@@ -1,0 +1,10 @@
+
+/**/.vs/
+/**/bin/
+/**/obj/
+/artifacts/
+/build/
+/reports/
+/**/*.user
+/src/**/*-help.xml
+/src/**/*.help.txt
