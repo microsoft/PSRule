@@ -25,7 +25,7 @@ The following modules are included in this repository.
 
 ## Getting started
 
-### Prerequsits
+### Prerequisites
 
 - Windows PowerShell 5.1 or PowerShell Core 6.0
 
@@ -37,13 +37,14 @@ PSRule extends PowerShell with domain specific language (DSL) keywords and cmdle
 
 The following language keywords are used by the `PSRule` module:
 
-- [Rule](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#Rule) -
-- [Exists](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#Exists) -
-- [Match](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#Match) -
-- [AnyOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#AnyOf) -
-- [AllOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#AllOf) -
-- [Within](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#Within) -
-- [When](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#When) -
+- [Rule](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#rule) - A rule definition
+- [Exists](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#exists) - Assert that a field or property must exist
+- [Match](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#match) - Assert that the field must match any of the regular expressions
+- [AnyOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#anyof) - Assert that any of the child expressions must be true
+- [AllOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#allof) -Assert that all of the child expressions must be true
+- [Within](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#within) - Assert that the field must match any of the values
+- [When](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#when) - Only evaluate the expression when the condition is true
+- [TypeOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#typeof) - Assert that the object must be of a specific type
 
 ### Commands
 
