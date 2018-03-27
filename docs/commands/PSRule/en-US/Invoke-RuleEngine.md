@@ -1,7 +1,7 @@
 ---
 external help file: PSRule-help.xml
 Module Name: PSRule
-online version:
+online version: https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-RuleEngine.md
 schema: 2.0.0
 ---
 
@@ -13,7 +13,7 @@ Evaluate pipeline objects against matching rules.
 
 ## SYNTAX
 
-```
+```text
 Invoke-RuleEngine [-Path] <String> [[-ConfigurationData] <Object>] [-InputObject] <PSObject>
  [[-Status] <String[]>] [<CommonParameters>]
 ```
@@ -30,12 +30,13 @@ Evaluate pipeline objects against matching rules.
 PS C:\> @{ Name = 'Item 1' } | Invoke-RuleEngine .
 ```
 
-{{ Add example description here }}
+Evaluate a simple hashtable on the pipeline against rules loaded from the current working path.
 
 ## PARAMETERS
 
 ### -ConfigurationData
-{{Fill ConfigurationData Description}}
+
+Additional configuration data that can be referenced from rules. ConfigurationData can be a hashtable or a valid file path to a `.psd1` file.
 
 ```yaml
 Type: Object

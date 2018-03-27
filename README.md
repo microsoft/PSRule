@@ -6,7 +6,7 @@ A PowerShell module with commands to validate objects on the pipeline.
 | --- | --- |
 | [![av-image][]][av-site] | [![cc-image][]][cc-site] |
 
-[av-image]: https://ci.appveyor.com/api/projects/status/pl7tu7ktue388n7s
+[av-image]: https://ci.appveyor.com/api/projects/status/6vrh199evb1wl0s6
 [av-site]: https://ci.appveyor.com/project/BernieWhite/PSRule
 [cc-image]: https://codecov.io/gh/BernieWhite/PSRule/branch/master/graph/badge.svg
 [cc-site]: https://codecov.io/gh/BernieWhite/PSRule
