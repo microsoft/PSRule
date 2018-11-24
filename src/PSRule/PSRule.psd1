@@ -21,16 +21,18 @@ CompatiblePSEditions = 'Core', 'Desktop'
 GUID = '0130215d-58eb-4887-b6fa-31ed02500569'
 
 # Author of this module
-Author = 'Microsoft Corporation'
+Author = 'Bernie White'
 
 # Company or vendor of this module
-CompanyName = 'Microsoft Corporation'
+CompanyName = 'Bernie White'
 
 # Copyright statement for this module
-Copyright = '(c) Microsoft Corporation. All rights reserved.'
+Copyright = '(c) Bernie White. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'A PowerShell rules engine.'
+Description = 'A PowerShell rules engine.
+
+This project is to be considered a proof-of-concept and not a supported product.'
 
 # Minimum version of the Windows PowerShell engine required by this module
 PowerShellVersion = '5.1'
@@ -83,7 +85,7 @@ FunctionsToExport = @(
 # VariablesToExport = '*'
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-# AliasesToExport = @()
+AliasesToExport = @()
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -100,19 +102,19 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        # Tags = @()
+        Tags = @('Rule')
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://github.com/BernieWhite/PSRule/blob/master/LICENSE'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/BernieWhite/PSRule'
 
         # A URL to an icon representing this module.
         # IconUri = ''
 
         # ReleaseNotes of this module
-        # ReleaseNotes = ''
+        ReleaseNotes = 'https://github.com/BernieWhite/PSRule/blob/master/CHANGELOG.md'
 
     } # End of PSData hashtable
 
