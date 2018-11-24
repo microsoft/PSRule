@@ -2,26 +2,23 @@
 
 A PowerShell module with commands to validate objects on the pipeline.
 
-| AppVeyor (Windows) | Codecov (Windows) |
-| --- | --- |
-| [![av-image][]][av-site] | [![cc-image][]][cc-site] |
-
-[av-image]: https://ci.appveyor.com/api/projects/status/6vrh199evb1wl0s6
-[av-site]: https://ci.appveyor.com/project/BernieWhite/PSRule
-[cc-image]: https://codecov.io/gh/BernieWhite/PSRule/branch/master/graph/badge.svg
-[cc-site]: https://codecov.io/gh/BernieWhite/PSRule
+![ci-badge]
 
 ## Disclaimer
 
-This project is to be considered a **proof-of-concept** and **not a supported Microsoft product**.
+This project is to be considered a **proof-of-concept** and **not a supported product**.
+
+If you have any problems please check our GitHub [issues](https://github.com/BernieWhite/PSRule/issues) page. If you do not see your problem captured, please file a new issue and follow the provided template.
 
 ## Modules
 
-The following modules are included in this repository.
+## Getting the modules
 
-| Module     | Description | Latest version |
-| ------     | ----------- | -------------- |
-| PSRule     | A PowerShell rules engine. | Unreleased |
+You can download and install these PowerShell modules from the PowerShell Gallery.
+
+| Module     | Description | Downloads / instructions |
+| ------     | ----------- | ------------------------ |
+| PSRule     | A PowerShell rules engine | Unreleased |
 
 ## Getting started
 
@@ -64,4 +61,6 @@ Modules in this repository will use the [semantic versioning](http://semver.org/
 
 This project is [licensed under the MIT License](LICENSE).
 
+[install]: docs/scenarios/install-instructions.md
+[ci-badge]: https://bewhite.visualstudio.com/PSRule/_apis/build/status/PSRule-CI?branchName=master
 [psg-psrule]: https://www.powershellgallery.com/packages/PSRule

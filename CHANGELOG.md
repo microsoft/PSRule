@@ -1,3 +1,2 @@
-# Change log
 
 ## Unreleased
