@@ -1,0 +1,6 @@
+
+markdown:
+  # Should a line break be added after headers
+  sectionFormat: LineBreakAfterHeader
+  # Set the default infostring for fenced sections
+  infoString: text

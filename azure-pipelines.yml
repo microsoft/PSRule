@@ -1,0 +1,39 @@
+# Azure DevOps
+# Build pipeline for PSRule
+
+trigger:
+- master
+
+pool:
+  vmImage: VS2017-Win2016
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+
+# Install pipeline dependencies
+- powershell: ./scripts/vstsbuild.ps1
+  displayName: 'Install Invoke-Build'
+
+# Invoke build
+- powershell: Invoke-Build -Configuration $(buildConfiguration)
+  displayName: 'Build module'
+
+# Publish test results
+- task: PublishTestResults@2
+  displayName: 'Publish test results'
+  inputs:
+    testRunTitle: 'Pester unit tests'
+    testResultsFormat: NUnit
+    testResultsFiles: 'reports/*.xml'
+    mergeTestResults: true
+    buildConfiguration: $(buildConfiguration)
+  condition: succeededOrFailed()
+
+# Generate artifacts
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish PSRule module'
+  inputs:
+    PathtoPublish: out/modules/PSRule
+    ArtifactName: PSRule
