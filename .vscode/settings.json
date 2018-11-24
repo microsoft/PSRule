@@ -1,0 +1,9 @@
+{
+    "files.exclude": {
+        ".vs/": true,
+        "out/": true,
+        "reports/": true,
+        "**/bin/": true,
+        "**/obj/": true
+    }
+}

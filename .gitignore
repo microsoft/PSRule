@@ -5,6 +5,7 @@
 /artifacts/
 /build/
 /reports/
+/out/
 /**/*.user
 /src/**/*-help.xml
 /src/**/*.help.txt
