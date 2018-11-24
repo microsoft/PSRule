@@ -89,7 +89,7 @@ function SendAppveyorTestResult {
 task BuildDotNet {
     exec {
         # Build library
-        dotnet publish src/PSRule -c $Configuration -f net452 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule/desktop)
+        # dotnet publish src/PSRule -c $Configuration -f net452 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule/desktop)
         dotnet publish src/PSRule -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule/core)
     }
 }
@@ -108,7 +108,7 @@ task BuildModule BuildDotNet, CopyModule
 task BuildHelp BuildModule, PlatyPS, {
 
     # Generate MAML and about topics
-    $Null = New-ExternalHelp -OutputPath out/docs/PSRule -Path '.\docs\commands\PSRule\en-US','.\docs\keywords\PSRule\en-US','.\docs\concepts\PSRule\en-US' -Force;
+    $Null = New-ExternalHelp -OutputPath out/docs/PSRule -Path '.\docs\commands\PSRule\en-US','.\docs\keywords\PSRule\en-US' -Force;
 
     # Copy generated help into module out path
     $Null = Copy-Item -Path out/docs/PSRule/* -Destination out/modules/PSRule/en-US;
