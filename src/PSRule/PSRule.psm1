@@ -1,3 +1,42 @@
+#
+# PSRule module
+#
+
+Set-StrictMode -Version latest;
+
+# Set up some helper variables to make it easier to work with the module
+$PSModule = $ExecutionContext.SessionState.Module;
+$PSModuleRoot = $PSModule.ModuleBase;
+
+# Import the appropriate nested binary module based on the current PowerShell version
+$binModulePath = Join-Path -Path $PSModuleRoot -ChildPath '/desktop/PSRule.dll';
+
+if (($PSVersionTable.Keys -contains 'PSEdition') -and ($PSVersionTable.PSEdition -ne 'Desktop')) {
+    $binModulePath = Join-Path -Path $PSModuleRoot -ChildPath '/core/PSRule.dll';
+}
+
+$binaryModule = Import-Module -Name $binModulePath -PassThru;
+
+# When the module is unloaded, remove the nested binary module that was loaded with it
+$PSModule.OnRemove = {
+    Remove-Module -ModuleInfo $binaryModule;
+}
+
+[PSRule.Configuration.PSRuleOption]::GetWorkingPath = {
+    return Get-Location;
+}
+
+$Script:UTF8_NO_BOM = New-Object -TypeName System.Text.UTF8Encoding -ArgumentList $False;
+
+#
+# Localization
+#
+
+$LocalizedData = data {
+
+}
+
+Import-LocalizedData -BindingVariable LocalizedData -FileName 'PSRule.Resources.psd1' -ErrorAction SilentlyContinue;
 
 #
 # Public functions
@@ -204,6 +243,46 @@ function Invoke-RuleEngine {
     }
 }
 
+# Get a list of rules
+function Get-PSRule {
+
+    [CmdletBinding()]
+    [OutputType([PSRule.Rules.Rule])]
+    param (
+        # A list of deployments to run by name
+        [Parameter(Mandatory = $False)]
+        [SupportsWildcards()]
+        [String[]]$Name,
+
+        [Parameter(Mandatory = $False)]
+        [String[]]$Tag,
+
+        # A list of paths to check for deployments
+        [Parameter(Position = 0, Mandatory = $False)]
+        [String[]]$Path = $PWD
+    )
+
+    begin {
+        Write-Verbose -Message "[Get-PSRule]::BEGIN";
+
+        # Discover deployment script in the specified paths
+        [String[]]$includePaths = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
+
+        Write-Verbose -Message "[Get-PSRule] -- Found $($includePaths.Length) script(s)";
+        Write-Debug -Message "[Get-PSRule] -- Found scripts: $([String]::Join(' ', $includePaths))";
+    }
+
+    process {
+        # Get matching deployment definitions
+        $filter = New-Object -TypeName PSRule.Rules.RuleFilter -ArgumentList @($Name, $Tag);
+        GetRule -Path $includePaths -Filter $filter -Verbose:$VerbosePreference;
+    }
+
+    end {
+        Write-Verbose -Message "[Get-PSRule]::END";
+    }
+}
+
 <#
 .SYNOPSIS
 Create a rule definition.
@@ -262,8 +341,8 @@ function Rule {
 
         # Write out diagnostic information
         Write-Debug -Message "Discovered rule: $RuleName";
-        Write-Verbose -Message "[Engine]`t-- Discovered rule: $RuleName";
-        Write-Verbose -Message "[Engine]`t-- Source: $SourceFile";
+        Write-Verbose -Message "[PSRule] -- Discovered rule: $RuleName";
+        Write-Verbose -Message "[PSRule] -- Source: $SourceFile";
 
         # Add this rule to engine context
         $Engine.Rule.Add($RuleName, $ruleObject);
@@ -272,7 +351,7 @@ function Rule {
 
 function InvokeRule {
     [CmdletBinding()]
-    [OutputType('PSRule.Rule.Result')]
+    [OutputType([PSRule.Rules.RuleResult])]
     param (
         [Parameter(Mandatory = $True)]
         [PSObject]$Rule
@@ -997,6 +1076,52 @@ function Out-Rule {
 # Helper functions
 #
 
+# Used to discover the rule blocks
+function GetRule {
+
+    [CmdletBinding()]
+    [OutputType([PSRule.Rules.Rule])]
+    param (
+        [Parameter(Mandatory = $True)]
+        [String[]]$Path,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Rules.RuleFilter]$Filter
+    )
+
+    process {
+
+        Write-Verbose -Message "[PSRule] -- Getting rules";
+
+        $languageContext = New-Object -TypeName PSRule.Host.LanguageContext;
+
+        [PSRule.Pipeline.PipelineBuilder]::Get().Build().Process($languageContext, $Path, $Filter);
+
+        # Setup context to allow use of internal keywords
+        # $languageContext = [DevOpsKit.Host.HostHelper]::GetLanguageContext();
+        # $languageContext.Functions['Deployment'] = ${function:GetDeploymentBlockFn};
+
+        # Emit deployments to the pipeline
+        # [DevOpsKit.Host.HostHelper]::GetDeployment($languageContext, $Path, $Filter);
+    }
+}
+
+# Get a list of rule script files in the matching paths
+function GetRuleScriptPath {
+
+    [CmdletBinding()]
+    [OutputType([String])]
+    param (
+        [Parameter(Mandatory = $True)]
+        [String[]]$Path
+    )
+
+    process {
+
+        (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1').FullName;
+    }
+}
+
 function NewEngine {
 
     param (
@@ -1026,7 +1151,7 @@ function NewContext {
 
 function NewRuleResult {
     [CmdletBinding()]
-    [OutputType('PSRule.Rule.Result')]
+    [OutputType([PSRule.Rules.RuleResult])]
     param (
         [System.Boolean]$Success,
 
@@ -1035,9 +1160,9 @@ function NewRuleResult {
 
     process {
         # Create a result object
-        $result = New-Object -TypeName PSObject -Property @{ RuleName = $RuleName; Success = $Success; Status = $Status; Message = $Rule.Message; TargetName = $Rule.TargetName; Output = @(); }
+        $result = New-Object -TypeName PSRule.Rules.RuleResult -Property @{ RuleName = $RuleName; Success = $Success; Status = $Status; Message = $Rule.Message; TargetName = $Rule.TargetName; Output = @(); }
 
-        $result.PSObject.TypeNames.Insert(0, 'PSRule.Rule.Result');
+        # $result.PSObject.TypeNames.Insert(0, 'PSRule.Rules.RuleResult');
 
         $result;
     }
@@ -1047,6 +1172,6 @@ function NewRuleResult {
 # Export module
 #
 
-Export-ModuleMember -Function 'Rule','Invoke-RuleEngine','Out-Rule','Get-ObjectField';
+Export-ModuleMember -Function 'Rule','Invoke-RuleEngine', 'Get-PSRule','Out-Rule','Get-ObjectField';
 
 # EOM

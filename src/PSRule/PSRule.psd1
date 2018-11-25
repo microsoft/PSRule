@@ -74,6 +74,7 @@ FormatsToProcess = @('PSRule.Format.ps1xml')
 FunctionsToExport = @(
     'Rule',
     'Invoke-RuleEngine',
+    'Get-PSRule',
     'Out-Rule',
     'Get-ObjectField'
 )

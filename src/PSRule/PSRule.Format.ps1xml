@@ -46,9 +46,9 @@
   </TableControl>
 </View>
 <View>
-  <Name>PSRule.Rule.Result</Name>
+  <Name>PSRule.Rules.RuleResult</Name>
   <ViewSelectedBy>
-    <TypeName>PSRule.Rule.Result</TypeName>
+    <TypeName>PSRule.Rules.RuleResult</TypeName>
   </ViewSelectedBy>
   <GroupBy>
     <PropertyName>TargetName</PropertyName>
