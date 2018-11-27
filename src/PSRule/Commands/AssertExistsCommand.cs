@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Management.Automation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PSRule.Commands
 {
@@ -11,13 +7,21 @@ namespace PSRule.Commands
     internal sealed class AssertExistsCommand : InternalLanguageCommand
     {
         [Parameter(Mandatory = true, Position = 0)]
-        public string Field { get; set; }
+        public string[] Field { get; set; }
 
         protected override void ProcessRecord()
         {
             var inputObject = GetVariableValue("InputObject") ?? GetVariableValue("TargetObject");
 
-            var result = PSObject.AsPSObject(inputObject).Properties.FirstOrDefault(p => p.Name == Field) != null;
+            bool result = false;
+
+            foreach (var fieldName in Field)
+            {
+                if (GetField(inputObject, fieldName, out object fieldValue))
+                {
+                    result = true;
+                }
+            }
 
             WriteObject(result);
         }

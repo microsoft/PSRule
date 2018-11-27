@@ -26,7 +26,9 @@ Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
     Context 'Exists' {
         $testObject = [PSCustomObject]@{
             Name = "TestObject1"
-            Value = 1
+            Value = @{
+                Value1 = 1
+            }
         }
 
         It 'Return success' {
