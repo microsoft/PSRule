@@ -42,14 +42,18 @@ Import-LocalizedData -BindingVariable LocalizedData -FileName 'PSRule.Resources.
 # Public functions
 #
 
-function Invoke-RuleEngine {
+function Invoke-PSRule {
+
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $True)]
-        [String]$Path,
+        [Parameter(Position = 0)]
+        [String[]]$Path,
 
         [Parameter(Mandatory = $False)]
-        [Object]$ConfigurationData,
+        [String[]]$Name,
+
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$Tag,
 
         [Parameter(Mandatory = $True, ValueFromPipeline = $True)]
         [PSObject]$InputObject,
@@ -60,7 +64,49 @@ function Invoke-RuleEngine {
     )
 
     begin {
-        Write-Verbose -Message "[PSRule]`tBEGIN::";
+        Write-Verbose -Message "[PSRule] BEGIN::";
+
+        Write-Verbose -Message "[PSRule] -- Scanning for source files: $Path";
+
+        # Discover scripts in the specified paths
+        [String[]]$sourceFiles = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
+
+        $filter = New-Object -TypeName PSRule.Rules.RuleFilter -ArgumentList @($Name, $Tag);
+    }
+
+    process {
+        InvokeRulePipeline -Path $sourceFiles -Filter $filter -InputObject $InputObject -Verbose:$VerbosePreference;
+    }
+
+    end {
+        Write-Verbose -Message "[PSRule] END::";
+    }
+}
+
+function Invoke-EngineRule {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True)]
+        [String]$Path,
+
+        [String[]]$Name,
+
+        [Parameter(Mandatory = $False)]
+        [Object]$ConfigurationData,
+
+        [Parameter(Mandatory = $True, ValueFromPipeline = $True)]
+        [PSObject]$InputObject,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Success', 'Failed')]
+        [String[]]$Status,
+
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$Tag
+    )
+
+    begin {
+        Write-Verbose -Message "[PSRule] BEGIN::";
 
         # Ensure that the supplied path exists
         if (!(Test-Path -Path $Path))
@@ -70,7 +116,7 @@ function Invoke-RuleEngine {
             return;
         }
 
-        Write-Verbose -Message "[Engine]`tBEGIN::";
+        Write-Verbose -Message "[PSRule] BEGIN::";
 
         $configData = @{ };
         
@@ -93,7 +139,7 @@ function Invoke-RuleEngine {
 
                     return;
                 } else {
-                    Write-Verbose -Message "[Engine]`t-- Importing configuration data: $ConfigurationData";
+                    Write-Verbose -Message "[PSRule] -- Importing configuration data: $ConfigurationData";
 
                     $configDataDirectory = Split-Path -Path $ConfigurationData -Parent;
                     $configDataFileName = Split-Path -Path $ConfigurationData -Leaf;
@@ -111,15 +157,12 @@ function Invoke-RuleEngine {
         # Create Engine object
         $Engine = NewEngine;
 
-        Write-Verbose -Message "[Engine]`t-- Scanning for source files: $Path";
-        
-        # Look for rules in the specified path
-        $sourceFiles = Get-ChildItem -Path $Path -File -Recurse | Where-Object -FilterScript {
-            # Filter to files ending with '.Rule.ps1'
-            ($_.FullName -like '*.Rule.ps1')
-        } | ForEach-Object -Process { $_.FullName; };
+        Write-Verbose -Message "[PSRule] -- Scanning for source files: $Path";
 
-        Write-Verbose -Message "[Engine]`t-- Found $($sourceFiles.Count) source files";
+        # Discover scripts in the specified paths
+        [String[]]$sourceFiles = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
+
+        Write-Verbose -Message "[PSRule] -- Found $($sourceFiles.Count) source files";
 
         # Discover rule blocks in each source file
         foreach ($SourceFile in $sourceFiles) {
@@ -136,7 +179,7 @@ function Invoke-RuleEngine {
             $sourceBlock.InvokeWithContext($Null, $variablesToDefine) | Out-Null;
         }
 
-        Write-Verbose -Message "[Engine]`t-- Found $($Engine.Rule.Count) rules";
+        Write-Verbose -Message "[PSRule] -- Found $($Engine.Rule.Count) rules";
     }
 
     process {
@@ -255,7 +298,7 @@ function Get-PSRule {
         [String[]]$Name,
 
         [Parameter(Mandatory = $False)]
-        [String[]]$Tag,
+        [Hashtable]$Tag,
 
         # A list of paths to check for deployments
         [Parameter(Position = 0, Mandatory = $False)]
@@ -265,7 +308,7 @@ function Get-PSRule {
     begin {
         Write-Verbose -Message "[Get-PSRule]::BEGIN";
 
-        # Discover deployment script in the specified paths
+        # Discover scripts in the specified paths
         [String[]]$includePaths = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
 
         Write-Verbose -Message "[Get-PSRule] -- Found $($includePaths.Length) script(s)";
@@ -1085,7 +1128,8 @@ function GetRule {
         [Parameter(Mandatory = $True)]
         [String[]]$Path,
 
-        [Parameter(Mandatory = $False)]
+        [Parameter(Mandatory = $True)]
+        [AllowNull()]
         [PSRule.Rules.RuleFilter]$Filter
     )
 
@@ -1093,16 +1137,30 @@ function GetRule {
 
         Write-Verbose -Message "[PSRule] -- Getting rules";
 
-        $languageContext = New-Object -TypeName PSRule.Host.LanguageContext;
+        [PSRule.Pipeline.PipelineBuilder]::Get().Build($Path, $Filter).Process();
+    }
+}
 
-        [PSRule.Pipeline.PipelineBuilder]::Get().Build().Process($languageContext, $Path, $Filter);
+function InvokeRulePipeline {
 
-        # Setup context to allow use of internal keywords
-        # $languageContext = [DevOpsKit.Host.HostHelper]::GetLanguageContext();
-        # $languageContext.Functions['Deployment'] = ${function:GetDeploymentBlockFn};
+    [CmdletBinding()]
+    [OutputType([PSRule.Rules.RuleResult])]
+    param (
+        [Parameter(Mandatory = $True)]
+        [String[]]$Path,
 
-        # Emit deployments to the pipeline
-        # [DevOpsKit.Host.HostHelper]::GetDeployment($languageContext, $Path, $Filter);
+        [Parameter(Mandatory = $True)]
+        [AllowNull()]
+        [PSRule.Rules.RuleFilter]$Filter,
+
+        [Parameter(Mandatory = $True)]
+        [PSObject]$InputObject
+    )
+
+    process {
+
+        Write-Verbose -Message "[PSRule] -- Invoking rules";
+        [PSRule.Pipeline.PipelineBuilder]::Invoke().Build($Path, $Filter).Process($InputObject);
     }
 }
 
@@ -1172,6 +1230,6 @@ function NewRuleResult {
 # Export module
 #
 
-Export-ModuleMember -Function 'Rule','Invoke-RuleEngine', 'Get-PSRule','Out-Rule','Get-ObjectField';
+Export-ModuleMember -Function 'Rule','Get-PSRule','Invoke-PSRule','Out-Rule','Get-ObjectField';
 
 # EOM

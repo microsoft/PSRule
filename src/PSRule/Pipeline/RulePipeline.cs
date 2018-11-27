@@ -4,11 +4,17 @@ using System.Collections.Generic;
 
 namespace PSRule.Pipeline
 {
-    internal sealed class RulePipeline : IRulePipeline
+    public abstract class RulePipeline
     {
-        public IEnumerable<Rule> Process(LanguageContext context, string[] path, RuleFilter filter)
+        protected readonly string[] _Path;
+        protected readonly RuleFilter _Filter;
+        protected readonly LanguageContext _Context;
+
+        internal RulePipeline(string[] path, RuleFilter filter)
         {
-            return HostHelper.GetRule(context, path, filter);
+            _Path = path;
+            _Filter = filter;
+            _Context = new LanguageContext();
         }
     }
 }

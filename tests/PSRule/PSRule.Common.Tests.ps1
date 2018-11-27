@@ -21,66 +21,61 @@ $outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Common
 Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
 $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 
-Describe 'PSRule keywords' {
+Describe 'Invoke-PSRule' {
 
-    Context 'Exists' {
+    Context 'Using -Path' {
 
-        $exampleObject = [PSObject]@{ Property1 = 'test'; }
-        
-        Rule 'ShouldExist' {
-
-            Exists 'Property1'
+        $testObject = [PSCustomObject]@{
+            Name = "TestObject1"
+            Value = 1
         }
 
-        Rule 'ShouldNotExist' {
+        It 'Return success' {
 
-            Exists 'Property2'
+            $result = $testObject | Invoke-PSRule -Path $here -Name 'FromFile1' -Verbose;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Success | Should -Be $True;
+            $result.TargetName | Should -Be 'TestTarget1'
         }
 
-        $result = $exampleObject | Invoke-RuleEngine -Verbose;
+        It 'Return failure' {
 
-        It 'Success when field exists' {
-            $result | Should
+            $result = $testObject | Invoke-PSRule -Path $here -Name 'FromFile2' -Verbose;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Success | Should -Be $False;
+            $result.TargetName | Should -Be 'TestTarget2'
         }
-
-        It 'Success when field does not exist' {
-
-        }
-    }
-
-    Context 'Match' {
-
-    }
-
-    Context 'AnyOf' {
-
-    }
-
-    Context 'AllOf' {
-
-    }
-
-    Context 'Within' {
-
     }
 }
 
 Describe 'Get-PSRule' {
 
-
-    Context 'Get rule list' {
-
-        $result = Get-PSRule -Path $here -Verbose;
+    Context 'Using -Path' {
 
         It 'Returns rules' {
+            # Get a list of rules
+            $result = Get-PSRule -Path $here;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -BeGreaterThan 0;
         }
+
+        It 'Filters by name' {
+            $result = Get-PSRule -Path $here -Name 'FromFile1', 'FromFile3';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 2;
+            $result.Name | Should -BeIn @('FromFile1', 'FromFile3')
+        }
+
+        It 'Filters by tag' {
+            $result = Get-PSRule -Path $here -Tag @{ Test = "Test1" };
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Name | Should -Be 'FromFile1'
+        }
     }
 
-    Context 'Get rule with invalid path' {
+    # Context 'Get rule with invalid path' {
 
-        $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath invalid);
-    }
+    #     $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath invalid);
+    # }
 }
 

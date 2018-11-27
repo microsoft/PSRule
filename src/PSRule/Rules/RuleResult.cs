@@ -1,4 +1,6 @@
-﻿namespace PSRule.Rules
+﻿using System.Management.Automation;
+
+namespace PSRule.Rules
 {
     public sealed class RuleResult
     {
@@ -11,5 +13,7 @@
         public string Message { get; set; }
 
         public string TargetName { get; set; }
+
+        public PSObject TargetObject { get; internal set; }
     }
 }

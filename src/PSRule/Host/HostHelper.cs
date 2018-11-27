@@ -16,6 +16,10 @@ namespace PSRule.Host
         {
             return ToRule(GetLanguageBlock(context, scriptPaths), filter).Values.ToArray();
         }
+        public static IDictionary<string, RuleBlock> GetRuleBlock(LanguageContext context, string[] scriptPaths, RuleFilter filter)
+        {
+            return ToRuleBlock(GetLanguageBlock(context, scriptPaths), filter);
+        }
 
         /// <summary>
         /// Called from PowerShell to get additional metdata from a language block, such as comment help.
@@ -94,6 +98,8 @@ namespace PSRule.Host
 
             runspace.Open();
             runspace.SessionStateProxy.PSVariable.Set(new EnvironmentVariable("Environment"));
+            runspace.SessionStateProxy.PSVariable.Set(new RuleVariable("Rule"));
+            runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable("TargetObject"));
 
             var ps = PowerShell.Create();
 
@@ -119,6 +125,7 @@ namespace PSRule.Host
                     if (ir.BaseObject is ILanguageBlock)
                     {
                         var block = ir.BaseObject as ILanguageBlock;
+                        block.SourcePath = path;
 
                         results.Add(block);
                     }
@@ -126,6 +133,39 @@ namespace PSRule.Host
             }
 
             return results;
+        }
+
+        public static RuleResult InvokeRuleBlock(LanguageContext context, RuleBlock block, PSObject inputObject)
+        {
+            try
+            {
+                var result = new RuleResult
+                {
+                    RuleName = block.Name,
+                    TargetObject = inputObject
+                };
+
+                LanguageContext._Rule = result;
+
+                var scriptBlock = block.Body;
+                var invokeResults = scriptBlock.Invoke();
+
+                foreach (var ir in invokeResults)
+                {
+                    if (ir.BaseObject is bool)
+                    {
+                        var success = (bool)ir.BaseObject;
+
+                        result.Success = success;
+                    }
+                }
+
+                return result;
+            }
+            finally
+            {
+                LanguageContext._Rule = null;
+            }
         }
 
         /// <summary>
@@ -163,6 +203,25 @@ namespace PSRule.Host
                 {
                     rule = results[block.Name];
                 }
+            }
+
+            return results;
+        }
+
+        private static IDictionary<string, RuleBlock> ToRuleBlock(IEnumerable<ILanguageBlock> blocks, RuleFilter filter)
+        {
+            // Index rule blocks by name
+            var results = new Dictionary<string, RuleBlock>(System.StringComparer.OrdinalIgnoreCase);
+
+            foreach (var block in blocks.OfType<RuleBlock>())
+            {
+                // Ignore rule blocks that don't match
+                if (filter != null && !filter.Match(block))
+                {
+                    continue;
+                }
+
+                results[block.Name] = block;
             }
 
             return results;

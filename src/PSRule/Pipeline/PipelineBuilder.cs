@@ -2,9 +2,14 @@
 {
     public static class PipelineBuilder
     {
-        public static RulePipelineBuilder Get()
+        public static InvokeRulePipelineBuilder Invoke()
         {
-            return new RulePipelineBuilder();
+            return new InvokeRulePipelineBuilder();
+        }
+
+        public static GetRulePipelineBuilder Get()
+        {
+            return new GetRulePipelineBuilder();
         }
     }
 }

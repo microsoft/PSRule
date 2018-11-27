@@ -11,7 +11,7 @@ namespace PSRule.Rules
     /// </summary>
     public sealed class RuleBlock : ILanguageBlock
     {
-        public RuleBlock(string environment, string name)
+        public RuleBlock(string name)
         {
             Name = name;
         }
@@ -34,5 +34,7 @@ namespace PSRule.Rules
         /// Other deployments that must completed successfully before calling this deployment.
         /// </summary>
         public string[] DependsOn { get; set; }
+
+        public TagSet Tag { get; set; }
     }
 }

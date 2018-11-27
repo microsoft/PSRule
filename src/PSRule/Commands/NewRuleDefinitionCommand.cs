@@ -1,8 +1,6 @@
 ﻿using PSRule.Rules;
-using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Management.Automation;
-using System.Text;
 
 namespace PSRule.Commands
 {
@@ -21,14 +19,17 @@ namespace PSRule.Commands
         [Parameter(Mandatory = false, Position = 1)]
         public ScriptBlock Body { get; set; }
 
-        [Parameter(Mandatory = false)]
-        public string[] Tag { get; set; }
-
         /// <summary>
-        /// The environments that the deployment applies to.
+        /// A set of tags with additional metadata for the rule.
         /// </summary>
         [Parameter(Mandatory = false)]
-        public string[] Environment { get; set; }
+        public Hashtable Tag { get; set; }
+
+        /// <summary>
+        /// An optional precondition before the rule is evaluated.
+        /// </summary>
+        [Parameter(Mandatory = false)]
+        public ScriptBlock If { get; set; }
 
         /// <summary>
         /// Deployments that this deployment depends on.
@@ -39,34 +40,21 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             var metadata = GetMetadata(Body);
+            var tag = GetTag(Tag);
 
-            foreach (var environmentName in GetEnvironmentNames())
+            WriteVerbose($"[PSRule][R][{Name}]::BEGIN");
+
+            var block = new RuleBlock(Name)
             {
-                WriteVerbose($"[PSRule][R][{Name}]::BEGIN");
+                Body = Body,
+                Description = metadata.Description,
+                Tag = tag,
+                DependsOn = DependsOn
+            };
 
-                var block = new RuleBlock(environmentName, Name)
-                {
-                    Body = Body,
-                    Description = metadata.Description,
-                    DependsOn = DependsOn
-                };
+            WriteObject(block);
 
-                WriteObject(block);
-
-                WriteVerbose($"[PSRule][R][{Name}]::END");
-            }
-        }
-
-        private string[] GetEnvironmentNames()
-        {
-            if (Environment == null || Environment.Length == 0)
-            {
-                return new string[] { "default" };
-            }
-            else
-            {
-                return Environment;
-            }
+            WriteVerbose($"[PSRule][R][{Name}]::END");
         }
     }
 }

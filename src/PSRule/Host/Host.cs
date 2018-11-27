@@ -26,12 +26,56 @@ namespace PSRule.Host
         }
     }
 
+    public sealed class RuleVariable : PSVariable
+    {
+        public RuleVariable(string name)
+            : base(name, null, ScopedItemOptions.ReadOnly)
+        {
+
+        }
+
+        public override object Value
+        {
+            get
+            {
+                return LanguageContext._Rule;
+            }
+            set
+            {
+
+            }
+        }
+    }
+
+    public sealed class TargetObjectVariable : PSVariable
+    {
+        public TargetObjectVariable(string name)
+            : base (name, null, ScopedItemOptions.ReadOnly)
+        {
+
+        }
+
+        public override object Value
+        {
+            get
+            {
+                return LanguageContext._Rule?.TargetObject;
+            }
+            set
+            {
+
+            }
+        }
+    }
+
     internal static class HostState
     {
 
         internal static SessionStateCmdletEntry[] BuiltInCmdlets = new SessionStateCmdletEntry[]
         {
             new SessionStateCmdletEntry("New-RuleDefinition", typeof(NewRuleDefinitionCommand), null),
+            new SessionStateCmdletEntry("Set-PSRuleHint", typeof(SetPSRuleHintCommand), null),
+            new SessionStateCmdletEntry("Assert-Exists", typeof(AssertExistsCommand), null),
         };
 
         public static InitialSessionState CreateDefault()
@@ -61,6 +105,8 @@ namespace PSRule.Host
                 return new SessionStateAliasEntry[]
                 {
                     new SessionStateAliasEntry("rule", "New-RuleDefinition", string.Empty, ReadOnly),
+                    new SessionStateAliasEntry("hint", "Set-PSRuleHint", string.Empty, ReadOnly),
+                    new SessionStateAliasEntry("exists", "Assert-Exists", string.Empty, ReadOnly),
                 };
             }
         }

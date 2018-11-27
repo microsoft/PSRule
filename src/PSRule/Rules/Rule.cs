@@ -20,5 +20,8 @@ namespace PSRule.Rules
 
         [JsonIgnore]
         public ScriptBlock Body { get; set; }
+
+        [JsonProperty(PropertyName = "tag")]
+        public TagSet Tag { get; set; }
     }
 }

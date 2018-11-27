@@ -1,41 +1,44 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace PSRule.Rules
 {
     public sealed class RuleFilter
     {
-        private HashSet<string> _Name;
-        private HashSet<string> _Tag;
+        private HashSet<string> _RequiredName;
+        private Hashtable _RequiredTag;
 
-        public RuleFilter(IEnumerable<string> name, IEnumerable<string> tag)
+        public RuleFilter(IEnumerable<string> name, Hashtable tag)
         {
-            _Name = name == null ? null : new HashSet<string>(name, StringComparer.OrdinalIgnoreCase);
-            _Tag = tag == null ? null : new HashSet<string>(tag, StringComparer.OrdinalIgnoreCase);
+            _RequiredName = name == null ? null : new HashSet<string>(name, StringComparer.OrdinalIgnoreCase);
+            _RequiredTag = tag ?? null;
         }
 
         // Matches if the Name is contained or any tag is matched
-        public bool Match(string name, string[] tag)
+        public bool Match(string name, TagSet tag)
         {
-            if (_Name == null || _Name.Contains(name))
+            if (_RequiredName == null || _RequiredName.Contains(name))
             {
-                if (_Tag == null)
+                if (_RequiredTag == null)
                 {
                     return true;
                 }
 
-                if (tag == null)
+                if (tag == null || _RequiredTag.Count > tag.Count)
                 {
                     return false;
                 }
 
-                for (var i = 0; i < tag.Length; i++)
+                foreach (DictionaryEntry entry in _RequiredTag)
                 {
-                    if (_Tag.Contains(tag[i]))
+                    if (!tag.Contains(entry.Key, entry.Value))
                     {
-                        return true;
+                        return false;
                     }
                 }
+
+                return true;
             }
 
             return false;
@@ -43,7 +46,7 @@ namespace PSRule.Rules
 
         public bool Match(RuleBlock block)
         {
-            return Match(block.Name, null);
+            return Match(block.Name, block.Tag);
         }
     }
 }

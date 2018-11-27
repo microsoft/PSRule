@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using PSRule.Rules;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Management.Automation;
@@ -7,8 +9,8 @@ namespace PSRule.Host
 {
     public sealed class LanguageContext
     {
-        //[ThreadStatic]
-        //internal static RuleBlock _Rule;
+        [ThreadStatic]
+        internal static RuleResult _Rule;
 
         public LanguageContext()
         {
