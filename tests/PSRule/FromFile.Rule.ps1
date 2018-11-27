@@ -28,4 +28,14 @@ Rule 'FromFile3' -Tag @{ category = "group1" } {
 Rule 'ExistsTest' {
 
     Exists 'Name'
+
+    # Exists 'Value.Value1'
+}
+
+Rule 'WithinTest' {
+
+    Within 'Title' {
+        'Mr'
+        'Mrs'
+    }
 }
