@@ -49,3 +49,38 @@ Rule 'TypeOfTest' {
 
     TypeOf 'System.Collections.Hashtable'
 }
+
+Rule 'AllOfTest' {
+
+    AllOf {
+        $True
+        $True
+    }
+}
+
+Rule 'AllOfTestNegative' {
+
+    AllOf {
+        $True
+        $False
+    }
+}
+
+Rule 'AnyOfTest' {
+
+    AnyOf {
+        $True
+        $False
+        $False
+    }
+}
+
+Rule 'AnyOfTestNegative' {
+
+    AnyOf {
+        $False
+        $False
+        $False
+    }
+}
+

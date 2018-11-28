@@ -79,6 +79,8 @@ namespace PSRule.Host
             new SessionStateCmdletEntry("Assert-Within", typeof(AssertWithinCommand), null),
             new SessionStateCmdletEntry("Assert-Match", typeof(AssertMatchCommand), null),
             new SessionStateCmdletEntry("Assert-TypeOf", typeof(AssertTypeOfCommand), null),
+            new SessionStateCmdletEntry("Assert-AllOf", typeof(AssertAllOfCommand), null),
+            new SessionStateCmdletEntry("Assert-AnyOf", typeof(AssertAnyOfCommand), null),
         };
 
         public static InitialSessionState CreateDefault()
@@ -113,6 +115,8 @@ namespace PSRule.Host
                     new SessionStateAliasEntry("within", "Assert-Within", string.Empty, ReadOnly),
                     new SessionStateAliasEntry("match", "Assert-Match", string.Empty, ReadOnly),
                     new SessionStateAliasEntry("typeof", "Assert-TypeOf", string.Empty, ReadOnly),
+                    new SessionStateAliasEntry("allof", "Assert-AllOf", string.Empty, ReadOnly),
+                    new SessionStateAliasEntry("anyof", "Assert-AnyOf", string.Empty, ReadOnly),
                 };
             }
         }
