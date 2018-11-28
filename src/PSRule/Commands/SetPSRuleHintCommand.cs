@@ -10,6 +10,9 @@ namespace PSRule.Commands
     [Cmdlet(VerbsCommon.Set, "PSRuleHint")]
     internal sealed class SetPSRuleHintCommand : InternalLanguageCommand
     {
+        [Parameter(Mandatory = false, Position = 0)]
+        public string Message { get; set; }
+
         [Parameter(Mandatory = false)]
         public string TargetName { get; set; }
 
@@ -17,7 +20,10 @@ namespace PSRule.Commands
         {
             var result = GetResult();
 
-            result.TargetName = TargetName;
+            if (MyInvocation.BoundParameters.ContainsKey("Message"))
+            {
+                result.Message = Message;
+            }
 
             if (MyInvocation.BoundParameters.ContainsKey("TargetName"))
             {
