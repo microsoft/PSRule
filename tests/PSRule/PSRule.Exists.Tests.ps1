@@ -17,9 +17,6 @@ $rootPath = $PWD;
 Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 
 $here = (Resolve-Path $PSScriptRoot).Path;
-$outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Exists;
-Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
-$Null = New-Item -Path $outputPath -ItemType Directory -Force;
 
 Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
 

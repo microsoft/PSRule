@@ -39,3 +39,8 @@ Rule 'WithinTest' {
         'Mrs'
     }
 }
+
+Rule 'MatchTest' {
+
+    Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$'
+}

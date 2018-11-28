@@ -1,5 +1,5 @@
 #
-# Unit tests for the Within keyword
+# Unit tests for the Match keyword
 #
 
 [CmdletBinding()]
@@ -18,19 +18,19 @@ Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 
 $here = (Resolve-Path $PSScriptRoot).Path;
 
-Describe 'PSRule -- Within keyword' -Tag 'Within' {
+Describe 'PSRule -- Match keyword' -Tag 'Match' {
 
-    Context 'Within' {
+    Context 'Match' {
         $testObject = [PSCustomObject]@{
-            Title = 'Mr'
+            PhoneNumber = '0400 000 000'
         }
 
         It 'Return success' {
 
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'WithinTest' -Verbose;
+            $result = $testObject | Invoke-PSRule -Path $here -Name 'MatchTest' -Verbose;
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
-            $result.RuleName | Should -Be 'WithinTest'
+            $result.RuleName | Should -Be 'MatchTest'
         }
     }
 }
