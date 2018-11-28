@@ -32,7 +32,7 @@ To define a Rule use the `Rule` keyword followed by a unique name and a pair of 
 
 Syntax:
 
-```powershell
+```text
 Rule <name> [-DependsOn <rule_name[]>] {
     ...
 }
@@ -60,8 +60,8 @@ The `Exists` assertion is used within a `Rule` definition to assert that a _fiel
 
 Syntax:
 
-```powershell
-Exists <field> [-CaseSensitive]
+```text
+Exists [-Field] <field[]> [-CaseSensitive]
 ```
 
 Examples:
@@ -83,21 +83,15 @@ The `Match` assertion is used within a `Rule` definition to assert that the valu
 
 Syntax:
 
-```powershell
-Match <field> [-CaseSensitive] {
-    <regular expression>
-    [<regular expression>]
-    ...
-}
+```text
+Match [-Field] <field[]> [-Expression] <regularExpression[]> [-CaseSensitive]
 ```
 
 Examples:
 
 ```powershell
 Rule 'validatePhoneNumber' {
-    Match 'PhoneNumber' {
-        '^(\+61|0)[1-9][0-9\s]{7}[0-9]{1}$'
-    }
+    Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$'
 }
 ```
 
@@ -111,7 +105,7 @@ The `Within` assertion is used within a `Rule` definition to assert that the val
 
 Syntax:
 
-```powershell
+```text
 Within <field> [-CaseSensitive] {
     <item>
     [<item>]
@@ -142,7 +136,7 @@ The `AllOf` assertion is used within a `Rule` definition to aggregate the result
 
 Syntax:
 
-```powershell
+```text
 AllOf {
     <assertion>
     [<assertion>]
@@ -170,7 +164,7 @@ The `AnyOf` assertion is used within a `Rule` definition to aggregate the result
 
 Syntax:
 
-```powershell
+```text
 AnyOf {
     <assertion>
     [<assertion>]
