@@ -1,11 +1,11 @@
 ---
 external help file: PSRule-help.xml
 Module Name: PSRule
-online version: https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-RuleEngine.md
+online version: https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md
 schema: 2.0.0
 ---
 
-# Invoke-RuleEngine
+# Invoke-PSRule
 
 ## SYNOPSIS
 
@@ -14,8 +14,8 @@ Evaluate pipeline objects against matching rules.
 ## SYNTAX
 
 ```text
-Invoke-RuleEngine [-Path] <String> [[-ConfigurationData] <Object>] [-InputObject] <PSObject>
- [[-Status] <String[]>] [<CommonParameters>]
+Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
+ [-Status <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -27,28 +27,12 @@ Evaluate pipeline objects against matching rules.
 ### Example 1
 
 ```powershell
-PS C:\> @{ Name = 'Item 1' } | Invoke-RuleEngine .
+PS C:\> @{ Name = 'Item 1' } | Invoke-PSRule .
 ```
 
 Evaluate a simple hashtable on the pipeline against rules loaded from the current working path.
 
 ## PARAMETERS
-
-### -ConfigurationData
-
-Additional configuration data that can be referenced from rules. ConfigurationData can be a hashtable or a valid file path to a `.psd1` file.
-
-```yaml
-Type: Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -InputObject
 
@@ -60,9 +44,25 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 2
+Position: Named
 Default value: None
 Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -Name
+
+The name of a specific rule to evaluate. If this parameter is not specified all rules in search paths will be evaluated.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
@@ -71,11 +71,11 @@ Accept wildcard characters: False
 A path to one or more rules to evaluate.
 
 ```yaml
-Type: String
+Type: String[]
 Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: 0
 Default value: None
 Accept pipeline input: False
@@ -93,13 +93,30 @@ Aliases:
 Accepted values: Success, Failed
 
 Required: False
-Position: 3
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Tag
+
+Only evaluate rules with the specified tags set. If this parameter is not specified all rules in search paths will be evaluated.
+
+```yaml
+Type: Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
