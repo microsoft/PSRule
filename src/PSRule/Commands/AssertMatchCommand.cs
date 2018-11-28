@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management.Automation;
-using System.Text;
+﻿using System.Management.Automation;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace PSRule.Commands
 {
-    [Cmdlet(VerbsLifecycle.Assert, "Match")]
+    [Cmdlet(VerbsLifecycle.Assert, InternalCommandVerbs.Match)]
     internal sealed class AssertMatchCommand : InternalLanguageCommand
     {
         private Regex[] _Expressions;

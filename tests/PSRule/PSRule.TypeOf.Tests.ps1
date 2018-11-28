@@ -1,5 +1,5 @@
 #
-# Unit tests for the Within keyword
+# Unit tests for the TypeOf keyword
 #
 
 [CmdletBinding()]
@@ -18,19 +18,19 @@ Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 
 $here = (Resolve-Path $PSScriptRoot).Path;
 
-Describe 'PSRule -- Within keyword' -Tag 'Within' {
+Describe 'PSRule -- TypeOf keyword' -Tag 'TypeOf' {
 
-    Context 'Within' {
-        $testObject = [PSCustomObject]@{
-            Title = 'Mr'
+    Context 'TypeOf' {
+        $testObject = @{
+            Key = 'Value'
         }
 
         It 'Return success' {
 
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'WithinTest';
+            $result = $testObject | Invoke-PSRule -Path $here -Name 'TypeOfTest';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
-            $result.RuleName | Should -Be 'WithinTest'
+            $result.RuleName | Should -Be 'TypeOfTest'
         }
     }
 }

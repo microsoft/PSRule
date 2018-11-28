@@ -1,9 +1,8 @@
-﻿using System.Linq;
-using System.Management.Automation;
+﻿using System.Management.Automation;
 
 namespace PSRule.Commands
 {
-    [Cmdlet(VerbsLifecycle.Assert, "Exists")]
+    [Cmdlet(VerbsLifecycle.Assert, InternalCommandVerbs.Exists)]
     internal sealed class AssertExistsCommand : InternalLanguageCommand
     {
         [Parameter(Mandatory = true, Position = 0)]

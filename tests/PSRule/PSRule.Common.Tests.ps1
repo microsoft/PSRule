@@ -32,7 +32,7 @@ Describe 'Invoke-PSRule' {
 
         It 'Return success' {
 
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'FromFile1' -Verbose;
+            $result = $testObject | Invoke-PSRule -Path $here -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
             $result.TargetName | Should -Be 'TestTarget1'
@@ -40,7 +40,7 @@ Describe 'Invoke-PSRule' {
 
         It 'Return failure' {
 
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'FromFile2' -Verbose;
+            $result = $testObject | Invoke-PSRule -Path $here -Name 'FromFile2';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $False;
             $result.TargetName | Should -Be 'TestTarget2'

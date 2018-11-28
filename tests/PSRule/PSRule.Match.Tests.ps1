@@ -27,7 +27,7 @@ Describe 'PSRule -- Match keyword' -Tag 'Match' {
 
         It 'Return success' {
 
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'MatchTest' -Verbose;
+            $result = $testObject | Invoke-PSRule -Path $here -Name 'MatchTest';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
             $result.RuleName | Should -Be 'MatchTest'
