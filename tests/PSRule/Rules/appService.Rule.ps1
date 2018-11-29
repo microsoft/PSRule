@@ -3,7 +3,7 @@
 #
 
 # Description: App Service Plan has multiple instances
-Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
+Rule 'appServicePlan.MinInstanceCount' -If { ResourceType 'Microsoft.Web/serverfarms' } {
 
     Hint 'Use at least two (2) instances' -TargetName $TargetObject.ResourceName
 
@@ -11,7 +11,7 @@ Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Mic
 }
 
 # Description: Use at least a Standard App Service Plan
-Rule 'appServicePlan.MinPlan' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
+Rule 'appServicePlan.MinPlan' -If { ResourceType 'Microsoft.Web/serverfarms' } {
 
     Hint 'Use a Standard or high plans for production services' -TargetName $TargetObject.ResourceName
 
@@ -21,7 +21,7 @@ Rule 'appServicePlan.MinPlan' -If { $TargetObject.ResourceType -eq 'Microsoft.We
 }
 
 # Description: Disable client affinity for stateless services
-Rule 'appServiceApp.ARRAfinity' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/sites' } {
+Rule 'appServiceApp.ARRAfinity' -If { ResourceType 'Microsoft.Web/sites' } {
 
     Hint 'Disable ARR affinity when not required' -TargetName $TargetObject.ResourceName
 
@@ -29,7 +29,7 @@ Rule 'appServiceApp.ARRAfinity' -If { $TargetObject.ResourceType -eq 'Microsoft.
 }
 
 # Description: Use HTTPS only
-Rule 'appServiceApp.UseHTTPS' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/sites' } {
+Rule 'appServiceApp.UseHTTPS' -If { ResourceType 'Microsoft.Web/sites' } {
 
     Hint 'Disable HTTP when not required' -TargetName $TargetObject.ResourceName
 

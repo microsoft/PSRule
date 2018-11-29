@@ -4,8 +4,11 @@ using System.Management.Automation;
 
 namespace PSRule.Commands
 {
+    /// <summary>
+    /// A Rule language block.
+    /// </summary>
     [Cmdlet(VerbsCommon.New, RuleLanguageNouns.RuleDefinition)]
-    internal sealed class NewRuleDefinitionCommand : LanguageBlockCommand
+    internal sealed class NewRuleDefinitionCommand : LanguageBlock
     {
         /// <summary>
         /// The name of the deployment.
@@ -17,7 +20,7 @@ namespace PSRule.Commands
         /// The definition of the deployment.
         /// </summary>
         [Parameter(Mandatory = false, Position = 1)]
-        public ScriptBlock Body { get; set; }
+        public RuleCondition Body { get; set; }
 
         /// <summary>
         /// A set of tags with additional metadata for the rule.
@@ -39,7 +42,7 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            var metadata = GetMetadata(Body);
+            var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
 
             WriteVerbose($"[PSRule][R][{Name}]::BEGIN");

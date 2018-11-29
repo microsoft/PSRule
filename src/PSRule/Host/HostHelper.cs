@@ -17,6 +17,7 @@ namespace PSRule.Host
         {
             return ToRule(GetLanguageBlock(option, context, scriptPaths), filter).Values.ToArray();
         }
+
         public static IDictionary<string, RuleBlock> GetRuleBlock(PSRuleOption option, LanguageContext context, string[] scriptPaths, RuleFilter filter)
         {
             return ToRuleBlock(GetLanguageBlock(option, context, scriptPaths), filter);
@@ -28,36 +29,23 @@ namespace PSRule.Host
         /// <param name="path"></param>
         /// <param name="start"></param>
         /// <returns></returns>
-        public static BlockMetadata GetCommentMeta(string path, int start)
+        public static BlockMetadata GetCommentMeta(string path, int lineNumber, int offset)
         {
-            var scriptBlockContent = File.ReadAllText(path, Encoding.UTF8);
-
-            var errors = new Collection<PSParseError>();
-
-            var tokens = PSParser.Tokenize(scriptBlockContent, out errors);
-
-            if (tokens.Count == 0)
+            if (lineNumber == 1)
             {
                 return new BlockMetadata();
             }
 
-            var i = 0;
+            var lines = File.ReadAllLines(path, Encoding.UTF8);
+
+            var i = lineNumber - 1;
             var comments = new List<string>();
 
-            for (var t = tokens[0]; i < tokens.Count && t.Start < start; i++)
+            for (; i >= 0; i--)
             {
-                t = tokens[i];
-
-                if (t.Start == start)
+                if (lines[i].Contains("#"))
                 {
-                    // If tokens was a new line back track so that all comments are found
-                    if (i > 1 && tokens[i - 1].Type == PSTokenType.NewLine)
-                    {
-                        for (var j = i - 2; j >= 0 && tokens[j].Type == PSTokenType.Comment; j--)
-                        {
-                            comments.Insert(0, tokens[j].Content);
-                        }
-                    }
+                    comments.Insert(0, lines[i]);
                 }
             }
 
@@ -98,7 +86,6 @@ namespace PSRule.Host
             runspace.ThreadOptions = PSThreadOptions.UseCurrentThread;
 
             runspace.Open();
-            runspace.SessionStateProxy.PSVariable.Set(new EnvironmentVariable("Environment"));
             runspace.SessionStateProxy.PSVariable.Set(new RuleVariable("Rule"));
             runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable("TargetObject"));
 
@@ -161,23 +148,16 @@ namespace PSRule.Host
 
                 result.Status = RuleResultOutcome.InProgress;
 
-                var scriptBlock = block.Body;
-                var invokeResults = scriptBlock.Invoke();
+                var invokeResults = block.Body.Invoke();
 
-                foreach (var ir in invokeResults)
-                {
-                    if (ir.BaseObject is bool)
-                    {
-                        var success = (bool)ir.BaseObject;
-
-                        result.Success = success;
-                        result.Status = success ? RuleResultOutcome.Passed : RuleResultOutcome.Failed;
-                    }
-                }
-
-                if (result.Status == RuleResultOutcome.InProgress)
+                if (invokeResults == null)
                 {
                     result.Status = RuleResultOutcome.Inconclusive;
+                }
+                else
+                {
+                    result.Success = invokeResults.Success;
+                    result.Status = result.Success ? RuleResultOutcome.Passed : RuleResultOutcome.Failed;
                 }
 
                 return result;

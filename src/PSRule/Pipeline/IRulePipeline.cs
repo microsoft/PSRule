@@ -6,6 +6,6 @@ namespace PSRule.Pipeline
 {
     public interface IRulePipeline
     {
-        IEnumerable<Rule> Process(LanguageContext context, string[] path, RuleFilter filter);
+        IEnumerable<Rule> Process(string[] path, RuleFilter filter);
     }
 }

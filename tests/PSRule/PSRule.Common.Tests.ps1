@@ -30,18 +30,24 @@ Describe 'Invoke-PSRule' {
             Value = 1
         }
 
-        It 'Return success' {
+        It 'Return passed' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
-            $result.TargetName | Should -Be 'TestTarget1'
+            $result.TargetName | Should -Be 'TestTarget1';
         }
 
         It 'Return failure' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile2';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $False;
-            $result.TargetName | Should -Be 'TestTarget2'
+            $result.TargetName | Should -Be 'TestTarget2';
+        }
+
+        It 'Returns inconclusive' {
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile3' -Status All;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Status | Should -Be 'Inconclusive';
         }
 
         It 'Processes rules preconditions' {
@@ -91,13 +97,20 @@ Describe 'Get-PSRule' {
             $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1', 'FromFile3';
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
-            $result.Name | Should -BeIn @('FromFile1', 'FromFile3')
+            $result.Name | Should -BeIn @('FromFile1', 'FromFile3');
         }
 
         It 'Filters by tag' {
             $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ Test = "Test1" };
             $result | Should -Not -BeNullOrEmpty;
-            $result.Name | Should -Be 'FromFile1'
+            $result.Name | Should -Be 'FromFile1';
+        }
+
+        It 'Reads metadata' {
+            $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Name | Should -Be 'FromFile1';
+            $result.Description | Should -Be 'Test rule 1'
         }
     }
 

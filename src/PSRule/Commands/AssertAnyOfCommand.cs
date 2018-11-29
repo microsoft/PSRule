@@ -2,8 +2,11 @@
 
 namespace PSRule.Commands
 {
+    /// <summary>
+    /// The AnyOf keyword.
+    /// </summary>
     [Cmdlet(VerbsLifecycle.Assert, RuleLanguageNouns.AnyOf)]
-    internal sealed class AssertAnyOfCommand : InternalLanguageCommand
+    internal sealed class AssertAnyOfCommand : RuleKeyword
     {
         [Parameter(Mandatory = true, Position = 0)]
         public ScriptBlock Body { get; set; }

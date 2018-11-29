@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Management.Automation;
 
 namespace PSRule.Rules
 {
@@ -17,9 +16,6 @@ namespace PSRule.Rules
 
         [JsonProperty(PropertyName = "description")]
         public string Description { get; set; }
-
-        [JsonIgnore]
-        public ScriptBlock Body { get; set; }
 
         [JsonProperty(PropertyName = "tag")]
         public TagSet Tag { get; set; }

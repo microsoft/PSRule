@@ -3,8 +3,11 @@ using System.Management.Automation;
 
 namespace PSRule.Commands
 {
+    /// <summary>
+    /// The TypeOf keyword.
+    /// </summary>
     [Cmdlet(VerbsLifecycle.Assert, RuleLanguageNouns.TypeOf)]
-    internal sealed class AssertTypeOfCommand : InternalLanguageCommand
+    internal sealed class AssertTypeOfCommand : RuleKeyword
     {
         [Parameter(Mandatory = true, Position = 0)]
         public string[] TypeName { get; set; }

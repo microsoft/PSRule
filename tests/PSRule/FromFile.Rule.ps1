@@ -6,6 +6,7 @@ Rule 'FromFile1' -Tag @{ category = "group1"; test = "Test1" } {
 
     # Successful
     $True;
+    $True;
 }
 
 # Description: Test rule 2
@@ -15,6 +16,8 @@ Rule 'FromFile2' -Tag @{ category = "group1"; test = "Test2" } {
 
     # Failed
     $False;
+    $True;
+    $True;
 }
 
 # Description: Test rule 3

@@ -3,7 +3,7 @@
 #
 
 # Description: Configure storage accounts to only access encrypted traffic i.e. HTTPS/SMB
-Rule 'storageAccounts.UseHttps' -If { $TargetObject.ResourceType -eq 'Microsoft.Storage/storageAccounts' } {
+Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAccounts' } {
 
     Hint 'Secure access should only allow secure traffic' -TargetName $TargetObject.ResourceName
 
@@ -11,7 +11,7 @@ Rule 'storageAccounts.UseHttps' -If { $TargetObject.ResourceType -eq 'Microsoft.
 }
 
 # Description: Use at-rest storage encryption
-Rule 'storageAccounts.UseEncryption' -If { $TargetObject.ResourceType -eq 'Microsoft.Storage/storageAccounts' } {
+Rule 'storageAccounts.UseEncryption' -If { ResourceType 'Microsoft.Storage/storageAccounts' } {
 
     Hint 'Storage accounts should have encryption enabled' -TargetName $TargetObject.ResourceName
 

@@ -6,11 +6,14 @@ using System.Management.Automation;
 
 namespace PSRule.Commands
 {
-    public abstract class LanguageBlockCommand : PSCmdlet
+    /// <summary>
+    /// A base class for language blocks.
+    /// </summary>
+    internal abstract class LanguageBlock : PSCmdlet
     {
-        protected BlockMetadata GetMetadata(ScriptBlock body)
+        protected BlockMetadata GetMetadata(string path, int lineNumber, int offset)
         {
-            return HostHelper.GetCommentMeta(body.File, body.Ast.Parent.Parent.Extent.StartOffset);
+            return HostHelper.GetCommentMeta(path, lineNumber, offset);
         }
 
         protected TagSet GetTag(Hashtable hashtable)

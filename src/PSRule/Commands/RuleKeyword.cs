@@ -2,11 +2,13 @@
 using System;
 using System.Collections;
 using System.Management.Automation;
-using System.Reflection;
 
 namespace PSRule.Commands
 {
-    public abstract class InternalLanguageCommand : PSCmdlet
+    /// <summary>
+    /// A base class for Rule keywords.
+    /// </summary>
+    internal abstract class RuleKeyword : PSCmdlet
     {
 
         protected RuleResult GetResult()

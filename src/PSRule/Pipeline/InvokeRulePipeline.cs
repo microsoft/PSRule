@@ -16,7 +16,7 @@ namespace PSRule.Pipeline
             : base(option, path, filter)
         {
             _Outcome = outcome;
-            _RuleBlock = HostHelper.GetRuleBlock(_Option, _Context, _Path, _Filter);
+            _RuleBlock = HostHelper.GetRuleBlock(_Option, null, _Path, _Filter);
         }
 
         public IEnumerable<RuleResult> Process(PSObject o)
