@@ -1,6 +1,6 @@
 ﻿namespace PSRule.Commands
 {
-    public static class InternalCommandVerbs
+    public static class RuleLanguageNouns
     {
         public const string Exists = "Exists";
         public const string Match = "Match";

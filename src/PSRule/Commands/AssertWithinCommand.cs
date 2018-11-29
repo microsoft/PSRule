@@ -3,7 +3,7 @@ using System.Management.Automation;
 
 namespace PSRule.Commands
 {
-    [Cmdlet(VerbsLifecycle.Assert, InternalCommandVerbs.Within)]
+    [Cmdlet(VerbsLifecycle.Assert, RuleLanguageNouns.Within)]
     internal sealed class AssertWithinCommand : InternalLanguageCommand
     {
         [Parameter(Mandatory = true, Position = 0)]

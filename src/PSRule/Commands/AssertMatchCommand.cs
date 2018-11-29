@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace PSRule.Commands
 {
-    [Cmdlet(VerbsLifecycle.Assert, InternalCommandVerbs.Match)]
+    [Cmdlet(VerbsLifecycle.Assert, RuleLanguageNouns.Match)]
     internal sealed class AssertMatchCommand : InternalLanguageCommand
     {
         private Regex[] _Expressions;

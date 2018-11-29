@@ -2,7 +2,7 @@
 
 namespace PSRule.Commands
 {
-    [Cmdlet(VerbsLifecycle.Assert, InternalCommandVerbs.AllOf)]
+    [Cmdlet(VerbsLifecycle.Assert, RuleLanguageNouns.AllOf)]
     internal sealed class AssertAllOfCommand : InternalLanguageCommand
     {
         [Parameter(Mandatory = true, Position = 0)]

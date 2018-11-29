@@ -4,7 +4,7 @@ using System.Management.Automation;
 
 namespace PSRule.Commands
 {
-    [Cmdlet(VerbsCommon.New, InternalCommandVerbs.RuleDefinition)]
+    [Cmdlet(VerbsCommon.New, RuleLanguageNouns.RuleDefinition)]
     internal sealed class NewRuleDefinitionCommand : LanguageBlockCommand
     {
         /// <summary>

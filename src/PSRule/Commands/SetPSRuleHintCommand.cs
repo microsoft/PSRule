@@ -2,7 +2,7 @@
 
 namespace PSRule.Commands
 {
-    [Cmdlet(VerbsCommon.Set, InternalCommandVerbs.RuleHint)]
+    [Cmdlet(VerbsCommon.Set, RuleLanguageNouns.RuleHint)]
     internal sealed class SetPSRuleHintCommand : InternalLanguageCommand
     {
         [Parameter(Mandatory = false, Position = 0)]

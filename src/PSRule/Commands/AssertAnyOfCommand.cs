@@ -2,7 +2,7 @@
 
 namespace PSRule.Commands
 {
-    [Cmdlet(VerbsLifecycle.Assert, InternalCommandVerbs.AnyOf)]
+    [Cmdlet(VerbsLifecycle.Assert, RuleLanguageNouns.AnyOf)]
     internal sealed class AssertAnyOfCommand : InternalLanguageCommand
     {
         [Parameter(Mandatory = true, Position = 0)]
@@ -10,31 +10,42 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
+            //WriteVerbose("[Rule][$($Context.Index)][$($Rule.Name)][AnyOf]::BEGIN");
+
             var result = false;
 
-            var invokeResult = Body.Invoke();
-            var totalCount = 0;
-            var successCount = 0;
-
-            foreach (var ir in invokeResult)
+            try
             {
-                if (ir.BaseObject is bool)
-                {
-                    totalCount++;
+                var invokeResult = Body.Invoke();
+                var totalCount = 0;
+                var successCount = 0;
 
-                    if ((bool)ir.BaseObject)
+                foreach (var ir in invokeResult)
+                {
+                    if (ir.BaseObject is bool)
                     {
-                        successCount++;
+                        totalCount++;
+
+                        if ((bool)ir.BaseObject)
+                        {
+                            successCount++;
+                        }
                     }
                 }
-            }
 
-            if (successCount >= 1)
+                if (successCount >= 1)
+                {
+                    result = true;
+                }
+
+                //WriteVerbose($"[Rule][$($Context.Index)][$($Rule.Name)][AnyOf] -- [{successCount}/{totalCount}]");
+
+                WriteObject(result);
+            }
+            finally
             {
-                result = true;
+                //WriteVerbose($"[Rule][$($Context.Index)][$($Rule.Name)][AnyOf]::END [{result}]");
             }
-
-            WriteObject(result);
         }
     }
 }

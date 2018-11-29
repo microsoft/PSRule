@@ -2,7 +2,7 @@
 
 namespace PSRule.Commands
 {
-    [Cmdlet(VerbsLifecycle.Assert, InternalCommandVerbs.Exists)]
+    [Cmdlet(VerbsLifecycle.Assert, RuleLanguageNouns.Exists)]
     internal sealed class AssertExistsCommand : InternalLanguageCommand
     {
         [Parameter(Mandatory = true, Position = 0)]
