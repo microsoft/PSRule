@@ -47,6 +47,8 @@ The following language keywords are used by the `PSRule` module:
 The following commands exist in the `PSRule` module:
 
 - [Invoke-PSRule](docs/commands/PSRule/en-US/Invoke-PSRule.md)
+- [Get-PSRule](docs/commands/PSRule/en-US/Get-PSRule.md)
+- [New-PSRuleOption](docs/commands/PSRule/en-US/New-PSRuleOption.md)
 
 ## Changes and versioning
 
