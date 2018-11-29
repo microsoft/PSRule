@@ -9,11 +9,7 @@ $PSModule = $ExecutionContext.SessionState.Module;
 $PSModuleRoot = $PSModule.ModuleBase;
 
 # Import the appropriate nested binary module based on the current PowerShell version
-$binModulePath = Join-Path -Path $PSModuleRoot -ChildPath '/desktop/PSRule.dll';
-
-if (($PSVersionTable.Keys -contains 'PSEdition') -and ($PSVersionTable.PSEdition -ne 'Desktop')) {
-    $binModulePath = Join-Path -Path $PSModuleRoot -ChildPath '/core/PSRule.dll';
-}
+$binModulePath = Join-Path -Path $PSModuleRoot -ChildPath '/core/PSRule.dll';
 
 $binaryModule = Import-Module -Name $binModulePath -PassThru;
 

@@ -89,7 +89,6 @@ function SendAppveyorTestResult {
 task BuildDotNet {
     exec {
         # Build library
-        dotnet publish src/PSRule -c $Configuration -f net472 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule/desktop)
         dotnet publish src/PSRule -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule/core)
     }
 }
