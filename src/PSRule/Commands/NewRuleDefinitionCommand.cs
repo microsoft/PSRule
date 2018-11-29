@@ -17,7 +17,7 @@ namespace PSRule.Commands
         /// The definition of the deployment.
         /// </summary>
         [Parameter(Mandatory = false, Position = 1)]
-        public ScriptBlock Body { get; set; }
+        public RuleCondition Body { get; set; }
 
         /// <summary>
         /// A set of tags with additional metadata for the rule.

@@ -1,9 +1,12 @@
 ﻿using PSRule.Host;
+using System.Collections.Generic;
 using System.Management.Automation;
 
 namespace PSRule.Rules
 {
     public delegate bool RulePrecondition();
+
+    public delegate RuleConditionResult RuleCondition();
 
     /// <summary>
     /// Define an instance of a deployment block. Each deployment block has a unique name.
@@ -29,7 +32,7 @@ namespace PSRule.Rules
 
         public RulePrecondition If { get; set; }
 
-        public ScriptBlock Body { get; set; }
+        public RuleCondition Body { get; set; }
 
         /// <summary>
         /// Other deployments that must completed successfully before calling this deployment.

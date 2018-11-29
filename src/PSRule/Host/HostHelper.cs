@@ -148,23 +148,16 @@ namespace PSRule.Host
 
                 result.Status = RuleResultOutcome.InProgress;
 
-                var scriptBlock = block.Body;
-                var invokeResults = scriptBlock.Invoke();
+                var invokeResults = block.Body.Invoke();
 
-                foreach (var ir in invokeResults)
-                {
-                    if (ir.BaseObject is bool)
-                    {
-                        var success = (bool)ir.BaseObject;
-
-                        result.Success = success;
-                        result.Status = success ? RuleResultOutcome.Passed : RuleResultOutcome.Failed;
-                    }
-                }
-
-                if (result.Status == RuleResultOutcome.InProgress)
+                if (invokeResults == null)
                 {
                     result.Status = RuleResultOutcome.Inconclusive;
+                }
+                else
+                {
+                    result.Success = invokeResults.Success;
+                    result.Status = result.Success ? RuleResultOutcome.Passed : RuleResultOutcome.Failed;
                 }
 
                 return result;
