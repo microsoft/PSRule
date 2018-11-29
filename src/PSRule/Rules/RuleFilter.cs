@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace PSRule.Rules
 {
+    /// <summary>
+    /// A filter to include or exclude rules from being processed by name or tag.
+    /// </summary>
     public sealed class RuleFilter
     {
         private HashSet<string> _RequiredName;

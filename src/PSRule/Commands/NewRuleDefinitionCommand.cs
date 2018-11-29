@@ -4,8 +4,11 @@ using System.Management.Automation;
 
 namespace PSRule.Commands
 {
+    /// <summary>
+    /// A Rule language block.
+    /// </summary>
     [Cmdlet(VerbsCommon.New, RuleLanguageNouns.RuleDefinition)]
-    internal sealed class NewRuleDefinitionCommand : LanguageBlockCommand
+    internal sealed class NewRuleDefinitionCommand : LanguageBlock
     {
         /// <summary>
         /// The name of the deployment.

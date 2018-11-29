@@ -3,8 +3,11 @@ using System.Text.RegularExpressions;
 
 namespace PSRule.Commands
 {
+    /// <summary>
+    /// The Match keyword.
+    /// </summary>
     [Cmdlet(VerbsLifecycle.Assert, RuleLanguageNouns.Match)]
-    internal sealed class AssertMatchCommand : InternalLanguageCommand
+    internal sealed class AssertMatchCommand : RuleKeyword
     {
         private Regex[] _Expressions;
 

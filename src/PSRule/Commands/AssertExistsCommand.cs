@@ -2,8 +2,11 @@
 
 namespace PSRule.Commands
 {
+    /// <summary>
+    /// The Exists keyword.
+    /// </summary>
     [Cmdlet(VerbsLifecycle.Assert, RuleLanguageNouns.Exists)]
-    internal sealed class AssertExistsCommand : InternalLanguageCommand
+    internal sealed class AssertExistsCommand : RuleKeyword
     {
         [Parameter(Mandatory = true, Position = 0)]
         public string[] Field { get; set; }

@@ -3,8 +3,11 @@ using System.Management.Automation;
 
 namespace PSRule.Commands
 {
+    /// <summary>
+    /// The Within keyword.
+    /// </summary>
     [Cmdlet(VerbsLifecycle.Assert, RuleLanguageNouns.Within)]
-    internal sealed class AssertWithinCommand : InternalLanguageCommand
+    internal sealed class AssertWithinCommand : RuleKeyword
     {
         [Parameter(Mandatory = true, Position = 0)]
         public string Field { get; set; }

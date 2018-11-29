@@ -2,8 +2,11 @@
 
 namespace PSRule.Commands
 {
+    /// <summary>
+    /// The AllOf keyword.
+    /// </summary>
     [Cmdlet(VerbsLifecycle.Assert, RuleLanguageNouns.AllOf)]
-    internal sealed class AssertAllOfCommand : InternalLanguageCommand
+    internal sealed class AssertAllOfCommand : RuleKeyword
     {
         [Parameter(Mandatory = true, Position = 0)]
         public ScriptBlock Body { get; set; }

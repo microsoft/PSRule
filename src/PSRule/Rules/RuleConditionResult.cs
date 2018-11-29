@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
-namespace PSRule.Rules
+﻿namespace PSRule.Rules
 {
     public sealed class RuleConditionResult
     {

@@ -1,6 +1,4 @@
 ﻿using PSRule.Host;
-using System.Collections.Generic;
-using System.Management.Automation;
 
 namespace PSRule.Rules
 {
@@ -30,6 +28,9 @@ namespace PSRule.Rules
         /// </summary>
         public string Description { get; set; }
 
+        /// <summary>
+        /// A precondition that if set, must evaluate as true before the main rule body will be processed.
+        /// </summary>
         public RulePrecondition If { get; set; }
 
         public RuleCondition Body { get; set; }

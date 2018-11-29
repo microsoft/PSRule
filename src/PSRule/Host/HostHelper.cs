@@ -17,6 +17,7 @@ namespace PSRule.Host
         {
             return ToRule(GetLanguageBlock(option, context, scriptPaths), filter).Values.ToArray();
         }
+
         public static IDictionary<string, RuleBlock> GetRuleBlock(PSRuleOption option, LanguageContext context, string[] scriptPaths, RuleFilter filter)
         {
             return ToRuleBlock(GetLanguageBlock(option, context, scriptPaths), filter);
@@ -85,7 +86,6 @@ namespace PSRule.Host
             runspace.ThreadOptions = PSThreadOptions.UseCurrentThread;
 
             runspace.Open();
-            runspace.SessionStateProxy.PSVariable.Set(new EnvironmentVariable("Environment"));
             runspace.SessionStateProxy.PSVariable.Set(new RuleVariable("Rule"));
             runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable("TargetObject"));
 

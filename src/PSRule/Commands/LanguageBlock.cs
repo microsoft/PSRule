@@ -6,7 +6,10 @@ using System.Management.Automation;
 
 namespace PSRule.Commands
 {
-    public abstract class LanguageBlockCommand : PSCmdlet
+    /// <summary>
+    /// A base class for language blocks.
+    /// </summary>
+    internal abstract class LanguageBlock : PSCmdlet
     {
         protected BlockMetadata GetMetadata(string path, int lineNumber, int offset)
         {
