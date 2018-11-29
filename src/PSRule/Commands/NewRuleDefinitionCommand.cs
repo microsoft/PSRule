@@ -39,7 +39,7 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            var metadata = GetMetadata(Body);
+            var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
 
             WriteVerbose($"[PSRule][R][{Name}]::BEGIN");

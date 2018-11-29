@@ -28,36 +28,23 @@ namespace PSRule.Host
         /// <param name="path"></param>
         /// <param name="start"></param>
         /// <returns></returns>
-        public static BlockMetadata GetCommentMeta(string path, int start)
+        public static BlockMetadata GetCommentMeta(string path, int lineNumber, int offset)
         {
-            var scriptBlockContent = File.ReadAllText(path, Encoding.UTF8);
-
-            var errors = new Collection<PSParseError>();
-
-            var tokens = PSParser.Tokenize(scriptBlockContent, out errors);
-
-            if (tokens.Count == 0)
+            if (lineNumber == 1)
             {
                 return new BlockMetadata();
             }
 
-            var i = 0;
+            var lines = File.ReadAllLines(path, Encoding.UTF8);
+
+            var i = lineNumber - 1;
             var comments = new List<string>();
 
-            for (var t = tokens[0]; i < tokens.Count && t.Start < start; i++)
+            for (; i >= 0; i--)
             {
-                t = tokens[i];
-
-                if (t.Start == start)
+                if (lines[i].Contains("#"))
                 {
-                    // If tokens was a new line back track so that all comments are found
-                    if (i > 1 && tokens[i - 1].Type == PSTokenType.NewLine)
-                    {
-                        for (var j = i - 2; j >= 0 && tokens[j].Type == PSTokenType.Comment; j--)
-                        {
-                            comments.Insert(0, tokens[j].Content);
-                        }
-                    }
+                    comments.Insert(0, lines[i]);
                 }
             }
 

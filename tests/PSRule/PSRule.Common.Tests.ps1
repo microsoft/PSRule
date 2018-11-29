@@ -91,13 +91,20 @@ Describe 'Get-PSRule' {
             $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1', 'FromFile3';
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
-            $result.Name | Should -BeIn @('FromFile1', 'FromFile3')
+            $result.Name | Should -BeIn @('FromFile1', 'FromFile3');
         }
 
         It 'Filters by tag' {
             $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ Test = "Test1" };
             $result | Should -Not -BeNullOrEmpty;
-            $result.Name | Should -Be 'FromFile1'
+            $result.Name | Should -Be 'FromFile1';
+        }
+
+        It 'Reads metadata' {
+            $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Name | Should -Be 'FromFile1';
+            $result.Description | Should -Be 'Test rule 1'
         }
     }
 
