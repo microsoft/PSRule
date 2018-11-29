@@ -1,4 +1,5 @@
 ﻿using PSRule.Annotations;
+using PSRule.Configuration;
 using PSRule.Rules;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,13 +13,13 @@ namespace PSRule.Host
 {
     internal sealed class HostHelper
     {
-        public static IEnumerable<Rule> GetRule(LanguageContext context, string[] scriptPaths, RuleFilter filter)
+        public static IEnumerable<Rule> GetRule(PSRuleOption option, LanguageContext context, string[] scriptPaths, RuleFilter filter)
         {
-            return ToRule(GetLanguageBlock(context, scriptPaths), filter).Values.ToArray();
+            return ToRule(GetLanguageBlock(option, context, scriptPaths), filter).Values.ToArray();
         }
-        public static IDictionary<string, RuleBlock> GetRuleBlock(LanguageContext context, string[] scriptPaths, RuleFilter filter)
+        public static IDictionary<string, RuleBlock> GetRuleBlock(PSRuleOption option, LanguageContext context, string[] scriptPaths, RuleFilter filter)
         {
-            return ToRuleBlock(GetLanguageBlock(context, scriptPaths), filter);
+            return ToRuleBlock(GetLanguageBlock(option, context, scriptPaths), filter);
         }
 
         /// <summary>
@@ -84,15 +85,15 @@ namespace PSRule.Host
         /// <param name="context"></param>
         /// <param name="scriptPaths"></param>
         /// <returns></returns>
-        private static IEnumerable<ILanguageBlock> GetLanguageBlock(LanguageContext context, string[] scriptPaths)
+        private static IEnumerable<ILanguageBlock> GetLanguageBlock(PSRuleOption option, LanguageContext context, string[] scriptPaths)
         {
             var results = new Collection<ILanguageBlock>();
-
-            var scopeContext = context.New();
-
             var state = HostState.CreateDefault();
-            state.LanguageMode = PSLanguageMode.FullLanguage;
 
+            // Set PowerShell language mode
+            state.LanguageMode = option.Execution.LanguageMode == LanguageMode.FullLanguage ? PSLanguageMode.FullLanguage : PSLanguageMode.ConstrainedLanguage;
+
+            // Configure runspace
             var runspace = RunspaceFactory.CreateRunspace(state);
             runspace.ThreadOptions = PSThreadOptions.UseCurrentThread;
 
@@ -104,6 +105,8 @@ namespace PSRule.Host
             var ps = PowerShell.Create();
 
             ps.Runspace = runspace;
+
+            // Process scripts
 
             foreach (var path in scriptPaths)
             {
@@ -135,7 +138,7 @@ namespace PSRule.Host
             return results;
         }
 
-        public static RuleResult InvokeRuleBlock(LanguageContext context, RuleBlock block, PSObject inputObject)
+        public static RuleResult InvokeRuleBlock(PSRuleOption option, LanguageContext context, RuleBlock block, PSObject inputObject)
         {
             try
             {

@@ -15,7 +15,6 @@ Set-StrictMode -Version latest;
 $rootPath = $PWD;
 
 Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-
 $here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- TypeOf keyword' -Tag 'TypeOf' {
@@ -27,7 +26,7 @@ Describe 'PSRule -- TypeOf keyword' -Tag 'TypeOf' {
 
         It 'Return success' {
 
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'TypeOfTest';
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'TypeOfTest';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
             $result.RuleName | Should -Be 'TypeOfTest'

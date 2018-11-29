@@ -1,4 +1,5 @@
-﻿using PSRule.Rules;
+﻿using PSRule.Configuration;
+using PSRule.Rules;
 
 namespace PSRule.Pipeline
 {
@@ -9,9 +10,9 @@ namespace PSRule.Pipeline
 
         }
 
-        public InvokeRulePipeline Build(string[] path, RuleFilter filter, RuleResultOutcome outcome)
+        public InvokeRulePipeline Build(PSRuleOption option, string[] path, RuleFilter filter, RuleResultOutcome outcome)
         {
-            return new InvokeRulePipeline(path, filter, outcome);
+            return new InvokeRulePipeline(option, path, filter, outcome);
         }
     }
 }

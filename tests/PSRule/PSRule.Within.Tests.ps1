@@ -15,7 +15,6 @@ Set-StrictMode -Version latest;
 $rootPath = $PWD;
 
 Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-
 $here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- Within keyword' -Tag 'Within' {
@@ -27,7 +26,7 @@ Describe 'PSRule -- Within keyword' -Tag 'Within' {
 
         It 'Return success' {
 
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'WithinTest';
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithinTest';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
             $result.RuleName | Should -Be 'WithinTest'

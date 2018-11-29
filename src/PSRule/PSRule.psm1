@@ -59,11 +59,24 @@ function Invoke-PSRule {
         [PSObject]$InputObject,
 
         [Parameter(Mandatory = $False)]
-        [PSRule.Rules.RuleResultOutcome]$Status = [PSRule.Rules.RuleResultOutcome]::Default
+        [PSRule.Rules.RuleResultOutcome]$Status = [PSRule.Rules.RuleResultOutcome]::Default,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.PSRuleOption]$Option
     )
 
     begin {
         Write-Verbose -Message "[PSRule] BEGIN::";
+
+        # Get parameter options, which will override options from other sources
+        $optionParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Option')) {
+            $optionParams['Option'] =  $Option;
+        }
+
+        # Get an options object
+        $Option = New-PSRuleOption @optionParams;
 
         Write-Verbose -Message "[PSRule] -- Scanning for source files: $Path";
 
@@ -74,7 +87,7 @@ function Invoke-PSRule {
     }
 
     process {
-        InvokeRulePipeline -Path $sourceFiles -Filter $filter -InputObject $InputObject -Outcome $Status -Verbose:$VerbosePreference;
+        InvokeRulePipeline -Path $sourceFiles -Option $Option -Filter $filter -InputObject $InputObject -Outcome $Status -Verbose:$VerbosePreference;
     }
 
     end {
@@ -301,11 +314,24 @@ function Get-PSRule {
 
         # A list of paths to check for deployments
         [Parameter(Position = 0, Mandatory = $False)]
-        [String[]]$Path = $PWD
+        [String[]]$Path = $PWD,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.PSRuleOption]$Option
     )
 
     begin {
         Write-Verbose -Message "[Get-PSRule]::BEGIN";
+
+        # Get parameter options, which will override options from other sources
+        $optionParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Option')) {
+            $optionParams['Option'] =  $Option;
+        }
+
+        # Get an options object
+        $Option = New-PSRuleOption @optionParams;
 
         # Discover scripts in the specified paths
         [String[]]$includePaths = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
@@ -317,11 +343,52 @@ function Get-PSRule {
     process {
         # Get matching deployment definitions
         $filter = New-Object -TypeName PSRule.Rules.RuleFilter -ArgumentList @($Name, $Tag);
-        GetRule -Path $includePaths -Filter $filter -Verbose:$VerbosePreference;
+        GetRule -Path $includePaths -Option $Option -Filter $filter -Verbose:$VerbosePreference;
     }
 
     end {
         Write-Verbose -Message "[Get-PSRule]::END";
+    }
+}
+
+function New-PSRuleOption {
+
+    [CmdletBinding()]
+    [OutputType([PSRule.Configuration.PSRuleOption])]
+    param (
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Path = '.\psrule.yml'
+    )
+
+    process {
+
+        if ($PSBoundParameters.ContainsKey('Option')) {
+            $Option = $Option.Clone();
+        }
+        elseif ($PSBoundParameters.ContainsKey('Path')) {
+
+            if (!(Test-Path -Path $Path)) {
+
+            }
+
+            $Path = Resolve-Path -Path $Path;
+
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path);
+        }
+        else {
+            Write-Verbose -Message "Attempting to read: $Path";
+
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $True);
+        }
+
+        # if ($PSBoundParameters.ContainsKey('Encoding')) {
+        #     $Option.Markdown.Encoding = $Encoding;
+        # }
+
+        return $Option;
     }
 }
 
@@ -1034,65 +1101,6 @@ function Get-ObjectField {
     }
 }
 
-function Out-Rule {
-    [CmdletBinding(DefaultParameterSetName = 'NewObject')]
-    [OutputType([void])]
-    param (
-        # The TypeName that will be used for the emitted PSObject
-        [Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'NewObject')]
-        [String]$TypeName,
-
-        # A set of properties for the PSObject
-        [Parameter(Position = 1, Mandatory = $True, ParameterSetName = 'NewObject')]
-        [System.Collections.IDictionary]$Property,
-
-        [Parameter(Mandatory = $True, ValueFromPipeline = $True, ParameterSetName = 'InputObject')]
-        [PSObject]$InputObject
-    )
-
-    process {
-        Write-Verbose -Message "[Rule][$($Context.Index)][$($Rule.Name)]`t[Out-Rule]::BEGIN";
-
-        if ($PSBoundParameters.ContainsKey('InputObject')) {
-            Write-Verbose -Message "[Rule][$($Context.Index)][$($Rule.Name)]`t[Out-Rule] -- Using input object";
-
-            # Write verbose TypeName information
-            Write-Verbose -Message "[Rule][$($Context.Index)][$($Rule.Name)]`t[Out-Rule] -- TypeName: $($InputObject.PSObject.TypeNames[0])";
-
-            # Write verbose information about the properties of the supplied object
-            $InputObject.PSObject.Properties.GetEnumerator() | ForEach-Object `
-            -Process {
-                Write-Verbose -Message "[Rule][$($Context.Index)][$($Rule.Name)]`t[Out-Rule] -- $($_.Name): $($_.Value)";
-            }
-
-            # Add to Output objects for this Rule
-            $Rule.Output += $InputObject;
-        } else {
-            Write-Verbose -Message "[Rule][$($Context.Index)][$($Rule.Name)]`t[Out-Rule] -- Creating object from hashtable";
-
-            # Write verbose TypeName information
-            Write-Verbose -Message "[Rule][$($Context.Index)][$($Rule.Name)]`t[Out-Rule] -- TypeName: $TypeName";
-
-            # Write verbose information about the property hashtable supplied
-            $Property.GetEnumerator() | ForEach-Object `
-            -Process {
-                Write-Verbose -Message "[Rule][$($Context.Index)][$($Rule.Name)]`t[Out-Rule] -- $($_.Key): $($_.Value)";
-            }
-
-            # Build the output object as a PSObject
-            $outputObject = New-Object -TypeName PSObject -Property $Property;
-
-            # Set TypeName
-            $outputObject.PSObject.TypeNames.Insert(0, $TypeName);
-
-            # Add to Output objects for this Rule
-            $Rule.Output += $outputObject;
-        }
-
-        Write-Verbose -Message "[Rule][$($Context.Index)][$($Rule.Name)]`t[Out-Rule]::END";
-    }
-}
-
 #
 # Helper functions
 #
@@ -1107,15 +1115,25 @@ function GetRule {
         [String[]]$Path,
 
         [Parameter(Mandatory = $True)]
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $True)]
         [AllowNull()]
         [PSRule.Rules.RuleFilter]$Filter
     )
 
     process {
 
+        $isDeviceGuard = IsDeviceGuardEnabled;
+
+        # If DeviceGuard is enabled, force a contrained execution environment
+        if ($isDeviceGuard) {
+            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
+        }
+
         Write-Verbose -Message "[PSRule] -- Getting rules";
 
-        [PSRule.Pipeline.PipelineBuilder]::Get().Build($Path, $Filter).Process();
+        [PSRule.Pipeline.PipelineBuilder]::Get().Build($Option, $Path, $Filter).Process();
     }
 }
 
@@ -1126,6 +1144,9 @@ function InvokeRulePipeline {
     param (
         [Parameter(Mandatory = $True)]
         [String[]]$Path,
+
+        [Parameter(Mandatory = $True)]
+        [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $True)]
         [AllowNull()]
@@ -1140,8 +1161,15 @@ function InvokeRulePipeline {
 
     process {
 
+        $isDeviceGuard = IsDeviceGuardEnabled;
+
+        # If DeviceGuard is enabled, force a contrained execution environment
+        if ($isDeviceGuard) {
+            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
+        }
+
         Write-Verbose -Message "[PSRule] -- Invoking rules";
-        [PSRule.Pipeline.PipelineBuilder]::Invoke().Build($Path, $Filter, $Outcome).Process($InputObject);
+        [PSRule.Pipeline.PipelineBuilder]::Invoke().Build($Option, $Path, $Filter, $Outcome).Process($InputObject);
     }
 }
 
@@ -1207,10 +1235,33 @@ function NewRuleResult {
     }
 }
 
+function IsDeviceGuardEnabled {
+
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param (
+
+    )
+
+    process {
+
+        if ((Get-Variable -Name IsMacOS -ErrorAction Ignore) -or (Get-Variable -Name IsLinux -ErrorAction Ignore)) {
+            return $False;
+        }
+
+        # PowerShell 6.0.x does not support Device Guard
+        if ($PSVersionTable.PSVersion -ge '6.0' -and $PSVersionTable.PSVersion -lt '6.1') {
+            return $False;
+        }
+
+        return [System.Management.Automation.Security.SystemPolicy]::GetSystemLockdownPolicy() -eq [System.Management.Automation.Security.SystemEnforcementMode]::Enforce;
+    }
+}
+
 #
 # Export module
 #
 
-Export-ModuleMember -Function 'Rule','Get-PSRule','Invoke-PSRule','Out-Rule','Get-ObjectField';
+Export-ModuleMember -Function 'Rule','Invoke-PSRule','Get-PSRule','New-PSRuleOption';
 
 # EOM

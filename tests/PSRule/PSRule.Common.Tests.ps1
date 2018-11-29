@@ -31,25 +31,47 @@ Describe 'Invoke-PSRule' {
         }
 
         It 'Return success' {
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'FromFile1';
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
             $result.TargetName | Should -Be 'TestTarget1'
         }
 
         It 'Return failure' {
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'FromFile2';
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile2';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $False;
             $result.TargetName | Should -Be 'TestTarget2'
         }
 
         It 'Processes rules preconditions' {
-            $result = $testObject | Invoke-PSRule -Path $here -Tag @{ category = 'precondition' } -Status All;
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'precondition' } -Status All;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithPreconditionTrue' }).Status | Should -Be 'Passed';
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithPreconditionFalse' }).Status | Should -Be 'None';
+        }
+    }
+
+    Context 'With constrained language' {
+
+        $testObject = [PSCustomObject]@{
+            Name = "TestObject1"
+            Value = 1
+        }
+
+        It 'Checks if DeviceGuard is enabled' {
+            Mock -CommandName IsDeviceGuardEnabled -ModuleName PSRule -Verifiable -MockWith {
+                return $True;
+            }
+
+            $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'ConstrainedTest1';
+            Assert-MockCalled -CommandName IsDeviceGuardEnabled -ModuleName PSRule -Times 1;
+        }
+
+        # Check that '[Console]::WriteLine('Should fail')' is not executed
+        It 'Should fail to execute blocked code' {
+            { $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'ConstrainedTest2' -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
         }
     }
 }
@@ -60,20 +82,20 @@ Describe 'Get-PSRule' {
 
         It 'Returns rules' {
             # Get a list of rules
-            $result = Get-PSRule -Path $here;
+            $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -BeGreaterThan 0;
         }
 
         It 'Filters by name' {
-            $result = Get-PSRule -Path $here -Name 'FromFile1', 'FromFile3';
+            $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1', 'FromFile3';
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
             $result.Name | Should -BeIn @('FromFile1', 'FromFile3')
         }
 
         It 'Filters by tag' {
-            $result = Get-PSRule -Path $here -Tag @{ Test = "Test1" };
+            $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ Test = "Test1" };
             $result | Should -Not -BeNullOrEmpty;
             $result.Name | Should -Be 'FromFile1'
         }
@@ -83,5 +105,22 @@ Describe 'Get-PSRule' {
 
     #     $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath invalid);
     # }
+
+    Context 'With constrained language' {
+
+        It 'Checks if DeviceGuard is enabled' {
+            Mock -CommandName IsDeviceGuardEnabled -ModuleName PSRule -Verifiable -MockWith {
+                return $True;
+            }
+
+            $Null = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'ConstrainedTest1';
+            Assert-MockCalled -CommandName IsDeviceGuardEnabled -ModuleName PSRule -Times 1;
+        }
+
+        # Check that '[Console]::WriteLine('Should fail')' is not executed
+        It 'Should fail to execute blocked code' {
+            { $Null = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'UnconstrainedFile.Rule.ps1') -Name 'UnconstrainedFile1' -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
+        }
+    }
 }
 

@@ -15,7 +15,6 @@ Set-StrictMode -Version latest;
 $rootPath = $PWD;
 
 Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-
 $here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- AnyOf keyword' -Tag 'AnyOf' {
@@ -27,7 +26,7 @@ Describe 'PSRule -- AnyOf keyword' -Tag 'AnyOf' {
 
         It 'Should succeed on any positive conditions' {
 
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'AnyOfTest';
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AnyOfTest';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
             $result.RuleName | Should -Be 'AnyOfTest'
@@ -35,7 +34,7 @@ Describe 'PSRule -- AnyOf keyword' -Tag 'AnyOf' {
 
         It 'Should fail with all negative conditions' {
 
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'AnyOfTestNegative';
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AnyOfTestNegative';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $False;
             $result.RuleName | Should -Be 'AnyOfTestNegative'

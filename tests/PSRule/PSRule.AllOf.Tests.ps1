@@ -15,7 +15,6 @@ Set-StrictMode -Version latest;
 $rootPath = $PWD;
 
 Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-
 $here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- AllOf keyword' -Tag 'AllOf' {
@@ -27,7 +26,7 @@ Describe 'PSRule -- AllOf keyword' -Tag 'AllOf' {
 
         It 'Should succeed on all positive conditions' {
 
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'AllOfTest';
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AllOfTest';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
             $result.RuleName | Should -Be 'AllOfTest'
@@ -35,7 +34,7 @@ Describe 'PSRule -- AllOf keyword' -Tag 'AllOf' {
 
         It 'Should fail on any negative conditions' {
 
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'AllOfTestNegative';
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AllOfTestNegative';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $False;
             $result.RuleName | Should -Be 'AllOfTestNegative'

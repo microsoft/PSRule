@@ -33,6 +33,15 @@ Rule 'WithPreconditionFalse' -If { $False } -Tag @{ category = 'precondition' } 
     $True;
 }
 
+Rule 'ConstrainedTest1' {
+    $True;
+}
+
+Rule 'ConstrainedTest2' {
+    $Null = [Console]::WriteLine('Should fail');
+    $True;
+}
+
 Rule 'ExistsTest' {
 
     Exists 'Name'

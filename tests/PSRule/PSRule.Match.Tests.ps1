@@ -15,7 +15,6 @@ Set-StrictMode -Version latest;
 $rootPath = $PWD;
 
 Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-
 $here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- Match keyword' -Tag 'Match' {
@@ -27,7 +26,7 @@ Describe 'PSRule -- Match keyword' -Tag 'Match' {
 
         It 'Return success' {
 
-            $result = $testObject | Invoke-PSRule -Path $here -Name 'MatchTest';
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'MatchTest';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
             $result.RuleName | Should -Be 'MatchTest'

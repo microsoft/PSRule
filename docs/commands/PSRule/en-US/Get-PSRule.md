@@ -1,58 +1,42 @@
 ---
 external help file: PSRule-help.xml
 Module Name: PSRule
-online version: https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md
+online version: https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Get-PSRule.md
 schema: 2.0.0
 ---
 
-# Invoke-PSRule
+# Get-PSRule
 
 ## SYNOPSIS
 
-Evaluate pipeline objects against matching rules.
+Get a list of rule definitions.
 
 ## SYNTAX
 
 ```text
-Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
- [-Status <RuleResultOutcome>] [-Option <PSRuleOption>] [<CommonParameters>]
+Get-PSRule [-Name <String[]>] [-Tag <Hashtable>] [[-Path] <String[]>] [-Option <PSRuleOption>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Evaluate pipeline objects against matching rules.
+Get a list of matching rule definitions within the search path.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-PS C:\> @{ Name = 'Item 1' } | Invoke-PSRule
+PS C:\> Get-PSRule
 ```
 
-Evaluate a simple hashtable on the pipeline against rules loaded from the current working path.
+Get a list of rule definitions from the current working path.
 
 ## PARAMETERS
 
-### -InputObject
-
-The pipeline object to process rules for.
-
-```yaml
-Type: PSObject
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-```
-
 ### -Name
 
-The name of a specific rule to evaluate. If this parameter is not specified all rules in search paths will be evaluated.
+The name of a specific rule to list. If this parameter is not specified all rules in search paths will be listed.
 
 ```yaml
 Type: String[]
@@ -82,26 +66,9 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Status
-
-Filter output to only show rules with a specific status.
-
-```yaml
-Type: RuleResultOutcome
-Parameter Sets: (All)
-Aliases:
-Accepted values: Success, Failed
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Tag
 
-Only evaluate rules with the specified tags set. If this parameter is not specified all rules in search paths will be evaluated.
+Only get rules with the specified tags set. If this parameter is not specified all rules in search paths will be returned.
 
 ```yaml
 Type: Hashtable
@@ -137,12 +104,14 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### System.Management.Automation.PSObject
+### None
 
 ## OUTPUTS
 
-### System.Object
+### PSRule.Rules.Rule
 
 ## NOTES
 
 ## RELATED LINKS
+
+[Invoke-PSRule]()
