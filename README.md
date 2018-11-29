@@ -50,6 +50,16 @@ The following commands exist in the `PSRule` module:
 - [Get-PSRule](docs/commands/PSRule/en-US/Get-PSRule.md)
 - [New-PSRuleOption](docs/commands/PSRule/en-US/New-PSRuleOption.md)
 
+### Concepts
+
+The following conceptual topics exist in the `PSRule` module:
+
+- [Options](docs/concepts/PSRule/en-US/about_PSRule_Options.md)
+  - [Execution.LanguageMode](docs/concepts/PSRule/en-US/about_PSRule_Options.md#language-mode)
+- [Variables](docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
+  - [$Rule](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#rule)
+  - [$TargetObject](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#targetobject)
+
 ## Changes and versioning
 
 Modules in this repository will use the [semantic versioning](http://semver.org/) model to declare breaking changes from v1.0.0. Prior to v1.0.0, breaking changes may be introduced in minor (0.x.0) version increments. For a list of module changes please see the [change log](CHANGELOG.md).
