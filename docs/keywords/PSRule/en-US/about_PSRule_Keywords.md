@@ -21,7 +21,6 @@ The following are the built-in keywords that can be used within PSRule:
 - AnyOf - Assert that any of the child expressions must be true
 - AllOf - Assert that all of the child expressions must be true
 - Within - Assert that the field must match any of the values
-- When - Only evaluate the expression when the condition is true
 - TypeOf - Assert that the object must be of a specific type
 
 ### Rule
@@ -258,12 +257,12 @@ Rule 'nameMustExist' {
 ## EXAMPLES
 
 ```powershell
-Rule 'Availability set has members' {
-    Hint 'Availablity sets should have at least two members' -TargetName $InputObject.ResourceName
+# Description: App Service Plan has multiple instances
+Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
 
-    When { $InputObject.ResourceType -eq 'Microsoft.Compute/availabilitySets' } {
-        ($InputObject.properties.virtualmachines.id | Measure-Object).Count -ge 2
-    }
+    Hint 'Use at least two (2) instances' -TargetName $TargetObject.ResourceName
+
+    $TargetObject.Sku.capacity -ge 2
 }
 ```
 
