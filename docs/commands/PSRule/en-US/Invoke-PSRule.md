@@ -68,7 +68,7 @@ Accept wildcard characters: False
 
 ### -Path
 
-A path to one or more rules to evaluate.
+One or more paths to search for rule definitions within. If this parameter is not specified the current working path will be used.
 
 ```yaml
 Type: String[]
