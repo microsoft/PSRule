@@ -4,29 +4,10 @@ using System.Management.Automation.Runspaces;
 
 namespace PSRule.Host
 {
-    public sealed class EnvironmentVariable : PSVariable
-    {
-        public EnvironmentVariable(string name)
-            : base(name, null, ScopedItemOptions.ReadOnly)
-        {
-
-        }
-
-        public override object Value
-        {
-            get
-            {
-                //return LanguageContext._Environment;
-                return string.Empty;
-            }
-            set
-            {
-                // Do nothing
-            }
-        }
-    }
-
-    public sealed class RuleVariable : PSVariable
+    /// <summary>
+    /// A dynamic variable used during Rule execution.
+    /// </summary>
+    internal sealed class RuleVariable : PSVariable
     {
         public RuleVariable(string name)
             : base(name, null, ScopedItemOptions.ReadOnly)
@@ -40,14 +21,13 @@ namespace PSRule.Host
             {
                 return LanguageContext._Rule;
             }
-            set
-            {
-
-            }
         }
     }
 
-    public sealed class TargetObjectVariable : PSVariable
+    /// <summary>
+    /// A dynamic variable used during Rule execution.
+    /// </summary>
+    internal sealed class TargetObjectVariable : PSVariable
     {
         public TargetObjectVariable(string name)
             : base (name, null, ScopedItemOptions.ReadOnly)
@@ -61,16 +41,14 @@ namespace PSRule.Host
             {
                 return LanguageContext._Rule?.TargetObject;
             }
-            set
-            {
-
-            }
         }
     }
 
     internal static class HostState
     {
-
+        /// <summary>
+        /// Define language commands.
+        /// </summary>
         internal static SessionStateCmdletEntry[] BuiltInCmdlets = new SessionStateCmdletEntry[]
         {
             new SessionStateCmdletEntry("New-RuleDefinition", typeof(NewRuleDefinitionCommand), null),
@@ -83,24 +61,9 @@ namespace PSRule.Host
             new SessionStateCmdletEntry("Assert-AnyOf", typeof(AssertAnyOfCommand), null),
         };
 
-        public static InitialSessionState CreateDefault()
-        {
-            var state = InitialSessionState.CreateDefault();
-
-            state.Commands.Add(BuiltInCmdlets);
-            state.Commands.Add(BuiltInAliases);
-            state.Commands.Add(GetSpec);
-
-            state.Variables.Add(new SessionStateVariableEntry("LanguageContext", new LanguageContext(), string.Empty, ScopedItemOptions.ReadOnly));
-
-            //ResourceCommandBinder.Bind(state);
-
-#if !NET472
-            state.ExecutionPolicy = Microsoft.PowerShell.ExecutionPolicy.RemoteSigned;
-#endif
-            return state;
-        }
-
+        /// <summary>
+        /// Define language aliases.
+        /// </summary>
         internal static SessionStateAliasEntry[] BuiltInAliases
         {
             get
@@ -121,15 +84,23 @@ namespace PSRule.Host
             }
         }
 
-        internal static SessionStateFunctionEntry[] GetSpec
+        /// <summary>
+        /// Create a default session state.
+        /// </summary>
+        /// <returns></returns>
+        public static InitialSessionState CreateDefault()
         {
-            get
-            {
-                return new SessionStateFunctionEntry[]
-                {
-                    new SessionStateFunctionEntry("DOK.TestSpec", "")
-                };
-            }
+            var state = InitialSessionState.CreateDefault();
+
+            // Add in language elements
+            state.Commands.Add(BuiltInCmdlets);
+            state.Commands.Add(BuiltInAliases);
+
+#if !NET472
+            // Set execution policy
+            state.ExecutionPolicy = Microsoft.PowerShell.ExecutionPolicy.RemoteSigned;
+#endif
+            return state;
         }
     }
 }
