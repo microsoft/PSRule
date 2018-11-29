@@ -114,7 +114,7 @@ namespace PSRule.Configuration
         }
 
         /// <summary>
-        /// Convert from string to options by loading the yaml file from disk. This enables -Option '.\.psdocs.yml' from PowerShell.
+        /// Convert from string to options by loading the yaml file from disk. This enables -Option '.\psrule.yml' from PowerShell.
         /// </summary>
         /// <param name="path"></param>
         public static implicit operator PSRuleOption(string path)
