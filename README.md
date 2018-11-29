@@ -40,14 +40,15 @@ The following language keywords are used by the `PSRule` module:
 - [AnyOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#anyof) - Assert that any of the child expressions must be true
 - [AllOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#allof) -Assert that all of the child expressions must be true
 - [Within](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#within) - Assert that the field must match any of the values
-- [When](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#when) - Only evaluate the expression when the condition is true
 - [TypeOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#typeof) - Assert that the object must be of a specific type
 
 ### Commands
 
 The following commands exist in the `PSRule` module:
 
-- [Invoke-RuleEngine](docs/commands/PSRule/en-US/Invoke-RuleEngine.md)
+- [Invoke-PSRule](docs/commands/PSRule/en-US/Invoke-PSRule.md)
+- [Get-PSRule](docs/commands/PSRule/en-US/Get-PSRule.md)
+- [New-PSRuleOption](docs/commands/PSRule/en-US/New-PSRuleOption.md)
 
 ## Changes and versioning
 

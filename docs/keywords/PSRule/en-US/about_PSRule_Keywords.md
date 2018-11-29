@@ -21,7 +21,6 @@ The following are the built-in keywords that can be used within PSRule:
 - AnyOf - Assert that any of the child expressions must be true
 - AllOf - Assert that all of the child expressions must be true
 - Within - Assert that the field must match any of the values
-- When - Only evaluate the expression when the condition is true
 - TypeOf - Assert that the object must be of a specific type
 
 ### Rule
@@ -32,7 +31,7 @@ To define a Rule use the `Rule` keyword followed by a unique name and a pair of 
 
 Syntax:
 
-```powershell
+```text
 Rule <name> [-DependsOn <rule_name[]>] {
     ...
 }
@@ -60,8 +59,8 @@ The `Exists` assertion is used within a `Rule` definition to assert that a _fiel
 
 Syntax:
 
-```powershell
-Exists <field> [-CaseSensitive]
+```text
+Exists [-Field] <field[]> [-CaseSensitive]
 ```
 
 Examples:
@@ -83,21 +82,15 @@ The `Match` assertion is used within a `Rule` definition to assert that the valu
 
 Syntax:
 
-```powershell
-Match <field> [-CaseSensitive] {
-    <regular expression>
-    [<regular expression>]
-    ...
-}
+```text
+Match [-Field] <field[]> [-Expression] <regularExpression[]> [-CaseSensitive]
 ```
 
 Examples:
 
 ```powershell
 Rule 'validatePhoneNumber' {
-    Match 'PhoneNumber' {
-        '^(\+61|0)[1-9][0-9\s]{7}[0-9]{1}$'
-    }
+    Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$'
 }
 ```
 
@@ -111,7 +104,7 @@ The `Within` assertion is used within a `Rule` definition to assert that the val
 
 Syntax:
 
-```powershell
+```text
 Within <field> [-CaseSensitive] {
     <item>
     [<item>]
@@ -142,7 +135,7 @@ The `AllOf` assertion is used within a `Rule` definition to aggregate the result
 
 Syntax:
 
-```powershell
+```text
 AllOf {
     <assertion>
     [<assertion>]
@@ -170,7 +163,7 @@ The `AnyOf` assertion is used within a `Rule` definition to aggregate the result
 
 Syntax:
 
-```powershell
+```text
 AnyOf {
     <assertion>
     [<assertion>]
@@ -264,12 +257,12 @@ Rule 'nameMustExist' {
 ## EXAMPLES
 
 ```powershell
-Rule 'Availability set has members' {
-    Hint 'Availablity sets should have at least two members' -TargetName $InputObject.ResourceName
+# Description: App Service Plan has multiple instances
+Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
 
-    When { $InputObject.ResourceType -eq 'Microsoft.Compute/availabilitySets' } {
-        ($InputObject.properties.virtualmachines.id | Measure-Object).Count -ge 2
-    }
+    Hint 'Use at least two (2) instances' -TargetName $TargetObject.ResourceName
+
+    $TargetObject.Sku.capacity -ge 2
 }
 ```
 

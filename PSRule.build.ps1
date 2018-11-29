@@ -27,7 +27,7 @@ function CopyModuleFiles {
     process {
         $sourcePath = Resolve-Path -Path $Path;
 
-        Get-ChildItem -Path $sourcePath -Recurse -File -Include *.ps1,*.psm1,*.psd1,*.docx,*.dotx | Where-Object -FilterScript {
+        Get-ChildItem -Path $sourcePath -Recurse -File -Include *.ps1,*.psm1,*.psd1,*.ps1xml | Where-Object -FilterScript {
             ($_.FullName -notmatch '(\.(cs|csproj)|(\\|\/)(obj|bin))')
         } | ForEach-Object -Process {
             $filePath = $_.FullName.Replace($sourcePath, $destinationPath);
@@ -89,7 +89,7 @@ function SendAppveyorTestResult {
 task BuildDotNet {
     exec {
         # Build library
-        # dotnet publish src/PSRule -c $Configuration -f net452 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule/desktop)
+        dotnet publish src/PSRule -c $Configuration -f net472 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule/desktop)
         dotnet publish src/PSRule -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule/core)
     }
 }
