@@ -25,6 +25,14 @@ Rule 'FromFile3' -Tag @{ category = "group1" } {
     # Inconclusive
 }
 
+Rule 'WithPreconditionTrue' -If { $True } -Tag @{ category = 'precondition' } {
+    $True;
+}
+
+Rule 'WithPreconditionFalse' -If { $False } -Tag @{ category = 'precondition' } {
+    $True;
+}
+
 Rule 'ExistsTest' {
 
     Exists 'Name'

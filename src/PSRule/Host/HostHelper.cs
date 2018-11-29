@@ -147,6 +147,17 @@ namespace PSRule.Host
 
                 LanguageContext._Rule = result;
 
+                if (block.If != null)
+                {
+                    if (!block.If.Invoke())
+                    {
+                        //result.Status = RuleResultOutcome.Skipped;
+                        return result;
+                    }
+                }
+
+                result.Status = RuleResultOutcome.InProgress;
+
                 var scriptBlock = block.Body;
                 var invokeResults = scriptBlock.Invoke();
 
@@ -157,7 +168,13 @@ namespace PSRule.Host
                         var success = (bool)ir.BaseObject;
 
                         result.Success = success;
+                        result.Status = success ? RuleResultOutcome.Passed : RuleResultOutcome.Failed;
                     }
+                }
+
+                if (result.Status == RuleResultOutcome.InProgress)
+                {
+                    result.Status = RuleResultOutcome.Inconclusive;
                 }
 
                 return result;

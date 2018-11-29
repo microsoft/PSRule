@@ -9,9 +9,9 @@ namespace PSRule.Pipeline
 
         }
 
-        public InvokeRulePipeline Build(string[] path, RuleFilter filter)
+        public InvokeRulePipeline Build(string[] path, RuleFilter filter, RuleResultOutcome outcome)
         {
-            return new InvokeRulePipeline(path, filter);
+            return new InvokeRulePipeline(path, filter, outcome);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace PSRule.Commands
         /// An optional precondition before the rule is evaluated.
         /// </summary>
         [Parameter(Mandatory = false)]
-        public ScriptBlock If { get; set; }
+        public RulePrecondition If { get; set; }
 
         /// <summary>
         /// Deployments that this deployment depends on.
@@ -49,7 +49,8 @@ namespace PSRule.Commands
                 Body = Body,
                 Description = metadata.Description,
                 Tag = tag,
-                DependsOn = DependsOn
+                DependsOn = DependsOn,
+                If = If
             };
 
             WriteObject(block);

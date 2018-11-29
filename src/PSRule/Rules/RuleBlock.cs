@@ -1,11 +1,10 @@
 ﻿using PSRule.Host;
-using System;
-using System.Collections.Generic;
 using System.Management.Automation;
-using System.Text;
 
 namespace PSRule.Rules
 {
+    public delegate bool RulePrecondition();
+
     /// <summary>
     /// Define an instance of a deployment block. Each deployment block has a unique name.
     /// </summary>
@@ -27,6 +26,8 @@ namespace PSRule.Rules
         /// A human readable block of text, used to identify the purpose of the deployment.
         /// </summary>
         public string Description { get; set; }
+
+        public RulePrecondition If { get; set; }
 
         public ScriptBlock Body { get; set; }
 

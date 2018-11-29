@@ -4,11 +4,16 @@ namespace PSRule.Rules
 {
     public sealed class RuleResult
     {
+        public RuleResult()
+        {
+            Status = RuleResultOutcome.None;
+        }
+
         public string RuleName { get; set; }
 
         public bool Success { get; set; }
 
-        public string Status { get; set; }
+        public RuleResultOutcome Status { get; set; }
 
         public string Message { get; set; }
 

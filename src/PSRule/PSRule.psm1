@@ -47,7 +47,7 @@ function Invoke-PSRule {
     [CmdletBinding()]
     param (
         [Parameter(Position = 0)]
-        [String[]]$Path,
+        [String[]]$Path = $PWD,
 
         [Parameter(Mandatory = $False)]
         [String[]]$Name,
@@ -59,8 +59,7 @@ function Invoke-PSRule {
         [PSObject]$InputObject,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('Success', 'Failed')]
-        [String[]]$Status
+        [PSRule.Rules.RuleResultOutcome]$Status = [PSRule.Rules.RuleResultOutcome]::Default
     )
 
     begin {
@@ -75,7 +74,7 @@ function Invoke-PSRule {
     }
 
     process {
-        InvokeRulePipeline -Path $sourceFiles -Filter $filter -InputObject $InputObject -Verbose:$VerbosePreference;
+        InvokeRulePipeline -Path $sourceFiles -Filter $filter -InputObject $InputObject -Outcome $Status -Verbose:$VerbosePreference;
     }
 
     end {
@@ -368,27 +367,6 @@ function Rule {
 
             return;
         }
-    }
-
-    process {
-        # Create a rule object which will collect in the engine until called
-        $ruleObject = New-Object -TypeName PSObject -Property @{
-            RuleName = $RuleName
-            SourceFile = $SourceFile
-            Body = $Body
-            DependsOn = $DependsOn
-        }
-
-        # Add type information
-        $ruleObject.PSObject.TypeNames.Insert(0, 'PSRule.Rule');
-
-        # Write out diagnostic information
-        Write-Debug -Message "Discovered rule: $RuleName";
-        Write-Verbose -Message "[PSRule] -- Discovered rule: $RuleName";
-        Write-Verbose -Message "[PSRule] -- Source: $SourceFile";
-
-        # Add this rule to engine context
-        $Engine.Rule.Add($RuleName, $ruleObject);
     }
 }
 
@@ -1154,13 +1132,16 @@ function InvokeRulePipeline {
         [PSRule.Rules.RuleFilter]$Filter,
 
         [Parameter(Mandatory = $True)]
+        [PSRule.Rules.RuleResultOutcome]$Outcome,
+
+        [Parameter(Mandatory = $True)]
         [PSObject]$InputObject
     )
 
     process {
 
         Write-Verbose -Message "[PSRule] -- Invoking rules";
-        [PSRule.Pipeline.PipelineBuilder]::Invoke().Build($Path, $Filter).Process($InputObject);
+        [PSRule.Pipeline.PipelineBuilder]::Invoke().Build($Path, $Filter, $Outcome).Process($InputObject);
     }
 }
 

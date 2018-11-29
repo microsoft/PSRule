@@ -31,7 +31,6 @@ Describe 'Invoke-PSRule' {
         }
 
         It 'Return success' {
-
             $result = $testObject | Invoke-PSRule -Path $here -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
@@ -39,11 +38,18 @@ Describe 'Invoke-PSRule' {
         }
 
         It 'Return failure' {
-
             $result = $testObject | Invoke-PSRule -Path $here -Name 'FromFile2';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $False;
             $result.TargetName | Should -Be 'TestTarget2'
+        }
+
+        It 'Processes rules preconditions' {
+            $result = $testObject | Invoke-PSRule -Path $here -Tag @{ category = 'precondition' } -Status All;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 2;
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithPreconditionTrue' }).Status | Should -Be 'Passed';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithPreconditionFalse' }).Status | Should -Be 'None';
         }
     }
 }

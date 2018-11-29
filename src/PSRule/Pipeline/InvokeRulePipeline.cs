@@ -8,11 +8,13 @@ namespace PSRule.Pipeline
 {
     public sealed class InvokeRulePipeline : RulePipeline
     {
+        private readonly RuleResultOutcome _Outcome;
         private readonly IDictionary<string, RuleBlock> _RuleBlock;
 
-        internal InvokeRulePipeline(string[] path, RuleFilter filter)
+        internal InvokeRulePipeline(string[] path, RuleFilter filter, RuleResultOutcome outcome)
             : base(path, filter)
         {
+            _Outcome = outcome;
             _RuleBlock = HostHelper.GetRuleBlock(_Context, _Path, _Filter);
         }
 
@@ -24,7 +26,10 @@ namespace PSRule.Pipeline
             {
                 var result = HostHelper.InvokeRuleBlock(null, rule, o);
 
-                results.Add(result);
+                if (_Outcome == RuleResultOutcome.All | (result.Status & _Outcome) > 0)
+                {
+                    results.Add(result);
+                }
             }
 
             return results;
