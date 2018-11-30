@@ -1,4 +1,5 @@
-﻿using System.Management.Automation;
+﻿using PSRule.Pipeline;
+using System.Management.Automation;
 
 namespace PSRule.Commands
 {
@@ -13,19 +14,28 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            var inputObject = GetVariableValue("InputObject") ?? GetVariableValue("TargetObject");
+            PipelineContext.WriteVerbose("[Exists]::BEGIN");
 
-            bool result = false;
-
-            foreach (var fieldName in Field)
+            try
             {
-                if (GetField(inputObject, fieldName, out object fieldValue))
-                {
-                    result = true;
-                }
-            }
+                var inputObject = GetVariableValue("InputObject") ?? GetVariableValue("TargetObject");
 
-            WriteObject(result);
+                bool result = false;
+
+                foreach (var fieldName in Field)
+                {
+                    if (GetField(inputObject, fieldName, out object fieldValue))
+                    {
+                        result = true;
+                    }
+                }
+
+                WriteObject(result);
+            }
+            finally
+            {
+                PipelineContext.WriteVerbose("[Exists]::END");
+            }
         }
     }
 }

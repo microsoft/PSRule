@@ -4,8 +4,9 @@ namespace PSRule.Rules
 {
     public sealed class RuleResult
     {
-        public RuleResult()
+        public RuleResult(string ruleId)
         {
+            RuleName = ruleId;
             Status = RuleResultOutcome.None;
         }
 

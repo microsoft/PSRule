@@ -4,7 +4,7 @@ Rule 'FromFile1' -Tag @{ category = "group1"; test = "Test1" } {
 
     Hint -TargetName 'TestTarget1'
 
-    # Successful
+    # Pass
     $True;
     $True;
 }
@@ -14,7 +14,7 @@ Rule 'FromFile2' -Tag @{ category = "group1"; test = "Test2" } {
 
     Hint -TargetName 'TestTarget2'
 
-    # Failed
+    # Fail
     $False;
     $True;
     $True;
@@ -34,6 +34,36 @@ Rule 'WithPreconditionTrue' -If { $True } -Tag @{ category = 'precondition' } {
 
 Rule 'WithPreconditionFalse' -If { $False } -Tag @{ category = 'precondition' } {
     $True;
+}
+
+# Description: Should fail, because of dependency fail
+Rule 'WithDependency1' -DependsOn 'WithDependency3','WithDependency2' {
+    # Pass
+    $True;
+}
+
+# Description: Should fail, because of dependency fail
+Rule 'WithDependency2' -DependsOn 'WithDependency5' {
+    # Pass
+    $True;
+}
+
+# Description: Should pass, with a passing dependency
+Rule 'WithDependency3' -DependsOn 'WithDependency4' {
+    # Pass
+    $True
+}
+
+# Description: Pass
+Rule 'WithDependency4' {
+    # Pass
+    $True
+}
+
+# Description: Fail
+Rule 'WithDependency5' {
+    # Fail
+    $False
 }
 
 Rule 'ConstrainedTest1' {

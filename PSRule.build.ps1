@@ -4,6 +4,9 @@ param (
     [String]$ModuleVersion,
 
     [Parameter(Mandatory = $False)]
+    [String]$Revision,
+
+    [Parameter(Mandatory = $False)]
     [String]$Configuration = 'Debug',
 
     [Parameter(Mandatory = $False)]
@@ -126,11 +129,16 @@ task Clean {
     Remove-Item -Path out,reports -Recurse -Force -ErrorAction SilentlyContinue;
 }
 
-task PublishModule Build, {
+task VersionModule {
 
     # Update module version
-    if ($Null -ne 'ModuleVersion') {
+    if (![String]::IsNullOrEmpty($ModuleVersion)) {
         Update-ModuleManifest -Path out/modules/PSRule/PSRule.psd1 -ModuleVersion $ModuleVersion;
+    }
+
+    # Update pre-release version
+    if (![String]::IsNullOrEmpty($Revision)) {
+        Update-ModuleManifest -Path out/modules/PSRule/PSRule.psd1 -Prerelease "B$Revision";
     }
 }
 
@@ -166,7 +174,17 @@ task platyPS {
     Import-Module -Name PlatyPS -Verbose:$False;
 }
 
-task TestModule Pester, {
+task PSScriptAnalyzer {
+
+    # Install PSScriptAnalyzer if not currently installed
+    if ($Null -eq (Get-Module -Name PSScriptAnalyzer -ListAvailable)) {
+        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser;
+    }
+
+    Import-Module -Name PSScriptAnalyzer -Verbose:$False;
+}
+
+task TestModule Pester, PSScriptAnalyzer, {
 
     # Run Pester tests
     $pesterParams = @{ Path = $PWD; OutputFile = 'reports/Pester.xml'; OutputFormat = 'NUnitXml'; PesterOption = @{ IncludeVSCodeMarker = $True }; PassThru = $True; };
@@ -195,14 +213,18 @@ task TestModule Pester, {
     }
 }
 
+# Synopsis: Run script analyzer
+task Analyze Build, PSScriptAnalyzer, {
+
+    Invoke-ScriptAnalyzer -Path out/modules/PSRule;
+}
+
 # Synopsis: Build and clean.
 task . Build, Test
 
 # Synopsis: Build the project
-task Build Clean, BuildModule, BuildHelp
+task Build Clean, BuildModule, BuildHelp, VersionModule
 
 task Test Build, TestModule
-
-task Publish PublishModule
 
 task Release ReleaseModule
