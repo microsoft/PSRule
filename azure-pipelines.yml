@@ -1,6 +1,9 @@
 # Azure DevOps
 # Build pipeline for PSRule
 
+# Use build number format, i.e. 1808.1
+name: $(date:yyMM)$(rev:rr)
+
 trigger:
 - master
 
