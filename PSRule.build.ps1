@@ -4,6 +4,9 @@ param (
     [String]$ModuleVersion,
 
     [Parameter(Mandatory = $False)]
+    [String]$Revision,
+
+    [Parameter(Mandatory = $False)]
     [String]$Configuration = 'Debug',
 
     [Parameter(Mandatory = $False)]
@@ -129,8 +132,13 @@ task Clean {
 task PublishModule Build, {
 
     # Update module version
-    if ($Null -ne 'ModuleVersion') {
+    if ($Null -ne $ModuleVersion) {
         Update-ModuleManifest -Path out/modules/PSRule/PSRule.psd1 -ModuleVersion $ModuleVersion;
+    }
+
+    # Update pre-release version
+    if ($Null -ne $Revision) {
+        Update-ModuleManifest -Path out/modules/PSRule/PSRule.psd1 -Prerelease "B$Revision";
     }
 }
 

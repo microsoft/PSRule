@@ -1,7 +1,7 @@
 # Azure DevOps
 # Build pipeline for PSRule
 
-# Use build number format, i.e. 1808.1
+# Use build number format, i.e. 180801
 name: $(date:yyMM)$(rev:rr)
 
 trigger:
@@ -12,6 +12,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  version: '0.1.0'
 
 steps:
 
@@ -20,7 +21,7 @@ steps:
   displayName: 'Install Invoke-Build'
 
 # Invoke build
-- powershell: Invoke-Build -Configuration $(buildConfiguration)
+- powershell: Invoke-Build -Configuration $(buildConfiguration) -ModuleVersion $(version) -Revision $(Build.BuildNumber)
   displayName: 'Build module'
 
 # Publish test results
