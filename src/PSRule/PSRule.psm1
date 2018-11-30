@@ -22,15 +22,13 @@ $PSModule.OnRemove = {
     return Get-Location;
 }
 
-$Script:UTF8_NO_BOM = New-Object -TypeName System.Text.UTF8Encoding -ArgumentList $False;
-
 #
 # Localization
 #
 
-$LocalizedData = data {
+# $LocalizedData = data {
 
-}
+# }
 
 Import-LocalizedData -BindingVariable LocalizedData -FileName 'PSRule.Resources.psd1' -ErrorAction SilentlyContinue;
 
@@ -101,209 +99,6 @@ function Invoke-PSRule {
 
     end {
         Write-Verbose -Message "[PSRule] END::";
-    }
-}
-
-function Invoke-EngineRule {
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $True)]
-        [String]$Path,
-
-        [String[]]$Name,
-
-        [Parameter(Mandatory = $False)]
-        [Object]$ConfigurationData,
-
-        [Parameter(Mandatory = $True, ValueFromPipeline = $True)]
-        [PSObject]$InputObject,
-
-        [Parameter(Mandatory = $False)]
-        [ValidateSet('Success', 'Failed')]
-        [String[]]$Status,
-
-        [Parameter(Mandatory = $False)]
-        [Hashtable]$Tag
-    )
-
-    begin {
-        Write-Verbose -Message "[PSRule] BEGIN::";
-
-        # Ensure that the supplied path exists
-        if (!(Test-Path -Path $Path))
-        {
-            Write-Error -Message "The path to the rules does not exist: $Path";
-
-            return;
-        }
-
-        Write-Verbose -Message "[PSRule] BEGIN::";
-
-        $configData = @{ };
-        
-        # Handle ConfigurationData
-        if ($PSBoundParameters.ContainsKey('ConfigurationData')) {
-
-            # Check the ConfigurationData is a supported type
-            if (!($ConfigurationData -is [String] -or $ConfigurationData -is [Hashtable])) {
-                Write-Error -Message "The format or type of configuration data is not valid";
-
-                return;
-            }
-
-            # If ConfigurationData is a string, attempt to load a .psd1
-            if ($ConfigurationData -is [String]) {
-
-                # Check the path exists
-                if (!(Test-Path -Path $ConfigurationData)) {
-                    Write-Error -Message "The path to configuration data does not exist: $ConfigurationData";
-
-                    return;
-                } else {
-                    Write-Verbose -Message "[PSRule] -- Importing configuration data: $ConfigurationData";
-
-                    $configDataDirectory = Split-Path -Path $ConfigurationData -Parent;
-                    $configDataFileName = Split-Path -Path $ConfigurationData -Leaf;
-
-                    # Import the .psd1
-                    Import-LocalizedData -BindingVariable 'configData' -BaseDirectory $configDataDirectory -FileName $configDataFileName;
-                }
-            } elseif ($ConfigurationData -is [Hashtable]) {
-
-                # Use the provided hashtable
-                $configData += $ConfigurationData;
-            }
-        }
-        
-        # Create Engine object
-        $Engine = NewEngine;
-
-        Write-Verbose -Message "[PSRule] -- Scanning for source files: $Path";
-
-        # Discover scripts in the specified paths
-        [String[]]$sourceFiles = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
-
-        Write-Verbose -Message "[PSRule] -- Found $($sourceFiles.Count) source files";
-
-        # Discover rule blocks in each source file
-        foreach ($SourceFile in $sourceFiles) {
-            # Set variables for discovery
-            $variablesToDefine = [PSVariable[]]@(
-                New-Object -TypeName PSVariable -ArgumentList ('Engine', $Engine)
-                New-Object -TypeName PSVariable -ArgumentList ('SourceFile', $SourceFile)
-            );
-
-            # Get source file content
-            [ScriptBlock]$sourceBlock = [ScriptBlock]::Create((Get-Content -Path $SourceFile -Raw));
-
-            # Discover rule blocks
-            $sourceBlock.InvokeWithContext($Null, $variablesToDefine) | Out-Null;
-        }
-
-        Write-Verbose -Message "[PSRule] -- Found $($Engine.Rule.Count) rules";
-    }
-
-    process {
-
-        # $This is the current object in the pipeline
-        $Local:This = $_;
-
-        
-        $Local:Context =  @{
-            Index = 0; ScriptName = (Split-Path -Path $Path -Leaf); Rule = $ruleBook;
-        };
-
-        # $Parameter is any configuration data provided
-        $Local:Parameter = $configData;
-
-        # Create a list of scoped variables.
-        $variablesToDefine = @(
-            New-Object -TypeName PSVariable -ArgumentList ('This', $This)
-            New-Object -TypeName PSVariable -ArgumentList ('Context', $Local:Context)
-            New-Object -TypeName PSVariable -ArgumentList ('Parameter', $configData)
-        );
-
-        # Create history for current pipeline object
-        $history = @{ };
-
-        Write-Verbose -Message "[Engine][$($Local:Context.Index)]`tBEGIN::";
-
-        # Setup helper functions
-
-        function ShouldRun { param ([String]$RuleName) return !$history.ContainsKey($RuleName); }
-
-        function GetDependency {
-            param ([String]$RuleName)
-
-            foreach ($dependencyRuleName in $Engine.Rule[$RuleName].DependsOn) {
-                $Engine.Rule[$dependencyRuleName];
-            }
-        }
-
-        function TryRun {
-            param ([String]$RuleName)
-
-            # Check history
-            if (ShouldRun($RuleName)) {
-                # The rule has not run yet
-                
-                # Get the rule
-                $rule = $Engine.Rule[$RuleName];
-
-                # Check dependencies
-                if ($Null -ne $rule.DependsOn -and $r.DependsOn.Length -gt 0) {
-
-                    # Rule has dependencies
-                    foreach ($d in GetDependency($rule.RuleName)) {
-                        Write-Verbose -Message "[Engine][$($Local:Context.Index)]`t-- $($rule.RuleName) depends on: $($d.RuleName)";
-                        
-                        # Try to run the dependency
-                        TryRun($d.RuleName);
-
-                        # Check if dependency failed
-                        if (!$history[$d.RuleName].Success) {
-                            # Dependency failed
-
-                            $history.Add($rule.RuleName, (NewRuleResult -Success $False -Status 'Skipped'));
-
-                            return;
-                        }
-                    }
-                }
-
-                Write-Verbose -Message "[Engine][$($Local:Context.Index)]`t-- Running $($rule.RuleName)";
-
-                # Invoke the rule
-                $ruleResult = InvokeRule -Rule $rule -Verbose:$VerbosePreference;
-
-                # Add result to history
-                $history.Add($rule.RuleName, $ruleResult);
-            } else {
-                Write-Verbose -Message "[Engine][$($Local:Context.Index)]`t-- $($RuleName) has already run";
-            }
-        }
-
-        # Rule each rule for the pipeline object
-        foreach ($r in $Engine.Rule.Values.GetEnumerator()) {
-            # Invoke the rules within the engine context
-
-            TryRun($r.RuleName);
-        }
-
-        # Emit results to the pipeline
-        $history.Values.GetEnumerator() | Where-Object -FilterScript {
-            # Filter by status
-            ([String]::IsNullOrEmpty($Status) -or $Status -contains $_.Status)
-        }
-
-        Write-Verbose -Message "[Engine][$($Local:Context.Index)]`tEND::";
-
-        # Keep track of the number of objects that have passed though the pipeline
-        $Local:Context.Index++;
-    }
-
-    end {
-        Write-Verbose -Message "[PSRule]`tEND::";
     }
 }
 
@@ -750,7 +545,7 @@ function AssertWithin {
             }
             catch {
                 Write-Error -Message "Failed to invoke Within expression block. $($_.Exception.Message)" -Exception $_.Exception -TargetObject $Parameter;
-            }            
+            }
 
             if ($Null -eq $innerResult) {
                 Write-Verbose -Message "[Rule][$($Context.Index)][$($Rule.Name)]`t[Within] -- The expression was empty";
@@ -976,7 +771,7 @@ function Set-RuleHint {
     process {
 
         Write-Verbose -Message "[Rule][$($Context.Index)][$($Rule.Name)]`t[Hint]::BEGIN";
-        
+
         # Set TargetName if specified
         if ($PSBoundParameters.ContainsKey('TargetName')) {
             if ($PSCmdlet.ShouldProcess('Rule', 'Set TargetName')) {
@@ -985,7 +780,7 @@ function Set-RuleHint {
                 $Rule.TargetName = $TargetName;
             }
         }
-        
+
         # Set Message if specified
         if ($PSBoundParameters.ContainsKey('Message')) {
             if ($PSCmdlet.ShouldProcess($Rule.RuleName, 'Set Message')) {

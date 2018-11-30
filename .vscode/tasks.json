@@ -50,6 +50,12 @@
             "type": "shell",
             "command": "Invoke-Build Clean",
             "problemMatcher": []
+        },
+        {
+            "label": "script-analyzer",
+            "type": "shell",
+            "command": "Invoke-Build PSScriptAnalyzer",
+            "problemMatcher": []
         }
     ]
 }

@@ -195,6 +195,12 @@ task TestModule Pester, {
     }
 }
 
+# Synopsis: Run script analyzer
+task PSScriptAnalyzer Build, {
+
+    Invoke-ScriptAnalyzer -Path out/modules/PSRule;
+}
+
 # Synopsis: Build and clean.
 task . Build, Test
 

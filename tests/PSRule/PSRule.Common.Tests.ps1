@@ -147,4 +147,3 @@ Describe 'Get-PSRule' {
         }
     }
 }
-
