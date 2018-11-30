@@ -54,7 +54,7 @@
         {
             "label": "script-analyzer",
             "type": "shell",
-            "command": "Invoke-Build PSScriptAnalyzer",
+            "command": "Invoke-Build Analyze",
             "problemMatcher": []
         }
     ]

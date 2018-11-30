@@ -166,7 +166,17 @@ task platyPS {
     Import-Module -Name PlatyPS -Verbose:$False;
 }
 
-task TestModule Pester, {
+task PSScriptAnalyzer {
+
+    # Install PSScriptAnalyzer if not currently installed
+    if ($Null -eq (Get-Module -Name PSScriptAnalyzer -ListAvailable)) {
+        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser;
+    }
+
+    Import-Module -Name PSScriptAnalyzer -Verbose:$False;
+}
+
+task TestModule Pester, PSScriptAnalyzer, {
 
     # Run Pester tests
     $pesterParams = @{ Path = $PWD; OutputFile = 'reports/Pester.xml'; OutputFormat = 'NUnitXml'; PesterOption = @{ IncludeVSCodeMarker = $True }; PassThru = $True; };
@@ -196,7 +206,7 @@ task TestModule Pester, {
 }
 
 # Synopsis: Run script analyzer
-task PSScriptAnalyzer Build, {
+task Analyze Build, PSScriptAnalyzer, {
 
     Invoke-ScriptAnalyzer -Path out/modules/PSRule;
 }
