@@ -1,4 +1,5 @@
-﻿using PSRule.Rules;
+﻿using PSRule.Pipeline;
+using PSRule.Rules;
 using System.Collections;
 using System.Management.Automation;
 
@@ -45,7 +46,7 @@ namespace PSRule.Commands
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
 
-            WriteVerbose($"[PSRule][R][{Name}]::BEGIN");
+            PipelineContext.WriteVerbose($"[PSRule][D] -- Found {Name} in {MyInvocation.ScriptName}");
 
             var block = new RuleBlock(Name)
             {
@@ -57,8 +58,6 @@ namespace PSRule.Commands
             };
 
             WriteObject(block);
-
-            WriteVerbose($"[PSRule][R][{Name}]::END");
         }
     }
 }

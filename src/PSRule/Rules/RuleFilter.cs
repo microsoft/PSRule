@@ -49,7 +49,7 @@ namespace PSRule.Rules
 
         public bool Match(RuleBlock block)
         {
-            return Match(block.Name, block.Tag);
+            return Match(block.Id, block.Tag);
         }
     }
 }

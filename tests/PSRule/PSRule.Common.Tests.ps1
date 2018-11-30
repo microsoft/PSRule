@@ -50,12 +50,23 @@ Describe 'Invoke-PSRule' {
             $result.Status | Should -Be 'Inconclusive';
         }
 
-        It 'Processes rules preconditions' {
+        It 'Processes rule preconditions' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'precondition' } -Status All;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithPreconditionTrue' }).Status | Should -Be 'Passed';
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithPreconditionFalse' }).Status | Should -Be 'None';
+        }
+
+        It 'Processes rule dependencies' {
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name WithDependency1 -Status All;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 5;
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency5' }).Status | Should -Be 'Failed';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency4' }).Status | Should -Be 'Passed';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency3' }).Status | Should -Be 'Passed';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency2' }).Status | Should -Be 'None';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency1' }).Status | Should -Be 'None';
         }
     }
 

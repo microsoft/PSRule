@@ -1,4 +1,5 @@
-﻿using System.Management.Automation;
+﻿using PSRule.Pipeline;
+using System.Management.Automation;
 
 namespace PSRule.Commands
 {
@@ -13,7 +14,7 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            //WriteVerbose("[Rule][$($Context.Index)][$($Rule.Name)][AnyOf]::BEGIN");
+            PipelineContext.WriteVerbose("[AnyOf]::BEGIN");
 
             var result = false;
 
@@ -41,13 +42,13 @@ namespace PSRule.Commands
                     result = true;
                 }
 
-                //WriteVerbose($"[Rule][$($Context.Index)][$($Rule.Name)][AnyOf] -- [{successCount}/{totalCount}]");
+                PipelineContext.WriteVerbose($"[AnyOf] -- [{successCount}/{totalCount}]");
 
                 WriteObject(result);
             }
             finally
             {
-                //WriteVerbose($"[Rule][$($Context.Index)][$($Rule.Name)][AnyOf]::END [{result}]");
+                PipelineContext.WriteVerbose($"[AnyOf]::END [{result}]");
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using PSRule.Annotations;
 using PSRule.Host;
+using PSRule.Pipeline;
 using PSRule.Rules;
 using System.Collections;
 using System.Management.Automation;

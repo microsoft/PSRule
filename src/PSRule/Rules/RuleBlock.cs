@@ -1,4 +1,5 @@
 ﻿using PSRule.Host;
+using System.Diagnostics;
 
 namespace PSRule.Rules
 {
@@ -7,24 +8,31 @@ namespace PSRule.Rules
     public delegate RuleConditionResult RuleCondition();
 
     /// <summary>
-    /// Define an instance of a deployment block. Each deployment block has a unique name.
+    /// Define an instance of a rule block. Each rule block has a unique id.
     /// </summary>
-    public sealed class RuleBlock : ILanguageBlock
+    [DebuggerDisplay("{Id} @{SourcePath}")]
+    public sealed class RuleBlock : ILanguageBlock, IDependencyTarget
     {
-        public RuleBlock(string name)
+        public RuleBlock(string id)
         {
-            Name = name;
+            Id = id;
+            Name = id;
         }
 
         public string SourcePath { get; set; }
 
         /// <summary>
-        /// The name of the deployment.
+        /// Get a unique identifer for the rule.
+        /// </summary>
+        public string Id { get; private set; }
+
+        /// <summary>
+        /// The name of the rule.
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// A human readable block of text, used to identify the purpose of the deployment.
+        /// A human readable block of text, used to identify the purpose of the rule.
         /// </summary>
         public string Description { get; set; }
 
@@ -36,7 +44,7 @@ namespace PSRule.Rules
         public RuleCondition Body { get; set; }
 
         /// <summary>
-        /// Other deployments that must completed successfully before calling this deployment.
+        /// Other deployments that must completed successfully before calling this rule.
         /// </summary>
         public string[] DependsOn { get; set; }
 

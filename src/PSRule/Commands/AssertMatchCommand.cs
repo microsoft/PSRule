@@ -1,4 +1,5 @@
-﻿using System.Management.Automation;
+﻿using PSRule.Pipeline;
+using System.Management.Automation;
 using System.Text.RegularExpressions;
 
 namespace PSRule.Commands
@@ -39,22 +40,31 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            var inputObject = GetVariableValue("InputObject") ?? GetVariableValue("TargetObject");
+            PipelineContext.WriteVerbose("[Match]::BEGIN");
 
-            var result = false;
-
-            if (GetField(inputObject, Field, out object fieldValue))
+            try
             {
-                for (var i = 0; i < _Expressions.Length && !result; i++)
+                var inputObject = GetVariableValue("InputObject") ?? GetVariableValue("TargetObject");
+
+                var result = false;
+
+                if (GetField(inputObject, Field, out object fieldValue))
                 {
-                    if (_Expressions[i].IsMatch(fieldValue.ToString()))
+                    for (var i = 0; i < _Expressions.Length && !result; i++)
                     {
-                        result = true;
+                        if (_Expressions[i].IsMatch(fieldValue.ToString()))
+                        {
+                            result = true;
+                        }
                     }
                 }
-            }
 
-            WriteObject(result);
+                WriteObject(result);
+            }
+            finally
+            {
+                PipelineContext.WriteVerbose("[Match]::END");
+            }
         }
     }
 }

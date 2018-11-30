@@ -1,0 +1,102 @@
+﻿using System.Collections.Generic;
+
+namespace PSRule.Host
+{
+    internal sealed class DependencyGraph<T> where T : IDependencyTarget
+    {
+        private readonly Dictionary<string, DependencyTarget> _Index;
+        private readonly DependencyTarget[] _Targets;
+
+        public DependencyGraph(T[] targets)
+        {
+            _Targets = new DependencyTarget[targets.Length];
+            _Index = new Dictionary<string, DependencyTarget>(targets.Length);
+
+            Prepare(targets);
+        }
+
+        public enum DependencyTargetState : byte
+        {
+            None = 0,
+
+            Pass = 1,
+
+            Fail = 2,
+
+            FailDependency = 3
+        }
+
+        public sealed class DependencyTarget
+        {
+            public DependencyTarget(DependencyGraph<T> graph, T value)
+            {
+                Graph = graph;
+                Value = value;
+            }
+
+            public DependencyGraph<T> Graph { get; }
+
+            public T Value { get; }
+
+            public DependencyTargetState State { get; internal set; }
+
+            public bool Skipped
+            {
+                get { return State == DependencyTargetState.FailDependency; }
+            }
+
+            public void Pass()
+            {
+                State = DependencyTargetState.Pass;
+            }
+
+            public void Fail()
+            {
+                State = DependencyTargetState.Fail;
+            }
+        }
+
+        public IEnumerable<DependencyTarget> GetSingleTarget()
+        {
+            foreach (var target in _Targets)
+            {
+                if (target.Value.DependsOn != null && target.Value.DependsOn.Length > 0)
+                {
+                    foreach (var d in target.Value.DependsOn)
+                    {
+                        var dTarget = _Index[d];
+
+                        // Check if dependency was already completed
+                        if (dTarget.State == DependencyTargetState.Pass)
+                        {
+                            continue;
+                        }
+                        else if (dTarget.State == DependencyTargetState.Fail || dTarget.State == DependencyTargetState.FailDependency)
+                        {
+                            target.State = DependencyTargetState.FailDependency;
+                            break;
+                        }
+
+                        yield return dTarget;
+                    }
+                }
+
+                //if (target.State == DependencyTargetState.FailDependency)
+                //{
+                //    continue;
+                //}
+
+                yield return target;
+            }
+        }
+
+        private void Prepare(T[] targets)
+        {
+            for (var i = 0; i < targets.Length; i++)
+            {
+                _Targets[i] = new DependencyTarget(this, targets[i]);
+                _Index.Add(targets[i].Id, _Targets[i]);
+            }
+        }
+    }
+}

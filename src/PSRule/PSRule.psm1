@@ -74,16 +74,29 @@ function Invoke-PSRule {
         # Get an options object
         $Option = New-PSRuleOption @optionParams;
 
-        Write-Verbose -Message "[PSRule] -- Scanning for source files: $Path";
+        Write-Verbose -Message "[PSRule][D] -- Scanning for source files: $Path";
 
         # Discover scripts in the specified paths
         [String[]]$sourceFiles = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
 
-        $filter = New-Object -TypeName PSRule.Rules.RuleFilter -ArgumentList @($Name, $Tag);
+        $isDeviceGuard = IsDeviceGuardEnabled;
+
+        # If DeviceGuard is enabled, force a contrained execution environment
+        if ($isDeviceGuard) {
+            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
+        }
+
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke();
+        $builder.FilterBy($Name, $Tag);
+        $builder.Source($sourceFiles);
+        $builder.Option($Option);
+        $builder.Limit($Status);
+        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $pipeline = $builder.Build();
     }
 
     process {
-        InvokeRulePipeline -Path $sourceFiles -Option $Option -Filter $filter -InputObject $InputObject -Outcome $Status -Verbose:$VerbosePreference;
+        $pipeline.Process($InputObject);
     }
 
     end {
@@ -432,6 +445,10 @@ function Rule {
         }
     }
 }
+
+#
+# Helper functions
+#
 
 function InvokeRule {
     [CmdletBinding()]
@@ -1130,42 +1147,6 @@ function GetRule {
         Write-Verbose -Message "[PSRule] -- Getting rules";
 
         [PSRule.Pipeline.PipelineBuilder]::Get().Build($Option, $Path, $Filter).Process();
-    }
-}
-
-function InvokeRulePipeline {
-
-    [CmdletBinding()]
-    [OutputType([PSRule.Rules.RuleResult])]
-    param (
-        [Parameter(Mandatory = $True)]
-        [String[]]$Path,
-
-        [Parameter(Mandatory = $True)]
-        [PSRule.Configuration.PSRuleOption]$Option,
-
-        [Parameter(Mandatory = $True)]
-        [AllowNull()]
-        [PSRule.Rules.RuleFilter]$Filter,
-
-        [Parameter(Mandatory = $True)]
-        [PSRule.Rules.RuleResultOutcome]$Outcome,
-
-        [Parameter(Mandatory = $True)]
-        [PSObject]$InputObject
-    )
-
-    process {
-
-        $isDeviceGuard = IsDeviceGuardEnabled;
-
-        # If DeviceGuard is enabled, force a contrained execution environment
-        if ($isDeviceGuard) {
-            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
-        }
-
-        Write-Verbose -Message "[PSRule] -- Invoking rules";
-        [PSRule.Pipeline.PipelineBuilder]::Invoke().Build($Option, $Path, $Filter, $Outcome).Process($InputObject);
     }
 }
 
