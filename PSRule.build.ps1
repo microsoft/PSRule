@@ -129,15 +129,15 @@ task Clean {
     Remove-Item -Path out,reports -Recurse -Force -ErrorAction SilentlyContinue;
 }
 
-task PublishModule Build, {
+task VersionModule {
 
     # Update module version
-    if ($Null -ne $ModuleVersion) {
+    if (![String]::IsNullOrEmpty($ModuleVersion)) {
         Update-ModuleManifest -Path out/modules/PSRule/PSRule.psd1 -ModuleVersion $ModuleVersion;
     }
 
     # Update pre-release version
-    if ($Null -ne $Revision) {
+    if (![String]::IsNullOrEmpty($Revision)) {
         Update-ModuleManifest -Path out/modules/PSRule/PSRule.psd1 -Prerelease "B$Revision";
     }
 }
@@ -223,10 +223,8 @@ task Analyze Build, PSScriptAnalyzer, {
 task . Build, Test
 
 # Synopsis: Build the project
-task Build Clean, BuildModule, BuildHelp
+task Build Clean, BuildModule, BuildHelp, VersionModule
 
 task Test Build, TestModule
-
-task Publish PublishModule
 
 task Release ReleaseModule
