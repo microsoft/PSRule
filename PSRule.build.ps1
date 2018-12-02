@@ -13,7 +13,9 @@ param (
     [String]$NuGetApiKey,
 
     [Parameter(Mandatory = $False)]
-    [Switch]$CodeCoverage = $False
+    [Switch]$CodeCoverage = $False,
+
+    [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules)
 )
 
 # Copy the PowerShell modules files to the destination path
@@ -133,20 +135,20 @@ task VersionModule {
 
     # Update module version
     if (![String]::IsNullOrEmpty($ModuleVersion)) {
-        Update-ModuleManifest -Path out/modules/PSRule/PSRule.psd1 -ModuleVersion $ModuleVersion;
+        Update-ModuleManifest -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule/PSRule.psd1) -ModuleVersion $ModuleVersion;
     }
 
     # Update pre-release version
     if (![String]::IsNullOrEmpty($Revision)) {
-        Update-ModuleManifest -Path out/modules/PSRule/PSRule.psd1 -Prerelease "B$Revision";
+        Update-ModuleManifest -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule/PSRule.psd1) -Prerelease "$Revision";
     }
 }
 
-task ReleaseModule {
+task ReleaseModule VersionModule, {
 
     if ($Null -ne 'NuGetApiKey') {
 
-        Publish-Module -Path out/modules/PSRule -NuGetApiKey $NuGetApiKey -Verbose
+        Publish-Module -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule) -NuGetApiKey $NuGetApiKey -Verbose -WhatIf
     }
 }
 
