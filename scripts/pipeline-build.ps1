@@ -8,6 +8,9 @@ param (
     [String]$File,
 
     [Parameter(Mandatory = $False)]
+    [String]$Task,
+
+    [Parameter(Mandatory = $False)]
     [String]$ModuleVersion,
 
     [Parameter(Mandatory = $False)]
