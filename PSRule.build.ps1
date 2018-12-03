@@ -4,16 +4,15 @@ param (
     [String]$ModuleVersion,
 
     [Parameter(Mandatory = $False)]
-    [String]$Revision,
-
-    [Parameter(Mandatory = $False)]
     [String]$Configuration = 'Debug',
 
     [Parameter(Mandatory = $False)]
     [String]$NuGetApiKey,
 
     [Parameter(Mandatory = $False)]
-    [Switch]$CodeCoverage = $False
+    [Switch]$CodeCoverage = $False,
+
+    [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules)
 )
 
 # Copy the PowerShell modules files to the destination path
@@ -131,22 +130,37 @@ task Clean {
 
 task VersionModule {
 
-    # Update module version
     if (![String]::IsNullOrEmpty($ModuleVersion)) {
-        Update-ModuleManifest -Path out/modules/PSRule/PSRule.psd1 -ModuleVersion $ModuleVersion;
-    }
 
-    # Update pre-release version
-    if (![String]::IsNullOrEmpty($Revision)) {
-        Update-ModuleManifest -Path out/modules/PSRule/PSRule.psd1 -Prerelease "B$Revision";
+        $version = $ModuleVersion;
+        $revision = [String]::Empty;
+
+        if ($version -like '*-*') {
+            [String[]]$versionParts = $version.Split('-', [System.StringSplitOptions]::RemoveEmptyEntries);
+            $version = $versionParts[0];
+
+            if ($versionParts.Length -eq 2) {
+                $revision = $versionParts[1];
+            }
+        }
+
+        # Update module version
+        if (![String]::IsNullOrEmpty($version)) {
+            Update-ModuleManifest -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule/PSRule.psd1) -ModuleVersion $version;
+        }
+
+        # Update pre-release version
+        if (![String]::IsNullOrEmpty($revision)) {
+            Update-ModuleManifest -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule/PSRule.psd1) -Prerelease $revision;
+        }
     }
 }
 
-task ReleaseModule {
+task ReleaseModule VersionModule, {
 
     if ($Null -ne 'NuGetApiKey') {
 
-        Publish-Module -Path out/modules/PSRule -NuGetApiKey $NuGetApiKey -Verbose
+        Publish-Module -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule) -NuGetApiKey $NuGetApiKey -Verbose -WhatIf
     }
 }
 

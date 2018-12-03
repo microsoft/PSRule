@@ -1,8 +1,12 @@
 # Azure DevOps
 # Build pipeline for PSRule
 
-# Use build number format, i.e. 180801
-name: $(date:yyMM)$(rev:rr)
+variables:
+  buildConfiguration: 'Release'
+  version: '0.1.0'
+
+# Use build number format, i.e. 0.1.0-B181101
+name: $(version)-B$(date:yyMM)$(rev:rr)
 
 trigger:
 - master
@@ -10,18 +14,10 @@ trigger:
 pool:
   vmImage: VS2017-Win2016
 
-variables:
-  buildConfiguration: 'Release'
-  version: '0.1.0'
-
 steps:
 
-# Install pipeline dependencies
-- powershell: ./scripts/vstsbuild.ps1
-  displayName: 'Install Invoke-Build'
-
-# Invoke build
-- powershell: Invoke-Build -Configuration $(buildConfiguration) -ModuleVersion $(version) -Revision $(Build.BuildNumber)
+# Install pipeline dependencies and build module
+- powershell: ./scripts/vstsbuild.ps1 -File ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber)
   displayName: 'Build module'
 
 # Publish test results
