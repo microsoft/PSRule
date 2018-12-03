@@ -4,7 +4,7 @@ This is an example of how PSRule can be used to validate Azure resources match i
 
 In this scenario we will use a JSON file:
 
-- [`resources.json`](resources.json) - An export for the Azure resource properties saved for offline use
+- [`resources.json`](resources.json) - An export for the Azure resource properties saved for offline use.
 
 To generate a similar `resources.json` file of your own, the use following command.
 
@@ -24,7 +24,7 @@ Get-AzResource -ExpandProperties | ConvertTo-Json -Depth 10 | Set-Content -path 
 
 To validate our Azure resources we need to define some rules. Rules are defined by using the `Rule` keyword in a file ending with the `.Rule.ps1` extension.
 
-So start we are going to define a `storageAccounts.UseHttps` rule, which will validate that Azure Storage resources have a Secure Transfer Required enabled.
+So start we are going to define a `storageAccounts.UseHttps` rule, which will validate that Azure Storage resources have a [Secure Transfer Required][azure-docs-secure-transfer] enabled.
 
 In the example below:
 
@@ -209,3 +209,5 @@ Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAcc
 - [appService.Rule.ps1](appService.Rule.ps1) - Example rules for validating Azure App Service.
 - [resources.json](resources.json) - Offline export of Azure resources.
 - [common.Rule.ps1](common.Rule.ps1) - ResourceType helper function.
+
+[azure-docs-secure-transfer]: https://docs.microsoft.com/en-us/azure/storage/common/storage-require-secure-transfer
