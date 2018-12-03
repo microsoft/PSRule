@@ -28,4 +28,6 @@ Save for offline use from PowerShell Gallery
 Save-Module -Name 'PSRule' -Path '.\modules';
 ```
 
+> For pre-release versions the `-AllowPrerelease` switch must be added when calling `Install-Module` or `Save-Module`.
+
 [psg-psrule]: https://www.powershellgallery.com/packages/PSRule
