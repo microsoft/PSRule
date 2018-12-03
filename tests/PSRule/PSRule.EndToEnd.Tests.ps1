@@ -14,12 +14,11 @@ Set-StrictMode -Version latest;
 # Setup tests paths
 $rootPath = $PWD;
 Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-$here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- end to end tests' -Tag 'EndToEnd' {
 
     $jsonData = Get-Content -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources/resources.json) | ConvertFrom-Json;
-    $result = $jsonData | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath Rules);
+    $result = $jsonData | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources);
 
     Context 'App Service' {
 

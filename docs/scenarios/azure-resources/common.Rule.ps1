@@ -2,7 +2,7 @@
 # Helper functions for rules
 #
 
-# Add a custom function to filter by resource type
+# A custom function to filter by resource type
 function global:ResourceType {
     param (
         [String]$ResourceType

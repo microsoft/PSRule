@@ -20,16 +20,33 @@ $here = (Resolve-Path $PSScriptRoot).Path;
 Describe 'PSRule -- Within keyword' -Tag 'Within' {
 
     Context 'Within' {
-        $testObject = [PSCustomObject]@{
-            Title = 'Mr'
+
+        It 'Matches list' {
+            $testObject = @(
+                [PSCustomObject]@{ Title = 'mr' },
+                [PSCustomObject]@{ Title = 'unknown' }
+            )
+
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithinTest' -Status All;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 2;
+            $result.RuleName | Should -BeIn 'WithinTest'
+            $result[0].Success | Should -Be $True;
+            $result[1].Success | Should -Be $False;
         }
 
-        It 'Return success' {
+        It 'Matches list with case sensitivity' {
+            $testObject = @(
+                [PSCustomObject]@{ Title = 'mr' },
+                [PSCustomObject]@{ Title = 'Mr' }
+            )
 
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithinTest';
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithinTestCaseSensitive';
             $result | Should -Not -BeNullOrEmpty;
-            $result.Success | Should -Be $True;
-            $result.RuleName | Should -Be 'WithinTest'
+            $result.Count | Should -Be 2;
+            $result.RuleName | Should -BeIn 'WithinTestCaseSensitive'
+            $result[0].Success | Should -Be $False;
+            $result[1].Success | Should -Be $True;
         }
     }
 }

@@ -10,11 +10,9 @@ This project is to be considered a **proof-of-concept** and **not a supported pr
 
 If you have any problems please check our GitHub [issues](https://github.com/BernieWhite/PSRule/issues) page. If you do not see your problem captured, please file a new issue and follow the provided template.
 
-## Modules
-
 ## Getting the modules
 
-You can download and install these PowerShell modules from the PowerShell Gallery.
+You can download and install the PSRule module from the PowerShell Gallery.
 
 | Module     | Description | Downloads / instructions |
 | ------     | ----------- | ------------------------ |
@@ -22,9 +20,48 @@ You can download and install these PowerShell modules from the PowerShell Galler
 
 ## Getting started
 
-### Prerequisites
+### Define a rule
 
-- Windows PowerShell 5.1 or PowerShell Core 6.0
+To define a rule use the `Rule` keyword.
+
+```powershell
+Rule 'NameOfRule' {
+    # Rule conditions
+}
+```
+
+Within the body of the rule provide one or more conditions. A condition is valid PowerShell that results in `$True` or `$False`.
+
+For example:
+
+```powershell
+# Saved to isFruit.Rule.ps1
+Rule 'isFruit' {
+    $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
+}
+```
+
+### Execute a rule
+
+To execute with rule use `Invoke-PSRule`.
+
+For example:
+
+```powershell
+# Define objects
+$items = @();
+$items += [PSCustomObject]@{ Name = 'Fridge' };
+$items += [PSCustomObject]@{ Name = 'Apple' };
+
+# Validate each item using rules saved in current working path
+$items | Invoke-PSRule;
+```
+
+### Scenarios
+
+For practical examples of PSRule see:
+
+- [Validate configuration of Azure resources](docs/scenarios/azure-resources/azure-resources.md)
 
 ## Language reference
 
