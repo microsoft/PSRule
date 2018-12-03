@@ -30,14 +30,14 @@ Describe 'Invoke-PSRule' {
             Value = 1
         }
 
-        It 'Return passed' {
+        It 'Returns passed' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
             $result.TargetName | Should -Be 'TestObject1';
         }
 
-        It 'Return failure' {
+        It 'Returns failure' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile2';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $False;
@@ -48,6 +48,28 @@ Describe 'Invoke-PSRule' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile3' -Status All;
             $result | Should -Not -BeNullOrEmpty;
             $result.Status | Should -Be 'Inconclusive';
+        }
+
+        It 'Processes rule tags' {
+            # Ensure that rules can be selected by tag and that tags are mapped back to the rule results
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ feature = 'tag' };
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 5;
+            $result.Tag.feature | Should -BeIn 'tag';
+
+            # Ensure that tag selection is and'ed together, requiring all tags to be selected
+            # Tag values, will be matched without case sensitivity, but values are case sensitive
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ feature = 'tag'; severity = 'critical'; };
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 2;
+            $result.Tag.feature | Should -BeIn 'tag';
+
+            # Using a * wildcard in tag filter, matches rules with the tag regardless of value 
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ feature = 'tag'; severity = '*'; };
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 4;
+            $result.Tag.feature | Should -BeIn 'tag';
+            $result.Tag.severity | Should -BeIn 'critical', 'information';
         }
 
         It 'Processes rule preconditions' {

@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 
 namespace PSRule.Rules
 {
-    public sealed class TagSet
+    public sealed class TagSet : DynamicObject
     {
+        private readonly IEqualityComparer<string> _Comparer;
         private readonly Dictionary<string, string> _Tag;
 
         public TagSet()
         {
+            _Comparer = StringComparer.Ordinal;
             _Tag = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
         private TagSet(Dictionary<string, string> tag)
         {
+            _Comparer = StringComparer.Ordinal;
             _Tag = tag;
         }
 
@@ -35,8 +39,12 @@ namespace PSRule.Rules
             {
                 return false;
             }
+            else if (v == "*")
+            {
+                return true;
+            }
 
-            return StringComparer.OrdinalIgnoreCase.Equals(v, _Tag[k]);
+            return _Comparer.Equals(v, _Tag[k]);
         }
 
         public static TagSet FromHashtable(Hashtable hashtable)
@@ -54,6 +62,28 @@ namespace PSRule.Rules
             }
 
             return new TagSet(dictionary);
+        }
+
+        public Hashtable ToHashtable()
+        {
+            return new Hashtable(_Tag, StringComparer.OrdinalIgnoreCase);
+        }
+
+        public bool ContainsKey(string key)
+        {
+            return _Tag.ContainsKey(key);
+        }
+
+        public bool TryGetValue(string key, out string value)
+        {
+            return _Tag.TryGetValue(key, out value);
+        }
+
+        public override bool TryGetMember(GetMemberBinder binder, out object result)
+        {
+            var found = _Tag.TryGetValue(binder.Name, out string value);
+            result = value;
+            return found;
         }
     }
 }

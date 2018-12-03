@@ -113,7 +113,7 @@ namespace PSRule.Host
 
                 if (ps.HadErrors)
                 {
-                    throw new System.Exception(ps.Streams.Error[0].Exception.Message, ps.Streams.Error[0].Exception);
+                    throw new Exception(ps.Streams.Error[0].Exception.Message, ps.Streams.Error[0].Exception);
                 }
 
                 foreach (var ir in invokeResults)
@@ -140,7 +140,8 @@ namespace PSRule.Host
                 var result = new RuleResult(block.Id)
                 {
                     TargetObject = inputObject,
-                    TargetName = BindName(inputObject)
+                    TargetName = BindName(inputObject),
+                    Tag = block.Tag?.ToHashtable()
                 };
 
                 LanguageContext._Rule = result;

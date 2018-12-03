@@ -19,6 +19,31 @@ Rule 'FromFile3' -Tag @{ category = "group1" } {
     # Inconclusive
 }
 
+# Description: Test for tags
+Rule 'WithTag' -Tag @{ severity = 'critical'; feature = 'tag' } {
+    $True;
+}
+
+# Description: Test for tags
+Rule 'WithTag2' -Tag @{ feature = 'tag' } {
+    $True;
+}
+
+# Description: Test for tags
+Rule 'WithTag3' -Tag @{ severity = 'information'; feature = 'tag' } {
+    $True;
+}
+
+# Description: Test for tags
+Rule 'WithTag4' -Tag @{ Severity = 'critical'; feature = 'tag' } {
+    $True;
+}
+
+# Description: Test for tags
+Rule 'WithTag5' -Tag @{ severity = 'Critical'; feature = 'tag' } {
+    $True;
+}
+
 Rule 'WithPreconditionTrue' -If { $True } -Tag @{ category = 'precondition' } {
     $True;
 }
