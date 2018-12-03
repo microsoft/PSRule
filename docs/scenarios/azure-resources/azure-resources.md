@@ -89,6 +89,7 @@ In the example below:
 
 - Directly after the `Hint` keyword is a message to help understand why the rule failed or passed.
 - The `-TargetName` parameter is used to map the name of the Azure resource so that the result shows which Azure resource passed or failed.
+  - In this case, it's not strictly required because there is a default `Name` property for each resource which PSRule will bind to by default.
 
 ```powershell
 # Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB

@@ -2,6 +2,7 @@
 using PSRule.Configuration;
 using PSRule.Pipeline;
 using PSRule.Rules;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -138,7 +139,8 @@ namespace PSRule.Host
 
                 var result = new RuleResult(block.Id)
                 {
-                    TargetObject = inputObject
+                    TargetObject = inputObject,
+                    TargetName = BindName(inputObject)
                 };
 
                 LanguageContext._Rule = result;
@@ -214,6 +216,29 @@ namespace PSRule.Host
             }
 
             return results;
+        }
+
+        /// <summary>
+        /// Get the name of the object by looking for a TargetName or Name property.
+        /// </summary>
+        /// <param name="targetObject">A PSObject to bind.</param>
+        /// <returns>The target name of the object.</returns>
+        private static string BindName(PSObject targetObject)
+        {
+            string result = null;
+
+            var property = targetObject.Properties.ToDictionary(i => i.Name, StringComparer.OrdinalIgnoreCase);
+
+            if (property.ContainsKey("TargetName"))
+            {
+                result = property["TargetName"].Value?.ToString();
+            }
+            else if (property.ContainsKey("Name"))
+            {
+                result = property["Name"].Value?.ToString();
+            }
+
+            return result;
         }
     }
 }

@@ -1,9 +1,6 @@
 
 # Description: Test rule 1
 Rule 'FromFile1' -Tag @{ category = "group1"; test = "Test1" } {
-
-    Hint -TargetName 'TestTarget1'
-
     # Pass
     $True;
     $True;
@@ -11,9 +8,6 @@ Rule 'FromFile1' -Tag @{ category = "group1"; test = "Test1" } {
 
 # Description: Test rule 2
 Rule 'FromFile2' -Tag @{ category = "group1"; test = "Test2" } {
-
-    Hint -TargetName 'TestTarget2'
-
     # Fail
     $False;
     $True;
@@ -22,9 +16,6 @@ Rule 'FromFile2' -Tag @{ category = "group1"; test = "Test2" } {
 
 # Description: Test rule 3
 Rule 'FromFile3' -Tag @{ category = "group1" } {
-
-    Hint -TargetName 'TestTarget3'
-
     # Inconclusive
 }
 
@@ -75,35 +66,35 @@ Rule 'ConstrainedTest2' {
     $True;
 }
 
-Rule 'ExistsTest' {
+# Description: Test for Hint keyword
+Rule 'HintTest' {
+    Hint 'This is a message' -TargetName 'HintTarget'
+}
 
+# Description: Test for Exists keyword
+Rule 'ExistsTest' {
     Exists 'Name'
 
     # Exists 'Value.Value1'
 }
 
 Rule 'WithinTest' {
-
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
 
 Rule 'WithinTestCaseSensitive' {
-
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms' -CaseSensitive
 }
 
 Rule 'MatchTest' {
-
     Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$'
 }
 
 Rule 'TypeOfTest' {
-
     TypeOf 'System.Collections.Hashtable'
 }
 
 Rule 'AllOfTest' {
-
     AllOf {
         $True
         $True
@@ -111,7 +102,6 @@ Rule 'AllOfTest' {
 }
 
 Rule 'AllOfTestNegative' {
-
     AllOf {
         $True
         $False
@@ -119,7 +109,6 @@ Rule 'AllOfTestNegative' {
 }
 
 Rule 'AnyOfTest' {
-
     AnyOf {
         $True
         $False
@@ -128,7 +117,6 @@ Rule 'AnyOfTest' {
 }
 
 Rule 'AnyOfTestNegative' {
-
     AnyOf {
         $False
         $False

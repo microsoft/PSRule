@@ -159,8 +159,8 @@ task VersionModule {
 task ReleaseModule VersionModule, {
 
     if ($Null -ne 'NuGetApiKey') {
-
-        Publish-Module -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule) -NuGetApiKey $NuGetApiKey -Verbose -WhatIf
+        # Publish to PowerShell Gallery
+        Publish-Module -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule) -NuGetApiKey $NuGetApiKey;
     }
 }
 

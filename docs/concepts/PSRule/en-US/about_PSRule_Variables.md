@@ -25,6 +25,7 @@ The following section properties are available for public read access:
 
 - `RuleName` - The name of the rule.
 - `TargetObject` - The object currently being processed on the pipeline.
+- `TargetName` - The name of the object currently being processed on the pipeline. This property will automatically bind to `TargetName` or `Name` properties of the object if they exist.
 
 Syntax:
 
