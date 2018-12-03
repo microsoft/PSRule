@@ -2,10 +2,10 @@
 # Validation rules for Azure Storage Accounts
 #
 
-# Description: Configure storage accounts to only access encrypted traffic i.e. HTTPS/SMB
+# Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAccounts' } {
 
-    Hint 'Secure access should only allow secure traffic' -TargetName $TargetObject.ResourceName
+    Hint 'Storage accounts should only allow secure traffic' -TargetName $TargetObject.ResourceName
 
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }
