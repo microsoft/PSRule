@@ -1,5 +1,5 @@
 #
-# Unit tests for the Exists keyword
+# Unit tests for the Hint keyword
 #
 
 [CmdletBinding()]
@@ -17,9 +17,9 @@ $rootPath = $PWD;
 Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 $here = (Resolve-Path $PSScriptRoot).Path;
 
-Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
+Describe 'PSRule -- Hint keyword' -Tag 'Hint' {
 
-    Context 'Exists' {
+    Context 'Hint' {
         $testObject = [PSCustomObject]@{
             Name = "TestObject1"
             Value = @{
@@ -29,10 +29,11 @@ Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
 
         It 'Return success' {
 
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'ExistsTest';
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'HintTest' -Status All;
             $result | Should -Not -BeNullOrEmpty;
-            $result.Success | Should -Be $True;
-            $result.RuleName | Should -Be 'ExistsTest';
+            $result.RuleName | Should -Be 'HintTest';
+            $result.TargetName | Should -Be 'HintTarget';
+            $result.Message | SHould -Be 'This is a message';
         }
     }
 }

@@ -34,14 +34,14 @@ Describe 'Invoke-PSRule' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $True;
-            $result.TargetName | Should -Be 'TestTarget1';
+            $result.TargetName | Should -Be 'TestObject1';
         }
 
         It 'Return failure' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile2';
             $result | Should -Not -BeNullOrEmpty;
             $result.Success | Should -Be $False;
-            $result.TargetName | Should -Be 'TestTarget2';
+            $result.TargetName | Should -Be 'TestObject1';
         }
 
         It 'Returns inconclusive' {
@@ -67,6 +67,31 @@ Describe 'Invoke-PSRule' {
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency3' }).Status | Should -Be 'Passed';
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency2' }).Status | Should -Be 'None';
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency1' }).Status | Should -Be 'None';
+        }
+
+        It 'Binds to TargetName' {
+            $testObject = [PSCustomObject]@{
+                TargetName = "ObjectTargetName"
+                Name = "ObjectName"
+                Value = 1
+            }
+
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Success | Should -Be $True;
+            $result.TargetName | Should -Be 'ObjectTargetName';
+        }
+
+        It 'Binds to Name' {
+            $testObject = [PSCustomObject]@{
+                Name = "ObjectName"
+                Value = 1
+            }
+
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Success | Should -Be $True;
+            $result.TargetName | Should -Be 'ObjectName';
         }
     }
 
