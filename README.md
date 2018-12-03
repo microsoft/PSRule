@@ -37,6 +37,19 @@ For example:
 ```powershell
 # Saved to isFruit.Rule.ps1
 Rule 'isFruit' {
+    # Condition to determine if the object is fruit
+    $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
+}
+```
+
+An optional result message can be added to by using the `Hint` keyword.
+
+```powershell
+Rule 'isFruit' {
+    # An additional message to display in output
+    Hint 'Fruit is only Apple, Orange and Pear'
+
+    # Condition to determine if the object is fruit
     $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
 }
 ```
@@ -54,7 +67,25 @@ $items += [PSCustomObject]@{ Name = 'Fridge' };
 $items += [PSCustomObject]@{ Name = 'Apple' };
 
 # Validate each item using rules saved in current working path
+# Results can be filtered with -Status Failed to return only non-fruit results
 $items | Invoke-PSRule;
+```
+
+The output of this example is:
+
+```text
+   TargetName: Fridge
+
+RuleName                            Status     Message
+--------                            ------     -------
+isFruit                             Failed     Fruit is only Apple, Orange and Pear
+
+
+   TargetName: Apple
+
+RuleName                            Status     Message
+--------                            ------     -------
+isFruit                             Passed     Fruit is only Apple, Orange and Pear
 ```
 
 ### Scenarios
