@@ -105,23 +105,14 @@ The `Within` assertion is used within a `Rule` definition to assert that the val
 Syntax:
 
 ```text
-Within <field> [-CaseSensitive] {
-    <item>
-    [<item>]
-    ...
-}
+Within [-Field] <field> [-CaseSensitive] [-List] <PSObject[]]>
 ```
 
 Examples:
 
 ```powershell
 Rule 'validateTitle' {
-    Within 'Title' {
-        'Mr'
-        'Miss'
-        'Mrs'
-        'Ms'
-    }
+    Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
 ```
 

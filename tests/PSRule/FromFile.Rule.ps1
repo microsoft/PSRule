@@ -84,10 +84,12 @@ Rule 'ExistsTest' {
 
 Rule 'WithinTest' {
 
-    Within 'Title' {
-        'Mr'
-        'Mrs'
-    }
+    Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
+}
+
+Rule 'WithinTestCaseSensitive' {
+
+    Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms' -CaseSensitive
 }
 
 Rule 'MatchTest' {

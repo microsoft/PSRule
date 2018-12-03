@@ -9,11 +9,26 @@ namespace PSRule.Commands
     [Cmdlet(VerbsLifecycle.Assert, RuleLanguageNouns.Within)]
     internal sealed class AssertWithinCommand : RuleKeyword
     {
+        private StringComparer _Comparer;
+
+        public AssertWithinCommand()
+        {
+            CaseSensitive = false;
+        }
+
         [Parameter(Mandatory = true, Position = 0)]
         public string Field { get; set; }
 
         [Parameter(Mandatory = true, Position = 1)]
-        public ScriptBlock Body { get; set; }
+        public PSObject[] List { get; set; }
+
+        [Parameter(Mandatory = false)]
+        public SwitchParameter CaseSensitive { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            _Comparer = CaseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
+        }
 
         protected override void ProcessRecord()
         {
@@ -21,20 +36,18 @@ namespace PSRule.Commands
 
             var result = false;
 
-            var invokeResult = Body.Invoke();
-
             if (GetField(inputObject, Field, out object fieldValue))
             {
-                foreach (var ir in invokeResult)
+                foreach (var item in List)
                 {
-                    if (fieldValue is string && ir.BaseObject is string)
+                    if (fieldValue is string && item.BaseObject is string)
                     {
-                        if (StringComparer.OrdinalIgnoreCase.Equals(fieldValue, ir.BaseObject))
+                        if (_Comparer.Equals(fieldValue, item.BaseObject))
                         {
                             result = true;
                         }
                     }
-                    else if (ir == fieldValue)
+                    else if (item == fieldValue)
                     {
                         result = true;
                     }

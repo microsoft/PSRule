@@ -1,5 +1,5 @@
 # An example rule
 
 Rule 'IsFruit' {
-    Within 'Name' 'Apple', 'Orange', 'Pear'
+    $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
 }
