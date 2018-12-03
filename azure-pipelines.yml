@@ -21,7 +21,7 @@ steps:
   displayName: 'Install Invoke-Build'
 
 # Invoke build
-- powershell: Invoke-Build -Configuration $(buildConfiguration) -ModuleVersion $(version) -Revision "B$(date:yyMM)$(rev:rr)"
+- powershell: Invoke-Build -Configuration $(buildConfiguration) -ModuleVersion $(version) -Revision B$(date:yyMM)$(rev:rr)
   displayName: 'Build module'
 
 # Publish test results
