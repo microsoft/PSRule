@@ -5,7 +5,7 @@
 [CmdletBinding()]
 param (
     [Parameter(Mandatory = $True)]
-    [String]$Path,
+    [String]$File,
 
     [Parameter(Mandatory = $False)]
     [String]$ModuleVersion,
@@ -31,4 +31,4 @@ if ($Null -eq (Get-Module -Name InvokeBuild -ListAvailable -ErrorAction Silently
     Install-Module InvokeBuild -MinimumVersion 5.4.0 -Scope CurrentUser -Force;
 }
 
-Invoke-Build -File $Path @PSBoundParameters
+Invoke-Build @PSBoundParameters
