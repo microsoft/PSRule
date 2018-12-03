@@ -1,6 +1,6 @@
 # PSRule
 
-A PowerShell module with commands to validate objects on the pipeline.
+A PowerShell module with commands to validate objects on the pipeline using PowerShell syntax.
 
 ![ci-badge]
 
@@ -14,9 +14,9 @@ If you have any problems please check our GitHub [issues](https://github.com/Ber
 
 You can download and install the PSRule module from the PowerShell Gallery.
 
-| Module     | Description | Downloads / instructions |
-| ------     | ----------- | ------------------------ |
-| PSRule     | A PowerShell rules engine | Unreleased |
+Module | Description | Downloads / instructions
+------ | ----------- | ------------------------
+PSRule | A PowerShell rules engine | [latest][psg-psrule] / [instructions][install]
 
 ## Getting started
 
