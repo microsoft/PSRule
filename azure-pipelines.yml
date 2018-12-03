@@ -16,12 +16,8 @@ pool:
 
 steps:
 
-# Install pipeline dependencies
-- powershell: ./scripts/vstsbuild.ps1
-  displayName: 'Install Invoke-Build'
-
-# Invoke build
-- powershell: Invoke-Build -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber)
+# Install pipeline dependencies and build module
+- powershell: ./scripts/vstsbuild.ps1 -Path ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber)
   displayName: 'Build module'
 
 # Publish test results
