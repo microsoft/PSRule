@@ -70,6 +70,8 @@ Accept wildcard characters: False
 
 Only get rules with the specified tags set. If this parameter is not specified all rules in search paths will be returned.
 
+When more then one tag is used, all tags must match. Tag names are not case sensitive, tag values are case sensitive. A tag value of `*` may be used to filter rules to any rule with the tag set, regardless of tag value.
+
 ```yaml
 Type: Hashtable
 Parameter Sets: (All)
