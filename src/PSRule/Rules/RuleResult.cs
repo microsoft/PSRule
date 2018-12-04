@@ -1,4 +1,5 @@
-﻿using System.Management.Automation;
+﻿using System.Collections;
+using System.Management.Automation;
 
 namespace PSRule.Rules
 {
@@ -10,16 +11,18 @@ namespace PSRule.Rules
             Status = RuleResultOutcome.None;
         }
 
-        public string RuleName { get; set; }
+        public string RuleName { get; private set; }
 
-        public bool Success { get; set; }
+        public bool Success { get; internal set; }
 
-        public RuleResultOutcome Status { get; set; }
+        public RuleResultOutcome Status { get; internal set; }
 
-        public string Message { get; set; }
+        public string Message { get; internal set; }
 
-        public string TargetName { get; set; }
+        public string TargetName { get; internal set; }
 
         public PSObject TargetObject { get; internal set; }
+
+        public Hashtable Tag { get; internal set; }
     }
 }
