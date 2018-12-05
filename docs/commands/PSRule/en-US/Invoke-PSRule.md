@@ -15,7 +15,7 @@ Evaluate pipeline objects against matching rules.
 
 ```text
 Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
- [-Status <RuleResultOutcome>] [-Option <PSRuleOption>] [<CommonParameters>]
+ [-Status <RuleOutcome>] [-Option <PSRuleOption>] [-As <ResultFormat>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -87,7 +87,7 @@ Accept wildcard characters: False
 Filter output to only show rules with a specific status.
 
 ```yaml
-Type: RuleResultOutcome
+Type: RuleOutcome
 Parameter Sets: (All)
 Aliases:
 Accepted values: Success, Failed
@@ -133,6 +133,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -As
+
+The format to return results. Results are returned using detailed by default.
+
+```yaml
+Type: ResultFormat
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
@@ -143,7 +159,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### PSRule.Rules.RuleResult
+### PSRule.Rules.DetailResult
+
+### PSRule.Rules.SummaryResult
 
 ## NOTES
 
