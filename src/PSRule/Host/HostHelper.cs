@@ -89,7 +89,10 @@ namespace PSRule.Host
             var runspace = RunspaceFactory.CreateRunspace(state);
             runspace.ThreadOptions = PSThreadOptions.UseCurrentThread;
 
-            Runspace.DefaultRunspace = runspace;
+            if (Runspace.DefaultRunspace == null)
+            {
+                Runspace.DefaultRunspace = runspace;
+            }
 
             runspace.Open();
             runspace.SessionStateProxy.PSVariable.Set(new RuleVariable("Rule"));
