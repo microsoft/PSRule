@@ -1,22 +1,27 @@
 ﻿using PSRule.Configuration;
 using PSRule.Rules;
-using System;
 using System.Collections;
 using System.Management.Automation;
 
 namespace PSRule.Pipeline
 {
+    /// <summary>
+    /// A helper to construct an invoke pipeline.
+    /// </summary>
     public sealed class InvokeRulePipelineBuilder
     {
         private string[] _Path;
         private PSRuleOption _Option;
         private RuleFilter _Filter;
-        private RuleResultOutcome _Outcome;
+        private RuleOutcome _Outcome;
         private PipelineLogger _Logger;
+        private ResultFormat _ResultFormat;
 
         internal InvokeRulePipelineBuilder()
         {
             _Logger = new PipelineLogger();
+            _Option = new PSRuleOption();
+            _ResultFormat = ResultFormat.Detail;
         }
 
         public void FilterBy(string[] name, Hashtable tag)
@@ -31,28 +36,21 @@ namespace PSRule.Pipeline
 
         public void Option(PSRuleOption option)
         {
-            _Option = option;
+            _Option = option.Clone();
         }
 
-        public void Limit(RuleResultOutcome outcome)
+        public void Limit(RuleOutcome outcome)
         {
             _Outcome = outcome;
         }
 
-        //public void WriteVerbose(ActionPreference preference, Func<string> callback)
-        //{
-
-        //}
-
-        //public void WriteError(ActionPreference preference, Func<ErrorRecord> callback)
-        //{
-
-        //}
-
-        //public void WriteWarning(ActionPreference preference, Func<string> callback)
-        //{
-
-        //}
+        public void As(ResultFormat resultFormat)
+        {
+            if (resultFormat != ResultFormat.Default)
+            {
+                _ResultFormat = resultFormat;
+            }
+        }
 
         public void UseCommandRuntime(ICommandRuntime commandRuntime)
         {
@@ -70,7 +68,7 @@ namespace PSRule.Pipeline
 
         public InvokeRulePipeline Build()
         {
-            return new InvokeRulePipeline(_Logger, _Option, _Path, _Filter, _Outcome);
+            return new InvokeRulePipeline(_Logger, _Option, _Path, _Filter, _Outcome, _ResultFormat);
         }
     }
 }

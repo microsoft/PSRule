@@ -6,6 +6,6 @@ namespace PSRule.Host
     internal sealed class LanguageContext
     {
         [ThreadStatic]
-        internal static RuleResult _Rule;
+        internal static DetailResult _Rule;
     }
 }

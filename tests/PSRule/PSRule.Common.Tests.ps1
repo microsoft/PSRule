@@ -117,6 +117,27 @@ Describe 'Invoke-PSRule' {
         }
     }
 
+    Context 'Using -As' {
+        $testObject = [PSCustomObject]@{
+            Name = "TestObject1"
+            Value = 1
+        }
+
+        It 'Returns detail' {
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'group1' } -As Detail;
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType PSRule.Rules.DetailResult;
+        }
+
+        It 'Returns summary' {
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'group1' } -As Summary;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 3;
+            $result | Should -BeOfType PSRule.Rules.SummaryResult;
+            $result.RuleId | Should -BeIn 'FromFile1', 'FromFile2', 'FromFile3'
+        }
+    }
+
     Context 'With constrained language' {
 
         $testObject = [PSCustomObject]@{
