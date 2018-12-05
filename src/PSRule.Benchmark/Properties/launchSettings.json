@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PSRule.Benchmark": {
+      "commandName": "Project",
+      "commandLineArgs": "benchmark"
+    }
+  }
+}
