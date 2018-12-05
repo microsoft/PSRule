@@ -150,7 +150,7 @@ namespace PSRule.Host
                 var result = new DetailResult(block.Id)
                 {
                     TargetObject = inputObject,
-                    TargetName = BindName(inputObject),
+                    TargetName = BindName(inputObject), // TODO: Move name binding outside of InvokeRuleBlock so that it is not called for every rule
                     Tag = block.Tag?.ToHashtable()
                 };
 
