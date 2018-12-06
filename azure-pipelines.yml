@@ -25,10 +25,10 @@ steps:
   displayName: 'Publish test results'
   inputs:
     testRunTitle: 'Pester unit tests'
-    testResultsFormat: NUnit
+    testRunner: NUnit
     testResultsFiles: 'reports/*.xml'
     mergeTestResults: true
-    buildConfiguration: $(buildConfiguration)
+    configuration: $(buildConfiguration)
   condition: succeededOrFailed()
 
 # Generate artifacts
