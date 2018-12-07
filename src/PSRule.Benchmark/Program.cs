@@ -1,9 +1,12 @@
-﻿using BenchmarkDotNet.Configs;
-#if !DEBUG
+﻿using BenchmarkDotNet.Analysers;
+using BenchmarkDotNet.Columns;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Exporters;
+using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Running;
 using Microsoft.Extensions.CommandLineUtils;
 using PSRule.Pipeline;
-#endif
+using System;
 
 namespace PSRule.Benchmark
 {
@@ -14,27 +17,38 @@ namespace PSRule.Benchmark
             public BenchmarkConfig(string artifactsPath)
             {
                 ArtifactsPath = artifactsPath;
-                
             }
         }
 
         static void Main(string[] args)
         {
 
-#if DEBUG
+            var app = new CommandLineApplication();
+            app.Name = "PSRule Benchmark";
+            app.Description = "";
+
+#if !BENCHMARK
             // Do profiling
-            RunProfile();
+            DebugProfile();
 #endif
 
-#if !DEBUG
-            var config = DefaultConfig.Instance;
+#if BENCHMARK
+            RunProfile(app);
+            app.Execute(args);
+#endif
+        }
 
-            if (args != null && args.Length == 1)
-            {
-                config = new BenchmarkConfig(args[0]);
-            }
-
-            var app = new CommandLineApplication();
+        private static void RunProfile(CommandLineApplication app)
+        {
+            var config = ManualConfig.CreateEmpty()
+                .With(ConsoleLogger.Default)
+                .With(DefaultColumnProviders.Instance)
+                .With(EnvironmentAnalyser.Default)
+                .With(OutliersAnalyser.Default)
+                .With(MinIterationTimeAnalyser.Default)
+                .With(MultimodalDistributionAnalyzer.Default)
+                .With(RuntimeErrorAnalyser.Default)
+                .With(ZeroMeasurementAnalyser.Default);
 
             app.Command("benchmark", cmd =>
             {
@@ -42,9 +56,14 @@ namespace PSRule.Benchmark
 
                 cmd.OnExecute(() =>
                 {
+                    if (output.HasValue())
+                    {
+                        config.WithArtifactsPath(output.Value());
+                    }
+
                     // Do benchmarks
                     var summary = BenchmarkRunner.Run<PSRule>(config);
-                    
+
                     return 0;
                 });
 
@@ -52,11 +71,9 @@ namespace PSRule.Benchmark
             });
 
             app.HelpOption("-? | -h | --help");
-            app.Execute(args);
-#endif
         }
 
-        public static void RunProfile()
+        private static void DebugProfile()
         {
             var profile = new PSRule();
             profile.Prepare();

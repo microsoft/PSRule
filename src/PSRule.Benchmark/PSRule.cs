@@ -15,8 +15,7 @@ namespace PSRule.Benchmark
     /// Define a set of benchmarks for performance testing PSRule internals.
     /// </summary>
     [MemoryDiagnoser]
-    //[ClrJob(baseline: true)]
-    //[RPlotExporter, RankColumn]
+    [MarkdownExporterAttribute.GitHub]
     public class PSRule
     {
         private PSObject[] _TargetObject;
