@@ -137,6 +137,12 @@ Accept wildcard characters: False
 
 The format to return results. Results are returned using detailed by default.
 
+The following result formats are available:
+
+- `Detail` - Returns pass/ fail results for each individual object
+- `Summary` - Returns summarized results for the rule and an overall outcome
+- `Default` - Same as `Detail`.
+
 ```yaml
 Type: ResultFormat
 Parameter Sets: (All)
