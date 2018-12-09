@@ -39,8 +39,8 @@ Import-LocalizedData -BindingVariable LocalizedData -FileName 'PSRule.Resources.
 function Invoke-PSRule {
 
     [CmdletBinding()]
-    [OutputType([PSRule.Rules.DetailResult])]
-    [OutputType([PSRule.Rules.SummaryResult])]
+    [OutputType([PSRule.Rules.RuleRecord])]
+    [OutputType([PSRule.Rules.RuleSummaryRecord])]
     param (
         [Parameter(Position = 0)]
         [String[]]$Path = $PWD,
@@ -61,7 +61,6 @@ function Invoke-PSRule {
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('Detail', 'Summary')]
         [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Default
     )
 

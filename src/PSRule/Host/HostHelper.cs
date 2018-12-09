@@ -141,13 +141,13 @@ namespace PSRule.Host
             return results;
         }
 
-        public static DetailResult InvokeRuleBlock(PSRuleOption option, RuleBlock block, PSObject inputObject)
+        public static RuleRecord InvokeRuleBlock(PSRuleOption option, RuleBlock block, PSObject inputObject)
         {
             try
             {
                 //PipelineContext.WriteVerbose($"[PSRule][R][{block.Id}]::BEGIN");
 
-                var result = new DetailResult(block.Id)
+                var result = new RuleRecord(block.Id)
                 {
                     TargetObject = inputObject,
                     TargetName = BindName(inputObject), // TODO: Move name binding outside of InvokeRuleBlock so that it is not called for every rule

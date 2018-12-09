@@ -10,9 +10,9 @@ namespace PSRule.Commands
     /// </summary>
     internal abstract class RuleKeyword : PSCmdlet
     {
-        protected DetailResult GetResult()
+        protected RuleRecord GetResult()
         {
-            return GetVariableValue("Rule") as DetailResult;
+            return GetVariableValue("Rule") as RuleRecord;
         }
 
         protected bool GetField(object obj, string name, out object value)

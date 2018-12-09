@@ -46,9 +46,9 @@
       </TableControl>
     </View>
     <View>
-      <Name>PSRule.Rules.DetailResult</Name>
+      <Name>PSRule.Rules.RuleRecord</Name>
       <ViewSelectedBy>
-        <TypeName>PSRule.Rules.DetailResult</TypeName>
+        <TypeName>PSRule.Rules.RuleRecord</TypeName>
       </ViewSelectedBy>
       <GroupBy>
         <PropertyName>TargetName</PropertyName>
@@ -85,9 +85,9 @@
       </TableControl>
     </View>
     <View>
-      <Name>PSRule.Rules.SummaryResult</Name>
+      <Name>PSRule.Rules.RuleSummaryRecord</Name>
       <ViewSelectedBy>
-        <TypeName>PSRule.Rules.SummaryResult</TypeName>
+        <TypeName>PSRule.Rules.RuleSummaryRecord</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -103,6 +103,9 @@
             <Label>Fail</Label>
             <Width>5</Width>
           </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Outcome</Label>
+          </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
@@ -115,6 +118,9 @@
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Fail</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Outcome</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

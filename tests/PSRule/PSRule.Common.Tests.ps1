@@ -118,23 +118,35 @@ Describe 'Invoke-PSRule' {
     }
 
     Context 'Using -As' {
-        $testObject = [PSCustomObject]@{
-            Name = "TestObject1"
-            Value = 1
-        }
+        $testObject = @(
+            [PSCustomObject]@{
+                Name = "TestObject1"
+                Value = 1
+            }
+            [PSCustomObject]@{
+                Name = "TestObject1"
+                Value = 1
+            }
+        );
 
         It 'Returns detail' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'group1' } -As Detail;
             $result | Should -Not -BeNullOrEmpty;
-            $result | Should -BeOfType PSRule.Rules.DetailResult;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
         }
 
         It 'Returns summary' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'group1' } -As Summary;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 3;
-            $result | Should -BeOfType PSRule.Rules.SummaryResult;
+            $result | Should -BeOfType PSRule.Rules.RuleSummaryRecord;
             $result.RuleId | Should -BeIn 'FromFile1', 'FromFile2', 'FromFile3'
+            $result.Tag.category | Should -BeIn 'group1';
+
+            ($result | Where-Object { $_.RuleId -eq 'FromFile1'}).Outcome | Should -Be 'Passed';
+            ($result | Where-Object { $_.RuleId -eq 'FromFile1'}).Pass | Should -Be 2;
+            ($result | Where-Object { $_.RuleId -eq 'FromFile2'}).Outcome | Should -Be 'Failed';
+            ($result | Where-Object { $_.RuleId -eq 'FromFile2'}).Fail | Should -Be 2;
         }
     }
 

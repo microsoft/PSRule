@@ -159,9 +159,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### PSRule.Rules.DetailResult
+### PSRule.Rules.RuleRecord
 
-### PSRule.Rules.SummaryResult
+### PSRule.Rules.RuleSummaryRecord
 
 ## NOTES
 

@@ -8,9 +8,9 @@ namespace PSRule.Rules
     /// A detailed format for rule results.
     /// </summary>
     [DebuggerDisplay("{RuleName")]
-    public sealed class DetailResult : IRuleResult
+    public sealed class RuleRecord : IRuleResult
     {
-        internal DetailResult(string ruleId)
+        internal RuleRecord(string ruleId)
         {
             RuleName = ruleId;
             Status = RuleOutcome.None;

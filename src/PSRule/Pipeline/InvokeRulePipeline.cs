@@ -12,7 +12,7 @@ namespace PSRule.Pipeline
         private readonly DependencyGraph<RuleBlock> _RuleGraph;
 
         // A per summary of rules being processes and outcome
-        private readonly Dictionary<string, SummaryResult> _Summary;
+        private readonly Dictionary<string, RuleSummaryRecord> _Summary;
 
         private readonly ResultFormat _ResultFormat;
         private readonly PipelineContext _Context;
@@ -23,11 +23,11 @@ namespace PSRule.Pipeline
             _Outcome = outcome;
             _Context = PipelineContext.New(logger);
             _RuleGraph = HostHelper.GetRuleBlockGraph(_Option, null, _Path, _Filter);
-            _Summary = new Dictionary<string, SummaryResult>();
+            _Summary = new Dictionary<string, RuleSummaryRecord>();
             _ResultFormat = resultFormat;
         }
 
-        public IEnumerable<DetailResult> Process(PSObject o)
+        public IEnumerable<RuleRecord> Process(PSObject o)
         {
             try
             {
@@ -39,9 +39,9 @@ namespace PSRule.Pipeline
             }
         }
 
-        public IEnumerable<DetailResult> Process(PSObject[] targets)
+        public IEnumerable<RuleRecord> Process(PSObject[] targets)
         {
-            var results = new List<DetailResult>();
+            var results = new List<RuleRecord>();
 
             foreach (var target in targets)
             {
@@ -54,18 +54,18 @@ namespace PSRule.Pipeline
             return results;
         }
 
-        public IEnumerable<SummaryResult> GetSummary()
+        public IEnumerable<RuleSummaryRecord> GetSummary()
         {
             return _Summary.Values;
         }
 
-        private IEnumerable<DetailResult> ProcessRule(PSObject o)
+        private IEnumerable<RuleRecord> ProcessRule(PSObject o)
         {
-            var results = new List<DetailResult>();
+            var results = new List<RuleRecord>();
 
             foreach (var target in _RuleGraph.GetSingleTarget())
             {
-                var result = (target.Skipped) ? new DetailResult(target.Value.Id) : HostHelper.InvokeRuleBlock(_Option, target.Value, o);
+                var result = (target.Skipped) ? new RuleRecord(target.Value.Id) : HostHelper.InvokeRuleBlock(_Option, target.Value, o);
 
                 if (result.Status == RuleOutcome.Passed || result.Status == RuleOutcome.Inconclusive)
                 {
@@ -76,7 +76,7 @@ namespace PSRule.Pipeline
                     target.Fail();
                 }
 
-                AddToSummary(ruleId: result.RuleName, targetName: result.TargetName, outcome: result.Status);
+                AddToSummary(ruleBlock: target.Value, targetName: result.TargetName, outcome: result.Status);
 
                 if (ShouldOutput(result.Status))
                 {
@@ -93,13 +93,14 @@ namespace PSRule.Pipeline
                 (_Outcome == RuleOutcome.All | (outcome & _Outcome) > 0);
         }
 
-        private void AddToSummary(string ruleId, string targetName, RuleOutcome outcome)
+        private void AddToSummary(RuleBlock ruleBlock, string targetName, RuleOutcome outcome)
         {
-            if (!_Summary.TryGetValue(ruleId, out SummaryResult s))
+            if (!_Summary.TryGetValue(ruleBlock.Id, out RuleSummaryRecord s))
             {
-                s = new SummaryResult(ruleId);
+                s = new RuleSummaryRecord(ruleBlock.Id);
+                s.Tag = ruleBlock.Tag?.ToHashtable();
 
-                _Summary.Add(ruleId, s);
+                _Summary.Add(ruleBlock.Id, s);
             }
 
             if (outcome == RuleOutcome.Passed)
@@ -109,6 +110,10 @@ namespace PSRule.Pipeline
             else if (outcome == RuleOutcome.Failed)
             {
                 s.Fail++;
+            }
+            else if (outcome == RuleOutcome.Error)
+            {
+                s.Error++;
             }
         }
     }
