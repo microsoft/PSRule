@@ -4,6 +4,10 @@ param (
     [String]$ModuleVersion,
 
     [Parameter(Mandatory = $False)]
+    [AllowNull()]
+    [String]$ReleaseVersion,
+
+    [Parameter(Mandatory = $False)]
     [String]$Configuration = 'Debug',
 
     [Parameter(Mandatory = $False)]
@@ -130,10 +134,19 @@ task Clean {
 
 task VersionModule {
 
+    if (![String]::IsNullOrEmpty($ReleaseVersion)) {
+        Write-Verbose -Message "[VersionModule] -- ReleaseVersion: $ReleaseVersion";
+        $ModuleVersion = $ReleaseVersion;
+    }
+
     if (![String]::IsNullOrEmpty($ModuleVersion)) {
+        Write-Verbose -Message "[VersionModule] -- ModuleVersion: $ModuleVersion";
 
         $version = $ModuleVersion;
         $revision = [String]::Empty;
+
+        Write-Verbose -Message "[VersionModule] -- Using Version: $version";
+        Write-Verbose -Message "[VersionModule] -- Using Revision: $revision";
 
         if ($version -like '*-*') {
             [String[]]$versionParts = $version.Split('-', [System.StringSplitOptions]::RemoveEmptyEntries);
@@ -146,11 +159,13 @@ task VersionModule {
 
         # Update module version
         if (![String]::IsNullOrEmpty($version)) {
+            Write-Verbose -Message "[VersionModule] -- Updating module manifest ModuleVersion";
             Update-ModuleManifest -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule/PSRule.psd1) -ModuleVersion $version;
         }
 
         # Update pre-release version
         if (![String]::IsNullOrEmpty($revision)) {
+            Write-Verbose -Message "[VersionModule] -- Updating module manifest Prerelease";
             Update-ModuleManifest -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule/PSRule.psd1) -Prerelease $revision;
         }
     }
