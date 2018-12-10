@@ -56,6 +56,16 @@
             "type": "shell",
             "command": "Invoke-Build Analyze",
             "problemMatcher": []
+        },
+        {
+            "label": "benchmark",
+            "type": "shell",
+            "command": "Invoke-Build Benchmark",
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true,
+                "panel": "dedicated"
+            }
         }
     ]
 }

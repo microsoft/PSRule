@@ -16,7 +16,7 @@ You can download and install the PSRule module from the PowerShell Gallery.
 
 Module | Description | Downloads / instructions
 ------ | ----------- | ------------------------
-PSRule | A PowerShell rules engine | [latest][psg-psrule] / [instructions][install]
+PSRule | Validate objects using PowerShell rules | [latest][psg-psrule] / [instructions][install]
 
 ## Getting started
 

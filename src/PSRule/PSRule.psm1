@@ -39,6 +39,8 @@ Import-LocalizedData -BindingVariable LocalizedData -FileName 'PSRule.Resources.
 function Invoke-PSRule {
 
     [CmdletBinding()]
+    [OutputType([PSRule.Rules.RuleRecord])]
+    [OutputType([PSRule.Rules.RuleSummaryRecord])]
     param (
         [Parameter(Position = 0)]
         [String[]]$Path = $PWD,
@@ -53,10 +55,13 @@ function Invoke-PSRule {
         [PSObject]$InputObject,
 
         [Parameter(Mandatory = $False)]
-        [PSRule.Rules.RuleResultOutcome]$Status = [PSRule.Rules.RuleResultOutcome]::Default,
+        [PSRule.Rules.RuleOutcome]$Status = [PSRule.Rules.RuleOutcome]::Default,
 
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.PSRuleOption]$Option
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Default
     )
 
     begin {
@@ -89,6 +94,7 @@ function Invoke-PSRule {
         $builder.Source($sourceFiles);
         $builder.Option($Option);
         $builder.Limit($Status);
+        $builder.As($As);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $pipeline = $builder.Build();
     }
@@ -98,6 +104,10 @@ function Invoke-PSRule {
     }
 
     end {
+        if ($As -eq [PSRule.Configuration.ResultFormat]::Summary) {
+            $pipeline.GetSummary();
+        }
+
         Write-Verbose -Message "[PSRule] END::";
     }
 }
@@ -244,156 +254,6 @@ function Rule {
 #
 # Helper functions
 #
-
-function InvokeRule {
-    [CmdletBinding()]
-    [OutputType([PSRule.Rules.RuleResult])]
-    param (
-        [Parameter(Mandatory = $True)]
-        [PSObject]$Rule
-    )
-
-    begin {
-        $RuleName = $Rule.RuleName;
-        $Body = $Rule.Body;
-
-        # Create a progress record
-        $progressRecord = @{
-            Activity = "Running rule $RuleName";
-            Status = 'Running rule';
-            CurrentOperation = '';
-            PercentComplete = 0;
-        };
-
-        # Update progress display
-        Write-Progress @progressRecord;
-    }
-
-    process {
-
-        if ($Null -eq $Context) {
-            Write-Error -Message "Rule expression can only be used within a Rule engine. Please call with Invoke-RuleEngine";
-
-            return;
-        }
-
-        Write-Verbose -Message "[Rule][$($Context.Index)][$RuleName]`tBEGIN::";
-        Write-Verbose -Message "[Rule][$($Context.Index)][$RuleName]`t-- Setting context";
-
-        # Set Rule context variables
-        $Rule = @{
-            Name = $RuleName;
-            Warning = @();
-            Error = @();
-            Output = @();
-            Invocation = $PSCmdlet.MyInvocation;
-            TargetName = '';
-            Message = '';
-            Input = $This;
-            OnSuccess = @();
-            OnFailure = @();
-        };
-
-        $functionsToDefine = New-Object -TypeName 'System.Collections.Generic.Dictionary[string,ScriptBlock]'([System.StringComparer]::OrdinalIgnoreCase);
-        $functionsToDefine.Add('AllOf', ${function:AssertAllOf});
-        $functionsToDefine.Add('AnyOf', ${function:AssertAnyOf});
-        $functionsToDefine.Add('Exists', ${function:AssertExists});
-        $functionsToDefine.Add('Within', ${function:AssertWithin});
-        $functionsToDefine.Add('Match', ${function:AssertMatch});
-        $functionsToDefine.Add('When', ${function:WhenExpression});
-        $functionsToDefine.Add('Warn', ${function:Write-RuleWarning});
-        $functionsToDefine.Add('Hint', ${function:Set-RuleHint});
-        $functionsToDefine.Add('TypeOf', ${function:AssertTypeOf});
-
-        $functionsToDefine.Add('OnSuccess', ${function:Add-RuleSuccessTrigger});
-        $functionsToDefine.Add('OnFailure', ${function:Add-RuleFailureTrigger});
-
-        $variablesToDefine = New-Object -TypeName 'System.Collections.Generic.List[PSVariable]';
-        $variablesToDefine.Add((Get-Variable -Name 'Rule'));
-
-        # Add helper methods
-        Add-Member -InputObject $Rule -MemberType ScriptMethod -Name 'GetField' -Value { param([String]$Field) process { Get-ObjectField -InputObject $This.Input -Field $Field; } };
-
-        # Invoke body within the context of this Rule
-        $innerResult = ($Body.InvokeWithContext($functionsToDefine, $variablesToDefine));
-
-        # Count the results that are boolean $True
-        $numResult = $innerResult.Count;
-        $successCount = 0;
-
-        foreach ($r in $innerResult) {
-            if ($r -eq $True) {
-                $successCount++;
-            }
-        }
-
-        # Determine overall success of rule
-        $success = $successCount -eq $numResult;
-
-        # Create a result object
-        $resultObject = NewRuleResult -Success $success;
-
-        # Set Status to Success if all results are successful, otherwise default to Failed
-        if ($success) {
-            $resultObject.Status = 'Success'
-        }
-
-        if ($numResult -eq 0) {
-            $resultObject.Status = 'Skipped'
-        }
-
-        Write-Verbose -Message "[Rule][$($Context.Index)][$RuleName]`t-- Status = $($resultObject.Status)";
-
-        # Invoke triggers
-        if ($success -and $Rule.OnSuccess.Length -gt 0) {
-            # OnSuccess
-
-            Write-Verbose -Message "[Rule][$($Context.Index)][$RuleName]`t-- Triggering OnSuccess";
-
-            # Run each trigger
-            foreach ($trigger in $Rule.OnSuccess) {
-                Write-Verbose -Message "[Rule][$($Context.Index)][$RuleName]`t[OnSuccess]::BEGIN";
-
-                $innerResult = $trigger.InvokeWithContext($functionsToDefine, $variablesToDefine);
-
-                Write-Verbose -Message "[Rule][$($Context.Index)][$RuleName]`t[OnSuccess]::END";
-            }
-        } elseif (!$success -and $Rule.OnFailure.Length -gt 0) {
-            # OnFailure
-
-            Write-Verbose -Message "[Rule][$($Context.Index)][$RuleName]`t-- Triggering OnFailure";
-
-            # Run each trigger
-            foreach ($trigger in $Rule.OnFailure) {
-                Write-Verbose -Message "[Rule][$($Context.Index)][$RuleName]`t[OnFailure]::BEGIN";
-
-                $innerResult = $trigger.InvokeWithContext($functionsToDefine, $variablesToDefine);
-
-                Write-Verbose -Message "[Rule][$($Context.Index)][$RuleName]`t[OnFailure]::END";
-            }
-        }
-
-        # Add output objects to result object
-        if ($Rule.Output.Length -gt 0) {
-            foreach ($a in $Rule.Output) {
-                $resultObject.Output += $a;
-            }
-        }
-
-        Write-Verbose -Message "[Rule][$($Context.Index)][$RuleName]`t-- Output = $($resultObject.Output.Length)";
-
-        # Emit the result object to the pipeline
-        $resultObject;
-
-        Write-Verbose -Message "[Rule][$($Context.Index)][$RuleName]`tEND:: [$successCount/$numResult]";
-    }
-
-    end {
-        # Update progress display
-        $progressRecord.PercentComplete = 100;
-        Write-Progress @progressRecord -Completed;
-    }
-}
 
 function AssertAllOf {
     [CmdletBinding()]
@@ -958,52 +818,6 @@ function GetRuleScriptPath {
     process {
 
         (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1').FullName;
-    }
-}
-
-function NewEngine {
-
-    param (
-
-    )
-
-    process {
-
-        $result = New-Object -TypeName PSObject -Property @{
-            Rule = New-Object -TypeName 'System.Collections.Generic.Dictionary[string,PSObject]'([System.StringComparer]::OrdinalIgnoreCase)
-        }
-
-        $result;
-    }
-}
-
-function NewContext {
-
-    param (
-
-    )
-
-    process {
-
-    }
-}
-
-function NewRuleResult {
-    [CmdletBinding()]
-    [OutputType([PSRule.Rules.RuleResult])]
-    param (
-        [System.Boolean]$Success,
-
-        [String]$Status = 'Failed'
-    )
-
-    process {
-        # Create a result object
-        $result = New-Object -TypeName PSRule.Rules.RuleResult -Property @{ RuleName = $RuleName; Success = $Success; Status = $Status; Message = $Rule.Message; TargetName = $Rule.TargetName; Output = @(); }
-
-        # $result.PSObject.TypeNames.Insert(0, 'PSRule.Rules.RuleResult');
-
-        $result;
     }
 }
 

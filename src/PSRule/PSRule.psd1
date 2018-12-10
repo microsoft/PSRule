@@ -26,7 +26,7 @@ CompanyName = 'Bernie White'
 Copyright = '(c) Bernie White. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'A PowerShell rules engine.
+Description = 'Validate objects using PowerShell rules.
 
 This project is to be considered a proof-of-concept and not a supported product.'
 

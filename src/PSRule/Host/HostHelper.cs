@@ -89,6 +89,11 @@ namespace PSRule.Host
             var runspace = RunspaceFactory.CreateRunspace(state);
             runspace.ThreadOptions = PSThreadOptions.UseCurrentThread;
 
+            if (Runspace.DefaultRunspace == null)
+            {
+                Runspace.DefaultRunspace = runspace;
+            }
+
             runspace.Open();
             runspace.SessionStateProxy.PSVariable.Set(new RuleVariable("Rule"));
             runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable("TargetObject"));
@@ -107,6 +112,11 @@ namespace PSRule.Host
                 }
 
                 PipelineContext.WriteVerbose($"[PSRule][D] -- Scanning: {path}");
+
+                if (!File.Exists(path))
+                {
+                    throw new FileNotFoundException("Can't find file", path);
+                }
 
                 ps.AddScript(path, true);
                 var invokeResults = ps.Invoke();
@@ -131,16 +141,16 @@ namespace PSRule.Host
             return results;
         }
 
-        public static RuleResult InvokeRuleBlock(PSRuleOption option, RuleBlock block, PSObject inputObject)
+        public static RuleRecord InvokeRuleBlock(PSRuleOption option, RuleBlock block, PSObject inputObject)
         {
             try
             {
                 //PipelineContext.WriteVerbose($"[PSRule][R][{block.Id}]::BEGIN");
 
-                var result = new RuleResult(block.Id)
+                var result = new RuleRecord(block.Id)
                 {
                     TargetObject = inputObject,
-                    TargetName = BindName(inputObject),
+                    TargetName = BindName(inputObject), // TODO: Move name binding outside of InvokeRuleBlock so that it is not called for every rule
                     Tag = block.Tag?.ToHashtable()
                 };
 
@@ -155,18 +165,18 @@ namespace PSRule.Host
                     }
                 }
 
-                result.Status = RuleResultOutcome.InProgress;
+                result.Status = RuleOutcome.InProgress;
 
                 var invokeResults = block.Body.Invoke();
 
                 if (invokeResults == null)
                 {
-                    result.Status = RuleResultOutcome.Inconclusive;
+                    result.Status = RuleOutcome.Inconclusive;
                 }
                 else
                 {
                     result.Success = invokeResults.Success;
-                    result.Status = result.Success ? RuleResultOutcome.Passed : RuleResultOutcome.Failed;
+                    result.Status = result.Success ? RuleOutcome.Passed : RuleOutcome.Failed;
                 }
 
                 PipelineContext.WriteVerbose($"[PSRule][R][{block.Id}] -- [{result.Status}]");
@@ -228,15 +238,18 @@ namespace PSRule.Host
         {
             string result = null;
 
-            var property = targetObject.Properties.ToDictionary(i => i.Name, StringComparer.OrdinalIgnoreCase);
+            var comparer = StringComparer.OrdinalIgnoreCase;
 
-            if (property.ContainsKey("TargetName"))
+            foreach (var p in targetObject.Properties)
             {
-                result = property["TargetName"].Value?.ToString();
-            }
-            else if (property.ContainsKey("Name"))
-            {
-                result = property["Name"].Value?.ToString();
+                if (comparer.Equals(p.Name, "TargetName"))
+                {
+                    result = targetObject.Properties[p.Name].Value?.ToString();
+                }
+                else if (comparer.Equals(p.Name, "Name") && result == null)
+                {
+                    result = targetObject.Properties[p.Name].Value?.ToString();
+                }
             }
 
             return result;

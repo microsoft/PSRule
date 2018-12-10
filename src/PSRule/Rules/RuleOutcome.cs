@@ -3,7 +3,7 @@
 namespace PSRule.Rules
 {
     [Flags]
-    public enum RuleResultOutcome : byte
+    public enum RuleOutcome : byte
     {
         None = 0,
 

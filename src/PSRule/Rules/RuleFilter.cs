@@ -12,6 +12,11 @@ namespace PSRule.Rules
         private HashSet<string> _RequiredName;
         private Hashtable _RequiredTag;
 
+        /// <summary>
+        /// Filter rules by name or tag.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="tag"></param>
         public RuleFilter(IEnumerable<string> name, Hashtable tag)
         {
             _RequiredName = name == null ? null : new HashSet<string>(name, StringComparer.OrdinalIgnoreCase);

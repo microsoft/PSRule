@@ -227,6 +227,10 @@ task TestModule Pester, PSScriptAnalyzer, {
     }
 }
 
+task Benchmark {
+    dotnet run -p src/PSRule.Benchmark -f net472 -c Release -- benchmark --output $PWD;
+}
+
 # Synopsis: Run script analyzer
 task Analyze Build, PSScriptAnalyzer, {
 
