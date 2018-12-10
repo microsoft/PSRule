@@ -17,7 +17,7 @@ pool:
 steps:
 
 # Install pipeline dependencies and build module
-- powershell: ./scripts/pipeline-build.ps1 -File ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion $(Release.Version)
+- powershell: ./scripts/pipeline-build.ps1 -File ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion "$(Release.Version)"
   displayName: 'Build module'
 
 # Publish test results
