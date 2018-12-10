@@ -15,13 +15,13 @@ PSRule lets you define rules using PowerShell blocks. To create a rule use the `
 
 The following are the built-in keywords that can be used within PSRule:
 
-- Rule - A rule definition
-- Exists - Assert that a field or property must exist
-- Match - Assert that the field must match any of the regular expressions
-- AnyOf - Assert that any of the child expressions must be true
-- AllOf - Assert that all of the child expressions must be true
-- Within - Assert that the field must match any of the values
-- TypeOf - Assert that the object must be of a specific type
+- [Rule](#rule) - A rule definition
+- [Exists](#exists) - Assert that a field or property must exist
+- [Match](#match) - Assert that the field must match any of the regular expressions
+- [AnyOf](#anyof) - Assert that any of the child expressions must be true
+- [AllOf](#allof) - Assert that all of the child expressions must be true
+- [Within](#within) - Assert that the field must match any of the values
+- [TypeOf](#typeof) - Assert that the object must be of a specific type
 
 ### Rule
 
@@ -189,62 +189,6 @@ Examples:
 TypeOf 'System.Collections.Hashtable'
 ```
 
-### OnSuccess
-
-The `OnSuccess` trigger executes the code between the squiggly brackets `{ }` after the rule has been evaluated as successful.
-
-Syntax:
-
-```powershell
-OnSuccess {
-    <code_to_execute>
-}
-```
-
-Examples:
-
-```powershell
-# This rule checks for the presence of a Name field
-Rule 'nameMustExist' {
-
-    Exists 'Name'
-
-    # Output when the Name field exists
-    OnSuccess {
-
-        # Write Success action
-    }
-}
-```
-
-### OnFailure
-
-The `OnFailure` trigger executes the code between the squiggly brackets `{ }` after the rule has been evaluated as failed.
-
-Syntax:
-
-```powershell
-OnFailure {
-    <code_to_execute>
-}
-```
-
-Examples:
-
-```powershell
-# This rule checks for the presence of a Name field
-Rule 'nameMustExist' {
-
-    Exists 'Name'
-
-    # Output when the Name field does not exist
-    OnFailure {
-
-        # Write Set action
-    }
-}
-```
-
 ## EXAMPLES
 
 ```powershell
@@ -273,7 +217,6 @@ An online version of this document is available at https://github.com/BernieWhit
 - AnyOf
 - AllOf
 - Within
-- When
 - TypeOf
 
 [Invoke-RuleEngine]: https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-RuleEngine.md
