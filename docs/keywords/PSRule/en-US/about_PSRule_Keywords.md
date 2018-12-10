@@ -207,7 +207,7 @@ An online version of this document is available at https://github.com/BernieWhit
 
 ## SEE ALSO
 
-- [Invoke-RuleEngine]
+- [Invoke-PSRule]
 
 ## KEYWORDS
 
@@ -219,4 +219,4 @@ An online version of this document is available at https://github.com/BernieWhit
 - Within
 - TypeOf
 
-[Invoke-RuleEngine]: https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-RuleEngine.md
+[Invoke-PSRule]: https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md
