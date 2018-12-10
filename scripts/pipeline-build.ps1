@@ -14,6 +14,10 @@ param (
     [String]$ModuleVersion,
 
     [Parameter(Mandatory = $False)]
+    [AllowNull()]
+    [String]$ReleaseVersion,
+
+    [Parameter(Mandatory = $False)]
     [String]$Configuration = 'Debug',
 
     [Parameter(Mandatory = $False)]
