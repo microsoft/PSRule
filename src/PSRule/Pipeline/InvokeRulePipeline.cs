@@ -67,18 +67,18 @@ namespace PSRule.Pipeline
             {
                 var result = (target.Skipped) ? new RuleRecord(target.Value.Id) : HostHelper.InvokeRuleBlock(_Option, target.Value, o);
 
-                if (result.Status == RuleOutcome.Passed || result.Status == RuleOutcome.Inconclusive)
+                if (result.Outcome == RuleOutcome.Passed || result.Outcome == RuleOutcome.Inconclusive)
                 {
                     target.Pass();
                 }
-                else if (result.Status == RuleOutcome.Failed || result.Status == RuleOutcome.Error)
+                else if (result.Outcome == RuleOutcome.Failed || result.Outcome == RuleOutcome.Error)
                 {
                     target.Fail();
                 }
 
-                AddToSummary(ruleBlock: target.Value, targetName: result.TargetName, outcome: result.Status);
+                AddToSummary(ruleBlock: target.Value, targetName: result.TargetName, outcome: result.Outcome);
 
-                if (ShouldOutput(result.Status))
+                if (ShouldOutput(result.Outcome))
                 {
                     results.Add(result);
                 }

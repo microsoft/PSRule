@@ -15,7 +15,7 @@ Evaluate pipeline objects against matching rules.
 
 ```text
 Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
- [-Status <RuleOutcome>] [-Option <PSRuleOption>] [-As <ResultFormat>] [<CommonParameters>]
+ [-Outcome <RuleOutcome>] [-Option <PSRuleOption>] [-As <ResultFormat>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -82,9 +82,9 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Status
+### -Outcome
 
-Filter output to only show rules with a specific status.
+Filter output to only show rules with a specific outcome.
 
 ```yaml
 Type: RuleOutcome

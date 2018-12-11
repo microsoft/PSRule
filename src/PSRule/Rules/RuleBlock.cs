@@ -48,6 +48,9 @@ namespace PSRule.Rules
         /// </summary>
         public string[] DependsOn { get; set; }
 
+        /// <summary>
+        /// One or more tags assigned to block. Tags are additional metadata used to select rules to execute and identify results.
+        /// </summary>
         public TagSet Tag { get; set; }
     }
 }

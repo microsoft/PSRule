@@ -165,21 +165,21 @@ namespace PSRule.Host
                     }
                 }
 
-                result.Status = RuleOutcome.InProgress;
+                result.Outcome = RuleOutcome.InProgress;
 
                 var invokeResults = block.Body.Invoke();
 
                 if (invokeResults == null)
                 {
-                    result.Status = RuleOutcome.Inconclusive;
+                    result.Outcome = RuleOutcome.Inconclusive;
                 }
                 else
                 {
                     result.Success = invokeResults.Success;
-                    result.Status = result.Success ? RuleOutcome.Passed : RuleOutcome.Failed;
+                    result.Outcome = result.Success ? RuleOutcome.Passed : RuleOutcome.Failed;
                 }
 
-                PipelineContext.WriteVerbose($"[PSRule][R][{block.Id}] -- [{result.Status}]");
+                PipelineContext.WriteVerbose($"[PSRule][R][{block.Id}] -- [{result.Outcome}]");
 
                 return result;
             }

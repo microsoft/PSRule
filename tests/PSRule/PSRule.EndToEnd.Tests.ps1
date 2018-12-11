@@ -29,12 +29,12 @@ Describe 'PSRule -- end to end tests' -Tag 'EndToEnd' {
             $scopedResult.Count | Should -Be 4;
 
             # Should pass
-            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServicePlan.MinPlan' }).Status | Should -Be 'Passed';
-            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServiceApp.ARRAfinity' }).Status | Should -Be 'Passed';
+            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServicePlan.MinPlan' }).Outcome | Should -Be 'Passed';
+            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServiceApp.ARRAfinity' }).Outcome | Should -Be 'Passed';
 
             # Should fail
-            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServicePlan.MinInstanceCount' }).Status | Should -Be 'Failed';
-            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServiceApp.UseHTTPS' }).Status | Should -Be 'Failed';
+            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServicePlan.MinInstanceCount' }).Outcome | Should -Be 'Failed';
+            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServiceApp.UseHTTPS' }).Outcome | Should -Be 'Failed';
         }
     }
 
@@ -47,10 +47,10 @@ Describe 'PSRule -- end to end tests' -Tag 'EndToEnd' {
             $scopedResult.Count | Should -Be 2;
 
             # Should pass
-            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'storageAccounts.UseEncryption' }).Status | Should -Be 'Passed';
+            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'storageAccounts.UseEncryption' }).Outcome | Should -Be 'Passed';
 
             # Should fail
-            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'storageAccounts.UseHttps' }).Status | Should -Be 'Failed';
+            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'storageAccounts.UseHttps' }).Outcome | Should -Be 'Failed';
         }
     }
 }

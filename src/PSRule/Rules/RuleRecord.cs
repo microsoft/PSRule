@@ -12,9 +12,15 @@ namespace PSRule.Rules
     {
         internal RuleRecord(string ruleId)
         {
+            RuleId = ruleId;
             RuleName = ruleId;
-            Status = RuleOutcome.None;
+            Outcome = RuleOutcome.None;
         }
+
+        /// <summary>
+        /// A unique identifer for the rule.
+        /// </summary>
+        public string RuleId { get; private set; }
 
         public string RuleName { get; private set; }
 
@@ -23,7 +29,7 @@ namespace PSRule.Rules
         /// <summary>
         /// The outcome of the processing an object.
         /// </summary>
-        public RuleOutcome Status { get; internal set; }
+        public RuleOutcome Outcome { get; internal set; }
 
         public string Message { get; internal set; }
 

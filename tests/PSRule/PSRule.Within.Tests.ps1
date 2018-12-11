@@ -27,7 +27,7 @@ Describe 'PSRule -- Within keyword' -Tag 'Within' {
                 [PSCustomObject]@{ Title = 'unknown' }
             )
 
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithinTest' -Status All;
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithinTest' -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
             $result.RuleName | Should -BeIn 'WithinTest'

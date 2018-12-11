@@ -17,6 +17,9 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "description")]
         public string Description { get; set; }
 
+        /// <summary>
+        /// One or more tags assigned to the rule. Tags are additional metadata used to select rules to execute and identify results.
+        /// </summary>
         [JsonProperty(PropertyName = "tag")]
         public TagSet Tag { get; set; }
     }

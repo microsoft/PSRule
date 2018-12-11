@@ -76,15 +76,15 @@ The output of this example is:
 ```text
    TargetName: Fridge
 
-RuleName                            Status     Message
---------                            ------     -------
+RuleId                              Outcome    Message
+------                              -------    -------
 isFruit                             Failed     Fruit is only Apple, Orange and Pear
 
 
    TargetName: Apple
 
-RuleName                            Status     Message
---------                            ------     -------
+RuleId                              Outcome    Message
+------                              -------    -------
 isFruit                             Passed     Fruit is only Apple, Orange and Pear
 ```
 
