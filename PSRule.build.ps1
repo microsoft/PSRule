@@ -173,7 +173,7 @@ task VersionModule {
 
 task ReleaseModule VersionModule, {
 
-    if ($Null -ne 'NuGetApiKey') {
+    if (![String]::IsNullOrEmpty($NuGetApiKey)) {
         # Publish to PowerShell Gallery
         Publish-Module -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule) -NuGetApiKey $NuGetApiKey;
     }
