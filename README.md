@@ -87,6 +87,8 @@ RuleId                              Outcome    Message
 isFruit                             Pass       Fruit is only Apple, Orange and Pear
 ```
 
+### Additional options
+
 To filter results to only non-fruit results, use `Invoke-PSRule -Outcome Fail`. Passed, failed and error results are shown by default.
 
 ```powershell
@@ -119,7 +121,7 @@ For practical examples of PSRule see:
 
 ## Language reference
 
-PSRule extends PowerShell with domain specific language (DSL) keywords, cmdlets and variables.
+PSRule extends PowerShell with domain specific language (DSL) keywords, cmdlets and automatic variables.
 
 ### Keywords
 
@@ -154,6 +156,8 @@ The following conceptual topics exist in the `PSRule` module:
 ## Changes and versioning
 
 Modules in this repository will use the [semantic versioning](http://semver.org/) model to declare breaking changes from v1.0.0. Prior to v1.0.0, breaking changes may be introduced in minor (0.x.0) version increments. For a list of module changes please see the [change log](CHANGELOG.md).
+
+> Pre-release module versions are created on major commits and can be installed from the PowerShell Gallery. Pre-release versions should be considered experimental. Modules and change log details for pre-releases will be removed as standard releases are made available.
 
 ## Maintainers
 
