@@ -36,6 +36,7 @@ Import-LocalizedData -BindingVariable LocalizedData -FileName 'PSRule.Resources.
 # Public functions
 #
 
+# .ExternalHelp PSRule-Help.xml
 function Invoke-PSRule {
 
     [CmdletBinding()]
@@ -112,7 +113,7 @@ function Invoke-PSRule {
     }
 }
 
-# Get a list of rules
+# .ExternalHelp PSRule-Help.xml
 function Get-PSRule {
 
     [CmdletBinding()]
@@ -179,10 +180,12 @@ function Get-PSRule {
     }
 }
 
+# .ExternalHelp PSRule-Help.xml
 function New-PSRuleOption {
 
     [CmdletBinding()]
     [OutputType([PSRule.Configuration.PSRuleOption])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in memory object only')]
     param (
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option,
@@ -211,10 +214,6 @@ function New-PSRuleOption {
 
             $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $True);
         }
-
-        # if ($PSBoundParameters.ContainsKey('Encoding')) {
-        #     $Option.Markdown.Encoding = $Encoding;
-        # }
 
         return $Option;
     }
@@ -267,32 +266,6 @@ function Rule {
 # Helper functions
 #
 
-# Used to discover the rule blocks
-function GetRule {
-
-    [CmdletBinding()]
-    [OutputType([PSRule.Rules.Rule])]
-    param (
-        [Parameter(Mandatory = $True)]
-        [String[]]$Path,
-
-        [Parameter(Mandatory = $True)]
-        [PSRule.Configuration.PSRuleOption]$Option,
-
-        [Parameter(Mandatory = $True)]
-        [AllowNull()]
-        [PSRule.Rules.RuleFilter]$Filter
-    )
-
-    begin {
-        
-    }
-
-    process {
-        
-    }
-}
-
 # Get a list of rule script files in the matching paths
 function GetRuleScriptPath {
 
@@ -304,7 +277,6 @@ function GetRuleScriptPath {
     )
 
     process {
-
         (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1').FullName;
     }
 }

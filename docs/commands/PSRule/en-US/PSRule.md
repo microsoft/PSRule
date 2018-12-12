@@ -21,3 +21,7 @@ Get a list of matching rule definitions within the search path.
 ### [Invoke-PSRule](Invoke-PSRule.md)
 
 Evaluate pipeline objects against matching rules.
+
+### [New-PSRuleOption](New-PSRuleOption.md)
+
+Create options to configure PSRule execution.
