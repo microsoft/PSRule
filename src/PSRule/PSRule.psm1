@@ -44,9 +44,11 @@ function Invoke-PSRule {
     [OutputType([PSRule.Rules.RuleSummaryRecord])]
     param (
         [Parameter(Position = 0)]
+        [Alias('f')]
         [String[]]$Path = $PWD,
 
         [Parameter(Mandatory = $False)]
+        [Alias('n')]
         [String[]]$Name,
 
         [Parameter(Mandatory = $False)]
@@ -62,7 +64,8 @@ function Invoke-PSRule {
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Default
+        [ValidateSet('Detail', 'Summary')]
+        [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Detail
     )
 
     begin {
@@ -83,6 +86,12 @@ function Invoke-PSRule {
         # Discover scripts in the specified paths
         [String[]]$sourceFiles = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
 
+        # Check that some matching script files were found
+        if ($Null -eq $sourceFiles) {
+            Write-Warning -Message LocalizedData.PathNotFound;
+            continue;
+        }
+
         $isDeviceGuard = IsDeviceGuardEnabled;
 
         # If DeviceGuard is enabled, force a contrained execution environment
@@ -95,7 +104,11 @@ function Invoke-PSRule {
         $builder.Source($sourceFiles);
         $builder.Option($Option);
         $builder.Limit($Outcome);
-        $builder.As($As);
+
+        if ($PSBoundParameters.ContainsKey('As')) {
+            $builder.As($As);
+        }
+
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $pipeline = $builder.Build();
     }
@@ -122,6 +135,7 @@ function Get-PSRule {
         # A list of deployments to run by name
         [Parameter(Mandatory = $False)]
         [SupportsWildcards()]
+        [Alias('n')]
         [String[]]$Name,
 
         [Parameter(Mandatory = $False)]
@@ -129,6 +143,7 @@ function Get-PSRule {
 
         # A list of paths to check for deployments
         [Parameter(Position = 0, Mandatory = $False)]
+        [Alias('f')]
         [String[]]$Path = $PWD,
 
         [Parameter(Mandatory = $False)]
@@ -277,7 +292,11 @@ function GetRuleScriptPath {
     )
 
     process {
-        (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1').FullName;
+        $fileObjects = (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
+
+        if ($Null -ne $fileObjects) {
+            $fileObjects.FullName;
+        }
     }
 }
 

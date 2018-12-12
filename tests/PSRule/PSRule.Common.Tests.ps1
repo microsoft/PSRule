@@ -50,6 +50,10 @@ Describe 'Invoke-PSRule' {
             $result.Outcome | Should -Be 'Inconclusive';
         }
 
+        It 'Returns error with bad path' {
+            { $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'NotAFile.ps1') } | Should -Throw -ExceptionType System.Management.Automation.ItemNotFoundException;
+        }
+
         It 'Processes rule tags' {
             # Ensure that rules can be selected by tag and that tags are mapped back to the rule results
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ feature = 'tag' };
