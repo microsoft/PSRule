@@ -77,7 +77,7 @@ Aliases:
 
 Required: False
 Position: 0
-Default value: None
+Default value: $PWD
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -90,11 +90,11 @@ Filter output to only show rules with a specific outcome.
 Type: RuleOutcome
 Parameter Sets: (All)
 Aliases:
-Accepted values: Success, Failed
+Accepted values: Passed, Failed, Error
 
 Required: False
 Position: Named
-Default value: None
+Default value: Failed, Passed, Error
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -141,16 +141,16 @@ The following result formats are available:
 
 - `Detail` - Returns pass/ fail results for each individual object
 - `Summary` - Returns summarized results for the rule and an overall outcome
-- `Default` - Same as `Detail`.
 
 ```yaml
 Type: ResultFormat
 Parameter Sets: (All)
 Aliases:
+Accepted values: Detail, Summary
 
 Required: False
 Position: Named
-Default value: None
+Default value: Detail
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -163,11 +163,17 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### System.Management.Automation.PSObject
 
+You can pipe any object to **Invoke-PSRule**.
+
 ## OUTPUTS
 
 ### PSRule.Rules.RuleRecord
 
+This is the default.
+
 ### PSRule.Rules.RuleSummaryRecord
+
+When you use the `-As Summary`. Otherwise, it returns a `RuleRecord` object.
 
 ## NOTES
 
