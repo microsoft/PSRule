@@ -4,6 +4,9 @@ using System;
 
 namespace PSRule.Rules
 {
+    /// <summary>
+    /// The outcome of a rule.
+    /// </summary>
     [Flags]
     [JsonConverter(typeof(StringEnumConverter))]
     public enum RuleOutcome : byte
@@ -28,7 +31,20 @@ namespace PSRule.Rules
         /// </summary>
         Error = 4,
 
-        Processed = Fail | Pass | Error,
+        /// <summary>
+        /// Any outcome when the rule was processed.
+        /// </summary>
+        /// <remarks>
+        /// This flag is used to filter outcomes with Invoke-PSRule.
+        /// </remarks>
+        Processed = Pass | Fail | Error,
+
+        /// <summary>
+        /// Any outcome.
+        /// </summary>
+        /// <remarks>
+        /// This flag is used to filter outcomes with Invoke-PSRule.
+        /// </remarks>
         All = 255
     }
 }

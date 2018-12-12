@@ -27,7 +27,7 @@ Get a list of matching rule definitions within the search path.
 ### Example 1
 
 ```powershell
-PS C:\> Get-PSRule
+Get-PSRule
 ```
 
 Get a list of rule definitions from the current working path.
@@ -87,6 +87,8 @@ Accept wildcard characters: False
 ### -Option
 
 Additional options that configure execution. A `PSRuleOption` can be created by using the `New-PSRuleOption` cmdlet. Alternatively a hashtable or path to YAML file can be specified with options.
+
+For more information on PSRule options see about_PSRule_Options.
 
 ```yaml
 Type: PSRuleOption

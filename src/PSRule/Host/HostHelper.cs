@@ -147,7 +147,7 @@ namespace PSRule.Host
             {
                 //PipelineContext.WriteVerbose($"[PSRule][R][{block.Id}]::BEGIN");
 
-                var result = new RuleRecord(block.Id)
+                var result = new RuleRecord(block.RuleId)
                 {
                     TargetObject = inputObject,
                     TargetName = BindName(inputObject), // TODO: Move name binding outside of InvokeRuleBlock so that it is not called for every rule
@@ -178,7 +178,7 @@ namespace PSRule.Host
                     result.Outcome = invokeResults.Success ? RuleOutcome.Pass : RuleOutcome.Fail;
                 }
 
-                PipelineContext.WriteVerbose($"[PSRule][R][{block.Id}] -- [{result.Outcome}]");
+                PipelineContext.WriteVerbose($"[PSRule][R][{block.RuleId}] -- [{result.Outcome}]");
 
                 return result;
             }
@@ -209,19 +209,19 @@ namespace PSRule.Host
 
                 Rule rule = null;
 
-                if (!results.ContainsKey(block.Id))
+                if (!results.ContainsKey(block.RuleId))
                 {
                     rule = new Rule
                     {
-                        Name = block.Name,
+                        RuleId = block.RuleId,
                         Description = block.Description
                     };
 
-                    results[block.Id] = rule;
+                    results[block.RuleId] = rule;
                 }
                 else
                 {
-                    rule = results[block.Id];
+                    rule = results[block.RuleId];
                 }
             }
 

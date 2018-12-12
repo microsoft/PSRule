@@ -2,7 +2,7 @@
 {
     internal interface IDependencyTarget
     {
-        string Id { get; }
+        string RuleId { get; }
 
         string[] DependsOn { get; }
     }

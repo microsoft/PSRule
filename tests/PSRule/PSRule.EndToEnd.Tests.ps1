@@ -22,35 +22,35 @@ Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd' {
 
     Context 'App Service' {
 
-        $scopedResult = $result | Where-Object -FilterScript { $_.RuleName -like 'appService*' };
+        $scopedResult = $result | Where-Object -FilterScript { $_.RuleId -like 'appService*' };
 
         It 'Processes rules' {
             $scopedResult | Should -Not -BeNullOrEmpty;
             $scopedResult.Count | Should -Be 4;
 
             # Should pass
-            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServicePlan.MinPlan' }).Outcome | Should -Be 'Pass';
-            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServiceApp.ARRAfinity' }).Outcome | Should -Be 'Pass';
+            ($scopedResult | Where-Object -FilterScript { $_.RuleId -eq 'appServicePlan.MinPlan' }).Outcome | Should -Be 'Pass';
+            ($scopedResult | Where-Object -FilterScript { $_.RuleId -eq 'appServiceApp.ARRAfinity' }).Outcome | Should -Be 'Pass';
 
             # Should fail
-            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServicePlan.MinInstanceCount' }).Outcome | Should -Be 'Fail';
-            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServiceApp.UseHTTPS' }).Outcome | Should -Be 'Fail';
+            ($scopedResult | Where-Object -FilterScript { $_.RuleId -eq 'appServicePlan.MinInstanceCount' }).Outcome | Should -Be 'Fail';
+            ($scopedResult | Where-Object -FilterScript { $_.RuleId -eq 'appServiceApp.UseHTTPS' }).Outcome | Should -Be 'Fail';
         }
     }
 
     Context 'Storage Accounts' {
 
-        $scopedResult = $result | Where-Object -FilterScript { $_.RuleName -like 'storageAccounts.*' };
+        $scopedResult = $result | Where-Object -FilterScript { $_.RuleId -like 'storageAccounts.*' };
 
         It 'Processes rules' {
             $scopedResult | Should -Not -BeNullOrEmpty;
             $scopedResult.Count | Should -Be 2;
 
             # Should pass
-            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'storageAccounts.UseEncryption' }).Outcome | Should -Be 'Pass';
+            ($scopedResult | Where-Object -FilterScript { $_.RuleId -eq 'storageAccounts.UseEncryption' }).Outcome | Should -Be 'Pass';
 
             # Should fail
-            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'storageAccounts.UseHttps' }).Outcome | Should -Be 'Fail';
+            ($scopedResult | Where-Object -FilterScript { $_.RuleId -eq 'storageAccounts.UseHttps' }).Outcome | Should -Be 'Fail';
         }
     }
 }

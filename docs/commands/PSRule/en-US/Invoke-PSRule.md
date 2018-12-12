@@ -27,10 +27,81 @@ Evaluate pipeline objects against matching rules.
 ### Example 1
 
 ```powershell
-PS C:\> @{ Name = 'Item 1' } | Invoke-PSRule
+@{ Name = 'Item 1' } | Invoke-PSRule;
 ```
 
 Evaluate a simple hashtable on the pipeline against rules loaded from the current working path.
+
+### Example 2
+
+```powershell
+# Define objects to validate
+$items = @();
+$items += [PSCustomObject]@{ Name = 'Fridge' };
+$items += [PSCustomObject]@{ Name = 'Apple' };
+
+# Validate each item using rules saved in current working path
+$items | Invoke-PSRule;
+```
+
+```text
+   TargetName: Fridge
+
+RuleId                              Outcome    Message
+------                              -------    -------
+isFruit                             Fail       Fruit is only Apple, Orange and Pear
+
+
+   TargetName: Apple
+
+RuleId                              Outcome    Message
+------                              -------    -------
+isFruit                             Pass       Fruit is only Apple, Orange and Pear
+```
+
+Evaluate an array of objects on the pipeline against rules loaded from the current working path.
+
+### Example 3
+
+```powershell
+# Define objects to validate
+$items = @();
+$items += [PSCustomObject]@{ Name = 'Fridge' };
+$items += [PSCustomObject]@{ Name = 'Apple' };
+
+# Validate each item and only return failing results
+$items | Invoke-PSRule -Outcome Fail;
+```
+
+```text
+   TargetName: Fridge
+
+RuleId                              Outcome    Message
+------                              -------    -------
+isFruit                             Fail       Fruit is only Apple, Orange and Pear
+```
+
+Evaluate an array of objects, only failing object results are returned.
+
+### Example 4
+
+```powershell
+# Define objects to validate
+$items = @();
+$items += [PSCustomObject]@{ Name = 'Fridge' };
+$items += [PSCustomObject]@{ Name = 'Apple' };
+
+# Validate each item and show rule summary
+$items | Invoke-PSRule -As Summary;
+```
+
+```text
+RuleId                              Pass  Fail  Outcome
+------                              ----  ----  -------
+isFruit                             1     1     Fail
+```
+
+Evaluate an array of objects. The results for each rule is returned as a summary. Outcome is represented as the worst outcome.
 
 ## PARAMETERS
 
@@ -41,7 +112,7 @@ The pipeline object to process rules for.
 ```yaml
 Type: PSObject
 Parameter Sets: (All)
-Aliases:
+Aliases: TargetObject
 
 Required: True
 Position: Named
@@ -121,6 +192,8 @@ Accept wildcard characters: False
 
 Additional options that configure execution. A `PSRuleOption` can be created by using the `New-PSRuleOption` cmdlet. Alternatively a hashtable or path to YAML file can be specified with options.
 
+For more information on PSRule options see about_PSRule_Options.
+
 ```yaml
 Type: PSRuleOption
 Parameter Sets: (All)
@@ -140,7 +213,7 @@ The format to return results. Results are returned using detailed by default.
 The following result formats are available:
 
 - `Detail` - Returns pass/ fail results for each individual object
-- `Summary` - Returns summarized results for the rule and an overall outcome
+- `Summary` - Returns summarized results for the rule and the worst outcome
 
 ```yaml
 Type: ResultFormat

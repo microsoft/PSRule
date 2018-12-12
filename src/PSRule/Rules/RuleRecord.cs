@@ -9,27 +9,24 @@ namespace PSRule.Rules
     /// <summary>
     /// A detailed format for rule results.
     /// </summary>
-    [DebuggerDisplay("{RuleName")]
-    public sealed class RuleRecord : IRuleResult
+    [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
+    public sealed class RuleRecord : IRuleRecord
     {
         internal RuleRecord(string ruleId, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
             RuleId = ruleId;
-            RuleName = ruleId;
             Outcome = outcome;
             OutcomeReason = reason;
         }
 
         /// <summary>
-        /// A unique identifer for the rule.
+        /// A unique identifier for the rule.
         /// </summary>
         [JsonRequired]
         public string RuleId { get; private set; }
 
-        public string RuleName { get; private set; }
-
         /// <summary>
-        /// The outcome of the processing an object.
+        /// The outcome after the rule processes an object.
         /// </summary>
         public RuleOutcome Outcome { get; internal set; }
 

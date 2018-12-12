@@ -95,7 +95,7 @@ namespace PSRule.Host
             for (var i = 0; i < targets.Length; i++)
             {
                 _Targets[i] = new DependencyTarget(this, targets[i]);
-                _Index.Add(targets[i].Id, _Targets[i]);
+                _Index.Add(targets[i].RuleId, _Targets[i]);
             }
         }
     }

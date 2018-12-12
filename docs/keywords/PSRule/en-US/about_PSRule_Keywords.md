@@ -24,14 +24,14 @@ The following are the built-in keywords that can be used within PSRule:
 
 ### Rule
 
-A `Rule` definition describes an individual business rule that will be applied to pipeline data.
+A `Rule` definition describes an individual business rule that will be applied to pipeline objects.
 
-To define a Rule use the `Rule` keyword followed by a unique name and a pair of squiggly brackets `{`. Within the `{ }` one or more expressions can be used.
+To define a Rule use the `Rule` keyword followed by a unique identifier and a pair of squiggly brackets `{`. Within the `{ }` one or more expressions can be used.
 
 Syntax:
 
 ```text
-Rule <name> [-DependsOn <rule_name[]>] {
+Rule [-RuleId] <string> [-Tag <hashtable>] [-If <scriptBlock>] [-DependsOn <string[]>] [-Body] {
     ...
 }
 ```
@@ -54,12 +54,12 @@ Rule 'NameIsValid' -DependsOn 'NameMustExist' {
 
 ### Exists
 
-The `Exists` assertion is used within a `Rule` definition to assert that a _field_ or property must exist on pipeline data.
+The `Exists` assertion is used within a `Rule` definition to assert that a _field_ or property must exist on the pipeline object.
 
 Syntax:
 
 ```text
-Exists [-Field] <field[]> [-CaseSensitive]
+Exists [-Field] <string[]> [-CaseSensitive]
 ```
 
 Examples:
@@ -82,7 +82,7 @@ The `Match` assertion is used within a `Rule` definition to assert that the valu
 Syntax:
 
 ```text
-Match [-Field] <field[]> [-Expression] <regularExpression[]> [-CaseSensitive]
+Match [-Field] <string[]> [-Expression] <string[]> [-CaseSensitive]
 ```
 
 Examples:
@@ -104,7 +104,7 @@ The `Within` assertion is used within a `Rule` definition to assert that the val
 Syntax:
 
 ```text
-Within [-Field] <field> [-CaseSensitive] [-List] <PSObject[]]>
+Within [-Field] <string> [-CaseSensitive] [-List] <PSObject[]]>
 ```
 
 Examples:
@@ -179,7 +179,7 @@ The `TypeOf` assertion is used within a `Rule` definition to evaluate if the pip
 Syntax:
 
 ```powershell
-TypeOf <typeName[]>
+TypeOf <string[]>
 ```
 
 Examples:

@@ -8,8 +8,8 @@ namespace PSRule.Rules
     /// <summary>
     /// A summary format for rule results.
     /// </summary>
-    [DebuggerDisplay("{RuleId")]
-    public sealed class RuleSummaryRecord : IRuleResult
+    [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
+    public sealed class RuleSummaryRecord : IRuleRecord
     {
         internal RuleSummaryRecord(string ruleId)
         {
@@ -32,11 +32,14 @@ namespace PSRule.Rules
         public int Error { get; internal set; }
 
         /// <summary>
-        /// The unique identifer for the rule.
+        /// The unique identifier for the rule.
         /// </summary>
         [JsonRequired]
         public string RuleId { get; private set; }
 
+        /// <summary>
+        /// The aggregate outcome after the rule processes all objects.
+        /// </summary>
         public RuleOutcome Outcome
         {
             get

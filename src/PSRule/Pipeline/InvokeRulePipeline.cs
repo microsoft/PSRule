@@ -65,7 +65,7 @@ namespace PSRule.Pipeline
 
             foreach (var target in _RuleGraph.GetSingleTarget())
             {
-                var result = (target.Skipped) ? new RuleRecord(target.Value.Id, reason: RuleOutcomeReason.DependencyFail) : HostHelper.InvokeRuleBlock(_Option, target.Value, o);
+                var result = (target.Skipped) ? new RuleRecord(target.Value.RuleId, reason: RuleOutcomeReason.DependencyFail) : HostHelper.InvokeRuleBlock(_Option, target.Value, o);
 
                 if (result.Outcome == RuleOutcome.Pass)
                 {
@@ -95,12 +95,12 @@ namespace PSRule.Pipeline
 
         private void AddToSummary(RuleBlock ruleBlock, string targetName, RuleOutcome outcome)
         {
-            if (!_Summary.TryGetValue(ruleBlock.Id, out RuleSummaryRecord s))
+            if (!_Summary.TryGetValue(ruleBlock.RuleId, out RuleSummaryRecord s))
             {
-                s = new RuleSummaryRecord(ruleBlock.Id);
+                s = new RuleSummaryRecord(ruleBlock.RuleId);
                 s.Tag = ruleBlock.Tag?.ToHashtable();
 
-                _Summary.Add(ruleBlock.Id, s);
+                _Summary.Add(ruleBlock.RuleId, s);
             }
 
             if (outcome == RuleOutcome.Pass)

@@ -28,7 +28,7 @@ Describe 'PSRule -- Match keyword' -Tag 'Match' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'MatchTest';
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $True;
-            $result.RuleName | Should -Be 'MatchTest';
+            $result.RuleId | Should -Be 'MatchTest';
         }
     }
 }

@@ -26,8 +26,8 @@ The **New-PSRuleOption** cmdlet creates an options object that can be passed to 
 ### Example 1
 
 ```powershell
-PS C:\> $option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' }
-PS C:\> @{ Name = 'Item 1' } | Invoke-PSRule -Option $option
+$option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' }
+@{ Name = 'Item 1' } | Invoke-PSRule -Option $option
 ```
 
 Create a options object and run rules in constrained mode.
@@ -37,6 +37,8 @@ Create a options object and run rules in constrained mode.
 ### -Option
 
 Additional options that configure execution. Option also accepts a hashtable to configure options.
+
+For more information on PSRule options see about_PSRule_Options.
 
 ```yaml
 Type: PSRuleOption

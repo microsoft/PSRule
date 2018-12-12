@@ -13,23 +13,17 @@ namespace PSRule.Rules
     [DebuggerDisplay("{Id} @{SourcePath}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget
     {
-        public RuleBlock(string id)
+        public RuleBlock(string ruleId)
         {
-            Id = id;
-            Name = id;
+            RuleId = ruleId;
         }
 
         public string SourcePath { get; set; }
 
         /// <summary>
-        /// Get a unique identifer for the rule.
+        /// A unique identifier for the rule.
         /// </summary>
-        public string Id { get; private set; }
-
-        /// <summary>
-        /// The name of the rule.
-        /// </summary>
-        public string Name { get; private set; }
+        public string RuleId { get; private set; }
 
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.

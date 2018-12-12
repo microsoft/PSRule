@@ -55,6 +55,7 @@ function Invoke-PSRule {
         [Hashtable]$Tag,
 
         [Parameter(Mandatory = $True, ValueFromPipeline = $True)]
+        [Alias('TargetObject')]
         [PSObject]$InputObject,
 
         [Parameter(Mandatory = $False)]
@@ -234,6 +235,10 @@ function New-PSRuleOption {
     }
 }
 
+#
+# Keywords
+#
+
 <#
 .SYNOPSIS
 Create a rule definition.
@@ -258,7 +263,7 @@ function Rule {
     param (
         # The name of the rule
         [Parameter(Position = 0, Mandatory = $True)]
-        [String]$RuleName,
+        [String]$RuleId,
 
         # The body of the rule
         [Parameter(Position = 1, Mandatory = $True)]
@@ -272,8 +277,85 @@ function Rule {
     )
 
     begin {
-        # Just a stub
-        Write-Error -Message 'Rule keyword can only be called within PSRule. To call rules use Invoke-PSRule';
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'Rule keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+    }
+}
+
+function AllOf {
+
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True, Position = 0)]
+        [ScriptBlock]$Body
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'AllOf keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+    }
+}
+
+function AnyOf {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True, Position = 0)]
+        [ScriptBlock]$Body
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'AnyOf keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+    }
+}
+
+function Exists {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True, Position = 0)]
+        [Strin[]]$Field
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'Exists keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+    }
+}
+
+function Match {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True, Position = 0)]
+        [String]$Field,
+
+        [Parameter(Mandatory = $True, Position = 1)]
+        [String[]]$Expression,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$CaseSensitive = $False
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'Match keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+    }
+}
+
+function TypeOf {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True, Position = 0)]
+        [String[]]$TypeName
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'TypeOf keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
     }
 }
 
@@ -322,6 +404,34 @@ function IsDeviceGuardEnabled {
         return [System.Management.Automation.Security.SystemPolicy]::GetSystemLockdownPolicy() -eq [System.Management.Automation.Security.SystemEnforcementMode]::Enforce;
     }
 }
+
+function InitEditorServices {
+
+    [CmdletBinding()]
+    param (
+
+    )
+
+    process {
+        if ($Null -ne (Get-Variable -Name psEditor -ErrorAction Ignore)) {
+            Export-ModuleMember -Function @(
+                'AllOf'
+                'AnyOf'
+                'Exists'
+                'Match'
+                'TypeOf'
+                'Within'
+                'Hint'
+            );
+        }
+    }
+}
+
+#
+# Editor services
+#
+
+InitEditorServices;
 
 #
 # Export module

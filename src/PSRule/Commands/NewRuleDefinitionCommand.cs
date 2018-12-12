@@ -15,7 +15,7 @@ namespace PSRule.Commands
         /// The name of the deployment.
         /// </summary>
         [Parameter(Mandatory = true, Position = 0)]
-        public string Name { get; set; }
+        public string RuleId { get; set; }
 
         /// <summary>
         /// The definition of the deployment.
@@ -46,9 +46,9 @@ namespace PSRule.Commands
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
 
-            PipelineContext.WriteVerbose($"[PSRule][D] -- Found {Name} in {MyInvocation.ScriptName}");
+            PipelineContext.WriteVerbose($"[PSRule][D] -- Found {RuleId} in {MyInvocation.ScriptName}");
 
-            var block = new RuleBlock(Name)
+            var block = new RuleBlock(RuleId)
             {
                 Body = Body,
                 Description = metadata.Description,

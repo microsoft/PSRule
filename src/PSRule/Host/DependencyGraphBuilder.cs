@@ -22,12 +22,12 @@ namespace PSRule.Host
             // Load items into index
             foreach (var item in items)
             {
-                if (index.ContainsKey(item.Id))
+                if (index.ContainsKey(item.RuleId))
                 {
                     throw new Exception("Name already exists in index");
                 }
 
-                index.Add(item.Id, item);
+                index.Add(item.RuleId, item);
             }
 
             // Include any matching items
@@ -35,7 +35,7 @@ namespace PSRule.Host
             {
                 if (filter == null || filter(item))
                 {
-                    Include(item.Id, index);
+                    Include(item.RuleId, index);
                 }
             }
         }
