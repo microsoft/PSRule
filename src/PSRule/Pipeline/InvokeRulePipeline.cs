@@ -65,13 +65,13 @@ namespace PSRule.Pipeline
 
             foreach (var target in _RuleGraph.GetSingleTarget())
             {
-                var result = (target.Skipped) ? new RuleRecord(target.Value.Id) : HostHelper.InvokeRuleBlock(_Option, target.Value, o);
+                var result = (target.Skipped) ? new RuleRecord(target.Value.Id, reason: RuleOutcomeReason.DependencyFail) : HostHelper.InvokeRuleBlock(_Option, target.Value, o);
 
-                if (result.Outcome == RuleOutcome.Passed || result.Outcome == RuleOutcome.Inconclusive)
+                if (result.Outcome == RuleOutcome.Pass)
                 {
                     target.Pass();
                 }
-                else if (result.Outcome == RuleOutcome.Failed || result.Outcome == RuleOutcome.Error)
+                else if (result.Outcome == RuleOutcome.Fail || result.Outcome == RuleOutcome.Error)
                 {
                     target.Fail();
                 }
@@ -103,11 +103,11 @@ namespace PSRule.Pipeline
                 _Summary.Add(ruleBlock.Id, s);
             }
 
-            if (outcome == RuleOutcome.Passed)
+            if (outcome == RuleOutcome.Pass)
             {
                 s.Pass++;
             }
-            else if (outcome == RuleOutcome.Failed)
+            else if (outcome == RuleOutcome.Fail)
             {
                 s.Fail++;
             }

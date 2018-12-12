@@ -47,11 +47,11 @@ namespace PSRule.Rules
                 }
                 else if (Fail > 0)
                 {
-                    return RuleOutcome.Failed;
+                    return RuleOutcome.Fail;
                 }
                 else if (Pass > 0)
                 {
-                    return RuleOutcome.Passed;
+                    return RuleOutcome.Pass;
                 }
 
                 return RuleOutcome.None;
@@ -60,5 +60,10 @@ namespace PSRule.Rules
 
         [DefaultValue(null)]
         public Hashtable Tag { get; internal set; }
+
+        public bool IsSuccess()
+        {
+            return Outcome == RuleOutcome.Pass || Outcome == RuleOutcome.None;
+        }
     }
 }

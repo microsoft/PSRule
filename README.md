@@ -38,7 +38,6 @@ For example:
 # Saved to isFruit.Rule.ps1
 Rule 'isFruit' {
     # Condition to determine if the object is fruit
-    # $TargetObject is the current pipeline object being evaluated
     $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
 }
 ```
@@ -51,7 +50,6 @@ Rule 'isFruit' {
     Hint 'Fruit is only Apple, Orange and Pear'
 
     # Condition to determine if the object is fruit
-    # $TargetObject is the current pipeline object being evaluated
     $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
 }
 ```
@@ -69,7 +67,6 @@ $items += [PSCustomObject]@{ Name = 'Fridge' };
 $items += [PSCustomObject]@{ Name = 'Apple' };
 
 # Validate each item using rules saved in current working path
-# Results can be filtered with -Outcome Failed to return only non-fruit results
 $items | Invoke-PSRule;
 ```
 
@@ -80,22 +77,29 @@ The output of this example is:
 
 RuleId                              Outcome    Message
 ------                              -------    -------
-isFruit                             Failed     Fruit is only Apple, Orange and Pear
+isFruit                             Fail       Fruit is only Apple, Orange and Pear
 
 
    TargetName: Apple
 
 RuleId                              Outcome    Message
 ------                              -------    -------
-isFruit                             Passed     Fruit is only Apple, Orange and Pear
+isFruit                             Pass       Fruit is only Apple, Orange and Pear
 ```
 
-For a summary instead use `Invoke-PSRule -As Summary`.
+To filter results to only non-fruit results, use `Invoke-PSRule -Outcome Fail`. Passed, failed and error results are shown by default.
+
+```powershell
+# Only show non-fruit results
+$items | Invoke-PSRule -Outcome Fail;
+```
+
+For a summary of results for each rule use `Invoke-PSRule -As Summary`.
 
 For example:
 
 ```powershell
-# Using our existing $items add -As Summary
+# Show rule summary
 $items | Invoke-PSRule -As Summary;
 ```
 
@@ -104,7 +108,7 @@ The output of this example is:
 ```text
 RuleId                              Pass  Fail  Outcome
 ------                              ----  ----  -------
-isFruit                             1     1     Failed
+isFruit                             1     1     Fail
 ```
 
 ### Scenarios

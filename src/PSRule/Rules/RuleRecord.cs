@@ -12,11 +12,12 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleName")]
     public sealed class RuleRecord : IRuleResult
     {
-        internal RuleRecord(string ruleId)
+        internal RuleRecord(string ruleId, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
             RuleId = ruleId;
             RuleName = ruleId;
-            Outcome = RuleOutcome.None;
+            Outcome = outcome;
+            OutcomeReason = reason;
         }
 
         /// <summary>
@@ -27,12 +28,12 @@ namespace PSRule.Rules
 
         public string RuleName { get; private set; }
 
-        public bool Success { get; internal set; }
-
         /// <summary>
         /// The outcome of the processing an object.
         /// </summary>
         public RuleOutcome Outcome { get; internal set; }
+
+        public RuleOutcomeReason OutcomeReason { get; internal set; }
 
         public string Message { get; internal set; }
 
@@ -46,5 +47,10 @@ namespace PSRule.Rules
 
         [DefaultValue(null)]
         public Hashtable Tag { get; internal set; }
+
+        public bool IsSuccess()
+        {
+            return Outcome == RuleOutcome.Pass || Outcome == RuleOutcome.None;
+        }
     }
 }

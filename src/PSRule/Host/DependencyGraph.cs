@@ -23,7 +23,7 @@ namespace PSRule.Host
 
             Fail = 2,
 
-            FailDependency = 3
+            DependencyFail = 3
         }
 
         public sealed class DependencyTarget
@@ -42,7 +42,7 @@ namespace PSRule.Host
 
             public bool Skipped
             {
-                get { return State == DependencyTargetState.FailDependency; }
+                get { return State == DependencyTargetState.DependencyFail; }
             }
 
             public void Pass()
@@ -71,9 +71,9 @@ namespace PSRule.Host
                         {
                             continue;
                         }
-                        else if (dTarget.State == DependencyTargetState.Fail || dTarget.State == DependencyTargetState.FailDependency)
+                        else if (dTarget.State == DependencyTargetState.Fail || dTarget.State == DependencyTargetState.DependencyFail)
                         {
-                            target.State = DependencyTargetState.FailDependency;
+                            target.State = DependencyTargetState.DependencyFail;
                             break;
                         }
 

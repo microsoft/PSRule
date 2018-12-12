@@ -31,7 +31,7 @@ Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
 
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'ExistsTest';
             $result | Should -Not -BeNullOrEmpty;
-            $result.Success | Should -Be $True;
+            $result.IsSuccess() | Should -Be $True;
             $result.RuleName | Should -Be 'ExistsTest';
         }
     }

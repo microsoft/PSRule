@@ -90,11 +90,11 @@ Filter output to only show rules with a specific outcome.
 Type: RuleOutcome
 Parameter Sets: (All)
 Aliases:
-Accepted values: Passed, Failed, Error
+Accepted values: Pass, Fail, Error, None
 
 Required: False
 Position: Named
-Default value: Failed, Passed, Error
+Default value: Pass, Fail, Error
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

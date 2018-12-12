@@ -58,7 +58,7 @@ function Invoke-PSRule {
         [PSObject]$InputObject,
 
         [Parameter(Mandatory = $False)]
-        [PSRule.Rules.RuleOutcome]$Outcome = [PSRule.Rules.RuleOutcome]::Default,
+        [PSRule.Rules.RuleOutcome]$Outcome = [PSRule.Rules.RuleOutcome]::Processed,
 
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option,

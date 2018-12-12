@@ -160,23 +160,22 @@ namespace PSRule.Host
                 {
                     if (!block.If.Invoke())
                     {
-                        //result.Status = RuleResultOutcome.Skipped;
+                        result.OutcomeReason = RuleOutcomeReason.PreconditionFail;
                         return result;
                     }
                 }
-
-                result.Outcome = RuleOutcome.InProgress;
 
                 var invokeResults = block.Body.Invoke();
 
                 if (invokeResults == null)
                 {
-                    result.Outcome = RuleOutcome.Inconclusive;
+                    result.OutcomeReason = RuleOutcomeReason.Inconclusive;
+                    result.Outcome = RuleOutcome.Fail;
                 }
                 else
                 {
-                    result.Success = invokeResults.Success;
-                    result.Outcome = result.Success ? RuleOutcome.Passed : RuleOutcome.Failed;
+                    result.OutcomeReason = RuleOutcomeReason.Processed;
+                    result.Outcome = invokeResults.Success ? RuleOutcome.Pass : RuleOutcome.Fail;
                 }
 
                 PipelineContext.WriteVerbose($"[PSRule][R][{block.Id}] -- [{result.Outcome}]");

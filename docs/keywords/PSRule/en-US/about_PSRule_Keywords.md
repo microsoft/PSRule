@@ -8,10 +8,9 @@ Describes the language keywords that can be used within PSRule document definiti
 
 ## LONG DESCRIPTION
 
-PSRule lets you define rules using PowerShell blocks. To create a rule use the `Rule` keyword. Within a rule a mixture or assertions and triggers can be used.
+PSRule lets you define rules using PowerShell blocks. To create a rule use the `Rule` keyword. Within a rule several assertions can be used.
 
 - Assertion - A specific test that always evaluates to true or false.
-- Trigger - are sections of code that execute after the rule has been evaluated as either successful or failed.
 
 The following are the built-in keywords that can be used within PSRule:
 

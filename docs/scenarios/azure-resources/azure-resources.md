@@ -156,10 +156,10 @@ Our output looked like this:
 
 RuleId                              Outcome    Message
 ------                              -------    -------
-storageAccounts.UseHttps            Failed     Storage accounts should only allow secure traffic
+storageAccounts.UseHttps            Fail       Storage accounts should only allow secure traffic
 ```
 
-In our case `storageAccounts.UseHttps` returns a `Failed` status because our storage account has `supportsHttpsTrafficOnly` = `false`, which is exactly what should happen.
+In our case `storageAccounts.UseHttps` returns a `Fail` outcome because our storage account has `supportsHttpsTrafficOnly` = `false`, which is exactly what should happen.
 
 ## Define helper functions
 
