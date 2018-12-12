@@ -1,0 +1,11 @@
+
+.vscode/
+.github/
+.vs/
+docs/
+out/
+src/
+reports/
+scripts/
+tests/
+BenchmarkDotNet.Artifacts/
