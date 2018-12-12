@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 
 namespace PSRule.Rules
 {
     [Flags]
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum RuleOutcome : byte
     {
         None = 0,

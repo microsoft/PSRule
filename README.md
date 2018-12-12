@@ -38,6 +38,7 @@ For example:
 # Saved to isFruit.Rule.ps1
 Rule 'isFruit' {
     # Condition to determine if the object is fruit
+    # $TargetObject is the current pipeline object being evaluated
     $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
 }
 ```
@@ -50,6 +51,7 @@ Rule 'isFruit' {
     Hint 'Fruit is only Apple, Orange and Pear'
 
     # Condition to determine if the object is fruit
+    # $TargetObject is the current pipeline object being evaluated
     $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
 }
 ```
@@ -61,13 +63,13 @@ To execute with rule use `Invoke-PSRule`.
 For example:
 
 ```powershell
-# Define objects
+# Define objects to validate
 $items = @();
 $items += [PSCustomObject]@{ Name = 'Fridge' };
 $items += [PSCustomObject]@{ Name = 'Apple' };
 
 # Validate each item using rules saved in current working path
-# Results can be filtered with -Status Failed to return only non-fruit results
+# Results can be filtered with -Outcome Failed to return only non-fruit results
 $items | Invoke-PSRule;
 ```
 
@@ -88,6 +90,23 @@ RuleId                              Outcome    Message
 isFruit                             Passed     Fruit is only Apple, Orange and Pear
 ```
 
+For a summary instead use `Invoke-PSRule -As Summary`.
+
+For example:
+
+```powershell
+# Using our existing $items add -As Summary
+$items | Invoke-PSRule -As Summary;
+```
+
+The output of this example is:
+
+```text
+RuleId                              Pass  Fail  Outcome
+------                              ----  ----  -------
+isFruit                             1     1     Failed
+```
+
 ### Scenarios
 
 For practical examples of PSRule see:
@@ -96,7 +115,7 @@ For practical examples of PSRule see:
 
 ## Language reference
 
-PSRule extends PowerShell with domain specific language (DSL) keywords and cmdlets.
+PSRule extends PowerShell with domain specific language (DSL) keywords, cmdlets and variables.
 
 ### Keywords
 

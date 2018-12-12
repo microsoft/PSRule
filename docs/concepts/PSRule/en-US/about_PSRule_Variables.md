@@ -12,6 +12,8 @@ PSRule lets you define rules using PowerShell blocks. A rule is defined within s
 
 Within a rule definition, PSRule exposes a number of automatic variables that can be read to assist with rule execution. Overwriting these variables or variable properties is not supported.
 
+These variables are only available while `Invoke-PSRule` is executing.
+
 The following variables are available for use:
 
 - [$Rule](#rule)

@@ -1,12 +1,14 @@
-﻿namespace PSRule.Configuration
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace PSRule.Configuration
 {
     /// <summary>
     /// The format to return to the pipeline after executing rules.
     /// </summary>
-    public enum ResultFormat
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum ResultFormat : byte
     {
-        Default = 0,
-
         Detail = 1,
 
         Summary = 2

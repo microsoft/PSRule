@@ -46,7 +46,7 @@ Conditions can be any valid PowerShell expression that results in a `$True` or `
 
 > Several PSRule keywords such as `Exists` and `AllOf` can supplement PowerShell to quickly build out rules that are easy to read.
 
-In `resources.json` one of our example Azure Storage has a property `Properties.supportsHttpsTrafficOnly` as shown in a brief extract below, which will be how our rule will pass `$True` or fail `$False` Azure resources that we throw at it.
+In `resources.json` one of our example storage accounts has a property `Properties.supportsHttpsTrafficOnly` as shown below, which will be how our rule will pass `$True` or fail `$False` Azure resources that we throw at it.
 
 ```json
 {
@@ -123,7 +123,7 @@ Rule 'storageAccounts.UseHttps' -If { $TargetObject.ResourceType -eq 'Microsoft.
 
 ## Execute rules
 
-With a rule defined, the next step is to execute it. To execute rules pipe the target object to `Invoke-PSRule`.
+With a rule defined, the next step is to execute it. To execute rules, pipe the target object to `Invoke-PSRule`.
 
 For example:
 
@@ -177,7 +177,7 @@ function global:NameOfFunction {
 }
 ```
 
-In our example, we are going to define a `ResourceType` function in a file named `common.Rule.ps1`. This function will be used by preconditions to check if the type of Azure resource.
+In our example, we are going to define a `ResourceType` function in a file named `common.Rule.ps1`. This function will be used by preconditions to check the type of Azure resource.
 
 ```powershell
 # A custom function to filter by resource type

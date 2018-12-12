@@ -41,7 +41,7 @@ The name of a specific rule to list. If this parameter is not specified all rule
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases:
+Aliases: n
 
 Required: False
 Position: Named
@@ -57,7 +57,7 @@ One or more paths to search for rule definitions within. If this parameter is no
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases:
+Aliases: f
 
 Required: False
 Position: 0

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Newtonsoft.Json;
+using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Management.Automation;
 
@@ -20,6 +22,7 @@ namespace PSRule.Rules
         /// <summary>
         /// A unique identifer for the rule.
         /// </summary>
+        [JsonRequired]
         public string RuleId { get; private set; }
 
         public string RuleName { get; private set; }
@@ -38,8 +41,10 @@ namespace PSRule.Rules
         /// </summary>
         public string TargetName { get; internal set; }
 
+        [JsonIgnore]
         public PSObject TargetObject { get; internal set; }
 
+        [DefaultValue(null)]
         public Hashtable Tag { get; internal set; }
     }
 }

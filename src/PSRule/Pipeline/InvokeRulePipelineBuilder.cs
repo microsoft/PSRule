@@ -46,10 +46,7 @@ namespace PSRule.Pipeline
 
         public void As(ResultFormat resultFormat)
         {
-            if (resultFormat != ResultFormat.Default)
-            {
-                _ResultFormat = resultFormat;
-            }
+            _ResultFormat = resultFormat;
         }
 
         public void UseCommandRuntime(ICommandRuntime commandRuntime)

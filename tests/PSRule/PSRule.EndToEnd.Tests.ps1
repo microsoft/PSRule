@@ -15,7 +15,7 @@ Set-StrictMode -Version latest;
 $rootPath = $PWD;
 Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 
-Describe 'PSRule -- end to end tests' -Tag 'EndToEnd' {
+Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd' {
 
     $jsonData = Get-Content -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources/resources.json) | ConvertFrom-Json;
     $result = $jsonData | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources);
@@ -51,6 +51,36 @@ Describe 'PSRule -- end to end tests' -Tag 'EndToEnd' {
 
             # Should fail
             ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'storageAccounts.UseHttps' }).Outcome | Should -Be 'Failed';
+        }
+    }
+}
+
+Describe 'Scenarios -- fruit' -Tag 'EndToEnd' {
+
+    # Define objects
+    $items = @();
+    $items += [PSCustomObject]@{ Name = 'Fridge' };
+    $items += [PSCustomObject]@{ Name = 'Apple' };
+
+    Context 'Invoke-PSRule' {
+        It 'Detailed results' {
+            $result = @($items | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/fruit) -As Detail);
+            $result.Count | Should -Be 2;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+        }
+
+        It 'Summary results' {
+            $result = @($items | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/fruit) -As Summary);
+            $result.Count | Should -Be 1;
+            $result | Should -BeOfType PSRule.Rules.RuleSummaryRecord;
+        }
+    }
+
+    Context 'Get-PSRule' {
+        It 'Returns rules' {
+            $result = @(Get-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/fruit));
+            $result.Count | Should -Be 1;
+            $result | Should -BeOfType PSRule.Rules.Rule;
         }
     }
 }
