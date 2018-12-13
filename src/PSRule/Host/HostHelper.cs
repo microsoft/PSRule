@@ -118,6 +118,7 @@ namespace PSRule.Host
                     throw new FileNotFoundException("Can't find file", path);
                 }
 
+                // Invoke script
                 ps.AddScript(path, true);
                 var invokeResults = ps.Invoke();
 
@@ -131,7 +132,6 @@ namespace PSRule.Host
                     if (ir.BaseObject is ILanguageBlock)
                     {
                         var block = ir.BaseObject as ILanguageBlock;
-                        block.SourcePath = path;
 
                         results.Add(block);
                     }
@@ -147,12 +147,14 @@ namespace PSRule.Host
             {
                 //PipelineContext.WriteVerbose($"[PSRule][R][{block.Id}]::BEGIN");
 
-                var result = new RuleRecord(block.Id)
+                var result = new RuleRecord(block.RuleId)
                 {
                     TargetObject = inputObject,
                     TargetName = BindName(inputObject), // TODO: Move name binding outside of InvokeRuleBlock so that it is not called for every rule
                     Tag = block.Tag?.ToHashtable()
                 };
+
+                PipelineContext.WriteVerbose($" :: {result.TargetName}");
 
                 LanguageContext._Rule = result;
 
@@ -160,26 +162,25 @@ namespace PSRule.Host
                 {
                     if (!block.If.Invoke())
                     {
-                        //result.Status = RuleResultOutcome.Skipped;
+                        result.OutcomeReason = RuleOutcomeReason.PreconditionFail;
                         return result;
                     }
                 }
 
-                result.Status = RuleOutcome.InProgress;
+                var invokeResult = block.Body.Invoke();
 
-                var invokeResults = block.Body.Invoke();
-
-                if (invokeResults == null)
+                if (invokeResult == null)
                 {
-                    result.Status = RuleOutcome.Inconclusive;
+                    result.OutcomeReason = RuleOutcomeReason.Inconclusive;
+                    result.Outcome = RuleOutcome.Fail;
                 }
                 else
                 {
-                    result.Success = invokeResults.Success;
-                    result.Status = result.Success ? RuleOutcome.Passed : RuleOutcome.Failed;
+                    result.OutcomeReason = RuleOutcomeReason.Processed;
+                    result.Outcome = invokeResult.AllOf ? RuleOutcome.Pass : RuleOutcome.Fail;
                 }
 
-                PipelineContext.WriteVerbose($"[PSRule][R][{block.Id}] -- [{result.Status}]");
+                PipelineContext.WriteVerbose($" -- [{invokeResult?.Pass}/{invokeResult?.Count}] [{result.Outcome}]");
 
                 return result;
             }
@@ -198,7 +199,7 @@ namespace PSRule.Host
         private static IDictionary<string, Rule> ToRule(IEnumerable<ILanguageBlock> blocks, RuleFilter filter)
         {
             // Index deployments by environment/name
-            var results = new Dictionary<string, Rule>(System.StringComparer.OrdinalIgnoreCase);
+            var results = new Dictionary<string, Rule>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var block in blocks.OfType<RuleBlock>())
             {
@@ -210,19 +211,22 @@ namespace PSRule.Host
 
                 Rule rule = null;
 
-                if (!results.ContainsKey(block.Id))
+                if (!results.ContainsKey(block.RuleId))
                 {
                     rule = new Rule
                     {
-                        Name = block.Name,
-                        Description = block.Description
+                        RuleId = block.RuleId,
+                        RuleName = block.RuleName,
+                        SourcePath = block.SourcePath,
+                        Description = block.Description,
+                        Tag = block.Tag
                     };
 
-                    results[block.Id] = rule;
+                    results[block.RuleId] = rule;
                 }
                 else
                 {
-                    rule = results[block.Id];
+                    rule = results[block.RuleId];
                 }
             }
 

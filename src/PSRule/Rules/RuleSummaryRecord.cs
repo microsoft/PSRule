@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Newtonsoft.Json;
+using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace PSRule.Rules
@@ -6,13 +8,25 @@ namespace PSRule.Rules
     /// <summary>
     /// A summary format for rule results.
     /// </summary>
-    [DebuggerDisplay("{RuleId")]
-    public sealed class RuleSummaryRecord : IRuleResult
+    [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
+    public sealed class RuleSummaryRecord : IRuleRecord
     {
         internal RuleSummaryRecord(string ruleId)
         {
             RuleId = ruleId;
+            RuleName = RuleHelper.GetRuleName(RuleId);
         }
+
+        /// <summary>
+        /// The unique identifier for the rule.
+        /// </summary>
+        [JsonRequired]
+        public string RuleId { get; private set; }
+
+        /// <summary>
+        /// The name of the rule.
+        /// </summary>
+        public string RuleName { get; private set; }
 
         /// <summary>
         /// The number of rule passes.
@@ -30,10 +44,8 @@ namespace PSRule.Rules
         public int Error { get; internal set; }
 
         /// <summary>
-        /// The unique identifer for the rule.
+        /// The aggregate outcome after the rule processes all objects.
         /// </summary>
-        public string RuleId { get; private set; }
-
         public RuleOutcome Outcome
         {
             get
@@ -44,17 +56,23 @@ namespace PSRule.Rules
                 }
                 else if (Fail > 0)
                 {
-                    return RuleOutcome.Failed;
+                    return RuleOutcome.Fail;
                 }
                 else if (Pass > 0)
                 {
-                    return RuleOutcome.Passed;
+                    return RuleOutcome.Pass;
                 }
 
                 return RuleOutcome.None;
             }
         }
 
+        [DefaultValue(null)]
         public Hashtable Tag { get; internal set; }
+
+        public bool IsSuccess()
+        {
+            return Outcome == RuleOutcome.Pass || Outcome == RuleOutcome.None;
+        }
     }
 }

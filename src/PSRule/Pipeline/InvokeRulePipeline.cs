@@ -49,6 +49,8 @@ namespace PSRule.Pipeline
                 {
                     results.Add(result);
                 }
+
+                _Context.Next();
             }
 
             return results;
@@ -65,22 +67,31 @@ namespace PSRule.Pipeline
 
             foreach (var target in _RuleGraph.GetSingleTarget())
             {
-                var result = (target.Skipped) ? new RuleRecord(target.Value.Id) : HostHelper.InvokeRuleBlock(_Option, target.Value, o);
+                _Context.Enter(target);
 
-                if (result.Status == RuleOutcome.Passed || result.Status == RuleOutcome.Inconclusive)
+                try
                 {
-                    target.Pass();
+                    var result = (target.Skipped) ? new RuleRecord(target.Value.RuleId, reason: RuleOutcomeReason.DependencyFail) : HostHelper.InvokeRuleBlock(_Option, target.Value, o);
+
+                    if (result.Outcome == RuleOutcome.Pass)
+                    {
+                        target.Pass();
+                    }
+                    else if (result.Outcome == RuleOutcome.Fail || result.Outcome == RuleOutcome.Error)
+                    {
+                        target.Fail();
+                    }
+
+                    AddToSummary(ruleBlock: target.Value, targetName: result.TargetName, outcome: result.Outcome);
+
+                    if (ShouldOutput(result.Outcome))
+                    {
+                        results.Add(result);
+                    }
                 }
-                else if (result.Status == RuleOutcome.Failed || result.Status == RuleOutcome.Error)
+                finally
                 {
-                    target.Fail();
-                }
-
-                AddToSummary(ruleBlock: target.Value, targetName: result.TargetName, outcome: result.Status);
-
-                if (ShouldOutput(result.Status))
-                {
-                    results.Add(result);
+                    _Context.Exit();
                 }
             }
 
@@ -95,19 +106,19 @@ namespace PSRule.Pipeline
 
         private void AddToSummary(RuleBlock ruleBlock, string targetName, RuleOutcome outcome)
         {
-            if (!_Summary.TryGetValue(ruleBlock.Id, out RuleSummaryRecord s))
+            if (!_Summary.TryGetValue(ruleBlock.RuleId, out RuleSummaryRecord s))
             {
-                s = new RuleSummaryRecord(ruleBlock.Id);
+                s = new RuleSummaryRecord(ruleBlock.RuleId);
                 s.Tag = ruleBlock.Tag?.ToHashtable();
 
-                _Summary.Add(ruleBlock.Id, s);
+                _Summary.Add(ruleBlock.RuleId, s);
             }
 
-            if (outcome == RuleOutcome.Passed)
+            if (outcome == RuleOutcome.Pass)
             {
                 s.Pass++;
             }
-            else if (outcome == RuleOutcome.Failed)
+            else if (outcome == RuleOutcome.Fail)
             {
                 s.Fail++;
             }

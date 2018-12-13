@@ -33,21 +33,26 @@ Describe 'Invoke-PSRule' {
         It 'Returns passed' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
-            $result.Success | Should -Be $True;
+            $result.IsSuccess() | Should -Be $True;
             $result.TargetName | Should -Be 'TestObject1';
         }
 
         It 'Returns failure' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile2';
             $result | Should -Not -BeNullOrEmpty;
-            $result.Success | Should -Be $False;
+            $result.IsSuccess() | Should -Be $False;
             $result.TargetName | Should -Be 'TestObject1';
         }
 
         It 'Returns inconclusive' {
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile3' -Status All;
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile3' -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
-            $result.Status | Should -Be 'Inconclusive';
+            $result.IsSuccess() | Should -Be $False;
+            $result.OutcomeReason | Should -Be 'Inconclusive';
+        }
+
+        It 'Returns error with bad path' {
+            { $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'NotAFile.ps1') } | Should -Throw -ExceptionType System.Management.Automation.ItemNotFoundException;
         }
 
         It 'Processes rule tags' {
@@ -73,22 +78,22 @@ Describe 'Invoke-PSRule' {
         }
 
         It 'Processes rule preconditions' {
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'precondition' } -Status All;
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'precondition' } -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
-            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithPreconditionTrue' }).Status | Should -Be 'Passed';
-            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithPreconditionFalse' }).Status | Should -Be 'None';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithPreconditionTrue' }).Outcome | Should -Be 'Pass';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithPreconditionFalse' }).Outcome | Should -Be 'None';
         }
 
         It 'Processes rule dependencies' {
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name WithDependency1 -Status All;
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name WithDependency1 -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 5;
-            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency5' }).Status | Should -Be 'Failed';
-            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency4' }).Status | Should -Be 'Passed';
-            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency3' }).Status | Should -Be 'Passed';
-            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency2' }).Status | Should -Be 'None';
-            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency1' }).Status | Should -Be 'None';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency5' }).Outcome | Should -Be 'Fail';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency4' }).Outcome | Should -Be 'Pass';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency3' }).Outcome | Should -Be 'Pass';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency2' }).Outcome | Should -Be 'None';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency1' }).Outcome | Should -Be 'None';
         }
 
         It 'Binds to TargetName' {
@@ -100,7 +105,7 @@ Describe 'Invoke-PSRule' {
 
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
-            $result.Success | Should -Be $True;
+            $result.IsSuccess() | Should -Be $True;
             $result.TargetName | Should -Be 'ObjectTargetName';
         }
 
@@ -112,7 +117,7 @@ Describe 'Invoke-PSRule' {
 
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
-            $result.Success | Should -Be $True;
+            $result.IsSuccess() | Should -Be $True;
             $result.TargetName | Should -Be 'ObjectName';
         }
     }
@@ -140,13 +145,13 @@ Describe 'Invoke-PSRule' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 3;
             $result | Should -BeOfType PSRule.Rules.RuleSummaryRecord;
-            $result.RuleId | Should -BeIn 'FromFile1', 'FromFile2', 'FromFile3'
+            $result.RuleName | Should -BeIn 'FromFile1', 'FromFile2', 'FromFile3'
             $result.Tag.category | Should -BeIn 'group1';
 
-            ($result | Where-Object { $_.RuleId -eq 'FromFile1'}).Outcome | Should -Be 'Passed';
-            ($result | Where-Object { $_.RuleId -eq 'FromFile1'}).Pass | Should -Be 2;
-            ($result | Where-Object { $_.RuleId -eq 'FromFile2'}).Outcome | Should -Be 'Failed';
-            ($result | Where-Object { $_.RuleId -eq 'FromFile2'}).Fail | Should -Be 2;
+            ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Outcome | Should -Be 'Pass';
+            ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Pass | Should -Be 2;
+            ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Outcome | Should -Be 'Fail';
+            ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Fail | Should -Be 2;
         }
     }
 
@@ -188,20 +193,20 @@ Describe 'Get-PSRule' {
             $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1', 'FromFile3';
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
-            $result.Name | Should -BeIn @('FromFile1', 'FromFile3');
+            $result.RuleName | Should -BeIn @('FromFile1', 'FromFile3');
         }
 
         It 'Filters by tag' {
             $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ Test = "Test1" };
             $result | Should -Not -BeNullOrEmpty;
-            $result.Name | Should -Be 'FromFile1';
+            $result.RuleName | Should -Be 'FromFile1';
         }
 
         It 'Reads metadata' {
             $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
-            $result.Name | Should -Be 'FromFile1';
-            $result.Description | Should -Be 'Test rule 1'
+            $result.RuleName | Should -Be 'FromFile1';
+            $result.Description | Should -Be 'Test rule 1';
         }
     }
 

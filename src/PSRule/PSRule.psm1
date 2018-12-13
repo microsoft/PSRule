@@ -36,32 +36,39 @@ Import-LocalizedData -BindingVariable LocalizedData -FileName 'PSRule.Resources.
 # Public functions
 #
 
+# .ExternalHelp PSRule-Help.xml
 function Invoke-PSRule {
 
     [CmdletBinding()]
     [OutputType([PSRule.Rules.RuleRecord])]
     [OutputType([PSRule.Rules.RuleSummaryRecord])]
     param (
+        # A list of paths to check for rule definitions
         [Parameter(Position = 0)]
+        [Alias('f')]
         [String[]]$Path = $PWD,
 
+        # Filter to rules with the following names
         [Parameter(Mandatory = $False)]
+        [Alias('n')]
         [String[]]$Name,
 
         [Parameter(Mandatory = $False)]
         [Hashtable]$Tag,
 
         [Parameter(Mandatory = $True, ValueFromPipeline = $True)]
+        [Alias('TargetObject')]
         [PSObject]$InputObject,
 
         [Parameter(Mandatory = $False)]
-        [PSRule.Rules.RuleOutcome]$Status = [PSRule.Rules.RuleOutcome]::Default,
+        [PSRule.Rules.RuleOutcome]$Outcome = [PSRule.Rules.RuleOutcome]::Processed,
 
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Default
+        [ValidateSet('Detail', 'Summary')]
+        [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Detail
     )
 
     begin {
@@ -82,6 +89,12 @@ function Invoke-PSRule {
         # Discover scripts in the specified paths
         [String[]]$sourceFiles = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
 
+        # Check that some matching script files were found
+        if ($Null -eq $sourceFiles) {
+            Write-Warning -Message LocalizedData.PathNotFound;
+            continue;
+        }
+
         $isDeviceGuard = IsDeviceGuardEnabled;
 
         # If DeviceGuard is enabled, force a contrained execution environment
@@ -93,8 +106,12 @@ function Invoke-PSRule {
         $builder.FilterBy($Name, $Tag);
         $builder.Source($sourceFiles);
         $builder.Option($Option);
-        $builder.Limit($Status);
-        $builder.As($As);
+        $builder.Limit($Outcome);
+
+        if ($PSBoundParameters.ContainsKey('As')) {
+            $builder.As($As);
+        }
+
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $pipeline = $builder.Build();
     }
@@ -112,23 +129,24 @@ function Invoke-PSRule {
     }
 }
 
-# Get a list of rules
+# .ExternalHelp PSRule-Help.xml
 function Get-PSRule {
 
     [CmdletBinding()]
     [OutputType([PSRule.Rules.Rule])]
     param (
-        # A list of deployments to run by name
+        # A list of paths to check for rule definitions
+        [Parameter(Position = 0, Mandatory = $False)]
+        [Alias('f')]
+        [String[]]$Path = $PWD,
+
+        # Filter to rules with the following names
         [Parameter(Mandatory = $False)]
-        [SupportsWildcards()]
+        [Alias('n')]
         [String[]]$Name,
 
         [Parameter(Mandatory = $False)]
         [Hashtable]$Tag,
-
-        # A list of paths to check for deployments
-        [Parameter(Position = 0, Mandatory = $False)]
-        [String[]]$Path = $PWD,
 
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option
@@ -148,16 +166,29 @@ function Get-PSRule {
         $Option = New-PSRuleOption @optionParams;
 
         # Discover scripts in the specified paths
-        [String[]]$includePaths = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
+        [String[]]$sourceFiles = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
 
-        Write-Verbose -Message "[Get-PSRule] -- Found $($includePaths.Length) script(s)";
-        Write-Debug -Message "[Get-PSRule] -- Found scripts: $([String]::Join(' ', $includePaths))";
+        Write-Verbose -Message "[Get-PSRule] -- Found $($sourceFiles.Length) script(s)";
+        Write-Debug -Message "[Get-PSRule] -- Found scripts: $([String]::Join(' ', $sourceFiles))";
+
+        $isDeviceGuard = IsDeviceGuardEnabled;
+
+        # If DeviceGuard is enabled, force a contrained execution environment
+        if ($isDeviceGuard) {
+            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
+        }
+
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Get();
+        $builder.FilterBy($Name, $Tag);
+        $builder.Source($sourceFiles);
+        $builder.Option($Option);
+        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $pipeline = $builder.Build();
     }
 
     process {
-        # Get matching deployment definitions
-        $filter = New-Object -TypeName PSRule.Rules.RuleFilter -ArgumentList @($Name, $Tag);
-        GetRule -Path $includePaths -Option $Option -Filter $filter -Verbose:$VerbosePreference;
+        # Get matching rule definitions
+        $pipeline.Process();
     }
 
     end {
@@ -165,10 +196,12 @@ function Get-PSRule {
     }
 }
 
+# .ExternalHelp PSRule-Help.xml
 function New-PSRuleOption {
 
     [CmdletBinding()]
     [OutputType([PSRule.Configuration.PSRuleOption])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in memory object only')]
     param (
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option,
@@ -198,13 +231,13 @@ function New-PSRuleOption {
             $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $True);
         }
 
-        # if ($PSBoundParameters.ContainsKey('Encoding')) {
-        #     $Option.Markdown.Encoding = $Encoding;
-        # }
-
         return $Option;
     }
 }
+
+#
+# Keywords
+#
 
 <#
 .SYNOPSIS
@@ -230,7 +263,7 @@ function Rule {
     param (
         # The name of the rule
         [Parameter(Position = 0, Mandatory = $True)]
-        [String]$RuleName,
+        [String]$RuleId,
 
         # The body of the rule
         [Parameter(Position = 1, Mandatory = $True)]
@@ -244,46 +277,117 @@ function Rule {
     )
 
     begin {
-        # Just a stub
-        Write-Error -Message 'Rule keyword can only be called within PSRule. To call rules use Invoke-PSRule';
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'Rule keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+    }
+}
+
+function AllOf {
+
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True, Position = 0)]
+        [ScriptBlock]$Body
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'AllOf keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+    }
+}
+
+function AnyOf {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True, Position = 0)]
+        [ScriptBlock]$Body
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'AnyOf keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+    }
+}
+
+function Exists {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True, Position = 0)]
+        [String[]]$Field,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$CaseSensitive = $False,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$Not = $False
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'Exists keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+    }
+}
+
+function Match {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True, Position = 0)]
+        [String]$Field,
+
+        [Parameter(Mandatory = $True, Position = 1)]
+        [String[]]$Expression,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$CaseSensitive = $False
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'Match keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+    }
+}
+
+function Within {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True, Position = 0)]
+        [String]$Field,
+
+        [Parameter(Mandatory = $True, Position = 1)]
+        [PSObject[]]$AllowedValue,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$CaseSensitive = $False
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'Within keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+    }
+}
+
+function TypeOf {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True, Position = 0)]
+        [String[]]$TypeName
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'TypeOf keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
     }
 }
 
 #
 # Helper functions
 #
-
-# Used to discover the rule blocks
-function GetRule {
-
-    [CmdletBinding()]
-    [OutputType([PSRule.Rules.Rule])]
-    param (
-        [Parameter(Mandatory = $True)]
-        [String[]]$Path,
-
-        [Parameter(Mandatory = $True)]
-        [PSRule.Configuration.PSRuleOption]$Option,
-
-        [Parameter(Mandatory = $True)]
-        [AllowNull()]
-        [PSRule.Rules.RuleFilter]$Filter
-    )
-
-    process {
-
-        $isDeviceGuard = IsDeviceGuardEnabled;
-
-        # If DeviceGuard is enabled, force a contrained execution environment
-        if ($isDeviceGuard) {
-            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
-        }
-
-        Write-Verbose -Message "[PSRule] -- Getting rules";
-
-        [PSRule.Pipeline.PipelineBuilder]::Get().Build($Option, $Path, $Filter).Process();
-    }
-}
 
 # Get a list of rule script files in the matching paths
 function GetRuleScriptPath {
@@ -296,8 +400,11 @@ function GetRuleScriptPath {
     )
 
     process {
+        $fileObjects = (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
 
-        (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1').FullName;
+        if ($Null -ne $fileObjects) {
+            $fileObjects.FullName;
+        }
     }
 }
 
@@ -323,6 +430,34 @@ function IsDeviceGuardEnabled {
         return [System.Management.Automation.Security.SystemPolicy]::GetSystemLockdownPolicy() -eq [System.Management.Automation.Security.SystemEnforcementMode]::Enforce;
     }
 }
+
+function InitEditorServices {
+
+    [CmdletBinding()]
+    param (
+
+    )
+
+    process {
+        if ($Null -ne (Get-Variable -Name psEditor -ErrorAction Ignore)) {
+            Export-ModuleMember -Function @(
+                'AllOf'
+                'AnyOf'
+                'Exists'
+                'Match'
+                'TypeOf'
+                'Within'
+                'Hint'
+            );
+        }
+    }
+}
+
+#
+# Editor services
+#
+
+InitEditorServices;
 
 #
 # Export module

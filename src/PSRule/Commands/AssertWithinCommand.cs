@@ -20,7 +20,7 @@ namespace PSRule.Commands
         public string Field { get; set; }
 
         [Parameter(Mandatory = true, Position = 1)]
-        public PSObject[] List { get; set; }
+        public PSObject[] AllowedValue { get; set; }
 
         [Parameter(Mandatory = false)]
         public SwitchParameter CaseSensitive { get; set; }
@@ -36,9 +36,9 @@ namespace PSRule.Commands
 
             var result = false;
 
-            if (GetField(inputObject, Field, out object fieldValue))
+            if (GetField(inputObject, Field, false, out object fieldValue))
             {
-                foreach (var item in List)
+                foreach (var item in AllowedValue)
                 {
                     if (fieldValue is string && item.BaseObject is string)
                     {

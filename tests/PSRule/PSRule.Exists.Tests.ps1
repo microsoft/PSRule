@@ -27,12 +27,18 @@ Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
             }
         }
 
-        It 'Return success' {
+        $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ keyword = 'Exists' };
 
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'ExistsTest';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Success | Should -Be $True;
-            $result.RuleName | Should -Be 'ExistsTest';
+        It 'Return pass' {
+            $filteredResult = $result | Where-Object { $_.RuleName -eq 'ExistsTest' };
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult.IsSuccess() | Should -Be $True;
+        }
+
+        It 'Return fail' {
+            $filteredResult = $result | Where-Object { $_.RuleName -eq 'ExistsTestNegative' };
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult.IsSuccess() | Should -Be $False;
         }
     }
 }

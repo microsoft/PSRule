@@ -15,26 +15,28 @@ namespace PSRule.Commands
             return GetVariableValue("Rule") as RuleRecord;
         }
 
-        protected bool GetField(object obj, string name, out object value)
+        protected bool GetField(object targetObject, string name, bool caseSensitive, out object value)
         {
             value = null;
 
-            if (obj == null)
+            if (targetObject == null)
             {
                 value = null;
                 return false;
             }
 
-            var type = obj.GetType();
+            var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
+
+            var type = targetObject.GetType();
 
             // Handle dictionaries and hashtables
             if (type.IsAssignableFrom(typeof(IDictionary)))
             {
-                var dictionary = (IDictionary)obj;
+                var dictionary = (IDictionary)targetObject;
 
                 foreach (var k in dictionary.Keys)
                 {
-                    if (StringComparer.OrdinalIgnoreCase.Equals(name, k))
+                    if (comparer.Equals(name, k))
                     {
                         value = dictionary[k];
                         return true;
@@ -44,11 +46,11 @@ namespace PSRule.Commands
             // Handle PSObjects
             else if (type.IsAssignableFrom(typeof(PSObject)))
             {
-                var psobject = (PSObject)obj;
+                var psobject = (PSObject)targetObject;
 
                 foreach (var p in psobject.Properties)
                 {
-                    if (StringComparer.OrdinalIgnoreCase.Equals(name, p.Name))
+                    if (comparer.Equals(name, p.Name))
                     {
                         value = p.Value;
                         return true;
@@ -60,9 +62,9 @@ namespace PSRule.Commands
             {
                 foreach (var p in type.GetProperties())
                 {
-                    if (StringComparer.OrdinalIgnoreCase.Equals(name, p.Name))
+                    if (comparer.Equals(name, p.Name))
                     {
-                        value = p.GetValue(obj);
+                        value = p.GetValue(targetObject);
                         return true;
                     }
                 }

@@ -27,7 +27,13 @@ Get a list of matching rule definitions within the search path.
 ### Example 1
 
 ```powershell
-PS C:\> Get-PSRule
+Get-PSRule;
+```
+
+```text
+RuleName                            Description
+--------                            -----------
+isFruit                             An example rule
 ```
 
 Get a list of rule definitions from the current working path.
@@ -41,7 +47,7 @@ The name of a specific rule to list. If this parameter is not specified all rule
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases:
+Aliases: n
 
 Required: False
 Position: Named
@@ -57,11 +63,11 @@ One or more paths to search for rule definitions within. If this parameter is no
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases:
+Aliases: f
 
 Required: False
 Position: 0
-Default value: None
+Default value: $PWD
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -87,6 +93,8 @@ Accept wildcard characters: False
 ### -Option
 
 Additional options that configure execution. A `PSRuleOption` can be created by using the `New-PSRuleOption` cmdlet. Alternatively a hashtable or path to YAML file can be specified with options.
+
+For more information on PSRule options see about_PSRule_Options.
 
 ```yaml
 Type: PSRuleOption

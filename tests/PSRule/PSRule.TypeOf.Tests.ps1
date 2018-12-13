@@ -28,8 +28,8 @@ Describe 'PSRule -- TypeOf keyword' -Tag 'TypeOf' {
 
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'TypeOfTest';
             $result | Should -Not -BeNullOrEmpty;
-            $result.Success | Should -Be $True;
-            $result.RuleName | Should -Be 'TypeOfTest'
+            $result.IsSuccess() | Should -Be $True;
+            $result.RuleName | Should -Be 'TypeOfTest';
         }
     }
 }

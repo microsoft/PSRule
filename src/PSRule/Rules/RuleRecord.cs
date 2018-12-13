@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Newtonsoft.Json;
+using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Management.Automation;
 
@@ -7,23 +9,34 @@ namespace PSRule.Rules
     /// <summary>
     /// A detailed format for rule results.
     /// </summary>
-    [DebuggerDisplay("{RuleName")]
-    public sealed class RuleRecord : IRuleResult
+    [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
+    public sealed class RuleRecord : IRuleRecord
     {
-        internal RuleRecord(string ruleId)
+        internal RuleRecord(string ruleId, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
-            RuleName = ruleId;
-            Status = RuleOutcome.None;
+            RuleId = ruleId;
+            RuleName = RuleHelper.GetRuleName(RuleId);
+            Outcome = outcome;
+            OutcomeReason = reason;
         }
 
-        public string RuleName { get; private set; }
-
-        public bool Success { get; internal set; }
+        /// <summary>
+        /// A unique identifier for the rule.
+        /// </summary>
+        [JsonRequired]
+        public string RuleId { get; private set; }
 
         /// <summary>
-        /// The outcome of the processing an object.
+        /// The name of the rule.
         /// </summary>
-        public RuleOutcome Status { get; internal set; }
+        public string RuleName { get; private set; }
+
+        /// <summary>
+        /// The outcome after the rule processes an object.
+        /// </summary>
+        public RuleOutcome Outcome { get; internal set; }
+
+        public RuleOutcomeReason OutcomeReason { get; internal set; }
 
         public string Message { get; internal set; }
 
@@ -32,8 +45,15 @@ namespace PSRule.Rules
         /// </summary>
         public string TargetName { get; internal set; }
 
+        [JsonIgnore]
         public PSObject TargetObject { get; internal set; }
 
+        [DefaultValue(null)]
         public Hashtable Tag { get; internal set; }
+
+        public bool IsSuccess()
+        {
+            return Outcome == RuleOutcome.Pass || Outcome == RuleOutcome.None;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using PSRule.Host;
 using System.Diagnostics;
+using System.IO;
 
 namespace PSRule.Rules
 {
@@ -13,23 +14,29 @@ namespace PSRule.Rules
     [DebuggerDisplay("{Id} @{SourcePath}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget
     {
-        public RuleBlock(string id)
+        public RuleBlock(string sourcePath, string ruleName)
         {
-            Id = id;
-            Name = id;
+            SourcePath = sourcePath;
+            RuleName = ruleName;
+
+            var scriptFileName = Path.GetFileName(sourcePath);
+            RuleId = string.Concat(scriptFileName, '/', ruleName);
         }
 
-        public string SourcePath { get; set; }
-
         /// <summary>
-        /// Get a unique identifer for the rule.
+        /// A unique identifier for the rule.
         /// </summary>
-        public string Id { get; private set; }
+        public string RuleId { get; private set; }
 
         /// <summary>
         /// The name of the rule.
         /// </summary>
-        public string Name { get; private set; }
+        public string RuleName { get; private set; }
+
+        /// <summary>
+        /// The script file path where the rule is defined.
+        /// </summary>
+        public string SourcePath { get; private set; }
 
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
@@ -48,6 +55,9 @@ namespace PSRule.Rules
         /// </summary>
         public string[] DependsOn { get; set; }
 
+        /// <summary>
+        /// One or more tags assigned to block. Tags are additional metadata used to select rules to execute and identify results.
+        /// </summary>
         public TagSet Tag { get; set; }
     }
 }

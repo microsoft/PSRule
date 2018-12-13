@@ -1,24 +1,50 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 
 namespace PSRule.Rules
 {
+    /// <summary>
+    /// The outcome of a rule.
+    /// </summary>
     [Flags]
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum RuleOutcome : byte
     {
+        /// <summary>
+        /// The rule was not evaluated.
+        /// </summary>
         None = 0,
 
-        Failed = 1,
+        /// <summary>
+        /// The rule evaluated as false.
+        /// </summary>
+        Fail = 1,
 
-        Passed = 2,
+        /// <summary>
+        /// The rule evaluated as true.
+        /// </summary>
+        Pass = 2,
 
+        /// <summary>
+        /// The rule returned an error.
+        /// </summary>
         Error = 4,
 
-        Inconclusive = 8,
+        /// <summary>
+        /// Any outcome when the rule was processed.
+        /// </summary>
+        /// <remarks>
+        /// This flag is used to filter outcomes with Invoke-PSRule.
+        /// </remarks>
+        Processed = Pass | Fail | Error,
 
-        InProgress = 16,
-
-        Default = Failed | Passed | Error,
-
+        /// <summary>
+        /// Any outcome.
+        /// </summary>
+        /// <remarks>
+        /// This flag is used to filter outcomes with Invoke-PSRule.
+        /// </remarks>
         All = 255
     }
 }

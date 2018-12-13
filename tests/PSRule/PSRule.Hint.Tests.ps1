@@ -29,7 +29,7 @@ Describe 'PSRule -- Hint keyword' -Tag 'Hint' {
 
         It 'Return success' {
 
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'HintTest' -Status All;
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'HintTest' -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
             $result.RuleName | Should -Be 'HintTest';
             $result.TargetName | Should -Be 'HintTarget';

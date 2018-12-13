@@ -2,6 +2,6 @@
 {
     public interface ILanguageBlock
     {
-        string SourcePath { get; set; }
+        string SourcePath { get; }
     }
 }

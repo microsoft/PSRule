@@ -61,13 +61,12 @@ To execute with rule use `Invoke-PSRule`.
 For example:
 
 ```powershell
-# Define objects
+# Define objects to validate
 $items = @();
 $items += [PSCustomObject]@{ Name = 'Fridge' };
 $items += [PSCustomObject]@{ Name = 'Apple' };
 
 # Validate each item using rules saved in current working path
-# Results can be filtered with -Status Failed to return only non-fruit results
 $items | Invoke-PSRule;
 ```
 
@@ -76,16 +75,42 @@ The output of this example is:
 ```text
    TargetName: Fridge
 
-RuleName                            Status     Message
---------                            ------     -------
-isFruit                             Failed     Fruit is only Apple, Orange and Pear
+RuleName                            Outcome    Message
+--------                            -------    -------
+isFruit                             Fail       Fruit is only Apple, Orange and Pear
 
 
    TargetName: Apple
 
-RuleName                            Status     Message
---------                            ------     -------
-isFruit                             Passed     Fruit is only Apple, Orange and Pear
+RuleName                            Outcome    Message
+--------                            -------    -------
+isFruit                             Pass       Fruit is only Apple, Orange and Pear
+```
+
+### Additional options
+
+To filter results to only non-fruit results, use `Invoke-PSRule -Outcome Fail`. Passed, failed and error results are shown by default.
+
+```powershell
+# Only show non-fruit results
+$items | Invoke-PSRule -Outcome Fail;
+```
+
+For a summary of results for each rule use `Invoke-PSRule -As Summary`.
+
+For example:
+
+```powershell
+# Show rule summary
+$items | Invoke-PSRule -As Summary;
+```
+
+The output of this example is:
+
+```text
+RuleName                            Pass  Fail  Outcome
+--------                            ----  ----  -------
+isFruit                             1     1     Fail
 ```
 
 ### Scenarios
@@ -96,7 +121,7 @@ For practical examples of PSRule see:
 
 ## Language reference
 
-PSRule extends PowerShell with domain specific language (DSL) keywords and cmdlets.
+PSRule extends PowerShell with domain specific language (DSL) keywords, cmdlets and automatic variables.
 
 ### Keywords
 
@@ -131,6 +156,8 @@ The following conceptual topics exist in the `PSRule` module:
 ## Changes and versioning
 
 Modules in this repository will use the [semantic versioning](http://semver.org/) model to declare breaking changes from v1.0.0. Prior to v1.0.0, breaking changes may be introduced in minor (0.x.0) version increments. For a list of module changes please see the [change log](CHANGELOG.md).
+
+> Pre-release module versions are created on major commits and can be installed from the PowerShell Gallery. Pre-release versions should be considered experimental. Modules and change log details for pre-releases will be removed as standard releases are made available.
 
 ## Maintainers
 

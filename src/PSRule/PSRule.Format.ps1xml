@@ -2,24 +2,18 @@
 <Configuration>
   <ViewDefinitions>
     <View>
-      <Name>PSRule.Message</Name>
+      <Name>PSRule.Rules.Rule</Name>
       <ViewSelectedBy>
-        <TypeName>PSRule.Message</TypeName>
+        <TypeName>PSRule.Rules.Rule</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
+            <Label>RuleName</Label>
+            <Width>35</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Width>18</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Width>24</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Width>4</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
+            <Label>Description</Label>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
@@ -29,16 +23,7 @@
               <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Severity</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>ScriptName</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>Line</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>Message</PropertyName>
+                <PropertyName>Description</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
@@ -60,7 +45,7 @@
             <Width>35</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Status</Label>
+            <Label>Outcome</Label>
             <Width>10</Width>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -74,7 +59,7 @@
               <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Status</PropertyName>
+                <PropertyName>Outcome</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Message</PropertyName>
@@ -92,7 +77,7 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>RuleId</Label>
+            <Label>RuleName</Label>
             <Width>35</Width>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -111,7 +96,7 @@
           <TableRowEntry>
             <TableColumnItems>
               <TableColumnItem>
-              <PropertyName>RuleId</PropertyName>
+              <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Pass</PropertyName>

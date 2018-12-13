@@ -5,28 +5,31 @@ using System.Collections.Generic;
 namespace PSRule.Rules
 {
     /// <summary>
-    /// A filter to include or exclude rules from being processed by name or tag.
+    /// A filter to include or exclude rules from being processed by id or tag.
     /// </summary>
     public sealed class RuleFilter
     {
-        private HashSet<string> _RequiredName;
+        private HashSet<string> _RequiredRuleName;
         private Hashtable _RequiredTag;
 
         /// <summary>
-        /// Filter rules by name or tag.
+        /// Filter rules by id or tag.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="ruleName"></param>
         /// <param name="tag"></param>
-        public RuleFilter(IEnumerable<string> name, Hashtable tag)
+        public RuleFilter(IEnumerable<string> ruleName, Hashtable tag)
         {
-            _RequiredName = name == null ? null : new HashSet<string>(name, StringComparer.OrdinalIgnoreCase);
+            _RequiredRuleName = ruleName == null ? null : new HashSet<string>(ruleName, StringComparer.OrdinalIgnoreCase);
             _RequiredTag = tag ?? null;
         }
 
-        // Matches if the Name is contained or any tag is matched
-        public bool Match(string name, TagSet tag)
+        /// <summary>
+        /// Matches if the RuleId is contained or any tag is matched
+        /// </summary>
+        /// <returns>Return true if rule is matched, otherwise false.</returns>
+        public bool Match(string ruleName, TagSet tag)
         {
-            if (_RequiredName == null || _RequiredName.Contains(name))
+            if (_RequiredRuleName == null || _RequiredRuleName.Contains(ruleName))
             {
                 if (_RequiredTag == null)
                 {
@@ -54,7 +57,7 @@ namespace PSRule.Rules
 
         public bool Match(RuleBlock block)
         {
-            return Match(block.Id, block.Tag);
+            return Match(block.RuleName, block.Tag);
         }
     }
 }

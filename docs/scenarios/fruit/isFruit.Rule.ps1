@@ -1,5 +1,4 @@
-# An example rule
-
+# Description: An example rule
 Rule 'isFruit' {
     # An additional message to display in output
     Hint 'Fruit is only Apple, Orange and Pear'

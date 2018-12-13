@@ -8,10 +8,9 @@ Describes the language keywords that can be used within PSRule document definiti
 
 ## LONG DESCRIPTION
 
-PSRule lets you define rules using PowerShell blocks. To create a rule use the `Rule` keyword. Within a rule a mixture or assertions and triggers can be used.
+PSRule lets you define rules using PowerShell blocks. To create a rule use the `Rule` keyword. Within a rule several assertions can be used.
 
 - Assertion - A specific test that always evaluates to true or false.
-- Trigger - are sections of code that execute after the rule has been evaluated as either successful or failed.
 
 The following are the built-in keywords that can be used within PSRule:
 
@@ -25,17 +24,23 @@ The following are the built-in keywords that can be used within PSRule:
 
 ### Rule
 
-A `Rule` definition describes an individual business rule that will be applied to pipeline data.
+A `Rule` definition describes an individual business rule that will be applied to pipeline objects.
 
-To define a Rule use the `Rule` keyword followed by a unique name and a pair of squiggly brackets `{`. Within the `{ }` one or more expressions can be used.
+To define a Rule use the `Rule` keyword followed by a name and a pair of squiggly brackets `{`. Within the `{ }` one or more expressions can be used.
 
 Syntax:
 
 ```text
-Rule <name> [-DependsOn <rule_name[]>] {
+Rule [-Name] <string> [-Tag <hashtable>] [-If <scriptBlock>] [-DependsOn <string[]>] [-Body] {
     ...
 }
 ```
+
+- `Name` - The name of the rule definition. This must be unique with in the same script file.
+- `Tag` - A hashtable of key/ value metadata that can be used to filter and identify rules and rule results.
+- `If` - A precondition that must evaluate to `$True` before the rule is executed.
+- `DependsOn` - A list of rules this rule depends on. Rule dependencies must execute successfully before this rule is executed.
+- `Body` - A script block definition of the rule containing one or more PSRule keywords and PowerShell expressions.
 
 Examples:
 
@@ -55,13 +60,17 @@ Rule 'NameIsValid' -DependsOn 'NameMustExist' {
 
 ### Exists
 
-The `Exists` assertion is used within a `Rule` definition to assert that a _field_ or property must exist on pipeline data.
+The `Exists` assertion is used within a `Rule` definition to assert that a _field_ or property must exist on the pipeline object.
 
 Syntax:
 
 ```text
-Exists [-Field] <field[]> [-CaseSensitive]
+Exists [-Field] <string[]> [-CaseSensitive] [-Not]
 ```
+
+- `Field` - One or more fields/ properties that must exist on the pipeline object.
+- `CaseSensitive` - The field name must match exact case.
+- `Not` - Instead of checking if the field names exists they should not exist.
 
 Examples:
 
@@ -74,7 +83,9 @@ Rule 'nameMustExist' {
 
 Output:
 
-If the specified field exists then Exists will return `$True`, otherwise `$False`.
+If **any** the specified field exists then Exists will return `$True`, otherwise `$False`.
+
+If `-Not` is used, then if **any** of the specified fields exist then Exists will return `$False` otherwise `$True`.
 
 ### Match
 
@@ -83,8 +94,12 @@ The `Match` assertion is used within a `Rule` definition to assert that the valu
 Syntax:
 
 ```text
-Match [-Field] <field[]> [-Expression] <regularExpression[]> [-CaseSensitive]
+Match [-Field] <string> [-Expression] <string[]> [-CaseSensitive]
 ```
+
+- `Field` - The name of the field that will be evaluated on the pipeline object.
+- `Expression` - One or more regular expressions that will be used to match the value of the field.
+- `CaseSensitive` - The field _value_ must match exact case.
 
 Examples:
 
@@ -96,17 +111,21 @@ Rule 'validatePhoneNumber' {
 
 Output:
 
-If __any__ of the specified regular expressions match the field then Match returns `$True`, otherwise `$False`.
+If **any** of the specified regular expressions match the field value then Match returns `$True`, otherwise `$False`.
 
 ### Within
 
-The `Within` assertion is used within a `Rule` definition to assert that the value of a field or property from pipeline data must equal an item from a supplied list. To optionally perform a case sensitive match use the `-CaseSensitive` switch, otherwise a case insensitive match will be used.
+The `Within` assertion is used within a `Rule` definition to assert that the value of a field or property from pipeline data must equal an item from a supplied list of allowed values. To optionally perform a case sensitive match use the `-CaseSensitive` switch, otherwise a case insensitive match will be used.
 
 Syntax:
 
 ```text
-Within [-Field] <field> [-CaseSensitive] [-List] <PSObject[]]>
+Within [-Field] <string> [-AllowedValue] <PSObject[]]> [-CaseSensitive]
 ```
+
+- `Field` - The name of the field that will be evaluated on the pipeline object.
+- `AllowedValue` - A list of allowed values that the field value must match.
+- `CaseSensitive` - The field _value_ must match exact case. Only applies when the field value and allowed values are strings.
 
 Examples:
 
@@ -118,21 +137,23 @@ Rule 'validateTitle' {
 
 Output:
 
-If __any__ of the items match the field then Within returns `$True`, otherwise `$False`.
+If **any** of the allow values match the field value then Within returns `$True`, otherwise `$False`.
 
 ### AllOf
 
-The `AllOf` assertion is used within a `Rule` definition to aggregate the result of assertions within a pair of squiggly brackets `{ }`. `AllOf` is functionally equivalent to a binary __and__, where when all of the contained assertions return `$True`, `AllOf` will return `$True`.
+The `AllOf` assertion is used within a `Rule` definition to aggregate the result of assertions within a pair of squiggly brackets `{ }`. `AllOf` is functionally equivalent to a binary **and**, where when all of the contained assertions return `$True`, `AllOf` will return `$True`.
 
 Syntax:
 
 ```text
-AllOf {
+AllOf [-Body] {
     <assertion>
     [<assertion>]
     ...
 }
 ```
+
+- `Body` - A script block definition of the containing one or more PSRule keywords and PowerShell expressions.
 
 Examples:
 
@@ -148,19 +169,25 @@ AllOf {
 }
 ```
 
+Output:
+
+If **all** of the assertions return `$True` AllOf will return `$True`, otherwise `$False`.
+
 ### AnyOf
 
-The `AnyOf` assertion is used within a `Rule` definition to aggregate the result of assertions within a pair of squiggly brackets `{ }`. `AnyOf` is functionally equivalent to a binary __or__, where if any of the contained assertions returns `$True`, `AnyOf` will return `$True`.
+The `AnyOf` assertion is used within a `Rule` definition to aggregate the result of assertions within a pair of squiggly brackets `{ }`. `AnyOf` is functionally equivalent to a binary **or**, where if any of the contained assertions returns `$True`, `AnyOf` will return `$True`.
 
 Syntax:
 
 ```text
-AnyOf {
+AnyOf [-Body] {
     <assertion>
     [<assertion>]
     ...
 }
 ```
+
+- `Body` - A script block definition of the containing one or more PSRule keywords and PowerShell expressions.
 
 Examples:
 
@@ -173,21 +200,31 @@ AllOf {
 }
 ```
 
+Output:
+
+If **any** of the assertions return `$True` AnyOf will return `$True`, otherwise `$False`.
+
 ### TypeOf
 
 The `TypeOf` assertion is used within a `Rule` definition to evaluate if the pipeline object matches one or more of the supplied type names.
 
 Syntax:
 
-```powershell
-TypeOf <typeName[]>
+```text
+TypeOf [-TypeName] <string[]>
 ```
+
+- `TypeName` - One or more type names which will be evaluated against the pipeline object. `TypeName` is case insensitive.
 
 Examples:
 
 ```powershell
 TypeOf 'System.Collections.Hashtable'
 ```
+
+Output:
+
+If **any** the specified type names match the pipeline object then TypeOf will return `$True`, otherwise `$False`.
 
 ## EXAMPLES
 

@@ -35,7 +35,7 @@ Describe 'PSRule' -Tag 'PowerShellGallery' {
         }
 
         It 'Exports functions' {
-            $result.ExportedFunctions.Keys | Should -BeIn 'Invoke-PSRule', 'Get-PSRule', 'New-PSRuleOption', 'Rule';
+            'Invoke-PSRule', 'Get-PSRule', 'New-PSRuleOption', 'Rule' | Should -BeIn $result.ExportedFunctions.Keys;
         }
     }
 
@@ -45,7 +45,9 @@ Describe 'PSRule' -Tag 'PowerShellGallery' {
         $warningCount = ($result | Where-Object { $_.Severity -eq 'Warning' } | Measure-Object).Count;
         $errorCount = ($result | Where-Object { $_.Severity -eq 'Error' } | Measure-Object).Count;
 
-        Write-Warning -Message "PSScriptAnalyzer reports $warningCount warnings.";
+        if ($warningCount -gt 0) {
+            Write-Warning -Message "PSScriptAnalyzer reports $warningCount warnings.";
+        }
 
         It 'Has no quality errors' {
             $errorCount | Should -BeLessOrEqual 0;
