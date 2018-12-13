@@ -141,17 +141,29 @@ Describe 'Invoke-PSRule' {
         }
 
         It 'Returns summary' {
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'group1' } -As Summary;
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'group1' } -As Summary -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
-            $result.Count | Should -Be 3;
+            $result.Count | Should -Be 4;
             $result | Should -BeOfType PSRule.Rules.RuleSummaryRecord;
-            $result.RuleName | Should -BeIn 'FromFile1', 'FromFile2', 'FromFile3'
+            $result.RuleName | Should -BeIn 'FromFile1', 'FromFile2', 'FromFile3', 'FromFile4'
             $result.Tag.category | Should -BeIn 'group1';
 
             ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Outcome | Should -Be 'Pass';
             ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Pass | Should -Be 2;
             ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Outcome | Should -Be 'Fail';
             ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Fail | Should -Be 2;
+            ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Outcome | Should -Be 'None';
+            ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Pass | Should -Be 0;
+            ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Fail | Should -Be 0;
+        }
+
+        It 'Returns filtered summary' {
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'group1' } -As Summary -Outcome Fail;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 2;
+            $result | Should -BeOfType PSRule.Rules.RuleSummaryRecord;
+            $result.RuleName | Should -BeIn 'FromFile2', 'FromFile3'
+            $result.Tag.category | Should -BeIn 'group1';
         }
     }
 

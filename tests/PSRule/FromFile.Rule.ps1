@@ -19,6 +19,11 @@ Rule 'FromFile3' -Tag @{ category = "group1" } {
     # Inconclusive
 }
 
+# Description: Test rule 4
+Rule 'FromFile4' -Tag @{ category = "group1" } -DependsOn 'FromFile3' {
+    # Inconclusive
+}
+
 # Description: Test for tags
 Rule 'WithTag' -Tag @{ severity = 'critical'; feature = 'tag' } {
     $True;

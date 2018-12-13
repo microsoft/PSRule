@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Fix outcome filtering of summary results [#33](https://github.com/BernieWhite/PSRule/issues/33)
+
 ## v0.1.0-B181235
 
 - RuleId and RuleName are now independent. Rules are created with a name, and the RuleId is generated based on rule name and file name
