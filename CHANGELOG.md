@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.1.0-B181235
+
 - RuleId and RuleName are now independent. Rules are created with a name, and the RuleId is generated based on rule name and file name
   - Rules with the same name can exist and be cross linked with DependsOn, as long a the script file name is different
 - Added `-Not` to `Exists` keyword
