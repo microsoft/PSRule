@@ -29,7 +29,7 @@ Describe 'PSRule -- AnyOf keyword' -Tag 'AnyOf' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AnyOfTest';
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $True;
-            $result.RuleId | Should -Be 'AnyOfTest'
+            $result.RuleName | Should -Be 'AnyOfTest';
         }
 
         It 'Should fail with all negative conditions' {
@@ -37,7 +37,7 @@ Describe 'PSRule -- AnyOf keyword' -Tag 'AnyOf' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AnyOfTestNegative';
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $False;
-            $result.RuleId | Should -Be 'AnyOfTestNegative'
+            $result.RuleName | Should -Be 'AnyOfTestNegative';
         }
     }
 }

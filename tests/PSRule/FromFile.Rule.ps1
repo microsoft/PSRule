@@ -97,10 +97,15 @@ Rule 'HintTest' {
 }
 
 # Description: Test for Exists keyword
-Rule 'ExistsTest' {
+Rule 'ExistsTest' -Tag @{ keyword = 'Exists' } {
     Exists 'Name'
+    Exists -Not 'NotName'
+}
 
-    # Exists 'Value.Value1'
+# Description: Test for Exists keyword
+Rule 'ExistsTestNegative' -Tag @{ keyword = 'Exists' } {
+    Exists 'NotName'
+    Exists 'name' -CaseSensitive
 }
 
 Rule 'WithinTest' {

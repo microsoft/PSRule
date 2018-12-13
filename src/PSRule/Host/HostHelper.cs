@@ -118,6 +118,7 @@ namespace PSRule.Host
                     throw new FileNotFoundException("Can't find file", path);
                 }
 
+                // Invoke script
                 ps.AddScript(path, true);
                 var invokeResults = ps.Invoke();
 
@@ -131,7 +132,6 @@ namespace PSRule.Host
                     if (ir.BaseObject is ILanguageBlock)
                     {
                         var block = ir.BaseObject as ILanguageBlock;
-                        block.SourcePath = path;
 
                         results.Add(block);
                     }
@@ -154,6 +154,8 @@ namespace PSRule.Host
                     Tag = block.Tag?.ToHashtable()
                 };
 
+                PipelineContext.WriteVerbose($" :: {result.TargetName}");
+
                 LanguageContext._Rule = result;
 
                 if (block.If != null)
@@ -165,9 +167,9 @@ namespace PSRule.Host
                     }
                 }
 
-                var invokeResults = block.Body.Invoke();
+                var invokeResult = block.Body.Invoke();
 
-                if (invokeResults == null)
+                if (invokeResult == null)
                 {
                     result.OutcomeReason = RuleOutcomeReason.Inconclusive;
                     result.Outcome = RuleOutcome.Fail;
@@ -175,10 +177,10 @@ namespace PSRule.Host
                 else
                 {
                     result.OutcomeReason = RuleOutcomeReason.Processed;
-                    result.Outcome = invokeResults.Success ? RuleOutcome.Pass : RuleOutcome.Fail;
+                    result.Outcome = invokeResult.AllOf ? RuleOutcome.Pass : RuleOutcome.Fail;
                 }
 
-                PipelineContext.WriteVerbose($"[PSRule][R][{block.RuleId}] -- [{result.Outcome}]");
+                PipelineContext.WriteVerbose($" -- [{invokeResult?.Pass}/{invokeResult?.Count}] [{result.Outcome}]");
 
                 return result;
             }
@@ -197,7 +199,7 @@ namespace PSRule.Host
         private static IDictionary<string, Rule> ToRule(IEnumerable<ILanguageBlock> blocks, RuleFilter filter)
         {
             // Index deployments by environment/name
-            var results = new Dictionary<string, Rule>(System.StringComparer.OrdinalIgnoreCase);
+            var results = new Dictionary<string, Rule>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var block in blocks.OfType<RuleBlock>())
             {
@@ -214,7 +216,10 @@ namespace PSRule.Host
                     rule = new Rule
                     {
                         RuleId = block.RuleId,
-                        Description = block.Description
+                        RuleName = block.RuleName,
+                        SourcePath = block.SourcePath,
+                        Description = block.Description,
+                        Tag = block.Tag
                     };
 
                     results[block.RuleId] = rule;

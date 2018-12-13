@@ -1,5 +1,6 @@
 ﻿using PSRule.Host;
 using System.Diagnostics;
+using System.IO;
 
 namespace PSRule.Rules
 {
@@ -13,17 +14,29 @@ namespace PSRule.Rules
     [DebuggerDisplay("{Id} @{SourcePath}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget
     {
-        public RuleBlock(string ruleId)
+        public RuleBlock(string sourcePath, string ruleName)
         {
-            RuleId = ruleId;
-        }
+            SourcePath = sourcePath;
+            RuleName = ruleName;
 
-        public string SourcePath { get; set; }
+            var scriptFileName = Path.GetFileName(sourcePath);
+            RuleId = string.Concat(scriptFileName, '/', ruleName);
+        }
 
         /// <summary>
         /// A unique identifier for the rule.
         /// </summary>
         public string RuleId { get; private set; }
+
+        /// <summary>
+        /// The name of the rule.
+        /// </summary>
+        public string RuleName { get; private set; }
+
+        /// <summary>
+        /// The script file path where the rule is defined.
+        /// </summary>
+        public string SourcePath { get; private set; }
 
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.

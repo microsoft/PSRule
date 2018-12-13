@@ -41,7 +41,7 @@ The name of a specific rule to list. If this parameter is not specified all rule
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases: n
+Aliases: n, Id
 
 Required: False
 Position: Named
@@ -61,7 +61,7 @@ Aliases: f
 
 Required: False
 Position: 0
-Default value: None
+Default value: $PWD
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

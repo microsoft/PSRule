@@ -28,14 +28,14 @@ Describe 'PSRule -- AllOf keyword' -Tag 'AllOf' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AllOfTest';
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $True;
-            $result.RuleId | Should -Be 'AllOfTest'
+            $result.RuleName | Should -Be 'AllOfTest';
         }
 
         It 'Should fail on any negative conditions' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AllOfTestNegative';
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $False;
-            $result.RuleId | Should -Be 'AllOfTestNegative'
+            $result.RuleName | Should -Be 'AllOfTestNegative';
         }
     }
 }

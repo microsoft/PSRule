@@ -9,7 +9,7 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>Id</Label>
+            <Label>RuleName</Label>
             <Width>35</Width>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -41,7 +41,7 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>RuleId</Label>
+            <Label>RuleName</Label>
             <Width>35</Width>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -56,7 +56,7 @@
           <TableRowEntry>
             <TableColumnItems>
               <TableColumnItem>
-              <PropertyName>RuleId</PropertyName>
+              <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Outcome</PropertyName>
@@ -77,7 +77,7 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>RuleId</Label>
+            <Label>RuleName</Label>
             <Width>35</Width>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -96,7 +96,7 @@
           <TableRowEntry>
             <TableColumnItems>
               <TableColumnItem>
-              <PropertyName>RuleId</PropertyName>
+              <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Pass</PropertyName>

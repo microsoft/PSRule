@@ -43,10 +43,12 @@ function Invoke-PSRule {
     [OutputType([PSRule.Rules.RuleRecord])]
     [OutputType([PSRule.Rules.RuleSummaryRecord])]
     param (
+        # A list of paths to check for rule definitions
         [Parameter(Position = 0)]
         [Alias('f')]
         [String[]]$Path = $PWD,
 
+        # Filter to rules with the following names
         [Parameter(Mandatory = $False)]
         [Alias('n')]
         [String[]]$Name,
@@ -133,19 +135,18 @@ function Get-PSRule {
     [CmdletBinding()]
     [OutputType([PSRule.Rules.Rule])]
     param (
-        # A list of deployments to run by name
+        # A list of paths to check for rule definitions
+        [Parameter(Position = 0, Mandatory = $False)]
+        [Alias('f')]
+        [String[]]$Path = $PWD,
+
+        # Filter to rules with the following names
         [Parameter(Mandatory = $False)]
-        [SupportsWildcards()]
         [Alias('n')]
         [String[]]$Name,
 
         [Parameter(Mandatory = $False)]
         [Hashtable]$Tag,
-
-        # A list of paths to check for deployments
-        [Parameter(Position = 0, Mandatory = $False)]
-        [Alias('f')]
-        [String[]]$Path = $PWD,
 
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option
@@ -188,7 +189,6 @@ function Get-PSRule {
     process {
         # Get matching rule definitions
         $pipeline.Process();
-        # GetRule -Path $includePaths -Option $Option -Filter $filter -Verbose:$VerbosePreference;
     }
 
     end {
@@ -316,7 +316,13 @@ function Exists {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
-        [Strin[]]$Field
+        [String[]]$Field,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$CaseSensitive = $False,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$Not = $False
     )
 
     begin {
@@ -342,6 +348,26 @@ function Match {
     begin {
         # This is just a stub to improve rule authoring and discovery
         Write-Error -Message 'Match keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+    }
+}
+
+function Within {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True, Position = 0)]
+        [String]$Field,
+
+        [Parameter(Mandatory = $True, Position = 1)]
+        [PSObject[]]$AllowedValue,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$CaseSensitive = $False
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message 'Within keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
     }
 }
 

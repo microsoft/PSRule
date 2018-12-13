@@ -15,6 +15,7 @@ namespace PSRule.Rules
         internal RuleRecord(string ruleId, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
             RuleId = ruleId;
+            RuleName = RuleHelper.GetRuleName(RuleId);
             Outcome = outcome;
             OutcomeReason = reason;
         }
@@ -24,6 +25,11 @@ namespace PSRule.Rules
         /// </summary>
         [JsonRequired]
         public string RuleId { get; private set; }
+
+        /// <summary>
+        /// The name of the rule.
+        /// </summary>
+        public string RuleName { get; private set; }
 
         /// <summary>
         /// The outcome after the rule processes an object.

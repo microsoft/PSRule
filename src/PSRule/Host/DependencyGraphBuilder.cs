@@ -24,7 +24,7 @@ namespace PSRule.Host
             {
                 if (index.ContainsKey(item.RuleId))
                 {
-                    throw new Exception("Name already exists in index");
+                    throw new Exception("RuleId already exists in index");
                 }
 
                 index.Add(item.RuleId, item);

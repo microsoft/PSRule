@@ -48,7 +48,7 @@ namespace PSRule.Commands
 
                 var result = false;
 
-                if (GetField(inputObject, Field, out object fieldValue))
+                if (GetField(inputObject, Field, false, out object fieldValue))
                 {
                     for (var i = 0; i < _Expressions.Length && !result; i++)
                     {

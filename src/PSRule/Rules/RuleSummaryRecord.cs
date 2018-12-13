@@ -14,7 +14,19 @@ namespace PSRule.Rules
         internal RuleSummaryRecord(string ruleId)
         {
             RuleId = ruleId;
+            RuleName = RuleHelper.GetRuleName(RuleId);
         }
+
+        /// <summary>
+        /// The unique identifier for the rule.
+        /// </summary>
+        [JsonRequired]
+        public string RuleId { get; private set; }
+
+        /// <summary>
+        /// The name of the rule.
+        /// </summary>
+        public string RuleName { get; private set; }
 
         /// <summary>
         /// The number of rule passes.
@@ -30,12 +42,6 @@ namespace PSRule.Rules
         /// The number of rile errors.
         /// </summary>
         public int Error { get; internal set; }
-
-        /// <summary>
-        /// The unique identifier for the rule.
-        /// </summary>
-        [JsonRequired]
-        public string RuleId { get; private set; }
 
         /// <summary>
         /// The aggregate outcome after the rule processes all objects.

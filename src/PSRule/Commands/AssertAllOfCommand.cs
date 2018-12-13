@@ -1,4 +1,5 @@
 ﻿using PSRule.Pipeline;
+using PSRule.Rules;
 using System.Management.Automation;
 
 namespace PSRule.Commands
@@ -14,39 +15,19 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            PipelineContext.WriteVerbose("[AllOf]::BEGIN");
-
-            var result = false;
-
             try
             {
-                var invokeResult = Body.Invoke();
-                var totalCount = 0;
-                var successCount = 0;
+                var invokeResult = new RuleConditionResult(Body.Invoke());
 
-                foreach (var ir in invokeResult)
-                {
-                    if (ir.BaseObject is bool)
-                    {
-                        totalCount++;
+                var result = invokeResult.AllOf;
 
-                        if ((bool)ir.BaseObject)
-                        {
-                            successCount++;
-                        }
-                    }
-                }
-
-                if (successCount == totalCount)
-                {
-                    result = true;
-                }
+                PipelineContext.WriteVerbose($"[AllOf] -- [{invokeResult.Pass}/{invokeResult.Count}] [{result}]");
 
                 WriteObject(result);
             }
             finally
             {
-                PipelineContext.WriteVerbose($"[AllOf]::END [{result}]");
+
             }
         }
     }

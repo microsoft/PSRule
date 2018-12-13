@@ -21,9 +21,9 @@ namespace PSRule.Pipeline
             _Option = new PSRuleOption();
         }
 
-        public void FilterBy(string[] name, Hashtable tag)
+        public void FilterBy(string[] ruleName, Hashtable tag)
         {
-            _Filter = new RuleFilter(name, tag);
+            _Filter = new RuleFilter(ruleName, tag);
         }
 
         public void Source(string[] path)

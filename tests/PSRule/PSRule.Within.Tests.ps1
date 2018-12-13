@@ -30,7 +30,7 @@ Describe 'PSRule -- Within keyword' -Tag 'Within' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithinTest' -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
-            $result.RuleId | Should -BeIn 'WithinTest'
+            $result.RuleName | Should -BeIn 'WithinTest'
             $result[0].IsSuccess() | Should -Be $True;
             $result[1].IsSuccess() | Should -Be $False;
         }
@@ -44,7 +44,7 @@ Describe 'PSRule -- Within keyword' -Tag 'Within' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithinTestCaseSensitive';
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
-            $result.RuleId | Should -BeIn 'WithinTestCaseSensitive'
+            $result.RuleName | Should -BeIn 'WithinTestCaseSensitive'
             $result[0].IsSuccess() | Should -Be $False;
             $result[1].IsSuccess() | Should -Be $True;
         }

@@ -1,6 +1,10 @@
 
 ## Unreleased
 
+- RuleId and RuleName are now independent. Rules are created with a name, and the RuleId is generated based on rule name and file name
+  - Rules with the same name can exist and be cross linked with DependsOn, as long a the script file name is different
+- Added `-Not` to `Exists` keyword
+- Improved verbose logging of `Exists`, `AllOf`, `AnyOf` keywords and core engine
 - **Breaking change** - Renamed outcome filtering parameters to align to type name and increase clarity
   - `Invoke-PSRule` has a `-Outcome` parameter instead of `-Status`
   - `-Outcome` supports values of `Pass`, `Fail`, `Error`, `None`, `Processed` and `All`

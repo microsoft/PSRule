@@ -12,10 +12,10 @@ namespace PSRule.Commands
     internal sealed class NewRuleDefinitionCommand : LanguageBlock
     {
         /// <summary>
-        /// The name of the deployment.
+        /// The name of the rule.
         /// </summary>
         [Parameter(Mandatory = true, Position = 0)]
-        public string RuleId { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// The definition of the deployment.
@@ -46,14 +46,14 @@ namespace PSRule.Commands
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
 
-            PipelineContext.WriteVerbose($"[PSRule][D] -- Found {RuleId} in {MyInvocation.ScriptName}");
+            PipelineContext.WriteVerbose($"[PSRule][D] -- Found {Name} in {MyInvocation.ScriptName}");
 
-            var block = new RuleBlock(RuleId)
+            var block = new RuleBlock(MyInvocation.ScriptName, Name)
             {
                 Body = Body,
                 Description = metadata.Description,
                 Tag = tag,
-                DependsOn = DependsOn,
+                DependsOn = RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName),
                 If = If
             };
 

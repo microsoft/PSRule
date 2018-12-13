@@ -49,6 +49,8 @@ namespace PSRule.Pipeline
                 {
                     results.Add(result);
                 }
+
+                _Context.Next();
             }
 
             return results;
@@ -65,22 +67,31 @@ namespace PSRule.Pipeline
 
             foreach (var target in _RuleGraph.GetSingleTarget())
             {
-                var result = (target.Skipped) ? new RuleRecord(target.Value.RuleId, reason: RuleOutcomeReason.DependencyFail) : HostHelper.InvokeRuleBlock(_Option, target.Value, o);
+                _Context.Enter(target);
 
-                if (result.Outcome == RuleOutcome.Pass)
+                try
                 {
-                    target.Pass();
+                    var result = (target.Skipped) ? new RuleRecord(target.Value.RuleId, reason: RuleOutcomeReason.DependencyFail) : HostHelper.InvokeRuleBlock(_Option, target.Value, o);
+
+                    if (result.Outcome == RuleOutcome.Pass)
+                    {
+                        target.Pass();
+                    }
+                    else if (result.Outcome == RuleOutcome.Fail || result.Outcome == RuleOutcome.Error)
+                    {
+                        target.Fail();
+                    }
+
+                    AddToSummary(ruleBlock: target.Value, targetName: result.TargetName, outcome: result.Outcome);
+
+                    if (ShouldOutput(result.Outcome))
+                    {
+                        results.Add(result);
+                    }
                 }
-                else if (result.Outcome == RuleOutcome.Fail || result.Outcome == RuleOutcome.Error)
+                finally
                 {
-                    target.Fail();
-                }
-
-                AddToSummary(ruleBlock: target.Value, targetName: result.TargetName, outcome: result.Outcome);
-
-                if (ShouldOutput(result.Outcome))
-                {
-                    results.Add(result);
+                    _Context.Exit();
                 }
             }
 
