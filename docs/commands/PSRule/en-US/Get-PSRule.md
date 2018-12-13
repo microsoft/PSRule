@@ -27,7 +27,13 @@ Get a list of matching rule definitions within the search path.
 ### Example 1
 
 ```powershell
-Get-PSRule
+Get-PSRule;
+```
+
+```text
+RuleName                            Description
+--------                            -----------
+isFruit                             An example rule
 ```
 
 Get a list of rule definitions from the current working path.
@@ -41,7 +47,7 @@ The name of a specific rule to list. If this parameter is not specified all rule
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases: n, Id
+Aliases: n
 
 Required: False
 Position: Named

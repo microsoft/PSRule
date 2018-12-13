@@ -75,15 +75,15 @@ The output of this example is:
 ```text
    TargetName: Fridge
 
-RuleId                              Outcome    Message
-------                              -------    -------
+RuleName                            Outcome    Message
+--------                            -------    -------
 isFruit                             Fail       Fruit is only Apple, Orange and Pear
 
 
    TargetName: Apple
 
-RuleId                              Outcome    Message
-------                              -------    -------
+RuleName                            Outcome    Message
+--------                            -------    -------
 isFruit                             Pass       Fruit is only Apple, Orange and Pear
 ```
 
@@ -108,8 +108,8 @@ $items | Invoke-PSRule -As Summary;
 The output of this example is:
 
 ```text
-RuleId                              Pass  Fail  Outcome
-------                              ----  ----  -------
+RuleName                            Pass  Fail  Outcome
+--------                            ----  ----  -------
 isFruit                             1     1     Fail
 ```
 

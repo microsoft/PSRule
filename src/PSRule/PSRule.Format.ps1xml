@@ -20,7 +20,7 @@
           <TableRowEntry>
             <TableColumnItems>
               <TableColumnItem>
-              <PropertyName>Id</PropertyName>
+              <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Description</PropertyName>

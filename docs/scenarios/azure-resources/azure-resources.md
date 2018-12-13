@@ -154,8 +154,8 @@ Our output looked like this:
 ```text
    TargetName: storage
 
-RuleId                              Outcome    Message
-------                              -------    -------
+RuleName                            Outcome    Message
+--------                            -------    -------
 storageAccounts.UseHttps            Fail       Storage accounts should only allow secure traffic
 ```
 
