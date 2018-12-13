@@ -2,6 +2,7 @@
 using PSRule.Host;
 using PSRule.Rules;
 using System.Collections.Generic;
+using System.Linq;
 using System.Management.Automation;
 
 namespace PSRule.Pipeline
@@ -58,7 +59,13 @@ namespace PSRule.Pipeline
 
         public IEnumerable<RuleSummaryRecord> GetSummary()
         {
-            return _Summary.Values;
+            foreach (var s in _Summary.Values.ToArray())
+            {
+                if (_Outcome == RuleOutcome.All || (s.Outcome & _Outcome) > 0)
+                {
+                    yield return s;
+                }
+            }
         }
 
         private IEnumerable<RuleRecord> ProcessRule(PSObject o)
@@ -101,7 +108,7 @@ namespace PSRule.Pipeline
         private bool ShouldOutput(RuleOutcome outcome)
         {
             return _ResultFormat == ResultFormat.Detail &&
-                (_Outcome == RuleOutcome.All | (outcome & _Outcome) > 0);
+                (_Outcome == RuleOutcome.All || (outcome & _Outcome) > 0);
         }
 
         private void AddToSummary(RuleBlock ruleBlock, string targetName, RuleOutcome outcome)
