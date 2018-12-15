@@ -1,0 +1,266 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Azure Resource Manager example </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Azure Resource Manager example ">
+    <meta name="generator" content="docfx 2.40.4.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../../toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="azure-resource-manager-example">Azure Resource Manager example</h1>
+
+<p>This is an example of how PSRule can be used to validate Azure resources match internal standards or assess if resources meet a defined baseline.</p>
+<p>In this scenario we will use a JSON file:</p>
+<ul>
+<li><a href="resources.json"><code>resources.json</code></a> - An export for the Azure resource properties saved for offline use.</li>
+</ul>
+<p>To generate a similar <code>resources.json</code> file of your own, the use following command.</p>
+<pre><code class="lang-powershell"># Get all resources using the Az modules. Alternatively use Get-AzureRmResource if using AzureRm modules.
+# This command also requires authentication with Connect-AzAccount or Connect-AzureRmAccount
+Get-AzResource -ExpandProperties | ConvertTo-Json -Depth 10 | Set-Content -path .\resources.json;
+</code></pre>
+<p>For this example we ran this command:</p>
+<pre><code class="lang-powershell">Get-AzResource -ExpandProperties | ConvertTo-Json -Depth 10 | Set-Content -path docs/scenarios/azure-resources/resources.json;
+</code></pre>
+<h2 id="define-rules">Define rules</h2>
+<p>To validate our Azure resources we need to define some rules. Rules are defined by using the <code>Rule</code> keyword in a file ending with the <code>.Rule.ps1</code> extension.</p>
+<p>So start we are going to define a <code>storageAccounts.UseHttps</code> rule, which will validate that Azure Storage resources have a <a href="https://docs.microsoft.com/en-us/azure/storage/common/storage-require-secure-transfer">Secure Transfer Required</a> enabled.</p>
+<p>In the example below:</p>
+<ul>
+<li>We use <code>storageAccounts.UseHttps</code> directly after the <code>Rule</code> keyword to name the rule definition. Each rule must be named uniquely.</li>
+<li>The <code># Description:</code> comment is used to add additional metadata interpreted by PSRule.</li>
+<li>One or more conditions are defined with the curly braces <code>{ }</code>.</li>
+<li>The rule definition is saved within a file named <code>storageAccounts.Rule.ps1</code>.</li>
+</ul>
+<pre><code class="lang-powershell"># Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+Rule 'storageAccounts.UseHttps' {
+    # Rule conditions go here
+}
+</code></pre>
+<h3 id="set-rule-condition">Set rule condition</h3>
+<p>Conditions can be any valid PowerShell expression that results in a <code>$True</code> or <code>$False</code>, just like an <code>If</code> statement, but without specifically requiring the <code>If</code> keyword to be used.</p>
+<blockquote>
+<p>Several PSRule keywords such as <code>Exists</code> and <code>AllOf</code> can supplement PowerShell to quickly build out rules that are easy to read.</p>
+</blockquote>
+<p>In <code>resources.json</code> one of our example storage accounts has a property <code>Properties.supportsHttpsTrafficOnly</code> as shown below, which will be how our rule will pass <code>$True</code> or fail <code>$False</code> Azure resources that we throw at it.</p>
+<pre><code class="lang-json">{
+    &quot;Name&quot;: &quot;storage&quot;,
+    &quot;ResourceName&quot;: &quot;storage&quot;,
+    &quot;ResourceType&quot;: &quot;Microsoft.Storage/storageAccounts&quot;,
+    &quot;Kind&quot;: &quot;Storage&quot;,
+    &quot;ResourceGroupName&quot;: &quot;test-rg&quot;,
+    &quot;Location&quot;: &quot;eastus2&quot;,
+    &quot;Properties&quot;: {
+        &quot;supportsHttpsTrafficOnly&quot;: false
+    }
+}
+</code></pre>
+<p>In the example below:</p>
+<ul>
+<li>We use the <code>$TargetObject</code> variable to get the object on the pipeline and access it's properties.</li>
+<li>The condition will return <code>$True</code> or <code>$False</code> back to the pipeline, where:
+<ul>
+<li><code>$True</code> - the object passed the validation check</li>
+<li><code>$False</code> - the object failed the validation check</li>
+</ul>
+</li>
+</ul>
+<pre><code class="lang-powershell"># Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+Rule 'storageAccounts.UseHttps' {
+
+    # This property returns true or false, so nothing more needs to be done
+    $TargetObject.Properties.supportsHttpsTrafficOnly
+
+    # Alternatively this could be written as:
+    # $TargetObject.Properties.supportsHttpsTrafficOnly -eq $True
+}
+</code></pre>
+<h3 id="add-rule-hint">Add rule hint</h3>
+<p>Additionally to provide feedback to the person or process running the rules, we can use the <code>Hint</code> keyword.</p>
+<p>In the example below:</p>
+<ul>
+<li>Directly after the <code>Hint</code> keyword is a message to help understand why the rule failed or passed.</li>
+<li>The <code>-TargetName</code> parameter is used to map the name of the Azure resource so that the result shows which Azure resource passed or failed.
+<ul>
+<li>In this case, it's not strictly required because there is a default <code>Name</code> property for each resource which PSRule will bind to by default.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="lang-powershell"># Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+Rule 'storageAccounts.UseHttps' {
+
+    Hint 'Storage accounts should only allow secure traffic' -TargetName $TargetObject.ResourceName
+
+    $TargetObject.Properties.supportsHttpsTrafficOnly
+}
+</code></pre>
+<h3 id="filter-with-preconditions">Filter with preconditions</h3>
+<p>So far our rule works for a Storage Account, but there are many type of resources that could be returned by calling <code>Get-AzResource</code>. Most of these resources won't have the <code>Properties.supportsHttpsTrafficOnly</code> property, and if it did, it may use different configuration options instead of just <code>true</code> and <code>false</code>. This is where preconditions help out.</p>
+<p>Preconditions can be specified by using the <code>-If</code> parameter when defining a rule. When the rule is executed, if the precondition is <code>$True</code> then the rule is processed, otherwise it is skipped.</p>
+<p>In the example below:</p>
+<ul>
+<li>A check against <code>$TargetObject.ResourceType</code> ensured that our rule is only processed for Storage Accounts.</li>
+</ul>
+<pre><code class="lang-powershell"># Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+Rule 'storageAccounts.UseHttps' -If { $TargetObject.ResourceType -eq 'Microsoft.Storage/storageAccounts' } {
+
+    Hint 'Storage accounts should only allow secure traffic' -TargetName $TargetObject.ResourceName
+
+    $TargetObject.Properties.supportsHttpsTrafficOnly
+}
+</code></pre>
+<h2 id="execute-rules">Execute rules</h2>
+<p>With a rule defined, the next step is to execute it. To execute rules, pipe the target object to <code>Invoke-PSRule</code>.</p>
+<p>For example:</p>
+<pre><code class="lang-powershell"># Read resources in from file
+$resources = Get-Content -Path .\resources.json | ConvertFrom-Json;
+
+# For each resource
+$resources | Invoke-PSRule;
+</code></pre>
+<p>You will notice, we didn't specify the rule. By default PSRule will look for any <code>.Rule.ps1</code> files in the current working path.</p>
+<p><code>Invoke-PSRule</code> also supports <code>-Path</code>, <code>-Name</code> and <code>-Tag</code> parameters that can be used to specify the path to look for rules in or filter rules if you want to run a subset of the rules.</p>
+<p>For this example we ran these commands:</p>
+<pre><code class="lang-powershell"># Read resources in from file
+$resources = Get-Content -Path docs/scenarios/azure-resources/resources.json | ConvertFrom-Json;
+
+# For each resource
+$resources | Invoke-PSRule -Path docs/scenarios/azure-resources;
+</code></pre>
+<p>Our output looked like this:</p>
+<pre><code class="lang-text">   TargetName: storage
+
+RuleName                            Outcome    Message
+--------                            -------    -------
+storageAccounts.UseHttps            Fail       Storage accounts should only allow secure traffic
+</code></pre>
+<p>In our case <code>storageAccounts.UseHttps</code> returns a <code>Fail</code> outcome because our storage account has <code>supportsHttpsTrafficOnly</code> = <code>false</code>, which is exactly what should happen.</p>
+<h2 id="define-helper-functions">Define helper functions</h2>
+<p>Using helper functions is completely optional and not required in many cases. However, you may prefer to use helper functions when rule conditions or preconditions are complex and hard to understand.</p>
+<p>To use helper functions use a <code>function</code> block within a file with a <code>.Rule.ps1</code> extension. Any code within <code>.Rule.ps1</code> files called by <code>Invoke-PSRule</code> will be executed, however to make it available for use within a rule, a global scope modifier must be used.</p>
+<p>For functions this is done by prefixing the function name with <code>global:</code>.</p>
+<p>For example:</p>
+<pre><code class="lang-powershell">function global:NameOfFunction {
+    # Function body
+}
+</code></pre>
+<p>In our example, we are going to define a <code>ResourceType</code> function in a file named <code>common.Rule.ps1</code>. This function will be used by preconditions to check the type of Azure resource.</p>
+<pre><code class="lang-powershell"># A custom function to filter by resource type
+function global:ResourceType {
+    param (
+        [String]$ResourceType
+    )
+
+    process {
+        return $TargetObject.ResourceType -eq $ResourceType;
+    }
+}
+</code></pre>
+<p>Updating our existing <code>storageAccounts.UseHttps</code> rule, our rule definition becomes:</p>
+<pre><code class="lang-powershell"># Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAccounts' } {
+
+    Hint 'Storage accounts should only allow secure traffic' -TargetName $TargetObject.ResourceName
+
+    $TargetObject.Properties.supportsHttpsTrafficOnly
+}
+</code></pre>
+<h2 id="more-information">More information</h2>
+<ul>
+<li><a href="storageAccounts.Rule.ps1">storageAccounts.Rule.ps1</a> - Example rules for validating Azure Storage.</li>
+<li><a href="appService.Rule.ps1">appService.Rule.ps1</a> - Example rules for validating Azure App Service.</li>
+<li><a href="resources.json">resources.json</a> - Offline export of Azure resources.</li>
+<li><a href="common.Rule.ps1">common.Rule.ps1</a> - ResourceType helper function.</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/scenarios/azure-resources/azure-resources.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

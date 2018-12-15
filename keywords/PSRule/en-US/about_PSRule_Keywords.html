@@ -1,0 +1,292 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>PSRule_Keywords </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="PSRule_Keywords ">
+    <meta name="generator" content="docfx 2.40.4.0">
+    
+    <link rel="shortcut icon" href="../../../favicon.ico">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="../../../commands/PSRule/en-US/toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="psrule_keywords">PSRule_Keywords</h1>
+
+<h2 id="about_psrule_keywords">about_PSRule_Keywords</h2>
+<h2 id="short-description">SHORT DESCRIPTION</h2>
+<p>Describes the language keywords that can be used within PSRule document definitions.</p>
+<h2 id="long-description">LONG DESCRIPTION</h2>
+<p>PSRule lets you define rules using PowerShell blocks. To create a rule use the <code>Rule</code> keyword. Within a rule several assertions can be used.</p>
+<ul>
+<li>Assertion - A specific test that always evaluates to true or false.</li>
+</ul>
+<p>The following are the built-in keywords that can be used within PSRule:</p>
+<ul>
+<li><a href="#rule">Rule</a> - A rule definition</li>
+<li><a href="#exists">Exists</a> - Assert that a field or property must exist</li>
+<li><a href="#match">Match</a> - Assert that the field must match any of the regular expressions</li>
+<li><a href="#anyof">AnyOf</a> - Assert that any of the child expressions must be true</li>
+<li><a href="#allof">AllOf</a> - Assert that all of the child expressions must be true</li>
+<li><a href="#within">Within</a> - Assert that the field must match any of the values</li>
+<li><a href="#typeof">TypeOf</a> - Assert that the object must be of a specific type</li>
+</ul>
+<h3 id="rule">Rule</h3>
+<p>A <code>Rule</code> definition describes an individual business rule that will be applied to pipeline objects.</p>
+<p>To define a Rule use the <code>Rule</code> keyword followed by a name and a pair of squiggly brackets <code>{</code>. Within the <code>{ }</code> one or more expressions can be used.</p>
+<p>Syntax:</p>
+<pre><code class="lang-text">Rule [-Name] &lt;string&gt; [-Tag &lt;hashtable&gt;] [-If &lt;scriptBlock&gt;] [-DependsOn &lt;string[]&gt;] [-Body] {
+    ...
+}
+</code></pre>
+<ul>
+<li><code>Name</code> - The name of the rule definition. This must be unique with in the same script file.</li>
+<li><code>Tag</code> - A hashtable of key/ value metadata that can be used to filter and identify rules and rule results.</li>
+<li><code>If</code> - A precondition that must evaluate to <code>$True</code> before the rule is executed.</li>
+<li><code>DependsOn</code> - A list of rules this rule depends on. Rule dependencies must execute successfully before this rule is executed.</li>
+<li><code>Body</code> - A script block definition of the rule containing one or more PSRule keywords and PowerShell expressions.</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell"># This rule checks for the presence of a name field
+Rule 'NameMustExist' {
+    ...
+}
+</code></pre>
+<pre><code class="lang-powershell"># This rule checks that the name field is valid, when the rule NameMustExist is successful
+Rule 'NameIsValid' -DependsOn 'NameMustExist' {
+    ...
+}
+</code></pre>
+<h3 id="exists">Exists</h3>
+<p>The <code>Exists</code> assertion is used within a <code>Rule</code> definition to assert that a <em>field</em> or property must exist on the pipeline object.</p>
+<p>Syntax:</p>
+<pre><code class="lang-text">Exists [-Field] &lt;string[]&gt; [-CaseSensitive] [-Not]
+</code></pre>
+<ul>
+<li><code>Field</code> - One or more fields/ properties that must exist on the pipeline object.</li>
+<li><code>CaseSensitive</code> - The field name must match exact case.</li>
+<li><code>Not</code> - Instead of checking if the field names exists they should not exist.</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell"># This rule checks for the presence of a name property
+Rule 'nameMustExist' {
+    Exists 'Name'
+}
+</code></pre>
+<p>Output:</p>
+<p>If <strong>any</strong> the specified field exists then Exists will return <code>$True</code>, otherwise <code>$False</code>.</p>
+<p>If <code>-Not</code> is used, then if <strong>any</strong> of the specified fields exist then Exists will return <code>$False</code> otherwise <code>$True</code>.</p>
+<h3 id="match">Match</h3>
+<p>The <code>Match</code> assertion is used within a <code>Rule</code> definition to assert that the value of a <em>field</em> or property from pipeline data must match one or more regular expressions. To optionally perform a case sensitive match use the <code>-CaseSensitive</code> switch, otherwise a case insensitive match will be used.</p>
+<p>Syntax:</p>
+<pre><code class="lang-text">Match [-Field] &lt;string&gt; [-Expression] &lt;string[]&gt; [-CaseSensitive]
+</code></pre>
+<ul>
+<li><code>Field</code> - The name of the field that will be evaluated on the pipeline object.</li>
+<li><code>Expression</code> - One or more regular expressions that will be used to match the value of the field.</li>
+<li><code>CaseSensitive</code> - The field <em>value</em> must match exact case.</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'validatePhoneNumber' {
+    Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$'
+}
+</code></pre>
+<p>Output:</p>
+<p>If <strong>any</strong> of the specified regular expressions match the field value then Match returns <code>$True</code>, otherwise <code>$False</code>.</p>
+<h3 id="within">Within</h3>
+<p>The <code>Within</code> assertion is used within a <code>Rule</code> definition to assert that the value of a field or property from pipeline data must equal an item from a supplied list of allowed values. To optionally perform a case sensitive match use the <code>-CaseSensitive</code> switch, otherwise a case insensitive match will be used.</p>
+<p>Syntax:</p>
+<pre><code class="lang-text">Within [-Field] &lt;string&gt; [-AllowedValue] &lt;PSObject[]]&gt; [-CaseSensitive]
+</code></pre>
+<ul>
+<li><code>Field</code> - The name of the field that will be evaluated on the pipeline object.</li>
+<li><code>AllowedValue</code> - A list of allowed values that the field value must match.</li>
+<li><code>CaseSensitive</code> - The field <em>value</em> must match exact case. Only applies when the field value and allowed values are strings.</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'validateTitle' {
+    Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
+}
+</code></pre>
+<p>Output:</p>
+<p>If <strong>any</strong> of the allow values match the field value then Within returns <code>$True</code>, otherwise <code>$False</code>.</p>
+<h3 id="allof">AllOf</h3>
+<p>The <code>AllOf</code> assertion is used within a <code>Rule</code> definition to aggregate the result of assertions within a pair of squiggly brackets <code>{ }</code>. <code>AllOf</code> is functionally equivalent to a binary <strong>and</strong>, where when all of the contained assertions return <code>$True</code>, <code>AllOf</code> will return <code>$True</code>.</p>
+<p>Syntax:</p>
+<pre><code class="lang-text">AllOf [-Body] {
+    &lt;assertion&gt;
+    [&lt;assertion&gt;]
+    ...
+}
+</code></pre>
+<ul>
+<li><code>Body</code> - A script block definition of the containing one or more PSRule keywords and PowerShell expressions.</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell"># The Name field must exist and have a value of either John or Jane
+AllOf {
+    Exists 'Name'
+
+    Within 'Name' {
+        'John'
+        'Jane'
+    }
+}
+</code></pre>
+<p>Output:</p>
+<p>If <strong>all</strong> of the assertions return <code>$True</code> AllOf will return <code>$True</code>, otherwise <code>$False</code>.</p>
+<h3 id="anyof">AnyOf</h3>
+<p>The <code>AnyOf</code> assertion is used within a <code>Rule</code> definition to aggregate the result of assertions within a pair of squiggly brackets <code>{ }</code>. <code>AnyOf</code> is functionally equivalent to a binary <strong>or</strong>, where if any of the contained assertions returns <code>$True</code>, <code>AnyOf</code> will return <code>$True</code>.</p>
+<p>Syntax:</p>
+<pre><code class="lang-text">AnyOf [-Body] {
+    &lt;assertion&gt;
+    [&lt;assertion&gt;]
+    ...
+}
+</code></pre>
+<ul>
+<li><code>Body</code> - A script block definition of the containing one or more PSRule keywords and PowerShell expressions.</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell"># The Last or Surname field must exist
+AllOf {
+    Exists 'Last'
+
+    Exists 'Surname'
+}
+</code></pre>
+<p>Output:</p>
+<p>If <strong>any</strong> of the assertions return <code>$True</code> AnyOf will return <code>$True</code>, otherwise <code>$False</code>.</p>
+<h3 id="typeof">TypeOf</h3>
+<p>The <code>TypeOf</code> assertion is used within a <code>Rule</code> definition to evaluate if the pipeline object matches one or more of the supplied type names.</p>
+<p>Syntax:</p>
+<pre><code class="lang-text">TypeOf [-TypeName] &lt;string[]&gt;
+</code></pre>
+<ul>
+<li><code>TypeName</code> - One or more type names which will be evaluated against the pipeline object. <code>TypeName</code> is case insensitive.</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">TypeOf 'System.Collections.Hashtable'
+</code></pre>
+<p>Output:</p>
+<p>If <strong>any</strong> the specified type names match the pipeline object then TypeOf will return <code>$True</code>, otherwise <code>$False</code>.</p>
+<h2 id="examples">EXAMPLES</h2>
+<pre><code class="lang-powershell"># Description: App Service Plan has multiple instances
+Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
+
+    Hint 'Use at least two (2) instances' -TargetName $TargetObject.ResourceName
+
+    $TargetObject.Sku.capacity -ge 2
+}
+</code></pre>
+<h2 id="note">NOTE</h2>
+<p>An online version of this document is available at <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/keywords/PSRule/en-US/about_PSRule_Keywords.md">https://github.com/BernieWhite/PSRule/blob/master/docs/keywords/PSRule/en-US/about_PSRule_Keywords.md</a>.</p>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md">Invoke-PSRule</a></li>
+</ul>
+<h2 id="keywords">KEYWORDS</h2>
+<ul>
+<li>Rule</li>
+<li>Exists</li>
+<li>Match</li>
+<li>AnyOf</li>
+<li>AllOf</li>
+<li>Within</li>
+<li>TypeOf</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/keywords/PSRule/en-US/about_PSRule_Keywords.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

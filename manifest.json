@@ -8,11 +8,11 @@
       "source_relative_path": "commands/PSRule/en-US/Get-PSRule.md",
       "output": {
         ".html": {
-          "relative_path": "PSRule/en-US/Get-PSRule.html",
-          "hash": "gZxvCsfXcMqh23d1LL4ihw=="
+          "relative_path": "commands/PSRule/en-US/Get-PSRule.html",
+          "hash": "BrlDlnDac8SRCIWMLr+wnw=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -20,11 +20,11 @@
       "source_relative_path": "commands/PSRule/en-US/Invoke-PSRule.md",
       "output": {
         ".html": {
-          "relative_path": "PSRule/en-US/Invoke-PSRule.html",
-          "hash": "nRM6ETsUTIg+nirmUSiElA=="
+          "relative_path": "commands/PSRule/en-US/Invoke-PSRule.html",
+          "hash": "9OGUbQcvFJOCFbEtUE3Y6A=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -33,10 +33,10 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "+NPhIVY8tP3tfNxS7ZMp/g=="
+          "hash": "PHWEOPvngJaCCVXupFAeKw=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -45,10 +45,46 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/PSRule.html",
-          "hash": "frw/dbPzyEs18SCH2nxj7Q=="
+          "hash": "HAZcAWwMgqzwxbPddssGUg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "commands/PSRule/en-US/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "commands/PSRule/en-US/toc.html",
+          "hash": "ErpWIQmnez842Jw7E4RJwA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "concepts/PSRule/en-US/about_PSRule_Options.md",
+      "output": {
+        ".html": {
+          "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
+          "hash": "1IbqtKspEmxxg3eCPZID2Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "concepts/PSRule/en-US/about_PSRule_Variables.md",
+      "output": {
+        ".html": {
+          "relative_path": "concepts/PSRule/en-US/about_PSRule_Variables.html",
+          "hash": "yeYe7jZEwTZvpKUxtGPzhg=="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -57,10 +93,112 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "zdUwKlWylnnIQNz4s3jQkA=="
+          "hash": "7Rp9I3XW6z3izVeJ/ipeNg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "keywords/PSRule/en-US/about_PSRule_Keywords.md",
+      "output": {
+        ".html": {
+          "relative_path": "keywords/PSRule/en-US/about_PSRule_Keywords.html",
+          "hash": "nwQYPI00cX1uFUk2ENCfeQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "scenarios/azure-resources/appService.Rule.ps1",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/azure-resources/appService.Rule.ps1"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "scenarios/azure-resources/azure-resources.md",
+      "output": {
+        ".html": {
+          "relative_path": "scenarios/azure-resources/azure-resources.html",
+          "hash": "GfrGjLlVMFCC2sRjEnMGrw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "scenarios/azure-resources/common.Rule.ps1",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/azure-resources/common.Rule.ps1"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "scenarios/azure-resources/resources.json",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/azure-resources/resources.json"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "scenarios/azure-resources/storageAccounts.Rule.ps1",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/azure-resources/storageAccounts.Rule.ps1"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "scenarios/fruit/fruit-example.ps1",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/fruit/fruit-example.ps1"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "scenarios/fruit/isFruit.Rule.ps1",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/fruit/isFruit.Rule.ps1"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "scenarios/install-instructions.md",
+      "output": {
+        ".html": {
+          "relative_path": "scenarios/install-instructions.html",
+          "hash": "WQZX+7mfilre+rtbDdgzZA=="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -69,7 +207,7 @@
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "tIqR04nwBnrtx1v+Wv0m6w=="
+          "hash": "DwNf23ixLhAxwxzmwfxMdg=="
         }
       },
       "is_incremental": false,
@@ -79,7 +217,8 @@
   "incremental_info": [
     {
       "status": {
-        "can_incremental": true,
+        "can_incremental": false,
+        "details": "Disable incremental build by force rebuild option.",
         "incrementalPhase": "build"
       },
       "processors": {
@@ -89,15 +228,20 @@
           "incrementalPhase": "build"
         },
         "ConceptualDocumentProcessor": {
-          "can_incremental": true,
+          "can_incremental": false,
+          "incrementalPhase": "build"
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         }
       }
     },
     {
       "status": {
-        "can_incremental": true,
-        "details": "Can support incremental post processing.",
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
         "incrementalPhase": "postProcessing"
       },
       "processors": {}

@@ -5,17 +5,17 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>PSRule Module </title>
+    <title>Install instructions </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="PSRule Module ">
+    <meta name="title" content="Install instructions ">
     <meta name="generator" content="docfx 2.40.4.0">
     
-    <link rel="shortcut icon" href="../../../favicon.ico">
-    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
-    <link rel="stylesheet" href="../../../styles/docfx.css">
-    <link rel="stylesheet" href="../../../styles/main.css">
-    <meta property="docfx:navrel" content="../../../toc.html">
-    <meta property="docfx:tocrel" content="toc.html">
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
     
     
     
@@ -34,8 +34,8 @@
                 <span class="icon-bar"></span>
               </button>
               
-              <a class="navbar-brand" href="../../../index.html">
-                <img id="logo" class="svg" src="../../../logo.svg" alt="">
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
@@ -57,27 +57,32 @@
         </div>
       </header>
       <div role="main" class="container body-content hide-when-search">
-        
-        <div class="sidenav hide-when-search">
-          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"></div>
-          </div>
-        </div>
-        <div class="article row grid-right">
+        <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="psrule-module">PSRule Module</h1>
+<h1 id="install-instructions">Install instructions</h1>
 
-<h2 id="description">Description</h2>
-<p>A PowerShell rules engine.</p>
-<h2 id="psrule-cmdlets">PSRule Cmdlets</h2>
-<h3 id="get-psrule"><a href="Get-PSRule.html">Get-PSRule</a></h3>
-<p>Get a list of matching rule definitions within the search path.</p>
-<h3 id="invoke-psrule"><a href="Invoke-PSRule.html">Invoke-PSRule</a></h3>
-<p>Evaluate pipeline objects against matching rules.</p>
-<h3 id="new-psruleoption"><a href="New-PSRuleOption.html">New-PSRuleOption</a></h3>
-<p>Create options to configure PSRule execution.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Windows PowerShell 5.1 with .NET Framework 4.7.2+ or</li>
+<li>PowerShell Core 6.0</li>
+</ul>
+<h2 id="getting-the-modules">Getting the modules</h2>
+<p>Install from <a href="https://www.powershellgallery.com/packages/PSRule">PowerShell Gallery</a> for all users (requires permissions)</p>
+<pre><code class="lang-powershell"># Install PSRule module
+Install-Module -Name 'PSRule';
+</code></pre>
+<p>Install from <a href="https://www.powershellgallery.com/packages/PSRule">PowerShell Gallery</a> for current user only</p>
+<pre><code class="lang-powershell"># Install PSRule module
+Install-Module -Name 'PSRule' -Scope CurrentUser;
+</code></pre>
+<p>Save for offline use from PowerShell Gallery</p>
+<pre><code class="lang-powershell"># Save PSRule module, in the .\modules directory
+Save-Module -Name 'PSRule' -Path '.\modules';
+</code></pre>
+<blockquote>
+<p>For pre-release versions the <code>-AllowPrerelease</code> switch must be added when calling <code>Install-Module</code> or <code>Save-Module</code>.</p>
+</blockquote>
 </article>
           </div>
           
@@ -86,7 +91,7 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/PSRule.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/scenarios/install-instructions.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>
@@ -112,8 +117,8 @@
       </footer>
     </div>
     
-    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
-    <script type="text/javascript" src="../../../styles/docfx.js"></script>
-    <script type="text/javascript" src="../../../styles/main.js"></script>
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
   </body>
 </html>

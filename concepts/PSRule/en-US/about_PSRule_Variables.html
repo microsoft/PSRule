@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>PSRule Module </title>
+    <title>PSRule_Variables </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="PSRule Module ">
+    <meta name="title" content="PSRule_Variables ">
     <meta name="generator" content="docfx 2.40.4.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="../../../styles/docfx.css">
     <link rel="stylesheet" href="../../../styles/main.css">
     <meta property="docfx:navrel" content="../../../toc.html">
-    <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:tocrel" content="../../../commands/PSRule/en-US/toc.html">
     
     
     
@@ -67,17 +67,49 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="psrule-module">PSRule Module</h1>
+<h1 id="psrule_variables">PSRule_Variables</h1>
 
-<h2 id="description">Description</h2>
-<p>A PowerShell rules engine.</p>
-<h2 id="psrule-cmdlets">PSRule Cmdlets</h2>
-<h3 id="get-psrule"><a href="Get-PSRule.html">Get-PSRule</a></h3>
-<p>Get a list of matching rule definitions within the search path.</p>
-<h3 id="invoke-psrule"><a href="Invoke-PSRule.html">Invoke-PSRule</a></h3>
-<p>Evaluate pipeline objects against matching rules.</p>
-<h3 id="new-psruleoption"><a href="New-PSRuleOption.html">New-PSRuleOption</a></h3>
-<p>Create options to configure PSRule execution.</p>
+<h2 id="about_psrule_variables">about_PSRule_Variables</h2>
+<h2 id="short-description">SHORT DESCRIPTION</h2>
+<p>Describes the automatic variables that can be used within PSRule rule definitions.</p>
+<h2 id="long-description">LONG DESCRIPTION</h2>
+<p>PSRule lets you define rules using PowerShell blocks. A rule is defined within script files by using the <code>rule</code> keyword.</p>
+<p>Within a rule definition, PSRule exposes a number of automatic variables that can be read to assist with rule execution. Overwriting these variables or variable properties is not supported.</p>
+<p>These variables are only available while <code>Invoke-PSRule</code> is executing.</p>
+<p>The following variables are available for use:</p>
+<ul>
+<li><a href="#rule">$Rule</a></li>
+<li><a href="#targetobject">$TargetObject</a></li>
+</ul>
+<h3 id="rule">Rule</h3>
+<p>An object representing the current object model of the rule during execution.</p>
+<p>The following section properties are available for public read access:</p>
+<ul>
+<li><code>RuleName</code> - The name of the rule.</li>
+<li><code>RuleId</code> - A unique identifier for the rule.</li>
+<li><code>TargetObject</code> - The object currently being processed on the pipeline.</li>
+<li><code>TargetName</code> - The name of the object currently being processed on the pipeline. This property will automatically bind to <code>TargetName</code> or <code>Name</code> properties of the object if they exist.</li>
+</ul>
+<p>Syntax:</p>
+<pre><code class="lang-powershell">$Rule
+</code></pre>
+<h3 id="targetobject">TargetObject</h3>
+<p>The value of the pipeline object currently being processed. <code>$TargetObject</code> is set by using the <code>-InputObject</code> parameter of <code>Invoke-PSRule</code>.</p>
+<p>When more than one input object is set, each object will be processed sequentially.</p>
+<p>Syntax:</p>
+<pre><code class="lang-powershell">$TargetObject
+</code></pre>
+<h2 id="note">NOTE</h2>
+<p>An online version of this document is available at <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Variables.md">https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Variables.md</a>.</p>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md">Invoke-PSRule</a></li>
+</ul>
+<h2 id="keywords">KEYWORDS</h2>
+<ul>
+<li>Rule</li>
+<li>TargetObject</li>
+</ul>
 </article>
           </div>
           
@@ -86,7 +118,7 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/PSRule.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Variables.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>
