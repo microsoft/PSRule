@@ -3,6 +3,7 @@
 
 - Fix outcome filtering of summary results [#33](https://github.com/BernieWhite/PSRule/issues/33)
 - Fix target object counter in verbose logging [#35](https://github.com/BernieWhite/PSRule/issues/35)
+- Fix hashtable keys should be handled as fields [#36](https://github.com/BernieWhite/PSRule/issues/36)
 
 ## v0.1.0-B181235
 
