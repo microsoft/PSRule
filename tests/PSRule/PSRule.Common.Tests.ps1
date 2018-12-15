@@ -170,7 +170,7 @@ Describe 'Invoke-PSRule' {
     Context 'With constrained language' {
 
         $testObject = [PSCustomObject]@{
-            Name = "TestObject1"
+            Name = 'TestObject1'
             Value = 1
         }
 

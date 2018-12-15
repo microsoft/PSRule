@@ -113,7 +113,7 @@ Rule 'ExistsTestNegative' -Tag @{ keyword = 'Exists' } {
     Exists 'name' -CaseSensitive
 }
 
-Rule 'WithinTest' {
+Rule 'WithinTest' -Tag @{ keyword = 'Within' } {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
 
@@ -121,12 +121,16 @@ Rule 'WithinTestCaseSensitive' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms' -CaseSensitive
 }
 
-Rule 'MatchTest' {
-    Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$'
+Rule 'MatchTest' -Tag @{ keyword = 'Match' } {
+    Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$', '^(0{1,3})$'
+}
+
+Rule 'MatchTestCaseSensitive' -Tag @{ keyword = 'Match' } {
+    Match 'Title' '^(Mr|Miss|Mrs|Ms)$' -CaseSensitive
 }
 
 Rule 'TypeOfTest' {
-    TypeOf 'System.Collections.Hashtable'
+    TypeOf 'System.Collections.Hashtable', 'PSRule.Test.OtherType'
 }
 
 Rule 'AllOfTest' {
@@ -158,4 +162,3 @@ Rule 'AnyOfTestNegative' {
         $False
     }
 }
-

@@ -26,13 +26,13 @@ namespace PSRule.Commands
             }
 
             var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
-
-            var type = targetObject.GetType();
+            var baseObject = GetBaseObject(targetObject);
+            var baseType = baseObject.GetType();
 
             // Handle dictionaries and hashtables
-            if (type.IsAssignableFrom(typeof(IDictionary)))
+            if (typeof(IDictionary).IsAssignableFrom(baseType))
             {
-                var dictionary = (IDictionary)targetObject;
+                var dictionary = (IDictionary)baseObject;
 
                 foreach (var k in dictionary.Keys)
                 {
@@ -44,7 +44,7 @@ namespace PSRule.Commands
                 }
             }
             // Handle PSObjects
-            else if (type.IsAssignableFrom(typeof(PSObject)))
+            else if (targetObject is PSObject)
             {
                 var psobject = (PSObject)targetObject;
 
@@ -60,7 +60,7 @@ namespace PSRule.Commands
             // Handle all other CLR types
             else
             {
-                foreach (var p in type.GetProperties())
+                foreach (var p in baseType.GetProperties())
                 {
                     if (comparer.Equals(name, p.Name))
                     {
@@ -71,6 +71,26 @@ namespace PSRule.Commands
             }
 
             return false;
+        }
+
+        protected object GetBaseObject(object value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            if (value is PSObject)
+            {
+                var baseObject = ((PSObject)value).BaseObject;
+
+                if (baseObject != null)
+                {
+                    return baseObject;
+                }
+            }
+
+            return value;
         }
     }
 }
