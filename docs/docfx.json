@@ -5,12 +5,7 @@
         "files": [
           "**/*.md",
           "**/*.yml"
-        ],
-        "exclude": [
-          "**/obj/**",
-        ],
-        "src": "commands",
-        "dest": "."
+        ]
       },
       {
         "files": [
@@ -22,7 +17,9 @@
     "resource": [
       {
         "files": [
-          "images/**"
+          "images/**",
+          "scenarios/**/*.ps1",
+          "scenarios/**/*.json"
         ]
       }
     ],

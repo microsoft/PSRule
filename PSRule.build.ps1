@@ -247,8 +247,26 @@ task Benchmark {
 
 # Synopsis: Run script analyzer
 task Analyze Build, PSScriptAnalyzer, {
-
     Invoke-ScriptAnalyzer -Path out/modules/PSRule;
+}
+
+# Synopsis: Build project site
+task BuildSite {
+    git branch -D gh-pages;
+    git worktree add -b gh-pages -f out/site origin/gh-pages;
+    docfx build --force docs/docfx.json;
+
+    try {
+        Push-Location -Path out/site;
+        git add *;
+        git commit -m 'Update documentation';
+        git push;
+    }
+    finally {
+        Pop-Location;
+    }
+
+    git worktree remove out/site
 }
 
 # Synopsis: Build and clean.

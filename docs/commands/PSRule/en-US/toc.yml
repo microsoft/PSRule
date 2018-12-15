@@ -1,0 +1,26 @@
+
+- name: Commands
+  href: PSRule.md
+  topicHref: PSRule.md
+  items:
+    - name: Get-PSRule
+      href: Get-PSRule.md
+      topicHref: Get-PSRule.md
+    - name: Invoke-PSRule
+      href: Invoke-PSRule.md
+      topicHref: Invoke-PSRule.md
+    - name: New-PSRuleOption
+      href: New-PSRuleOption.md
+      topicHref: New-PSRuleOption.md
+
+- name: Keywords
+  href: ../../../keywords/PSRule/en-US/about_PSRule_Keywords.md
+  topicHref: ../../../keywords/PSRule/en-US/about_PSRule_Keywords.md
+
+- name: Options
+  href: ../../../concepts/PSRule/en-US/about_PSRule_Options.md
+  topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Options.md
+
+- name: Variables
+  href: ../../../concepts/PSRule/en-US/about_PSRule_Variables.md
+  topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Variables.md
