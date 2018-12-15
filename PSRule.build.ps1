@@ -233,7 +233,6 @@ task TestModule Pester, PSScriptAnalyzer, {
     }
 
     # Throw an error if pester tests failed
-
     if ($Null -eq $results) {
         throw 'Failed to get Pester test results.';
     }

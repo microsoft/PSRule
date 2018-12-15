@@ -18,7 +18,6 @@ Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 $here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- Hint keyword' -Tag 'Hint' {
-
     Context 'Hint' {
         $testObject = [PSCustomObject]@{
             Name = "TestObject1"
@@ -27,8 +26,7 @@ Describe 'PSRule -- Hint keyword' -Tag 'Hint' {
             }
         }
 
-        It 'Return success' {
-
+        It 'Sets result properties' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'HintTest' -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
             $result.RuleName | Should -Be 'HintTest';
