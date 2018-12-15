@@ -28,30 +28,24 @@ namespace PSRule.Pipeline
             _ResultFormat = resultFormat;
         }
 
-        public IEnumerable<RuleRecord> Process(PSObject o)
+        public IEnumerable<RuleRecord> Process(PSObject targetObject)
         {
-            try
-            {
-                return ProcessRule(o);
-            }
-            finally
-            {
-                
-            }
+            _Context.Next();
+            return ProcessRule(targetObject);
         }
 
-        public IEnumerable<RuleRecord> Process(PSObject[] targets)
+        public IEnumerable<RuleRecord> Process(PSObject[] targetObjects)
         {
             var results = new List<RuleRecord>();
 
-            foreach (var target in targets)
+            foreach (var targetObject in targetObjects)
             {
-                foreach (var result in Process(target))
+                _Context.Next();
+
+                foreach (var result in Process(targetObject))
                 {
                     results.Add(result);
                 }
-
-                _Context.Next();
             }
 
             return results;
@@ -68,7 +62,7 @@ namespace PSRule.Pipeline
             }
         }
 
-        private IEnumerable<RuleRecord> ProcessRule(PSObject o)
+        private IEnumerable<RuleRecord> ProcessRule(PSObject targetObject)
         {
             var results = new List<RuleRecord>();
 
@@ -78,7 +72,7 @@ namespace PSRule.Pipeline
 
                 try
                 {
-                    var result = (target.Skipped) ? new RuleRecord(target.Value.RuleId, reason: RuleOutcomeReason.DependencyFail) : HostHelper.InvokeRuleBlock(_Option, target.Value, o);
+                    var result = (target.Skipped) ? new RuleRecord(target.Value.RuleId, reason: RuleOutcomeReason.DependencyFail) : HostHelper.InvokeRuleBlock(_Option, target.Value, targetObject);
 
                     if (result.Outcome == RuleOutcome.Pass)
                     {

@@ -16,7 +16,7 @@ namespace PSRule.Pipeline
 
         private PipelineContext(ILogger logger)
         {
-            _ObjectNumber = 0;
+            _ObjectNumber = -1;
             _Logger = logger;
         }
 
