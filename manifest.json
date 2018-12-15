@@ -1,0 +1,112 @@
+{
+  "homepages": [],
+  "source_base_path": "C:/dev/workspace/PSRule/docs",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Conceptual",
+      "source_relative_path": "commands/PSRule/en-US/Get-PSRule.md",
+      "output": {
+        ".html": {
+          "relative_path": "PSRule/en-US/Get-PSRule.html",
+          "hash": "gZxvCsfXcMqh23d1LL4ihw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "commands/PSRule/en-US/Invoke-PSRule.md",
+      "output": {
+        ".html": {
+          "relative_path": "PSRule/en-US/Invoke-PSRule.html",
+          "hash": "nRM6ETsUTIg+nirmUSiElA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "commands/PSRule/en-US/New-PSRuleOption.md",
+      "output": {
+        ".html": {
+          "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
+          "hash": "+NPhIVY8tP3tfNxS7ZMp/g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "commands/PSRule/en-US/PSRule.md",
+      "output": {
+        ".html": {
+          "relative_path": "commands/PSRule/en-US/PSRule.html",
+          "hash": "frw/dbPzyEs18SCH2nxj7Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "zdUwKlWylnnIQNz4s3jQkA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "tIqR04nwBnrtx1v+Wv0m6w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": true,
+        "incrementalPhase": "build"
+      },
+      "processors": {
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build"
+        },
+        "ConceptualDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build"
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
+        "incrementalPhase": "postProcessing"
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
