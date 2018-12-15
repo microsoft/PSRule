@@ -1,3 +1,6 @@
-- name: Commands
-  href: commands/PSRule/en-US/
-  homepage: commands/PSRule/en-US/PSRule.md
+
+- name: Reference
+  href: commands/PSRule/en-US/PSRule.md
+  topicHref: commands/PSRule/en-US/PSRule.md
+- name: Source
+  href: https://github.com/BernieWhite/PSRule
