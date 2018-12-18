@@ -145,8 +145,6 @@ namespace PSRule.Host
         {
             try
             {
-                //PipelineContext.WriteVerbose($"[PSRule][R][{block.Id}]::BEGIN");
-
                 var result = new RuleRecord(block.RuleId)
                 {
                     TargetObject = inputObject,

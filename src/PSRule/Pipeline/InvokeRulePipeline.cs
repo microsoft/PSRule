@@ -105,6 +105,9 @@ namespace PSRule.Pipeline
                 (_Outcome == RuleOutcome.All || (outcome & _Outcome) > 0);
         }
 
+        /// <summary>
+        /// Add rule result to summary.
+        /// </summary>
         private void AddToSummary(RuleBlock ruleBlock, string targetName, RuleOutcome outcome)
         {
             if (!_Summary.TryGetValue(ruleBlock.RuleId, out RuleSummaryRecord s))

@@ -66,7 +66,6 @@ namespace PSRule.Pipeline
                 outMessage = string.Concat(_LogPrefix, message);
             }
 
-            // TODO: Prefix entries with context. i.e. //[Rule][$($Context.Index)][$($Rule.Name)]
             _Logger.WriteVerbose(outMessage);
         }
 
