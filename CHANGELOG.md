@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Allow objects to be suppressed by TargetName for individual rules [#13](https://github.com/BernieWhite/PSRule/issues/13)
+
 ## v0.1.0
 
 - Initial release

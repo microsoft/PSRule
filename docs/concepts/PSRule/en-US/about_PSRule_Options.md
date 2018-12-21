@@ -55,6 +55,24 @@ PSRule allows objects to be suppressed for a rule by TargetName. Objects that ar
 
 Rule suppression complements pre-filtering and pre-conditions.
 
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the SuppressTargetName option with a hash table
+$option = New-PSRuleOption -SuppressTargetName @{ 'storageAccounts.UseHttps' = 'TestObject1', 'TestObject3' };
+```
+
+```yaml
+# psrule.yml: Using the suppression YAML property
+suppression:
+  storageAccounts.UseHttps:
+    targetName:
+    - TestObject1
+    - TestObject3
+```
+
+In both of the above examples, `TestObject1` and `TestObject3` have been suppressed from being processed by a rule named `storageAccounts.UseHttps`.
+
 When **to** use rule suppression:
 
 - A temporary exclusion for an object that is in a known failed state.
@@ -63,6 +81,8 @@ When **not** to use rule suppression:
 
 - An object should never be processed by any rule. Pre-filter the pipeline instead.
 - The rule is not applicable because the object is the wrong type. Use pre-conditions on the rule instead.
+
+An example of pre-filtering:
 
 ```powershell
 # Define objects to validate
@@ -75,28 +95,14 @@ $items += [PSCustomObject]@{ Name = 'Carrot'; Type = 'Food'; Category = 'Produce
 $items | Where-Object { $_.Type -eq 'Food' } | Invoke-PSRule;
 ```
 
+An example of pre-conditions:
+
 ```powershell
 # A rule with a pre-condition to only process produce
 Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
     # Condition to determine if the object is fruit
     $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
 }
-```
-
-This option can be specified using:
-
-```powershell
-# PowerShell: Using the SuppressTargetName option with a hash table, to suppress TestObject1 and TestObject3 from being processed a rule named storageAccounts.UseHttps.
-$option = New-PSRuleOption -SuppressTargetName @{ 'storageAccounts.UseHttps' = 'TestObject1', 'TestObject3' };
-```
-
-```yaml
-# psrule.yml: Using the suppression YAML property
-suppression:
-  storageAccounts.UseHttps:
-    targetName:
-    - TestObject1
-    - TestObject3
 ```
 
 ### Language mode
