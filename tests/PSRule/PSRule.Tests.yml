@@ -1,9 +1,13 @@
-# These are test options
-exclusion:
-  ExclusionTest1:
+# These are options for unit tests
+
+# Configure rule suppression
+suppression:
+  SuppressionTest1:
     targetName:
     - TestObject1
     - TestObject3
-  ExclusionTest2: TestObject1, TestObject3
+  SuppressionTest2: TestObject1, TestObject3
+
+# Configure execution options
 execution:
   languageMode: ConstrainedLanguage

@@ -209,7 +209,7 @@ function New-PSRuleOption {
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.ExclusionOption]$ExcludeTarget,
+        [PSRule.Configuration.SuppressionOption]$SuppressTargetName,
 
         [Parameter(Mandatory = $False)]
         [String]$Path = '.\psrule.yml'
@@ -236,8 +236,8 @@ function New-PSRuleOption {
             $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $True);
         }
 
-        if ($PSBoundParameters.ContainsKey('ExcludeTarget')) {
-            $Option.Exclusion = $ExcludeTarget;
+        if ($PSBoundParameters.ContainsKey('SuppressTargetName')) {
+            $Option.Suppression = $SuppressTargetName;
         }
 
         return $Option;

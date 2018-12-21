@@ -96,10 +96,6 @@ Rule 'ConstrainedTest2' {
     $True;
 }
 
-Rule 'ExclusionTest' {
-
-}
-
 # Description: Test automatic variables
 Rule 'VariableTest' {
     $TargetObject.Name -eq $Rule.RuleName;

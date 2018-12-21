@@ -3,41 +3,41 @@
 namespace PSRule.Configuration
 {
     /// <summary>
-    /// A rule exclusion.
+    /// A suppression rule, that specifies TargetNames that will not be processed by individual rules.
     /// </summary>
-    public sealed class RuleExclusion
+    public sealed class SuppressionRule
     {
-        public RuleExclusion()
+        public SuppressionRule()
         {
 
         }
 
-        private RuleExclusion(string[] targetNames)
+        private SuppressionRule(string[] targetNames)
         {
             TargetName = targetNames;
         }
 
         /// <summary>
-        /// One of more target names to exclude.
+        /// One of more target names to suppress.
         /// </summary>
         public string[] TargetName { get; set; }
 
-        public static implicit operator RuleExclusion(string value)
+        public static implicit operator SuppressionRule(string value)
         {
             return FromString(value);
         }
 
-        public static implicit operator RuleExclusion(string[] value)
+        public static implicit operator SuppressionRule(string[] value)
         {
             return FromString(value);
         }
 
-        internal static RuleExclusion FromString(params string[] value)
+        internal static SuppressionRule FromString(params string[] value)
         {
-            return new RuleExclusion(value);
+            return new SuppressionRule(value);
         }
 
-        internal static RuleExclusion FromObject(object value)
+        internal static SuppressionRule FromObject(object value)
         {
             if (value is string)
             {

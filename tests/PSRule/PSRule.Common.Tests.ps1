@@ -133,7 +133,7 @@ Describe 'Invoke-PSRule' {
                 }
             )
 
-            $option = New-PSRuleOption -ExcludeTarget @{ FromFile1 = 'TestObject1'; FromFile2 = 'testobject1'; };
+            $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'testobject1'; };
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Option $option -Name 'FromFile1', 'FromFile2' -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 4;
@@ -270,22 +270,22 @@ Describe 'Get-PSRule' {
 #region New-PSRuleOption
 
 Describe 'New-PSRuleOption' -Tag 'Option' {
-    Context 'Read Exclusion' {
+    Context 'Read Suppression' {
         It 'from default' {
             $option = New-PSRuleOption;
-            $option.Exclusion.Count | Should -Be 0;
+            $option.Suppression.Count | Should -Be 0;
         }
 
         It 'from Hashtable' {
-            $option = New-PSRuleOption -ExcludeTarget @{ 'ExclusionTest' = 'testObject1', 'testObject3' };
-            $option.Exclusion['ExclusionTest'].TargetName | Should -BeIn 'testObject1', 'testObject3';
+            $option = New-PSRuleOption -SuppressTargetName @{ 'SuppressionTest' = 'testObject1', 'testObject3' };
+            $option.Suppression['SuppressionTest'].TargetName | Should -BeIn 'testObject1', 'testObject3';
         }
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Exclusion['ExclusionTest1'].TargetName | Should -BeIn 'TestObject1', 'TestObject3';
+            $option.Suppression['SuppressionTest1'].TargetName | Should -BeIn 'TestObject1', 'TestObject3';
             # TODO: Yaml inline
-            # $option.Exclusion['ExclusionTest2'].TargetName | Should -BeIn 'TestObject1', 'TestObject3';
+            # $option.Suppression['SuppressionTest2'].TargetName | Should -BeIn 'TestObject1', 'TestObject3';
         }
     }
 

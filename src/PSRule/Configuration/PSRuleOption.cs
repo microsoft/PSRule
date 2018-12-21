@@ -17,14 +17,14 @@ namespace PSRule.Configuration
         public PSRuleOption()
         {
             // Set defaults
-            Exclusion = new ExclusionOption();
+            Suppression = new SuppressionOption();
             Execution = new ExecutionOption();
         }
 
         public PSRuleOption(PSRuleOption option)
         {
             // Set from existing option instance
-            Exclusion = new ExclusionOption(option.Exclusion);
+            Suppression = new SuppressionOption(option.Suppression);
             Execution = new ExecutionOption
             {
                 LanguageMode = option.Execution.LanguageMode
@@ -37,9 +37,9 @@ namespace PSRule.Configuration
         public static PathDelegate GetWorkingPath = () => Directory.GetCurrentDirectory();
 
         /// <summary>
-        /// A set of rule exclusions.
+        /// A set of suppression rules.
         /// </summary>
-        public ExclusionOption Exclusion { get; set; }
+        public SuppressionOption Suppression { get; set; }
 
         /// <summary>
         /// Options that affect script execution.

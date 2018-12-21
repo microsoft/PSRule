@@ -12,7 +12,7 @@ namespace PSRule.Pipeline
         private readonly RuleOutcome _Outcome;
         private readonly DependencyGraph<RuleBlock> _RuleGraph;
 
-        // A per summary of rules being processes and outcome
+        // A per rule summary of rules that have been processed and the outcome
         private readonly Dictionary<string, RuleSummaryRecord> _Summary;
 
         private readonly ResultFormat _ResultFormat;
@@ -27,7 +27,7 @@ namespace PSRule.Pipeline
             _RuleGraph = HostHelper.GetRuleBlockGraph(_Option, _Path, _Filter);
             _Summary = new Dictionary<string, RuleSummaryRecord>();
             _ResultFormat = resultFormat;
-            _SuppressionFilter = new RuleSuppressionFilter(_Option.Exclusion);
+            _SuppressionFilter = new RuleSuppressionFilter(_Option.Suppression);
         }
 
         public IEnumerable<RuleRecord> Process(PSObject targetObject)

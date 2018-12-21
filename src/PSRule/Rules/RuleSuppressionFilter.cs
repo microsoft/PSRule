@@ -11,7 +11,7 @@ namespace PSRule.Rules
         private readonly HashSet<SuppressionKey> _Index;
         private readonly bool _IsEmpty;
 
-        public RuleSuppressionFilter(ExclusionOption option)
+        public RuleSuppressionFilter(SuppressionOption option)
         {
             if (option == null || option.Count == 0)
             {
@@ -86,7 +86,7 @@ namespace PSRule.Rules
             return _Index.Contains(new SuppressionKey(ruleName, targetName));
         }
 
-        private void Index(ExclusionOption option)
+        private void Index(SuppressionOption option)
         {
             // Read suppress rules into index combined key (RuleName + TargetName)
             foreach (var rule in option)
