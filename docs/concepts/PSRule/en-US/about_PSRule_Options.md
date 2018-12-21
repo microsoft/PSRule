@@ -44,7 +44,7 @@ By default PSRule will automatically look for a file named `psrule.yml` in the c
 For example:
 
 ```powershell
-Invoke-PSRule -Path . -Option '.\myconfig.yml'.
+Invoke-PSRule -Path . -Option '.\myconfig.yml';
 ```
 
 ### Rule suppression
@@ -87,7 +87,7 @@ This option can be specified using:
 
 ```powershell
 # PowerShell: Using the SuppressTargetName option with a hash table, to suppress TestObject1 and TestObject3 from being processed a rule named storageAccounts.UseHttps.
-$option = New-PSRuleOption -SuppressTargetName @{ 'storageAccounts.UseHttps' = 'TestObject1', 'TestObject3' }
+$option = New-PSRuleOption -SuppressTargetName @{ 'storageAccounts.UseHttps' = 'TestObject1', 'TestObject3' };
 ```
 
 ```yaml
@@ -114,7 +114,7 @@ This option can be specified using:
 
 ```powershell
 # PowerShell: Using the Execution.LanguageMode hash table key
-$option = New-PSRuleOption -Option @{ 'Execution.LanguageMode' = 'ConstrainedLanguage' }
+$option = New-PSRuleOption -Option @{ 'Execution.LanguageMode' = 'ConstrainedLanguage' };
 ```
 
 ```yaml
