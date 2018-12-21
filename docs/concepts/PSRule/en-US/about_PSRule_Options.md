@@ -47,6 +47,58 @@ For example:
 Invoke-PSRule -Path . -Option '.\myconfig.yml'.
 ```
 
+### Rule suppression
+
+In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.
+
+PSRule allows objects to be suppressed for a rule by TargetName. Objects that are suppressed are not processed by the rule at all, but will continue to be processed by other rules.
+
+Rule suppression complements pre-filtering and pre-conditions.
+
+When **to** use rule suppression:
+
+- A temporary exclusion for an object that is in a known failed state.
+
+When **not** to use rule suppression:
+
+- An object should never be processed by any rule. Pre-filter the pipeline instead.
+- The rule is not applicable because the object is the wrong type. Use pre-conditions on the rule instead.
+
+```powershell
+# Define objects to validate
+$items = @();
+$items += [PSCustomObject]@{ Name = 'Fridge'; Type = 'Equipment'; Category = 'White goods'; };
+$items += [PSCustomObject]@{ Name = 'Apple'; Type = 'Food'; Category = 'Produce'; };
+$items += [PSCustomObject]@{ Name = 'Carrot'; Type = 'Food'; Category = 'Produce'; };
+
+# Example of pre-filtering, only food items are sent to Invoke-PSRule
+$items | Where-Object { $_.Type -eq 'Food' } | Invoke-PSRule;
+```
+
+```powershell
+# A rule with a pre-condition to only process produce
+Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
+    # Condition to determine if the object is fruit
+    $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
+}
+```
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the SuppressTargetName option with a hash table, to suppress TestObject1 and TestObject3 from being processed a rule named storageAccounts.UseHttps.
+$option = New-PSRuleOption -SuppressTargetName @{ 'storageAccounts.UseHttps' = 'TestObject1', 'TestObject3' }
+```
+
+```yaml
+# psrule.yml: Using the suppression YAML property
+suppression:
+  storageAccounts.UseHttps:
+    targetName:
+    - TestObject1
+    - TestObject3
+```
+
 ### Language mode
 
 Unless PowerShell has been constrained, full language features of PowerShell are available to use within rule definitions. In locked down environments, a reduced set of language features may be desired.
@@ -79,6 +131,13 @@ execution:
 # Set execution options
 execution:
   languageMode: ConstrainedLanguage
+
+# Suppress the following target names
+suppression:
+  storageAccounts.UseHttps:
+    targetName:
+    - TestObject1
+    - TestObject3
 ```
 
 ### Default PSRule.yml
