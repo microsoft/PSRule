@@ -1,0 +1,9 @@
+# These are test options
+exclusion:
+  ExclusionTest1:
+    targetName:
+    - TestObject1
+    - TestObject3
+  ExclusionTest2: TestObject1, TestObject3
+execution:
+  languageMode: ConstrainedLanguage

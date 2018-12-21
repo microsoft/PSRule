@@ -14,6 +14,9 @@ namespace PSRule.Pipeline
         private PSRuleOption _Option;
         private RuleFilter _Filter;
         private PipelineLogger _Logger;
+        private bool _LogError;
+        private bool _LogWarning;
+        private bool _LogVerbose;
 
         internal GetRulePipelineBuilder()
         {
@@ -50,9 +53,18 @@ namespace PSRule.Pipeline
             _Logger.OnWriteError = commandRuntime.WriteError;
         }
 
+        public void UseLoggingPreferences(ActionPreference error, ActionPreference warning, ActionPreference verbose)
+        {
+            _LogError = !(error == ActionPreference.Ignore || error == ActionPreference.SilentlyContinue);
+            _LogWarning = !(warning == ActionPreference.Ignore || warning == ActionPreference.SilentlyContinue);
+            _LogVerbose = !(verbose == ActionPreference.Ignore || verbose == ActionPreference.SilentlyContinue);
+        }
+
         public GetRulePipeline Build()
         {
-            return new GetRulePipeline(_Logger, _Option, _Path, _Filter);
+            var context = PipelineContext.New(_Logger, null, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose);
+
+            return new GetRulePipeline(_Option, _Path, _Filter, context: context);
         }
     }
 }

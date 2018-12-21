@@ -19,7 +19,10 @@ namespace PSRule.Benchmark
     public class PSRule
     {
         private PSObject[] _TargetObject;
-        private InvokeRulePipeline _Invoke;
+        private GetRulePipeline _GetPipeline;
+        private InvokeRulePipeline _InvokePipeline;
+        private InvokeRulePipeline _InvokeIfPipeline;
+        private InvokeRulePipeline _InvokeSummaryPipeline;
 
         public sealed class TargetObject
         {
@@ -37,11 +40,48 @@ namespace PSRule.Benchmark
         [GlobalSetup]
         public void Prepare()
         {
-            var builder = PipelineBuilder.Invoke();
-            
-            builder.Source(new string[] { Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1") });
-            _Invoke = builder.Build();
+            PrepareGetPipeline();
+            PrepareInvokePipeline();
+            PrepareInvokeIfPipeline();
+            PrepareInvokeSummaryPipeline();
+            PrepareTargetObjects();
+        }
 
+        private void PrepareGetPipeline()
+        {
+            var getBuilder = PipelineBuilder.Get();
+            getBuilder.Source(new string[] { Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1") });
+            getBuilder.FilterBy(new string[] { "Benchmark" }, null);
+            _GetPipeline = getBuilder.Build();
+        }
+
+        private void PrepareInvokePipeline()
+        {
+            var invokeBuilder = PipelineBuilder.Invoke();
+            invokeBuilder.Source(new string[] { Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1") });
+            invokeBuilder.FilterBy(new string[] { "Benchmark" }, null);
+            _InvokePipeline = invokeBuilder.Build();
+        }
+
+        private void PrepareInvokeIfPipeline()
+        {
+            var invokeBuilder = PipelineBuilder.Invoke();
+            invokeBuilder.Source(new string[] { Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1") });
+            invokeBuilder.FilterBy(new string[] { "BenchmarkIf" }, null);
+            _InvokeIfPipeline = invokeBuilder.Build();
+        }
+
+        private void PrepareInvokeSummaryPipeline()
+        {
+            var invokeBuilder = PipelineBuilder.Invoke();
+            invokeBuilder.Source(new string[] { Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1") });
+            invokeBuilder.FilterBy(new string[] { "Benchmark" }, null);
+            invokeBuilder.As(Configuration.ResultFormat.Summary);
+            _InvokeSummaryPipeline = invokeBuilder.Build();
+        }
+
+        private void PrepareTargetObjects()
+        {
             var r = new Random();
             var randomBuffer = new byte[40];
             var targetObjects = new List<PSObject>();
@@ -56,6 +96,15 @@ namespace PSRule.Benchmark
         }
 
         [Benchmark]
-        public void Invoke() => _Invoke.Process(_TargetObject).Consume(new Consumer());
+        public void Invoke() => _InvokePipeline.Process(_TargetObject).Consume(new Consumer());
+
+        //[Benchmark]
+        //public void InvokeIf() => _InvokeIfPipeline.Process(_TargetObject).Consume(new Consumer());
+
+        //[Benchmark]
+        //public void InvokeSummary() => _InvokeSummaryPipeline.Process(_TargetObject);
+
+        [Benchmark]
+        public void Get() => _GetPipeline.Process().Consume(new Consumer());
     }
 }

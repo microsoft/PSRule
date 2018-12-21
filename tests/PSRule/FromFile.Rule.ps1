@@ -96,6 +96,16 @@ Rule 'ConstrainedTest2' {
     $True;
 }
 
+Rule 'ExclusionTest' {
+
+}
+
+# Description: Test automatic variables
+Rule 'VariableTest' {
+    $TargetObject.Name -eq $Rule.RuleName;
+    $TargetObject.Name -eq $Rule.TargetName;
+}
+
 # Description: Test for Hint keyword
 Rule 'HintTest' {
     Hint 'This is a message' -TargetName 'HintTarget'

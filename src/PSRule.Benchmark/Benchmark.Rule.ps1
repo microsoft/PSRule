@@ -3,11 +3,16 @@
 #
 
 # Description: A rule for testing PSRule performance
-Rule 'BenchmarkOdd' -If { ($TargetObject.Name % 2) -gt 0 } {
-    Hint 'Odd message'
+Rule 'Benchmark' {
+	1 -eq 1;
 }
 
 # Description: A rule for testing PSRule performance
-Rule 'BenchmarkEven' -If { ($TargetObject.Name % 2) -ge 0 } {
-    Hint 'Even message'
+Rule 'BenchmarkIf' -If { 1 -eq 1 } {
+	1 -eq 1;
+}
+
+# Description: A rule for testing PSRule performance
+Rule 'BenchmarkExists' {
+
 }

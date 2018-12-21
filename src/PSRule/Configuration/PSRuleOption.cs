@@ -17,12 +17,14 @@ namespace PSRule.Configuration
         public PSRuleOption()
         {
             // Set defaults
+            Exclusion = new ExclusionOption();
             Execution = new ExecutionOption();
         }
 
         public PSRuleOption(PSRuleOption option)
         {
             // Set from existing option instance
+            Exclusion = new ExclusionOption(option.Exclusion);
             Execution = new ExecutionOption
             {
                 LanguageMode = option.Execution.LanguageMode
@@ -35,9 +37,17 @@ namespace PSRule.Configuration
         public static PathDelegate GetWorkingPath = () => Directory.GetCurrentDirectory();
 
         /// <summary>
+        /// A set of rule exclusions.
+        /// </summary>
+        public ExclusionOption Exclusion { get; set; }
+
+        /// <summary>
         /// Options that affect script execution.
         /// </summary>
         public ExecutionOption Execution { get; set; }
+
+        [YamlIgnore()]
+        public PipelineHook Pipeline { get; set; }
 
         public string ToYaml()
         {

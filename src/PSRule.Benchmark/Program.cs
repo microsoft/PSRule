@@ -12,20 +12,11 @@ namespace PSRule.Benchmark
 {
     internal sealed class Program
     {
-        private class BenchmarkConfig : ManualConfig
-        {
-            public BenchmarkConfig(string artifactsPath)
-            {
-                ArtifactsPath = artifactsPath;
-            }
-        }
-
         static void Main(string[] args)
         {
-
             var app = new CommandLineApplication();
             app.Name = "PSRule Benchmark";
-            app.Description = "";
+            app.Description = "A runner for testing PSRule performance";
 
 #if !BENCHMARK
             // Do profiling

@@ -16,22 +16,23 @@ namespace PSRule.Pipeline
         private readonly Dictionary<string, RuleSummaryRecord> _Summary;
 
         private readonly ResultFormat _ResultFormat;
+        private readonly RuleSuppressionFilter _SuppressionFilter;
         private readonly PipelineContext _Context;
 
-        internal InvokeRulePipeline(PipelineLogger logger, PSRuleOption option, string[] path, RuleFilter filter, RuleOutcome outcome, ResultFormat resultFormat)
+        internal InvokeRulePipeline(PSRuleOption option, string[] path, RuleFilter filter, RuleOutcome outcome, ResultFormat resultFormat, PipelineContext context)
             : base(option, path, filter)
         {
             _Outcome = outcome;
-            _Context = PipelineContext.New(logger);
-            _RuleGraph = HostHelper.GetRuleBlockGraph(_Option, null, _Path, _Filter);
+            _Context = context;
+            _RuleGraph = HostHelper.GetRuleBlockGraph(_Option, _Path, _Filter);
             _Summary = new Dictionary<string, RuleSummaryRecord>();
             _ResultFormat = resultFormat;
+            _SuppressionFilter = new RuleSuppressionFilter(_Option.Exclusion);
         }
 
         public IEnumerable<RuleRecord> Process(PSObject targetObject)
         {
-            _Context.Next();
-            return ProcessRule(targetObject);
+            return ProcessTargetObject(targetObject);
         }
 
         public IEnumerable<RuleRecord> Process(PSObject[] targetObjects)
@@ -40,9 +41,7 @@ namespace PSRule.Pipeline
 
             foreach (var targetObject in targetObjects)
             {
-                _Context.Next();
-
-                foreach (var result in Process(targetObject))
+                foreach (var result in ProcessTargetObject(targetObject))
                 {
                     results.Add(result);
                 }
@@ -62,36 +61,62 @@ namespace PSRule.Pipeline
             }
         }
 
-        private IEnumerable<RuleRecord> ProcessRule(PSObject targetObject)
+        private IEnumerable<RuleRecord> ProcessTargetObject(PSObject targetObject)
         {
+            _Context.TargetObject(targetObject);
+
             var results = new List<RuleRecord>();
 
-            foreach (var target in _RuleGraph.GetSingleTarget())
+            // Process rule blocks ordered by dependency graph
+            foreach (var ruleBlockTarget in _RuleGraph.GetSingleTarget())
             {
-                _Context.Enter(target);
+                // Enter rule block scope
+                _Context.Enter(ruleBlockTarget.Value);
 
                 try
                 {
-                    var result = (target.Skipped) ? new RuleRecord(target.Value.RuleId, reason: RuleOutcomeReason.DependencyFail) : HostHelper.InvokeRuleBlock(_Option, target.Value, targetObject);
-
-                    if (result.Outcome == RuleOutcome.Pass)
+                    var ruleRecord = new RuleRecord(ruleBlockTarget.Value.RuleId, ruleBlockTarget.Value.RuleName)
                     {
-                        target.Pass();
+                        TargetObject = targetObject,
+                        TargetName = _Context.TargetName,
+                        Tag = ruleBlockTarget.Value.Tag?.ToHashtable()
+                    };
+
+                    // Check if dependency failed
+                    if (ruleBlockTarget.Skipped)
+                    {
+                        ruleRecord.OutcomeReason = RuleOutcomeReason.DependencyFail;
                     }
-                    else if (result.Outcome == RuleOutcome.Fail || result.Outcome == RuleOutcome.Error)
+                    // Check for suppression
+                    else if (_SuppressionFilter.Match(ruleName: ruleBlockTarget.Value.RuleName, targetName: _Context.TargetName))
                     {
-                        target.Fail();
+                        ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
+                    }
+                    else
+                    {
+                        HostHelper.InvokeRuleBlock(context: _Context, ruleBlock: ruleBlockTarget.Value, ruleRecord: ruleRecord);
                     }
 
-                    AddToSummary(ruleBlock: target.Value, targetName: result.TargetName, outcome: result.Outcome);
-
-                    if (ShouldOutput(result.Outcome))
+                    // Report outcome to dependency graph
+                    if (ruleRecord.Outcome == RuleOutcome.Pass)
                     {
-                        results.Add(result);
+                        ruleBlockTarget.Pass();
+                    }
+                    else if (ruleRecord.Outcome == RuleOutcome.Fail || ruleRecord.Outcome == RuleOutcome.Error)
+                    {
+                        ruleBlockTarget.Fail();
+                    }
+
+                    AddToSummary(ruleBlock: ruleBlockTarget.Value, targetName: ruleRecord.TargetName, outcome: ruleRecord.Outcome);
+
+                    if (ShouldOutput(ruleRecord.Outcome))
+                    {
+                        results.Add(ruleRecord);
                     }
                 }
                 finally
                 {
+                    // Exit rule block scope
                     _Context.Exit();
                 }
             }
@@ -112,8 +137,10 @@ namespace PSRule.Pipeline
         {
             if (!_Summary.TryGetValue(ruleBlock.RuleId, out RuleSummaryRecord s))
             {
-                s = new RuleSummaryRecord(ruleBlock.RuleId);
-                s.Tag = ruleBlock.Tag?.ToHashtable();
+                s = new RuleSummaryRecord(ruleBlock.RuleId, ruleBlock.RuleName)
+                {
+                    Tag = ruleBlock.Tag?.ToHashtable()
+                };
 
                 _Summary.Add(ruleBlock.RuleId, s);
             }

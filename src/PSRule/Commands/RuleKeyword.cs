@@ -1,4 +1,5 @@
-﻿using PSRule.Rules;
+﻿using PSRule.Pipeline;
+using PSRule.Rules;
 using System;
 using System.Collections;
 using System.Management.Automation;
@@ -12,7 +13,7 @@ namespace PSRule.Commands
     {
         protected RuleRecord GetResult()
         {
-            return GetVariableValue("Rule") as RuleRecord;
+            return PipelineContext.CurrentThread._Rule;
         }
 
         protected bool GetField(object targetObject, string name, bool caseSensitive, out object value)

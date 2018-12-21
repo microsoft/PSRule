@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Management.Automation;
+using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Rules;
 
@@ -13,85 +14,155 @@ namespace PSRule.Pipeline
         private string _LogPrefix;
         private int _ObjectNumber;
         private readonly ILogger _Logger;
+        private readonly BindTargetName _BindTargetName;
+        private readonly bool _LogError;
+        private readonly bool _LogWarning;
+        private readonly bool _LogVerbose;
+        internal RuleRecord _Rule;
 
-        private PipelineContext(ILogger logger)
+        public string TargetName { get; private set; }
+
+        private PipelineContext(ILogger logger, BindTargetName bindTargetName, bool logError, bool logWarning, bool logVerbose)
         {
             _ObjectNumber = -1;
             _Logger = logger;
+            _BindTargetName = bindTargetName;
+            _LogError = logError;
+            _LogWarning = logWarning;
+            _LogVerbose = logVerbose;
+
+            if (_Logger == null)
+            {
+                _LogError = _LogWarning = _LogVerbose = false;
+            }
         }
 
-        public static PipelineContext New(ILogger logger)
+        public static PipelineContext New(ILogger logger, BindTargetName bindTargetName, bool logError = true, bool logWarning = true, bool logVerbose = false)
         {
-            var context = new PipelineContext(logger);
+            var context = new PipelineContext(logger, bindTargetName, logError, logWarning, logVerbose);
             CurrentThread = context;
             return context;
         }
 
-        public static void WriteError(ErrorRecord errorRecord)
-        {
-            CurrentThread.DoWriteError(errorRecord);
-        }
+        #region Logging
 
-        public static void WriteVerbose(string message, bool usePrefix = true)
+        public void WriteError(ErrorRecord errorRecord)
         {
-            CurrentThread.DoWriteVerbose(message, usePrefix);
-        }
-
-        public static void WriteWarning(string message)
-        {
-            CurrentThread.DoWriteWarning(message);
-        }
-
-        private void DoWriteError(ErrorRecord errorRecord)
-        {
-            if (_Logger == null)
+            if (!_LogError || errorRecord == null)
             {
                 return;
             }
 
+            DoWriteError(errorRecord);
+        }
+
+        public void WriteVerbose(string message, bool usePrefix = true)
+        {
+            if (!_LogVerbose || string.IsNullOrEmpty(message))
+            {
+                return;
+            }
+
+            DoWriteVerbose(message, usePrefix);
+        }
+
+        public void WriteVerboseObjectStart()
+        {
+            if (!_LogVerbose)
+            {
+                return;
+            }
+
+            DoWriteVerbose($" :: {TargetName}", usePrefix: true);
+        }
+
+        public void WriteVerboseConditionResult(string condition, int pass, int count, bool outcome)
+        {
+            if (!_LogVerbose)
+            {
+                return;
+            }
+
+            DoWriteVerbose($"{condition} -- [{pass}/{count}] [{outcome}]", usePrefix: true);
+        }
+
+        public void WriteVerboseConditionResult(int? pass, int? count, RuleOutcome outcome)
+        {
+            if (!_LogVerbose)
+            {
+                return;
+            }
+
+            DoWriteVerbose($" -- [{pass}/{count}] [{outcome}]", usePrefix: true);
+        }
+
+        public void WriteWarning(string message)
+        {
+            if (!_LogWarning)
+            {
+                return;
+            }
+
+            DoWriteWarning(message);
+        }
+
+        #endregion Logging
+
+        #region Internal logging methods
+
+        /// <summary>
+        /// Core methods to hand off to logger.
+        /// </summary>
+        /// <param name="errorRecord">A valid PowerShell error record.</param>
+        private void DoWriteError(ErrorRecord errorRecord)
+        {
             _Logger.WriteError(errorRecord);
         }
 
+        /// <summary>
+        /// Core method to hand off verbose messages to logger.
+        /// </summary>
+        /// <param name="message">A message to log.</param>
+        /// <param name="usePrefix">When true a prefix indicating the current rule and target object will prefix the message.</param>
         private void DoWriteVerbose(string message, bool usePrefix)
         {
-            if (_Logger == null)
-            {
-                return;
-            }
-
-            var outMessage = message;
-
-            if (usePrefix)
-            {
-                outMessage = string.Concat(_LogPrefix, message);
-            }
-
+            var outMessage = usePrefix ? string.Concat(_LogPrefix, message) : message;
             _Logger.WriteVerbose(outMessage);
         }
 
         /// <summary>
-        /// Increment the pipeline object number.
+        /// Core methods to hand off to logger.
         /// </summary>
-        public void Next()
-        {
-            _ObjectNumber++;
-        }
-
+        /// <param name="message">A message to log</param>
         private void DoWriteWarning(string message)
         {
-            if (_Logger == null)
-            {
-                return;
-            }
-
             _Logger.WriteVerbose(message);
         }
 
-        public void Enter(DependencyGraph<RuleBlock>.DependencyTarget target)
+        #endregion Internal logging methods
+
+        /// <summary>
+        /// Increment the pipeline object number.
+        /// </summary>
+        public void TargetObject(PSObject targetObject)
         {
-            _LogPrefix = $"[PSRule][R][{_ObjectNumber}][{target.Value.RuleId}]";
+            _ObjectNumber++;
+
+            // Bind targetname
+            TargetName = _BindTargetName(targetObject);
         }
 
+        /// <summary>
+        /// Enter the rule block scope.
+        /// </summary>
+        public void Enter(RuleBlock ruleBlock)
+        {
+            _LogPrefix = $"[PSRule][R][{_ObjectNumber}][{ruleBlock.RuleId}]";
+        }
+
+        /// <summary>
+        /// Exit the rule block scope.
+        /// </summary>
         public void Exit()
         {
             _LogPrefix = string.Empty;

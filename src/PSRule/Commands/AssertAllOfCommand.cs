@@ -21,7 +21,7 @@ namespace PSRule.Commands
 
                 var result = invokeResult.AllOf;
 
-                PipelineContext.WriteVerbose($"[AllOf] -- [{invokeResult.Pass}/{invokeResult.Count}] [{result}]");
+                PipelineContext.CurrentThread.WriteVerboseConditionResult(condition: "[AllOf]", pass: invokeResult.Pass, count: invokeResult.Count, outcome: result);
 
                 WriteObject(result);
             }

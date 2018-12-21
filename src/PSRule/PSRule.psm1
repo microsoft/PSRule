@@ -113,6 +113,7 @@ function Invoke-PSRule {
         }
 
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference);
         $pipeline = $builder.Build();
     }
 
@@ -183,6 +184,7 @@ function Get-PSRule {
         $builder.Source($sourceFiles);
         $builder.Option($Option);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference);
         $pipeline = $builder.Build();
     }
 
@@ -207,6 +209,9 @@ function New-PSRuleOption {
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExclusionOption]$ExcludeTarget,
+
+        [Parameter(Mandatory = $False)]
         [String]$Path = '.\psrule.yml'
     )
 
@@ -229,6 +234,10 @@ function New-PSRuleOption {
             Write-Verbose -Message "Attempting to read: $Path";
 
             $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $True);
+        }
+
+        if ($PSBoundParameters.ContainsKey('ExcludeTarget')) {
+            $Option.Exclusion = $ExcludeTarget;
         }
 
         return $Option;

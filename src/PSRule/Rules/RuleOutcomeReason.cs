@@ -44,6 +44,13 @@ namespace PSRule.Rules
         /// <remarks>
         /// This reason is used with the Fail outcome.
         /// </remarks>
-        Inconclusive = 4
+        Inconclusive = 4,
+
+        /// <summary>
+        /// The rule was not processed because the Target Name was suppressed.
+        /// </summary>
+        /// <remarks>
+        /// This reason is used with the None outcome.
+        Suppressed = 5
     }
 }

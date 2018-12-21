@@ -1,5 +1,4 @@
 ﻿using PSRule.Configuration;
-using PSRule.Host;
 using PSRule.Rules;
 
 namespace PSRule.Pipeline

@@ -21,10 +21,10 @@ $outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Common
 Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
 $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 
+#region Invoke-PSRule
+
 Describe 'Invoke-PSRule' {
-
     Context 'Using -Path' {
-
         $testObject = [PSCustomObject]@{
             Name = "TestObject1"
             Value = 1
@@ -111,14 +111,35 @@ Describe 'Invoke-PSRule' {
 
         It 'Binds to Name' {
             $testObject = [PSCustomObject]@{
-                Name = "ObjectName"
+                Name = "TestObject1"
                 Value = 1
             }
 
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $True;
-            $result.TargetName | Should -Be 'ObjectName';
+            $result.TargetName | Should -Be 'TestObject1';
+        }
+
+        It 'Suppresses rules' {
+            $testObject = @(
+                [PSCustomObject]@{
+                    Name = "TestObject1"
+                    Value = 1
+                }
+                [PSCustomObject]@{
+                    Name = "TestObject2"
+                    Value = 1
+                }
+            )
+
+            $option = New-PSRuleOption -ExcludeTarget @{ FromFile1 = 'TestObject1'; FromFile2 = 'testobject1'; };
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Option $option -Name 'FromFile1', 'FromFile2' -Outcome All;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 4;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            ($result | Where-Object { $_.TargetName -eq 'TestObject1' }).OutcomeReason | Should -BeIn 'Suppressed';
+            ($result | Where-Object { $_.TargetName -eq 'TestObject2' }).OutcomeReason | Should -BeIn 'Processed';
         }
     }
 
@@ -129,8 +150,8 @@ Describe 'Invoke-PSRule' {
                 Value = 1
             }
             [PSCustomObject]@{
-                Name = "TestObject1"
-                Value = 1
+                Name = "TestObject2"
+                Value = 2
             }
         );
 
@@ -147,7 +168,6 @@ Describe 'Invoke-PSRule' {
             $result | Should -BeOfType PSRule.Rules.RuleSummaryRecord;
             $result.RuleName | Should -BeIn 'FromFile1', 'FromFile2', 'FromFile3', 'FromFile4'
             $result.Tag.category | Should -BeIn 'group1';
-
             ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Outcome | Should -Be 'Pass';
             ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Pass | Should -Be 2;
             ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Outcome | Should -Be 'Fail';
@@ -168,7 +188,6 @@ Describe 'Invoke-PSRule' {
     }
 
     Context 'With constrained language' {
-
         $testObject = [PSCustomObject]@{
             Name = 'TestObject1'
             Value = 1
@@ -190,10 +209,12 @@ Describe 'Invoke-PSRule' {
     }
 }
 
+#endregion Invoke-PSRule
+
+#region Get-PSRule
+
 Describe 'Get-PSRule' {
-
     Context 'Using -Path' {
-
         It 'Returns rules' {
             # Get a list of rules
             $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
@@ -223,12 +244,11 @@ Describe 'Get-PSRule' {
     }
 
     # Context 'Get rule with invalid path' {
-
+    #     # TODO: Test with invalid path
     #     $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath invalid);
     # }
 
     Context 'With constrained language' {
-
         It 'Checks if DeviceGuard is enabled' {
             Mock -CommandName IsDeviceGuardEnabled -ModuleName PSRule -Verifiable -MockWith {
                 return $True;
@@ -244,3 +264,66 @@ Describe 'Get-PSRule' {
         }
     }
 }
+
+#endregion Get-PSRule
+
+#region New-PSRuleOption
+
+Describe 'New-PSRuleOption' -Tag 'Option' {
+    Context 'Read Exclusion' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Exclusion.Count | Should -Be 0;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -ExcludeTarget @{ 'ExclusionTest' = 'testObject1', 'testObject3' };
+            $option.Exclusion['ExclusionTest'].TargetName | Should -BeIn 'testObject1', 'testObject3';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Exclusion['ExclusionTest1'].TargetName | Should -BeIn 'TestObject1', 'TestObject3';
+            # TODO: Yaml inline
+            # $option.Exclusion['ExclusionTest2'].TargetName | Should -BeIn 'TestObject1', 'TestObject3';
+        }
+    }
+
+    Context 'Read Execution.LanguageMode' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Execution.LanguageMode | Should -Be FullLanguage;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.LanguageMode' = 'ConstrainedLanguage' };
+            $option.Execution.LanguageMode | Should -Be ConstrainedLanguage;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.LanguageMode | Should -Be ConstrainedLanguage
+        }
+    }
+}
+
+#endregion New-PSRuleOption
+
+#region PSRule variables
+
+Describe 'PSRule variables' -Tag 'Variables' {
+    Context 'PowerShell automatic variables' {
+        $testObject = [PSCustomObject]@{
+            Name = 'VariableTest'
+        }
+
+        It '$Rule' {
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'VariableTest';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
+            $result.TargetName | Should -Be 'VariableTest';
+        }
+    }
+}
+
+#endregion PSRule variables
