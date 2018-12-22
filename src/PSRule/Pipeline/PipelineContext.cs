@@ -1,12 +1,12 @@
-﻿using System;
-using System.Management.Automation;
-using PSRule.Configuration;
-using PSRule.Host;
+﻿using PSRule.Configuration;
 using PSRule.Rules;
+using System;
+using System.Management.Automation;
+using System.Security.Cryptography;
 
 namespace PSRule.Pipeline
 {
-    internal sealed class PipelineContext
+    internal sealed class PipelineContext : IDisposable
     {
         [ThreadStatic]
         internal static PipelineContext CurrentThread;
@@ -20,7 +20,25 @@ namespace PSRule.Pipeline
         private readonly bool _LogVerbose;
         internal RuleRecord _Rule;
 
+        private SHA1Managed _Hash;
+
+        // Track whether Dispose has been called.
+        private bool _Disposed = false;
+
         public string TargetName { get; private set; }
+
+        public HashAlgorithm ObjectHashAlgorithm
+        {
+            get
+            {
+                if (_Hash == null)
+                {
+                    _Hash = new SHA1Managed();
+                }
+
+                return _Hash;
+            }
+        }
 
         private PipelineContext(ILogger logger, BindTargetName bindTargetName, bool logError, bool logWarning, bool logVerbose)
         {
@@ -167,5 +185,33 @@ namespace PSRule.Pipeline
         {
             _LogPrefix = string.Empty;
         }
+
+        #region IDisposable
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            // Already cleaned up by dispose.
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!_Disposed)
+            {
+                if (disposing)
+                {
+                    if (_Hash != null)
+                    {
+                        _Hash.Dispose();
+                    }
+                }
+
+                _Disposed = true;
+            }
+        }
+
+        #endregion IDisposable
     }
 }

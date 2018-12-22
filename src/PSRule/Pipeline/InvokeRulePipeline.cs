@@ -17,13 +17,11 @@ namespace PSRule.Pipeline
 
         private readonly ResultFormat _ResultFormat;
         private readonly RuleSuppressionFilter _SuppressionFilter;
-        private readonly PipelineContext _Context;
 
         internal InvokeRulePipeline(PSRuleOption option, string[] path, RuleFilter filter, RuleOutcome outcome, ResultFormat resultFormat, PipelineContext context)
-            : base(option, path, filter)
+            : base(context, option, path, filter)
         {
             _Outcome = outcome;
-            _Context = context;
             _RuleGraph = HostHelper.GetRuleBlockGraph(_Option, _Path, _Filter);
             _Summary = new Dictionary<string, RuleSummaryRecord>();
             _ResultFormat = resultFormat;

@@ -7,12 +7,10 @@ namespace PSRule.Pipeline
 {
     public sealed class GetRulePipeline : RulePipeline
     {
-        private readonly PipelineContext _Context;
-
         internal GetRulePipeline(PSRuleOption option, string[] path, RuleFilter filter, PipelineContext context)
-            : base(option, path, filter)
+            : base(context, option, path, filter)
         {
-            _Context = context;
+            // Do nothing
         }
 
         public IEnumerable<Rule> Process()

@@ -56,6 +56,7 @@ The value that PSRule uses for _TargetName_ is configurable. PSRule uses the fol
 - By default PSRule will:
   - Use `TargetName` or `Name` properties on the object.
   - If both `TargetName` and `Name` properties exist, `TargetName` will take precedence over `Name`.
+  - If neither `TargetName` or `Name` properties exist, a SHA1 hash of the object will be used as _TargetName_.
 - If custom _TargetName_ binding options are configured, the property names specified will override the defaults.
   - If **none** of the configured property names exist, PSRule will revert back to `TargetName` then `Name`.
   - If more then one property name is configured, the order they are specified in the configuration determines precedence.

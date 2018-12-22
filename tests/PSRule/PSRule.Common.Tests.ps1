@@ -120,6 +120,17 @@ Describe 'Invoke-PSRule' {
             $result.TargetName | Should -Be 'TestObject1';
         }
 
+        It 'Binds to object hash' {
+            $testObject = [PSCustomObject]@{
+                NotName = 'TestObject1'
+            }
+
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
+            $result.TargetName | Should -Be '14bcc950bf83198b33447c85984f3fe4563b9204';
+        }
+
         It 'Binds to custom name' {
             $testObject = @(
                 [PSCustomObject]@{

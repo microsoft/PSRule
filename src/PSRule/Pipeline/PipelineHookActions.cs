@@ -1,6 +1,9 @@
-﻿using System;
-using System.Management.Automation;
+﻿using Newtonsoft.Json;
 using PSRule.Configuration;
+using System;
+using System.Linq;
+using System.Management.Automation;
+using System.Text;
 
 namespace PSRule.Pipeline
 {
@@ -34,6 +37,11 @@ namespace PSRule.Pipeline
                 {
                     targetName = p.Value.ToString();
                 }
+            }
+
+            if (targetName == null)
+            {
+                return GetUnboundObjectTargetName(targetObject);
             }
 
             return targetName;
@@ -75,6 +83,18 @@ namespace PSRule.Pipeline
 
             // If TargetName is found return, otherwise continue to next delegate
             return (targetName == null) ? next(targetObject) : targetName;
+        }
+
+        /// <summary>
+        /// Calculate a SHA1 hash for an object to use as TargetName.
+        /// </summary>
+        /// <param name="targetObject">A PSObject to hash.</param>
+        /// <returns>The TargetName of the object.</returns>
+        private static string GetUnboundObjectTargetName(PSObject targetObject)
+        {
+            var json = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(targetObject));
+            var hash = PipelineContext.CurrentThread.ObjectHashAlgorithm.ComputeHash(json);
+            return string.Join("", hash.Select(b => b.ToString("x2")).ToArray());
         }
     }
 }

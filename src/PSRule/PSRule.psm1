@@ -117,12 +117,24 @@ function Invoke-PSRule {
     }
 
     process {
-        $pipeline.Process($InputObject);
+        try {
+            # Process pipeline objects
+            $pipeline.Process($InputObject);
+        }
+        catch {
+            $pipeline.Dispose();
+            throw;
+        }
     }
 
     end {
-        if ($As -eq [PSRule.Configuration.ResultFormat]::Summary) {
-            $pipeline.GetSummary();
+        try {
+            if ($As -eq [PSRule.Configuration.ResultFormat]::Summary) {
+                $pipeline.GetSummary();
+            }
+        }
+        finally {
+            $pipeline.Dispose();
         }
 
         Write-Verbose -Message "[PSRule] END::";
@@ -188,11 +200,18 @@ function Get-PSRule {
     }
 
     process {
-        # Get matching rule definitions
-        $pipeline.Process();
+        try {
+            # Get matching rule definitions
+            $pipeline.Process();
+        }
+        catch {
+            $pipeline.Dispose();
+            throw;
+        }
     }
 
     end {
+        $pipeline.Dispose();
         Write-Verbose -Message "[Get-PSRule]::END";
     }
 }
