@@ -111,8 +111,7 @@ Describe 'Invoke-PSRule' {
 
         It 'Binds to Name' {
             $testObject = [PSCustomObject]@{
-                Name = "TestObject1"
-                Value = 1
+                Name = 'TestObject1'
             }
 
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
@@ -121,15 +120,38 @@ Describe 'Invoke-PSRule' {
             $result.TargetName | Should -Be 'TestObject1';
         }
 
+        It 'Binds to custom name' {
+            $testObject = @(
+                [PSCustomObject]@{
+                    resourceName = 'ResourceName'
+                    AlternateName = 'AlternateName'
+                    TargetName = 'TargetName'
+                }
+                [PSCustomObject]@{
+                    AlternateName = 'AlternateName'
+                    TargetName = 'TargetName'
+                }
+                [PSCustomObject]@{
+                    TargetName = 'TargetName'
+                }
+            )
+
+            $option = @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName' };
+            $result = $testObject | Invoke-PSRule -Option $option -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 3;
+            $result[0].TargetName | Should -Be 'ResourceName';
+            $result[1].TargetName | Should -Be 'AlternateName';
+            $result[2].TargetName | Should -Be 'TargetName';
+        }
+
         It 'Suppresses rules' {
             $testObject = @(
                 [PSCustomObject]@{
                     Name = "TestObject1"
-                    Value = 1
                 }
                 [PSCustomObject]@{
                     Name = "TestObject2"
-                    Value = 1
                 }
             )
 
@@ -270,22 +292,34 @@ Describe 'Get-PSRule' {
 #region New-PSRuleOption
 
 Describe 'New-PSRuleOption' -Tag 'Option' {
-    Context 'Read Suppression' {
+    Context 'Read binding' {
         It 'from default' {
             $option = New-PSRuleOption;
-            $option.Suppression.Count | Should -Be 0;
+            $option.Binding.TargetName | Should -Be $Null;
         }
 
         It 'from Hashtable' {
-            $option = New-PSRuleOption -SuppressTargetName @{ 'SuppressionTest' = 'testObject1', 'testObject3' };
-            $option.Suppression['SuppressionTest'].TargetName | Should -BeIn 'testObject1', 'testObject3';
+            # With single item
+            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName' };
+            $option.Binding.TargetName | Should -BeIn 'ResourceName';
+
+            # With array
+            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName' };
+            $option.Binding.TargetName | Should -BeIn 'ResourceName', 'AlternateName';
         }
 
         It 'from YAML' {
+            # With single item
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Suppression['SuppressionTest1'].TargetName | Should -BeIn 'TestObject1', 'TestObject3';
-            # TODO: Yaml inline
-            # $option.Suppression['SuppressionTest2'].TargetName | Should -BeIn 'TestObject1', 'TestObject3';
+            $option.Binding.TargetName | Should -BeIn 'ResourceName';
+
+            # With array
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests2.yml');
+            $option.Binding.TargetName | Should -BeIn 'ResourceName', 'AlternateName';
+
+            # With flat single item
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests3.yml');
+            $option.Binding.TargetName | Should -BeIn 'ResourceName';
         }
     }
 
@@ -303,6 +337,24 @@ Describe 'New-PSRuleOption' -Tag 'Option' {
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
             $option.Execution.LanguageMode | Should -Be ConstrainedLanguage
+        }
+    }
+
+    Context 'Read Suppression' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Suppression.Count | Should -Be 0;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -SuppressTargetName @{ 'SuppressionTest' = 'testObject1', 'testObject3' };
+            $option.Suppression['SuppressionTest'].TargetName | Should -BeIn 'testObject1', 'testObject3';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Suppression['SuppressionTest1'].TargetName | Should -BeIn 'TestObject1', 'TestObject3';
+            $option.Suppression['SuppressionTest2'].TargetName | Should -BeIn 'TestObject1', 'TestObject3';
         }
     }
 }

@@ -26,7 +26,7 @@ namespace PSRule.Pipeline
             _Logger = new PipelineLogger();
             _Option = new PSRuleOption();
             _ResultFormat = ResultFormat.Detail;
-            _BindTargetNameHook = PipelineHookActions.DefaultBindTargetName;
+            _BindTargetNameHook = PipelineHookActions.DefaultTargetNameBinding;
         }
 
         public void FilterBy(string[] ruleName, Hashtable tag)
@@ -37,11 +37,6 @@ namespace PSRule.Pipeline
         public void Source(string[] path)
         {
             _Path = path;
-        }
-
-        public void Option(PSRuleOption option)
-        {
-            _Option = option.Clone();
         }
 
         public void Limit(RuleOutcome outcome)
@@ -90,17 +85,35 @@ namespace PSRule.Pipeline
                 return this;
             }
 
-            if (option.Pipeline.BindTargetName.Count > 0)
+            if (option.Binding.TargetName != null && option.Binding.TargetName.Length > 0)
+            {
+                AddBindTargetNameAction((targetObject, next) =>
+                {
+                    return PipelineHookActions.CustomTargetNameBinding(option.Binding.TargetName, targetObject, next);
+                });
+            }
+
+            if (option.Pipeline.BindTargetName != null && option.Pipeline.BindTargetName.Count > 0)
             {
                 foreach (var action in option.Pipeline.BindTargetName)
                 {
-                    AddBindTargetNameAction((command, next) =>
+                    AddBindTargetNameAction((targetObject, next) =>
                     {
-                        action(command);
+                        var targetName = action(targetObject);
 
-                        return next(command);
+                        return targetName == null ? next(targetObject) : targetName;
                     });
                 }
+            }
+
+            if (option.Suppression.Count > 0)
+            {
+                _Option.Suppression = new SuppressionOption(option.Suppression);
+            }
+
+            if (option.Execution.LanguageMode != _Option.Execution.LanguageMode)
+            {
+                _Option.Execution.LanguageMode = option.Execution.LanguageMode;
             }
 
             return this;

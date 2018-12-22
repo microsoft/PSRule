@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -12,22 +13,32 @@ namespace PSRule.Configuration
     /// </summary>
     public delegate string PathDelegate();
 
+    /// <summary>
+    /// A structure that stores PSRule configuration options.
+    /// </summary>
     public sealed class PSRuleOption
     {
         public PSRuleOption()
         {
             // Set defaults
+            Binding = new BindingOption();
             Suppression = new SuppressionOption();
             Execution = new ExecutionOption();
+            Pipeline = new PipelineHook();
         }
 
         public PSRuleOption(PSRuleOption option)
         {
             // Set from existing option instance
+            Binding = new BindingOption(option.Binding);
             Suppression = new SuppressionOption(option.Suppression);
             Execution = new ExecutionOption
             {
                 LanguageMode = option.Execution.LanguageMode
+            };
+            Pipeline = new PipelineHook
+            {
+                BindTargetName = option.Pipeline.BindTargetName
             };
         }
 
@@ -35,6 +46,11 @@ namespace PSRule.Configuration
         /// A callback that is overridden by PowerShell so that the current working path can be retrieved.
         /// </summary>
         public static PathDelegate GetWorkingPath = () => Directory.GetCurrentDirectory();
+
+        /// <summary>
+        /// Options tht affect property binding of TargetName.
+        /// </summary>
+        public BindingOption Binding { get; set; }
 
         /// <summary>
         /// A set of suppression rules.
@@ -90,6 +106,7 @@ namespace PSRule.Configuration
             var d = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
                 .WithNamingConvention(new CamelCaseNamingConvention())
+                .WithTypeConverter(new SuppressionRuleConverter())
                 .Build();
 
             return d.Deserialize<PSRuleOption>(yaml) ?? new PSRuleOption();
@@ -114,6 +131,18 @@ namespace PSRule.Configuration
             // Start loading matching values
 
             object value;
+
+            if (index.TryGetValue("binding.targetname", out value))
+            {
+                if (value.GetType().IsArray)
+                {
+                    option.Binding.TargetName = ((object[])value).OfType<string>().ToArray();
+                }
+                else
+                {
+                    option.Binding.TargetName = new string[] { value.ToString() };
+                }
+            }
 
             if (index.TryGetValue("execution.languagemode", out value))
             {

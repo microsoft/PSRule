@@ -47,6 +47,59 @@ For example:
 Invoke-PSRule -Path . -Option '.\myconfig.yml';
 ```
 
+### TargetName binding
+
+When an object is passed from the pipeline, PSRule assigns the object a _TargetName_. _TargetName_ is used in output results to identify one object from another. Many objects could be passed down the pipeline at the same time, so using a _TargetName_ that is meaningful is important. _TargetName_ is also used for advanced features such as rule suppression.
+
+The value that PSRule uses for _TargetName_ is configurable. PSRule uses the following logic to determine what _TargetName_ should be used:
+
+- By default PSRule will:
+  - Use `TargetName` or `Name` properties on the object.
+  - If both `TargetName` and `Name` properties exist, `TargetName` will take precedence over `Name`.
+- If custom _TargetName_ binding options are configured, the property names specified will override the defaults.
+  - If **none** of the configured property names exist, PSRule will revert back to `TargetName` then `Name`.
+  - If more then one property name is configured, the order they are specified in the configuration determines precedence.
+    - i.e. The first configured property name will take precedence over the second property name.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Binding.TargetName hash table key
+$option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName' };
+```
+
+```yaml
+# psrule.yml: Using the binding/targetName YAML property
+binding:
+  targetName:
+  - ResourceName
+  - AlternateName
+```
+
+### Language mode
+
+Unless PowerShell has been constrained, full language features of PowerShell are available to use within rule definitions. In locked down environments, a reduced set of language features may be desired.
+
+When PSRule is executed in an environment configured for Device Guard, only constrained language features are available.
+
+The following language modes are available for use in PSRule:
+
+- FullLanguage
+- ConstrainedLanguage
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Execution.LanguageMode hash table key
+$option = New-PSRuleOption -Option @{ 'Execution.LanguageMode' = 'ConstrainedLanguage' };
+```
+
+```yaml
+# psrule.yml: Using the execution/languageMode YAML property
+execution:
+  languageMode: ConstrainedLanguage
+```
+
 ### Rule suppression
 
 In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.
@@ -105,35 +158,16 @@ Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
 }
 ```
 
-### Language mode
-
-Unless PowerShell has been constrained, full language features of PowerShell are available to use within rule definitions. In locked down environments, a reduced set of language features may be desired.
-
-When PSRule is executed in an environment configured for Device Guard, only constrained language features are available.
-
-The following language modes are available for use in PSRule:
-
-- FullLanguage
-- ConstrainedLanguage
-
-This option can be specified using:
-
-```powershell
-# PowerShell: Using the Execution.LanguageMode hash table key
-$option = New-PSRuleOption -Option @{ 'Execution.LanguageMode' = 'ConstrainedLanguage' };
-```
-
-```yaml
-# psrule.yml: Using the execution/languageMode YAML property
-execution:
-  languageMode: ConstrainedLanguage
-```
-
 ## EXAMPLES
 
 ### Example PSRule.yml
 
 ```yaml
+binding:
+  targetName:
+  - ResourceName
+  - AlternateName
+
 # Set execution options
 execution:
   languageMode: ConstrainedLanguage
@@ -151,8 +185,15 @@ suppression:
 ```yaml
 # These are the default options.
 # Only properties that differ from the default values need to be specified.
+binding:
+  targetName:
+  - TargetName
+  - Name
+
 execution:
   languageMode: FullLanguage
+
+suppression: { }
 ```
 
 ## NOTE

@@ -2,6 +2,7 @@
 ## Unreleased
 
 - Allow objects to be suppressed by TargetName for individual rules [#13](https://github.com/BernieWhite/PSRule/issues/13)
+- Allow binding of TargetName to custom property [#44](https://github.com/BernieWhite/PSRule/issues/44)
 
 ## v0.1.0
 

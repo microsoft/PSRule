@@ -102,10 +102,9 @@ function Invoke-PSRule {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke();
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
         $builder.FilterBy($Name, $Tag);
         $builder.Source($sourceFiles);
-        $builder.Option($Option);
         $builder.Limit($Outcome);
 
         if ($PSBoundParameters.ContainsKey('As')) {

@@ -1,13 +1,18 @@
 # These are options for unit tests
 
+# Configure TargetName binding
+binding:
+  targetName:
+  - ResourceName
+
+# Configure execution options
+execution:
+  languageMode: ConstrainedLanguage
+
 # Configure rule suppression
 suppression:
   SuppressionTest1:
     targetName:
     - TestObject1
     - TestObject3
-  SuppressionTest2: TestObject1, TestObject3
-
-# Configure execution options
-execution:
-  languageMode: ConstrainedLanguage
+  SuppressionTest2: [ 'TestObject1', 'TestObject3' ]

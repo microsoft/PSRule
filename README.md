@@ -148,8 +148,9 @@ The following commands exist in the `PSRule` module:
 The following conceptual topics exist in the `PSRule` module:
 
 - [Options](docs/concepts/PSRule/en-US/about_PSRule_Options.md)
-  - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#rule-suppression)
+  - [Binding.TargetName](docs/concepts/PSRule/en-US/about_PSRule_Options.md#targetname-binding)
   - [Execution.LanguageMode](docs/concepts/PSRule/en-US/about_PSRule_Options.md#language-mode)
+  - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#rule-suppression)
 - [Variables](docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
   - [$Rule](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#rule)
   - [$TargetObject](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#targetobject)
