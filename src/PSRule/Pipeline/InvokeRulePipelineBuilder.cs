@@ -25,6 +25,7 @@ namespace PSRule.Pipeline
         {
             _Logger = new PipelineLogger();
             _Option = new PSRuleOption();
+            _Outcome = RuleOutcome.Processed;
             _ResultFormat = ResultFormat.Detail;
             _BindTargetNameHook = PipelineHookActions.DefaultTargetNameBinding;
         }

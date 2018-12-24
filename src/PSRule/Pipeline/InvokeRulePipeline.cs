@@ -28,21 +28,18 @@ namespace PSRule.Pipeline
             _SuppressionFilter = new RuleSuppressionFilter(_Option.Suppression);
         }
 
-        public IEnumerable<RuleRecord> Process(PSObject targetObject)
+        public InvokeResult Process(PSObject targetObject)
         {
             return ProcessTargetObject(targetObject);
         }
 
-        public IEnumerable<RuleRecord> Process(PSObject[] targetObjects)
+        public IEnumerable<InvokeResult> Process(PSObject[] targetObjects)
         {
-            var results = new List<RuleRecord>();
+            var results = new List<InvokeResult>();
 
             foreach (var targetObject in targetObjects)
             {
-                foreach (var result in ProcessTargetObject(targetObject))
-                {
-                    results.Add(result);
-                }
+                results.Add(ProcessTargetObject(targetObject));
             }
 
             return results;
@@ -59,11 +56,11 @@ namespace PSRule.Pipeline
             }
         }
 
-        private IEnumerable<RuleRecord> ProcessTargetObject(PSObject targetObject)
+        private InvokeResult ProcessTargetObject(PSObject targetObject)
         {
             _Context.TargetObject(targetObject);
 
-            var results = new List<RuleRecord>();
+            var result = new InvokeResult();
 
             // Process rule blocks ordered by dependency graph
             foreach (var ruleBlockTarget in _RuleGraph.GetSingleTarget())
@@ -109,7 +106,7 @@ namespace PSRule.Pipeline
 
                     if (ShouldOutput(ruleRecord.Outcome))
                     {
-                        results.Add(ruleRecord);
+                        result.Add(ruleRecord);
                     }
                 }
                 finally
@@ -119,7 +116,7 @@ namespace PSRule.Pipeline
                 }
             }
 
-            return results;
+            return result;
         }
 
         private bool ShouldOutput(RuleOutcome outcome)

@@ -24,7 +24,7 @@ $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 #region Invoke-PSRule
 
 Describe 'Invoke-PSRule' {
-    Context 'Using -Path' {
+    Context 'With defaults' {
         $testObject = [PSCustomObject]@{
             Name = "TestObject1"
             Value = 1
@@ -275,6 +275,50 @@ Describe 'Invoke-PSRule' {
 }
 
 #endregion Invoke-PSRule
+
+#region Test-PSRule
+
+Describe 'Test-PSRule' {
+    Context 'With defaults' {
+        It 'Returns boolean' {
+            $testObject = [PSCustomObject]@{
+                Name = "TestObject1"
+            }
+
+            # Check passing rule
+            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.Boolean;
+            $result | Should -Be $True;
+
+            # Check result with one failing rule
+            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1', 'FromFile2', 'FromFile3';
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.Boolean;
+            $result | Should -Be $False;
+
+            # Check result with an inconculsive rule
+            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile3';
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.Boolean;
+            $result | Should -Be $False;
+
+            # Check result with no matching rules
+            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'NotARule';
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.Boolean;
+            $result | Should -Be $True;
+
+            # Check result with no rules matching precondition
+            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithPreconditionFalse';
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.Boolean;
+            $result | Should -Be $True;
+        }
+    }
+}
+
+#endregion Test-PSRule
 
 #region Get-PSRule
 
