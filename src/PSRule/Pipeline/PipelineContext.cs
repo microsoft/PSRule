@@ -1,4 +1,5 @@
 ﻿using PSRule.Configuration;
+using PSRule.Resources;
 using PSRule.Rules;
 using System;
 using System.Management.Automation;
@@ -18,6 +19,8 @@ namespace PSRule.Pipeline
         private readonly bool _LogError;
         private readonly bool _LogWarning;
         private readonly bool _LogVerbose;
+        private readonly bool _InconclusiveWarning;
+        private readonly bool _NotProcessedWarning;
         internal RuleRecord _Rule;
 
         private SHA1Managed _Hash;
@@ -40,7 +43,7 @@ namespace PSRule.Pipeline
             }
         }
 
-        private PipelineContext(ILogger logger, BindTargetName bindTargetName, bool logError, bool logWarning, bool logVerbose)
+        private PipelineContext(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, bool logError, bool logWarning, bool logVerbose)
         {
             _ObjectNumber = -1;
             _Logger = logger;
@@ -49,15 +52,18 @@ namespace PSRule.Pipeline
             _LogWarning = logWarning;
             _LogVerbose = logVerbose;
 
+            _InconclusiveWarning = option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning.Value;
+            _NotProcessedWarning = option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning.Value;
+
             if (_Logger == null)
             {
                 _LogError = _LogWarning = _LogVerbose = false;
             }
         }
 
-        public static PipelineContext New(ILogger logger, BindTargetName bindTargetName, bool logError = true, bool logWarning = true, bool logVerbose = false)
+        public static PipelineContext New(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, bool logError = true, bool logWarning = true, bool logVerbose = false)
         {
-            var context = new PipelineContext(logger, bindTargetName, logError, logWarning, logVerbose);
+            var context = new PipelineContext(logger, option, bindTargetName, logError, logWarning, logVerbose);
             CurrentThread = context;
             return context;
         }
@@ -124,6 +130,36 @@ namespace PSRule.Pipeline
             DoWriteWarning(message);
         }
 
+        public void WarnRuleInconclusive(string ruleId)
+        {
+            if (!_LogWarning || !_InconclusiveWarning)
+            {
+                return;
+            }
+
+            DoWriteWarning(string.Format(PSRuleResources.RuleInconclusive, ruleId, TargetName));
+        }
+
+        public void WarnObjectNotProcessed()
+        {
+            if (!_LogWarning || !_NotProcessedWarning)
+            {
+                return;
+            }
+
+            DoWriteWarning(string.Format(PSRuleResources.ObjectNotProcessed, TargetName));
+        }
+
+        public void WarnRuleNotFound()
+        {
+            if (!_LogWarning)
+            {
+                return;
+            }
+
+            DoWriteWarning(PSRuleResources.RuleNotFound);
+        }
+
         #endregion Logging
 
         #region Internal logging methods
@@ -154,7 +190,7 @@ namespace PSRule.Pipeline
         /// <param name="message">A message to log</param>
         private void DoWriteWarning(string message)
         {
-            _Logger.WriteVerbose(message);
+            _Logger.WriteWarning(message);
         }
 
         #endregion Internal logging methods

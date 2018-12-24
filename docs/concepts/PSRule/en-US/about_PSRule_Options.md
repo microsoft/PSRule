@@ -125,6 +125,58 @@ execution:
   languageMode: ConstrainedLanguage
 ```
 
+### Inconclusive warning
+
+When defining rules it is possible not return a valid `$True` or `$False` result within the definition script block.
+
+Rule authors should not intentionally avoid returning a result, however a possible cause for not returning a result may be a rule logic error.
+
+If a rule should not be evaluated, use pre-conditions to avoid processing the rule for objects where the rule is not applicable.
+
+In cases where the rule does not return a result it is marked as inconclusive.
+
+Inconclusive results will:
+
+- Generate a warning by default.
+- Fail the object. Outcome will be reported as `Fail` with an OutcomeReason of `Inconclusive`.
+
+The inconclusive warning can be disabled by using:
+
+```powershell
+# PowerShell: Using the Execution.InconclusiveWarning hash table key
+$option = New-PSRuleOption -Option @{ 'Execution.InconclusiveWarning' = $False };
+```
+
+```yaml
+# psrule.yml: Using the execution/inconclusiveWarning YAML property
+execution:
+  inconclusiveWarning: false
+```
+
+### Not processed warning
+
+When evaluating rules it is possible to incorrectly select a path with rules that use pre-conditions that do not accept the pipeline object.
+
+In this case the object has not been processed by any rule.
+
+Not processed objects will:
+
+- Generate a warning by default.
+- Pass the object. Outcome will be reported as `None`.
+
+The not processed warning can be disabled by using:
+
+```powershell
+# PowerShell: Using the Execution.NotProcessedWarning hash table key
+$option = New-PSRuleOption -Option @{ 'Execution.NotProcessedWarning' = $False };
+```
+
+```yaml
+# psrule.yml: Using the execution/notProcessedWarning YAML property
+execution:
+  notProcessedWarning: false
+```
+
 ### Rule suppression
 
 In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.
@@ -196,6 +248,8 @@ binding:
 # Set execution options
 execution:
   languageMode: ConstrainedLanguage
+  inconclusiveWarning: false
+  notProcessedWarning: false
 
 # Suppress the following target names
 suppression:
@@ -217,6 +271,8 @@ binding:
 
 execution:
   languageMode: FullLanguage
+  inconclusiveWarning: true
+  notProcessedWarning: true
 
 suppression: { }
 ```

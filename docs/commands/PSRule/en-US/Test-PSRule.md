@@ -15,7 +15,7 @@ Pass or fail pipeline objects against matching rules.
 
 ```text
 Test-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
- [<CommonParameters>]
+ [-Option <PSRuleOption>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -106,6 +106,24 @@ Required: True
 Position: Named
 Default value: None
 Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -Option
+
+Additional options that configure execution. A `PSRuleOption` can be created by using the `New-PSRuleOption` cmdlet. Alternatively a hashtable or path to YAML file can be specified with options.
+
+For more information on PSRule options see about_PSRule_Options.
+
+```yaml
+Type: PSRuleOption
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

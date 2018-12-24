@@ -45,7 +45,8 @@ Describe 'Invoke-PSRule' {
         }
 
         It 'Returns inconclusive' {
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile3' -Outcome All;
+            $option = @{ 'Execution.InconclusiveWarning' = $False };
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile3' -Outcome All -Option $option;
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $False;
             $result.OutcomeReason | Should -Be 'Inconclusive';
@@ -129,13 +130,15 @@ Describe 'Invoke-PSRule' {
         );
 
         It 'Returns detail' {
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'group1' } -As Detail;
+            $option = @{ 'Execution.InconclusiveWarning' = $False };
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'group1' } -As Detail -Option $option;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
         }
 
         It 'Returns summary' {
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'group1' } -As Summary -Outcome All;
+            $option = @{ 'Execution.InconclusiveWarning' = $False };
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'group1' } -As Summary -Outcome All -Option $option;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 4;
             $result | Should -BeOfType PSRule.Rules.RuleSummaryRecord;
@@ -151,7 +154,8 @@ Describe 'Invoke-PSRule' {
         }
 
         It 'Returns filtered summary' {
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'group1' } -As Summary -Outcome Fail;
+            $option = @{ 'Execution.InconclusiveWarning' = $False };
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'group1' } -As Summary -Outcome Fail -Option $option;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleSummaryRecord;
@@ -280,11 +284,11 @@ Describe 'Invoke-PSRule' {
 
 Describe 'Test-PSRule' {
     Context 'With defaults' {
-        It 'Returns boolean' {
-            $testObject = [PSCustomObject]@{
-                Name = "TestObject1"
-            }
+        $testObject = [PSCustomObject]@{
+            Name = "TestObject1"
+        }
 
+        It 'Returns boolean' {
             # Check passing rule
             $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
@@ -292,28 +296,36 @@ Describe 'Test-PSRule' {
             $result | Should -Be $True;
 
             # Check result with one failing rule
-            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1', 'FromFile2', 'FromFile3';
+            $option = @{ 'Execution.InconclusiveWarning' = $False };
+            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1', 'FromFile2', 'FromFile3' -Option $option;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.Boolean;
             $result | Should -Be $False;
+        }
 
+        It 'Returns warnings on inconclusive' {
             # Check result with an inconculsive rule
-            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile3';
+            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile3' -WarningVariable outWarnings -WarningAction SilentlyContinue;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.Boolean;
             $result | Should -Be $False;
+            $outWarnings | Should -Be "Inconclusive result reported for 'TestObject1' @FromFile.Rule.ps1/FromFile3.";
+        }
 
+        It 'Returns warnings on no rules' {
             # Check result with no matching rules
-            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'NotARule';
-            $result | Should -Not -BeNullOrEmpty;
-            $result | Should -BeOfType System.Boolean;
-            $result | Should -Be $True;
+            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'NotARule' -WarningVariable outWarnings -WarningAction SilentlyContinue;
+            $result | Should -BeNullOrEmpty;
+            $outWarnings | Should -Be 'Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.';
+        }
 
+        It 'Returns warnings on no processed rules' {
             # Check result with no rules matching precondition
-            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithPreconditionFalse';
+            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithPreconditionFalse' -WarningVariable outWarnings -WarningAction SilentlyContinue;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.Boolean;
             $result | Should -Be $True;
+            $outWarnings | Should -Be "Target object 'TestObject1' has not been processed because no matching rules were found.";
         }
     }
 }
@@ -424,6 +436,40 @@ Describe 'New-PSRuleOption' -Tag 'Option' {
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
             $option.Execution.LanguageMode | Should -Be ConstrainedLanguage
+        }
+    }
+
+    Context 'Read Execution.InconclusiveWarning' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Execution.InconclusiveWarning | Should -Be $True;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.InconclusiveWarning' = $False };
+            $option.Execution.InconclusiveWarning | Should -Be $False;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.InconclusiveWarning | Should -Be $False
+        }
+    }
+
+    Context 'Read Execution.NotProcessedWarning' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Execution.NotProcessedWarning | Should -Be $True;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.NotProcessedWarning' = $False };
+            $option.Execution.NotProcessedWarning | Should -Be $False;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.NotProcessedWarning | Should -Be $False
         }
     }
 

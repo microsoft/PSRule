@@ -8,6 +8,8 @@ binding:
 # Configure execution options
 execution:
   languageMode: ConstrainedLanguage
+  inconclusiveWarning: false
+  notProcessedWarning: false
 
 # Configure rule suppression
 suppression:

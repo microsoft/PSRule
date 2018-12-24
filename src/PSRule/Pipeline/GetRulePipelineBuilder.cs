@@ -34,9 +34,16 @@ namespace PSRule.Pipeline
             _Path = path;
         }
 
-        public void Option(PSRuleOption option)
+        public GetRulePipelineBuilder Configure(PSRuleOption option)
         {
-            _Option = option.Clone();
+            if (option == null)
+            {
+                return this;
+            }
+
+            _Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
+
+            return this;
         }
 
         public void UseCommandRuntime(ICommandRuntime commandRuntime)
@@ -55,15 +62,14 @@ namespace PSRule.Pipeline
 
         public void UseLoggingPreferences(ActionPreference error, ActionPreference warning, ActionPreference verbose)
         {
-            _LogError = !(error == ActionPreference.Ignore || error == ActionPreference.SilentlyContinue);
-            _LogWarning = !(warning == ActionPreference.Ignore || warning == ActionPreference.SilentlyContinue);
+            _LogError = !(error == ActionPreference.Ignore);
+            _LogWarning = !(warning == ActionPreference.Ignore);
             _LogVerbose = !(verbose == ActionPreference.Ignore || verbose == ActionPreference.SilentlyContinue);
         }
 
         public GetRulePipeline Build()
         {
-            var context = PipelineContext.New(_Logger, null, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose);
-
+            var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: null, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose);
             return new GetRulePipeline(_Option, _Path, _Filter, context: context);
         }
     }

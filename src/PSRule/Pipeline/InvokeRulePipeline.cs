@@ -26,7 +26,15 @@ namespace PSRule.Pipeline
             _Summary = new Dictionary<string, RuleSummaryRecord>();
             _ResultFormat = resultFormat;
             _SuppressionFilter = new RuleSuppressionFilter(_Option.Suppression);
+            RuleCount = _RuleGraph.Count;
+
+            if (RuleCount == 0)
+            {
+                _Context.WarnRuleNotFound();
+            }
         }
+
+        public int RuleCount { get; private set; }
 
         public InvokeResult Process(PSObject targetObject)
         {
@@ -62,11 +70,14 @@ namespace PSRule.Pipeline
 
             var result = new InvokeResult();
 
+            var ruleCounter = 0;
+
             // Process rule blocks ordered by dependency graph
             foreach (var ruleBlockTarget in _RuleGraph.GetSingleTarget())
             {
                 // Enter rule block scope
                 _Context.Enter(ruleBlockTarget.Value);
+                ruleCounter++;
 
                 try
                 {
@@ -90,6 +101,11 @@ namespace PSRule.Pipeline
                     else
                     {
                         HostHelper.InvokeRuleBlock(context: _Context, ruleBlock: ruleBlockTarget.Value, ruleRecord: ruleRecord);
+
+                        if (ruleRecord.OutcomeReason == RuleOutcomeReason.PreconditionFail)
+                        {
+                            ruleCounter--;
+                        }
                     }
 
                     // Report outcome to dependency graph
@@ -114,6 +130,11 @@ namespace PSRule.Pipeline
                     // Exit rule block scope
                     _Context.Exit();
                 }
+            }
+
+            if (ruleCounter == 0)
+            {
+                _Context.WarnObjectNotProcessed();
             }
 
             return result;

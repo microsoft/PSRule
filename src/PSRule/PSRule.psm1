@@ -115,13 +115,15 @@ function Invoke-PSRule {
     }
 
     process {
-        try {
-            # Process pipeline objects
-            $pipeline.Process($InputObject).AsRecord();
-        }
-        catch {
-            $pipeline.Dispose();
-            throw;
+        if ($pipeline.RuleCount -gt 0) {
+            try {
+                # Process pipeline objects
+                $pipeline.Process($InputObject).AsRecord();
+            }
+            catch {
+                $pipeline.Dispose();
+                throw;
+            }
         }
     }
 
@@ -159,7 +161,10 @@ function Test-PSRule {
 
         [Parameter(Mandatory = $True, ValueFromPipeline = $True)]
         [Alias('TargetObject')]
-        [PSObject]$InputObject
+        [PSObject]$InputObject,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.PSRuleOption]$Option
     )
 
     begin {
@@ -194,20 +199,21 @@ function Test-PSRule {
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
         $builder.FilterBy($Name, $Tag);
         $builder.Source($sourceFiles);
-
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference);
         $pipeline = $builder.Build();
     }
 
     process {
-        try {
-            # Process pipeline objects
-            $pipeline.Process($InputObject).AsBoolean();
-        }
-        catch {
-            $pipeline.Dispose();
-            throw;
+        if ($pipeline.RuleCount -gt 0) {
+            try {
+                # Process pipeline objects
+                $pipeline.Process($InputObject).AsBoolean();
+            }
+            catch {
+                $pipeline.Dispose();
+                throw;
+            }
         }
     }
 
@@ -266,10 +272,9 @@ function Get-PSRule {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Get();
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Get().Configure($Option);
         $builder.FilterBy($Name, $Tag);
         $builder.Source($sourceFiles);
-        $builder.Option($Option);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference);
         $pipeline = $builder.Build();

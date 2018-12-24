@@ -15,6 +15,14 @@ namespace PSRule.Host
             Prepare(targets);
         }
 
+        public int Count
+        {
+            get
+            {
+                return _Targets.Length;
+            }
+        }
+
         public enum DependencyTargetState : byte
         {
             None = 0,

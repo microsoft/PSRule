@@ -17,8 +17,9 @@ Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 
 Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd' {
 
+    $option = @{ 'Execution.NotProcessedWarning' = $False };
     $jsonData = Get-Content -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources/resources.json) | ConvertFrom-Json;
-    $result = $jsonData | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources);
+    $result = $jsonData | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources) -Option $option;
 
     Context 'App Service' {
 

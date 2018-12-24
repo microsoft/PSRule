@@ -18,6 +18,11 @@ namespace PSRule.Configuration
     /// </summary>
     public sealed class PSRuleOption
     {
+        private static readonly PSRuleOption Default = new PSRuleOption
+        {
+            Execution = ExecutionOption.Default
+        };
+
         public PSRuleOption()
         {
             // Set defaults
@@ -32,10 +37,7 @@ namespace PSRule.Configuration
             // Set from existing option instance
             Binding = new BindingOption(option.Binding);
             Suppression = new SuppressionOption(option.Suppression);
-            Execution = new ExecutionOption
-            {
-                LanguageMode = option.Execution.LanguageMode
-            };
+            Execution = new ExecutionOption(option.Execution);
             Pipeline = new PipelineHook
             {
                 BindTargetName = option.Pipeline.BindTargetName
@@ -94,7 +96,7 @@ namespace PSRule.Configuration
                 else
                 {
                     // Use the default options
-                    return new PSRuleOption();
+                    return Default.Clone();
                 }
             }
 
@@ -147,6 +149,16 @@ namespace PSRule.Configuration
             if (index.TryGetValue("execution.languagemode", out value))
             {
                 option.Execution.LanguageMode = (LanguageMode)Enum.Parse(typeof(LanguageMode), (string)value);
+            }
+
+            if (index.TryGetValue("execution.inconclusivewarning", out value))
+            {
+                option.Execution.InconclusiveWarning = bool.Parse(value.ToString());
+            }
+
+            if (index.TryGetValue("execution.notprocessedwarning", out value))
+            {
+                option.Execution.NotProcessedWarning = bool.Parse(value.ToString());
             }
 
             return option;
