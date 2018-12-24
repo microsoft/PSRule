@@ -44,7 +44,61 @@ By default PSRule will automatically look for a file named `psrule.yml` in the c
 For example:
 
 ```powershell
-Invoke-PSRule -Path . -Option '.\myconfig.yml'.
+Invoke-PSRule -Path . -Option '.\myconfig.yml';
+```
+
+### TargetName binding
+
+When an object is passed from the pipeline, PSRule assigns the object a _TargetName_. _TargetName_ is used in output results to identify one object from another. Many objects could be passed down the pipeline at the same time, so using a _TargetName_ that is meaningful is important. _TargetName_ is also used for advanced features such as rule suppression.
+
+The value that PSRule uses for _TargetName_ is configurable. PSRule uses the following logic to determine what _TargetName_ should be used:
+
+- By default PSRule will:
+  - Use `TargetName` or `Name` properties on the object.
+  - If both `TargetName` and `Name` properties exist, `TargetName` will take precedence over `Name`.
+  - If neither `TargetName` or `Name` properties exist, a SHA1 hash of the object will be used as _TargetName_.
+- If custom _TargetName_ binding properties are configured, the property names specified will override the defaults.
+  - If **none** of the configured property names exist, PSRule will revert back to `TargetName` then `Name`.
+  - If more then one property name is configured, the order they are specified in the configuration determines precedence.
+    - i.e. The first configured property name will take precedence over the second property name.
+- If a custom _TargetName_ binding function is specified, the function will be evaluated first before any other option.
+  - If the function returns `$Null` then custom properties, `TargetName` and `Name` properties will be used.
+  - The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.
+  - Custom binding functions are blocked in constrained language mode is used. See [language mode](#language-mode) for more information.
+
+Custom property names to use for binding can be specified using:
+
+```powershell
+# PowerShell: Using the Binding.TargetName hash table key
+$option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName' };
+```
+
+```yaml
+# psrule.yml: Using the binding/targetName YAML property
+binding:
+  targetName:
+  - ResourceName
+  - AlternateName
+```
+
+To specify a custom binding function use:
+
+```powershell
+# Create a custom function that returns a TargetName string
+$bindFn = {
+    param ($TargetObject)
+
+    $otherName = $TargetObject.PSObject.Properties['OtherName'];
+
+    if ($otherName -eq $Null) {
+        return $Null
+    }
+
+    return $otherName.Value;
+}
+
+# Specify the binding function script block code to execute
+$option = New-PSRuleOption -BindTargetName $bindFn;
 ```
 
 ### Language mode
@@ -62,7 +116,7 @@ This option can be specified using:
 
 ```powershell
 # PowerShell: Using the Execution.LanguageMode hash table key
-$option = New-PSRuleOption -Option @{ 'Execution.LanguageMode' = 'ConstrainedLanguage' }
+$option = New-PSRuleOption -Option @{ 'Execution.LanguageMode' = 'ConstrainedLanguage' };
 ```
 
 ```yaml
@@ -71,14 +125,84 @@ execution:
   languageMode: ConstrainedLanguage
 ```
 
+### Rule suppression
+
+In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.
+
+PSRule allows objects to be suppressed for a rule by TargetName. Objects that are suppressed are not processed by the rule at all, but will continue to be processed by other rules.
+
+Rule suppression complements pre-filtering and pre-conditions.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the SuppressTargetName option with a hash table
+$option = New-PSRuleOption -SuppressTargetName @{ 'storageAccounts.UseHttps' = 'TestObject1', 'TestObject3' };
+```
+
+```yaml
+# psrule.yml: Using the suppression YAML property
+suppression:
+  storageAccounts.UseHttps:
+    targetName:
+    - TestObject1
+    - TestObject3
+```
+
+In both of the above examples, `TestObject1` and `TestObject3` have been suppressed from being processed by a rule named `storageAccounts.UseHttps`.
+
+When **to** use rule suppression:
+
+- A temporary exclusion for an object that is in a known failed state.
+
+When **not** to use rule suppression:
+
+- An object should never be processed by any rule. Pre-filter the pipeline instead.
+- The rule is not applicable because the object is the wrong type. Use pre-conditions on the rule instead.
+
+An example of pre-filtering:
+
+```powershell
+# Define objects to validate
+$items = @();
+$items += [PSCustomObject]@{ Name = 'Fridge'; Type = 'Equipment'; Category = 'White goods'; };
+$items += [PSCustomObject]@{ Name = 'Apple'; Type = 'Food'; Category = 'Produce'; };
+$items += [PSCustomObject]@{ Name = 'Carrot'; Type = 'Food'; Category = 'Produce'; };
+
+# Example of pre-filtering, only food items are sent to Invoke-PSRule
+$items | Where-Object { $_.Type -eq 'Food' } | Invoke-PSRule;
+```
+
+An example of pre-conditions:
+
+```powershell
+# A rule with a pre-condition to only process produce
+Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
+    # Condition to determine if the object is fruit
+    $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
+}
+```
+
 ## EXAMPLES
 
 ### Example PSRule.yml
 
 ```yaml
+binding:
+  targetName:
+  - ResourceName
+  - AlternateName
+
 # Set execution options
 execution:
   languageMode: ConstrainedLanguage
+
+# Suppress the following target names
+suppression:
+  storageAccounts.UseHttps:
+    targetName:
+    - TestObject1
+    - TestObject3
 ```
 
 ### Default PSRule.yml
@@ -86,8 +210,15 @@ execution:
 ```yaml
 # These are the default options.
 # Only properties that differ from the default values need to be specified.
+binding:
+  targetName:
+  - TargetName
+  - Name
+
 execution:
   languageMode: FullLanguage
+
+suppression: { }
 ```
 
 ## NOTE

@@ -43,14 +43,14 @@ namespace PSRule.Commands
                     {
                         if (expected)
                         {
-                            PipelineContext.WriteVerbose($"[Exists] -- The field {Field[i]} exists");
+                            PipelineContext.CurrentThread.WriteVerbose($"[Exists] -- The field {Field[i]} exists");
                         }
                     }
                 }
 
                 if (!actual)
                 {
-                    PipelineContext.WriteVerbose($"[Exists] -- The field(s) {string.Join(", ", Field)} do not exist");
+                    PipelineContext.CurrentThread.WriteVerbose($"[Exists] -- The field(s) {string.Join(", ", Field)} do not exist");
                 }
 
                 WriteObject(expected == actual);

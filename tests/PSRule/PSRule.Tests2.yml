@@ -1,0 +1,7 @@
+# These are options for unit tests
+
+# Configure TargetName binding
+binding:
+  targetName:
+  - ResourceName
+  - AlternateName

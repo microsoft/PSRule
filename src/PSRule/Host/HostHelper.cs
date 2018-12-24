@@ -15,15 +15,15 @@ namespace PSRule.Host
 {
     internal sealed class HostHelper
     {
-        public static IEnumerable<Rule> GetRule(PSRuleOption option, LanguageContext context, string[] scriptPaths, RuleFilter filter)
+        public static IEnumerable<Rule> GetRule(PSRuleOption option, string[] scriptPaths, RuleFilter filter)
         {
-            return ToRule(GetLanguageBlock(option, context, scriptPaths), filter).Values.ToArray();
+            return ToRule(GetLanguageBlock(option, scriptPaths), filter);
         }
 
-        public static DependencyGraph<RuleBlock> GetRuleBlockGraph(PSRuleOption option, LanguageContext context, string[] scriptPaths, RuleFilter filter)
+        public static DependencyGraph<RuleBlock> GetRuleBlockGraph(PSRuleOption option, string[] scriptPaths, RuleFilter filter)
         {
             var builder = new DependencyGraphBuilder<RuleBlock>();
-            builder.Include(items: GetLanguageBlock(option, context, scriptPaths).OfType<RuleBlock>(), filter: (b) => filter == null || filter.Match(b));
+            builder.Include(items: GetLanguageBlock(option, scriptPaths).OfType<RuleBlock>(), filter: (b) => filter == null || filter.Match(b));
             return builder.Build();
         }
 
@@ -77,7 +77,7 @@ namespace PSRule.Host
         /// <param name="context"></param>
         /// <param name="scriptPaths"></param>
         /// <returns></returns>
-        private static IEnumerable<ILanguageBlock> GetLanguageBlock(PSRuleOption option, LanguageContext context, string[] scriptPaths)
+        private static IEnumerable<ILanguageBlock> GetLanguageBlock(PSRuleOption option, string[] scriptPaths)
         {
             var results = new Collection<ILanguageBlock>();
             var state = HostState.CreateDefault();
@@ -111,7 +111,7 @@ namespace PSRule.Host
                     throw new FileNotFoundException("The script was not found.", path);
                 }
 
-                PipelineContext.WriteVerbose($"[PSRule][D] -- Scanning: {path}");
+                PipelineContext.CurrentThread.WriteVerbose($"[PSRule][D] -- Scanning: {path}");
 
                 if (!File.Exists(path))
                 {
@@ -141,52 +141,43 @@ namespace PSRule.Host
             return results;
         }
 
-        public static RuleRecord InvokeRuleBlock(PSRuleOption option, RuleBlock block, PSObject inputObject)
+        public static void InvokeRuleBlock(PipelineContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)
         {
             try
             {
-                //PipelineContext.WriteVerbose($"[PSRule][R][{block.Id}]::BEGIN");
+                context.WriteVerboseObjectStart();
 
-                var result = new RuleRecord(block.RuleId)
+                context._Rule = ruleRecord;
+
+                if (ruleBlock.If != null)
                 {
-                    TargetObject = inputObject,
-                    TargetName = BindName(inputObject), // TODO: Move name binding outside of InvokeRuleBlock so that it is not called for every rule
-                    Tag = block.Tag?.ToHashtable()
-                };
-
-                PipelineContext.WriteVerbose($" :: {result.TargetName}");
-
-                LanguageContext._Rule = result;
-
-                if (block.If != null)
-                {
-                    if (!block.If.Invoke())
+                    if (!ruleBlock.If.Invoke())
                     {
-                        result.OutcomeReason = RuleOutcomeReason.PreconditionFail;
-                        return result;
+                        ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
+                        return;
                     }
                 }
 
-                var invokeResult = block.Body.Invoke();
+                var invokeResult = ruleBlock.Body.Invoke();
 
                 if (invokeResult == null)
                 {
-                    result.OutcomeReason = RuleOutcomeReason.Inconclusive;
-                    result.Outcome = RuleOutcome.Fail;
+                    ruleRecord.OutcomeReason = RuleOutcomeReason.Inconclusive;
+                    ruleRecord.Outcome = RuleOutcome.Fail;
                 }
                 else
                 {
-                    result.OutcomeReason = RuleOutcomeReason.Processed;
-                    result.Outcome = invokeResult.AllOf ? RuleOutcome.Pass : RuleOutcome.Fail;
+                    ruleRecord.OutcomeReason = RuleOutcomeReason.Processed;
+                    ruleRecord.Outcome = invokeResult.AllOf ? RuleOutcome.Pass : RuleOutcome.Fail;
                 }
 
-                PipelineContext.WriteVerbose($" -- [{invokeResult?.Pass}/{invokeResult?.Count}] [{result.Outcome}]");
+                context.WriteVerboseConditionResult(pass: invokeResult?.Pass, count: invokeResult?.Count, outcome: ruleRecord.Outcome);
 
-                return result;
+                return;
             }
             finally
             {
-                LanguageContext._Rule = null;
+                PipelineContext.CurrentThread._Rule = null;
             }
         }
 
@@ -196,7 +187,7 @@ namespace PSRule.Host
         /// <param name="blocks"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        private static IDictionary<string, Rule> ToRule(IEnumerable<ILanguageBlock> blocks, RuleFilter filter)
+        private static Rule[] ToRule(IEnumerable<ILanguageBlock> blocks, RuleFilter filter)
         {
             // Index deployments by environment/name
             var results = new Dictionary<string, Rule>(StringComparer.OrdinalIgnoreCase);
@@ -209,11 +200,9 @@ namespace PSRule.Host
                     continue;
                 }
 
-                Rule rule = null;
-
                 if (!results.ContainsKey(block.RuleId))
                 {
-                    rule = new Rule
+                    results[block.RuleId] = new Rule
                     {
                         RuleId = block.RuleId,
                         RuleName = block.RuleName,
@@ -221,42 +210,10 @@ namespace PSRule.Host
                         Description = block.Description,
                         Tag = block.Tag
                     };
-
-                    results[block.RuleId] = rule;
-                }
-                else
-                {
-                    rule = results[block.RuleId];
                 }
             }
 
-            return results;
-        }
-
-        /// <summary>
-        /// Get the name of the object by looking for a TargetName or Name property.
-        /// </summary>
-        /// <param name="targetObject">A PSObject to bind.</param>
-        /// <returns>The target name of the object.</returns>
-        private static string BindName(PSObject targetObject)
-        {
-            string result = null;
-
-            var comparer = StringComparer.OrdinalIgnoreCase;
-
-            foreach (var p in targetObject.Properties)
-            {
-                if (comparer.Equals(p.Name, "TargetName"))
-                {
-                    result = targetObject.Properties[p.Name].Value?.ToString();
-                }
-                else if (comparer.Equals(p.Name, "Name") && result == null)
-                {
-                    result = targetObject.Properties[p.Name].Value?.ToString();
-                }
-            }
-
-            return result;
+            return results.Values.ToArray();
         }
     }
 }

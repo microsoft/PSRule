@@ -7,17 +7,15 @@ namespace PSRule.Pipeline
 {
     public sealed class GetRulePipeline : RulePipeline
     {
-        private readonly PipelineContext _Context;
-
-        internal GetRulePipeline(PipelineLogger logger, PSRuleOption option, string[] path, RuleFilter filter)
-            : base(option, path, filter)
+        internal GetRulePipeline(PSRuleOption option, string[] path, RuleFilter filter, PipelineContext context)
+            : base(context, option, path, filter)
         {
-            _Context = PipelineContext.New(logger);
+            // Do nothing
         }
 
         public IEnumerable<Rule> Process()
         {
-            return HostHelper.GetRule(_Option, null, _Path, _Filter);
+            return HostHelper.GetRule(_Option, _Path, _Filter);
         }
     }
 }

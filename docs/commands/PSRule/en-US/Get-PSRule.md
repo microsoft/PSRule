@@ -14,7 +14,7 @@ Get a list of rule definitions.
 ## SYNTAX
 
 ```text
-Get-PSRule [-Name <String[]>] [-Tag <Hashtable>] [[-Path] <String[]>] [-Option <PSRuleOption>]
+Get-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>]
  [<CommonParameters>]
 ```
 

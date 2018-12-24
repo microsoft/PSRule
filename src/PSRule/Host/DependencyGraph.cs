@@ -62,6 +62,7 @@ namespace PSRule.Host
             {
                 if (target.Value.DependsOn != null && target.Value.DependsOn.Length > 0)
                 {
+                    // Process each dependency
                     foreach (var d in target.Value.DependsOn)
                     {
                         var dTarget = _Index[d];

@@ -12,10 +12,10 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
     public sealed class RuleRecord : IRuleRecord
     {
-        internal RuleRecord(string ruleId, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
+        internal RuleRecord(string ruleId, string ruleName, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
             RuleId = ruleId;
-            RuleName = RuleHelper.GetRuleName(RuleId);
+            RuleName = ruleName;
             Outcome = outcome;
             OutcomeReason = reason;
         }

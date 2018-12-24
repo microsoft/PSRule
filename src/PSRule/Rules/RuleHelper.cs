@@ -5,16 +5,6 @@ namespace PSRule.Rules
     internal static class RuleHelper
     {
         /// <summary>
-        /// Extract RuleName from a RuleId.
-        /// </summary>
-        /// <param name="ruleId">Unique identifier for a rule.</param>
-        /// <returns>A rule name.</returns>
-        public static string GetRuleName(string ruleId)
-        {
-            return ruleId.Split('/')[1];
-        }
-
-        /// <summary>
         /// Checks each RuleName and converts each to a RuleId.
         /// </summary>
         /// <param name="ruleNames">An array of names. Qualified names (RuleIds) supplied are left intact.</param>

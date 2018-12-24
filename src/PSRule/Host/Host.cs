@@ -1,4 +1,5 @@
 ﻿using PSRule.Commands;
+using PSRule.Pipeline;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 
@@ -19,7 +20,7 @@ namespace PSRule.Host
         {
             get
             {
-                return LanguageContext._Rule;
+                return PipelineContext.CurrentThread._Rule;
             }
         }
     }
@@ -39,7 +40,7 @@ namespace PSRule.Host
         {
             get
             {
-                return LanguageContext._Rule?.TargetObject;
+                return PipelineContext.CurrentThread._Rule?.TargetObject;
             }
         }
     }

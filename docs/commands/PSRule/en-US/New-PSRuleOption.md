@@ -14,7 +14,8 @@ Create options to configure PSRule execution.
 ## SYNTAX
 
 ```text
-New-PSRuleOption [[-Option] <PSRuleOption>] [[-Path] <String>] [<CommonParameters>]
+New-PSRuleOption [[-Option] <PSRuleOption>] [-SuppressTargetName <SuppressionOption>]
+ [-BindTargetName <BindTargetName[]>] [[-Path] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -30,7 +31,37 @@ $option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' }
 @{ Name = 'Item 1' } | Invoke-PSRule -Option $option
 ```
 
-Create a options object and run rules in constrained mode.
+Create an options object and run rules in constrained mode.
+
+### Example 2
+
+```powershell
+$option = New-PSRuleOption -SuppressTargetName @{ 'storageAccounts.UseHttps' = 'TestObject1', 'TestObject3' };
+```
+
+Create an options object that suppresses `TestObject1` and `TestObject3` for a rule named `storageAccounts.UseHttps`.
+
+### Example 3
+
+```powershell
+# Create a custom function that returns a TargetName string
+$bindFn = {
+    param ($TargetObject)
+
+    $otherName = $TargetObject.PSObject.Properties['OtherName'];
+
+    if ($otherName -eq $Null) {
+        return $Null
+    }
+
+    return $otherName.Value;
+}
+
+# Specify the binding function script block code to execute
+$option = New-PSRuleOption -BindTargetName $bindFn;
+```
+
+Creates an options object that uses a custom function to bind the _TargetName_ of an object.
 
 ## PARAMETERS
 
@@ -63,6 +94,42 @@ Aliases:
 
 Required: False
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SuppressTargetName
+
+Configures suppression for a list of objects by TargetName. Option also accepts a hashtable to configure rule suppression.
+
+For more information on PSRule options see about_PSRule_Options.
+
+```yaml
+Type: SuppressionOption
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -BindTargetName
+
+Configures a custom function to use to bind TargetName of an object.
+
+For more information on PSRule options see about_PSRule_Options.
+
+```yaml
+Type: BindTargetName[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

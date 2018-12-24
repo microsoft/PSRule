@@ -102,10 +102,9 @@ function Invoke-PSRule {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke();
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
         $builder.FilterBy($Name, $Tag);
         $builder.Source($sourceFiles);
-        $builder.Option($Option);
         $builder.Limit($Outcome);
 
         if ($PSBoundParameters.ContainsKey('As')) {
@@ -113,16 +112,29 @@ function Invoke-PSRule {
         }
 
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference);
         $pipeline = $builder.Build();
     }
 
     process {
-        $pipeline.Process($InputObject);
+        try {
+            # Process pipeline objects
+            $pipeline.Process($InputObject);
+        }
+        catch {
+            $pipeline.Dispose();
+            throw;
+        }
     }
 
     end {
-        if ($As -eq [PSRule.Configuration.ResultFormat]::Summary) {
-            $pipeline.GetSummary();
+        try {
+            if ($As -eq [PSRule.Configuration.ResultFormat]::Summary) {
+                $pipeline.GetSummary();
+            }
+        }
+        finally {
+            $pipeline.Dispose();
         }
 
         Write-Verbose -Message "[PSRule] END::";
@@ -183,15 +195,23 @@ function Get-PSRule {
         $builder.Source($sourceFiles);
         $builder.Option($Option);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference);
         $pipeline = $builder.Build();
     }
 
     process {
-        # Get matching rule definitions
-        $pipeline.Process();
+        try {
+            # Get matching rule definitions
+            $pipeline.Process();
+        }
+        catch {
+            $pipeline.Dispose();
+            throw;
+        }
     }
 
     end {
+        $pipeline.Dispose();
         Write-Verbose -Message "[Get-PSRule]::END";
     }
 }
@@ -207,6 +227,13 @@ function New-PSRuleOption {
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.SuppressionOption]$SuppressTargetName,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.BindTargetName[]]$BindTargetName,
+
+        [Parameter(Mandatory = $False)]
+        [PSDefaultValue(Help = '.\psrule.yml')]
         [String]$Path = '.\psrule.yml'
     )
 
@@ -229,6 +256,15 @@ function New-PSRuleOption {
             Write-Verbose -Message "Attempting to read: $Path";
 
             $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $True);
+        }
+
+        if ($PSBoundParameters.ContainsKey('SuppressTargetName')) {
+            $Option.Suppression = $SuppressTargetName;
+        }
+
+        if ($PSBoundParameters.ContainsKey('BindTargetName')) {
+            Write-Verbose -Message 'Set BindTargetName pipeline hook';
+            $Option.Pipeline.BindTargetName.AddRange($BindTargetName);
         }
 
         return $Option;

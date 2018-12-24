@@ -11,10 +11,10 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
     public sealed class RuleSummaryRecord : IRuleRecord
     {
-        internal RuleSummaryRecord(string ruleId)
+        internal RuleSummaryRecord(string ruleId, string ruleName)
         {
             RuleId = ruleId;
-            RuleName = RuleHelper.GetRuleName(RuleId);
+            RuleName = ruleName;
         }
 
         /// <summary>

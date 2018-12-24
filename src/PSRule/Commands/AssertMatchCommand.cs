@@ -40,7 +40,7 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            PipelineContext.WriteVerbose("[Match]::BEGIN");
+            PipelineContext.CurrentThread.WriteVerbose("[Match]::BEGIN");
 
             try
             {
@@ -63,7 +63,7 @@ namespace PSRule.Commands
             }
             finally
             {
-                PipelineContext.WriteVerbose("[Match]::END");
+                PipelineContext.CurrentThread.WriteVerbose("[Match]::END");
             }
         }
     }

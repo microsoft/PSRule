@@ -46,7 +46,7 @@ namespace PSRule.Commands
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
 
-            PipelineContext.WriteVerbose($"[PSRule][D] -- Found {Name} in {MyInvocation.ScriptName}");
+            PipelineContext.CurrentThread.WriteVerbose($"[PSRule][D] -- Found {Name} in {MyInvocation.ScriptName}");
 
             var block = new RuleBlock(MyInvocation.ScriptName, Name)
             {
