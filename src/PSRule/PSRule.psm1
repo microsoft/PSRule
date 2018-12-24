@@ -72,7 +72,7 @@ function Invoke-PSRule {
     )
 
     begin {
-        Write-Verbose -Message "[PSRule] BEGIN::";
+        Write-Verbose -Message "[Invoke-PSRule] BEGIN::";
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -83,8 +83,6 @@ function Invoke-PSRule {
 
         # Get an options object
         $Option = New-PSRuleOption @optionParams;
-
-        Write-Verbose -Message "[PSRule][D] -- Scanning for source files: $Path";
 
         # Discover scripts in the specified paths
         [String[]]$sourceFiles = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
@@ -117,13 +115,15 @@ function Invoke-PSRule {
     }
 
     process {
-        try {
-            # Process pipeline objects
-            $pipeline.Process($InputObject);
-        }
-        catch {
-            $pipeline.Dispose();
-            throw;
+        if ($pipeline.RuleCount -gt 0) {
+            try {
+                # Process pipeline objects
+                $pipeline.Process($InputObject).AsRecord();
+            }
+            catch {
+                $pipeline.Dispose();
+                throw;
+            }
         }
     }
 
@@ -137,7 +137,89 @@ function Invoke-PSRule {
             $pipeline.Dispose();
         }
 
-        Write-Verbose -Message "[PSRule] END::";
+        Write-Verbose -Message "[Invoke-PSRule] END::";
+    }
+}
+
+# .ExternalHelp PSRule-Help.xml
+function Test-PSRule {
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param (
+        # A list of paths to check for rule definitions
+        [Parameter(Position = 0)]
+        [Alias('f')]
+        [String[]]$Path = $PWD,
+
+        # Filter to rules with the following names
+        [Parameter(Mandatory = $False)]
+        [Alias('n')]
+        [String[]]$Name,
+
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$Tag,
+
+        [Parameter(Mandatory = $True, ValueFromPipeline = $True)]
+        [Alias('TargetObject')]
+        [PSObject]$InputObject,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.PSRuleOption]$Option
+    )
+
+    begin {
+        Write-Verbose -Message "[Test-PSRule] BEGIN::";
+
+        # Get parameter options, which will override options from other sources
+        $optionParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Option')) {
+            $optionParams['Option'] =  $Option;
+        }
+
+        # Get an options object
+        $Option = New-PSRuleOption @optionParams;
+
+        # Discover scripts in the specified paths
+        [String[]]$sourceFiles = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
+
+        # Check that some matching script files were found
+        if ($Null -eq $sourceFiles) {
+            Write-Warning -Message LocalizedData.PathNotFound;
+            continue;
+        }
+
+        $isDeviceGuard = IsDeviceGuardEnabled;
+
+        # If DeviceGuard is enabled, force a contrained execution environment
+        if ($isDeviceGuard) {
+            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
+        }
+
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
+        $builder.FilterBy($Name, $Tag);
+        $builder.Source($sourceFiles);
+        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference);
+        $pipeline = $builder.Build();
+    }
+
+    process {
+        if ($pipeline.RuleCount -gt 0) {
+            try {
+                # Process pipeline objects
+                $pipeline.Process($InputObject).AsBoolean();
+            }
+            catch {
+                $pipeline.Dispose();
+                throw;
+            }
+        }
+    }
+
+    end {
+        $pipeline.Dispose();
+        Write-Verbose -Message "[Test-PSRule] END::";
     }
 }
 
@@ -190,10 +272,9 @@ function Get-PSRule {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Get();
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Get().Configure($Option);
         $builder.FilterBy($Name, $Tag);
         $builder.Source($sourceFiles);
-        $builder.Option($Option);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference);
         $pipeline = $builder.Build();
@@ -436,6 +517,7 @@ function GetRuleScriptPath {
     )
 
     process {
+        Write-Verbose -Message "[PSRule][D] -- Scanning for source files: $Path";
         $fileObjects = (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
 
         if ($Null -ne $fileObjects) {
@@ -499,6 +581,6 @@ InitEditorServices;
 # Export module
 #
 
-Export-ModuleMember -Function 'Rule','Invoke-PSRule','Get-PSRule','New-PSRuleOption';
+Export-ModuleMember -Function 'Rule','Invoke-PSRule','Test-PSRule','Get-PSRule','New-PSRuleOption';
 
 # EOM

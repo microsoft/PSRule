@@ -164,6 +164,7 @@ namespace PSRule.Host
                 {
                     ruleRecord.OutcomeReason = RuleOutcomeReason.Inconclusive;
                     ruleRecord.Outcome = RuleOutcome.Fail;
+                    context.WarnRuleInconclusive(ruleId: ruleRecord.RuleId);
                 }
                 else
                 {

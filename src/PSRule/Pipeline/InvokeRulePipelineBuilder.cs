@@ -25,6 +25,7 @@ namespace PSRule.Pipeline
         {
             _Logger = new PipelineLogger();
             _Option = new PSRuleOption();
+            _Outcome = RuleOutcome.Processed;
             _ResultFormat = ResultFormat.Detail;
             _BindTargetNameHook = PipelineHookActions.DefaultTargetNameBinding;
         }
@@ -65,8 +66,8 @@ namespace PSRule.Pipeline
 
         public void UseLoggingPreferences(ActionPreference error, ActionPreference warning, ActionPreference verbose)
         {
-            _LogError = !(error == ActionPreference.Ignore || error == ActionPreference.SilentlyContinue);
-            _LogWarning = !(warning == ActionPreference.Ignore || warning == ActionPreference.SilentlyContinue);
+            _LogError = !(error == ActionPreference.Ignore);
+            _LogWarning = !(warning == ActionPreference.Ignore);
             _LogVerbose = !(verbose == ActionPreference.Ignore || verbose == ActionPreference.SilentlyContinue);
         }
 
@@ -85,10 +86,9 @@ namespace PSRule.Pipeline
                 return this;
             }
 
-            if (option.Execution.LanguageMode != _Option.Execution.LanguageMode)
-            {
-                _Option.Execution.LanguageMode = option.Execution.LanguageMode;
-            }
+            _Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
+            _Option.Execution.InconclusiveWarning = option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning;
+            _Option.Execution.NotProcessedWarning = option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning;
 
             if (option.Binding.TargetName != null && option.Binding.TargetName.Length > 0)
             {
@@ -127,8 +127,7 @@ namespace PSRule.Pipeline
 
         public InvokeRulePipeline Build()
         {
-            var context = PipelineContext.New(_Logger, _BindTargetNameHook, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose);
-
+            var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: _BindTargetNameHook, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose);
             return new InvokeRulePipeline(_Option, _Path, _Filter, _Outcome, _ResultFormat, context: context);
         }
     }

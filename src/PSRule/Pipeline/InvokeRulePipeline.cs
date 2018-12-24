@@ -26,23 +26,28 @@ namespace PSRule.Pipeline
             _Summary = new Dictionary<string, RuleSummaryRecord>();
             _ResultFormat = resultFormat;
             _SuppressionFilter = new RuleSuppressionFilter(_Option.Suppression);
+            RuleCount = _RuleGraph.Count;
+
+            if (RuleCount == 0)
+            {
+                _Context.WarnRuleNotFound();
+            }
         }
 
-        public IEnumerable<RuleRecord> Process(PSObject targetObject)
+        public int RuleCount { get; private set; }
+
+        public InvokeResult Process(PSObject targetObject)
         {
             return ProcessTargetObject(targetObject);
         }
 
-        public IEnumerable<RuleRecord> Process(PSObject[] targetObjects)
+        public IEnumerable<InvokeResult> Process(PSObject[] targetObjects)
         {
-            var results = new List<RuleRecord>();
+            var results = new List<InvokeResult>();
 
             foreach (var targetObject in targetObjects)
             {
-                foreach (var result in ProcessTargetObject(targetObject))
-                {
-                    results.Add(result);
-                }
+                results.Add(ProcessTargetObject(targetObject));
             }
 
             return results;
@@ -59,17 +64,20 @@ namespace PSRule.Pipeline
             }
         }
 
-        private IEnumerable<RuleRecord> ProcessTargetObject(PSObject targetObject)
+        private InvokeResult ProcessTargetObject(PSObject targetObject)
         {
             _Context.TargetObject(targetObject);
 
-            var results = new List<RuleRecord>();
+            var result = new InvokeResult();
+
+            var ruleCounter = 0;
 
             // Process rule blocks ordered by dependency graph
             foreach (var ruleBlockTarget in _RuleGraph.GetSingleTarget())
             {
                 // Enter rule block scope
                 _Context.Enter(ruleBlockTarget.Value);
+                ruleCounter++;
 
                 try
                 {
@@ -93,6 +101,11 @@ namespace PSRule.Pipeline
                     else
                     {
                         HostHelper.InvokeRuleBlock(context: _Context, ruleBlock: ruleBlockTarget.Value, ruleRecord: ruleRecord);
+
+                        if (ruleRecord.OutcomeReason == RuleOutcomeReason.PreconditionFail)
+                        {
+                            ruleCounter--;
+                        }
                     }
 
                     // Report outcome to dependency graph
@@ -109,7 +122,7 @@ namespace PSRule.Pipeline
 
                     if (ShouldOutput(ruleRecord.Outcome))
                     {
-                        results.Add(ruleRecord);
+                        result.Add(ruleRecord);
                     }
                 }
                 finally
@@ -119,7 +132,12 @@ namespace PSRule.Pipeline
                 }
             }
 
-            return results;
+            if (ruleCounter == 0)
+            {
+                _Context.WarnObjectNotProcessed();
+            }
+
+            return result;
         }
 
         private bool ShouldOutput(RuleOutcome outcome)

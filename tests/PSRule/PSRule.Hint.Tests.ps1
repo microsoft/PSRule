@@ -27,7 +27,8 @@ Describe 'PSRule -- Hint keyword' -Tag 'Hint' {
         }
 
         It 'Sets result properties' {
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'HintTest' -Outcome All;
+            $option = @{ 'Execution.InconclusiveWarning' = $False };
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Option $option -Name 'HintTest' -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
             $result.RuleName | Should -Be 'HintTest';
             $result.TargetName | Should -Be 'HintTarget';

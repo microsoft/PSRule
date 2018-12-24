@@ -142,6 +142,7 @@ The following commands exist in the `PSRule` module:
 - [Invoke-PSRule](docs/commands/PSRule/en-US/Invoke-PSRule.md)
 - [Get-PSRule](docs/commands/PSRule/en-US/Get-PSRule.md)
 - [New-PSRuleOption](docs/commands/PSRule/en-US/New-PSRuleOption.md)
+- [Test-PSRule](docs/commands/PSRule/en-US/Test-PSRule.md)
 
 ### Concepts
 
@@ -150,6 +151,8 @@ The following conceptual topics exist in the `PSRule` module:
 - [Options](docs/concepts/PSRule/en-US/about_PSRule_Options.md)
   - [Binding.TargetName](docs/concepts/PSRule/en-US/about_PSRule_Options.md#targetname-binding)
   - [Execution.LanguageMode](docs/concepts/PSRule/en-US/about_PSRule_Options.md#language-mode)
+  - [Execution.InconclusiveWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inconclusive-warning)
+  - [Execution.NotProcessedWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#not-processed-warning)
   - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#rule-suppression)
 - [Variables](docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
   - [$Rule](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#rule)

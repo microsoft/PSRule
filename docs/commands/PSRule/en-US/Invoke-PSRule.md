@@ -105,22 +105,6 @@ Evaluate an array of objects. The results for each rule is returned as a summary
 
 ## PARAMETERS
 
-### -InputObject
-
-The pipeline object to process rules for.
-
-```yaml
-Type: PSObject
-Parameter Sets: (All)
-Aliases: TargetObject
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-```
-
 ### -Name
 
 The name of a specific rule to evaluate. If this parameter is not specified all rules in search paths will be evaluated.
@@ -185,6 +169,22 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InputObject
+
+The pipeline object to process rules for.
+
+```yaml
+Type: PSObject
+Parameter Sets: (All)
+Aliases: TargetObject
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
@@ -253,3 +253,4 @@ When you use the `-As Summary`. Otherwise, it returns a `RuleRecord` object.
 ## RELATED LINKS
 
 [Get-PSRule](Get-PSRule.md)
+[Test-PSRule](Test-PSRule.md)
