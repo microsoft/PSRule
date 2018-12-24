@@ -230,6 +230,10 @@ function New-PSRuleOption {
         [PSRule.Configuration.SuppressionOption]$SuppressTargetName,
 
         [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.BindTargetName[]]$BindTargetName,
+
+        [Parameter(Mandatory = $False)]
+        [PSDefaultValue(Help = '.\psrule.yml')]
         [String]$Path = '.\psrule.yml'
     )
 
@@ -256,6 +260,11 @@ function New-PSRuleOption {
 
         if ($PSBoundParameters.ContainsKey('SuppressTargetName')) {
             $Option.Suppression = $SuppressTargetName;
+        }
+
+        if ($PSBoundParameters.ContainsKey('BindTargetName')) {
+            Write-Verbose -Message 'Set BindTargetName pipeline hook';
+            $Option.Pipeline.BindTargetName.AddRange($BindTargetName);
         }
 
         return $Option;

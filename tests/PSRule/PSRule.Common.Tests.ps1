@@ -96,66 +96,6 @@ Describe 'Invoke-PSRule' {
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency1' }).Outcome | Should -Be 'None';
         }
 
-        It 'Binds to TargetName' {
-            $testObject = [PSCustomObject]@{
-                TargetName = "ObjectTargetName"
-                Name = "ObjectName"
-                Value = 1
-            }
-
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.IsSuccess() | Should -Be $True;
-            $result.TargetName | Should -Be 'ObjectTargetName';
-        }
-
-        It 'Binds to Name' {
-            $testObject = [PSCustomObject]@{
-                Name = 'TestObject1'
-            }
-
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.IsSuccess() | Should -Be $True;
-            $result.TargetName | Should -Be 'TestObject1';
-        }
-
-        It 'Binds to object hash' {
-            $testObject = [PSCustomObject]@{
-                NotName = 'TestObject1'
-            }
-
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.IsSuccess() | Should -Be $True;
-            $result.TargetName | Should -Be '14bcc950bf83198b33447c85984f3fe4563b9204';
-        }
-
-        It 'Binds to custom name' {
-            $testObject = @(
-                [PSCustomObject]@{
-                    resourceName = 'ResourceName'
-                    AlternateName = 'AlternateName'
-                    TargetName = 'TargetName'
-                }
-                [PSCustomObject]@{
-                    AlternateName = 'AlternateName'
-                    TargetName = 'TargetName'
-                }
-                [PSCustomObject]@{
-                    TargetName = 'TargetName'
-                }
-            )
-
-            $option = @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName' };
-            $result = $testObject | Invoke-PSRule -Option $option -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Count | Should -Be 3;
-            $result[0].TargetName | Should -Be 'ResourceName';
-            $result[1].TargetName | Should -Be 'AlternateName';
-            $result[2].TargetName | Should -Be 'TargetName';
-        }
-
         It 'Suppresses rules' {
             $testObject = @(
                 [PSCustomObject]@{
@@ -237,7 +177,99 @@ Describe 'Invoke-PSRule' {
 
         # Check that '[Console]::WriteLine('Should fail')' is not executed
         It 'Should fail to execute blocked code' {
-            { $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'ConstrainedTest2' -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
+            $option = @{ 'execution.mode' = 'ConstrainedLanguage' };
+            { $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'ConstrainedTest2' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
+            { $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'ConstrainedTest3' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
+
+            $bindFn = {
+                param ($TargetObject)
+                $Null = [Console]::WriteLine('Should fail');
+                return 'BadName';
+            }
+
+            $option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -BindTargetName $bindFn;
+            { $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop } | Should -Throw 'Binding functions are not supported in this language mode.';
+        }
+    }
+
+    Context 'TargetName binding' {
+        It 'Binds to TargetName' {
+            $testObject = [PSCustomObject]@{
+                TargetName = "ObjectTargetName"
+                Name = "ObjectName"
+                Value = 1
+            }
+
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
+            $result.TargetName | Should -Be 'ObjectTargetName';
+        }
+
+        It 'Binds to Name' {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+            }
+
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
+            $result.TargetName | Should -Be 'TestObject1';
+        }
+
+        It 'Binds to object hash' {
+            $testObject = [PSCustomObject]@{
+                NotName = 'TestObject1'
+            }
+
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
+            $result.TargetName | Should -Be '14bcc950bf83198b33447c85984f3fe4563b9204';
+        }
+
+        It 'Binds to custom name' {
+            $testObject = @(
+                [PSCustomObject]@{
+                    resourceName = 'ResourceName'
+                    AlternateName = 'AlternateName'
+                    TargetName = 'TargetName'
+                }
+                [PSCustomObject]@{
+                    AlternateName = 'AlternateName'
+                    TargetName = 'TargetName'
+                }
+                [PSCustomObject]@{
+                    TargetName = 'TargetName'
+                }
+                [PSCustomObject]@{
+                    OtherName = 'OtherName'
+                    resourceName = 'ResourceName'
+                    AlternateName = 'AlternateName'
+                    TargetName = 'TargetName'
+                }
+            )
+
+            $bindFn = {
+                param ($TargetObject)
+
+                $otherName = $TargetObject.PSObject.Properties['OtherName'];
+
+                if ($otherName -eq $Null) {
+                    return $Null
+                }
+
+                return $otherName.Value;
+            }
+
+            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName' } -BindTargetName $bindFn;
+            $result = $testObject | Invoke-PSRule -Option $option -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 4;
+            $result[0].TargetName | Should -Be 'ResourceName';
+            $result[1].TargetName | Should -Be 'AlternateName';
+            $result[2].TargetName | Should -Be 'TargetName';
+            $result[3].TargetName | Should -Be 'OtherName';
         }
     }
 }

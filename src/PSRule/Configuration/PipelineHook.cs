@@ -7,15 +7,19 @@ namespace PSRule.Configuration
 
     public delegate string BindTargetNameAction(PSObject targetObject, BindTargetName next);
 
+    /// <summary>
+    /// Hooks that provide customize pipeline execution.
+    /// </summary>
     public sealed class PipelineHook
     {
-        public static BindTargetName EmptyBindTargetNameDelegate = (targetObject) => { return null; };
-
         public PipelineHook()
         {
             BindTargetName = new List<BindTargetName>();
         }
 
+        /// <summary>
+        /// One or more custom functions to use to bind TargetName of a pipeline object.
+        /// </summary>
         public List<BindTargetName> BindTargetName { get; set; }
     }
 }

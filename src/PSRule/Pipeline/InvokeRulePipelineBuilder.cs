@@ -85,6 +85,11 @@ namespace PSRule.Pipeline
                 return this;
             }
 
+            if (option.Execution.LanguageMode != _Option.Execution.LanguageMode)
+            {
+                _Option.Execution.LanguageMode = option.Execution.LanguageMode;
+            }
+
             if (option.Binding.TargetName != null && option.Binding.TargetName.Length > 0)
             {
                 AddBindTargetNameAction((targetObject, next) =>
@@ -95,13 +100,19 @@ namespace PSRule.Pipeline
 
             if (option.Pipeline.BindTargetName != null && option.Pipeline.BindTargetName.Count > 0)
             {
+                // Do not allow custom binding functions to be used with constrained language mode
+                if (_Option.Execution.LanguageMode == LanguageMode.ConstrainedLanguage)
+                {
+                    throw new PipelineConfigurationException(optionName: "BindTargetName", message: "Binding functions are not supported in this language mode.");
+                }
+
                 foreach (var action in option.Pipeline.BindTargetName)
                 {
                     AddBindTargetNameAction((targetObject, next) =>
                     {
                         var targetName = action(targetObject);
 
-                        return targetName == null ? next(targetObject) : targetName;
+                        return string.IsNullOrEmpty(targetName) ? next(targetObject) : targetName;
                     });
                 }
             }
@@ -109,11 +120,6 @@ namespace PSRule.Pipeline
             if (option.Suppression.Count > 0)
             {
                 _Option.Suppression = new SuppressionOption(option.Suppression);
-            }
-
-            if (option.Execution.LanguageMode != _Option.Execution.LanguageMode)
-            {
-                _Option.Execution.LanguageMode = option.Execution.LanguageMode;
             }
 
             return this;

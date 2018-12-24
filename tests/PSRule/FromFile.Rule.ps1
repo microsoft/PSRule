@@ -87,12 +87,19 @@ Rule 'WithDependency5' {
     $False
 }
 
+# Description: Test for constrained language
 Rule 'ConstrainedTest1' {
     $True;
 }
 
+# Description: Test for constrained language, should not execute
 Rule 'ConstrainedTest2' {
     $Null = [Console]::WriteLine('Should fail');
+    $True;
+}
+
+# Description: Test for constrained language, should not execute
+Rule 'ConstrainedTest3' -If { $Null = [Console]::WriteLine('Should fail'); return $True; } {
     $True;
 }
 

@@ -57,12 +57,16 @@ The value that PSRule uses for _TargetName_ is configurable. PSRule uses the fol
   - Use `TargetName` or `Name` properties on the object.
   - If both `TargetName` and `Name` properties exist, `TargetName` will take precedence over `Name`.
   - If neither `TargetName` or `Name` properties exist, a SHA1 hash of the object will be used as _TargetName_.
-- If custom _TargetName_ binding options are configured, the property names specified will override the defaults.
+- If custom _TargetName_ binding properties are configured, the property names specified will override the defaults.
   - If **none** of the configured property names exist, PSRule will revert back to `TargetName` then `Name`.
   - If more then one property name is configured, the order they are specified in the configuration determines precedence.
     - i.e. The first configured property name will take precedence over the second property name.
+- If a custom _TargetName_ binding function is specified, the function will be evaluated first before any other option.
+  - If the function returns `$Null` then custom properties, `TargetName` and `Name` properties will be used.
+  - The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.
+  - Custom binding functions are blocked in constrained language mode is used. See [language mode](#language-mode) for more information.
 
-This option can be specified using:
+Custom property names to use for binding can be specified using:
 
 ```powershell
 # PowerShell: Using the Binding.TargetName hash table key
@@ -75,6 +79,26 @@ binding:
   targetName:
   - ResourceName
   - AlternateName
+```
+
+To specify a custom binding function use:
+
+```powershell
+# Create a custom function that returns a TargetName string
+$bindFn = {
+    param ($TargetObject)
+
+    $otherName = $TargetObject.PSObject.Properties['OtherName'];
+
+    if ($otherName -eq $Null) {
+        return $Null
+    }
+
+    return $otherName.Value;
+}
+
+# Specify the binding function script block code to execute
+$option = New-PSRuleOption -BindTargetName $bindFn;
 ```
 
 ### Language mode
