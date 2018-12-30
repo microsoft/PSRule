@@ -20,6 +20,7 @@ namespace PSRule.Pipeline
         private bool _LogError;
         private bool _LogWarning;
         private bool _LogVerbose;
+        private bool _LogInformation;
 
         internal InvokeRulePipelineBuilder()
         {
@@ -62,13 +63,15 @@ namespace PSRule.Pipeline
             _Logger.OnWriteVerbose = commandRuntime.WriteVerbose;
             _Logger.OnWriteWarning = commandRuntime.WriteWarning;
             _Logger.OnWriteError = commandRuntime.WriteError;
+            _Logger.OnWriteInformation = commandRuntime.WriteInformation;
         }
 
-        public void UseLoggingPreferences(ActionPreference error, ActionPreference warning, ActionPreference verbose)
+        public void UseLoggingPreferences(ActionPreference error, ActionPreference warning, ActionPreference verbose, ActionPreference information)
         {
             _LogError = !(error == ActionPreference.Ignore);
             _LogWarning = !(warning == ActionPreference.Ignore);
             _LogVerbose = !(verbose == ActionPreference.Ignore || verbose == ActionPreference.SilentlyContinue);
+            _LogInformation = !(information == ActionPreference.Ignore || information == ActionPreference.SilentlyContinue);
         }
 
         public void AddBindTargetNameAction(BindTargetNameAction action)
@@ -127,7 +130,7 @@ namespace PSRule.Pipeline
 
         public InvokeRulePipeline Build()
         {
-            var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: _BindTargetNameHook, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose);
+            var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: _BindTargetNameHook, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);
             return new InvokeRulePipeline(_Option, _Path, _Filter, _Outcome, _ResultFormat, context: context);
         }
     }

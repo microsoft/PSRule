@@ -80,7 +80,7 @@ namespace PSRule.Host
         private static IEnumerable<ILanguageBlock> GetLanguageBlock(PSRuleOption option, string[] scriptPaths)
         {
             var results = new Collection<ILanguageBlock>();
-            var state = HostState.CreateDefault();
+            var state = HostState.CreateSessionState();
 
             // Set PowerShell language mode
             state.LanguageMode = option.Execution.LanguageMode == LanguageMode.FullLanguage ? PSLanguageMode.FullLanguage : PSLanguageMode.ConstrainedLanguage;
@@ -97,10 +97,17 @@ namespace PSRule.Host
             runspace.Open();
             runspace.SessionStateProxy.PSVariable.Set(new RuleVariable("Rule"));
             runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable("TargetObject"));
+            runspace.SessionStateProxy.PSVariable.Set("ErrorActionPreference", ActionPreference.Continue);
+            runspace.SessionStateProxy.PSVariable.Set("WarningPreference", ActionPreference.Continue);
+            runspace.SessionStateProxy.PSVariable.Set("VerbosePreference", ActionPreference.Continue);
 
-            var ps = PowerShell.Create();
+            var ps = PipelineContext.CurrentThread.GetPowerShell();
 
             ps.Runspace = runspace;
+            ps.Streams.Error.DataAdded += Error_DataAdded;
+            ps.Streams.Warning.DataAdded += Warning_DataAdded;
+            ps.Streams.Verbose.DataAdded += Verbose_DataAdded;
+            ps.Streams.Information.DataAdded += Information_DataAdded;
 
             // Process scripts
 
@@ -111,7 +118,7 @@ namespace PSRule.Host
                     throw new FileNotFoundException("The script was not found.", path);
                 }
 
-                PipelineContext.CurrentThread.WriteVerbose($"[PSRule][D] -- Scanning: {path}");
+                PipelineContext.CurrentThread.WriteVerbose($"[PSRule][D] -- Discovering rules in: {path}");
 
                 if (!File.Exists(path))
                 {
@@ -141,10 +148,45 @@ namespace PSRule.Host
             return results;
         }
 
+        private static void Information_DataAdded(object sender, DataAddedEventArgs e)
+        {
+            var collection = sender as PSDataCollection<InformationRecord>;
+            var record = collection[e.Index];
+
+            PipelineContext.CurrentThread.WriteInformation(informationRecord: record);
+        }
+
+        private static void Verbose_DataAdded(object sender, DataAddedEventArgs e)
+        {
+            var collection = sender as PSDataCollection<VerboseRecord>;
+            var record = collection[e.Index];
+
+            PipelineContext.CurrentThread.WriteVerbose(record.Message, usePrefix: false);
+        }
+
+        private static void Warning_DataAdded(object sender, DataAddedEventArgs e)
+        {
+            var collection = sender as PSDataCollection<WarningRecord>;
+            var record = collection[e.Index];
+
+            PipelineContext.CurrentThread.WriteWarning(message: record.Message);
+        }
+
+        private static void Error_DataAdded(object sender, DataAddedEventArgs e)
+        {
+            var collection = sender as PSDataCollection<ErrorRecord>;
+            var record = collection[e.Index];
+
+            PipelineContext.CurrentThread.WriteError(errorRecord: record);
+        }
+
         public static void InvokeRuleBlock(PipelineContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)
         {
             try
             {
+                var ps = PipelineContext.CurrentThread.GetPowerShell();
+                ps.Commands.Clear();
+
                 context.WriteVerboseObjectStart();
 
                 context._Rule = ruleRecord;
@@ -158,9 +200,15 @@ namespace PSRule.Host
                     }
                 }
 
-                var invokeResult = ruleBlock.Body.Invoke();
+                //var ps2 = ruleBlock.Body.GetPowerShell();
+                //ps2.
 
-                if (invokeResult == null)
+                //ps.AddCommand(new CommandInfo { })
+                ps.AddScript(ruleBlock.Body.ToString(), useLocalScope: true);
+                
+                var invokeResult = new RuleConditionResult(ps.Invoke());
+
+                if (invokeResult == null || invokeResult.Count == 0)
                 {
                     ruleRecord.OutcomeReason = RuleOutcomeReason.Inconclusive;
                     ruleRecord.Outcome = RuleOutcome.Fail;

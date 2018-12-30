@@ -1,6 +1,7 @@
 ﻿using PSRule.Host;
 using System.Diagnostics;
 using System.IO;
+using System.Management.Automation;
 
 namespace PSRule.Rules
 {
@@ -11,7 +12,7 @@ namespace PSRule.Rules
     /// <summary>
     /// Define an instance of a rule block. Each rule block has a unique id.
     /// </summary>
-    [DebuggerDisplay("{Id} @{SourcePath}")]
+    [DebuggerDisplay("{RuleId} @{SourcePath}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget
     {
         public RuleBlock(string sourcePath, string ruleName)
@@ -48,7 +49,10 @@ namespace PSRule.Rules
         /// </summary>
         public RulePrecondition If { get; set; }
 
-        public RuleCondition Body { get; set; }
+        /// <summary>
+        /// The body of the rule definition where conditions are provided that either pass or fail the rule.
+        /// </summary>
+        public ScriptBlock Body { get; set; }
 
         /// <summary>
         /// Other deployments that must completed successfully before calling this rule.

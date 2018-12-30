@@ -50,7 +50,7 @@ namespace PSRule.Host
         /// <summary>
         /// Define language commands.
         /// </summary>
-        internal static SessionStateCmdletEntry[] BuiltInCmdlets = new SessionStateCmdletEntry[]
+        private static SessionStateCmdletEntry[] BuiltInCmdlets = new SessionStateCmdletEntry[]
         {
             new SessionStateCmdletEntry("New-RuleDefinition", typeof(NewRuleDefinitionCommand), null),
             new SessionStateCmdletEntry("Set-PSRuleHint", typeof(SetPSRuleHintCommand), null),
@@ -65,7 +65,7 @@ namespace PSRule.Host
         /// <summary>
         /// Define language aliases.
         /// </summary>
-        internal static SessionStateAliasEntry[] BuiltInAliases
+        private static SessionStateAliasEntry[] BuiltInAliases
         {
             get
             {
@@ -89,7 +89,7 @@ namespace PSRule.Host
         /// Create a default session state.
         /// </summary>
         /// <returns></returns>
-        public static InitialSessionState CreateDefault()
+        public static InitialSessionState CreateSessionState()
         {
             var state = InitialSessionState.CreateDefault();
 

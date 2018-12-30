@@ -52,6 +52,35 @@ Describe 'Invoke-PSRule' {
             $result.OutcomeReason | Should -Be 'Inconclusive';
         }
 
+        It 'Propagates PowerShell logging' {
+            # Warnings
+            $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1') -Name 'WithWarning' -WarningVariable outWarnings -WarningAction SilentlyContinue;
+            $warningMessages = $outWarnings.ToArray();
+            $warningMessages.Length | Should -Be 2;
+            $warningMessages[0] | Should -Be 'Script warning message';
+            $warningMessages[1] | Should -Be 'Rule warning message';
+
+            # Errors
+            $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1') -Name 'WithError' -ErrorVariable outErrors -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
+            $outErrors | Should -Be 'Rule error message';
+
+            # Verbose
+            $outVerbose = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1') -Name 'WithVerbose' -WarningAction SilentlyContinue -Verbose 4>&1 | Where-Object {
+                $_ -is [System.Management.Automation.VerboseRecord] -and
+                $_.Message -like "* verbose message"
+            };
+            $outVerbose.Length | Should -Be 2;
+            $outVerbose[0] | Should -Be 'Script verbose message';
+            $outVerbose[1] | Should -Be 'Rule verbose message';
+
+            # Information
+            $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1') -Name 'WithInformation' -InformationVariable outInformation -InformationAction Continue -WarningAction SilentlyContinue 6>&1;
+            $informationMessages = $outInformation.ToArray();
+            $informationMessages.Length | Should -Be 2;
+            $informationMessages[0] | Should -Be 'Script information message';
+            $informationMessages[1] | Should -Be 'Rule information message';
+        }
+
         It 'Returns error with bad path' {
             { $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'NotAFile.ps1') } | Should -Throw -ExceptionType System.Management.Automation.ItemNotFoundException;
         }

@@ -19,6 +19,7 @@ namespace PSRule.Pipeline
         private readonly bool _LogError;
         private readonly bool _LogWarning;
         private readonly bool _LogVerbose;
+        private readonly bool _LogInformation;
         private readonly bool _InconclusiveWarning;
         private readonly bool _NotProcessedWarning;
         internal RuleRecord _Rule;
@@ -27,6 +28,8 @@ namespace PSRule.Pipeline
 
         // Track whether Dispose has been called.
         private bool _Disposed = false;
+
+        private PowerShell _PowerShell;
 
         public string TargetName { get; private set; }
 
@@ -43,7 +46,7 @@ namespace PSRule.Pipeline
             }
         }
 
-        private PipelineContext(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, bool logError, bool logWarning, bool logVerbose)
+        private PipelineContext(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, bool logError, bool logWarning, bool logVerbose, bool logInformation)
         {
             _ObjectNumber = -1;
             _Logger = logger;
@@ -51,19 +54,20 @@ namespace PSRule.Pipeline
             _LogError = logError;
             _LogWarning = logWarning;
             _LogVerbose = logVerbose;
+            _LogInformation = logInformation;
 
             _InconclusiveWarning = option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning.Value;
             _NotProcessedWarning = option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning.Value;
 
             if (_Logger == null)
             {
-                _LogError = _LogWarning = _LogVerbose = false;
+                _LogError = _LogWarning = _LogVerbose = _LogInformation = false;
             }
         }
 
-        public static PipelineContext New(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, bool logError = true, bool logWarning = true, bool logVerbose = false)
+        public static PipelineContext New(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, bool logError = true, bool logWarning = true, bool logVerbose = false, bool logInformation = false)
         {
-            var context = new PipelineContext(logger, option, bindTargetName, logError, logWarning, logVerbose);
+            var context = new PipelineContext(logger, option, bindTargetName, logError, logWarning, logVerbose, logInformation);
             CurrentThread = context;
             return context;
         }
@@ -88,6 +92,17 @@ namespace PSRule.Pipeline
             }
 
             DoWriteVerbose(message, usePrefix);
+        }
+
+        public void WriteVerboseFoundRule(string ruleName, string scriptName)
+        {
+            if (!_LogVerbose)
+            {
+                return;
+            }
+
+
+            DoWriteVerbose($"[PSRule][D] -- Found {ruleName} in {scriptName}", usePrefix: false);
         }
 
         public void WriteVerboseObjectStart()
@@ -120,6 +135,16 @@ namespace PSRule.Pipeline
             DoWriteVerbose($" -- [{pass}/{count}] [{outcome}]", usePrefix: true);
         }
 
+        public void WriteInformation(InformationRecord informationRecord)
+        {
+            if (!_LogInformation)
+            {
+                return;
+            }
+
+            DoWriteInformation(informationRecord);
+        }
+
         public void WriteWarning(string message)
         {
             if (!_LogWarning)
@@ -138,6 +163,16 @@ namespace PSRule.Pipeline
             }
 
             DoWriteWarning(string.Format(PSRuleResources.RuleInconclusive, ruleId, TargetName));
+        }
+
+        internal PowerShell GetPowerShell()
+        {
+            if (_PowerShell == null)
+            {
+                _PowerShell = PowerShell.Create();
+            }
+
+            return _PowerShell;
         }
 
         public void WarnObjectNotProcessed()
@@ -193,6 +228,11 @@ namespace PSRule.Pipeline
             _Logger.WriteWarning(message);
         }
 
+        private void DoWriteInformation(InformationRecord informationRecord)
+        {
+            _Logger.WriteInformation(informationRecord);
+        }
+
         #endregion Internal logging methods
 
         /// <summary>
@@ -241,6 +281,11 @@ namespace PSRule.Pipeline
                     if (_Hash != null)
                     {
                         _Hash.Dispose();
+                    }
+
+                    if (_PowerShell != null)
+                    {
+                        _PowerShell.Dispose();
                     }
                 }
 
