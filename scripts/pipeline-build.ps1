@@ -27,6 +27,9 @@ param (
     [Switch]$CodeCoverage = $False,
 
     [Parameter(Mandatory = $False)]
+    [Switch]$Benchmark = $False,
+
+    [Parameter(Mandatory = $False)]
     [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules)
 )
 
