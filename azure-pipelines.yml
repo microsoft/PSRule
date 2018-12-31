@@ -1,6 +1,15 @@
 # Azure DevOps
 # Build pipeline for PSRule
 
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-16.04'
+    mac:
+      imageName: 'macos-10.13'
+    windows:
+      imageName: 'vs2017-win2016'
+
 variables:
   buildConfiguration: 'Release'
   version: '0.2.0'
@@ -12,12 +21,12 @@ trigger:
 - master
 
 pool:
-  vmImage: VS2017-Win2016
+  vmImage: $(imageName)
 
 steps:
 
 # Install pipeline dependencies and build module
-- powershell: ./scripts/pipeline-build.ps1 -File ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion "$(Release.Version)" -Benchmark
+- powershell: ./scripts/pipeline-build.ps1 -File ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion "$(Release.Version)"
   displayName: 'Build module'
 
 # Publish test results
