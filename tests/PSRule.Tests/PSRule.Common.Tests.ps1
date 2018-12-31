@@ -11,6 +11,10 @@ param (
 $ErrorActionPreference = 'Stop';
 Set-StrictMode -Version latest;
 
+if ($Env:SYSTEM_DEBUG -eq 'true') {
+    $VerbosePreference = 'Continue';
+}
+
 # Setup tests paths
 $rootPath = $PWD;
 
@@ -254,6 +258,8 @@ Describe 'Invoke-PSRule' {
             $testObject = [PSCustomObject]@{
                 NotName = 'TestObject1'
             }
+
+            Write-Verbose -Message "Will hash object $($testObject | ConvertTo-Json)";
 
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
