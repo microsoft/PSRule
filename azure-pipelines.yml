@@ -1,17 +1,18 @@
 # Azure DevOps
 # Build pipeline for PSRule
 
+displayName: 'PowerShell Module'
+
 strategy:
   matrix:
     Linux:
       imageName: 'ubuntu-16.04'
-      benchmark: '$True'
+      benchmark: 'true'
     MacOS:
       imageName: 'macos-10.13'
-      benchmark: '$False'
     Windows:
       imageName: 'vs2017-win2016'
-      benchmark: '$False'
+      publishModule: 'true'
 
 variables:
   buildConfiguration: 'Release'
@@ -32,6 +33,11 @@ steps:
 - powershell: ./scripts/pipeline-build.ps1 -File ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion "$(Release.Version)" -Benchmark:$(benchmark)
   displayName: 'Build module'
 
+# Run module benchmark
+- powershell: ./scripts/pipeline-build.ps1 -Task Benchmark -File ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion "$(Release.Version)"
+  displayName: 'Benchmark'
+  condition: eq(variables['benchmark'], 'true')
+
 # Publish test results
 - task: PublishTestResults@2
   displayName: 'Publish test results'
@@ -49,3 +55,4 @@ steps:
   inputs:
     PathtoPublish: out/modules/PSRule
     ArtifactName: PSRule
+  condition: and(succeeded(), eq(variables['publishModule'], 'true'))
