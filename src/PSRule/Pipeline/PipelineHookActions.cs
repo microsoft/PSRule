@@ -93,7 +93,7 @@ namespace PSRule.Pipeline
         private static string GetUnboundObjectTargetName(PSObject targetObject)
         {
             var settings = new JsonSerializerSettings { Formatting = Formatting.None, TypeNameHandling = TypeNameHandling.None, MaxDepth = 1024 };
-            var json = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(targetObject, settings));
+            var json = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(targetObject, settings).Replace(Environment.NewLine, string.Empty));
             var hash = PipelineContext.CurrentThread.ObjectHashAlgorithm.ComputeHash(json);
             return string.Join("", hash.Select(b => b.ToString("x2")).ToArray());
         }
