@@ -106,7 +106,7 @@ task BuildDotNet {
 task TestDotNet {
     exec {
         # Test library
-        dotnet test tests/PSRule.Tests
+        dotnet test --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Tests
     }
 }
 

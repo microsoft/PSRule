@@ -38,15 +38,30 @@ steps:
   displayName: 'Benchmark'
   condition: eq(variables['benchmark'], 'true')
 
-# Publish test results
+# DotNet test results
 - task: PublishTestResults@2
-  displayName: 'Publish test results'
+  displayName: 'Publish unit test results'
   inputs:
-    testRunTitle: 'Pester unit tests'
+    testRunTitle: 'DotNet on $(imageName)'
+    testRunner: VSTest
+    testResultsFiles: 'reports/*.trx'
+    mergeTestResults: true
+    platform: $(imageName)
+    configuration: $(buildConfiguration)
+    publishRunAttachments: true
+  condition: succeededOrFailed()
+
+# Pester test results
+- task: PublishTestResults@2
+  displayName: 'Publish Pester results'
+  inputs:
+    testRunTitle: 'Pester on $(imageName)'
     testRunner: NUnit
     testResultsFiles: 'reports/*.xml'
     mergeTestResults: true
+    platform: $(imageName)
     configuration: $(buildConfiguration)
+    publishRunAttachments: true
   condition: succeededOrFailed()
 
 # Generate artifacts
