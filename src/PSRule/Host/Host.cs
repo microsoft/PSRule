@@ -97,7 +97,7 @@ namespace PSRule.Host
             state.Commands.Add(BuiltInCmdlets);
             state.Commands.Add(BuiltInAliases);
 
-#if !NET472
+#if !NET472 && Windows
             // Set execution policy
             state.ExecutionPolicy = Microsoft.PowerShell.ExecutionPolicy.RemoteSigned;
 #endif
