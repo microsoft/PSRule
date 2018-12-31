@@ -3,12 +3,15 @@
 
 strategy:
   matrix:
-    linux:
+    Linux:
       imageName: 'ubuntu-16.04'
-    mac:
+      benchmark: '$True'
+    MacOS:
       imageName: 'macos-10.13'
-    windows:
+      benchmark: '$False'
+    Windows:
       imageName: 'vs2017-win2016'
+      benchmark: '$False'
 
 variables:
   buildConfiguration: 'Release'
@@ -26,7 +29,7 @@ pool:
 steps:
 
 # Install pipeline dependencies and build module
-- powershell: ./scripts/pipeline-build.ps1 -File ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion "$(Release.Version)"
+- powershell: ./scripts/pipeline-build.ps1 -File ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion "$(Release.Version)" -Benchmark:$(benchmark)
   displayName: 'Build module'
 
 # Publish test results
