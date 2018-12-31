@@ -1,8 +1,6 @@
 # Azure DevOps
 # Build pipeline for PSRule
 
-job: 'PowerShell Module'
-
 strategy:
   matrix:
     Linux:
