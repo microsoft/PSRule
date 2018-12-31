@@ -259,12 +259,10 @@ Describe 'Invoke-PSRule' {
                 NotName = 'TestObject1'
             }
 
-            Write-Verbose -Message "Will hash object $($testObject | ConvertTo-Json)";
-
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
-            $result.IsSuccess() | Should -Be $True;
-            $result.TargetName | Should -Be '14bcc950bf83198b33447c85984f3fe4563b9204';
+            $result.IsSuccess() | Should -BeIn $True;
+            $result.TargetName | Should -BeIn 'f209c623345144be61087d91f30c17b01c6e86d2';
         }
 
         It 'Binds to custom name' {
