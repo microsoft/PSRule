@@ -103,6 +103,13 @@ task BuildDotNet {
     }
 }
 
+task TestDotNet {
+    exec {
+        # Test library
+        dotnet test tests/PSRule.Tests
+    }
+}
+
 task CopyModule {
     CopyModuleFiles -Path src/PSRule -DestinationPath out/modules/PSRule;
 
@@ -217,7 +224,7 @@ task PSScriptAnalyzer {
     Import-Module -Name PSScriptAnalyzer -Verbose:$False;
 }
 
-task TestModule Pester, PSScriptAnalyzer, {
+task TestModule TestDotNet, Pester, PSScriptAnalyzer, {
 
     # Run Pester tests
     $pesterParams = @{ Path = $PWD; OutputFile = 'reports/Pester.xml'; OutputFormat = 'NUnitXml'; PesterOption = @{ IncludeVSCodeMarker = $True }; PassThru = $True; };
