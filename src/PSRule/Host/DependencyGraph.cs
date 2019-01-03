@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PSRule.Host
 {
-    internal sealed class DependencyGraph<T> where T : IDependencyTarget
+    internal sealed class DependencyGraph<T> : IDisposable where T : IDependencyTarget
     {
         private readonly Dictionary<string, DependencyTarget> _Index;
         private readonly DependencyTarget[] _Targets;
+
+        // Track whether Dispose has been called.
+        private bool _Disposed = false;
 
         public DependencyGraph(T[] targets)
         {
@@ -36,17 +40,16 @@ namespace PSRule.Host
 
         public sealed class DependencyTarget
         {
+            public readonly DependencyGraph<T> Graph;
+            public readonly T Value;
+
+            internal DependencyTargetState State;
+
             public DependencyTarget(DependencyGraph<T> graph, T value)
             {
                 Graph = graph;
                 Value = value;
             }
-
-            public DependencyGraph<T> Graph { get; }
-
-            public T Value { get; }
-
-            public DependencyTargetState State { get; internal set; }
 
             public bool Skipped
             {
@@ -107,5 +110,35 @@ namespace PSRule.Host
                 _Index.Add(targets[i].RuleId, _Targets[i]);
             }
         }
+
+        #region IDisposable
+
+        void Dispose(bool disposing)
+        {
+            if (!_Disposed)
+            {
+                if (disposing)
+                {
+                    if (_Targets != null && _Targets.Length > 0 && typeof(T) is IDisposable)
+                    {
+                        for (var i = 0; i < _Targets.Length; i++)
+                        {
+                            ((IDisposable)_Targets[i].Value).Dispose();
+                        }
+                    }
+                }
+
+                _Index.Clear();
+
+                _Disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        #endregion IDisposable
     }
 }

@@ -1,6 +1,6 @@
 # PSRule
 
-A PowerShell module with commands to validate objects on the pipeline using PowerShell syntax.
+A cross-platform PowerShell module (Windows, Linux, and macOS) with commands to validate objects on the pipeline using PowerShell syntax.
 
 ![ci-badge]
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using PSRule.Pipeline;
+using System.Linq;
 using System.Management.Automation;
 
 namespace PSRule.Commands
@@ -14,7 +15,7 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            var inputObject = GetVariableValue("InputObject") ?? GetVariableValue("TargetObject");
+            var inputObject = GetTargetObject();
 
             var result = false;
 
@@ -27,6 +28,8 @@ namespace PSRule.Commands
                     result = true;
                 }
             }
+
+            PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.TypeOf, outcome: result);
 
             WriteObject(result);
         }

@@ -18,6 +18,9 @@ namespace PSRule.Pipeline
         private readonly ResultFormat _ResultFormat;
         private readonly RuleSuppressionFilter _SuppressionFilter;
 
+        // Track whether Dispose has been called.
+        private bool _Disposed = false;
+
         internal InvokeRulePipeline(PSRuleOption option, string[] path, RuleFilter filter, RuleOutcome outcome, ResultFormat resultFormat, PipelineContext context)
             : base(context, option, path, filter)
         {
@@ -66,7 +69,7 @@ namespace PSRule.Pipeline
 
         private InvokeResult ProcessTargetObject(PSObject targetObject)
         {
-            _Context.TargetObject(targetObject);
+            _Context.SetTargetObject(targetObject: targetObject);
 
             var result = new InvokeResult();
 
@@ -76,18 +79,11 @@ namespace PSRule.Pipeline
             foreach (var ruleBlockTarget in _RuleGraph.GetSingleTarget())
             {
                 // Enter rule block scope
-                _Context.Enter(ruleBlockTarget.Value);
+                var ruleRecord = _Context.EnterRuleBlock(ruleBlock: ruleBlockTarget.Value);
                 ruleCounter++;
 
                 try
                 {
-                    var ruleRecord = new RuleRecord(ruleBlockTarget.Value.RuleId, ruleBlockTarget.Value.RuleName)
-                    {
-                        TargetObject = targetObject,
-                        TargetName = _Context.TargetName,
-                        Tag = ruleBlockTarget.Value.Tag?.ToHashtable()
-                    };
-
                     // Check if dependency failed
                     if (ruleBlockTarget.Skipped)
                     {
@@ -128,7 +124,7 @@ namespace PSRule.Pipeline
                 finally
                 {
                     // Exit rule block scope
-                    _Context.Exit();
+                    _Context.ExitRuleBlock();
                 }
             }
 
@@ -173,6 +169,21 @@ namespace PSRule.Pipeline
             {
                 s.Error++;
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!_Disposed)
+            {
+                if (disposing)
+                {
+                    _RuleGraph.Dispose();
+                }
+
+                _Disposed = true;
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

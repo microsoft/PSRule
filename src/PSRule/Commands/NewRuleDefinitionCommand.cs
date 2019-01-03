@@ -11,6 +11,10 @@ namespace PSRule.Commands
     [Cmdlet(VerbsCommon.New, RuleLanguageNouns.RuleDefinition)]
     internal sealed class NewRuleDefinitionCommand : LanguageBlock
     {
+        private const string InvokeBlockCmdletName = "Invoke-RuleBlock";
+        private const string InvokeBlockCmdlet_IfParameter = "If";
+        private const string InvokeBlockCmdlet_BodyParameter = "Body";
+
         /// <summary>
         /// The name of the rule.
         /// </summary>
@@ -21,7 +25,7 @@ namespace PSRule.Commands
         /// The definition of the deployment.
         /// </summary>
         [Parameter(Mandatory = false, Position = 1)]
-        public RuleCondition Body { get; set; }
+        public ScriptBlock Body { get; set; }
 
         /// <summary>
         /// A set of tags with additional metadata for the rule.
@@ -33,7 +37,7 @@ namespace PSRule.Commands
         /// An optional precondition before the rule is evaluated.
         /// </summary>
         [Parameter(Mandatory = false)]
-        public RulePrecondition If { get; set; }
+        public ScriptBlock If { get; set; }
 
         /// <summary>
         /// Deployments that this deployment depends on.
@@ -46,16 +50,24 @@ namespace PSRule.Commands
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
 
-            PipelineContext.CurrentThread.WriteVerbose($"[PSRule][D] -- Found {Name} in {MyInvocation.ScriptName}");
+            PipelineContext.CurrentThread.VerboseFoundRule(ruleName: Name, scriptName: MyInvocation.ScriptName);
 
-            var block = new RuleBlock(MyInvocation.ScriptName, Name)
-            {
-                Body = Body,
-                Description = metadata.Description,
-                Tag = tag,
-                DependsOn = RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName),
-                If = If
-            };
+            var ps = PowerShell.Create();
+            ps.Runspace = PipelineContext.CurrentThread.GetRunspace();
+            ps.AddCommand(new CmdletInfo(InvokeBlockCmdletName, typeof(InvokeRuleBlockCommand)));
+            ps.AddParameter(InvokeBlockCmdlet_IfParameter, If);
+            ps.AddParameter(InvokeBlockCmdlet_BodyParameter, Body);
+
+            PipelineContext.EnableLogging(ps);
+
+            var block = new RuleBlock(
+                sourcePath: MyInvocation.ScriptName,
+                ruleName: Name,
+                description: metadata.Description,
+                condition: ps,
+                tag: tag,
+                dependsOn: RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName)
+            );
 
             WriteObject(block);
         }

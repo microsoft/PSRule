@@ -13,5 +13,7 @@ namespace PSRule.Pipeline
         void WriteWarning(string message);
 
         void WriteError(ErrorRecord errorRecord);
+
+        void WriteInformation(InformationRecord informationRecord);
     }
 }

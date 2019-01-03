@@ -49,35 +49,35 @@ namespace PSRule.Benchmark
 
         private void PrepareGetPipeline()
         {
-            var getBuilder = PipelineBuilder.Get();
-            getBuilder.Source(new string[] { Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1") });
-            getBuilder.FilterBy(new string[] { "Benchmark" }, null);
-            _GetPipeline = getBuilder.Build();
+            var builder = PipelineBuilder.Get();
+            builder.Source(new string[] { Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1") });
+            builder.FilterBy(new string[] { "Benchmark" }, null);
+            _GetPipeline = builder.Build();
         }
 
         private void PrepareInvokePipeline()
         {
-            var invokeBuilder = PipelineBuilder.Invoke();
-            invokeBuilder.Source(new string[] { Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1") });
-            invokeBuilder.FilterBy(new string[] { "Benchmark" }, null);
-            _InvokePipeline = invokeBuilder.Build();
+            var builder = PipelineBuilder.Invoke();
+            builder.Source(new string[] { Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1") });
+            builder.FilterBy(new string[] { "Benchmark" }, null);
+            _InvokePipeline = builder.Build();
         }
 
         private void PrepareInvokeIfPipeline()
         {
-            var invokeBuilder = PipelineBuilder.Invoke();
-            invokeBuilder.Source(new string[] { Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1") });
-            invokeBuilder.FilterBy(new string[] { "BenchmarkIf" }, null);
-            _InvokeIfPipeline = invokeBuilder.Build();
+            var builder = PipelineBuilder.Invoke();
+            builder.Source(new string[] { Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1") });
+            builder.FilterBy(new string[] { "BenchmarkIf" }, null);
+            _InvokeIfPipeline = builder.Build();
         }
 
         private void PrepareInvokeSummaryPipeline()
         {
-            var invokeBuilder = PipelineBuilder.Invoke();
-            invokeBuilder.Source(new string[] { Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1") });
-            invokeBuilder.FilterBy(new string[] { "Benchmark" }, null);
-            invokeBuilder.As(Configuration.ResultFormat.Summary);
-            _InvokeSummaryPipeline = invokeBuilder.Build();
+            var builder = PipelineBuilder.Invoke();
+            builder.Source(new string[] { Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1") });
+            builder.FilterBy(new string[] { "Benchmark" }, null);
+            builder.As(Configuration.ResultFormat.Summary);
+            _InvokeSummaryPipeline = builder.Build();
         }
 
         private void PrepareTargetObjects()
@@ -98,11 +98,11 @@ namespace PSRule.Benchmark
         [Benchmark]
         public void Invoke() => _InvokePipeline.Process(_TargetObject).Consume(new Consumer());
 
-        //[Benchmark]
-        //public void InvokeIf() => _InvokeIfPipeline.Process(_TargetObject).Consume(new Consumer());
+        [Benchmark]
+        public void InvokeIf() => _InvokeIfPipeline.Process(_TargetObject).Consume(new Consumer());
 
-        //[Benchmark]
-        //public void InvokeSummary() => _InvokeSummaryPipeline.Process(_TargetObject);
+        [Benchmark]
+        public void InvokeSummary() => _InvokeSummaryPipeline.Process(_TargetObject);
 
         [Benchmark]
         public void Get() => _GetPipeline.Process().Consume(new Consumer());

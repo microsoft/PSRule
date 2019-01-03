@@ -8,7 +8,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
-using System.Management.Automation.Runspaces;
 using System.Text;
 
 namespace PSRule.Host
@@ -80,62 +79,55 @@ namespace PSRule.Host
         private static IEnumerable<ILanguageBlock> GetLanguageBlock(PSRuleOption option, string[] scriptPaths)
         {
             var results = new Collection<ILanguageBlock>();
-            var state = HostState.CreateDefault();
 
-            // Set PowerShell language mode
-            state.LanguageMode = option.Execution.LanguageMode == LanguageMode.FullLanguage ? PSLanguageMode.FullLanguage : PSLanguageMode.ConstrainedLanguage;
-
-            // Configure runspace
-            var runspace = RunspaceFactory.CreateRunspace(state);
-            runspace.ThreadOptions = PSThreadOptions.UseCurrentThread;
-
-            if (Runspace.DefaultRunspace == null)
-            {
-                Runspace.DefaultRunspace = runspace;
-            }
-
-            runspace.Open();
-            runspace.SessionStateProxy.PSVariable.Set(new RuleVariable("Rule"));
-            runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable("TargetObject"));
-
+            var runspace = PipelineContext.CurrentThread.GetRunspace();
             var ps = PowerShell.Create();
 
-            ps.Runspace = runspace;
-
-            // Process scripts
-
-            foreach (var path in scriptPaths)
+            try
             {
-                if (!File.Exists(path))
+                ps.Runspace = runspace;
+                PipelineContext.EnableLogging(ps);
+
+                // Process scripts
+
+                foreach (var path in scriptPaths)
                 {
-                    throw new FileNotFoundException("The script was not found.", path);
-                }
-
-                PipelineContext.CurrentThread.WriteVerbose($"[PSRule][D] -- Scanning: {path}");
-
-                if (!File.Exists(path))
-                {
-                    throw new FileNotFoundException("Can't find file", path);
-                }
-
-                // Invoke script
-                ps.AddScript(path, true);
-                var invokeResults = ps.Invoke();
-
-                if (ps.HadErrors)
-                {
-                    throw new Exception(ps.Streams.Error[0].Exception.Message, ps.Streams.Error[0].Exception);
-                }
-
-                foreach (var ir in invokeResults)
-                {
-                    if (ir.BaseObject is ILanguageBlock)
+                    if (!File.Exists(path))
                     {
-                        var block = ir.BaseObject as ILanguageBlock;
+                        throw new FileNotFoundException("The script was not found.", path);
+                    }
 
-                        results.Add(block);
+                    PipelineContext.CurrentThread.VerboseRuleDiscovery(path: path);
+
+                    if (!File.Exists(path))
+                    {
+                        throw new FileNotFoundException("Can't find file", path);
+                    }
+
+                    // Invoke script
+                    ps.AddScript(path, true);
+                    var invokeResults = ps.Invoke();
+
+                    if (ps.HadErrors)
+                    {
+                        throw new Exception(ps.Streams.Error[0].Exception.Message, ps.Streams.Error[0].Exception);
+                    }
+
+                    foreach (var ir in invokeResults)
+                    {
+                        if (ir.BaseObject is ILanguageBlock)
+                        {
+                            var block = ir.BaseObject as ILanguageBlock;
+
+                            results.Add(block);
+                        }
                     }
                 }
+            }
+            finally
+            {
+                ps.Runspace = null;
+                ps.Dispose();
             }
 
             return results;
@@ -143,43 +135,31 @@ namespace PSRule.Host
 
         public static void InvokeRuleBlock(PipelineContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)
         {
-            try
+            var ps = ruleBlock.Condition;
+            ps.Streams.ClearStreams();
+
+            context.VerboseObjectStart();
+
+            var invokeResult = ps.Invoke<RuleConditionResult>().FirstOrDefault();
+
+            if (invokeResult == null)
             {
-                context.WriteVerboseObjectStart();
-
-                context._Rule = ruleRecord;
-
-                if (ruleBlock.If != null)
-                {
-                    if (!ruleBlock.If.Invoke())
-                    {
-                        ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
-                        return;
-                    }
-                }
-
-                var invokeResult = ruleBlock.Body.Invoke();
-
-                if (invokeResult == null)
-                {
-                    ruleRecord.OutcomeReason = RuleOutcomeReason.Inconclusive;
-                    ruleRecord.Outcome = RuleOutcome.Fail;
-                    context.WarnRuleInconclusive(ruleId: ruleRecord.RuleId);
-                }
-                else
-                {
-                    ruleRecord.OutcomeReason = RuleOutcomeReason.Processed;
-                    ruleRecord.Outcome = invokeResult.AllOf ? RuleOutcome.Pass : RuleOutcome.Fail;
-                }
-
-                context.WriteVerboseConditionResult(pass: invokeResult?.Pass, count: invokeResult?.Count, outcome: ruleRecord.Outcome);
-
+                ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
                 return;
             }
-            finally
+            else if (invokeResult.Count == 0)
             {
-                PipelineContext.CurrentThread._Rule = null;
+                ruleRecord.OutcomeReason = RuleOutcomeReason.Inconclusive;
+                ruleRecord.Outcome = RuleOutcome.Fail;
+                context.WarnRuleInconclusive(ruleId: ruleRecord.RuleId);
             }
+            else
+            {
+                ruleRecord.OutcomeReason = RuleOutcomeReason.Processed;
+                ruleRecord.Outcome = invokeResult.AllOf() ? RuleOutcome.Pass : RuleOutcome.Fail;
+            }
+
+            context.VerboseConditionResult(pass: invokeResult.Pass, count: invokeResult.Count, outcome: ruleRecord.Outcome);
         }
 
         /// <summary>

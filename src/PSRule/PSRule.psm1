@@ -110,7 +110,7 @@ function Invoke-PSRule {
         }
 
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
-        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference);
+        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
         $pipeline = $builder.Build();
     }
 
@@ -200,7 +200,7 @@ function Test-PSRule {
         $builder.FilterBy($Name, $Tag);
         $builder.Source($sourceFiles);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
-        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference);
+        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
         $pipeline = $builder.Build();
     }
 
@@ -276,7 +276,7 @@ function Get-PSRule {
         $builder.FilterBy($Name, $Tag);
         $builder.Source($sourceFiles);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
-        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference);
+        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
         $pipeline = $builder.Build();
     }
 

@@ -16,6 +16,10 @@ param (
     [Parameter(Mandatory = $False)]
     [Switch]$CodeCoverage = $False,
 
+    [Parameter(Mandatory = $False)]
+    [Switch]$Benchmark = $False,
+
+    [Parameter(Mandatory = $False)]
     [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules)
 )
 
@@ -96,6 +100,13 @@ task BuildDotNet {
     exec {
         # Build library
         dotnet publish src/PSRule -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule/core)
+    }
+}
+
+task TestDotNet {
+    exec {
+        # Test library
+        dotnet test --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Tests
     }
 }
 
@@ -213,7 +224,7 @@ task PSScriptAnalyzer {
     Import-Module -Name PSScriptAnalyzer -Verbose:$False;
 }
 
-task TestModule Pester, PSScriptAnalyzer, {
+task TestModule TestDotNet, Pester, PSScriptAnalyzer, {
 
     # Run Pester tests
     $pesterParams = @{ Path = $PWD; OutputFile = 'reports/Pester.xml'; OutputFormat = 'NUnitXml'; PesterOption = @{ IncludeVSCodeMarker = $True }; PassThru = $True; };
@@ -242,7 +253,9 @@ task TestModule Pester, PSScriptAnalyzer, {
 }
 
 task Benchmark {
-    dotnet run -p src/PSRule.Benchmark -f net472 -c Release -- benchmark --output $PWD;
+    if ($Benchmark -or $BuildTask -eq 'Benchmark') {
+        dotnet run -p src/PSRule.Benchmark -f netcoreapp2.1 -c Release -- benchmark --output $PWD;
+    }
 }
 
 # Synopsis: Run script analyzer
@@ -270,7 +283,7 @@ task BuildSite {
 }
 
 # Synopsis: Build and clean.
-task . Build, Test
+task . Build, Test, Benchmark
 
 # Synopsis: Build the project
 task Build Clean, BuildModule, BuildHelp, VersionModule

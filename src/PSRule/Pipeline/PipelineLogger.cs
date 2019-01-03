@@ -8,6 +8,7 @@ namespace PSRule.Pipeline
         internal Action<string> OnWriteWarning;
         internal Action<string> OnWriteVerbose;
         internal Action<ErrorRecord> OnWriteError;
+        internal Action<InformationRecord> OnWriteInformation;
 
         public void WriteError(ErrorRecord errorRecord)
         {
@@ -37,6 +38,16 @@ namespace PSRule.Pipeline
             }
 
             OnWriteWarning(message);
+        }
+
+        public void WriteInformation(InformationRecord informationRecord)
+        {
+            if (OnWriteInformation == null)
+            {
+                return;
+            }
+
+            OnWriteInformation(informationRecord);
         }
     }
 }

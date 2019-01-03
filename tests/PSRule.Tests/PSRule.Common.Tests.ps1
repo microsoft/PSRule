@@ -11,6 +11,10 @@ param (
 $ErrorActionPreference = 'Stop';
 Set-StrictMode -Version latest;
 
+if ($Env:SYSTEM_DEBUG -eq 'true') {
+    $VerbosePreference = 'Continue';
+}
+
 # Setup tests paths
 $rootPath = $PWD;
 
@@ -50,6 +54,35 @@ Describe 'Invoke-PSRule' {
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $False;
             $result.OutcomeReason | Should -Be 'Inconclusive';
+        }
+
+        It 'Propagates PowerShell logging' {
+            # Warnings
+            $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1') -Name 'WithWarning' -WarningVariable outWarnings -WarningAction SilentlyContinue;
+            $warningMessages = $outWarnings.ToArray();
+            $warningMessages.Length | Should -Be 2;
+            $warningMessages[0] | Should -Be 'Script warning message';
+            $warningMessages[1] | Should -Be 'Rule warning message';
+
+            # Errors
+            $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1') -Name 'WithError' -ErrorVariable outErrors -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
+            $outErrors | Should -Be 'Rule error message';
+
+            # Verbose
+            $outVerbose = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1') -Name 'WithVerbose' -WarningAction SilentlyContinue -Verbose 4>&1 | Where-Object {
+                $_ -is [System.Management.Automation.VerboseRecord] -and
+                $_.Message -like "* verbose message"
+            };
+            $outVerbose.Length | Should -Be 2;
+            $outVerbose[0] | Should -Be 'Script verbose message';
+            $outVerbose[1] | Should -Be 'Rule verbose message';
+
+            # Information
+            $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1') -Name 'WithInformation' -InformationVariable outInformation -InformationAction Continue -WarningAction SilentlyContinue 6>&1;
+            $informationMessages = $outInformation.ToArray();
+            $informationMessages.Length | Should -Be 2;
+            $informationMessages[0] | Should -Be 'Script information message';
+            $informationMessages[1] | Should -Be 'Rule information message';
         }
 
         It 'Returns error with bad path' {
@@ -228,8 +261,8 @@ Describe 'Invoke-PSRule' {
 
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
-            $result.IsSuccess() | Should -Be $True;
-            $result.TargetName | Should -Be '14bcc950bf83198b33447c85984f3fe4563b9204';
+            $result.IsSuccess() | Should -BeIn $True;
+            $result.TargetName | Should -BeIn 'f209c623345144be61087d91f30c17b01c6e86d2';
         }
 
         It 'Binds to custom name' {
