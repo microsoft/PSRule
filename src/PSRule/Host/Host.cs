@@ -20,7 +20,7 @@ namespace PSRule.Host
         {
             get
             {
-                return PipelineContext.CurrentThread._Rule;
+                return PipelineContext.CurrentThread.RuleRecord;
             }
         }
     }
@@ -40,7 +40,7 @@ namespace PSRule.Host
         {
             get
             {
-                return PipelineContext.CurrentThread._Rule?.TargetObject;
+                return PipelineContext.CurrentThread.TargetObject;
             }
         }
     }

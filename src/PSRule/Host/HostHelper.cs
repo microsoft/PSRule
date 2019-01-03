@@ -96,7 +96,7 @@ namespace PSRule.Host
                     throw new FileNotFoundException("The script was not found.", path);
                 }
 
-                PipelineContext.CurrentThread.WriteVerbose($"[PSRule][D] -- Discovering rules in: {path}");
+                PipelineContext.CurrentThread.WriteVerbose($"[PSRule][D] -- Discovering rules in: {path}", usePrefix: false);
 
                 if (!File.Exists(path))
                 {
@@ -132,50 +132,30 @@ namespace PSRule.Host
         public static void InvokeRuleBlock(PipelineContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)
         {
             var ps = ruleBlock.Body;
+            ps.Streams.ClearStreams();
 
-            try
+            context.WriteVerboseObjectStart();
+
+            var invokeResult = ps.Invoke<RuleConditionResult>().FirstOrDefault();
+
+            if (invokeResult == null)
             {
-                context.WriteVerboseObjectStart();
-
-                context._Rule = ruleRecord;
-
-                //if (ruleBlock.If != null)
-                //{
-                //    if (!ruleBlock.If.Invoke())
-                //    {
-                //        ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
-                //        return;
-                //    }
-                //}
-
-                //var invokeResult = RuleConditionResult.Create(ps.Invoke());
-
-                var invokeResult = ps.Invoke<RuleConditionResult>().FirstOrDefault();
-
-                if (invokeResult == null)
-                {
-                    ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
-                    return;
-                }
-                else if (invokeResult.Count == 0)
-                {
-                    ruleRecord.OutcomeReason = RuleOutcomeReason.Inconclusive;
-                    ruleRecord.Outcome = RuleOutcome.Fail;
-                    context.WarnRuleInconclusive(ruleId: ruleRecord.RuleId);
-                }
-                else
-                {
-                    ruleRecord.OutcomeReason = RuleOutcomeReason.Processed;
-                    ruleRecord.Outcome = invokeResult.AllOf() ? RuleOutcome.Pass : RuleOutcome.Fail;
-                }
-
-                context.WriteVerboseConditionResult(pass: invokeResult.Pass, count: invokeResult.Count, outcome: ruleRecord.Outcome);
+                ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
+                return;
             }
-            finally
+            else if (invokeResult.Count == 0)
             {
-                ps.Streams.ClearStreams();
-                context._Rule = null;
+                ruleRecord.OutcomeReason = RuleOutcomeReason.Inconclusive;
+                ruleRecord.Outcome = RuleOutcome.Fail;
+                context.WarnRuleInconclusive(ruleId: ruleRecord.RuleId);
             }
+            else
+            {
+                ruleRecord.OutcomeReason = RuleOutcomeReason.Processed;
+                ruleRecord.Outcome = invokeResult.AllOf() ? RuleOutcome.Pass : RuleOutcome.Fail;
+            }
+
+            context.WriteVerboseConditionResult(pass: invokeResult.Pass, count: invokeResult.Count, outcome: ruleRecord.Outcome);
         }
 
         /// <summary>

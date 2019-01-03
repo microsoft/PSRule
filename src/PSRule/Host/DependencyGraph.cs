@@ -36,17 +36,16 @@ namespace PSRule.Host
 
         public sealed class DependencyTarget
         {
+            public readonly DependencyGraph<T> Graph;
+            public readonly T Value;
+
+            internal DependencyTargetState State;
+
             public DependencyTarget(DependencyGraph<T> graph, T value)
             {
                 Graph = graph;
                 Value = value;
             }
-
-            public DependencyGraph<T> Graph { get; }
-
-            public T Value { get; }
-
-            public DependencyTargetState State { get; internal set; }
 
             public bool Skipped
             {

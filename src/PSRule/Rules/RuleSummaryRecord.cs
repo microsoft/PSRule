@@ -9,7 +9,7 @@ namespace PSRule.Rules
     /// A summary format for rule results.
     /// </summary>
     [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
-    public sealed class RuleSummaryRecord : IRuleRecord
+    public sealed class RuleSummaryRecord
     {
         internal RuleSummaryRecord(string ruleId, string ruleName)
         {
@@ -21,12 +21,12 @@ namespace PSRule.Rules
         /// The unique identifier for the rule.
         /// </summary>
         [JsonRequired]
-        public string RuleId { get; private set; }
+        public readonly string RuleId;
 
         /// <summary>
         /// The name of the rule.
         /// </summary>
-        public string RuleName { get; private set; }
+        public readonly string RuleName;
 
         /// <summary>
         /// The number of rule passes.

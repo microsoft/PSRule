@@ -11,6 +11,10 @@ namespace PSRule.Commands
     [Cmdlet(VerbsCommon.New, RuleLanguageNouns.RuleDefinition)]
     internal sealed class NewRuleDefinitionCommand : LanguageBlock
     {
+        private const string InvokeBlockCmdletName = "Invoke-RuleBlock";
+        private const string InvokeBlockCmdlet_IfParameter = "If";
+        private const string InvokeBlockCmdlet_BodyParameter = "Body";
+
         /// <summary>
         /// The name of the rule.
         /// </summary>
@@ -50,13 +54,17 @@ namespace PSRule.Commands
 
             var ps = PowerShell.Create();
             ps.Runspace = PipelineContext.CurrentThread.GetRunspace();
-            ps.AddCommand(new CmdletInfo("Invoke-RuleBlock", typeof(InvokeRuleBlockCommand)));
-            ps.AddParameter("If", If);
-            ps.AddParameter("Body", Body);
+            ps.AddCommand(new CmdletInfo(InvokeBlockCmdletName, typeof(InvokeRuleBlockCommand)));
+            ps.AddParameter(InvokeBlockCmdlet_IfParameter, If);
+            ps.AddParameter(InvokeBlockCmdlet_BodyParameter, Body);
 
             PipelineContext.EnableLogging(ps);
 
-            var block = new RuleBlock(sourcePath: MyInvocation.ScriptName, ruleName: Name, description: metadata.Description)
+            var block = new RuleBlock(
+                sourcePath: MyInvocation.ScriptName,
+                ruleName: Name,
+                description: metadata.Description
+            )
             {
                 Body = ps,
                 Tag = tag,

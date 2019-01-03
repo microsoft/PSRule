@@ -66,7 +66,7 @@ namespace PSRule.Pipeline
 
         private InvokeResult ProcessTargetObject(PSObject targetObject)
         {
-            _Context.TargetObject(targetObject);
+            _Context.SetTargetObject(targetObject: targetObject);
 
             var result = new InvokeResult();
 
@@ -76,19 +76,11 @@ namespace PSRule.Pipeline
             foreach (var ruleBlockTarget in _RuleGraph.GetSingleTarget())
             {
                 // Enter rule block scope
-                _Context.Enter(ruleBlockTarget.Value);
+                var ruleRecord = _Context.EnterRuleBlock(ruleBlock: ruleBlockTarget.Value);
                 ruleCounter++;
 
                 try
                 {
-                    var ruleRecord = new RuleRecord(
-                        ruleId: ruleBlockTarget.Value.RuleId,
-                        ruleName: ruleBlockTarget.Value.RuleName,
-                        targetObject: targetObject,
-                        targetName: _Context.TargetName,
-                        tag: ruleBlockTarget.Value.Tag
-                    );
-
                     // Check if dependency failed
                     if (ruleBlockTarget.Skipped)
                     {
@@ -129,7 +121,7 @@ namespace PSRule.Pipeline
                 finally
                 {
                     // Exit rule block scope
-                    _Context.Exit();
+                    _Context.ExitRuleBlock();
                 }
             }
 

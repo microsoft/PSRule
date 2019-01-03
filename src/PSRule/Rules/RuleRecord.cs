@@ -10,7 +10,7 @@ namespace PSRule.Rules
     /// A detailed format for rule results.
     /// </summary>
     [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
-    public sealed class RuleRecord : IRuleRecord
+    public sealed class RuleRecord
     {
         internal RuleRecord(string ruleId, string ruleName, PSObject targetObject, string targetName, TagSet tag, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
@@ -32,12 +32,12 @@ namespace PSRule.Rules
         /// A unique identifier for the rule.
         /// </summary>
         [JsonRequired]
-        public string RuleId { get; private set; }
+        public readonly string RuleId;
 
         /// <summary>
         /// The name of the rule.
         /// </summary>
-        public string RuleName { get; private set; }
+        public readonly string RuleName;
 
         /// <summary>
         /// The outcome after the rule processes an object.

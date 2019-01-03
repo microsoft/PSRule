@@ -13,7 +13,7 @@ namespace PSRule.Commands
     {
         protected RuleRecord GetResult()
         {
-            return PipelineContext.CurrentThread._Rule;
+            return PipelineContext.CurrentThread.RuleRecord;
         }
 
         protected bool GetField(object targetObject, string name, bool caseSensitive, out object value)

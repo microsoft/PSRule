@@ -14,8 +14,7 @@ namespace PSRule.Pipeline
         [ThreadStatic]
         internal static PipelineContext CurrentThread;
 
-        private string _LogPrefix;
-        private int _ObjectNumber;
+        // Configuration parameters
         private readonly ILogger _Logger;
         private readonly BindTargetName _BindTargetName;
         private readonly bool _LogError;
@@ -25,16 +24,22 @@ namespace PSRule.Pipeline
         private readonly LanguageMode _LanguageMode;
         private readonly bool _InconclusiveWarning;
         private readonly bool _NotProcessedWarning;
-        internal RuleRecord _Rule;
 
+        // Pipeline logging
+        private string _LogPrefix;
+        private int _ObjectNumber;
+
+        // Objects kept for caching and disposal
+        private Runspace _Runspace;
         private SHA1Managed _Hash;
 
         // Track whether Dispose has been called.
         private bool _Disposed = false;
 
-        private Runspace _Runspace;
-
-        public string TargetName { get; private set; }
+        // Fields exposed to engine
+        internal RuleRecord RuleRecord;
+        internal string TargetName;
+        internal PSObject TargetObject;
 
         public HashAlgorithm ObjectHashAlgorithm
         {
@@ -238,7 +243,7 @@ namespace PSRule.Pipeline
         /// <param name="usePrefix">When true a prefix indicating the current rule and target object will prefix the message.</param>
         private void DoWriteVerbose(string message, bool usePrefix)
         {
-            var outMessage = usePrefix ? string.Concat(_LogPrefix, message) : message;
+            var outMessage = usePrefix ? string.Concat(GetLogPrefix(), message) : message;
             _Logger.WriteVerbose(outMessage);
         }
 
@@ -301,9 +306,11 @@ namespace PSRule.Pipeline
         /// <summary>
         /// Increment the pipeline object number.
         /// </summary>
-        public void TargetObject(PSObject targetObject)
+        public void SetTargetObject(PSObject targetObject)
         {
             _ObjectNumber++;
+
+            TargetObject = targetObject;
 
             // Bind targetname
             TargetName = _BindTargetName(targetObject);
@@ -312,25 +319,36 @@ namespace PSRule.Pipeline
         /// <summary>
         /// Enter the rule block scope.
         /// </summary>
-        public void Enter(RuleBlock ruleBlock)
+        public RuleRecord EnterRuleBlock(RuleBlock ruleBlock)
         {
-            _LogPrefix = $"[PSRule][R][{_ObjectNumber}][{ruleBlock.RuleId}]";
+            RuleRecord = new RuleRecord(
+                ruleId: ruleBlock.RuleId,
+                ruleName: ruleBlock.RuleName,
+                targetObject: TargetObject,
+                targetName: TargetName,
+                tag: ruleBlock.Tag
+            );
 
-            //var ruleRecord = new RuleRecord(ruleBlock.RuleId, ruleBlock.RuleName)
-            //{
-            //    TargetObject = targetObject,
-            //    TargetName = TargetName,
-            //    Tag = ruleBlock.Tag?.ToHashtable()
-            //};
+            return RuleRecord;
         }
 
         /// <summary>
         /// Exit the rule block scope.
         /// </summary>
-        public void Exit()
+        public void ExitRuleBlock()
         {
-            _LogPrefix = string.Empty;
-            _Rule = null;
+            _LogPrefix = null;
+            RuleRecord = null;
+        }
+
+        private string GetLogPrefix()
+        {
+            if (_LogPrefix == null)
+            {
+                _LogPrefix = $"[PSRule][R][{_ObjectNumber}][{RuleRecord?.RuleId}]";
+            }
+
+            return _LogPrefix ?? string.Empty;
         }
 
         #region IDisposable
