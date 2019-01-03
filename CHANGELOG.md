@@ -9,6 +9,7 @@
 - Improve reporting of inconclusive results and objects that are not processed by any rule [#46](https://github.com/BernieWhite/PSRule/issues/46)
   - Inconclusive results and objects not processed will return a warning
 - Fix propagation of informational messages to host from rule scripts and definitions [#48](https://github.com/BernieWhite/PSRule/issues/48)
+- Add support for cross-platform environments (Windows, Linux, and macOS) [#49](https://github.com/BernieWhite/PSRule/issues/49)
 
 ## v0.1.0
 
