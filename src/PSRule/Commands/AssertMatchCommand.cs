@@ -40,31 +40,24 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            PipelineContext.CurrentThread.WriteVerbose("[Match]::BEGIN");
+            var inputObject = GetTargetObject();
 
-            try
+            var result = false;
+
+            if (GetField(inputObject, Field, false, out object fieldValue))
             {
-                var inputObject = GetVariableValue("InputObject") ?? GetVariableValue("TargetObject");
-
-                var result = false;
-
-                if (GetField(inputObject, Field, false, out object fieldValue))
+                for (var i = 0; i < _Expressions.Length && !result; i++)
                 {
-                    for (var i = 0; i < _Expressions.Length && !result; i++)
+                    if (_Expressions[i].IsMatch(fieldValue.ToString()))
                     {
-                        if (_Expressions[i].IsMatch(fieldValue.ToString()))
-                        {
-                            result = true;
-                        }
+                        result = true;
                     }
                 }
+            }
 
-                WriteObject(result);
-            }
-            finally
-            {
-                PipelineContext.CurrentThread.WriteVerbose("[Match]::END");
-            }
+            PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Match, outcome: result);
+
+            WriteObject(result);
         }
     }
 }

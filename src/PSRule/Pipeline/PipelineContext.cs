@@ -104,7 +104,17 @@ namespace PSRule.Pipeline
             DoWriteVerbose(message, usePrefix);
         }
 
-        public void WriteVerboseFoundRule(string ruleName, string scriptName)
+        public void VerboseRuleDiscovery(string path)
+        {
+            if (!_LogVerbose || string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
+            DoWriteVerbose($"[PSRule][D] -- Discovering rules in: {path}", usePrefix: false);
+        }
+
+        public void VerboseFoundRule(string ruleName, string scriptName)
         {
             if (!_LogVerbose)
             {
@@ -115,7 +125,7 @@ namespace PSRule.Pipeline
             DoWriteVerbose($"[PSRule][D] -- Found {ruleName} in {scriptName}", usePrefix: false);
         }
 
-        public void WriteVerboseObjectStart()
+        public void VerboseObjectStart()
         {
             if (!_LogVerbose)
             {
@@ -125,17 +135,27 @@ namespace PSRule.Pipeline
             DoWriteVerbose($" :: {TargetName}", usePrefix: true);
         }
 
-        public void WriteVerboseConditionResult(string condition, int pass, int count, bool outcome)
+        public void VerboseConditionResult(string condition, int pass, int count, bool outcome)
         {
             if (!_LogVerbose)
             {
                 return;
             }
 
-            DoWriteVerbose($"{condition} -- [{pass}/{count}] [{outcome}]", usePrefix: true);
+            DoWriteVerbose($"[{condition}] -- [{pass}/{count}] [{outcome}]", usePrefix: true);
         }
 
-        public void WriteVerboseConditionResult(int pass, int count, RuleOutcome outcome)
+        public void VerboseConditionResult(string condition, bool outcome)
+        {
+            if (!_LogVerbose)
+            {
+                return;
+            }
+
+            DoWriteVerbose($"[{condition}] -- [{outcome}]", usePrefix: true);
+        }
+
+        public void VerboseConditionResult(int pass, int count, RuleOutcome outcome)
         {
             if (!_LogVerbose)
             {
@@ -356,9 +376,6 @@ namespace PSRule.Pipeline
         public void Dispose()
         {
             Dispose(true);
-
-            // Already cleaned up by dispose.
-            GC.SuppressFinalize(this);
         }
 
         private void Dispose(bool disposing)

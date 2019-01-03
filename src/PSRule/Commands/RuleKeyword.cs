@@ -16,6 +16,11 @@ namespace PSRule.Commands
             return PipelineContext.CurrentThread.RuleRecord;
         }
 
+        protected PSObject GetTargetObject()
+        {
+            return PipelineContext.CurrentThread.TargetObject;
+        }
+
         protected bool GetField(object targetObject, string name, bool caseSensitive, out object value)
         {
             value = null;

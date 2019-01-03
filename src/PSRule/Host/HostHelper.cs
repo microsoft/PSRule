@@ -8,7 +8,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
-using System.Management.Automation.Runspaces;
 using System.Text;
 
 namespace PSRule.Host
@@ -84,47 +83,52 @@ namespace PSRule.Host
             var runspace = PipelineContext.CurrentThread.GetRunspace();
             var ps = PowerShell.Create();
 
-            ps.Runspace = runspace;
-            PipelineContext.EnableLogging(ps);
-
-            // Process scripts
-
-            foreach (var path in scriptPaths)
+            try
             {
-                if (!File.Exists(path))
+                ps.Runspace = runspace;
+                PipelineContext.EnableLogging(ps);
+
+                // Process scripts
+
+                foreach (var path in scriptPaths)
                 {
-                    throw new FileNotFoundException("The script was not found.", path);
-                }
-
-                PipelineContext.CurrentThread.WriteVerbose($"[PSRule][D] -- Discovering rules in: {path}", usePrefix: false);
-
-                if (!File.Exists(path))
-                {
-                    throw new FileNotFoundException("Can't find file", path);
-                }
-
-                // Invoke script
-                ps.AddScript(path, true);
-                var invokeResults = ps.Invoke();
-
-                if (ps.HadErrors)
-                {
-                    throw new Exception(ps.Streams.Error[0].Exception.Message, ps.Streams.Error[0].Exception);
-                }
-
-                foreach (var ir in invokeResults)
-                {
-                    if (ir.BaseObject is ILanguageBlock)
+                    if (!File.Exists(path))
                     {
-                        var block = ir.BaseObject as ILanguageBlock;
+                        throw new FileNotFoundException("The script was not found.", path);
+                    }
 
-                        results.Add(block);
+                    PipelineContext.CurrentThread.VerboseRuleDiscovery(path: path);
+
+                    if (!File.Exists(path))
+                    {
+                        throw new FileNotFoundException("Can't find file", path);
+                    }
+
+                    // Invoke script
+                    ps.AddScript(path, true);
+                    var invokeResults = ps.Invoke();
+
+                    if (ps.HadErrors)
+                    {
+                        throw new Exception(ps.Streams.Error[0].Exception.Message, ps.Streams.Error[0].Exception);
+                    }
+
+                    foreach (var ir in invokeResults)
+                    {
+                        if (ir.BaseObject is ILanguageBlock)
+                        {
+                            var block = ir.BaseObject as ILanguageBlock;
+
+                            results.Add(block);
+                        }
                     }
                 }
             }
-
-            ps.Runspace = null;
-            ps.Dispose();
+            finally
+            {
+                ps.Runspace = null;
+                ps.Dispose();
+            }
 
             return results;
         }
@@ -134,7 +138,7 @@ namespace PSRule.Host
             var ps = ruleBlock.Condition;
             ps.Streams.ClearStreams();
 
-            context.WriteVerboseObjectStart();
+            context.VerboseObjectStart();
 
             var invokeResult = ps.Invoke<RuleConditionResult>().FirstOrDefault();
 
@@ -155,7 +159,7 @@ namespace PSRule.Host
                 ruleRecord.Outcome = invokeResult.AllOf() ? RuleOutcome.Pass : RuleOutcome.Fail;
             }
 
-            context.WriteVerboseConditionResult(pass: invokeResult.Pass, count: invokeResult.Count, outcome: ruleRecord.Outcome);
+            context.VerboseConditionResult(pass: invokeResult.Pass, count: invokeResult.Count, outcome: ruleRecord.Outcome);
         }
 
         /// <summary>

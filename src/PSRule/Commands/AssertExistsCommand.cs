@@ -28,37 +28,30 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            try
+            var inputObject = GetTargetObject();
+
+            bool expected = !Not;
+            bool actual = Not;
+
+            for (var i = 0; i < Field.Length && actual != expected; i++)
             {
-                var inputObject = GetVariableValue("InputObject") ?? GetVariableValue("TargetObject");
+                actual = GetField(inputObject, Field[i], CaseSensitive, out object fieldValue);
 
-                bool expected = !Not;
-                bool actual = Not;
-
-                for (var i = 0; i < Field.Length && actual != expected; i++)
+                if (actual == expected)
                 {
-                    actual = GetField(inputObject, Field[i], CaseSensitive, out object fieldValue);
-
-                    if (actual == expected)
+                    if (expected)
                     {
-                        if (expected)
-                        {
-                            PipelineContext.CurrentThread.WriteVerbose($"[Exists] -- The field {Field[i]} exists");
-                        }
+                        PipelineContext.CurrentThread.WriteVerbose($"[Exists] -- The field {Field[i]} exists");
                     }
                 }
-
-                if (!actual)
-                {
-                    PipelineContext.CurrentThread.WriteVerbose($"[Exists] -- The field(s) {string.Join(", ", Field)} do not exist");
-                }
-
-                WriteObject(expected == actual);
             }
-            finally
+
+            if (!actual)
             {
-                
+                PipelineContext.CurrentThread.WriteVerbose($"[Exists] -- The field(s) {string.Join(", ", Field)} do not exist");
             }
+
+            WriteObject(expected == actual);
         }
     }
 }

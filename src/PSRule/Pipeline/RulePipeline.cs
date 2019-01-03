@@ -27,9 +27,6 @@ namespace PSRule.Pipeline
         public void Dispose()
         {
             Dispose(true);
-
-            // Already cleaned up by dispose.
-            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)

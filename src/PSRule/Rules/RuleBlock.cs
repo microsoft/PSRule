@@ -1,4 +1,5 @@
 ﻿using PSRule.Host;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Management.Automation;
@@ -13,7 +14,7 @@ namespace PSRule.Rules
     /// Define an instance of a rule block. Each rule block has a unique id.
     /// </summary>
     [DebuggerDisplay("{RuleId} @{SourcePath}")]
-    public sealed class RuleBlock : ILanguageBlock, IDependencyTarget
+    public sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     {
         public RuleBlock(string sourcePath, string ruleName, string description, PowerShell condition, TagSet tag, string[] dependsOn)
         {
@@ -69,5 +70,14 @@ namespace PSRule.Rules
         string IDependencyTarget.RuleId => RuleId;
 
         string[] IDependencyTarget.DependsOn => DependsOn;
+
+        #region IDisposable
+
+        public void Dispose()
+        {
+            Condition.Dispose();
+        }
+
+        #endregion IDisposable
     }
 }

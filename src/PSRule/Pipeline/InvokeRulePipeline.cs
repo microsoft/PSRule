@@ -18,6 +18,9 @@ namespace PSRule.Pipeline
         private readonly ResultFormat _ResultFormat;
         private readonly RuleSuppressionFilter _SuppressionFilter;
 
+        // Track whether Dispose has been called.
+        private bool _Disposed = false;
+
         internal InvokeRulePipeline(PSRuleOption option, string[] path, RuleFilter filter, RuleOutcome outcome, ResultFormat resultFormat, PipelineContext context)
             : base(context, option, path, filter)
         {
@@ -166,6 +169,21 @@ namespace PSRule.Pipeline
             {
                 s.Error++;
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!_Disposed)
+            {
+                if (disposing)
+                {
+                    _RuleGraph.Dispose();
+                }
+
+                _Disposed = true;
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

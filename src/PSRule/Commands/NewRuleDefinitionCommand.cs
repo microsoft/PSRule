@@ -50,7 +50,7 @@ namespace PSRule.Commands
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
 
-            PipelineContext.CurrentThread.WriteVerboseFoundRule(ruleName: Name, scriptName: MyInvocation.ScriptName);
+            PipelineContext.CurrentThread.VerboseFoundRule(ruleName: Name, scriptName: MyInvocation.ScriptName);
 
             var ps = PowerShell.Create();
             ps.Runspace = PipelineContext.CurrentThread.GetRunspace();

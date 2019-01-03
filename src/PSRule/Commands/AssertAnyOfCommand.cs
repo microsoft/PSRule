@@ -15,20 +15,13 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            try
-            {
-                var invokeResult = RuleConditionResult.Create(Body.Invoke());
+            var invokeResult = RuleConditionResult.Create(Body.Invoke());
 
-                var result = invokeResult.AnyOf();
+            var result = invokeResult.AnyOf();
 
-                PipelineContext.CurrentThread.WriteVerboseConditionResult(condition: "[AnyOf]", pass: invokeResult.Pass, count: invokeResult.Count, outcome: result);
+            PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.AnyOf, pass: invokeResult.Pass, count: invokeResult.Count, outcome: result);
 
-                WriteObject(result);
-            }
-            finally
-            {
-                
-            }
+            WriteObject(result);
         }
     }
 }
