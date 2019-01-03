@@ -5,7 +5,6 @@ strategy:
   matrix:
     Linux:
       imageName: 'ubuntu-16.04'
-      benchmark: 'true'
     MacOS:
       imageName: 'macos-10.13'
     Windows:
