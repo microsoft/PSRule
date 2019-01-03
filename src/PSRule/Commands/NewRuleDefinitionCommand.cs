@@ -63,14 +63,11 @@ namespace PSRule.Commands
             var block = new RuleBlock(
                 sourcePath: MyInvocation.ScriptName,
                 ruleName: Name,
-                description: metadata.Description
-            )
-            {
-                Body = ps,
-                Tag = tag,
-                DependsOn = RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName),
-                If = If
-            };
+                description: metadata.Description,
+                condition: ps,
+                tag: tag,
+                dependsOn: RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName)
+            );
 
             WriteObject(block);
         }

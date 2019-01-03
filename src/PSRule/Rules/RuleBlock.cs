@@ -15,7 +15,7 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId} @{SourcePath}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget
     {
-        public RuleBlock(string sourcePath, string ruleName, string description)
+        public RuleBlock(string sourcePath, string ruleName, string description, PowerShell condition, TagSet tag, string[] dependsOn)
         {
             SourcePath = sourcePath;
             RuleName = ruleName;
@@ -24,46 +24,50 @@ namespace PSRule.Rules
             RuleId = string.Concat(scriptFileName, '/', ruleName);
 
             Description = description;
+            Condition = condition;
+            Tag = tag;
+            DependsOn = dependsOn;
         }
 
         /// <summary>
         /// A unique identifier for the rule.
         /// </summary>
-        public string RuleId { get; private set; }
+        public readonly string RuleId;
 
         /// <summary>
         /// The name of the rule.
         /// </summary>
-        public string RuleName { get; private set; }
+        public readonly string RuleName;
 
         /// <summary>
         /// The script file path where the rule is defined.
         /// </summary>
-        public string SourcePath { get; private set; }
+        public readonly string SourcePath;
 
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
         /// </summary>
-        public string Description { get; set; }
-
-        /// <summary>
-        /// A pre-condition that if set, must evaluate as true before the main rule body will be processed.
-        /// </summary>
-        public ScriptBlock If { get; set; }
+        public readonly string Description;
 
         /// <summary>
         /// The body of the rule definition where conditions are provided that either pass or fail the rule.
         /// </summary>
-        public PowerShell Body { get; set; }
+        public readonly PowerShell Condition;
 
         /// <summary>
         /// Other deployments that must completed successfully before calling this rule.
         /// </summary>
-        public string[] DependsOn { get; set; }
+        public readonly string[] DependsOn;
 
         /// <summary>
         /// One or more tags assigned to block. Tags are additional metadata used to select rules to execute and identify results.
         /// </summary>
-        public TagSet Tag { get; set; }
+        public readonly TagSet Tag;
+
+        string ILanguageBlock.SourcePath => SourcePath;
+
+        string IDependencyTarget.RuleId => RuleId;
+
+        string[] IDependencyTarget.DependsOn => DependsOn;
     }
 }

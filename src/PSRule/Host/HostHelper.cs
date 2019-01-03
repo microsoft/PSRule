@@ -131,7 +131,7 @@ namespace PSRule.Host
 
         public static void InvokeRuleBlock(PipelineContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)
         {
-            var ps = ruleBlock.Body;
+            var ps = ruleBlock.Condition;
             ps.Streams.ClearStreams();
 
             context.WriteVerboseObjectStart();
