@@ -12,10 +12,18 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
     public sealed class RuleRecord : IRuleRecord
     {
-        internal RuleRecord(string ruleId, string ruleName, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
+        internal RuleRecord(string ruleId, string ruleName, PSObject targetObject, string targetName, TagSet tag, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
             RuleId = ruleId;
             RuleName = ruleName;
+            TargetObject = targetObject;
+            TargetName = targetName;
+            
+            if (tag != null)
+            {
+                Tag = tag.ToHashtable();
+            }
+
             Outcome = outcome;
             OutcomeReason = reason;
         }

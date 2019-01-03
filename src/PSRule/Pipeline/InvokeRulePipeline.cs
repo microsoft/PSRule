@@ -81,12 +81,13 @@ namespace PSRule.Pipeline
 
                 try
                 {
-                    var ruleRecord = new RuleRecord(ruleBlockTarget.Value.RuleId, ruleBlockTarget.Value.RuleName)
-                    {
-                        TargetObject = targetObject,
-                        TargetName = _Context.TargetName,
-                        Tag = ruleBlockTarget.Value.Tag?.ToHashtable()
-                    };
+                    var ruleRecord = new RuleRecord(
+                        ruleId: ruleBlockTarget.Value.RuleId,
+                        ruleName: ruleBlockTarget.Value.RuleName,
+                        targetObject: targetObject,
+                        targetName: _Context.TargetName,
+                        tag: ruleBlockTarget.Value.Tag
+                    );
 
                     // Check if dependency failed
                     if (ruleBlockTarget.Skipped)

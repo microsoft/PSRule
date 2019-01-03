@@ -33,7 +33,7 @@ namespace PSRule.Commands
         /// An optional precondition before the rule is evaluated.
         /// </summary>
         [Parameter(Mandatory = false)]
-        public RulePrecondition If { get; set; }
+        public ScriptBlock If { get; set; }
 
         /// <summary>
         /// Deployments that this deployment depends on.
@@ -48,10 +48,17 @@ namespace PSRule.Commands
 
             PipelineContext.CurrentThread.WriteVerboseFoundRule(ruleName: Name, scriptName: MyInvocation.ScriptName);
 
-            var block = new RuleBlock(MyInvocation.ScriptName, Name)
+            var ps = PowerShell.Create();
+            ps.Runspace = PipelineContext.CurrentThread.GetRunspace();
+            ps.AddCommand(new CmdletInfo("Invoke-RuleBlock", typeof(InvokeRuleBlockCommand)));
+            ps.AddParameter("If", If);
+            ps.AddParameter("Body", Body);
+
+            PipelineContext.EnableLogging(ps);
+
+            var block = new RuleBlock(sourcePath: MyInvocation.ScriptName, ruleName: Name, description: metadata.Description)
             {
-                Body = Body,
-                Description = metadata.Description,
+                Body = ps,
                 Tag = tag,
                 DependsOn = RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName),
                 If = If

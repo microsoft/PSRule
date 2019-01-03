@@ -15,13 +15,15 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId} @{SourcePath}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget
     {
-        public RuleBlock(string sourcePath, string ruleName)
+        public RuleBlock(string sourcePath, string ruleName, string description)
         {
             SourcePath = sourcePath;
             RuleName = ruleName;
 
             var scriptFileName = Path.GetFileName(sourcePath);
             RuleId = string.Concat(scriptFileName, '/', ruleName);
+
+            Description = description;
         }
 
         /// <summary>
@@ -45,14 +47,14 @@ namespace PSRule.Rules
         public string Description { get; set; }
 
         /// <summary>
-        /// A precondition that if set, must evaluate as true before the main rule body will be processed.
+        /// A pre-condition that if set, must evaluate as true before the main rule body will be processed.
         /// </summary>
-        public RulePrecondition If { get; set; }
+        public ScriptBlock If { get; set; }
 
         /// <summary>
         /// The body of the rule definition where conditions are provided that either pass or fail the rule.
         /// </summary>
-        public ScriptBlock Body { get; set; }
+        public PowerShell Body { get; set; }
 
         /// <summary>
         /// Other deployments that must completed successfully before calling this rule.

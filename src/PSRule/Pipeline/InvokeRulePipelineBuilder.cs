@@ -29,6 +29,7 @@ namespace PSRule.Pipeline
             _Outcome = RuleOutcome.Processed;
             _ResultFormat = ResultFormat.Detail;
             _BindTargetNameHook = PipelineHookActions.DefaultTargetNameBinding;
+            _LogError = _LogWarning = _LogVerbose = _LogInformation = false;
         }
 
         public void FilterBy(string[] ruleName, Hashtable tag)

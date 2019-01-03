@@ -80,34 +80,12 @@ namespace PSRule.Host
         private static IEnumerable<ILanguageBlock> GetLanguageBlock(PSRuleOption option, string[] scriptPaths)
         {
             var results = new Collection<ILanguageBlock>();
-            var state = HostState.CreateSessionState();
 
-            // Set PowerShell language mode
-            state.LanguageMode = option.Execution.LanguageMode == LanguageMode.FullLanguage ? PSLanguageMode.FullLanguage : PSLanguageMode.ConstrainedLanguage;
-
-            // Configure runspace
-            var runspace = RunspaceFactory.CreateRunspace(state);
-            runspace.ThreadOptions = PSThreadOptions.UseCurrentThread;
-
-            if (Runspace.DefaultRunspace == null)
-            {
-                Runspace.DefaultRunspace = runspace;
-            }
-
-            runspace.Open();
-            runspace.SessionStateProxy.PSVariable.Set(new RuleVariable("Rule"));
-            runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable("TargetObject"));
-            runspace.SessionStateProxy.PSVariable.Set("ErrorActionPreference", ActionPreference.Continue);
-            runspace.SessionStateProxy.PSVariable.Set("WarningPreference", ActionPreference.Continue);
-            runspace.SessionStateProxy.PSVariable.Set("VerbosePreference", ActionPreference.Continue);
-
-            var ps = PipelineContext.CurrentThread.GetPowerShell();
+            var runspace = PipelineContext.CurrentThread.GetRunspace();
+            var ps = PowerShell.Create();
 
             ps.Runspace = runspace;
-            ps.Streams.Error.DataAdded += Error_DataAdded;
-            ps.Streams.Warning.DataAdded += Warning_DataAdded;
-            ps.Streams.Verbose.DataAdded += Verbose_DataAdded;
-            ps.Streams.Information.DataAdded += Information_DataAdded;
+            PipelineContext.EnableLogging(ps);
 
             // Process scripts
 
@@ -145,70 +123,41 @@ namespace PSRule.Host
                 }
             }
 
+            ps.Runspace = null;
+            ps.Dispose();
+
             return results;
-        }
-
-        private static void Information_DataAdded(object sender, DataAddedEventArgs e)
-        {
-            var collection = sender as PSDataCollection<InformationRecord>;
-            var record = collection[e.Index];
-
-            PipelineContext.CurrentThread.WriteInformation(informationRecord: record);
-        }
-
-        private static void Verbose_DataAdded(object sender, DataAddedEventArgs e)
-        {
-            var collection = sender as PSDataCollection<VerboseRecord>;
-            var record = collection[e.Index];
-
-            PipelineContext.CurrentThread.WriteVerbose(record.Message, usePrefix: false);
-        }
-
-        private static void Warning_DataAdded(object sender, DataAddedEventArgs e)
-        {
-            var collection = sender as PSDataCollection<WarningRecord>;
-            var record = collection[e.Index];
-
-            PipelineContext.CurrentThread.WriteWarning(message: record.Message);
-        }
-
-        private static void Error_DataAdded(object sender, DataAddedEventArgs e)
-        {
-            var collection = sender as PSDataCollection<ErrorRecord>;
-            var record = collection[e.Index];
-
-            PipelineContext.CurrentThread.WriteError(errorRecord: record);
         }
 
         public static void InvokeRuleBlock(PipelineContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)
         {
+            var ps = ruleBlock.Body;
+
             try
             {
-                var ps = PipelineContext.CurrentThread.GetPowerShell();
-                ps.Commands.Clear();
-
                 context.WriteVerboseObjectStart();
 
                 context._Rule = ruleRecord;
 
-                if (ruleBlock.If != null)
+                //if (ruleBlock.If != null)
+                //{
+                //    if (!ruleBlock.If.Invoke())
+                //    {
+                //        ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
+                //        return;
+                //    }
+                //}
+
+                //var invokeResult = RuleConditionResult.Create(ps.Invoke());
+
+                var invokeResult = ps.Invoke<RuleConditionResult>().FirstOrDefault();
+
+                if (invokeResult == null)
                 {
-                    if (!ruleBlock.If.Invoke())
-                    {
-                        ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
-                        return;
-                    }
+                    ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
+                    return;
                 }
-
-                //var ps2 = ruleBlock.Body.GetPowerShell();
-                //ps2.
-
-                //ps.AddCommand(new CommandInfo { })
-                ps.AddScript(ruleBlock.Body.ToString(), useLocalScope: true);
-                
-                var invokeResult = new RuleConditionResult(ps.Invoke());
-
-                if (invokeResult == null || invokeResult.Count == 0)
+                else if (invokeResult.Count == 0)
                 {
                     ruleRecord.OutcomeReason = RuleOutcomeReason.Inconclusive;
                     ruleRecord.Outcome = RuleOutcome.Fail;
@@ -217,16 +166,15 @@ namespace PSRule.Host
                 else
                 {
                     ruleRecord.OutcomeReason = RuleOutcomeReason.Processed;
-                    ruleRecord.Outcome = invokeResult.AllOf ? RuleOutcome.Pass : RuleOutcome.Fail;
+                    ruleRecord.Outcome = invokeResult.AllOf() ? RuleOutcome.Pass : RuleOutcome.Fail;
                 }
 
-                context.WriteVerboseConditionResult(pass: invokeResult?.Pass, count: invokeResult?.Count, outcome: ruleRecord.Outcome);
-
-                return;
+                context.WriteVerboseConditionResult(pass: invokeResult.Pass, count: invokeResult.Count, outcome: ruleRecord.Outcome);
             }
             finally
             {
-                PipelineContext.CurrentThread._Rule = null;
+                ps.Streams.ClearStreams();
+                context._Rule = null;
             }
         }
 

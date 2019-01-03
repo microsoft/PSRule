@@ -1,8 +1,10 @@
 ﻿using PSRule.Configuration;
+using PSRule.Host;
 using PSRule.Resources;
 using PSRule.Rules;
 using System;
 using System.Management.Automation;
+using System.Management.Automation.Runspaces;
 using System.Security.Cryptography;
 
 namespace PSRule.Pipeline
@@ -20,6 +22,7 @@ namespace PSRule.Pipeline
         private readonly bool _LogWarning;
         private readonly bool _LogVerbose;
         private readonly bool _LogInformation;
+        private readonly LanguageMode _LanguageMode;
         private readonly bool _InconclusiveWarning;
         private readonly bool _NotProcessedWarning;
         internal RuleRecord _Rule;
@@ -29,7 +32,7 @@ namespace PSRule.Pipeline
         // Track whether Dispose has been called.
         private bool _Disposed = false;
 
-        private PowerShell _PowerShell;
+        private Runspace _Runspace;
 
         public string TargetName { get; private set; }
 
@@ -55,6 +58,8 @@ namespace PSRule.Pipeline
             _LogWarning = logWarning;
             _LogVerbose = logVerbose;
             _LogInformation = logInformation;
+
+            _LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode.Value;
 
             _InconclusiveWarning = option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning.Value;
             _NotProcessedWarning = option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning.Value;
@@ -125,7 +130,7 @@ namespace PSRule.Pipeline
             DoWriteVerbose($"{condition} -- [{pass}/{count}] [{outcome}]", usePrefix: true);
         }
 
-        public void WriteVerboseConditionResult(int? pass, int? count, RuleOutcome outcome)
+        public void WriteVerboseConditionResult(int pass, int count, RuleOutcome outcome)
         {
             if (!_LogVerbose)
             {
@@ -165,14 +170,32 @@ namespace PSRule.Pipeline
             DoWriteWarning(string.Format(PSRuleResources.RuleInconclusive, ruleId, TargetName));
         }
 
-        internal PowerShell GetPowerShell()
+        internal Runspace GetRunspace()
         {
-            if (_PowerShell == null)
+            if (_Runspace == null)
             {
-                _PowerShell = PowerShell.Create();
+                var state = HostState.CreateSessionState();
+
+                // Set PowerShell language mode
+                state.LanguageMode = _LanguageMode == LanguageMode.FullLanguage ? PSLanguageMode.FullLanguage : PSLanguageMode.ConstrainedLanguage;
+
+                _Runspace = RunspaceFactory.CreateRunspace(state);
+                _Runspace.ThreadOptions = PSThreadOptions.UseCurrentThread;
+
+                if (Runspace.DefaultRunspace == null)
+                {
+                    Runspace.DefaultRunspace = _Runspace;
+                }
+
+                _Runspace.Open();
+                _Runspace.SessionStateProxy.PSVariable.Set(new RuleVariable("Rule"));
+                _Runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable("TargetObject"));
+                _Runspace.SessionStateProxy.PSVariable.Set("ErrorActionPreference", ActionPreference.Continue);
+                _Runspace.SessionStateProxy.PSVariable.Set("WarningPreference", ActionPreference.Continue);
+                _Runspace.SessionStateProxy.PSVariable.Set("VerbosePreference", ActionPreference.Continue);
             }
 
-            return _PowerShell;
+            return _Runspace;
         }
 
         public void WarnObjectNotProcessed()
@@ -235,6 +258,46 @@ namespace PSRule.Pipeline
 
         #endregion Internal logging methods
 
+        internal static void EnableLogging(PowerShell ps)
+        {
+            ps.Streams.Error.DataAdded += Error_DataAdded;
+            ps.Streams.Warning.DataAdded += Warning_DataAdded;
+            ps.Streams.Verbose.DataAdded += Verbose_DataAdded;
+            ps.Streams.Information.DataAdded += Information_DataAdded;
+        }
+
+        private static void Information_DataAdded(object sender, DataAddedEventArgs e)
+        {
+            var collection = sender as PSDataCollection<InformationRecord>;
+            var record = collection[e.Index];
+
+            CurrentThread.WriteInformation(informationRecord: record);
+        }
+
+        private static void Verbose_DataAdded(object sender, DataAddedEventArgs e)
+        {
+            var collection = sender as PSDataCollection<VerboseRecord>;
+            var record = collection[e.Index];
+
+            CurrentThread.WriteVerbose(record.Message, usePrefix: false);
+        }
+
+        private static void Warning_DataAdded(object sender, DataAddedEventArgs e)
+        {
+            var collection = sender as PSDataCollection<WarningRecord>;
+            var record = collection[e.Index];
+
+            CurrentThread.WriteWarning(message: record.Message);
+        }
+
+        private static void Error_DataAdded(object sender, DataAddedEventArgs e)
+        {
+            var collection = sender as PSDataCollection<ErrorRecord>;
+            var record = collection[e.Index];
+
+            CurrentThread.WriteError(errorRecord: record);
+        }
+
         /// <summary>
         /// Increment the pipeline object number.
         /// </summary>
@@ -252,6 +315,13 @@ namespace PSRule.Pipeline
         public void Enter(RuleBlock ruleBlock)
         {
             _LogPrefix = $"[PSRule][R][{_ObjectNumber}][{ruleBlock.RuleId}]";
+
+            //var ruleRecord = new RuleRecord(ruleBlock.RuleId, ruleBlock.RuleName)
+            //{
+            //    TargetObject = targetObject,
+            //    TargetName = TargetName,
+            //    Tag = ruleBlock.Tag?.ToHashtable()
+            //};
         }
 
         /// <summary>
@@ -260,6 +330,7 @@ namespace PSRule.Pipeline
         public void Exit()
         {
             _LogPrefix = string.Empty;
+            _Rule = null;
         }
 
         #region IDisposable
@@ -283,9 +354,9 @@ namespace PSRule.Pipeline
                         _Hash.Dispose();
                     }
 
-                    if (_PowerShell != null)
+                    if (_Runspace != null)
                     {
-                        _PowerShell.Dispose();
+                        _Runspace.Dispose();
                     }
                 }
 

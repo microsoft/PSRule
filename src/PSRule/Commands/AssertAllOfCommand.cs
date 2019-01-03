@@ -17,9 +17,9 @@ namespace PSRule.Commands
         {
             try
             {
-                var invokeResult = new RuleConditionResult(Body.Invoke());
+                var invokeResult = RuleConditionResult.Create(Body.Invoke());
 
-                var result = invokeResult.AllOf;
+                var result = invokeResult.AllOf();
 
                 PipelineContext.CurrentThread.WriteVerboseConditionResult(condition: "[AllOf]", pass: invokeResult.Pass, count: invokeResult.Count, outcome: result);
 
