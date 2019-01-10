@@ -32,6 +32,12 @@ Capture any error messages and or verbose messages with `-Verbose`.
 - Module: PSRule
 - Version: **[e.g. 0.1.0]**
 
+Captured output from `$PSVersionTable`:
+
+```text
+
+```
+
 **Additional context**
 
 Add any other context about the problem here.

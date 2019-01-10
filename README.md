@@ -56,7 +56,7 @@ Rule 'isFruit' {
 
 ### Execute a rule
 
-To execute with rule use `Invoke-PSRule`.
+To execute the rule use `Invoke-PSRule`.
 
 For example:
 
