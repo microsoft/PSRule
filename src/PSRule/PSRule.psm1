@@ -89,8 +89,8 @@ function Invoke-PSRule {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Warning -Message LocalizedData.PathNotFound;
-            continue;
+            Write-Warning -Message $LocalizedData.PathNotFound;
+            return; # continue causes issues with Pester
         }
 
         $isDeviceGuard = IsDeviceGuardEnabled;
@@ -115,7 +115,7 @@ function Invoke-PSRule {
     }
 
     process {
-        if ($pipeline.RuleCount -gt 0) {
+        if ($Null -ne $pipeline -and $pipeline.RuleCount -gt 0) {
             try {
                 # Process pipeline objects
                 $pipeline.Process($InputObject).AsRecord();
@@ -128,15 +128,16 @@ function Invoke-PSRule {
     }
 
     end {
-        try {
-            if ($As -eq [PSRule.Configuration.ResultFormat]::Summary) {
-                $pipeline.GetSummary();
+        if ($Null -ne $pipeline) {
+            try {
+                if ($As -eq [PSRule.Configuration.ResultFormat]::Summary) {
+                    $pipeline.GetSummary();
+                }
+            }
+            finally {
+                $pipeline.Dispose();
             }
         }
-        finally {
-            $pipeline.Dispose();
-        }
-
         Write-Verbose -Message "[Invoke-PSRule] END::";
     }
 }
@@ -185,8 +186,8 @@ function Test-PSRule {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Warning -Message LocalizedData.PathNotFound;
-            continue;
+            Write-Warning -Message $LocalizedData.PathNotFound;
+            return; # continue causes issues with Pester
         }
 
         $isDeviceGuard = IsDeviceGuardEnabled;
@@ -205,7 +206,7 @@ function Test-PSRule {
     }
 
     process {
-        if ($pipeline.RuleCount -gt 0) {
+        if ($Null -ne $pipeline -and $pipeline.RuleCount -gt 0) {
             try {
                 # Process pipeline objects
                 $pipeline.Process($InputObject).AsBoolean();
@@ -218,7 +219,9 @@ function Test-PSRule {
     }
 
     end {
-        $pipeline.Dispose();
+        if ($Null -ne $pipeline) {
+            $pipeline.Dispose();
+        }
         Write-Verbose -Message "[Test-PSRule] END::";
     }
 }
@@ -262,6 +265,12 @@ function Get-PSRule {
         # Discover scripts in the specified paths
         [String[]]$sourceFiles = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
 
+        # Check that some matching script files were found
+        if ($Null -eq $sourceFiles) {
+            Write-Verbose -Message "[Get-PSRule] -- Could not find any .Rule.ps1 script files in the path";
+            return; # continue causes issues with Pester
+        }
+
         Write-Verbose -Message "[Get-PSRule] -- Found $($sourceFiles.Length) script(s)";
         Write-Debug -Message "[Get-PSRule] -- Found scripts: $([String]::Join(' ', $sourceFiles))";
 
@@ -281,18 +290,22 @@ function Get-PSRule {
     }
 
     process {
-        try {
-            # Get matching rule definitions
-            $pipeline.Process();
-        }
-        catch {
-            $pipeline.Dispose();
-            throw;
+        if ($Null -ne $pipeline) {
+            try {
+                # Get matching rule definitions
+                $pipeline.Process();
+            }
+            catch {
+                $pipeline.Dispose();
+                throw;
+            }
         }
     }
 
     end {
-        $pipeline.Dispose();
+        if ($Null -ne $pipeline) {
+            $pipeline.Dispose();
+        }
         Write-Verbose -Message "[Get-PSRule]::END";
     }
 }
