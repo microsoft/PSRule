@@ -89,6 +89,18 @@ Describe 'Invoke-PSRule' {
             { $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'NotAFile.ps1') } | Should -Throw -ExceptionType System.Management.Automation.ItemNotFoundException;
         }
 
+        It 'Returns warning with empty path' {
+            $emptyPath = Join-Path -Path $outputPath -ChildPath 'empty';
+            if (!(Test-Path -Path $emptyPath)) {
+                $Null = New-Item -Path $emptyPath -ItemType Directory -Force;
+            }
+            $Null = $testObject | Invoke-PSRule -Path $emptyPath -WarningVariable outWarnings -WarningAction SilentlyContinue;
+            $warningMessages = $outwarnings.ToArray();
+            $warningMessages.Length | Should -Be 1;
+            $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
+            $warningMessages[0].Message | Should -Be 'Path not found';
+        }
+
         It 'Processes rule tags' {
             # Ensure that rules can be selected by tag and that tags are mapped back to the rule results
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ feature = 'tag' };
@@ -352,6 +364,18 @@ Describe 'Test-PSRule' {
             $outWarnings | Should -Be 'Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.';
         }
 
+        It 'Returns warning with empty path' {
+            $emptyPath = Join-Path -Path $outputPath -ChildPath 'empty';
+            if (!(Test-Path -Path $emptyPath)) {
+                $Null = New-Item -Path $emptyPath -ItemType Directory -Force;
+            }
+            $Null = $testObject | Test-PSRule -Path $emptyPath -WarningVariable outWarnings -WarningAction SilentlyContinue;
+            $warningMessages = $outwarnings.ToArray();
+            $warningMessages.Length | Should -Be 1;
+            $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
+            $warningMessages[0].Message | Should -Be 'Path not found';
+        }
+
         It 'Returns warnings on no processed rules' {
             # Check result with no rules matching precondition
             $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithPreconditionFalse' -WarningVariable outWarnings -WarningAction SilentlyContinue;
@@ -394,6 +418,14 @@ Describe 'Get-PSRule' {
             $result | Should -Not -BeNullOrEmpty;
             $result.RuleName | Should -Be 'FromFile1';
             $result.Description | Should -Be 'Test rule 1';
+        }
+
+        It 'Handles empty path' {
+            $emptyPath = Join-Path -Path $outputPath -ChildPath 'empty';
+            if (!(Test-Path -Path $emptyPath)) {
+                $Null = New-Item -Path $emptyPath -ItemType Directory -Force;
+            }
+            $Null = Get-PSRule -Path $emptyPath;
         }
     }
 
