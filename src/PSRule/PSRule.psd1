@@ -70,7 +70,7 @@ FormatsToProcess = @('PSRule.Format.ps1xml')
 FunctionsToExport = @(
     'Rule'
     'Invoke-PSRule'
-    'Test-PSRule'
+    'Test-PSRuleTarget'
     'Get-PSRule'
     'New-PSRuleOption'
     'AllOf'

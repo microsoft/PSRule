@@ -253,4 +253,4 @@ When you use the `-As Summary`. Otherwise, it returns a `RuleRecord` object.
 ## RELATED LINKS
 
 [Get-PSRule](Get-PSRule.md)
-[Test-PSRule](Test-PSRule.md)
+[Test-PSRuleTarget](Test-PSRuleTarget.md)

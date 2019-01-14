@@ -1,11 +1,11 @@
 ---
 external help file: PSRule-help.xml
 Module Name: PSRule
-online version: https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Test-PSRule.md
+online version: https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Test-PSRuleTarget.md
 schema: 2.0.0
 ---
 
-# Test-PSRule
+# Test-PSRuleTarget
 
 ## SYNOPSIS
 
@@ -14,7 +14,7 @@ Pass or fail pipeline objects against matching rules.
 ## SYNTAX
 
 ```text
-Test-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
+Test-PSRuleTarget [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
  [-Option <PSRuleOption>] [<CommonParameters>]
 ```
 
@@ -36,7 +36,7 @@ PSRule uses the following logic to determine overall pass or fail for an object:
 ### Example 1
 
 ```powershell
-@{ Name = 'Item 1' } | Test-PSRule;
+@{ Name = 'Item 1' } | Test-PSRuleTarget;
 ```
 
 Evaluate a simple hashtable on the pipeline against rules loaded from the current working path.

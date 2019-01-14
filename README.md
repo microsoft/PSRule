@@ -142,7 +142,7 @@ The following commands exist in the `PSRule` module:
 - [Invoke-PSRule](docs/commands/PSRule/en-US/Invoke-PSRule.md)
 - [Get-PSRule](docs/commands/PSRule/en-US/Get-PSRule.md)
 - [New-PSRuleOption](docs/commands/PSRule/en-US/New-PSRuleOption.md)
-- [Test-PSRule](docs/commands/PSRule/en-US/Test-PSRule.md)
+- [Test-PSRuleTarget](docs/commands/PSRule/en-US/Test-PSRuleTarget.md)
 
 ### Concepts
 

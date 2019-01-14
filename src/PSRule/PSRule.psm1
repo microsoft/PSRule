@@ -143,7 +143,7 @@ function Invoke-PSRule {
 }
 
 # .ExternalHelp PSRule-Help.xml
-function Test-PSRule {
+function Test-PSRuleTarget {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
     param (
@@ -169,7 +169,7 @@ function Test-PSRule {
     )
 
     begin {
-        Write-Verbose -Message "[Test-PSRule] BEGIN::";
+        Write-Verbose -Message "[Test-PSRuleTarget] BEGIN::";
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -222,7 +222,7 @@ function Test-PSRule {
         if ($Null -ne $pipeline) {
             $pipeline.Dispose();
         }
-        Write-Verbose -Message "[Test-PSRule] END::";
+        Write-Verbose -Message "[Test-PSRuleTarget] END::";
     }
 }
 
@@ -594,6 +594,6 @@ InitEditorServices;
 # Export module
 #
 
-Export-ModuleMember -Function 'Rule','Invoke-PSRule','Test-PSRule','Get-PSRule','New-PSRuleOption';
+Export-ModuleMember -Function 'Rule','Invoke-PSRule','Test-PSRuleTarget','Get-PSRule','New-PSRuleOption';
 
 # EOM

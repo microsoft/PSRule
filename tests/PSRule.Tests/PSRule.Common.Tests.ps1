@@ -325,9 +325,9 @@ Describe 'Invoke-PSRule' {
 
 #endregion Invoke-PSRule
 
-#region Test-PSRule
+#region Test-PSRuleTarget
 
-Describe 'Test-PSRule' {
+Describe 'Test-PSRuleTarget' {
     Context 'With defaults' {
         $testObject = [PSCustomObject]@{
             Name = "TestObject1"
@@ -335,14 +335,14 @@ Describe 'Test-PSRule' {
 
         It 'Returns boolean' {
             # Check passing rule
-            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
+            $result = $testObject | Test-PSRuleTarget -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.Boolean;
             $result | Should -Be $True;
 
             # Check result with one failing rule
             $option = @{ 'Execution.InconclusiveWarning' = $False };
-            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1', 'FromFile2', 'FromFile3' -Option $option;
+            $result = $testObject | Test-PSRuleTarget -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1', 'FromFile2', 'FromFile3' -Option $option;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.Boolean;
             $result | Should -Be $False;
@@ -350,7 +350,7 @@ Describe 'Test-PSRule' {
 
         It 'Returns warnings on inconclusive' {
             # Check result with an inconculsive rule
-            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile3' -WarningVariable outWarnings -WarningAction SilentlyContinue;
+            $result = $testObject | Test-PSRuleTarget -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile3' -WarningVariable outWarnings -WarningAction SilentlyContinue;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.Boolean;
             $result | Should -Be $False;
@@ -359,7 +359,7 @@ Describe 'Test-PSRule' {
 
         It 'Returns warnings on no rules' {
             # Check result with no matching rules
-            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'NotARule' -WarningVariable outWarnings -WarningAction SilentlyContinue;
+            $result = $testObject | Test-PSRuleTarget -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'NotARule' -WarningVariable outWarnings -WarningAction SilentlyContinue;
             $result | Should -BeNullOrEmpty;
             $outWarnings | Should -Be 'Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.';
         }
@@ -369,7 +369,7 @@ Describe 'Test-PSRule' {
             if (!(Test-Path -Path $emptyPath)) {
                 $Null = New-Item -Path $emptyPath -ItemType Directory -Force;
             }
-            $Null = $testObject | Test-PSRule -Path $emptyPath -WarningVariable outWarnings -WarningAction SilentlyContinue;
+            $Null = $testObject | Test-PSRuleTarget -Path $emptyPath -WarningVariable outWarnings -WarningAction SilentlyContinue;
             $warningMessages = $outwarnings.ToArray();
             $warningMessages.Length | Should -Be 1;
             $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
@@ -378,7 +378,7 @@ Describe 'Test-PSRule' {
 
         It 'Returns warnings on no processed rules' {
             # Check result with no rules matching precondition
-            $result = $testObject | Test-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithPreconditionFalse' -WarningVariable outWarnings -WarningAction SilentlyContinue;
+            $result = $testObject | Test-PSRuleTarget -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithPreconditionFalse' -WarningVariable outWarnings -WarningAction SilentlyContinue;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.Boolean;
             $result | Should -Be $True;
@@ -387,7 +387,7 @@ Describe 'Test-PSRule' {
     }
 }
 
-#endregion Test-PSRule
+#endregion Test-PSRuleTarget
 
 #region Get-PSRule
 
