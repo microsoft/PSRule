@@ -25,10 +25,11 @@ Describe 'PSRule -- Match keyword' -Tag 'Match' {
                 [PSCustomObject]@{ PhoneNumber = '0400 000 000' }
                 [PSCustomObject]@{ PhoneNumber = '000' }
                 @{ PhoneNumber = '000' }
+                @{ Value = @{ PhoneNumber = '0400 000 000' }}
             )
             $result = $goodObjects | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'MatchTest';
             $result | Should -Not -BeNullOrEmpty;
-            $result.Count | Should -Be 3;
+            $result.Count | Should -Be 4;
             $result.Outcome | Should -BeIn 'Pass';
             $result.RuleName | Should -BeIn 'MatchTest';
 

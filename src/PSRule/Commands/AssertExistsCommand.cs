@@ -28,14 +28,14 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            var inputObject = GetTargetObject();
+            var targetObject = GetTargetObject();
 
             bool expected = !Not;
             bool actual = Not;
 
             for (var i = 0; i < Field.Length && actual != expected; i++)
             {
-                actual = GetField(inputObject, Field[i], CaseSensitive, out object fieldValue);
+                actual = ObjectHelper.GetField(targetObject: targetObject, name: Field[i], caseSensitive: CaseSensitive, value: out object fieldValue);
 
                 if (actual == expected)
                 {

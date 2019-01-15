@@ -40,11 +40,11 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            var inputObject = GetTargetObject();
+            var targetObject = GetTargetObject();
 
             var result = false;
 
-            if (GetField(inputObject, Field, false, out object fieldValue))
+            if (ObjectHelper.GetField(targetObject: targetObject, name: Field, caseSensitive: false, value: out object fieldValue))
             {
                 for (var i = 0; i < _Expressions.Length && !result; i++)
                 {

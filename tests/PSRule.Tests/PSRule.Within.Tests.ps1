@@ -24,11 +24,12 @@ Describe 'PSRule -- Within keyword' -Tag 'Within' {
                 [PSCustomObject]@{ Title = 'mr' }
                 [PSCustomObject]@{ Title = 'unknown' }
                 @{ Title = 'mr' }
+                @{ Value = @{ Title = 'Mr' } }
             )
 
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithinTest' -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
-            $result.Count | Should -Be 3;
+            $result.Count | Should -Be 4;
             $result.RuleName | Should -BeIn 'WithinTest'
             $result[0].IsSuccess() | Should -Be $True;
             $result[1].IsSuccess() | Should -Be $False;

@@ -118,34 +118,52 @@ Rule 'HintTest' {
 Rule 'ExistsTest' -Tag @{ keyword = 'Exists' } {
     Exists 'Name'
     Exists -Not 'NotName'
+    Exists 'Value.Value1'
+    Exists 'NotName','Value'
 }
 
 # Description: Test for Exists keyword
 Rule 'ExistsTestNegative' -Tag @{ keyword = 'Exists' } {
-    Exists 'NotName'
-    Exists 'name' -CaseSensitive
+    AnyOf {
+        Exists 'NotName'
+        Exists 'NotName1','NotName2'
+        Exists 'name' -CaseSensitive
+        Exists 'NotValue.Value1'
+    }
 }
 
+# Description: Test for Within keyword
 Rule 'WithinTest' -Tag @{ keyword = 'Within' } {
-    Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
+    AnyOf {
+        Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
+        Within 'Value.Title' 'Mr'
+    }
 }
 
+# Description: Test for Within keyword
 Rule 'WithinTestCaseSensitive' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms' -CaseSensitive
 }
 
+# Description: Test for Match keyword
 Rule 'MatchTest' -Tag @{ keyword = 'Match' } {
-    Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$', '^(0{1,3})$'
+    AnyOf {
+        Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$', '^(0{1,3})$'
+        Match 'Value.PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$'
+    }
 }
 
+# Description: Test for Match keyword
 Rule 'MatchTestCaseSensitive' -Tag @{ keyword = 'Match' } {
     Match 'Title' '^(Mr|Miss|Mrs|Ms)$' -CaseSensitive
 }
 
+# Description: Test for TypeOf keyword
 Rule 'TypeOfTest' {
     TypeOf 'System.Collections.Hashtable', 'PSRule.Test.OtherType'
 }
 
+# Description: Test for AllOf keyword
 Rule 'AllOfTest' {
     AllOf {
         $True
@@ -153,6 +171,7 @@ Rule 'AllOfTest' {
     }
 }
 
+# Description: Test for AllOf keyword
 Rule 'AllOfTestNegative' {
     AllOf {
         $True
@@ -160,6 +179,7 @@ Rule 'AllOfTestNegative' {
     }
 }
 
+# Description: Test for AnyOf keyword
 Rule 'AnyOfTest' {
     AnyOf {
         $True
@@ -168,6 +188,7 @@ Rule 'AnyOfTest' {
     }
 }
 
+# Description: Test for AnyOf keyword
 Rule 'AnyOfTestNegative' {
     AnyOf {
         $False
