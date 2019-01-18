@@ -149,6 +149,9 @@ The following commands exist in the `PSRule` module:
 The following conceptual topics exist in the `PSRule` module:
 
 - [Options](docs/concepts/PSRule/en-US/about_PSRule_Options.md)
+  - [Baseline.RuleName](docs/concepts/PSRule/en-US/about_PSRule_Options.md#baselinerulename)
+  - [Baseline.Exclude](docs/concepts/PSRule/en-US/about_PSRule_Options.md#baselineexclude)
+  - [Baseline.Configuration](docs/concepts/PSRule/en-US/about_PSRule_Options.md#baselineconfiguration)
   - [Binding.TargetName](docs/concepts/PSRule/en-US/about_PSRule_Options.md#targetname-binding)
   - [Execution.LanguageMode](docs/concepts/PSRule/en-US/about_PSRule_Options.md#language-mode)
   - [Execution.InconclusiveWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inconclusive-warning)

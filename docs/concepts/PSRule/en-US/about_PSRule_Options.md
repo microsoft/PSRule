@@ -12,9 +12,9 @@ PSRule lets you use options when calling `Invoke-PSRule` to change how rules are
 
 The following options are available for use:
 
-- [Baseline.RuleName](#baseline.rulename)
-- [Baseline.Exclude](#baseline.exclude)
-- [Baseline.Configuration](#baseline.configuration)
+- [Baseline.RuleName](#baselinerulename)
+- [Baseline.Exclude](#baselineexclude)
+- [Baseline.Configuration](#baselineconfiguration)
 - [Binding.TargetName](#targetname-binding)
 - [Execution.LanguageMode](#language-mode)
 - [Execution.InconclusiveWarning](#inconclusive-warning)
