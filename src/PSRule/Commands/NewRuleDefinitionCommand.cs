@@ -45,6 +45,12 @@ namespace PSRule.Commands
         [Parameter(Mandatory = false)]
         public string[] DependsOn { get; set; }
 
+        /// <summary>
+        /// A set of default configuration values.
+        /// </summary>
+        [Parameter(Mandatory = false)]
+        public Hashtable Configure { get; set; }
+
         protected override void ProcessRecord()
         {
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
@@ -66,7 +72,8 @@ namespace PSRule.Commands
                 description: metadata.Description,
                 condition: ps,
                 tag: tag,
-                dependsOn: RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName)
+                dependsOn: RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName),
+                configuration: Configure
             );
 
             WriteObject(block);

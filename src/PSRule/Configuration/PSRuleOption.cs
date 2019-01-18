@@ -26,6 +26,7 @@ namespace PSRule.Configuration
         public PSRuleOption()
         {
             // Set defaults
+            Baseline = new BaselineOption();
             Binding = new BindingOption();
             Suppression = new SuppressionOption();
             Execution = new ExecutionOption();
@@ -35,6 +36,7 @@ namespace PSRule.Configuration
         public PSRuleOption(PSRuleOption option)
         {
             // Set from existing option instance
+            Baseline = new BaselineOption(option.Baseline);
             Binding = new BindingOption(option.Binding);
             Suppression = new SuppressionOption(option.Suppression);
             Execution = new ExecutionOption(option.Execution);
@@ -48,6 +50,11 @@ namespace PSRule.Configuration
         /// A callback that is overridden by PowerShell so that the current working path can be retrieved.
         /// </summary>
         public static PathDelegate GetWorkingPath = () => Directory.GetCurrentDirectory();
+
+        /// <summary>
+        /// Options that specify the rules to evaluate or exclude and their configuration.
+        /// </summary>
+        public BaselineOption Baseline { get; set; }
 
         /// <summary>
         /// Options tht affect property binding of TargetName.
@@ -133,6 +140,30 @@ namespace PSRule.Configuration
             // Start loading matching values
 
             object value;
+
+            if (index.TryGetValue("baseline.rulename", out value))
+            {
+                if (value.GetType().IsArray)
+                {
+                    option.Baseline.RuleName = ((object[])value).OfType<string>().ToArray();
+                }
+                else
+                {
+                    option.Baseline.RuleName = new string[] { value.ToString() };
+                }
+            }
+
+            if (index.TryGetValue("baseline.exclude", out value))
+            {
+                if (value.GetType().IsArray)
+                {
+                    option.Baseline.Exclude = ((object[])value).OfType<string>().ToArray();
+                }
+                else
+                {
+                    option.Baseline.Exclude = new string[] { value.ToString() };
+                }
+            }
 
             if (index.TryGetValue("binding.targetname", out value))
             {

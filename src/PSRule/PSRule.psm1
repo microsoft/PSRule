@@ -100,8 +100,12 @@ function Invoke-PSRule {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
 
+        if ($PSBoundParameters.ContainsKey('Name')) {
+            $Option.Baseline.RuleName = $Name;
+        }
+
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
-        $builder.FilterBy($Name, $Tag);
+        $builder.FilterBy($Tag);
         $builder.Source($sourceFiles);
         $builder.Limit($Outcome);
 
@@ -197,8 +201,12 @@ function Test-PSRuleTarget {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
 
+        if ($PSBoundParameters.ContainsKey('Name')) {
+            $Option.Baseline.RuleName = $Name;
+        }
+
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
-        $builder.FilterBy($Name, $Tag);
+        $builder.FilterBy($Tag);
         $builder.Source($sourceFiles);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
@@ -281,8 +289,12 @@ function Get-PSRule {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
 
+        if ($PSBoundParameters.ContainsKey('Name')) {
+            $Option.Baseline.RuleName = $Name;
+        }
+
         $builder = [PSRule.Pipeline.PipelineBuilder]::Get().Configure($Option);
-        $builder.FilterBy($Name, $Tag);
+        $builder.FilterBy($Tag);
         $builder.Source($sourceFiles);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
@@ -321,6 +333,9 @@ function New-PSRuleOption {
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.BaselineConfiguration]$BaselineConfiguration,
+
+        [Parameter(Mandatory = $False)]
         [PSRule.Configuration.SuppressionOption]$SuppressTargetName,
 
         [Parameter(Mandatory = $False)]
@@ -350,6 +365,10 @@ function New-PSRuleOption {
             Write-Verbose -Message "Attempting to read: $Path";
 
             $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $True);
+        }
+
+        if ($PSBoundParameters.ContainsKey('BaselineConfiguration')) {
+            $Option.Baseline.Configuration = $BaselineConfiguration;
         }
 
         if ($PSBoundParameters.ContainsKey('SuppressTargetName')) {

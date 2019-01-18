@@ -10,17 +10,19 @@ namespace PSRule.Host
     /// </summary>
     internal sealed class RuleVariable : PSVariable
     {
+        private readonly RuntimeRuleView _View;
+
         public RuleVariable(string name)
             : base(name, null, ScopedItemOptions.ReadOnly)
         {
-
+            _View = new RuntimeRuleView();
         }
 
         public override object Value
         {
             get
             {
-                return PipelineContext.CurrentThread.RuleRecord;
+                return _View;
             }
         }
     }
@@ -50,7 +52,7 @@ namespace PSRule.Host
         /// <summary>
         /// Define language commands.
         /// </summary>
-        private static SessionStateCmdletEntry[] BuiltInCmdlets = new SessionStateCmdletEntry[]
+        private readonly static SessionStateCmdletEntry[] BuiltInCmdlets = new SessionStateCmdletEntry[]
         {
             new SessionStateCmdletEntry("New-RuleDefinition", typeof(NewRuleDefinitionCommand), null),
             new SessionStateCmdletEntry("Set-PSRuleHint", typeof(SetPSRuleHintCommand), null),
@@ -65,25 +67,17 @@ namespace PSRule.Host
         /// <summary>
         /// Define language aliases.
         /// </summary>
-        private static SessionStateAliasEntry[] BuiltInAliases
+        private readonly static SessionStateAliasEntry[] BuiltInAliases = new SessionStateAliasEntry[]
         {
-            get
-            {
-                const ScopedItemOptions ReadOnly = ScopedItemOptions.ReadOnly;
-
-                return new SessionStateAliasEntry[]
-                {
-                    new SessionStateAliasEntry("rule", "New-RuleDefinition", string.Empty, ReadOnly),
-                    new SessionStateAliasEntry("hint", "Set-PSRuleHint", string.Empty, ReadOnly),
-                    new SessionStateAliasEntry("exists", "Assert-Exists", string.Empty, ReadOnly),
-                    new SessionStateAliasEntry("within", "Assert-Within", string.Empty, ReadOnly),
-                    new SessionStateAliasEntry("match", "Assert-Match", string.Empty, ReadOnly),
-                    new SessionStateAliasEntry("typeof", "Assert-TypeOf", string.Empty, ReadOnly),
-                    new SessionStateAliasEntry("allof", "Assert-AllOf", string.Empty, ReadOnly),
-                    new SessionStateAliasEntry("anyof", "Assert-AnyOf", string.Empty, ReadOnly),
-                };
-            }
-        }
+            new SessionStateAliasEntry("rule", "New-RuleDefinition", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry("hint", "Set-PSRuleHint", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry("exists", "Assert-Exists", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry("within", "Assert-Within", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry("match", "Assert-Match", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry("typeof", "Assert-TypeOf", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry("allof", "Assert-AllOf", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry("anyof", "Assert-AnyOf", string.Empty, ScopedItemOptions.ReadOnly),
+        };
 
         /// <summary>
         /// Create a default session state.

@@ -1,5 +1,6 @@
 ﻿using PSRule.Host;
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Management.Automation;
@@ -16,7 +17,7 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId} @{SourcePath}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     {
-        public RuleBlock(string sourcePath, string ruleName, string description, PowerShell condition, TagSet tag, string[] dependsOn)
+        public RuleBlock(string sourcePath, string ruleName, string description, PowerShell condition, TagSet tag, string[] dependsOn, Hashtable configuration)
         {
             SourcePath = sourcePath;
             RuleName = ruleName;
@@ -28,6 +29,7 @@ namespace PSRule.Rules
             Condition = condition;
             Tag = tag;
             DependsOn = dependsOn;
+            Configuration = configuration;
         }
 
         /// <summary>
@@ -61,9 +63,17 @@ namespace PSRule.Rules
         public readonly string[] DependsOn;
 
         /// <summary>
-        /// One or more tags assigned to block. Tags are additional metadata used to select rules to execute and identify results.
+        /// Tags assigned to block. Tags are additional metadata used to select rules to execute and identify results.
         /// </summary>
         public readonly TagSet Tag;
+
+        /// <summary>
+        /// Configuration defaults for the rule definition.
+        /// </summary>
+        /// <remarks>
+        /// These defaults are used when the value does not exist in the baseline configuration.
+        /// </remarks>
+        public readonly Hashtable Configuration;
 
         string ILanguageBlock.SourcePath => SourcePath;
 

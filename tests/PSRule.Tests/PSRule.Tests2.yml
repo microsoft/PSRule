@@ -1,5 +1,14 @@
 # These are options for unit tests
 
+# Configure baseline
+baseline:
+  ruleName:
+  - rule1
+  - rule2
+  exclude:
+  - rule3
+  - rule4
+
 # Configure TargetName binding
 binding:
   targetName:

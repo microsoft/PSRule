@@ -25,10 +25,10 @@ namespace PSRule.Pipeline
             : base(context, option, path, filter)
         {
             _Outcome = outcome;
-            _RuleGraph = HostHelper.GetRuleBlockGraph(_Option, _Path, _Filter);
+            _RuleGraph = HostHelper.GetRuleBlockGraph(option, _Path, _Filter);
             _Summary = new Dictionary<string, RuleSummaryRecord>();
             _ResultFormat = resultFormat;
-            _SuppressionFilter = new RuleSuppressionFilter(_Option.Suppression);
+            _SuppressionFilter = new RuleSuppressionFilter(option.Suppression);
             RuleCount = _RuleGraph.Count;
 
             if (RuleCount == 0)
