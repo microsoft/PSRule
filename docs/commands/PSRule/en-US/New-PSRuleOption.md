@@ -14,8 +14,9 @@ Create options to configure PSRule execution.
 ## SYNTAX
 
 ```text
-New-PSRuleOption [[-Option] <PSRuleOption>] [-SuppressTargetName <SuppressionOption>]
- [-BindTargetName <BindTargetName[]>] [[-Path] <String>] [<CommonParameters>]
+New-PSRuleOption [[-Option] <PSRuleOption>] [-BaselineConfiguration <BaselineConfiguration>]
+ [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>] [[-Path] <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -63,6 +64,14 @@ $option = New-PSRuleOption -BindTargetName $bindFn;
 
 Creates an options object that uses a custom function to bind the _TargetName_ of an object.
 
+### Example 4
+
+```powershell
+$option = New-PSRuleOption -BaselineConfiguration @{ 'appServiceMinInstanceCount' = 2 };
+```
+
+Create an options object that sets the `appServiceMinInstanceCount` baseline configuration option to `2`.
+
 ## PARAMETERS
 
 ### -Option
@@ -101,7 +110,7 @@ Accept wildcard characters: False
 
 ### -SuppressTargetName
 
-Configures suppression for a list of objects by TargetName. Option also accepts a hashtable to configure rule suppression.
+Configures suppression for a list of objects by TargetName. SuppressTargetName also accepts a hashtable to configure rule suppression.
 
 For more information on PSRule options see about_PSRule_Options.
 
@@ -125,6 +134,24 @@ For more information on PSRule options see about_PSRule_Options.
 
 ```yaml
 Type: BindTargetName[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -BaselineConfiguration
+
+Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values. BaselineConfiguration also accepts a hashtable of configuration values as key/ value pairs.
+
+For more information on PSRule options see about_PSRule_Options.
+
+```yaml
+Type: BaselineConfiguration
 Parameter Sets: (All)
 Aliases:
 

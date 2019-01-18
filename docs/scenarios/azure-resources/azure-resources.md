@@ -30,7 +30,7 @@ In the example below:
 
 - We use `storageAccounts.UseHttps` directly after the `Rule` keyword to name the rule definition. Each rule must be named uniquely.
 - The `# Description: ` comment is used to add additional metadata interpreted by PSRule.
-- One or more conditions are defined with the curly braces `{ }`.
+- One or more conditions are defined within the curly braces `{ }`.
 - The rule definition is saved within a file named `storageAccounts.Rule.ps1`.
 
 ```powershell

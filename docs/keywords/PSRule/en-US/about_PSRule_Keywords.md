@@ -31,7 +31,7 @@ To define a Rule use the `Rule` keyword followed by a name and a pair of squiggl
 Syntax:
 
 ```text
-Rule [-Name] <string> [-Tag <hashtable>] [-If <scriptBlock>] [-DependsOn <string[]>] [-Body] {
+Rule [-Name] <string> [-Tag <hashtable>] [-If <scriptBlock>] [-DependsOn <string[]>] [-Configure <hashtable>] [-Body] {
     ...
 }
 ```
@@ -40,6 +40,7 @@ Rule [-Name] <string> [-Tag <hashtable>] [-If <scriptBlock>] [-DependsOn <string
 - `Tag` - A hashtable of key/ value metadata that can be used to filter and identify rules and rule results.
 - `If` - A precondition that must evaluate to `$True` before the rule is executed.
 - `DependsOn` - A list of rules this rule depends on. Rule dependencies must execute successfully before this rule is executed.
+- `Configure` - A set of default configuration values. These values are only used when the baseline configuration does not contain the key.
 - `Body` - A script block definition of the rule containing one or more PSRule keywords and PowerShell expressions.
 
 Examples:
@@ -47,15 +48,22 @@ Examples:
 ```powershell
 # This rule checks for the presence of a name field
 Rule 'NameMustExist' {
-    ...
+    Exists 'Name'
 }
 ```
 
 ```powershell
-# This rule checks that the name field is valid, when the rule NameMustExist is successful
-Rule 'NameIsValid' -DependsOn 'NameMustExist' {
-    ...
+# This rule checks that the title field is valid, when the rule NameMustExist is successful
+Rule 'TitleIsValid' -DependsOn 'NameMustExist' {
+    Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
+```
+
+```powershell
+# This rule uses a threshold stored as $Rule.Configuration.minInstanceCount
+Rule 'HasMinInstances' {
+    $TargetObject.Sku.capacity -ge $Rule.Configuration.minInstanceCount
+} -Configure @{ minInstanceCount = 2 }
 ```
 
 ### Exists
@@ -130,6 +138,7 @@ Within [-Field] <string> [-AllowedValue] <PSObject[]]> [-CaseSensitive]
 Examples:
 
 ```powershell
+# Ensure that the title field has one of the allowed values
 Rule 'validateTitle' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
@@ -161,11 +170,7 @@ Examples:
 # The Name field must exist and have a value of either John or Jane
 AllOf {
     Exists 'Name'
-
-    Within 'Name' {
-        'John'
-        'Jane'
-    }
+    Within 'Name' 'John', 'Jane'
 }
 ```
 
@@ -193,9 +198,8 @@ Examples:
 
 ```powershell
 # The Last or Surname field must exist
-AllOf {
+AnyOf {
     Exists 'Last'
-
     Exists 'Surname'
 }
 ```

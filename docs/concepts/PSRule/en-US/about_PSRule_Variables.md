@@ -29,11 +29,28 @@ The following section properties are available for public read access:
 - `RuleId` - A unique identifier for the rule.
 - `TargetObject` - The object currently being processed on the pipeline.
 - `TargetName` - The name of the object currently being processed on the pipeline. This property will automatically bind to `TargetName` or `Name` properties of the object if they exist.
+- `Configuration` - Configuration values set by a baseline.
 
 Syntax:
 
 ```powershell
 $Rule
+```
+
+Examples:
+
+```powershell
+# This rule determined if the target object matches the naming convention
+Rule 'resource.NamingConvention' {
+    $Rule.TargetName.ToLower() -ceq $Rule.TargetName
+}
+```
+
+```powershell
+# This rule uses a threshold stored as $Rule.Configuration.appServiceMinInstanceCount
+Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
+    $TargetObject.Sku.capacity -ge $Rule.Configuration.appServiceMinInstanceCount
+} -Configure @{ appServiceMinInstanceCount = 2 }
 ```
 
 ### TargetObject
@@ -46,6 +63,15 @@ Syntax:
 
 ```powershell
 $TargetObject
+```
+
+Examples:
+
+```powershell
+# Check that sku capacity is set to at least 2
+Rule 'HasMinInstances' {
+    $TargetObject.Sku.capacity -ge 2
+}
 ```
 
 ## NOTE
