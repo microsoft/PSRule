@@ -412,17 +412,24 @@ function Rule {
     param (
         # The name of the rule
         [Parameter(Position = 0, Mandatory = $True)]
-        [String]$RuleId,
+        [String]$Name,
 
         # The body of the rule
         [Parameter(Position = 1, Mandatory = $True)]
         [ScriptBlock]$Body,
 
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$Tag,
+
+        [Parameter(Mandatory = $False)]
+        [ScriptBlock]$If,
+
         # Any dependencies for this rule
         [Parameter(Mandatory = $False)]
         [String[]]$DependsOn,
 
-        [Hashtable]$Tag
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$Configure
     )
 
     begin {
@@ -432,8 +439,6 @@ function Rule {
 }
 
 function AllOf {
-
-
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
@@ -447,7 +452,6 @@ function AllOf {
 }
 
 function AnyOf {
-
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
@@ -461,7 +465,6 @@ function AnyOf {
 }
 
 function Exists {
-
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
@@ -481,7 +484,6 @@ function Exists {
 }
 
 function Match {
-
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
@@ -501,7 +503,6 @@ function Match {
 }
 
 function Within {
-
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
@@ -521,7 +522,6 @@ function Within {
 }
 
 function TypeOf {
-
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
