@@ -25,15 +25,18 @@ Describe 'PSRule -- Within keyword' -Tag 'Within' {
                 [PSCustomObject]@{ Title = 'unknown' }
                 @{ Title = 'mr' }
                 @{ Value = @{ Title = 'Mr' } }
+                @{ NotTitle = 'a different property' }
             )
 
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithinTest' -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
-            $result.Count | Should -Be 4;
+            $result.Count | Should -Be 5;
             $result.RuleName | Should -BeIn 'WithinTest'
             $result[0].IsSuccess() | Should -Be $True;
             $result[1].IsSuccess() | Should -Be $False;
             $result[2].IsSuccess() | Should -Be $True;
+            $result[3].IsSuccess() | Should -Be $True;
+            $result[4].IsSuccess() | Should -Be $False;
         }
 
         It 'Matches list with case sensitivity' {
