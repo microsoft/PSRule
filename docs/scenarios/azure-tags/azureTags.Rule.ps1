@@ -8,4 +8,5 @@ Rule 'environmentTag' {
 # Description: Has costCentre tag
 Rule 'costCentreTag' {
     Exists 'Tags.costCentre' -CaseSensitive
+    Match 'Tags.costCentre' '^([1-9][0-9]{4})$'
 }
