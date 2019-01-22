@@ -34,5 +34,13 @@ Describe 'PSRule -- Hint keyword' -Tag 'Hint' {
             $result.TargetName | Should -Be 'HintTarget';
             $result.Message | SHould -Be 'This is a message';
         }
+
+        It 'Uses description' {
+            $option = @{ 'Execution.InconclusiveWarning' = $False };
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Option $option -Name 'HintTestWithDescription' -Outcome All;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.RuleName | Should -Be 'HintTestWithDescription';
+            $result.Message | SHould -Be 'Test for Hint keyword';
+        }
     }
 }

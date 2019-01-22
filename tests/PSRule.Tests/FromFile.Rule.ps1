@@ -119,6 +119,11 @@ Rule 'HintTest' {
     Hint 'This is a message' -TargetName 'HintTarget'
 }
 
+# Description: Test for Hint keyword
+Rule 'HintTestWithDescription' {
+    $True
+}
+
 # Description: Test for Exists keyword
 Rule 'ExistsTest' -Tag @{ keyword = 'Exists' } {
     Exists 'Name'
