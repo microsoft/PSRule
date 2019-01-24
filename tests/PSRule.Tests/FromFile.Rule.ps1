@@ -1,3 +1,6 @@
+#
+# Pester unit test rules
+#
 
 # Description: Test rule 1
 Rule 'FromFile1' -Tag @{ category = "group1"; test = "Test1" } {

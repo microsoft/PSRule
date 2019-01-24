@@ -61,9 +61,7 @@ namespace PSRule.Pipeline
 
         public void UseCommandRuntime(ICommandRuntime2 commandRuntime)
         {
-            _Logger.OnWriteVerbose = commandRuntime.WriteVerbose;
-            _Logger.OnWriteWarning = commandRuntime.WriteWarning;
-            _Logger.OnWriteError = commandRuntime.WriteError;
+            UseCommandRuntime((ICommandRuntime)commandRuntime);
             _Logger.OnWriteInformation = commandRuntime.WriteInformation;
         }
 

@@ -85,6 +85,11 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $informationMessages[1] | Should -Be 'Rule information message';
         }
 
+        It 'Propagates PowerShell exceptions' {
+            $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFileWithException.Rule.ps1') -ErrorVariable outErrors -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
+            $outErrors | Should -Be 'You cannot call a method on a null-valued expression.';
+        }
+
         It 'Returns error with bad path' {
             { $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'NotAFile.ps1') } | Should -Throw -ExceptionType System.Management.Automation.ItemNotFoundException;
         }
