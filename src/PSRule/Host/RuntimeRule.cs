@@ -19,7 +19,7 @@ namespace PSRule.Host
             }
 
             // Check if value exists in Rule definition defaults
-            if (PipelineContext.CurrentThread.RuleBlock.Configuration == null || !PipelineContext.CurrentThread.RuleBlock.Configuration.ContainsKey(binder.Name))
+            if (PipelineContext.CurrentThread.RuleBlock == null || PipelineContext.CurrentThread.RuleBlock.Configuration == null || !PipelineContext.CurrentThread.RuleBlock.Configuration.ContainsKey(binder.Name))
             {
                 result = null;
                 return false;
