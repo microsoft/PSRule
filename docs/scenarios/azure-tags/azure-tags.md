@@ -2,6 +2,14 @@
 
 This is an example of how PSRule can be used to validate tags on Azure resources to match an internal tagging standards.
 
+This scenario covers the following:
+
+- Defining a basic rule.
+- Basic usage of `Exists`, `Within` and `Match` keywords.
+- Using configuration in a rule definition.
+- Setting configuration in YAML.
+- Running rules with configuration.
+
 In this scenario we will use a JSON file:
 
 - [`resources.json`](resources.json) - An export for the Azure resource properties saved for offline use.
@@ -11,13 +19,13 @@ To generate a similar `resources.json` file of your own, the use following comma
 ```powershell
 # Get all resources using the Az modules. Alternatively use Get-AzureRmResource if using AzureRm modules.
 # This command also requires authentication with Connect-AzAccount or Connect-AzureRmAccount
-Get-AzResource -ExpandProperties | ConvertTo-Json -Depth 10 | Set-Content -path .\resources.json;
+Get-AzResource -ExpandProperties | ConvertTo-Json -Depth 10 | Set-Content -Path .\resources.json;
 ```
 
 For this example we ran this command:
 
 ```powershell
-Get-AzResource -ExpandProperties | ConvertTo-Json -Depth 10 | Set-Content -path docs/scenarios/azure-resources/resources.json;
+Get-AzResource -ExpandProperties | ConvertTo-Json -Depth 10 | Set-Content -Path docs/scenarios/azure-resources/resources.json;
 ```
 
 ## Define rules
@@ -31,6 +39,7 @@ Our business rules for Azure resource tagging can be defined with the following 
 - The following mandatory tags will be used:
   - environment: An operational environment for systems and services. Valid environments are _production_, _testing_ and _development_.
   - costCentre: A allocation account with financial systems used for charging costs to a business unit. A cost centre is a number with 5 digits, and can't start with a 0.
+  - businessUnit: The name of the organizational unit or team that owns the application/ solution.
 
 To start we are going to define an `environmentTag` rule, which will ensure that the _environment_ tag exists and that the value only uses allowed values.
 
@@ -42,7 +51,7 @@ In the example below:
 - The rule definition is saved within a file named `azureTags.Rule.ps1`.
 
 ```powershell
-# Description: Has environment tag
+# Description: Resource must have environment tag
 Rule 'environmentTag' {
     # Rule conditions go here
 }
@@ -52,7 +61,7 @@ Rule 'environmentTag' {
 
 Conditions can be any valid PowerShell expression that results in a `$True` or `$False`, just like an `If` statement, but without specifically requiring the `If` keyword to be used.
 
-In `resources.json` one of our example storage accounts has the `Tags` property as shown below, this is how Azure Resource Manager stores tags of a resource. We will use this property as the basis of our rule to determine if the resource is tagged and what the tag value is.
+In `resources.json` one of our example storage accounts has the `Tags` property as shown below, this is how Azure Resource Manager stores tags of a resource. We will use this property as the basis of our rules to determine if the resource is tagged and what the tag value is.
 
 ```json
 {
@@ -77,7 +86,7 @@ In the example below:
   - `$False` - the _environment_ tag does not exist.
 
 ```powershell
-# Description: Has environment tag
+# Description: Resource must have environment tag
 Rule 'environmentTag' {
     Exists 'Tags.environment' -CaseSensitive
 }
@@ -96,7 +105,7 @@ In the example below:
   - `$False` - the _environment_ tag does not use one of the allowed values.
 
 ```powershell
-# Description: Has environment tag
+# Description: Resource must have environment tag
 Rule 'environmentTag' {
     Exists 'Tags.environment' -CaseSensitive
     Within 'Tags.environment' 'production', 'test', 'development' -CaseSensitive
@@ -115,7 +124,7 @@ In the example below:
   - `$False` - the _environment_ tag does not use one of the allowed values.
 
 ```powershell
-# Description: Has environment tag
+# Description: Resource must have environment tag
 Rule 'environmentTag' {
     Exists 'Tags.environment' -CaseSensitive
     $TargetObject.Tags.environment -cin 'production', 'test', 'development'
@@ -124,7 +133,7 @@ Rule 'environmentTag' {
 
 ### Tag value matches regular expression
 
-For our second rule `costCentreTag`, the value of the tag must be 5 numbers. We can validate this by using a regular expression.
+For our second rule `costCentreTag` the _costCentre_ tag value must be 5 numbers. We can validate this by using a regular expression.
 
 In the example below:
 
@@ -134,7 +143,7 @@ In the example below:
   - `$False` - the _costCentre_ tag value does not use match the regular expression.
 
 ```powershell
-# Description: Has costCentre tag
+# Description: Resource must have costCentre tag
 Rule 'costCentreTag' {
     Exists 'Tags.costCentre' -CaseSensitive
     Match 'Tags.costCentre' '^([1-9][0-9]{4})$'
@@ -152,11 +161,46 @@ The the example below:
   - `$False` - the _costCentre_ tag value does not use match the regular expression.
 
 ```powershell
-# Description: Has costCentre tag
+# Description: Resource must have costCentre tag
 Rule 'costCentreTag' {
     Exists 'Tags.costCentre' -CaseSensitive
     $TargetObject.Tags.costCentre -match '^([1-9][0-9]{4})$'
 }
+```
+
+### Use business unit name from configuration
+
+For our third rule `businessUnitTag` the _businessUnit_ must match a valid business unit. A list of business units will be referenced from configuration instead of hard coded in the rule.
+
+Configuration can be used within rule definitions by defining configuration in a YAML file then using the automatic `$Rule` variable.
+
+In the example below:
+
+- We use the `Within` keyword to check if the _businessUnit_ tag uses any of the allowed values.
+- `allowedBusinessUnits` configuration value can be referenced using the syntax `$Rule.Configuration.allowedBusinessUnits`.
+- The rule definition is defined in [azureTags.Rule.ps1].
+- YAML configuration is defined in [PSRule.yaml].
+
+An extract from _azureTags.Rule.ps1_:
+
+```powershell
+# Description: Resource must have businessUnit tag
+Rule 'businessUnitTag' {
+    Exists 'Tags.businessUnit' -CaseSensitive
+    Within 'Tags.businessUnit' $Rule.Configuration.allowedBusinessUnits
+}
+```
+
+An extract from _PSRule.yaml_:
+
+```yaml
+# Configure business units that are allowed
+baseline:
+  configuration:
+    allowedBusinessUnits:
+    - 'IT Operations'
+    - 'Finance'
+    - 'HR'
 ```
 
 ## Execute rules
@@ -170,12 +214,14 @@ For example:
 $resources = Get-Content -Path .\resources.json | ConvertFrom-Json;
 
 # For each resource
-$resources | Invoke-PSRule;
+$resources | Invoke-PSRule -Option .\PSRule.yaml;
 ```
 
 You will notice, we didn't specify the rule. By default PSRule will look for any `.Rule.ps1` files in the current working path.
 
 `Invoke-PSRule` also supports `-Path`, `-Name` and `-Tag` parameters that can be used to specify the path to look for rules in or filter rules if you want to run a subset of the rules.
+
+The `-Option` parameter allows us to specify a specific YAML configuration file to use.
 
 For this example we ran these commands:
 
@@ -183,17 +229,44 @@ For this example we ran these commands:
 # Read resources in from file
 $resources = Get-Content -Path docs/scenarios/azure-tags/resources.json | ConvertFrom-Json;
 
-# For each resource
-$resources | Invoke-PSRule -Path docs/scenarios/azure-tags;
+# Evaluate each resource against tagging rules
+$resources | Invoke-PSRule -Path docs/scenarios/azure-tags -Outcome Fail -Option docs/scenarios/azure-tags/PSRule.yaml;
 ```
 
 Our output looked like this:
 
 ```text
+   TargetName: storage
 
+RuleName                            Outcome    Message
+--------                            -------    -------
+costCentreTag                       Fail       Resource must have costCentre tag
+businessUnitTag                     Fail       Resource must have businessUnit tag
+
+
+   TargetName: web-app
+
+RuleName                            Outcome    Message
+--------                            -------    -------
+environmentTag                      Fail       Resource must have environment tag
+costCentreTag                       Fail       Resource must have costCentre tag
+
+
+   TargetName: web-app/staging
+
+RuleName                            Outcome    Message
+--------                            -------    -------
+environmentTag                      Fail       Resource must have environment tag
+costCentreTag                       Fail       Resource must have costCentre tag
 ```
+
+Any resources that don't follow the tagging standard are reported with an outcome of `Fail`.
 
 ## More information
 
-- [azureTags.Rule.ps1](azureTags.Rule.ps1) - Example rules for validating Azure resource tagging standard rules.
+- [azureTags.Rule.ps1] - Example rules for validating Azure resource tagging standard rules.
 - [resources.json](resources.json) - Offline export of Azure resources.
+- [PSRule.yaml] - A YAML configuration file for PSRule.
+
+[azureTags.Rule.ps1]: azureTags.Rule.ps1
+[PSRule.yaml]: PSRule.yaml

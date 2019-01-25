@@ -55,7 +55,9 @@
         "Location": "East US 2",
         "SubscriptionId": "00000000-0000-0000-0000-000000000000",
         "Tags": {
-            "environment": "production"
+            "environment": "production",
+            "costCentre": "12345",
+            "businessUnit": "IT Operations"
         },
         "Properties": {
             "name": "app-service-plan",
@@ -111,6 +113,9 @@
         "ResourceGroupName": "test-rg",
         "Location": "East US 2",
         "SubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "Tags": {
+            "businessUnit": "IT Operations"
+        },
         "Properties": {
             "name": "web-app",
             "state": "Running",
@@ -217,6 +222,9 @@
         "ResourceGroupName": "test-rg",
         "Location": "East US 2",
         "SubscriptionId": "00000000-0000-0000-0000-000000000000",
+        "Tags": {
+            "businessUnit": "IT Operations"
+        },
         "Properties": {
             "name": "web-app(staging)",
             "state": "Running",

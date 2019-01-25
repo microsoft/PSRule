@@ -15,14 +15,12 @@ Set-StrictMode -Version latest;
 $rootPath = $PWD;
 Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 
-Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd' {
-
+Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd','azure-resources' {
     $option = @{ 'Execution.NotProcessedWarning' = $False };
     $jsonData = Get-Content -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources/resources.json) | ConvertFrom-Json;
     $result = $jsonData | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources) -Option $option;
 
     Context 'App Service' {
-
         $scopedResult = $result | Where-Object -FilterScript { $_.RuleName -like 'appService*' };
 
         It 'Processes rules' {
@@ -40,7 +38,6 @@ Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd' {
     }
 
     Context 'Storage Accounts' {
-
         $scopedResult = $result | Where-Object -FilterScript { $_.RuleName -like 'storageAccounts.*' };
 
         It 'Processes rules' {
@@ -56,7 +53,35 @@ Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd' {
     }
 }
 
-Describe 'Scenarios -- fruit' -Tag 'EndToEnd' {
+Describe 'Scenarios -- azure-tags' -Tag 'EndToEnd','azure-tags' {
+    $option = Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-tags/PSRule.yaml;
+    $jsonData = Get-Content -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-tags/resources.json) | ConvertFrom-Json;
+    $result = $jsonData | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-tags) -Option $option;
+
+    Context 'Resources' {
+        It 'Processes rules' {
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 12;
+
+            # environmentTag
+            $filteredResults = ($result | Where-Object -FilterScript { $_.RuleName -eq 'environmentTag' });
+            ($filteredResults | Where-Object -FilterScript { $_.Outcome -eq 'Pass' }).TargetName | Should -BeIn 'storage', 'app-service-plan';
+            ($filteredResults | Where-Object -FilterScript { $_.Outcome -eq 'Fail' }).TargetName | Should -BeIn 'web-app', 'web-app/staging';
+
+            # costCentreTag
+            $filteredResults = ($result | Where-Object -FilterScript { $_.RuleName -eq 'costCentreTag' });
+            ($filteredResults | Where-Object -FilterScript { $_.Outcome -eq 'Pass' }).TargetName | Should -BeIn 'app-service-plan';
+            ($filteredResults | Where-Object -FilterScript { $_.Outcome -eq 'Fail' }).TargetName | Should -BeIn 'storage', 'web-app', 'web-app/staging';
+
+            # businessUnitTag
+            $filteredResults = ($result | Where-Object -FilterScript { $_.RuleName -eq 'businessUnitTag' });
+            ($filteredResults | Where-Object -FilterScript { $_.Outcome -eq 'Pass' }).TargetName | Should -BeIn 'app-service-plan', 'web-app', 'web-app/staging';
+            ($filteredResults | Where-Object -FilterScript { $_.Outcome -eq 'Fail' }).TargetName | Should -BeIn 'storage';
+        }
+    }
+}
+
+Describe 'Scenarios -- fruit' -Tag 'EndToEnd','fruit' {
 
     # Define objects
     $items = @();
