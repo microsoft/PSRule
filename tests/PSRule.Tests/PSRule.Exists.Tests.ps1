@@ -18,7 +18,6 @@ Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 $here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
-
     Context 'Exists' {
         $testObject = [PSCustomObject]@{
             Name = "TestObject1"

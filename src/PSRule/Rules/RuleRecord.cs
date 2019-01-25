@@ -12,7 +12,7 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
     public sealed class RuleRecord
     {
-        internal RuleRecord(string ruleId, string ruleName, PSObject targetObject, string targetName, TagSet tag, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
+        internal RuleRecord(string ruleId, string ruleName, PSObject targetObject, string targetName, TagSet tag, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, string message = null)
         {
             RuleId = ruleId;
             RuleName = ruleName;
@@ -26,6 +26,7 @@ namespace PSRule.Rules
 
             Outcome = outcome;
             OutcomeReason = reason;
+            Message = message;
         }
 
         /// <summary>

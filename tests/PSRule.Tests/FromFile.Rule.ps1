@@ -1,3 +1,6 @@
+#
+# Pester unit test rules
+#
 
 # Description: Test rule 1
 Rule 'FromFile1' -Tag @{ category = "group1"; test = "Test1" } {
@@ -109,43 +112,71 @@ Rule 'VariableTest' {
     $TargetObject.Name -eq $Rule.TargetName;
 }
 
+Rule 'WithConfiguration' {
+    $Rule.Configuration.Value1 -eq 1
+    $Rule.Configuration.Value2 -eq 2
+} -Configure @{ Value1 = 2; Value2 = 2; }
+
 # Description: Test for Hint keyword
 Rule 'HintTest' {
     Hint 'This is a message' -TargetName 'HintTarget'
+}
+
+# Description: Test for Hint keyword
+Rule 'HintTestWithDescription' {
+    $True
 }
 
 # Description: Test for Exists keyword
 Rule 'ExistsTest' -Tag @{ keyword = 'Exists' } {
     Exists 'Name'
     Exists -Not 'NotName'
+    Exists 'Value.Value1'
+    Exists 'NotName','Value'
 }
 
 # Description: Test for Exists keyword
 Rule 'ExistsTestNegative' -Tag @{ keyword = 'Exists' } {
-    Exists 'NotName'
-    Exists 'name' -CaseSensitive
+    AnyOf {
+        Exists 'NotName'
+        Exists 'NotName1','NotName2'
+        Exists 'name' -CaseSensitive
+        Exists 'NotValue.Value1'
+    }
 }
 
+# Description: Test for Within keyword
 Rule 'WithinTest' -Tag @{ keyword = 'Within' } {
-    Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
+    AnyOf {
+        Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
+        Within 'Value.Title' 'Mr'
+    }
 }
 
+# Description: Test for Within keyword
 Rule 'WithinTestCaseSensitive' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms' -CaseSensitive
 }
 
+# Description: Test for Match keyword
 Rule 'MatchTest' -Tag @{ keyword = 'Match' } {
-    Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$', '^(0{1,3})$'
+    AnyOf {
+        Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$', '^(0{1,3})$'
+        Match 'Value.PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$'
+    }
 }
 
+# Description: Test for Match keyword
 Rule 'MatchTestCaseSensitive' -Tag @{ keyword = 'Match' } {
     Match 'Title' '^(Mr|Miss|Mrs|Ms)$' -CaseSensitive
 }
 
+# Description: Test for TypeOf keyword
 Rule 'TypeOfTest' {
     TypeOf 'System.Collections.Hashtable', 'PSRule.Test.OtherType'
 }
 
+# Description: Test for AllOf keyword
 Rule 'AllOfTest' {
     AllOf {
         $True
@@ -153,6 +184,7 @@ Rule 'AllOfTest' {
     }
 }
 
+# Description: Test for AllOf keyword
 Rule 'AllOfTestNegative' {
     AllOf {
         $True
@@ -160,6 +192,7 @@ Rule 'AllOfTestNegative' {
     }
 }
 
+# Description: Test for AnyOf keyword
 Rule 'AnyOfTest' {
     AnyOf {
         $True
@@ -168,6 +201,7 @@ Rule 'AnyOfTest' {
     }
 }
 
+# Description: Test for AnyOf keyword
 Rule 'AnyOfTestNegative' {
     AnyOf {
         $False

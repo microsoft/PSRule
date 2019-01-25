@@ -100,8 +100,12 @@ function Invoke-PSRule {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
 
+        if ($PSBoundParameters.ContainsKey('Name')) {
+            $Option.Baseline.RuleName = $Name;
+        }
+
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
-        $builder.FilterBy($Name, $Tag);
+        $builder.FilterBy($Tag);
         $builder.Source($sourceFiles);
         $builder.Limit($Outcome);
 
@@ -197,8 +201,12 @@ function Test-PSRuleTarget {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
 
+        if ($PSBoundParameters.ContainsKey('Name')) {
+            $Option.Baseline.RuleName = $Name;
+        }
+
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
-        $builder.FilterBy($Name, $Tag);
+        $builder.FilterBy($Tag);
         $builder.Source($sourceFiles);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
@@ -281,8 +289,12 @@ function Get-PSRule {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
 
+        if ($PSBoundParameters.ContainsKey('Name')) {
+            $Option.Baseline.RuleName = $Name;
+        }
+
         $builder = [PSRule.Pipeline.PipelineBuilder]::Get().Configure($Option);
-        $builder.FilterBy($Name, $Tag);
+        $builder.FilterBy($Tag);
         $builder.Source($sourceFiles);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
@@ -321,6 +333,9 @@ function New-PSRuleOption {
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.BaselineConfiguration]$BaselineConfiguration,
+
+        [Parameter(Mandatory = $False)]
         [PSRule.Configuration.SuppressionOption]$SuppressTargetName,
 
         [Parameter(Mandatory = $False)]
@@ -350,6 +365,10 @@ function New-PSRuleOption {
             Write-Verbose -Message "Attempting to read: $Path";
 
             $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $True);
+        }
+
+        if ($PSBoundParameters.ContainsKey('BaselineConfiguration')) {
+            $Option.Baseline.Configuration = $BaselineConfiguration;
         }
 
         if ($PSBoundParameters.ContainsKey('SuppressTargetName')) {
@@ -393,17 +412,24 @@ function Rule {
     param (
         # The name of the rule
         [Parameter(Position = 0, Mandatory = $True)]
-        [String]$RuleId,
+        [String]$Name,
 
         # The body of the rule
         [Parameter(Position = 1, Mandatory = $True)]
         [ScriptBlock]$Body,
 
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$Tag,
+
+        [Parameter(Mandatory = $False)]
+        [ScriptBlock]$If,
+
         # Any dependencies for this rule
         [Parameter(Mandatory = $False)]
         [String[]]$DependsOn,
 
-        [Hashtable]$Tag
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$Configure
     )
 
     begin {
@@ -413,8 +439,6 @@ function Rule {
 }
 
 function AllOf {
-
-
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
@@ -428,7 +452,6 @@ function AllOf {
 }
 
 function AnyOf {
-
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
@@ -442,7 +465,6 @@ function AnyOf {
 }
 
 function Exists {
-
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
@@ -462,7 +484,6 @@ function Exists {
 }
 
 function Match {
-
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
@@ -482,7 +503,6 @@ function Match {
 }
 
 function Within {
-
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
@@ -502,7 +522,6 @@ function Within {
 }
 
 function TypeOf {
-
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]

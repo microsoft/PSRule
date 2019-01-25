@@ -27,7 +27,7 @@ $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 
 #region Invoke-PSRule
 
-Describe 'Invoke-PSRule' {
+Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
     Context 'With defaults' {
         $testObject = [PSCustomObject]@{
             Name = "TestObject1"
@@ -83,6 +83,11 @@ Describe 'Invoke-PSRule' {
             $informationMessages.Length | Should -Be 2;
             $informationMessages[0] | Should -Be 'Script information message';
             $informationMessages[1] | Should -Be 'Rule information message';
+        }
+
+        It 'Propagates PowerShell exceptions' {
+            $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFileWithException.Rule.ps1') -ErrorVariable outErrors -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
+            $outErrors | Should -Be 'You cannot call a method on a null-valued expression.';
         }
 
         It 'Returns error with bad path' {
@@ -159,6 +164,13 @@ Describe 'Invoke-PSRule' {
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
             ($result | Where-Object { $_.TargetName -eq 'TestObject1' }).OutcomeReason | Should -BeIn 'Suppressed';
             ($result | Where-Object { $_.TargetName -eq 'TestObject2' }).OutcomeReason | Should -BeIn 'Processed';
+        }
+
+        It 'Processes configuration' {
+            $option = New-PSRuleOption -BaselineConfiguration @{ Value1 = 1 };
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Option $option -Name WithConfiguration;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
         }
     }
 
@@ -327,7 +339,7 @@ Describe 'Invoke-PSRule' {
 
 #region Test-PSRuleTarget
 
-Describe 'Test-PSRuleTarget' {
+Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
     Context 'With defaults' {
         $testObject = [PSCustomObject]@{
             Name = "TestObject1"
@@ -376,7 +388,7 @@ Describe 'Test-PSRuleTarget' {
             $warningMessages[0].Message | Should -Be 'Path not found';
         }
 
-        It 'Returns warnings on no processed rules' {
+        It 'Returns warning when not processed' {
             # Check result with no rules matching precondition
             $result = $testObject | Test-PSRuleTarget -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithPreconditionFalse' -WarningVariable outWarnings -WarningAction SilentlyContinue;
             $result | Should -Not -BeNullOrEmpty;
@@ -391,7 +403,7 @@ Describe 'Test-PSRuleTarget' {
 
 #region Get-PSRule
 
-Describe 'Get-PSRule' {
+Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
     Context 'Using -Path' {
         It 'Returns rules' {
             # Get a list of rules
@@ -455,8 +467,91 @@ Describe 'Get-PSRule' {
 
 #region New-PSRuleOption
 
-Describe 'New-PSRuleOption' -Tag 'Option' {
-    Context 'Read binding' {
+Describe 'New-PSRuleOption' -Tag 'Option','Common','New-PSRuleOption' {
+    Context 'Read Baseline.RuleName' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Baseline.RuleName | Should -Be $Null;
+        }
+
+        It 'from Hashtable' {
+            # With single item
+            $option = New-PSRuleOption -Option @{ 'Baseline.RuleName' = 'rule1' };
+            $option.Baseline.RuleName | Should -BeIn 'rule1';
+
+            # With array
+            $option = New-PSRuleOption -Option @{ 'Baseline.RuleName' = 'rule1', 'rule2' };
+            $option.Baseline.RuleName | Should -BeIn 'rule1', 'rule2';
+        }
+
+        It 'from YAML' {
+            # With single item
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Baseline.RuleName | Should -BeIn 'rule1';
+
+            # With array
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests2.yml');
+            $option.Baseline.RuleName | Should -BeIn 'rule1', 'rule2';
+
+            # With flat single item
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests3.yml');
+            $option.Baseline.RuleName | Should -BeIn 'rule1';
+        }
+    }
+
+    Context 'Read Baseline.Exclude' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Baseline.Exclude | Should -Be $Null;
+        }
+
+        It 'from Hashtable' {
+            # With single item
+            $option = New-PSRuleOption -Option @{ 'Baseline.Exclude' = 'rule3' };
+            $option.Baseline.Exclude | Should -BeIn 'rule3';
+
+            # With array
+            $option = New-PSRuleOption -Option @{ 'Baseline.Exclude' = 'rule3', 'rule4' };
+            $option.Baseline.Exclude | Should -BeIn 'rule3', 'rule4';
+        }
+
+        It 'from YAML' {
+            # With single item
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Baseline.Exclude | Should -BeIn 'rule3';
+
+            # With array
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests2.yml');
+            $option.Baseline.Exclude | Should -BeIn 'rule3', 'rule4';
+
+            # With flat single item
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests3.yml');
+            $option.Baseline.Exclude | Should -BeIn 'rule3';
+        }
+    }
+
+    Context 'Read Baseline.Configuration' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Baseline.Configuration.Count | Should -Be 0;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -BaselineConfiguration @{ 'option1' = 'option'; 'option2' = 2; option3 = 'option3a', 'option3b' };
+            $option.Baseline.Configuration.option1 | Should -BeIn 'option';
+            $option.Baseline.Configuration.option2 | Should -Be 2;
+            $option.Baseline.Configuration.option3 | Should -BeIn 'option3a', 'option3b';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Baseline.Configuration.option1 | Should -Be 'option';
+            $option.Baseline.Configuration.option2 | Should -Be 2;
+            $option.Baseline.Configuration.option3 | Should -BeIn 'option3a', 'option3b';
+        }
+    }
+
+    Context 'Read Binding.TargetName' {
         It 'from default' {
             $option = New-PSRuleOption;
             $option.Binding.TargetName | Should -Be $Null;
@@ -561,7 +656,7 @@ Describe 'New-PSRuleOption' -Tag 'Option' {
 
 #region PSRule variables
 
-Describe 'PSRule variables' -Tag 'Variables' {
+Describe 'PSRule variables' -Tag 'Variables','Common' {
     Context 'PowerShell automatic variables' {
         $testObject = [PSCustomObject]@{
             Name = 'VariableTest'

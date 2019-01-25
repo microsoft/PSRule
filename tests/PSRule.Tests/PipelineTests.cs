@@ -1,3 +1,4 @@
+using PSRule.Configuration;
 using PSRule.Pipeline;
 using System;
 using System.Collections.Generic;
@@ -28,10 +29,10 @@ namespace PSRule
         public void InvokePipeline()
         {
             var testObject1 = new TestObject { Name = "TestObject1" };
-
-            var builder = PipelineBuilder.Invoke();
+            var option = new PSRuleOption();
+            option.Baseline.RuleName = new string[] { "FromFile1" };
+            var builder = PipelineBuilder.Invoke().Configure(option);
             builder.Source(GetTestSource());
-            builder.FilterBy(new string[] { "FromFile1" }, null);
             var pipeline = builder.Build();
 
             var actual = new List<InvokeResult>();

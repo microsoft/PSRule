@@ -1,3 +1,6 @@
+#
+# Pester unit test rules
+#
 
 # Logging in main script
 Write-Information -MessageData 'Script information message';

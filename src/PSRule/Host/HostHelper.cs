@@ -110,7 +110,8 @@ namespace PSRule.Host
 
                     if (ps.HadErrors)
                     {
-                        throw new Exception(ps.Streams.Error[0].Exception.Message, ps.Streams.Error[0].Exception);
+                        // Discovery has errors so skip this file
+                        continue;
                     }
 
                     foreach (var ir in invokeResults)

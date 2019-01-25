@@ -1,5 +1,10 @@
 # These are options for unit tests
 
+# Configure baseline
+baseline:
+  ruleName: [ 'rule1' ]
+  exclude: [ 'rule3' ]
+
 # Configure TargetName binding
 binding:
   targetName: [ 'ResourceName' ]

@@ -40,6 +40,8 @@ namespace PSRule.Pipeline
         internal RuleRecord RuleRecord;
         internal string TargetName;
         internal PSObject TargetObject;
+        internal RuleBlock RuleBlock;
+        internal PSRuleOption Option;
 
         public HashAlgorithm ObjectHashAlgorithm
         {
@@ -63,6 +65,8 @@ namespace PSRule.Pipeline
             _LogWarning = logWarning;
             _LogVerbose = logVerbose;
             _LogInformation = logInformation;
+
+            Option = option;
 
             _LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode.Value;
 
@@ -346,8 +350,11 @@ namespace PSRule.Pipeline
                 ruleName: ruleBlock.RuleName,
                 targetObject: TargetObject,
                 targetName: TargetName,
-                tag: ruleBlock.Tag
+                tag: ruleBlock.Tag,
+                message: ruleBlock.Description
             );
+
+            RuleBlock = ruleBlock;
 
             return RuleRecord;
         }
@@ -359,6 +366,7 @@ namespace PSRule.Pipeline
         {
             _LogPrefix = null;
             RuleRecord = null;
+            RuleBlock = null;
         }
 
         private string GetLogPrefix()

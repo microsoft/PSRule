@@ -12,7 +12,7 @@ namespace PSRule.Pipeline
     {
         private string[] _Path;
         private PSRuleOption _Option;
-        private RuleFilter _Filter;
+        private Hashtable _Tag;
         private PipelineLogger _Logger;
         private bool _LogError;
         private bool _LogWarning;
@@ -25,9 +25,9 @@ namespace PSRule.Pipeline
             _Option = new PSRuleOption();
         }
 
-        public void FilterBy(string[] ruleName, Hashtable tag)
+        public void FilterBy(Hashtable tag)
         {
-            _Filter = new RuleFilter(ruleName, tag);
+            _Tag = tag;
         }
 
         public void Source(string[] path)
@@ -43,6 +43,12 @@ namespace PSRule.Pipeline
             }
 
             _Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
+
+            if (option.Baseline != null)
+            {
+                _Option.Baseline.RuleName = option.Baseline.RuleName;
+                _Option.Baseline.Exclude = option.Baseline.Exclude;
+            }
 
             return this;
         }
@@ -72,8 +78,9 @@ namespace PSRule.Pipeline
 
         public GetRulePipeline Build()
         {
+            var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
             var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: null, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);
-            return new GetRulePipeline(_Option, _Path, _Filter, context: context);
+            return new GetRulePipeline(option: _Option, path: _Path, filter: filter, context: context);
         }
     }
 }

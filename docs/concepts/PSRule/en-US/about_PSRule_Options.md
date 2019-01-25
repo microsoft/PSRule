@@ -10,6 +10,17 @@ Describes additional options that can be used during rule execution.
 
 PSRule lets you use options when calling `Invoke-PSRule` to change how rules are executed. This topic describes what options are available, when to and how to use them.
 
+The following options are available for use:
+
+- [Baseline.RuleName](#baselinerulename)
+- [Baseline.Exclude](#baselineexclude)
+- [Baseline.Configuration](#baselineconfiguration)
+- [Binding.TargetName](#targetname-binding)
+- [Execution.LanguageMode](#language-mode)
+- [Execution.InconclusiveWarning](#inconclusive-warning)
+- [Execution.NotProcessedWarning](#not-processed-warning)
+- [Suppression](#rule-suppression)
+
 Options can be used by:
 
 - Using the `-Option` parameter of `Invoke-PSRule` with an object created with `New-PSRuleOption`
@@ -47,6 +58,64 @@ For example:
 Invoke-PSRule -Path . -Option '.\myconfig.yml';
 ```
 
+### Baseline.RuleName
+
+The name of specific rules to evaluate. If this option is not specified all rules in search paths will be evaluated.
+
+This option can be overridden at runtime by using the `-Name` parameter of `Invoke-PSRule`, `Get-PSRule` and `Test-PSRuleTarget`.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Baseline.RuleName hashtable key
+$option = New-PSRuleOption -Option @{ 'Baseline.RuleName' = 'Rule1','Rule2' };
+```
+
+```yaml
+# YAML: Using the baseline/ruleName property
+baseline:
+  ruleName:
+  - rule1
+  - rule2
+```
+
+### Baseline.Exclude
+
+The name of specific rules to exclude from being evaluated. This will exclude rules specified by `Baseline.RuleName` or discovered from a search path.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Baseline.Exclude hashtable key
+$option = New-PSRuleOption -Option @{ 'Baseline.Exclude' = 'Rule3','Rule4' };
+```
+
+```yaml
+# YAML: Using the baseline/exclude property
+baseline:
+  exclude:
+  - rule3
+  - rule4
+```
+
+### Baseline.Configuration
+
+Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the BaselineConfiguration option with a hashtable
+$option = New-PSRuleOption -BaselineConfiguration @{ appServiceMinInstanceCount = 2 };
+```
+
+```yaml
+# YAML: Using the baseline/configuration property
+baseline:
+  configuration:
+    appServiceMinInstanceCount: 2
+```
+
 ### TargetName binding
 
 When an object is passed from the pipeline, PSRule assigns the object a _TargetName_. _TargetName_ is used in output results to identify one object from another. Many objects could be passed down the pipeline at the same time, so using a _TargetName_ that is meaningful is important. _TargetName_ is also used for advanced features such as rule suppression.
@@ -69,12 +138,12 @@ The value that PSRule uses for _TargetName_ is configurable. PSRule uses the fol
 Custom property names to use for binding can be specified using:
 
 ```powershell
-# PowerShell: Using the Binding.TargetName hash table key
+# PowerShell: Using the Binding.TargetName hashtable key
 $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName' };
 ```
 
 ```yaml
-# psrule.yml: Using the binding/targetName YAML property
+# YAML: Using the binding/targetName property
 binding:
   targetName:
   - ResourceName
@@ -115,12 +184,12 @@ The following language modes are available for use in PSRule:
 This option can be specified using:
 
 ```powershell
-# PowerShell: Using the Execution.LanguageMode hash table key
+# PowerShell: Using the Execution.LanguageMode hashtable key
 $option = New-PSRuleOption -Option @{ 'Execution.LanguageMode' = 'ConstrainedLanguage' };
 ```
 
 ```yaml
-# psrule.yml: Using the execution/languageMode YAML property
+# YAML: Using the execution/languageMode property
 execution:
   languageMode: ConstrainedLanguage
 ```
@@ -143,12 +212,12 @@ Inconclusive results will:
 The inconclusive warning can be disabled by using:
 
 ```powershell
-# PowerShell: Using the Execution.InconclusiveWarning hash table key
+# PowerShell: Using the Execution.InconclusiveWarning hashtable key
 $option = New-PSRuleOption -Option @{ 'Execution.InconclusiveWarning' = $False };
 ```
 
 ```yaml
-# psrule.yml: Using the execution/inconclusiveWarning YAML property
+# YAML: Using the execution/inconclusiveWarning property
 execution:
   inconclusiveWarning: false
 ```
@@ -167,12 +236,12 @@ Not processed objects will:
 The not processed warning can be disabled by using:
 
 ```powershell
-# PowerShell: Using the Execution.NotProcessedWarning hash table key
+# PowerShell: Using the Execution.NotProcessedWarning hashtable key
 $option = New-PSRuleOption -Option @{ 'Execution.NotProcessedWarning' = $False };
 ```
 
 ```yaml
-# psrule.yml: Using the execution/notProcessedWarning YAML property
+# YAML: Using the execution/notProcessedWarning property
 execution:
   notProcessedWarning: false
 ```
@@ -188,12 +257,12 @@ Rule suppression complements pre-filtering and pre-conditions.
 This option can be specified using:
 
 ```powershell
-# PowerShell: Using the SuppressTargetName option with a hash table
+# PowerShell: Using the SuppressTargetName option with a hashtable
 $option = New-PSRuleOption -SuppressTargetName @{ 'storageAccounts.UseHttps' = 'TestObject1', 'TestObject3' };
 ```
 
 ```yaml
-# psrule.yml: Using the suppression YAML property
+# YAML: Using the suppression property
 suppression:
   storageAccounts.UseHttps:
     targetName:
@@ -240,18 +309,30 @@ Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
 ### Example PSRule.yml
 
 ```yaml
+# Configure baseline
+baseline:
+  ruleName:
+  - rule1
+  - rule2
+  exclude:
+  - rule3
+  - rule4
+  configuration:
+    appServiceMinInstanceCount: 2
+
+# Configure TargetName binding
 binding:
   targetName:
   - ResourceName
   - AlternateName
 
-# Set execution options
+# Configure execution options
 execution:
   languageMode: ConstrainedLanguage
   inconclusiveWarning: false
   notProcessedWarning: false
 
-# Suppress the following target names
+# Configure rule suppression
 suppression:
   storageAccounts.UseHttps:
     targetName:
@@ -264,16 +345,26 @@ suppression:
 ```yaml
 # These are the default options.
 # Only properties that differ from the default values need to be specified.
+
+# Configure baseline
+baseline:
+  ruleName: [ ]
+  exclude: [ ]
+  configuration: { }
+
+# Configure TargetName binding
 binding:
   targetName:
   - TargetName
   - Name
 
+# Configure execution options
 execution:
   languageMode: FullLanguage
   inconclusiveWarning: true
   notProcessedWarning: true
 
+# Configure rule suppression
 suppression: { }
 ```
 

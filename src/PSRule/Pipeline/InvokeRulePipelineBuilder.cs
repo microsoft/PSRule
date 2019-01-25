@@ -12,7 +12,7 @@ namespace PSRule.Pipeline
     {
         private string[] _Path;
         private PSRuleOption _Option;
-        private RuleFilter _Filter;
+        private Hashtable _Tag;
         private RuleOutcome _Outcome;
         private PipelineLogger _Logger;
         private ResultFormat _ResultFormat;
@@ -32,9 +32,9 @@ namespace PSRule.Pipeline
             _LogError = _LogWarning = _LogVerbose = _LogInformation = false;
         }
 
-        public void FilterBy(string[] ruleName, Hashtable tag)
+        public void FilterBy(Hashtable tag)
         {
-            _Filter = new RuleFilter(ruleName, tag);
+            _Tag = tag;
         }
 
         public void Source(string[] path)
@@ -61,9 +61,7 @@ namespace PSRule.Pipeline
 
         public void UseCommandRuntime(ICommandRuntime2 commandRuntime)
         {
-            _Logger.OnWriteVerbose = commandRuntime.WriteVerbose;
-            _Logger.OnWriteWarning = commandRuntime.WriteWarning;
-            _Logger.OnWriteError = commandRuntime.WriteError;
+            UseCommandRuntime((ICommandRuntime)commandRuntime);
             _Logger.OnWriteInformation = commandRuntime.WriteInformation;
         }
 
@@ -93,6 +91,11 @@ namespace PSRule.Pipeline
             _Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
             _Option.Execution.InconclusiveWarning = option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning;
             _Option.Execution.NotProcessedWarning = option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning;
+
+            if (option.Baseline != null)
+            {
+                _Option.Baseline = new BaselineOption(option.Baseline);
+            }
 
             if (option.Binding.TargetName != null && option.Binding.TargetName.Length > 0)
             {
@@ -131,8 +134,9 @@ namespace PSRule.Pipeline
 
         public InvokeRulePipeline Build()
         {
+            var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
             var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: _BindTargetNameHook, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);
-            return new InvokeRulePipeline(_Option, _Path, _Filter, _Outcome, _ResultFormat, context: context);
+            return new InvokeRulePipeline(option: _Option, path: _Path, filter: filter, outcome: _Outcome, resultFormat: _ResultFormat, context: context);
         }
     }
 }
