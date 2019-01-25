@@ -3,6 +3,7 @@
 
 - Added support for nested field names with `Exists`, `Within` and `Match` keywords [#60](https://github.com/BernieWhite/PSRule/issues/60)
 - Added support for rule configuration using baselines [#17](https://github.com/BernieWhite/PSRule/issues/17)
+- Use rule description when hint message not set [#61](https://github.com/BernieWhite/PSRule/issues/61)
 
 ## v0.2.0-B190113 (pre-release)
 

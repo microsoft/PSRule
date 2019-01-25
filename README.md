@@ -118,6 +118,7 @@ isFruit                             1     1     Fail
 For practical examples of PSRule see:
 
 - [Validate configuration of Azure resources](docs/scenarios/azure-resources/azure-resources.md)
+- [Validate Azure resources tags](docs/scenarios/azure-tags/azure-tags.md)
 
 ## Language reference
 
