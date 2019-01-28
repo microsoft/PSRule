@@ -113,8 +113,8 @@ Rule 'VariableTest' {
 }
 
 Rule 'WithConfiguration' {
-    $Rule.Configuration.Value1 -eq 1
-    $Rule.Configuration.Value2 -eq 2
+    $Configuration.Value1 -eq 1
+    $Configuration.Value2 -eq 2
 } -Configure @{ Value1 = 2; Value2 = 2; }
 
 # Description: Test for Hint keyword

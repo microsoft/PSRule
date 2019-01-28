@@ -36,13 +36,6 @@ namespace PSRule.Host
     /// </summary>
     public sealed class RuntimeRuleView
     {
-        public RuntimeRuleView()
-        {
-            Configuration = new RuntimeRuleConfigurationView();
-        }
-
-        public readonly RuntimeRuleConfigurationView Configuration;
-
         public string RuleName
         {
             get

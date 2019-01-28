@@ -172,12 +172,12 @@ Rule 'costCentreTag' {
 
 For our third rule `businessUnitTag` the _businessUnit_ must match a valid business unit. A list of business units will be referenced from configuration instead of hard coded in the rule.
 
-Configuration can be used within rule definitions by defining configuration in a YAML file then using the automatic `$Rule` variable.
+Configuration can be used within rule definitions by defining configuration in a YAML file then using the automatic `$Configuration` variable.
 
 In the example below:
 
 - We use the `Within` keyword to check if the _businessUnit_ tag uses any of the allowed values.
-- `allowedBusinessUnits` configuration value can be referenced using the syntax `$Rule.Configuration.allowedBusinessUnits`.
+- `allowedBusinessUnits` configuration value can be referenced using the syntax `$Configuration.allowedBusinessUnits`.
 - The rule definition is defined in [azureTags.Rule.ps1].
 - YAML configuration is defined in [PSRule.yaml].
 
@@ -187,7 +187,7 @@ An extract from _azureTags.Rule.ps1_:
 # Description: Resource must have businessUnit tag
 Rule 'businessUnitTag' {
     Exists 'Tags.businessUnit' -CaseSensitive
-    Within 'Tags.businessUnit' $Rule.Configuration.allowedBusinessUnits
+    Within 'Tags.businessUnit' $Configuration.allowedBusinessUnits
 }
 ```
 

@@ -2,7 +2,7 @@
 # Validation rules for Azure resource tagging standard
 #
 
-if ($Null -eq $Rule.Configuration.allowedBusinessUnits) {
+if ($Null -eq $Configuration.allowedBusinessUnits) {
     Write-Warning -Message 'The allowedBusinessUnits option is not configured';
 }
 
@@ -21,5 +21,5 @@ Rule 'costCentreTag' {
 # Description: Resource must have businessUnit tag
 Rule 'businessUnitTag' {
     Exists 'Tags.businessUnit' -CaseSensitive
-    Within 'Tags.businessUnit' $Rule.Configuration.allowedBusinessUnits
+    Within 'Tags.businessUnit' $Configuration.allowedBusinessUnits
 }

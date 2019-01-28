@@ -159,6 +159,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Execution.NotProcessedWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#not-processed-warning)
   - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#rule-suppression)
 - [Variables](docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
+  - [$Configuration](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#configuration)
   - [$Rule](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#rule)
   - [$TargetObject](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#targetobject)
 

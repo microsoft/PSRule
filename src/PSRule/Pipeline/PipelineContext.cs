@@ -219,6 +219,7 @@ namespace PSRule.Pipeline
                 _Runspace.Open();
                 _Runspace.SessionStateProxy.PSVariable.Set(new RuleVariable("Rule"));
                 _Runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable("TargetObject"));
+                _Runspace.SessionStateProxy.PSVariable.Set(new ConfigurationVariable("Configuration"));
                 _Runspace.SessionStateProxy.PSVariable.Set("ErrorActionPreference", ActionPreference.Continue);
                 _Runspace.SessionStateProxy.PSVariable.Set("WarningPreference", ActionPreference.Continue);
                 _Runspace.SessionStateProxy.PSVariable.Set("VerbosePreference", ActionPreference.Continue);
