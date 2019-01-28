@@ -16,8 +16,33 @@ These variables are only available while `Invoke-PSRule` is executing.
 
 The following variables are available for use:
 
+- [$Configuration](#configuration)
 - [$Rule](#rule)
 - [$TargetObject](#targetobject)
+
+### Configuration
+
+A configuration object with properties names for each configuration value set in the baseline.
+
+When accessing configuration:
+
+- Configuration values are read only.
+- Property names are case sensitive.
+
+Syntax:
+
+```powershell
+$Configuration
+```
+
+Examples:
+
+```powershell
+# This rule uses a threshold stored as $Configuration.appServiceMinInstanceCount
+Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
+    $TargetObject.Sku.capacity -ge $Configuration.appServiceMinInstanceCount
+} -Configure @{ appServiceMinInstanceCount = 2 }
+```
 
 ### Rule
 
@@ -29,7 +54,6 @@ The following section properties are available for public read access:
 - `RuleId` - A unique identifier for the rule.
 - `TargetObject` - The object currently being processed on the pipeline.
 - `TargetName` - The name of the object currently being processed on the pipeline. This property will automatically bind to `TargetName` or `Name` properties of the object if they exist.
-- `Configuration` - Configuration values set by a baseline.
 
 Syntax:
 
@@ -44,13 +68,6 @@ Examples:
 Rule 'resource.NamingConvention' {
     $Rule.TargetName.ToLower() -ceq $Rule.TargetName
 }
-```
-
-```powershell
-# This rule uses a threshold stored as $Rule.Configuration.appServiceMinInstanceCount
-Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
-    $TargetObject.Sku.capacity -ge $Rule.Configuration.appServiceMinInstanceCount
-} -Configure @{ appServiceMinInstanceCount = 2 }
 ```
 
 ### TargetObject
@@ -84,5 +101,6 @@ An online version of this document is available at https://github.com/BernieWhit
 
 ## KEYWORDS
 
+- Configuration
 - Rule
 - TargetObject

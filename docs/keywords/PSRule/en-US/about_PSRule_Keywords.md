@@ -60,9 +60,9 @@ Rule 'TitleIsValid' -DependsOn 'NameMustExist' {
 ```
 
 ```powershell
-# This rule uses a threshold stored as $Rule.Configuration.minInstanceCount
+# This rule uses a threshold stored as $Configuration.minInstanceCount
 Rule 'HasMinInstances' {
-    $TargetObject.Sku.capacity -ge $Rule.Configuration.minInstanceCount
+    $TargetObject.Sku.capacity -ge $Configuration.minInstanceCount
 } -Configure @{ minInstanceCount = 2 }
 ```
 

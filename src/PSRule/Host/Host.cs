@@ -33,7 +33,7 @@ namespace PSRule.Host
     internal sealed class TargetObjectVariable : PSVariable
     {
         public TargetObjectVariable(string name)
-            : base (name, null, ScopedItemOptions.ReadOnly)
+            : base(name, null, ScopedItemOptions.ReadOnly)
         {
 
         }
@@ -43,6 +43,25 @@ namespace PSRule.Host
             get
             {
                 return PipelineContext.CurrentThread.TargetObject;
+            }
+        }
+    }
+
+    internal sealed class ConfigurationVariable : PSVariable
+    {
+        private readonly RuntimeRuleConfigurationView _Value;
+
+        public ConfigurationVariable(string name)
+            : base(name, null, ScopedItemOptions.ReadOnly)
+        {
+            _Value = new RuntimeRuleConfigurationView(); 
+        }
+
+        public override object Value
+        {
+            get
+            {
+                return _Value;
             }
         }
     }
