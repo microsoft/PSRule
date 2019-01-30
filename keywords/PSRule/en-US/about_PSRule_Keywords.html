@@ -91,7 +91,7 @@
 <p>A <code>Rule</code> definition describes an individual business rule that will be applied to pipeline objects.</p>
 <p>To define a Rule use the <code>Rule</code> keyword followed by a name and a pair of squiggly brackets <code>{</code>. Within the <code>{ }</code> one or more expressions can be used.</p>
 <p>Syntax:</p>
-<pre><code class="lang-text">Rule [-Name] &lt;string&gt; [-Tag &lt;hashtable&gt;] [-If &lt;scriptBlock&gt;] [-DependsOn &lt;string[]&gt;] [-Body] {
+<pre><code class="lang-text">Rule [-Name] &lt;string&gt; [-Tag &lt;hashtable&gt;] [-If &lt;scriptBlock&gt;] [-DependsOn &lt;string[]&gt;] [-Configure &lt;hashtable&gt;] [-Body] {
     ...
 }
 </code></pre>
@@ -100,18 +100,24 @@
 <li><code>Tag</code> - A hashtable of key/ value metadata that can be used to filter and identify rules and rule results.</li>
 <li><code>If</code> - A precondition that must evaluate to <code>$True</code> before the rule is executed.</li>
 <li><code>DependsOn</code> - A list of rules this rule depends on. Rule dependencies must execute successfully before this rule is executed.</li>
+<li><code>Configure</code> - A set of default configuration values. These values are only used when the baseline configuration does not contain the key.</li>
 <li><code>Body</code> - A script block definition of the rule containing one or more PSRule keywords and PowerShell expressions.</li>
 </ul>
 <p>Examples:</p>
 <pre><code class="lang-powershell"># This rule checks for the presence of a name field
 Rule 'NameMustExist' {
-    ...
+    Exists 'Name'
 }
 </code></pre>
-<pre><code class="lang-powershell"># This rule checks that the name field is valid, when the rule NameMustExist is successful
-Rule 'NameIsValid' -DependsOn 'NameMustExist' {
-    ...
+<pre><code class="lang-powershell"># This rule checks that the title field is valid, when the rule NameMustExist is successful
+Rule 'TitleIsValid' -DependsOn 'NameMustExist' {
+    Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
+</code></pre>
+<pre><code class="lang-powershell"># This rule uses a threshold stored as $Configuration.minInstanceCount
+Rule 'HasMinInstances' {
+    $TargetObject.Sku.capacity -ge $Configuration.minInstanceCount
+} -Configure @{ minInstanceCount = 2 }
 </code></pre>
 <h3 id="exists">Exists</h3>
 <p>The <code>Exists</code> assertion is used within a <code>Rule</code> definition to assert that a <em>field</em> or property must exist on the pipeline object.</p>
@@ -160,7 +166,8 @@ Rule 'nameMustExist' {
 <li><code>CaseSensitive</code> - The field <em>value</em> must match exact case. Only applies when the field value and allowed values are strings.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell">Rule 'validateTitle' {
+<pre><code class="lang-powershell"># Ensure that the title field has one of the allowed values
+Rule 'validateTitle' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
 </code></pre>
@@ -182,11 +189,7 @@ Rule 'nameMustExist' {
 <pre><code class="lang-powershell"># The Name field must exist and have a value of either John or Jane
 AllOf {
     Exists 'Name'
-
-    Within 'Name' {
-        'John'
-        'Jane'
-    }
+    Within 'Name' 'John', 'Jane'
 }
 </code></pre>
 <p>Output:</p>
@@ -205,9 +208,8 @@ AllOf {
 </ul>
 <p>Examples:</p>
 <pre><code class="lang-powershell"># The Last or Surname field must exist
-AllOf {
+AnyOf {
     Exists 'Last'
-
     Exists 'Surname'
 }
 </code></pre>

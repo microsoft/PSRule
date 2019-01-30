@@ -74,6 +74,17 @@
 <p>Describes additional options that can be used during rule execution.</p>
 <h2 id="long-description">LONG DESCRIPTION</h2>
 <p>PSRule lets you use options when calling <code>Invoke-PSRule</code> to change how rules are executed. This topic describes what options are available, when to and how to use them.</p>
+<p>The following options are available for use:</p>
+<ul>
+<li><a href="#baselinerulename">Baseline.RuleName</a></li>
+<li><a href="#baselineexclude">Baseline.Exclude</a></li>
+<li><a href="#baselineconfiguration">Baseline.Configuration</a></li>
+<li><a href="#targetname-binding">Binding.TargetName</a></li>
+<li><a href="#language-mode">Execution.LanguageMode</a></li>
+<li><a href="#inconclusive-warning">Execution.InconclusiveWarning</a></li>
+<li><a href="#not-processed-warning">Execution.NotProcessedWarning</a></li>
+<li><a href="#rule-suppression">Suppression</a></li>
+</ul>
 <p>Options can be used by:</p>
 <ul>
 <li>Using the <code>-Option</code> parameter of <code>Invoke-PSRule</code> with an object created with <code>New-PSRuleOption</code></li>
@@ -95,7 +106,99 @@ Invoke-PSRule -Path . -Option $option;
 </code></pre>
 <p>By default PSRule will automatically look for a file named <code>psrule.yml</code> in the current working directory. Alternatively, you can specify a YAML file in the <code>-Option</code> parameter.</p>
 <p>For example:</p>
-<pre><code class="lang-powershell">Invoke-PSRule -Path . -Option '.\myconfig.yml'.
+<pre><code class="lang-powershell">Invoke-PSRule -Path . -Option '.\myconfig.yml';
+</code></pre>
+<h3 id="baselinerulename">Baseline.RuleName</h3>
+<p>The name of specific rules to evaluate. If this option is not specified all rules in search paths will be evaluated.</p>
+<p>This option can be overridden at runtime by using the <code>-Name</code> parameter of <code>Invoke-PSRule</code>, <code>Get-PSRule</code> and <code>Test-PSRuleTarget</code>.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the Baseline.RuleName hashtable key
+$option = New-PSRuleOption -Option @{ 'Baseline.RuleName' = 'Rule1','Rule2' };
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the baseline/ruleName property
+baseline:
+  ruleName:
+  - rule1
+  - rule2
+</code></pre>
+<h3 id="baselineexclude">Baseline.Exclude</h3>
+<p>The name of specific rules to exclude from being evaluated. This will exclude rules specified by <code>Baseline.RuleName</code> or discovered from a search path.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the Baseline.Exclude hashtable key
+$option = New-PSRuleOption -Option @{ 'Baseline.Exclude' = 'Rule3','Rule4' };
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the baseline/exclude property
+baseline:
+  exclude:
+  - rule3
+  - rule4
+</code></pre>
+<h3 id="baselineconfiguration">Baseline.Configuration</h3>
+<p>Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the BaselineConfiguration option with a hashtable
+$option = New-PSRuleOption -BaselineConfiguration @{ appServiceMinInstanceCount = 2 };
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the baseline/configuration property
+baseline:
+  configuration:
+    appServiceMinInstanceCount: 2
+</code></pre>
+<h3 id="targetname-binding">TargetName binding</h3>
+<p>When an object is passed from the pipeline, PSRule assigns the object a <em>TargetName</em>. <em>TargetName</em> is used in output results to identify one object from another. Many objects could be passed down the pipeline at the same time, so using a <em>TargetName</em> that is meaningful is important. <em>TargetName</em> is also used for advanced features such as rule suppression.</p>
+<p>The value that PSRule uses for <em>TargetName</em> is configurable. PSRule uses the following logic to determine what <em>TargetName</em> should be used:</p>
+<ul>
+<li>By default PSRule will:
+<ul>
+<li>Use <code>TargetName</code> or <code>Name</code> properties on the object.</li>
+<li>If both <code>TargetName</code> and <code>Name</code> properties exist, <code>TargetName</code> will take precedence over <code>Name</code>.</li>
+<li>If neither <code>TargetName</code> or <code>Name</code> properties exist, a SHA1 hash of the object will be used as <em>TargetName</em>.</li>
+</ul>
+</li>
+<li>If custom <em>TargetName</em> binding properties are configured, the property names specified will override the defaults.
+<ul>
+<li>If <strong>none</strong> of the configured property names exist, PSRule will revert back to <code>TargetName</code> then <code>Name</code>.</li>
+<li>If more then one property name is configured, the order they are specified in the configuration determines precedence.
+<ul>
+<li>i.e. The first configured property name will take precedence over the second property name.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>If a custom <em>TargetName</em> binding function is specified, the function will be evaluated first before any other option.
+<ul>
+<li>If the function returns <code>$Null</code> then custom properties, <code>TargetName</code> and <code>Name</code> properties will be used.</li>
+<li>The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.</li>
+<li>Custom binding functions are blocked in constrained language mode is used. See <a href="#language-mode">language mode</a> for more information.</li>
+</ul>
+</li>
+</ul>
+<p>Custom property names to use for binding can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the Binding.TargetName hashtable key
+$option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName' };
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the binding/targetName property
+binding:
+  targetName:
+  - ResourceName
+  - AlternateName
+</code></pre>
+<p>To specify a custom binding function use:</p>
+<pre><code class="lang-powershell"># Create a custom function that returns a TargetName string
+$bindFn = {
+    param ($TargetObject)
+
+    $otherName = $TargetObject.PSObject.Properties['OtherName'];
+
+    if ($otherName -eq $Null) {
+        return $Null
+    }
+
+    return $otherName.Value;
+}
+
+# Specify the binding function script block code to execute
+$option = New-PSRuleOption -BindTargetName $bindFn;
 </code></pre>
 <h3 id="language-mode">Language mode</h3>
 <p>Unless PowerShell has been constrained, full language features of PowerShell are available to use within rule definitions. In locked down environments, a reduced set of language features may be desired.</p>
@@ -106,24 +209,145 @@ Invoke-PSRule -Path . -Option $option;
 <li>ConstrainedLanguage</li>
 </ul>
 <p>This option can be specified using:</p>
-<pre><code class="lang-powershell"># PowerShell: Using the Execution.LanguageMode hash table key
-$option = New-PSRuleOption -Option @{ 'Execution.LanguageMode' = 'ConstrainedLanguage' }
+<pre><code class="lang-powershell"># PowerShell: Using the Execution.LanguageMode hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.LanguageMode' = 'ConstrainedLanguage' };
 </code></pre>
-<pre><code class="lang-yaml"># psrule.yml: Using the execution/languageMode YAML property
+<pre><code class="lang-yaml"># YAML: Using the execution/languageMode property
 execution:
   languageMode: ConstrainedLanguage
+</code></pre>
+<h3 id="inconclusive-warning">Inconclusive warning</h3>
+<p>When defining rules it is possible not return a valid <code>$True</code> or <code>$False</code> result within the definition script block.</p>
+<p>Rule authors should not intentionally avoid returning a result, however a possible cause for not returning a result may be a rule logic error.</p>
+<p>If a rule should not be evaluated, use pre-conditions to avoid processing the rule for objects where the rule is not applicable.</p>
+<p>In cases where the rule does not return a result it is marked as inconclusive.</p>
+<p>Inconclusive results will:</p>
+<ul>
+<li>Generate a warning by default.</li>
+<li>Fail the object. Outcome will be reported as <code>Fail</code> with an OutcomeReason of <code>Inconclusive</code>.</li>
+</ul>
+<p>The inconclusive warning can be disabled by using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the Execution.InconclusiveWarning hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.InconclusiveWarning' = $False };
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the execution/inconclusiveWarning property
+execution:
+  inconclusiveWarning: false
+</code></pre>
+<h3 id="not-processed-warning">Not processed warning</h3>
+<p>When evaluating rules it is possible to incorrectly select a path with rules that use pre-conditions that do not accept the pipeline object.</p>
+<p>In this case the object has not been processed by any rule.</p>
+<p>Not processed objects will:</p>
+<ul>
+<li>Generate a warning by default.</li>
+<li>Pass the object. Outcome will be reported as <code>None</code>.</li>
+</ul>
+<p>The not processed warning can be disabled by using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the Execution.NotProcessedWarning hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.NotProcessedWarning' = $False };
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the execution/notProcessedWarning property
+execution:
+  notProcessedWarning: false
+</code></pre>
+<h3 id="rule-suppression">Rule suppression</h3>
+<p>In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.</p>
+<p>PSRule allows objects to be suppressed for a rule by TargetName. Objects that are suppressed are not processed by the rule at all, but will continue to be processed by other rules.</p>
+<p>Rule suppression complements pre-filtering and pre-conditions.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the SuppressTargetName option with a hashtable
+$option = New-PSRuleOption -SuppressTargetName @{ 'storageAccounts.UseHttps' = 'TestObject1', 'TestObject3' };
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the suppression property
+suppression:
+  storageAccounts.UseHttps:
+    targetName:
+    - TestObject1
+    - TestObject3
+</code></pre>
+<p>In both of the above examples, <code>TestObject1</code> and <code>TestObject3</code> have been suppressed from being processed by a rule named <code>storageAccounts.UseHttps</code>.</p>
+<p>When <strong>to</strong> use rule suppression:</p>
+<ul>
+<li>A temporary exclusion for an object that is in a known failed state.</li>
+</ul>
+<p>When <strong>not</strong> to use rule suppression:</p>
+<ul>
+<li>An object should never be processed by any rule. Pre-filter the pipeline instead.</li>
+<li>The rule is not applicable because the object is the wrong type. Use pre-conditions on the rule instead.</li>
+</ul>
+<p>An example of pre-filtering:</p>
+<pre><code class="lang-powershell"># Define objects to validate
+$items = @();
+$items += [PSCustomObject]@{ Name = 'Fridge'; Type = 'Equipment'; Category = 'White goods'; };
+$items += [PSCustomObject]@{ Name = 'Apple'; Type = 'Food'; Category = 'Produce'; };
+$items += [PSCustomObject]@{ Name = 'Carrot'; Type = 'Food'; Category = 'Produce'; };
+
+# Example of pre-filtering, only food items are sent to Invoke-PSRule
+$items | Where-Object { $_.Type -eq 'Food' } | Invoke-PSRule;
+</code></pre>
+<p>An example of pre-conditions:</p>
+<pre><code class="lang-powershell"># A rule with a pre-condition to only process produce
+Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
+    # Condition to determine if the object is fruit
+    $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
+}
 </code></pre>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-psruleyml">Example PSRule.yml</h3>
-<pre><code class="lang-yaml"># Set execution options
+<pre><code class="lang-yaml"># Configure baseline
+baseline:
+  ruleName:
+  - rule1
+  - rule2
+  exclude:
+  - rule3
+  - rule4
+  configuration:
+    appServiceMinInstanceCount: 2
+
+# Configure TargetName binding
+binding:
+  targetName:
+  - ResourceName
+  - AlternateName
+
+# Configure execution options
 execution:
   languageMode: ConstrainedLanguage
+  inconclusiveWarning: false
+  notProcessedWarning: false
+
+# Configure rule suppression
+suppression:
+  storageAccounts.UseHttps:
+    targetName:
+    - TestObject1
+    - TestObject3
 </code></pre>
 <h3 id="default-psruleyml">Default PSRule.yml</h3>
 <pre><code class="lang-yaml"># These are the default options.
 # Only properties that differ from the default values need to be specified.
+
+# Configure baseline
+baseline:
+  ruleName: [ ]
+  exclude: [ ]
+  configuration: { }
+
+# Configure TargetName binding
+binding:
+  targetName:
+  - TargetName
+  - Name
+
+# Configure execution options
 execution:
   languageMode: FullLanguage
+  inconclusiveWarning: true
+  notProcessedWarning: true
+
+# Configure rule suppression
+suppression: { }
 </code></pre>
 <h2 id="note">NOTE</h2>
 <p>An online version of this document is available at <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md">https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md</a>.</p>

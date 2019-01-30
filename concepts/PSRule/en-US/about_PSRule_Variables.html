@@ -78,9 +78,26 @@
 <p>These variables are only available while <code>Invoke-PSRule</code> is executing.</p>
 <p>The following variables are available for use:</p>
 <ul>
+<li><a href="#configuration">$Configuration</a></li>
 <li><a href="#rule">$Rule</a></li>
 <li><a href="#targetobject">$TargetObject</a></li>
 </ul>
+<h3 id="configuration">Configuration</h3>
+<p>A configuration object with properties names for each configuration value set in the baseline.</p>
+<p>When accessing configuration:</p>
+<ul>
+<li>Configuration values are read only.</li>
+<li>Property names are case sensitive.</li>
+</ul>
+<p>Syntax:</p>
+<pre><code class="lang-powershell">$Configuration
+</code></pre>
+<p>Examples:</p>
+<pre><code class="lang-powershell"># This rule uses a threshold stored as $Configuration.appServiceMinInstanceCount
+Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
+    $TargetObject.Sku.capacity -ge $Configuration.appServiceMinInstanceCount
+} -Configure @{ appServiceMinInstanceCount = 2 }
+</code></pre>
 <h3 id="rule">Rule</h3>
 <p>An object representing the current object model of the rule during execution.</p>
 <p>The following section properties are available for public read access:</p>
@@ -93,11 +110,23 @@
 <p>Syntax:</p>
 <pre><code class="lang-powershell">$Rule
 </code></pre>
+<p>Examples:</p>
+<pre><code class="lang-powershell"># This rule determined if the target object matches the naming convention
+Rule 'resource.NamingConvention' {
+    $Rule.TargetName.ToLower() -ceq $Rule.TargetName
+}
+</code></pre>
 <h3 id="targetobject">TargetObject</h3>
 <p>The value of the pipeline object currently being processed. <code>$TargetObject</code> is set by using the <code>-InputObject</code> parameter of <code>Invoke-PSRule</code>.</p>
 <p>When more than one input object is set, each object will be processed sequentially.</p>
 <p>Syntax:</p>
 <pre><code class="lang-powershell">$TargetObject
+</code></pre>
+<p>Examples:</p>
+<pre><code class="lang-powershell"># Check that sku capacity is set to at least 2
+Rule 'HasMinInstances' {
+    $TargetObject.Sku.capacity -ge 2
+}
 </code></pre>
 <h2 id="note">NOTE</h2>
 <p>An online version of this document is available at <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Variables.md">https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Variables.md</a>.</p>
@@ -107,6 +136,7 @@
 </ul>
 <h2 id="keywords">KEYWORDS</h2>
 <ul>
+<li>Configuration</li>
 <li>Rule</li>
 <li>TargetObject</li>
 </ul>

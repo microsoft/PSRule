@@ -136,18 +136,6 @@ isFruit                             1     1     Fail
 </code></pre>
 <p>Evaluate an array of objects. The results for each rule is returned as a summary. Outcome is represented as the worst outcome.</p>
 <h2 id="parameters">PARAMETERS</h2>
-<h3 id="-inputobject">-InputObject</h3>
-<p>The pipeline object to process rules for.</p>
-<pre><code class="lang-yaml">Type: PSObject
-Parameter Sets: (All)
-Aliases: TargetObject
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-</code></pre>
 <h3 id="-name">-Name</h3>
 <p>The name of a specific rule to evaluate. If this parameter is not specified all rules in search paths will be evaluated.</p>
 <pre><code class="lang-yaml">Type: String[]
@@ -198,6 +186,18 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
+<h3 id="-inputobject">-InputObject</h3>
+<p>The pipeline object to process rules for.</p>
+<pre><code class="lang-yaml">Type: PSObject
+Parameter Sets: (All)
+Aliases: TargetObject
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+</code></pre>
 <h3 id="-option">-Option</h3>
 <p>Additional options that configure execution. A <code>PSRuleOption</code> can be created by using the <code>New-PSRuleOption</code> cmdlet. Alternatively a hashtable or path to YAML file can be specified with options.</p>
 <p>For more information on PSRule options see about_PSRule_Options.</p>
@@ -241,7 +241,8 @@ Accept wildcard characters: False
 <p>When you use the <code>-As Summary</code>. Otherwise, it returns a <code>RuleRecord</code> object.</p>
 <h2 id="notes">NOTES</h2>
 <h2 id="related-links">RELATED LINKS</h2>
-<p><a href="Get-PSRule.html">Get-PSRule</a></p>
+<p><a href="Get-PSRule.html">Get-PSRule</a>
+<a href="Test-PSRuleTarget.html">Test-PSRuleTarget</a></p>
 </article>
           </div>
           
