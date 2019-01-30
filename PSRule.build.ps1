@@ -266,6 +266,7 @@ task Analyze Build, PSScriptAnalyzer, {
 # Synopsis: Build project site
 task BuildSite {
     git branch -D gh-pages;
+    Remove-Item -Path out/site -Recurse -Force -ErrorAction Ignore;
     git worktree add -b gh-pages -f out/site origin/gh-pages;
     docfx build --force docs/docfx.json;
 
@@ -280,6 +281,7 @@ task BuildSite {
     }
 
     git worktree remove out/site
+    git worktree prune
 }
 
 # Synopsis: Build and clean.
