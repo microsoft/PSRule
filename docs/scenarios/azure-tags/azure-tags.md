@@ -1,6 +1,6 @@
 # Azure resource tagging example
 
-This is an example of how PSRule can be used to validate tags on Azure resources to match an internal tagging standards.
+This is an example of how PSRule can be used to validate tags on Azure resources to match an internal tagging standard.
 
 This scenario covers the following:
 
@@ -12,9 +12,9 @@ This scenario covers the following:
 
 In this scenario we will use a JSON file:
 
-- [`resources.json`](resources.json) - An export for the Azure resource properties saved for offline use.
+- [`resources.json`](resources.json) - An export of Azure resource properties saved for offline use.
 
-To generate a similar `resources.json` file of your own, the use following command.
+To generate a similar file of your own, the use following command.
 
 ```powershell
 # Get all resources using the Az modules. Alternatively use Get-AzureRmResource if using AzureRm modules.
@@ -22,7 +22,7 @@ To generate a similar `resources.json` file of your own, the use following comma
 Get-AzResource -ExpandProperties | ConvertTo-Json -Depth 10 | Set-Content -Path .\resources.json;
 ```
 
-For this example we ran this command:
+For this example, we ran this command:
 
 ```powershell
 Get-AzResource -ExpandProperties | ConvertTo-Json -Depth 10 | Set-Content -Path docs/scenarios/azure-resources/resources.json;
@@ -34,11 +34,11 @@ To validate our Azure resources, we need to define some rules. Rules are defined
 
 Our business rules for Azure resource tagging can be defined with the following dot points:
 
-- Tag names should be easy to read and understand
-- Tag names will use lower-camel/ pascal casing
+- Tag names should be easy to read and understand.
+- Tag names will use lower-camel/ pascal casing.
 - The following mandatory tags will be used:
   - environment: An operational environment for systems and services. Valid environments are _production_, _testing_ and _development_.
-  - costCentre: A allocation account with financial systems used for charging costs to a business unit. A cost centre is a number with 5 digits, and can't start with a 0.
+  - costCentre: A allocation account within financial systems used for charging costs to a business unit. A cost centre is a number with 5 digits and can't start with a 0.
   - businessUnit: The name of the organizational unit or team that owns the application/ solution.
 
 To start we are going to define an `environmentTag` rule, which will ensure that the _environment_ tag exists and that the value only uses allowed values.
@@ -61,7 +61,7 @@ Rule 'environmentTag' {
 
 Conditions can be any valid PowerShell expression that results in a `$True` or `$False`, just like an `If` statement, but without specifically requiring the `If` keyword to be used.
 
-In `resources.json` one of our example storage accounts has the `Tags` property as shown below, this is how Azure Resource Manager stores tags of a resource. We will use this property as the basis of our rules to determine if the resource is tagged and what the tag value is.
+In `resources.json` one of our example storage accounts has the `Tags` property as shown below, this is how Azure Resource Manager stores tags for a resource. We will use this property as the basis of our rules to determine if the resource is tagged and what the tag value is.
 
 ```json
 {
@@ -75,7 +75,7 @@ In `resources.json` one of our example storage accounts has the `Tags` property 
 }
 ```
 
-PSRule also defines several additional keywords to supplement PowerShell. These additional keywords allow rules to be defined quickly and easier to read.
+PSRule also defines several additional keywords to supplement PowerShell. These additional keywords help to create readable rules that can be built out quickly.
 
 In the example below:
 
@@ -118,7 +118,7 @@ In the example below:
 
 - `$TargetObject` automatic variable is used to get the pipeline object being evaluated.
 - We use the `-cin` operator to check the _environment_ tag only uses allowed values.
-- The `-cin` operator performance a cases sensitive match on _production_, _test_ and _development_.
+- The `-cin` operator performs a cases sensitive match on _production_, _test_ and _development_.
 - The condition will return `$True` or `$False` back to the pipeline, where:
   - `$True` - an allowed environment is used.
   - `$False` - the _environment_ tag does not use one of the allowed values.
@@ -133,7 +133,7 @@ Rule 'environmentTag' {
 
 ### Tag value matches regular expression
 
-For our second rule `costCentreTag` the _costCentre_ tag value must be 5 numbers. We can validate this by using a regular expression.
+For our second rule (`costCentreTag`), the _costCentre_ tag value must be 5 numbers. We can validate this by using a regular expression.
 
 In the example below:
 
@@ -150,9 +150,9 @@ Rule 'costCentreTag' {
 }
 ```
 
-An alternative way to write the rule would be to use the `-match` operator instead of the `Match` keyword. Similar to the `Within` keyword, the `Match` keyword provides additional verbose logging that the `-match` operator does not provide.
+An alternative way to write the rule would be to use the `-match` operator instead of the `Match` keyword. Like the `Within` keyword, the `Match` keyword provides additional verbose logging that the `-match` operator does not provide.
 
-The the example below:
+In the example below:
 
 - `$TargetObject` automatic variable is used to get the pipeline object being evaluated.
 - We use the `-match` operator to check the _costCentre_ tag value matches the regular expression.
@@ -170,9 +170,9 @@ Rule 'costCentreTag' {
 
 ### Use business unit name from configuration
 
-For our third rule `businessUnitTag` the _businessUnit_ must match a valid business unit. A list of business units will be referenced from configuration instead of hard coded in the rule.
+For our third rule (`businessUnitTag`), the _businessUnit_ must match a valid business unit. A list of business units will be referenced from configuration instead of hard coded in the rule.
 
-Configuration can be used within rule definitions by defining configuration in a YAML file then using the automatic `$Configuration` variable.
+Configuration can be used within rule definitions by defining configuration in a YAML file then using the automatic variable `$Configuration`.
 
 In the example below:
 
@@ -223,7 +223,7 @@ You will notice, we didn't specify the rule. By default PSRule will look for any
 
 The `-Option` parameter allows us to specify a specific YAML configuration file to use.
 
-For this example we ran these commands:
+For this example, we ran these commands:
 
 ```powershell
 # Read resources in from file
