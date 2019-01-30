@@ -12,6 +12,9 @@
     - name: New-PSRuleOption
       href: New-PSRuleOption.md
       topicHref: New-PSRuleOption.md
+    - name: Test-PSRuleTarget
+      href: Test-PSRuleTarget.md
+      topicHref: Test-PSRuleTarget.md
 
 - name: Keywords
   href: ../../../keywords/PSRule/en-US/about_PSRule_Keywords.md
