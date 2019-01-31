@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Added online help links to keywords [#72](https://github.com/BernieWhite/PSRule/issues/72)
+
 ## v0.2.0
 
 What's changed since v0.1.0:
