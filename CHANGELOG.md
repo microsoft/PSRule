@@ -2,6 +2,7 @@
 ## Unreleased
 
 - Added online help links to keywords [#72](https://github.com/BernieWhite/PSRule/issues/72)
+- Added schema for PSRule options [#74](https://github.com/BernieWhite/PSRule/issues/74)
 
 ## v0.2.0
 
