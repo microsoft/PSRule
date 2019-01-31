@@ -115,6 +115,9 @@ task CopyModule {
 
     # Copy third party notices
     Copy-Item -Path ThirdPartyNotices.txt -Destination out/modules/PSRule;
+
+    # Copy schemas
+    Copy-Item -Path schemas/* -Destination out/modules/PSRule;
 }
 
 # Synopsis: Build modules only
