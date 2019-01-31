@@ -389,23 +389,8 @@ function New-PSRuleOption {
 #
 
 <#
-.SYNOPSIS
-Create a rule definition.
-
-.DESCRIPTION
-Create a rule definition.
-
-.INPUTS
-None
-
-.OUTPUTS
-None
-
-.NOTES
-A rule definition can be used by the rule analysis engine.
-
 .LINK
-Invoke-RuleEngine
+https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#rule
 #>
 function Rule {
     [CmdletBinding()]
@@ -438,6 +423,10 @@ function Rule {
     }
 }
 
+<#
+.LINK
+https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#allof
+#>
 function AllOf {
     [CmdletBinding()]
     param (
@@ -451,6 +440,10 @@ function AllOf {
     }
 }
 
+<#
+.LINK
+https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#anyof
+#>
 function AnyOf {
     [CmdletBinding()]
     param (
@@ -464,6 +457,10 @@ function AnyOf {
     }
 }
 
+<#
+.LINK
+https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#exists
+#>
 function Exists {
     [CmdletBinding()]
     param (
@@ -483,6 +480,10 @@ function Exists {
     }
 }
 
+<#
+.LINK
+https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#match
+#>
 function Match {
     [CmdletBinding()]
     param (
@@ -502,6 +503,10 @@ function Match {
     }
 }
 
+<#
+.LINK
+https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#within
+#>
 function Within {
     [CmdletBinding()]
     param (
@@ -521,6 +526,10 @@ function Within {
     }
 }
 
+<#
+.LINK
+https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#typeof
+#>
 function TypeOf {
     [CmdletBinding()]
     param (
