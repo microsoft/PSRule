@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
@@ -69,6 +70,34 @@ namespace PSRule.Configuration
         public void WriteYaml(IEmitter emitter, object value, Type type)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// YAML resolver to convert any dictionary types to a hashtable which support keys as properties.
+    /// </summary>
+    internal sealed class HashtableTypeResolver : INodeTypeResolver
+    {
+        public bool Resolve(NodeEvent nodeEvent, ref Type currentType)
+        {
+            if (currentType == typeof(Dictionary<object, object>))
+            {
+                currentType = typeof(Hashtable);
+
+                return true;
+            }
+
+            if (currentType == typeof(object))
+            {
+                if (nodeEvent is MappingStart)
+                {
+                    currentType = typeof(Hashtable);
+
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

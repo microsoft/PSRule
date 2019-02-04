@@ -11,7 +11,7 @@ namespace PSRule.Pipeline
     {
         public override bool CanConvert(Type objectType)
         {
-            return typeof(PSObject).IsAssignableFrom(objectType);
+            return objectType == typeof(PSObject);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -25,8 +25,8 @@ namespace PSRule.Pipeline
 
             foreach (var property in obj.Properties)
             {
-                // Ignore properties that are not readable
-                if (!property.IsGettable)
+                // Ignore properties that are not readable or can cause race condition
+                if (!property.IsGettable || property.Value is PSDriveInfo || property.Value is ProviderInfo)
                 {
                     continue;
                 }
@@ -40,9 +40,48 @@ namespace PSRule.Pipeline
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            // Create target object based on JObject
+            var result = existingValue as PSObject ?? new PSObject();
+
+            // Read tokens
+            ReadObject(value: result, reader: reader);
+
+            return result;
         }
 
-        public override bool CanRead => false;
+        private void ReadObject(PSObject value, JsonReader reader)
+        {
+            if (reader.TokenType != JsonToken.StartObject)
+            {
+                throw new Exception("Read json failed");
+            }
+
+            reader.Read();
+
+            string name = null;
+
+            // Read each token
+            while (reader.TokenType != JsonToken.EndObject)
+            {
+                switch (reader.TokenType)
+                {
+                    case JsonToken.PropertyName:
+                        name = reader.Value.ToString();
+                        break;
+
+                    case JsonToken.StartObject:
+                        var child = new PSObject();
+                        ReadObject(value: child, reader: reader);
+                        value.Properties.Add(new PSNoteProperty(name: name, value: child));
+                        break;
+
+                    default:
+                        value.Properties.Add(new PSNoteProperty(name: name, value: reader.Value));
+                        break;
+                }
+
+                reader.Read();
+            }
+        }
     }
 }
