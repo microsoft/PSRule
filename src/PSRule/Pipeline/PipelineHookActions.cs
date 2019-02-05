@@ -26,18 +26,21 @@ namespace PSRule.Pipeline
 
             foreach (var p in targetObject.Properties)
             {
-                if (p.Value == null || !StringComparer.Ordinal.Equals(StringTypeName, p.TypeNameOfValue))
+                if (ShouldSkipBindingProperty(p))
                 {
                     continue;
                 }
 
-                if (StringComparer.OrdinalIgnoreCase.Equals(p.Name, Property_TargetName))
+                if (p.Name[0] == 't' || p.Name[0] == 'T' || p.Name[0] == 'n' || p.Name[0] == 'N')
                 {
-                    return p.Value.ToString();
-                }
-                else if (StringComparer.OrdinalIgnoreCase.Equals(p.Name, Property_Name))
-                {
-                    targetName = p.Value.ToString();
+                    if (StringComparer.OrdinalIgnoreCase.Equals(p.Name, Property_TargetName))
+                    {
+                        return p.Value.ToString();
+                    }
+                    else if (StringComparer.OrdinalIgnoreCase.Equals(p.Name, Property_Name))
+                    {
+                        targetName = p.Value.ToString();
+                    }
                 }
             }
 
@@ -63,7 +66,7 @@ namespace PSRule.Pipeline
 
             foreach (var p in targetObject.Properties)
             {
-                if (p.Value == null || !StringComparer.Ordinal.Equals(StringTypeName, p.TypeNameOfValue))
+                if (ShouldSkipBindingProperty(p))
                 {
                     continue;
                 }
@@ -124,6 +127,14 @@ namespace PSRule.Pipeline
             var json = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(targetObject, settings));
             var hash = PipelineContext.CurrentThread.ObjectHashAlgorithm.ComputeHash(json);
             return string.Join("", hash.Select(b => b.ToString("x2")).ToArray());
+        }
+
+        /// <summary>
+        /// Only consider properties that are strings with a value set.
+        /// </summary>
+        private static bool ShouldSkipBindingProperty(PSPropertyInfo propertyInfo)
+        {
+            return (!propertyInfo.IsGettable || propertyInfo.Value == null || !StringComparer.Ordinal.Equals(StringTypeName, propertyInfo.TypeNameOfValue));
         }
     }
 }

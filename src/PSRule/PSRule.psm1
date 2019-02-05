@@ -177,7 +177,11 @@ function Test-PSRuleTarget {
         [PSObject]$InputObject,
 
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.PSRuleOption]$Option
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Yaml', 'Json')]
+        [PSRule.Configuration.InputFormat]$Format
     )
 
     begin {
@@ -211,6 +215,10 @@ function Test-PSRuleTarget {
 
         if ($PSBoundParameters.ContainsKey('Name')) {
             $Option.Baseline.RuleName = $Name;
+        }
+
+        if ($PSBoundParameters.ContainsKey('Format')) {
+            $Option.Input.Format = $Format;
         }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);

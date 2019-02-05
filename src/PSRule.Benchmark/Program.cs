@@ -73,6 +73,21 @@ namespace PSRule.Benchmark
             {
                 profile.Invoke();
             }
+
+            for (var i = 0; i < 10; i++)
+            {
+                profile.DefaultTargetNameBinding();
+            }
+
+            for (var i = 0; i < 10; i++)
+            {
+                profile.CustomTargetNameBinding();
+            }
+
+            for (var i = 0; i < 10; i++)
+            {
+                profile.NestedTargetNameBinding();
+            }
         }
     }
 }
