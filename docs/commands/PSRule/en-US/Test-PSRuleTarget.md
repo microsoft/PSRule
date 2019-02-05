@@ -15,7 +15,7 @@ Pass or fail pipeline objects against matching rules.
 
 ```text
 Test-PSRuleTarget [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
- [-Option <PSRuleOption>] [<CommonParameters>]
+ [-Option <PSRuleOption>] [-Format <InputFormat>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -117,6 +117,28 @@ For more information on PSRule options see about_PSRule_Options.
 
 ```yaml
 Type: PSRuleOption
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Format
+
+Configures the input format for when a string is passed in as a target object. By default, strings are just treated as raw text. However when set strings can be read as YAML or JSON and converted to an object.
+
+The following formats are available:
+
+- None
+- Yaml
+- Json
+
+```yaml
+Type: InputFormat
 Parameter Sets: (All)
 Aliases:
 

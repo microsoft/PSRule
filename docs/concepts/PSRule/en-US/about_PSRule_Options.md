@@ -19,6 +19,7 @@ The following options are available for use:
 - [Execution.LanguageMode](#language-mode)
 - [Execution.InconclusiveWarning](#inconclusive-warning)
 - [Execution.NotProcessedWarning](#not-processed-warning)
+- [Input.Format](#inputformat)
 - [Suppression](#rule-suppression)
 
 Options can be used by:
@@ -246,6 +247,31 @@ execution:
   notProcessedWarning: false
 ```
 
+### Input.Format
+
+Configures the input format for when a string is passed in as a target object. By default, strings are just treated as raw text. However when set strings can be read as YAML or JSON and converted to an object.
+
+When using `Invoke-PSRule` and `Test-PSRuleTarget` the `-Format` parameter will override any value set in configuration.
+
+The following formats are available:
+
+- None
+- Yaml
+- Json
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Input.Format hashtable key
+$option = New-PSRuleOption -Option @{ 'Input.Format' = 'Yaml' };
+```
+
+```yaml
+# YAML: Using the input/format property
+input:
+  format: Yaml
+```
+
 ### Rule suppression
 
 In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.
@@ -309,6 +335,10 @@ Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
 ### Example PSRule.yml
 
 ```yaml
+#
+# PSRule example configuration
+#
+
 # Configure baseline
 baseline:
   ruleName:
@@ -332,6 +362,10 @@ execution:
   inconclusiveWarning: false
   notProcessedWarning: false
 
+# Configures input options
+input:
+  format: Yaml
+
 # Configure rule suppression
 suppression:
   storageAccounts.UseHttps:
@@ -343,8 +377,11 @@ suppression:
 ### Default PSRule.yml
 
 ```yaml
-# These are the default options.
-# Only properties that differ from the default values need to be specified.
+#
+# PSRule defaults
+#
+
+# Note: Only properties that differ from the default values need to be specified.
 
 # Configure baseline
 baseline:
@@ -363,6 +400,10 @@ execution:
   languageMode: FullLanguage
   inconclusiveWarning: true
   notProcessedWarning: true
+
+# Configures input options
+input:
+  format: None
 
 # Configure rule suppression
 suppression: { }
