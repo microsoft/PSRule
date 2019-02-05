@@ -2,6 +2,7 @@
 using PSRule.Rules;
 using System;
 using System.Collections;
+using System.Linq;
 using System.Management.Automation;
 
 namespace PSRule.Pipeline
@@ -106,10 +107,23 @@ namespace PSRule.Pipeline
 
             if (option.Binding.TargetName != null && option.Binding.TargetName.Length > 0)
             {
-                AddBindTargetNameAction((targetObject, next) =>
+                // Use nested TargetName binding when '.' is included in field name because it's slower then custom
+                var useNested = option.Binding.TargetName.Any(n => n.Contains('.'));
+
+                if (useNested)
                 {
-                    return PipelineHookActions.CustomTargetNameBinding(option.Binding.TargetName, targetObject, next);
-                });
+                    AddBindTargetNameAction((targetObject, next) =>
+                    {
+                        return PipelineHookActions.NestedTargetNameBinding(option.Binding.TargetName, targetObject, next);
+                    });
+                }
+                else
+                {
+                    AddBindTargetNameAction((targetObject, next) =>
+                    {
+                        return PipelineHookActions.CustomTargetNameBinding(option.Binding.TargetName, targetObject, next);
+                    });
+                }
             }
 
             if (option.Pipeline.BindTargetName != null && option.Pipeline.BindTargetName.Count > 0)

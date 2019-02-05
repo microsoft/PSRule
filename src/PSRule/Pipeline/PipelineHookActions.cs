@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PSRule.Commands;
 using PSRule.Configuration;
 using System;
 using System.Globalization;
@@ -79,6 +80,31 @@ namespace PSRule.Pipeline
                 if (score == 0)
                 {
                     break;
+                }
+            }
+
+            // If TargetName is found return, otherwise continue to next delegate
+            return (targetName == null) ? next(targetObject) : targetName;
+        }
+
+        /// <summary>
+        /// Get the TargetName of the object by using any of the specified property names.
+        /// </summary>
+        /// <param name="propertyNames">One or more property names to use to bind TargetName.</param>
+        /// <param name="targetObject">A PSObject to bind.</param>
+        /// <param name="next">The next delegate function to check if all of the property names can not be found.</param>
+        /// <returns>The TargetName of the object.</returns>
+        public static string NestedTargetNameBinding(string[] propertyNames, PSObject targetObject, BindTargetName next)
+        {
+            string targetName = null;
+            int score = int.MaxValue;
+
+            for (var i = 0; i < propertyNames.Length && score > propertyNames.Length; i++)
+            {
+                if (ObjectHelper.GetField(targetObject: targetObject, name: propertyNames[i], caseSensitive: false, value: out object value))
+                {
+                    targetName = value.ToString();
+                    score = i;
                 }
             }
 
