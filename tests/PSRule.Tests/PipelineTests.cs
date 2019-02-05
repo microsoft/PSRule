@@ -33,13 +33,13 @@ namespace PSRule
             option.Baseline.RuleName = new string[] { "FromFile1" };
             var builder = PipelineBuilder.Invoke().Configure(option);
             builder.Source(GetTestSource());
-            var pipeline = builder.Build();
+            var stream = builder.Build().GetStream();
 
             var actual = new List<InvokeResult>();
 
             for (var i = 0; i < 100; i++)
             {
-                actual.Add(pipeline.Process(PSObject.AsPSObject(testObject1)));
+                stream.Process(PSObject.AsPSObject(testObject1));
             }
         }
 

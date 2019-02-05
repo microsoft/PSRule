@@ -101,10 +101,10 @@ namespace PSRule.Benchmark
         }
 
         [Benchmark]
-        public void Invoke() => _InvokePipeline.Process(_TargetObject).Consume(new Consumer());
+        public void Invoke() => _InvokePipeline.Process(_TargetObject);
 
         [Benchmark]
-        public void InvokeIf() => _InvokeIfPipeline.Process(_TargetObject).Consume(new Consumer());
+        public void InvokeIf() => _InvokeIfPipeline.Process(_TargetObject);
 
         [Benchmark]
         public void InvokeSummary() => _InvokeSummaryPipeline.Process(_TargetObject);

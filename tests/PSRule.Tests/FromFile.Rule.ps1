@@ -117,6 +117,10 @@ Rule 'WithConfiguration' {
     $Configuration.Value2 -eq 2
 } -Configure @{ Value1 = 2; Value2 = 2; }
 
+Rule 'WithYamlFormat' {
+    $TargetObject.execution.languageMode -eq 'ConstrainedLanguage'
+}
+
 # Description: Test for Hint keyword
 Rule 'HintTest' {
     Hint 'This is a message' -TargetName 'HintTarget'

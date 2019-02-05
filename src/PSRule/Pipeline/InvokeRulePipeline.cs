@@ -10,6 +10,7 @@ namespace PSRule.Pipeline
     public sealed class InvokeRulePipeline : RulePipeline
     {
         private readonly RuleOutcome _Outcome;
+        private readonly PipelineStream _Stream;
         private readonly DependencyGraph<RuleBlock> _RuleGraph;
 
         // A per rule summary of rules that have been processed and the outcome
@@ -17,43 +18,76 @@ namespace PSRule.Pipeline
 
         private readonly ResultFormat _ResultFormat;
         private readonly RuleSuppressionFilter _SuppressionFilter;
+        private readonly bool _ReturnBoolean;
 
         // Track whether Dispose has been called.
         private bool _Disposed = false;
 
-        internal InvokeRulePipeline(PSRuleOption option, string[] path, RuleFilter filter, RuleOutcome outcome, ResultFormat resultFormat, PipelineContext context)
+        internal InvokeRulePipeline(PipelineStream stream, PSRuleOption option, string[] path, RuleFilter filter, RuleOutcome outcome, ResultFormat resultFormat, PipelineContext context, bool returnBoolean)
             : base(context, option, path, filter)
         {
-            _Outcome = outcome;
-            _RuleGraph = HostHelper.GetRuleBlockGraph(option, _Path, _Filter);
-            _Summary = new Dictionary<string, RuleSummaryRecord>();
-            _ResultFormat = resultFormat;
-            _SuppressionFilter = new RuleSuppressionFilter(option.Suppression);
+            _Stream = stream;
+            _RuleGraph = HostHelper.GetRuleBlockGraph(_Option, _Path, _Filter);
             RuleCount = _RuleGraph.Count;
 
             if (RuleCount == 0)
             {
                 _Context.WarnRuleNotFound();
             }
+
+            _Outcome = outcome;
+            _Summary = new Dictionary<string, RuleSummaryRecord>();
+            _ResultFormat = resultFormat;
+            _SuppressionFilter = new RuleSuppressionFilter(option.Suppression);
+            _ReturnBoolean = returnBoolean;
         }
 
         public int RuleCount { get; private set; }
 
-        public InvokeResult Process(PSObject targetObject)
+        public IPipelineStream GetStream()
         {
-            return ProcessTargetObject(targetObject);
+            return _Stream;
         }
 
-        public IEnumerable<InvokeResult> Process(PSObject[] targetObjects)
+        public void Process(PSObject[] targetObjects)
         {
-            var results = new List<InvokeResult>();
-
             foreach (var targetObject in targetObjects)
             {
-                results.Add(ProcessTargetObject(targetObject));
+                _Stream.Process(targetObject);
             }
 
-            return results;
+            while (_Stream.Next(out PSObject next))
+            {
+                var result = ProcessTargetObject(next);
+
+                if (_ReturnBoolean)
+                {
+                    _Stream.Output(result.AsBoolean(), false);
+                }
+                else
+                {
+                    _Stream.Output(result.AsRecord(), true);
+                }
+            }
+        }
+
+        public void Process(PSObject targetObject)
+        {
+            _Stream.Process(targetObject);
+
+            while (_Stream.Next(out PSObject next))
+            {
+                var result = ProcessTargetObject(next);
+
+                if (_ReturnBoolean)
+                {
+                    _Stream.Output(result.AsBoolean(), false);
+                }
+                else
+                {
+                    _Stream.Output(result.AsRecord(), true);
+                }
+            }
         }
 
         public IEnumerable<RuleSummaryRecord> GetSummary()
