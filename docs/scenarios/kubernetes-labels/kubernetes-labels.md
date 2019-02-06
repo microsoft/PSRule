@@ -39,7 +39,7 @@ For this example we ran:
 
 ```powershell
 $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'metadata.name' }
-Invoke-PSRule -InputObject (Get-Content docs/scenarios/kubernetes-labels/azure-vote-all-in-one-redis.yaml) -Path docs/scenarios/kubernetes-labels -Format Yaml -Option $option;
+Invoke-PSRule -InputObject (Get-Content docs/scenarios/kubernetes-labels/azure-vote-all-in-one-redis.yaml -Raw) -Path docs/scenarios/kubernetes-labels -Format Yaml -Option $option;
 ```
 
 ```powershell
