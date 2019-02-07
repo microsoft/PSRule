@@ -13,5 +13,11 @@
             "/tests/PSRule.Tests/PSRule.*.yml",
             "/docs/scenarios/*/PSRule.yaml"
         ]
+    },
+    "[yaml]": {
+        "editor.tabSize": 2
+    },
+    "[markdown]": {
+        "editor.tabSize": 2
     }
 }

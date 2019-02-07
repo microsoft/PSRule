@@ -1,0 +1,11 @@
+targetName: TestObject1
+spec:
+  properties:
+    value1: 1
+    kind: Test
+---
+targetName: TestObject2
+spec:
+  properties:
+    value2: 2
+    kind: Test

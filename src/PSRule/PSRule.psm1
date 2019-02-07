@@ -68,7 +68,11 @@ function Invoke-PSRule {
 
         [Parameter(Mandatory = $False)]
         [ValidateSet('Detail', 'Summary')]
-        [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Detail
+        [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Detail,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Yaml', 'Json')]
+        [PSRule.Configuration.InputFormat]$Format
     )
 
     begin {
@@ -104,6 +108,10 @@ function Invoke-PSRule {
             $Option.Baseline.RuleName = $Name;
         }
 
+        if ($PSBoundParameters.ContainsKey('Format')) {
+            $Option.Input.Format = $Format;
+        }
+
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
         $builder.FilterBy($Tag);
         $builder.Source($sourceFiles);
@@ -122,7 +130,7 @@ function Invoke-PSRule {
         if ($Null -ne $pipeline -and $pipeline.RuleCount -gt 0) {
             try {
                 # Process pipeline objects
-                $pipeline.Process($InputObject).AsRecord();
+                $pipeline.Process($InputObject);
             }
             catch {
                 $pipeline.Dispose();
@@ -169,7 +177,11 @@ function Test-PSRuleTarget {
         [PSObject]$InputObject,
 
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.PSRuleOption]$Option
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Yaml', 'Json')]
+        [PSRule.Configuration.InputFormat]$Format
     )
 
     begin {
@@ -205,11 +217,16 @@ function Test-PSRuleTarget {
             $Option.Baseline.RuleName = $Name;
         }
 
+        if ($PSBoundParameters.ContainsKey('Format')) {
+            $Option.Input.Format = $Format;
+        }
+
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
         $builder.FilterBy($Tag);
         $builder.Source($sourceFiles);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
+        $builder.ReturnBoolean();
         $pipeline = $builder.Build();
     }
 
@@ -217,7 +234,7 @@ function Test-PSRuleTarget {
         if ($Null -ne $pipeline -and $pipeline.RuleCount -gt 0) {
             try {
                 # Process pipeline objects
-                $pipeline.Process($InputObject).AsBoolean();
+                $pipeline.Process($InputObject);
             }
             catch {
                 $pipeline.Dispose();

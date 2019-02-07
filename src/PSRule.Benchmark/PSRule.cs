@@ -101,15 +101,42 @@ namespace PSRule.Benchmark
         }
 
         [Benchmark]
-        public void Invoke() => _InvokePipeline.Process(_TargetObject).Consume(new Consumer());
+        public void Invoke() => _InvokePipeline.Process(_TargetObject);
 
         [Benchmark]
-        public void InvokeIf() => _InvokeIfPipeline.Process(_TargetObject).Consume(new Consumer());
+        public void InvokeIf() => _InvokeIfPipeline.Process(_TargetObject);
 
         [Benchmark]
         public void InvokeSummary() => _InvokeSummaryPipeline.Process(_TargetObject);
 
         [Benchmark]
         public void Get() => _GetPipeline.Process().Consume(new Consumer());
+
+        [Benchmark]
+        public void DefaultTargetNameBinding()
+        {
+            foreach (var targetObject in _TargetObject)
+            {
+                PipelineHookActions.DefaultTargetNameBinding(targetObject);
+            }
+        }
+
+        [Benchmark]
+        public void CustomTargetNameBinding()
+        {
+            foreach (var targetObject in _TargetObject)
+            {
+                PipelineHookActions.CustomTargetNameBinding(new string[] { "TargetName", "Name" }, targetObject, next: (o) => { return null; });
+            }
+        }
+
+        [Benchmark]
+        public void NestedTargetNameBinding()
+        {
+            foreach (var targetObject in _TargetObject)
+            {
+                PipelineHookActions.NestedTargetNameBinding(new string[] { "TargetName", "Name" }, targetObject, next: (o) => { return null; });
+            }
+        }
     }
 }

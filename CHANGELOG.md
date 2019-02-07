@@ -3,6 +3,8 @@
 
 - Added online help links to keywords [#72](https://github.com/BernieWhite/PSRule/issues/72)
 - Added schema for PSRule options [#74](https://github.com/BernieWhite/PSRule/issues/74)
+- Import objects from YAML or JSON format [#75](https://github.com/BernieWhite/PSRule/issues/75)
+- Support TargetName binding of nested properties [#71](https://github.com/BernieWhite/PSRule/issues/71)
 
 ## v0.2.0
 

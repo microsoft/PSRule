@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PSRule.Commands;
 using PSRule.Configuration;
 using System;
 using System.Globalization;
@@ -25,18 +26,21 @@ namespace PSRule.Pipeline
 
             foreach (var p in targetObject.Properties)
             {
-                if (p.Value == null || !StringComparer.Ordinal.Equals(StringTypeName, p.TypeNameOfValue))
+                if (ShouldSkipBindingProperty(p))
                 {
                     continue;
                 }
 
-                if (StringComparer.OrdinalIgnoreCase.Equals(p.Name, Property_TargetName))
+                if (p.Name[0] == 't' || p.Name[0] == 'T' || p.Name[0] == 'n' || p.Name[0] == 'N')
                 {
-                    return p.Value.ToString();
-                }
-                else if (StringComparer.OrdinalIgnoreCase.Equals(p.Name, Property_Name))
-                {
-                    targetName = p.Value.ToString();
+                    if (StringComparer.OrdinalIgnoreCase.Equals(p.Name, Property_TargetName))
+                    {
+                        return p.Value.ToString();
+                    }
+                    else if (StringComparer.OrdinalIgnoreCase.Equals(p.Name, Property_Name))
+                    {
+                        targetName = p.Value.ToString();
+                    }
                 }
             }
 
@@ -62,7 +66,7 @@ namespace PSRule.Pipeline
 
             foreach (var p in targetObject.Properties)
             {
-                if (p.Value == null || !StringComparer.Ordinal.Equals(StringTypeName, p.TypeNameOfValue))
+                if (ShouldSkipBindingProperty(p))
                 {
                     continue;
                 }
@@ -87,6 +91,31 @@ namespace PSRule.Pipeline
         }
 
         /// <summary>
+        /// Get the TargetName of the object by using any of the specified property names.
+        /// </summary>
+        /// <param name="propertyNames">One or more property names to use to bind TargetName.</param>
+        /// <param name="targetObject">A PSObject to bind.</param>
+        /// <param name="next">The next delegate function to check if all of the property names can not be found.</param>
+        /// <returns>The TargetName of the object.</returns>
+        public static string NestedTargetNameBinding(string[] propertyNames, PSObject targetObject, BindTargetName next)
+        {
+            string targetName = null;
+            int score = int.MaxValue;
+
+            for (var i = 0; i < propertyNames.Length && score > propertyNames.Length; i++)
+            {
+                if (ObjectHelper.GetField(targetObject: targetObject, name: propertyNames[i], caseSensitive: false, value: out object value))
+                {
+                    targetName = value.ToString();
+                    score = i;
+                }
+            }
+
+            // If TargetName is found return, otherwise continue to next delegate
+            return (targetName == null) ? next(targetObject) : targetName;
+        }
+
+        /// <summary>
         /// Calculate a SHA1 hash for an object to use as TargetName.
         /// </summary>
         /// <param name="targetObject">A PSObject to hash.</param>
@@ -98,6 +127,14 @@ namespace PSRule.Pipeline
             var json = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(targetObject, settings));
             var hash = PipelineContext.CurrentThread.ObjectHashAlgorithm.ComputeHash(json);
             return string.Join("", hash.Select(b => b.ToString("x2")).ToArray());
+        }
+
+        /// <summary>
+        /// Only consider properties that are strings with a value set.
+        /// </summary>
+        private static bool ShouldSkipBindingProperty(PSPropertyInfo propertyInfo)
+        {
+            return (!propertyInfo.IsGettable || propertyInfo.Value == null || !StringComparer.Ordinal.Equals(StringTypeName, propertyInfo.TypeNameOfValue));
         }
     }
 }

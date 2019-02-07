@@ -157,6 +157,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Execution.LanguageMode](docs/concepts/PSRule/en-US/about_PSRule_Options.md#language-mode)
   - [Execution.InconclusiveWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inconclusive-warning)
   - [Execution.NotProcessedWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#not-processed-warning)
+  - [Input.Format](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inputformat)
   - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#rule-suppression)
 - [Variables](docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
   - [$Configuration](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#configuration)
@@ -167,7 +168,7 @@ The following conceptual topics exist in the `PSRule` module:
 
 PSRule uses the following schemas:
 
-- [PSRuleOptions](schemas/PSRule-options-0.2.0.schema.json) - Schema for PSRule YAML configuration file.
+- [PSRuleOptions](schemas/PSRule-options-0.3.0.schema.json) - Schema for PSRule YAML configuration file.
 
 ## Changes and versioning
 

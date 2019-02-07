@@ -15,7 +15,8 @@ Evaluate pipeline objects against matching rules.
 
 ```text
 Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
- [-Outcome <RuleOutcome>] [-Option <PSRuleOption>] [-As <ResultFormat>] [<CommonParameters>]
+ [-Outcome <RuleOutcome>] [-Option <PSRuleOption>] [-As <ResultFormat>] [-Format <InputFormat>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -45,7 +46,7 @@ $items | Invoke-PSRule;
 ```
 
 ```text
-   TargetName: Fridge
+TargetName: Fridge
 
 RuleName                            Outcome    Message
 --------                            -------    -------
@@ -74,7 +75,7 @@ $items | Invoke-PSRule -Outcome Fail;
 ```
 
 ```text
-   TargetName: Fridge
+TargetName: Fridge
 
 RuleName                            Outcome    Message
 --------                            -------    -------
@@ -224,6 +225,28 @@ Accepted values: Detail, Summary
 Required: False
 Position: Named
 Default value: Detail
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Format
+
+Configures the input format for when a string is passed in as a target object. By default, strings are just treated as raw text. However when set strings can be read as YAML or JSON and converted to an object.
+
+The following formats are available:
+
+- None
+- Yaml
+- Json
+
+```yaml
+Type: InputFormat
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

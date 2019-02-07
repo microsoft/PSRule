@@ -28,6 +28,7 @@ namespace PSRule.Configuration
             // Set defaults
             Baseline = new BaselineOption();
             Binding = new BindingOption();
+            Input = new InputOption();
             Suppression = new SuppressionOption();
             Execution = new ExecutionOption();
             Pipeline = new PipelineHook();
@@ -38,6 +39,7 @@ namespace PSRule.Configuration
             // Set from existing option instance
             Baseline = new BaselineOption(option.Baseline);
             Binding = new BindingOption(option.Binding);
+            Input = new InputOption(option.Input);
             Suppression = new SuppressionOption(option.Suppression);
             Execution = new ExecutionOption(option.Execution);
             Pipeline = new PipelineHook
@@ -62,14 +64,16 @@ namespace PSRule.Configuration
         public BindingOption Binding { get; set; }
 
         /// <summary>
-        /// A set of suppression rules.
-        /// </summary>
-        public SuppressionOption Suppression { get; set; }
-
-        /// <summary>
         /// Options that affect script execution.
         /// </summary>
         public ExecutionOption Execution { get; set; }
+
+        public InputOption Input { get; set; }
+
+        /// <summary>
+        /// A set of suppression rules.
+        /// </summary>
+        public SuppressionOption Suppression { get; set; }
 
         [YamlIgnore()]
         public PipelineHook Pipeline { get; set; }
@@ -115,7 +119,7 @@ namespace PSRule.Configuration
             var d = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
                 .WithNamingConvention(new CamelCaseNamingConvention())
-                .WithTypeConverter(new SuppressionRuleConverter())
+                .WithTypeConverter(new SuppressionRuleYamlTypeConverter())
                 .Build();
 
             return d.Deserialize<PSRuleOption>(yaml) ?? new PSRuleOption();

@@ -221,6 +221,26 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
     }
 
+    Context 'Using -Format' {
+        It 'Processes Yaml' {
+            $yaml = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.yaml') -Raw;
+            $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputObject $yaml -Format Yaml);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
+        }
+
+        It 'Processes Json' {
+            $json = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.json') -Raw;
+            $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputObject $json -Format Json);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
+        }
+    }
+
     Context 'With constrained language' {
         $testObject = [PSCustomObject]@{
             Name = 'TestObject1'
@@ -309,6 +329,11 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                     AlternateName = 'AlternateName'
                     TargetName = 'TargetName'
                 }
+                [PSCustomObject]@{
+                    Metadata = @{
+                        Name = 'MetadataName'
+                    }
+                }
             )
 
             $bindFn = {
@@ -323,14 +348,15 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 return $otherName.Value;
             }
 
-            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName' } -BindTargetName $bindFn;
+            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName', 'Metadata.Name' } -BindTargetName $bindFn;
             $result = $testObject | Invoke-PSRule -Option $option -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
-            $result.Count | Should -Be 4;
+            $result.Count | Should -Be 5;
             $result[0].TargetName | Should -Be 'ResourceName';
             $result[1].TargetName | Should -Be 'AlternateName';
             $result[2].TargetName | Should -Be 'TargetName';
             $result[3].TargetName | Should -Be 'OtherName';
+            $result[4].TargetName | Should -Be 'MetadataName';
         }
     }
 }

@@ -1,0 +1,20 @@
+[
+    {
+        "TargetName": "TestObject1",
+        "Spec": {
+            "Properties": {
+                "Value1": 1,
+                "Kind": "Test"
+            }
+        }
+    },
+    {
+        "TargetName": "TestObject2",
+        "Spec": {
+            "Properties": {
+                "Value2": 2,
+                "Kind": "Test"
+            }
+        }
+    }
+]

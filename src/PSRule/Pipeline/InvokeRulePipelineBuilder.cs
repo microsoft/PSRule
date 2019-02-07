@@ -1,6 +1,8 @@
 ﻿using PSRule.Configuration;
 using PSRule.Rules;
+using System;
 using System.Collections;
+using System.Linq;
 using System.Management.Automation;
 
 namespace PSRule.Pipeline
@@ -21,6 +23,8 @@ namespace PSRule.Pipeline
         private bool _LogWarning;
         private bool _LogVerbose;
         private bool _LogInformation;
+        private Action<object, bool> _Output;
+        private bool _ReturnBoolean;
 
         internal InvokeRulePipelineBuilder()
         {
@@ -30,6 +34,7 @@ namespace PSRule.Pipeline
             _ResultFormat = ResultFormat.Detail;
             _BindTargetNameHook = PipelineHookActions.DefaultTargetNameBinding;
             _LogError = _LogWarning = _LogVerbose = _LogInformation = false;
+            _Output = (r, b) => { };
         }
 
         public void FilterBy(Hashtable tag)
@@ -52,17 +57,13 @@ namespace PSRule.Pipeline
             _ResultFormat = resultFormat;
         }
 
-        public void UseCommandRuntime(ICommandRuntime commandRuntime)
+        public void UseCommandRuntime(ICommandRuntime2 commandRuntime)
         {
             _Logger.OnWriteVerbose = commandRuntime.WriteVerbose;
             _Logger.OnWriteWarning = commandRuntime.WriteWarning;
             _Logger.OnWriteError = commandRuntime.WriteError;
-        }
-
-        public void UseCommandRuntime(ICommandRuntime2 commandRuntime)
-        {
-            UseCommandRuntime((ICommandRuntime)commandRuntime);
             _Logger.OnWriteInformation = commandRuntime.WriteInformation;
+            _Output = commandRuntime.WriteObject;
         }
 
         public void UseLoggingPreferences(ActionPreference error, ActionPreference warning, ActionPreference verbose, ActionPreference information)
@@ -81,6 +82,11 @@ namespace PSRule.Pipeline
             _BindTargetNameHook = (targetObject) => action(targetObject, previous);
         }
 
+        public void ReturnBoolean()
+        {
+            _ReturnBoolean = true;
+        }
+
         public InvokeRulePipelineBuilder Configure(PSRuleOption option)
         {
             if (option == null)
@@ -92,6 +98,8 @@ namespace PSRule.Pipeline
             _Option.Execution.InconclusiveWarning = option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning;
             _Option.Execution.NotProcessedWarning = option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning;
 
+            _Option.Input.Format = option.Input.Format ?? InputOption.Default.Format;
+
             if (option.Baseline != null)
             {
                 _Option.Baseline = new BaselineOption(option.Baseline);
@@ -99,10 +107,23 @@ namespace PSRule.Pipeline
 
             if (option.Binding.TargetName != null && option.Binding.TargetName.Length > 0)
             {
-                AddBindTargetNameAction((targetObject, next) =>
+                // Use nested TargetName binding when '.' is included in field name because it's slower then custom
+                var useNested = option.Binding.TargetName.Any(n => n.Contains('.'));
+
+                if (useNested)
                 {
-                    return PipelineHookActions.CustomTargetNameBinding(option.Binding.TargetName, targetObject, next);
-                });
+                    AddBindTargetNameAction((targetObject, next) =>
+                    {
+                        return PipelineHookActions.NestedTargetNameBinding(option.Binding.TargetName, targetObject, next);
+                    });
+                }
+                else
+                {
+                    AddBindTargetNameAction((targetObject, next) =>
+                    {
+                        return PipelineHookActions.CustomTargetNameBinding(option.Binding.TargetName, targetObject, next);
+                    });
+                }
             }
 
             if (option.Pipeline.BindTargetName != null && option.Pipeline.BindTargetName.Count > 0)
@@ -134,9 +155,31 @@ namespace PSRule.Pipeline
 
         public InvokeRulePipeline Build()
         {
+            VisitTargetObject input = PipelineReceiverActions.PassThru;
+
+            if (_Option.Input.Format == InputFormat.Yaml)
+            {
+                input = PipelineReceiverActions.ConvertFromYaml;
+            }
+            else if (_Option.Input.Format == InputFormat.Json)
+            {
+                input = PipelineReceiverActions.ConvertFromJson;
+            }
+
             var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
             var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: _BindTargetNameHook, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);
-            return new InvokeRulePipeline(option: _Option, path: _Path, filter: filter, outcome: _Outcome, resultFormat: _ResultFormat, context: context);
+            var pipeline = new InvokeRulePipeline(
+                stream: new PipelineStream(input: input, output: _Output),
+                option: _Option,
+                path: _Path,
+                filter: filter,
+                outcome: _Outcome,
+                resultFormat: _ResultFormat,
+                context: context,
+                returnBoolean: _ReturnBoolean
+            );
+
+            return pipeline;
         }
     }
 }
