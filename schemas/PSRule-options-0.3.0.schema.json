@@ -86,8 +86,13 @@
                         "Json"
                     ],
                     "default": "None"
+                },
+                "objectPath": {
+                    "type": "string",
+                    "description": "The object path to a property to use instead of the pipeline object."
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "suppression": {
             "type": "object",
