@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
-using PSRule.Configuration;
+using PSRule.Commands;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Management.Automation;
@@ -9,8 +10,8 @@ using YamlDotNet.Serialization;
 
 namespace PSRule.Pipeline
 {
-    public delegate IEnumerable<PSObject> VisitTargetObject(PSObject targetObject);
-    public delegate IEnumerable<PSObject> VisitTargetObjectAction(PSObject targetObject, VisitTargetObject next);
+    public delegate IEnumerable<PSObject> VisitTargetObject(PSObject sourceObject);
+    public delegate IEnumerable<PSObject> VisitTargetObjectAction(PSObject sourceObject, VisitTargetObject next);
 
     public static class PipelineReceiverActions
     {
@@ -19,21 +20,43 @@ namespace PSRule.Pipeline
             yield return targetObject;
         }
 
-        public static IEnumerable<PSObject> ConvertFromJson(PSObject sourceObject)
+        public static IEnumerable<PSObject> ConvertFromJson(PSObject sourceObject, VisitTargetObject next)
         {
             if (!(sourceObject.BaseObject is string))
             {
                 return new PSObject[] { sourceObject };
             }
 
-            var result = new List<PSObject>();
-
             var value = JsonConvert.DeserializeObject<PSObject[]>(sourceObject.BaseObject.ToString(), new PSObjectArrayJsonConverter());
 
-            return value;
+            if (value == null)
+            {
+                return null;
+            }
+
+            var result = new List<PSObject>();
+
+            foreach (var item in value)
+            {
+                var items = next(item);
+
+                if (items == null)
+                {
+                    continue;
+                }
+
+                result.AddRange(items);
+            }
+
+            if (result.Count == 0)
+            {
+                return null;
+            }
+
+            return result.ToArray();
         }
 
-        public static IEnumerable<PSObject> ConvertFromYaml(PSObject sourceObject)
+        public static IEnumerable<PSObject> ConvertFromYaml(PSObject sourceObject, VisitTargetObject next)
         {
             if (!(sourceObject.BaseObject is string))
             {
@@ -56,10 +79,54 @@ namespace PSRule.Pipeline
             while (parser.Accept<DocumentStart>())
             {
                 var item = d.Deserialize<PSObject>(parser: parser);
-                result.Add(item);
+
+                if (item == null)
+                {
+                    continue;
+                }
+
+                var items = next(item);
+
+                if (items == null)
+                {
+                    continue;
+                }
+
+                result.AddRange(items);
+            }
+
+            if (result.Count == 0)
+            {
+                return null;
             }
 
             return result.ToArray();
+        }
+
+        public static IEnumerable<PSObject> ReadObjectPath(PSObject sourceObject, VisitTargetObject source, string objectPath, bool caseSensitive)
+        {
+            if (!ObjectHelper.GetField(targetObject: sourceObject, name: objectPath, caseSensitive: caseSensitive, value: out object nestedObject))
+            {
+                return null;
+            }
+
+            var nestedType = nestedObject.GetType();
+
+            if (typeof(IEnumerable).IsAssignableFrom(nestedType))
+            {
+                var result = new List<PSObject>();
+
+                foreach (var item in (nestedObject as IEnumerable))
+                {
+                    result.Add(PSObject.AsPSObject(item));
+                }
+
+                return result.ToArray();
+            }
+            else
+            {
+                return new PSObject[] { PSObject.AsPSObject(nestedObject) };
+            }
         }
     }
 }

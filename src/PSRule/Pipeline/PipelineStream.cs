@@ -39,6 +39,11 @@ namespace PSRule.Pipeline
             // Visit the object, which may change or expand the object
             var input = _InputVisitor(targetObject);
 
+            if (input == null)
+            {
+                return;
+            }
+
             foreach (var item in input)
             {
                 _Queue.Enqueue(item);

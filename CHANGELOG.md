@@ -5,6 +5,7 @@
 - Added schema for PSRule options [#74](https://github.com/BernieWhite/PSRule/issues/74)
 - Import objects from YAML or JSON format [#75](https://github.com/BernieWhite/PSRule/issues/75)
 - Support TargetName binding of nested properties [#71](https://github.com/BernieWhite/PSRule/issues/71)
+- Support nested TargetObjects [#77](https://github.com/BernieWhite/PSRule/issues/77)
 
 ## v0.2.0
 

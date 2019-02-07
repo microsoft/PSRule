@@ -19,6 +19,7 @@ namespace PSRule.Pipeline
         private PipelineLogger _Logger;
         private ResultFormat _ResultFormat;
         private BindTargetName _BindTargetNameHook;
+        private VisitTargetObject _VisitTargetObject;
         private bool _LogError;
         private bool _LogWarning;
         private bool _LogVerbose;
@@ -33,6 +34,7 @@ namespace PSRule.Pipeline
             _Outcome = RuleOutcome.Processed;
             _ResultFormat = ResultFormat.Detail;
             _BindTargetNameHook = PipelineHookActions.DefaultTargetNameBinding;
+            _VisitTargetObject = PipelineReceiverActions.PassThru;
             _LogError = _LogWarning = _LogVerbose = _LogInformation = false;
             _Output = (r, b) => { };
         }
@@ -82,6 +84,14 @@ namespace PSRule.Pipeline
             _BindTargetNameHook = (targetObject) => action(targetObject, previous);
         }
 
+        private void AddVisitTargetObjectAction(VisitTargetObjectAction action)
+        {
+            // Nest the previous write action in the new supplied action
+            // Execution chain will be: action -> previous -> previous..n
+            var previous = _VisitTargetObject;
+            _VisitTargetObject = (targetObject) => action(targetObject, previous);
+        }
+
         public void ReturnBoolean()
         {
             _ReturnBoolean = true;
@@ -99,6 +109,7 @@ namespace PSRule.Pipeline
             _Option.Execution.NotProcessedWarning = option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning;
 
             _Option.Input.Format = option.Input.Format ?? InputOption.Default.Format;
+            _Option.Input.ObjectPath = option.Input.ObjectPath ?? InputOption.Default.ObjectPath;
 
             if (option.Baseline != null)
             {
@@ -155,21 +166,33 @@ namespace PSRule.Pipeline
 
         public InvokeRulePipeline Build()
         {
-            VisitTargetObject input = PipelineReceiverActions.PassThru;
+            if (!string.IsNullOrEmpty(_Option.Input.ObjectPath))
+            {
+                AddVisitTargetObjectAction((sourceObject, next) =>
+                {
+                    return PipelineReceiverActions.ReadObjectPath(sourceObject, next, _Option.Input.ObjectPath, true);
+                });
+            }
 
             if (_Option.Input.Format == InputFormat.Yaml)
             {
-                input = PipelineReceiverActions.ConvertFromYaml;
+                AddVisitTargetObjectAction((sourceObject, next) =>
+                {
+                    return PipelineReceiverActions.ConvertFromYaml(sourceObject, next);
+                });
             }
             else if (_Option.Input.Format == InputFormat.Json)
             {
-                input = PipelineReceiverActions.ConvertFromJson;
+                AddVisitTargetObjectAction((sourceObject, next) =>
+                {
+                    return PipelineReceiverActions.ConvertFromJson(sourceObject, next);
+                });
             }
 
             var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
             var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: _BindTargetNameHook, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);
             var pipeline = new InvokeRulePipeline(
-                stream: new PipelineStream(input: input, output: _Output),
+                stream: new PipelineStream(input: _VisitTargetObject, output: _Output),
                 option: _Option,
                 path: _Path,
                 filter: filter,

@@ -12,7 +12,7 @@ namespace PSRule
         [Fact]
         public void DeserializeObjectsYaml()
         {
-            var actual = PipelineReceiverActions.ConvertFromYaml(GetYamlContent()).ToArray();
+            var actual = PipelineReceiverActions.ConvertFromYaml(GetYamlContent(), PipelineReceiverActions.PassThru).ToArray();
 
             Assert.Equal(2, actual.Length);
             Assert.Equal("TestObject1", actual[0].Properties["targetName"].Value);
@@ -23,7 +23,7 @@ namespace PSRule
         [Fact]
         public void DeserialObjectsJson()
         {
-            var actual = PipelineReceiverActions.ConvertFromJson(GetJsonContent()).ToArray();
+            var actual = PipelineReceiverActions.ConvertFromJson(GetJsonContent(), PipelineReceiverActions.PassThru).ToArray();
 
             Assert.Equal(2, actual.Length);
             Assert.Equal("TestObject1", actual[0].Properties["targetName"].Value);

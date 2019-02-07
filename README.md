@@ -158,6 +158,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Execution.InconclusiveWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inconclusive-warning)
   - [Execution.NotProcessedWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#not-processed-warning)
   - [Input.Format](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inputformat)
+  - [Input.ObjectPath](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inputobjectpath)
   - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#rule-suppression)
 - [Variables](docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
   - [$Configuration](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#configuration)

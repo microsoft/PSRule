@@ -22,6 +22,11 @@ execution:
   inconclusiveWarning: false
   notProcessedWarning: false
 
+  # Configure input options
+input:
+  format: Yaml
+  objectPath: items
+
 # Configure rule suppression
 suppression:
   SuppressionTest1:

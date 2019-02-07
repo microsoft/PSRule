@@ -72,7 +72,10 @@ function Invoke-PSRule {
 
         [Parameter(Mandatory = $False)]
         [ValidateSet('Yaml', 'Json')]
-        [PSRule.Configuration.InputFormat]$Format
+        [PSRule.Configuration.InputFormat]$Format,
+
+        [Parameter(Mandatory = $False)]
+        [String]$ObjectPath
     )
 
     begin {
@@ -110,6 +113,10 @@ function Invoke-PSRule {
 
         if ($PSBoundParameters.ContainsKey('Format')) {
             $Option.Input.Format = $Format;
+        }
+
+        if ($PSBoundParameters.ContainsKey('ObjectPath')) {
+            $Option.Input.ObjectPath = $ObjectPath;
         }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
@@ -181,7 +188,10 @@ function Test-PSRuleTarget {
 
         [Parameter(Mandatory = $False)]
         [ValidateSet('Yaml', 'Json')]
-        [PSRule.Configuration.InputFormat]$Format
+        [PSRule.Configuration.InputFormat]$Format,
+
+        [Parameter(Mandatory = $False)]
+        [String]$ObjectPath
     )
 
     begin {
@@ -219,6 +229,10 @@ function Test-PSRuleTarget {
 
         if ($PSBoundParameters.ContainsKey('Format')) {
             $Option.Input.Format = $Format;
+        }
+
+        if ($PSBoundParameters.ContainsKey('ObjectPath')) {
+            $Option.Input.ObjectPath = $ObjectPath;
         }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);

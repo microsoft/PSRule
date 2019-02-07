@@ -16,7 +16,7 @@ Evaluate pipeline objects against matching rules.
 ```text
 Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
  [-Outcome <RuleOutcome>] [-Option <PSRuleOption>] [-As <ResultFormat>] [-Format <InputFormat>]
- [<CommonParameters>]
+ [-ObjectPath <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -241,6 +241,22 @@ The following formats are available:
 
 ```yaml
 Type: InputFormat
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ObjectPath
+
+The name of a property to use instead of the pipeline object. If the property specified by `ObjectPath` is a collection/ array then each item in evaluated separately.
+
+```yaml
+Type: String
 Parameter Sets: (All)
 Aliases:
 
