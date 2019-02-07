@@ -222,11 +222,22 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
     }
 
     Context 'Using -Format' {
-        It 'Processed Yaml' {
-            $yaml = Get-Content -Path (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml') -Raw;
-            $result = Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithYamlFormat' -InputObject $yaml -Format Yaml;
+        It 'Processes Yaml' {
+            $yaml = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.yaml') -Raw;
+            $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputObject $yaml -Format Yaml);
             $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
+        }
+
+        It 'Processes Json' {
+            $json = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.json') -Raw;
+            $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputObject $json -Format Json);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
         }
     }
 

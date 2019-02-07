@@ -161,6 +161,10 @@ namespace PSRule.Pipeline
             {
                 input = PipelineReceiverActions.ConvertFromYaml;
             }
+            else if (_Option.Input.Format == InputFormat.Json)
+            {
+                input = PipelineReceiverActions.ConvertFromJson;
+            }
 
             var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
             var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: _BindTargetNameHook, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);

@@ -119,7 +119,7 @@ namespace PSRule.Configuration
             var d = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
                 .WithNamingConvention(new CamelCaseNamingConvention())
-                .WithTypeConverter(new SuppressionRuleConverter())
+                .WithTypeConverter(new SuppressionRuleYamlTypeConverter())
                 .Build();
 
             return d.Deserialize<PSRuleOption>(yaml) ?? new PSRuleOption();

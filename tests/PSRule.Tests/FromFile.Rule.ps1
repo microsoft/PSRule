@@ -117,8 +117,8 @@ Rule 'WithConfiguration' {
     $Configuration.Value2 -eq 2
 } -Configure @{ Value1 = 2; Value2 = 2; }
 
-Rule 'WithYamlFormat' {
-    $TargetObject.execution.languageMode -eq 'ConstrainedLanguage'
+Rule 'WithFormat' {
+    $TargetObject.spec.properties.kind -eq 'Test'
 }
 
 # Description: Test for Hint keyword
