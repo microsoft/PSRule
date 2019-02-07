@@ -15,7 +15,7 @@ Pass or fail pipeline objects against matching rules.
 
 ```text
 Test-PSRuleTarget [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
- [-Option <PSRuleOption>] [-Format <InputFormat>] [<CommonParameters>]
+ [-Option <PSRuleOption>] [-Format <InputFormat>] [-ObjectPath <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -139,6 +139,22 @@ The following formats are available:
 
 ```yaml
 Type: InputFormat
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ObjectPath
+
+The name of a property to use instead of the pipeline object. If the property specified by `ObjectPath` is a collection/ array then each item in evaluated separately.
+
+```yaml
+Type: String
 Parameter Sets: (All)
 Aliases:
 

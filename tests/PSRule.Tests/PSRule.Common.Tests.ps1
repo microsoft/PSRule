@@ -241,6 +241,17 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
     }
 
+    Context 'Using -ObjectPath' {
+        It 'Processes nested objects' {
+            $yaml = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFileNested.yaml') -Raw;
+            $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputObject $yaml -Format Yaml -ObjectPath items);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
+        }
+    }
+
     Context 'With constrained language' {
         $testObject = [PSCustomObject]@{
             Name = 'TestObject1'
@@ -638,7 +649,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','Common','New-PSRuleOption' {
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Execution.InconclusiveWarning | Should -Be $False
+            $option.Execution.InconclusiveWarning | Should -Be $False;
         }
     }
 
@@ -655,7 +666,41 @@ Describe 'New-PSRuleOption' -Tag 'Option','Common','New-PSRuleOption' {
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Execution.NotProcessedWarning | Should -Be $False
+            $option.Execution.NotProcessedWarning | Should -Be $False;
+        }
+    }
+
+    Context 'Read Input.Format' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Input.Format | Should -Be $Null;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Input.Format' = 'Yaml' };
+            $option.Input.Format | Should -Be Yaml;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Input.Format | Should -Be Yaml;
+        }
+    }
+
+    Context 'Read Input.ObjectPath' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Input.ObjectPath | Should -Be $Null;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Input.ObjectPath' = 'items' };
+            $option.Input.ObjectPath | Should -Be 'items';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Input.ObjectPath | Should -Be 'items';
         }
     }
 

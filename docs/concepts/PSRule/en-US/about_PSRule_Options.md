@@ -16,10 +16,11 @@ The following options are available for use:
 - [Baseline.Exclude](#baselineexclude)
 - [Baseline.Configuration](#baselineconfiguration)
 - [Binding.TargetName](#targetname-binding)
-- [Execution.LanguageMode](#language-mode)
+- [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InconclusiveWarning](#inconclusive-warning)
 - [Execution.NotProcessedWarning](#not-processed-warning)
 - [Input.Format](#inputformat)
+- [Input.ObjectPath](#inputobjectpath)
 - [Suppression](#rule-suppression)
 
 Options can be used by:
@@ -171,7 +172,7 @@ $bindFn = {
 $option = New-PSRuleOption -BindTargetName $bindFn;
 ```
 
-### Language mode
+### Execution.LanguageMode
 
 Unless PowerShell has been constrained, full language features of PowerShell are available to use within rule definitions. In locked down environments, a reduced set of language features may be desired.
 
@@ -272,6 +273,29 @@ input:
   format: Yaml
 ```
 
+### Input.ObjectPath
+
+The object path to a property to use instead of the pipeline object.
+
+By default, PSRule processes objects passed from the pipeline against selected rules. When this option is set, instead of evaluating the pipeline object, PSRule looks for a property of the pipeline object specified by `ObjectPath` and uses that instead. If the property specified by `ObjectPath` is a collection/ array then each item is evaluated separately.
+
+If the property specified by `ObjectPath` does not exist, PSRule skips the object.
+
+When using `Invoke-PSRule` and `Test-PSRuleTarget` the `-ObjectPath` parameter will override any value set in configuration.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Input.ObjectPath hashtable key
+$option = New-PSRuleOption -Option @{ 'Input.ObjectPath' = 'items' };
+```
+
+```yaml
+# YAML: Using the input/objectPath property
+input:
+  objectPath: items
+```
+
 ### Rule suppression
 
 In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.
@@ -365,6 +389,7 @@ execution:
 # Configures input options
 input:
   format: Yaml
+  objectPath: items
 
 # Configure rule suppression
 suppression:
@@ -404,6 +429,7 @@ execution:
 # Configures input options
 input:
   format: None
+  objectPath:
 
 # Configure rule suppression
 suppression: { }

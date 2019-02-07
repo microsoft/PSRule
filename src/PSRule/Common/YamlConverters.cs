@@ -104,7 +104,14 @@ namespace PSRule
 
                         while (!parser.Accept<SequenceEnd>())
                         {
-                            values.Add(parser.Allow<Scalar>().Value);
+                            if (parser.Accept<MappingStart>())
+                            {
+                                values.Add(ReadYaml(parser, type));
+                            }
+                            else if (parser.Accept<Scalar>())
+                            {
+                                values.Add(parser.Allow<Scalar>().Value);
+                            }
                         }
 
                         result.Properties.Add(new PSNoteProperty(name, values.ToArray()));

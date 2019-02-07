@@ -196,6 +196,16 @@ namespace PSRule.Configuration
                 option.Execution.NotProcessedWarning = bool.Parse(value.ToString());
             }
 
+            if (index.TryGetValue("input.format", out value))
+            {
+                option.Input.Format = (InputFormat)Enum.Parse(typeof(InputFormat), (string)value);
+            }
+
+            if (index.TryGetValue("input.objectpath", out value))
+            {
+                option.Input.ObjectPath = (string)value;
+            }
+
             return option;
         }
 
