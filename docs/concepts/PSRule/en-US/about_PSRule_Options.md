@@ -16,7 +16,7 @@ The following options are available for use:
 - [Baseline.Exclude](#baselineexclude)
 - [Baseline.Configuration](#baselineconfiguration)
 - [Binding.TargetName](#targetname-binding)
-- [Execution.LanguageMode](#language-mode)
+- [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InconclusiveWarning](#inconclusive-warning)
 - [Execution.NotProcessedWarning](#not-processed-warning)
 - [Input.Format](#inputformat)
@@ -172,7 +172,7 @@ $bindFn = {
 $option = New-PSRuleOption -BindTargetName $bindFn;
 ```
 
-### Language mode
+### Execution.LanguageMode
 
 Unless PowerShell has been constrained, full language features of PowerShell are available to use within rule definitions. In locked down environments, a reduced set of language features may be desired.
 

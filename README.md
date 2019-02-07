@@ -154,7 +154,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Baseline.Exclude](docs/concepts/PSRule/en-US/about_PSRule_Options.md#baselineexclude)
   - [Baseline.Configuration](docs/concepts/PSRule/en-US/about_PSRule_Options.md#baselineconfiguration)
   - [Binding.TargetName](docs/concepts/PSRule/en-US/about_PSRule_Options.md#targetname-binding)
-  - [Execution.LanguageMode](docs/concepts/PSRule/en-US/about_PSRule_Options.md#language-mode)
+  - [Execution.LanguageMode](docs/concepts/PSRule/en-US/about_PSRule_Options.md#executionlanguagemode)
   - [Execution.InconclusiveWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inconclusive-warning)
   - [Execution.NotProcessedWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#not-processed-warning)
   - [Input.Format](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inputformat)
