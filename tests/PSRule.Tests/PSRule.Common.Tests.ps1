@@ -478,6 +478,24 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         }
     }
 
+    Context 'Using -Module' {
+        It 'Returns module rules' {
+            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
+            $result = @(Get-PSRule -Module 'TestModule');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result.RuleName | Should -Be 'Rule1';
+        }
+
+        It 'Returns module and path rules' {
+            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
+            $result = @(Get-PSRule -Path (Join-Path $here -ChildPath 'TestModule') -Module 'TestModule');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result.RuleName | Should -BeIn 'Rule1';
+        }
+    }
+
     # Context 'Get rule with invalid path' {
     #     # TODO: Test with invalid path
     #     $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath invalid);

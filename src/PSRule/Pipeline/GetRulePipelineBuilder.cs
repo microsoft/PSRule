@@ -10,7 +10,7 @@ namespace PSRule.Pipeline
     /// </summary>
     public sealed class GetRulePipelineBuilder
     {
-        private string[] _Path;
+        private RuleSource[] _Source;
         private PSRuleOption _Option;
         private Hashtable _Tag;
         private PipelineLogger _Logger;
@@ -30,9 +30,9 @@ namespace PSRule.Pipeline
             _Tag = tag;
         }
 
-        public void Source(string[] path)
+        public void Source(RuleSource[] source)
         {
-            _Path = path;
+            _Source = source;
         }
 
         public GetRulePipelineBuilder Configure(PSRuleOption option)
@@ -51,13 +51,6 @@ namespace PSRule.Pipeline
             }
 
             return this;
-        }
-
-        public void UseCommandRuntime(ICommandRuntime commandRuntime)
-        {
-            _Logger.OnWriteVerbose = commandRuntime.WriteVerbose;
-            _Logger.OnWriteWarning = commandRuntime.WriteWarning;
-            _Logger.OnWriteError = commandRuntime.WriteError;
         }
 
         public void UseCommandRuntime(ICommandRuntime2 commandRuntime)
@@ -80,7 +73,7 @@ namespace PSRule.Pipeline
         {
             var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
             var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: null, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);
-            return new GetRulePipeline(option: _Option, path: _Path, filter: filter, context: context);
+            return new GetRulePipeline(option: _Option, source: _Source, filter: filter, context: context);
         }
     }
 }

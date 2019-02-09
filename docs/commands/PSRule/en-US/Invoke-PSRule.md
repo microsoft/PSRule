@@ -16,7 +16,7 @@ Evaluate pipeline objects against matching rules.
 ```text
 Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
  [-Outcome <RuleOutcome>] [-Option <PSRuleOption>] [-As <ResultFormat>] [-Format <InputFormat>]
- [-ObjectPath <String>] [<CommonParameters>]
+ [-ObjectPath <String>] [-Module <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -124,7 +124,11 @@ Accept wildcard characters: False
 
 ### -Path
 
-One or more paths to search for rule definitions within. If this parameter is not specified the current working path will be used.
+One or more paths to search for rule definitions within.
+
+If this parameter is not specified the current working path will be used, unless the `-Module` parameter is used.
+
+If the `-Module` parameter is used, rule definitions from the currently working path will not be included by default.
 
 ```yaml
 Type: String[]
@@ -257,6 +261,24 @@ The name of a property to use instead of the pipeline object. If the property sp
 
 ```yaml
 Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Module
+
+Search for rule definitions within a module. When specified without the `-Path` parameter, only rule definitions in the module will be discovered.
+
+When both `-Path` and `-Module` are specified, rule definitions from both are discovered.
+
+```yaml
+Type: String[]
 Parameter Sets: (All)
 Aliases:
 

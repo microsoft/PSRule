@@ -12,7 +12,7 @@ namespace PSRule.Pipeline
     /// </summary>
     public sealed class InvokeRulePipelineBuilder
     {
-        private string[] _Path;
+        private RuleSource[] _Source;
         private PSRuleOption _Option;
         private Hashtable _Tag;
         private RuleOutcome _Outcome;
@@ -44,9 +44,9 @@ namespace PSRule.Pipeline
             _Tag = tag;
         }
 
-        public void Source(string[] path)
+        public void Source(RuleSource[] source)
         {
-            _Path = path;
+            _Source = source;
         }
 
         public void Limit(RuleOutcome outcome)
@@ -194,7 +194,7 @@ namespace PSRule.Pipeline
             var pipeline = new InvokeRulePipeline(
                 stream: new PipelineStream(input: _VisitTargetObject, output: _Output),
                 option: _Option,
-                path: _Path,
+                source: _Source,
                 filter: filter,
                 outcome: _Outcome,
                 resultFormat: _ResultFormat,

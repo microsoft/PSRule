@@ -55,6 +55,7 @@ namespace PSRule.Commands
         {
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
+            var moduleName = PipelineContext.CurrentThread.ModuleName;
 
             PipelineContext.CurrentThread.VerboseFoundRule(ruleName: Name, scriptName: MyInvocation.ScriptName);
 
@@ -68,11 +69,12 @@ namespace PSRule.Commands
 
             var block = new RuleBlock(
                 sourcePath: MyInvocation.ScriptName,
+                moduleName: moduleName,
                 ruleName: Name,
                 description: metadata.Description,
                 condition: ps,
                 tag: tag,
-                dependsOn: RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName),
+                dependsOn: RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName, moduleName),
                 configuration: Configure
             );
 

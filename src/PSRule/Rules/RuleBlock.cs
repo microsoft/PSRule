@@ -17,13 +17,17 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId} @{SourcePath}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     {
-        public RuleBlock(string sourcePath, string ruleName, string description, PowerShell condition, TagSet tag, string[] dependsOn, Hashtable configuration)
+        public RuleBlock(string sourcePath, string moduleName, string ruleName, string description, PowerShell condition, TagSet tag, string[] dependsOn, Hashtable configuration)
         {
             SourcePath = sourcePath;
+            ModuleName = moduleName;
             RuleName = ruleName;
 
             var scriptFileName = Path.GetFileName(sourcePath);
-            RuleId = string.Concat(scriptFileName, '/', ruleName);
+
+            // Get either scriptFileName/RuleName or Module/scriptFileName/RuleName
+            RuleId = (ModuleName == null) ?
+                string.Concat(scriptFileName, '/', RuleName) : string.Concat(ModuleName, '/', scriptFileName, '/', RuleName);
 
             Description = description;
             Condition = condition;
@@ -46,6 +50,11 @@ namespace PSRule.Rules
         /// The script file path where the rule is defined.
         /// </summary>
         public readonly string SourcePath;
+
+        /// <summary>
+        /// The name of the module where the rule is defined, or null if the rule is not defined in a module.
+        /// </summary>
+        public readonly string ModuleName;
 
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
@@ -76,6 +85,8 @@ namespace PSRule.Rules
         public readonly Hashtable Configuration;
 
         string ILanguageBlock.SourcePath => SourcePath;
+
+        string ILanguageBlock.Module => ModuleName;
 
         string IDependencyTarget.RuleId => RuleId;
 

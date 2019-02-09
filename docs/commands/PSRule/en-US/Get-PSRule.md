@@ -15,7 +15,7 @@ Get a list of rule definitions.
 
 ```text
 Get-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>]
- [<CommonParameters>]
+ [-Module <String[]>] [-ListAvailable] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -58,7 +58,11 @@ Accept wildcard characters: False
 
 ### -Path
 
-One or more paths to search for rule definitions within. If this parameter is not specified the current working path will be used.
+One or more paths to search for rule definitions within.
+
+If this parameter is not specified the current working path will be used, unless the `-Module` parameter is used.
+
+If the `-Module` parameter is used, rule definitions from the currently working path will not be included by default.
 
 ```yaml
 Type: String[]
@@ -98,6 +102,40 @@ For more information on PSRule options see about_PSRule_Options.
 
 ```yaml
 Type: PSRuleOption
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ListAvailable
+
+Look for modules containing rule definitions including modules that are currently not imported.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Module
+
+Search for rule definitions within a module. When specified without the `-Path` parameter, only rule definitions in the module will be discovered.
+
+When both `-Path` and `-Module` are specified, rule definitions from both are discovered.
+
+```yaml
+Type: String[]
 Parameter Sets: (All)
 Aliases:
 

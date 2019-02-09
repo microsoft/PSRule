@@ -1,5 +1,6 @@
 using PSRule.Configuration;
 using PSRule.Pipeline;
+using PSRule.Rules;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -53,9 +54,9 @@ namespace PSRule
             Assert.NotNull(pipeline);
         }
 
-        private static string[] GetTestSource()
+        private static RuleSource[] GetTestSource()
         {
-            return new string[] { Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FromFile.Rule.ps1") };
+            return new RuleSource[] { new RuleSource(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FromFile.Rule.ps1"), null) };
         }
     }
 }

@@ -10,7 +10,7 @@ namespace PSRule.Rules
         /// <param name="ruleNames">An array of names. Qualified names (RuleIds) supplied are left intact.</param>
         /// <param name="sourcePath">A source path to use to qualify each name.</param>
         /// <returns>An array of RuleIds.</returns>
-        public static string[] ExpandRuleName(string[] ruleNames, string sourcePath)
+        public static string[] ExpandRuleName(string[] ruleNames, string sourcePath, string moduleName)
         {
             if (ruleNames == null)
             {
@@ -32,7 +32,8 @@ namespace PSRule.Rules
                 // The name is not already qualified
                 if (ruleNames[i].IndexOf('/') == -1)
                 {
-                    result[i] = string.Concat(scriptFileName, '/', ruleNames[i]);
+                    result[i] = (moduleName == null) ?
+                        string.Concat(scriptFileName, '/', ruleNames[i]) : string.Concat(moduleName, '/', scriptFileName, '/', ruleNames[i]);
                 }
             }
 

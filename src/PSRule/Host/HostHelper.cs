@@ -14,15 +14,15 @@ namespace PSRule.Host
 {
     internal sealed class HostHelper
     {
-        public static IEnumerable<Rule> GetRule(PSRuleOption option, string[] scriptPaths, RuleFilter filter)
+        public static IEnumerable<Rule> GetRule(PSRuleOption option, RuleSource[] source, RuleFilter filter)
         {
-            return ToRule(GetLanguageBlock(option, scriptPaths), filter);
+            return ToRule(GetLanguageBlock(option: option, sources: source), filter);
         }
 
-        public static DependencyGraph<RuleBlock> GetRuleBlockGraph(PSRuleOption option, string[] scriptPaths, RuleFilter filter)
+        public static DependencyGraph<RuleBlock> GetRuleBlockGraph(PSRuleOption option, RuleSource[] source, RuleFilter filter)
         {
             var builder = new DependencyGraphBuilder<RuleBlock>();
-            builder.Include(items: GetLanguageBlock(option, scriptPaths).OfType<RuleBlock>(), filter: (b) => filter == null || filter.Match(b));
+            builder.Include(items: GetLanguageBlock(option: option, sources: source).OfType<RuleBlock>(), filter: (b) => filter == null || filter.Match(b));
             return builder.Build();
         }
 
@@ -74,9 +74,9 @@ namespace PSRule.Host
         /// Execute one or more PowerShell script files to get language blocks.
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="scriptPaths"></param>
+        /// <param name="sources"></param>
         /// <returns></returns>
-        private static IEnumerable<ILanguageBlock> GetLanguageBlock(PSRuleOption option, string[] scriptPaths)
+        private static IEnumerable<ILanguageBlock> GetLanguageBlock(PSRuleOption option, RuleSource[] sources)
         {
             var results = new Collection<ILanguageBlock>();
 
@@ -90,22 +90,24 @@ namespace PSRule.Host
 
                 // Process scripts
 
-                foreach (var path in scriptPaths)
+                foreach (var source in sources)
                 {
-                    if (!File.Exists(path))
+                    if (!File.Exists(source.Path))
                     {
-                        throw new FileNotFoundException("The script was not found.", path);
+                        throw new FileNotFoundException("The script was not found.", source.Path);
                     }
 
-                    PipelineContext.CurrentThread.VerboseRuleDiscovery(path: path);
+                    PipelineContext.CurrentThread.ModuleName = string.IsNullOrEmpty(source.ModuleName) ? null : source.ModuleName;
 
-                    if (!File.Exists(path))
+                    PipelineContext.CurrentThread.VerboseRuleDiscovery(path: source.Path);
+
+                    if (!File.Exists(source.Path))
                     {
-                        throw new FileNotFoundException("Can't find file", path);
+                        throw new FileNotFoundException("Can't find file", source.Path);
                     }
 
                     // Invoke script
-                    ps.AddScript(path, true);
+                    ps.AddScript(source.Path, true);
                     var invokeResults = ps.Invoke();
 
                     if (ps.HadErrors)
@@ -127,6 +129,7 @@ namespace PSRule.Host
             }
             finally
             {
+                PipelineContext.CurrentThread.ModuleName = null;
                 ps.Runspace = null;
                 ps.Dispose();
             }
@@ -189,6 +192,7 @@ namespace PSRule.Host
                         RuleId = block.RuleId,
                         RuleName = block.RuleName,
                         SourcePath = block.SourcePath,
+                        ModuleName = block.ModuleName,
                         Description = block.Description,
                         Tag = block.Tag
                     };

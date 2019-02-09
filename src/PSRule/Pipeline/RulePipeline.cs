@@ -8,17 +8,17 @@ namespace PSRule.Pipeline
     {
         internal readonly PipelineContext _Context;
         protected readonly PSRuleOption _Option;
-        protected readonly string[] _Path;
+        protected readonly RuleSource[] _Source;
         protected readonly RuleFilter _Filter;
 
         // Track whether Dispose has been called.
         private bool _Disposed = false;
 
-        internal RulePipeline(PipelineContext context, PSRuleOption option, string[] path, RuleFilter filter)
+        internal RulePipeline(PipelineContext context, PSRuleOption option, RuleSource[] source, RuleFilter filter)
         {
             _Context = context;
             _Option = option;
-            _Path = path;
+            _Source = source;
             _Filter = filter;
         }
 
