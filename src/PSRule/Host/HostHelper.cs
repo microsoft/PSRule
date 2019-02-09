@@ -92,6 +92,8 @@ namespace PSRule.Host
 
                 foreach (var source in sources)
                 {
+                    ps.Commands.Clear();
+
                     if (!File.Exists(source.Path))
                     {
                         throw new FileNotFoundException("The script was not found.", source.Path);
