@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Export variables to improve authoring experience [#83](https://github.com/BernieWhite/PSRule/issues/83)
+
 ## v0.3.0-B190208 (pre-release)
 
 - Added online help links to keywords [#72](https://github.com/BernieWhite/PSRule/issues/72)
