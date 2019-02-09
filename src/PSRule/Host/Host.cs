@@ -10,12 +10,12 @@ namespace PSRule.Host
     /// </summary>
     internal sealed class RuleVariable : PSVariable
     {
-        private readonly RuntimeRuleView _View;
+        private readonly Runtime.Rule _View;
 
         public RuleVariable(string name)
             : base(name, null, ScopedItemOptions.ReadOnly)
         {
-            _View = new RuntimeRuleView();
+            _View = new Runtime.Rule();
         }
 
         public override object Value

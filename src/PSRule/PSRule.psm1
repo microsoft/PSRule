@@ -630,6 +630,7 @@ function InitEditorServices {
 
     process {
         if ($Null -ne (Get-Variable -Name psEditor -ErrorAction Ignore)) {
+            # Export keywords
             Export-ModuleMember -Function @(
                 'AllOf'
                 'AnyOf'
@@ -639,6 +640,13 @@ function InitEditorServices {
                 'Within'
                 'Hint'
             );
+
+            # Export variables
+            Export-ModuleMember -Variable @(
+                'Configuration'
+                'Rule'
+                'TargetObject'
+            );
         }
     }
 }
@@ -646,6 +654,14 @@ function InitEditorServices {
 #
 # Editor services
 #
+
+# Define variables and types
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
+[PSObject]$Configuration = $Null;
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
+[PSRule.Runtime.Rule]$Rule = New-Object -TypeName 'PSRule.Runtime.Rule';
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
+[PSObject]$TargetObject = New-Object -TypeName 'PSObject';
 
 InitEditorServices;
 
