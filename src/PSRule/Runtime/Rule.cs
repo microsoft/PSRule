@@ -1,8 +1,5 @@
 ﻿using PSRule.Pipeline;
-using System;
-using System.Collections.Generic;
 using System.Management.Automation;
-using System.Text;
 
 namespace PSRule.Runtime
 {
