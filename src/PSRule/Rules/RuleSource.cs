@@ -4,6 +4,9 @@ using System.Text;
 
 namespace PSRule.Rules
 {
+    /// <summary>
+    /// A source file for rule definitions.
+    /// </summary>
     public sealed class RuleSource
     {
         public readonly string Path;
@@ -16,6 +19,9 @@ namespace PSRule.Rules
         }   
     }
 
+    /// <summary>
+    /// A helper to build a list of rule sources for discovery.
+    /// </summary>
     public sealed class RuleSourceBuilder
     {
         private readonly List<RuleSource> _Source;

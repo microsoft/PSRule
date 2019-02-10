@@ -116,6 +116,8 @@ Accept wildcard characters: False
 
 Look for modules containing rule definitions including modules that are currently not imported.
 
+This switch is used with the `-Module` parameter.
+
 ```yaml
 Type: SwitchParameter
 Parameter Sets: (All)

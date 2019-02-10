@@ -83,7 +83,9 @@ Rule 'storageAccounts.UseHttps' {
 
 ### Add rule hint
 
-Additionally to provide feedback to the person or process running the rules, we can use the `Hint` keyword.
+Additionally to provide feedback to the person or process running the rules, we can use the `Hint` keyword to set a message that appears in results.
+
+If a hint message is not provided the description will be used instead.
 
 In the example below:
 
