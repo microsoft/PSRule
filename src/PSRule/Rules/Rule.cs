@@ -28,6 +28,12 @@ namespace PSRule.Rules
         public string SourcePath { get; set; }
 
         /// <summary>
+        /// The name of the module where the rule is defined, or null if the rule is not defined in a module.
+        /// </summary>
+        [JsonProperty(PropertyName = "moduleName")]
+        public string ModuleName { get; set; }
+
+        /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
         /// </summary>
         [JsonProperty(PropertyName = "description")]

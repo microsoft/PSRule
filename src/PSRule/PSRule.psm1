@@ -75,7 +75,10 @@ function Invoke-PSRule {
         [PSRule.Configuration.InputFormat]$Format,
 
         [Parameter(Mandatory = $False)]
-        [String]$ObjectPath
+        [String]$ObjectPath,
+
+        [Parameter(Mandatory = $False)]
+        [String[]]$Module
     )
 
     begin {
@@ -92,7 +95,18 @@ function Invoke-PSRule {
         $Option = New-PSRuleOption @optionParams;
 
         # Discover scripts in the specified paths
-        [String[]]$sourceFiles = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
+        $sourceParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Path')) {
+            $sourceParams['Path'] = $Path;
+        }
+        if ($PSBoundParameters.ContainsKey('Module')) {
+            $sourceParams['Module'] = $Module;
+        }
+        if ($sourceParams.Count -eq 0) {
+            $sourceParams['Path'] = $Path;
+        }
+        [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -191,7 +205,10 @@ function Test-PSRuleTarget {
         [PSRule.Configuration.InputFormat]$Format,
 
         [Parameter(Mandatory = $False)]
-        [String]$ObjectPath
+        [String]$ObjectPath,
+
+        [Parameter(Mandatory = $False)]
+        [String[]]$Module
     )
 
     begin {
@@ -208,7 +225,18 @@ function Test-PSRuleTarget {
         $Option = New-PSRuleOption @optionParams;
 
         # Discover scripts in the specified paths
-        [String[]]$sourceFiles = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
+        $sourceParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Path')) {
+            $sourceParams['Path'] = $Path;
+        }
+        if ($PSBoundParameters.ContainsKey('Module')) {
+            $sourceParams['Module'] = $Module;
+        }
+        if ($sourceParams.Count -eq 0) {
+            $sourceParams['Path'] = $Path;
+        }
+        [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -285,7 +313,13 @@ function Get-PSRule {
         [Hashtable]$Tag,
 
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.PSRuleOption]$Option
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $False)]
+        [String[]]$Module,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$ListAvailable
     )
 
     begin {
@@ -302,7 +336,21 @@ function Get-PSRule {
         $Option = New-PSRuleOption @optionParams;
 
         # Discover scripts in the specified paths
-        [String[]]$sourceFiles = GetRuleScriptPath -Path $Path -Verbose:$VerbosePreference;
+        $sourceParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Path')) {
+            $sourceParams['Path'] = $Path;
+        }
+        if ($PSBoundParameters.ContainsKey('Module')) {
+            $sourceParams['Module'] = $Module;
+        }
+        if ($PSBoundParameters.ContainsKey('ListAvailable')) {
+            $sourceParams['ListAvailable'] = $ListAvailable;
+        }
+        if ($sourceParams.Count -eq 0) {
+            $sourceParams['Path'] = $Path;
+        }
+        [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -311,7 +359,6 @@ function Get-PSRule {
         }
 
         Write-Verbose -Message "[Get-PSRule] -- Found $($sourceFiles.Length) script(s)";
-        Write-Debug -Message "[Get-PSRule] -- Found scripts: $([String]::Join(' ', $sourceFiles))";
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
@@ -582,19 +629,58 @@ function TypeOf {
 function GetRuleScriptPath {
 
     [CmdletBinding()]
-    [OutputType([String])]
+    [OutputType([PSRule.Rules.RuleSource])]
     param (
-        [Parameter(Mandatory = $True)]
-        [String[]]$Path
+        [Parameter(Mandatory = $False)]
+        [String[]]$Path,
+
+        [Parameter(Mandatory = $False)]
+        [String[]]$Module,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$ListAvailable
     )
 
     process {
-        Write-Verbose -Message "[PSRule][D] -- Scanning for source files: $Path";
-        $fileObjects = (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
+        $builder = New-Object -TypeName 'PSRule.Rules.RuleSourceBuilder';
+        
+        if ($PSBoundParameters.ContainsKey('Path')) {
+            Write-Verbose -Message "[PSRule][D] -- Scanning for source files: $Path";
+            $fileObjects = (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
 
-        if ($Null -ne $fileObjects) {
-            $fileObjects.FullName;
+            if ($Null -ne $fileObjects) {
+                $builder.Add($fileObjects.FullName, $Null);
+            }
         }
+
+        $moduleParams = @{};
+
+        if ($PSBoundParameters.ContainsKey('Module')) {
+            $moduleParams['Name'] = $Module;
+        }
+
+        if ($PSBoundParameters.ContainsKey('ListAvailable')) {
+            $moduleParams['ListAvailable'] = $ListAvailable.ToBool();
+        }
+
+        if ($moduleParams.Count -gt 0) {
+            $modules = Microsoft.PowerShell.Core\Get-Module @moduleParams | Where-Object -FilterScript {
+                'PSRule' -in $_.Tags
+            }
+
+            if ($Null -ne $modules) {
+                foreach ($m in $modules) {
+                    Write-Verbose -Message "[PSRule][D] -- Found module: $($m.Name)";
+                    $fileObjects = (Get-ChildItem -Path $m.ModuleBase -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
+
+                    if ($Null -ne $fileObjects) {
+                        $builder.Add($fileObjects.FullName, $m.Name);
+                    }
+                }
+            }
+        }
+
+        $builder.Build();
     }
 }
 
@@ -630,6 +716,7 @@ function InitEditorServices {
 
     process {
         if ($Null -ne (Get-Variable -Name psEditor -ErrorAction Ignore)) {
+            # Export keywords
             Export-ModuleMember -Function @(
                 'AllOf'
                 'AnyOf'
@@ -639,6 +726,13 @@ function InitEditorServices {
                 'Within'
                 'Hint'
             );
+
+            # Export variables
+            Export-ModuleMember -Variable @(
+                'Configuration'
+                'Rule'
+                'TargetObject'
+            );
         }
     }
 }
@@ -646,6 +740,14 @@ function InitEditorServices {
 #
 # Editor services
 #
+
+# Define variables and types
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
+[PSObject]$Configuration = $Null;
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
+[PSRule.Runtime.Rule]$Rule = New-Object -TypeName 'PSRule.Runtime.Rule';
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
+[PSObject]$TargetObject = New-Object -TypeName 'PSObject';
 
 InitEditorServices;
 

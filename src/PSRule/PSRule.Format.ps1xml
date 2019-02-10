@@ -15,6 +15,9 @@
           <TableColumnHeader>
             <Label>Description</Label>
           </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ModuleName</Label>
+          </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
@@ -24,6 +27,9 @@
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Description</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>ModuleName</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

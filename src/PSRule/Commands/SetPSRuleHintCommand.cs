@@ -1,4 +1,5 @@
-﻿using System.Management.Automation;
+﻿using PSRule.Pipeline;
+using System.Management.Automation;
 
 namespace PSRule.Commands
 {
@@ -25,7 +26,7 @@ namespace PSRule.Commands
 
             if (MyInvocation.BoundParameters.ContainsKey("TargetName"))
             {
-                result.TargetName = TargetName;
+                PipelineContext.CurrentThread.WarnTargetNameParameterObsolete();
             }
         }
     }

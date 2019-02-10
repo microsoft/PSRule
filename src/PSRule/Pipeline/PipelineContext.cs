@@ -42,6 +42,7 @@ namespace PSRule.Pipeline
         internal PSObject TargetObject;
         internal RuleBlock RuleBlock;
         internal PSRuleOption Option;
+        internal string ModuleName;
 
         public HashAlgorithm ObjectHashAlgorithm
         {
@@ -197,6 +198,16 @@ namespace PSRule.Pipeline
             }
 
             DoWriteWarning(string.Format(PSRuleResources.RuleInconclusive, ruleId, TargetName));
+        }
+
+        public void WarnTargetNameParameterObsolete()
+        {
+            if (!_LogWarning)
+            {
+                return;
+            }
+
+            DoWriteWarning(PSRuleResources.TargetNameParameterObsolete);
         }
 
         internal Runspace GetRunspace()

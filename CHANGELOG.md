@@ -1,6 +1,10 @@
 
 ## Unreleased
 
+- Export variables to improve authoring experience [#83](https://github.com/BernieWhite/PSRule/issues/83)
+- Support for packaging rules in modules [#16](https://github.com/BernieWhite/PSRule/issues/16)
+- **Breaking change** - Removed `-TargetName` parameter of the `Hint` keyword [#81](https://github.com/BernieWhite/PSRule/issues/81)
+
 ## v0.3.0-B190208 (pre-release)
 
 - Added online help links to keywords [#72](https://github.com/BernieWhite/PSRule/issues/72)

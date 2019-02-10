@@ -83,19 +83,18 @@ Rule 'storageAccounts.UseHttps' {
 
 ### Add rule hint
 
-Additionally to provide feedback to the person or process running the rules, we can use the `Hint` keyword.
+Additionally to provide feedback to the person or process running the rules, we can use the `Hint` keyword to set a message that appears in results.
+
+If a hint message is not provided the description will be used instead.
 
 In the example below:
 
 - Directly after the `Hint` keyword is a message to help understand why the rule failed or passed.
-- The `-TargetName` parameter is used to map the name of the Azure resource so that the result shows which Azure resource passed or failed.
-  - In this case, it's not strictly required because there is a default `Name` property for each resource which PSRule will bind to by default.
 
 ```powershell
 # Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' {
-
-    Hint 'Storage accounts should only allow secure traffic' -TargetName $TargetObject.ResourceName
+    Hint 'Storage accounts should only allow secure traffic'
 
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }
@@ -114,8 +113,7 @@ In the example below:
 ```powershell
 # Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { $TargetObject.ResourceType -eq 'Microsoft.Storage/storageAccounts' } {
-
-    Hint 'Storage accounts should only allow secure traffic' -TargetName $TargetObject.ResourceName
+    Hint 'Storage accounts should only allow secure traffic'
 
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }
@@ -197,8 +195,7 @@ Updating our existing `storageAccounts.UseHttps` rule, our rule definition becom
 ```powershell
 # Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAccounts' } {
-
-    Hint 'Storage accounts should only allow secure traffic' -TargetName $TargetObject.ResourceName
+    Hint 'Storage accounts should only allow secure traffic'
 
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }

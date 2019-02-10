@@ -23,11 +23,11 @@ namespace PSRule.Pipeline
         // Track whether Dispose has been called.
         private bool _Disposed = false;
 
-        internal InvokeRulePipeline(PipelineStream stream, PSRuleOption option, string[] path, RuleFilter filter, RuleOutcome outcome, ResultFormat resultFormat, PipelineContext context, bool returnBoolean)
-            : base(context, option, path, filter)
+        internal InvokeRulePipeline(PipelineStream stream, PSRuleOption option, RuleSource[] source, RuleFilter filter, RuleOutcome outcome, ResultFormat resultFormat, PipelineContext context, bool returnBoolean)
+            : base(context, option, source, filter)
         {
             _Stream = stream;
-            _RuleGraph = HostHelper.GetRuleBlockGraph(_Option, _Path, _Filter);
+            _RuleGraph = HostHelper.GetRuleBlockGraph(_Option, _Source, _Filter);
             RuleCount = _RuleGraph.Count;
 
             if (RuleCount == 0)
