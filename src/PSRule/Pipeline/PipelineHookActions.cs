@@ -106,7 +106,7 @@ namespace PSRule.Pipeline
 
             for (var i = 0; i < propertyNames.Length && score > propertyNames.Length; i++)
             {
-                if (ObjectHelper.GetField(targetObject: targetObject, name: propertyNames[i], caseSensitive: caseSensitive, value: out object value))
+                if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: propertyNames[i], caseSensitive: caseSensitive, value: out object value))
                 {
                     targetName = value.ToString();
                     score = i;

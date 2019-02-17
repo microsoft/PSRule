@@ -38,7 +38,7 @@ namespace PSRule.Commands
 
             var result = false;
 
-            if (ObjectHelper.GetField(targetObject: targetObject, name: Field, caseSensitive: false, value: out object fieldValue))
+            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field, caseSensitive: false, value: out object fieldValue))
             {
                 foreach (var item in AllowedValue)
                 {

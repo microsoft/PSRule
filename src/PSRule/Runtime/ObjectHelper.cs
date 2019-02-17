@@ -7,24 +7,6 @@ namespace PSRule.Runtime
 {
     internal static class ObjectHelper
     {
-        private enum NameTokenType
-        {
-            Field = 0,
-
-            Index = 1
-        }
-
-        private sealed class NameToken
-        {
-            public string Name;
-
-            public int Index;
-
-            public NameToken Next;
-
-            public NameTokenType Type = NameTokenType.Field;
-        }
-
         private sealed class NameTokenStream
         {
             private const char Separator = '.';
@@ -165,9 +147,18 @@ namespace PSRule.Runtime
             }
         }
 
-        public static bool GetField(object targetObject, string name, bool caseSensitive, out object value)
+        public static bool GetField(IBindingContext bindingContext, object targetObject, string name, bool caseSensitive, out object value)
         {
-            var nameToken = GetNameTokens(name);
+            // Try to load nameToken from cache
+            if (bindingContext == null || !bindingContext.GetNameToken(expression: name, nameToken: out NameToken nameToken))
+            {
+                nameToken = GetNameToken(expression: name);
+
+                if (bindingContext != null)
+                {
+                    bindingContext.CacheNameToken(expression: name, nameToken: nameToken);
+                }
+            }
 
             return GetField(targetObject: targetObject, token: nameToken, caseSensitive: caseSensitive, value: out value);
         }
@@ -269,9 +260,9 @@ namespace PSRule.Runtime
             return false;
         }
 
-        private static NameToken GetNameTokens(string name)
+        private static NameToken GetNameToken(string expression)
         {
-            var stream = new NameTokenStream(name);
+            var stream = new NameTokenStream(expression);
             return stream.Get();
         }
 

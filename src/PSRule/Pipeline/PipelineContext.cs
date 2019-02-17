@@ -1,15 +1,17 @@
-﻿using PSRule.Configuration;
+using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Resources;
 using PSRule.Rules;
+using PSRule.Runtime;
 using System;
+using System.Collections.Generic;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Security.Cryptography;
 
 namespace PSRule.Pipeline
 {
-    internal sealed class PipelineContext : IDisposable
+    internal sealed class PipelineContext : IDisposable, IBindingContext
     {
         [ThreadStatic]
         internal static PipelineContext CurrentThread;
@@ -24,6 +26,7 @@ namespace PSRule.Pipeline
         private readonly LanguageMode _LanguageMode;
         private readonly bool _InconclusiveWarning;
         private readonly bool _NotProcessedWarning;
+        private readonly Dictionary<string, NameToken> _NameTokenCache;
 
         // Pipeline logging
         private string _LogPrefix;
@@ -78,6 +81,8 @@ namespace PSRule.Pipeline
             {
                 _LogError = _LogWarning = _LogVerbose = _LogInformation = false;
             }
+
+            _NameTokenCache = new Dictionary<string, NameToken>();
         }
 
         public static PipelineContext New(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, bool logError = true, bool logWarning = true, bool logVerbose = false, bool logInformation = false)
@@ -391,6 +396,27 @@ namespace PSRule.Pipeline
             return _LogPrefix ?? string.Empty;
         }
 
+        #region IBindingContext
+
+        public bool GetNameToken(string expression, out NameToken nameToken)
+        {
+            if (!_NameTokenCache.ContainsKey(expression))
+            {
+                nameToken = null;
+                return false;
+            }
+
+            nameToken = _NameTokenCache[expression];
+            return true;
+        }
+
+        public void CacheNameToken(string expression, NameToken nameToken)
+        {
+            _NameTokenCache[expression] = nameToken;
+        }
+
+        #endregion IBindingContext
+
         #region IDisposable
 
         public void Dispose()
@@ -413,6 +439,8 @@ namespace PSRule.Pipeline
                     {
                         _Runspace.Dispose();
                     }
+
+                    _NameTokenCache.Clear();
                 }
 
                 _Disposed = true;

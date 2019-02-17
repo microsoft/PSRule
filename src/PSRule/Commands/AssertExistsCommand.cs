@@ -36,7 +36,7 @@ namespace PSRule.Commands
 
             for (var i = 0; i < Field.Length && actual != expected; i++)
             {
-                actual = ObjectHelper.GetField(targetObject: targetObject, name: Field[i], caseSensitive: CaseSensitive, value: out object fieldValue);
+                actual = ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field[i], caseSensitive: CaseSensitive, value: out object fieldValue);
 
                 if (actual == expected)
                 {
