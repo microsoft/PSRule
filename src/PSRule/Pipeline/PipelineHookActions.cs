@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
-using PSRule.Commands;
 using PSRule.Configuration;
+using PSRule.Runtime;
 using System;
 using System.Globalization;
 using System.Linq;

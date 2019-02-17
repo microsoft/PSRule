@@ -1,4 +1,5 @@
 ﻿using PSRule.Pipeline;
+using PSRule.Runtime;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
 

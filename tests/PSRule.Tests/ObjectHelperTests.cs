@@ -11,10 +11,10 @@ namespace PSRule
         {
             var testObject = GetTestObject();
 
-            ObjectHelper.GetField(targetObject: testObject, name: "Name", caseSensitive: true, value: out object actual1);
-            ObjectHelper.GetField(targetObject: testObject, name: "Value.Value1", caseSensitive: false, value: out object actual2);
-            ObjectHelper.GetField(targetObject: testObject, name: "Metadata.'app.kubernetes.io/name'", caseSensitive: false, value: out object actual3);
-            ObjectHelper.GetField(targetObject: testObject, name: "Value2[1]", caseSensitive: false, value: out object actual4);
+            Runtime.ObjectHelper.GetField(targetObject: testObject, name: "Name", caseSensitive: true, value: out object actual1);
+            Runtime.ObjectHelper.GetField(targetObject: testObject, name: "Value.Value1", caseSensitive: false, value: out object actual2);
+            Runtime.ObjectHelper.GetField(targetObject: testObject, name: "Metadata.'app.kubernetes.io/name'", caseSensitive: false, value: out object actual3);
+            Runtime.ObjectHelper.GetField(targetObject: testObject, name: "Value2[1]", caseSensitive: false, value: out object actual4);
 
             Assert.Equal(expected: testObject.Name, actual: actual1);
             Assert.Equal(expected: testObject.Value.Value1, actual: actual2);

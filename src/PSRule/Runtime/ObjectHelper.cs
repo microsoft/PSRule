@@ -3,7 +3,7 @@ using System.Collections;
 using System.Management.Automation;
 using System.Reflection;
 
-namespace PSRule.Commands
+namespace PSRule.Runtime
 {
     internal static class ObjectHelper
     {
