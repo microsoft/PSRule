@@ -169,6 +169,11 @@ namespace PSRule.Configuration
                 }
             }
 
+            if (index.TryGetValue("binding.ignorecase", out value))
+            {
+                option.Binding.IgnoreCase = bool.Parse(value.ToString());
+            }
+
             if (index.TryGetValue("binding.targetname", out value))
             {
                 if (value.GetType().IsArray)
