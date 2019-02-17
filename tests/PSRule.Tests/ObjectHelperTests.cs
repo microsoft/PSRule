@@ -1,15 +1,44 @@
 ﻿using PSRule.Commands;
+using System.Collections;
 using Xunit;
 
 namespace PSRule
 {
     public sealed class ObjectHelperTests
     {
+        [Fact]
+        public void GetFieldTestPOCO()
+        {
+            var testObject = GetTestObject();
+
+            ObjectHelper.GetField(targetObject: testObject, name: "Name", caseSensitive: true, value: out object actual1);
+            ObjectHelper.GetField(targetObject: testObject, name: "Value.Value1", caseSensitive: false, value: out object actual2);
+            ObjectHelper.GetField(targetObject: testObject, name: "Metadata.'app.kubernetes.io/name'", caseSensitive: false, value: out object actual3);
+            ObjectHelper.GetField(targetObject: testObject, name: "Value2[1]", caseSensitive: false, value: out object actual4);
+
+            Assert.Equal(expected: testObject.Name, actual: actual1);
+            Assert.Equal(expected: testObject.Value.Value1, actual: actual2);
+            Assert.Equal(expected: testObject.Metadata["app.kubernetes.io/name"], actual: actual3);
+            Assert.Equal(expected: testObject.Value2[1], actual: actual4);
+        }
+
+        private TestObject1 GetTestObject()
+        {
+            var result = new TestObject1 { Name = "TestObject1", Value = new TestObject2 { Value1 = "Value1" }, Value2 = new string[] { "1", "2" }, Metadata = new Hashtable() };
+            result.Metadata.Add("app.kubernetes.io/name", "KubeName");
+
+            return result;
+        }
+
         public sealed class TestObject1
         {
             public string Name;
 
             public TestObject2 Value;
+
+            public string[] Value2;
+
+            public Hashtable Metadata;
         }
 
         public sealed class TestObject2
@@ -17,16 +46,5 @@ namespace PSRule
             public string Value1;
         }
 
-        [Fact]
-        public void GetFieldTestPOCO()
-        {
-            var testObject = new TestObject1 { Name = "TestObject1", Value = new TestObject2 { Value1 = "Value1" } };
-
-            ObjectHelper.GetField(targetObject: testObject, name: "Name", caseSensitive: false, value: out object actual1);
-            ObjectHelper.GetField(targetObject: testObject, name: "Value.Value1", caseSensitive: false, value: out object actual2);
-
-            Assert.Equal(expected: testObject.Name, actual: actual1);
-            Assert.Equal(expected: testObject.Value.Value1, actual: actual2);
-        }
     }
 }

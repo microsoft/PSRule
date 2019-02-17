@@ -59,10 +59,12 @@ namespace PSRule.Pipeline
         /// <param name="targetObject">A PSObject to bind.</param>
         /// <param name="next">The next delegate function to check if all of the property names can not be found.</param>
         /// <returns>The TargetName of the object.</returns>
-        public static string CustomTargetNameBinding(string[] propertyNames, PSObject targetObject, BindTargetName next)
+        public static string CustomTargetNameBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next)
         {
             string targetName = null;
             int score = int.MaxValue;
+
+            var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
 
             foreach (var p in targetObject.Properties)
             {
@@ -73,7 +75,7 @@ namespace PSRule.Pipeline
 
                 for (var i = 0; i < propertyNames.Length && score > 0; i++)
                 {
-                    if (i < score && StringComparer.OrdinalIgnoreCase.Equals(p.Name, propertyNames[i]))
+                    if (i < score && comparer.Equals(p.Name, propertyNames[i]))
                     {
                         targetName = p.Value.ToString();
                         score = i;
@@ -97,14 +99,14 @@ namespace PSRule.Pipeline
         /// <param name="targetObject">A PSObject to bind.</param>
         /// <param name="next">The next delegate function to check if all of the property names can not be found.</param>
         /// <returns>The TargetName of the object.</returns>
-        public static string NestedTargetNameBinding(string[] propertyNames, PSObject targetObject, BindTargetName next)
+        public static string NestedTargetNameBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next)
         {
             string targetName = null;
             int score = int.MaxValue;
 
             for (var i = 0; i < propertyNames.Length && score > propertyNames.Length; i++)
             {
-                if (ObjectHelper.GetField(targetObject: targetObject, name: propertyNames[i], caseSensitive: false, value: out object value))
+                if (ObjectHelper.GetField(targetObject: targetObject, name: propertyNames[i], caseSensitive: caseSensitive, value: out object value))
                 {
                     targetName = value.ToString();
                     score = i;

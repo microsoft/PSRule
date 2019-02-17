@@ -111,6 +111,8 @@ namespace PSRule.Pipeline
             _Option.Input.Format = option.Input.Format ?? InputOption.Default.Format;
             _Option.Input.ObjectPath = option.Input.ObjectPath ?? InputOption.Default.ObjectPath;
 
+            _Option.Binding.IgnoreCase = option.Binding.IgnoreCase ?? BindingOption.Default.IgnoreCase;
+
             if (option.Baseline != null)
             {
                 _Option.Baseline = new BaselineOption(option.Baseline);
@@ -125,14 +127,24 @@ namespace PSRule.Pipeline
                 {
                     AddBindTargetNameAction((targetObject, next) =>
                     {
-                        return PipelineHookActions.NestedTargetNameBinding(option.Binding.TargetName, targetObject, next);
+                        return PipelineHookActions.NestedTargetNameBinding(
+                            propertyNames: option.Binding.TargetName,
+                            caseSensitive: !_Option.Binding.IgnoreCase.Value,
+                            targetObject: targetObject,
+                            next: next
+                        );
                     });
                 }
                 else
                 {
                     AddBindTargetNameAction((targetObject, next) =>
                     {
-                        return PipelineHookActions.CustomTargetNameBinding(option.Binding.TargetName, targetObject, next);
+                        return PipelineHookActions.CustomTargetNameBinding(
+                            propertyNames: option.Binding.TargetName,
+                            caseSensitive: !_Option.Binding.IgnoreCase.Value,
+                            targetObject: targetObject,
+                            next: next
+                        );
                     });
                 }
             }

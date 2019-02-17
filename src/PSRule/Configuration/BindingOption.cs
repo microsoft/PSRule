@@ -35,6 +35,7 @@ namespace PSRule.Configuration
         /// <summary>
         /// One or more property names to use to bind TargetName.
         /// </summary>
+        [DefaultValue(null)]
         public string[] TargetName { get; set; }
     }
 }

@@ -13,6 +13,7 @@ baseline:
 
 # Configure TargetName binding
 binding:
+  ignoreCase: true
   targetName:
   - ResourceName
 

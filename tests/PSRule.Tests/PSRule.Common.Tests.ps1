@@ -359,7 +359,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 return $otherName.Value;
             }
 
-            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName', 'Metadata.Name' } -BindTargetName $bindFn;
+            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName', 'Metadata.Name'; 'Binding.IgnoreCase' = $True } -BindTargetName $bindFn;
             $result = $testObject | Invoke-PSRule -Option $option -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 5;
@@ -368,6 +368,13 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result[2].TargetName | Should -Be 'TargetName';
             $result[3].TargetName | Should -Be 'OtherName';
             $result[4].TargetName | Should -Be 'MetadataName';
+
+            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName' } -BindTargetName $bindFn;
+            $result = $testObject[0..1] | Invoke-PSRule -Option $option -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 2;
+            $result[0].TargetName | Should -Be 'AlternateName';
+            $result[1].TargetName | Should -Be 'AlternateName';
         }
     }
 }
@@ -603,6 +610,23 @@ Describe 'New-PSRuleOption' -Tag 'Option','Common','New-PSRuleOption' {
             $option.Baseline.Configuration.option1 | Should -Be 'option';
             $option.Baseline.Configuration.option2 | Should -Be 2;
             $option.Baseline.Configuration.option3 | Should -BeIn 'option3a', 'option3b';
+        }
+    }
+
+    Context 'Read Binding.TargetName' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Binding.IgnoreCase | Should -Be $Null;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Binding.IgnoreCase' = $True };
+            $option.Binding.IgnoreCase | Should -Be $True;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Binding.IgnoreCase | Should -Be $True;
         }
     }
 

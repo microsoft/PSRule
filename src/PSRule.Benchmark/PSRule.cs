@@ -126,7 +126,12 @@ namespace PSRule.Benchmark
         {
             foreach (var targetObject in _TargetObject)
             {
-                PipelineHookActions.CustomTargetNameBinding(new string[] { "TargetName", "Name" }, targetObject, next: (o) => { return null; });
+                PipelineHookActions.CustomTargetNameBinding(
+                    propertyNames: new string[] { "TargetName", "Name" },
+                    caseSensitive: true,
+                    targetObject: targetObject,
+                    next: (o) => { return null; }
+                );
             }
         }
 
@@ -135,7 +140,12 @@ namespace PSRule.Benchmark
         {
             foreach (var targetObject in _TargetObject)
             {
-                PipelineHookActions.NestedTargetNameBinding(new string[] { "TargetName", "Name" }, targetObject, next: (o) => { return null; });
+                PipelineHookActions.NestedTargetNameBinding(
+                    propertyNames: new string[] { "TargetName", "Name" },
+                    caseSensitive: true,
+                    targetObject: targetObject,
+                    next: (o) => { return null; }
+                );
             }
         }
     }
