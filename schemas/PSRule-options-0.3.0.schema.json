@@ -48,6 +48,13 @@
                     "items": {
                         "type": "string"
                     }
+                },
+                "targetType": {
+                    "type": "array",
+                    "description": "Specifies one or more property names to bind TargetType to.",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             },
             "additionalProperties": false
