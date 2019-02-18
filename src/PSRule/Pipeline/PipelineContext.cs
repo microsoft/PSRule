@@ -19,6 +19,7 @@ namespace PSRule.Pipeline
         // Configuration parameters
         private readonly ILogger _Logger;
         private readonly BindTargetName _BindTargetName;
+        private readonly BindTargetName _BindTargetType;
         private readonly bool _LogError;
         private readonly bool _LogWarning;
         private readonly bool _LogVerbose;
@@ -42,6 +43,7 @@ namespace PSRule.Pipeline
         // Fields exposed to engine
         internal RuleRecord RuleRecord;
         internal string TargetName;
+        internal string TargetType;
         internal PSObject TargetObject;
         internal RuleBlock RuleBlock;
         internal PSRuleOption Option;
@@ -60,11 +62,12 @@ namespace PSRule.Pipeline
             }
         }
 
-        private PipelineContext(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, bool logError, bool logWarning, bool logVerbose, bool logInformation)
+        private PipelineContext(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, BindTargetName bindTargetType, bool logError, bool logWarning, bool logVerbose, bool logInformation)
         {
             _ObjectNumber = -1;
             _Logger = logger;
             _BindTargetName = bindTargetName;
+            _BindTargetType = bindTargetType;
             _LogError = logError;
             _LogWarning = logWarning;
             _LogVerbose = logVerbose;
@@ -85,9 +88,9 @@ namespace PSRule.Pipeline
             _NameTokenCache = new Dictionary<string, NameToken>();
         }
 
-        public static PipelineContext New(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, bool logError = true, bool logWarning = true, bool logVerbose = false, bool logInformation = false)
+        public static PipelineContext New(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, BindTargetName bindTargetType, bool logError = true, bool logWarning = true, bool logVerbose = false, bool logInformation = false)
         {
-            var context = new PipelineContext(logger, option, bindTargetName, logError, logWarning, logVerbose, logInformation);
+            var context = new PipelineContext(logger, option, bindTargetName, bindTargetType, logError, logWarning, logVerbose, logInformation);
             CurrentThread = context;
             return context;
         }
@@ -353,8 +356,11 @@ namespace PSRule.Pipeline
 
             TargetObject = targetObject;
 
-            // Bind targetname
+            // Bind TargetName
             TargetName = _BindTargetName(targetObject);
+
+            // Bind TargetType
+            TargetType = _BindTargetType(targetObject);
         }
 
         /// <summary>

@@ -18,12 +18,14 @@ namespace PSRule.Configuration
         {
             IgnoreCase = null;
             TargetName = null;
+            TargetType = null;
         }
 
         public BindingOption(BindingOption option)
         {
             IgnoreCase = option.IgnoreCase;
             TargetName = option.TargetName;
+            TargetType = option.TargetType;
         }
 
         /// <summary>
@@ -37,5 +39,11 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public string[] TargetName { get; set; }
+
+        /// <summary>
+        /// One or more property names to use to bind TargetType.
+        /// </summary>
+        [DefaultValue(null)]
+        public string[] TargetType { get; set; }
     }
 }

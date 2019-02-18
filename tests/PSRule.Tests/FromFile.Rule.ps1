@@ -52,11 +52,23 @@ Rule 'WithTag5' -Tag @{ severity = 'Critical'; feature = 'tag' } {
     $True;
 }
 
-Rule 'WithPreconditionTrue' -If { $True } -Tag @{ category = 'precondition' } {
+# Description: Test for type preconditions
+Rule 'WithTypeTrue' -Type 'TestType' -Tag @{ category = 'precondition-type' } {
     $True;
 }
 
-Rule 'WithPreconditionFalse' -If { $False } -Tag @{ category = 'precondition' } {
+# Description: Test for type preconditions
+Rule 'WithTypeFalse' -Type 'NotTestType' -Tag @{ category = 'precondition-type' } {
+    $True;
+}
+
+# Description: Test for script preconditions
+Rule 'WithPreconditionTrue' -If { $True } -Tag @{ category = 'precondition-if' } {
+    $True;
+}
+
+# Description: Test for script preconditions
+Rule 'WithPreconditionFalse' -If { $False } -Tag @{ category = 'precondition-if' } {
     $True;
 }
 

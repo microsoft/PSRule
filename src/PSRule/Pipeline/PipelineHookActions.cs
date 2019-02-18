@@ -138,5 +138,15 @@ namespace PSRule.Pipeline
         {
             return (!propertyInfo.IsGettable || propertyInfo.Value == null || !StringComparer.Ordinal.Equals(StringTypeName, propertyInfo.TypeNameOfValue));
         }
+
+        /// <summary>
+        /// Get the TargetType by reading TypeNames of the PSObject.
+        /// </summary>
+        /// <param name="targetObject">A PSObject to bind.</param>
+        /// <returns>The TargetObject of the object.</returns>
+        public static string DefaultTargetTypeBinding(PSObject targetObject)
+        {
+            return targetObject.TypeNames[0];
+        }
     }
 }

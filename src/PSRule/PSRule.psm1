@@ -487,6 +487,9 @@ function Rule {
         [Parameter(Mandatory = $False)]
         [ScriptBlock]$If,
 
+        [Parameter(Mandatory = $False)]
+        [String[]]$Type,
+
         # Any dependencies for this rule
         [Parameter(Mandatory = $False)]
         [String[]]$DependsOn,

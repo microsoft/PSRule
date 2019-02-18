@@ -33,6 +33,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             Name = "TestObject1"
             Value = 1
         }
+        $testObject.PSObject.TypeNames.Insert(0, 'TestType');
 
         It 'Returns passed' {
             $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1';
@@ -128,12 +129,20 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.Tag.severity | Should -BeIn 'critical', 'information';
         }
 
-        It 'Processes rule preconditions' {
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'precondition' } -Outcome All;
+        It 'Processes rule script preconditions' {
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'precondition-if' } -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithPreconditionTrue' }).Outcome | Should -Be 'Pass';
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithPreconditionFalse' }).Outcome | Should -Be 'None';
+        }
+
+        It 'Processes rule type preconditions' {
+            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ category = 'precondition-type' } -Outcome All;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 2;
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithTypeTrue' }).Outcome | Should -Be 'Pass';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithTypeFalse' }).Outcome | Should -Be 'None';
         }
 
         It 'Processes rule dependencies' {
