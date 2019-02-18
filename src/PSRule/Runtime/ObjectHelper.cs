@@ -194,14 +194,9 @@ namespace PSRule.Runtime
                 // Handle PSObjects
                 else if (targetObject is PSObject)
                 {
-                    foreach (var p in ((PSObject)targetObject).Properties)
+                    if (((PSObject)targetObject).PropertyValue(propertyName: token.Name, caseSensitive: caseSensitive, value: out field))
                     {
-                        if (comparer.Equals(token.Name, p.Name))
-                        {
-                            field = p.Value;
-                            foundField = true;
-                            break;
-                        }
+                        foundField = true;
                     }
                 }
                 // Handle all other CLR types

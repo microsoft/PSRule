@@ -188,7 +188,7 @@ namespace PSRule.Pipeline
                     AddBindTargetTypeAction((targetObject, next) =>
                     {
                         return PipelineHookActions.NestedTargetNameBinding(
-                            propertyNames: option.Binding.TargetName,
+                            propertyNames: option.Binding.TargetType,
                             caseSensitive: !_Option.Binding.IgnoreCase.Value,
                             targetObject: targetObject,
                             next: next
@@ -200,7 +200,7 @@ namespace PSRule.Pipeline
                     AddBindTargetTypeAction((targetObject, next) =>
                     {
                         return PipelineHookActions.CustomTargetNameBinding(
-                            propertyNames: option.Binding.TargetName,
+                            propertyNames: option.Binding.TargetType,
                             caseSensitive: !_Option.Binding.IgnoreCase.Value,
                             targetObject: targetObject,
                             next: next

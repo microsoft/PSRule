@@ -12,6 +12,19 @@ using PSRule.Configuration;
 
 namespace PSRule.Benchmark
 {
+    public sealed class TargetObject
+    {
+        public TargetObject(string name, string message)
+        {
+            Name = name;
+            Message = message;
+        }
+
+        public string Name { get; private set; }
+
+        public string Message { get; private set; }
+    }
+
     /// <summary>
     /// Define a set of benchmarks for performance testing PSRule internals.
     /// </summary>
@@ -23,20 +36,8 @@ namespace PSRule.Benchmark
         private GetRulePipeline _GetPipeline;
         private InvokeRulePipeline _InvokePipeline;
         private InvokeRulePipeline _InvokeIfPipeline;
+        private InvokeRulePipeline _InvokeTypePipeline;
         private InvokeRulePipeline _InvokeSummaryPipeline;
-
-        public sealed class TargetObject
-        {
-            public TargetObject(string name, string message)
-            {
-                Name = name;
-                Message = message;
-            }
-
-            public string Name { get; private set; }
-
-            public string Message { get; private set; }
-        }
 
         [GlobalSetup]
         public void Prepare()
@@ -44,6 +45,7 @@ namespace PSRule.Benchmark
             PrepareGetPipeline();
             PrepareInvokePipeline();
             PrepareInvokeIfPipeline();
+            PrepareInvokeTypePipeline();
             PrepareInvokeSummaryPipeline();
             PrepareTargetObjects();
         }
@@ -73,6 +75,15 @@ namespace PSRule.Benchmark
             var builder = PipelineBuilder.Invoke().Configure(option);
             builder.Source(new RuleSource[] { new RuleSource(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1"), null) });
             _InvokeIfPipeline = builder.Build();
+        }
+
+        private void PrepareInvokeTypePipeline()
+        {
+            var option = new PSRuleOption();
+            option.Baseline.RuleName = new string[] { "BenchmarkType" };
+            var builder = PipelineBuilder.Invoke().Configure(option);
+            builder.Source(new RuleSource[] { new RuleSource(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1"), null) });
+            _InvokeTypePipeline = builder.Build();
         }
 
         private void PrepareInvokeSummaryPipeline()
@@ -105,6 +116,9 @@ namespace PSRule.Benchmark
 
         [Benchmark]
         public void InvokeIf() => _InvokeIfPipeline.Process(_TargetObject);
+
+        [Benchmark]
+        public void InvokeType() => _InvokeTypePipeline.Process(_TargetObject);
 
         [Benchmark]
         public void InvokeSummary() => _InvokeSummaryPipeline.Process(_TargetObject);

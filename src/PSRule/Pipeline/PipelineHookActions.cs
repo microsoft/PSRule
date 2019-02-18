@@ -24,24 +24,11 @@ namespace PSRule.Pipeline
         {
             string targetName = null;
 
-            foreach (var p in targetObject.Properties)
-            {
-                if (ShouldSkipBindingProperty(p))
-                {
-                    continue;
-                }
+            targetName = targetObject.Properties[Property_TargetName]?.Value.ToString();
 
-                if (p.Name[0] == 't' || p.Name[0] == 'T' || p.Name[0] == 'n' || p.Name[0] == 'N')
-                {
-                    if (StringComparer.OrdinalIgnoreCase.Equals(p.Name, Property_TargetName))
-                    {
-                        return p.Value.ToString();
-                    }
-                    else if (StringComparer.OrdinalIgnoreCase.Equals(p.Name, Property_Name))
-                    {
-                        targetName = p.Value.ToString();
-                    }
-                }
+            if (targetName == null)
+            {
+                targetName = targetObject.Properties[Property_Name]?.Value.ToString();
             }
 
             if (targetName == null)
@@ -62,30 +49,12 @@ namespace PSRule.Pipeline
         public static string CustomTargetNameBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next)
         {
             string targetName = null;
-            int score = int.MaxValue;
 
             var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
 
-            foreach (var p in targetObject.Properties)
+            for (var i = 0; i < propertyNames.Length && targetName == null; i++)
             {
-                if (ShouldSkipBindingProperty(p))
-                {
-                    continue;
-                }
-
-                for (var i = 0; i < propertyNames.Length && score > 0; i++)
-                {
-                    if (i < score && comparer.Equals(p.Name, propertyNames[i]))
-                    {
-                        targetName = p.Value.ToString();
-                        score = i;
-                    }
-                }
-
-                if (score == 0)
-                {
-                    break;
-                }
+                targetName = targetObject.ValueString(propertyName: propertyNames[i]);
             }
 
             // If TargetName is found return, otherwise continue to next delegate
@@ -137,6 +106,16 @@ namespace PSRule.Pipeline
         private static bool ShouldSkipBindingProperty(PSPropertyInfo propertyInfo)
         {
             return (!propertyInfo.IsGettable || propertyInfo.Value == null || !StringComparer.Ordinal.Equals(StringTypeName, propertyInfo.TypeNameOfValue));
+        }
+
+        private static bool IsTargetNameProperty(string name)
+        {
+            return (name[0] == 'T' || name[0] == 't') && StringComparer.OrdinalIgnoreCase.Equals(name, Property_TargetName);
+        }
+
+        private static bool IsNameProperty(string name)
+        {
+            return (name[0] == 'N' || name[0] == 'n') && StringComparer.OrdinalIgnoreCase.Equals(name, Property_Name);
         }
 
         /// <summary>
