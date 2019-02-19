@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.3.0-B190224 (pre-release)
+
 - Export variables to improve authoring experience [#83](https://github.com/BernieWhite/PSRule/issues/83)
 - Added support for packaging rules in modules [#16](https://github.com/BernieWhite/PSRule/issues/16)
 - Added support for indexed and quoted field names [#86](https://github.com/BernieWhite/PSRule/issues/86)
