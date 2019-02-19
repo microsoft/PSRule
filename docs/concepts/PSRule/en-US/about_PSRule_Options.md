@@ -15,7 +15,9 @@ The following options are available for use:
 - [Baseline.RuleName](#baselinerulename)
 - [Baseline.Exclude](#baselineexclude)
 - [Baseline.Configuration](#baselineconfiguration)
-- [Binding.TargetName](#targetname-binding)
+- [Binding.IgnoreCase](#bindingignorecase)
+- [Binding.TargetName](#bindingtargetname)
+- [Binding.TargetType](#bindingtargettype)
 - [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InconclusiveWarning](#inconclusive-warning)
 - [Execution.NotProcessedWarning](#not-processed-warning)
@@ -118,20 +120,43 @@ baseline:
     appServiceMinInstanceCount: 2
 ```
 
-### TargetName binding
+### Binding.IgnoreCase
+
+When evaluating an object, PSRule extracts a few key properties from the object to help filter rules and display output results. The process of extract these key properties is called _binding_. The properties that PSRule uses for binding can be customized by providing a order list of alternative properties to use. See [`Binding.TargetName`](#bindingtargetname) and [`Binding.TargetType`](#bindingtargettype) for these options.
+
+- By default, custom property binding finds the first matching property by name regardless of case. i.e. `Binding.IgnoreCase` is `true`
+- To change the default, set the `Binding.IgnoreCase` option to `false` and a case sensitive match will be used.
+  - Changing this option will affect all custom property bindings, including _TargetName_ and _TargetType_.
+- PSRule also has binding defaults, and an option to use a custom script. Setting this option has no affect on binding defaults or custom scripts.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Binding.IgnoreCase hashtable key
+$option = New-PSRuleOption -Option @{ 'Binding.IgnoreCase' = $False };
+```
+
+```yaml
+# YAML: Using the binding/ignoreCase property
+binding:
+  ignoreCase: false
+```
+
+### Binding.TargetName
 
 When an object is passed from the pipeline, PSRule assigns the object a _TargetName_. _TargetName_ is used in output results to identify one object from another. Many objects could be passed down the pipeline at the same time, so using a _TargetName_ that is meaningful is important. _TargetName_ is also used for advanced features such as rule suppression.
 
 The value that PSRule uses for _TargetName_ is configurable. PSRule uses the following logic to determine what _TargetName_ should be used:
 
 - By default PSRule will:
-  - Use `TargetName` or `Name` properties on the object.
+  - Use `TargetName` or `Name` properties on the object. These property names are case insensitive.
   - If both `TargetName` and `Name` properties exist, `TargetName` will take precedence over `Name`.
   - If neither `TargetName` or `Name` properties exist, a SHA1 hash of the object will be used as _TargetName_.
 - If custom _TargetName_ binding properties are configured, the property names specified will override the defaults.
   - If **none** of the configured property names exist, PSRule will revert back to `TargetName` then `Name`.
   - If more then one property name is configured, the order they are specified in the configuration determines precedence.
     - i.e. The first configured property name will take precedence over the second property name.
+  - By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the [`Binding.IgnoreCase`](#bindingignorecase) option.
 - If a custom _TargetName_ binding function is specified, the function will be evaluated first before any other option.
   - If the function returns `$Null` then custom properties, `TargetName` and `Name` properties will be used.
   - The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.
@@ -170,6 +195,59 @@ $bindFn = {
 
 # Specify the binding function script block code to execute
 $option = New-PSRuleOption -BindTargetName $bindFn;
+```
+
+### Binding.TargetType
+
+When an object is passed from the pipeline, PSRule assigns the object a _TargetType_. _TargetType_ is used to filter rules based on object type and appears in output results.
+
+The value that PSRule uses for _TargetType_ is configurable. PSRule uses the following logic to determine what _TargetType_ should be used:
+
+- By default PSRule will:
+  - Use the default type presented by PowerShell from `TypeNames`. i.e. `.PSObject.TypeNames[0]`
+- If custom _TargetType_ binding properties are configured, the property names specified will override the defaults.
+  - If **none** of the configured property names exist, PSRule will revert back to the type presented by PowerShell.
+  - If more then one property name is configured, the order they are specified in the configuration determines precedence.
+    - i.e. The first configured property name will take precedence over the second property name.
+  - By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the [`Binding.IgnoreCase`](#bindingignorecase) option.
+- If a custom _TargetType_ binding function is specified, the function will be evaluated first before any other option.
+  - If the function returns `$Null` then custom properties, or the type presented by PowerShell will be used in order instead.
+  - The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.
+  - Custom binding functions are blocked in constrained language mode is used. See [language mode](#language-mode) for more information.
+
+Custom property names to use for binding can be specified using:
+
+```powershell
+# PowerShell: Using the Binding.TargetType hashtable key
+$option = New-PSRuleOption -Option @{ 'Binding.TargetType' = 'ResourceType', 'kind' };
+```
+
+```yaml
+# YAML: Using the binding/targetType property
+binding:
+  targetType:
+  - ResourceType
+  - kind
+```
+
+To specify a custom binding function use:
+
+```powershell
+# Create a custom function that returns a TargetType string
+$bindFn = {
+    param ($TargetObject)
+
+    $otherType = $TargetObject.PSObject.Properties['OtherType'];
+
+    if ($otherType -eq $Null) {
+        return $Null
+    }
+
+    return $otherType.Value;
+}
+
+# Specify the binding function script block code to execute
+$option = New-PSRuleOption -BindTargetType $bindFn;
 ```
 
 ### Execution.LanguageMode
@@ -250,7 +328,7 @@ execution:
 
 ### Input.Format
 
-Configures the input format for when a string is passed in as a target object. By default, strings are just treated as raw text. However when set strings can be read as YAML or JSON and converted to an object.
+Configures the input format for when a string is passed in as a target object. By default, strings are just treated as raw text. However, when set strings can be read as YAML or JSON and converted to an object.
 
 When using `Invoke-PSRule` and `Test-PSRuleTarget` the `-Format` parameter will override any value set in configuration.
 
@@ -277,7 +355,7 @@ input:
 
 The object path to a property to use instead of the pipeline object.
 
-By default, PSRule processes objects passed from the pipeline against selected rules. When this option is set, instead of evaluating the pipeline object, PSRule looks for a property of the pipeline object specified by `ObjectPath` and uses that instead. If the property specified by `ObjectPath` is a collection/ array then each item is evaluated separately.
+By default, PSRule processes objects passed from the pipeline against selected rules. When this option is set, instead of evaluating the pipeline object, PSRule looks for a property of the pipeline object specified by `ObjectPath` and uses that instead. If the property specified by `ObjectPath` is a collection/ array, then each item is evaluated separately.
 
 If the property specified by `ObjectPath` does not exist, PSRule skips the object.
 
@@ -300,7 +378,7 @@ input:
 
 In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.
 
-PSRule allows objects to be suppressed for a rule by TargetName. Objects that are suppressed are not processed by the rule at all, but will continue to be processed by other rules.
+PSRule allows objects to be suppressed for a rule by TargetName. Objects that are suppressed are not processed by the rule at all but will continue to be processed by other rules.
 
 Rule suppression complements pre-filtering and pre-conditions.
 
@@ -376,9 +454,13 @@ baseline:
 
 # Configure TargetName binding
 binding:
+  ignoreCase: false
   targetName:
   - ResourceName
   - AlternateName
+  targetType:
+  - ResourceType
+  - kind
 
 # Configure execution options
 execution:
@@ -416,9 +498,12 @@ baseline:
 
 # Configure TargetName binding
 binding:
+  ignoreCase: true
   targetName:
   - TargetName
   - Name
+  targetType:
+  - PSObject.TypeNames[0]
 
 # Configure execution options
 execution:

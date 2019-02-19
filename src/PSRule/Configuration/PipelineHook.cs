@@ -15,11 +15,23 @@ namespace PSRule.Configuration
         public PipelineHook()
         {
             BindTargetName = new List<BindTargetName>();
+            BindTargetType = new List<BindTargetName>();
+        }
+
+        public PipelineHook(PipelineHook option)
+        {
+            BindTargetName = option.BindTargetName;
+            BindTargetType = option.BindTargetType;
         }
 
         /// <summary>
         /// One or more custom functions to use to bind TargetName of a pipeline object.
         /// </summary>
         public List<BindTargetName> BindTargetName { get; set; }
+
+        /// <summary>
+        /// One or more custom functions to use to bind TargetType of a pipeline object.
+        /// </summary>
+        public List<BindTargetName> BindTargetType { get; set; }
     }
 }

@@ -122,6 +122,7 @@ Rule 'ConstrainedTest3' -If { $Null = [Console]::WriteLine('Should fail'); retur
 Rule 'VariableTest' {
     $TargetObject.Name -eq $Rule.RuleName;
     $TargetObject.Name -eq $Rule.TargetName;
+    $TargetObject.Type -eq $Rule.TargetType;
 }
 
 Rule 'WithConfiguration' {

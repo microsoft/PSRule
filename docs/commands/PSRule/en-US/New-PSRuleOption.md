@@ -15,8 +15,8 @@ Create options to configure PSRule execution.
 
 ```text
 New-PSRuleOption [[-Option] <PSRuleOption>] [-BaselineConfiguration <BaselineConfiguration>]
- [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>] [[-Path] <String>]
- [<CommonParameters>]
+ [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>]
+ [-BindTargetType <BindTargetName[]>] [[-Path] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -152,6 +152,24 @@ For more information on PSRule options see about_PSRule_Options.
 
 ```yaml
 Type: BaselineConfiguration
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -BindTargetType
+
+Configures a custom function to use to bind TargetType of an object.
+
+For more information on PSRule options see about_PSRule_Options.
+
+```yaml
+Type: BindTargetName[]
 Parameter Sets: (All)
 Aliases:
 

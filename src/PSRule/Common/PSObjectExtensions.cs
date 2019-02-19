@@ -15,9 +15,24 @@ namespace PSRule
             return (T)o.Properties[propertyName].Value;
         }
 
-        public static string ValueString(this PSObject o, string propertyName)
+        public static string ValueAsString(this PSObject o, string propertyName, bool caseSensitive)
         {
-            return o.Properties[propertyName]?.Value.ToString();
+            var p = o.Properties[propertyName];
+
+            if (p == null)
+            {
+                return null;
+            }
+
+            if (caseSensitive)
+            {
+                if (!StringComparer.Ordinal.Equals(p.Name, propertyName))
+                {
+                    return null;
+                }
+            }
+
+            return p.Value.ToString();
         }
 
         public static bool PropertyValue(this PSObject o, string propertyName, bool caseSensitive, out object value)

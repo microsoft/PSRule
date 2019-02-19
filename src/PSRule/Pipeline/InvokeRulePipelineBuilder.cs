@@ -209,6 +209,25 @@ namespace PSRule.Pipeline
                 }
             }
 
+            if (option.Pipeline.BindTargetType != null && option.Pipeline.BindTargetType.Count > 0)
+            {
+                // Do not allow custom binding functions to be used with constrained language mode
+                if (_Option.Execution.LanguageMode == LanguageMode.ConstrainedLanguage)
+                {
+                    throw new PipelineConfigurationException(optionName: "BindTargetType", message: "Binding functions are not supported in this language mode.");
+                }
+
+                foreach (var action in option.Pipeline.BindTargetType)
+                {
+                    AddBindTargetTypeAction((targetObject, next) =>
+                    {
+                        var targetType = action(targetObject);
+
+                        return string.IsNullOrEmpty(targetType) ? next(targetObject) : targetType;
+                    });
+                }
+            }
+
             if (option.Suppression.Count > 0)
             {
                 _Option.Suppression = new SuppressionOption(option.Suppression);

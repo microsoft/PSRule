@@ -40,7 +40,8 @@
             "properties": {
                 "ignoreCase": {
                     "type": "boolean",
-                    "description": "Determines if custom binding uses ignores case when matching properties."
+                    "description": "Determines if custom binding uses ignores case when matching properties.",
+                    "default": true
                 },
                 "targetName": {
                     "type": "array",

@@ -12,12 +12,13 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
     public sealed class RuleRecord
     {
-        internal RuleRecord(string ruleId, string ruleName, PSObject targetObject, string targetName, TagSet tag, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, string message = null)
+        internal RuleRecord(string ruleId, string ruleName, PSObject targetObject, string targetName, string targetType, TagSet tag, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, string message = null)
         {
             RuleId = ruleId;
             RuleName = ruleName;
             TargetObject = targetObject;
             TargetName = targetName;
+            TargetType = targetType;
             
             if (tag != null)
             {
@@ -53,6 +54,11 @@ namespace PSRule.Rules
         /// A name to identify the processed object.
         /// </summary>
         public string TargetName { get; internal set; }
+
+        /// <summary>
+        /// The type of the processed object.
+        /// </summary>
+        public string TargetType { get; internal set; }
 
         [JsonIgnore]
         public PSObject TargetObject { get; internal set; }

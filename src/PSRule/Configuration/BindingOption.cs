@@ -7,7 +7,7 @@ namespace PSRule.Configuration
     /// </summary>
     public sealed class BindingOption
     {
-        private const bool DEFAULT_IGNORECASE = false;
+        private const bool DEFAULT_IGNORECASE = true;
 
         public static readonly BindingOption Default = new BindingOption
         {

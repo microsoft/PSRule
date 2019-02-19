@@ -20,7 +20,9 @@ namespace PSRule.Configuration
     {
         private static readonly PSRuleOption Default = new PSRuleOption
         {
-            Execution = ExecutionOption.Default
+            Binding = BindingOption.Default,
+            Execution = ExecutionOption.Default,
+            Input = InputOption.Default
         };
 
         public PSRuleOption()
@@ -42,10 +44,7 @@ namespace PSRule.Configuration
             Input = new InputOption(option.Input);
             Suppression = new SuppressionOption(option.Suppression);
             Execution = new ExecutionOption(option.Execution);
-            Pipeline = new PipelineHook
-            {
-                BindTargetName = option.Pipeline.BindTargetName
-            };
+            Pipeline = new PipelineHook(option.Pipeline);
         }
 
         /// <summary>
@@ -183,6 +182,18 @@ namespace PSRule.Configuration
                 else
                 {
                     option.Binding.TargetName = new string[] { value.ToString() };
+                }
+            }
+
+            if (index.TryGetValue("binding.targettype", out value))
+            {
+                if (value.GetType().IsArray)
+                {
+                    option.Binding.TargetType = ((object[])value).OfType<string>().ToArray();
+                }
+                else
+                {
+                    option.Binding.TargetType = new string[] { value.ToString() };
                 }
             }
 

@@ -373,6 +373,7 @@ namespace PSRule.Pipeline
                 ruleName: ruleBlock.RuleName,
                 targetObject: TargetObject,
                 targetName: TargetName,
+                targetType: TargetType,
                 tag: ruleBlock.Tag,
                 message: ruleBlock.Description
             );

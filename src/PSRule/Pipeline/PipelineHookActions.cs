@@ -54,11 +54,11 @@ namespace PSRule.Pipeline
 
             for (var i = 0; i < propertyNames.Length && targetName == null; i++)
             {
-                targetName = targetObject.ValueString(propertyName: propertyNames[i]);
+                targetName = targetObject.ValueAsString(propertyName: propertyNames[i], caseSensitive: caseSensitive);
             }
 
             // If TargetName is found return, otherwise continue to next delegate
-            return (targetName == null) ? next(targetObject) : targetName;
+            return targetName ?? next(targetObject);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace PSRule.Pipeline
             }
 
             // If TargetName is found return, otherwise continue to next delegate
-            return (targetName == null) ? next(targetObject) : targetName;
+            return targetName ?? next(targetObject);
         }
 
         /// <summary>

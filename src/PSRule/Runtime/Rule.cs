@@ -39,5 +39,13 @@ namespace PSRule.Runtime
                 return PipelineContext.CurrentThread.RuleRecord.TargetName;
             }
         }
+
+        public string TargetType
+        {
+            get
+            {
+                return PipelineContext.CurrentThread.RuleRecord.TargetType;
+            }
+        }
     }
 }

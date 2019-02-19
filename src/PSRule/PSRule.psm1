@@ -420,6 +420,9 @@ function New-PSRuleOption {
         [PSRule.Configuration.BindTargetName[]]$BindTargetName,
 
         [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.BindTargetName[]]$BindTargetType,
+
+        [Parameter(Mandatory = $False)]
         [PSDefaultValue(Help = '.\psrule.yml')]
         [String]$Path = '.\psrule.yml'
     )
@@ -456,6 +459,11 @@ function New-PSRuleOption {
         if ($PSBoundParameters.ContainsKey('BindTargetName')) {
             Write-Verbose -Message 'Set BindTargetName pipeline hook';
             $Option.Pipeline.BindTargetName.AddRange($BindTargetName);
+        }
+
+        if ($PSBoundParameters.ContainsKey('BindTargetType')) {
+            Write-Verbose -Message 'Set BindTargetType pipeline hook';
+            $Option.Pipeline.BindTargetType.AddRange($BindTargetType);
         }
 
         return $Option;

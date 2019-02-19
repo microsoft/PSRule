@@ -53,7 +53,8 @@ The following section properties are available for public read access:
 - `RuleName` - The name of the rule.
 - `RuleId` - A unique identifier for the rule.
 - `TargetObject` - The object currently being processed on the pipeline.
-- `TargetName` - The name of the object currently being processed on the pipeline. This property will automatically bind to `TargetName` or `Name` properties of the object if they exist.
+- `TargetName` - The name of the object currently being processed on the pipeline. This property will automatically default to `TargetName` or `Name` properties of the object if they exist.
+- `TargetType` - The type of the object currently being processed on the pipeline. This property will automatically bind to `PSObject.TypeNames[0]` by default.
 
 Syntax:
 

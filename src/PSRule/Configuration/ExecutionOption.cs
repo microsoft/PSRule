@@ -4,7 +4,7 @@ namespace PSRule.Configuration
 {
     public sealed class ExecutionOption
     {
-        private const LanguageMode DEFAULT_LANGUAGEMODE = PSRule.Configuration.LanguageMode.FullLanguage;
+        private const LanguageMode DEFAULT_LANGUAGEMODE = Configuration.LanguageMode.FullLanguage;
         private const bool DEFAULT_INCONCLUSIVEWARNING = true;
         private const bool DEFAULT_NOTPROCESSEDWARNING = true;
 

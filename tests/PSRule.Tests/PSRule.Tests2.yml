@@ -14,3 +14,6 @@ binding:
   targetName:
   - ResourceName
   - AlternateName
+  targetType:
+  - ResourceType
+  - kind
