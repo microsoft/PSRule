@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using PSRule.Commands;
+using PSRule.Runtime;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -105,7 +105,7 @@ namespace PSRule.Pipeline
 
         public static IEnumerable<PSObject> ReadObjectPath(PSObject sourceObject, VisitTargetObject source, string objectPath, bool caseSensitive)
         {
-            if (!ObjectHelper.GetField(targetObject: sourceObject, name: objectPath, caseSensitive: caseSensitive, value: out object nestedObject))
+            if (!ObjectHelper.GetField(bindingContext: null, targetObject: sourceObject, name: objectPath, caseSensitive: caseSensitive, value: out object nestedObject))
             {
                 return null;
             }

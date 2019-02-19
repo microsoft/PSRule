@@ -8,3 +8,4 @@ baseline:
 # Configure TargetName binding
 binding:
   targetName: [ 'ResourceName' ]
+  targetType: [ 'ResourceType' ]

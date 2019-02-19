@@ -1,4 +1,5 @@
 ﻿using PSRule.Pipeline;
+using PSRule.Runtime;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
 
@@ -44,7 +45,7 @@ namespace PSRule.Commands
 
             var result = false;
 
-            if (ObjectHelper.GetField(targetObject: targetObject, name: Field, caseSensitive: false, value: out object fieldValue))
+            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field, caseSensitive: false, value: out object fieldValue))
             {
                 for (var i = 0; i < _Expressions.Length && !result; i++)
                 {

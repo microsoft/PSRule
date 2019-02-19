@@ -13,8 +13,11 @@ baseline:
 
 # Configure TargetName binding
 binding:
+  ignoreCase: false
   targetName:
   - ResourceName
+  targetType:
+  - ResourceType
 
 # Configure execution options
 execution:

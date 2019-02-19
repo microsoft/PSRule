@@ -12,6 +12,7 @@ namespace PSRule.Commands
     internal sealed class NewRuleDefinitionCommand : LanguageBlock
     {
         private const string InvokeBlockCmdletName = "Invoke-RuleBlock";
+        private const string InvokeBlockCmdlet_TypeParameter = "Type";
         private const string InvokeBlockCmdlet_IfParameter = "If";
         private const string InvokeBlockCmdlet_BodyParameter = "Body";
 
@@ -40,6 +41,12 @@ namespace PSRule.Commands
         public ScriptBlock If { get; set; }
 
         /// <summary>
+        /// An optional preconditions before the rule is evaluated.
+        /// </summary>
+        [Parameter(Mandatory = false)]
+        public string[] Type { get; set; }
+
+        /// <summary>
         /// Deployments that this deployment depends on.
         /// </summary>
         [Parameter(Mandatory = false)]
@@ -62,6 +69,7 @@ namespace PSRule.Commands
             var ps = PowerShell.Create();
             ps.Runspace = PipelineContext.CurrentThread.GetRunspace();
             ps.AddCommand(new CmdletInfo(InvokeBlockCmdletName, typeof(InvokeRuleBlockCommand)));
+            ps.AddParameter(InvokeBlockCmdlet_TypeParameter, Type);
             ps.AddParameter(InvokeBlockCmdlet_IfParameter, If);
             ps.AddParameter(InvokeBlockCmdlet_BodyParameter, Body);
 

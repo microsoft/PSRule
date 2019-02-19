@@ -141,6 +141,8 @@ namespace PSRule.Host
 
         public static void InvokeRuleBlock(PipelineContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)
         {
+            PipelineContext.CurrentThread = context;
+
             var ps = ruleBlock.Condition;
             ps.Streams.ClearStreams();
 

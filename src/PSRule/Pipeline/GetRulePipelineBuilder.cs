@@ -72,7 +72,7 @@ namespace PSRule.Pipeline
         public GetRulePipeline Build()
         {
             var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
-            var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: null, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);
+            var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: null, bindTargetType: null, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);
             return new GetRulePipeline(option: _Option, source: _Source, filter: filter, context: context);
         }
     }

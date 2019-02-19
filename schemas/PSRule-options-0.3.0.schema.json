@@ -38,9 +38,21 @@
             "type": "object",
             "description": "Configure property/ object binding options.",
             "properties": {
+                "ignoreCase": {
+                    "type": "boolean",
+                    "description": "Determines if custom binding uses ignores case when matching properties.",
+                    "default": true
+                },
                 "targetName": {
                     "type": "array",
                     "description": "Specifies one or more property names to bind TargetName to.",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "targetType": {
+                    "type": "array",
+                    "description": "Specifies one or more property names to bind TargetType to.",
                     "items": {
                         "type": "string"
                     }

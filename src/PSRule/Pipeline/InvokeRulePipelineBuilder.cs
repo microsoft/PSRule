@@ -19,6 +19,7 @@ namespace PSRule.Pipeline
         private PipelineLogger _Logger;
         private ResultFormat _ResultFormat;
         private BindTargetName _BindTargetNameHook;
+        private BindTargetName _BindTargetTypeHook;
         private VisitTargetObject _VisitTargetObject;
         private bool _LogError;
         private bool _LogWarning;
@@ -34,6 +35,7 @@ namespace PSRule.Pipeline
             _Outcome = RuleOutcome.Processed;
             _ResultFormat = ResultFormat.Detail;
             _BindTargetNameHook = PipelineHookActions.DefaultTargetNameBinding;
+            _BindTargetTypeHook = PipelineHookActions.DefaultTargetTypeBinding;
             _VisitTargetObject = PipelineReceiverActions.PassThru;
             _LogError = _LogWarning = _LogVerbose = _LogInformation = false;
             _Output = (r, b) => { };
@@ -84,6 +86,14 @@ namespace PSRule.Pipeline
             _BindTargetNameHook = (targetObject) => action(targetObject, previous);
         }
 
+        public void AddBindTargetTypeAction(BindTargetNameAction action)
+        {
+            // Nest the previous write action in the new supplied action
+            // Execution chain will be: action -> previous -> previous..n
+            var previous = _BindTargetTypeHook;
+            _BindTargetTypeHook = (targetObject) => action(targetObject, previous);
+        }
+
         private void AddVisitTargetObjectAction(VisitTargetObjectAction action)
         {
             // Nest the previous write action in the new supplied action
@@ -111,6 +121,8 @@ namespace PSRule.Pipeline
             _Option.Input.Format = option.Input.Format ?? InputOption.Default.Format;
             _Option.Input.ObjectPath = option.Input.ObjectPath ?? InputOption.Default.ObjectPath;
 
+            _Option.Binding.IgnoreCase = option.Binding.IgnoreCase ?? BindingOption.Default.IgnoreCase;
+
             if (option.Baseline != null)
             {
                 _Option.Baseline = new BaselineOption(option.Baseline);
@@ -125,14 +137,24 @@ namespace PSRule.Pipeline
                 {
                     AddBindTargetNameAction((targetObject, next) =>
                     {
-                        return PipelineHookActions.NestedTargetNameBinding(option.Binding.TargetName, targetObject, next);
+                        return PipelineHookActions.NestedTargetNameBinding(
+                            propertyNames: option.Binding.TargetName,
+                            caseSensitive: !_Option.Binding.IgnoreCase.Value,
+                            targetObject: targetObject,
+                            next: next
+                        );
                     });
                 }
                 else
                 {
                     AddBindTargetNameAction((targetObject, next) =>
                     {
-                        return PipelineHookActions.CustomTargetNameBinding(option.Binding.TargetName, targetObject, next);
+                        return PipelineHookActions.CustomTargetNameBinding(
+                            propertyNames: option.Binding.TargetName,
+                            caseSensitive: !_Option.Binding.IgnoreCase.Value,
+                            targetObject: targetObject,
+                            next: next
+                        );
                     });
                 }
             }
@@ -152,6 +174,56 @@ namespace PSRule.Pipeline
                         var targetName = action(targetObject);
 
                         return string.IsNullOrEmpty(targetName) ? next(targetObject) : targetName;
+                    });
+                }
+            }
+
+            if (option.Binding.TargetType != null && option.Binding.TargetType.Length > 0)
+            {
+                // Use nested TargetType binding when '.' is included in field name because it's slower then custom
+                var useNested = option.Binding.TargetType.Any(n => n.Contains('.'));
+
+                if (useNested)
+                {
+                    AddBindTargetTypeAction((targetObject, next) =>
+                    {
+                        return PipelineHookActions.NestedTargetNameBinding(
+                            propertyNames: option.Binding.TargetType,
+                            caseSensitive: !_Option.Binding.IgnoreCase.Value,
+                            targetObject: targetObject,
+                            next: next
+                        );
+                    });
+                }
+                else
+                {
+                    AddBindTargetTypeAction((targetObject, next) =>
+                    {
+                        return PipelineHookActions.CustomTargetNameBinding(
+                            propertyNames: option.Binding.TargetType,
+                            caseSensitive: !_Option.Binding.IgnoreCase.Value,
+                            targetObject: targetObject,
+                            next: next
+                        );
+                    });
+                }
+            }
+
+            if (option.Pipeline.BindTargetType != null && option.Pipeline.BindTargetType.Count > 0)
+            {
+                // Do not allow custom binding functions to be used with constrained language mode
+                if (_Option.Execution.LanguageMode == LanguageMode.ConstrainedLanguage)
+                {
+                    throw new PipelineConfigurationException(optionName: "BindTargetType", message: "Binding functions are not supported in this language mode.");
+                }
+
+                foreach (var action in option.Pipeline.BindTargetType)
+                {
+                    AddBindTargetTypeAction((targetObject, next) =>
+                    {
+                        var targetType = action(targetObject);
+
+                        return string.IsNullOrEmpty(targetType) ? next(targetObject) : targetType;
                     });
                 }
             }
@@ -190,7 +262,7 @@ namespace PSRule.Pipeline
             }
 
             var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
-            var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: _BindTargetNameHook, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);
+            var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: _BindTargetNameHook, bindTargetType: _BindTargetTypeHook, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);
             var pipeline = new InvokeRulePipeline(
                 stream: new PipelineStream(input: _VisitTargetObject, output: _Output),
                 option: _Option,

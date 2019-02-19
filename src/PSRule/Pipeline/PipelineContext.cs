@@ -1,15 +1,17 @@
-﻿using PSRule.Configuration;
+using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Resources;
 using PSRule.Rules;
+using PSRule.Runtime;
 using System;
+using System.Collections.Generic;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Security.Cryptography;
 
 namespace PSRule.Pipeline
 {
-    internal sealed class PipelineContext : IDisposable
+    internal sealed class PipelineContext : IDisposable, IBindingContext
     {
         [ThreadStatic]
         internal static PipelineContext CurrentThread;
@@ -17,6 +19,7 @@ namespace PSRule.Pipeline
         // Configuration parameters
         private readonly ILogger _Logger;
         private readonly BindTargetName _BindTargetName;
+        private readonly BindTargetName _BindTargetType;
         private readonly bool _LogError;
         private readonly bool _LogWarning;
         private readonly bool _LogVerbose;
@@ -24,6 +27,7 @@ namespace PSRule.Pipeline
         private readonly LanguageMode _LanguageMode;
         private readonly bool _InconclusiveWarning;
         private readonly bool _NotProcessedWarning;
+        private readonly Dictionary<string, NameToken> _NameTokenCache;
 
         // Pipeline logging
         private string _LogPrefix;
@@ -39,6 +43,7 @@ namespace PSRule.Pipeline
         // Fields exposed to engine
         internal RuleRecord RuleRecord;
         internal string TargetName;
+        internal string TargetType;
         internal PSObject TargetObject;
         internal RuleBlock RuleBlock;
         internal PSRuleOption Option;
@@ -57,11 +62,12 @@ namespace PSRule.Pipeline
             }
         }
 
-        private PipelineContext(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, bool logError, bool logWarning, bool logVerbose, bool logInformation)
+        private PipelineContext(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, BindTargetName bindTargetType, bool logError, bool logWarning, bool logVerbose, bool logInformation)
         {
             _ObjectNumber = -1;
             _Logger = logger;
             _BindTargetName = bindTargetName;
+            _BindTargetType = bindTargetType;
             _LogError = logError;
             _LogWarning = logWarning;
             _LogVerbose = logVerbose;
@@ -78,11 +84,13 @@ namespace PSRule.Pipeline
             {
                 _LogError = _LogWarning = _LogVerbose = _LogInformation = false;
             }
+
+            _NameTokenCache = new Dictionary<string, NameToken>();
         }
 
-        public static PipelineContext New(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, bool logError = true, bool logWarning = true, bool logVerbose = false, bool logInformation = false)
+        public static PipelineContext New(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, BindTargetName bindTargetType, bool logError = true, bool logWarning = true, bool logVerbose = false, bool logInformation = false)
         {
-            var context = new PipelineContext(logger, option, bindTargetName, logError, logWarning, logVerbose, logInformation);
+            var context = new PipelineContext(logger, option, bindTargetName, bindTargetType, logError, logWarning, logVerbose, logInformation);
             CurrentThread = context;
             return context;
         }
@@ -348,8 +356,11 @@ namespace PSRule.Pipeline
 
             TargetObject = targetObject;
 
-            // Bind targetname
+            // Bind TargetName
             TargetName = _BindTargetName(targetObject);
+
+            // Bind TargetType
+            TargetType = _BindTargetType(targetObject);
         }
 
         /// <summary>
@@ -362,6 +373,7 @@ namespace PSRule.Pipeline
                 ruleName: ruleBlock.RuleName,
                 targetObject: TargetObject,
                 targetName: TargetName,
+                targetType: TargetType,
                 tag: ruleBlock.Tag,
                 message: ruleBlock.Description
             );
@@ -391,6 +403,27 @@ namespace PSRule.Pipeline
             return _LogPrefix ?? string.Empty;
         }
 
+        #region IBindingContext
+
+        public bool GetNameToken(string expression, out NameToken nameToken)
+        {
+            if (!_NameTokenCache.ContainsKey(expression))
+            {
+                nameToken = null;
+                return false;
+            }
+
+            nameToken = _NameTokenCache[expression];
+            return true;
+        }
+
+        public void CacheNameToken(string expression, NameToken nameToken)
+        {
+            _NameTokenCache[expression] = nameToken;
+        }
+
+        #endregion IBindingContext
+
         #region IDisposable
 
         public void Dispose()
@@ -413,6 +446,8 @@ namespace PSRule.Pipeline
                     {
                         _Runspace.Dispose();
                     }
+
+                    _NameTokenCache.Clear();
                 }
 
                 _Disposed = true;

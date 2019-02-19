@@ -2,8 +2,14 @@
 ## Unreleased
 
 - Export variables to improve authoring experience [#83](https://github.com/BernieWhite/PSRule/issues/83)
-- Support for packaging rules in modules [#16](https://github.com/BernieWhite/PSRule/issues/16)
-- **Breaking change** - Removed `-TargetName` parameter of the `Hint` keyword [#81](https://github.com/BernieWhite/PSRule/issues/81)
+- Added support for packaging rules in modules [#16](https://github.com/BernieWhite/PSRule/issues/16)
+- Added support for indexed and quoted field names [#86](https://github.com/BernieWhite/PSRule/issues/86)
+- Added object type binding and dynamic filtering for rules [#82](https://github.com/BernieWhite/PSRule/issues/82)
+- Added support for case-sensitive binding operations [#87](https://github.com/BernieWhite/PSRule/issues/87)
+  - Binding is ignores case by default. Set option `Binding.CaseSensitive` to `true` to enable case-sensitivity.
+- **Breaking change** - The `-TargetName` parameter of the `Hint` keyword has been deprecated [#81](https://github.com/BernieWhite/PSRule/issues/81)
+  - `-TargetName` parameter not longer sets the pipeline object _TargetName_ and generates a warning instead.
+  - The `-TargetName` will be completely removed in **v0.4.0**, at which time using the parameter will generate an error.
 
 ## v0.3.0-B190208 (pre-release)
 
@@ -27,7 +33,7 @@ What's changed since v0.1.0:
 - Objects that are unable to bind a _TargetName_ will use a SHA1 object hash for _TargetName_ [#44](https://github.com/BernieWhite/PSRule/issues/44)
 - Added `Test-PSRuleTarget` command to return an overall `$True` or `$False` after evaluating rules for an object [#30](https://github.com/BernieWhite/PSRule/issues/30)
 - Improve reporting of inconclusive results and objects that are not processed by any rule [#46](https://github.com/BernieWhite/PSRule/issues/46)
-  - Inconclusive results and objects not processed will return a warning
+  - Inconclusive results and objects not processed will return a warning by default.
 - Fix propagation of informational messages to host from rule scripts and definitions [#48](https://github.com/BernieWhite/PSRule/issues/48)
 - Fix Get-PSRule generates exception when no .rule.ps1 scripts exist in path [#53](https://github.com/BernieWhite/PSRule/issues/53)
 - Fix LocalizedData.PathNotFound warning when no .rule.ps1 scripts exist in path [#54](https://github.com/BernieWhite/PSRule/issues/54)
@@ -56,7 +62,7 @@ What's changed since pre-release v0.2.0-B190121
 - Objects that are unable to bind a _TargetName_ will use a SHA1 object hash for _TargetName_ [#44](https://github.com/BernieWhite/PSRule/issues/44)
 - Added `Test-PSRule` command to return an overall `$True` or `$False` after evaluating rules for an object [#30](https://github.com/BernieWhite/PSRule/issues/30)
 - Improve reporting of inconclusive results and objects that are not processed by any rule [#46](https://github.com/BernieWhite/PSRule/issues/46)
-  - Inconclusive results and objects not processed will return a warning
+  - Inconclusive results and objects not processed will return a warning by default.
 - Fix propagation of informational messages to host from rule scripts and definitions [#48](https://github.com/BernieWhite/PSRule/issues/48)
 - Added support for cross-platform environments (Windows, Linux and macOS) [#49](https://github.com/BernieWhite/PSRule/issues/49)
 

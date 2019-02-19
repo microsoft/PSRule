@@ -1,4 +1,8 @@
-﻿using PSRule.Rules;
+﻿using PSRule.Pipeline;
+using PSRule.Rules;
+using System;
+using System.Linq;
+using System.Collections.ObjectModel;
 using System.Management.Automation;
 
 namespace PSRule.Commands
@@ -8,6 +12,9 @@ namespace PSRule.Commands
     /// </summary>
     internal sealed class InvokeRuleBlockCommand : Cmdlet
     {
+        [Parameter()]
+        public string[] Type;
+
         [Parameter()]
         public ScriptBlock If;
 
@@ -21,7 +28,18 @@ namespace PSRule.Commands
                 return;
             }
 
-            // Evaluate pre-condition
+            // Evalute type pre-condition
+            if (Type != null)
+            {
+                var comparer = PipelineContext.CurrentThread.Option.Binding.IgnoreCase.Value ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+
+                if (!Type.Contains(value: PipelineContext.CurrentThread.TargetType, comparer: comparer))
+                {
+                    return;
+                }
+            }
+
+            // Evaluate script pre-condition
             if (If != null)
             {
                 var ifResult = If.InvokeReturnAsIs() as PSObject;
