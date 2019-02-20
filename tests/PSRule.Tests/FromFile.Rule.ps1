@@ -150,6 +150,7 @@ Rule 'ExistsTest' -Tag @{ keyword = 'Exists' } {
     Exists -Not 'NotName'
     Exists 'Value.Value1'
     Exists 'NotName','Value'
+    @{ Pipeline = 'Value' } | Exists 'Pipeline'
 }
 
 # Description: Test for Exists keyword
@@ -166,7 +167,7 @@ Rule 'ExistsTestNegative' -Tag @{ keyword = 'Exists' } {
 Rule 'WithinTest' -Tag @{ keyword = 'Within' } {
     AnyOf {
         Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
-        Within 'Value.Title' 'Mr'
+        $TargetObject | Within 'Value.Title' 'Mr'
     }
 }
 
@@ -181,6 +182,9 @@ Rule 'MatchTest' -Tag @{ keyword = 'Match' } {
         Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$', '^(0{1,3})$'
         Match 'Value.PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$'
     }
+
+    # Test pipelining
+    [PSCustomObject]@{ Key = 'Value' } | Match 'Key' 'Value'
 }
 
 # Description: Test for Match keyword
@@ -191,6 +195,11 @@ Rule 'MatchTestCaseSensitive' -Tag @{ keyword = 'Match' } {
 # Description: Test for TypeOf keyword
 Rule 'TypeOfTest' {
     TypeOf 'System.Collections.Hashtable', 'PSRule.Test.OtherType'
+
+    # Test pipelining
+    $inlineObject = [PSCustomObject]@{ Key = 'Value' }
+    $inlineObject.PSObject.TypeNames.Add('PSRule.Test.OtherOtherType')
+    $inlineObject | TypeOf 'PSRule.Test.OtherOtherType'
 }
 
 # Description: Test for AllOf keyword
