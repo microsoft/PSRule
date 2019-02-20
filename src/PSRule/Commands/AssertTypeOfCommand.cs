@@ -13,9 +13,12 @@ namespace PSRule.Commands
         [Parameter(Mandatory = true, Position = 0)]
         public string[] TypeName { get; set; }
 
+        [Parameter(Mandatory = false, ValueFromPipeline = true)]
+        public PSObject InputObject { get; set; }
+
         protected override void ProcessRecord()
         {
-            var inputObject = GetTargetObject();
+            var inputObject = InputObject ?? GetTargetObject();
 
             var result = false;
 

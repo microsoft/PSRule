@@ -31,14 +31,15 @@ To define a Rule use the `Rule` keyword followed by a name and a pair of squiggl
 Syntax:
 
 ```text
-Rule [-Name] <string> [-Tag <hashtable>] [-If <scriptBlock>] [-DependsOn <string[]>] [-Configure <hashtable>] [-Body] {
+Rule [-Name] <string> [-Tag <hashtable>] [-Type <string[]>] [-If <scriptBlock>] [-DependsOn <string[]>] [-Configure <hashtable>] [-Body] {
     ...
 }
 ```
 
 - `Name` - The name of the rule definition. This must be unique with in the same script file.
 - `Tag` - A hashtable of key/ value metadata that can be used to filter and identify rules and rule results.
-- `If` - A precondition that must evaluate to `$True` before the rule is executed.
+- `Type` - A type precondition that must match the _TargetType_ of the pipeline object before the rule is executed.
+- `If` - A script precondition that must evaluate to `$True` before the rule is executed.
 - `DependsOn` - A list of rules this rule depends on. Rule dependencies must execute successfully before this rule is executed.
 - `Configure` - A set of default configuration values. These values are only used when the baseline configuration does not contain the key.
 - `Body` - A script block definition of the rule containing one or more PSRule keywords and PowerShell expressions.
@@ -46,21 +47,21 @@ Rule [-Name] <string> [-Tag <hashtable>] [-If <scriptBlock>] [-DependsOn <string
 Examples:
 
 ```powershell
-# This rule checks for the presence of a name field
+# Description: This rule checks for the presence of a name field
 Rule 'NameMustExist' {
     Exists 'Name'
 }
 ```
 
 ```powershell
-# This rule checks that the title field is valid, when the rule NameMustExist is successful
+# Description: This rule checks that the title field is valid, when the rule NameMustExist is successful
 Rule 'TitleIsValid' -DependsOn 'NameMustExist' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
 ```
 
 ```powershell
-# This rule uses a threshold stored as $Configuration.minInstanceCount
+# Description: This rule uses a threshold stored as $Configuration.minInstanceCount
 Rule 'HasMinInstances' {
     $TargetObject.Sku.capacity -ge $Configuration.minInstanceCount
 } -Configure @{ minInstanceCount = 2 }
@@ -73,19 +74,34 @@ The `Exists` assertion is used within a `Rule` definition to assert that a _fiel
 Syntax:
 
 ```text
-Exists [-Field] <string[]> [-CaseSensitive] [-Not]
+Exists [-Field] <string[]> [-CaseSensitive] [-Not] [-InputObject <PSObject>]
 ```
 
 - `Field` - One or more fields/ properties that must exist on the pipeline object.
 - `CaseSensitive` - The field name must match exact case.
 - `Not` - Instead of checking if the field names exists they should not exist.
+- `InputObject` - Supports objects being piped directly.
 
 Examples:
 
 ```powershell
-# This rule checks for the presence of a name property
+# Description: Checks for the presence of a name property
 Rule 'nameMustExist' {
     Exists 'Name'
+}
+```
+
+```powershell
+# Description: Checks for the presence of name nested under the metadata property
+Rule 'nameMustExist' {
+    Exists 'metadata.name'
+}
+```
+
+```powershell
+# Description: Checks for the presence of name nested under the metadata property
+Rule 'nameMustExist' {
+    $TargetObject.metadata | Exists 'name'
 }
 ```
 
@@ -102,16 +118,18 @@ The `Match` assertion is used within a `Rule` definition to assert that the valu
 Syntax:
 
 ```text
-Match [-Field] <string> [-Expression] <string[]> [-CaseSensitive]
+Match [-Field] <string> [-Expression] <string[]> [-CaseSensitive] [-InputObject <PSObject>]
 ```
 
 - `Field` - The name of the field that will be evaluated on the pipeline object.
 - `Expression` - One or more regular expressions that will be used to match the value of the field.
 - `CaseSensitive` - The field _value_ must match exact case.
+- `InputObject` - Supports objects being piped directly.
 
 Examples:
 
 ```powershell
+# Description: Check that PhoneNumber is complete and formatted correctly
 Rule 'validatePhoneNumber' {
     Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$'
 }
@@ -128,17 +146,18 @@ The `Within` assertion is used within a `Rule` definition to assert that the val
 Syntax:
 
 ```text
-Within [-Field] <string> [-AllowedValue] <PSObject[]]> [-CaseSensitive]
+Within [-Field] <string> [-AllowedValue] <PSObject[]]> [-CaseSensitive] [-InputObject <PSObject>]
 ```
 
 - `Field` - The name of the field that will be evaluated on the pipeline object.
 - `AllowedValue` - A list of allowed values that the field value must match.
 - `CaseSensitive` - The field _value_ must match exact case. Only applies when the field value and allowed values are strings.
+- `InputObject` - Supports objects being piped directly.
 
 Examples:
 
 ```powershell
-# Ensure that the title field has one of the allowed values
+# Description: Ensure that the title field has one of the allowed values
 Rule 'validateTitle' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
@@ -167,10 +186,12 @@ AllOf [-Body] {
 Examples:
 
 ```powershell
-# The Name field must exist and have a value of either John or Jane
-AllOf {
-    Exists 'Name'
-    Within 'Name' 'John', 'Jane'
+# Description: The Name field must exist and have a value of either John or Jane
+Rule 'nameCheck' {
+    AllOf {
+        Exists 'Name'
+        Within 'Name' 'John', 'Jane'
+    }
 }
 ```
 
@@ -197,10 +218,12 @@ AnyOf [-Body] {
 Examples:
 
 ```powershell
-# The Last or Surname field must exist
-AnyOf {
-    Exists 'Last'
-    Exists 'Surname'
+# Description: The Last or Surname field must exist
+Rule 'personCheck' {
+    AnyOf {
+        Exists 'Last'
+        Exists 'Surname'
+    }
 }
 ```
 
@@ -215,15 +238,19 @@ The `TypeOf` assertion is used within a `Rule` definition to evaluate if the pip
 Syntax:
 
 ```text
-TypeOf [-TypeName] <string[]>
+TypeOf [-TypeName] <string[]> [-InputObject <PSObject>]
 ```
 
 - `TypeName` - One or more type names which will be evaluated against the pipeline object. `TypeName` is case insensitive.
+- `InputObject` - Supports objects being piped directly.
 
 Examples:
 
 ```powershell
-TypeOf 'System.Collections.Hashtable'
+# Description: The object must be a hashtable
+Rule 'objectType' {
+    TypeOf 'System.Collections.Hashtable'
+}
 ```
 
 Output:
@@ -235,8 +262,7 @@ If **any** the specified type names match the pipeline object then TypeOf will r
 ```powershell
 # Description: App Service Plan has multiple instances
 Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
-
-    Hint 'Use at least two (2) instances' -TargetName $TargetObject.ResourceName
+    Hint 'Use at least two (2) instances'
 
     $TargetObject.Sku.capacity -ge 2
 }

@@ -560,7 +560,10 @@ function Exists {
         [Switch]$CaseSensitive = $False,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$Not = $False
+        [Switch]$Not = $False,
+
+        [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
+        [PSObject]$InputObject
     )
 
     begin {
@@ -583,7 +586,10 @@ function Match {
         [String[]]$Expression,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$CaseSensitive = $False
+        [Switch]$CaseSensitive = $False,
+
+        [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
+        [PSObject]$InputObject
     )
 
     begin {
@@ -606,7 +612,10 @@ function Within {
         [PSObject[]]$AllowedValue,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$CaseSensitive = $False
+        [Switch]$CaseSensitive = $False,
+
+        [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
+        [PSObject]$InputObject
     )
 
     begin {
@@ -623,7 +632,10 @@ function TypeOf {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
-        [String[]]$TypeName
+        [String[]]$TypeName,
+
+        [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
+        [PSObject]$InputObject
     )
 
     begin {

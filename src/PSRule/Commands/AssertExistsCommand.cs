@@ -27,9 +27,12 @@ namespace PSRule.Commands
         [PSDefaultValue(Value = false)]
         public SwitchParameter Not { get; set; }
 
+        [Parameter(Mandatory = false, ValueFromPipeline = true)]
+        public PSObject InputObject { get; set; }
+
         protected override void ProcessRecord()
         {
-            var targetObject = GetTargetObject();
+            var targetObject = InputObject ?? GetTargetObject();
 
             bool expected = !Not;
             bool actual = Not;

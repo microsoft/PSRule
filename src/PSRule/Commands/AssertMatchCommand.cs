@@ -27,6 +27,9 @@ namespace PSRule.Commands
         [Parameter(Mandatory = false)]
         public SwitchParameter CaseSensitive { get; set; }
 
+        [Parameter(Mandatory = false, ValueFromPipeline = true)]
+        public PSObject InputObject { get; set; }
+
         protected override void BeginProcessing()
         {
             // Setup regex expressions
@@ -41,7 +44,7 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
-            var targetObject = GetTargetObject();
+            var targetObject = InputObject ?? GetTargetObject();
 
             var result = false;
 
