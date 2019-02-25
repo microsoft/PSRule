@@ -86,6 +86,13 @@ namespace PSRule
 
         public object ReadYaml(IParser parser, Type type)
         {
+            // Handle empty objects
+            if (parser.Accept<Scalar>())
+            {
+                parser.Allow<Scalar>();
+                return null;
+            }
+
             var result = new PSObject();
 
             if (parser.Accept<MappingStart>())
