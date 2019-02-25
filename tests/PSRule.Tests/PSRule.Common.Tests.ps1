@@ -231,7 +231,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
     }
 
     Context 'Using -Format' {
-        It 'Processes Yaml' {
+        It 'Yaml String' {
             $yaml = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.yaml') -Raw;
             $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputObject $yaml -Format Yaml);
             $result | Should -Not -BeNullOrEmpty;
@@ -240,9 +240,27 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
         }
 
-        It 'Processes Json' {
+        It 'Yaml FileInfo' {
+            $file = Get-ChildItem -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.yaml') -File;
+            $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputObject $file -Format Yaml);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
+        }
+
+        It 'Json String' {
             $json = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.json') -Raw;
             $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputObject $json -Format Json);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
+        }
+
+        It 'Json FileInfo' {
+            $file = Get-ChildItem -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.json') -File;
+            $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputObject $file -Format Json);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
