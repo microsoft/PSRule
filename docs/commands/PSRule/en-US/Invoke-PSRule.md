@@ -163,7 +163,7 @@ Accept wildcard characters: False
 
 Only evaluate rules with the specified tags set. If this parameter is not specified all rules in search paths will be evaluated.
 
-When more then one tag is used, all tags must match. Tag names are not case sensitive, tag values are case sensitive. A tag value of `*` may be used to filter rules to any rule with the tag set, regardless of tag value.
+When more than one tag is used, all tags must match. Tag names are not case sensitive, tag values are case sensitive. A tag value of `*` may be used to filter rules to any rule with the tag set, regardless of tag value.
 
 ```yaml
 Type: Hashtable
@@ -195,7 +195,7 @@ Accept wildcard characters: False
 
 ### -Option
 
-Additional options that configure execution. A `PSRuleOption` can be created by using the `New-PSRuleOption` cmdlet. Alternatively a hashtable or path to YAML file can be specified with options.
+Additional options that configure execution. A `PSRuleOption` can be created by using the `New-PSRuleOption` cmdlet. Alternatively, a hashtable or path to YAML file can be specified with options.
 
 For more information on PSRule options see about_PSRule_Options.
 
@@ -235,7 +235,7 @@ Accept wildcard characters: False
 
 ### -Format
 
-Configures the input format for when a string is passed in as a target object. By default, strings are just treated as raw text. However when set strings can be read as YAML or JSON and converted to an object.
+Configures the input format for when a string is passed in as a target object. By default, strings are just treated as raw text. However, when set strings can be read as YAML or JSON and converted to an object.
 
 The following formats are available:
 
@@ -257,7 +257,7 @@ Accept wildcard characters: False
 
 ### -ObjectPath
 
-The name of a property to use instead of the pipeline object. If the property specified by `ObjectPath` is a collection/ array then each item in evaluated separately.
+The name of a property to use instead of the pipeline object. If the property specified by `ObjectPath` is a collection or an array, then each item in evaluated separately.
 
 ```yaml
 Type: String
