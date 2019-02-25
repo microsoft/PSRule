@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.3.0-B190231 (pre-release)
+
 - Added support for pipelining with `Exists`, `Within`, `Match` and `TypeOf` keywords [#90](https://github.com/BernieWhite/PSRule/issues/90)
 - Fix empty YAML object causes format deserialize to fail [#92](https://github.com/BernieWhite/PSRule/issues/92)
 
