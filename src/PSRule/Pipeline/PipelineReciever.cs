@@ -22,12 +22,26 @@ namespace PSRule.Pipeline
 
         public static IEnumerable<PSObject> ConvertFromJson(PSObject sourceObject, VisitTargetObject next)
         {
-            if (!(sourceObject.BaseObject is string))
+            // Only attempt to deserialize if the input is a string or a file
+            if (!(sourceObject.BaseObject is string || sourceObject.BaseObject is FileInfo))
             {
                 return new PSObject[] { sourceObject };
             }
 
-            var value = JsonConvert.DeserializeObject<PSObject[]>(sourceObject.BaseObject.ToString(), new PSObjectArrayJsonConverter());
+            var json = string.Empty;
+
+            if (sourceObject.BaseObject is string)
+            {
+                json = sourceObject.BaseObject.ToString();
+            }
+            else
+            {
+                var fileInfo = sourceObject.BaseObject as FileInfo;
+                var reader = new StreamReader(fileInfo.FullName);
+                json = reader.ReadToEnd();
+            }
+
+            var value = JsonConvert.DeserializeObject<PSObject[]>(json, new PSObjectArrayJsonConverter());
 
             if (value == null)
             {
@@ -58,7 +72,8 @@ namespace PSRule.Pipeline
 
         public static IEnumerable<PSObject> ConvertFromYaml(PSObject sourceObject, VisitTargetObject next)
         {
-            if (!(sourceObject.BaseObject is string))
+            // Only attempt to deserialize if the input is a string or a file
+            if (!(sourceObject.BaseObject is string || sourceObject.BaseObject is FileInfo))
             {
                 return new PSObject[] { sourceObject };
             }
@@ -69,7 +84,18 @@ namespace PSRule.Pipeline
                 .WithNodeTypeResolver(new PSObjectYamlTypeResolver())
                 .Build();
 
-            var reader = new StringReader(sourceObject.BaseObject.ToString());
+            TextReader reader = null;
+
+            if (sourceObject.BaseObject is string)
+            {
+                reader = new StringReader(sourceObject.BaseObject.ToString());
+            }
+            else
+            {
+                var fileInfo = sourceObject.BaseObject as FileInfo;
+                reader = new StreamReader(fileInfo.FullName);
+            }
+
             var parser = new Parser(reader);
 
             parser.Expect<StreamStart>();
