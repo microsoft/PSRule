@@ -1,5 +1,6 @@
 # An object described in YAML for unit testing
 
+---
 targetName: TestObject1
 spec:
   properties:
@@ -11,3 +12,8 @@ spec:
   properties:
     value2: 2
     kind: Test
+
+---
+# Null object
+
+---
