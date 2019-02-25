@@ -1,7 +1,7 @@
 
 ## Unreleased
 
-- Support input deserialization from FileInfo objects [#95](https://github.com/BernieWhite/PSRule/issues/95)
+- Added support for input deserialization from FileInfo objects [#95](https://github.com/BernieWhite/PSRule/issues/95)
 
 ## v0.3.0-B190231 (pre-release)
 
