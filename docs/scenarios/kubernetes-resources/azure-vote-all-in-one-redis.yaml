@@ -2,6 +2,10 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: azure-vote-back
+  labels:
+    app.kubernetes.io/name: azure-vote
+    app.kubernetes.io/version: 1.0.0
+    app.kubernetes.io/component: database
 spec:
   replicas: 1
   template:
@@ -20,6 +24,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: azure-vote-back
+  lables:
 spec:
   ports:
   - port: 6379
@@ -30,6 +35,8 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: azure-vote-front
+  labels:
+    app.kubernetes.io/component: web
 spec:
   replicas: 1
   strategy:
