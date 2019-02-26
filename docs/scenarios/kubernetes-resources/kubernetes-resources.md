@@ -186,8 +186,43 @@ For this example, we ran:
 Get-Content docs/scenarios/kubernetes-resources/resources.yaml -Raw | Invoke-PSRule -Path docs/scenarios/kubernetes-resources -Format Yaml -Option docs/scenarios/kubernetes-resources/PSRule.yaml
 ```
 
+## Complete remaining rules
+
+The remaining rule definitions from our defined business rules are included below. Each follows a similar pattern and builds on the previous sections.
+
+In the example below:
+
+- The built-in variable `$TargetObject` is used to get the current pipeline object.
+  - Built-in keywords like `Exists` automatically default to `$TargetObject`, but can be piped alternative input as shown in the rule definition named `deployment.ResourcesSet`.
+
+```powershell
+# Description: Deployments use a minimum of 2 replicas
+Rule 'deployment.HasMinimumReplicas' -Type 'Deployment' {
+    Exists 'spec.replicas'
+    $TargetObject.spec.replicas -ge 2
+}
+
+# Description: Deployments use specific tags
+Rule 'deployment.NotLatestImage' -Type 'Deployment' {
+    foreach ($container in $TargetObject.spec.template.spec.containers) {
+        $container.image -like '*:*' -and
+        $container.image -notlike '*:latest'
+    }
+}
+
+# Description: Resource requirements are set for each container
+Rule 'deployment.ResourcesSet' -Type 'Deployment' {
+    foreach ($container in $TargetObject.spec.template.spec.containers) {
+        $container | Exists 'resources.requests.cpu'
+        $container | Exists 'resources.requests.memory'
+        $container | Exists 'resources.limits.cpu'
+        $container | Exists 'resources.limits.memory'
+    }
+}
+```
+
 ## More information
 
 - [kubernetes.Rule.ps1](kubernetes.Rule.ps1) - Example rules for validating Kubernetes resources.
-- [resources.yaml](resources.yaml) - An Kubernetes manifest.
+- [resources.yaml](resources.yaml) - An example Kubernetes manifest.
 - [PSRule.yaml](PSRule.yaml) - PSRule options configuration file.

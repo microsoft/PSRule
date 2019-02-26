@@ -27,15 +27,17 @@ Rule 'deployment.HasMinimumReplicas' -Type 'Deployment' {
 # Description: Deployments use specific tags
 Rule 'deployment.NotLatestImage' -Type 'Deployment' {
     foreach ($container in $TargetObject.spec.template.spec.containers) {
-        $container.image -like '*:*' -and 
+        $container.image -like '*:*' -and
         $container.image -notlike '*:latest'
     }
 }
 
-# Description: Services should not have a load balancer configured
-Rule 'service.NotLoadBalancer' -Type 'Service' {
-    AnyOf {
-        Exists 'spec.type' -Not
-        $TargetObject.spec.type -ne 'LoadBalancer'
+# Description: Resource requirements are set for each container
+Rule 'deployment.ResourcesSet' -Type 'Deployment' {
+    foreach ($container in $TargetObject.spec.template.spec.containers) {
+        $container | Exists 'resources.requests.cpu'
+        $container | Exists 'resources.requests.memory'
+        $container | Exists 'resources.limits.cpu'
+        $container | Exists 'resources.limits.memory'
     }
 }
