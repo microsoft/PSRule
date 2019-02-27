@@ -180,10 +180,36 @@ Get-Content .\resources.yaml -Raw | Invoke-PSRule -Format Yaml -Option .\PSRule.
 kubectl get services -o yaml | Out-String | Invoke-PSRule -Format Yaml -Option .\PSRule.yaml -ObjectPath items;
 ```
 
-For this example, we ran:
+For this example, we ran the following to get only failed results:
 
 ```powershell
-Get-Content docs/scenarios/kubernetes-resources/resources.yaml -Raw | Invoke-PSRule -Path docs/scenarios/kubernetes-resources -Format Yaml -Option docs/scenarios/kubernetes-resources/PSRule.yaml
+Get-Content docs/scenarios/kubernetes-resources/resources.yaml -Raw | Invoke-PSRule -Path docs/scenarios/kubernetes-resources -Format Yaml -Option docs/scenarios/kubernetes-resources/PSRule.yaml -Outcome Fail;
+```
+
+```text
+   TargetName: app1-cache
+
+RuleName                            Outcome    Message
+--------                            -------    -------
+deployment.HasMinimumReplicas       Fail       Deployments use a minimum of 2 replicas
+deployment.NotLatestImage           Fail       Deployments use specific tags
+deployment.ResourcesSet             Fail       Resource requirements are set for each container
+
+
+   TargetName: app1-cache-service
+
+RuleName                            Outcome    Message
+--------                            -------    -------
+metadata.Name                       Fail       Must have the app.kubernetes.io/name label
+metadata.Version                    Fail       Must have the app.kubernetes.io/version label
+metadata.Component                  Fail       Must have the app.kubernetes.io/component label
+
+
+   TargetName: app1-ui
+
+RuleName                            Outcome    Message
+--------                            -------    -------
+metadata.Version                    Fail       Must have the app.kubernetes.io/version label
 ```
 
 ## Complete remaining rules
