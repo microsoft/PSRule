@@ -68,10 +68,10 @@ spec:
         resources:
           requests:
             cpu: 250m
-            memory: 50MiB
+            memory: 50Mi
           limits:
             cpu: 500m
-            memory: 100MiB
+            memory: 100Mi
         env:
         - name: REDIS
           value: "app1-cache"
