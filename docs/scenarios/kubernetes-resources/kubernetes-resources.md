@@ -155,63 +155,6 @@ Rule 'metadata.Name' -If { $TargetObject.kind -eq 'Deployment' -or $TargetObject
 }
 ```
 
-## Execute rules
-
-With some rules defined, the next step is to execute them. For this example we'll use `Invoke-PSRule` to get the result for each rule. The `Test-PSRuleTarget` cmdlet can be used if only a _true_ or _false_ is required.
-
-In our example we are using the YAML format to store Kubernetes resources. PSRule has built-in support for YAML so we can import these files directly from disk or process output from a command such as `kubectl`.
-
-In the examples below:
-
-- `Get-Content` is piped to `Invoke-PSRule` with the `-Raw` switch. The `-Raw` switch reads the full contents of the rule as a string. In contrast, without the `-Raw` switch, each line would be passed to `Invoke-PSRule` individually as separate objects.
-- The `-Format` parameter informs PSRule that the string is YAML and it should convert the string into structured objects.
-- The `-Option` parameter sets the location of the configuration file that contains custom binding options.
-- `kubectl` is called with the `-o yaml` to output resources as YAML.
-- `kubectl` is piped to `Out-String` to convert the multi-line output to a single string.
-- The `-ObjectPath` parameter is used with the output from `kubectl`. This is required because the output from `kubectl` is a collection of resources instead of individual resources. Specifically `-ObjectPath items` gets the resources from the `items` property of the output.
-
-```powershell
-# Validate resources from file
-Get-Content .\resources.yaml -Raw | Invoke-PSRule -Format Yaml -Option .\PSRule.yaml;
-```
-
-```powershell
-# Validate resources directly from kubectl output
-kubectl get services -o yaml | Out-String | Invoke-PSRule -Format Yaml -Option .\PSRule.yaml -ObjectPath items;
-```
-
-For this example, we ran the following to get only failed results:
-
-```powershell
-Get-Content docs/scenarios/kubernetes-resources/resources.yaml -Raw | Invoke-PSRule -Path docs/scenarios/kubernetes-resources -Format Yaml -Option docs/scenarios/kubernetes-resources/PSRule.yaml -Outcome Fail;
-```
-
-```text
-   TargetName: app1-cache
-
-RuleName                            Outcome    Message
---------                            -------    -------
-deployment.HasMinimumReplicas       Fail       Deployments use a minimum of 2 replicas
-deployment.NotLatestImage           Fail       Deployments use specific tags
-deployment.ResourcesSet             Fail       Resource requirements are set for each container
-
-
-   TargetName: app1-cache-service
-
-RuleName                            Outcome    Message
---------                            -------    -------
-metadata.Name                       Fail       Must have the app.kubernetes.io/name label
-metadata.Version                    Fail       Must have the app.kubernetes.io/version label
-metadata.Component                  Fail       Must have the app.kubernetes.io/component label
-
-
-   TargetName: app1-ui
-
-RuleName                            Outcome    Message
---------                            -------    -------
-metadata.Version                    Fail       Must have the app.kubernetes.io/version label
-```
-
 ## Complete remaining rules
 
 The remaining rule definitions from our defined business rules are included below. Each follows a similar pattern and builds on the previous sections.
@@ -245,6 +188,65 @@ Rule 'deployment.ResourcesSet' -Type 'Deployment' {
         $container | Exists 'resources.limits.memory'
     }
 }
+```
+
+## Execute rules
+
+With some rules defined, the next step is to execute them. For this example, we'll use `Invoke-PSRule` to get the result for each rule. The `Test-PSRuleTarget` cmdlet can be used if only a _true_ or _false_ is required.
+
+In our example we are using the YAML format to store Kubernetes resources. PSRule has built-in support for YAML so we can import these files directly from disk or process output from a command such as `kubectl`.
+
+In the examples below:
+
+- `Get-Content` is piped to `Invoke-PSRule` with the `-Raw` switch. The `-Raw` switch reads the full contents of the rule as a string. In contrast, without the `-Raw` switch, each line would be passed to `Invoke-PSRule` individually as separate objects.
+- The `-Format` parameter informs PSRule that the string is YAML and it should convert the string into structured objects.
+- The `-Option` parameter sets the location of the configuration file that contains custom binding options.
+- `kubectl` is called with the `-o yaml` to output resources as YAML.
+- `kubectl` is piped to `Out-String` to convert the multi-line output to a single string.
+- The `-ObjectPath` parameter is used with the output from `kubectl`. This is required because the output from `kubectl` is a collection of resources instead of individual resources. Specifically `-ObjectPath items` gets the resources from the `items` property of the output.
+
+```powershell
+# Validate resources from file
+Get-Content .\resources.yaml -Raw | Invoke-PSRule -Format Yaml -Option .\PSRule.yaml;
+```
+
+```powershell
+# Validate resources directly from kubectl output
+kubectl get services -o yaml | Out-String | Invoke-PSRule -Format Yaml -Option .\PSRule.yaml -ObjectPath items;
+```
+
+For this example, we limited the output to failed results with the following command:
+
+```powershell
+Get-Content docs/scenarios/kubernetes-resources/resources.yaml -Raw | Invoke-PSRule -Path docs/scenarios/kubernetes-resources -Format Yaml -Option docs/scenarios/kubernetes-resources/PSRule.yaml -Outcome Fail;
+```
+
+The resulting output is:
+
+```text
+   TargetName: app1-cache
+
+RuleName                            Outcome    Message
+--------                            -------    -------
+deployment.HasMinimumReplicas       Fail       Deployments use a minimum of 2 replicas
+deployment.NotLatestImage           Fail       Deployments use specific tags
+deployment.ResourcesSet             Fail       Resource requirements are set for each container
+
+
+   TargetName: app1-cache-service
+
+RuleName                            Outcome    Message
+--------                            -------    -------
+metadata.Name                       Fail       Must have the app.kubernetes.io/name label
+metadata.Version                    Fail       Must have the app.kubernetes.io/version label
+metadata.Component                  Fail       Must have the app.kubernetes.io/component label
+
+
+   TargetName: app1-ui
+
+RuleName                            Outcome    Message
+--------                            -------    -------
+metadata.Version                    Fail       Must have the app.kubernetes.io/version label
 ```
 
 ## More information
