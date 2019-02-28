@@ -119,6 +119,7 @@ For practical examples of PSRule see:
 
 - [Validate configuration of Azure resources](docs/scenarios/azure-resources/azure-resources.md)
 - [Validate Azure resources tags](docs/scenarios/azure-tags/azure-tags.md)
+- [Validate Kubernetes resources](docs/scenarios/kubernetes-resources/kubernetes-resources.md)
 
 ## Language reference
 

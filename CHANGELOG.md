@@ -15,7 +15,7 @@
 - Added support for indexed and quoted field names [#86](https://github.com/BernieWhite/PSRule/issues/86)
 - Added object type binding and dynamic filtering for rules [#82](https://github.com/BernieWhite/PSRule/issues/82)
 - Added support for case-sensitive binding operations [#87](https://github.com/BernieWhite/PSRule/issues/87)
-  - Binding is ignores case by default. Set option `Binding.CaseSensitive` to `true` to enable case-sensitivity.
+  - Binding ignores case by default. Set option `Binding.CaseSensitive` to `true` to enable case-sensitivity.
 - **Breaking change** - The `-TargetName` parameter of the `Hint` keyword has been deprecated [#81](https://github.com/BernieWhite/PSRule/issues/81)
   - `-TargetName` parameter not longer sets the pipeline object _TargetName_ and generates a warning instead.
   - The `-TargetName` will be completely removed in **v0.4.0**, at which time using the parameter will generate an error.
