@@ -110,3 +110,53 @@ Describe 'Scenarios -- fruit' -Tag 'EndToEnd','fruit' {
         }
     }
 }
+
+Describe 'Scenarios -- kubernetes-resources' -Tag 'EndToEnd','kubernetes-resources' {
+    $scenarioPath = Join-Path -Path $rootPath -ChildPath docs/scenarios/kubernetes-resources;
+    $yamlData = Get-Content -Path (Join-Path -Path $scenarioPath -ChildPath 'resources.yaml') -Raw;
+
+    Context 'Invoke-PSRule' {
+        $invokeParams = @{
+            Path = $scenarioPath
+            Format = 'Yaml'
+            Option = (Join-Path -Path $scenarioPath -ChildPath 'PSRule.yaml')
+        }
+        $result = @($yamlData | Invoke-PSRule @invokeParams);
+
+        It 'Processes rules' {
+            $result.Count | Should -Be 18;
+        }
+
+        It 'Deployment app1-cache' {
+            $instance = $result | Where-Object -FilterScript { $_.TargetName -eq 'app1-cache' };
+            $fail = @($instance | Where-Object -FilterScript { $_.Outcome -eq 'Fail' });
+            $pass = @($instance | Where-Object -FilterScript { $_.Outcome -eq 'Pass' });
+            $fail.Length | Should -Be 3;
+            $pass.Length | Should -Be 3;
+        }
+
+        It 'Service app1-cache-service' {
+            $instance = $result | Where-Object -FilterScript { $_.TargetName -eq 'app1-cache-service' };
+            $fail = @($instance | Where-Object -FilterScript { $_.Outcome -eq 'Fail' });
+            $pass = @($instance | Where-Object -FilterScript { $_.Outcome -eq 'Pass' });
+            $fail.Length | Should -Be 3;
+            $pass.Length | Should -Be 0;
+        }
+
+        It 'Deployment app1-ui' {
+            $instance = $result | Where-Object -FilterScript { $_.TargetName -eq 'app1-ui' };
+            $fail = @($instance | Where-Object -FilterScript { $_.Outcome -eq 'Fail' });
+            $pass = @($instance | Where-Object -FilterScript { $_.Outcome -eq 'Pass' });
+            $fail.Length | Should -Be 1;
+            $pass.Length | Should -Be 5;
+        }
+
+        It 'Service app1-ui-service' {
+            $instance = $result | Where-Object -FilterScript { $_.TargetName -eq 'app1-ui-service' };
+            $fail = @($instance | Where-Object -FilterScript { $_.Outcome -eq 'Fail' });
+            $pass = @($instance | Where-Object -FilterScript { $_.Outcome -eq 'Pass' });
+            $fail.Length | Should -Be 0;
+            $pass.Length | Should -Be 3;
+        }
+    }
+}
