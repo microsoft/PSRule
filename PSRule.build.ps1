@@ -134,7 +134,7 @@ task BuildHelp BuildModule, PlatyPS, {
     $Null = Copy-Item -Path out/docs/PSRule/* -Destination out/modules/PSRule/en-AU;
 }
 
-task ScaffoldHelp BuildModule, {
+task ScaffoldHelp Build, {
 
     Import-Module (Join-Path -Path $PWD -ChildPath out/modules/PSRule) -Force;
 

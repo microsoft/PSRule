@@ -133,7 +133,7 @@ If the `-Module` parameter is used, rule definitions from the currently working 
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases: f
+Aliases: p
 
 Required: False
 Position: 0

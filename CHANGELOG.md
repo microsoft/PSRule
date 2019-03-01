@@ -2,6 +2,7 @@
 ## Unreleased
 
 - Added support for input deserialization from FileInfo objects [#95](https://github.com/BernieWhite/PSRule/issues/95)
+- **Breaking change** - Changed parameter alias for `-Path` from `-f` to `-p` [#99](https://github.com/BernieWhite/PSRule/issues/99)
 
 ## v0.3.0-B190231 (pre-release)
 
