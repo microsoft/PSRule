@@ -45,7 +45,7 @@ function Invoke-PSRule {
     param (
         # A list of paths to check for rule definitions
         [Parameter(Position = 0)]
-        [Alias('f')]
+        [Alias('p')]
         [String[]]$Path = $PWD,
 
         # Filter to rules with the following names
@@ -71,7 +71,7 @@ function Invoke-PSRule {
         [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Detail,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('Yaml', 'Json')]
+        [ValidateSet('None', 'Yaml', 'Json')]
         [PSRule.Configuration.InputFormat]$Format,
 
         [Parameter(Mandatory = $False)]
@@ -182,7 +182,7 @@ function Test-PSRuleTarget {
     param (
         # A list of paths to check for rule definitions
         [Parameter(Position = 0)]
-        [Alias('f')]
+        [Alias('p')]
         [String[]]$Path = $PWD,
 
         # Filter to rules with the following names
@@ -201,7 +201,7 @@ function Test-PSRuleTarget {
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('Yaml', 'Json')]
+        [ValidateSet('None', 'Yaml', 'Json')]
         [PSRule.Configuration.InputFormat]$Format,
 
         [Parameter(Mandatory = $False)]
@@ -301,7 +301,7 @@ function Get-PSRule {
     param (
         # A list of paths to check for rule definitions
         [Parameter(Position = 0, Mandatory = $False)]
-        [Alias('f')]
+        [Alias('p')]
         [String[]]$Path = $PWD,
 
         # Filter to rules with the following names

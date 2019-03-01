@@ -133,7 +133,7 @@ If the `-Module` parameter is used, rule definitions from the currently working 
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases: f
+Aliases: p
 
 Required: False
 Position: 0
@@ -237,16 +237,11 @@ Accept wildcard characters: False
 
 Configures the input format for when a string is passed in as a target object. By default, strings are just treated as raw text. However, when set strings can be read as YAML or JSON and converted to an object.
 
-The following formats are available:
-
-- None
-- Yaml
-- Json
-
 ```yaml
 Type: InputFormat
 Parameter Sets: (All)
 Aliases:
+Accepted values: None, Yaml, Json
 
 Required: False
 Position: Named
