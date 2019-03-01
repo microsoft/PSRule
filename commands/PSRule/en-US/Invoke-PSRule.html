@@ -8,7 +8,7 @@
     <title>Invoke-PSRule </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Invoke-PSRule ">
-    <meta name="generator" content="docfx 2.40.4.0">
+    <meta name="generator" content="docfx 2.40.10.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -73,7 +73,8 @@
 <p>Evaluate pipeline objects against matching rules.</p>
 <h2 id="syntax">SYNTAX</h2>
 <pre><code class="lang-text">Invoke-PSRule [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] -InputObject &lt;PSObject&gt;
- [-Outcome &lt;RuleOutcome&gt;] [-Option &lt;PSRuleOption&gt;] [-As &lt;ResultFormat&gt;] [&lt;CommonParameters&gt;]
+ [-Outcome &lt;RuleOutcome&gt;] [-Option &lt;PSRuleOption&gt;] [-As &lt;ResultFormat&gt;] [-Format &lt;InputFormat&gt;]
+ [-ObjectPath &lt;String&gt;] [-Module &lt;String[]&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Evaluate pipeline objects against matching rules.</p>
@@ -91,7 +92,7 @@ $items += [PSCustomObject]@{ Name = 'Apple' };
 # Validate each item using rules saved in current working path
 $items | Invoke-PSRule;
 </code></pre>
-<pre><code class="lang-text">   TargetName: Fridge
+<pre><code class="lang-text">TargetName: Fridge
 
 RuleName                            Outcome    Message
 --------                            -------    -------
@@ -114,7 +115,7 @@ $items += [PSCustomObject]@{ Name = 'Apple' };
 # Validate each item and only return failing results
 $items | Invoke-PSRule -Outcome Fail;
 </code></pre>
-<pre><code class="lang-text">   TargetName: Fridge
+<pre><code class="lang-text">TargetName: Fridge
 
 RuleName                            Outcome    Message
 --------                            -------    -------
@@ -149,10 +150,12 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-path">-Path</h3>
-<p>One or more paths to search for rule definitions within. If this parameter is not specified the current working path will be used.</p>
+<p>One or more paths to search for rule definitions within.</p>
+<p>If this parameter is not specified the current working path will be used, unless the <code>-Module</code> parameter is used.</p>
+<p>If the <code>-Module</code> parameter is used, rule definitions from the currently working path will not be included by default.</p>
 <pre><code class="lang-yaml">Type: String[]
 Parameter Sets: (All)
-Aliases: f
+Aliases: p
 
 Required: False
 Position: 0
@@ -175,7 +178,7 @@ Accept wildcard characters: False
 </code></pre>
 <h3 id="-tag">-Tag</h3>
 <p>Only evaluate rules with the specified tags set. If this parameter is not specified all rules in search paths will be evaluated.</p>
-<p>When more then one tag is used, all tags must match. Tag names are not case sensitive, tag values are case sensitive. A tag value of <code>*</code> may be used to filter rules to any rule with the tag set, regardless of tag value.</p>
+<p>When more than one tag is used, all tags must match. Tag names are not case sensitive, tag values are case sensitive. A tag value of <code>*</code> may be used to filter rules to any rule with the tag set, regardless of tag value.</p>
 <pre><code class="lang-yaml">Type: Hashtable
 Parameter Sets: (All)
 Aliases:
@@ -199,7 +202,7 @@ Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-option">-Option</h3>
-<p>Additional options that configure execution. A <code>PSRuleOption</code> can be created by using the <code>New-PSRuleOption</code> cmdlet. Alternatively a hashtable or path to YAML file can be specified with options.</p>
+<p>Additional options that configure execution. A <code>PSRuleOption</code> can be created by using the <code>New-PSRuleOption</code> cmdlet. Alternatively, a hashtable or path to YAML file can be specified with options.</p>
 <p>For more information on PSRule options see about_PSRule_Options.</p>
 <pre><code class="lang-yaml">Type: PSRuleOption
 Parameter Sets: (All)
@@ -226,6 +229,44 @@ Accepted values: Detail, Summary
 Required: False
 Position: Named
 Default value: Detail
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-format">-Format</h3>
+<p>Configures the input format for when a string is passed in as a target object. By default, strings are just treated as raw text. However, when set strings can be read as YAML or JSON and converted to an object.</p>
+<pre><code class="lang-yaml">Type: InputFormat
+Parameter Sets: (All)
+Aliases:
+Accepted values: None, Yaml, Json
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-objectpath">-ObjectPath</h3>
+<p>The name of a property to use instead of the pipeline object. If the property specified by <code>ObjectPath</code> is a collection or an array, then each item in evaluated separately.</p>
+<pre><code class="lang-yaml">Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-module">-Module</h3>
+<p>Search for rule definitions within a module. When specified without the <code>-Path</code> parameter, only rule definitions in the module will be discovered.</p>
+<p>When both <code>-Path</code> and <code>-Module</code> are specified, rule definitions from both are discovered.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>

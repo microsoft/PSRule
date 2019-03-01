@@ -1,0 +1,325 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Kubernetes resource validation example </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Kubernetes resource validation example ">
+    <meta name="generator" content="docfx 2.40.10.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../../toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="kubernetes-resource-validation-example">Kubernetes resource validation example</h1>
+
+<p>This is an example of how PSRule can be used to validate Kubernetes resources to match an internal metadata and configuration standard.</p>
+<p>This scenario covers the following:</p>
+<ul>
+<li>Defining a basic rule.</li>
+<li>Configuring custom binding.</li>
+<li>Using a type precondition.</li>
+<li>Running rules using YAML input.</li>
+</ul>
+<p>In this scenario we will use a YAML file:</p>
+<ul>
+<li><a href="resources.yaml"><code>resources.yaml</code></a> - A Kubernetes manifest containing deployments and services.</li>
+</ul>
+<h2 id="define-rules">Define rules</h2>
+<p>To validate our Kubernetes resources, we need to define some rules. Rules are defined by using the <code>Rule</code> keyword in a file ending with the <code>.Rule.ps1</code> extension.</p>
+<p>Our business rules for configuration Kubernetes resources can be defined with the following dot points:</p>
+<ul>
+<li>The following <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/">recommended</a> labels will be used on all services and deployments:
+<ul>
+<li><code>app.kubernetes.io/name</code> - the name of the application/ service.</li>
+<li><code>app.kubernetes.io/version</code> - the version of the service.</li>
+<li><code>app.kubernetes.io/component</code> - identifies the type of component, valid options are <code>web</code>, <code>api</code>, <code>database</code> and <code>gateway</code></li>
+</ul>
+</li>
+<li>For <code>web</code> or <code>api</code> deployments, a minimum of two (2) replicas must be used.</li>
+<li>Deployments must use container images with a specific version tag, and not <code>latest</code>.</li>
+<li>Deployments must declare minimum and maximum memory/ CPU resources.</li>
+</ul>
+<p>In the example below:</p>
+<ul>
+<li>We use <code>metadata.Name</code> directly after the <code>Rule</code> keyword to name the rule definition. Each rule must be named uniquely.</li>
+<li>The <code># Description:</code> comment is used to add additional metadata interpreted by PSRule.</li>
+<li>One or more conditions are defined within the curly braces <code>{ }</code>.</li>
+<li>The rule definition is saved within a file named <code>kubernetes.Rule.ps1</code>.</li>
+</ul>
+<pre><code class="lang-powershell"># Description: Must have the app.kubernetes.io/name label
+Rule 'metadata.Name' {
+    # Rule conditions go here
+}
+</code></pre>
+<h3 id="check-that-the-label-exists">Check that the label exists</h3>
+<p>In the next step, we define one or more conditions.</p>
+<p>Conditions can be:</p>
+<ul>
+<li>Any valid PowerShell that returns a <em>true</em> (pass) when the condition is met or <em>false</em> (fail) when the condition is not met.</li>
+<li>More than one condition can be defined, if any condition returns <em>false</em> then the whole rule fails.</li>
+</ul>
+<p>PSRule includes several convenience keywords such as <code>AllOf</code>, <code>AnyOf</code>, <code>Exists</code>, <code>Match</code>, <code>TypeOf</code> and <code>Within</code> that make conditions faster to define, easier to understand and troubleshoot. However, use of these keywords is optional.</p>
+<p>In the example below:</p>
+<ul>
+<li>We use the <code>Exists</code> keyword to check that the resource has the <code>app.kubernetes.io/name</code> label set.
+<ul>
+<li>By default, PSRule will step through nested properties separated by a <code>.</code>. i.e. <code>labels</code> is a property of <code>metadata</code>.</li>
+<li>Kubernetes supports and recommends label namespaces, which often use <code>.</code> in their name. PSRule supports this by enclosing the field name (<code>app.kubernetes.io/name</code>) in apostrophes (<code>'</code>) so that <code>app.kubernetes.io/name</code> is checked instead of <code>app</code>.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="lang-powershell"># Description: Must have the app.kubernetes.io/name label
+Rule 'metadata.Name' {
+    Exists &quot;metadata.labels.'app.kubernetes.io/name'&quot;
+}
+</code></pre>
+<p>We have also defined something similar for the <em>version</em> and <em>component</em> labels.</p>
+<p>In the example below:</p>
+<ul>
+<li>Double apostrophes (<code>''</code>) are used to enclose <code>app.kubernetes.io/name</code> because the field name uses <code>'</code> at the start and end of the string instead of <code>&quot;</code> in the previous example.</li>
+<li>The <code>Within</code> keyword is used to validate that the <code>app.kubernetes.io/component</code> only uses one of four (4) allowed values.</li>
+</ul>
+<pre><code class="lang-powershell"># Description: Must have the app.kubernetes.io/version label
+Rule 'metadata.Version' {
+    Exists 'metadata.labels.''app.kubernetes.io/version'''
+}
+
+# Description: Must have the app.kubernetes.io/component label
+Rule 'metadata.Component' {
+    Exists 'metadata.labels.''app.kubernetes.io/component'''
+    Within 'metadata.labels.''app.kubernetes.io/component''' 'web', 'api', 'database', 'gateway' -CaseSensitive
+}
+</code></pre>
+<h2 id="use-custom-binding">Use custom binding</h2>
+<p>Before processing rules, PSRule binds <code>TargetName</code> and <code>TargetType</code> properties to the pipeline object. These properties are used for filtering and displaying results.</p>
+<p>The default properties that PSRule binds are different from how Kubernetes resources are structured. Kubernetes uses:</p>
+<ul>
+<li><code>metadata.name</code> to store the name of a resource.</li>
+<li><code>kind</code> to store the type of resource.</li>
+</ul>
+<p>The default bindings can be updated by providing custom property names or a custom script. To change binding property names set the <code>Binding.TargetName</code> and <code>Binding.TargetType</code> configuration options.</p>
+<p>The following example shows how to set the options using a YAML configuration file:</p>
+<ul>
+<li>TargetName is bound to <code>metadata.name</code></li>
+<li>TargetType is bound to <code>kind</code></li>
+</ul>
+<pre><code class="lang-yaml">binding:
+  targetName:
+  - metadata.name
+  targetType:
+  - kind
+</code></pre>
+<p>Alternatively, these options can be set at runtime using the hashtable syntax.</p>
+<pre><code class="lang-powershell">$option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'metadata.name'; 'Binding.TargetType' = 'kind' };
+</code></pre>
+<p>These options will be passed to <code>Invoke-PSRule</code> using the <code>-Option</code> parameter in a later step.</p>
+<h2 id="define-preconditions">Define preconditions</h2>
+<p>Currently the <code>metadata.Name</code> rule defined in a previous step will be executed for any type of object. Kubernetes has many types of built-in resource such as <em>Services</em>, <em>Deployments</em>, <em>Namespaces</em>, <em>Pods</em> and <em>ClusterRoles</em>.</p>
+<p>By defining a precondition, we can ensure that the rule is only processed for <em>Services</em> or <em>Deployments</em> to match our business rules.</p>
+<p>PSRule supports two types of preconditions, either type (<code>-Type</code>) or script block (<code>-If</code>).</p>
+<ul>
+<li><strong>Type</strong> preconditions are one or more type names that PSRule compares to the <code>TargetType</code> binding, where:
+<ul>
+<li>One of the type names names equal <code>TargetType</code> the rule will be processed.</li>
+<li>None of the type names equal <code>TargetType</code> the rule be skipped.</li>
+</ul>
+</li>
+<li><strong>Script</strong> block preconditions is a PowerShell script block that returns <em>true</em> or <em>false</em>, where:
+<ul>
+<li><em>True</em> - Continue processing the rule.</li>
+<li><em>False</em> - Skip processing the rule.</li>
+</ul>
+</li>
+</ul>
+<p>Preconditions are evaluated once per rule for each object.</p>
+<p>In the example below:</p>
+<ul>
+<li>We update our <code>metadata.Name</code> rule to use the <code>-Type</code> parameter to specify a type precondition of either <em>Deployment</em> or <em>Service</em>.</li>
+<li>In a previous step, <code>TypeName</code> was bound to the <code>kind</code> property which will be <em>Deployment</em> or <em>Service</em> for these resource types.</li>
+</ul>
+<pre><code class="lang-powershell"># Description: Must have the app.kubernetes.io/name label
+Rule 'metadata.Name' -Type 'Deployment', 'Service' {
+    Exists &quot;metadata.labels.'app.kubernetes.io/name'&quot;
+}
+</code></pre>
+<p>Using a type precondition satisfies our business rules and will deliver faster performance then using a script block. An example using a script block precondition is also shown below.</p>
+<pre><code class="lang-powershell"># Description: Must have the app.kubernetes.io/name label
+Rule 'metadata.Name' -If { $TargetObject.kind -eq 'Deployment' -or $TargetObject.kind -eq 'Service' } {
+    Exists &quot;metadata.labels.'app.kubernetes.io/name'&quot;
+}
+</code></pre>
+<h2 id="complete-remaining-rules">Complete remaining rules</h2>
+<p>The remaining rule definitions from our defined business rules are included below. Each follows a similar pattern and builds on the previous sections.</p>
+<p>In the example below:</p>
+<ul>
+<li>The built-in variable <code>$TargetObject</code> is used to get the current pipeline object.
+<ul>
+<li>Built-in keywords like <code>Exists</code> automatically default to <code>$TargetObject</code>, but can be piped alternative input as shown in the rule definition named <code>deployment.ResourcesSet</code>.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="lang-powershell"># Description: Deployments use a minimum of 2 replicas
+Rule 'deployment.HasMinimumReplicas' -Type 'Deployment' {
+    Exists 'spec.replicas'
+    $TargetObject.spec.replicas -ge 2
+}
+
+# Description: Deployments use specific tags
+Rule 'deployment.NotLatestImage' -Type 'Deployment' {
+    foreach ($container in $TargetObject.spec.template.spec.containers) {
+        $container.image -like '*:*' -and
+        $container.image -notlike '*:latest'
+    }
+}
+
+# Description: Resource requirements are set for each container
+Rule 'deployment.ResourcesSet' -Type 'Deployment' {
+    foreach ($container in $TargetObject.spec.template.spec.containers) {
+        $container | Exists 'resources.requests.cpu'
+        $container | Exists 'resources.requests.memory'
+        $container | Exists 'resources.limits.cpu'
+        $container | Exists 'resources.limits.memory'
+    }
+}
+</code></pre>
+<h2 id="execute-rules">Execute rules</h2>
+<p>With some rules defined, the next step is to execute them. For this example, we'll use <code>Invoke-PSRule</code> to get the result for each rule. The <code>Test-PSRuleTarget</code> cmdlet can be used if only a <em>true</em> or <em>false</em> is required.</p>
+<p>In our example we are using the YAML format to store Kubernetes resources. PSRule has built-in support for YAML so we can import these files directly from disk or process output from a command such as <code>kubectl</code>.</p>
+<p>In the examples below:</p>
+<ul>
+<li><code>Get-Content</code> is piped to <code>Invoke-PSRule</code> with the <code>-Raw</code> switch. The <code>-Raw</code> switch reads the full contents of the rule as a string. In contrast, without the <code>-Raw</code> switch, each line would be passed to <code>Invoke-PSRule</code> individually as separate objects.</li>
+<li>The <code>-Format</code> parameter informs PSRule that the string is YAML and it should convert the string into structured objects.</li>
+<li>The <code>-Option</code> parameter sets the location of the configuration file that contains custom binding options.</li>
+<li><code>kubectl</code> is called with the <code>-o yaml</code> to output resources as YAML.</li>
+<li><code>kubectl</code> is piped to <code>Out-String</code> to convert the multi-line output to a single string.</li>
+<li>The <code>-ObjectPath</code> parameter is used with the output from <code>kubectl</code>. This is required because the output from <code>kubectl</code> is a collection of resources instead of individual resources. Specifically <code>-ObjectPath items</code> gets the resources from the <code>items</code> property of the output.</li>
+</ul>
+<pre><code class="lang-powershell"># Validate resources from file
+Get-Content .\resources.yaml -Raw | Invoke-PSRule -Format Yaml -Option .\PSRule.yaml;
+</code></pre>
+<pre><code class="lang-powershell"># Validate resources directly from kubectl output
+kubectl get services -o yaml | Out-String | Invoke-PSRule -Format Yaml -Option .\PSRule.yaml -ObjectPath items;
+</code></pre>
+<p>For this example, we limited the output to failed results with the following command:</p>
+<pre><code class="lang-powershell">Get-Content docs/scenarios/kubernetes-resources/resources.yaml -Raw | Invoke-PSRule -Path docs/scenarios/kubernetes-resources -Format Yaml -Option docs/scenarios/kubernetes-resources/PSRule.yaml -Outcome Fail;
+</code></pre>
+<p>The resulting output is:</p>
+<pre><code class="lang-text">   TargetName: app1-cache
+
+RuleName                            Outcome    Message
+--------                            -------    -------
+deployment.HasMinimumReplicas       Fail       Deployments use a minimum of 2 replicas
+deployment.NotLatestImage           Fail       Deployments use specific tags
+deployment.ResourcesSet             Fail       Resource requirements are set for each container
+
+
+   TargetName: app1-cache-service
+
+RuleName                            Outcome    Message
+--------                            -------    -------
+metadata.Name                       Fail       Must have the app.kubernetes.io/name label
+metadata.Version                    Fail       Must have the app.kubernetes.io/version label
+metadata.Component                  Fail       Must have the app.kubernetes.io/component label
+
+
+   TargetName: app1-ui
+
+RuleName                            Outcome    Message
+--------                            -------    -------
+metadata.Version                    Fail       Must have the app.kubernetes.io/version label
+</code></pre>
+<h2 id="more-information">More information</h2>
+<ul>
+<li><a href="kubernetes.Rule.ps1">kubernetes.Rule.ps1</a> - Example rules for validating Kubernetes resources.</li>
+<li><a href="resources.yaml">resources.yaml</a> - An example Kubernetes manifest.</li>
+<li><a href="PSRule.yaml">PSRule.yaml</a> - PSRule options configuration file.</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/scenarios/kubernetes-resources/kubernetes-resources.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

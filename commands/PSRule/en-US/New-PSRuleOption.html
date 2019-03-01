@@ -8,7 +8,7 @@
     <title>New-PSRuleOption </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="New-PSRuleOption ">
-    <meta name="generator" content="docfx 2.40.4.0">
+    <meta name="generator" content="docfx 2.40.10.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -73,8 +73,8 @@
 <p>Create options to configure PSRule execution.</p>
 <h2 id="syntax">SYNTAX</h2>
 <pre><code class="lang-text">New-PSRuleOption [[-Option] &lt;PSRuleOption&gt;] [-BaselineConfiguration &lt;BaselineConfiguration&gt;]
- [-SuppressTargetName &lt;SuppressionOption&gt;] [-BindTargetName &lt;BindTargetName[]&gt;] [[-Path] &lt;String&gt;]
- [&lt;CommonParameters&gt;]
+ [-SuppressTargetName &lt;SuppressionOption&gt;] [-BindTargetName &lt;BindTargetName[]&gt;]
+ [-BindTargetType &lt;BindTargetName[]&gt;] [[-Path] &lt;String&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>The <strong>New-PSRuleOption</strong> cmdlet creates an options object that can be passed to PSRule cmdlets to configure execution.</p>
@@ -166,6 +166,19 @@ Accept wildcard characters: False
 <p>Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values. BaselineConfiguration also accepts a hashtable of configuration values as key/ value pairs.</p>
 <p>For more information on PSRule options see about_PSRule_Options.</p>
 <pre><code class="lang-yaml">Type: BaselineConfiguration
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-bindtargettype">-BindTargetType</h3>
+<p>Configures a custom function to use to bind TargetType of an object.</p>
+<p>For more information on PSRule options see about_PSRule_Options.</p>
+<pre><code class="lang-yaml">Type: BindTargetName[]
 Parameter Sets: (All)
 Aliases:
 

@@ -8,7 +8,7 @@
     <title>PSRule_Variables </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="PSRule_Variables ">
-    <meta name="generator" content="docfx 2.40.4.0">
+    <meta name="generator" content="docfx 2.40.10.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -105,7 +105,8 @@ Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Mic
 <li><code>RuleName</code> - The name of the rule.</li>
 <li><code>RuleId</code> - A unique identifier for the rule.</li>
 <li><code>TargetObject</code> - The object currently being processed on the pipeline.</li>
-<li><code>TargetName</code> - The name of the object currently being processed on the pipeline. This property will automatically bind to <code>TargetName</code> or <code>Name</code> properties of the object if they exist.</li>
+<li><code>TargetName</code> - The name of the object currently being processed on the pipeline. This property will automatically default to <code>TargetName</code> or <code>Name</code> properties of the object if they exist.</li>
+<li><code>TargetType</code> - The type of the object currently being processed on the pipeline. This property will automatically bind to <code>PSObject.TypeNames[0]</code> by default.</li>
 </ul>
 <p>Syntax:</p>
 <pre><code class="lang-powershell">$Rule

@@ -1,6 +1,6 @@
 {
   "homepages": [],
-  "source_base_path": "C:/Dev/workspace/PSRule/docs",
+  "source_base_path": "C:/dev/workspace/PSRule/docs",
   "xrefmap": "xrefmap.yml",
   "files": [
     {
@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRule.html",
-          "hash": "mGyJlECVZ3oaxTsPXH448w=="
+          "hash": "pYEgaAgDxX2kfo07eZqtvQ=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Invoke-PSRule.html",
-          "hash": "DKzHJ6hxTZXTk1nAWURlbA=="
+          "hash": "6JMKehnPJSK8vnHVKL9cjg=="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "gcJQ1Jyx3Ip0sedeYOKoog=="
+          "hash": "Qr9d9GDMOMlEFDZiOFrTZA=="
         }
       },
       "is_incremental": false,
@@ -45,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/PSRule.html",
-          "hash": "bsTv2QUQvCChWbSbqtLcLA=="
+          "hash": "mJdY4H1qQMgIEm0+y5lVLw=="
         }
       },
       "is_incremental": false,
@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Test-PSRuleTarget.html",
-          "hash": "gdo1D+OOAe94nzUP7ExZoQ=="
+          "hash": "FVf7TNRsqL2dfihGTFDqmg=="
         }
       },
       "is_incremental": false,
@@ -81,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "g3q4Kl+5nYfolgcX8gPjXQ=="
+          "hash": "VPGlEw/bh34KcEgamF1qHw=="
         }
       },
       "is_incremental": false,
@@ -93,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Variables.html",
-          "hash": "aehqI8l/tW3FGUxgTY4m5Q=="
+          "hash": "NmGIsCLAlE0C8KfKFpPpeg=="
         }
       },
       "is_incremental": false,
@@ -105,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "7Rp9I3XW6z3izVeJ/ipeNg=="
+          "hash": "5F0pT1lfLxM9F8B1CCh/2Q=="
         }
       },
       "is_incremental": false,
@@ -117,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "keywords/PSRule/en-US/about_PSRule_Keywords.html",
-          "hash": "DHLyXWP496amjmQsteZagA=="
+          "hash": "wCcgQaYDlsa9tC7RI0MS7Q=="
         }
       },
       "is_incremental": false,
@@ -140,7 +140,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/azure-resources/azure-resources.html",
-          "hash": "Es3ml/00STqgQWzrFVs+rA=="
+          "hash": "pXuHWzJe5S+eplfsyK/RTg=="
         }
       },
       "is_incremental": false,
@@ -188,7 +188,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/azure-tags/azure-tags.html",
-          "hash": "6/CEcMg6Avf1XopCSChNtw=="
+          "hash": "fp2zXMKhHvCZkl/wtwhF+w=="
         }
       },
       "is_incremental": false,
@@ -222,7 +222,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/benchmark/PSRule.Benchmark.PSRule-report-github.html",
-          "hash": "VvSOnpyHoH56z1kcE6qJNw=="
+          "hash": "+OyXIjGrJ44WYkRDTYp67Q=="
         }
       },
       "is_incremental": false,
@@ -256,7 +256,33 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/install-instructions.html",
-          "hash": "9iGFeoX7z6+zi7SEyHB4cw=="
+          "hash": "A31w/8siVNxTiSgFVdzTaA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "scenarios/kubernetes-resources/kubernetes-resources.md",
+      "output": {
+        ".html": {
+          "relative_path": "scenarios/kubernetes-resources/kubernetes-resources.html",
+          "hash": "T5QS56z7SfUdEb1z0daxZQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "scenarios/kubernetes-resources/kubernetes.Rule.ps1",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/kubernetes-resources/kubernetes.Rule.ps1"
         }
       },
       "is_incremental": false,
@@ -279,23 +305,31 @@
     {
       "status": {
         "can_incremental": false,
-        "details": "Disable incremental build by force rebuild option.",
-        "incrementalPhase": "build"
+        "details": "Cannot build incrementally because docfx version changed from 2.40.4.0 to 2.40.10.0.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0
       },
       "processors": {
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build"
-        },
-        "ConceptualDocumentProcessor": {
-          "can_incremental": false,
-          "incrementalPhase": "build"
-        },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build"
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 14,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
         }
       }
     },
@@ -303,7 +337,9 @@
       "status": {
         "can_incremental": false,
         "details": "Cannot support incremental post processing, the reason is: it's disabled.",
-        "incrementalPhase": "postProcessing"
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
       },
       "processors": {}
     }

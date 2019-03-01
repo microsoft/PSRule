@@ -8,7 +8,7 @@
     <title>Get-PSRule </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Get-PSRule ">
-    <meta name="generator" content="docfx 2.40.4.0">
+    <meta name="generator" content="docfx 2.40.10.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -73,7 +73,7 @@
 <p>Get a list of rule definitions.</p>
 <h2 id="syntax">SYNTAX</h2>
 <pre><code class="lang-text">Get-PSRule [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;]
- [&lt;CommonParameters&gt;]
+ [-Module &lt;String[]&gt;] [-ListAvailable] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Get a list of matching rule definitions within the search path.</p>
@@ -100,10 +100,12 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-path">-Path</h3>
-<p>One or more paths to search for rule definitions within. If this parameter is not specified the current working path will be used.</p>
+<p>One or more paths to search for rule definitions within.</p>
+<p>If this parameter is not specified the current working path will be used, unless the <code>-Module</code> parameter is used.</p>
+<p>If the <code>-Module</code> parameter is used, rule definitions from the currently working path will not be included by default.</p>
 <pre><code class="lang-yaml">Type: String[]
 Parameter Sets: (All)
-Aliases: f
+Aliases: p
 
 Required: False
 Position: 0
@@ -128,6 +130,32 @@ Accept wildcard characters: False
 <p>Additional options that configure execution. A <code>PSRuleOption</code> can be created by using the <code>New-PSRuleOption</code> cmdlet. Alternatively a hashtable or path to YAML file can be specified with options.</p>
 <p>For more information on PSRule options see about_PSRule_Options.</p>
 <pre><code class="lang-yaml">Type: PSRuleOption
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-listavailable">-ListAvailable</h3>
+<p>Look for modules containing rule definitions including modules that are currently not imported.</p>
+<p>This switch is used with the <code>-Module</code> parameter.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-module">-Module</h3>
+<p>Search for rule definitions within a module. When specified without the <code>-Path</code> parameter, only rule definitions in the module will be discovered.</p>
+<p>When both <code>-Path</code> and <code>-Module</code> are specified, rule definitions from both are discovered.</p>
+<pre><code class="lang-yaml">Type: String[]
 Parameter Sets: (All)
 Aliases:
 

@@ -8,7 +8,7 @@
     <title>PSRule_Keywords </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="PSRule_Keywords ">
-    <meta name="generator" content="docfx 2.40.4.0">
+    <meta name="generator" content="docfx 2.40.10.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -91,30 +91,31 @@
 <p>A <code>Rule</code> definition describes an individual business rule that will be applied to pipeline objects.</p>
 <p>To define a Rule use the <code>Rule</code> keyword followed by a name and a pair of squiggly brackets <code>{</code>. Within the <code>{ }</code> one or more expressions can be used.</p>
 <p>Syntax:</p>
-<pre><code class="lang-text">Rule [-Name] &lt;string&gt; [-Tag &lt;hashtable&gt;] [-If &lt;scriptBlock&gt;] [-DependsOn &lt;string[]&gt;] [-Configure &lt;hashtable&gt;] [-Body] {
+<pre><code class="lang-text">Rule [-Name] &lt;string&gt; [-Tag &lt;hashtable&gt;] [-Type &lt;string[]&gt;] [-If &lt;scriptBlock&gt;] [-DependsOn &lt;string[]&gt;] [-Configure &lt;hashtable&gt;] [-Body] {
     ...
 }
 </code></pre>
 <ul>
 <li><code>Name</code> - The name of the rule definition. This must be unique with in the same script file.</li>
 <li><code>Tag</code> - A hashtable of key/ value metadata that can be used to filter and identify rules and rule results.</li>
-<li><code>If</code> - A precondition that must evaluate to <code>$True</code> before the rule is executed.</li>
+<li><code>Type</code> - A type precondition that must match the <em>TargetType</em> of the pipeline object before the rule is executed.</li>
+<li><code>If</code> - A script precondition that must evaluate to <code>$True</code> before the rule is executed.</li>
 <li><code>DependsOn</code> - A list of rules this rule depends on. Rule dependencies must execute successfully before this rule is executed.</li>
 <li><code>Configure</code> - A set of default configuration values. These values are only used when the baseline configuration does not contain the key.</li>
 <li><code>Body</code> - A script block definition of the rule containing one or more PSRule keywords and PowerShell expressions.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># This rule checks for the presence of a name field
+<pre><code class="lang-powershell"># Description: This rule checks for the presence of a name field
 Rule 'NameMustExist' {
     Exists 'Name'
 }
 </code></pre>
-<pre><code class="lang-powershell"># This rule checks that the title field is valid, when the rule NameMustExist is successful
+<pre><code class="lang-powershell"># Description: This rule checks that the title field is valid, when the rule NameMustExist is successful
 Rule 'TitleIsValid' -DependsOn 'NameMustExist' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
 </code></pre>
-<pre><code class="lang-powershell"># This rule uses a threshold stored as $Configuration.minInstanceCount
+<pre><code class="lang-powershell"># Description: This rule uses a threshold stored as $Configuration.minInstanceCount
 Rule 'HasMinInstances' {
     $TargetObject.Sku.capacity -ge $Configuration.minInstanceCount
 } -Configure @{ minInstanceCount = 2 }
@@ -122,17 +123,28 @@ Rule 'HasMinInstances' {
 <h3 id="exists">Exists</h3>
 <p>The <code>Exists</code> assertion is used within a <code>Rule</code> definition to assert that a <em>field</em> or property must exist on the pipeline object.</p>
 <p>Syntax:</p>
-<pre><code class="lang-text">Exists [-Field] &lt;string[]&gt; [-CaseSensitive] [-Not]
+<pre><code class="lang-text">Exists [-Field] &lt;string[]&gt; [-CaseSensitive] [-Not] [-InputObject &lt;PSObject&gt;]
 </code></pre>
 <ul>
 <li><code>Field</code> - One or more fields/ properties that must exist on the pipeline object.</li>
 <li><code>CaseSensitive</code> - The field name must match exact case.</li>
 <li><code>Not</code> - Instead of checking if the field names exists they should not exist.</li>
+<li><code>InputObject</code> - Supports objects being piped directly.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># This rule checks for the presence of a name property
+<pre><code class="lang-powershell"># Description: Checks for the presence of a name property
 Rule 'nameMustExist' {
     Exists 'Name'
+}
+</code></pre>
+<pre><code class="lang-powershell"># Description: Checks for the presence of name nested under the metadata property
+Rule 'nameMustExist' {
+    Exists 'metadata.name'
+}
+</code></pre>
+<pre><code class="lang-powershell"># Description: Checks for the presence of name nested under the metadata property
+Rule 'nameMustExist' {
+    $TargetObject.metadata | Exists 'name'
 }
 </code></pre>
 <p>Output:</p>
@@ -141,15 +153,17 @@ Rule 'nameMustExist' {
 <h3 id="match">Match</h3>
 <p>The <code>Match</code> assertion is used within a <code>Rule</code> definition to assert that the value of a <em>field</em> or property from pipeline data must match one or more regular expressions. To optionally perform a case sensitive match use the <code>-CaseSensitive</code> switch, otherwise a case insensitive match will be used.</p>
 <p>Syntax:</p>
-<pre><code class="lang-text">Match [-Field] &lt;string&gt; [-Expression] &lt;string[]&gt; [-CaseSensitive]
+<pre><code class="lang-text">Match [-Field] &lt;string&gt; [-Expression] &lt;string[]&gt; [-CaseSensitive] [-InputObject &lt;PSObject&gt;]
 </code></pre>
 <ul>
 <li><code>Field</code> - The name of the field that will be evaluated on the pipeline object.</li>
 <li><code>Expression</code> - One or more regular expressions that will be used to match the value of the field.</li>
 <li><code>CaseSensitive</code> - The field <em>value</em> must match exact case.</li>
+<li><code>InputObject</code> - Supports objects being piped directly.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell">Rule 'validatePhoneNumber' {
+<pre><code class="lang-powershell"># Description: Check that PhoneNumber is complete and formatted correctly
+Rule 'validatePhoneNumber' {
     Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$'
 }
 </code></pre>
@@ -158,15 +172,16 @@ Rule 'nameMustExist' {
 <h3 id="within">Within</h3>
 <p>The <code>Within</code> assertion is used within a <code>Rule</code> definition to assert that the value of a field or property from pipeline data must equal an item from a supplied list of allowed values. To optionally perform a case sensitive match use the <code>-CaseSensitive</code> switch, otherwise a case insensitive match will be used.</p>
 <p>Syntax:</p>
-<pre><code class="lang-text">Within [-Field] &lt;string&gt; [-AllowedValue] &lt;PSObject[]]&gt; [-CaseSensitive]
+<pre><code class="lang-text">Within [-Field] &lt;string&gt; [-AllowedValue] &lt;PSObject[]]&gt; [-CaseSensitive] [-InputObject &lt;PSObject&gt;]
 </code></pre>
 <ul>
 <li><code>Field</code> - The name of the field that will be evaluated on the pipeline object.</li>
 <li><code>AllowedValue</code> - A list of allowed values that the field value must match.</li>
 <li><code>CaseSensitive</code> - The field <em>value</em> must match exact case. Only applies when the field value and allowed values are strings.</li>
+<li><code>InputObject</code> - Supports objects being piped directly.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># Ensure that the title field has one of the allowed values
+<pre><code class="lang-powershell"># Description: Ensure that the title field has one of the allowed values
 Rule 'validateTitle' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
@@ -186,10 +201,12 @@ Rule 'validateTitle' {
 <li><code>Body</code> - A script block definition of the containing one or more PSRule keywords and PowerShell expressions.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># The Name field must exist and have a value of either John or Jane
-AllOf {
-    Exists 'Name'
-    Within 'Name' 'John', 'Jane'
+<pre><code class="lang-powershell"># Description: The Name field must exist and have a value of either John or Jane
+Rule 'nameCheck' {
+    AllOf {
+        Exists 'Name'
+        Within 'Name' 'John', 'Jane'
+    }
 }
 </code></pre>
 <p>Output:</p>
@@ -207,10 +224,12 @@ AllOf {
 <li><code>Body</code> - A script block definition of the containing one or more PSRule keywords and PowerShell expressions.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># The Last or Surname field must exist
-AnyOf {
-    Exists 'Last'
-    Exists 'Surname'
+<pre><code class="lang-powershell"># Description: The Last or Surname field must exist
+Rule 'personCheck' {
+    AnyOf {
+        Exists 'Last'
+        Exists 'Surname'
+    }
 }
 </code></pre>
 <p>Output:</p>
@@ -218,21 +237,24 @@ AnyOf {
 <h3 id="typeof">TypeOf</h3>
 <p>The <code>TypeOf</code> assertion is used within a <code>Rule</code> definition to evaluate if the pipeline object matches one or more of the supplied type names.</p>
 <p>Syntax:</p>
-<pre><code class="lang-text">TypeOf [-TypeName] &lt;string[]&gt;
+<pre><code class="lang-text">TypeOf [-TypeName] &lt;string[]&gt; [-InputObject &lt;PSObject&gt;]
 </code></pre>
 <ul>
 <li><code>TypeName</code> - One or more type names which will be evaluated against the pipeline object. <code>TypeName</code> is case insensitive.</li>
+<li><code>InputObject</code> - Supports objects being piped directly.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell">TypeOf 'System.Collections.Hashtable'
+<pre><code class="lang-powershell"># Description: The object must be a hashtable
+Rule 'objectType' {
+    TypeOf 'System.Collections.Hashtable'
+}
 </code></pre>
 <p>Output:</p>
 <p>If <strong>any</strong> the specified type names match the pipeline object then TypeOf will return <code>$True</code>, otherwise <code>$False</code>.</p>
 <h2 id="examples">EXAMPLES</h2>
 <pre><code class="lang-powershell"># Description: App Service Plan has multiple instances
 Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
-
-    Hint 'Use at least two (2) instances' -TargetName $TargetObject.ResourceName
+    Hint 'Use at least two (2) instances'
 
     $TargetObject.Sku.capacity -ge 2
 }
