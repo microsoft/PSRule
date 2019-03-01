@@ -1,13 +1,38 @@
 
 ## Unreleased
 
-- Added support for input deserialization from FileInfo objects [#95](https://github.com/BernieWhite/PSRule/issues/95)
+## v0.3.0
+
+What's changed since v0.2.0:
+
+- Added support for pipelining with `Exists`, `Within`, `Match` and `TypeOf` keywords [#90](https://github.com/BernieWhite/PSRule/issues/90)
+- Added support for packaging rules in modules [#16](https://github.com/BernieWhite/PSRule/issues/16)
+- Import objects from YAML or JSON format [#75](https://github.com/BernieWhite/PSRule/issues/75)
+  - Added support for input de-serialization from FileInfo objects [#95](https://github.com/BernieWhite/PSRule/issues/95)
+- Support nested TargetObjects [#77](https://github.com/BernieWhite/PSRule/issues/77)
+- Export variables to improve authoring experience [#83](https://github.com/BernieWhite/PSRule/issues/83)
+- Binding improvements:
+  - Added object type binding and dynamic filtering for rules [#82](https://github.com/BernieWhite/PSRule/issues/82)
+  - Added support for indexed and quoted field names [#86](https://github.com/BernieWhite/PSRule/issues/86)
+  - Added support for case-sensitive binding operations [#87](https://github.com/BernieWhite/PSRule/issues/87)
+    - Binding ignores case by default. Set option `Binding.CaseSensitive` to `true` to enable case-sensitivity.
+  - Support TargetName binding of nested properties [#71](https://github.com/BernieWhite/PSRule/issues/71)
+- Added online help links to keywords [#72](https://github.com/BernieWhite/PSRule/issues/72)
+- Added schema for PSRule options [#74](https://github.com/BernieWhite/PSRule/issues/74)
+- **Breaking change** - Changed parameter alias for `-Path` from `-f` to `-p` [#99](https://github.com/BernieWhite/PSRule/issues/99)
+- **Breaking change** - The `-TargetName` parameter of the `Hint` keyword has been deprecated [#81](https://github.com/BernieWhite/PSRule/issues/81)
+  - `-TargetName` parameter not longer sets the pipeline object _TargetName_ and generates a warning instead.
+  - The `-TargetName` will be completely removed in **v0.4.0**, at which time using the parameter will generate an error.
+
+What's changed since pre-release v0.3.0-B190231
+
+- Added support for input de-serialization from FileInfo objects [#95](https://github.com/BernieWhite/PSRule/issues/95)
 - **Breaking change** - Changed parameter alias for `-Path` from `-f` to `-p` [#99](https://github.com/BernieWhite/PSRule/issues/99)
 
 ## v0.3.0-B190231 (pre-release)
 
 - Added support for pipelining with `Exists`, `Within`, `Match` and `TypeOf` keywords [#90](https://github.com/BernieWhite/PSRule/issues/90)
-- Fix empty YAML object causes format deserialize to fail [#92](https://github.com/BernieWhite/PSRule/issues/92)
+- Fix empty YAML object causes format de-serialize to fail [#92](https://github.com/BernieWhite/PSRule/issues/92)
 
 ## v0.3.0-B190224 (pre-release)
 
