@@ -10,7 +10,7 @@ This project is to be considered a **proof-of-concept** and **not a supported pr
 
 If you have any problems please check our GitHub [issues](https://github.com/BernieWhite/PSRule/issues) page. If you do not see your problem captured, please file a new issue and follow the provided template.
 
-## Getting the modules
+## Getting the module
 
 You can download and install the PSRule module from the PowerShell Gallery.
 
