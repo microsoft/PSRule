@@ -16,7 +16,15 @@ You can download and install the PSRule module from the PowerShell Gallery.
 
 Module | Description | Downloads / instructions
 ------ | ----------- | ------------------------
-PSRule | Validate objects using PowerShell rules | [latest][psg-psrule] / [instructions][install]
+PSRule | Validate objects using PowerShell rules | [latest][module-psrule] / [instructions][install]
+
+## Getting the extension
+
+A companion extension for Visual Studio Code can be downloaded or installed from the [Visual Studio Marketplace][ext-psrule].
+
+Extension | Description | Downloads / instructions
+--------- | ----------- | ------------------------
+PSRule    | An extension for IT Pros using the PSRule PowerShell module | [latest][ext-psrule] / [instructions][install]
 
 ## Getting started
 
@@ -190,4 +198,5 @@ This project is [licensed under the MIT License](LICENSE).
 
 [install]: docs/scenarios/install-instructions.md
 [ci-badge]: https://bewhite.visualstudio.com/PSRule/_apis/build/status/PSRule-CI?branchName=master
-[psg-psrule]: https://www.powershellgallery.com/packages/PSRule
+[module-psrule]: https://www.powershellgallery.com/packages/PSRule
+[ext-psrule]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
