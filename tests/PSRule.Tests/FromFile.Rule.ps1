@@ -136,7 +136,7 @@ Rule 'WithFormat' {
 
 # Description: Test for Hint keyword
 Rule 'HintTest' {
-    Hint 'This is a message' -TargetName 'HintTarget'
+    Hint 'This is a message'
 }
 
 # Description: Test for Hint keyword

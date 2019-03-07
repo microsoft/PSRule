@@ -2,6 +2,7 @@
 ## Unreleased
 
 - Added support for logging pass or fail outcomes to a data stream such as Error, Warning or Information [#97](https://github.com/BernieWhite/PSRule/issues/97)
+- **Breaking change** - Deprecated usage of the `-TargetName` parameter on the `Hint` keyword has been removed [#81](https://github.com/BernieWhite/PSRule/issues/81)
 
 ## v0.3.0
 

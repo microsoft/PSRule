@@ -104,14 +104,5 @@ namespace PSRule.Resources {
                 return ResourceManager.GetString("RuleNotFound", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hint parameter -TargetName is obsolete and has been replaced with TargetName binding. See about_PSRule_Options for details on how to set Binding.TargetName..
-        /// </summary>
-        internal static string TargetNameParameterObsolete {
-            get {
-                return ResourceManager.GetString("TargetNameParameterObsolete", resourceCulture);
-            }
-        }
     }
 }
