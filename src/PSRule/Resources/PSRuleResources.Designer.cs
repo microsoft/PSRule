@@ -70,6 +70,24 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [FAIL] -- {0}:: Reported for &apos;{1}&apos;.
+        /// </summary>
+        internal static string OutcomeRuleFail {
+            get {
+                return ResourceManager.GetString("OutcomeRuleFail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [PASS] -- {0}:: Reported for &apos;{1}&apos;.
+        /// </summary>
+        internal static string OutcomeRulePass {
+            get {
+                return ResourceManager.GetString("OutcomeRulePass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inconclusive result reported for &apos;{1}&apos; @{0}..
         /// </summary>
         internal static string RuleInconclusive {

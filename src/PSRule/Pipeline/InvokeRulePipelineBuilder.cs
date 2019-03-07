@@ -75,7 +75,7 @@ namespace PSRule.Pipeline
             _LogError = !(error == ActionPreference.Ignore);
             _LogWarning = !(warning == ActionPreference.Ignore);
             _LogVerbose = !(verbose == ActionPreference.Ignore || verbose == ActionPreference.SilentlyContinue);
-            _LogInformation = !(information == ActionPreference.Ignore || information == ActionPreference.SilentlyContinue);
+            _LogInformation = !(information == ActionPreference.Ignore);
         }
 
         public void AddBindTargetNameAction(BindTargetNameAction action)
@@ -120,6 +120,9 @@ namespace PSRule.Pipeline
 
             _Option.Input.Format = option.Input.Format ?? InputOption.Default.Format;
             _Option.Input.ObjectPath = option.Input.ObjectPath ?? InputOption.Default.ObjectPath;
+
+            _Option.Logging.RuleFail = option.Logging.RuleFail ?? LoggingOption.Default.RuleFail;
+            _Option.Logging.RulePass = option.Logging.RulePass ?? LoggingOption.Default.RulePass;
 
             _Option.Binding.IgnoreCase = option.Binding.IgnoreCase ?? BindingOption.Default.IgnoreCase;
 

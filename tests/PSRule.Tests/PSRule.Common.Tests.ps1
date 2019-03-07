@@ -461,6 +461,74 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.TargetType | Should -Be 'OtherType';
         }
     }
+
+    Context 'Logging' {
+        It 'RuleFail' {
+            $testObject = [PSCustomObject]@{
+                Name = 'LoggingTest'
+            }
+
+            # Warning
+            $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Warning'};
+            $result = $testObject | Invoke-PSRule -Option $option -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile2' -WarningVariable outWarning -WarningAction SilentlyContinue;
+            $messages = @($outwarning);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Outcome | Should -Be 'Fail';
+            $messages | Should -Not -BeNullOrEmpty;
+            $messages | Should -Be "[FAIL] -- FromFile2:: Reported for 'LoggingTest'"
+
+            # Error
+            $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error'};
+            $result = $testObject | Invoke-PSRule -Option $option -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile2' -ErrorVariable outError -ErrorAction SilentlyContinue;
+            $messages = @($outError);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Outcome | Should -Be 'Fail';
+            $messages | Should -Not -BeNullOrEmpty;
+            $messages.Exception.Message | Should -Be "[FAIL] -- FromFile2:: Reported for 'LoggingTest'"
+
+            # Information
+            $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Information'};
+            $result = $testObject | Invoke-PSRule -Option $option -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile2' -InformationVariable outInformation;
+            $messages = @($outInformation);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Outcome | Should -Be 'Fail';
+            $messages | Should -Not -BeNullOrEmpty;
+            $messages | Should -Be "[FAIL] -- FromFile2:: Reported for 'LoggingTest'"
+        }
+
+        It 'RulePass' {
+            $testObject = [PSCustomObject]@{
+                Name = 'LoggingTest'
+            }
+
+            # Warning
+            $option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Warning'};
+            $result = $testObject | Invoke-PSRule -Option $option -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1' -WarningVariable outWarning -WarningAction SilentlyContinue;
+            $messages = @($outwarning);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Outcome | Should -Be 'Pass';
+            $messages | Should -Not -BeNullOrEmpty;
+            $messages | Should -Be "[PASS] -- FromFile1:: Reported for 'LoggingTest'"
+
+            # Error
+            $option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Error'};
+            $result = $testObject | Invoke-PSRule -Option $option -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1' -ErrorVariable outError -ErrorAction SilentlyContinue;
+            $messages = @($outError);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Outcome | Should -Be 'Pass';
+            $messages | Should -Not -BeNullOrEmpty;
+            $messages.Exception.Message | Should -Be "[PASS] -- FromFile1:: Reported for 'LoggingTest'"
+
+            # Information
+            $option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Information'};
+            $result = $testObject | Invoke-PSRule -Option $option -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1' -InformationVariable outInformation;
+            $messages = @($outInformation);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Outcome | Should -Be 'Pass';
+            $messages | Should -Not -BeNullOrEmpty;
+            $messages | Should -Be "[PASS] -- FromFile1:: Reported for 'LoggingTest'"
+        }
+    }
 }
 
 #endregion Invoke-PSRule
@@ -860,6 +928,40 @@ Describe 'New-PSRuleOption' -Tag 'Option','Common','New-PSRuleOption' {
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
             $option.Input.ObjectPath | Should -Be 'items';
+        }
+    }
+
+    Context 'Read Logging.RuleFail' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Logging.RuleFail | Should -Be 'None';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+            $option.Logging.RuleFail | Should -Be Error;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Logging.RuleFail | Should -Be Warning;
+        }
+    }
+
+    Context 'Read Logging.RulePass' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Logging.RulePass | Should -Be 'None';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Error' };
+            $option.Logging.RulePass | Should -Be Error;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Logging.RulePass | Should -Be Warning;
         }
     }
 

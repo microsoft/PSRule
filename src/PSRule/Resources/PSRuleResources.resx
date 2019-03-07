@@ -120,6 +120,12 @@
   <data name="ObjectNotProcessed" xml:space="preserve">
     <value>Target object '{0}' has not been processed because no matching rules were found.</value>
   </data>
+  <data name="OutcomeRuleFail" xml:space="preserve">
+    <value>[FAIL] -- {0}:: Reported for '{1}'</value>
+  </data>
+  <data name="OutcomeRulePass" xml:space="preserve">
+    <value>[PASS] -- {0}:: Reported for '{1}'</value>
+  </data>
   <data name="RuleInconclusive" xml:space="preserve">
     <value>Inconclusive result reported for '{1}' @{0}.</value>
   </data>

@@ -22,7 +22,8 @@ namespace PSRule.Configuration
         {
             Binding = BindingOption.Default,
             Execution = ExecutionOption.Default,
-            Input = InputOption.Default
+            Input = InputOption.Default,
+            Logging = LoggingOption.Default
         };
 
         public PSRuleOption()
@@ -31,6 +32,7 @@ namespace PSRule.Configuration
             Baseline = new BaselineOption();
             Binding = new BindingOption();
             Input = new InputOption();
+            Logging = new LoggingOption();
             Suppression = new SuppressionOption();
             Execution = new ExecutionOption();
             Pipeline = new PipelineHook();
@@ -42,6 +44,7 @@ namespace PSRule.Configuration
             Baseline = new BaselineOption(option.Baseline);
             Binding = new BindingOption(option.Binding);
             Input = new InputOption(option.Input);
+            Logging = new LoggingOption(option.Logging);
             Suppression = new SuppressionOption(option.Suppression);
             Execution = new ExecutionOption(option.Execution);
             Pipeline = new PipelineHook(option.Pipeline);
@@ -67,7 +70,15 @@ namespace PSRule.Configuration
         /// </summary>
         public ExecutionOption Execution { get; set; }
 
+        /// <summary>
+        /// Options that affect how input types are processed.
+        /// </summary>
         public InputOption Input { get; set; }
+
+        /// <summary>
+        /// Options for logging outcomes to a informational streams.
+        /// </summary>
+        public LoggingOption Logging { get; set; }
 
         /// <summary>
         /// A set of suppression rules.
@@ -220,6 +231,16 @@ namespace PSRule.Configuration
             if (index.TryGetValue("input.objectpath", out value))
             {
                 option.Input.ObjectPath = (string)value;
+            }
+
+            if (index.TryGetValue("logging.rulefail", out value))
+            {
+                option.Logging.RuleFail = (OutcomeLogStream)Enum.Parse(typeof(OutcomeLogStream), (string)value);
+            }
+
+            if (index.TryGetValue("logging.rulepass", out value))
+            {
+                option.Logging.RulePass = (OutcomeLogStream)Enum.Parse(typeof(OutcomeLogStream), (string)value);
             }
 
             return option;

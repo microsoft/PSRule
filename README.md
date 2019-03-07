@@ -170,6 +170,8 @@ The following conceptual topics exist in the `PSRule` module:
   - [Execution.NotProcessedWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#not-processed-warning)
   - [Input.Format](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inputformat)
   - [Input.ObjectPath](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inputobjectpath)
+  - [Logging.RuleFail](docs/concepts/PSRule/en-US/about_PSRule_Options.md#loggingrulefail)
+  - [Logging.RulePass](docs/concepts/PSRule/en-US/about_PSRule_Options.md#loggingrulepass)
   - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#rule-suppression)
 - [Variables](docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
   - [$Configuration](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#configuration)
@@ -180,7 +182,7 @@ The following conceptual topics exist in the `PSRule` module:
 
 PSRule uses the following schemas:
 
-- [PSRuleOptions](schemas/PSRule-options-0.3.0.schema.json) - Schema for PSRule YAML configuration file.
+- [PSRuleOptions](schemas/PSRule-options-0.4.0.schema.json) - Schema for PSRule YAML configuration file.
 
 ## Changes and versioning
 

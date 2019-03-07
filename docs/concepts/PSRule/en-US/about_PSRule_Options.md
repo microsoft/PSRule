@@ -23,6 +23,8 @@ The following options are available for use:
 - [Execution.NotProcessedWarning](#not-processed-warning)
 - [Input.Format](#inputformat)
 - [Input.ObjectPath](#inputobjectpath)
+- [Logging.RuleFail](#loggingrulefail)
+- [Logging.RulePass](#loggingrulepass)
 - [Suppression](#rule-suppression)
 
 Options can be used by:
@@ -374,6 +376,62 @@ input:
   objectPath: items
 ```
 
+### Logging.RuleFail
+
+When an object fails a rule condition the results are written to output as a structured object marked with the outcome of _Fail_. If the rule executed successfully regardless of outcome no other informational messages are shown by default.
+
+In some circumstances such as a continuous integration (CI) pipeline, it may be preferable to see informational messages or abort the CI process if one or more _Fail_ outcomes are returned.
+
+By settings this option, error, warning or information messages will be generated for each rule _fail_ outcome in addition to structured output. By default, outcomes are not logged to an informational stream (i.e. None).
+
+The following streams available:
+
+- None
+- Error
+- Warning
+- Information
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Logging.RuleFail hashtable key
+$option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+```
+
+```yaml
+# YAML: Using the logging/ruleFail property
+logging:
+  ruleFail: Error
+```
+
+### Logging.RulePass
+
+When an object passes a rule condition the results are written to output as a structured object marked with the outcome of _Pass_. If the rule executed successfully regardless of outcome no other informational messages are shown by default.
+
+In some circumstances such as a continuous integration (CI) pipeline, it may be preferable to see informational messages.
+
+By settings this option, error, warning or information messages will be generated for each rule _pass_ outcome in addition to structured output. By default, outcomes are not logged to an informational stream (i.e. None).
+
+The following streams available:
+
+- None
+- Error
+- Warning
+- Information
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Logging.RulePass hashtable key
+$option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Information' };
+```
+
+```yaml
+# YAML: Using the logging/rulePass property
+logging:
+  rulePass: Information
+```
+
 ### Rule suppression
 
 In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.
@@ -473,6 +531,11 @@ input:
   format: Yaml
   objectPath: items
 
+# Configures outcome logging options
+logging:
+  ruleFail: Error
+  rulePass: Information
+
 # Configure rule suppression
 suppression:
   storageAccounts.UseHttps:
@@ -515,6 +578,11 @@ execution:
 input:
   format: None
   objectPath:
+
+# Configures outcome logging options
+logging:
+  ruleFail: None
+  rulePass: None
 
 # Configure rule suppression
 suppression: { }
