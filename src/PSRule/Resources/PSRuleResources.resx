@@ -132,7 +132,4 @@
   <data name="RuleNotFound" xml:space="preserve">
     <value>Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.</value>
   </data>
-  <data name="TargetNameParameterObsolete" xml:space="preserve">
-    <value>Hint parameter -TargetName is obsolete and has been replaced with TargetName binding. See about_PSRule_Options for details on how to set Binding.TargetName.</value>
-  </data>
 </root>

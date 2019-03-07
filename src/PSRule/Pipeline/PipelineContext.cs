@@ -212,16 +212,6 @@ namespace PSRule.Pipeline
             DoWriteWarning(string.Format(PSRuleResources.RuleInconclusive, ruleId, TargetName));
         }
 
-        public void WarnTargetNameParameterObsolete()
-        {
-            if (!_LogWarning)
-            {
-                return;
-            }
-
-            DoWriteWarning(PSRuleResources.TargetNameParameterObsolete);
-        }
-
         public void Pass()
         {
             if (_PassStream == OutcomeLogStream.None)
