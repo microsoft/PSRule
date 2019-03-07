@@ -1,0 +1,299 @@
+{
+    "title": "PSRule options",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "oneOf": [
+        {
+            "$ref": "#/definitions/options-v0.4.0"
+        },
+        {
+            "$ref": "#/definitions/options-v0.3.0"
+        },
+        {
+            "$ref": "#/definitions/options-v0.2.0"
+        }
+    ],
+    "definitions": {
+        "baseline-v0.2.0": {
+            "type": "object",
+            "description": "Options that include/ exclude and configure rules.",
+            "properties": {
+                "ruleName": {
+                    "type": "array",
+                    "description": "Optionally filter rules by name.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "exclude": {
+                    "type": "array",
+                    "description": "Specifies rules to exclude by name.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "configuration": {
+                    "type": "object",
+                    "description": "A set of key/ value configuration options for rules."
+                }
+            },
+            "additionalProperties": false
+        },
+        "binding-v0.2.0": {
+            "type": "object",
+            "description": "Configure property/ object binding options.",
+            "properties": {
+                "targetName": {
+                    "type": "array",
+                    "description": "Specifies one or more property names to bind TargetName to.",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "binding-v0.3.0": {
+            "type": "object",
+            "description": "Configure property/ object binding options.",
+            "properties": {
+                "ignoreCase": {
+                    "type": "boolean",
+                    "description": "Determines if custom binding uses ignores case when matching properties.",
+                    "default": true
+                },
+                "targetName": {
+                    "type": "array",
+                    "description": "Specifies one or more property names to bind TargetName to.",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "targetType": {
+                    "type": "array",
+                    "description": "Specifies one or more property names to bind TargetType to.",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "execution": {
+            "type": "object",
+            "description": "Options that affect rule execution.",
+            "properties": {
+                "languageMode": {
+                    "type": "string",
+                    "description": "The PowerShell language mode to use for rule execution.",
+                    "enum": [
+                        "FullLanguage",
+                        "ConstrainedLanguage"
+                    ],
+                    "default": "FullLanguage"
+                },
+                "inconclusiveWarning": {
+                    "type": "boolean",
+                    "description": "Enable or disable warnings for inconclusive rules.",
+                    "default": true
+                },
+                "notProcessedWarning": {
+                    "type": "boolean",
+                    "description": "Enable or disable warnings for objects that are not processed by any rule.",
+                    "default": true
+                }
+            },
+            "additionalProperties": false
+        },
+        "input-v0.3.0": {
+            "type": "object",
+            "description": "Options that affect how input types are processed.",
+            "properties": {
+                "format": {
+                    "type": "string",
+                    "description": "The input string format.",
+                    "enum": [
+                        "None",
+                        "Yaml",
+                        "Json"
+                    ],
+                    "default": "None"
+                },
+                "objectPath": {
+                    "type": "string",
+                    "description": "The object path to a property to use instead of the pipeline object."
+                }
+            },
+            "additionalProperties": false
+        },
+        "logging-v0.4.0": {
+            "type": "object",
+            "description": "Options for logging outcomes to a informational streams.",
+            "properties": {
+                "ruleFail": {
+                    "type": "string",
+                    "description": "Log fail outcomes for each rule to a specific informational stream.",
+                    "enum": [
+                        "None",
+                        "Error",
+                        "Warning",
+                        "Information"
+                    ],
+                    "default": "None"
+                },
+                "rulePass": {
+                    "type": "string",
+                    "description": "Log pass outcomes for each rule to a specific informational stream.",
+                    "enum": [
+                        "None",
+                        "Error",
+                        "Warning",
+                        "Information"
+                    ],
+                    "default": "None"
+                },
+                "additionalProperties": false
+            }
+        },
+        "suppression-v0.2.0": {
+            "type": "object",
+            "description": "Specifies suppression rules."
+        },
+        "options-v0.2.0": {
+            "properties": {
+                "baseline": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/baseline-v0.2.0"
+                        }
+                    ]
+                },
+                "binding": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/binding-v0.2.0"
+                        }
+                    ]
+                },
+                "execution": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/execution"
+                        }
+                    ]
+                },
+                "suppression": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/suppression-v0.2.0"
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "options-v0.3.0": {
+            "properties": {
+                "baseline": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/baseline-v0.2.0"
+                        }
+                    ]
+                },
+                "binding": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/binding-v0.3.0"
+                        }
+                    ]
+                },
+                "execution": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/execution"
+                        }
+                    ]
+                },
+                "input": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/input-v0.3.0"
+                        }
+                    ]
+                },
+                "suppression": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/suppression-v0.2.0"
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "options-v0.4.0": {
+            "properties": {
+                "baseline": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/baseline-v0.2.0"
+                        }
+                    ]
+                },
+                "binding": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/binding-v0.3.0"
+                        }
+                    ]
+                },
+                "execution": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/execution"
+                        }
+                    ]
+                },
+                "input": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/input-v0.3.0"
+                        }
+                    ]
+                },
+                "logging": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/logging-v0.4.0"
+                        }
+                    ]
+                },
+                "suppression": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/suppression-v0.2.0"
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}

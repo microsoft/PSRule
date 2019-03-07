@@ -27,6 +27,8 @@ namespace PSRule.Pipeline
         private readonly LanguageMode _LanguageMode;
         private readonly bool _InconclusiveWarning;
         private readonly bool _NotProcessedWarning;
+        private readonly OutcomeLogStream _FailStream;
+        private readonly OutcomeLogStream _PassStream;
         private readonly Dictionary<string, NameToken> _NameTokenCache;
 
         // Pipeline logging
@@ -79,6 +81,8 @@ namespace PSRule.Pipeline
 
             _InconclusiveWarning = option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning.Value;
             _NotProcessedWarning = option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning.Value;
+            _FailStream = option.Logging.RuleFail ?? LoggingOption.Default.RuleFail.Value;
+            _PassStream = option.Logging.RulePass ?? LoggingOption.Default.RulePass.Value;
 
             if (_Logger == null)
             {
@@ -218,6 +222,52 @@ namespace PSRule.Pipeline
             DoWriteWarning(PSRuleResources.TargetNameParameterObsolete);
         }
 
+        public void Pass()
+        {
+            if (_PassStream == OutcomeLogStream.None)
+            {
+                return;
+            }
+
+            if (_PassStream == OutcomeLogStream.Warning && _LogWarning)
+            {
+                DoWriteWarning(string.Format(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, TargetName));
+            }
+
+            if (_PassStream == OutcomeLogStream.Error && _LogError)
+            {
+                DoWriteError(new ErrorRecord(new RuleRuntimeException(string.Format(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, TargetName)), "Rule.Outcome.Pass", ErrorCategory.InvalidData, null));
+            }
+
+            if (_PassStream == OutcomeLogStream.Information && _LogInformation)
+            {
+                DoWriteInformation(new InformationRecord(messageData: string.Format(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, TargetName), source: "Rule.Outcome.Pass"));
+            }
+        }
+
+        public void Fail()
+        {
+            if (_FailStream == OutcomeLogStream.None)
+            {
+                return;
+            }
+            
+            if (_FailStream == OutcomeLogStream.Warning && _LogWarning)
+            {
+                DoWriteWarning(string.Format(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, TargetName));
+            }
+
+            if (_FailStream == OutcomeLogStream.Error && _LogError)
+            {
+                DoWriteError(new ErrorRecord(new RuleRuntimeException(string.Format(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, TargetName)), "Rule.Outcome.Fail", ErrorCategory.InvalidData, null));
+            }
+
+            if (_FailStream == OutcomeLogStream.Information && _LogInformation)
+            {
+                DoWriteInformation(new InformationRecord(messageData: string.Format(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, TargetName), source: "Rule.Outcome.Fail"));
+            }
+        }
+
         internal Runspace GetRunspace()
         {
             if (_Runspace == null)
@@ -292,7 +342,7 @@ namespace PSRule.Pipeline
         }
 
         /// <summary>
-        /// Core methods to hand off to logger.
+        /// Core method to hand off warning messages to logger.
         /// </summary>
         /// <param name="message">A message to log</param>
         private void DoWriteWarning(string message)
@@ -300,6 +350,9 @@ namespace PSRule.Pipeline
             _Logger.WriteWarning(message);
         }
 
+        /// <summary>
+        /// Core method to hand off information messages to logger.
+        /// </summary>
         private void DoWriteInformation(InformationRecord informationRecord)
         {
             _Logger.WriteInformation(informationRecord);

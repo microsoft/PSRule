@@ -194,10 +194,12 @@ namespace PSRule.Pipeline
             if (outcome == RuleOutcome.Pass)
             {
                 s.Pass++;
+                _Context.Pass();
             }
             else if (outcome == RuleOutcome.Fail)
             {
                 s.Fail++;
+                _Context.Fail();
             }
             else if (outcome == RuleOutcome.Error)
             {

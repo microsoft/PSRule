@@ -30,6 +30,11 @@ input:
   format: Yaml
   objectPath: items
 
+# Configures outcome logging options
+logging:
+  ruleFail: Warning
+  rulePass: Warning
+
 # Configure rule suppression
 suppression:
   SuppressionTest1:

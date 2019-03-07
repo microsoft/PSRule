@@ -2,6 +2,9 @@
 
 namespace PSRule.Configuration
 {
+    /// <summary>
+    /// Options that affect how input types are processed.
+    /// </summary>
     public sealed class InputOption
     {
         private const InputFormat DEFAULT_FORMAT = PSRule.Configuration.InputFormat.None;
@@ -25,9 +28,15 @@ namespace PSRule.Configuration
             ObjectPath = option.ObjectPath;
         }
 
+        /// <summary>
+        /// The input string format.
+        /// </summary>
         [DefaultValue(null)]
         public InputFormat? Format { get; set; }
 
+        /// <summary>
+        /// The object path to a property to use instead of the pipeline object.
+        /// </summary>
         [DefaultValue(null)]
         public string ObjectPath { get; set; }
     }

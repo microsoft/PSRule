@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Added support for logging pass or fail outcomes to a data stream such as Error, Warning or Information [#97](https://github.com/BernieWhite/PSRule/issues/97)
+
 ## v0.3.0
 
 What's changed since v0.2.0:
