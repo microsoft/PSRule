@@ -31,7 +31,7 @@
     <None Update="ObjectFromFile.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="ObjectFromFileNested.yaml">
+    <None Update="ObjectFromNestedFile.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

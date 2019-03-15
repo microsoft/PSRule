@@ -7,6 +7,14 @@ namespace PSRule.Pipeline
     /// </summary>
     public interface IPipelineStream
     {
+        IStreamManager Manager { get; set; }
+
+        void Begin();
+
         void Process(PSObject targetObject);
+
+        void End();
+
+        void Output(InvokeResult result);
     }
 }

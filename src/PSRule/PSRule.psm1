@@ -39,9 +39,10 @@ Import-LocalizedData -BindingVariable LocalizedData -FileName 'PSRule.Resources.
 # .ExternalHelp PSRule-Help.xml
 function Invoke-PSRule {
 
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Input')]
     [OutputType([PSRule.Rules.RuleRecord])]
     [OutputType([PSRule.Rules.RuleSummaryRecord])]
+    [OutputType([System.String])]
     param (
         # A list of paths to check for rule definitions
         [Parameter(Position = 0)]
@@ -56,7 +57,7 @@ function Invoke-PSRule {
         [Parameter(Mandatory = $False)]
         [Hashtable]$Tag,
 
-        [Parameter(Mandatory = $True, ValueFromPipeline = $True)]
+        [Parameter(Mandatory = $True, ValueFromPipeline = $True, ParameterSetName = 'Input')]
         [Alias('TargetObject')]
         [PSObject]$InputObject,
 
@@ -78,7 +79,14 @@ function Invoke-PSRule {
         [String]$ObjectPath,
 
         [Parameter(Mandatory = $False)]
-        [String[]]$Module
+        [String[]]$Module,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json')]
+        [PSRule.Configuration.OutputFormat]$OutputFormat,
+
+        [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
+        [String[]]$InputPath
     )
 
     begin {
@@ -133,6 +141,10 @@ function Invoke-PSRule {
             $Option.Input.ObjectPath = $ObjectPath;
         }
 
+        if ($PSBoundParameters.ContainsKey('OutputFormat')) {
+            $Option.Output.Format = $OutputFormat;
+        }
+
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
         $builder.FilterBy($Tag);
         $builder.Source($sourceFiles);
@@ -142,9 +154,15 @@ function Invoke-PSRule {
             $builder.As($As);
         }
 
+        if ($PSBoundParameters.ContainsKey('InputPath')) {
+            $inputPaths = GetFilePath -Path $InputPath -Verbose:$VerbosePreference;
+            $builder.InputPath($inputPaths);
+        }
+
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
         $pipeline = $builder.Build();
+        $pipeline.Begin();
     }
 
     process {
@@ -166,6 +184,8 @@ function Invoke-PSRule {
                 if ($As -eq [PSRule.Configuration.ResultFormat]::Summary) {
                     $pipeline.GetSummary();
                 }
+
+                $pipeline.End();
             }
             finally {
                 $pipeline.Dispose();
@@ -177,7 +197,7 @@ function Invoke-PSRule {
 
 # .ExternalHelp PSRule-Help.xml
 function Test-PSRuleTarget {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Input')]
     [OutputType([System.Boolean])]
     param (
         # A list of paths to check for rule definitions
@@ -193,7 +213,7 @@ function Test-PSRuleTarget {
         [Parameter(Mandatory = $False)]
         [Hashtable]$Tag,
 
-        [Parameter(Mandatory = $True, ValueFromPipeline = $True)]
+        [Parameter(Mandatory = $True, ValueFromPipeline = $True, ParameterSetName = 'Input')]
         [Alias('TargetObject')]
         [PSObject]$InputObject,
 
@@ -208,7 +228,10 @@ function Test-PSRuleTarget {
         [String]$ObjectPath,
 
         [Parameter(Mandatory = $False)]
-        [String[]]$Module
+        [String[]]$Module,
+
+        [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
+        [String[]]$InputPath
     )
 
     begin {
@@ -266,10 +289,17 @@ function Test-PSRuleTarget {
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
         $builder.FilterBy($Tag);
         $builder.Source($sourceFiles);
+
+        if ($PSBoundParameters.ContainsKey('InputPath')) {
+            $inputPaths = GetFilePath -Path $InputPath -Verbose:$VerbosePreference;
+            $builder.InputPath($inputPaths);
+        }
+
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
         $builder.ReturnBoolean();
         $pipeline = $builder.Build();
+        $pipeline.Begin();
     }
 
     process {
@@ -287,7 +317,14 @@ function Test-PSRuleTarget {
 
     end {
         if ($Null -ne $pipeline) {
-            $pipeline.Dispose();
+            try
+            {
+                $pipeline.End();
+            }
+            finally
+            {
+                $pipeline.Dispose();
+            }
         }
         Write-Verbose -Message "[Test-PSRuleTarget] END::";
     }
@@ -666,7 +703,7 @@ function GetRuleScriptPath {
 
     process {
         $builder = New-Object -TypeName 'PSRule.Rules.RuleSourceBuilder';
-        
+
         if ($PSBoundParameters.ContainsKey('Path')) {
             Write-Verbose -Message "[PSRule][D] -- Scanning for source files: $Path";
             $fileObjects = (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
@@ -700,6 +737,39 @@ function GetRuleScriptPath {
                         $builder.Add($fileObjects.FullName, $m.Name);
                     }
                 }
+            }
+        }
+
+        $builder.Build();
+    }
+}
+
+function GetFilePath {
+    [CmdletBinding()]
+    [OutputType([System.String])]
+    param (
+        [Parameter(Mandatory = $True)]
+        [String[]]$Path
+    )
+
+    process {
+        $builder = New-Object -TypeName 'PSRule.Pipeline.InputPathBuilder';
+        Write-Verbose -Message "[PSRule][D] -- Scanning for input files: $Path";
+
+        foreach ($p in $Path) {
+            if ($p -notlike 'https://*' -and $p -notlike 'http://*') {
+                if (Test-Path -Path $p -PathType Leaf) {
+                    Resolve-Path -Path $p;
+                }
+                else {
+                    $builder.Add((Get-ChildItem -Path $p -ErrorAction Ignore -Recurse -File).FullName);
+                }
+            }
+            elseif (!$p.Contains('*')) {
+                $builder.Add($p);
+            }
+            else {
+                throw 'The path is not valid. Wildcards are not supported in URL input paths.';
             }
         }
 

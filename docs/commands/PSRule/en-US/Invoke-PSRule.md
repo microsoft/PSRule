@@ -13,10 +13,20 @@ Evaluate pipeline objects against matching rules.
 
 ## SYNTAX
 
+### Input (Default)
+
 ```text
 Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
  [-Outcome <RuleOutcome>] [-Option <PSRuleOption>] [-As <ResultFormat>] [-Format <InputFormat>]
- [-ObjectPath <String>] [-Module <String[]>] [<CommonParameters>]
+ [-ObjectPath <String>] [-Module <String[]>] [-OutputFormat <OutputFormat>] [<CommonParameters>]
+```
+
+### InputPath
+
+```text
+Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Outcome <RuleOutcome>]
+ [-Option <PSRuleOption>] [-As <ResultFormat>] [-Format <InputFormat>] [-ObjectPath <String>]
+ [-Module <String[]>] [-OutputFormat <OutputFormat>] -InputPath <String[]> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -183,7 +193,7 @@ The pipeline object to process rules for.
 
 ```yaml
 Type: PSObject
-Parameter Sets: (All)
+Parameter Sets: Input
 Aliases: TargetObject
 
 Required: True
@@ -276,6 +286,39 @@ When both `-Path` and `-Module` are specified, rule definitions from both are di
 Type: String[]
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InputPath
+
+Instead of processing objects from the pipeline, import objects file the specified file paths.
+
+```yaml
+Type: String[]
+Parameter Sets: InputPath
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputFormat
+
+Configures the format that output is presented in.
+
+```yaml
+Type: OutputFormat
+Parameter Sets: (All)
+Aliases:
+Accepted values: None, Yaml, Json
 
 Required: False
 Position: Named

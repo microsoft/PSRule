@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PSRule.Configuration;
+using System;
 using System.Collections.Concurrent;
 using System.Management.Automation;
 
@@ -7,18 +8,20 @@ namespace PSRule.Pipeline
     /// <summary>
     /// The default stream that queues objects for processing in the pipeline.
     /// </summary>
-    internal sealed class PipelineStream : IPipelineStream
+    internal sealed class StreamManager : IStreamManager
     {
+        private readonly IPipelineStream _Stream;
         private readonly VisitTargetObject _InputVisitor;
-        private readonly Action<object, bool> _OutputVisitor;
 
         private ConcurrentQueue<PSObject> _Queue;
 
-        public PipelineStream(VisitTargetObject input, Action<object, bool> output)
+        internal StreamManager(PSRuleOption option, IPipelineStream stream, VisitTargetObject input)
         {
+            _Stream = stream;
             _InputVisitor = input;
-            _OutputVisitor = output;
             _Queue = new ConcurrentQueue<PSObject>();
+
+            _Stream.Manager = this;
         }
 
         public bool IsEmpty
@@ -29,7 +32,22 @@ namespace PSRule.Pipeline
             }
         }
 
+        public void Begin()
+        {
+            _Stream.Begin();
+        }
+
+        public void End()
+        {
+            _Stream.End();
+        }
+
         public void Process(PSObject targetObject)
+        {
+            _Stream.Process(targetObject);
+        }
+
+        void IStreamManager.Process(PSObject targetObject)
         {
             if (targetObject == null)
             {
@@ -50,9 +68,9 @@ namespace PSRule.Pipeline
             }
         }
 
-        internal void Output(object o, bool expandCollection)
+        internal void Output(InvokeResult result)
         {
-            _OutputVisitor(o, expandCollection);
+            _Stream.Output(result);
         }
 
         /// <summary>

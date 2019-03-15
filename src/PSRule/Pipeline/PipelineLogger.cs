@@ -9,6 +9,7 @@ namespace PSRule.Pipeline
         internal Action<string> OnWriteVerbose;
         internal Action<ErrorRecord> OnWriteError;
         internal Action<InformationRecord> OnWriteInformation;
+        internal Action<object, bool> OnWriteObject;
 
         public void WriteError(ErrorRecord errorRecord)
         {
@@ -48,6 +49,16 @@ namespace PSRule.Pipeline
             }
 
             OnWriteInformation(informationRecord);
+        }
+
+        public void WriteObject(object sendToPipeline, bool enumerateCollection)
+        {
+            if (OnWriteObject == null)
+            {
+                return;
+            }
+
+            OnWriteObject(sendToPipeline, enumerateCollection);
         }
     }
 }

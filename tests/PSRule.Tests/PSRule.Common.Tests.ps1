@@ -270,12 +270,51 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
     Context 'Using -ObjectPath' {
         It 'Processes nested objects' {
-            $yaml = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFileNested.yaml') -Raw;
+            $yaml = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromNestedFile.yaml') -Raw;
             $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputObject $yaml -Format Yaml -ObjectPath items);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
             $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
+        }
+    }
+
+    Context 'Using -OutputFormat' {
+        $testObject = [PSCustomObject]@{
+            Name = 'TestObject1'
+            Value = 1
+        }
+
+        It 'Yaml' {
+            $result = @($testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1' -OutputFormat Yaml);
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $result -match 'ruleName: FromFile1' | Should -Be $True;
+        }
+
+        It 'Json' {
+            $result = @($testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1' -OutputFormat Json);
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $result -match '"ruleName":"FromFile1"' | Should -Be $True;
+        }
+    }
+
+    Context 'Using -InputFile' {
+        It 'Yaml' {
+            $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFile*.yaml') -Format Yaml);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 3;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2', 'TestObject3';
+        }
+
+        It 'Json' {
+            $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFile.json') -Format Json);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
         }
     }
 
@@ -962,6 +1001,23 @@ Describe 'New-PSRuleOption' -Tag 'Option','Common','New-PSRuleOption' {
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
             $option.Logging.RulePass | Should -Be Warning;
+        }
+    }
+
+    Context 'Read Output.Format' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Output.Format | Should -Be 'None';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Output.Format' = 'Yaml' };
+            $option.Output.Format | Should -Be Yaml;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Output.Format | Should -Be Json;
         }
     }
 

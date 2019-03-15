@@ -1,0 +1,8 @@
+# An object described in YAML for unit testing
+
+---
+targetName: TestObject3
+spec:
+  properties:
+    value1: 3
+    kind: Test

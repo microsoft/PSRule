@@ -27,6 +27,8 @@ namespace PSRule.Pipeline
         private bool _LogInformation;
         private Action<object, bool> _Output;
         private bool _ReturnBoolean;
+        private IPipelineStream _Stream;
+        private string[] _InputPath;
 
         internal InvokeRulePipelineBuilder()
         {
@@ -39,6 +41,8 @@ namespace PSRule.Pipeline
             _VisitTargetObject = PipelineReceiverActions.PassThru;
             _LogError = _LogWarning = _LogVerbose = _LogInformation = false;
             _Output = (r, b) => { };
+            _Stream = null;
+            _InputPath = null;
         }
 
         public void FilterBy(Hashtable tag)
@@ -67,6 +71,7 @@ namespace PSRule.Pipeline
             _Logger.OnWriteWarning = commandRuntime.WriteWarning;
             _Logger.OnWriteError = commandRuntime.WriteError;
             _Logger.OnWriteInformation = commandRuntime.WriteInformation;
+            _Logger.OnWriteObject = commandRuntime.WriteObject;
             _Output = commandRuntime.WriteObject;
         }
 
@@ -107,6 +112,11 @@ namespace PSRule.Pipeline
             _ReturnBoolean = true;
         }
 
+        public void InputPath(string[] path)
+        {
+            _InputPath = path;
+        }
+
         public InvokeRulePipelineBuilder Configure(PSRuleOption option)
         {
             if (option == null)
@@ -123,6 +133,8 @@ namespace PSRule.Pipeline
 
             _Option.Logging.RuleFail = option.Logging.RuleFail ?? LoggingOption.Default.RuleFail;
             _Option.Logging.RulePass = option.Logging.RulePass ?? LoggingOption.Default.RulePass;
+
+            _Option.Output.Format = option.Output.Format ?? OutputOption.Default.Format;
 
             _Option.Binding.IgnoreCase = option.Binding.IgnoreCase ?? BindingOption.Default.IgnoreCase;
 
@@ -264,17 +276,21 @@ namespace PSRule.Pipeline
                 });
             }
 
+            if (_Stream == null)
+            {
+                _Stream = new PowerShellPipelineStream(option: _Option, output: _Output, returnBoolean: _ReturnBoolean, inputPath: _InputPath);
+            }
+
             var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
             var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: _BindTargetNameHook, bindTargetType: _BindTargetTypeHook, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);
             var pipeline = new InvokeRulePipeline(
-                stream: new PipelineStream(input: _VisitTargetObject, output: _Output),
+                streamManager: new StreamManager(option: _Option, stream: _Stream, input: _VisitTargetObject),
                 option: _Option,
                 source: _Source,
                 filter: filter,
                 outcome: _Outcome,
                 resultFormat: _ResultFormat,
-                context: context,
-                returnBoolean: _ReturnBoolean
+                context: context
             );
 
             return pipeline;

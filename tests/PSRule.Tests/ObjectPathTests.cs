@@ -24,7 +24,7 @@ namespace PSRule
 
         private string GetYamlContent()
         {
-            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ObjectFromFileNested.yaml");
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ObjectFromNestedFile.yaml");
             return File.ReadAllText(path);
         }
     }

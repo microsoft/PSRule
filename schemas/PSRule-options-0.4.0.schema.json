@@ -160,6 +160,23 @@
             "type": "object",
             "description": "Specifies suppression rules."
         },
+        "output-v0.4.0": {
+            "type": "object",
+            "description": "Options that affect how output is generated.",
+            "properties": {
+                "format": {
+                    "type": "string",
+                    "description": "The output format.",
+                    "enum": [
+                        "None",
+                        "Yaml",
+                        "Json"
+                    ],
+                    "default": "None"
+                }
+            },
+            "additionalProperties": false
+        },
         "options-v0.2.0": {
             "properties": {
                 "baseline": {
@@ -281,6 +298,14 @@
                     "oneOf": [
                         {
                             "$ref": "#/definitions/logging-v0.4.0"
+                        }
+                    ]
+                },
+                "output": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/output-v0.4.0"
                         }
                     ]
                 },

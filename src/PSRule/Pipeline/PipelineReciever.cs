@@ -13,6 +13,8 @@ namespace PSRule.Pipeline
     public delegate IEnumerable<PSObject> VisitTargetObject(PSObject sourceObject);
     public delegate IEnumerable<PSObject> VisitTargetObjectAction(PSObject sourceObject, VisitTargetObject next);
 
+    //public delegate void Visit
+
     public static class PipelineReceiverActions
     {
         public static IEnumerable<PSObject> PassThru(PSObject targetObject)

@@ -23,7 +23,8 @@ namespace PSRule.Configuration
             Binding = BindingOption.Default,
             Execution = ExecutionOption.Default,
             Input = InputOption.Default,
-            Logging = LoggingOption.Default
+            Logging = LoggingOption.Default,
+            Output = OutputOption.Default
         };
 
         public PSRuleOption()
@@ -33,6 +34,7 @@ namespace PSRule.Configuration
             Binding = new BindingOption();
             Input = new InputOption();
             Logging = new LoggingOption();
+            Output = new OutputOption();
             Suppression = new SuppressionOption();
             Execution = new ExecutionOption();
             Pipeline = new PipelineHook();
@@ -45,6 +47,7 @@ namespace PSRule.Configuration
             Binding = new BindingOption(option.Binding);
             Input = new InputOption(option.Input);
             Logging = new LoggingOption(option.Logging);
+            Output = new OutputOption(option.Output);
             Suppression = new SuppressionOption(option.Suppression);
             Execution = new ExecutionOption(option.Execution);
             Pipeline = new PipelineHook(option.Pipeline);
@@ -79,6 +82,11 @@ namespace PSRule.Configuration
         /// Options for logging outcomes to a informational streams.
         /// </summary>
         public LoggingOption Logging { get; set; }
+
+        /// <summary>
+        /// Options that affect how output is generated.
+        /// </summary>
+        public OutputOption Output { get; set; }
 
         /// <summary>
         /// A set of suppression rules.
@@ -241,6 +249,11 @@ namespace PSRule.Configuration
             if (index.TryGetValue("logging.rulepass", out value))
             {
                 option.Logging.RulePass = (OutcomeLogStream)Enum.Parse(typeof(OutcomeLogStream), (string)value);
+            }
+
+            if (index.TryGetValue("output.format", out value))
+            {
+                option.Output.Format = (OutputFormat)Enum.Parse(typeof(OutputFormat), (string)value);
             }
 
             return option;

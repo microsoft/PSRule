@@ -13,10 +13,19 @@ Pass or fail pipeline objects against matching rules.
 
 ## SYNTAX
 
+### Input (Default)
+
 ```text
 Test-PSRuleTarget [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
  [-Option <PSRuleOption>] [-Format <InputFormat>] [-ObjectPath <String>] [-Module <String[]>]
  [<CommonParameters>]
+```
+
+### InputPath
+
+```text
+Test-PSRuleTarget [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>]
+ [-Format <InputFormat>] [-ObjectPath <String>] [-Module <String[]>] -InputPath <String[]> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -104,7 +113,7 @@ The pipeline object to process rules for.
 
 ```yaml
 Type: PSObject
-Parameter Sets: (All)
+Parameter Sets: Input
 Aliases: TargetObject
 
 Required: True
@@ -177,6 +186,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InputPath
+
+Instead of processing objects from the pipeline, import objects file the specified file paths.
+
+```yaml
+Type: String[]
+Parameter Sets: InputPath
+Aliases:
+
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False

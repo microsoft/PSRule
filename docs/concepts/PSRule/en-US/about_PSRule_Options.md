@@ -25,6 +25,7 @@ The following options are available for use:
 - [Input.ObjectPath](#inputobjectpath)
 - [Logging.RuleFail](#loggingrulefail)
 - [Logging.RulePass](#loggingrulepass)
+- [Output.Format](#outputformat)
 - [Suppression](#rule-suppression)
 
 Options can be used by:
@@ -432,6 +433,10 @@ logging:
   rulePass: Information
 ```
 
+### Output.Format
+
+
+
 ### Rule suppression
 
 In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.
@@ -536,6 +541,9 @@ logging:
   ruleFail: Error
   rulePass: Information
 
+output:
+  format: Json
+
 # Configure rule suppression
 suppression:
   storageAccounts.UseHttps:
@@ -583,6 +591,9 @@ input:
 logging:
   ruleFail: None
   rulePass: None
+
+output:
+  format: None
 
 # Configure rule suppression
 suppression: { }
