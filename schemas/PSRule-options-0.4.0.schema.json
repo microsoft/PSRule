@@ -127,6 +127,28 @@
             },
             "additionalProperties": false
         },
+        "input-v0.4.0": {
+            "type": "object",
+            "description": "Options that affect how input types are processed.",
+            "properties": {
+                "format": {
+                    "type": "string",
+                    "description": "The input string format.",
+                    "enum": [
+                        "None",
+                        "Yaml",
+                        "Json",
+                        "Detect"
+                    ],
+                    "default": "Detect"
+                },
+                "objectPath": {
+                    "type": "string",
+                    "description": "The object path to a property to use instead of the pipeline object."
+                }
+            },
+            "additionalProperties": false
+        },
         "logging-v0.4.0": {
             "type": "object",
             "description": "Options for logging outcomes to a informational streams.",
@@ -289,7 +311,7 @@
                     "type": "object",
                     "oneOf": [
                         {
-                            "$ref": "#/definitions/input-v0.3.0"
+                            "$ref": "#/definitions/input-v0.4.0"
                         }
                     ]
                 },

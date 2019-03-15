@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
 using PSRule.Runtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Management.Automation;
+using System.Net;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -22,10 +24,39 @@ namespace PSRule.Pipeline
             yield return targetObject;
         }
 
+        public static IEnumerable<PSObject> DetectInputFormat(PSObject sourceObject, VisitTargetObject next)
+        {
+            string pathExtension = null;
+
+            if (sourceObject.BaseObject is FileInfo)
+            {
+                var fileInfo = sourceObject.BaseObject as FileInfo;
+                pathExtension = fileInfo.Extension;
+            }
+            else if (sourceObject.BaseObject is Uri)
+            {
+                var uri = sourceObject.BaseObject as Uri;
+                pathExtension = Path.GetExtension(uri.OriginalString);
+            }
+
+            // Handle JSON
+            if (pathExtension == ".json")
+            {
+                return ConvertFromJson(sourceObject: sourceObject, next: next);
+            }
+            // Handle YAML
+            else if (pathExtension == ".yaml" || pathExtension == ".yml")
+            {
+                return ConvertFromYaml(sourceObject: sourceObject, next: next);
+            }
+
+            return new PSObject[] { sourceObject };
+        }
+
         public static IEnumerable<PSObject> ConvertFromJson(PSObject sourceObject, VisitTargetObject next)
         {
             // Only attempt to deserialize if the input is a string or a file
-            if (!(sourceObject.BaseObject is string || sourceObject.BaseObject is FileInfo))
+            if (!IsAcceptedType(sourceObject: sourceObject))
             {
                 return new PSObject[] { sourceObject };
             }
@@ -36,11 +67,17 @@ namespace PSRule.Pipeline
             {
                 json = sourceObject.BaseObject.ToString();
             }
-            else
+            else if (sourceObject.BaseObject is FileInfo)
             {
                 var fileInfo = sourceObject.BaseObject as FileInfo;
                 var reader = new StreamReader(fileInfo.FullName);
                 json = reader.ReadToEnd();
+            }
+            else
+            {
+                var uri = sourceObject.BaseObject as Uri;
+                var webClient = new WebClient();
+                json = webClient.DownloadString(uri);
             }
 
             var value = JsonConvert.DeserializeObject<PSObject[]>(json, new PSObjectArrayJsonConverter());
@@ -75,7 +112,7 @@ namespace PSRule.Pipeline
         public static IEnumerable<PSObject> ConvertFromYaml(PSObject sourceObject, VisitTargetObject next)
         {
             // Only attempt to deserialize if the input is a string or a file
-            if (!(sourceObject.BaseObject is string || sourceObject.BaseObject is FileInfo))
+            if (!IsAcceptedType(sourceObject: sourceObject))
             {
                 return new PSObject[] { sourceObject };
             }
@@ -92,10 +129,16 @@ namespace PSRule.Pipeline
             {
                 reader = new StringReader(sourceObject.BaseObject.ToString());
             }
-            else
+            else if (sourceObject.BaseObject is FileInfo)
             {
                 var fileInfo = sourceObject.BaseObject as FileInfo;
                 reader = new StreamReader(fileInfo.FullName);
+            }
+            else
+            {
+                var uri = sourceObject.BaseObject as Uri;
+                var webClient = new WebClient();
+                reader = new StringReader(webClient.DownloadString(uri));
             }
 
             var parser = new Parser(reader);
@@ -155,6 +198,11 @@ namespace PSRule.Pipeline
             {
                 return new PSObject[] { PSObject.AsPSObject(nestedObject) };
             }
+        }
+
+        private static bool IsAcceptedType(PSObject sourceObject)
+        {
+            return sourceObject.BaseObject is string || sourceObject.BaseObject is FileInfo || sourceObject.BaseObject is Uri;
         }
     }
 }

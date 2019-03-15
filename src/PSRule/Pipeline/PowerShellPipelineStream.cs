@@ -2,15 +2,12 @@
 using PSRule.Configuration;
 using PSRule.Rules;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
-using YamlDotNet.Serialization.TypeResolvers;
-using System.IO;
-using System.Net.Http;
-using System.Net;
 
 namespace PSRule.Pipeline
 {
@@ -43,8 +40,6 @@ namespace PSRule.Pipeline
 
         public void Begin()
         {
-            var webClient = new WebClient();
-
             if (_InputPath != null)
             {
                 // Read each file
@@ -53,11 +48,11 @@ namespace PSRule.Pipeline
                 {
                     if (p.StartsWith("http://") || p.StartsWith("https://"))
                     {
-                        Manager.Process(targetObject: PSObject.AsPSObject(webClient.DownloadString(p)));
+                        Manager.Process(targetObject: PSObject.AsPSObject(new Uri(p)));
                     }
                     else
                     {
-                        Manager.Process(targetObject: PSObject.AsPSObject(File.ReadAllText(p)));
+                        Manager.Process(targetObject: PSObject.AsPSObject(new FileInfo(p)));
                     }
                 }
             }

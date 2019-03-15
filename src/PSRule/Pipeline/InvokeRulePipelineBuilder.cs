@@ -275,6 +275,13 @@ namespace PSRule.Pipeline
                     return PipelineReceiverActions.ConvertFromJson(sourceObject, next);
                 });
             }
+            else if (_Option.Input.Format == InputFormat.Detect && _InputPath != null)
+            {
+                AddVisitTargetObjectAction((sourceObject, next) =>
+                {
+                    return PipelineReceiverActions.DetectInputFormat(sourceObject, next);
+                });
+            }
 
             if (_Stream == null)
             {

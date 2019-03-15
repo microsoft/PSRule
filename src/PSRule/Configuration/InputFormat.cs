@@ -13,6 +13,8 @@ namespace PSRule.Configuration
 
         Yaml = 1,
 
-        Json = 2
+        Json = 2,
+
+        Detect = 255
     }
 }

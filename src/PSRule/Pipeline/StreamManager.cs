@@ -1,5 +1,4 @@
 ﻿using PSRule.Configuration;
-using System;
 using System.Collections.Concurrent;
 using System.Management.Automation;
 

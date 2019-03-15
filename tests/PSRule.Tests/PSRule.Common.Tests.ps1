@@ -302,7 +302,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
     Context 'Using -InputFile' {
         It 'Yaml' {
-            $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFile*.yaml') -Format Yaml);
+            $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFile*.yaml'));
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 3;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
@@ -310,7 +310,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         It 'Json' {
-            $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFile.json') -Format Json);
+            $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFile.json'));
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
@@ -939,7 +939,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','Common','New-PSRuleOption' {
     Context 'Read Input.Format' {
         It 'from default' {
             $option = New-PSRuleOption;
-            $option.Input.Format | Should -Be 'None';
+            $option.Input.Format | Should -Be 'Detect';
         }
 
         It 'from Hashtable' {

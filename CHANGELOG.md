@@ -1,6 +1,9 @@
 
 ## Unreleased
 
+- Added support for using `-InputPath` instead of using `-InputObject` to handle serialized objects.
+  - `-Format` is automatically detected for `.yaml`, `.yml` and `.json` file extensions.
+- Added `-OutputFormat` parameter to serialize output from `Invoke-PSRule`.
 - Added support for logging pass or fail outcomes to a data stream such as Error, Warning or Information [#97](https://github.com/BernieWhite/PSRule/issues/97)
 - **Breaking change** - Deprecated usage of the `-TargetName` parameter on the `Hint` keyword has been removed [#81](https://github.com/BernieWhite/PSRule/issues/81)
 

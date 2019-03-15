@@ -143,17 +143,20 @@ Accept wildcard characters: False
 
 ### -Format
 
-Configures the input format for when a string is passed in as a target object. By default, strings are just treated as raw text. However, when set strings can be read as YAML or JSON and converted to an object.
+Configures the input format for when a string is passed in as a target object.
+
+- When the `-InputObject` parameter or pipeline input is used, strings are treated as plain text by default. When this option is used and set to either `Yaml` or `Json`, strings are read as YAML or JSON and are converted to an object.
+- When the `-InputPath` parameter is used with a file path or URL, by default the file extension (either `.yaml`, `.yml` or `.json`) will be used to automatically detect the format as YAML or JSON.
 
 ```yaml
 Type: InputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json
+Accepted values: None, Yaml, Json, Detect
 
 Required: False
 Position: Named
-Default value: None
+Default value: Detect
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

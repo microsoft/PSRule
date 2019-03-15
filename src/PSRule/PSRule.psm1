@@ -72,7 +72,7 @@ function Invoke-PSRule {
         [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Detail,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
         [PSRule.Configuration.InputFormat]$Format,
 
         [Parameter(Mandatory = $False)]
@@ -221,7 +221,7 @@ function Test-PSRuleTarget {
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
         [PSRule.Configuration.InputFormat]$Format,
 
         [Parameter(Mandatory = $False)]
