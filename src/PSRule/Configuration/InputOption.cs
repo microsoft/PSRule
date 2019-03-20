@@ -7,7 +7,7 @@ namespace PSRule.Configuration
     /// </summary>
     public sealed class InputOption
     {
-        private const InputFormat DEFAULT_FORMAT = PSRule.Configuration.InputFormat.None;
+        private const InputFormat DEFAULT_FORMAT = PSRule.Configuration.InputFormat.Detect;
         private const string DEFAULT_OBJECTPATH = null;
 
         public static readonly InputOption Default = new InputOption

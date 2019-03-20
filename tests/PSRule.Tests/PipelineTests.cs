@@ -19,7 +19,8 @@ namespace PSRule
         [Fact]
         public void BuildInvokePipeline()
         {
-            var builder = PipelineBuilder.Invoke();
+            var option = new PSRuleOption();
+            var builder = PipelineBuilder.Invoke().Configure(option);
             builder.Source(GetTestSource());
             var pipeline = builder.Build();
 
@@ -34,14 +35,17 @@ namespace PSRule
             option.Baseline.RuleName = new string[] { "FromFile1" };
             var builder = PipelineBuilder.Invoke().Configure(option);
             builder.Source(GetTestSource());
-            var stream = builder.Build().GetStream();
+            var pipeline = builder.Build();
+            pipeline.Begin();
 
             var actual = new List<InvokeResult>();
 
             for (var i = 0; i < 100; i++)
             {
-                stream.Process(PSObject.AsPSObject(testObject1));
+                pipeline.Process(PSObject.AsPSObject(testObject1));
             }
+
+            pipeline.End();
         }
 
         [Fact]

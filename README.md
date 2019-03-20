@@ -172,6 +172,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Input.ObjectPath](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inputobjectpath)
   - [Logging.RuleFail](docs/concepts/PSRule/en-US/about_PSRule_Options.md#loggingrulefail)
   - [Logging.RulePass](docs/concepts/PSRule/en-US/about_PSRule_Options.md#loggingrulepass)
+  - [Output.Format](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputformat)
   - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#rule-suppression)
 - [Variables](docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
   - [$Configuration](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#configuration)

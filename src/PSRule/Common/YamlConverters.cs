@@ -1,10 +1,14 @@
 ﻿using PSRule.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Management.Automation;
+using System.Reflection;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.TypeInspectors;
+using YamlDotNet.Serialization.TypeResolvers;
 
 namespace PSRule
 {
@@ -174,6 +178,68 @@ namespace PSRule
             }
 
             return false;
+        }
+    }
+
+    /// <summary>
+    /// A YAML type inspector to read fields and properties from a type for serialization.
+    /// </summary>
+    internal sealed class FieldYamlTypeInspector : TypeInspectorSkeleton
+    {
+        private readonly ITypeResolver _TypeResolver;
+
+        public FieldYamlTypeInspector()
+        {
+            _TypeResolver = new StaticTypeResolver();
+        }
+
+        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
+        {
+            return type
+                .GetRuntimeFields().Where(f => !f.IsStatic && f.IsPublic)
+                .Select(p => new FieldDescriptor(p, _TypeResolver));
+        }
+
+        private sealed class FieldDescriptor : IPropertyDescriptor
+        {
+            private readonly FieldInfo _FieldInfo;
+            private readonly ITypeResolver _TypeResolver;
+
+            public FieldDescriptor(FieldInfo fieldInfo, ITypeResolver typeResolver)
+            {
+                _FieldInfo = fieldInfo;
+                _TypeResolver = typeResolver;
+                ScalarStyle = ScalarStyle.Any;
+            }
+
+            public string Name => _FieldInfo.Name;
+
+            public Type Type => _FieldInfo.FieldType;
+
+            public Type TypeOverride { get; set; }
+
+            public int Order { get; set; }
+
+            public bool CanWrite => false;
+
+            public ScalarStyle ScalarStyle { get; set; }
+
+            public void Write(object target, object value)
+            {
+                throw new NotImplementedException();
+            }
+
+            public T GetCustomAttribute<T>() where T : Attribute
+            {
+                return _FieldInfo.GetCustomAttributes(typeof(T), true).OfType<T>().FirstOrDefault();
+            }
+
+            public IObjectDescriptor Read(object target)
+            {
+                var propertyValue = _FieldInfo.GetValue(target);
+                var actualType = TypeOverride ?? _TypeResolver.Resolve(Type, propertyValue);
+                return new ObjectDescriptor(propertyValue, actualType, Type, ScalarStyle);
+            }
         }
     }
 }

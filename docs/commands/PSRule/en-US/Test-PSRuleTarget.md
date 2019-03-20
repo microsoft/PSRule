@@ -13,10 +13,19 @@ Pass or fail pipeline objects against matching rules.
 
 ## SYNTAX
 
+### Input (Default)
+
 ```text
 Test-PSRuleTarget [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
  [-Option <PSRuleOption>] [-Format <InputFormat>] [-ObjectPath <String>] [-Module <String[]>]
  [<CommonParameters>]
+```
+
+### InputPath
+
+```text
+Test-PSRuleTarget [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>]
+ [-Format <InputFormat>] [-ObjectPath <String>] [-Module <String[]>] -InputPath <String[]> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -104,7 +113,7 @@ The pipeline object to process rules for.
 
 ```yaml
 Type: PSObject
-Parameter Sets: (All)
+Parameter Sets: Input
 Aliases: TargetObject
 
 Required: True
@@ -134,17 +143,20 @@ Accept wildcard characters: False
 
 ### -Format
 
-Configures the input format for when a string is passed in as a target object. By default, strings are just treated as raw text. However, when set strings can be read as YAML or JSON and converted to an object.
+Configures the input format for when a string is passed in as a target object.
+
+- When the `-InputObject` parameter or pipeline input is used, strings are treated as plain text by default. When this option is used and set to either `Yaml` or `Json`, strings are read as YAML or JSON and are converted to an object.
+- When the `-InputPath` parameter is used with a file path or URL, by default the file extension (either `.yaml`, `.yml` or `.json`) will be used to automatically detect the format as YAML or JSON.
 
 ```yaml
 Type: InputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json
+Accepted values: None, Yaml, Json, Detect
 
 Required: False
 Position: Named
-Default value: None
+Default value: Detect
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -177,6 +189,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InputPath
+
+Instead of processing objects from the pipeline, import objects file the specified file paths.
+
+```yaml
+Type: String[]
+Parameter Sets: InputPath
+Aliases:
+
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False

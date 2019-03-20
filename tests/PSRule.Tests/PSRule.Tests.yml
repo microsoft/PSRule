@@ -35,6 +35,9 @@ logging:
   ruleFail: Warning
   rulePass: Warning
 
+output:
+  format: Json
+
 # Configure rule suppression
 suppression:
   SuppressionTest1:

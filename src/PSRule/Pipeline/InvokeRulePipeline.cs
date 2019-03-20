@@ -10,7 +10,7 @@ namespace PSRule.Pipeline
     public sealed class InvokeRulePipeline : RulePipeline
     {
         private readonly RuleOutcome _Outcome;
-        private readonly PipelineStream _Stream;
+        private readonly StreamManager _StreamManager;
         private readonly DependencyGraph<RuleBlock> _RuleGraph;
 
         // A per rule summary of rules that have been processed and the outcome
@@ -18,15 +18,14 @@ namespace PSRule.Pipeline
 
         private readonly ResultFormat _ResultFormat;
         private readonly RuleSuppressionFilter _SuppressionFilter;
-        private readonly bool _ReturnBoolean;
 
         // Track whether Dispose has been called.
         private bool _Disposed = false;
 
-        internal InvokeRulePipeline(PipelineStream stream, PSRuleOption option, RuleSource[] source, RuleFilter filter, RuleOutcome outcome, ResultFormat resultFormat, PipelineContext context, bool returnBoolean)
+        internal InvokeRulePipeline(StreamManager streamManager, PSRuleOption option, RuleSource[] source, RuleFilter filter, RuleOutcome outcome, ResultFormat resultFormat, PipelineContext context)
             : base(context, option, source, filter)
         {
-            _Stream = stream;
+            _StreamManager = streamManager;
             _RuleGraph = HostHelper.GetRuleBlockGraph(_Option, _Source, _Filter);
             RuleCount = _RuleGraph.Count;
 
@@ -39,55 +38,45 @@ namespace PSRule.Pipeline
             _Summary = new Dictionary<string, RuleSummaryRecord>();
             _ResultFormat = resultFormat;
             _SuppressionFilter = new RuleSuppressionFilter(option.Suppression);
-            _ReturnBoolean = returnBoolean;
         }
 
         public int RuleCount { get; private set; }
 
-        public IPipelineStream GetStream()
+        public void Begin()
         {
-            return _Stream;
+            _StreamManager.Begin();
         }
 
         public void Process(PSObject[] targetObjects)
         {
             foreach (var targetObject in targetObjects)
             {
-                _Stream.Process(targetObject);
+                _StreamManager.Process(targetObject);
             }
 
-            while (_Stream.Next(out PSObject next))
+            while (_StreamManager.Next(out PSObject next))
             {
                 var result = ProcessTargetObject(next);
 
-                if (_ReturnBoolean)
-                {
-                    _Stream.Output(result.AsBoolean(), false);
-                }
-                else
-                {
-                    _Stream.Output(result.AsRecord(), true);
-                }
+                _StreamManager.Output(result);
             }
         }
 
         public void Process(PSObject targetObject)
         {
-            _Stream.Process(targetObject);
+            _StreamManager.Process(targetObject);
 
-            while (_Stream.Next(out PSObject next))
+            while (_StreamManager.Next(out PSObject next))
             {
                 var result = ProcessTargetObject(next);
 
-                if (_ReturnBoolean)
-                {
-                    _Stream.Output(result.AsBoolean(), false);
-                }
-                else
-                {
-                    _Stream.Output(result.AsRecord(), true);
-                }
+                _StreamManager.Output(result);
             }
+        }
+
+        public void End()
+        {
+            _StreamManager.End();
         }
 
         public IEnumerable<RuleSummaryRecord> GetSummary()

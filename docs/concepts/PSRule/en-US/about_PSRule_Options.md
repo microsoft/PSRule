@@ -25,6 +25,7 @@ The following options are available for use:
 - [Input.ObjectPath](#inputobjectpath)
 - [Logging.RuleFail](#loggingrulefail)
 - [Logging.RulePass](#loggingrulepass)
+- [Output.Format](#outputformat)
 - [Suppression](#rule-suppression)
 
 Options can be used by:
@@ -330,15 +331,20 @@ execution:
 
 ### Input.Format
 
-Configures the input format for when a string is passed in as a target object. By default, strings are just treated as raw text. However, when set strings can be read as YAML or JSON and converted to an object.
+Configures the input format for when a string is passed in as a target object.
 
-When using `Invoke-PSRule` and `Test-PSRuleTarget` the `-Format` parameter will override any value set in configuration.
+Using this option with `Invoke-PSRule` or `Test-PSRuleTarget`:
+
+- When the `-InputObject` parameter or pipeline input is used, strings are treated as plain text by default. When this option is used and set to either `Yaml` or `Json`, strings are read as YAML or JSON and are converted to an object.
+- When the `-InputPath` parameter is used with a file path or URL, by default the file extension (either `.yaml`, `.yml` or `.json`) will be used to automatically detect the format as YAML or JSON.
+- The `-Format` parameter will override any value set in configuration.
 
 The following formats are available:
 
-- None
-- Yaml
-- Json
+- None - Treat strings as plain text.
+- Yaml - Treat strings as one or more YAML objects.
+- Json - Treat strings as one or more JSON objects.
+- Detect - Detect format based on file extension. Detection only applies when used with the `-InputPath` parameter. In all other cases, `Detect` is the same as `None`. This is the default configuration.
 
 This option can be specified using:
 
@@ -430,6 +436,29 @@ $option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Information' };
 # YAML: Using the logging/rulePass property
 logging:
   rulePass: Information
+```
+
+### Output.Format
+
+Configures the format that results will be presented in.
+
+The following format options are available:
+
+- None - Output is presented as an object using PowerShell defaults. This is the default configuration.
+- Yaml - Output is serialized as YAML.
+- Json - Output is serialized as JSON.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Output.Format hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Format' = 'Yaml' };
+```
+
+```yaml
+# YAML: Using the output/format property
+output:
+  format: Yaml
 ```
 
 ### Rule suppression
@@ -536,6 +565,9 @@ logging:
   ruleFail: Error
   rulePass: Information
 
+output:
+  format: Json
+
 # Configure rule suppression
 suppression:
   storageAccounts.UseHttps:
@@ -576,13 +608,16 @@ execution:
 
 # Configures input options
 input:
-  format: None
+  format: Detect
   objectPath:
 
 # Configures outcome logging options
 logging:
   ruleFail: None
   rulePass: None
+
+output:
+  format: None
 
 # Configure rule suppression
 suppression: { }
