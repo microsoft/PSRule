@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.4.0-B190311 (pre-release)
+
 - Added support for using `-InputPath` instead of using `-InputObject` to handle serialized objects. [#106](https://github.com/BernieWhite/PSRule/issues/106)
   - `-Format` is automatically detected for `.yaml`, `.yml` and `.json` file extensions.
 - Added `-OutputFormat` parameter to serialize output from `Invoke-PSRule`. [#29](https://github.com/BernieWhite/PSRule/issues/29)
