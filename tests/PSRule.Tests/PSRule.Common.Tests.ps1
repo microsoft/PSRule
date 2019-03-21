@@ -304,6 +304,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         It 'Yaml' {
             $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFile*.yaml'));
             $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -BeIn $True;
             $result.Length | Should -Be 3;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
             $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2', 'TestObject3';
@@ -312,6 +313,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         It 'Json' {
             $result = @(Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'WithFormat' -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFile.json'));
             $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -BeIn $True;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
             $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';

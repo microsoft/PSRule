@@ -4,7 +4,15 @@
         "Spec": {
             "Properties": {
                 "Value1": 1,
-                "Kind": "Test"
+                "Kind": "Test",
+                "array": [
+                    {
+                        "id": "1"
+                    },
+                    {
+                        "id": "2"
+                    }
+                ]
             }
         }
     },
@@ -13,7 +21,15 @@
         "Spec": {
             "Properties": {
                 "Value2": 2,
-                "Kind": "Test"
+                "Kind": "Test",
+                "array": [
+                    {
+                        "id": "1"
+                    },
+                    {
+                        "id": "2"
+                    }
+                ]
             }
         }
     }
