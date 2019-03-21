@@ -18,6 +18,7 @@ namespace PSRule
             Assert.Equal("TestObject1", actual[0].Properties["targetName"].Value);
             Assert.Equal("Test", actual[0].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<string>("kind"));
             Assert.Equal(2, actual[1].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<int>("value2"));
+            Assert.Equal(2, actual[1].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<PSObject[]>("array").Length);
         }
 
         [Fact]
@@ -29,6 +30,7 @@ namespace PSRule
             Assert.Equal("TestObject1", actual[0].Properties["targetName"].Value);
             Assert.Equal("Test", actual[0].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<string>("kind"));
             Assert.Equal(2, actual[1].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<int>("value2"));
+            Assert.Equal(2, actual[1].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<PSObject[]>("array").Length);
         }
 
         private string GetYamlContent()

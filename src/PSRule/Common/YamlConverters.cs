@@ -111,17 +111,17 @@ namespace PSRule
                     {
                         parser.MoveNext();
 
-                        var values = new List<object>();
+                        var values = new List<PSObject>();
 
                         while (!parser.Accept<SequenceEnd>())
                         {
                             if (parser.Accept<MappingStart>())
                             {
-                                values.Add(ReadYaml(parser, type));
+                                values.Add(PSObject.AsPSObject(ReadYaml(parser, type)));
                             }
                             else if (parser.Accept<Scalar>())
                             {
-                                values.Add(parser.Allow<Scalar>().Value);
+                                values.Add(PSObject.AsPSObject(parser.Allow<Scalar>().Value));
                             }
                         }
 

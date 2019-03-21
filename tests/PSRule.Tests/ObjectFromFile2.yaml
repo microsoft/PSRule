@@ -6,3 +6,6 @@ spec:
   properties:
     value1: 3
     kind: Test
+    array:
+    - id: 1
+    - id: 2

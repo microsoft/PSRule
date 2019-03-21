@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Fix incorrect JSON de-serialization of nested arrays. [#109](https://github.com/BernieWhite/PSRule/issues/109)
+
 ## v0.4.0-B190311 (pre-release)
 
 - Added support for using `-InputPath` instead of using `-InputObject` to handle serialized objects. [#106](https://github.com/BernieWhite/PSRule/issues/106)

@@ -132,6 +132,7 @@ Rule 'WithConfiguration' {
 
 Rule 'WithFormat' {
     $TargetObject.spec.properties.kind -eq 'Test'
+    ($TargetObject.spec.properties.array.id | Measure-Object).Count -eq 2
 }
 
 # Description: Test for Hint keyword

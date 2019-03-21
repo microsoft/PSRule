@@ -76,6 +76,22 @@ namespace PSRule
                         value.Properties.Add(new PSNoteProperty(name: name, value: child));
                         break;
 
+                    case JsonToken.StartArray:
+                        var items = new List<PSObject>();
+                        reader.Read();
+                        var item = new PSObject();
+
+                        while (reader.TokenType != JsonToken.EndArray)
+                        {
+                            ReadObject(value: item, reader: reader);
+                            items.Add(item);
+                            reader.Read();
+                        }
+
+                        value.Properties.Add(new PSNoteProperty(name: name, value: items.ToArray()));
+
+                        break;
+
                     default:
                         value.Properties.Add(new PSNoteProperty(name: name, value: reader.Value));
                         break;
@@ -159,6 +175,21 @@ namespace PSRule
                     case JsonToken.StartObject:
                         var value = ReadObject(reader: reader);
                         result.Properties.Add(new PSNoteProperty(name: name, value: value));
+                        break;
+
+                    case JsonToken.StartArray:
+                        var items = new List<PSObject>();
+                        reader.Read();
+
+                        while (reader.TokenType != JsonToken.EndArray)
+                        {
+                            var item = ReadObject(reader: reader);
+                            items.Add(item);
+                            reader.Read();
+                        }
+
+                        result.Properties.Add(new PSNoteProperty(name: name, value: items.ToArray()));
+
                         break;
 
                     default:
