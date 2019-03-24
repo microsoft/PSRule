@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.4.0-B190320 (pre-release)
+
 - Fix incorrect JSON de-serialization of nested arrays. [#109](https://github.com/BernieWhite/PSRule/issues/109)
 - Fix incorrect JSON de-serialization of non-object arrays. [#111](https://github.com/BernieWhite/PSRule/issues/111)
 
