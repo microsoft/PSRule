@@ -133,6 +133,7 @@ Rule 'WithConfiguration' {
 Rule 'WithFormat' {
     $TargetObject.spec.properties.kind -eq 'Test'
     ($TargetObject.spec.properties.array.id | Measure-Object).Count -eq 2
+    ($TargetObject.spec.properties.array2 | Measure-Object).Count -eq 3
 }
 
 # Description: Test for Hint keyword

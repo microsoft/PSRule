@@ -183,8 +183,16 @@ namespace PSRule
 
                         while (reader.TokenType != JsonToken.EndArray)
                         {
-                            var item = ReadObject(reader: reader);
-                            items.Add(item);
+                            if (reader.TokenType == JsonToken.StartObject)
+                            {
+                                var item = ReadObject(reader: reader);
+                                items.Add(item);
+                            }
+                            else
+                            {
+                                items.Add(PSObject.AsPSObject(reader.Value));
+                            }
+                            
                             reader.Read();
                         }
 
