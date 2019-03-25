@@ -10,6 +10,7 @@ strategy:
     Windows:
       imageName: 'vs2017-win2016'
       publishModule: 'true'
+      analysis: 'true'
 
 variables:
   buildConfiguration: 'Release'
@@ -26,6 +27,26 @@ pool:
 
 steps:
 
+
+- powershell: dotnet tool install --global dotnet-sonarscanner
+  displayName: 'Install Sonar scanner'
+  condition: eq(variables['analysis'], 'true')
+
+# - script: dotnet sonarscanner begin /k:"BernieWhite_PSRule" /d:sonar.organization="berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken)
+#   displayName: 'Prepare SonarCloud'
+#   condition: eq(variables['analysis'], 'true')
+
+# SonarCloud preparation
+- task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
+  displayName: 'Prepare SonarCloud'
+  inputs:
+    SonarCloud: PSRule
+    organization: 'berniewhite-github'
+    projectKey: 'BernieWhite_PSRule'
+    projectName: PSRule
+    projectVersion: $(Build.BuildNumber)
+  condition: eq(variables['analysis'], 'true')
+
 # Install pipeline dependencies and build module
 - powershell: ./scripts/pipeline-build.ps1 -File ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion "$(Release.Version)"
   displayName: 'Build module'
@@ -34,6 +55,15 @@ steps:
 - powershell: ./scripts/pipeline-build.ps1 -Task Benchmark -File ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion "$(Release.Version)"
   displayName: 'Benchmark'
   condition: eq(variables['benchmark'], 'true')
+
+# - script: dotnet sonarscanner end /d:sonar.login=$(sonarQubeToken)
+#   displayName: 'Complete SonarCloud'
+#   condition: eq(variables['analysis'], 'true')
+
+# SonarCloud analysis
+- task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
+  displayName: 'Run Code Analysis'
+  condition: eq(variables['analysis'], 'true')
 
 # DotNet test results
 - task: PublishTestResults@2
