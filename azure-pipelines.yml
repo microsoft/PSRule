@@ -27,15 +27,6 @@ pool:
 
 steps:
 
-
-- powershell: dotnet tool install --global dotnet-sonarscanner
-  displayName: 'Install Sonar scanner'
-  condition: eq(variables['analysis'], 'true')
-
-- script: dotnet sonarscanner begin /k:"BernieWhite_PSRule" /o:"berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken)
-  displayName: 'Prepare SonarCloud'
-  condition: eq(variables['analysis'], 'true')
-
 # Install pipeline dependencies and build module
 - powershell: ./scripts/pipeline-build.ps1 -File ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion "$(Release.Version)"
   displayName: 'Build module'
@@ -44,6 +35,19 @@ steps:
 - powershell: ./scripts/pipeline-build.ps1 -Task Benchmark -File ./PSRule.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion "$(Release.Version)"
   displayName: 'Benchmark'
   condition: eq(variables['benchmark'], 'true')
+
+  
+- powershell: dotnet tool install --global dotnet-sonarscanner
+  displayName: 'Install Sonar scanner'
+  condition: eq(variables['analysis'], 'true')
+
+- script: dotnet sonarscanner begin /k:"BernieWhite_PSRule" /o:"berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken)
+  displayName: 'Prepare SonarCloud'
+  condition: eq(variables['analysis'], 'true')
+
+- script: dotnet build
+  displayName: 'Build solution for analysis'
+  condition: eq(variables['analysis'], 'true')
 
 - script: dotnet sonarscanner end /d:sonar.login=$(sonarQubeToken)
   displayName: 'Complete SonarCloud'
