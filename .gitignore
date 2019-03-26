@@ -1,12 +1,13 @@
 
-/**/.vs/
-/**/bin/
-/**/obj/
-/artifacts/
-/build/
-/reports/
-/out/
-/**/*.user
-/src/**/*-help.xml
-/src/**/*.help.txt
-/BenchmarkDotNet.Artifacts/
+**/.vs/
+**/bin/
+**/obj/
+artifacts/
+build/
+reports/
+out/
+*.user
+src/**/*-help.xml
+src/**/*.help.txt
+BenchmarkDotNet.Artifacts/
+.sonarqube/
