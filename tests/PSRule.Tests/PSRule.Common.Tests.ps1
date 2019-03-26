@@ -284,19 +284,29 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             Name = 'TestObject1'
             Value = 1
         }
+        $testObject.PSObject.TypeNames.Insert(0, 'TestType');
 
         It 'Yaml' {
             $result = @($testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1' -OutputFormat Yaml);
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
-            $result -match 'ruleName: FromFile1' | Should -Be $True;
+            $result -cmatch 'ruleName: FromFile1' | Should -Be $True;
+            $result -cmatch 'outcome: Pass' | Should -Be $True;
+            $result -cmatch 'targetName: TestObject1' | Should -Be $True;
+            $result -cmatch 'targetType: TestType' | Should -Be $True;
+            $result | Should -Match 'tag:(\r|\n){1,2}\s{2,}test: Test1';
+            $result | Should -Not -Match 'targetObject:';
         }
 
         It 'Json' {
             $result = @($testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'FromFile1' -OutputFormat Json);
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
-            $result -match '"ruleName":"FromFile1"' | Should -Be $True;
+            $result -cmatch '"ruleName":"FromFile1"' | Should -Be $True;
+            $result -cmatch '"outcome":"Pass"' | Should -Be $True;
+            $result -cmatch '"targetName":"TestObject1"' | Should -Be $True;
+            $result -cmatch '"targetType":"TestType"' | Should -Be $True;
+            $result | Should -Not -Match '"targetObject":';
         }
     }
 

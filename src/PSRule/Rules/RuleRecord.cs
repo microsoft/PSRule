@@ -36,6 +36,7 @@ namespace PSRule.Rules
         /// A unique identifier for the rule.
         /// </summary>
         [JsonIgnore]
+        [YamlIgnore]
         public readonly string RuleId;
 
         /// <summary>
