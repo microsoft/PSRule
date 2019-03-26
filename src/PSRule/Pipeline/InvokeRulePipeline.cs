@@ -76,18 +76,7 @@ namespace PSRule.Pipeline
 
         public void End()
         {
-            _StreamManager.End();
-        }
-
-        public IEnumerable<RuleSummaryRecord> GetSummary()
-        {
-            foreach (var s in _Summary.Values.ToArray())
-            {
-                if (_Outcome == RuleOutcome.All || (s.Outcome & _Outcome) > 0)
-                {
-                    yield return s;
-                }
-            }
+            _StreamManager.End(_Summary.Values.Where(r => _Outcome == RuleOutcome.All || (r.Outcome & _Outcome) > 0));
         }
 
         private InvokeResult ProcessTargetObject(PSObject targetObject)

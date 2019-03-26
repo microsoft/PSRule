@@ -18,14 +18,17 @@ namespace PSRule.Pipeline
     {
         private readonly Action<object, bool> _OutputVisitor;
         private readonly bool _ReturnBoolean;
+        private readonly ResultFormat _ResultFormat;
         private readonly OutputFormat _OutputFormat;
         private readonly List<InvokeResult> _Results;
+
         private readonly string[] _InputPath;
 
         public PowerShellPipelineStream(PSRuleOption option, Action<object, bool> output, bool returnBoolean, string[] inputPath)
         {
             _OutputVisitor = output;
             _ReturnBoolean = returnBoolean;
+            _ResultFormat = option.Output.As.Value;
             _OutputFormat = option.Output.Format.Value;
 
             if (_OutputFormat != OutputFormat.None)
@@ -63,12 +66,29 @@ namespace PSRule.Pipeline
             Manager.Process(targetObject);
         }
 
-        public void End()
+        public void End(IEnumerable<RuleSummaryRecord> summary)
         {
             if (_Results != null)
             {
-                var results = _Results.SelectMany(r => r.AsRecord()).ToArray();
-                _Results.Clear();
+                if (_ResultFormat == ResultFormat.Detail)
+                {
+                    var results = _Results.SelectMany(r => r.AsRecord()).ToArray();
+                    _Results.Clear();
+
+                    if (_OutputFormat == OutputFormat.Json)
+                    {
+                        WriteObjectJson(results);
+                    }
+                    else if (_OutputFormat == OutputFormat.Yaml)
+                    {
+                        WriteObjectYaml(results);
+                    }
+                }
+            }
+
+            if (_ResultFormat == ResultFormat.Summary)
+            {
+                var results = summary.ToArray();
 
                 if (_OutputFormat == OutputFormat.Json)
                 {
@@ -77,6 +97,10 @@ namespace PSRule.Pipeline
                 else if (_OutputFormat == OutputFormat.Yaml)
                 {
                     WriteObjectYaml(results);
+                }
+                else
+                {
+                    WriteObject(results, expandCollection: true);
                 }
             }
         }
@@ -114,7 +138,28 @@ namespace PSRule.Pipeline
             _OutputVisitor(json, false);
         }
 
+        private void WriteObjectJson(IEnumerable<RuleSummaryRecord> o)
+        {
+            var settings = new JsonSerializerSettings();
+            settings.NullValueHandling = NullValueHandling.Ignore;
+            var json = JsonConvert.SerializeObject(o, settings: settings);
+
+            _OutputVisitor(json, false);
+        }
+
         private void WriteObjectYaml(IEnumerable<RuleRecord> o)
+        {
+            var s = new SerializerBuilder()
+                .WithTypeInspector(f => new FieldYamlTypeInspector())
+                .WithNamingConvention(new CamelCaseNamingConvention())
+                .Build();
+
+            var yaml = s.Serialize(o);
+
+            _OutputVisitor(yaml, false);
+        }
+
+        private void WriteObjectYaml(IEnumerable<RuleSummaryRecord> o)
         {
             var s = new SerializerBuilder()
                 .WithTypeInspector(f => new FieldYamlTypeInspector())

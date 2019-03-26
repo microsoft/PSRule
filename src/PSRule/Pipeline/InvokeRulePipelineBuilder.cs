@@ -17,7 +17,6 @@ namespace PSRule.Pipeline
         private Hashtable _Tag;
         private RuleOutcome _Outcome;
         private PipelineLogger _Logger;
-        private ResultFormat _ResultFormat;
         private BindTargetName _BindTargetNameHook;
         private BindTargetName _BindTargetTypeHook;
         private VisitTargetObject _VisitTargetObject;
@@ -35,7 +34,6 @@ namespace PSRule.Pipeline
             _Logger = new PipelineLogger();
             _Option = new PSRuleOption();
             _Outcome = RuleOutcome.Processed;
-            _ResultFormat = ResultFormat.Detail;
             _BindTargetNameHook = PipelineHookActions.DefaultTargetNameBinding;
             _BindTargetTypeHook = PipelineHookActions.DefaultTargetTypeBinding;
             _VisitTargetObject = PipelineReceiverActions.PassThru;
@@ -58,11 +56,6 @@ namespace PSRule.Pipeline
         public void Limit(RuleOutcome outcome)
         {
             _Outcome = outcome;
-        }
-
-        public void As(ResultFormat resultFormat)
-        {
-            _ResultFormat = resultFormat;
         }
 
         public void UseCommandRuntime(ICommandRuntime2 commandRuntime)
@@ -134,6 +127,7 @@ namespace PSRule.Pipeline
             _Option.Logging.RuleFail = option.Logging.RuleFail ?? LoggingOption.Default.RuleFail;
             _Option.Logging.RulePass = option.Logging.RulePass ?? LoggingOption.Default.RulePass;
 
+            _Option.Output.As = option.Output.As ?? OutputOption.Default.As;
             _Option.Output.Format = option.Output.Format ?? OutputOption.Default.Format;
 
             _Option.Binding.IgnoreCase = option.Binding.IgnoreCase ?? BindingOption.Default.IgnoreCase;
@@ -296,7 +290,7 @@ namespace PSRule.Pipeline
                 source: _Source,
                 filter: filter,
                 outcome: _Outcome,
-                resultFormat: _ResultFormat,
+                resultFormat: _Option.Output.As.Value,
                 context: context
             );
 
