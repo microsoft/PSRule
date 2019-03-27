@@ -24,12 +24,9 @@ namespace PSRule
                 return null;
             }
 
-            if (caseSensitive)
+            if (caseSensitive && !StringComparer.Ordinal.Equals(p.Name, propertyName))
             {
-                if (!StringComparer.Ordinal.Equals(p.Name, propertyName))
-                {
-                    return null;
-                }
+                return null;
             }
 
             return p.Value.ToString();
@@ -45,12 +42,9 @@ namespace PSRule
                 return false;
             }
 
-            if (caseSensitive)
+            if (caseSensitive && !StringComparer.Ordinal.Equals(p.Name, propertyName))
             {
-                if (!StringComparer.Ordinal.Equals(p.Name, propertyName))
-                {
-                    return false;
-                }
+                return false;
             }
 
             value = p.Value;

@@ -6,7 +6,7 @@ namespace PSRule.Configuration
 {
     public sealed class SuppressionOption : IDictionary<string, SuppressionRule>
     {
-        private Dictionary<string, SuppressionRule> _Rules;
+        private readonly Dictionary<string, SuppressionRule> _Rules;
 
         public SuppressionOption()
         {

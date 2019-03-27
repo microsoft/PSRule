@@ -9,9 +9,9 @@ namespace PSRule.Rules
     /// </summary>
     public sealed class RuleFilter
     {
-        private HashSet<string> _RequiredRuleName;
-        private HashSet<string> _ExcludedRuleName;
-        private Hashtable _RequiredTag;
+        private readonly HashSet<string> _RequiredRuleName;
+        private readonly HashSet<string> _ExcludedRuleName;
+        private readonly Hashtable _RequiredTag;
 
         /// <summary>
         /// Filter rules by id or tag.

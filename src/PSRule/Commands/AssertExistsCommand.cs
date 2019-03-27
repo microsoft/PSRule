@@ -41,12 +41,9 @@ namespace PSRule.Commands
             {
                 actual = ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field[i], caseSensitive: CaseSensitive, value: out object fieldValue);
 
-                if (actual == expected)
+                if (expected && actual == expected)
                 {
-                    if (expected)
-                    {
-                        PipelineContext.CurrentThread.WriteVerbose($"[Exists] -- The field {Field[i]} exists");
-                    }
+                    PipelineContext.CurrentThread.WriteVerbose($"[Exists] -- The field {Field[i]} exists");
                 }
             }
 

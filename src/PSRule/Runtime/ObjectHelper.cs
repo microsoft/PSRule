@@ -135,16 +135,6 @@ namespace PSRule.Runtime
 
                 return result;
             }
-
-            public bool IsSeparator()
-            {
-                return (Current == Separator);
-            }
-
-            public bool IsEnd()
-            {
-                return Position == Last;
-            }
         }
 
         public static bool GetField(IBindingContext bindingContext, object targetObject, string name, bool caseSensitive, out object value)

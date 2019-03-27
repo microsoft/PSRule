@@ -10,7 +10,7 @@ namespace PSRule.Configuration
     /// </summary>
     public sealed class BaselineConfiguration : DynamicObject, IDictionary<string, object>
     {
-        private Dictionary<string, object> _Configuration;
+        private readonly Dictionary<string, object> _Configuration;
 
         public BaselineConfiguration()
         {

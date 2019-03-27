@@ -70,14 +70,18 @@ namespace PSRule.Pipeline
             else if (sourceObject.BaseObject is FileInfo)
             {
                 var fileInfo = sourceObject.BaseObject as FileInfo;
-                var reader = new StreamReader(fileInfo.FullName);
-                json = reader.ReadToEnd();
+                using (var reader = new StreamReader(fileInfo.FullName))
+                {
+                    json = reader.ReadToEnd();
+                }
             }
             else
             {
                 var uri = sourceObject.BaseObject as Uri;
-                var webClient = new WebClient();
-                json = webClient.DownloadString(uri);
+                using (var webClient = new WebClient())
+                {
+                    json = webClient.DownloadString(uri);
+                }
             }
 
             var value = JsonConvert.DeserializeObject<PSObject[]>(json, new PSObjectArrayJsonConverter());
@@ -137,8 +141,10 @@ namespace PSRule.Pipeline
             else
             {
                 var uri = sourceObject.BaseObject as Uri;
-                var webClient = new WebClient();
-                reader = new StringReader(webClient.DownloadString(uri));
+                using (var webClient = new WebClient())
+                {
+                    reader = new StringReader(webClient.DownloadString(uri));
+                }
             }
 
             var parser = new Parser(reader);

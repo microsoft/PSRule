@@ -101,24 +101,6 @@ namespace PSRule.Pipeline
         }
 
         /// <summary>
-        /// Only consider properties that are strings with a value set.
-        /// </summary>
-        private static bool ShouldSkipBindingProperty(PSPropertyInfo propertyInfo)
-        {
-            return (!propertyInfo.IsGettable || propertyInfo.Value == null || !StringComparer.Ordinal.Equals(StringTypeName, propertyInfo.TypeNameOfValue));
-        }
-
-        private static bool IsTargetNameProperty(string name)
-        {
-            return (name[0] == 'T' || name[0] == 't') && StringComparer.OrdinalIgnoreCase.Equals(name, Property_TargetName);
-        }
-
-        private static bool IsNameProperty(string name)
-        {
-            return (name[0] == 'N' || name[0] == 'n') && StringComparer.OrdinalIgnoreCase.Equals(name, Property_Name);
-        }
-
-        /// <summary>
         /// Get the TargetType by reading TypeNames of the PSObject.
         /// </summary>
         /// <param name="targetObject">A PSObject to bind.</param>

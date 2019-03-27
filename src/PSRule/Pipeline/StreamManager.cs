@@ -13,15 +13,13 @@ namespace PSRule.Pipeline
     {
         private readonly IPipelineStream _Stream;
         private readonly VisitTargetObject _InputVisitor;
-
-        private ConcurrentQueue<PSObject> _Queue;
+        private readonly ConcurrentQueue<PSObject> _Queue;
 
         internal StreamManager(PSRuleOption option, IPipelineStream stream, VisitTargetObject input)
         {
             _Stream = stream;
             _InputVisitor = input;
             _Queue = new ConcurrentQueue<PSObject>();
-
             _Stream.Manager = this;
         }
 
