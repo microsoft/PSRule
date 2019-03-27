@@ -1,9 +1,11 @@
 
 ## Unreleased
 
-- Fix summary is not correctly serialized with JSON or YAML output format [#116](https://github.com/BernieWhite/PSRule/issues/116)
-- Fix missing properties on serialized YAML output [#115](https://github.com/BernieWhite/PSRule/issues/115)
-- Fix incorrect property name case of YAML serialized results [#114](https://github.com/BernieWhite/PSRule/issues/114)
+## v0.4.0-B190328 (pre-release)
+
+- Fix summary is not correctly serialized with JSON or YAML output format. [#116](https://github.com/BernieWhite/PSRule/issues/116)
+- Fix missing properties on serialized YAML output. [#115](https://github.com/BernieWhite/PSRule/issues/115)
+- Fix incorrect property name case of YAML serialized results. [#114](https://github.com/BernieWhite/PSRule/issues/114)
 
 ## v0.4.0-B190320 (pre-release)
 
@@ -15,8 +17,8 @@
 - Added support for using `-InputPath` instead of using `-InputObject` to handle serialized objects. [#106](https://github.com/BernieWhite/PSRule/issues/106)
   - `-Format` is automatically detected for `.yaml`, `.yml` and `.json` file extensions.
 - Added `-OutputFormat` parameter to serialize output from `Invoke-PSRule`. [#29](https://github.com/BernieWhite/PSRule/issues/29)
-- Added support for logging pass or fail outcomes to a data stream such as Error, Warning or Information [#97](https://github.com/BernieWhite/PSRule/issues/97)
-- **Breaking change** - Deprecated usage of the `-TargetName` parameter on the `Hint` keyword has been removed [#81](https://github.com/BernieWhite/PSRule/issues/81)
+- Added support for logging pass or fail outcomes to a data stream such as Error, Warning or Information. [#97](https://github.com/BernieWhite/PSRule/issues/97)
+- **Breaking change** - Deprecated usage of the `-TargetName` parameter on the `Hint` keyword has been removed. [#81](https://github.com/BernieWhite/PSRule/issues/81)
 
 ## v0.3.0
 
