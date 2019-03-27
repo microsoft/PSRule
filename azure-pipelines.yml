@@ -41,7 +41,7 @@ steps:
   displayName: 'Install Sonar scanner'
   condition: eq(variables['analysis'], 'true')
 
-- script: dotnet sonarscanner begin /k:"BernieWhite_PSRule" /o:"berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken) /d:sonar.projectVersion=$(Build.BuildNumber)
+- script: dotnet sonarscanner begin /k:"BernieWhite_PSRule" /o:"berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken) /v:"$(Build.BuildNumber)"
   displayName: 'Prepare SonarCloud'
   condition: eq(variables['analysis'], 'true')
 
