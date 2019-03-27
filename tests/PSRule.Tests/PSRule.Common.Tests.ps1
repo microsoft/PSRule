@@ -294,7 +294,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result -cmatch 'outcome: Pass' | Should -Be $True;
             $result -cmatch 'targetName: TestObject1' | Should -Be $True;
             $result -cmatch 'targetType: TestType' | Should -Be $True;
-            $result | Should -Match 'tag:(\r|\n){1,2}\s{2,}test: Test1';
+            $result | Should -Match 'tag:(\r|\n){1,2}\s{2,}(test: Test1|category: group1)';
             $result | Should -Not -Match 'targetObject:';
         }
 

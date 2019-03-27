@@ -90,9 +90,9 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Baseline.RuleName = new string[] { "Benchmark" };
+            option.Output.As = ResultFormat.Summary;
             var builder = PipelineBuilder.Invoke().Configure(option);
             builder.Source(new RuleSource[] { new RuleSource(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1"), null) });
-            builder.As(Configuration.ResultFormat.Summary);
             _InvokeSummaryPipeline = builder.Build();
         }
 

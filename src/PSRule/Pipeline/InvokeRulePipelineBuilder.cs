@@ -70,10 +70,10 @@ namespace PSRule.Pipeline
 
         public void UseLoggingPreferences(ActionPreference error, ActionPreference warning, ActionPreference verbose, ActionPreference information)
         {
-            _LogError = !(error == ActionPreference.Ignore);
-            _LogWarning = !(warning == ActionPreference.Ignore);
+            _LogError = (error != ActionPreference.Ignore);
+            _LogWarning = (warning != ActionPreference.Ignore);
             _LogVerbose = !(verbose == ActionPreference.Ignore || verbose == ActionPreference.SilentlyContinue);
-            _LogInformation = !(information == ActionPreference.Ignore);
+            _LogInformation = (information != ActionPreference.Ignore);
         }
 
         public void AddBindTargetNameAction(BindTargetNameAction action)
@@ -290,7 +290,6 @@ namespace PSRule.Pipeline
                 source: _Source,
                 filter: filter,
                 outcome: _Outcome,
-                resultFormat: _Option.Output.As.Value,
                 context: context
             );
 
