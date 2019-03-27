@@ -1,5 +1,7 @@
 ﻿using PSRule.Configuration;
+using PSRule.Rules;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Management.Automation;
 
 namespace PSRule.Pipeline
@@ -36,9 +38,9 @@ namespace PSRule.Pipeline
             _Stream.Begin();
         }
 
-        public void End()
+        public void End(IEnumerable<RuleSummaryRecord> summary)
         {
-            _Stream.End();
+            _Stream.End(summary);
         }
 
         public void Process(PSObject targetObject)

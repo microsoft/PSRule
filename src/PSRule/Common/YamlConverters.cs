@@ -7,6 +7,7 @@ using System.Reflection;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization.TypeInspectors;
 using YamlDotNet.Serialization.TypeResolvers;
 
@@ -187,32 +188,63 @@ namespace PSRule
     internal sealed class FieldYamlTypeInspector : TypeInspectorSkeleton
     {
         private readonly ITypeResolver _TypeResolver;
+        private readonly INamingConvention _NamingConvention;
 
         public FieldYamlTypeInspector()
         {
             _TypeResolver = new StaticTypeResolver();
+            _NamingConvention = new CamelCaseNamingConvention();
         }
 
         public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
         {
-            return type
-                .GetRuntimeFields().Where(f => !f.IsStatic && f.IsPublic)
-                .Select(p => new FieldDescriptor(p, _TypeResolver));
+            return GetPropertyDescriptor(type: type);
         }
 
-        private sealed class FieldDescriptor : IPropertyDescriptor
+        private IEnumerable<IPropertyDescriptor> GetPropertyDescriptor(Type type)
+        {
+            foreach (var f in SelectField(type: type))
+            {
+                yield return f;
+            }
+            
+            foreach (var p in SelectProperty(type: type))
+            {
+                yield return p;
+            }
+        }
+
+        private IEnumerable<Field> SelectField(Type type)
+        {
+            return type
+                .GetRuntimeFields()
+                .Where(f => !f.IsStatic && f.IsPublic)
+                .Select(p => new Field(p, _TypeResolver, _NamingConvention));
+        }
+
+        private IEnumerable<Property> SelectProperty(Type type)
+        {
+            return type
+                .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance)
+                .Where(p => p.CanRead && p.Name != "TargetObject")
+                .Select(p => new Property(p, _TypeResolver, _NamingConvention));
+        }
+
+        private sealed class Field : IPropertyDescriptor
         {
             private readonly FieldInfo _FieldInfo;
             private readonly ITypeResolver _TypeResolver;
+            private readonly INamingConvention _NamingConvention;
 
-            public FieldDescriptor(FieldInfo fieldInfo, ITypeResolver typeResolver)
+            public Field(FieldInfo fieldInfo, ITypeResolver typeResolver, INamingConvention namingConvention)
             {
                 _FieldInfo = fieldInfo;
                 _TypeResolver = typeResolver;
+                _NamingConvention = namingConvention;
                 ScalarStyle = ScalarStyle.Any;
             }
 
-            public string Name => _FieldInfo.Name;
+            public string Name => _NamingConvention.Apply(_FieldInfo.Name);
 
             public Type Type => _FieldInfo.FieldType;
 
@@ -237,6 +269,50 @@ namespace PSRule
             public IObjectDescriptor Read(object target)
             {
                 var propertyValue = _FieldInfo.GetValue(target);
+                var actualType = TypeOverride ?? _TypeResolver.Resolve(Type, propertyValue);
+                return new ObjectDescriptor(propertyValue, actualType, Type, ScalarStyle);
+            }
+        }
+
+        private sealed class Property : IPropertyDescriptor
+        {
+            private readonly PropertyInfo _PropertyInfo;
+            private readonly ITypeResolver _TypeResolver;
+            private readonly INamingConvention _NamingConvention;
+
+            public Property(PropertyInfo propertyInfo, ITypeResolver typeResolver, INamingConvention namingConvention)
+            {
+                _PropertyInfo = propertyInfo;
+                _TypeResolver = typeResolver;
+                _NamingConvention = namingConvention;
+                ScalarStyle = ScalarStyle.Any;
+            }
+
+            public string Name => _NamingConvention.Apply(_PropertyInfo.Name);
+
+            public Type Type => _PropertyInfo.PropertyType;
+
+            public Type TypeOverride { get; set; }
+
+            public int Order { get; set; }
+
+            public bool CanWrite => false;
+
+            public ScalarStyle ScalarStyle { get; set; }
+
+            public T GetCustomAttribute<T>() where T : Attribute
+            {
+                return _PropertyInfo.GetCustomAttributes(typeof(T), true).OfType<T>().FirstOrDefault();
+            }
+
+            public void Write(object target, object value)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IObjectDescriptor Read(object target)
+            {
+                var propertyValue = _PropertyInfo.GetValue(target);
                 var actualType = TypeOverride ?? _TypeResolver.Resolve(Type, propertyValue);
                 return new ObjectDescriptor(propertyValue, actualType, Type, ScalarStyle);
             }

@@ -22,7 +22,7 @@ namespace PSRule.Pipeline
         // Track whether Dispose has been called.
         private bool _Disposed = false;
 
-        internal InvokeRulePipeline(StreamManager streamManager, PSRuleOption option, RuleSource[] source, RuleFilter filter, RuleOutcome outcome, ResultFormat resultFormat, PipelineContext context)
+        internal InvokeRulePipeline(StreamManager streamManager, PSRuleOption option, RuleSource[] source, RuleFilter filter, RuleOutcome outcome, PipelineContext context)
             : base(context, option, source, filter)
         {
             _StreamManager = streamManager;
@@ -36,7 +36,7 @@ namespace PSRule.Pipeline
 
             _Outcome = outcome;
             _Summary = new Dictionary<string, RuleSummaryRecord>();
-            _ResultFormat = resultFormat;
+            _ResultFormat = option.Output.As.Value;
             _SuppressionFilter = new RuleSuppressionFilter(option.Suppression);
         }
 
@@ -76,18 +76,7 @@ namespace PSRule.Pipeline
 
         public void End()
         {
-            _StreamManager.End();
-        }
-
-        public IEnumerable<RuleSummaryRecord> GetSummary()
-        {
-            foreach (var s in _Summary.Values.ToArray())
-            {
-                if (_Outcome == RuleOutcome.All || (s.Outcome & _Outcome) > 0)
-                {
-                    yield return s;
-                }
-            }
+            _StreamManager.End(_Summary.Values.Where(r => _Outcome == RuleOutcome.All || (r.Outcome & _Outcome) > 0));
         }
 
         private InvokeResult ProcessTargetObject(PSObject targetObject)

@@ -25,7 +25,7 @@ execution:
   inconclusiveWarning: false
   notProcessedWarning: false
 
-  # Configure input options
+# Configure input options
 input:
   format: Yaml
   objectPath: items
@@ -35,7 +35,9 @@ logging:
   ruleFail: Warning
   rulePass: Warning
 
+# Configure output options
 output:
+  as: Summary
   format: Json
 
 # Configure rule suppression

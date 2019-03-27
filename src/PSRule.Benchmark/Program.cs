@@ -10,7 +10,7 @@ using System;
 
 namespace PSRule.Benchmark
 {
-    internal sealed class Program
+    internal static class Program
     {
         static void Main(string[] args)
         {

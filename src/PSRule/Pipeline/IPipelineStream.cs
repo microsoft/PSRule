@@ -1,4 +1,6 @@
-﻿using System.Management.Automation;
+﻿using PSRule.Rules;
+using System.Collections.Generic;
+using System.Management.Automation;
 
 namespace PSRule.Pipeline
 {
@@ -13,7 +15,7 @@ namespace PSRule.Pipeline
 
         void Process(PSObject targetObject);
 
-        void End();
+        void End(IEnumerable<RuleSummaryRecord> summary);
 
         void Output(InvokeResult result);
     }

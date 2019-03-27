@@ -25,6 +25,7 @@ The following options are available for use:
 - [Input.ObjectPath](#inputobjectpath)
 - [Logging.RuleFail](#loggingrulefail)
 - [Logging.RulePass](#loggingrulepass)
+- [Output.As](#outputas)
 - [Output.Format](#outputformat)
 - [Suppression](#rule-suppression)
 
@@ -438,6 +439,30 @@ logging:
   rulePass: Information
 ```
 
+### Output.As
+
+Configures the type of results to produce.
+
+This option only applies to `Invoke-PSRule`. `Invoke-PSRule` also includes a parameter `-As` to set this option at runtime. If specified, the `-As` parameter take precedence, over this option.
+
+The following options are available:
+
+- Detail - Return a record per rule per object.
+- Summary - Return summary information for per rule.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Output.As hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.As' = 'Summary' };
+```
+
+```yaml
+# YAML: Using the output/as property
+output:
+  as: Summary
+```
+
 ### Output.Format
 
 Configures the format that results will be presented in.
@@ -566,6 +591,7 @@ logging:
   rulePass: Information
 
 output:
+  as: Summary
   format: Json
 
 # Configure rule suppression
@@ -617,6 +643,7 @@ logging:
   rulePass: None
 
 output:
+  as: Detail
   format: None
 
 # Configure rule suppression

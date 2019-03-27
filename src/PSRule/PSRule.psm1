@@ -141,6 +141,10 @@ function Invoke-PSRule {
             $Option.Input.ObjectPath = $ObjectPath;
         }
 
+        if ($PSBoundParameters.ContainsKey('As')) {
+            $Option.Output.As = $As;
+        }
+
         if ($PSBoundParameters.ContainsKey('OutputFormat')) {
             $Option.Output.Format = $OutputFormat;
         }
@@ -149,10 +153,6 @@ function Invoke-PSRule {
         $builder.FilterBy($Tag);
         $builder.Source($sourceFiles);
         $builder.Limit($Outcome);
-
-        if ($PSBoundParameters.ContainsKey('As')) {
-            $builder.As($As);
-        }
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $inputPaths = GetFilePath -Path $InputPath -Verbose:$VerbosePreference;
@@ -181,10 +181,6 @@ function Invoke-PSRule {
     end {
         if ($Null -ne $pipeline) {
             try {
-                if ($As -eq [PSRule.Configuration.ResultFormat]::Summary) {
-                    $pipeline.GetSummary();
-                }
-
                 $pipeline.End();
             }
             finally {

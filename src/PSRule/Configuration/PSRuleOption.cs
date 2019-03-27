@@ -251,6 +251,11 @@ namespace PSRule.Configuration
                 option.Logging.RulePass = (OutcomeLogStream)Enum.Parse(typeof(OutcomeLogStream), (string)value);
             }
 
+            if (index.TryGetValue("output.as", out value))
+            {
+                option.Output.As = (ResultFormat)Enum.Parse(typeof(ResultFormat), (string)value);
+            }
+
             if (index.TryGetValue("output.format", out value))
             {
                 option.Output.Format = (OutputFormat)Enum.Parse(typeof(OutputFormat), (string)value);

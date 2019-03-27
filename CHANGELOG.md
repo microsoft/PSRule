@@ -1,6 +1,10 @@
 
 ## Unreleased
 
+- Fix summary is not correctly serialized with JSON or YAML output format [#116](https://github.com/BernieWhite/PSRule/issues/116)
+- Fix missing properties on serialized YAML output [#115](https://github.com/BernieWhite/PSRule/issues/115)
+- Fix incorrect property name case of YAML serialized results [#114](https://github.com/BernieWhite/PSRule/issues/114)
+
 ## v0.4.0-B190320 (pre-release)
 
 - Fix incorrect JSON de-serialization of nested arrays. [#109](https://github.com/BernieWhite/PSRule/issues/109)
