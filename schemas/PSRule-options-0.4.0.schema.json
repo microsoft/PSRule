@@ -186,6 +186,15 @@
             "type": "object",
             "description": "Options that affect how output is generated.",
             "properties": {
+                "as": {
+                    "type": "string",
+                    "description": "Determine if detailed or summary results are generated.",
+                    "enum": [
+                        "Detail",
+                        "Summary"
+                    ],
+                    "default": "Detail"
+                },
                 "format": {
                     "type": "string",
                     "description": "The output format.",

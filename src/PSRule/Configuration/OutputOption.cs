@@ -25,6 +25,9 @@ namespace PSRule.Configuration
             Format = option.Format;
         }
 
+        /// <summary>
+        /// The type of result to produce.
+        /// </summary>
         [DefaultValue(null)]
         public ResultFormat? As { get; set; }
 

@@ -1016,6 +1016,23 @@ Describe 'New-PSRuleOption' -Tag 'Option','Common','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Output.As' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Output.As | Should -Be 'Detail';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Output.As' = 'Summary' };
+            $option.Output.As | Should -Be Summary;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Output.As | Should -Be Summary;
+        }
+    }
+
     Context 'Read Output.Format' {
         It 'from default' {
             $option = New-PSRuleOption;
