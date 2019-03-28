@@ -18,9 +18,7 @@ $PSModule.OnRemove = {
     Remove-Module -ModuleInfo $binaryModule;
 }
 
-[PSRule.Configuration.PSRuleOption]::GetWorkingPath = {
-    return Get-Location;
-}
+[PSRule.Configuration.PSRuleOption]::UseExecutionContext($ExecutionContext);
 
 #
 # Localization
