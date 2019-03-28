@@ -12,11 +12,12 @@ namespace PSRule.Pipeline
     /// </summary>
     public sealed class InvokeRulePipelineBuilder
     {
+        private readonly PSRuleOption _Option;
+        private readonly PipelineLogger _Logger;
+
         private RuleSource[] _Source;
-        private PSRuleOption _Option;
         private Hashtable _Tag;
         private RuleOutcome _Outcome;
-        private PipelineLogger _Logger;
         private BindTargetName _BindTargetNameHook;
         private BindTargetName _BindTargetTypeHook;
         private VisitTargetObject _VisitTargetObject;

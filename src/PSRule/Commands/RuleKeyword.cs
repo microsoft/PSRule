@@ -40,25 +40,23 @@ namespace PSRule.Commands
             {
                 var dictionary = (IDictionary)baseObject;
 
-                foreach (var k in dictionary.Keys)
+                foreach (var key in dictionary.Keys)
                 {
-                    if (comparer.Equals(name, k))
+                    if (comparer.Equals(name, key))
                     {
-                        value = dictionary[k];
+                        value = dictionary[key];
                         return true;
                     }
                 }
             }
             // Handle PSObjects
-            else if (targetObject is PSObject)
+            else if (targetObject is PSObject pso)
             {
-                var psobject = (PSObject)targetObject;
-
-                foreach (var p in psobject.Properties)
+                foreach (var prop in pso.Properties)
                 {
-                    if (comparer.Equals(name, p.Name))
+                    if (comparer.Equals(name, prop.Name))
                     {
-                        value = p.Value;
+                        value = prop.Value;
                         return true;
                     }
                 }

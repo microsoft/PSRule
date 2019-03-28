@@ -10,10 +10,11 @@ namespace PSRule.Pipeline
     /// </summary>
     public sealed class GetRulePipelineBuilder
     {
+        private readonly PSRuleOption _Option;
+        private readonly PipelineLogger _Logger;
+
         private RuleSource[] _Source;
-        private PSRuleOption _Option;
         private Hashtable _Tag;
-        private PipelineLogger _Logger;
         private bool _LogError;
         private bool _LogWarning;
         private bool _LogVerbose;
@@ -63,8 +64,8 @@ namespace PSRule.Pipeline
 
         public void UseLoggingPreferences(ActionPreference error, ActionPreference warning, ActionPreference verbose, ActionPreference information)
         {
-            _LogError = !(error == ActionPreference.Ignore);
-            _LogWarning = !(warning == ActionPreference.Ignore);
+            _LogError = (error != ActionPreference.Ignore);
+            _LogWarning = (warning != ActionPreference.Ignore);
             _LogVerbose = !(verbose == ActionPreference.Ignore || verbose == ActionPreference.SilentlyContinue);
             _LogInformation = !(information == ActionPreference.Ignore || information == ActionPreference.SilentlyContinue);
         }

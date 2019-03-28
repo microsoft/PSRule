@@ -12,17 +12,17 @@ using System.Text;
 
 namespace PSRule.Host
 {
-    internal sealed class HostHelper
+    internal static class HostHelper
     {
-        public static IEnumerable<Rule> GetRule(PSRuleOption option, RuleSource[] source, RuleFilter filter)
+        public static IEnumerable<Rule> GetRule(RuleSource[] source, RuleFilter filter)
         {
-            return ToRule(GetLanguageBlock(option: option, sources: source), filter);
+            return ToRule(GetLanguageBlock(sources: source), filter);
         }
 
-        public static DependencyGraph<RuleBlock> GetRuleBlockGraph(PSRuleOption option, RuleSource[] source, RuleFilter filter)
+        public static DependencyGraph<RuleBlock> GetRuleBlockGraph(RuleSource[] source, RuleFilter filter)
         {
             var builder = new DependencyGraphBuilder<RuleBlock>();
-            builder.Include(items: GetLanguageBlock(option: option, sources: source).OfType<RuleBlock>(), filter: (b) => filter == null || filter.Match(b));
+            builder.Include(items: GetLanguageBlock(sources: source).OfType<RuleBlock>(), filter: (b) => filter == null || filter.Match(b));
             return builder.Build();
         }
 
@@ -76,7 +76,7 @@ namespace PSRule.Host
         /// <param name="context"></param>
         /// <param name="sources"></param>
         /// <returns></returns>
-        private static IEnumerable<ILanguageBlock> GetLanguageBlock(PSRuleOption option, RuleSource[] sources)
+        private static IEnumerable<ILanguageBlock> GetLanguageBlock(RuleSource[] sources)
         {
             var results = new Collection<ILanguageBlock>();
 

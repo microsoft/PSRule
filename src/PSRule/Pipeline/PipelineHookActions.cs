@@ -11,7 +11,6 @@ namespace PSRule.Pipeline
 {
     internal static class PipelineHookActions
     {
-        private const string StringTypeName = "System.String";
         private const string Property_TargetName = "TargetName";
         private const string Property_Name = "Name";
 
@@ -49,8 +48,6 @@ namespace PSRule.Pipeline
         public static string CustomTargetNameBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next)
         {
             string targetName = null;
-
-            var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
 
             for (var i = 0; i < propertyNames.Length && targetName == null; i++)
             {
