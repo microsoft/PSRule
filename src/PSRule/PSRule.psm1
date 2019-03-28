@@ -164,7 +164,7 @@ function Invoke-PSRule {
     }
 
     process {
-        if ($Null -ne $pipeline -and $pipeline.RuleCount -gt 0) {
+        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue) -and $pipeline.RuleCount -gt 0) {
             try {
                 # Process pipeline objects
                 $pipeline.Process($InputObject);
@@ -177,7 +177,7 @@ function Invoke-PSRule {
     }
 
     end {
-        if ($Null -ne $pipeline) {
+        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
             try {
                 $pipeline.End();
             }
@@ -297,7 +297,7 @@ function Test-PSRuleTarget {
     }
 
     process {
-        if ($Null -ne $pipeline -and $pipeline.RuleCount -gt 0) {
+        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue) -and $pipeline.RuleCount -gt 0) {
             try {
                 # Process pipeline objects
                 $pipeline.Process($InputObject);
@@ -310,7 +310,7 @@ function Test-PSRuleTarget {
     }
 
     end {
-        if ($Null -ne $pipeline) {
+        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
             try
             {
                 $pipeline.End();
@@ -411,7 +411,7 @@ function Get-PSRule {
     }
 
     process {
-        if ($Null -ne $pipeline) {
+        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
             try {
                 # Get matching rule definitions
                 $pipeline.Process();
@@ -424,7 +424,7 @@ function Get-PSRule {
     }
 
     end {
-        if ($Null -ne $pipeline) {
+        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
             $pipeline.Dispose();
         }
         Write-Verbose -Message "[Get-PSRule]::END";
