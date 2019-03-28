@@ -53,49 +53,6 @@ function CopyModuleFiles {
     }
 }
 
-function SendAppveyorTestResult {
-
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $True)]
-        [String]$Uri,
-
-        [Parameter(Mandatory = $True)]
-        [String]$Path,
-
-        [Parameter(Mandatory = $False)]
-        [String]$Include = '*'
-    )
-
-    begin {
-        Write-Verbose -Message "[SendAppveyorTestResult] BEGIN::";
-    }
-
-    process {
-
-        try {
-            $webClient = New-Object -TypeName 'System.Net.WebClient';
-
-            foreach ($resultFile in (Get-ChildItem -Path $Path -Filter $Include -File -Recurse)) {
-
-                Write-Verbose -Message "[SendAppveyorTestResult] -- Uploading file: $($resultFile.FullName)";
-
-                $webClient.UploadFile($Uri, "$($resultFile.FullName)");
-            }
-        }
-        catch {
-            throw $_.Exception;
-        }
-        finally {
-            $webClient = $Null;
-        }
-    }
-
-    end {
-        Write-Verbose -Message "[SendAppveyorTestResult] END::";
-    }
-}
-
 task BuildDotNet {
     exec {
         # Build library
@@ -230,10 +187,11 @@ task PSScriptAnalyzer {
 task TestModule TestDotNet, Pester, PSScriptAnalyzer, {
 
     # Run Pester tests
-    $pesterParams = @{ Path = $PWD; OutputFile = 'reports/Pester.xml'; OutputFormat = 'NUnitXml'; PesterOption = @{ IncludeVSCodeMarker = $True }; PassThru = $True; };
+    $pesterParams = @{ Path = $PWD; OutputFile = 'reports/pester-unit.xml'; OutputFormat = 'NUnitXml'; PesterOption = @{ IncludeVSCodeMarker = $True }; PassThru = $True; };
 
     if ($CodeCoverage) {
         $pesterParams.Add('CodeCoverage', (Join-Path -Path $PWD -ChildPath 'out/modules/**/*.psm1'));
+        $pesterParams.Add('CodeCoverageOutputFile', (Join-Path -Path $PWD -ChildPath reports/pester-coverage.xml));
     }
 
     if (!(Test-Path -Path reports)) {
@@ -241,10 +199,6 @@ task TestModule TestDotNet, Pester, PSScriptAnalyzer, {
     }
 
     $results = Invoke-Pester @pesterParams;
-
-    if (![String]::IsNullOrEmpty($Env:APPVEYOR_JOB_ID)) {
-        SendAppveyorTestResult -Uri "https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)" -Path '.\reports' -Include '*.xml';
-    }
 
     # Throw an error if pester tests failed
     if ($Null -eq $results) {
