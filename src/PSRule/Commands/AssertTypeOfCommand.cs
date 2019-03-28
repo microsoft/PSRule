@@ -19,7 +19,6 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             var inputObject = InputObject ?? GetTargetObject();
-
             var result = false;
 
             if (inputObject != null)

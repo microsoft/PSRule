@@ -1,5 +1,4 @@
-﻿using PSRule.Pipeline;
-using System.Management.Automation;
+﻿using System.Management.Automation;
 
 namespace PSRule.Commands
 {

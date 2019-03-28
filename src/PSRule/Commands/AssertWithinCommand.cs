@@ -38,7 +38,6 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             var targetObject = InputObject ?? GetTargetObject();
-
             var result = false;
 
             if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field, caseSensitive: false, value: out object fieldValue))
