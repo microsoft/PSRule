@@ -84,9 +84,9 @@ namespace PSRule.Commands
                 return null;
             }
 
-            if (value is PSObject)
+            if (value is PSObject pso)
             {
-                var baseObject = ((PSObject)value).BaseObject;
+                var baseObject = pso.BaseObject;
 
                 if (baseObject != null)
                 {
