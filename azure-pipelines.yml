@@ -82,6 +82,7 @@ steps:
 
 # Publish Code Coverage Results
 - task: PublishCodeCoverageResults@1
+  displayName: 'Publish Pester code coverage'
   inputs:
     codeCoverageTool: 'JaCoCo'
     summaryFileLocation: 'reports/pester-coverage.xml'

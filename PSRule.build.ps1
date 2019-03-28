@@ -23,6 +23,10 @@ param (
     [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules)
 )
 
+if ($Env:Coverage -eq 'true') {
+    $CodeCoverage = $True;
+}
+
 # Copy the PowerShell modules files to the destination path
 function CopyModuleFiles {
 
@@ -63,7 +67,7 @@ task BuildDotNet {
 task TestDotNet {
     exec {
         # Test library
-        dotnet test --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Tests
+        dotnet test --collect:"Code Coverage" --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Tests
     }
 }
 
