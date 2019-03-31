@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Management.Automation;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -11,7 +12,7 @@ namespace PSRule.Configuration
     /// <summary>
     /// A delgate to allow callback to PowerShell to get current working path.
     /// </summary>
-    public delegate string PathDelegate();
+    internal delegate string PathDelegate();
 
     /// <summary>
     /// A structure that stores PSRule configuration options.
@@ -26,6 +27,11 @@ namespace PSRule.Configuration
             Logging = LoggingOption.Default,
             Output = OutputOption.Default
         };
+
+        /// <summary>
+        /// A callback that is overridden by PowerShell so that the current working path can be retrieved.
+        /// </summary>
+        private static PathDelegate _GetWorkingPath = () => Directory.GetCurrentDirectory();
 
         public PSRuleOption()
         {
@@ -52,11 +58,6 @@ namespace PSRule.Configuration
             Execution = new ExecutionOption(option.Execution);
             Pipeline = new PipelineHook(option.Pipeline);
         }
-
-        /// <summary>
-        /// A callback that is overridden by PowerShell so that the current working path can be retrieved.
-        /// </summary>
-        public static PathDelegate GetWorkingPath = () => Directory.GetCurrentDirectory();
 
         /// <summary>
         /// Options that specify the rules to evaluate or exclude and their configuration.
@@ -141,6 +142,23 @@ namespace PSRule.Configuration
                 .Build();
 
             return d.Deserialize<PSRuleOption>(yaml) ?? new PSRuleOption();
+        }
+
+        public static void UseExecutionContext(EngineIntrinsics executionContext)
+        {
+            if (executionContext == null)
+            {
+                _GetWorkingPath = () => Directory.GetCurrentDirectory();
+
+                return;
+            }
+
+            _GetWorkingPath = () => executionContext.SessionState.Path.CurrentFileSystemLocation.Path;
+        }
+
+        public static string GetWorkingPath()
+        {
+            return _GetWorkingPath();
         }
 
         /// <summary>

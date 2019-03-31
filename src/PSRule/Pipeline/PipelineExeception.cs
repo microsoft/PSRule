@@ -10,7 +10,7 @@ namespace PSRule.Pipeline
         /// <summary>
         /// Creates a pipeline exception.
         /// </summary>
-        public PipelineExeception()
+        protected PipelineExeception()
         {
         }
 
@@ -18,7 +18,7 @@ namespace PSRule.Pipeline
         /// Creates a pipeline exception.
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
-        public PipelineExeception(string message) : base(message)
+        protected PipelineExeception(string message) : base(message)
         {
         }
 
@@ -27,7 +27,8 @@ namespace PSRule.Pipeline
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
         /// <param name="innerException">A nested exception that caused the issue.</param>
-        public PipelineExeception(string message, Exception innerException) : base(message, innerException)
+        protected PipelineExeception(string message, Exception innerException) :
+            base(message, innerException)
         {
         }
     }

@@ -11,7 +11,6 @@ namespace PSRule.Pipeline
 {
     internal static class PipelineHookActions
     {
-        private const string StringTypeName = "System.String";
         private const string Property_TargetName = "TargetName";
         private const string Property_Name = "Name";
 
@@ -49,8 +48,6 @@ namespace PSRule.Pipeline
         public static string CustomTargetNameBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next)
         {
             string targetName = null;
-
-            var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
 
             for (var i = 0; i < propertyNames.Length && targetName == null; i++)
             {
@@ -98,24 +95,6 @@ namespace PSRule.Pipeline
             var json = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(targetObject, settings));
             var hash = PipelineContext.CurrentThread.ObjectHashAlgorithm.ComputeHash(json);
             return string.Join("", hash.Select(b => b.ToString("x2")).ToArray());
-        }
-
-        /// <summary>
-        /// Only consider properties that are strings with a value set.
-        /// </summary>
-        private static bool ShouldSkipBindingProperty(PSPropertyInfo propertyInfo)
-        {
-            return (!propertyInfo.IsGettable || propertyInfo.Value == null || !StringComparer.Ordinal.Equals(StringTypeName, propertyInfo.TypeNameOfValue));
-        }
-
-        private static bool IsTargetNameProperty(string name)
-        {
-            return (name[0] == 'T' || name[0] == 't') && StringComparer.OrdinalIgnoreCase.Equals(name, Property_TargetName);
-        }
-
-        private static bool IsNameProperty(string name)
-        {
-            return (name[0] == 'N' || name[0] == 'n') && StringComparer.OrdinalIgnoreCase.Equals(name, Property_Name);
         }
 
         /// <summary>

@@ -19,17 +19,12 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             var inputObject = InputObject ?? GetTargetObject();
-
             var result = false;
 
             if (inputObject != null)
             {
                 var actualTypeNames = PSObject.AsPSObject(inputObject).TypeNames.ToArray();
-
-                if (actualTypeNames.Intersect(TypeName).Count() > 0)
-                {
-                    result = true;
-                }
+                result = (actualTypeNames.Intersect(TypeName).Any());
             }
 
             PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.TypeOf, outcome: result);

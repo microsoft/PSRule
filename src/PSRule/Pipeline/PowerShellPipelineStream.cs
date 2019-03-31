@@ -68,21 +68,18 @@ namespace PSRule.Pipeline
 
         public void End(IEnumerable<RuleSummaryRecord> summary)
         {
-            if (_Results != null)
+            if (_Results != null && _ResultFormat == ResultFormat.Detail)
             {
-                if (_ResultFormat == ResultFormat.Detail)
-                {
-                    var results = _Results.SelectMany(r => r.AsRecord()).ToArray();
-                    _Results.Clear();
+                var results = _Results.SelectMany(r => r.AsRecord()).ToArray();
+                _Results.Clear();
 
-                    if (_OutputFormat == OutputFormat.Json)
-                    {
-                        WriteObjectJson(results);
-                    }
-                    else if (_OutputFormat == OutputFormat.Yaml)
-                    {
-                        WriteObjectYaml(results);
-                    }
+                if (_OutputFormat == OutputFormat.Json)
+                {
+                    WriteObjectJson(results);
+                }
+                else if (_OutputFormat == OutputFormat.Yaml)
+                {
+                    WriteObjectYaml(results);
                 }
             }
 

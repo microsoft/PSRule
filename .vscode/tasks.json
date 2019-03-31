@@ -21,7 +21,11 @@
             "label": "coverage",
             "type": "shell",
             "command": "Invoke-Build Test -CodeCoverage",
-            "problemMatcher": [ "$pester" ]
+            "problemMatcher": [ "$pester" ],
+            "presentation": {
+                "clear": true,
+                "panel": "dedicated"
+            }
         },
         {
             "label": "build",

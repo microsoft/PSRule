@@ -93,11 +93,6 @@ namespace PSRule.Host
                     }
                 }
 
-                //if (target.State == DependencyTargetState.FailDependency)
-                //{
-                //    continue;
-                //}
-
                 yield return target;
             }
         }
@@ -117,19 +112,15 @@ namespace PSRule.Host
         {
             if (!_Disposed)
             {
-                if (disposing)
+                if (disposing && _Targets != null && _Targets.Length > 0 && typeof(T) is IDisposable)
                 {
-                    if (_Targets != null && _Targets.Length > 0 && typeof(T) is IDisposable)
+                    for (var i = 0; i < _Targets.Length; i++)
                     {
-                        for (var i = 0; i < _Targets.Length; i++)
-                        {
-                            ((IDisposable)_Targets[i].Value).Dispose();
-                        }
+                        ((IDisposable)_Targets[i].Value).Dispose();
                     }
                 }
 
                 _Index.Clear();
-
                 _Disposed = true;
             }
         }

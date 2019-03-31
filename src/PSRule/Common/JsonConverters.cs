@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PSRule.Resources;
 using System;
 using System.Collections.Generic;
 using System.Management.Automation;
@@ -19,7 +20,7 @@ namespace PSRule
         {
             if (!(value is PSObject obj))
             {
-                throw new ArgumentException();
+                throw new ArgumentException(message: PSRuleResources.SerializeNullPSObject, paramName: nameof(value));
             }
 
             writer.WriteStartObject();

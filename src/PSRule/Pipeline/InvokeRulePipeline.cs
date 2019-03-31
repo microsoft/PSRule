@@ -26,7 +26,7 @@ namespace PSRule.Pipeline
             : base(context, option, source, filter)
         {
             _StreamManager = streamManager;
-            _RuleGraph = HostHelper.GetRuleBlockGraph(_Option, _Source, _Filter);
+            _RuleGraph = HostHelper.GetRuleBlockGraph(source: _Source, filter: _Filter);
             RuleCount = _RuleGraph.Count;
 
             if (RuleCount == 0)
@@ -126,7 +126,7 @@ namespace PSRule.Pipeline
                         ruleBlockTarget.Fail();
                     }
 
-                    AddToSummary(ruleBlock: ruleBlockTarget.Value, targetName: ruleRecord.TargetName, outcome: ruleRecord.Outcome);
+                    AddToSummary(ruleBlock: ruleBlockTarget.Value, outcome: ruleRecord.Outcome);
 
                     if (ShouldOutput(ruleRecord.Outcome))
                     {
@@ -157,7 +157,7 @@ namespace PSRule.Pipeline
         /// <summary>
         /// Add rule result to summary.
         /// </summary>
-        private void AddToSummary(RuleBlock ruleBlock, string targetName, RuleOutcome outcome)
+        private void AddToSummary(RuleBlock ruleBlock, RuleOutcome outcome)
         {
             if (!_Summary.TryGetValue(ruleBlock.RuleId, out RuleSummaryRecord s))
             {

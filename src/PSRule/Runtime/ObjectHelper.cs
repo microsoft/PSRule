@@ -135,16 +135,6 @@ namespace PSRule.Runtime
 
                 return result;
             }
-
-            public bool IsSeparator()
-            {
-                return (Current == Separator);
-            }
-
-            public bool IsEnd()
-            {
-                return Position == Last;
-            }
         }
 
         public static bool GetField(IBindingContext bindingContext, object targetObject, string name, bool caseSensitive, out object value)
@@ -174,27 +164,20 @@ namespace PSRule.Runtime
             // Handle field tokens
             if (token.Type == NameTokenType.Field)
             {
-                var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
-
                 // Handle dictionaries and hashtables
                 if (typeof(IDictionary).IsAssignableFrom(baseType))
                 {
                     var dictionary = (IDictionary)baseObject;
 
-                    foreach (var k in dictionary.Keys)
+                    if (dictionary.GetFieldName(fieldName: token.Name, caseSensitive: caseSensitive, value: out field))
                     {
-                        if (comparer.Equals(token.Name, k))
-                        {
-                            field = dictionary[k];
-                            foundField = true;
-                            break;
-                        }
+                        foundField = true;
                     }
                 }
                 // Handle PSObjects
-                else if (targetObject is PSObject)
+                else if (targetObject is PSObject pso)
                 {
-                    if (((PSObject)targetObject).PropertyValue(propertyName: token.Name, caseSensitive: caseSensitive, value: out field))
+                    if (pso.PropertyValue(propertyName: token.Name, caseSensitive: caseSensitive, value: out field))
                     {
                         foundField = true;
                     }

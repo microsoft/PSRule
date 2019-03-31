@@ -11,6 +11,7 @@ strategy:
       imageName: 'vs2017-win2016'
       publishModule: 'true'
       analysis: 'true'
+      coverage: 'true'
 
 variables:
   buildConfiguration: 'Release'
@@ -41,7 +42,7 @@ steps:
   displayName: 'Install Sonar scanner'
   condition: eq(variables['analysis'], 'true')
 
-- script: dotnet sonarscanner begin /k:"BernieWhite_PSRule" /o:"berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken)
+- script: dotnet sonarscanner begin /k:"BernieWhite_PSRule" /o:"berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken) /v:"$(Build.BuildNumber)"
   displayName: 'Prepare SonarCloud'
   condition: eq(variables['analysis'], 'true')
 
@@ -72,12 +73,23 @@ steps:
   inputs:
     testRunTitle: 'Pester on $(imageName)'
     testRunner: NUnit
-    testResultsFiles: 'reports/*.xml'
+    testResultsFiles: 'reports/pester-unit.xml'
     mergeTestResults: true
     platform: $(imageName)
     configuration: $(buildConfiguration)
     publishRunAttachments: true
   condition: succeededOrFailed()
+
+# Publish Code Coverage Results
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish Pester code coverage'
+  inputs:
+    codeCoverageTool: 'JaCoCo'
+    summaryFileLocation: 'reports/pester-coverage.xml'
+    #reportDirectory: # Optional
+    #additionalCodeCoverageFiles: # Optional
+    #failIfCoverageEmpty: false # Optional
+  condition: eq(variables['coverage'], 'true')
 
 # Generate artifacts
 - task: PublishBuildArtifacts@1

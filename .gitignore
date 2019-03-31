@@ -11,3 +11,4 @@ src/**/*-help.xml
 src/**/*.help.txt
 BenchmarkDotNet.Artifacts/
 .sonarqube/
+TestResults/

@@ -104,5 +104,14 @@ namespace PSRule.Resources {
                 return ResourceManager.GetString("RuleNotFound", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can not serialize a null PSObject..
+        /// </summary>
+        internal static string SerializeNullPSObject {
+            get {
+                return ResourceManager.GetString("SerializeNullPSObject", resourceCulture);
+            }
+        }
     }
 }

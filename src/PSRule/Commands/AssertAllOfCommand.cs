@@ -16,7 +16,6 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             var invokeResult = RuleConditionResult.Create(Body.Invoke());
-
             var result = invokeResult.AllOf();
 
             PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.AllOf, pass: invokeResult.Pass, count: invokeResult.Count, outcome: result);
