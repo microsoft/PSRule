@@ -1,6 +1,21 @@
 
 ## Unreleased
 
+## v0.4.0
+
+What's changed since v0.3.0:
+
+- Fix incorrect JSON de-serialization. [#109](https://github.com/BernieWhite/PSRule/issues/109) [#111](https://github.com/BernieWhite/PSRule/issues/111)
+- Added support for using `-InputPath` instead of using `-InputObject` to handle serialized objects. [#106](https://github.com/BernieWhite/PSRule/issues/106)
+  - `-Format` is automatically detected for `.yaml`, `.yml` and `.json` file extensions.
+- Added `-OutputFormat` parameter to serialize output from `Invoke-PSRule` as YAML or JSON. [#29](https://github.com/BernieWhite/PSRule/issues/29)
+- Added support for logging pass or fail outcomes to a data stream such as Error, Warning or Information. [#97](https://github.com/BernieWhite/PSRule/issues/97)
+- **Breaking change** - Deprecated usage of the `-TargetName` parameter on the `Hint` keyword has been removed. [#81](https://github.com/BernieWhite/PSRule/issues/81)
+
+What's changed since pre-release  v0.4.0-B190328:
+
+- No additional changes
+
 ## v0.4.0-B190328 (pre-release)
 
 - Fix summary is not correctly serialized with JSON or YAML output format. [#116](https://github.com/BernieWhite/PSRule/issues/116)
