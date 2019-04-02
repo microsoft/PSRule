@@ -162,6 +162,7 @@ Rule 'ExistsTestNegative' -Tag @{ keyword = 'Exists' } {
         Exists 'NotName1','NotName2'
         Exists 'name' -CaseSensitive
         Exists 'NotValue.Value1'
+        Exists 'Properties.value'
     }
 }
 

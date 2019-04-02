@@ -24,6 +24,7 @@ Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
             Value = @{
                 Value1 = 1
             }
+            Properties = $Null
         }
 
         $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ keyword = 'Exists' };
