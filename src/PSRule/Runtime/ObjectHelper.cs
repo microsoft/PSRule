@@ -156,6 +156,13 @@ namespace PSRule.Runtime
         private static bool GetField(object targetObject, NameToken token, bool caseSensitive, out object value)
         {
             var baseObject = GetBaseObject(targetObject);
+
+            if (baseObject == null)
+            {
+                value = null;
+                return false;
+            }
+
             var baseType = baseObject.GetType();
 
             object field = null;

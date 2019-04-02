@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Fix null reference exception when traversing null field [#123](https://github.com/BernieWhite/PSRule/issues/123)
+
 ## v0.4.0
 
 What's changed since v0.3.0:
