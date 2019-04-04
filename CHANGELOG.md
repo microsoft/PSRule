@@ -2,6 +2,7 @@
 ## Unreleased
 
 - Fix null reference exception when traversing null field [#123](https://github.com/BernieWhite/PSRule/issues/123)
+- Fix missing help topics for options and variables [#125](https://github.com/BernieWhite/PSRule/issues/125)
 
 ## v0.4.0
 
