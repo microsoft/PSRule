@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRule.html",
-          "hash": "pYEgaAgDxX2kfo07eZqtvQ=="
+          "hash": "SFoeEh8uCKqPYEBTqb0pFQ=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Invoke-PSRule.html",
-          "hash": "6JMKehnPJSK8vnHVKL9cjg=="
+          "hash": "QkYIaFmMgvdQ4GumZ8SwyA=="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "Qr9d9GDMOMlEFDZiOFrTZA=="
+          "hash": "eBvIdcppRx6+BskKhJ/0Zg=="
         }
       },
       "is_incremental": false,
@@ -45,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/PSRule.html",
-          "hash": "mJdY4H1qQMgIEm0+y5lVLw=="
+          "hash": "L/Jero9ygsmA9txJz0w7qA=="
         }
       },
       "is_incremental": false,
@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Test-PSRuleTarget.html",
-          "hash": "FVf7TNRsqL2dfihGTFDqmg=="
+          "hash": "OnmecTj7TdSz7jr/sAARQg=="
         }
       },
       "is_incremental": false,
@@ -81,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "VPGlEw/bh34KcEgamF1qHw=="
+          "hash": "g15XlkDZnUPuLPl6c+tOtQ=="
         }
       },
       "is_incremental": false,
@@ -93,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Variables.html",
-          "hash": "NmGIsCLAlE0C8KfKFpPpeg=="
+          "hash": "b0k2bMp9foqbdLyshaX79A=="
         }
       },
       "is_incremental": false,
@@ -105,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "5F0pT1lfLxM9F8B1CCh/2Q=="
+          "hash": "NpgR3dtUPdotTXyI1Y/Gvg=="
         }
       },
       "is_incremental": false,
@@ -117,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "keywords/PSRule/en-US/about_PSRule_Keywords.html",
-          "hash": "wCcgQaYDlsa9tC7RI0MS7Q=="
+          "hash": "qQPr5+bqq2SolIH+05MvSA=="
         }
       },
       "is_incremental": false,
@@ -140,7 +140,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/azure-resources/azure-resources.html",
-          "hash": "pXuHWzJe5S+eplfsyK/RTg=="
+          "hash": "G2EwPT+kO/SphgJiKh84jw=="
         }
       },
       "is_incremental": false,
@@ -188,7 +188,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/azure-tags/azure-tags.html",
-          "hash": "fp2zXMKhHvCZkl/wtwhF+w=="
+          "hash": "yCgDH+FZi1hwO2CwZQUgFw=="
         }
       },
       "is_incremental": false,
@@ -222,7 +222,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/benchmark/PSRule.Benchmark.PSRule-report-github.html",
-          "hash": "+OyXIjGrJ44WYkRDTYp67Q=="
+          "hash": "umrjjaobWZksojlfKQ/HKA=="
         }
       },
       "is_incremental": false,
@@ -256,7 +256,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/install-instructions.html",
-          "hash": "A31w/8siVNxTiSgFVdzTaA=="
+          "hash": "M9z14zaL64xZg7blFDSrvg=="
         }
       },
       "is_incremental": false,
@@ -271,7 +271,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/kubernetes-resources/kubernetes-resources.html",
-          "hash": "T5QS56z7SfUdEb1z0daxZQ=="
+          "hash": "aRpabeDGX8j+Gd/Vh00/sw=="
         }
       },
       "is_incremental": false,
@@ -305,12 +305,20 @@
     {
       "status": {
         "can_incremental": false,
-        "details": "Cannot build incrementally because docfx version changed from 2.40.4.0 to 2.40.10.0.",
+        "details": "Disable incremental build by force rebuild option.",
         "incrementalPhase": "build",
         "total_file_count": 0,
-        "skipped_file_count": 0
+        "skipped_file_count": 0,
+        "full_build_reason_code": "ForceRebuild"
       },
       "processors": {
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
@@ -322,13 +330,6 @@
           "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 14,
-          "skipped_file_count": 0
-        },
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build",
-          "total_file_count": 0,
           "skipped_file_count": 0
         }
       }

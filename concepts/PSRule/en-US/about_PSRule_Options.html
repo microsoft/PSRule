@@ -8,7 +8,7 @@
     <title>PSRule_Options </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="PSRule_Options ">
-    <meta name="generator" content="docfx 2.40.10.0">
+    <meta name="generator" content="docfx 2.41.0.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -87,6 +87,10 @@
 <li><a href="#not-processed-warning">Execution.NotProcessedWarning</a></li>
 <li><a href="#inputformat">Input.Format</a></li>
 <li><a href="#inputobjectpath">Input.ObjectPath</a></li>
+<li><a href="#loggingrulefail">Logging.RuleFail</a></li>
+<li><a href="#loggingrulepass">Logging.RulePass</a></li>
+<li><a href="#outputas">Output.As</a></li>
+<li><a href="#outputformat">Output.Format</a></li>
 <li><a href="#rule-suppression">Suppression</a></li>
 </ul>
 <p>Options can be used by:</p>
@@ -330,13 +334,19 @@ execution:
   notProcessedWarning: false
 </code></pre>
 <h3 id="inputformat">Input.Format</h3>
-<p>Configures the input format for when a string is passed in as a target object. By default, strings are just treated as raw text. However, when set strings can be read as YAML or JSON and converted to an object.</p>
-<p>When using <code>Invoke-PSRule</code> and <code>Test-PSRuleTarget</code> the <code>-Format</code> parameter will override any value set in configuration.</p>
+<p>Configures the input format for when a string is passed in as a target object.</p>
+<p>Using this option with <code>Invoke-PSRule</code> or <code>Test-PSRuleTarget</code>:</p>
+<ul>
+<li>When the <code>-InputObject</code> parameter or pipeline input is used, strings are treated as plain text by default. When this option is used and set to either <code>Yaml</code> or <code>Json</code>, strings are read as YAML or JSON and are converted to an object.</li>
+<li>When the <code>-InputPath</code> parameter is used with a file path or URL, by default the file extension (either <code>.yaml</code>, <code>.yml</code> or <code>.json</code>) will be used to automatically detect the format as YAML or JSON.</li>
+<li>The <code>-Format</code> parameter will override any value set in configuration.</li>
+</ul>
 <p>The following formats are available:</p>
 <ul>
-<li>None</li>
-<li>Yaml</li>
-<li>Json</li>
+<li>None - Treat strings as plain text.</li>
+<li>Yaml - Treat strings as one or more YAML objects.</li>
+<li>Json - Treat strings as one or more JSON objects.</li>
+<li>Detect - Detect format based on file extension. Detection only applies when used with the <code>-InputPath</code> parameter. In all other cases, <code>Detect</code> is the same as <code>None</code>. This is the default configuration.</li>
 </ul>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the Input.Format hashtable key
@@ -358,6 +368,76 @@ $option = New-PSRuleOption -Option @{ 'Input.ObjectPath' = 'items' };
 <pre><code class="lang-yaml"># YAML: Using the input/objectPath property
 input:
   objectPath: items
+</code></pre>
+<h3 id="loggingrulefail">Logging.RuleFail</h3>
+<p>When an object fails a rule condition the results are written to output as a structured object marked with the outcome of <em>Fail</em>. If the rule executed successfully regardless of outcome no other informational messages are shown by default.</p>
+<p>In some circumstances such as a continuous integration (CI) pipeline, it may be preferable to see informational messages or abort the CI process if one or more <em>Fail</em> outcomes are returned.</p>
+<p>By settings this option, error, warning or information messages will be generated for each rule <em>fail</em> outcome in addition to structured output. By default, outcomes are not logged to an informational stream (i.e. None).</p>
+<p>The following streams available:</p>
+<ul>
+<li>None</li>
+<li>Error</li>
+<li>Warning</li>
+<li>Information</li>
+</ul>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the Logging.RuleFail hashtable key
+$option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the logging/ruleFail property
+logging:
+  ruleFail: Error
+</code></pre>
+<h3 id="loggingrulepass">Logging.RulePass</h3>
+<p>When an object passes a rule condition the results are written to output as a structured object marked with the outcome of <em>Pass</em>. If the rule executed successfully regardless of outcome no other informational messages are shown by default.</p>
+<p>In some circumstances such as a continuous integration (CI) pipeline, it may be preferable to see informational messages.</p>
+<p>By settings this option, error, warning or information messages will be generated for each rule <em>pass</em> outcome in addition to structured output. By default, outcomes are not logged to an informational stream (i.e. None).</p>
+<p>The following streams available:</p>
+<ul>
+<li>None</li>
+<li>Error</li>
+<li>Warning</li>
+<li>Information</li>
+</ul>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the Logging.RulePass hashtable key
+$option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Information' };
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the logging/rulePass property
+logging:
+  rulePass: Information
+</code></pre>
+<h3 id="outputas">Output.As</h3>
+<p>Configures the type of results to produce.</p>
+<p>This option only applies to <code>Invoke-PSRule</code>. <code>Invoke-PSRule</code> also includes a parameter <code>-As</code> to set this option at runtime. If specified, the <code>-As</code> parameter take precedence, over this option.</p>
+<p>The following options are available:</p>
+<ul>
+<li>Detail - Return a record per rule per object.</li>
+<li>Summary - Return summary information for per rule.</li>
+</ul>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the Output.As hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.As' = 'Summary' };
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the output/as property
+output:
+  as: Summary
+</code></pre>
+<h3 id="outputformat">Output.Format</h3>
+<p>Configures the format that results will be presented in.</p>
+<p>The following format options are available:</p>
+<ul>
+<li>None - Output is presented as an object using PowerShell defaults. This is the default configuration.</li>
+<li>Yaml - Output is serialized as YAML.</li>
+<li>Json - Output is serialized as JSON.</li>
+</ul>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the Output.Format hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Format' = 'Yaml' };
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the output/format property
+output:
+  format: Yaml
 </code></pre>
 <h3 id="rule-suppression">Rule suppression</h3>
 <p>In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.</p>
@@ -439,6 +519,15 @@ input:
   format: Yaml
   objectPath: items
 
+# Configures outcome logging options
+logging:
+  ruleFail: Error
+  rulePass: Information
+
+output:
+  as: Summary
+  format: Json
+
 # Configure rule suppression
 suppression:
   storageAccounts.UseHttps:
@@ -476,8 +565,17 @@ execution:
 
 # Configures input options
 input:
-  format: None
+  format: Detect
   objectPath:
+
+# Configures outcome logging options
+logging:
+  ruleFail: None
+  rulePass: None
+
+output:
+  as: Detail
+  format: None
 
 # Configure rule suppression
 suppression: { }
