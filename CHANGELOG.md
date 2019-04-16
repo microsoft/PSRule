@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.5.0-B190405 (pre-release)
+
 - Fix null reference exception when traversing null field [#123](https://github.com/BernieWhite/PSRule/issues/123)
 - Fix missing help topics for options and variables [#125](https://github.com/BernieWhite/PSRule/issues/125)
 
