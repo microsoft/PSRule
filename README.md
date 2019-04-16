@@ -201,6 +201,6 @@ Modules in this repository will use the [semantic versioning](http://semver.org/
 This project is [licensed under the MIT License](LICENSE).
 
 [install]: docs/scenarios/install-instructions.md
-[ci-badge]: https://bewhite.visualstudio.com/PSRule/_apis/build/status/PSRule-CI?branchName=master
+[ci-badge]: https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=master
 [module-psrule]: https://www.powershellgallery.com/packages/PSRule
 [ext-psrule]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
