@@ -8,12 +8,22 @@ namespace PSRule.Pipeline
     /// </summary>
     public sealed class InvokeResult
     {
+        public readonly string TargetName;
+
         private readonly List<RuleRecord> _Record;
         private RuleOutcome _Outcome;
+        private float _Time;
 
-        public InvokeResult()
+        internal InvokeResult(string targetName)
         {
+            TargetName = targetName;
             _Record = new List<RuleRecord>();
+            _Time = 0f;
+        }
+
+        internal float Time
+        {
+            get { return _Time; }
         }
 
         /// <summary>
@@ -29,9 +39,14 @@ namespace PSRule.Pipeline
         /// Get an overall pass or fail for the target object.
         /// </summary>
         /// <returns>Returns true if object passed and false if object failed.</returns>
-        public bool AsBoolean()
+        public bool IsSuccess()
         {
-            return !(_Outcome == RuleOutcome.Error || _Outcome == RuleOutcome.Fail);
+            return _Outcome == RuleOutcome.Pass || _Outcome == RuleOutcome.None;
+        }
+
+        public bool IsProcessed()
+        {
+            return _Outcome == RuleOutcome.Processed;
         }
 
         /// <summary>
@@ -41,7 +56,7 @@ namespace PSRule.Pipeline
         internal void Add(RuleRecord ruleRecord)
         {
             _Outcome = GetWorstCase(ruleRecord.Outcome);
-
+            _Time += ruleRecord.Time;
             _Record.Add(ruleRecord);
         }
 

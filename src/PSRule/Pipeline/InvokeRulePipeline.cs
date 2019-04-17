@@ -83,7 +83,7 @@ namespace PSRule.Pipeline
         {
             _Context.SetTargetObject(targetObject: targetObject);
 
-            var result = new InvokeResult();
+            var result = new InvokeResult(_Context.TargetName);
 
             var ruleCounter = 0;
 

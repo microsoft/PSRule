@@ -1,5 +1,7 @@
+# Copyright (c) Bernie White. All rights reserved.
+
 #
-# Module manifest for module 'PSRule'
+# PSRule module
 #
 
 @{

@@ -77,9 +77,18 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "tag")]
         public Hashtable Tag { get; internal set; }
 
+        [DefaultValue(0f)]
+        [JsonProperty(PropertyName = "time")]
+        public float Time { get; internal set; }
+
         public bool IsSuccess()
         {
             return Outcome == RuleOutcome.Pass || Outcome == RuleOutcome.None;
+        }
+
+        public bool IsProcessed()
+        {
+            return Outcome == RuleOutcome.Processed;
         }
     }
 }

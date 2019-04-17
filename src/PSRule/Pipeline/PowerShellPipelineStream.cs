@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using System.Text;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -70,16 +71,18 @@ namespace PSRule.Pipeline
         {
             if (_Results != null && _ResultFormat == ResultFormat.Detail)
             {
-                var results = _Results.SelectMany(r => r.AsRecord()).ToArray();
-                _Results.Clear();
-
                 if (_OutputFormat == OutputFormat.Json)
                 {
-                    WriteObjectJson(results);
+                    WriteObjectJson(o: GetRecords());
                 }
                 else if (_OutputFormat == OutputFormat.Yaml)
                 {
-                    WriteObjectYaml(results);
+                    WriteObjectYaml(o: GetRecords());
+                }
+                else if (_OutputFormat == OutputFormat.NUnit3)
+                {
+                    WriteObjectNUnit3(_Results);
+                    _Results.Clear();
                 }
             }
 
@@ -106,7 +109,7 @@ namespace PSRule.Pipeline
         {
             if (_ReturnBoolean)
             {
-                WriteObject(result.AsBoolean(), false);
+                WriteObject(result.IsSuccess(), false);
             }
             else
             {
@@ -166,6 +169,31 @@ namespace PSRule.Pipeline
             var yaml = s.Serialize(o);
 
             _OutputVisitor(yaml, false);
+        }
+
+        private void WriteObjectNUnit3(IEnumerable<InvokeResult> o)
+        {
+            var sb = new StringBuilder();
+            var s = new NUnit3Serializer();
+            var xml = s.Serialize(o);
+
+            _OutputVisitor(xml, false);
+        }
+
+        private void WriteObjectNUnit(IEnumerable<RuleSummaryRecord> o)
+        {
+            var sb = new StringBuilder();
+            var xml = sb.ToString();
+
+            _OutputVisitor(xml, false);
+        }
+
+        private RuleRecord[] GetRecords()
+        {
+            var results = _Results.SelectMany(r => r.AsRecord()).ToArray();
+            _Results.Clear();
+
+            return results;
         }
     }
 }
