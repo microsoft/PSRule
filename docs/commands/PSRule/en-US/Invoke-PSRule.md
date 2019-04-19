@@ -321,7 +321,7 @@ Configures the format that output is presented in.
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json
+Accepted values: None, Yaml, Json, NUnit3
 
 Required: False
 Position: Named

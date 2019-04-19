@@ -6,7 +6,7 @@ This scenario covers the following:
 
 - Installing PSRule within a continuous integration (CI) pipeline
 - Failing the pipeline based on validation results
-- Generating NUNit output
+- Generating NUnit output
 
 ## Installing PSRule within a CI pipeline
 
