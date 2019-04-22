@@ -1,7 +1,7 @@
 
 ## Unreleased
 
-- Added `-OutputFormat NUnit3` to `Invoke-PSRule` return NUnit formatted output.
+- Added `-OutputFormat NUnit3` to `Invoke-PSRule` return NUnit formatted output. [#129](https://github.com/BernieWhite/PSRule/issues/129)
 
 ## v0.5.0-B190405 (pre-release)
 
