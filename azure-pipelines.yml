@@ -80,6 +80,19 @@ steps:
     publishRunAttachments: true
   condition: succeededOrFailed()
 
+# PSRule results
+- task: PublishTestResults@2
+  displayName: 'Publish PSRule results'
+  inputs:
+    testRunTitle: 'PSRule on $(imageName)'
+    testRunner: NUnit
+    testResultsFiles: 'reports/rule.report.xml'
+    mergeTestResults: true
+    platform: $(imageName)
+    configuration: $(buildConfiguration)
+    publishRunAttachments: true
+  condition: succeededOrFailed()
+
 # Publish Code Coverage Results
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish Pester code coverage'

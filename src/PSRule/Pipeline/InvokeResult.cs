@@ -8,12 +8,43 @@ namespace PSRule.Pipeline
     /// </summary>
     public sealed class InvokeResult
     {
+        public readonly string TargetName;
+
         private readonly List<RuleRecord> _Record;
         private RuleOutcome _Outcome;
+        private float _Time;
+        private int _Total;
+        private int _Error;
+        private int _Fail;
 
-        public InvokeResult()
+        internal InvokeResult(string targetName)
         {
+            TargetName = targetName;
             _Record = new List<RuleRecord>();
+            _Time = 0f;
+            _Total = 0;
+            _Error = 0;
+            _Fail = 0;
+        }
+
+        internal float Time
+        {
+            get { return _Time; }
+        }
+
+        internal int Total
+        {
+            get { return _Total; }
+        }
+
+        internal int Error
+        {
+            get { return _Error; }
+        }
+
+        internal int Fail
+        {
+            get { return _Fail; }
         }
 
         /// <summary>
@@ -29,9 +60,14 @@ namespace PSRule.Pipeline
         /// Get an overall pass or fail for the target object.
         /// </summary>
         /// <returns>Returns true if object passed and false if object failed.</returns>
-        public bool AsBoolean()
+        public bool IsSuccess()
         {
-            return !(_Outcome == RuleOutcome.Error || _Outcome == RuleOutcome.Fail);
+            return _Outcome == RuleOutcome.Pass || _Outcome == RuleOutcome.None;
+        }
+
+        public bool IsProcessed()
+        {
+            return _Outcome == RuleOutcome.Processed;
         }
 
         /// <summary>
@@ -41,7 +77,17 @@ namespace PSRule.Pipeline
         internal void Add(RuleRecord ruleRecord)
         {
             _Outcome = GetWorstCase(ruleRecord.Outcome);
-
+            _Time += ruleRecord.Time;
+            _Total++;
+            
+            if (ruleRecord.Outcome == RuleOutcome.Error)
+            {
+                _Error++;
+            }
+            if (ruleRecord.Outcome == RuleOutcome.Fail)
+            {
+                _Fail++;
+            }
             _Record.Add(ruleRecord);
         }
 

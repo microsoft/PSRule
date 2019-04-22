@@ -15,6 +15,11 @@ Set-StrictMode -Version latest;
 $rootPath = $PWD;
 Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 
+$reportPath = Join-Path -Path $rootPath -ChildPath reports/;
+if (!(Test-Path -Path $reportPath)) {
+    $Null = New-Item -Path $reportPath -ItemType Directory -Force;
+}
+
 Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd','azure-resources' {
     $option = @{ 'Execution.NotProcessedWarning' = $False };
     $jsonData = Get-Content -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources/resources.json) | ConvertFrom-Json;
@@ -157,6 +162,42 @@ Describe 'Scenarios -- kubernetes-resources' -Tag 'EndToEnd','kubernetes-resourc
             $pass = @($instance | Where-Object -FilterScript { $_.Outcome -eq 'Pass' });
             $fail.Length | Should -Be 0;
             $pass.Length | Should -Be 3;
+        }
+    }
+}
+
+Describe 'Scenarios -- validation-pipeline' -Tag 'EndToEnd', 'validation-pipeline' {
+    $scenarioPath = Join-Path -Path $rootPath -ChildPath docs/scenarios/validation-pipeline;
+    $sourcePath = Join-Path -Path $rootPath -ChildPath src/PSRule;
+    $sourceFiles = Get-ChildItem -Path $sourcePath -Recurse -Include *.ps1,*.psm1,*.psd1;
+
+    Context 'Invoke-PSRule' {
+        $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error'; };
+        $result = $sourceFiles | Invoke-PSRule -Path $scenarioPath -Option $option;
+
+        It 'Module quality' {
+            $fail = @($result | Where-Object -FilterScript { !$_.IsSuccess() });
+            $fail.Length | Should -Be 0;
+            $pass = @($result | Where-Object -FilterScript { $_.IsSuccess() });
+            $pass.Length | Should -BeGreaterThan 0;
+        }
+
+        It 'Use header' {
+            $filteredResult = @($result | Where-Object -FilterScript { $_.RuleName -eq 'file.Header' });
+            $filteredResult | Should -Not -BeNullOrEmpty;
+        }
+
+        It 'Use encoding' {
+            $filteredResult = @($result | Where-Object -FilterScript { $_.RuleName -eq 'file.Encoding' });
+            $filteredResult | Should -Not -BeNullOrEmpty;
+        }
+
+        It 'Use NUnit output' {
+            $report = [Xml]($sourceFiles | Invoke-PSrule -Path $scenarioPath -Option $option -OutputFormat NUnit3);
+            $report.Save((Join-Path -Path $reportPath -ChildPath 'rule.report.xml'));
+            $items = @($report.DocumentElement.'test-suite');
+            Test-Path -Path (Join-Path -Path $reportPath -ChildPath 'rule.report.xml') | Should -be $True;
+            $items.Length | Should -Be 4;
         }
     }
 }

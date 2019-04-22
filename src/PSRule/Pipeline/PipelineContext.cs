@@ -5,6 +5,7 @@ using PSRule.Rules;
 using PSRule.Runtime;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Security.Cryptography;
@@ -30,6 +31,7 @@ namespace PSRule.Pipeline
         private readonly OutcomeLogStream _FailStream;
         private readonly OutcomeLogStream _PassStream;
         private readonly Dictionary<string, NameToken> _NameTokenCache;
+        private readonly Stopwatch _RuleTimer;
 
         // Pipeline logging
         private string _LogPrefix;
@@ -74,6 +76,7 @@ namespace PSRule.Pipeline
             _LogWarning = logWarning;
             _LogVerbose = logVerbose;
             _LogInformation = logInformation;
+            _RuleTimer = new Stopwatch();
 
             Option = option;
 
@@ -423,6 +426,8 @@ namespace PSRule.Pipeline
 
             RuleBlock = ruleBlock;
 
+            _RuleTimer.Restart();
+
             return RuleRecord;
         }
 
@@ -431,6 +436,10 @@ namespace PSRule.Pipeline
         /// </summary>
         public void ExitRuleBlock()
         {
+            _RuleTimer.Stop();
+            var time = _RuleTimer.ElapsedMilliseconds;
+            RuleRecord.Time = time > 0 ? time / 1000 : 0f;
+
             _LogPrefix = null;
             RuleRecord = null;
             RuleBlock = null;
@@ -490,6 +499,7 @@ namespace PSRule.Pipeline
                         _Runspace.Dispose();
                     }
 
+                    _RuleTimer.Stop();
                     _NameTokenCache.Clear();
                 }
 

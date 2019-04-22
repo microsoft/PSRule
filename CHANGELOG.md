@@ -1,10 +1,12 @@
 
 ## Unreleased
 
+- Added `-OutputFormat NUnit3` to `Invoke-PSRule` return NUnit formatted output. [#129](https://github.com/BernieWhite/PSRule/issues/129)
+
 ## v0.5.0-B190405 (pre-release)
 
-- Fix null reference exception when traversing null field [#123](https://github.com/BernieWhite/PSRule/issues/123)
-- Fix missing help topics for options and variables [#125](https://github.com/BernieWhite/PSRule/issues/125)
+- Fix null reference exception when traversing null field. [#123](https://github.com/BernieWhite/PSRule/issues/123)
+- Fix missing help topics for options and variables. [#125](https://github.com/BernieWhite/PSRule/issues/125)
 
 ## v0.4.0
 
