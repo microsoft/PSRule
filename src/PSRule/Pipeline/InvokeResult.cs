@@ -13,17 +13,38 @@ namespace PSRule.Pipeline
         private readonly List<RuleRecord> _Record;
         private RuleOutcome _Outcome;
         private float _Time;
+        private int _Total;
+        private int _Error;
+        private int _Fail;
 
         internal InvokeResult(string targetName)
         {
             TargetName = targetName;
             _Record = new List<RuleRecord>();
             _Time = 0f;
+            _Total = 0;
+            _Error = 0;
+            _Fail = 0;
         }
 
         internal float Time
         {
             get { return _Time; }
+        }
+
+        internal int Total
+        {
+            get { return _Total; }
+        }
+
+        internal int Error
+        {
+            get { return _Error; }
+        }
+
+        internal int Fail
+        {
+            get { return _Fail; }
         }
 
         /// <summary>
@@ -57,6 +78,16 @@ namespace PSRule.Pipeline
         {
             _Outcome = GetWorstCase(ruleRecord.Outcome);
             _Time += ruleRecord.Time;
+            _Total++;
+            
+            if (ruleRecord.Outcome == RuleOutcome.Error)
+            {
+                _Error++;
+            }
+            if (ruleRecord.Outcome == RuleOutcome.Fail)
+            {
+                _Fail++;
+            }
             _Record.Add(ruleRecord);
         }
 
