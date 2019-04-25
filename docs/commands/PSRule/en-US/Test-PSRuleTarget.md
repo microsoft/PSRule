@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Pass or fail pipeline objects against matching rules.
+Pass or fail objects against matching rules.
 
 ## SYNTAX
 
@@ -30,7 +30,7 @@ Test-PSRuleTarget [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-O
 
 ## DESCRIPTION
 
-Evaluate pipeline objects against matching rules and return an overall pass or fail for the object as `$True` (pass) or `$False` (fail).
+Evaluate objects against matching rules and return an overall pass or fail for the object as `$True` (pass) or `$False` (fail).
 
 PSRule uses the following logic to determine overall pass or fail for an object:
 
