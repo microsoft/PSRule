@@ -11,6 +11,10 @@ param (
 $ErrorActionPreference = 'Stop';
 Set-StrictMode -Version latest;
 
+if ($Env:SYSTEM_DEBUG -eq 'true') {
+    $VerbosePreference = 'Continue';
+}
+
 # Setup tests paths
 $rootPath = $PWD;
 
@@ -24,18 +28,18 @@ Describe 'PSRule -- AllOf keyword' -Tag 'AllOf' {
             Key = 'Value'
         }
 
+        $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AllOfTest','AllOfTestNegative';
+
         It 'Should succeed on all positive conditions' {
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AllOfTest';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.IsSuccess() | Should -Be $True;
-            $result.RuleName | Should -Be 'AllOfTest';
+            $filteredResult = $result | Where-Object -Property RuleName -EQ -Value AllOfTest;
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult.IsSuccess() | Should -Be $True;
         }
 
         It 'Should fail on any negative conditions' {
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AllOfTestNegative';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.IsSuccess() | Should -Be $False;
-            $result.RuleName | Should -Be 'AllOfTestNegative';
+            $filteredResult = $result | Where-Object -Property RuleName -EQ -Value AllOfTestNegative;
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult.IsSuccess() | Should -Be $False;
         }
     }
 }
