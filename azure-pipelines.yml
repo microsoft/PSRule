@@ -40,19 +40,19 @@ steps:
 # Run SonarCloud analysis
 - powershell: dotnet tool install --global dotnet-sonarscanner
   displayName: 'Install Sonar scanner'
-  condition: and(not(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
+  condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
 
 - script: dotnet sonarscanner begin /k:"BernieWhite_PSRule" /o:"berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken) /v:"$(Build.BuildNumber)"
   displayName: 'Prepare SonarCloud'
-  condition: and(not(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
+  condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
 
 - script: dotnet build
   displayName: 'Build solution for analysis'
-  condition: and(not(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
+  condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
 
 - script: dotnet sonarscanner end /d:sonar.login=$(sonarQubeToken)
   displayName: 'Complete SonarCloud'
-  condition: and(not(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
+  condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
 
 # DotNet test results
 - task: PublishTestResults@2
