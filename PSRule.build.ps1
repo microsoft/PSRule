@@ -160,7 +160,7 @@ task NuGet {
 
 # Synopsis: Install Pester module
 task Pester {
-    if ($Null -eq (Get-InstalledModule -Name Pester -MinimumVersion '4.0.0')) {
+    if ($Null -eq (Get-InstalledModule -Name Pester -MinimumVersion '4.0.0' -ErrorAction Ignore)) {
         Install-Module -Name Pester -Scope CurrentUser -MinimumVersion '4.0.0' -Force -SkipPublisherCheck;
     }
 
@@ -169,7 +169,7 @@ task Pester {
 
 # Synopsis: Install PlatyPS module
 task platyPS {
-    if ($Null -eq (Get-InstalledModule -Name PlatyPS -MinimumVersion '0.14.0')) {
+    if ($Null -eq (Get-InstalledModule -Name PlatyPS -MinimumVersion '0.14.0' -ErrorAction Ignore)) {
         Install-Module -Name PlatyPS -Scope CurrentUser -MinimumVersion '0.14.0' -Force;
     }
 
@@ -178,7 +178,7 @@ task platyPS {
 
 # Synopsis: Install PSScriptAnalyzer module
 task PSScriptAnalyzer {
-    if ($Null -eq (Get-InstalledModule -Name PSScriptAnalyzer)) {
+    if ($Null -eq (Get-InstalledModule -Name PSScriptAnalyzer -ErrorAction Ignore)) {
         Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force;
     }
 
