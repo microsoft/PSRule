@@ -15,9 +15,7 @@ Set-StrictMode -Version latest;
 $rootPath = $PWD;
 
 Describe 'PSRule' -Tag 'PowerShellGallery' {
-
     Context 'Module' {
-
         It 'Can be imported' {
             Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
         }

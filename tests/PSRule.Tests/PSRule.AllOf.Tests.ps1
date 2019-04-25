@@ -22,7 +22,6 @@ Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 $here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- AllOf keyword' -Tag 'AllOf' {
-
     Context 'AllOf' {
         $testObject = @{
             Key = 'Value'
@@ -31,13 +30,13 @@ Describe 'PSRule -- AllOf keyword' -Tag 'AllOf' {
         $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AllOfTest','AllOfTestNegative';
 
         It 'Should succeed on all positive conditions' {
-            $filteredResult = $result | Where-Object -Property RuleName -EQ -Value AllOfTest;
+            $filteredResult = $result | Where-Object { $_.RuleName -eq 'AllOfTest' };
             $filteredResult | Should -Not -BeNullOrEmpty;
             $filteredResult.IsSuccess() | Should -Be $True;
         }
 
         It 'Should fail on any negative conditions' {
-            $filteredResult = $result | Where-Object -Property RuleName -EQ -Value AllOfTestNegative;
+            $filteredResult = $result | Where-Object { $_.RuleName -eq 'AllOfTestNegative' };
             $filteredResult | Should -Not -BeNullOrEmpty;
             $filteredResult.IsSuccess() | Should -Be $False;
         }
