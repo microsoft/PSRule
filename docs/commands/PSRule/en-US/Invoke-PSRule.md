@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Evaluate pipeline objects against matching rules.
+Evaluate objects against matching rules.
 
 ## SYNTAX
 
@@ -31,7 +31,7 @@ Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Outco
 
 ## DESCRIPTION
 
-Evaluate pipeline objects against matching rules.
+Evaluate objects against matching rules.
 
 ## EXAMPLES
 

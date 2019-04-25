@@ -28,6 +28,8 @@ PSRule    | An extension for IT Pros using the PSRule PowerShell module | [lates
 
 ## Getting started
 
+The following example shows basic PSRule usage. For specific use cases see [scenarios](#scenarios).
+
 ### Define a rule
 
 To define a rule use the `Rule` keyword.
@@ -123,7 +125,7 @@ isFruit                             1     1     Fail
 
 ### Scenarios
 
-For practical examples of PSRule see:
+For walk through examples of PSRule usage see:
 
 - [Validate configuration of Azure resources](docs/scenarios/azure-resources/azure-resources.md)
 - [Validate Azure resources tags](docs/scenarios/azure-tags/azure-tags.md)
@@ -150,10 +152,10 @@ The following language keywords are used by the `PSRule` module:
 
 The following commands exist in the `PSRule` module:
 
-- [Invoke-PSRule](docs/commands/PSRule/en-US/Invoke-PSRule.md)
-- [Get-PSRule](docs/commands/PSRule/en-US/Get-PSRule.md)
-- [New-PSRuleOption](docs/commands/PSRule/en-US/New-PSRuleOption.md)
-- [Test-PSRuleTarget](docs/commands/PSRule/en-US/Test-PSRuleTarget.md)
+- [Get-PSRule](docs/commands/PSRule/en-US/Get-PSRule.md) - Get a list of rule definitions.
+- [Invoke-PSRule](docs/commands/PSRule/en-US/Invoke-PSRule.md) - Evaluate objects against matching rules.
+- [New-PSRuleOption](docs/commands/PSRule/en-US/New-PSRuleOption.md) - Create options to configure PSRule execution.
+- [Test-PSRuleTarget](docs/commands/PSRule/en-US/Test-PSRuleTarget.md) - Pass or fail objects against matching rules.
 
 ### Concepts
 
