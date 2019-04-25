@@ -158,31 +158,28 @@ task NuGet {
     $Null = Install-PackageProvider -Name NuGet -Force -Scope CurrentUser;
 }
 
+# Synopsis: Install Pester module
 task Pester {
-
-    # Install pester if v4+ is not currently installed
-    if ($Null -eq (Get-Module -Name Pester -ListAvailable | Where-Object -FilterScript { $_.Version -like '4.*' })) {
-        Install-Module -Name Pester -MinimumVersion '4.0.0' -Force -Scope CurrentUser -SkipPublisherCheck;
+    if ($Null -eq (Get-InstalledModule -Name Pester -MinimumVersion '4.0.0')) {
+        Install-Module -Name Pester -Scope CurrentUser -MinimumVersion '4.0.0' -Force -SkipPublisherCheck;
     }
 
     Import-Module -Name Pester -Verbose:$False;
 }
 
+# Synopsis: Install PlatyPS module
 task platyPS {
-
-    # Install pester if v4+ is not currently installed
-    if ($Null -eq (Get-Module -Name PlatyPS -ListAvailable)) {
-        Install-Module -Name PlatyPS -Force -Scope CurrentUser;
+    if ($Null -eq (Get-InstalledModule -Name PlatyPS -MinimumVersion '0.14.0')) {
+        Install-Module -Name PlatyPS -Scope CurrentUser -MinimumVersion '0.14.0' -Force;
     }
 
     Import-Module -Name PlatyPS -Verbose:$False;
 }
 
+# Synopsis: Install PSScriptAnalyzer module
 task PSScriptAnalyzer {
-
-    # Install PSScriptAnalyzer if not currently installed
-    if ($Null -eq (Get-Module -Name PSScriptAnalyzer -ListAvailable)) {
-        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser;
+    if ($Null -eq (Get-InstalledModule -Name PSScriptAnalyzer)) {
+        Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force;
     }
 
     Import-Module -Name PSScriptAnalyzer -Verbose:$False;
@@ -224,10 +221,18 @@ task Analyze Build, PSScriptAnalyzer, {
     Invoke-ScriptAnalyzer -Path out/modules/PSRule;
 }
 
-# Synopsis: Build project site
-task BuildSite {
+task CleanSite {
     git branch -D gh-pages;
     Remove-Item -Path out/site -Recurse -Force -ErrorAction Ignore;
+}
+
+# Synopsis: Build project site
+task BuildSite CleanSite, {
+    docfx build --force docs/docfx.json;
+}
+
+# Synopsis: Publish project site to gh-pages
+task PublishSite CleanSite, {
     git worktree add -b gh-pages -f out/site origin/gh-pages;
     docfx build --force docs/docfx.json;
 

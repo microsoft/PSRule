@@ -19,7 +19,8 @@
         "files": [
           "images/**",
           "scenarios/**/*.ps1",
-          "scenarios/**/*.json"
+          "scenarios/**/*.json",
+          "scenarios/**/*.yaml"
         ]
       }
     ],

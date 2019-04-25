@@ -70,6 +70,16 @@
                 "clear": true,
                 "panel": "dedicated"
             }
+        },
+        {
+            "label": "build-site",
+            "type": "shell",
+            "command": "Invoke-Build BuildSite",
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true,
+                "panel": "dedicated"
+            }
         }
     ]
 }

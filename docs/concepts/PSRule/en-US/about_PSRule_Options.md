@@ -164,7 +164,7 @@ The value that PSRule uses for _TargetName_ is configurable. PSRule uses the fol
 - If a custom _TargetName_ binding function is specified, the function will be evaluated first before any other option.
   - If the function returns `$Null` then custom properties, `TargetName` and `Name` properties will be used.
   - The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.
-  - Custom binding functions are blocked in constrained language mode is used. See [language mode](#language-mode) for more information.
+  - Custom binding functions are blocked in constrained language mode is used. See [language mode](#executionlanguagemode) for more information.
 
 Custom property names to use for binding can be specified using:
 
@@ -217,7 +217,7 @@ The value that PSRule uses for _TargetType_ is configurable. PSRule uses the fol
 - If a custom _TargetType_ binding function is specified, the function will be evaluated first before any other option.
   - If the function returns `$Null` then custom properties, or the type presented by PowerShell will be used in order instead.
   - The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.
-  - Custom binding functions are blocked in constrained language mode is used. See [language mode](#language-mode) for more information.
+  - Custom binding functions are blocked in constrained language mode is used. See [language mode](#executionlanguagemode) for more information.
 
 Custom property names to use for binding can be specified using:
 
