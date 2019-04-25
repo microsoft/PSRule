@@ -11,6 +11,10 @@ param (
 $ErrorActionPreference = 'Stop';
 Set-StrictMode -Version latest;
 
+if ($Env:SYSTEM_DEBUG -eq 'true') {
+    $VerbosePreference = 'Continue';
+}
+
 # Setup tests paths
 $rootPath = $PWD;
 
@@ -18,26 +22,23 @@ Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 $here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- AnyOf keyword' -Tag 'AnyOf' {
-
     Context 'AnyOf' {
         $testObject = @{
             Key = 'Value'
         }
 
-        It 'Should succeed on any positive conditions' {
+        $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AnyOfTest', 'AnyOfTestNegative';
 
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AnyOfTest';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.IsSuccess() | Should -Be $True;
-            $result.RuleName | Should -Be 'AnyOfTest';
+        It 'Should succeed on any positive conditions' {
+            $filteredResult = $result | Where-Object { $_.RuleName -eq 'AnyOfTest' };
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult.IsSuccess() | Should -Be $True;
         }
 
         It 'Should fail with all negative conditions' {
-
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AnyOfTestNegative';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.IsSuccess() | Should -Be $False;
-            $result.RuleName | Should -Be 'AnyOfTestNegative';
+            $filteredResult = $result | Where-Object { $_.RuleName -eq 'AnyOfTestNegative' };
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult.IsSuccess() | Should -Be $False;
         }
     }
 }
