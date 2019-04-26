@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PSRule.Resources;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -17,8 +18,10 @@ namespace PSRule.Configuration
     /// <summary>
     /// A structure that stores PSRule configuration options.
     /// </summary>
-    public sealed class PSRuleOption
+    public sealed class PSRuleOption : IEquatable<PSRuleOption>
     {
+        private const string DEFAULT_FILENAME = "psrule.yaml";
+
         private static readonly PSRuleOption Default = new PSRuleOption
         {
             Binding = BindingOption.Default,
@@ -111,17 +114,24 @@ namespace PSRule.Configuration
             return new PSRuleOption(this);
         }
 
+        public void ToFile(string path)
+        {
+            // Get a rooted file path instead of directory or relative path
+            var filePath = GetFilePath(path: path);
+            File.WriteAllText(path: filePath, contents: ToYaml());
+        }
+
         public static PSRuleOption FromFile(string path, bool silentlyContinue = false)
         {
-            // Ensure that a full path instead of a path relative to PowerShell is used for .NET methods
-            var rootedPath = GetRootedPath(path);
+            // Get a rooted file path instead of directory or relative path
+            var filePath = GetFilePath(path: path);
 
             // Fallback to defaults even if file does not exist when silentlyContinue is true
-            if (!File.Exists(rootedPath))
+            if (!File.Exists(filePath))
             {
                 if (!silentlyContinue)
                 {
-                    throw new FileNotFoundException("", rootedPath);
+                    throw new FileNotFoundException(PSRuleResources.OptionsNotFound, filePath);
                 }
                 else
                 {
@@ -130,7 +140,7 @@ namespace PSRule.Configuration
                 }
             }
 
-            return FromYaml(File.ReadAllText(rootedPath));
+            return FromYaml(yaml: File.ReadAllText(filePath));
         }
 
         public static PSRuleOption FromYaml(string yaml)
@@ -293,6 +303,42 @@ namespace PSRule.Configuration
             return option;
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj != null &&
+                obj is PSRuleOption &&
+                Equals(obj as PSRuleOption);
+        }
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine
+            {
+                int hash = 17;
+                hash = hash * 23 + (Baseline != null ? Baseline.GetHashCode() : 0);
+                hash = hash * 23 + (Binding != null ? Binding.GetHashCode() : 0);
+                hash = hash * 23 + (Execution != null ? Execution.GetHashCode() : 0);
+                hash = hash * 23 + (Input != null ? Input.GetHashCode() : 0);
+                hash = hash * 23 + (Logging != null ? Logging.GetHashCode() : 0);
+                hash = hash * 23 + (Output != null ? Output.GetHashCode() : 0);
+                hash = hash * 23 + (Suppression != null ? Suppression.GetHashCode() : 0);
+                hash = hash * 23 + (Pipeline != null ? Pipeline.GetHashCode() : 0);
+                return hash;
+            }
+        }
+
+        public bool Equals(PSRuleOption other)
+        {
+            return other != null &&
+                Baseline == other.Baseline &&
+                Binding == other.Binding &&
+                Execution == other.Execution &&
+                Input == other.Input &&
+                Logging == other.Logging &&
+                Output == other.Output &&
+                Suppression == other.Suppression &&
+                Pipeline == other.Pipeline;
+        }
+
         /// <summary>
         /// Get a full path instead of a relative path that may be passed from PowerShell.
         /// </summary>
@@ -301,6 +347,12 @@ namespace PSRule.Configuration
         private static string GetRootedPath(string path)
         {
             return Path.IsPathRooted(path) ? path : Path.Combine(GetWorkingPath(), path);
+        }
+
+        private static string GetFilePath(string path)
+        {
+            var rootedPath = GetRootedPath(path);
+            return Path.HasExtension(rootedPath) ? rootedPath : Path.Combine(path, DEFAULT_FILENAME);
         }
     }
 }

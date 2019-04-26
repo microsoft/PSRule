@@ -120,6 +120,10 @@
   <data name="ObjectNotProcessed" xml:space="preserve">
     <value>Target object '{0}' has not been processed because no matching rules were found.</value>
   </data>
+  <data name="OptionsNotFound" xml:space="preserve">
+    <value>Options file does not exist.</value>
+    <comment>Occurs when explicit path to a YAML file is specified and doesn't exist.</comment>
+  </data>
   <data name="OutcomeRuleFail" xml:space="preserve">
     <value>[FAIL] -- {0}:: Reported for '{1}'</value>
   </data>

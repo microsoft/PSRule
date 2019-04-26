@@ -435,11 +435,14 @@ function Get-PSRule {
 
 # .ExternalHelp PSRule-Help.xml
 function New-PSRuleOption {
-
     [CmdletBinding()]
     [OutputType([PSRule.Configuration.PSRuleOption])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in memory object only')]
     param (
+        [Parameter(Position = 0, Mandatory = $False)]
+        [PSDefaultValue(Help = '.\ps-rule.yml')]
+        [String]$Path = $PWD,
+
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option,
 
@@ -455,29 +458,81 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.BindTargetName[]]$BindTargetType,
 
+        # Options
+
+        # Baseline.RuleName
+        # Baseline.Exclude
+        # Baseline.Configuration
+
+        # Sets option Binding.IgnoreCase
         [Parameter(Mandatory = $False)]
-        [PSDefaultValue(Help = '.\psrule.yml')]
-        [String]$Path = '.\psrule.yml'
+        [System.Boolean]$BindingIgnoreCase = $True,
+
+        # Sets option Binding.TargetName
+        [Parameter(Mandatory = $False)]
+        [String[]]$BindingTargetName,
+
+        # Sets option Binding.TargetType
+        [Parameter(Mandatory = $False)]
+        [String[]]$BindingTargetType,
+
+        # Sets option Execution.LanguageMode
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('FullLanguage', 'ConstrainedLanguage')]
+        [PSRule.Configuration.LanguageMode]$ExecutionLanguageMode = 'FullLanguage',
+
+        # Sets option Execution.InconclusiveWarning
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$ExecutionInconclusiveWarning = $True,
+    
+        # Sets option Execution.NotProcessedWarning
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$ExecutionNotProcessedWarning = $True,
+
+        # Sets option Input.Format
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [Alias('Format')]
+        [PSRule.Configuration.InputFormat]$InputFormat = 'Detect',
+
+        # Sets option Input.ObjectPath
+        [Parameter(Mandatory = $False)]
+        [Alias('ObjectPath')]
+        [String]$InputObjectPath = '',
+
+        # Sets option Logging.RuleFail
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.OutcomeLogStream]$LoggingRuleFail = 'None',
+
+        # Sets option Logging.RulePass
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.OutcomeLogStream]$LoggingRulePass = 'None',
+
+        # Sets option Output.As
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Detail', 'Summary')]
+        [Alias('As')]
+        [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
+
+        # Sets option Output.Format
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3')]
+        [PSRule.Configuration.OutputFormat]$OutputFormat = 'None'
+
+        # Suppression
     )
 
-    process {
+    end {
 
         if ($PSBoundParameters.ContainsKey('Option')) {
             $Option = $Option.Clone();
         }
         elseif ($PSBoundParameters.ContainsKey('Path')) {
-
-            if (!(Test-Path -Path $Path)) {
-
-            }
-
-            $Path = Resolve-Path -Path $Path;
-
-            $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path);
+            Write-Verbose -Message "Attempting to read: $Path";
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $False);
         }
         else {
             Write-Verbose -Message "Attempting to read: $Path";
-
             $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $True);
         }
 
@@ -499,7 +554,200 @@ function New-PSRuleOption {
             $Option.Pipeline.BindTargetType.AddRange($BindTargetType);
         }
 
+        # Options
+
+        # Baseline.RuleName
+        # Baseline.Exclude
+        # Baseline.Configuration
+
+        # Sets option Binding.IgnoreCase
+        if ($PSBoundParameters.ContainsKey('BindingIgnoreCase')) {
+            $Option.Binding.IgnoreCase = $BindingIgnoreCase;
+        }
+
+        # Sets option Binding.TargetName
+        if ($PSBoundParameters.ContainsKey('BindingTargetName')) {
+            $Option.Binding.TargetName = $BindingTargetName;
+        }
+
+        # Sets option Binding.TargetType
+        if ($PSBoundParameters.ContainsKey('BindingTargetType')) {
+            $Option.Binding.TargetType = $BindingTargetType;
+        }
+
+
+        # Sets option Execution.LanguageMode
+        if ($PSBoundParameters.ContainsKey('ExecutionLanguageMode')) {
+            $Option.Execution.LanguageMode = $ExecutionLanguageMode;
+        }
+
+        # Sets option Execution.InconclusiveWarning
+        if ($PSBoundParameters.ContainsKey('ExecutionInconclusiveWarning')) {
+            $Option.Execution.InconclusiveWarning = $ExecutionInconclusiveWarning;
+        }
+
+        # Sets option Execution.NotProcessedWarning
+        if ($PSBoundParameters.ContainsKey('ExecutionNotProcessedWarning')) {
+            $Option.Execution.NotProcessedWarning = $ExecutionNotProcessedWarning;
+        }
+
+        # Sets option Input.Format
+        if ($PSBoundParameters.ContainsKey('InputFormat')) {
+            $Option.Input.Format = $InputFormat;
+        }
+
+        # Sets option Input.ObjectPath
+        if ($PSBoundParameters.ContainsKey('InputObjectPath')) {
+            $Option.Input.ObjectPath = $InputObjectPath;
+        }
+
+        # Sets option Logging.RuleFail
+        if ($PSBoundParameters.ContainsKey('LoggingRuleFail')) {
+            $Option.Logging.RuleFail = $LoggingRuleFail;
+        }
+
+        # Sets option Logging.RulePass
+        if ($PSBoundParameters.ContainsKey('LoggingRulePass')) {
+            $Option.Logging.RulePass = $LoggingRulePass;
+        }
+
+        # Sets option Output.As
+        if ($PSBoundParameters.ContainsKey('OutputAs')) {
+            $Option.Output.As = $OutputAs;
+        }
+
+        # Sets option Output.Format
+        if ($PSBoundParameters.ContainsKey('OutputFormat')) {
+            $Option.Output.Format = $OutputFormat;
+        }
+
+        # Suppression
+
         return $Option;
+    }
+}
+
+# .ExternalHelp PSRule-Help.xml
+function Set-PSRuleOption {
+    [CmdletBinding(SupportsShouldProcess = $True)]
+    [OutputType([PSRule.Configuration.PSRuleOption])]
+    param (
+        # The path to a YAML file where options will be set
+        [Parameter(Position = 0, Mandatory = $False)]
+        [PSDefaultValue(Help = '.\ps-rule.yml')]
+        [String]$Path = $PWD,
+
+        [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$PassThru = $False,
+
+        # Force creation of directory path for Path parameter
+        [Parameter(Mandatory = $False)]
+        [Switch]$Force = $False,
+
+        # Overwrite YAML files that contain comments
+        [Parameter(Mandatory = $False)]
+        [Switch]$Overwrite = $False,
+
+        # Options
+
+        # Baseline.RuleName
+        # Baseline.Exclude
+        # Baseline.Configuration
+
+        # Sets the Binding.IgnoreCase option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$BindingIgnoreCase = $True,
+
+        # Sets the Binding.TargetName option
+        [Parameter(Mandatory = $False)]
+        [Alias('BindingTargetName')]
+        [String[]]$TargetName,
+
+        # Sets option Binding.TargetType
+        [Parameter(Mandatory = $False)]
+        [Alias('BindingTargetType')]
+        [String[]]$TargetType,
+
+        # Sets option Execution.InconclusiveWarning
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInconclusiveWarning')]
+        [System.Boolean]$InconclusiveWarning = $True,
+    
+        # Sets option Execution.NotProcessedWarning
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionNotProcessedWarning')]
+        [System.Boolean]$NotProcessedWarning = $True,
+
+        # Sets option Input.Format
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [Alias('InputFormat')]
+        [PSRule.Configuration.InputFormat]$Format = 'Detect',
+
+        # Sets option Input.ObjectPath
+        [Parameter(Mandatory = $False)]
+        [Alias('InputObjectPath')]
+        [String]$ObjectPath = '',
+
+        # Sets option Logging.RuleFail
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.OutcomeLogStream]$LoggingRuleFail = 'None',
+
+        # Sets option Logging.RulePass
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.OutcomeLogStream]$LoggingRulePass = 'None',
+
+        # Sets option Output.As
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Detail', 'Summary')]
+        [Alias('As')]
+        [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
+
+        # Sets option Output.Format
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3')]
+        [PSRule.Configuration.OutputFormat]$OutputFormat = 'None'
+
+        # Suppression
+    )
+
+    begin {
+        Write-Verbose -Message "[Set-PSRuleOption] BEGIN::";
+
+        # Get parameter options, which will override options from other sources
+        $optionParams = @{ };
+        $optionParams += $PSBoundParameters;
+
+        if ($PSBoundParameters.ContainsKey('Path')) {
+            $optionParams['Path'] = $Path;
+        }
+
+        # Remove PassThru which is not valid on New-PSRuleOption
+        if ($optionParams.ContainsKey('PassThru')) {
+            $optionParams.Remove('PassThru');
+        }
+    }
+
+    process {
+        try {
+            $result = New-PSRuleOption @optionParams;
+            if ($PassThru) {
+                $result;
+            }
+            else {
+                $result.ToFile($Path);
+            }
+        }
+        finally {
+
+        }
+    }
+
+    end {
+        Write-Verbose -Message "[Set-PSRuleOption] END::";
     }
 }
 
@@ -844,6 +1092,13 @@ InitEditorServices;
 # Export module
 #
 
-Export-ModuleMember -Function 'Rule','Invoke-PSRule','Test-PSRuleTarget','Get-PSRule','New-PSRuleOption';
+Export-ModuleMember -Function @(
+    'Rule'
+    'Invoke-PSRule'
+    'Test-PSRuleTarget'
+    'Get-PSRule'
+    'New-PSRuleOption'
+    'Set-PSRuleOption'
+)
 
 # EOM

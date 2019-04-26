@@ -8,7 +8,7 @@ Describes additional options that can be used during rule execution.
 
 ## LONG DESCRIPTION
 
-PSRule lets you use options when calling `Invoke-PSRule` to change how rules are executed. This topic describes what options are available, when to and how to use them.
+PSRule lets you use options when calling cmdlets such as `Invoke-PSRule` and `Test-PSRuleTarget` to change how rules are processed. This topic describes what options are available, when to and how to use them.
 
 The following options are available for use:
 
@@ -29,16 +29,19 @@ The following options are available for use:
 - [Output.Format](#outputformat)
 - [Suppression](#rule-suppression)
 
-Options can be used by:
+Options can be used with the following PSRule cmdlets:
 
-- Using the `-Option` parameter of `Invoke-PSRule` with an object created with `New-PSRuleOption`
-- Using the `-Option` parameter of `Invoke-PSRule` with a hash table
-- Using the `-Option` parameter of `Invoke-PSRule` with a YAML file
-- Configuring the default options file `psrule.yml`
+- Get-PSRule
+- Invoke-PSRule
+- Test-PSRuleTarget
 
-As mentioned above, a options object can be created with `New-PSRuleOption` see cmdlet help for syntax and examples.
+Each of these cmdlets support:
 
-When using a hash table, `@{}`, one or more options can be specified with the `-Option` parameter using a dotted notation.
+- Using the `-Option` parameter with an object created with the `New-PSRuleOption` cmdlet. See cmdlet help for syntax and examples.
+- Using the `-Option` parameter with a hashtable object.
+- Using the `-Option` parameter with a YAML file path.
+
+When using a hashtable object `@{}`, one or more options can be specified as keys using a dotted notation.
 
 For example:
 
@@ -47,11 +50,11 @@ $option = @{ 'execution.languageMode' = 'ConstrainedLanguage' };
 Invoke-PSRule -Path . -Option $option;
 ```
 
-`execution.languageMode` is an example of an option that can be used. Please see the following sections for other options can be used.
+The above example shows how the `execution.languageMode` option as a hashtable key can be used. Continue reading for a full list of options and how each can be used.
 
-Another option is to use an external file, formatted as YAML, instead of having to create an options object manually each time. This YAML file can be used with `Invoke-PSRule` to quickly execute rules in a repeatable way.
+Alternatively, options can be stored in a YAML formatted file and loaded from disk. Storing options as YAML allows different configurations to be loaded in a repeatable way instead of having to create an options object each time.
 
-YAML properties are specified using lower camel case, for example:
+Options are stored as YAML properties using a lower camel case naming convention, for example:
 
 ```yaml
 execution:
@@ -128,7 +131,7 @@ baseline:
 
 When evaluating an object, PSRule extracts a few key properties from the object to help filter rules and display output results. The process of extract these key properties is called _binding_. The properties that PSRule uses for binding can be customized by providing a order list of alternative properties to use. See [`Binding.TargetName`](#bindingtargetname) and [`Binding.TargetType`](#bindingtargettype) for these options.
 
-- By default, custom property binding finds the first matching property by name regardless of case. i.e. `Binding.IgnoreCase` is `true`
+- By default, custom property binding finds the first matching property by name regardless of case. i.e. `Binding.IgnoreCase` is `true`.
 - To change the default, set the `Binding.IgnoreCase` option to `false` and a case sensitive match will be used.
   - Changing this option will affect all custom property bindings, including _TargetName_ and _TargetType_.
 - PSRule also has binding defaults, and an option to use a custom script. Setting this option has no affect on binding defaults or custom scripts.
@@ -136,8 +139,18 @@ When evaluating an object, PSRule extracts a few key properties from the object 
 This option can be specified using:
 
 ```powershell
+# PowerShell: Using the BindingIgnoreCase parameter
+$option = New-PSRuleOption -BindingIgnoreCase $False;
+```
+
+```powershell
 # PowerShell: Using the Binding.IgnoreCase hashtable key
 $option = New-PSRuleOption -Option @{ 'Binding.IgnoreCase' = $False };
+```
+
+```powershell
+# PowerShell: Using the BindingIgnoreCase parameter to set YAML
+Set-PSRuleOption -BindingIgnoreCase $False;
 ```
 
 ```yaml
@@ -169,8 +182,18 @@ The value that PSRule uses for _TargetName_ is configurable. PSRule uses the fol
 Custom property names to use for binding can be specified using:
 
 ```powershell
+# PowerShell: Using the TargetName parameter
+$option = New-PSRuleOption -TargetName 'ResourceName', 'AlternateName';
+```
+
+```powershell
 # PowerShell: Using the Binding.TargetName hashtable key
 $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName' };
+```
+
+```powershell
+# PowerShell: Using the TargetName parameter to set YAML
+Set-PSRuleOption -TargetName 'ResourceName', 'AlternateName';
 ```
 
 ```yaml
@@ -222,9 +245,19 @@ The value that PSRule uses for _TargetType_ is configurable. PSRule uses the fol
 Custom property names to use for binding can be specified using:
 
 ```powershell
+# PowerShell: Using the TargetType parameter
+$option = New-PSRuleOption -TargetType 'ResourceType', 'kind';
+```
+
+```powershell
 # PowerShell: Using the Binding.TargetType hashtable key
 $option = New-PSRuleOption -Option @{ 'Binding.TargetType' = 'ResourceType', 'kind' };
 ```
+
+```powershell
+# PowerShell: Using the TargetType parameter to set YAML
+Set-PSRuleOption -TargetType 'ResourceType', 'kind';
+``
 
 ```yaml
 # YAML: Using the binding/targetType property
@@ -296,8 +329,18 @@ Inconclusive results will:
 The inconclusive warning can be disabled by using:
 
 ```powershell
+# PowerShell: Using the InconclusiveWarning parameter
+$option = New-PSRuleOption -InconclusiveWarning $False;
+```
+
+```powershell
 # PowerShell: Using the Execution.InconclusiveWarning hashtable key
 $option = New-PSRuleOption -Option @{ 'Execution.InconclusiveWarning' = $False };
+```
+
+```powershell
+# PowerShell: Using the InconclusiveWarning parameter to set YAML
+Set-PSRuleOption -InconclusiveWarning $False;
 ```
 
 ```yaml
@@ -320,8 +363,18 @@ Not processed objects will:
 The not processed warning can be disabled by using:
 
 ```powershell
+# PowerShell: Using the NotProcessedWarning parameter
+$option = New-PSRuleOption -NotProcessedWarning $False;
+```
+
+```powershell
 # PowerShell: Using the Execution.NotProcessedWarning hashtable key
 $option = New-PSRuleOption -Option @{ 'Execution.NotProcessedWarning' = $False };
+```
+
+```powershell
+# PowerShell: Using the NotProcessedWarning parameter to set YAML
+Set-PSRuleOption -NotProcessedWarning $False;
 ```
 
 ```yaml
@@ -350,8 +403,18 @@ The following formats are available:
 This option can be specified using:
 
 ```powershell
+# PowerShell: Using the Format parameter
+$option = New-PSRuleOption -Format Yaml;
+```
+
+```powershell
 # PowerShell: Using the Input.Format hashtable key
 $option = New-PSRuleOption -Option @{ 'Input.Format' = 'Yaml' };
+```
+
+```powershell
+# PowerShell: Using the Format parameter to set YAML
+Set-PSRuleOption -Format Yaml;
 ```
 
 ```yaml
@@ -373,8 +436,18 @@ When using `Invoke-PSRule` and `Test-PSRuleTarget` the `-ObjectPath` parameter w
 This option can be specified using:
 
 ```powershell
+# PowerShell: Using the ObjectPath parameter
+$option = New-PSRuleOption -ObjectPath 'items';
+```
+
+```powershell
 # PowerShell: Using the Input.ObjectPath hashtable key
 $option = New-PSRuleOption -Option @{ 'Input.ObjectPath' = 'items' };
+```
+
+```powershell
+# PowerShell: Using the ObjectPath parameter to set YAML
+Set-PSRuleOption -ObjectPath 'items';
 ```
 
 ```yaml
@@ -658,6 +731,7 @@ An online version of this document is available at https://github.com/BernieWhit
 
 - [Invoke-PSRule](https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md)
 - [New-PSRuleOption](https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/New-PSRuleOption.md)
+- [Set-PSRuleOption](https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Set-PSRuleOption.md)
 
 ## KEYWORDS
 

@@ -1,11 +1,12 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace PSRule.Configuration
 {
     /// <summary>
     /// Options tht affect property binding of TargetName.
     /// </summary>
-    public sealed class BindingOption
+    public sealed class BindingOption : IEquatable<BindingOption>
     {
         private const bool DEFAULT_IGNORECASE = true;
 
@@ -26,6 +27,32 @@ namespace PSRule.Configuration
             IgnoreCase = option.IgnoreCase;
             TargetName = option.TargetName;
             TargetType = option.TargetType;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj != null &&
+                obj is BindingOption &&
+                Equals(obj as BindingOption);
+        }
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine
+            {
+                int hash = 17;
+                hash = hash * 23 + (IgnoreCase.HasValue ? IgnoreCase.Value.GetHashCode() : 0);
+                hash = hash * 23 + (TargetName != null ? TargetName.GetHashCode() : 0);
+                hash = hash * 23 + (TargetType != null ? TargetType.GetHashCode() : 0);
+                return hash;
+            }
+        }
+
+        public bool Equals(BindingOption other)
+        {
+            return other != null &&
+                IgnoreCase == other.IgnoreCase &&
+                TargetName == other.TargetName &&
+                TargetType == other.TargetType;
         }
 
         /// <summary>

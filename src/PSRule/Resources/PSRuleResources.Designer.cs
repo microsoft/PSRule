@@ -19,7 +19,7 @@ namespace PSRule.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class PSRuleResources {
@@ -66,6 +66,15 @@ namespace PSRule.Resources {
         internal static string ObjectNotProcessed {
             get {
                 return ResourceManager.GetString("ObjectNotProcessed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options file does not exist..
+        /// </summary>
+        internal static string OptionsNotFound {
+            get {
+                return ResourceManager.GetString("OptionsNotFound", resourceCulture);
             }
         }
         

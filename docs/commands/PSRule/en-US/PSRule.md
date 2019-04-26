@@ -26,6 +26,10 @@ Evaluate pipeline objects against matching rules.
 
 Create options to configure PSRule execution.
 
+### [Set-PSRuleOption](Set-PSRuleOption.md)
+
+Set options to configure PSRule execution.
+
 ### [Test-PSRuleTarget](Test-PSRuleTarget.md)
 
 Evaluate pipeline objects against matching rules.
