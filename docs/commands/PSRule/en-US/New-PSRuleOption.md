@@ -16,10 +16,9 @@ Create options to configure PSRule execution.
 ```text
 New-PSRuleOption [[-Path] <String>] [[-Option] <PSRuleOption>] [-BaselineConfiguration <BaselineConfiguration>]
  [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>]
- [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-BindingTargetName <String[]>]
- [-BindingTargetType <String[]>] [-ExecutionLanguageMode <LanguageMode>]
- [-ExecutionInconclusiveWarning <Boolean>] [-ExecutionNotProcessedWarning <Boolean>]
- [-InputFormat <InputFormat>] [-InputObjectPath <String>] [-LoggingRuleFail <OutcomeLogStream>]
+ [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-TargetName <String[]>]
+ [-TargetType <String[]>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
+ [-Format <InputFormat>] [-ObjectPath <String>] [-LoggingRuleFail <OutcomeLogStream>]
  [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputFormat <OutputFormat>]
  [<CommonParameters>]
 ```
@@ -99,7 +98,11 @@ Accept wildcard characters: False
 
 ### -Path
 
-The path to a YAML file containing options.
+The path to a YAML file containing options. By default the current working path (`$PWD`) is used.
+
+Either a directory or file path can be specified. When a directory is used, `ps-rule.yaml` will be used as the file name.
+
+If the `-Path` parameter is specified and the file does not exist, an exception will be generated.
 
 ```yaml
 Type: String
@@ -187,7 +190,7 @@ Accept wildcard characters: False
 
 ### -BindingIgnoreCase
 
-{{ Fill BindingIgnoreCase Description }}
+Sets the option `Binding.IgnoreCase`. The option `Binding.IgnoreCase` determines if binding operations are case-sensitive or not. See about_PSRule_Options for more information.
 
 ```yaml
 Type: Boolean
@@ -203,12 +206,12 @@ Accept wildcard characters: False
 
 ### -TargetName
 
-{{ Fill BindingTargetName Description }}
+Sets the option `Binding.TargetName`. This option specifies one or more properties of _TargetObject_ to use to bind _TargetName_ to. See about_PSRule_Options for more information.
 
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases:
+Aliases: BindingTargetName
 
 Required: False
 Position: Named
@@ -219,12 +222,12 @@ Accept wildcard characters: False
 
 ### -TargetType
 
-{{ Fill BindingTargetType Description }}
+Sets the option `Binding.TargetType`. This option specifies one or more properties of _TargetObject_ to use to bind _TargetType_ to. See about_PSRule_Options for more information.
 
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases:
+Aliases: BindingTargetType
 
 Required: False
 Position: Named
@@ -235,12 +238,12 @@ Accept wildcard characters: False
 
 ### -InconclusiveWarning
 
-{{ Fill ExecutionInconclusiveWarning Description }}
+Sets the option `Execution.InconclusiveWarning`. The `Execution.InconclusiveWarning` option determines if a warning is generated when the outcome of a rule is inconclusive. See about_PSRule_Options for more information.
 
 ```yaml
 Type: Boolean
 Parameter Sets: (All)
-Aliases:
+Aliases: ExecutionInconclusiveWarning
 
 Required: False
 Position: Named
@@ -251,12 +254,12 @@ Accept wildcard characters: False
 
 ### -NotProcessedWarning
 
-{{ Fill ExecutionNotProcessedWarning Description }}
+Sets the option `Execution.NotProcessedWarning`. The `Execution.NotProcessedWarning` option determines if a warning is generated when an object is not processed by any rule. See about_PSRule_Options for more information.
 
 ```yaml
 Type: Boolean
 Parameter Sets: (All)
-Aliases:
+Aliases: ExecutionNotProcessedWarning
 
 Required: False
 Position: Named
@@ -267,12 +270,12 @@ Accept wildcard characters: False
 
 ### -Format
 
-{{ Fill InputFormat Description }}
+Sets the `Input.Format` option to configure the input format for when a string is passed in as a target object.
 
 ```yaml
 Type: InputFormat
 Parameter Sets: (All)
-Aliases: Format
+Aliases: InputFormat
 
 Required: False
 Position: Named
@@ -283,12 +286,12 @@ Accept wildcard characters: False
 
 ### -ObjectPath
 
-{{ Fill InputObjectPath Description }}
+Sets the `Input.ObjectPath` option to use an object path to use instead of the pipeline object.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: ObjectPath
+Aliases: InputObjectPath
 
 Required: False
 Position: Named
@@ -299,7 +302,7 @@ Accept wildcard characters: False
 
 ### -LoggingRuleFail
 
-{{ Fill LoggingRuleFail Description }}
+Sets the `Logging.RuleFail` option to generate an informational message for each rule fail.
 
 ```yaml
 Type: OutcomeLogStream
@@ -315,7 +318,7 @@ Accept wildcard characters: False
 
 ### -LoggingRulePass
 
-{{ Fill LoggingRulePass Description }}
+Sets the `Logging.RulePass` option to generate an informational message for each rule pass.
 
 ```yaml
 Type: OutcomeLogStream
@@ -331,12 +334,12 @@ Accept wildcard characters: False
 
 ### -OutputAs
 
-{{ Fill OutputAs Description }}
+Sets the option `Output.As`. The `Output.As` option configures the type of results to produce, either detail or summary.
 
 ```yaml
 Type: ResultFormat
 Parameter Sets: (All)
-Aliases: As
+Aliases:
 
 Required: False
 Position: Named
@@ -347,7 +350,7 @@ Accept wildcard characters: False
 
 ### -OutputFormat
 
-{{ Fill OutputFormat Description }}
+Sets the option `Output.Format`. The `Output.Format` option configures the format that results will be presented in.
 
 ```yaml
 Type: OutputFormat

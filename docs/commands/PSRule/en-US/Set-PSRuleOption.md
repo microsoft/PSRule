@@ -189,7 +189,7 @@ Accept wildcard characters: False
 
 ### -NotProcessedWarning
 
-Sets the option `Execution.NotProcessedWarning`. The `Execution.NotProcessedWarning` option determines if a warning is generated when an object is not processed by any rule. See about_PSRule_Options for more information.
+Sets the `Execution.NotProcessedWarning` option. The `Execution.NotProcessedWarning` option determines if a warning is generated when an object is not processed by any rule. See about_PSRule_Options for more information.
 
 ```yaml
 Type: Boolean
@@ -205,7 +205,7 @@ Accept wildcard characters: False
 
 ### -Format
 
-Sets the option `Input.Format`.
+Sets the `Input.Format` option to configure the input format for when a string is passed in as a target object.
 
 ```yaml
 Type: InputFormat
@@ -222,7 +222,7 @@ Accept wildcard characters: False
 
 ### -ObjectPath
 
-Sets the option `Input.ObjectPath`.
+Sets the `Input.ObjectPath` option to use an object path to use instead of the pipeline object.
 
 ```yaml
 Type: String
@@ -238,7 +238,7 @@ Accept wildcard characters: False
 
 ### -LoggingRuleFail
 
-Sets the option `Logging.RuleFail`.
+Sets the `Logging.RuleFail` option to generate an informational message for each rule fail.
 
 ```yaml
 Type: OutcomeLogStream
@@ -255,7 +255,7 @@ Accept wildcard characters: False
 
 ### -LoggingRulePass
 
-Sets the option `Logging.RulePass`.
+Sets the `Logging.RulePass` option to generate an informational message for each rule pass.
 
 ```yaml
 Type: OutcomeLogStream
@@ -277,7 +277,7 @@ Sets the option `Output.As`. The `Output.As` option configures the type of resul
 ```yaml
 Type: ResultFormat
 Parameter Sets: (All)
-Aliases: As
+Aliases:
 Accepted values: Detail, Summary
 
 Required: False
