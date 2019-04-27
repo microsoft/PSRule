@@ -167,7 +167,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
 
         It 'from parameter' {
-            $option = New-PSRuleOption -BindingTargetName 'ResourceName', 'AlternateName' -Path $emptyOptionsFilePath;
+            $option = New-PSRuleOption -TargetName 'ResourceName', 'AlternateName' -Path $emptyOptionsFilePath;
             $option.Binding.TargetName | Should -BeIn 'ResourceName', 'AlternateName';
         }
     }
@@ -204,7 +204,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
 
         It 'from parameter' {
-            $option = New-PSRuleOption -BindingTargetType 'ResourceType', 'Kind' -Path $emptyOptionsFilePath;
+            $option = New-PSRuleOption -TargetType 'ResourceType', 'Kind' -Path $emptyOptionsFilePath;
             $option.Binding.TargetType | Should -BeIn 'ResourceType', 'Kind';
         }
     }
@@ -222,11 +222,6 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Execution.LanguageMode | Should -Be 'ConstrainedLanguage';
-        }
-
-        It 'from parameter' {
-            $option = New-PSRuleOption -ExecutionLanguageMode 'ConstrainedLanguage' -Path $emptyOptionsFilePath;
             $option.Execution.LanguageMode | Should -Be 'ConstrainedLanguage';
         }
     }
@@ -248,7 +243,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
 
         It 'from parameter' {
-            $option = New-PSRuleOption -ExecutionInconclusiveWarning $False -Path $emptyOptionsFilePath;
+            $option = New-PSRuleOption -InconclusiveWarning $False -Path $emptyOptionsFilePath;
             $option.Execution.InconclusiveWarning | Should -Be $False;
         }
     }
@@ -270,7 +265,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
 
         It 'from parameter' {
-            $option = New-PSRuleOption -ExecutionNotProcessedWarning $False -Path $emptyOptionsFilePath;
+            $option = New-PSRuleOption -NotProcessedWarning $False -Path $emptyOptionsFilePath;
             $option.Execution.NotProcessedWarning | Should -Be $False;
         }
     }
@@ -292,7 +287,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
 
         It 'from parameter' {
-            $option = New-PSRuleOption -InputFormat 'Yaml' -Path $emptyOptionsFilePath;
+            $option = New-PSRuleOption -Format 'Yaml' -Path $emptyOptionsFilePath;
             $option.Input.Format | Should -Be 'Yaml';
         }
     }
@@ -314,7 +309,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
 
         It 'from parameter' {
-            $option = New-PSRuleOption -InputObjectPath 'items' -Path $emptyOptionsFilePath;
+            $option = New-PSRuleOption -ObjectPath 'items' -Path $emptyOptionsFilePath;
             $option.Input.ObjectPath | Should -Be 'items';
         }
     }
@@ -437,10 +432,6 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         PassThru = $True
     }
 
-    # Baseline.RuleName
-    # Baseline.Exclude
-    # Baseline.Configuration
-
     Context 'Read Binding.IgnoreCase' {
         It 'from parameter' {
             $option = Set-PSRuleOption -BindingIgnoreCase $False @optionParams;
@@ -450,49 +441,42 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
 
     Context 'Read Binding.TargetName' {
         It 'from parameter' {
-            $option = Set-PSRuleOption -BindingTargetName 'ResourceName', 'AlternateName' @optionParams;
+            $option = Set-PSRuleOption -TargetName 'ResourceName', 'AlternateName' @optionParams;
             $option.Binding.TargetName | Should -BeIn 'ResourceName', 'AlternateName';
         }
     }
 
     Context 'Read Binding.TargetType' {
         It 'from parameter' {
-            $option = Set-PSRuleOption -BindingTargetType 'ResourceType', 'Kind' @optionParams;
+            $option = Set-PSRuleOption -TargetType 'ResourceType', 'Kind' @optionParams;
             $option.Binding.TargetType | Should -BeIn 'ResourceType', 'Kind';
-        }
-    }
-
-    Context 'Read Execution.LanguageMode' {
-        It 'from parameter' {
-            $option = Set-PSRuleOption -ExecutionLanguageMode 'ConstrainedLanguage' @optionParams;
-            $option.Execution.LanguageMode | Should -Be 'ConstrainedLanguage';
         }
     }
 
     Context 'Read Execution.InconclusiveWarning' {
         It 'from parameter' {
-            $option = Set-PSRuleOption -ExecutionInconclusiveWarning $False @optionParams;
+            $option = Set-PSRuleOption -InconclusiveWarning $False @optionParams;
             $option.Execution.InconclusiveWarning | Should -Be $False;
         }
     }
 
     Context 'Read Execution.NotProcessedWarning' {
         It 'from parameter' {
-            $option = Set-PSRuleOption -ExecutionNotProcessedWarning $False @optionParams;
+            $option = Set-PSRuleOption -NotProcessedWarning $False @optionParams;
             $option.Execution.NotProcessedWarning | Should -Be $False;
         }
     }
 
     Context 'Read Input.Format' {
         It 'from parameter' {
-            $option = Set-PSRuleOption -InputFormat 'Yaml' @optionParams;
+            $option = Set-PSRuleOption -Format 'Yaml' @optionParams;
             $option.Input.Format | Should -Be 'Yaml';
         }
     }
 
     Context 'Read Input.ObjectPath' {
         It 'from parameter' {
-            $option = Set-PSRuleOption -InputObjectPath 'items' @optionParams;
+            $option = Set-PSRuleOption -ObjectPath 'items' @optionParams;
             $option.Input.ObjectPath | Should -Be 'items';
         }
     }
@@ -524,8 +508,6 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
             $option.Output.Format | Should -Be 'Yaml';
         }
     }
-    
-    # Suppression
 }
 
 #endregion Set-PSRuleOption

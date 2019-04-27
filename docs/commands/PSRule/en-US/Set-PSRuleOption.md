@@ -2,6 +2,7 @@
 external help file: PSRule-help.xml
 Module Name: PSRule
 online version: https://berniewhite.github.io/PSRule/commands/PSRule/en-US/Set-PSRuleOption.html
+schema: 2.0.0
 ---
 
 # Set-PSRuleOption
@@ -13,12 +14,11 @@ Sets options that configure PSRule execution.
 ## SYNTAX
 
 ```text
-Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-BindingIgnoreCase <Boolean>]
- [-BindingTargetName <String[]>] [-BindingTargetType <String[]>] [-ExecutionLanguageMode <LanguageMode>]
- [-ExecutionInconclusiveWarning <Boolean>] [-ExecutionNotProcessedWarning <Boolean>]
- [-InputFormat <InputFormat>] [-InputObjectPath <String>] [-LoggingRuleFail <OutcomeLogStream>]
- [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputFormat <OutputFormat>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force] [-Overwrite]
+ [-BindingIgnoreCase <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
+ [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-Format <InputFormat>]
+ [-ObjectPath <String>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
+ [-OutputAs <ResultFormat>] [-OutputFormat <OutputFormat>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -44,6 +44,8 @@ The path to a YAML file where options will be set. By default the current workin
 Either a directory or file path can be specified. When a directory is used, `ps-rule.yaml` will be used as the file name.
 
 The file will be created if it does not exist. If the file already exists it will be merged with the existing options and **overwritten**.
+
+If the directory does not exist an error will be generated. To force the creation of the directory path use the `-Force` switch.
 
 ```yaml
 Type: String
@@ -89,9 +91,41 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Force
+
+Force creation of directory path for Path parameter, when the directory does not already exist.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Overwrite
+
+Overwrite YAML files that contain comments.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -BindingIgnoreCase
 
-Sets the option `Binding.IgnoreCase`. The option `Binding.IgnoreCase` determines if binding operations are case-sensitive or not. See [about_PSRule_Options][about_PSRule_Options] for more information.
+Sets the option `Binding.IgnoreCase`. The option `Binding.IgnoreCase` determines if binding operations are case-sensitive or not. See about_PSRule_Options for more information.
 
 ```yaml
 Type: Boolean
@@ -107,12 +141,12 @@ Accept wildcard characters: False
 
 ### -TargetName
 
-Sets the option `Binding.TargetName`. This option specifies one or more properties of _TargetObject_ to use to bind _TargetName_ to. See [about_PSRule_Options][about_PSRule_Options] for more information.
+Sets the option `Binding.TargetName`. This option specifies one or more properties of _TargetObject_ to use to bind _TargetName_ to. See about_PSRule_Options for more information.
 
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases:
+Aliases: BindingTargetName
 
 Required: False
 Position: Named
@@ -123,12 +157,12 @@ Accept wildcard characters: False
 
 ### -TargetType
 
-Sets the option `Binding.TargetType`. This option specifies one or more properties of _TargetObject_ to use to bind _TargetType_ to. See [about_PSRule_Options][about_PSRule_Options] for more information.
+Sets the option `Binding.TargetType`. This option specifies one or more properties of _TargetObject_ to use to bind _TargetType_ to. See about_PSRule_Options for more information.
 
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases:
+Aliases: BindingTargetType
 
 Required: False
 Position: Named
@@ -137,33 +171,14 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ExecutionLanguageMode
-
-Sets the option `Execution.LanguageMode`. The `Execution.LanguageMode` option determines if all or limit PowerShell language features are available for rules.
-
-TODO: Get rid of this parameter.
-
-```yaml
-Type: LanguageMode
-Parameter Sets: (All)
-Aliases:
-Accepted values: FullLanguage, ConstrainedLanguage
-
-Required: False
-Position: Named
-Default value: FullLanguage
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -InconclusiveWarning
 
-Sets the option `Execution.InconclusiveWarning`. The `Execution.InconclusiveWarning` option determines if a warning is generated when the outcome of a rule is inconclusive. See [about_PSRule_Options][about_PSRule_Options] for more information.
+Sets the option `Execution.InconclusiveWarning`. The `Execution.InconclusiveWarning` option determines if a warning is generated when the outcome of a rule is inconclusive. See about_PSRule_Options for more information.
 
 ```yaml
 Type: Boolean
 Parameter Sets: (All)
-Aliases:
+Aliases: ExecutionInconclusiveWarning
 
 Required: False
 Position: Named
@@ -174,12 +189,12 @@ Accept wildcard characters: False
 
 ### -NotProcessedWarning
 
-Sets the option `Execution.NotProcessedWarning`. The `Execution.NotProcessedWarning` option determines if a warning is generated when an object is not processed by any rule. See [about_PSRule_Options][about_PSRule_Options] for more information.
+Sets the option `Execution.NotProcessedWarning`. The `Execution.NotProcessedWarning` option determines if a warning is generated when an object is not processed by any rule. See about_PSRule_Options for more information.
 
 ```yaml
 Type: Boolean
 Parameter Sets: (All)
-Aliases:
+Aliases: ExecutionNotProcessedWarning
 
 Required: False
 Position: Named
@@ -195,7 +210,7 @@ Sets the option `Input.Format`.
 ```yaml
 Type: InputFormat
 Parameter Sets: (All)
-Aliases: Format
+Aliases: InputFormat
 Accepted values: None, Yaml, Json, Detect
 
 Required: False
@@ -212,7 +227,7 @@ Sets the option `Input.ObjectPath`.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: ObjectPath
+Aliases: InputObjectPath
 
 Required: False
 Position: Named
@@ -338,5 +353,3 @@ When you use the `-PassThru` switch, an options object is returned to the pipeli
 ## RELATED LINKS
 
 [New-PSRuleOption](New-PSRuleOption.md)
-
-[about_PSRule_Options]: ../../../concepts/PSRule/en-US/about_PSRule_Options.md

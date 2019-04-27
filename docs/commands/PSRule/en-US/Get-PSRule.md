@@ -2,6 +2,7 @@
 external help file: PSRule-help.xml
 Module Name: PSRule
 online version: https://berniewhite.github.io/PSRule/commands/PSRule/en-US/Get-PSRule.html
+schema: 2.0.0
 ---
 
 # Get-PSRule

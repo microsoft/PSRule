@@ -2,6 +2,7 @@
 external help file: PSRule-help.xml
 Module Name: PSRule
 online version: https://berniewhite.github.io/PSRule/commands/PSRule/en-US/New-PSRuleOption.html
+schema: 2.0.0
 ---
 
 # New-PSRuleOption
@@ -13,9 +14,14 @@ Create options to configure PSRule execution.
 ## SYNTAX
 
 ```text
-New-PSRuleOption [[-Option] <PSRuleOption>] [-BaselineConfiguration <BaselineConfiguration>]
+New-PSRuleOption [[-Path] <String>] [[-Option] <PSRuleOption>] [-BaselineConfiguration <BaselineConfiguration>]
  [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>]
- [-BindTargetType <BindTargetName[]>] [[-Path] <String>] [<CommonParameters>]
+ [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-BindingTargetName <String[]>]
+ [-BindingTargetType <String[]>] [-ExecutionLanguageMode <LanguageMode>]
+ [-ExecutionInconclusiveWarning <Boolean>] [-ExecutionNotProcessedWarning <Boolean>]
+ [-InputFormat <InputFormat>] [-InputObjectPath <String>] [-LoggingRuleFail <OutcomeLogStream>]
+ [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputFormat <OutputFormat>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -169,6 +175,182 @@ For more information on PSRule options see about_PSRule_Options.
 
 ```yaml
 Type: BindTargetName[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -BindingIgnoreCase
+
+{{ Fill BindingIgnoreCase Description }}
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TargetName
+
+{{ Fill BindingTargetName Description }}
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TargetType
+
+{{ Fill BindingTargetType Description }}
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InconclusiveWarning
+
+{{ Fill ExecutionInconclusiveWarning Description }}
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NotProcessedWarning
+
+{{ Fill ExecutionNotProcessedWarning Description }}
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Format
+
+{{ Fill InputFormat Description }}
+
+```yaml
+Type: InputFormat
+Parameter Sets: (All)
+Aliases: Format
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ObjectPath
+
+{{ Fill InputObjectPath Description }}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: ObjectPath
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -LoggingRuleFail
+
+{{ Fill LoggingRuleFail Description }}
+
+```yaml
+Type: OutcomeLogStream
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -LoggingRulePass
+
+{{ Fill LoggingRulePass Description }}
+
+```yaml
+Type: OutcomeLogStream
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputAs
+
+{{ Fill OutputAs Description }}
+
+```yaml
+Type: ResultFormat
+Parameter Sets: (All)
+Aliases: As
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputFormat
+
+{{ Fill OutputFormat Description }}
+
+```yaml
+Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
 

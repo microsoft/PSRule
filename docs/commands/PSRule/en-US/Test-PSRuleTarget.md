@@ -2,6 +2,7 @@
 external help file: PSRule-help.xml
 Module Name: PSRule
 online version: https://berniewhite.github.io/PSRule/commands/PSRule/en-US/Test-PSRuleTarget.html
+schema: 2.0.0
 ---
 
 # Test-PSRuleTarget
