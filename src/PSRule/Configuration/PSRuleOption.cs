@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using System.Text.RegularExpressions;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -138,6 +139,20 @@ namespace PSRule.Configuration
                     // Use the default options
                     return Default.Clone();
                 }
+            }
+
+            return FromYaml(yaml: File.ReadAllText(filePath));
+        }
+
+        public static PSRuleOption FromFileOrDefault(string path)
+        {
+            // Get a rooted file path instead of directory or relative path
+            var filePath = GetFilePath(path: path);
+
+            // Fallback to defaults even if file does not exist when silentlyContinue is true
+            if (!File.Exists(filePath))
+            {
+                return new PSRuleOption();
             }
 
             return FromYaml(yaml: File.ReadAllText(filePath));
@@ -298,7 +313,7 @@ namespace PSRule.Configuration
         /// <param name="path"></param>
         public static implicit operator PSRuleOption(string path)
         {
-            var option = FromFile(path);
+            var option = FromFile(path: path, silentlyContinue: false);
 
             return option;
         }
@@ -339,6 +354,12 @@ namespace PSRule.Configuration
                 Pipeline == other.Pipeline;
         }
 
+        public static string GetFilePath(string path)
+        {
+            var rootedPath = GetRootedPath(path);
+            return Path.HasExtension(rootedPath) ? rootedPath : Path.Combine(path, DEFAULT_FILENAME);
+        }
+
         /// <summary>
         /// Get a full path instead of a relative path that may be passed from PowerShell.
         /// </summary>
@@ -347,12 +368,6 @@ namespace PSRule.Configuration
         private static string GetRootedPath(string path)
         {
             return Path.IsPathRooted(path) ? path : Path.Combine(GetWorkingPath(), path);
-        }
-
-        private static string GetFilePath(string path)
-        {
-            var rootedPath = GetRootedPath(path);
-            return Path.HasExtension(rootedPath) ? rootedPath : Path.Combine(path, DEFAULT_FILENAME);
         }
     }
 }

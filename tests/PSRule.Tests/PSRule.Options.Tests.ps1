@@ -432,6 +432,41 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         PassThru = $True
     }
 
+    Context 'Use -AllowClobber' {
+        $filePath = (Join-Path -Path $outputPath -ChildPath 'PSRule.Tests4.yml');
+        Copy-Item -Path (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml') -Destination $filePath;
+
+        It 'Errors with comments' {
+            { Set-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Throw -ErrorId 'PSRule.PSRuleOption.YamlContainsComments';
+        }
+
+        it 'Overwrites file' {
+            Set-PSRuleOption -Path $filePath -BindingIgnoreCase $True -AllowClobber;
+            $result = New-PSRuleOption -Path $filePath;
+            $result.Binding.IgnoreCase | Should -Be $True;
+        }
+    }
+
+    Context 'Use -Path' {
+        It 'With missing file' {
+            $filePath = (Join-Path -Path $outputPath -ChildPath 'not-a-file.yml');
+            { Set-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Not -Throw;
+            Test-Path -Path $filePath | Should -Be $True;
+        }
+
+        It 'With missing directory' {
+            $filePath = (Join-Path -Path $outputPath -ChildPath 'dir/ps-rule.yaml');
+            { Set-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Throw -ErrorId 'PSRule.PSRuleOption.ParentPathNotFound';
+            Test-Path -Path $filePath | Should -Be $False;
+        }
+
+        It 'With missing directory with -Force' {
+            $filePath = (Join-Path -Path $outputPath -ChildPath 'dir/ps-rule.yaml');
+            Set-PSRuleOption -Path $filePath -Force;
+            Test-Path -Path $filePath | Should -Be $True;
+        }
+    }
+
     Context 'Read Binding.IgnoreCase' {
         It 'from parameter' {
             $option = Set-PSRuleOption -BindingIgnoreCase $False @optionParams;

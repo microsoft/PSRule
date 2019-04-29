@@ -46,19 +46,25 @@ When using a hashtable object `@{}`, one or more options can be specified as key
 For example:
 
 ```powershell
-$option = @{ 'execution.languageMode' = 'ConstrainedLanguage' };
+$option = @{ 'Output.Format' = 'Yaml' };
 Invoke-PSRule -Path . -Option $option;
 ```
 
-The above example shows how the `execution.languageMode` option as a hashtable key can be used. Continue reading for a full list of options and how each can be used.
+The above example shows how the `Output.Format` option as a hashtable key can be used. Continue reading for a full list of options and how each can be used.
 
 Alternatively, options can be stored in a YAML formatted file and loaded from disk. Storing options as YAML allows different configurations to be loaded in a repeatable way instead of having to create an options object each time.
 
 Options are stored as YAML properties using a lower camel case naming convention, for example:
 
 ```yaml
-execution:
-  languageMode: ConstrainedLanguage
+output:
+  format: Yaml
+```
+
+The `Set-PSRuleOption` cmdlet can be used to set options stored in YAML or the YAML file can be manually edited.
+
+```powershell
+Set-PSRuleOption -OutputFormat Yaml;
 ```
 
 By default PSRule will automatically look for a file named `psrule.yml` in the current working directory. Alternatively, you can specify a YAML file in the `-Option` parameter.
@@ -257,7 +263,7 @@ $option = New-PSRuleOption -Option @{ 'Binding.TargetType' = 'ResourceType', 'ki
 ```powershell
 # PowerShell: Using the TargetType parameter to set YAML
 Set-PSRuleOption -TargetType 'ResourceType', 'kind';
-``
+```
 
 ```yaml
 # YAML: Using the binding/targetType property
@@ -474,8 +480,18 @@ The following streams available:
 This option can be specified using:
 
 ```powershell
+# PowerShell: Using the LoggingRuleFail parameter
+$option = New-PSRuleOption -LoggingRuleFail Error;
+```
+
+```powershell
 # PowerShell: Using the Logging.RuleFail hashtable key
 $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+```
+
+```powershell
+# PowerShell: Using the LoggingRuleFail parameter to set YAML
+Set-PSRuleOption -LoggingRuleFail Error;
 ```
 
 ```yaml
@@ -502,8 +518,18 @@ The following streams available:
 This option can be specified using:
 
 ```powershell
+# PowerShell: Using the LoggingRulePass parameter
+$option = New-PSRuleOption -LoggingRulePass Information;
+```
+
+```powershell
 # PowerShell: Using the Logging.RulePass hashtable key
 $option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Information' };
+```
+
+```powershell
+# PowerShell: Using the LoggingRulePass parameter to set YAML
+Set-PSRuleOption -LoggingRulePass Information;
 ```
 
 ```yaml
@@ -526,8 +552,18 @@ The following options are available:
 This option can be specified using:
 
 ```powershell
+# PowerShell: Using the OutputAs parameter
+$option = New-PSRuleOption -OutputAs Yaml;
+```
+
+```powershell
 # PowerShell: Using the Output.As hashtable key
 $option = New-PSRuleOption -Option @{ 'Output.As' = 'Summary' };
+```
+
+```powershell
+# PowerShell: Using the OutputAs parameter to set YAML
+Set-PSRuleOption -OutputAs Yaml;
 ```
 
 ```yaml
@@ -545,12 +581,23 @@ The following format options are available:
 - None - Output is presented as an object using PowerShell defaults. This is the default configuration.
 - Yaml - Output is serialized as YAML.
 - Json - Output is serialized as JSON.
+- NUnit3 - Output is serialized as NUnit3 (XML).
 
 This option can be specified using:
 
 ```powershell
+# PowerShell: Using the OutputFormat parameter
+$option = New-PSRuleOption -OutputFormat Yaml;
+```
+
+```powershell
 # PowerShell: Using the Output.Format hashtable key
 $option = New-PSRuleOption -Option @{ 'Output.Format' = 'Yaml' };
+```
+
+```powershell
+# PowerShell: Using the OutputFormat parameter to set YAML
+Set-PSRuleOption -OutputFormat Yaml;
 ```
 
 ```yaml

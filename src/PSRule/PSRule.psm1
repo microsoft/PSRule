@@ -530,6 +530,10 @@ function New-PSRuleOption {
             $optionParams.Remove('Option');
         }
 
+        if ($optionParams.ContainsKey('Verbose')) {
+            $optionParams.Remove('Verbose');
+        }
+
         if ($optionParams.ContainsKey('BaselineConfiguration')) {
             $optionParams.Remove('BaselineConfiguration');
         }
@@ -581,7 +585,7 @@ function New-PSRuleOption {
         # Options
         $Option | SetOptions @optionParams -Verbose:$VerbosePreference;
 
-        Write-Verbose -Message "[Set-PSRuleOption] END::";
+        Write-Verbose -Message "[New-PSRuleOption] END::";
     }
 }
 
@@ -607,7 +611,7 @@ function Set-PSRuleOption {
 
         # Overwrite YAML files that contain comments
         [Parameter(Mandatory = $False)]
-        [Switch]$Overwrite = $False,
+        [Switch]$AllowClobber = $False,
 
         # Options
 
@@ -689,8 +693,20 @@ function Set-PSRuleOption {
             $optionParams.Remove('Force');
         }
 
-        if ($optionParams.ContainsKey('Overwrite')) {
-            $optionParams.Remove('Overwrite');
+        if ($optionParams.ContainsKey('AllowClobber')) {
+            $optionParams.Remove('AllowClobber');
+        }
+
+        if ($optionParams.ContainsKey('WhatIf')) {
+            $optionParams.Remove('WhatIf');
+        }
+
+        if ($optionParams.ContainsKey('Confirm')) {
+            $optionParams.Remove('Confirm');
+        }
+
+        if ($optionParams.ContainsKey('Verbose')) {
+            $optionParams.Remove('Verbose');
         }
 
         # Build options object
@@ -699,18 +715,37 @@ function Set-PSRuleOption {
         }
         else {
             Write-Verbose -Message "[Set-PSRuleOption] -- Attempting to read: $Path";
-            $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $False);
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFileOrDefault($Path);
         }
+
+        $filePath = [PSRule.Configuration.PSRuleOption]::GetFilePath($Path);
+        $containsComments = YamlContainsComments -Path $filePath;
     }
 
     process {
         try {
-            $result = $Option | SetOptions @optionParams;
+            $result = $Option | SetOptions @optionParams -Verbose:$VerbosePreference;
             if ($PassThru) {
                 $result;
             }
+            elseif ($containsComments -and !$AllowClobber) {
+                Write-Error -Message $LocalizedData.YamlContainsComments -Category ResourceExists -ErrorId 'PSRule.PSRuleOption.YamlContainsComments';
+            }
             else {
-                $result.ToFile($Path);
+                $parentPath = Split-Path -Path $filePath -Parent;
+                if (!(Test-Path -Path $parentPath)) {
+                    if ($Force) {
+                        if ($PSCmdlet.ShouldProcess('Create directory', $parentPath)) {
+                            $Null = New-Item -Path $parentPath -ItemType Directory -Force;
+                        }
+                    }
+                    else {
+                        Write-Error -Message $LocalizedData.PathNotFound -Category ObjectNotFound -ErrorId 'PSRule.PSRuleOption.ParentPathNotFound';
+                    }
+                }
+                if ($PSCmdlet.ShouldProcess('Write options to file', $filePath)) {
+                    $result.ToFile($Path);
+                }
             }
         }
         finally {
@@ -1115,6 +1150,22 @@ function SetOptions {
         }
 
         return $Option;
+    }
+}
+
+function YamlContainsComments {
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param (
+        [Parameter(Mandatory = $True)]
+        [String]$Path
+    )
+
+    process {
+        if (!(Test-Path -Path $Path)) {
+            return $False;
+        }
+        return (Get-Content -Path $Path -Raw) -match '(?:(^[ \t]*)|[ \t]+|)(?=\#|^\#)';
     }
 }
 

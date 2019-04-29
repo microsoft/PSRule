@@ -14,7 +14,7 @@ Sets options that configure PSRule execution.
 ## SYNTAX
 
 ```text
-Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force] [-Overwrite]
+Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force] [-AllowClobber]
  [-BindingIgnoreCase <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-Format <InputFormat>]
  [-ObjectPath <String>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
@@ -34,6 +34,14 @@ PS C:\> Set-PSRuleOption -OutputFormat Yaml;
 ```
 
 Sets the `Output.Format` to `Yaml` for `ps-rule.yaml` in the current working path. If the `ps-rule.yaml` file exists, it is merged with the existing file and overwritten. If the file does not exist, a new file is created.
+
+### Example 2
+
+```powershell
+PS C:\> Set-PSRuleOption -OutputFormat Yaml -Path .\project-options.yaml;
+```
+
+Sets the `Output.Format` to `Yaml` for `project-options.yaml` in the current working path. If the `project-options.yaml` file exists, it is merged with the existing file and overwritten. If the file does not exist, a new file is created.
 
 ## PARAMETERS
 
@@ -61,7 +69,7 @@ Accept wildcard characters: False
 
 ### -Option
 
-{{ Fill Option Description }}
+An options object to use.
 
 ```yaml
 Type: PSRuleOption
@@ -107,7 +115,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Overwrite
+### -AllowClobber
 
 Overwrite YAML files that contain comments.
 
