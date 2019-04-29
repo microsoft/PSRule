@@ -440,7 +440,6 @@ function New-PSRuleOption {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in memory object only')]
     param (
         [Parameter(Position = 0, Mandatory = $False)]
-        [PSDefaultValue(Help = '.\ps-rule.yml')]
         [String]$Path = $PWD,
 
         [Parameter(Mandatory = $False)]
@@ -596,7 +595,6 @@ function Set-PSRuleOption {
     param (
         # The path to a YAML file where options will be set
         [Parameter(Position = 0, Mandatory = $False)]
-        [PSDefaultValue(Help = '.\ps-rule.yml')]
         [String]$Path = $PWD,
 
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]

@@ -467,6 +467,38 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         }
     }
 
+    Context 'Default YAML file detection' {
+        It 'Find default options files' {
+            $defaultPath = (Join-Path -Path $outputPath -ChildPath 'default');
+
+            # psrule.yml
+            $filePath = (Join-Path -Path $defaultPath -ChildPath 'psrule.yml');
+            Set-PSRuleOption -Path $filePath -TargetName 'psrule.yml' -Force;
+            $result = New-PSRuleOption -Path $defaultPath;
+            $result.Binding.TargetName | Should -Be 'psrule.yml';
+
+            # psrule.yaml
+            $filePath = (Join-Path -Path $defaultPath -ChildPath 'psrule.yaml');
+            Set-PSRuleOption -Path $filePath -TargetName 'psrule.yaml' -Force;
+            $result = New-PSRuleOption -Path $defaultPath;
+            $result.Binding.TargetName | Should -Be 'psrule.yaml';
+
+            # ps-rule.yml
+            $filePath = (Join-Path -Path $defaultPath -ChildPath 'ps-rule.yml');
+            Set-PSRuleOption -Path $filePath -TargetName 'ps-rule.yml' -Force;
+            $result = New-PSRuleOption -Path $defaultPath;
+            $result.Binding.TargetName | Should -Be 'ps-rule.yml';
+
+            # ps-rule.yaml
+            $filePath = (Join-Path -Path $defaultPath -ChildPath 'ps-rule.yaml');
+            Set-PSRuleOption -Path $filePath -TargetName 'ps-rule.yaml' -Force;
+            $result = New-PSRuleOption -Path $defaultPath;
+            $result.Binding.TargetName | Should -Be 'ps-rule.yaml';
+
+            (Get-ChildItem -Path $defaultPath | Measure-Object).Count | Should -Be 4;
+        }
+    }
+
     Context 'Read Binding.IgnoreCase' {
         It 'from parameter' {
             $option = Set-PSRuleOption -BindingIgnoreCase $False @optionParams;

@@ -62,7 +62,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: .\ps-rule.yml
+Default value: $PWD
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
