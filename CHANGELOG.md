@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.5.0-B190423 (pre-release)
+
 - Added `-OutputFormat NUnit3` to `Invoke-PSRule` return NUnit formatted output. [#129](https://github.com/BernieWhite/PSRule/issues/129)
 - Added `Set-PSRuleOption` cmdlet to configure YAML options file. [#135](https://github.com/BernieWhite/PSRule/issues/135)
 - Added parameters to New-PSRuleOption to configure common options. [#134](https://github.com/BernieWhite/PSRule/issues/134)
