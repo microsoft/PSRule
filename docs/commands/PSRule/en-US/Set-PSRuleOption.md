@@ -1,108 +1,59 @@
 ---
 external help file: PSRule-help.xml
 Module Name: PSRule
-online version: https://berniewhite.github.io/PSRule/commands/PSRule/en-US/New-PSRuleOption.html
+online version: https://berniewhite.github.io/PSRule/commands/PSRule/en-US/Set-PSRuleOption.html
 schema: 2.0.0
 ---
 
-# New-PSRuleOption
+# Set-PSRuleOption
 
 ## SYNOPSIS
 
-Create options to configure PSRule execution.
+Sets options that configure PSRule execution.
 
 ## SYNTAX
 
 ```text
-New-PSRuleOption [[-Path] <String>] [[-Option] <PSRuleOption>] [-BaselineConfiguration <BaselineConfiguration>]
- [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>]
- [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-TargetName <String[]>]
- [-TargetType <String[]>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
- [-Format <InputFormat>] [-ObjectPath <String>] [-LoggingRuleFail <OutcomeLogStream>]
- [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputFormat <OutputFormat>]
- [<CommonParameters>]
+Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force] [-AllowClobber]
+ [-BindingIgnoreCase <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
+ [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-Format <InputFormat>]
+ [-ObjectPath <String>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
+ [-OutputAs <ResultFormat>] [-OutputFormat <OutputFormat>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-The **New-PSRuleOption** cmdlet creates an options object that can be passed to PSRule cmdlets to configure execution.
+Sets options that configure PSRule execution.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-$option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' }
-@{ Name = 'Item 1' } | Invoke-PSRule -Option $option
+PS C:\> Set-PSRuleOption -OutputFormat Yaml;
 ```
 
-Create an options object and run rules in constrained mode.
+Sets the `Output.Format` to `Yaml` for `ps-rule.yaml` in the current working path. If the `ps-rule.yaml` file exists, it is merged with the existing file and overwritten. If the file does not exist, a new file is created.
 
 ### Example 2
 
 ```powershell
-$option = New-PSRuleOption -SuppressTargetName @{ 'storageAccounts.UseHttps' = 'TestObject1', 'TestObject3' };
+PS C:\> Set-PSRuleOption -OutputFormat Yaml -Path .\project-options.yaml;
 ```
 
-Create an options object that suppresses `TestObject1` and `TestObject3` for a rule named `storageAccounts.UseHttps`.
-
-### Example 3
-
-```powershell
-# Create a custom function that returns a TargetName string
-$bindFn = {
-    param ($TargetObject)
-
-    $otherName = $TargetObject.PSObject.Properties['OtherName'];
-
-    if ($otherName -eq $Null) {
-        return $Null
-    }
-
-    return $otherName.Value;
-}
-
-# Specify the binding function script block code to execute
-$option = New-PSRuleOption -BindTargetName $bindFn;
-```
-
-Creates an options object that uses a custom function to bind the _TargetName_ of an object.
-
-### Example 4
-
-```powershell
-$option = New-PSRuleOption -BaselineConfiguration @{ 'appServiceMinInstanceCount' = 2 };
-```
-
-Create an options object that sets the `appServiceMinInstanceCount` baseline configuration option to `2`.
+Sets the `Output.Format` to `Yaml` for `project-options.yaml` in the current working path. If the `project-options.yaml` file exists, it is merged with the existing file and overwritten. If the file does not exist, a new file is created.
 
 ## PARAMETERS
 
-### -Option
-
-Additional options that configure execution. Option also accepts a hashtable to configure options.
-
-For more information on PSRule options see about_PSRule_Options.
-
-```yaml
-Type: PSRuleOption
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Path
 
-The path to a YAML file containing options. By default the current working path (`$PWD`) is used.
+The path to a YAML file where options will be set. By default the current working path (`$PWD`) is used.
 
 Either a directory or file path can be specified. When a directory is used, `ps-rule.yaml` will be used as the file name.
 
-If the `-Path` parameter is specified and the file does not exist, an exception will be generated.
+The file will be created if it does not exist. If the file already exists it will be merged with the existing options and **overwritten**.
+
+If the directory does not exist an error will be generated. To force the creation of the directory path use the `-Force` switch.
 
 ```yaml
 Type: String
@@ -111,19 +62,49 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: None
+Default value: .\ps-rule.yml
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -SuppressTargetName
+### -Option
 
-Configures suppression for a list of objects by TargetName. SuppressTargetName also accepts a hashtable to configure rule suppression.
-
-For more information on PSRule options see about_PSRule_Options.
+An options object to use.
 
 ```yaml
-Type: SuppressionOption
+Type: PSRuleOption
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -PassThru
+
+Use this option to return the options object to the pipeline instead of saving to disk.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+
+Force creation of directory path for Path parameter, when the directory does not already exist.
+
+```yaml
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -134,50 +115,12 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -BindTargetName
+### -AllowClobber
 
-Configures a custom function to use to bind TargetName of an object.
-
-For more information on PSRule options see about_PSRule_Options.
+Overwrite YAML files that contain comments.
 
 ```yaml
-Type: BindTargetName[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -BaselineConfiguration
-
-Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values. BaselineConfiguration also accepts a hashtable of configuration values as key/ value pairs.
-
-For more information on PSRule options see about_PSRule_Options.
-
-```yaml
-Type: BaselineConfiguration
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -BindTargetType
-
-Configures a custom function to use to bind TargetType of an object.
-
-For more information on PSRule options see about_PSRule_Options.
-
-```yaml
-Type: BindTargetName[]
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -199,7 +142,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -247,14 +190,14 @@ Aliases: ExecutionInconclusiveWarning
 
 Required: False
 Position: Named
-Default value: None
+Default value: True
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -NotProcessedWarning
 
-Sets the option `Execution.NotProcessedWarning`. The `Execution.NotProcessedWarning` option determines if a warning is generated when an object is not processed by any rule. See about_PSRule_Options for more information.
+Sets the `Execution.NotProcessedWarning` option. The `Execution.NotProcessedWarning` option determines if a warning is generated when an object is not processed by any rule. See about_PSRule_Options for more information.
 
 ```yaml
 Type: Boolean
@@ -263,7 +206,7 @@ Aliases: ExecutionNotProcessedWarning
 
 Required: False
 Position: Named
-Default value: None
+Default value: True
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -276,10 +219,11 @@ Sets the `Input.Format` option to configure the input format for when a string i
 Type: InputFormat
 Parameter Sets: (All)
 Aliases: InputFormat
+Accepted values: None, Yaml, Json, Detect
 
 Required: False
 Position: Named
-Default value: None
+Default value: Detect
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -308,6 +252,7 @@ Sets the `Logging.RuleFail` option to generate an informational message for each
 Type: OutcomeLogStream
 Parameter Sets: (All)
 Aliases:
+Accepted values: None, Error, Warning, Information
 
 Required: False
 Position: Named
@@ -324,6 +269,7 @@ Sets the `Logging.RulePass` option to generate an informational message for each
 Type: OutcomeLogStream
 Parameter Sets: (All)
 Aliases:
+Accepted values: None, Error, Warning, Information
 
 Required: False
 Position: Named
@@ -340,10 +286,11 @@ Sets the option `Output.As`. The `Output.As` option configures the type of resul
 Type: ResultFormat
 Parameter Sets: (All)
 Aliases:
+Accepted values: Detail, Summary
 
 Required: False
 Position: Named
-Default value: None
+Default value: Detail
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -356,6 +303,39 @@ Sets the option `Output.Format`. The `Output.Format` option configures the forma
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
+Accepted values: None, Yaml, Json, NUnit3
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+
+Shows what would happen if the cmdlet runs. The cmdlet is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
 
 Required: False
 Position: Named
@@ -370,15 +350,14 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
-
 ## OUTPUTS
 
 ### PSRule.Configuration.PSRuleOption
+
+When you use the `-PassThru` switch, an options object is returned to the pipeline.
 
 ## NOTES
 
 ## RELATED LINKS
 
-[Invoke-PSRule](Invoke-PSRule.md)
-[Set-PSRuleOption](Set-PSRuleOption.md)
+[New-PSRuleOption](New-PSRuleOption.md)

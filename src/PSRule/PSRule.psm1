@@ -435,11 +435,14 @@ function Get-PSRule {
 
 # .ExternalHelp PSRule-Help.xml
 function New-PSRuleOption {
-
     [CmdletBinding()]
     [OutputType([PSRule.Configuration.PSRuleOption])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in memory object only')]
     param (
+        [Parameter(Position = 0, Mandatory = $False)]
+        [PSDefaultValue(Help = '.\ps-rule.yml')]
+        [String]$Path = $PWD,
+
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option,
 
@@ -455,32 +458,112 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.BindTargetName[]]$BindTargetType,
 
+        # Options
+
+        # Sets the Binding.IgnoreCase option
         [Parameter(Mandatory = $False)]
-        [PSDefaultValue(Help = '.\psrule.yml')]
-        [String]$Path = '.\psrule.yml'
+        [System.Boolean]$BindingIgnoreCase = $True,
+
+        # Sets the Binding.TargetName option
+        [Parameter(Mandatory = $False)]
+        [Alias('BindingTargetName')]
+        [String[]]$TargetName,
+
+        # Sets the Binding.TargetType option
+        [Parameter(Mandatory = $False)]
+        [Alias('BindingTargetType')]
+        [String[]]$TargetType,
+
+        # Sets the Execution.InconclusiveWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInconclusiveWarning')]
+        [System.Boolean]$InconclusiveWarning = $True,
+    
+        # Sets the Execution.NotProcessedWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionNotProcessedWarning')]
+        [System.Boolean]$NotProcessedWarning = $True,
+
+        # Sets the Input.Format option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [Alias('InputFormat')]
+        [PSRule.Configuration.InputFormat]$Format = 'Detect',
+
+        # Sets the Input.ObjectPath option
+        [Parameter(Mandatory = $False)]
+        [Alias('InputObjectPath')]
+        [String]$ObjectPath = '',
+
+        # Sets the Logging.RuleFail option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.OutcomeLogStream]$LoggingRuleFail = 'None',
+
+        # Sets the Logging.RulePass option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.OutcomeLogStream]$LoggingRulePass = 'None',
+
+        # Sets the Output.As option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Detail', 'Summary')]
+        [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
+
+        # Sets the Output.Format option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3')]
+        [PSRule.Configuration.OutputFormat]$OutputFormat = 'None'
     )
 
-    process {
+    begin {
+        Write-Verbose -Message "[New-PSRuleOption] BEGIN::";
+
+        # Get parameter options, which will override options from other sources
+        $optionParams = @{ };
+        $optionParams += $PSBoundParameters;
+
+        # Remove invalid parameters
+        if ($optionParams.ContainsKey('Path')) {
+            $optionParams.Remove('Path');
+        }
+
+        if ($optionParams.ContainsKey('Option')) {
+            $optionParams.Remove('Option');
+        }
+
+        if ($optionParams.ContainsKey('Verbose')) {
+            $optionParams.Remove('Verbose');
+        }
+
+        if ($optionParams.ContainsKey('BaselineConfiguration')) {
+            $optionParams.Remove('BaselineConfiguration');
+        }
+
+        if ($optionParams.ContainsKey('SuppressTargetName')) {
+            $optionParams.Remove('SuppressTargetName');
+        }
+
+        if ($optionParams.ContainsKey('BindTargetName')) {
+            $optionParams.Remove('BindTargetName');
+        }
+
+        if ($optionParams.ContainsKey('BindTargetType')) {
+            $optionParams.Remove('BindTargetType');
+        }
 
         if ($PSBoundParameters.ContainsKey('Option')) {
             $Option = $Option.Clone();
         }
         elseif ($PSBoundParameters.ContainsKey('Path')) {
-
-            if (!(Test-Path -Path $Path)) {
-
-            }
-
-            $Path = Resolve-Path -Path $Path;
-
-            $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path);
+            Write-Verbose -Message "Attempting to read: $Path";
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $False);
         }
         else {
             Write-Verbose -Message "Attempting to read: $Path";
-
             $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $True);
         }
+    }
 
+    end {
         if ($PSBoundParameters.ContainsKey('BaselineConfiguration')) {
             $Option.Baseline.Configuration = $BaselineConfiguration;
         }
@@ -499,7 +582,179 @@ function New-PSRuleOption {
             $Option.Pipeline.BindTargetType.AddRange($BindTargetType);
         }
 
-        return $Option;
+        # Options
+        $Option | SetOptions @optionParams -Verbose:$VerbosePreference;
+
+        Write-Verbose -Message "[New-PSRuleOption] END::";
+    }
+}
+
+# .ExternalHelp PSRule-Help.xml
+function Set-PSRuleOption {
+    [CmdletBinding(SupportsShouldProcess = $True)]
+    [OutputType([PSRule.Configuration.PSRuleOption])]
+    param (
+        # The path to a YAML file where options will be set
+        [Parameter(Position = 0, Mandatory = $False)]
+        [PSDefaultValue(Help = '.\ps-rule.yml')]
+        [String]$Path = $PWD,
+
+        [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$PassThru = $False,
+
+        # Force creation of directory path for Path parameter
+        [Parameter(Mandatory = $False)]
+        [Switch]$Force = $False,
+
+        # Overwrite YAML files that contain comments
+        [Parameter(Mandatory = $False)]
+        [Switch]$AllowClobber = $False,
+
+        # Options
+
+        # Sets the Binding.IgnoreCase option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$BindingIgnoreCase = $True,
+
+        # Sets the Binding.TargetName option
+        [Parameter(Mandatory = $False)]
+        [Alias('BindingTargetName')]
+        [String[]]$TargetName,
+
+        # Sets the Binding.TargetType option
+        [Parameter(Mandatory = $False)]
+        [Alias('BindingTargetType')]
+        [String[]]$TargetType,
+
+        # Sets the Execution.InconclusiveWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInconclusiveWarning')]
+        [System.Boolean]$InconclusiveWarning = $True,
+    
+        # Sets the Execution.NotProcessedWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionNotProcessedWarning')]
+        [System.Boolean]$NotProcessedWarning = $True,
+
+        # Sets the Input.Format option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [Alias('InputFormat')]
+        [PSRule.Configuration.InputFormat]$Format = 'Detect',
+
+        # Sets the Input.ObjectPath option
+        [Parameter(Mandatory = $False)]
+        [Alias('InputObjectPath')]
+        [String]$ObjectPath = '',
+
+        # Sets the Logging.RuleFail option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.OutcomeLogStream]$LoggingRuleFail = 'None',
+
+        # Sets the Logging.RulePass option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.OutcomeLogStream]$LoggingRulePass = 'None',
+
+        # Sets the Output.As option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Detail', 'Summary')]
+        [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
+
+        # Sets the Output.Format option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3')]
+        [PSRule.Configuration.OutputFormat]$OutputFormat = 'None'
+    )
+
+    begin {
+        Write-Verbose -Message "[Set-PSRuleOption] BEGIN::";
+
+        # Get parameter options, which will override options from other sources
+        $optionParams = @{ };
+        $optionParams += $PSBoundParameters;
+
+        # Remove invalid parameters
+        if ($optionParams.ContainsKey('Path')) {
+            $optionParams.Remove('Path');
+        }
+
+        if ($optionParams.ContainsKey('Option')) {
+            $optionParams.Remove('Option');
+        }
+
+        if ($optionParams.ContainsKey('PassThru')) {
+            $optionParams.Remove('PassThru');
+        }
+
+        if ($optionParams.ContainsKey('Force')) {
+            $optionParams.Remove('Force');
+        }
+
+        if ($optionParams.ContainsKey('AllowClobber')) {
+            $optionParams.Remove('AllowClobber');
+        }
+
+        if ($optionParams.ContainsKey('WhatIf')) {
+            $optionParams.Remove('WhatIf');
+        }
+
+        if ($optionParams.ContainsKey('Confirm')) {
+            $optionParams.Remove('Confirm');
+        }
+
+        if ($optionParams.ContainsKey('Verbose')) {
+            $optionParams.Remove('Verbose');
+        }
+
+        # Build options object
+        if ($PSBoundParameters.ContainsKey('Option')) {
+            $Option = $Option.Clone();
+        }
+        else {
+            Write-Verbose -Message "[Set-PSRuleOption] -- Attempting to read: $Path";
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFileOrDefault($Path);
+        }
+
+        $filePath = [PSRule.Configuration.PSRuleOption]::GetFilePath($Path);
+        $containsComments = YamlContainsComments -Path $filePath;
+    }
+
+    process {
+        try {
+            $result = $Option | SetOptions @optionParams -Verbose:$VerbosePreference;
+            if ($PassThru) {
+                $result;
+            }
+            elseif ($containsComments -and !$AllowClobber) {
+                Write-Error -Message $LocalizedData.YamlContainsComments -Category ResourceExists -ErrorId 'PSRule.PSRuleOption.YamlContainsComments';
+            }
+            else {
+                $parentPath = Split-Path -Path $filePath -Parent;
+                if (!(Test-Path -Path $parentPath)) {
+                    if ($Force) {
+                        if ($PSCmdlet.ShouldProcess('Create directory', $parentPath)) {
+                            $Null = New-Item -Path $parentPath -ItemType Directory -Force;
+                        }
+                    }
+                    else {
+                        Write-Error -Message $LocalizedData.PathNotFound -Category ObjectNotFound -ErrorId 'PSRule.PSRuleOption.ParentPathNotFound';
+                    }
+                }
+                if ($PSCmdlet.ShouldProcess('Write options to file', $filePath)) {
+                    $result.ToFile($Path);
+                }
+            }
+        }
+        finally {
+
+        }
+    }
+
+    end {
+        Write-Verbose -Message "[Set-PSRuleOption] END::";
     }
 }
 
@@ -773,6 +1028,147 @@ function GetFilePath {
     }
 }
 
+function SetOptions {
+    [CmdletBinding()]
+    [OutputType([PSRule.Configuration.PSRuleOption])]
+    param (
+        [Parameter(Mandatory = $True, ValueFromPipeline = $True)]
+        [PSRule.Configuration.PSRuleOption]$InputObject,
+
+        # Options
+
+        # Sets the Binding.IgnoreCase option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$BindingIgnoreCase = $True,
+
+        # Sets the Binding.TargetName option
+        [Parameter(Mandatory = $False)]
+        [Alias('BindingTargetName')]
+        [String[]]$TargetName,
+
+        # Sets the Binding.TargetType option
+        [Parameter(Mandatory = $False)]
+        [Alias('BindingTargetType')]
+        [String[]]$TargetType,
+
+        # Sets the Execution.InconclusiveWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInconclusiveWarning')]
+        [System.Boolean]$InconclusiveWarning = $True,
+    
+        # Sets the Execution.NotProcessedWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionNotProcessedWarning')]
+        [System.Boolean]$NotProcessedWarning = $True,
+
+        # Sets the Input.Format option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [Alias('InputFormat')]
+        [PSRule.Configuration.InputFormat]$Format = 'Detect',
+
+        # Sets the Input.ObjectPath option
+        [Parameter(Mandatory = $False)]
+        [Alias('InputObjectPath')]
+        [String]$ObjectPath = '',
+
+        # Sets the Logging.RuleFail option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.OutcomeLogStream]$LoggingRuleFail = 'None',
+
+        # Sets the Logging.RulePass option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.OutcomeLogStream]$LoggingRulePass = 'None',
+
+        # Sets the Output.As option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Detail', 'Summary')]
+        [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
+
+        # Sets the Output.Format option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3')]
+        [PSRule.Configuration.OutputFormat]$OutputFormat = 'None'
+    )
+
+    process {
+        # Options
+
+        # Sets option Binding.IgnoreCase
+        if ($PSBoundParameters.ContainsKey('BindingIgnoreCase')) {
+            $Option.Binding.IgnoreCase = $BindingIgnoreCase;
+        }
+
+        # Sets option Binding.TargetName
+        if ($PSBoundParameters.ContainsKey('TargetName')) {
+            $Option.Binding.TargetName = $TargetName;
+        }
+
+        # Sets option Binding.TargetType
+        if ($PSBoundParameters.ContainsKey('TargetType')) {
+            $Option.Binding.TargetType = $TargetType;
+        }
+
+        # Sets option Execution.InconclusiveWarning
+        if ($PSBoundParameters.ContainsKey('InconclusiveWarning')) {
+            $Option.Execution.InconclusiveWarning = $InconclusiveWarning;
+        }
+
+        # Sets option Execution.NotProcessedWarning
+        if ($PSBoundParameters.ContainsKey('NotProcessedWarning')) {
+            $Option.Execution.NotProcessedWarning = $NotProcessedWarning;
+        }
+
+        # Sets option Input.Format
+        if ($PSBoundParameters.ContainsKey('Format')) {
+            $Option.Input.Format = $Format;
+        }
+
+        # Sets option Input.ObjectPath
+        if ($PSBoundParameters.ContainsKey('ObjectPath')) {
+            $Option.Input.ObjectPath = $ObjectPath;
+        }
+
+        # Sets option Logging.RuleFail
+        if ($PSBoundParameters.ContainsKey('LoggingRuleFail')) {
+            $Option.Logging.RuleFail = $LoggingRuleFail;
+        }
+
+        # Sets option Logging.RulePass
+        if ($PSBoundParameters.ContainsKey('LoggingRulePass')) {
+            $Option.Logging.RulePass = $LoggingRulePass;
+        }
+
+        # Sets option Output.As
+        if ($PSBoundParameters.ContainsKey('OutputAs')) {
+            $Option.Output.As = $OutputAs;
+        }
+
+        # Sets option Output.Format
+        if ($PSBoundParameters.ContainsKey('OutputFormat')) {
+            $Option.Output.Format = $OutputFormat;
+        }
+
+        return $Option;
+    }
+}
+
+function YamlContainsComments {
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param (
+        [Parameter(Mandatory = $True)]
+        [String]$Path
+    )
+
+    process {
+        if (!(Test-Path -Path $Path)) {
+            return $False;
+        }
+        return (Get-Content -Path $Path -Raw) -match '(?:(^[ \t]*)|[ \t]+|)(?=\#|^\#)';
+    }
+}
+
 function IsDeviceGuardEnabled {
 
     [CmdletBinding()]
@@ -844,6 +1240,13 @@ InitEditorServices;
 # Export module
 #
 
-Export-ModuleMember -Function 'Rule','Invoke-PSRule','Test-PSRuleTarget','Get-PSRule','New-PSRuleOption';
+Export-ModuleMember -Function @(
+    'Rule'
+    'Invoke-PSRule'
+    'Test-PSRuleTarget'
+    'Get-PSRule'
+    'New-PSRuleOption'
+    'Set-PSRuleOption'
+)
 
 # EOM

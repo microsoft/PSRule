@@ -28,6 +28,8 @@ $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 #region New-PSRuleOption
 
 Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
+    $emptyOptionsFilePath = (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml');
+
     Context 'Read Baseline.RuleName' {
         It 'from default' {
             $option = New-PSRuleOption;
@@ -126,6 +128,11 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
             $option.Binding.IgnoreCase | Should -Be $False;
         }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -BindingIgnoreCase $False -Path $emptyOptionsFilePath;
+            $option.Binding.IgnoreCase | Should -Be $False;
+        }
     }
 
     Context 'Read Binding.TargetName' {
@@ -157,6 +164,11 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
             # With flat single item
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests3.yml');
             $option.Binding.TargetName | Should -BeIn 'ResourceName';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -TargetName 'ResourceName', 'AlternateName' -Path $emptyOptionsFilePath;
+            $option.Binding.TargetName | Should -BeIn 'ResourceName', 'AlternateName';
         }
     }
 
@@ -190,22 +202,27 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests3.yml');
             $option.Binding.TargetType | Should -BeIn 'ResourceType';
         }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -TargetType 'ResourceType', 'Kind' -Path $emptyOptionsFilePath;
+            $option.Binding.TargetType | Should -BeIn 'ResourceType', 'Kind';
+        }
     }
 
     Context 'Read Execution.LanguageMode' {
         It 'from default' {
             $option = New-PSRuleOption;
-            $option.Execution.LanguageMode | Should -Be FullLanguage;
+            $option.Execution.LanguageMode | Should -Be 'FullLanguage';
         }
 
         It 'from Hashtable' {
             $option = New-PSRuleOption -Option @{ 'Execution.LanguageMode' = 'ConstrainedLanguage' };
-            $option.Execution.LanguageMode | Should -Be ConstrainedLanguage;
+            $option.Execution.LanguageMode | Should -Be 'ConstrainedLanguage';
         }
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Execution.LanguageMode | Should -Be ConstrainedLanguage
+            $option.Execution.LanguageMode | Should -Be 'ConstrainedLanguage';
         }
     }
 
@@ -222,6 +239,11 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.InconclusiveWarning | Should -Be $False;
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -InconclusiveWarning $False -Path $emptyOptionsFilePath;
             $option.Execution.InconclusiveWarning | Should -Be $False;
         }
     }
@@ -241,6 +263,11 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
             $option.Execution.NotProcessedWarning | Should -Be $False;
         }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -NotProcessedWarning $False -Path $emptyOptionsFilePath;
+            $option.Execution.NotProcessedWarning | Should -Be $False;
+        }
     }
 
     Context 'Read Input.Format' {
@@ -251,12 +278,17 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
         It 'from Hashtable' {
             $option = New-PSRuleOption -Option @{ 'Input.Format' = 'Yaml' };
-            $option.Input.Format | Should -Be Yaml;
+            $option.Input.Format | Should -Be 'Yaml';
         }
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Input.Format | Should -Be Yaml;
+            $option.Input.Format | Should -Be 'Yaml';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -Format 'Yaml' -Path $emptyOptionsFilePath;
+            $option.Input.Format | Should -Be 'Yaml';
         }
     }
 
@@ -275,6 +307,11 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
             $option.Input.ObjectPath | Should -Be 'items';
         }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -ObjectPath 'items' -Path $emptyOptionsFilePath;
+            $option.Input.ObjectPath | Should -Be 'items';
+        }
     }
 
     Context 'Read Logging.RuleFail' {
@@ -285,12 +322,17 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
         It 'from Hashtable' {
             $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
-            $option.Logging.RuleFail | Should -Be Error;
+            $option.Logging.RuleFail | Should -Be 'Error';
         }
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Logging.RuleFail | Should -Be Warning;
+            $option.Logging.RuleFail | Should -Be 'Warning';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -LoggingRuleFail 'Warning' -Path $emptyOptionsFilePath;
+            $option.Logging.RuleFail | Should -Be 'Warning';
         }
     }
 
@@ -302,12 +344,17 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
         It 'from Hashtable' {
             $option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Error' };
-            $option.Logging.RulePass | Should -Be Error;
+            $option.Logging.RulePass | Should -Be 'Error';
         }
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Logging.RulePass | Should -Be Warning;
+            $option.Logging.RulePass | Should -Be 'Warning';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -LoggingRulePass 'Warning' -Path $emptyOptionsFilePath;
+            $option.Logging.RulePass | Should -Be 'Warning';
         }
     }
 
@@ -319,12 +366,17 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
         It 'from Hashtable' {
             $option = New-PSRuleOption -Option @{ 'Output.As' = 'Summary' };
-            $option.Output.As | Should -Be Summary;
+            $option.Output.As | Should -Be 'Summary';
         }
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Output.As | Should -Be Summary;
+            $option.Output.As | Should -Be 'Summary';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -OutputAs 'Summary' -Path $emptyOptionsFilePath;
+            $option.Output.As | Should -Be 'Summary';
         }
     }
 
@@ -336,12 +388,17 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
         It 'from Hashtable' {
             $option = New-PSRuleOption -Option @{ 'Output.Format' = 'Yaml' };
-            $option.Output.Format | Should -Be Yaml;
+            $option.Output.Format | Should -Be 'Yaml';
         }
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Output.Format | Should -Be Json;
+            $option.Output.Format | Should -Be 'Json';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -OutputFormat 'Yaml' -Path $emptyOptionsFilePath;
+            $option.Output.Format | Should -Be 'Yaml';
         }
     }
 
@@ -365,3 +422,127 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 }
 
 #endregion New-PSRuleOption
+
+#region Set-PSRuleOption
+
+Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
+    $emptyOptionsFilePath = (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml');
+    $optionParams = @{
+        Path = $emptyOptionsFilePath
+        PassThru = $True
+    }
+
+    Context 'Use -AllowClobber' {
+        $filePath = (Join-Path -Path $outputPath -ChildPath 'PSRule.Tests4.yml');
+        Copy-Item -Path (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml') -Destination $filePath;
+
+        It 'Errors with comments' {
+            { Set-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Throw -ErrorId 'PSRule.PSRuleOption.YamlContainsComments';
+        }
+
+        it 'Overwrites file' {
+            Set-PSRuleOption -Path $filePath -BindingIgnoreCase $True -AllowClobber;
+            $result = New-PSRuleOption -Path $filePath;
+            $result.Binding.IgnoreCase | Should -Be $True;
+        }
+    }
+
+    Context 'Use -Path' {
+        It 'With missing file' {
+            $filePath = (Join-Path -Path $outputPath -ChildPath 'not-a-file.yml');
+            { Set-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Not -Throw;
+            Test-Path -Path $filePath | Should -Be $True;
+        }
+
+        It 'With missing directory' {
+            $filePath = (Join-Path -Path $outputPath -ChildPath 'dir/ps-rule.yaml');
+            { Set-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Throw -ErrorId 'PSRule.PSRuleOption.ParentPathNotFound';
+            Test-Path -Path $filePath | Should -Be $False;
+        }
+
+        It 'With missing directory with -Force' {
+            $filePath = (Join-Path -Path $outputPath -ChildPath 'dir/ps-rule.yaml');
+            Set-PSRuleOption -Path $filePath -Force;
+            Test-Path -Path $filePath | Should -Be $True;
+        }
+    }
+
+    Context 'Read Binding.IgnoreCase' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -BindingIgnoreCase $False @optionParams;
+            $option.Binding.IgnoreCase | Should -Be $False;
+        }
+    }
+
+    Context 'Read Binding.TargetName' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -TargetName 'ResourceName', 'AlternateName' @optionParams;
+            $option.Binding.TargetName | Should -BeIn 'ResourceName', 'AlternateName';
+        }
+    }
+
+    Context 'Read Binding.TargetType' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -TargetType 'ResourceType', 'Kind' @optionParams;
+            $option.Binding.TargetType | Should -BeIn 'ResourceType', 'Kind';
+        }
+    }
+
+    Context 'Read Execution.InconclusiveWarning' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -InconclusiveWarning $False @optionParams;
+            $option.Execution.InconclusiveWarning | Should -Be $False;
+        }
+    }
+
+    Context 'Read Execution.NotProcessedWarning' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -NotProcessedWarning $False @optionParams;
+            $option.Execution.NotProcessedWarning | Should -Be $False;
+        }
+    }
+
+    Context 'Read Input.Format' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -Format 'Yaml' @optionParams;
+            $option.Input.Format | Should -Be 'Yaml';
+        }
+    }
+
+    Context 'Read Input.ObjectPath' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -ObjectPath 'items' @optionParams;
+            $option.Input.ObjectPath | Should -Be 'items';
+        }
+    }
+
+    Context 'Read Logging.RuleFail' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -LoggingRuleFail 'Warning' @optionParams;
+            $option.Logging.RuleFail | Should -Be 'Warning';
+        }
+    }
+
+    Context 'Read Logging.RulePass' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -LoggingRulePass 'Warning' @optionParams;
+            $option.Logging.RulePass | Should -Be 'Warning';
+        }
+    }
+
+    Context 'Read Output.As' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -OutputAs 'Summary' @optionParams;
+            $option.Output.As | Should -Be 'Summary';
+        }
+    }
+
+    Context 'Read Output.Format' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -OutputFormat 'Yaml' @optionParams;
+            $option.Output.Format | Should -Be 'Yaml';
+        }
+    }
+}
+
+#endregion Set-PSRuleOption
