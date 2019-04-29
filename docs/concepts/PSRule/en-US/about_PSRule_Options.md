@@ -67,13 +67,26 @@ The `Set-PSRuleOption` cmdlet can be used to set options stored in YAML or the Y
 Set-PSRuleOption -OutputFormat Yaml;
 ```
 
-By default PSRule will automatically look for a file named `psrule.yml` in the current working directory. Alternatively, you can specify a YAML file in the `-Option` parameter.
+By default PSRule will automatically look for a default YAML options file in the current working directory. Alternatively, you can specify a specific file path.
 
 For example:
 
 ```powershell
-Invoke-PSRule -Path . -Option '.\myconfig.yml';
+Invoke-PSRule -Option '.\myconfig.yml';
 ```
+
+```powershell
+New-PSRuleOption -Path '.\myconfig.yaml';
+```
+
+PSRule uses any of the following file names (in order) as the default YAML options file. If more then one of these files exist the following order will be used to find the first match.
+
+- `ps-rule.yaml`
+- `ps-rule.yml`
+- `psrule.yaml`
+- `psrule.yml`
+
+We recommend only using lowercase characters as shown above. This is because not all operation systems treat case in the same way.
 
 ### Baseline.RuleName
 

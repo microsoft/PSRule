@@ -21,7 +21,7 @@ namespace PSRule.Configuration
     /// </summary>
     public sealed class PSRuleOption : IEquatable<PSRuleOption>
     {
-        private const string DEFAULT_FILENAME = "psrule.yaml";
+        private const string DEFAULT_FILENAME = "ps-rule.yaml";
 
         private static readonly PSRuleOption Default = new PSRuleOption
         {
@@ -115,6 +115,10 @@ namespace PSRule.Configuration
             return new PSRuleOption(this);
         }
 
+        /// <summary>
+        /// Save the PSRuleOption to disk as YAML.
+        /// </summary>
+        /// <param name="path">The file or directory path to save the YAML file.</param>
         public void ToFile(string path)
         {
             // Get a rooted file path instead of directory or relative path
@@ -122,6 +126,12 @@ namespace PSRule.Configuration
             File.WriteAllText(path: filePath, contents: ToYaml());
         }
 
+        /// <summary>
+        /// Load a YAML formatted PSRuleOption object from disk.
+        /// </summary>
+        /// <param name="path">The file or directory path to load options from.</param>
+        /// <param name="silentlyContinue">When false, if the file does not exist, and exception will be raised.</param>
+        /// <returns></returns>
         public static PSRuleOption FromFile(string path, bool silentlyContinue = false)
         {
             // Get a rooted file path instead of directory or relative path
@@ -144,6 +154,11 @@ namespace PSRule.Configuration
             return FromYaml(yaml: File.ReadAllText(filePath));
         }
 
+        /// <summary>
+        /// Load a YAML formatted PSRuleOption object from disk.
+        /// </summary>
+        /// <param name="path">The file for directory path to load options from.</param>
+        /// <returns></returns>
         public static PSRuleOption FromFileOrDefault(string path)
         {
             // Get a rooted file path instead of directory or relative path
@@ -354,10 +369,25 @@ namespace PSRule.Configuration
                 Pipeline == other.Pipeline;
         }
 
+        /// <summary>
+        /// Get a fully qualified file path.
+        /// </summary>
+        /// <param name="path">A file or directory path.</param>
+        /// <returns></returns>
         public static string GetFilePath(string path)
         {
             var rootedPath = GetRootedPath(path);
-            return Path.HasExtension(rootedPath) ? rootedPath : Path.Combine(path, DEFAULT_FILENAME);
+            if (Path.HasExtension(rootedPath))
+            {
+                return rootedPath;
+            }
+
+            // Check if default files exist and 
+            return UseFilePath(path: path, name: "ps-rule.yaml") ??
+                UseFilePath(path: path, name: "ps-rule.yml") ??
+                UseFilePath(path: path, name: "psrule.yaml") ??
+                UseFilePath(path: path, name: "psrule.yml") ??
+                Path.Combine(path, DEFAULT_FILENAME);
         }
 
         /// <summary>
@@ -368,6 +398,18 @@ namespace PSRule.Configuration
         private static string GetRootedPath(string path)
         {
             return Path.IsPathRooted(path) ? path : Path.Combine(GetWorkingPath(), path);
+        }
+
+        /// <summary>
+        /// Determine if the combined file path is exists.
+        /// </summary>
+        /// <param name="path">A directory path where a options file may be stored.</param>
+        /// <param name="name">A file name of an options file.</param>
+        /// <returns>Returns a file path if the file exists or null if the file does not exist.</returns>
+        private static string UseFilePath(string path, string name)
+        {
+            var filePath = Path.Combine(path, name);
+            return File.Exists(filePath) ? filePath : null;
         }
     }
 }

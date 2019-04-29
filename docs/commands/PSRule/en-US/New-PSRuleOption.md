@@ -111,7 +111,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: None
+Default value: $PWD
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
