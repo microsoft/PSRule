@@ -1,15 +1,10 @@
 {
-    "title": "PSRule options",
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "PSRule options",
+    "description": "A schema for PSRule YAML options files.",
     "oneOf": [
         {
-            "$ref": "#/definitions/options-v0.4.0"
-        },
-        {
-            "$ref": "#/definitions/options-v0.3.0"
-        },
-        {
-            "$ref": "#/definitions/options-v0.2.0"
+            "$ref": "#/definitions/options-v0.5.0"
         }
     ],
     "definitions": {
@@ -40,20 +35,6 @@
             },
             "additionalProperties": false
         },
-        "binding-v0.2.0": {
-            "type": "object",
-            "description": "Configure property/ object binding options.",
-            "properties": {
-                "targetName": {
-                    "type": "array",
-                    "description": "Specifies one or more property names to bind TargetName to.",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            },
-            "additionalProperties": false
-        },
         "binding-v0.3.0": {
             "type": "object",
             "description": "Configure property/ object binding options.",
@@ -80,7 +61,7 @@
             },
             "additionalProperties": false
         },
-        "execution": {
+        "execution-v0.2.0": {
             "type": "object",
             "description": "Options that affect rule execution.",
             "properties": {
@@ -102,27 +83,6 @@
                     "type": "boolean",
                     "description": "Enable or disable warnings for objects that are not processed by any rule.",
                     "default": true
-                }
-            },
-            "additionalProperties": false
-        },
-        "input-v0.3.0": {
-            "type": "object",
-            "description": "Options that affect how input types are processed.",
-            "properties": {
-                "format": {
-                    "type": "string",
-                    "description": "The input string format.",
-                    "enum": [
-                        "None",
-                        "Yaml",
-                        "Json"
-                    ],
-                    "default": "None"
-                },
-                "objectPath": {
-                    "type": "string",
-                    "description": "The object path to a property to use instead of the pipeline object."
                 }
             },
             "additionalProperties": false
@@ -149,7 +109,7 @@
             },
             "additionalProperties": false
         },
-        "logging-v0.4.0": {
+        "logging-v0.5.0": {
             "type": "object",
             "description": "Options for logging outcomes to a informational streams.",
             "properties": {
@@ -174,15 +134,15 @@
                         "Information"
                     ],
                     "default": "None"
-                },
-                "additionalProperties": false
-            }
+                }
+            },
+            "additionalProperties": false
         },
         "suppression-v0.2.0": {
             "type": "object",
             "description": "Specifies suppression rules."
         },
-        "output-v0.4.0": {
+        "output-v0.5.0": {
             "type": "object",
             "description": "Options that affect how output is generated.",
             "properties": {
@@ -201,51 +161,15 @@
                     "enum": [
                         "None",
                         "Yaml",
-                        "Json"
+                        "Json",
+                        "NUnit3"
                     ],
                     "default": "None"
                 }
             },
             "additionalProperties": false
         },
-        "options-v0.2.0": {
-            "properties": {
-                "baseline": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/baseline-v0.2.0"
-                        }
-                    ]
-                },
-                "binding": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/binding-v0.2.0"
-                        }
-                    ]
-                },
-                "execution": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/execution"
-                        }
-                    ]
-                },
-                "suppression": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/suppression-v0.2.0"
-                        }
-                    ]
-                }
-            },
-            "additionalProperties": false
-        },
-        "options-v0.3.0": {
+        "options-v0.5.0": {
             "properties": {
                 "baseline": {
                     "type": "object",
@@ -267,52 +191,7 @@
                     "type": "object",
                     "oneOf": [
                         {
-                            "$ref": "#/definitions/execution"
-                        }
-                    ]
-                },
-                "input": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/input-v0.3.0"
-                        }
-                    ]
-                },
-                "suppression": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/suppression-v0.2.0"
-                        }
-                    ]
-                }
-            },
-            "additionalProperties": false
-        },
-        "options-v0.4.0": {
-            "properties": {
-                "baseline": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/baseline-v0.2.0"
-                        }
-                    ]
-                },
-                "binding": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/binding-v0.3.0"
-                        }
-                    ]
-                },
-                "execution": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/execution"
+                            "$ref": "#/definitions/execution-v0.2.0"
                         }
                     ]
                 },
@@ -328,7 +207,7 @@
                     "type": "object",
                     "oneOf": [
                         {
-                            "$ref": "#/definitions/logging-v0.4.0"
+                            "$ref": "#/definitions/logging-v0.5.0"
                         }
                     ]
                 },
@@ -336,7 +215,7 @@
                     "type": "object",
                     "oneOf": [
                         {
-                            "$ref": "#/definitions/output-v0.4.0"
+                            "$ref": "#/definitions/output-v0.5.0"
                         }
                     ]
                 },

@@ -188,7 +188,7 @@ The following conceptual topics exist in the `PSRule` module:
 
 PSRule uses the following schemas:
 
-- [PSRuleOptions](schemas/PSRule-options-0.4.0.schema.json) - Schema for PSRule YAML configuration file.
+- [PSRuleOptions](schemas/PSRule-options.schema.json) - Schema for PSRule YAML configuration file.
 
 ## Changes and versioning
 
