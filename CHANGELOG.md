@@ -1,16 +1,33 @@
 
 ## Unreleased
 
+## v0.5.0
+
+What's changed since v0.4.0:
+
+- Fix PSRule options schema usage of additionalProperties. [#136](https://github.com/BernieWhite/PSRule/issues/136)
+- Fix null reference exception when traversing null field. [#123](https://github.com/BernieWhite/PSRule/issues/123)
+- Fix missing help topics for options and variables. [#125](https://github.com/BernieWhite/PSRule/issues/125)
+- Improved handling of default YAML options file. [#137](https://github.com/BernieWhite/PSRule/issues/137)
+- Added support for `Invoke-PSRule` to return NUnit3 formatted results. [#129](https://github.com/BernieWhite/PSRule/issues/129)
+  - To generate NUnit3 results use the `-OutputFormat NUnit3` parameter.
+- Added `Set-PSRuleOption` cmdlet to configure YAML options file. [#135](https://github.com/BernieWhite/PSRule/issues/135)
+- Added parameters to New-PSRuleOption to configure common options. [#134](https://github.com/BernieWhite/PSRule/issues/134)
+  - Additional parameters are an alternative to using a `-Option` hashtable.
+
+What's changed since pre-release v0.5.0-B190423:
+
 - Fix schema conformance of `-OutputFormat NUnit3` to NUnit report schema. [#141](https://github.com/BernieWhite/PSRule/issues/141)
 - Fix PSRule options schema usage of additionalProperties. [#136](https://github.com/BernieWhite/PSRule/issues/136)
 
 ## v0.5.0-B190423 (pre-release)
 
-- Added `-OutputFormat NUnit3` to `Invoke-PSRule` return NUnit formatted output. [#129](https://github.com/BernieWhite/PSRule/issues/129)
+- Added support for `Invoke-PSRule` to return NUnit3 formatted results. [#129](https://github.com/BernieWhite/PSRule/issues/129)
+  - To generate NUnit3 results use the `-OutputFormat NUnit3` parameter.
 - Added `Set-PSRuleOption` cmdlet to configure YAML options file. [#135](https://github.com/BernieWhite/PSRule/issues/135)
 - Added parameters to New-PSRuleOption to configure common options. [#134](https://github.com/BernieWhite/PSRule/issues/134)
   - Additional parameters are an alternative to using a `-Option` hashtable.
-- Improve handling of default YAML options file. [#137](https://github.com/BernieWhite/PSRule/issues/137)
+- Improved handling of default YAML options file. [#137](https://github.com/BernieWhite/PSRule/issues/137)
 
 ## v0.5.0-B190405 (pre-release)
 
@@ -28,7 +45,7 @@ What's changed since v0.3.0:
 - Added support for logging pass or fail outcomes to a data stream such as Error, Warning or Information. [#97](https://github.com/BernieWhite/PSRule/issues/97)
 - **Breaking change** - Deprecated usage of the `-TargetName` parameter on the `Hint` keyword has been removed. [#81](https://github.com/BernieWhite/PSRule/issues/81)
 
-What's changed since pre-release  v0.4.0-B190328:
+What's changed since pre-release v0.4.0-B190328:
 
 - No additional changes
 
@@ -74,7 +91,7 @@ What's changed since v0.2.0:
   - `-TargetName` parameter not longer sets the pipeline object _TargetName_ and generates a warning instead.
   - The `-TargetName` will be completely removed in **v0.4.0**, at which time using the parameter will generate an error.
 
-What's changed since pre-release v0.3.0-B190231
+What's changed since pre-release v0.3.0-B190231:
 
 - Added support for input de-serialization from FileInfo objects [#95](https://github.com/BernieWhite/PSRule/issues/95)
 - **Breaking change** - Changed parameter alias for `-Path` from `-f` to `-p` [#99](https://github.com/BernieWhite/PSRule/issues/99)
@@ -123,7 +140,7 @@ What's changed since v0.1.0:
 - Fix Get-PSRule generates exception when no .rule.ps1 scripts exist in path [#53](https://github.com/BernieWhite/PSRule/issues/53)
 - Fix LocalizedData.PathNotFound warning when no .rule.ps1 scripts exist in path [#54](https://github.com/BernieWhite/PSRule/issues/54)
 
-What's changed since pre-release v0.2.0-B190121
+What's changed since pre-release v0.2.0-B190121:
 
 - No additional changes
 
