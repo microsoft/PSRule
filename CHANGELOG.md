@@ -1,12 +1,14 @@
 
 ## Unreleased
 
+- Fix schema conformance of `-OutputFormat NUnit3` to NUnit report schema. [#141](https://github.com/BernieWhite/PSRule/issues/141)
+
 ## v0.5.0-B190423 (pre-release)
 
 - Added `-OutputFormat NUnit3` to `Invoke-PSRule` return NUnit formatted output. [#129](https://github.com/BernieWhite/PSRule/issues/129)
 - Added `Set-PSRuleOption` cmdlet to configure YAML options file. [#135](https://github.com/BernieWhite/PSRule/issues/135)
 - Added parameters to New-PSRuleOption to configure common options. [#134](https://github.com/BernieWhite/PSRule/issues/134)
-  - Additional parameter are an alternative to using a `-Option` hashtable.
+  - Additional parameters are an alternative to using a `-Option` hashtable.
 - Improve handling of default YAML options file. [#137](https://github.com/BernieWhite/PSRule/issues/137)
 
 ## v0.5.0-B190405 (pre-release)

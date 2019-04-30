@@ -320,6 +320,31 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result -cmatch '"targetType":"TestType"' | Should -Be $True;
             $result | Should -Not -Match '"targetObject":';
         }
+
+        It 'NUnit3' {
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat NUnit3 | Out-String;
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+
+            # Check XML schema
+
+            $schemas = New-Object -TypeName System.Xml.Schema.XmlSchemaSet;
+            $schemas.CompilationSettings.EnableUpaCheck = $false
+
+            try {
+                $stream = (Get-Item -Path (Join-Path -Path $here -ChildPath 'NUnit.Schema.xsd')).OpenRead();
+                $schema = [Xml.Schema.XmlSchema]::Read($stream, $Null);
+                $Null = $schemas.Add($schema);
+            }
+            finally {
+                $stream.Close();
+            }
+            $schemas.Compile();
+
+            $resultXml = [XML]$result;
+            $resultXml.Schemas = $schemas;
+            { $resultXml.Validate($Null) } | Should -Not -Throw;
+        }
     }
 
     Context 'Using -InputFile' {
