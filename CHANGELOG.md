@@ -2,6 +2,7 @@
 ## Unreleased
 
 - Fix schema conformance of `-OutputFormat NUnit3` to NUnit report schema. [#141](https://github.com/BernieWhite/PSRule/issues/141)
+- Fix PSRule options schema usage of additionalProperties. [#136](https://github.com/BernieWhite/PSRule/issues/136)
 
 ## v0.5.0-B190423 (pre-release)
 
