@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRule.html",
-          "hash": "SFoeEh8uCKqPYEBTqb0pFQ=="
+          "hash": "5r/aCaZBmPkWsVPhZuYi5g=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Invoke-PSRule.html",
-          "hash": "QkYIaFmMgvdQ4GumZ8SwyA=="
+          "hash": "Ghx/BpkmBgLLhWybTuoBjA=="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "eBvIdcppRx6+BskKhJ/0Zg=="
+          "hash": "hW/9wBszXSC2U9czhwJnlQ=="
         }
       },
       "is_incremental": false,
@@ -45,7 +45,19 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/PSRule.html",
-          "hash": "L/Jero9ygsmA9txJz0w7qA=="
+          "hash": "L9dkXLuXz5whAg25lYkXnA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "commands/PSRule/en-US/Set-PSRuleOption.md",
+      "output": {
+        ".html": {
+          "relative_path": "commands/PSRule/en-US/Set-PSRuleOption.html",
+          "hash": "XQOPOV/YJWGb1AMNAbf8qA=="
         }
       },
       "is_incremental": false,
@@ -57,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Test-PSRuleTarget.html",
-          "hash": "OnmecTj7TdSz7jr/sAARQg=="
+          "hash": "lMbAX5sCJI+QJNYHUNqyJg=="
         }
       },
       "is_incremental": false,
@@ -81,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "g15XlkDZnUPuLPl6c+tOtQ=="
+          "hash": "eFyYxLOn0dPmeBDxK1X1vA=="
         }
       },
       "is_incremental": false,
@@ -180,9 +192,17 @@
       "version": ""
     },
     {
-      "log_codes": [
-        "InvalidFileLink"
-      ],
+      "type": "Resource",
+      "source_relative_path": "scenarios/azure-tags/PSRule.yaml",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/azure-tags/PSRule.yaml"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
       "type": "Conceptual",
       "source_relative_path": "scenarios/azure-tags/azure-tags.md",
       "output": {
@@ -263,9 +283,17 @@
       "version": ""
     },
     {
-      "log_codes": [
-        "InvalidFileLink"
-      ],
+      "type": "Resource",
+      "source_relative_path": "scenarios/kubernetes-resources/PSRule.yaml",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/kubernetes-resources/PSRule.yaml"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
       "type": "Conceptual",
       "source_relative_path": "scenarios/kubernetes-resources/kubernetes-resources.md",
       "output": {
@@ -283,6 +311,40 @@
       "output": {
         "resource": {
           "relative_path": "scenarios/kubernetes-resources/kubernetes.Rule.ps1"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "scenarios/kubernetes-resources/resources.yaml",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/kubernetes-resources/resources.yaml"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "scenarios/validation-pipeline/file.Rule.ps1",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/validation-pipeline/file.Rule.ps1"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "scenarios/validation-pipeline/validation-pipeline.md",
+      "output": {
+        ".html": {
+          "relative_path": "scenarios/validation-pipeline/validation-pipeline.html",
+          "hash": "y7I6X+di+VImGwZv7YLm9Q=="
         }
       },
       "is_incremental": false,
@@ -312,13 +374,6 @@
         "full_build_reason_code": "ForceRebuild"
       },
       "processors": {
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build",
-          "total_file_count": 0,
-          "skipped_file_count": 0
-        },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
@@ -329,7 +384,14 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 14,
+          "total_file_count": 16,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
           "skipped_file_count": 0
         }
       }

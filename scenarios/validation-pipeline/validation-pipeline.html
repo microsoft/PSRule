@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Validation pipeline example </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Validation pipeline example ">
+    <meta name="generator" content="docfx 2.41.0.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../../toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="validation-pipeline-example">Validation pipeline example</h1>
+
+<p>This example covers how PSRule can be used within a DevOps pipeline to validate files, templates and objects.</p>
+<p>This scenario covers the following:</p>
+<ul>
+<li>Installing PSRule within a continuous integration (CI) pipeline</li>
+<li>Failing the pipeline based on validation results</li>
+<li>Generating NUnit output</li>
+</ul>
+<h2 id="installing-psrule-within-a-ci-pipeline">Installing PSRule within a CI pipeline</h2>
+<p>Typically PSRule is not pre-installed on CI worker nodes, so within a CI pipeline the PSRule PowerShell module needs to be installed prior to calling PSRule cmdlets such as <code>Invoke-PSRule</code>.</p>
+<p>If your CI pipeline runs on a persistent virtual machine that you control consider pre-installing PSRule. The following examples focus on installing PSRule dynamically during execution of the pipeline. Which is suitable for cloud based CI worker nodes.</p>
+<p>To install PSRule within a CI pipeline execute the <code>Install-Module</code> PowerShell cmdlet.</p>
+<p>In the example below:</p>
+<ul>
+<li>When installing modules on Windows, by default modules will be installed into <em>Program Files</em>, which requires administrator permissions. Depending on your environment, the CI worker process may not have administrative permissions. Instead we can install PSRule for the current context running the CI pipeline by using the <code>-Scope CurrentUser</code> parameter.</li>
+<li>By default this cmdlet will install the module from the PowerShell Gallery which is not trusted by default. Since a CI pipeline is not interactive the <code>-Force</code> switch is used to suppress a prompt to install modules from PowerShell Gallery.</li>
+</ul>
+<pre><code class="lang-powershell">$Null = Install-Module -Name PSRule -Scope CurrentUser -Force;
+</code></pre>
+<p>In some cases installing NuGet may be required before the module can be installed. The NuGet package provider can be installed using the <code>Install-PackageProvider</code> PowerShell cmdlet.</p>
+<pre><code class="lang-powershell">$Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
+</code></pre>
+<p>The example below includes both steps together with checks:</p>
+<pre><code class="lang-powershell">if ($Null -eq (Get-PackageProvider -Name NuGet -ErrorAction Ignore)) {
+    $Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
+}
+
+if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.4.0' -ErrorAction Ignore)) {
+    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.4.0' -Force;
+}
+</code></pre>
+<h3 id="using-invoke-build">Using Invoke-Build</h3>
+<p><code>Invoke-Build</code> is a build automation cmdlet that can be installed from the PowerShell Gallery by installing the <em>InvokeBuild</em> module. Within Invoke-Build, each build process is broken into tasks as shown in the example below.</p>
+<pre><code class="lang-powershell"># Synopsis: Install NuGet
+task InstallNuGet {
+    if ($Null -eq (Get-PackageProvider -Name NuGet -ErrorAction Ignore)) {
+        $Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
+    }
+}
+
+# Synopsis: Install PSRule
+task InstallPSRule InstallNuGet, {
+    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.4.0' -ErrorAction Ignore)) {
+        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.4.0' -Force;
+    }
+}
+</code></pre>
+<h2 id="fail-the-pipeline">Fail the pipeline</h2>
+<p>When using PSRule within a continuous integration pipeline, typically we need to catch errors and failures and stop the pipeline if any occur.</p>
+<p>When using <code>Invoke-PSRule</code> an easy way to catch an failure or error conditions is to use the <code>-Outcome Fail,Error</code> parameter. By using this parameter only errors or failures are returned to the pipeline. A simple <code>$Null</code> test can then throw a terminating error to stop the pipeline.</p>
+<pre><code class="lang-powershell">$result = Invoke-PSRule -Outcome Fail,Error;
+if ($Null -ne $result) {
+    throw 'PSRule validation failed.'
+}
+</code></pre>
+<p>Extending on this further, PSRule has additional options that we can use to log passing/ failing validation rules to informational streams.</p>
+<p>By using the <code>Logging.RuleFail</code> option shown in the next example an error will be created for each failure so that meaningful information is logged to the CI pipeline.</p>
+<pre><code class="lang-powershell">$option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+$result = $inputObjects | Invoke-PSRule -Option $option -Outcome Fail,Error;
+if ($Null -ne $result) {
+    throw 'PSRule validation failed.'
+}
+</code></pre>
+<h3 id="calling-from-pester">Calling from Pester</h3>
+<p>If you are looking at integrating PSRule into a CI pipeline, there is a good chance that you are already using Pester. Pester is a unit test framework for PowerShell that can be installed from the PowerShell Gallery.</p>
+<p>PSRule can complement Pester unit tests with dynamic validation rules. By using <code>-If</code> or <code>-Type</code> pre-conditions rules can dynamically provide validation for a range of use cases.</p>
+<p>In our example we are going to validate the script files themselves:</p>
+<ul>
+<li>Have a copyright file header</li>
+<li>Are encoded as UTF-8</li>
+</ul>
+<p>Within a Pester test script include the following example:</p>
+<pre><code class="lang-powershell">Describe 'Project files' {
+    Context 'Script files' {
+        It 'Use content rules' {
+            $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+            $inputObjects = Get-ChildItem -Path *.ps1 -Recurse;
+            $inputObjects | Invoke-PSRule -Option $option -Outcome Fail,Error | Should -BeNullOrEmpty;
+        }
+    }
+}
+</code></pre>
+<h2 id="generating-nunit-output">Generating NUnit output</h2>
+<p>NUnit is a popular unit test framework for .NET. NUnit generates a test report format that is widely interpreted by CI systems. While PSRule does not use NUnit, it can output the same test report format allowing integration with any system that supports the NUnit3 for publishing test results.</p>
+<p>To generate an NUnit report use the <code>-OutputFormat NUnit3</code> parameter.</p>
+<pre><code class="lang-powershell">$option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+$inputObjects = Get-ChildItem -Path *.ps1 -Recurse;
+$inputObjects | Invoke-PSRule -OutputFormat NUnit3 | Set-Content -Path reports/rule.report.xml;
+</code></pre>
+<h3 id="publishing-nunit-report-with-azure-devops">Publishing NUnit report with Azure DevOps</h3>
+<p>With Azure DevOps, an NUnit report can be published using <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results">Publish Test Results task</a>.</p>
+<p>An example YAML snippet is included below:</p>
+<pre><code class="lang-yaml"># PSRule results
+- task: PublishTestResults@2
+  displayName: 'Publish PSRule results'
+  inputs:
+    testRunTitle: 'PSRule'
+    testRunner: NUnit
+    testResultsFiles: 'reports/rule.report.xml'
+    mergeTestResults: true
+    publishRunAttachments: true
+  condition: succeededOrFailed()
+</code></pre>
+<h2 id="examples">Examples</h2>
+<p>For our example we ran:</p>
+<pre><code class="lang-powershell">$option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+$inputObjects = Get-ChildItem -Path src/PSRule -Include *.ps1,*.psm1,*.psd1 -Recurse;
+$inputObjects | Invoke-PSRule -Path docs/scenarios/validation-pipeline  -OutputFormat NUnit3 | Set-Content -Path reports/rule.report.xml;
+</code></pre>
+<h2 id="more-information">More information</h2>
+<ul>
+<li><a href="file.Rule.ps1">file.Rule.ps1</a> - Example rules for validating script files.</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/scenarios/validation-pipeline/validation-pipeline.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

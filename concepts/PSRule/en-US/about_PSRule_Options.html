@@ -73,7 +73,7 @@
 <h2 id="short-description">SHORT DESCRIPTION</h2>
 <p>Describes additional options that can be used during rule execution.</p>
 <h2 id="long-description">LONG DESCRIPTION</h2>
-<p>PSRule lets you use options when calling <code>Invoke-PSRule</code> to change how rules are executed. This topic describes what options are available, when to and how to use them.</p>
+<p>PSRule lets you use options when calling cmdlets such as <code>Invoke-PSRule</code> and <code>Test-PSRuleTarget</code> to change how rules are processed. This topic describes what options are available, when to and how to use them.</p>
 <p>The following options are available for use:</p>
 <ul>
 <li><a href="#baselinerulename">Baseline.RuleName</a></li>
@@ -93,29 +93,46 @@
 <li><a href="#outputformat">Output.Format</a></li>
 <li><a href="#rule-suppression">Suppression</a></li>
 </ul>
-<p>Options can be used by:</p>
+<p>Options can be used with the following PSRule cmdlets:</p>
 <ul>
-<li>Using the <code>-Option</code> parameter of <code>Invoke-PSRule</code> with an object created with <code>New-PSRuleOption</code></li>
-<li>Using the <code>-Option</code> parameter of <code>Invoke-PSRule</code> with a hash table</li>
-<li>Using the <code>-Option</code> parameter of <code>Invoke-PSRule</code> with a YAML file</li>
-<li>Configuring the default options file <code>psrule.yml</code></li>
+<li>Get-PSRule</li>
+<li>Invoke-PSRule</li>
+<li>Test-PSRuleTarget</li>
 </ul>
-<p>As mentioned above, a options object can be created with <code>New-PSRuleOption</code> see cmdlet help for syntax and examples.</p>
-<p>When using a hash table, <code>@{}</code>, one or more options can be specified with the <code>-Option</code> parameter using a dotted notation.</p>
+<p>Each of these cmdlets support:</p>
+<ul>
+<li>Using the <code>-Option</code> parameter with an object created with the <code>New-PSRuleOption</code> cmdlet. See cmdlet help for syntax and examples.</li>
+<li>Using the <code>-Option</code> parameter with a hashtable object.</li>
+<li>Using the <code>-Option</code> parameter with a YAML file path.</li>
+</ul>
+<p>When using a hashtable object <code>@{}</code>, one or more options can be specified as keys using a dotted notation.</p>
 <p>For example:</p>
-<pre><code class="lang-powershell">$option = @{ 'execution.languageMode' = 'ConstrainedLanguage' };
+<pre><code class="lang-powershell">$option = @{ 'Output.Format' = 'Yaml' };
 Invoke-PSRule -Path . -Option $option;
 </code></pre>
-<p><code>execution.languageMode</code> is an example of an option that can be used. Please see the following sections for other options can be used.</p>
-<p>Another option is to use an external file, formatted as YAML, instead of having to create an options object manually each time. This YAML file can be used with <code>Invoke-PSRule</code> to quickly execute rules in a repeatable way.</p>
-<p>YAML properties are specified using lower camel case, for example:</p>
-<pre><code class="lang-yaml">execution:
-  languageMode: ConstrainedLanguage
+<p>The above example shows how the <code>Output.Format</code> option as a hashtable key can be used. Continue reading for a full list of options and how each can be used.</p>
+<p>Alternatively, options can be stored in a YAML formatted file and loaded from disk. Storing options as YAML allows different configurations to be loaded in a repeatable way instead of having to create an options object each time.</p>
+<p>Options are stored as YAML properties using a lower camel case naming convention, for example:</p>
+<pre><code class="lang-yaml">output:
+  format: Yaml
 </code></pre>
-<p>By default PSRule will automatically look for a file named <code>psrule.yml</code> in the current working directory. Alternatively, you can specify a YAML file in the <code>-Option</code> parameter.</p>
+<p>The <code>Set-PSRuleOption</code> cmdlet can be used to set options stored in YAML or the YAML file can be manually edited.</p>
+<pre><code class="lang-powershell">Set-PSRuleOption -OutputFormat Yaml;
+</code></pre>
+<p>By default PSRule will automatically look for a default YAML options file in the current working directory. Alternatively, you can specify a specific file path.</p>
 <p>For example:</p>
-<pre><code class="lang-powershell">Invoke-PSRule -Path . -Option '.\myconfig.yml';
+<pre><code class="lang-powershell">Invoke-PSRule -Option '.\myconfig.yml';
 </code></pre>
+<pre><code class="lang-powershell">New-PSRuleOption -Path '.\myconfig.yaml';
+</code></pre>
+<p>PSRule uses any of the following file names (in order) as the default YAML options file. If more then one of these files exist the following order will be used to find the first match.</p>
+<ul>
+<li><code>ps-rule.yaml</code></li>
+<li><code>ps-rule.yml</code></li>
+<li><code>psrule.yaml</code></li>
+<li><code>psrule.yml</code></li>
+</ul>
+<p>We recommend only using lowercase characters as shown above. This is because not all operation systems treat case in the same way.</p>
 <h3 id="baselinerulename">Baseline.RuleName</h3>
 <p>The name of specific rules to evaluate. If this option is not specified all rules in search paths will be evaluated.</p>
 <p>This option can be overridden at runtime by using the <code>-Name</code> parameter of <code>Invoke-PSRule</code>, <code>Get-PSRule</code> and <code>Test-PSRuleTarget</code>.</p>
@@ -155,7 +172,7 @@ baseline:
 <h3 id="bindingignorecase">Binding.IgnoreCase</h3>
 <p>When evaluating an object, PSRule extracts a few key properties from the object to help filter rules and display output results. The process of extract these key properties is called <em>binding</em>. The properties that PSRule uses for binding can be customized by providing a order list of alternative properties to use. See <a href="#bindingtargetname"><code>Binding.TargetName</code></a> and <a href="#bindingtargettype"><code>Binding.TargetType</code></a> for these options.</p>
 <ul>
-<li>By default, custom property binding finds the first matching property by name regardless of case. i.e. <code>Binding.IgnoreCase</code> is <code>true</code></li>
+<li>By default, custom property binding finds the first matching property by name regardless of case. i.e. <code>Binding.IgnoreCase</code> is <code>true</code>.</li>
 <li>To change the default, set the <code>Binding.IgnoreCase</code> option to <code>false</code> and a case sensitive match will be used.
 <ul>
 <li>Changing this option will affect all custom property bindings, including <em>TargetName</em> and <em>TargetType</em>.</li>
@@ -164,8 +181,14 @@ baseline:
 <li>PSRule also has binding defaults, and an option to use a custom script. Setting this option has no affect on binding defaults or custom scripts.</li>
 </ul>
 <p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the BindingIgnoreCase parameter
+$option = New-PSRuleOption -BindingIgnoreCase $False;
+</code></pre>
 <pre><code class="lang-powershell"># PowerShell: Using the Binding.IgnoreCase hashtable key
 $option = New-PSRuleOption -Option @{ 'Binding.IgnoreCase' = $False };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the BindingIgnoreCase parameter to set YAML
+Set-PSRuleOption -BindingIgnoreCase $False;
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the binding/ignoreCase property
 binding:
@@ -197,13 +220,19 @@ binding:
 <ul>
 <li>If the function returns <code>$Null</code> then custom properties, <code>TargetName</code> and <code>Name</code> properties will be used.</li>
 <li>The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.</li>
-<li>Custom binding functions are blocked in constrained language mode is used. See <a href="#language-mode">language mode</a> for more information.</li>
+<li>Custom binding functions are blocked in constrained language mode is used. See <a href="#executionlanguagemode">language mode</a> for more information.</li>
 </ul>
 </li>
 </ul>
 <p>Custom property names to use for binding can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the TargetName parameter
+$option = New-PSRuleOption -TargetName 'ResourceName', 'AlternateName';
+</code></pre>
 <pre><code class="lang-powershell"># PowerShell: Using the Binding.TargetName hashtable key
 $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the TargetName parameter to set YAML
+Set-PSRuleOption -TargetName 'ResourceName', 'AlternateName';
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the binding/targetName property
 binding:
@@ -252,13 +281,19 @@ $option = New-PSRuleOption -BindTargetName $bindFn;
 <ul>
 <li>If the function returns <code>$Null</code> then custom properties, or the type presented by PowerShell will be used in order instead.</li>
 <li>The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.</li>
-<li>Custom binding functions are blocked in constrained language mode is used. See <a href="#language-mode">language mode</a> for more information.</li>
+<li>Custom binding functions are blocked in constrained language mode is used. See <a href="#executionlanguagemode">language mode</a> for more information.</li>
 </ul>
 </li>
 </ul>
 <p>Custom property names to use for binding can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the TargetType parameter
+$option = New-PSRuleOption -TargetType 'ResourceType', 'kind';
+</code></pre>
 <pre><code class="lang-powershell"># PowerShell: Using the Binding.TargetType hashtable key
 $option = New-PSRuleOption -Option @{ 'Binding.TargetType' = 'ResourceType', 'kind' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the TargetType parameter to set YAML
+Set-PSRuleOption -TargetType 'ResourceType', 'kind';
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the binding/targetType property
 binding:
@@ -310,8 +345,14 @@ execution:
 <li>Fail the object. Outcome will be reported as <code>Fail</code> with an OutcomeReason of <code>Inconclusive</code>.</li>
 </ul>
 <p>The inconclusive warning can be disabled by using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the InconclusiveWarning parameter
+$option = New-PSRuleOption -InconclusiveWarning $False;
+</code></pre>
 <pre><code class="lang-powershell"># PowerShell: Using the Execution.InconclusiveWarning hashtable key
 $option = New-PSRuleOption -Option @{ 'Execution.InconclusiveWarning' = $False };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the InconclusiveWarning parameter to set YAML
+Set-PSRuleOption -InconclusiveWarning $False;
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the execution/inconclusiveWarning property
 execution:
@@ -326,8 +367,14 @@ execution:
 <li>Pass the object. Outcome will be reported as <code>None</code>.</li>
 </ul>
 <p>The not processed warning can be disabled by using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the NotProcessedWarning parameter
+$option = New-PSRuleOption -NotProcessedWarning $False;
+</code></pre>
 <pre><code class="lang-powershell"># PowerShell: Using the Execution.NotProcessedWarning hashtable key
 $option = New-PSRuleOption -Option @{ 'Execution.NotProcessedWarning' = $False };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the NotProcessedWarning parameter to set YAML
+Set-PSRuleOption -NotProcessedWarning $False;
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the execution/notProcessedWarning property
 execution:
@@ -349,8 +396,14 @@ execution:
 <li>Detect - Detect format based on file extension. Detection only applies when used with the <code>-InputPath</code> parameter. In all other cases, <code>Detect</code> is the same as <code>None</code>. This is the default configuration.</li>
 </ul>
 <p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the Format parameter
+$option = New-PSRuleOption -Format Yaml;
+</code></pre>
 <pre><code class="lang-powershell"># PowerShell: Using the Input.Format hashtable key
 $option = New-PSRuleOption -Option @{ 'Input.Format' = 'Yaml' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Format parameter to set YAML
+Set-PSRuleOption -Format Yaml;
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the input/format property
 input:
@@ -362,8 +415,14 @@ input:
 <p>If the property specified by <code>ObjectPath</code> does not exist, PSRule skips the object.</p>
 <p>When using <code>Invoke-PSRule</code> and <code>Test-PSRuleTarget</code> the <code>-ObjectPath</code> parameter will override any value set in configuration.</p>
 <p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the ObjectPath parameter
+$option = New-PSRuleOption -ObjectPath 'items';
+</code></pre>
 <pre><code class="lang-powershell"># PowerShell: Using the Input.ObjectPath hashtable key
 $option = New-PSRuleOption -Option @{ 'Input.ObjectPath' = 'items' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the ObjectPath parameter to set YAML
+Set-PSRuleOption -ObjectPath 'items';
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the input/objectPath property
 input:
@@ -381,8 +440,14 @@ input:
 <li>Information</li>
 </ul>
 <p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the LoggingRuleFail parameter
+$option = New-PSRuleOption -LoggingRuleFail Error;
+</code></pre>
 <pre><code class="lang-powershell"># PowerShell: Using the Logging.RuleFail hashtable key
 $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the LoggingRuleFail parameter to set YAML
+Set-PSRuleOption -LoggingRuleFail Error;
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the logging/ruleFail property
 logging:
@@ -400,8 +465,14 @@ logging:
 <li>Information</li>
 </ul>
 <p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the LoggingRulePass parameter
+$option = New-PSRuleOption -LoggingRulePass Information;
+</code></pre>
 <pre><code class="lang-powershell"># PowerShell: Using the Logging.RulePass hashtable key
 $option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Information' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the LoggingRulePass parameter to set YAML
+Set-PSRuleOption -LoggingRulePass Information;
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the logging/rulePass property
 logging:
@@ -416,8 +487,14 @@ logging:
 <li>Summary - Return summary information for per rule.</li>
 </ul>
 <p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputAs parameter
+$option = New-PSRuleOption -OutputAs Yaml;
+</code></pre>
 <pre><code class="lang-powershell"># PowerShell: Using the Output.As hashtable key
 $option = New-PSRuleOption -Option @{ 'Output.As' = 'Summary' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputAs parameter to set YAML
+Set-PSRuleOption -OutputAs Yaml;
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the output/as property
 output:
@@ -430,10 +507,17 @@ output:
 <li>None - Output is presented as an object using PowerShell defaults. This is the default configuration.</li>
 <li>Yaml - Output is serialized as YAML.</li>
 <li>Json - Output is serialized as JSON.</li>
+<li>NUnit3 - Output is serialized as NUnit3 (XML).</li>
 </ul>
 <p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputFormat parameter
+$option = New-PSRuleOption -OutputFormat Yaml;
+</code></pre>
 <pre><code class="lang-powershell"># PowerShell: Using the Output.Format hashtable key
 $option = New-PSRuleOption -Option @{ 'Output.Format' = 'Yaml' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputFormat parameter to set YAML
+Set-PSRuleOption -OutputFormat Yaml;
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the output/format property
 output:
@@ -586,6 +670,7 @@ suppression: { }
 <ul>
 <li><a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md">Invoke-PSRule</a></li>
 <li><a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/New-PSRuleOption.md">New-PSRuleOption</a></li>
+<li><a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Set-PSRuleOption.md">Set-PSRuleOption</a></li>
 </ul>
 <h2 id="keywords">KEYWORDS</h2>
 <ul>

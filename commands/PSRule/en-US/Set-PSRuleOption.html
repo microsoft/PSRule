@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>New-PSRuleOption </title>
+    <title>Set-PSRuleOption </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="New-PSRuleOption ">
+    <meta name="title" content="Set-PSRuleOption ">
     <meta name="generator" content="docfx 2.41.0.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
@@ -67,71 +67,34 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="new-psruleoption">New-PSRuleOption</h1>
+<h1 id="set-psruleoption">Set-PSRuleOption</h1>
 
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>Create options to configure PSRule execution.</p>
+<p>Sets options that configure PSRule execution.</p>
 <h2 id="syntax">SYNTAX</h2>
-<pre><code class="lang-text">New-PSRuleOption [[-Path] &lt;String&gt;] [[-Option] &lt;PSRuleOption&gt;] [-BaselineConfiguration &lt;BaselineConfiguration&gt;]
- [-SuppressTargetName &lt;SuppressionOption&gt;] [-BindTargetName &lt;BindTargetName[]&gt;]
- [-BindTargetType &lt;BindTargetName[]&gt;] [-BindingIgnoreCase &lt;Boolean&gt;] [-TargetName &lt;String[]&gt;]
- [-TargetType &lt;String[]&gt;] [-InconclusiveWarning &lt;Boolean&gt;] [-NotProcessedWarning &lt;Boolean&gt;]
- [-Format &lt;InputFormat&gt;] [-ObjectPath &lt;String&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;]
- [-LoggingRulePass &lt;OutcomeLogStream&gt;] [-OutputAs &lt;ResultFormat&gt;] [-OutputFormat &lt;OutputFormat&gt;]
- [&lt;CommonParameters&gt;]
+<pre><code class="lang-text">Set-PSRuleOption [[-Path] &lt;String&gt;] [-Option &lt;PSRuleOption&gt;] [-PassThru] [-Force] [-AllowClobber]
+ [-BindingIgnoreCase &lt;Boolean&gt;] [-TargetName &lt;String[]&gt;] [-TargetType &lt;String[]&gt;]
+ [-InconclusiveWarning &lt;Boolean&gt;] [-NotProcessedWarning &lt;Boolean&gt;] [-Format &lt;InputFormat&gt;]
+ [-ObjectPath &lt;String&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;] [-LoggingRulePass &lt;OutcomeLogStream&gt;]
+ [-OutputAs &lt;ResultFormat&gt;] [-OutputFormat &lt;OutputFormat&gt;] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
-<p>The <strong>New-PSRuleOption</strong> cmdlet creates an options object that can be passed to PSRule cmdlets to configure execution.</p>
+<p>Sets options that configure PSRule execution.</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">Example 1</h3>
-<pre><code class="lang-powershell">$option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' }
-@{ Name = 'Item 1' } | Invoke-PSRule -Option $option
+<pre><code class="lang-powershell">PS C:\&gt; Set-PSRuleOption -OutputFormat Yaml;
 </code></pre>
-<p>Create an options object and run rules in constrained mode.</p>
+<p>Sets the <code>Output.Format</code> to <code>Yaml</code> for <code>ps-rule.yaml</code> in the current working path. If the <code>ps-rule.yaml</code> file exists, it is merged with the existing file and overwritten. If the file does not exist, a new file is created.</p>
 <h3 id="example-2">Example 2</h3>
-<pre><code class="lang-powershell">$option = New-PSRuleOption -SuppressTargetName @{ 'storageAccounts.UseHttps' = 'TestObject1', 'TestObject3' };
+<pre><code class="lang-powershell">PS C:\&gt; Set-PSRuleOption -OutputFormat Yaml -Path .\project-options.yaml;
 </code></pre>
-<p>Create an options object that suppresses <code>TestObject1</code> and <code>TestObject3</code> for a rule named <code>storageAccounts.UseHttps</code>.</p>
-<h3 id="example-3">Example 3</h3>
-<pre><code class="lang-powershell"># Create a custom function that returns a TargetName string
-$bindFn = {
-    param ($TargetObject)
-
-    $otherName = $TargetObject.PSObject.Properties['OtherName'];
-
-    if ($otherName -eq $Null) {
-        return $Null
-    }
-
-    return $otherName.Value;
-}
-
-# Specify the binding function script block code to execute
-$option = New-PSRuleOption -BindTargetName $bindFn;
-</code></pre>
-<p>Creates an options object that uses a custom function to bind the <em>TargetName</em> of an object.</p>
-<h3 id="example-4">Example 4</h3>
-<pre><code class="lang-powershell">$option = New-PSRuleOption -BaselineConfiguration @{ 'appServiceMinInstanceCount' = 2 };
-</code></pre>
-<p>Create an options object that sets the <code>appServiceMinInstanceCount</code> baseline configuration option to <code>2</code>.</p>
+<p>Sets the <code>Output.Format</code> to <code>Yaml</code> for <code>project-options.yaml</code> in the current working path. If the <code>project-options.yaml</code> file exists, it is merged with the existing file and overwritten. If the file does not exist, a new file is created.</p>
 <h2 id="parameters">PARAMETERS</h2>
-<h3 id="-option">-Option</h3>
-<p>Additional options that configure execution. Option also accepts a hashtable to configure options.</p>
-<p>For more information on PSRule options see about_PSRule_Options.</p>
-<pre><code class="lang-yaml">Type: PSRuleOption
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-</code></pre>
 <h3 id="-path">-Path</h3>
-<p>The path to a YAML file containing options. By default the current working path (<code>$PWD</code>) is used.</p>
+<p>The path to a YAML file where options will be set. By default the current working path (<code>$PWD</code>) is used.</p>
 <p>Either a directory or file path can be specified. When a directory is used, <code>ps-rule.yaml</code> will be used as the file name.</p>
-<p>If the <code>-Path</code> parameter is specified and the file does not exist, an exception will be generated.</p>
+<p>The file will be created if it does not exist. If the file already exists it will be merged with the existing options and <strong>overwritten</strong>.</p>
+<p>If the directory does not exist an error will be generated. To force the creation of the directory path use the <code>-Force</code> switch.</p>
 <pre><code class="lang-yaml">Type: String
 Parameter Sets: (All)
 Aliases:
@@ -142,10 +105,33 @@ Default value: $PWD
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
-<h3 id="-suppresstargetname">-SuppressTargetName</h3>
-<p>Configures suppression for a list of objects by TargetName. SuppressTargetName also accepts a hashtable to configure rule suppression.</p>
-<p>For more information on PSRule options see about_PSRule_Options.</p>
-<pre><code class="lang-yaml">Type: SuppressionOption
+<h3 id="-option">-Option</h3>
+<p>An options object to use.</p>
+<pre><code class="lang-yaml">Type: PSRuleOption
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-passthru">-PassThru</h3>
+<p>Use this option to return the options object to the pipeline instead of saving to disk.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-force">-Force</h3>
+<p>Force creation of directory path for Path parameter, when the directory does not already exist.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -155,36 +141,9 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
-<h3 id="-bindtargetname">-BindTargetName</h3>
-<p>Configures a custom function to use to bind TargetName of an object.</p>
-<p>For more information on PSRule options see about_PSRule_Options.</p>
-<pre><code class="lang-yaml">Type: BindTargetName[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-</code></pre>
-<h3 id="-baselineconfiguration">-BaselineConfiguration</h3>
-<p>Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values. BaselineConfiguration also accepts a hashtable of configuration values as key/ value pairs.</p>
-<p>For more information on PSRule options see about_PSRule_Options.</p>
-<pre><code class="lang-yaml">Type: BaselineConfiguration
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-</code></pre>
-<h3 id="-bindtargettype">-BindTargetType</h3>
-<p>Configures a custom function to use to bind TargetType of an object.</p>
-<p>For more information on PSRule options see about_PSRule_Options.</p>
-<pre><code class="lang-yaml">Type: BindTargetName[]
+<h3 id="-allowclobber">-AllowClobber</h3>
+<p>Overwrite YAML files that contain comments.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -202,7 +161,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
@@ -238,19 +197,19 @@ Aliases: ExecutionInconclusiveWarning
 
 Required: False
 Position: Named
-Default value: None
+Default value: True
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-notprocessedwarning">-NotProcessedWarning</h3>
-<p>Sets the option <code>Execution.NotProcessedWarning</code>. The <code>Execution.NotProcessedWarning</code> option determines if a warning is generated when an object is not processed by any rule. See about_PSRule_Options for more information.</p>
+<p>Sets the <code>Execution.NotProcessedWarning</code> option. The <code>Execution.NotProcessedWarning</code> option determines if a warning is generated when an object is not processed by any rule. See about_PSRule_Options for more information.</p>
 <pre><code class="lang-yaml">Type: Boolean
 Parameter Sets: (All)
 Aliases: ExecutionNotProcessedWarning
 
 Required: False
 Position: Named
-Default value: None
+Default value: True
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
@@ -259,10 +218,11 @@ Accept wildcard characters: False
 <pre><code class="lang-yaml">Type: InputFormat
 Parameter Sets: (All)
 Aliases: InputFormat
+Accepted values: None, Yaml, Json, Detect
 
 Required: False
 Position: Named
-Default value: None
+Default value: Detect
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
@@ -283,6 +243,7 @@ Accept wildcard characters: False
 <pre><code class="lang-yaml">Type: OutcomeLogStream
 Parameter Sets: (All)
 Aliases:
+Accepted values: None, Error, Warning, Information
 
 Required: False
 Position: Named
@@ -295,6 +256,7 @@ Accept wildcard characters: False
 <pre><code class="lang-yaml">Type: OutcomeLogStream
 Parameter Sets: (All)
 Aliases:
+Accepted values: None, Error, Warning, Information
 
 Required: False
 Position: Named
@@ -307,10 +269,11 @@ Accept wildcard characters: False
 <pre><code class="lang-yaml">Type: ResultFormat
 Parameter Sets: (All)
 Aliases:
+Accepted values: Detail, Summary
 
 Required: False
 Position: Named
-Default value: None
+Default value: Detail
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
@@ -319,6 +282,31 @@ Accept wildcard characters: False
 <pre><code class="lang-yaml">Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
+Accepted values: None, Yaml, Json, NUnit3
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-whatif">-WhatIf</h3>
+<p>Shows what would happen if the cmdlet runs. The cmdlet is not run.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-confirm">-Confirm</h3>
+<p>Prompts you for confirmation before running the cmdlet.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
 
 Required: False
 Position: Named
@@ -329,13 +317,12 @@ Accept wildcard characters: False
 <h3 id="commonparameters">CommonParameters</h3>
 <p>This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see <a href="http://go.microsoft.com/fwlink/?LinkID=113216">about_CommonParameters</a>.</p>
 <h2 id="inputs">INPUTS</h2>
-<h3 id="none">None</h3>
 <h2 id="outputs">OUTPUTS</h2>
 <h3 id="psruleconfigurationpsruleoption">PSRule.Configuration.PSRuleOption</h3>
+<p>When you use the <code>-PassThru</code> switch, an options object is returned to the pipeline.</p>
 <h2 id="notes">NOTES</h2>
 <h2 id="related-links">RELATED LINKS</h2>
-<p><a href="Invoke-PSRule.html">Invoke-PSRule</a>
-<a href="Set-PSRuleOption.html">Set-PSRuleOption</a></p>
+<p><a href="New-PSRuleOption.html">New-PSRuleOption</a></p>
 </article>
           </div>
           
@@ -344,7 +331,7 @@ Accept wildcard characters: False
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/New-PSRuleOption.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Set-PSRuleOption.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>
