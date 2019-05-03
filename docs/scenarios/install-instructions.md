@@ -7,7 +7,7 @@
 
 For a list of platforms that PowerShell Core is supported on [see](https://github.com/PowerShell/PowerShell#get-powershell).
 
-## Getting the modules
+## Getting the module
 
 Install from [PowerShell Gallery][module-psrule] for all users (requires permissions):
 
