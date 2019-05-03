@@ -13,13 +13,25 @@ Because PSRule is based on PowerShell:
 - Works with other PowerShell modules and .NET classes
 - Works great with source control and DevOps pipelines
 
-## Download PSRule
+## Installing the module
 
 You can download and install the PSRule module from the PowerShell Gallery.
 
 Module | Description | Downloads / instructions
 ------ | ----------- | ------------------------
-PSRule | Validate objects using PowerShell rules | [latest][psg-psrule] / [instructions][install]
+PSRule | Validate objects using PowerShell rules | [latest][module] / [instructions][install]
+
+![module-ci-badge] ![module-version-badge] ![module-downloads-badge]
+
+## Installing the extension
+
+You can download and install the companion extension for Visual Studio Code from the Visual Studio Marketplace.
+
+Extension | Description | Downloads / instructions
+--------- | ----------- | ------------------------
+PSRule    | An extension for IT Pros using the PSRule PowerShell module | [latest][extension] / [instructions][install]
+
+![extension-ci-badge] ![extension-version-badge] ![extension-installs-badge]
 
 ## Support
 
@@ -28,4 +40,11 @@ This project is to be considered a **proof-of-concept** and **not a supported pr
 If you have any problems please check our GitHub [issues](https://github.com/BernieWhite/PSRule/issues) page. If you do not see your problem captured, please file a new issue and follow the provided template.
 
 [install]: scenarios/install-instructions.md
-[psg-psrule]: https://www.powershellgallery.com/packages/PSRule
+[module]: https://www.powershellgallery.com/packages/PSRule
+[extension]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
+[module-ci-badge]: https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=master
+[module-version-badge]: https://img.shields.io/powershellgallery/v/PSRule.svg?label=PowerShell%20Gallery&color=brightgreen
+[module-downloads-badge]: https://img.shields.io/powershellgallery/dt/PSRule.svg?color=brightgreen
+[extension-ci-badge]: https://dev.azure.com/bewhite/PSRule-vscode/_apis/build/status/PSRule-vscode-CI?branchName=master
+[extension-version-badge]: https://vsmarketplacebadge.apphb.com/version/bewhite.psrule-vscode-preview.svg
+[extension-installs-badge]: https://vsmarketplacebadge.apphb.com/installs-short/bewhite.psrule-vscode-preview.svg

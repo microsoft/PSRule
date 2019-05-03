@@ -12,6 +12,9 @@
     - name: New-PSRuleOption
       href: New-PSRuleOption.md
       topicHref: New-PSRuleOption.md
+    - name: Set-PSRuleOption
+      href: Set-PSRuleOption.md
+      topicHref: Set-PSRuleOption.md
     - name: Test-PSRuleTarget
       href: Test-PSRuleTarget.md
       topicHref: Test-PSRuleTarget.md
