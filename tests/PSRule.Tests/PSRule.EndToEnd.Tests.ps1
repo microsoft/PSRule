@@ -59,7 +59,7 @@ Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd','azure-resources' {
 }
 
 Describe 'Scenarios -- azure-tags' -Tag 'EndToEnd','azure-tags' {
-    $option = Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-tags/PSRule.yaml;
+    $option = Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-tags/ps-rule.yaml;
     $jsonData = Get-Content -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-tags/resources.json) | ConvertFrom-Json;
     $result = $jsonData | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-tags) -Option $option;
 
@@ -124,7 +124,7 @@ Describe 'Scenarios -- kubernetes-resources' -Tag 'EndToEnd','kubernetes-resourc
         $invokeParams = @{
             Path = $scenarioPath
             Format = 'Yaml'
-            Option = (Join-Path -Path $scenarioPath -ChildPath 'PSRule.yaml')
+            Option = (Join-Path -Path $scenarioPath -ChildPath 'ps-rule.yaml')
         }
         $result = @($yamlData | Invoke-PSRule @invokeParams);
 
