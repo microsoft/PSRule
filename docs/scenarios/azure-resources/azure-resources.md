@@ -72,7 +72,6 @@ In the example below:
 ```powershell
 # Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' {
-
     # This property returns true or false, so nothing more needs to be done
     $TargetObject.Properties.supportsHttpsTrafficOnly
 
@@ -129,22 +128,24 @@ For example:
 # Read resources in from file
 $resources = Get-Content -Path .\resources.json | ConvertFrom-Json;
 
-# For each resource
+# Process resources
 $resources | Invoke-PSRule;
+```
+
+PSRule natively supports reading from YAML and JSON files so this command-line can be simplified to:
+
+```powershell
+Invoke-PSRule -InputPath .\resources.json;
 ```
 
 You will notice, we didn't specify the rule. By default PSRule will look for any `.Rule.ps1` files in the current working path.
 
-`Invoke-PSRule` also supports `-Path`, `-Name` and `-Tag` parameters that can be used to specify the path to look for rules in or filter rules if you want to run a subset of the rules.
+`Invoke-PSRule` supports `-Path`, `-Name` and `-Tag` parameters that can be used to specify the path to look for rules in or filter rules if you want to run a subset of the rules.
 
 For this example we ran these commands:
 
 ```powershell
-# Read resources in from file
-$resources = Get-Content -Path docs/scenarios/azure-resources/resources.json | ConvertFrom-Json;
-
-# For each resource
-$resources | Invoke-PSRule -Path docs/scenarios/azure-resources;
+Invoke-PSRule -Path docs/scenarios/azure-resources -InputPath docs/scenarios/azure-resources/resources.json;
 ```
 
 Our output looked like this:

@@ -38,8 +38,8 @@ if ($Null -eq (Get-PackageProvider -Name NuGet -ErrorAction Ignore)) {
     $Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
 }
 
-if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.4.0' -ErrorAction Ignore)) {
-    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.4.0' -Force;
+if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.5.0' -ErrorAction Ignore)) {
+    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.5.0' -Force;
 }
 ```
 
@@ -57,8 +57,8 @@ task InstallNuGet {
 
 # Synopsis: Install PSRule
 task InstallPSRule InstallNuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.4.0' -ErrorAction Ignore)) {
-        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.4.0' -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.5.0' -ErrorAction Ignore)) {
+        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.5.0' -Force;
     }
 }
 ```
@@ -81,7 +81,7 @@ Extending on this further, PSRule has additional options that we can use to log 
 By using the `Logging.RuleFail` option shown in the next example an error will be created for each failure so that meaningful information is logged to the CI pipeline.
 
 ```powershell
-$option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+$option = New-PSRuleOption -LoggingRuleFail Error;
 $result = $inputObjects | Invoke-PSRule -Option $option -Outcome Fail,Error;
 if ($Null -ne $result) {
     throw 'PSRule validation failed.'
@@ -105,7 +105,7 @@ Within a Pester test script include the following example:
 Describe 'Project files' {
     Context 'Script files' {
         It 'Use content rules' {
-            $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+            $option = New-PSRuleOption -LoggingRuleFail Error;
             $inputObjects = Get-ChildItem -Path *.ps1 -Recurse;
             $inputObjects | Invoke-PSRule -Option $option -Outcome Fail,Error | Should -BeNullOrEmpty;
         }
@@ -120,9 +120,9 @@ NUnit is a popular unit test framework for .NET. NUnit generates a test report f
 To generate an NUnit report use the `-OutputFormat NUnit3` parameter.
 
 ```powershell
-$option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+$option = New-PSRuleOption -LoggingRuleFail Error;
 $inputObjects = Get-ChildItem -Path *.ps1 -Recurse;
-$inputObjects | Invoke-PSRule -OutputFormat NUnit3 | Set-Content -Path reports/rule.report.xml;
+$inputObjects | Invoke-PSRule -Option $option -OutputFormat NUnit3 | Set-Content -Path reports/rule.report.xml;
 ```
 
 ### Publishing NUnit report with Azure DevOps
@@ -149,9 +149,9 @@ An example YAML snippet is included below:
 For our example we ran:
 
 ```powershell
-$option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+$option = New-PSRuleOption -LoggingRuleFail Error;
 $inputObjects = Get-ChildItem -Path src/PSRule -Include *.ps1,*.psm1,*.psd1 -Recurse;
-$inputObjects | Invoke-PSRule -Path docs/scenarios/validation-pipeline  -OutputFormat NUnit3 | Set-Content -Path reports/rule.report.xml;
+$inputObjects | Invoke-PSRule -Path docs/scenarios/validation-pipeline -Option $option -OutputFormat NUnit3 | Set-Content -Path reports/rule.report.xml;
 ```
 
 ## More information

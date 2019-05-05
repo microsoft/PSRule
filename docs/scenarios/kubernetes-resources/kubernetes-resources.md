@@ -109,10 +109,18 @@ binding:
   - kind
 ```
 
+These options can be set in the file `.\ps-rule.yaml` to be automatically loaded at when PSRule cmdlets are called. To set these configuration options either edit the file manually or use the following command.
+
+```powershell
+# Set options in ps-rule.yaml
+Set-PSRuleOption -TargetName 'metadata.Name' -TargetType 'kind';
+```
+
 Alternatively, these options can be set at runtime using the hashtable syntax.
 
 ```powershell
-$option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'metadata.name'; 'Binding.TargetType' = 'kind' };
+# Save options to a variable
+$option = New-PSRuleOption -TargetName 'metadata.Name' -TargetType 'kind';
 ```
 
 These options will be passed to `Invoke-PSRule` using the `-Option` parameter in a later step.
@@ -198,27 +206,28 @@ In our example we are using the YAML format to store Kubernetes resources. PSRul
 
 In the examples below:
 
-- `Get-Content` is piped to `Invoke-PSRule` with the `-Raw` switch. The `-Raw` switch reads the full contents of the rule as a string. In contrast, without the `-Raw` switch, each line would be passed to `Invoke-PSRule` individually as separate objects.
-- The `-Format` parameter informs PSRule that the string is YAML and it should convert the string into structured objects.
-- The `-Option` parameter sets the location of the configuration file that contains custom binding options.
+- The `-InputPath` parameter is used to load objects from disk as YAML. YAML is automatically detected based on the `.yaml` file extension. Alternatively the `-Foramt Yaml` parameter can be used.
+- Binding parameters are read from `ps-rule.yaml` in the current working path. Alternatively the `-Option` parameter could be used to specify an alternative file path.
 - `kubectl` is called with the `-o yaml` to output resources as YAML.
 - `kubectl` is piped to `Out-String` to convert the multi-line output to a single string.
+- The `-Format` parameter informs PSRule that the string is YAML and it should convert the string into structured objects.
 - The `-ObjectPath` parameter is used with the output from `kubectl`. This is required because the output from `kubectl` is a collection of resources instead of individual resources. Specifically `-ObjectPath items` gets the resources from the `items` property of the output.
 
 ```powershell
 # Validate resources from file
-Get-Content .\resources.yaml -Raw | Invoke-PSRule -Format Yaml -Option .\PSRule.yaml;
+Invoke-PSRule -InputPath resources.yaml;
 ```
 
 ```powershell
 # Validate resources directly from kubectl output
-kubectl get services -o yaml | Out-String | Invoke-PSRule -Format Yaml -Option .\PSRule.yaml -ObjectPath items;
+kubectl get services -o yaml | Out-String | Invoke-PSRule -Format Yaml -ObjectPath items;
 ```
 
 For this example, we limited the output to failed results with the following command:
 
 ```powershell
-Get-Content docs/scenarios/kubernetes-resources/resources.yaml -Raw | Invoke-PSRule -Path docs/scenarios/kubernetes-resources -Format Yaml -Option docs/scenarios/kubernetes-resources/PSRule.yaml -Outcome Fail;
+# Validate resources from file
+Invoke-PSRule -Path docs/scenarios/kubernetes-resources -InputPath docs/scenarios/kubernetes-resources/resources.yaml -Option docs/scenarios/kubernetes-resources/ps-rule.yaml -Outcome Fail;
 ```
 
 The resulting output is:
@@ -253,4 +262,4 @@ metadata.Version                    Fail       Must have the app.kubernetes.io/v
 
 - [kubernetes.Rule.ps1](kubernetes.Rule.ps1) - Example rules for validating Kubernetes resources.
 - [resources.yaml](resources.yaml) - An example Kubernetes manifest.
-- [PSRule.yaml](PSRule.yaml) - PSRule options configuration file.
+- [ps-rule.yaml](ps-rule.yaml) - PSRule options configuration file.

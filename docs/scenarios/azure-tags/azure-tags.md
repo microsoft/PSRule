@@ -179,7 +179,7 @@ In the example below:
 - We use the `Within` keyword to check if the _businessUnit_ tag uses any of the allowed values.
 - `allowedBusinessUnits` configuration value can be referenced using the syntax `$Configuration.allowedBusinessUnits`.
 - The rule definition is defined in [azureTags.Rule.ps1].
-- YAML configuration is defined in [PSRule.yaml].
+- YAML configuration is defined in [ps-rule.yaml].
 
 An extract from _azureTags.Rule.ps1_:
 
@@ -191,7 +191,7 @@ Rule 'businessUnitTag' {
 }
 ```
 
-An extract from _PSRule.yaml_:
+An extract from _ps-rule.yaml_:
 
 ```yaml
 # Configure business units that are allowed
@@ -213,24 +213,30 @@ For example:
 # Read resources in from file
 $resources = Get-Content -Path .\resources.json | ConvertFrom-Json;
 
-# For each resource
-$resources | Invoke-PSRule -Option .\PSRule.yaml;
+# Evaluate each resource against tagging rules
+$resources | Invoke-PSRule -Option .\ps-rule.yaml;
+```
+
+The `ps-rule.yaml` will automatically discovered if it exists in the current working path (i.e. `.\ps-rule.yaml`). Alternatively it can be specified with the `-Option` parameter as show above.
+
+PSRule natively supports reading from YAML and JSON files so this command-line can be simplified to:
+
+```powershell
+# Evaluate each resource against tagging rules
+Invoke-PSRule -InputPath .\resources.json;
 ```
 
 You will notice, we didn't specify the rule. By default PSRule will look for any `.Rule.ps1` files in the current working path.
 
-`Invoke-PSRule` also supports `-Path`, `-Name` and `-Tag` parameters that can be used to specify the path to look for rules in or filter rules if you want to run a subset of the rules.
+`Invoke-PSRule` supports `-Path`, `-Name` and `-Tag` parameters that can be used to specify the path to look for rules in or filter rules if you want to run a subset of the rules.
 
 The `-Option` parameter allows us to specify a specific YAML configuration file to use.
 
 For this example, we ran these commands:
 
 ```powershell
-# Read resources in from file
-$resources = Get-Content -Path docs/scenarios/azure-tags/resources.json | ConvertFrom-Json;
-
 # Evaluate each resource against tagging rules
-$resources | Invoke-PSRule -Path docs/scenarios/azure-tags -Outcome Fail -Option docs/scenarios/azure-tags/PSRule.yaml;
+Invoke-PSRule -Path docs/scenarios/azure-tags -InputPath docs/scenarios/azure-tags/resources.json -Outcome Fail -Option docs/scenarios/azure-tags/ps-rule.yaml;
 ```
 
 Our output looked like this:
@@ -266,7 +272,7 @@ Any resources that don't follow the tagging standard are reported with an outcom
 
 - [azureTags.Rule.ps1] - Example rules for validating Azure resource tagging standard rules.
 - [resources.json](resources.json) - Offline export of Azure resources.
-- [PSRule.yaml] - A YAML configuration file for PSRule.
+- [ps-rule.yaml] - A YAML configuration file for PSRule.
 
 [azureTags.Rule.ps1]: azureTags.Rule.ps1
-[PSRule.yaml]: PSRule.yaml
+[ps-rule.yaml]: ps-rule.yaml

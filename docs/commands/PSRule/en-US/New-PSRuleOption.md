@@ -381,4 +381,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Invoke-PSRule](Invoke-PSRule.md)
+
 [Set-PSRuleOption](Set-PSRuleOption.md)

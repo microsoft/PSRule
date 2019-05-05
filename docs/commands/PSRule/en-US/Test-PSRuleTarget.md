@@ -228,4 +228,5 @@ Returns `$True` when the object passes and `$False` when the object fails.
 ## RELATED LINKS
 
 [Invoke-PSRule](Invoke-PSRule.md)
+
 [Get-PSRule](Get-PSRule.md)
