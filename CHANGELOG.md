@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Fix operation is not supported on this platform failure. [#152](https://github.com/BernieWhite/PSRule/issues/152)
+
 ## v0.5.0
 
 What's changed since v0.4.0:

@@ -9,9 +9,9 @@
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
     "yaml.schemas": {
-        "./schemas/PSRule-options-0.4.0.schema.json": [
+        "./schemas/PSRule-options.schema.json": [
             "/tests/PSRule.Tests/PSRule.*.yml",
-            "/docs/scenarios/*/PSRule.yaml"
+            "/docs/scenarios/*/ps-rule.yaml"
         ]
     },
     "[yaml]": {
