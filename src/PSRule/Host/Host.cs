@@ -122,7 +122,7 @@ namespace PSRule.Host
             {
                 state.ExecutionPolicy = executionPolicy;
             }
-            finally
+            catch
             {
                 // Do nothing. Will fail on non-Windows platforms.
             }
