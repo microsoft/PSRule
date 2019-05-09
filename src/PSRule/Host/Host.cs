@@ -1,5 +1,6 @@
 ﻿using PSRule.Commands;
 using PSRule.Pipeline;
+using System;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 
@@ -118,13 +119,10 @@ namespace PSRule.Host
 
         private static void SetExecutionPolicy(InitialSessionState state, Microsoft.PowerShell.ExecutionPolicy executionPolicy)
         {
-            try
+            // Only set execution policy on Windows
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
                 state.ExecutionPolicy = executionPolicy;
-            }
-            catch
-            {
-                // Do nothing. Will fail on non-Windows platforms.
             }
         }
     }
