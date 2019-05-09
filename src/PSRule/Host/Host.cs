@@ -1,5 +1,6 @@
 ﻿using PSRule.Commands;
 using PSRule.Pipeline;
+using System;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 
@@ -110,11 +111,19 @@ namespace PSRule.Host
             state.Commands.Add(BuiltInCmdlets);
             state.Commands.Add(BuiltInAliases);
 
-#if !NET472 && Windows
             // Set execution policy
-            state.ExecutionPolicy = Microsoft.PowerShell.ExecutionPolicy.RemoteSigned;
-#endif
+            SetExecutionPolicy(state: state, executionPolicy: Microsoft.PowerShell.ExecutionPolicy.RemoteSigned);
+
             return state;
+        }
+
+        private static void SetExecutionPolicy(InitialSessionState state, Microsoft.PowerShell.ExecutionPolicy executionPolicy)
+        {
+            // Only set execution policy on Windows
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                state.ExecutionPolicy = executionPolicy;
+            }
         }
     }
 }
