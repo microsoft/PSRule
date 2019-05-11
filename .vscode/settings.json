@@ -6,6 +6,9 @@
         "**/bin/": true,
         "**/obj/": true
     },
+    "search.exclude": {
+        "out/": true
+    },
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
     "yaml.schemas": {

@@ -1,0 +1,46 @@
+[
+    {
+        "TargetName": "TestObject3",
+        "Spec": {
+            "Properties": {
+                "Value1": 1,
+                "Kind": "Test",
+                "array": [
+                    {
+                        "id": "1"
+                    },
+                    {
+                        "id": "2"
+                    }
+                ],
+                "array2": [
+                    "1",
+                    "2",
+                    "3"
+                ]
+            }
+        }
+    },
+    {
+        "TargetName": "TestObject4",
+        "Spec": {
+            "Properties": {
+                "Value2": 2,
+                "Kind": "Test",
+                "array": [
+                    {
+                        "id": "1"
+                    },
+                    {
+                        "id": "2"
+                    }
+                ],
+                "array2": [
+                    "1",
+                    "2",
+                    "3"
+                ]
+            }
+        }
+    }
+]
