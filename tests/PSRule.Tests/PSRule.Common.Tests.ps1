@@ -347,9 +347,23 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
     }
 
-    Context 'Using -InputFile' {
+    Context 'Using -InputPath' {
         It 'Yaml' {
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFile*.yaml'));
+            $inputFiles = @(
+                (Join-Path -Path $here -ChildPath 'ObjectFromFile.yaml')
+                (Join-Path -Path $here -ChildPath 'ObjectFromFile2.yaml')
+            )
+
+            # Single file
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles[0]);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -BeIn $True;
+            $result.Length | Should -Be 2;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
+
+            # Multiple files, check that there are no duplicates
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles);
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -BeIn $True;
             $result.Length | Should -Be 3;
@@ -358,12 +372,57 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         It 'Json' {
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFile.json'));
+            $inputFiles = @(
+                (Join-Path -Path $here -ChildPath 'ObjectFromFile.json')
+                (Join-Path -Path $here -ChildPath 'ObjectFromFile2.json')
+            )
+
+            # Single file
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles[0]);
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -BeIn $True;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
             $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
+
+             # Multiple file
+             $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles);
+             $result | Should -Not -BeNullOrEmpty;
+             $result.IsSuccess() | Should -BeIn $True;
+             $result.Length | Should -Be 4;
+             $result | Should -BeOfType PSRule.Rules.RuleRecord;
+             $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2','TestObject3', 'TestObject4';
+        }
+
+        It 'Globbing processes paths' {
+            # Wildcards capture both files
+            $inputFiles = Join-Path -Path $here -ChildPath 'ObjectFromFile*.yaml';
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -InputPath $inputFiles);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 3;
+        }
+
+        It 'Returns error with bad path' {
+            $inputFiles = @(
+                (Join-Path -Path $here -ChildPath 'not-a-file1.yaml')
+                (Join-Path -Path $here -ChildPath 'not-a-file2.yaml')
+            )
+
+            # Single file
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles[0] -ErrorVariable outErrors -ErrorAction SilentlyContinue);
+            $result | Should -BeNullOrEmpty;
+            $records = @($outErrors);
+            $records | Should -Not -BeNullOrEmpty;
+            $records.Length | Should -Be 1;
+            $records.CategoryInfo.Category | Should -BeIn 'ObjectNotFound';
+
+            # Multiple files
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles -ErrorVariable outErrors -ErrorAction SilentlyContinue);
+            $result | Should -BeNullOrEmpty;
+            $records = @($outErrors);
+            $records | Should -Not -BeNullOrEmpty;
+            $records.Length | Should -Be 2;
+            $records.CategoryInfo.Category | Should -BeIn 'ObjectNotFound';
         }
     }
 

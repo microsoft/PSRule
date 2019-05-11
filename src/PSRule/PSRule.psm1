@@ -1007,11 +1007,12 @@ function GetFilePath {
 
         foreach ($p in $Path) {
             if ($p -notlike 'https://*' -and $p -notlike 'http://*') {
-                if (Test-Path -Path $p -PathType Leaf) {
-                    Resolve-Path -Path $p;
+                if ([System.IO.Path]::HasExtension($p)) {
+                    $items = [System.Management.Automation.PathInfo[]]@(Resolve-Path -Path $p);
+                    $builder.Add($items);
                 }
                 else {
-                    $builder.Add((Get-ChildItem -Path $p -ErrorAction Ignore -Recurse -File).FullName);
+                    $builder.Add([System.IO.FileInfo[]]@(Get-ChildItem -Path $p -ErrorAction Ignore -Recurse -File));
                 }
             }
             elseif (!$p.Contains('*')) {
