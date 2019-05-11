@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.6.0-B190514 (pre-release)
+
 - Fix operation is not supported on this platform failure. [#152](https://github.com/BernieWhite/PSRule/issues/152)
 - Fix FullName cannot be found on this object error. [#149](https://github.com/BernieWhite/PSRule/issues/149)
 
