@@ -1,4 +1,4 @@
-﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes;
 using PSRule.Pipeline;
 using PSRule.Rules;
 using System;
@@ -55,7 +55,7 @@ namespace PSRule.Benchmark
             var option = new PSRuleOption();
             option.Baseline.RuleName = new string[] { "Benchmark" };
             var builder = PipelineBuilder.Get().Configure(option);
-            builder.Source(new RuleSource[] { new RuleSource(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1"), null) });
+            builder.Source(new RuleSource[] { new RuleSource(path: GetSource(), moduleName: null) });
             _GetPipeline = builder.Build();
         }
 
@@ -64,7 +64,7 @@ namespace PSRule.Benchmark
             var option = new PSRuleOption();
             option.Baseline.RuleName = new string[] { "Benchmark" };
             var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(new RuleSource[] { new RuleSource(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1"), null) });
+            builder.Source(new RuleSource[] { new RuleSource(path: GetSource(), moduleName: null) });
             _InvokePipeline = builder.Build();
         }
 
@@ -73,7 +73,7 @@ namespace PSRule.Benchmark
             var option = new PSRuleOption();
             option.Baseline.RuleName = new string[] { "BenchmarkIf" };
             var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(new RuleSource[] { new RuleSource(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1"), null) });
+            builder.Source(new RuleSource[] { new RuleSource(path: GetSource(), moduleName: null) });
             _InvokeIfPipeline = builder.Build();
         }
 
@@ -82,7 +82,7 @@ namespace PSRule.Benchmark
             var option = new PSRuleOption();
             option.Baseline.RuleName = new string[] { "BenchmarkType" };
             var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(new RuleSource[] { new RuleSource(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1"), null) });
+            builder.Source(new RuleSource[] { new RuleSource(path: GetSource(), moduleName: null) });
             _InvokeTypePipeline = builder.Build();
         }
 
@@ -92,8 +92,13 @@ namespace PSRule.Benchmark
             option.Baseline.RuleName = new string[] { "Benchmark" };
             option.Output.As = ResultFormat.Summary;
             var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(new RuleSource[] { new RuleSource(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1"), null) });
+            builder.Source(new RuleSource[] { new RuleSource(path: GetSource(), moduleName: null) });
             _InvokeSummaryPipeline = builder.Build();
+        }
+
+        private string GetSource()
+        {
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1");
         }
 
         private void PrepareTargetObjects()

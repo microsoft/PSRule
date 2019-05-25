@@ -53,7 +53,7 @@ namespace PSRule.Benchmark
                     }
 
                     // Do benchmarks
-                    var summary = BenchmarkRunner.Run<PSRule>(config);
+                    BenchmarkRunner.Run<PSRule>(config);
 
                     return 0;
                 });

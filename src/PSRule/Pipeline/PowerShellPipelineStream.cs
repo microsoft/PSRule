@@ -131,8 +131,10 @@ namespace PSRule.Pipeline
 
         private void WriteObjectJson(IEnumerable<RuleRecord> o)
         {
-            var settings = new JsonSerializerSettings();
-            settings.NullValueHandling = NullValueHandling.Ignore;
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
             var json = JsonConvert.SerializeObject(o, settings: settings);
 
             _OutputVisitor(json, false);
@@ -140,8 +142,10 @@ namespace PSRule.Pipeline
 
         private void WriteObjectJson(IEnumerable<RuleSummaryRecord> o)
         {
-            var settings = new JsonSerializerSettings();
-            settings.NullValueHandling = NullValueHandling.Ignore;
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
             var json = JsonConvert.SerializeObject(o, settings: settings);
 
             _OutputVisitor(json, false);
@@ -173,17 +177,8 @@ namespace PSRule.Pipeline
 
         private void WriteObjectNUnit3(IEnumerable<InvokeResult> o)
         {
-            var sb = new StringBuilder();
             var s = new NUnit3Serializer();
             var xml = s.Serialize(o);
-
-            _OutputVisitor(xml, false);
-        }
-
-        private void WriteObjectNUnit(IEnumerable<RuleSummaryRecord> o)
-        {
-            var sb = new StringBuilder();
-            var xml = sb.ToString();
 
             _OutputVisitor(xml, false);
         }

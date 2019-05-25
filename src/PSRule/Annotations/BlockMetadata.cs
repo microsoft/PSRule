@@ -5,6 +5,6 @@
     /// </summary>
     public sealed class BlockMetadata
     {
-        public string Description { get; set; }
+        public string Description;
     }
 }
