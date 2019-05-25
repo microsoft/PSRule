@@ -147,7 +147,7 @@ namespace PSRule.Pipeline
                 }
             }
 
-            var parser = new Parser(reader);
+            var parser = new YamlDotNet.Core.Parser(reader);
 
             parser.Expect<StreamStart>();
 

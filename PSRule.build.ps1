@@ -23,7 +23,7 @@ param (
     [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules)
 )
 
-if ($Env:Coverage -eq 'true') {
+if ($Env:COVERAGE -eq 'true') {
     $CodeCoverage = $True;
 }
 
@@ -96,9 +96,7 @@ task BuildHelp BuildModule, PlatyPS, {
 }
 
 task ScaffoldHelp Build, {
-
     Import-Module (Join-Path -Path $PWD -ChildPath out/modules/PSRule) -Force;
-
     Update-MarkdownHelp -Path '.\docs\commands\PSRule\en-US';
 }
 
@@ -147,7 +145,6 @@ task VersionModule {
 }
 
 task ReleaseModule VersionModule, {
-
     if (![String]::IsNullOrEmpty($NuGetApiKey)) {
         # Publish to PowerShell Gallery
         Publish-Module -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule) -NuGetApiKey $NuGetApiKey;
@@ -186,7 +183,6 @@ task PSScriptAnalyzer {
 }
 
 task TestModule TestDotNet, Pester, PSScriptAnalyzer, {
-
     # Run Pester tests
     $pesterParams = @{ Path = $PWD; OutputFile = 'reports/pester-unit.xml'; OutputFormat = 'NUnitXml'; PesterOption = @{ IncludeVSCodeMarker = $True }; PassThru = $True; };
 

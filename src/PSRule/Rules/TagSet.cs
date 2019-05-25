@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -22,13 +22,7 @@ namespace PSRule.Rules
             _Tag = tag;
         }
 
-        public int Count
-        {
-            get
-            {
-                return _Tag.Count;
-            }
-        }
+        public int Count => _Tag.Count;
 
         public bool Contains(object key, object value)
         {
