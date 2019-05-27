@@ -6,20 +6,6 @@
 
 Set-StrictMode -Version latest;
 
-# Set up some helper variables to make it easier to work with the module
-$PSModule = $ExecutionContext.SessionState.Module;
-$PSModuleRoot = $PSModule.ModuleBase;
-
-# Import the appropriate nested binary module based on the current PowerShell version
-$binModulePath = Join-Path -Path $PSModuleRoot -ChildPath '/core/PSRule.dll';
-
-$binaryModule = Import-Module -Name $binModulePath -PassThru;
-
-# When the module is unloaded, remove the nested binary module that was loaded with it
-$PSModule.OnRemove = {
-    Remove-Module -ModuleInfo $binaryModule;
-}
-
 [PSRule.Configuration.PSRuleOption]::UseExecutionContext($ExecutionContext);
 
 #
@@ -86,7 +72,10 @@ function Invoke-PSRule {
         [PSRule.Configuration.OutputFormat]$OutputFormat,
 
         [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
-        [String[]]$InputPath
+        [String[]]$InputPath,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Culture
     )
 
     begin {
@@ -113,6 +102,9 @@ function Invoke-PSRule {
         }
         if ($sourceParams.Count -eq 0) {
             $sourceParams['Path'] = $Path;
+        }
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $sourceParams['Culture'] = $Culture;
         }
         [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -Verbose:$VerbosePreference;
 
@@ -227,7 +219,10 @@ function Test-PSRuleTarget {
         [String[]]$Module,
 
         [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
-        [String[]]$InputPath
+        [String[]]$InputPath,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Culture
     )
 
     begin {
@@ -254,6 +249,9 @@ function Test-PSRuleTarget {
         }
         if ($sourceParams.Count -eq 0) {
             $sourceParams['Path'] = $Path;
+        }
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $sourceParams['Culture'] = $Culture;
         }
         [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -Verbose:$VerbosePreference;
 
@@ -328,7 +326,6 @@ function Test-PSRuleTarget {
 
 # .ExternalHelp PSRule-Help.xml
 function Get-PSRule {
-
     [CmdletBinding()]
     [OutputType([PSRule.Rules.Rule])]
     param (
@@ -352,7 +349,10 @@ function Get-PSRule {
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$ListAvailable
+        [Switch]$ListAvailable,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Culture
     )
 
     begin {
@@ -382,6 +382,9 @@ function Get-PSRule {
         }
         if ($sourceParams.Count -eq 0) {
             $sourceParams['Path'] = $Path;
+        }
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $sourceParams['Culture'] = $Culture;
         }
         [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -Verbose:$VerbosePreference;
 
@@ -947,18 +950,25 @@ function GetRuleScriptPath {
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$ListAvailable
+        [Switch]$ListAvailable,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Culture
     )
 
     process {
         $builder = New-Object -TypeName 'PSRule.Rules.RuleSourceBuilder';
+        if ([String]::IsNullOrEmpty($Culture)) {
+            $Culture = [System.Threading.Thread]::CurrentThread.CurrentCulture.ToString();
+        }
 
         if ($PSBoundParameters.ContainsKey('Path')) {
             Write-Verbose -Message "[PSRule][D] -- Scanning for source files: $Path";
             $fileObjects = (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
 
-            if ($Null -ne $fileObjects) {
-                $builder.Add($fileObjects.FullName, $Null);
+            foreach ($file in $fileObjects) {
+                $helpPath = Join-Path -Path $file.Directory.FullName -ChildPath $Culture;
+                $builder.Add($file.FullName, $helpPath);
             }
         }
 
@@ -981,9 +991,10 @@ function GetRuleScriptPath {
                 foreach ($m in $modules) {
                     Write-Verbose -Message "[PSRule][D] -- Found module: $($m.Name)";
                     $fileObjects = (Get-ChildItem -Path $m.ModuleBase -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
+                    $helpPath = Join-Path $m.ModuleBase -ChildPath $Culture;
 
-                    if ($Null -ne $fileObjects) {
-                        $builder.Add($fileObjects.FullName, $m.Name);
+                    foreach ($file in $fileObjects) {
+                        $builder.Add($file.FullName, $m.Name, $helpPath);
                     }
                 }
             }

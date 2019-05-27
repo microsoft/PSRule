@@ -1,6 +1,7 @@
 ﻿using PSRule.Annotations;
 using PSRule.Configuration;
 using PSRule.Pipeline;
+using PSRule.Resources;
 using PSRule.Rules;
 using System;
 using System.Collections.Generic;
@@ -96,17 +97,12 @@ namespace PSRule.Host
 
                     if (!File.Exists(source.Path))
                     {
-                        throw new FileNotFoundException("The script was not found.", source.Path);
+                        throw new FileNotFoundException(PSRuleResources.ScriptNotFound, source.Path);
                     }
 
-                    PipelineContext.CurrentThread.ModuleName = string.IsNullOrEmpty(source.ModuleName) ? null : source.ModuleName;
-
+                    PipelineContext.CurrentThread.Source = source;
                     PipelineContext.CurrentThread.VerboseRuleDiscovery(path: source.Path);
-
-                    if (!File.Exists(source.Path))
-                    {
-                        throw new FileNotFoundException("Can't find file", source.Path);
-                    }
+                    //PipelineContext.CurrentThread.UseSource(source: source);
 
                     // Invoke script
                     ps.AddScript(source.Path, true);
@@ -120,18 +116,22 @@ namespace PSRule.Host
 
                     foreach (var ir in invokeResults)
                     {
-                        if (ir.BaseObject is ILanguageBlock)
+                        if (ir.BaseObject is RuleBlock)
                         {
-                            var block = ir.BaseObject as ILanguageBlock;
-
+                            var block = ir.BaseObject as RuleBlock;
                             results.Add(block);
                         }
+                        //else if (ir.BaseObject is ILanguageBlock)
+                        //{
+                        //    var block = ir.BaseObject as ILanguageBlock;
+                        //    results.Add(block);
+                        //}
                     }
                 }
             }
             finally
             {
-                PipelineContext.CurrentThread.ModuleName = null;
+                PipelineContext.CurrentThread.Source = null;
                 ps.Runspace = null;
                 ps.Dispose();
             }
@@ -198,7 +198,8 @@ namespace PSRule.Host
                         SourcePath = block.SourcePath,
                         ModuleName = block.ModuleName,
                         Description = block.Description,
-                        Tag = block.Tag
+                        Tag = block.Tag,
+                        Annotations = block.Annotations
                     };
                 }
             }

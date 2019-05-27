@@ -18,7 +18,8 @@ Evaluate objects against matching rules.
 ```text
 Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
  [-Outcome <RuleOutcome>] [-Option <PSRuleOption>] [-As <ResultFormat>] [-Format <InputFormat>]
- [-ObjectPath <String>] [-Module <String[]>] [-OutputFormat <OutputFormat>] [<CommonParameters>]
+ [-ObjectPath <String>] [-Module <String[]>] [-OutputFormat <OutputFormat>] [-Culture <String>]
+ [<CommonParameters>]
 ```
 
 ### InputPath
@@ -26,7 +27,8 @@ Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputO
 ```text
 Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Outcome <RuleOutcome>]
  [-Option <PSRuleOption>] [-As <ResultFormat>] [-Format <InputFormat>] [-ObjectPath <String>]
- [-Module <String[]>] [-OutputFormat <OutputFormat>] -InputPath <String[]> [<CommonParameters>]
+ [-Module <String[]>] [-OutputFormat <OutputFormat>] -InputPath <String[]> [-Culture <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -322,6 +324,26 @@ Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
 Accepted values: None, Yaml, Json, NUnit3
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Culture
+
+Specifies the culture to use for rule documentation and messages. By default, the culture of PowerShell is used.
+
+This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.
+
+The PowerShell cmdlet `Get-Culture` shows the current culture of PowerShell.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

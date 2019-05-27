@@ -51,7 +51,7 @@ namespace PSRule.Pipeline
         internal PSObject TargetObject;
         internal RuleBlock RuleBlock;
         internal PSRuleOption Option;
-        internal string ModuleName;
+        internal RuleSource Source;
 
         public HashAlgorithm ObjectHashAlgorithm
         {
@@ -421,6 +421,7 @@ namespace PSRule.Pipeline
                 targetName: TargetName,
                 targetType: TargetType,
                 tag: ruleBlock.Tag,
+                annotations: ruleBlock.Annotations,
                 message: ruleBlock.Description
             );
 

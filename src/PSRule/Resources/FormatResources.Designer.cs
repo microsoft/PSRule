@@ -22,14 +22,14 @@ namespace PSRule.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class PSRuleResources {
+    internal class FormatResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal PSRuleResources() {
+        internal FormatResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace PSRule.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PSRule.Resources.PSRuleResources", typeof(PSRuleResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PSRule.Resources.FormatResources", typeof(FormatResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,74 +61,47 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Target object &apos;{0}&apos; has not been processed because no matching rules were found..
+        ///   Looks up a localized string similar to RELATED LINKS.
         /// </summary>
-        internal static string ObjectNotProcessed {
+        internal static string Links {
             get {
-                return ResourceManager.GetString("ObjectNotProcessed", resourceCulture);
+                return ResourceManager.GetString("Links", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Options file does not exist..
+        ///   Looks up a localized string similar to NAME.
         /// </summary>
-        internal static string OptionsNotFound {
+        internal static string Name {
             get {
-                return ResourceManager.GetString("OptionsNotFound", resourceCulture);
+                return ResourceManager.GetString("Name", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [FAIL] -- {0}:: Reported for &apos;{1}&apos;.
+        ///   Looks up a localized string similar to NOTES.
         /// </summary>
-        internal static string OutcomeRuleFail {
+        internal static string Notes {
             get {
-                return ResourceManager.GetString("OutcomeRuleFail", resourceCulture);
+                return ResourceManager.GetString("Notes", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [PASS] -- {0}:: Reported for &apos;{1}&apos;.
+        ///   Looks up a localized string similar to RECOMMENDATION.
         /// </summary>
-        internal static string OutcomeRulePass {
+        internal static string Recommendation {
             get {
-                return ResourceManager.GetString("OutcomeRulePass", resourceCulture);
+                return ResourceManager.GetString("Recommendation", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Inconclusive result reported for &apos;{1}&apos; @{0}..
+        ///   Looks up a localized string similar to SYNOPSIS.
         /// </summary>
-        internal static string RuleInconclusive {
+        internal static string Synopsis {
             get {
-                return ResourceManager.GetString("RuleInconclusive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not find a matching rule. Please check that Path, Name and Tag parameters are correct..
-        /// </summary>
-        internal static string RuleNotFound {
-            get {
-                return ResourceManager.GetString("RuleNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The script was not found..
-        /// </summary>
-        internal static string ScriptNotFound {
-            get {
-                return ResourceManager.GetString("ScriptNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Can not serialize a null PSObject..
-        /// </summary>
-        internal static string SerializeNullPSObject {
-            get {
-                return ResourceManager.GetString("SerializeNullPSObject", resourceCulture);
+                return ResourceManager.GetString("Synopsis", resourceCulture);
             }
         }
     }

@@ -15,7 +15,7 @@ Get a list of rule definitions.
 
 ```text
 Get-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>]
- [-Module <String[]>] [-ListAvailable] [<CommonParameters>]
+ [-Module <String[]>] [-ListAvailable] [-Culture <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -138,6 +138,26 @@ When both `-Path` and `-Module` are specified, rule definitions from both are di
 
 ```yaml
 Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Culture
+
+Specifies the culture to use for rule documentation and messages. By default, the culture of PowerShell is used.
+
+This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.
+
+The PowerShell cmdlet `Get-Culture` shows the current culture of PowerShell.
+
+```yaml
+Type: String
 Parameter Sets: (All)
 Aliases:
 

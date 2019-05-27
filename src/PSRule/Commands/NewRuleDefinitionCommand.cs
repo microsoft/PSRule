@@ -1,6 +1,8 @@
-﻿using PSRule.Pipeline;
+﻿using PSRule.Parser;
+using PSRule.Pipeline;
 using PSRule.Rules;
 using System.Collections;
+using System.IO;
 using System.Management.Automation;
 
 namespace PSRule.Commands
@@ -60,14 +62,15 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
+            var context = PipelineContext.CurrentThread;
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
-            var moduleName = PipelineContext.CurrentThread.ModuleName;
+            var moduleName = context.Source.ModuleName;
 
-            PipelineContext.CurrentThread.VerboseFoundRule(ruleName: Name, scriptName: MyInvocation.ScriptName);
+            context.VerboseFoundRule(ruleName: Name, scriptName: MyInvocation.ScriptName);
 
             var ps = PowerShell.Create();
-            ps.Runspace = PipelineContext.CurrentThread.GetRunspace();
+            ps.Runspace = context.GetRunspace();
             ps.AddCommand(new CmdletInfo(InvokeBlockCmdletName, typeof(InvokeRuleBlockCommand)));
             ps.AddParameter(InvokeBlockCmdlet_TypeParameter, Type);
             ps.AddParameter(InvokeBlockCmdlet_IfParameter, If);
@@ -75,18 +78,47 @@ namespace PSRule.Commands
 
             PipelineContext.EnableLogging(ps);
 
+            var doc = GetDoc(context: context, Name);
+
             var block = new RuleBlock(
                 sourcePath: MyInvocation.ScriptName,
                 moduleName: moduleName,
                 ruleName: Name,
-                description: metadata.Description,
+                description: doc == null ? metadata.Description : doc.Synopsis.Text,
+                recommendation: doc != null ? doc.Recommendation[0].Introduction : null,
                 condition: ps,
                 tag: tag,
+                annotations: doc?.Annotations,
                 dependsOn: RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName, moduleName),
                 configuration: Configure
             );
 
             WriteObject(block);
+        }
+
+        private Parser.RuleDocument GetDoc(PipelineContext context, string name)
+        {
+            if (context.Source.HelpPath == null || context.Source.HelpPath.Length == 0)
+            {
+                return null;
+            }
+
+            for (var i = 0; i < context.Source.HelpPath.Length; i++)
+            {
+                var path = Path.Combine(context.Source.HelpPath[i], $"{name}.md");
+
+                if (!File.Exists(path))
+                {
+                    continue;
+                }
+
+                var reader = new MarkdownReader(yamlHeaderOnly: false);
+                var stream = reader.Read(markdown: File.ReadAllText(path: path), path: path);
+                var lexer = new RuleLexer(preserveFomatting: false);
+                return lexer.Process(stream: stream);
+            }
+
+            return null;
         }
     }
 }

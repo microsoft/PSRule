@@ -42,6 +42,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $True;
             $result.TargetName | Should -Be 'TestObject1';
+            $result.Annotations.severity | Should -Be 'Critical';
         }
 
         It 'Returns failure' {
@@ -224,6 +225,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.Tag.category | Should -BeIn 'group1';
             ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Outcome | Should -Be 'Pass';
             ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Pass | Should -Be 2;
+            ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Annotations.severity | Should -Be 'Critical';
             ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Outcome | Should -Be 'Fail';
             ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Fail | Should -Be 2;
             ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Outcome | Should -Be 'None';
@@ -808,7 +810,13 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.RuleName | Should -Be 'FromFile1';
-            $result.Description | Should -Be 'Test rule 1';
+            $result.Description | Should -Be 'This is a synopsis.';
+            $result.Annotations.severity | Should -Be 'Critical';
+
+            $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile2';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.RuleName | Should -Be 'FromFile2';
+            $result.Description | Should -Be 'Test rule 2';
         }
 
         It 'Handles empty path' {
