@@ -20,6 +20,11 @@ namespace PSRule.Host
             return ToRule(GetLanguageBlock(sources: source), filter);
         }
 
+        public static RuleHelpInfo GetRuleHelp(RuleSource[] source, RuleFilter filter)
+        {
+            return ToRuleHelp(GetLanguageBlock(sources: source), filter);
+        }
+
         public static DependencyGraph<RuleBlock> GetRuleBlockGraph(RuleSource[] source, RuleFilter filter)
         {
             var builder = new DependencyGraphBuilder<RuleBlock>();
@@ -205,6 +210,34 @@ namespace PSRule.Host
             }
 
             return results.Values.ToArray();
+        }
+
+        private static RuleHelpInfo ToRuleHelp(IEnumerable<ILanguageBlock> blocks, RuleFilter filter)
+        {
+            // Index deployments by environment/name
+            var results = new Dictionary<string, RuleHelpInfo>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var block in blocks.OfType<RuleBlock>())
+            {
+                // Ignore deployment blocks that don't match
+                if (filter != null && !filter.Match(block))
+                {
+                    continue;
+                }
+
+                if (!results.ContainsKey(block.RuleId))
+                {
+                    results[block.RuleId] = new RuleHelpInfo
+                    {
+                        Name = block.RuleName,
+                        Synopsis = block.Description,
+                        Recommendation = block.Recommendation,
+                        Annotations = block.Annotations.ToHashtable()
+                    };
+                }
+            }
+
+            return results.Values.FirstOrDefault();
         }
     }
 }

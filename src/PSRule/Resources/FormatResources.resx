@@ -117,8 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Fail" xml:space="preserve">
+    <value>Fail</value>
+  </data>
   <data name="Links" xml:space="preserve">
     <value>RELATED LINKS</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="ModuleName" xml:space="preserve">
+    <value>ModuleName</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>NAME</value>
@@ -126,8 +138,17 @@
   <data name="Notes" xml:space="preserve">
     <value>NOTES</value>
   </data>
+  <data name="Outcome" xml:space="preserve">
+    <value>Outcome</value>
+  </data>
+  <data name="Pass" xml:space="preserve">
+    <value>Pass</value>
+  </data>
   <data name="Recommendation" xml:space="preserve">
     <value>RECOMMENDATION</value>
+  </data>
+  <data name="RuleName" xml:space="preserve">
+    <value>RuleName</value>
   </data>
   <data name="Synopsis" xml:space="preserve">
     <value>SYNOPSIS</value>
