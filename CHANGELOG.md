@@ -1,6 +1,11 @@
 
 ## Unreleased
 
+- Added rule documentation, which allows additional rule information to be stored in markdown files. [#157](https://github.com/BernieWhite/PSRule/issues/157)
+  - Rule documentation also adds culture support. [#18](https://github.com/BernieWhite/PSRule/issues/18)
+- Added annotations, which are non-indexed metadata stored in rule documentation. [#148](https://github.com/BernieWhite/PSRule/issues/148)
+  - Annotations can contain a link to online version of the documentation. [#147](https://github.com/BernieWhite/PSRule/issues/147)
+
 ## v0.6.0-B190514 (pre-release)
 
 - Fix operation is not supported on this platform failure. [#152](https://github.com/BernieWhite/PSRule/issues/152)
