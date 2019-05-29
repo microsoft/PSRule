@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Management.Automation;
 
 namespace PSRule.Rules
 {
@@ -12,6 +13,7 @@ namespace PSRule.Rules
         private readonly HashSet<string> _RequiredRuleName;
         private readonly HashSet<string> _ExcludedRuleName;
         private readonly Hashtable _RequiredTag;
+        private readonly WildcardPattern _WildcardMatch;
 
         /// <summary>
         /// Filter rules by id or tag.
@@ -19,11 +21,25 @@ namespace PSRule.Rules
         /// <param name="ruleName">Only accept these rules by name.</param>
         /// <param name="tag">Only accept rules that have these tags.</param>
         /// <param name="exclude">Rule that are always excluded by name.</param>
-        public RuleFilter(IEnumerable<string> ruleName, Hashtable tag, IEnumerable<string> exclude)
+        public RuleFilter(string[] ruleName, Hashtable tag, IEnumerable<string> exclude, bool wildcardMatch = false)
         {
-            _RequiredRuleName = ruleName == null ? null : new HashSet<string>(ruleName, StringComparer.OrdinalIgnoreCase);
+            _RequiredRuleName = ruleName == null || ruleName.Length == 0 ? null : new HashSet<string>(ruleName, StringComparer.OrdinalIgnoreCase);
             _ExcludedRuleName = exclude == null ? null : new HashSet<string>(exclude, StringComparer.OrdinalIgnoreCase);
             _RequiredTag = tag ?? null;
+            _WildcardMatch = null;
+
+            if (wildcardMatch)
+            {
+                if (ruleName == null || ruleName.Length != 1)
+                {
+                    throw new NotSupportedException("Wildcard match requires exactly one ruleName");
+                }
+
+                if (WildcardPattern.ContainsWildcardCharacters(ruleName[0]))
+                {
+                    _WildcardMatch = new WildcardPattern(ruleName[0]);
+                }
+            }
         }
 
         /// <summary>
@@ -37,7 +53,7 @@ namespace PSRule.Rules
                 return false;
             }
 
-            if (_RequiredRuleName == null || _RequiredRuleName.Contains(ruleName))
+            if (_RequiredRuleName == null || _RequiredRuleName.Contains(ruleName) || MatchWildcard(ruleName: ruleName))
             {
                 if (_RequiredTag == null)
                 {
@@ -66,6 +82,16 @@ namespace PSRule.Rules
         public bool Match(RuleBlock block)
         {
             return Match(block.RuleName, block.Tag);
+        }
+
+        private bool MatchWildcard(string ruleName)
+        {
+            if (_WildcardMatch == null)
+            {
+                return false;
+            }
+
+            return _WildcardMatch.IsMatch(ruleName);
         }
     }
 }

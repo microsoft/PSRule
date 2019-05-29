@@ -70,7 +70,7 @@ namespace PSRule.Parser
         /// </summary>
         private bool Synopsis(TokenStream stream, RuleDocument doc)
         {
-            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, FormatResources.Synopsis))
+            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Synopsis))
             {
                 return false;
             }
@@ -86,7 +86,7 @@ namespace PSRule.Parser
         /// </summary>
         private bool Recommendation(TokenStream stream, RuleDocument doc)
         {
-            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, FormatResources.Recommendation))
+            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Recommendation))
             {
                 return false;
             }
@@ -122,7 +122,7 @@ namespace PSRule.Parser
         /// </summary>
         private bool Notes(TokenStream stream, RuleDocument doc)
         {
-            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, FormatResources.Notes))
+            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Notes))
             {
                 return false;
             }
@@ -135,7 +135,7 @@ namespace PSRule.Parser
 
         private bool RelatedLinks(TokenStream stream, RuleDocument doc)
         {
-            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, FormatResources.Links))
+            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Links))
             {
                 return false;
             }

@@ -1,6 +1,7 @@
 ﻿using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Rules;
+using System.Collections.Generic;
 
 namespace PSRule.Pipeline
 {
@@ -12,7 +13,7 @@ namespace PSRule.Pipeline
             // Do nothing
         }
 
-        public RuleHelpInfo Process()
+        public IEnumerable<RuleHelpInfo> Process()
         {
             return HostHelper.GetRuleHelp(source: _Source, filter: _Filter);
         }

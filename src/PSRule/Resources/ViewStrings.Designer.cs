@@ -22,14 +22,14 @@ namespace PSRule.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class FormatResources {
+    internal class ViewStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal FormatResources() {
+        internal ViewStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace PSRule.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PSRule.Resources.FormatResources", typeof(FormatResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PSRule.Resources.ViewStrings", typeof(ViewStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -79,15 +79,6 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to RELATED LINKS.
-        /// </summary>
-        internal static string Links {
-            get {
-                return ResourceManager.GetString("Links", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Message.
         /// </summary>
         internal static string Message {
@@ -106,20 +97,11 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NAME.
+        ///   Looks up a localized string similar to Name.
         /// </summary>
         internal static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NOTES.
-        /// </summary>
-        internal static string Notes {
-            get {
-                return ResourceManager.GetString("Notes", resourceCulture);
             }
         }
         
@@ -142,15 +124,6 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to RECOMMENDATION.
-        /// </summary>
-        internal static string Recommendation {
-            get {
-                return ResourceManager.GetString("Recommendation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to RuleName.
         /// </summary>
         internal static string RuleName {
@@ -160,7 +133,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SYNOPSIS.
+        ///   Looks up a localized string similar to Synopsis.
         /// </summary>
         internal static string Synopsis {
             get {

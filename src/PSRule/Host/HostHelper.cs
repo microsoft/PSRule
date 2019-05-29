@@ -20,7 +20,7 @@ namespace PSRule.Host
             return ToRule(GetLanguageBlock(sources: source), filter);
         }
 
-        public static RuleHelpInfo GetRuleHelp(RuleSource[] source, RuleFilter filter)
+        public static IEnumerable<RuleHelpInfo> GetRuleHelp(RuleSource[] source, RuleFilter filter)
         {
             return ToRuleHelp(GetLanguageBlock(sources: source), filter);
         }
@@ -212,7 +212,7 @@ namespace PSRule.Host
             return results.Values.ToArray();
         }
 
-        private static RuleHelpInfo ToRuleHelp(IEnumerable<ILanguageBlock> blocks, RuleFilter filter)
+        private static RuleHelpInfo[] ToRuleHelp(IEnumerable<ILanguageBlock> blocks, RuleFilter filter)
         {
             // Index deployments by environment/name
             var results = new Dictionary<string, RuleHelpInfo>(StringComparer.OrdinalIgnoreCase);
@@ -232,12 +232,12 @@ namespace PSRule.Host
                         Name = block.RuleName,
                         Synopsis = block.Description,
                         Recommendation = block.Recommendation,
-                        Annotations = block.Annotations.ToHashtable()
+                        Annotations = block.Annotations?.ToHashtable()
                     };
                 }
             }
 
-            return results.Values.FirstOrDefault();
+            return results.Values.ToArray();
         }
     }
 }

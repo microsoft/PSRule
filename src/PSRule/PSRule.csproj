@@ -19,26 +19,35 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\FormatResources.Designer.cs">
+    <Compile Update="Resources\DocumentStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>FormatResources.resx</DependentUpon>
+      <DependentUpon>DocumentStrings.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\PSRuleResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>PSRuleResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\ViewStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ViewStrings.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\FormatResources.resx">
+    <EmbeddedResource Update="Resources\DocumentStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>FormatResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>DocumentStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\PSRuleResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PSRuleResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ViewStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

@@ -394,7 +394,7 @@ function Get-PSRule {
             return; # continue causes issues with Pester
         }
 
-        Write-Verbose -Message "[Get-PSRule] -- Found $($sourceFiles.Length) script(s)";
+        Write-Verbose -Message "[Get-PSRule] -- Found $($sourceFiles.Length) source file(s)";
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
@@ -441,15 +441,16 @@ function Get-PSRuleHelp {
     [CmdletBinding()]
     [OutputType([PSRule.Rules.RuleHelpInfo])]
     param (
+        # Filter to rules with the following names
+        [Parameter(Position = 0, Mandatory = $True)]
+        [Alias('n')]
+        [SupportsWildcards()]
+        [String]$Name,
+
         # A list of paths to check for rule definitions
-        [Parameter(Position = 0, Mandatory = $False)]
+        [Parameter(Mandatory = $False)]
         [Alias('p')]
         [String]$Path = $PWD,
-
-        # Filter to rules with the following names
-        [Parameter(Mandatory = $True)]
-        [Alias('n')]
-        [String]$Name,
 
         [Parameter(Mandatory = $False)]
         [String]$Module,
@@ -483,13 +484,10 @@ function Get-PSRuleHelp {
         if ($PSBoundParameters.ContainsKey('Module')) {
             $sourceParams['Module'] = $Module;
         }
-        if ($sourceParams.Count -eq 0) {
-            $sourceParams['Path'] = $Path;
-        }
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $sourceParams['Culture'] = $Culture;
         }
-        [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -PreferModule -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -497,7 +495,7 @@ function Get-PSRuleHelp {
             return; # continue causes issues with Pester
         }
 
-        Write-Verbose -Message "[Get-PSRuleHelp] -- Found $($sourceFiles.Length) script(s)";
+        Write-Verbose -Message "[Get-PSRuleHelp] -- Found $($sourceFiles.Length) source file(s)";
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
@@ -521,17 +519,27 @@ function Get-PSRuleHelp {
         if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
             try {
                 # Get matching rule help
-                $result = $pipeline.Process();
+                $result = @($pipeline.Process());
 
-                if ($Null -ne $result -and $Online) {
-                    $launchUri = $result.GetOnlineHelpUri();
+                if ($Null -ne $result -and $result.Length -gt 0) {
 
-                    if ($Null -ne $launchUri) {
-                        LaunchOnlineHelp -Uri $launchUri -Verbose:$VerbosePreference;
+                    if ($Online -and $result.Length -eq 1) {
+                        $launchUri = $result.GetOnlineHelpUri();
+    
+                        if ($Null -ne $launchUri) {
+                            Write-Verbose -Message "[Get-PSRuleHelp] -- Launching online version: $($launchUri.OriginalString)";
+                            LaunchOnlineHelp -Uri $launchUri -Verbose:$VerbosePreference;
+                        }
                     }
-                }
-                else {
-                    $result;
+                    elseif ($result.Length -gt 1) {
+                        $result | ForEach-Object -Process {
+                            $Null = $_.PSObject.TypeNames.Insert(0, 'PSRule.Rules.RuleHelpInfo+Collection');
+                            $_;
+                        }
+                    }
+                    else {
+                        $result;
+                    }
                 }
             }
             catch {
@@ -1066,13 +1074,16 @@ function GetRuleScriptPath {
         [Switch]$ListAvailable,
 
         [Parameter(Mandatory = $False)]
-        [String]$Culture
+        [String]$Culture,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$PreferModule = $False
     )
 
     process {
         $builder = New-Object -TypeName 'PSRule.Rules.RuleSourceBuilder';
         if ([String]::IsNullOrEmpty($Culture)) {
-            $Culture = [System.Threading.Thread]::CurrentThread.CurrentCulture.ToString();
+            $Culture = GetCulture;
         }
 
         if ($PSBoundParameters.ContainsKey('Path')) {
@@ -1095,14 +1106,15 @@ function GetRuleScriptPath {
             $moduleParams['ListAvailable'] = $ListAvailable.ToBool();
         }
 
-        if ($moduleParams.Count -gt 0) {
-            $modules = Microsoft.PowerShell.Core\Get-Module @moduleParams | Where-Object -FilterScript {
+        if ($moduleParams.Count -gt 0 -or $PreferModule) {
+            $modules = @(Microsoft.PowerShell.Core\Get-Module @moduleParams | Where-Object -FilterScript {
                 'PSRule' -in $_.Tags
-            }
+            })
+            Write-Verbose -Message "[PSRule][D] -- Found $($modules.Length) PSRule module(s)";
 
             if ($Null -ne $modules) {
                 foreach ($m in $modules) {
-                    Write-Verbose -Message "[PSRule][D] -- Found module: $($m.Name)";
+                    Write-Verbose -Message "[PSRule][D] -- Scanning for source files in module: $($m.Name)";
                     $fileObjects = (Get-ChildItem -Path $m.ModuleBase -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
                     $helpPath = Join-Path $m.ModuleBase -ChildPath $Culture;
 
@@ -1296,7 +1308,6 @@ function IsDeviceGuardEnabled {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
     param ()
-
     process {
 
         if ((Get-Variable -Name IsMacOS -ErrorAction Ignore) -or (Get-Variable -Name IsLinux -ErrorAction Ignore)) {
@@ -1309,6 +1320,15 @@ function IsDeviceGuardEnabled {
         }
 
         return [System.Management.Automation.Security.SystemPolicy]::GetSystemLockdownPolicy() -eq [System.Management.Automation.Security.SystemEnforcementMode]::Enforce;
+    }
+}
+
+function GetCulture {
+    [CmdletBinding()]
+    [OutputType([System.String])]
+    param ()
+    process {
+        return [System.Threading.Thread]::CurrentThread.CurrentCulture.ToString();
     }
 }
 
