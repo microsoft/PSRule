@@ -3,6 +3,7 @@
 
 - Added rule documentation, which allows additional rule information to be stored in markdown files. [#157](https://github.com/BernieWhite/PSRule/issues/157)
   - Rule documentation also adds culture support. [#18](https://github.com/BernieWhite/PSRule/issues/18)
+  - Rule documentation can be access like help with the `Get-PSRuleHelp` cmdlet.
 - Added annotations, which are non-indexed metadata stored in rule documentation. [#148](https://github.com/BernieWhite/PSRule/issues/148)
   - Annotations can contain a link to online version of the documentation. [#147](https://github.com/BernieWhite/PSRule/issues/147)
 

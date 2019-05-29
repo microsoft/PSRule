@@ -450,7 +450,7 @@ function Get-PSRuleHelp {
         # A list of paths to check for rule definitions
         [Parameter(Mandatory = $False)]
         [Alias('p')]
-        [String]$Path = $PWD,
+        [String]$Path,
 
         [Parameter(Mandatory = $False)]
         [String]$Module,

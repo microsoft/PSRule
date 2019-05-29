@@ -14,7 +14,7 @@ Get documentation for a rule.
 ## SYNTAX
 
 ```text
-Get-PSRuleHelp [[-Path] <String>] -Name <String> [-Module <String>] [-Culture <String>] [-Online]
+Get-PSRuleHelp [-Name] <String> [-Path <String>] [-Module <String>] [-Culture <String>] [-Online]
  [<CommonParameters>]
 ```
 
@@ -27,10 +27,10 @@ Get documentation for a rule.
 ### Example 1
 
 ```powershell
-PS C:\> Get-PSRuleHelp Azure.ACR.AdminUser
+PS C:\> Get-PSRuleHelp Azure.ACR.AdminUser;
 ```
 
-{{ Add example description here }}
+Get rule documentation for the imported rule `Azure.ACR.AdminUser`.
 
 ## PARAMETERS
 
@@ -44,15 +44,15 @@ Parameter Sets: (All)
 Aliases: n
 
 Required: True
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: False
-Accept wildcard characters: False
+Accept wildcard characters: True
 ```
 
 ### -Path
 
-A list of paths to check for rule definitions
+A path to check documentation for. If this is not specified, documentation is sourced for imported modules.
 
 ```yaml
 Type: String
@@ -60,15 +60,15 @@ Parameter Sets: (All)
 Aliases: p
 
 Required: False
-Position: 1
-Default value: $PWD
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -Module
 
-{{ Fill Module Description }}
+Limit returned information to rules in the specified module.
 
 ```yaml
 Type: String
