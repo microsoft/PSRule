@@ -60,7 +60,7 @@ function CopyModuleFiles {
 task BuildDotNet {
     exec {
         # Build library
-        dotnet publish src/PSRule -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule)
+        dotnet publish src/PSRule -p:versionPrefix=$ModuleVersion -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule)
     }
 }
 
@@ -112,7 +112,7 @@ task VersionModule {
         $ModuleVersion = $ReleaseVersion;
     }
 
-    if (![String]::IsNullOrEmpty($ModuleVersion)) {
+    if ($PSBoundParameters.ContainsKey('ModuleVersion') -and ![String]::IsNullOrEmpty($ModuleVersion)) {
         Write-Verbose -Message "[VersionModule] -- ModuleVersion: $ModuleVersion";
 
         $version = $ModuleVersion;

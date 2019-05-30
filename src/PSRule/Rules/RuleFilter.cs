@@ -28,17 +28,14 @@ namespace PSRule.Rules
             _RequiredTag = tag ?? null;
             _WildcardMatch = null;
 
-            if (wildcardMatch)
+            if (wildcardMatch && ruleName != null && ruleName.Length > 0 && WildcardPattern.ContainsWildcardCharacters(ruleName[0]))
             {
-                if (ruleName == null || ruleName.Length != 1)
+                if (ruleName.Length > 1)
                 {
                     throw new NotSupportedException("Wildcard match requires exactly one ruleName");
                 }
 
-                if (WildcardPattern.ContainsWildcardCharacters(ruleName[0]))
-                {
-                    _WildcardMatch = new WildcardPattern(ruleName[0]);
-                }
+                _WildcardMatch = new WildcardPattern(ruleName[0]);
             }
         }
 

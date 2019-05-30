@@ -441,19 +441,22 @@ function Get-PSRuleHelp {
     [CmdletBinding()]
     [OutputType([PSRule.Rules.RuleHelpInfo])]
     param (
-        # Filter to rules with the following names
-        [Parameter(Position = 0, Mandatory = $True)]
+        # The name of the rule to get documentation for.
+        [Parameter(Position = 0, Mandatory = $False)]
         [Alias('n')]
         [SupportsWildcards()]
         [String]$Name,
 
-        # A list of paths to check for rule definitions
+        # A path to check documentation for.
         [Parameter(Mandatory = $False)]
         [Alias('p')]
         [String]$Path,
 
         [Parameter(Mandatory = $False)]
         [String]$Module,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
         [String]$Culture,
