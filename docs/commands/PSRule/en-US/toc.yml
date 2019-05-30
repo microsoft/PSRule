@@ -6,6 +6,9 @@
     - name: Get-PSRule
       href: Get-PSRule.md
       topicHref: Get-PSRule.md
+    - name: Get-PSRuleHelp
+      href: Get-PSRuleHelp.md
+      topicHref: Get-PSRuleHelp.md
     - name: Invoke-PSRule
       href: Invoke-PSRule.md
       topicHref: Invoke-PSRule.md
