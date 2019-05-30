@@ -23,7 +23,7 @@ param (
     [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules)
 )
 
-if ($Env:COVERAGE -eq 'true') {
+if ($Env:coverage -eq 'true') {
     $CodeCoverage = $True;
 }
 
