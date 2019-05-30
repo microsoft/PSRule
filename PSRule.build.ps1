@@ -1,7 +1,7 @@
 
 param (
     [Parameter(Mandatory = $False)]
-    [String]$ModuleVersion,
+    [String]$ModuleVersion = '0.0.1',
 
     [Parameter(Mandatory = $False)]
     [AllowNull()]
@@ -60,7 +60,8 @@ function CopyModuleFiles {
 task BuildDotNet {
     exec {
         # Build library
-        dotnet publish src/PSRule -p:versionPrefix=$ModuleVersion -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule)
+        # Add build version -p:versionPrefix=$ModuleVersion
+        dotnet publish src/PSRule -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule)
     }
 }
 
