@@ -78,7 +78,7 @@ namespace PSRule.Commands
 
             PipelineContext.EnableLogging(ps);
 
-            var doc = GetDoc(context: context, Name);
+            var doc = GetDoc(context: context, name: Name);
 
             var block = new RuleBlock(
                 sourcePath: MyInvocation.ScriptName,
