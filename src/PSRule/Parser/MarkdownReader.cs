@@ -71,7 +71,6 @@ namespace PSRule.Parser
         public TokenStream Read(string markdown, string path)
         {
             _Context = MarkdownReaderMode.None;
-
             _Stream = new MarkdownStream(markdown);
 
             YamlHeader();

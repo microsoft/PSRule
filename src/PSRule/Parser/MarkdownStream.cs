@@ -58,17 +58,21 @@ namespace PSRule.Parser
         }
 
         private readonly string _Markdown;
+        private readonly int _Length;
 
         /// <summary>
         /// The current character position in the markdown string. Call Next() to change the position.
         /// </summary>
-        private int _Position = 0;
+        private int _Position;
+        private int _Line;
+        private int _Column;
+        private char _Current;
+        private char _Previous;
+        private int _EscapeLength;
 
-        private int _Line = 0;
-        private int _Column = 0;
-        private int _Length;
         private int? _ExtentMarker;
         private StreamCursor _Checkpoint;
+
         private const char NewLine = '\n';
         private const char CarrageReturn = '\r';
         public const char Dash = '-';
@@ -84,17 +88,15 @@ namespace PSRule.Parser
         public const char Backslash = '\\';
         public const string TripleBacktick = "```";
         public const string NewLineTripleBacktick = "\r\n```";
-        public static char[] NewLineStopCharacters = new char[] { '\r', '\n' };
         public const char EqualSign = '=';
-        public static char[] UnorderListCharacters = new char[] { '-', '*' };
-        private char _Current;
-        private char _Previous;
-        private int _EscapeLength;
+        public readonly static char[] NewLineStopCharacters = new char[] { '\r', '\n' };
+        public readonly static char[] UnorderListCharacters = new char[] { '-', '*' };
 
         public MarkdownStream(string markdown)
         {
             _Markdown = markdown;
             _Length = _Markdown.Length;
+            _Position = _Line = _Column = _EscapeLength = 0;
 
             UpdateCurrent();
 
@@ -126,7 +128,7 @@ namespace PSRule.Parser
 
         public char Previous
         {
-            get { return _Previous;}
+            get { return _Previous; }
         }
 
         public int Line
