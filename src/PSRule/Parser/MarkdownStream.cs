@@ -406,6 +406,7 @@ namespace PSRule.Parser
         private void UpdateCurrent(bool ignoreEscaping = false)
         {
             // Handle escape sequences
+            _Position = _Position < 0 ? 0 : _Position;
             _EscapeLength = ignoreEscaping ? 0 : GetEscapeCount(_Position);
             
             _Previous = _Current;
