@@ -413,7 +413,7 @@ namespace PSRule.Parser
         private int GetEscapeCount(int position)
         {
             // Check for escape sequences
-            if (_Markdown[position] == Backslash && position < _Length)
+            if (position < _Length && _Markdown[position] == Backslash)
             {
                 var next = _Markdown[position + 1];
 
