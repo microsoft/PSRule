@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace PSRule.Parser
@@ -398,6 +399,15 @@ namespace PSRule.Parser
                 _Column += _EscapeLength + 1;
             }
 
+            if (_Position < 0)
+            {
+                throw new IndexOutOfRangeException("Position can not be < zero.");
+            }
+            else if (_Position >= _Length)
+            {
+                throw new IndexOutOfRangeException("Position can not be >= length.");
+            }
+
             UpdateCurrent(ignoreEscaping);
 
             return true;
@@ -406,7 +416,6 @@ namespace PSRule.Parser
         private void UpdateCurrent(bool ignoreEscaping = false)
         {
             // Handle escape sequences
-            _Position = _Position < 0 ? 0 : _Position;
             _EscapeLength = ignoreEscaping ? 0 : GetEscapeCount(_Position);
             
             _Previous = _Current;
@@ -416,7 +425,7 @@ namespace PSRule.Parser
         private int GetEscapeCount(int position)
         {
             // Check for escape sequences
-            if (position >= 0 && position < _Length && _Markdown[position] == Backslash)
+            if (position < _Length && _Markdown[position] == Backslash)
             {
                 var next = _Markdown[position + 1];
 
