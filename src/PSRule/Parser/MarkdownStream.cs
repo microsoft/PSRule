@@ -399,15 +399,6 @@ namespace PSRule.Parser
                 _Column += _EscapeLength + 1;
             }
 
-            if (_Position < 0)
-            {
-                throw new IndexOutOfRangeException("Position can not be < zero.");
-            }
-            else if (_Position >= _Length)
-            {
-                throw new IndexOutOfRangeException("Position can not be >= length.");
-            }
-
             UpdateCurrent(ignoreEscaping);
 
             return true;
@@ -417,7 +408,16 @@ namespace PSRule.Parser
         {
             // Handle escape sequences
             _EscapeLength = ignoreEscaping ? 0 : GetEscapeCount(_Position);
-            
+
+            if (_Position + _EscapeLength < 0)
+            {
+                throw new IndexOutOfRangeException($"Position can not be < zero. Position={_Position.ToString()}, EscapeLength={_EscapeLength.ToString()}"");
+            }
+            else if (_Position + _EscapeLength >= _Length)
+            {
+                throw new IndexOutOfRangeException($"Position can not be >= length. Position={_Position.ToString()}, EscapeLength={_EscapeLength.ToString()}");
+            }
+
             _Previous = _Current;
             _Current = _Markdown[_Position + _EscapeLength];
         }
@@ -425,7 +425,7 @@ namespace PSRule.Parser
         private int GetEscapeCount(int position)
         {
             // Check for escape sequences
-            if (position < _Length && _Markdown[position] == Backslash)
+            if (position >= 0 && position < _Length && _Markdown[position] == Backslash)
             {
                 var next = _Markdown[position + 1];
 
