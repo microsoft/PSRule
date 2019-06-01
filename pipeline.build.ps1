@@ -107,7 +107,6 @@ task Clean {
 }
 
 task VersionModule {
-
     if (![String]::IsNullOrEmpty($ReleaseVersion)) {
         Write-Verbose -Message "[VersionModule] -- ReleaseVersion: $ReleaseVersion";
         $ModuleVersion = $ReleaseVersion;
