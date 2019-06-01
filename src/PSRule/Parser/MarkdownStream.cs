@@ -411,7 +411,7 @@ namespace PSRule.Parser
 
             if (_Position + _EscapeLength < 0)
             {
-                throw new IndexOutOfRangeException($"Position can not be < zero. Position={_Position.ToString()}, EscapeLength={_EscapeLength.ToString()}"");
+                throw new IndexOutOfRangeException($"Position can not be < zero. Position={_Position.ToString()}, EscapeLength={_EscapeLength.ToString()}");
             }
             else if (_Position + _EscapeLength >= _Length)
             {
