@@ -128,7 +128,7 @@ task VersionModule {
         $ModuleVersion = $ReleaseVersion;
     }
 
-    if ($PSBoundParameters.ContainsKey('ModuleVersion')) {
+    if (![String]::IsNullOrEmpty($ModuleVersion)) {
         Write-Verbose -Message "[VersionModule] -- ModuleVersion: $ModuleVersion";
 
         $version = $ModuleVersion;
