@@ -27,10 +27,18 @@ Get documentation for a rule.
 ### Example 1
 
 ```powershell
-PS C:\> Get-PSRuleHelp Azure.ACR.AdminUser;
+Get-PSRuleHelp Azure.ACR.AdminUser;
 ```
 
-Get rule documentation for the imported rule `Azure.ACR.AdminUser`.
+Get rule documentation for the rule `Azure.ACR.AdminUser`.
+
+### Example 2
+
+```powershell
+Get-PSRuleHelp Azure.ACR.AdminUser -Online;
+```
+
+Browse to the online version of documentation for `Azure.ACR.AdminUser` using the default web browser.
 
 ## PARAMETERS
 
@@ -121,8 +129,6 @@ Accept wildcard characters: False
 ### CommonParameters
 
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
-
-## INPUTS
 
 ## OUTPUTS
 

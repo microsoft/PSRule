@@ -113,7 +113,7 @@ namespace PSRule.Parser
             _Stream.Skip(count + 1);
             _Stream.SkipLineEnding();
 
-            while (!_Stream.IsSequence(TripleDash, onNewLine: true))
+            while (!_Stream.EOF && !_Stream.IsSequence(TripleDash, onNewLine: true))
             {
                 var key = _Stream.CaptureUntil(YamlHeaderStopCharacters).Trim();
 

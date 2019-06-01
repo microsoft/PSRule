@@ -49,6 +49,7 @@ namespace PSRule.Parser
         }
     }
 
+    [DebuggerDisplay("Position = {Position}, Current = {Current}")]
     internal sealed class MarkdownStream
     {
         private sealed class StreamCursor
@@ -198,16 +199,17 @@ namespace PSRule.Parser
 
             while ((Current == CarrageReturn || Current == NewLine) && (max == 0 || skipped < max))
             {
-                if (Current == CarrageReturn && (Remaining == 0 || Peak() != NewLine))
+                if (Remaining == 0)
                 {
                     break;
                 }
-                else
+
+                if (Current == CarrageReturn && Peak() == NewLine)
                 {
                     Next();
                 }
 
-                Next(ignoreEscaping);
+                Next(ignoreEscaping: ignoreEscaping);
 
                 skipped++;
             }
@@ -567,7 +569,7 @@ namespace PSRule.Parser
         /// <returns>Returns the captured text up until the end of the line.</returns>
         public string CaptureLine()
         {
-            return CaptureUntil("\r\n");
+            return CaptureUntil(NewLineStopCharacters);
         }
 
         public bool IsSequence(string sequence, bool onNewLine = false)
