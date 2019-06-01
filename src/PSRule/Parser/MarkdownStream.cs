@@ -97,7 +97,10 @@ namespace PSRule.Parser
         {
             _Markdown = markdown;
             _Length = _Markdown.Length;
-            _Position = _Line = _Column = _EscapeLength = 0;
+            _Position = 0;
+            _Line = 0;
+            _Column = 0;
+            _EscapeLength = 0;
 
             UpdateCurrent();
 
@@ -379,7 +382,7 @@ namespace PSRule.Parser
         /// <returns>Is True when more characters exist in the stream.</returns>
         public bool Next(bool ignoreEscaping = false)
         {
-            _Position += _EscapeLength + 1;
+            _Position += _EscapeLength > 0 ? _EscapeLength + 1 : 1;
 
             if (_Position >= _Length)
             {
