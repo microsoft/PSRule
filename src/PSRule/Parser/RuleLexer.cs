@@ -262,11 +262,11 @@ namespace PSRule.Parser
 
             if (token.IsDoubleLineEnding())
             {
-                stringBuilder.Append(preserveEnding ? "\r\n\r\n" : "\r\n");
+                stringBuilder.Append(preserveEnding ? string.Concat(Environment.NewLine, Environment.NewLine) : Environment.NewLine);
             }
             else if (token.IsSingleLineEnding())
             {
-                stringBuilder.Append(preserveEnding ? "\r\n" : " ");
+                stringBuilder.Append(preserveEnding ? Environment.NewLine : " ");
             }
         }
 

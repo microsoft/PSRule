@@ -1,5 +1,7 @@
 ﻿using PSRule.Parser;
+using PSRule.Rules;
 using System;
+using System.Collections;
 using System.IO;
 using Xunit;
 
@@ -11,32 +13,51 @@ namespace PSRule
         public void ReadDocument_Windows()
         {
             var document = GetDocument(GetToken(nx: false));
+            var expected = GetExpected(nx: false);
 
-            Assert.Equal("Kubernetes.Deployment.NotLatestImage", document.Name);
-            Assert.Equal("Containers should use specific tags instead of latest.", document.Synopsis.Text);
+            Assert.Equal(expected.Name, document.Name);
+            Assert.Equal(expected.Synopsis.Text, document.Synopsis.Text);
             Assert.Single(document.Recommendation);
-            Assert.Equal(@"Deployments or pods should identify a specific tag to use for container images instead of latest. When latest is used it may be hard to determine which version of the image is running.
-When using variable tags such as v1.0 (which may refer to v1.0.0 or v1.0.1) consider using imagePullPolicy: Always to ensure that the an out-of-date cached image is not used.
-The latest tag automatically uses imagePullPolicy: Always instead of the default imagePullPolicy: IfNotPresent."
-            , document.Recommendation[0].Introduction);
-            Assert.Equal("Critical", document.Annotations["severity"]);
-            Assert.Equal("Pod security", document.Annotations["category"]);
+            Assert.Equal(expected.Recommendation[0].Introduction, document.Recommendation[0].Introduction);
+            Assert.Equal(expected.Annotations["severity"], document.Annotations["severity"]);
+            Assert.Equal(expected.Annotations["category"], document.Annotations["category"]);
         }
 
         [Fact]
         public void ReadDocument_Linux()
         {
             var document = GetDocument(GetToken(nx: true));
+            var expected = GetExpected(nx: true);
 
-            Assert.Equal("Kubernetes.Deployment.NotLatestImage", document.Name);
-            Assert.Equal("Containers should use specific tags instead of latest.", document.Synopsis.Text);
+            Assert.Equal(expected.Name, document.Name);
+            Assert.Equal(expected.Synopsis.Text, document.Synopsis.Text);
             Assert.Single(document.Recommendation);
-            Assert.Equal(@"Deployments or pods should identify a specific tag to use for container images instead of latest. When latest is used it may be hard to determine which version of the image is running.
+            Assert.Equal(expected.Recommendation[0].Introduction, document.Recommendation[0].Introduction);
+            Assert.Equal(expected.Annotations["severity"], document.Annotations["severity"]);
+            Assert.Equal(expected.Annotations["category"], document.Annotations["category"]);
+        }
+
+        private RuleDocument GetExpected(bool nx)
+        {
+            var annotations = new Hashtable();
+            annotations["severity"] = "Critical";
+            annotations["category"] = "Pod security";
+            var recommendation = new RuleRecommendation
+            {
+                Introduction = @"Deployments or pods should identify a specific tag to use for container images instead of latest. When latest is used it may be hard to determine which version of the image is running.
 When using variable tags such as v1.0 (which may refer to v1.0.0 or v1.0.1) consider using imagePullPolicy: Always to ensure that the an out-of-date cached image is not used.
 The latest tag automatically uses imagePullPolicy: Always instead of the default imagePullPolicy: IfNotPresent."
-            , document.Recommendation[0].Introduction);
-            Assert.Equal("Critical", document.Annotations["severity"]);
-            Assert.Equal("Pod security", document.Annotations["category"]);
+            };
+
+            var result = new RuleDocument
+            {
+                Name = "Kubernetes.Deployment.NotLatestImage",
+                Synopsis = new Body("Containers should use specific tags instead of latest."),
+                Annotations = TagSet.FromHashtable(annotations),
+                Recommendation = new RuleRecommendation[] { recommendation }
+            };
+
+            return result;
         }
 
         private RuleDocument GetDocument(TokenStream stream)

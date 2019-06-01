@@ -75,6 +75,9 @@ namespace PSRule.Parser
         private int? _ExtentMarker;
         private StreamCursor _Checkpoint;
 
+        // The maximum length of a markdown document. ~32 MB in UTF-8
+        private const int MaxLength = 4194304;
+
         private const char NewLine = '\n';
         private const char CarrageReturn = '\r';
         public const char Dash = '-';
