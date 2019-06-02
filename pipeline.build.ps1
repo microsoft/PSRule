@@ -37,7 +37,7 @@ if ($Env:coverage -eq 'true') {
     $CodeCoverage = $True;
 }
 
-if ($Env:BUILD_SOURCEBRANCH -contains '/tags/' -and $Env:BUILD_SOURCEBRANCHNAME -like "v0.") {
+if ($Env:BUILD_SOURCEBRANCH -contains '/tags/' -and $Env:BUILD_SOURCEBRANCHNAME -like "v0.*") {
     $ModuleVersion = $Env:BUILD_SOURCEBRANCHNAME.Substring(1);
 }
 
