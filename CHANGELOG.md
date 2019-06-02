@@ -1,7 +1,7 @@
 
 ## Unreleased
 
-## v0.6.0-B190614
+## v0.6.0-B190614 (pre-release)
 
 - Added rule documentation, which allows additional rule information to be stored in markdown files. [#157](https://github.com/BernieWhite/PSRule/issues/157)
   - Rule documentation also adds culture support. [#18](https://github.com/BernieWhite/PSRule/issues/18)
