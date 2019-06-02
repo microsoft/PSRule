@@ -37,11 +37,31 @@ if ($Env:coverage -eq 'true') {
     $CodeCoverage = $True;
 }
 
-if ($Env:BUILD_SOURCEBRANCH -contains '/tags/' -and $Env:BUILD_SOURCEBRANCHNAME -like "v0.*") {
+if ($Env:BUILD_SOURCEBRANCH -like '*/tags/*' -and $Env:BUILD_SOURCEBRANCHNAME -like 'v0.*') {
     $ModuleVersion = $Env:BUILD_SOURCEBRANCHNAME.Substring(1);
 }
 
+if (![String]::IsNullOrEmpty($ReleaseVersion)) {
+    Write-Host -Object "[Pipeline] -- ReleaseVersion: $ReleaseVersion" -ForegroundColor Green;
+    $ModuleVersion = $ReleaseVersion;
+}
+
 Write-Host -Object "[Pipeline] -- ModuleVersion: $ModuleVersion" -ForegroundColor Green;
+
+$version = $ModuleVersion;
+$versionSuffix = [String]::Empty;
+
+if ($version -like '*-*') {
+    [String[]]$versionParts = $version.Split('-', [System.StringSplitOptions]::RemoveEmptyEntries);
+    $version = $versionParts[0];
+
+    if ($versionParts.Length -eq 2) {
+        $versionSuffix = $versionParts[1];
+    }
+}
+
+Write-Host -Object "[Pipeline] -- Using version: $version" -ForegroundColor Green;
+Write-Host -Object "[Pipeline] -- Using versionSuffix: $versionSuffix" -ForegroundColor Green;
 
 # Copy the PowerShell modules files to the destination path
 function CopyModuleFiles {
@@ -123,28 +143,8 @@ task Clean {
 }
 
 task VersionModule {
-    if (![String]::IsNullOrEmpty($ReleaseVersion)) {
-        Write-Verbose -Message "[VersionModule] -- ReleaseVersion: $ReleaseVersion";
-        $ModuleVersion = $ReleaseVersion;
-    }
-
     if (![String]::IsNullOrEmpty($ModuleVersion)) {
         Write-Verbose -Message "[VersionModule] -- ModuleVersion: $ModuleVersion";
-
-        $version = $ModuleVersion;
-        $revision = [String]::Empty;
-
-        Write-Verbose -Message "[VersionModule] -- Using Version: $version";
-        Write-Verbose -Message "[VersionModule] -- Using Revision: $revision";
-
-        if ($version -like '*-*') {
-            [String[]]$versionParts = $version.Split('-', [System.StringSplitOptions]::RemoveEmptyEntries);
-            $version = $versionParts[0];
-
-            if ($versionParts.Length -eq 2) {
-                $revision = $versionParts[1];
-            }
-        }
 
         # Update module version
         if (![String]::IsNullOrEmpty($version)) {
@@ -153,9 +153,9 @@ task VersionModule {
         }
 
         # Update pre-release version
-        if (![String]::IsNullOrEmpty($revision)) {
+        if (![String]::IsNullOrEmpty($versionSuffix)) {
             Write-Verbose -Message "[VersionModule] -- Updating module manifest Prerelease";
-            Update-ModuleManifest -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule/PSRule.psd1) -Prerelease $revision;
+            Update-ModuleManifest -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule/PSRule.psd1) -Prerelease $versionSuffix;
         }
     }
 }
