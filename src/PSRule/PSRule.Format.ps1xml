@@ -1,5 +1,73 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Configuration>
+  <Controls>
+    <Control>
+      <Name>Help-Name</Name>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+              <CustomItem>
+                <Text AssemblyName="PSRule" BaseName="PSRule.Resources.DocumentStrings" ResourceId="Name"/>
+                <NewLine />
+                <Frame>
+                  <LeftIndent>4</LeftIndent>
+                  <CustomItem>
+                    <ExpressionBinding>
+                      <PropertyName>NAME</PropertyName>
+                    </ExpressionBinding>
+                    <NewLine/>
+                  </CustomItem>
+                </Frame>
+              </CustomItem>
+            </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </Control>
+    <Control>
+      <Name>Help-Synopsis</Name>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+              <CustomItem>
+                <Text AssemblyName="PSRule" BaseName="PSRule.Resources.DocumentStrings" ResourceId="Synopsis"/>
+                <NewLine />
+                <Frame>
+                  <LeftIndent>4</LeftIndent>
+                  <CustomItem>
+                    <ExpressionBinding>
+                      <PropertyName>Synopsis</PropertyName>
+                    </ExpressionBinding>
+                    <NewLine/>
+                  </CustomItem>
+                </Frame>
+              </CustomItem>
+            </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </Control>
+    <Control>
+      <Name>Help-Recommendation</Name>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+              <CustomItem>
+                <Text AssemblyName="PSRule" BaseName="PSRule.Resources.DocumentStrings" ResourceId="Recommendation"/>
+                <NewLine />
+                <Frame>
+                  <LeftIndent>4</LeftIndent>
+                  <CustomItem>
+                    <ExpressionBinding>
+                      <PropertyName>Recommendation</PropertyName>
+                    </ExpressionBinding>
+                    <NewLine/>
+                  </CustomItem>
+                </Frame>
+              </CustomItem>
+            </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </Control>
+  </Controls>
   <ViewDefinitions>
     <View>
       <Name>PSRule.Rules.Rule</Name>
@@ -9,14 +77,14 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>RuleName</Label>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="RuleName"/>
             <Width>35</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Description</Label>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Description"/>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>ModuleName</Label>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="ModuleName"/>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
@@ -47,15 +115,15 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>RuleName</Label>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="RuleName"/>
             <Width>35</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Outcome</Label>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Outcome"/>
             <Width>10</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Message</Label>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Message"/>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
@@ -83,19 +151,19 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>RuleName</Label>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="RuleName"/>
             <Width>35</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Pass</Label>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Pass"/>
             <Width>5</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Fail</Label>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Fail"/>
             <Width>5</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Outcome</Label>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Outcome"/>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
@@ -112,6 +180,75 @@
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Outcome</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>PSRule.Rules.RuleHelpInfo</Name>
+      <ViewSelectedBy>
+        <TypeName>PSRule.Rules.RuleHelpInfo</TypeName>
+      </ViewSelectedBy>
+      <CustomControl>
+         <CustomEntries>
+              <CustomEntry>
+                <CustomItem>
+                  <ExpressionBinding>
+                    <CustomControlName>Help-Name</CustomControlName>
+                  </ExpressionBinding>
+                  <Frame>
+                    <CustomItem>
+                      <NewLine />
+                      <ExpressionBinding>
+                        <CustomControlName>Help-Synopsis</CustomControlName>
+                      </ExpressionBinding>
+                      <Frame>
+                        <CustomItem>
+                          <NewLine />
+                          <ExpressionBinding>
+                            <CustomControlName>Help-Recommendation</CustomControlName>
+                          </ExpressionBinding>
+                        </CustomItem>
+                      </Frame>
+                    </CustomItem>
+                  </Frame>
+                </CustomItem>
+              </CustomEntry>
+            </CustomEntries>
+      </CustomControl>
+    </View>
+    <View>
+      <Name>PSRule.Rules.RuleHelpInfo+Collection</Name>
+      <ViewSelectedBy>
+        <TypeName>PSRule.Rules.RuleHelpInfo+Collection</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Name"/>
+            <Width>35</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="ModuleName"/>
+            <Width>24</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Synopsis"/>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+              <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>ModuleName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Synopsis</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

@@ -17,7 +17,7 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId} @{SourcePath}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     {
-        public RuleBlock(string sourcePath, string moduleName, string ruleName, string description, PowerShell condition, TagSet tag, string[] dependsOn, Hashtable configuration)
+        internal RuleBlock(string sourcePath, string moduleName, string ruleName, string description, string recommendation, PowerShell condition, TagSet tag, TagSet annotations, string[] dependsOn, Hashtable configuration)
         {
             SourcePath = sourcePath;
             ModuleName = moduleName;
@@ -30,8 +30,10 @@ namespace PSRule.Rules
                 string.Concat(scriptFileName, '/', RuleName) : string.Concat(ModuleName, '/', scriptFileName, '/', RuleName);
 
             Description = description;
+            Recommendation = recommendation;
             Condition = condition;
             Tag = tag;
+            Annotations = annotations;
             DependsOn = dependsOn;
             Configuration = configuration;
         }
@@ -62,6 +64,11 @@ namespace PSRule.Rules
         public readonly string Description;
 
         /// <summary>
+        /// A human readable block of text that identifies the recommendation to address the rule when failed.
+        /// </summary>
+        public readonly string Recommendation;
+
+        /// <summary>
         /// The body of the rule definition where conditions are provided that either pass or fail the rule.
         /// </summary>
         public readonly PowerShell Condition;
@@ -76,6 +83,8 @@ namespace PSRule.Rules
         /// </summary>
         public readonly TagSet Tag;
 
+        public readonly TagSet Annotations;
+
         /// <summary>
         /// Configuration defaults for the rule definition.
         /// </summary>
@@ -83,6 +92,10 @@ namespace PSRule.Rules
         /// These defaults are used when the value does not exist in the baseline configuration.
         /// </remarks>
         public readonly Hashtable Configuration;
+
+        //string ILanguageBlock.Name => RuleName;
+
+        //string ILanguageBlock.Synopsis => Description;
 
         string ILanguageBlock.SourcePath => SourcePath;
 

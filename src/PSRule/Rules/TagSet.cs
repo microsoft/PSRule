@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -23,6 +23,8 @@ namespace PSRule.Rules
         }
 
         public int Count => _Tag.Count;
+
+        public string this[string key] => _Tag[key];
 
         public bool Contains(object key, object value)
         {
@@ -53,6 +55,16 @@ namespace PSRule.Rules
             foreach (DictionaryEntry kv in hashtable)
             {
                 dictionary[kv.Key.ToString()] = kv.Value.ToString();
+            }
+
+            return new TagSet(dictionary);
+        }
+
+        internal static TagSet FromDictionary(Dictionary<string, string> dictionary)
+        {
+            if (dictionary == null)
+            {
+                return null;
             }
 
             return new TagSet(dictionary);

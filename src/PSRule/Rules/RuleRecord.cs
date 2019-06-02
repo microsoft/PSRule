@@ -14,7 +14,7 @@ namespace PSRule.Rules
     [JsonObject]
     public sealed class RuleRecord
     {
-        internal RuleRecord(string ruleId, string ruleName, PSObject targetObject, string targetName, string targetType, TagSet tag, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, string message = null)
+        internal RuleRecord(string ruleId, string ruleName, PSObject targetObject, string targetName, string targetType, TagSet tag, TagSet annotations, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, string message = null)
         {
             RuleId = ruleId;
             RuleName = ruleName;
@@ -25,6 +25,11 @@ namespace PSRule.Rules
             if (tag != null)
             {
                 Tag = tag.ToHashtable();
+            }
+
+            if (annotations != null)
+            {
+                Annotations = annotations.ToHashtable();
             }
 
             Outcome = outcome;
@@ -75,7 +80,11 @@ namespace PSRule.Rules
 
         [DefaultValue(null)]
         [JsonProperty(PropertyName = "tag")]
-        public Hashtable Tag { get; internal set; }
+        public Hashtable Tag { get; }
+
+        [DefaultValue(null)]
+        [JsonProperty(PropertyName = "annotations")]
+        public Hashtable Annotations { get; }
 
         [DefaultValue(0f)]
         [JsonProperty(PropertyName = "time")]

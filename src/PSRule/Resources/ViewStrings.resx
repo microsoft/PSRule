@@ -117,30 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ObjectNotProcessed" xml:space="preserve">
-    <value>Target object '{0}' has not been processed because no matching rules were found.</value>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
   </data>
-  <data name="OptionsNotFound" xml:space="preserve">
-    <value>Options file does not exist.</value>
-    <comment>Occurs when explicit path to a YAML file is specified and doesn't exist.</comment>
+  <data name="Fail" xml:space="preserve">
+    <value>Fail</value>
   </data>
-  <data name="OutcomeRuleFail" xml:space="preserve">
-    <value>[FAIL] -- {0}:: Reported for '{1}'</value>
+  <data name="Message" xml:space="preserve">
+    <value>Message</value>
   </data>
-  <data name="OutcomeRulePass" xml:space="preserve">
-    <value>[PASS] -- {0}:: Reported for '{1}'</value>
+  <data name="ModuleName" xml:space="preserve">
+    <value>ModuleName</value>
   </data>
-  <data name="RuleInconclusive" xml:space="preserve">
-    <value>Inconclusive result reported for '{1}' @{0}.</value>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
   </data>
-  <data name="RuleNotFound" xml:space="preserve">
-    <value>Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.</value>
+  <data name="Outcome" xml:space="preserve">
+    <value>Outcome</value>
   </data>
-  <data name="ScriptNotFound" xml:space="preserve">
-    <value>The script was not found.</value>
-    <comment>Occurs when the script rule file specified does not exist.</comment>
+  <data name="Pass" xml:space="preserve">
+    <value>Pass</value>
   </data>
-  <data name="SerializeNullPSObject" xml:space="preserve">
-    <value>Can not serialize a null PSObject.</value>
+  <data name="RuleName" xml:space="preserve">
+    <value>RuleName</value>
+  </data>
+  <data name="Synopsis" xml:space="preserve">
+    <value>Synopsis</value>
   </data>
 </root>

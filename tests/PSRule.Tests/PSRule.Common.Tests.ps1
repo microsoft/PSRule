@@ -38,10 +38,16 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         $testObject.PSObject.TypeNames.Insert(0, 'TestType');
 
         It 'Returns passed' {
+            Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -Verifiable -MockWith {
+                return 'en-ZZ';
+            }
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $True;
             $result.TargetName | Should -Be 'TestObject1';
+            $result.Annotations.culture | Should -Be 'en-ZZ';
+            $result.Message | Should -Be 'This is a synopsis.';
+            Assert-VerifiableMock;
         }
 
         It 'Returns failure' {
@@ -215,6 +221,9 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         It 'Returns summary' {
+            Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -Verifiable -MockWith {
+                return 'en-ZZ';
+            }
             $option = @{ 'Execution.InconclusiveWarning' = $False };
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Tag @{ category = 'group1' } -As Summary -Outcome All -Option $option;
             $result | Should -Not -BeNullOrEmpty;
@@ -224,11 +233,13 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.Tag.category | Should -BeIn 'group1';
             ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Outcome | Should -Be 'Pass';
             ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Pass | Should -Be 2;
+            ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Annotations.culture | Should -Be 'en-ZZ';
             ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Outcome | Should -Be 'Fail';
             ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Fail | Should -Be 2;
             ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Outcome | Should -Be 'None';
             ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Pass | Should -Be 0;
             ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Fail | Should -Be 0;
+            Assert-VerifiableMock;
         }
 
         It 'Returns filtered summary' {
@@ -805,10 +816,20 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         }
 
         It 'Reads metadata' {
+            Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -Verifiable -MockWith {
+                return 'en-ZZ';
+            }
             $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.RuleName | Should -Be 'FromFile1';
-            $result.Description | Should -Be 'Test rule 1';
+            $result.Description | Should -Be 'This is a synopsis.';
+            $result.Annotations.culture | Should -Be 'en-ZZ';
+
+            $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile2';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.RuleName | Should -Be 'FromFile2';
+            $result.Description | Should -Be 'Test rule 2';
+            Assert-VerifiableMock;
         }
 
         It 'Handles empty path' {
@@ -823,18 +844,57 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
     Context 'Using -Module' {
         It 'Returns module rules' {
             $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
-            $result = @(Get-PSRule -Module 'TestModule');
+            $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-US');
             $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 1;
-            $result.RuleName | Should -Be 'Rule1';
+            $result.Length | Should -Be 2;
+            $result[0].RuleName | Should -Be 'M1.Rule1';
+            $result[0].Description | Should -Be 'Synopsis en-US.';
+            $result[0].Annotations.culture | Should -Be 'en-US';
         }
 
         It 'Returns module and path rules' {
             $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
             $result = @(Get-PSRule -Path (Join-Path $here -ChildPath 'TestModule') -Module 'TestModule');
             $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 4;
+            $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2';
+        }
+
+        It 'Read from documentation' {
+            Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -MockWith {
+                return 'en-US';
+            }
+
+            # en-US default
+            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
+            $result = @(Get-PSRule -Module 'TestModule');
+            $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
-            $result.RuleName | Should -BeIn 'Rule1';
+            $result[0].RuleName | Should -Be 'M1.Rule1';
+            $result[0].Description | Should -Be 'Synopsis en-US.';
+            $result[0].Annotations.culture | Should -Be 'en-US';
+
+            # en-AU
+            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
+            $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-AU');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result[0].RuleName | Should -Be 'M1.Rule1';
+            $result[0].Description | Should -Be 'Synopsis en-AU.';
+            $result[0].Annotations.culture | Should -Be 'en-AU';
+
+            Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -MockWith {
+                return 'en-AU';
+            }
+
+            # en-AU default
+            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
+            $result = @(Get-PSRule -Module 'TestModule');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result[0].RuleName | Should -Be 'M1.Rule1';
+            $result[0].Description | Should -Be 'Synopsis en-AU.';
+            $result[0].Annotations.culture | Should -Be 'en-AU';
         }
     }
 
@@ -861,3 +921,53 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
 }
 
 #endregion Get-PSRule
+
+#region Get-PSRuleHelp
+
+Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
+    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
+
+    Context 'With defaults' {
+        $result = @(Get-PSRuleHelp -Module 'TestModule');
+        $result.Length | Should -Be 2;
+    }
+
+    Context 'With -Module' {
+        $result = @(Get-PSRuleHelp -Module 'TestModule');
+        $result.Length | Should -Be 2;
+    }
+
+    Context 'With -Online' {
+        It 'Launches browser with single result' {
+            Mock -CommandName LaunchOnlineHelp -ModuleName PSRule -Verifiable;
+            $Null = Get-PSRuleHelp -Module 'TestModule' -Name 'M1.Rule1' -Online;
+            Assert-VerifiableMock;
+        }
+
+        It 'Returns collection' {
+            Mock -CommandName LaunchOnlineHelp -ModuleName PSRule;
+            $result = @(Get-PSRuleHelp -Module 'TestModule' -Online);
+            Assert-MockCalled -CommandName LaunchOnlineHelp -ModuleName PSRule -Times 0 -Exactly -Scope It;
+            $result.Length | Should -Be 2;
+        }
+    }
+
+    Context 'With constrained language' {
+        It 'Checks if DeviceGuard is enabled' {
+            Mock -CommandName IsDeviceGuardEnabled -ModuleName PSRule -Verifiable -MockWith {
+                return $True;
+            }
+
+            $Null = Get-PSRuleHelp -Path $ruleFilePath -Name 'ConstrainedTest1';
+            Assert-MockCalled -CommandName IsDeviceGuardEnabled -ModuleName PSRule -Times 1;
+        }
+
+        # Check that '[Console]::WriteLine('Should fail')' is not executed
+        It 'Should fail to execute blocked code' {
+            { $Null = Get-PSRuleHelp -Path (Join-Path -Path $here -ChildPath 'UnconstrainedFile.Rule.ps1') -Name 'UnconstrainedFile1' -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
+        }
+    }
+}
+
+#endregion Get-PSRuleHelp

@@ -11,5 +11,10 @@
         {
             return new GetRulePipelineBuilder();
         }
+
+        public static GetRuleHelpPipelineBuilder GetHelp()
+        {
+            return new GetRuleHelpPipelineBuilder();
+        }
     }
 }

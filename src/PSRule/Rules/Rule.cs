@@ -46,5 +46,9 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "tag")]
         [DefaultValue(null)]
         public TagSet Tag { get; set; }
+
+        [JsonProperty(PropertyName = "annotations")]
+        [DefaultValue(null)]
+        public TagSet Annotations { get; set; }
     }
 }

@@ -6,20 +6,6 @@
 
 Set-StrictMode -Version latest;
 
-# Set up some helper variables to make it easier to work with the module
-$PSModule = $ExecutionContext.SessionState.Module;
-$PSModuleRoot = $PSModule.ModuleBase;
-
-# Import the appropriate nested binary module based on the current PowerShell version
-$binModulePath = Join-Path -Path $PSModuleRoot -ChildPath '/core/PSRule.dll';
-
-$binaryModule = Import-Module -Name $binModulePath -PassThru;
-
-# When the module is unloaded, remove the nested binary module that was loaded with it
-$PSModule.OnRemove = {
-    Remove-Module -ModuleInfo $binaryModule;
-}
-
 [PSRule.Configuration.PSRuleOption]::UseExecutionContext($ExecutionContext);
 
 #
@@ -86,7 +72,10 @@ function Invoke-PSRule {
         [PSRule.Configuration.OutputFormat]$OutputFormat,
 
         [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
-        [String[]]$InputPath
+        [String[]]$InputPath,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Culture
     )
 
     begin {
@@ -113,6 +102,9 @@ function Invoke-PSRule {
         }
         if ($sourceParams.Count -eq 0) {
             $sourceParams['Path'] = $Path;
+        }
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $sourceParams['Culture'] = $Culture;
         }
         [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -Verbose:$VerbosePreference;
 
@@ -227,7 +219,10 @@ function Test-PSRuleTarget {
         [String[]]$Module,
 
         [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
-        [String[]]$InputPath
+        [String[]]$InputPath,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Culture
     )
 
     begin {
@@ -254,6 +249,9 @@ function Test-PSRuleTarget {
         }
         if ($sourceParams.Count -eq 0) {
             $sourceParams['Path'] = $Path;
+        }
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $sourceParams['Culture'] = $Culture;
         }
         [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -Verbose:$VerbosePreference;
 
@@ -328,7 +326,6 @@ function Test-PSRuleTarget {
 
 # .ExternalHelp PSRule-Help.xml
 function Get-PSRule {
-
     [CmdletBinding()]
     [OutputType([PSRule.Rules.Rule])]
     param (
@@ -352,7 +349,10 @@ function Get-PSRule {
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$ListAvailable
+        [Switch]$ListAvailable,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Culture
     )
 
     begin {
@@ -383,6 +383,9 @@ function Get-PSRule {
         if ($sourceParams.Count -eq 0) {
             $sourceParams['Path'] = $Path;
         }
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $sourceParams['Culture'] = $Culture;
+        }
         [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
@@ -391,7 +394,7 @@ function Get-PSRule {
             return; # continue causes issues with Pester
         }
 
-        Write-Verbose -Message "[Get-PSRule] -- Found $($sourceFiles.Length) script(s)";
+        Write-Verbose -Message "[Get-PSRule] -- Found $($sourceFiles.Length) source file(s)";
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
@@ -430,6 +433,130 @@ function Get-PSRule {
             $pipeline.Dispose();
         }
         Write-Verbose -Message "[Get-PSRule]::END";
+    }
+}
+
+# .ExternalHelp PSRule-Help.xml
+function Get-PSRuleHelp {
+    [CmdletBinding()]
+    [OutputType([PSRule.Rules.RuleHelpInfo])]
+    param (
+        # The name of the rule to get documentation for.
+        [Parameter(Position = 0, Mandatory = $False)]
+        [Alias('n')]
+        [SupportsWildcards()]
+        [String]$Name,
+
+        # A path to check documentation for.
+        [Parameter(Mandatory = $False)]
+        [Alias('p')]
+        [String]$Path,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Module,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Culture,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$Online = $False
+    )
+
+    begin {
+        Write-Verbose -Message "[Get-PSRuleHelp]::BEGIN";
+
+        # Get parameter options, which will override options from other sources
+        $optionParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Option')) {
+            $optionParams['Option'] =  $Option;
+        }
+
+        # Get an options object
+        $Option = New-PSRuleOption @optionParams;
+
+        # Discover scripts in the specified paths
+        $sourceParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Path')) {
+            $sourceParams['Path'] = $Path;
+        }
+        if ($PSBoundParameters.ContainsKey('Module')) {
+            $sourceParams['Module'] = $Module;
+        }
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $sourceParams['Culture'] = $Culture;
+        }
+        [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -PreferModule -Verbose:$VerbosePreference;
+
+        # Check that some matching script files were found
+        if ($Null -eq $sourceFiles) {
+            Write-Verbose -Message "[Get-PSRuleHelp] -- Could not find any .Rule.ps1 script files in the path";
+            return; # continue causes issues with Pester
+        }
+
+        Write-Verbose -Message "[Get-PSRuleHelp] -- Found $($sourceFiles.Length) source file(s)";
+
+        $isDeviceGuard = IsDeviceGuardEnabled;
+
+        # If DeviceGuard is enabled, force a contrained execution environment
+        if ($isDeviceGuard) {
+            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
+        }
+
+        if ($PSBoundParameters.ContainsKey('Name')) {
+            $Option.Baseline.RuleName = $Name;
+        }
+
+        $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp().Configure($Option);
+        $builder.Source($sourceFiles);
+        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
+        $pipeline = $builder.Build();
+    }
+
+    process {
+        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+            try {
+                # Get matching rule help
+                $result = @($pipeline.Process());
+
+                if ($Null -ne $result -and $result.Length -gt 0) {
+
+                    if ($Online -and $result.Length -eq 1) {
+                        $launchUri = $result.GetOnlineHelpUri();
+    
+                        if ($Null -ne $launchUri) {
+                            Write-Verbose -Message "[Get-PSRuleHelp] -- Launching online version: $($launchUri.OriginalString)";
+                            LaunchOnlineHelp -Uri $launchUri -Verbose:$VerbosePreference;
+                        }
+                    }
+                    elseif ($result.Length -gt 1) {
+                        $result | ForEach-Object -Process {
+                            $Null = $_.PSObject.TypeNames.Insert(0, 'PSRule.Rules.RuleHelpInfo+Collection');
+                            $_;
+                        }
+                    }
+                    else {
+                        $result;
+                    }
+                }
+            }
+            catch {
+                $pipeline.Dispose();
+                throw;
+            }
+        }
+    }
+
+    end {
+        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+            $pipeline.Dispose();
+        }
+        Write-Verbose -Message "[Get-PSRuleHelp]::END";
     }
 }
 
@@ -947,18 +1074,28 @@ function GetRuleScriptPath {
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$ListAvailable
+        [Switch]$ListAvailable,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Culture,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$PreferModule = $False
     )
 
     process {
         $builder = New-Object -TypeName 'PSRule.Rules.RuleSourceBuilder';
+        if ([String]::IsNullOrEmpty($Culture)) {
+            $Culture = GetCulture;
+        }
 
         if ($PSBoundParameters.ContainsKey('Path')) {
             Write-Verbose -Message "[PSRule][D] -- Scanning for source files: $Path";
             $fileObjects = (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
 
-            if ($Null -ne $fileObjects) {
-                $builder.Add($fileObjects.FullName, $Null);
+            foreach ($file in $fileObjects) {
+                $helpPath = Join-Path -Path $file.Directory.FullName -ChildPath $Culture;
+                $builder.Add($file.FullName, $helpPath);
             }
         }
 
@@ -972,18 +1109,20 @@ function GetRuleScriptPath {
             $moduleParams['ListAvailable'] = $ListAvailable.ToBool();
         }
 
-        if ($moduleParams.Count -gt 0) {
-            $modules = Microsoft.PowerShell.Core\Get-Module @moduleParams | Where-Object -FilterScript {
+        if ($moduleParams.Count -gt 0 -or $PreferModule) {
+            $modules = @(Microsoft.PowerShell.Core\Get-Module @moduleParams | Where-Object -FilterScript {
                 'PSRule' -in $_.Tags
-            }
+            })
+            Write-Verbose -Message "[PSRule][D] -- Found $($modules.Length) PSRule module(s)";
 
             if ($Null -ne $modules) {
                 foreach ($m in $modules) {
-                    Write-Verbose -Message "[PSRule][D] -- Found module: $($m.Name)";
+                    Write-Verbose -Message "[PSRule][D] -- Scanning for source files in module: $($m.Name)";
                     $fileObjects = (Get-ChildItem -Path $m.ModuleBase -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
+                    $helpPath = Join-Path $m.ModuleBase -ChildPath $Culture;
 
-                    if ($Null -ne $fileObjects) {
-                        $builder.Add($fileObjects.FullName, $m.Name);
+                    foreach ($file in $fileObjects) {
+                        $builder.Add($file.FullName, $m.Name, $helpPath);
                     }
                 }
             }
@@ -1169,13 +1308,9 @@ function YamlContainsComments {
 }
 
 function IsDeviceGuardEnabled {
-
     [CmdletBinding()]
     [OutputType([System.Boolean])]
-    param (
-
-    )
-
+    param ()
     process {
 
         if ((Get-Variable -Name IsMacOS -ErrorAction Ignore) -or (Get-Variable -Name IsLinux -ErrorAction Ignore)) {
@@ -1191,12 +1326,34 @@ function IsDeviceGuardEnabled {
     }
 }
 
-function InitEditorServices {
-
+function GetCulture {
     [CmdletBinding()]
-    param (
+    [OutputType([System.String])]
+    param ()
+    process {
+        return [System.Threading.Thread]::CurrentThread.CurrentCulture.ToString();
+    }
+}
 
+function LaunchOnlineHelp {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory = $True)]
+        [System.Uri]$Uri
     )
+
+    process {
+        $launchProcess = New-Object -TypeName System.Diagnostics.Process;
+        $launchProcess.StartInfo.FileName = $Uri.OriginalString;
+        $launchProcess.StartInfo.UseShellExecute = $True;
+        $Null = $launchProcess.Start();
+    }
+}
+
+function InitEditorServices {
+    [CmdletBinding()]
+    param ()
 
     process {
         if ($Null -ne (Get-Variable -Name psEditor -ErrorAction Ignore)) {
@@ -1244,6 +1401,7 @@ Export-ModuleMember -Function @(
     'Invoke-PSRule'
     'Test-PSRuleTarget'
     'Get-PSRule'
+    'Get-PSRuleHelp'
     'New-PSRuleOption'
     'Set-PSRuleOption'
 )

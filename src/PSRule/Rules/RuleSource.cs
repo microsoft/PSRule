@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace PSRule.Rules
 {
@@ -11,12 +9,14 @@ namespace PSRule.Rules
     {
         public readonly string Path;
         public readonly string ModuleName;
+        public readonly string[] HelpPath;
 
-        public RuleSource(string path, string moduleName)
+        public RuleSource(string path, string moduleName, string[] helpPath = null)
         {
             Path = path;
             ModuleName = moduleName;
-        }   
+            HelpPath = helpPath;
+        }
     }
 
     /// <summary>
@@ -31,17 +31,24 @@ namespace PSRule.Rules
             _Source = new List<RuleSource>();
         }
 
-        public void Add(string[] path, string moduleName)
+        public void Add(string path, string moduleName, string helpPath)
         {
             if (path == null || path.Length == 0)
             {
                 return;
             }
 
-            for (var i = 0; i < path.Length; i++)
+            _Source.Add(new RuleSource(path, moduleName, new string[] { helpPath }));
+        }
+
+        public void Add(string path, string helpPath)
+        {
+            if (path == null)
             {
-                _Source.Add(new RuleSource(path[i], moduleName));
+                return;
             }
+
+            _Source.Add(new RuleSource(path, null, new string[] { helpPath }));
         }
 
         public RuleSource[] Build()

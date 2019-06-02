@@ -1,6 +1,7 @@
 ﻿using PSRule.Annotations;
 using PSRule.Configuration;
 using PSRule.Pipeline;
+using PSRule.Resources;
 using PSRule.Rules;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,11 @@ namespace PSRule.Host
         public static IEnumerable<Rule> GetRule(RuleSource[] source, RuleFilter filter)
         {
             return ToRule(GetLanguageBlock(sources: source), filter);
+        }
+
+        public static IEnumerable<RuleHelpInfo> GetRuleHelp(RuleSource[] source, RuleFilter filter)
+        {
+            return ToRuleHelp(GetLanguageBlock(sources: source), filter);
         }
 
         public static DependencyGraph<RuleBlock> GetRuleBlockGraph(RuleSource[] source, RuleFilter filter)
@@ -96,17 +102,12 @@ namespace PSRule.Host
 
                     if (!File.Exists(source.Path))
                     {
-                        throw new FileNotFoundException("The script was not found.", source.Path);
+                        throw new FileNotFoundException(PSRuleResources.ScriptNotFound, source.Path);
                     }
 
-                    PipelineContext.CurrentThread.ModuleName = string.IsNullOrEmpty(source.ModuleName) ? null : source.ModuleName;
-
+                    PipelineContext.CurrentThread.Source = source;
                     PipelineContext.CurrentThread.VerboseRuleDiscovery(path: source.Path);
-
-                    if (!File.Exists(source.Path))
-                    {
-                        throw new FileNotFoundException("Can't find file", source.Path);
-                    }
+                    //PipelineContext.CurrentThread.UseSource(source: source);
 
                     // Invoke script
                     ps.AddScript(source.Path, true);
@@ -120,18 +121,22 @@ namespace PSRule.Host
 
                     foreach (var ir in invokeResults)
                     {
-                        if (ir.BaseObject is ILanguageBlock)
+                        if (ir.BaseObject is RuleBlock)
                         {
-                            var block = ir.BaseObject as ILanguageBlock;
-
+                            var block = ir.BaseObject as RuleBlock;
                             results.Add(block);
                         }
+                        //else if (ir.BaseObject is ILanguageBlock)
+                        //{
+                        //    var block = ir.BaseObject as ILanguageBlock;
+                        //    results.Add(block);
+                        //}
                     }
                 }
             }
             finally
             {
-                PipelineContext.CurrentThread.ModuleName = null;
+                PipelineContext.CurrentThread.Source = null;
                 ps.Runspace = null;
                 ps.Dispose();
             }
@@ -198,7 +203,36 @@ namespace PSRule.Host
                         SourcePath = block.SourcePath,
                         ModuleName = block.ModuleName,
                         Description = block.Description,
-                        Tag = block.Tag
+                        Tag = block.Tag,
+                        Annotations = block.Annotations
+                    };
+                }
+            }
+
+            return results.Values.ToArray();
+        }
+
+        private static RuleHelpInfo[] ToRuleHelp(IEnumerable<ILanguageBlock> blocks, RuleFilter filter)
+        {
+            // Index deployments by environment/name
+            var results = new Dictionary<string, RuleHelpInfo>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var block in blocks.OfType<RuleBlock>())
+            {
+                // Ignore deployment blocks that don't match
+                if (filter != null && !filter.Match(block))
+                {
+                    continue;
+                }
+
+                if (!results.ContainsKey(block.RuleId))
+                {
+                    results[block.RuleId] = new RuleHelpInfo
+                    {
+                        Name = block.RuleName,
+                        Synopsis = block.Description,
+                        Recommendation = block.Recommendation,
+                        Annotations = block.Annotations?.ToHashtable()
                     };
                 }
             }

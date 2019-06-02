@@ -18,6 +18,10 @@ A PowerShell rules engine.
 
 Get a list of matching rule definitions within the search path.
 
+### [Get-PSRule](Get-PSRuleHelp.md)
+
+Get documentation for a rule.
+
 ### [Invoke-PSRule](Invoke-PSRule.md)
 
 Evaluate pipeline objects against matching rules.

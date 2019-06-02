@@ -1,7 +1,7 @@
-
+[CmdletBinding()]
 param (
     [Parameter(Mandatory = $False)]
-    [String]$ModuleVersion,
+    [String]$ModuleVersion = '0.0.1',
 
     [Parameter(Mandatory = $False)]
     [AllowNull()]
@@ -23,9 +23,25 @@ param (
     [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules)
 )
 
-if ($Env:COVERAGE -eq 'true') {
+Write-Host -Object "[Pipeline] -- PWD: $PWD" -ForegroundColor Green;
+Write-Host -Object "[Pipeline] -- ArtifactPath: $ArtifactPath" -ForegroundColor Green;
+Write-Host -Object "[Pipeline] -- BuildNumber: $($Env:BUILD_BUILDNUMBER)" -ForegroundColor Green;
+Write-Host -Object "[Pipeline] -- SourceBranch: $($Env:BUILD_SOURCEBRANCH)" -ForegroundColor Green;
+Write-Host -Object "[Pipeline] -- SourceBranchName: $($Env:BUILD_SOURCEBRANCHNAME)" -ForegroundColor Green;
+
+if ($Env:SYSTEM_DEBUG -eq 'true') {
+    $VerbosePreference = 'Continue';
+}
+
+if ($Env:coverage -eq 'true') {
     $CodeCoverage = $True;
 }
+
+if ($Env:BUILD_SOURCEBRANCH -contains '/tags/' -and $Env:BUILD_SOURCEBRANCHNAME -like "v0.") {
+    $ModuleVersion = $Env:BUILD_SOURCEBRANCHNAME.Substring(1);
+}
+
+Write-Host -Object "[Pipeline] -- ModuleVersion: $ModuleVersion" -ForegroundColor Green;
 
 # Copy the PowerShell modules files to the destination path
 function CopyModuleFiles {
@@ -60,7 +76,8 @@ function CopyModuleFiles {
 task BuildDotNet {
     exec {
         # Build library
-        dotnet publish src/PSRule -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule/core)
+        # Add build version -p:versionPrefix=$ModuleVersion
+        dotnet publish src/PSRule -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule)
     }
 }
 
@@ -106,7 +123,6 @@ task Clean {
 }
 
 task VersionModule {
-
     if (![String]::IsNullOrEmpty($ReleaseVersion)) {
         Write-Verbose -Message "[VersionModule] -- ReleaseVersion: $ReleaseVersion";
         $ModuleVersion = $ReleaseVersion;

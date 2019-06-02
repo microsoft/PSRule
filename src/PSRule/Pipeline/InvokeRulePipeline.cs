@@ -161,10 +161,12 @@ namespace PSRule.Pipeline
         {
             if (!_Summary.TryGetValue(ruleBlock.RuleId, out RuleSummaryRecord s))
             {
-                s = new RuleSummaryRecord(ruleBlock.RuleId, ruleBlock.RuleName)
-                {
-                    Tag = ruleBlock.Tag?.ToHashtable()
-                };
+                s = new RuleSummaryRecord(
+                    ruleId: ruleBlock.RuleId,
+                    ruleName: ruleBlock.RuleName,
+                    tag: ruleBlock.Tag,
+                    annotations: ruleBlock.Annotations
+                );
 
                 _Summary.Add(ruleBlock.RuleId, s);
             }
