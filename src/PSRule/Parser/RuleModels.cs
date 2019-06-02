@@ -1,27 +1,42 @@
 ﻿using PSRule.Rules;
+using System;
 
 namespace PSRule.Parser
 {
     /// <summary>
+    /// Define options that determine how markdown will be rendered.
+    /// </summary>
+    [Flags()]
+    internal enum FormatOption : byte
+    {
+        None = 0,
+
+        /// <summary>
+        /// Add a line break after headers.
+        /// </summary>
+        LineBreak = 1
+    }
+
+    /// <summary>
     /// YAML text content.
     /// </summary>
-    internal sealed class Body
+    internal sealed class TextBlock
     {
-        public Body(string text, SectionFormatOption formatOption = SectionFormatOption.None)
-        {
-            Text = text;
-            FormatOption = formatOption;
-        }
-
         /// <summary>
         /// The text of the section body.
         /// </summary>
-        public string Text { get; set; }
+        public readonly string Text;
 
         /// <summary>
         /// Additional options that determine how the section will be formated when rendering markdown.
         /// </summary>
-        public SectionFormatOption FormatOption { get; set; }
+        public readonly FormatOption FormatOption;
+
+        public TextBlock(string text, FormatOption formatOption = FormatOption.None)
+        {
+            Text = text;
+            FormatOption = formatOption;
+        }
 
         public override string ToString()
         {
@@ -39,39 +54,20 @@ namespace PSRule.Parser
         public string Uri;
     }
 
-    /// <summary>
-    /// YAML code block.
-    /// </summary>
-    internal sealed class CodeBlock
-    {
-        public CodeBlock(string text, string meta)
-        {
-
-        }
-    }
-
-    internal sealed class RuleRecommendation
-    {
-        public string Title { get; set; }
-
-        public object FormatOption { get; set; }
-
-        public string Introduction { get; set; }
-
-        public CodeBlock[] Code { get; set; }
-
-        public string Remarks { get; set; }
-    }
-
     internal sealed class RuleDocument
     {
-        public string Name;
+        public RuleDocument(string name)
+        {
+            Name = name;
+        }
 
-        public Body Synopsis;
+        public readonly string Name;
+
+        public TextBlock Synopsis;
         
-        public Body Notes;
+        public TextBlock Notes;
 
-        public RuleRecommendation[] Recommendation;
+        public TextBlock Recommendation;
 
         public Link[] Links;
 

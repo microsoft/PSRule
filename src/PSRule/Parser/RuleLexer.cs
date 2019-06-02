@@ -7,18 +7,18 @@ using System.Text;
 namespace PSRule.Parser
 {
     /// <summary>
-    /// A lexer that inteprets markdown as a rule.
+    /// A lexer that interprets markdown as a rule.
     /// </summary>
     internal sealed class RuleLexer : MarkdownLexer
     {
         private const int RULE_NAME_HEADING_LEVEL = 1;
         private const int RULE_ENTRIES_HEADING_LEVEL = 2;
 
-        private readonly bool _PreserveFormatting;
+        private const string Space = " ";
 
-        public RuleLexer(bool preserveFomatting)
+        public RuleLexer()
         {
-            _PreserveFormatting = preserveFomatting;
+            // Do nothing
         }
 
         public RuleDocument Process(TokenStream stream)
@@ -35,12 +35,10 @@ namespace PSRule.Parser
             {
                 if (IsHeading(stream.Current, RULE_NAME_HEADING_LEVEL))
                 {
-                    doc = new RuleDocument
+                    doc = new RuleDocument(stream.Current.Text)
                     {
-                        Name = stream.Current.Text
+                        Annotations = TagSet.FromDictionary(metadata)
                     };
-
-                    doc.Annotations = TagSet.FromDictionary(metadata);
                 }
                 else if (doc != null)
                 {
@@ -66,7 +64,7 @@ namespace PSRule.Parser
         }
 
         /// <summary>
-        /// Read Synopsis.
+        /// Read synopsis.
         /// </summary>
         private bool Synopsis(TokenStream stream, RuleDocument doc)
         {
@@ -75,14 +73,14 @@ namespace PSRule.Parser
                 return false;
             }
 
-            doc.Synopsis = SectionBody(stream);
-            stream.SkipUntil(MarkdownTokenType.Header);
+            doc.Synopsis = TextBlock(stream);
+            stream.SkipUntilHeader();
 
             return true;
         }
 
         /// <summary>
-        /// Process recommendations.
+        /// Read recommendation.
         /// </summary>
         private bool Recommendation(TokenStream stream, RuleDocument doc)
         {
@@ -91,34 +89,14 @@ namespace PSRule.Parser
                 return false;
             }
 
-            stream.Next();
-
-            var recommendations = new List<RuleRecommendation>();
-
-            if (!stream.EOF)
-            {
-                var hasLineBreak = stream.Current.IsDoubleLineEnding();
-                var recommendation = new RuleRecommendation
-                {
-                    Title = "default",
-                    FormatOption = hasLineBreak ? SectionFormatOption.LineBreakAfterHeader : SectionFormatOption.None,
-                    Introduction = SimpleTextSection(stream),
-                    Code = RecommendationBlock(stream),
-                    Remarks = SimpleTextSection(stream)
-                };
-
-                stream.SkipUntil(MarkdownTokenType.Header);
-
-                recommendations.Add(recommendation);
-            }
-
-            doc.Recommendation = recommendations.ToArray();
+            doc.Recommendation = TextBlock(stream);
+            stream.SkipUntilHeader();
 
             return true;
         }
 
         /// <summary>
-        /// Read Notes.
+        /// Read notes.
         /// </summary>
         private bool Notes(TokenStream stream, RuleDocument doc)
         {
@@ -127,8 +105,8 @@ namespace PSRule.Parser
                 return false;
             }
 
-            doc.Notes = SectionBody(stream);
-            stream.SkipUntil(MarkdownTokenType.Header);
+            doc.Notes = TextBlock(stream);
+            stream.SkipUntilHeader();
 
             return true;
         }
@@ -171,25 +149,28 @@ namespace PSRule.Parser
                 stream.Next();
             }
 
-            stream.SkipUntil(MarkdownTokenType.Header);
+            stream.SkipUntilHeader();
 
             doc.Links = links.ToArray();
 
             return true;
         }
 
-        private Body SectionBody(TokenStream stream)
+        private TextBlock TextBlock(TokenStream stream)
         {
             var useBreak = stream.Current.IsDoubleLineEnding();
 
             stream.Next();
 
-            var text = SimpleTextSection(stream);
+            var text = ReadText(stream);
 
-            return new Body(text, useBreak ? SectionFormatOption.LineBreakAfterHeader : SectionFormatOption.None);
+            return new TextBlock(text: text, formatOption: useBreak ? FormatOption.LineBreak : FormatOption.None);
         }
 
-        private string SimpleTextSection(TokenStream stream, bool includeNonYamlFencedBlocks = false)
+        /// <summary>
+        /// Read tokens from the stream as text.
+        /// </summary>
+        private string ReadText(TokenStream stream, bool includeNonYamlFencedBlocks = false)
         {
             var sb = new StringBuilder();
 
@@ -197,12 +178,12 @@ namespace PSRule.Parser
             {
                 if (stream.IsTokenType(MarkdownTokenType.Text))
                 {
-                    AppendEnding(sb, stream.Peak(-1), _PreserveFormatting);
+                    AppendEnding(sb, stream.Peak(-1));
                     sb.Append(stream.Current.Text);
                 }
                 else if (stream.IsTokenType(MarkdownTokenType.Link))
                 {
-                    AppendEnding(sb, stream.Peak(-1), _PreserveFormatting);
+                    AppendEnding(sb, stream.Peak(-1));
                     sb.Append(stream.Current.Meta);
 
                     if (!string.IsNullOrEmpty(stream.Current.Text))
@@ -212,7 +193,7 @@ namespace PSRule.Parser
                 }
                 else if (stream.IsTokenType(MarkdownTokenType.LinkReference))
                 {
-                    AppendEnding(sb, stream.Peak(-1), _PreserveFormatting);
+                    AppendEnding(sb, stream.Peak(-1));
 
                     sb.Append(stream.Current.Meta);
                 }
@@ -223,7 +204,7 @@ namespace PSRule.Parser
                     {
                         if (stream.PeakTokenType(-1) == MarkdownTokenType.LineBreak)
                         {
-                            AppendEnding(sb, stream.Peak(-1), _PreserveFormatting);
+                            AppendEnding(sb, stream.Peak(-1));
                         }
 
                         break;
@@ -234,7 +215,7 @@ namespace PSRule.Parser
                 }
                 else if (stream.IsTokenType(MarkdownTokenType.LineBreak))
                 {
-                    AppendEnding(sb, stream.Peak(-1), _PreserveFormatting);
+                    AppendEnding(sb, stream.Peak(-1));
                 }
 
                 stream.Next();
@@ -266,22 +247,8 @@ namespace PSRule.Parser
             }
             else if (token.IsSingleLineEnding())
             {
-                stringBuilder.Append(preserveEnding ? Environment.NewLine : " ");
+                stringBuilder.Append(preserveEnding ? Environment.NewLine : Space);
             }
-        }
-
-        private static CodeBlock[] RecommendationBlock(TokenStream stream)
-        {
-            List<CodeBlock> blocks = new List<CodeBlock>();
-
-            foreach (var token in stream.CaptureWhile(MarkdownTokenType.FencedBlock))
-            {
-                var block = new CodeBlock(token.Text, token.Meta);
-
-                blocks.Add(block);
-            }
-
-            return blocks.ToArray();
         }
     }
 }

@@ -298,6 +298,11 @@ namespace PSRule.Parser
             return _Token[p];
         }
 
+        public void SkipUntilHeader()
+        {
+            SkipUntil(MarkdownTokenType.Header);
+        }
+
         public void SkipUntil(MarkdownTokenType tokenType)
         {
             while (!EOF && Current.Type != tokenType)

@@ -1,26 +1,10 @@
-﻿using System;
-
-namespace PSRule.Parser
+﻿namespace PSRule.Parser
 {
     internal enum MarkdownReaderMode
     {
         None,
 
         List
-    }
-
-    /// <summary>
-    /// Define options that determine how sections will be formated when rendering markdown.
-    /// </summary>
-    [Flags()]
-    public enum SectionFormatOption : byte
-    {
-        None = 0,
-
-        /// <summary>
-        /// A line break should be added after the section header.
-        /// </summary>
-        LineBreakAfterHeader = 1
     }
 
     /// <summary>
@@ -37,7 +21,6 @@ namespace PSRule.Parser
         private readonly bool _PreserveFormatting;
 
         private MarkdownReaderMode _Context;
-
         private MarkdownStream _Stream;
 
         /// <summary>
@@ -45,6 +28,7 @@ namespace PSRule.Parser
         /// </summary>
         private readonly static char[] LineEndingCharacters = new char[] { '\r', '\n' };
 
+        private const char Hash = '#';
         private const char Asterix = '*';
         private const char Backtick = '`';
         private const char Underscore = '_';
@@ -55,6 +39,8 @@ namespace PSRule.Parser
         private const char BracketClose = ']';
         private const char ParenthesesOpen = '(';
         private const char ParenthesesClose = ')';
+        private const char EqualSign = '=';
+        private const string TripleBacktick = "```";
         private static readonly char[] LinkNameStopCharacters = new char[] { '\r', '\n', ']' };
         private static readonly char[] LinkUrlStopCharacters = new char[] { '\r', '\n', ')' };
         private static readonly char[] YamlHeaderStopCharacters = new char[] { '\r', '\n', ':' };
@@ -140,7 +126,7 @@ namespace PSRule.Parser
 
         private bool UnderlineHeader()
         {
-            if ((_Stream.Current != MarkdownStream.Dash && _Stream.Current != MarkdownStream.EqualSign) || !_Stream.IsStartOfLine)
+            if ((_Stream.Current != Dash && _Stream.Current != EqualSign) || !_Stream.IsStartOfLine)
             {
                 return false;
             }
@@ -160,7 +146,7 @@ namespace PSRule.Parser
 
                 _Stream.Skip(count + 1);
 
-                _Output.Header(currentChar == MarkdownStream.EqualSign ? 1 : 2, previousToken.Text, null, lineBreak: (_Stream.SkipLineEnding(max: 0) > 1));
+                _Output.Header(currentChar == EqualSign ? 1 : 2, previousToken.Text, null, lineBreak: (_Stream.SkipLineEnding(max: 0) > 1));
 
                 return true;
             }
@@ -173,7 +159,7 @@ namespace PSRule.Parser
         /// </summary>
         private bool HashHeader()
         {
-            if (_Stream.Current != MarkdownStream.Hash || !_Stream.IsStartOfLine)
+            if (_Stream.Current != Hash || !_Stream.IsStartOfLine)
             {
                 return false;
             }
@@ -182,7 +168,7 @@ namespace PSRule.Parser
             _Stream.Next();
 
             // Get the header depth
-            var headerDepth = _Stream.Skip(MarkdownStream.Hash, max: 0) + 1;
+            var headerDepth = _Stream.Skip(Hash, max: 0) + 1;
 
             // Capture to the end of the line
             _Stream.SkipWhitespace();
@@ -200,7 +186,7 @@ namespace PSRule.Parser
         /// </summary>
         private bool FencedBlock()
         {
-            if (_Stream.Current != MarkdownStream.Backtick || !_Stream.IsSequence(MarkdownStream.TripleBacktick, onNewLine: true))
+            if (_Stream.Current != Backtick || !_Stream.IsSequence(TripleBacktick, onNewLine: true))
             {
                 return false;
             }
@@ -215,10 +201,10 @@ namespace PSRule.Parser
             _Stream.SkipLineEnding();
             
             // Capture text within code fence
-            var text = _Stream.CaptureUntil(MarkdownStream.TripleBacktick, onNewLine: true, ignoreEscaping: true);
+            var text = _Stream.CaptureUntil(TripleBacktick, onNewLine: true, ignoreEscaping: true);
 
             // Skip backticks
-            _Stream.Skip(MarkdownStream.TripleBacktick);
+            _Stream.Skip(TripleBacktick);
 
             // Write code fence beginning
             _Output.FencedBlock(info, text, null, lineBreak: _Stream.SkipLineEnding(max: 0) > 1);

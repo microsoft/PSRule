@@ -85,7 +85,7 @@ namespace PSRule.Commands
                 moduleName: moduleName,
                 ruleName: Name,
                 description: doc == null ? metadata.Description : doc.Synopsis.Text,
-                recommendation: doc != null ? doc.Recommendation[0].Introduction : null,
+                recommendation: doc != null ? doc.Recommendation.Text : null,
                 condition: ps,
                 tag: tag,
                 annotations: doc?.Annotations,
@@ -114,7 +114,7 @@ namespace PSRule.Commands
 
                 var reader = new MarkdownReader(yamlHeaderOnly: false);
                 var stream = reader.Read(markdown: File.ReadAllText(path: path), path: path);
-                var lexer = new RuleLexer(preserveFomatting: false);
+                var lexer = new RuleLexer();
                 return lexer.Process(stream: stream);
             }
 

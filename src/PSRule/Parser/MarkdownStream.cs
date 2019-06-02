@@ -9,13 +9,15 @@ namespace PSRule.Parser
     [DebuggerDisplay("StartPos = (L: {Start}, C: {Column}), EndPos = (L: {End}, C: {Column.End}), Text = {Text}")]
     public sealed class SourceExtent
     {
+        private readonly string _Source;
+
+        // Lazily cache extracted text
         private string _Text;
 
-        internal SourceExtent(string markdown, string path, int start, int end, int line, int column)
+        internal SourceExtent(string source, string path, int start, int end, int line, int column)
         {
             _Text = null;
-
-            Markdown = markdown;
+            _Source = source;
             Path = path;
             Start = start;
             End = end;
@@ -23,17 +25,15 @@ namespace PSRule.Parser
             Column = column;
         }
 
-        public string Markdown { get; private set; }
+        public readonly string Path;
 
-        public string Path { get; private set; }
+        public readonly int Start;
 
-        public int Start { get; private set; }
+        public readonly int End;
 
-        public int End { get; private set; }
+        public readonly int Line;
 
-        public int Line { get; private set; }
-
-        public int Column { get; private set; }
+        public readonly int Column;
 
         public string Text
         {
@@ -41,7 +41,7 @@ namespace PSRule.Parser
             {
                 if (_Text == null)
                 {
-                    _Text = Markdown.Substring(Start, (End - Start));
+                    _Text = _Source.Substring(Start, (End - Start));
                 }
 
                 return _Text;
@@ -59,7 +59,7 @@ namespace PSRule.Parser
             public int Column = 0;
         }
 
-        private readonly string _Markdown;
+        private readonly string _Source;
         private readonly int _Length;
 
         /// <summary>
@@ -80,35 +80,35 @@ namespace PSRule.Parser
 
         private const char NewLine = '\n';
         private const char CarrageReturn = '\r';
-        public const char Dash = '-';
-        public const char Whitespace = ' ';
-        public const char Hash = '#';
-        public const char Backtick = '`';
+        private const char Whitespace = ' ';
+        private const char Backtick = '`';
         private const char BracketOpen = '[';
         private const char BracketClose = ']';
         private const char ParenthesesOpen = '(';
         private const char ParenthesesClose = ')';
         private const char AngleOpen = '<';
         private const char AngleClose = '>';
-        public const char Backslash = '\\';
-        public const string TripleBacktick = "```";
-        public const string NewLineTripleBacktick = "\r\n```";
-        public const char EqualSign = '=';
-        public readonly static char[] NewLineStopCharacters = new char[] { '\r', '\n' };
-        public readonly static char[] UnorderListCharacters = new char[] { '-', '*' };
+        private const char Backslash = '\\';
+        private readonly static char[] NewLineStopCharacters = new char[] { '\r', '\n' };
+        private readonly static char[] UnorderListCharacters = new char[] { '-', '*' };
 
         public MarkdownStream(string markdown)
         {
-            _Markdown = markdown;
-            _Length = _Markdown.Length;
+            _Source = markdown;
+            _Length = _Source.Length;
             _Position = 0;
             _Line = 0;
             _Column = 0;
             _EscapeLength = 0;
 
+            if (_Length < 0 || _Length > MaxLength)
+            {
+                throw new ArgumentOutOfRangeException(nameof(markdown));
+            }
+
             UpdateCurrent();
 
-            if (_Markdown.Length > 0)
+            if (_Source.Length > 0)
             {
                 _Line = 1;
             }
@@ -156,7 +156,7 @@ namespace PSRule.Parser
         /// </summary>
         public string Preview
         {
-            get { return _Markdown.Substring(_Position); }
+            get { return _Source.Substring(_Position); }
         }
 
 #endif
@@ -169,11 +169,6 @@ namespace PSRule.Parser
         private int Remaining
         {
             get { return _Length - Position; }
-        }
-
-        public string Body
-        {
-            get { return _Markdown; }
         }
 
         public bool IsEscaped
@@ -304,7 +299,7 @@ namespace PSRule.Parser
         /// <returns>The character at the offset.</returns>
         public char Peak(int offset = 1)
         {
-            return _Markdown[_Position + offset];
+            return _Source[_Position + offset];
         }
 
         public bool PeakAnyOf(int offset = 1, params char[] c)
@@ -354,7 +349,7 @@ namespace PSRule.Parser
                 return null;
             }
 
-            var extent = new SourceExtent(_Markdown, null, _ExtentMarker.Value, _Position, _Line, _Column);
+            var extent = new SourceExtent(_Source, null, _ExtentMarker.Value, _Position, _Line, _Column);
 
             _ExtentMarker = null;
 
@@ -417,25 +412,16 @@ namespace PSRule.Parser
             // Handle escape sequences
             _EscapeLength = ignoreEscaping ? 0 : GetEscapeCount(_Position);
 
-            if (_Position + _EscapeLength < 0)
-            {
-                throw new IndexOutOfRangeException($"Position can not be < zero. Position={_Position.ToString()}, EscapeLength={_EscapeLength.ToString()}");
-            }
-            else if (_Position + _EscapeLength >= _Length)
-            {
-                throw new IndexOutOfRangeException($"Position can not be >= length. Position={_Position.ToString()}, EscapeLength={_EscapeLength.ToString()}");
-            }
-
             _Previous = _Current;
-            _Current = _Markdown[_Position + _EscapeLength];
+            _Current = _Source[_Position + _EscapeLength];
         }
 
         private int GetEscapeCount(int position)
         {
             // Check for escape sequences
-            if (position >= 0 && position < _Length && _Markdown[position] == Backslash)
+            if (position < _Length && _Source[position] == Backslash)
             {
-                var next = _Markdown[position + 1];
+                var next = _Source[position + 1];
 
                 // Check against list of escapable characters
                 if (next == Backslash || next == BracketOpen || next == ParenthesesOpen ||next == AngleOpen || next == AngleClose || next == Backtick || next == BracketClose || next == ParenthesesClose)
@@ -544,7 +530,7 @@ namespace PSRule.Parser
         {
             if (ignoreEscaping)
             {
-                return _Markdown.Substring(start, length);
+                return _Source.Substring(start, length);
             }
 
             var position = start;
@@ -556,7 +542,7 @@ namespace PSRule.Parser
             {
                 var offset = GetEscapeCount(position);
 
-                buffer[i] = _Markdown[position + offset];
+                buffer[i] = _Source[position + offset];
 
                 position += offset + 1;
 
