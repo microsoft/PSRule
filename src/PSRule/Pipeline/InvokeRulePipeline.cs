@@ -165,7 +165,7 @@ namespace PSRule.Pipeline
                     ruleId: ruleBlock.RuleId,
                     ruleName: ruleBlock.RuleName,
                     tag: ruleBlock.Tag,
-                    annotations: ruleBlock.Annotations
+                    info: ruleBlock.Info
                 );
 
                 _Summary.Add(ruleBlock.RuleId, s);

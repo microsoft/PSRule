@@ -9,6 +9,6 @@
         public const string AnyOf = "AnyOf";
         public const string AllOf = "AllOf";
         public const string RuleDefinition = "RuleDefinition";
-        public const string RuleHint = "PSRuleHint";
+        public const string Recommendation = "Recommendation";
     }
 }

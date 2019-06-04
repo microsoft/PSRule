@@ -265,12 +265,9 @@
             }
 
             // Override line ending if the line was a list item so that the line ending is preserved
-            if (_Context == MarkdownReaderMode.List)
+            if (_Context == MarkdownReaderMode.List && ending.IsEnding())
             {
-                if (ending.IsEnding())
-                {
-                    ending |= MarkdownTokenFlag.Preserve;
-                }
+                ending |= MarkdownTokenFlag.Preserve;
             }
 
             // Add the text to the output stream
@@ -473,13 +470,6 @@
             }
 
             var extent = _Stream.GetExtent();
-
-            if (string.IsNullOrEmpty(text))
-            {
-                _Stream.Rollback();
-
-                return false;
-            }
 
             return true;
         }

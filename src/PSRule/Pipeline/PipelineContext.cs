@@ -421,8 +421,7 @@ namespace PSRule.Pipeline
                 targetName: TargetName,
                 targetType: TargetType,
                 tag: ruleBlock.Tag,
-                annotations: ruleBlock.Annotations,
-                message: ruleBlock.Description
+                info: ruleBlock.Info
             );
 
             RuleBlock = ruleBlock;

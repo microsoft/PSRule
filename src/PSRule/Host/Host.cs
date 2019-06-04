@@ -75,7 +75,7 @@ namespace PSRule.Host
         private readonly static SessionStateCmdletEntry[] BuiltInCmdlets = new SessionStateCmdletEntry[]
         {
             new SessionStateCmdletEntry("New-RuleDefinition", typeof(NewRuleDefinitionCommand), null),
-            new SessionStateCmdletEntry("Set-PSRuleHint", typeof(SetPSRuleHintCommand), null),
+            new SessionStateCmdletEntry("New-Recommendation", typeof(NewRecommendationCommand), null),
             new SessionStateCmdletEntry("Assert-Exists", typeof(AssertExistsCommand), null),
             new SessionStateCmdletEntry("Assert-Within", typeof(AssertWithinCommand), null),
             new SessionStateCmdletEntry("Assert-Match", typeof(AssertMatchCommand), null),
@@ -90,7 +90,8 @@ namespace PSRule.Host
         private readonly static SessionStateAliasEntry[] BuiltInAliases = new SessionStateAliasEntry[]
         {
             new SessionStateAliasEntry("rule", "New-RuleDefinition", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry("hint", "Set-PSRuleHint", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry("recommend", "New-Recommendation", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry("hint", "New-Recommendation", string.Empty, ScopedItemOptions.ReadOnly),
             new SessionStateAliasEntry("exists", "Assert-Exists", string.Empty, ScopedItemOptions.ReadOnly),
             new SessionStateAliasEntry("within", "Assert-Within", string.Empty, ScopedItemOptions.ReadOnly),
             new SessionStateAliasEntry("match", "Assert-Match", string.Empty, ScopedItemOptions.ReadOnly),

@@ -346,14 +346,11 @@ namespace PSRule.Parser
             _Token.Add(token);
             _Position = _Token.Count - 1;
 
-            if (token.Type == MarkdownTokenType.LinkReferenceDefinition)
+            // CommonMark specifies that link labels are case-insensitive, and
+            // first reference definition takes prescidence when multiple definitions use the same link label
+            if (token.Type == MarkdownTokenType.LinkReferenceDefinition && !_LinkTargetIndex.ContainsKey(token.Meta))
             {
-                // CommonMark specifies that link labels are case-insensitive, and
-                // first reference definition takes prescidence when multiple definitions use the same link label
-                if (!_LinkTargetIndex.ContainsKey(token.Meta))
-                {
-                    _LinkTargetIndex[token.Meta] = token;
-                }
+                _LinkTargetIndex[token.Meta] = token;
             }
         }
 

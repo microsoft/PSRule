@@ -29,12 +29,12 @@ So start we are going to define a `storageAccounts.UseHttps` rule, which will va
 In the example below:
 
 - We use `storageAccounts.UseHttps` directly after the `Rule` keyword to name the rule definition. Each rule must be named uniquely.
-- The `# Description: ` comment is used to add additional metadata interpreted by PSRule.
+- The `# Synopsis: ` comment is used to add additional metadata interpreted by PSRule.
 - One or more conditions are defined within the curly braces `{ }`.
 - The rule definition is saved within a file named `storageAccounts.Rule.ps1`.
 
 ```powershell
-# Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+# Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' {
     # Rule conditions go here
 }
@@ -70,7 +70,7 @@ In the example below:
   - `$False` - the object failed the validation check
 
 ```powershell
-# Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+# Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' {
     # This property returns true or false, so nothing more needs to be done
     $TargetObject.Properties.supportsHttpsTrafficOnly
@@ -91,7 +91,7 @@ In the example below:
 - Directly after the `Hint` keyword is a message to help understand why the rule failed or passed.
 
 ```powershell
-# Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+# Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' {
     Hint 'Storage accounts should only allow secure traffic'
 
@@ -110,7 +110,7 @@ In the example below:
 - A check against `$TargetObject.ResourceType` ensured that our rule is only processed for Storage Accounts.
 
 ```powershell
-# Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+# Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { $TargetObject.ResourceType -eq 'Microsoft.Storage/storageAccounts' } {
     Hint 'Storage accounts should only allow secure traffic'
 
@@ -194,7 +194,7 @@ function global:ResourceType {
 Updating our existing `storageAccounts.UseHttps` rule, our rule definition becomes:
 
 ```powershell
-# Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+# Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAccounts' } {
     Hint 'Storage accounts should only allow secure traffic'
 

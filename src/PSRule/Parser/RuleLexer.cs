@@ -40,19 +40,16 @@ namespace PSRule.Parser
                         Annotations = TagSet.FromDictionary(metadata)
                     };
                 }
-                else if (doc != null)
+                else if (doc != null && IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL))
                 {
-                    if (IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL))
-                    {
-                        var matching = Synopsis(stream, doc) ||
-                            Recommendation(stream, doc) ||
-                            Notes(stream, doc) ||
-                            RelatedLinks(stream, doc);
+                    var matching = Synopsis(stream, doc) ||
+                        Recommendation(stream, doc) ||
+                        Notes(stream, doc) ||
+                        RelatedLinks(stream, doc);
 
-                        if (matching)
-                        {
-                            continue;
-                        }
+                    if (matching)
+                    {
+                        continue;
                     }
                 }
 

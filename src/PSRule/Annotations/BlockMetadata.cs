@@ -5,6 +5,6 @@
     /// </summary>
     internal sealed class BlockMetadata
     {
-        public string Description;
+        public string Synopsis;
     }
 }

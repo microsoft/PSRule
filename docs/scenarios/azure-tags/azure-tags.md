@@ -46,12 +46,12 @@ To start we are going to define an `environmentTag` rule, which will ensure that
 In the example below:
 
 - We use `environmentTag` directly after the `Rule` keyword to name the rule definition. Each rule must be named uniquely.
-- The `# Description: ` comment is used to add additional metadata interpreted by PSRule.
+- The `# Synopsis: ` comment is used to add additional metadata interpreted by PSRule.
 - One or more conditions are defined within the curly braces `{ }`.
 - The rule definition is saved within a file named `azureTags.Rule.ps1`.
 
 ```powershell
-# Description: Resource must have environment tag
+# Synopsis: Resource must have environment tag
 Rule 'environmentTag' {
     # Rule conditions go here
 }
@@ -86,7 +86,7 @@ In the example below:
   - `$False` - the _environment_ tag does not exist.
 
 ```powershell
-# Description: Resource must have environment tag
+# Synopsis: Resource must have environment tag
 Rule 'environmentTag' {
     Exists 'Tags.environment' -CaseSensitive
 }
@@ -105,7 +105,7 @@ In the example below:
   - `$False` - the _environment_ tag does not use one of the allowed values.
 
 ```powershell
-# Description: Resource must have environment tag
+# Synopsis: Resource must have environment tag
 Rule 'environmentTag' {
     Exists 'Tags.environment' -CaseSensitive
     Within 'Tags.environment' 'production', 'test', 'development' -CaseSensitive
@@ -124,7 +124,7 @@ In the example below:
   - `$False` - the _environment_ tag does not use one of the allowed values.
 
 ```powershell
-# Description: Resource must have environment tag
+# Synopsis: Resource must have environment tag
 Rule 'environmentTag' {
     Exists 'Tags.environment' -CaseSensitive
     $TargetObject.Tags.environment -cin 'production', 'test', 'development'
@@ -143,7 +143,7 @@ In the example below:
   - `$False` - the _costCentre_ tag value does not use match the regular expression.
 
 ```powershell
-# Description: Resource must have costCentre tag
+# Synopsis: Resource must have costCentre tag
 Rule 'costCentreTag' {
     Exists 'Tags.costCentre' -CaseSensitive
     Match 'Tags.costCentre' '^([1-9][0-9]{4})$'
@@ -161,7 +161,7 @@ In the example below:
   - `$False` - the _costCentre_ tag value does not use match the regular expression.
 
 ```powershell
-# Description: Resource must have costCentre tag
+# Synopsis: Resource must have costCentre tag
 Rule 'costCentreTag' {
     Exists 'Tags.costCentre' -CaseSensitive
     $TargetObject.Tags.costCentre -match '^([1-9][0-9]{4})$'
@@ -184,7 +184,7 @@ In the example below:
 An extract from _azureTags.Rule.ps1_:
 
 ```powershell
-# Description: Resource must have businessUnit tag
+# Synopsis: Resource must have businessUnit tag
 Rule 'businessUnitTag' {
     Exists 'Tags.businessUnit' -CaseSensitive
     Within 'Tags.businessUnit' $Configuration.allowedBusinessUnits

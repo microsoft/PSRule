@@ -67,7 +67,12 @@ namespace PSRule.Host
                 {
                     if (comment.StartsWith("# Description: "))
                     {
-                        metadata.Description = comment.Substring(15);
+                        metadata.Synopsis = comment.Substring(15);
+                    }
+
+                    if (comment.StartsWith("# Synopsis: "))
+                    {
+                        metadata.Synopsis = comment.Substring(12);
                     }
                 }
 
@@ -202,9 +207,8 @@ namespace PSRule.Host
                         RuleName = block.RuleName,
                         SourcePath = block.SourcePath,
                         ModuleName = block.ModuleName,
-                        Description = block.Description,
                         Tag = block.Tag,
-                        Annotations = block.Annotations
+                        Info = block.Info
                     };
                 }
             }
@@ -227,13 +231,7 @@ namespace PSRule.Host
 
                 if (!results.ContainsKey(block.RuleId))
                 {
-                    results[block.RuleId] = new RuleHelpInfo
-                    {
-                        Name = block.RuleName,
-                        Synopsis = block.Description,
-                        Recommendation = block.Recommendation,
-                        Annotations = block.Annotations?.ToHashtable()
-                    };
+                    results[block.RuleId] = block.Info;
                 }
             }
 

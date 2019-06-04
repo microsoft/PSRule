@@ -90,7 +90,6 @@ namespace PSRule.Parser
         private const char AngleClose = '>';
         private const char Backslash = '\\';
         private readonly static char[] NewLineStopCharacters = new char[] { '\r', '\n' };
-        private readonly static char[] UnorderListCharacters = new char[] { '-', '*' };
 
         public MarkdownStream(string markdown)
         {

@@ -45,8 +45,8 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $True;
             $result.TargetName | Should -Be 'TestObject1';
-            $result.Annotations.culture | Should -Be 'en-ZZ';
-            $result.Message | Should -Be 'This is a synopsis.';
+            $result.Info.Annotations.culture | Should -Be 'en-ZZ';
+            $result.Message | Should -Be 'This is a recommendation.';
             Assert-VerifiableMock;
         }
 
@@ -233,7 +233,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.Tag.category | Should -BeIn 'group1';
             ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Outcome | Should -Be 'Pass';
             ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Pass | Should -Be 2;
-            ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Annotations.culture | Should -Be 'en-ZZ';
+            ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Info.Annotations.culture | Should -Be 'en-ZZ';
             ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Outcome | Should -Be 'Fail';
             ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Fail | Should -Be 2;
             ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Outcome | Should -Be 'None';
@@ -822,13 +822,13 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.RuleName | Should -Be 'FromFile1';
-            $result.Description | Should -Be 'This is a synopsis.';
-            $result.Annotations.culture | Should -Be 'en-ZZ';
+            $result.Synopsis | Should -Be 'This is a synopsis.';
+            $result.Info.Annotations.culture | Should -Be 'en-ZZ';
 
             $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile2';
             $result | Should -Not -BeNullOrEmpty;
             $result.RuleName | Should -Be 'FromFile2';
-            $result.Description | Should -Be 'Test rule 2';
+            $result.Synopsis | Should -Be 'Test rule 2';
             Assert-VerifiableMock;
         }
 
@@ -849,7 +849,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result.Length | Should -Be 2;
             $result[0].RuleName | Should -Be 'M1.Rule1';
             $result[0].Description | Should -Be 'Synopsis en-US.';
-            $result[0].Annotations.culture | Should -Be 'en-US';
+            $result[0].Info.Annotations.culture | Should -Be 'en-US';
         }
 
         It 'Returns module and path rules' {
@@ -872,7 +872,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result.Length | Should -Be 2;
             $result[0].RuleName | Should -Be 'M1.Rule1';
             $result[0].Description | Should -Be 'Synopsis en-US.';
-            $result[0].Annotations.culture | Should -Be 'en-US';
+            $result[0].Info.Annotations.culture | Should -Be 'en-US';
 
             # en-AU
             $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
@@ -881,7 +881,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result.Length | Should -Be 2;
             $result[0].RuleName | Should -Be 'M1.Rule1';
             $result[0].Description | Should -Be 'Synopsis en-AU.';
-            $result[0].Annotations.culture | Should -Be 'en-AU';
+            $result[0].Info.Annotations.culture | Should -Be 'en-AU';
 
             Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -MockWith {
                 return 'en-AU';
@@ -894,7 +894,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result.Length | Should -Be 2;
             $result[0].RuleName | Should -Be 'M1.Rule1';
             $result[0].Description | Should -Be 'Synopsis en-AU.';
-            $result[0].Annotations.culture | Should -Be 'en-AU';
+            $result[0].Info.Annotations.culture | Should -Be 'en-AU';
         }
     }
 

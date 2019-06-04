@@ -4,6 +4,7 @@ using PSRule.Rules;
 using System.Collections;
 using System.IO;
 using System.Management.Automation;
+using System.Runtime.Serialization;
 
 namespace PSRule.Commands
 {
@@ -78,17 +79,20 @@ namespace PSRule.Commands
 
             PipelineContext.EnableLogging(ps);
 
-            var doc = GetDoc(context: context, name: Name);
+            var helpInfo = GetHelpInfo(context: context, name: Name) ?? new RuleHelpInfo(name: Name);
+
+            if (helpInfo.Synopsis == null)
+            {
+                helpInfo.Synopsis = metadata.Synopsis;
+            }
 
             var block = new RuleBlock(
                 sourcePath: MyInvocation.ScriptName,
                 moduleName: moduleName,
                 ruleName: Name,
-                description: doc == null ? metadata.Description : doc.Synopsis.Text,
-                recommendation: doc != null ? doc.Recommendation.Text : null,
+                info: helpInfo,
                 condition: ps,
                 tag: tag,
-                annotations: doc?.Annotations,
                 dependsOn: RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName, moduleName),
                 configuration: Configure
             );
@@ -96,7 +100,7 @@ namespace PSRule.Commands
             WriteObject(block);
         }
 
-        private Parser.RuleDocument GetDoc(PipelineContext context, string name)
+        private RuleHelpInfo GetHelpInfo(PipelineContext context, string name)
         {
             if (context.Source.HelpPath == null || context.Source.HelpPath.Length == 0)
             {
@@ -115,7 +119,17 @@ namespace PSRule.Commands
                 var reader = new MarkdownReader(yamlHeaderOnly: false);
                 var stream = reader.Read(markdown: File.ReadAllText(path: path), path: path);
                 var lexer = new RuleLexer();
-                return lexer.Process(stream: stream);
+                var document = lexer.Process(stream: stream);
+
+                if (document != null)
+                {
+                     return new RuleHelpInfo(name: name)
+                     {
+                         Synopsis = document.Synopsis.Text,
+                         Recommendation = document.Recommendation?.Text ?? document.Synopsis?.Text,
+                         Annotations = document.Annotations?.ToHashtable()
+                     };
+                }
             }
 
             return null;

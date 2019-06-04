@@ -11,12 +11,12 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
     public sealed class RuleSummaryRecord
     {
-        internal RuleSummaryRecord(string ruleId, string ruleName, TagSet tag, TagSet annotations)
+        internal RuleSummaryRecord(string ruleId, string ruleName, TagSet tag, RuleHelpInfo info)
         {
             RuleId = ruleId;
             RuleName = ruleName;
             Tag = tag?.ToHashtable();
-            Annotations = annotations?.ToHashtable();
+            Info = info;
         }
 
         /// <summary>
@@ -74,8 +74,8 @@ namespace PSRule.Rules
         public Hashtable Tag { get; internal set; }
 
         [DefaultValue(null)]
-        [JsonProperty(PropertyName = "annotations")]
-        public Hashtable Annotations { get; internal set; }
+        [JsonProperty(PropertyName = "info")]
+        public RuleHelpInfo Info { get; internal set; }
 
         public bool IsSuccess()
         {

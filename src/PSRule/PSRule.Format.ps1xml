@@ -81,7 +81,7 @@
             <Width>35</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Description"/>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Synopsis"/>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="ModuleName"/>
@@ -94,7 +94,7 @@
               <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Description</PropertyName>
+                <PropertyName>Synopsis</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>ModuleName</PropertyName>

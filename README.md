@@ -147,6 +147,7 @@ The following language keywords are used by the `PSRule` module:
 - [AllOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#allof) - Assert that all of the child expressions must be true.
 - [Within](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#within) - Assert that the field must match any of the values.
 - [TypeOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#typeof) - Assert that the object must be of a specific type.
+- [Recommend](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#recommend) - Return the process to resolve the issue and pass the rule.
 
 ### Commands
 

@@ -10,10 +10,15 @@ namespace PSRule.Rules
     {
         private const string ONLINE_HELP_LINK_ANNOTATION = "online version";
 
+        internal RuleHelpInfo(string name)
+        {
+            Name = name;
+        }
+
         /// <summary>
         /// The name of the rule.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// The synopsis of the rule.
