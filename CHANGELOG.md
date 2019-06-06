@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.6.0-B190627 (pre-release)
+
 - **Important change**: Changed `Hint` keyword to `Recommend` to align with rule documentation. [#165](https://github.com/BernieWhite/PSRule/issues/165)
   - Use of `Hint` keyword is deprecated and will be removed in a future release. Currently `Hint` is aliased to `Recommend` for compatibility.
 - **Breaking change**: Changed rule properties to align with rule documentation. [#164](https://github.com/BernieWhite/PSRule/issues/164)
