@@ -3,10 +3,10 @@
 namespace PSRule.Commands
 {
     /// <summary>
-    /// The Hint keyword.
+    /// The Recommend keyword.
     /// </summary>
-    [Cmdlet(VerbsCommon.Set, RuleLanguageNouns.RuleHint)]
-    internal sealed class SetPSRuleHintCommand : RuleKeyword
+    [Cmdlet(VerbsCommon.New, RuleLanguageNouns.Recommendation)]
+    internal sealed class NewRecommendationCommand : RuleKeyword
     {
         [Parameter(Mandatory = false, Position = 0)]
         public string Message { get; set; }
@@ -15,9 +15,9 @@ namespace PSRule.Commands
         {
             var result = GetResult();
 
-            if (MyInvocation.BoundParameters.ContainsKey("Message"))
+            if (MyInvocation.BoundParameters.ContainsKey(nameof(Message)) && string.IsNullOrEmpty(result.Info.Recommendation))
             {
-                result.Message = Message;
+                result.Info.Recommendation = Message;
             }
         }
     }

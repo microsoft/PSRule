@@ -147,6 +147,7 @@ The following language keywords are used by the `PSRule` module:
 - [AllOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#allof) - Assert that all of the child expressions must be true.
 - [Within](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#within) - Assert that the field must match any of the values.
 - [TypeOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#typeof) - Assert that the object must be of a specific type.
+- [Recommend](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#recommend) - Return the process to resolve the issue and pass the rule.
 
 ### Commands
 
@@ -163,6 +164,10 @@ The following commands exist in the `PSRule` module:
 
 The following conceptual topics exist in the `PSRule` module:
 
+- [Docs](docs/concepts/PSRule/en-US/about_PSRule_Docs.md)
+  - [Getting documentation](docs/concepts/PSRule/en-US/about_PSRule_Docs.md#getting-documentation)
+  - [Online help](docs/concepts/PSRule/en-US/about_PSRule_Docs.md#online-help)
+  - [Creating documentation](docs/concepts/PSRule/en-US/about_PSRule_Docs.md#creating-documentation)
 - [Options](docs/concepts/PSRule/en-US/about_PSRule_Options.md)
   - [Baseline.RuleName](docs/concepts/PSRule/en-US/about_PSRule_Options.md#baselinerulename)
   - [Baseline.Exclude](docs/concepts/PSRule/en-US/about_PSRule_Options.md#baselineexclude)

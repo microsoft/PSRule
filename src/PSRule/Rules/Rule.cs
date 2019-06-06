@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System.Collections;
 using System.ComponentModel;
+using YamlDotNet.Serialization;
 
 namespace PSRule.Rules
 {
@@ -36,9 +38,14 @@ namespace PSRule.Rules
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
         /// </summary>
-        [JsonProperty(PropertyName = "description")]
-        [DefaultValue(null)]
-        public string Description { get; set; }
+        [JsonIgnore]
+        [YamlIgnore]
+        public string Synopsis => Info.Synopsis;
+
+        // Alias to synopsis
+        [JsonIgnore]
+        [YamlIgnore]
+        public string Description => Info.Synopsis;
 
         /// <summary>
         /// One or more tags assigned to the rule. Tags are additional metadata used to select rules to execute and identify results.
@@ -47,8 +54,8 @@ namespace PSRule.Rules
         [DefaultValue(null)]
         public TagSet Tag { get; set; }
 
-        [JsonProperty(PropertyName = "annotations")]
+        [JsonProperty(PropertyName = "info")]
         [DefaultValue(null)]
-        public TagSet Annotations { get; set; }
+        public RuleHelpInfo Info { get; set; }
     }
 }

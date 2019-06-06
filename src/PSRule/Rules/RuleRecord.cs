@@ -14,7 +14,7 @@ namespace PSRule.Rules
     [JsonObject]
     public sealed class RuleRecord
     {
-        internal RuleRecord(string ruleId, string ruleName, PSObject targetObject, string targetName, string targetType, TagSet tag, TagSet annotations, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, string message = null)
+        internal RuleRecord(string ruleId, string ruleName, PSObject targetObject, string targetName, string targetType, TagSet tag, RuleHelpInfo info, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
             RuleId = ruleId;
             RuleName = ruleName;
@@ -27,14 +27,9 @@ namespace PSRule.Rules
                 Tag = tag.ToHashtable();
             }
 
-            if (annotations != null)
-            {
-                Annotations = annotations.ToHashtable();
-            }
-
             Outcome = outcome;
             OutcomeReason = reason;
-            Message = message;
+            Info = info;
         }
 
         /// <summary>
@@ -59,8 +54,8 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "outcomeReason")]
         public RuleOutcomeReason OutcomeReason { get; internal set; }
 
-        [JsonProperty(PropertyName = "message")]
-        public string Message { get; internal set; }
+        [JsonProperty(PropertyName = "recommendation")]
+        public string Recommendation => Info.Recommendation ?? Info.Synopsis;
 
         /// <summary>
         /// A name to identify the processed object.
@@ -83,8 +78,8 @@ namespace PSRule.Rules
         public Hashtable Tag { get; }
 
         [DefaultValue(null)]
-        [JsonProperty(PropertyName = "annotations")]
-        public Hashtable Annotations { get; }
+        [JsonProperty(PropertyName = "helpInfo")]
+        public RuleHelpInfo Info { get; }
 
         [DefaultValue(0f)]
         [JsonProperty(PropertyName = "time")]

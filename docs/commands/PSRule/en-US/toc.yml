@@ -22,6 +22,10 @@
       href: Test-PSRuleTarget.md
       topicHref: Test-PSRuleTarget.md
 
+- name: Documentation
+  href: ../../../concepts/PSRule/en-US/about_PSRule_Docs.md
+  topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Docs.md
+
 - name: Keywords
   href: ../../../keywords/PSRule/en-US/about_PSRule_Keywords.md
   topicHref: ../../../keywords/PSRule/en-US/about_PSRule_Keywords.md

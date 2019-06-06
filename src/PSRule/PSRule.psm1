@@ -893,6 +893,7 @@ https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords
 #>
 function Rule {
     [CmdletBinding()]
+    [OutputType([void])]
     param (
         # The name of the rule
         [Parameter(Position = 0, Mandatory = $True)]
@@ -921,7 +922,7 @@ function Rule {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message 'Rule keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -931,6 +932,7 @@ https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords
 #>
 function AllOf {
     [CmdletBinding()]
+    [OutputType([void])]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
         [ScriptBlock]$Body
@@ -938,7 +940,7 @@ function AllOf {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message 'AllOf keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -948,6 +950,7 @@ https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords
 #>
 function AnyOf {
     [CmdletBinding()]
+    [OutputType([void])]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
         [ScriptBlock]$Body
@@ -955,7 +958,7 @@ function AnyOf {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message 'AnyOf keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -965,6 +968,7 @@ https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords
 #>
 function Exists {
     [CmdletBinding()]
+    [OutputType([void])]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
         [String[]]$Field,
@@ -981,7 +985,7 @@ function Exists {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message 'Exists keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -991,6 +995,7 @@ https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords
 #>
 function Match {
     [CmdletBinding()]
+    [OutputType([void])]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
         [String]$Field,
@@ -1007,7 +1012,7 @@ function Match {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message 'Match keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -1017,6 +1022,7 @@ https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords
 #>
 function Within {
     [CmdletBinding()]
+    [OutputType([void])]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
         [String]$Field,
@@ -1033,7 +1039,7 @@ function Within {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message 'Within keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -1043,6 +1049,7 @@ https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords
 #>
 function TypeOf {
     [CmdletBinding()]
+    [OutputType([void])]
     param (
         [Parameter(Mandatory = $True, Position = 0)]
         [String[]]$TypeName,
@@ -1053,7 +1060,25 @@ function TypeOf {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message 'TypeOf keyword can only be called within PSRule. To call rules use Invoke-PSRule.' -Category InvalidOperation;
+        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
+    }
+}
+
+<#
+.LINK
+https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#recommend
+#>
+function Recommend {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory = $False, Position = 0)]
+        [String]$Message
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -1365,6 +1390,12 @@ function InitEditorServices {
                 'Match'
                 'TypeOf'
                 'Within'
+                'Recommend'
+            );
+
+            New-Alias -Name 'Hint' -Value 'Recommend' -Force;
+
+            Export-ModuleMember -Alias @(
                 'Hint'
             );
 

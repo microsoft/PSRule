@@ -40,19 +40,17 @@ namespace PSRule.Parser
                         Annotations = TagSet.FromDictionary(metadata)
                     };
                 }
-                else if (doc != null)
+                else if (doc != null && IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL))
                 {
-                    if (IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL))
-                    {
-                        var matching = Synopsis(stream, doc) ||
-                            Recommendation(stream, doc) ||
-                            Notes(stream, doc) ||
-                            RelatedLinks(stream, doc);
+                    var matching = Synopsis(stream, doc) ||
+                        Description(stream, doc) ||
+                        Recommendation(stream, doc) ||
+                        Notes(stream, doc) ||
+                        RelatedLinks(stream, doc);
 
-                        if (matching)
-                        {
-                            continue;
-                        }
+                    if (matching)
+                    {
+                        continue;
                     }
                 }
 
@@ -74,6 +72,22 @@ namespace PSRule.Parser
             }
 
             doc.Synopsis = TextBlock(stream);
+            stream.SkipUntilHeader();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Read description.
+        /// </summary>
+        private bool Description(TokenStream stream, RuleDocument doc)
+        {
+            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Description))
+            {
+                return false;
+            }
+
+            doc.Description = TextBlock(stream);
             stream.SkipUntilHeader();
 
             return true;

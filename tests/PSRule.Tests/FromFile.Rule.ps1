@@ -2,14 +2,14 @@
 # Pester unit test rules
 #
 
-# Description: Test rule 1
+# Synopsis: Test rule 1
 Rule 'FromFile1' -Tag @{ category = "group1"; test = "Test1" } {
     # Pass
     $True;
     $True;
 }
 
-# Description: Test rule 2
+# Synopsis: Test rule 2
 Rule 'FromFile2' -Tag @{ category = "group1"; test = "Test2" } {
     # Fail
     $False;
@@ -17,108 +17,108 @@ Rule 'FromFile2' -Tag @{ category = "group1"; test = "Test2" } {
     $True;
 }
 
-# Description: Test rule 3
+# Synopsis: Test rule 3
 Rule 'FromFile3' -Tag @{ category = "group1" } {
     # Inconclusive
 }
 
-# Description: Test rule 4
+# Synopsis: Test rule 4
 Rule 'FromFile4' -Tag @{ category = "group1" } -DependsOn 'FromFile3' {
     # Inconclusive
 }
 
-# Description: Test for tags
+# Synopsis: Test for tags
 Rule 'WithTag' -Tag @{ severity = 'critical'; feature = 'tag' } {
     $True;
 }
 
-# Description: Test for tags
+# Synopsis: Test for tags
 Rule 'WithTag2' -Tag @{ feature = 'tag' } {
     $True;
 }
 
-# Description: Test for tags
+# Synopsis: Test for tags
 Rule 'WithTag3' -Tag @{ severity = 'information'; feature = 'tag' } {
     $True;
 }
 
-# Description: Test for tags
+# Synopsis: Test for tags
 Rule 'WithTag4' -Tag @{ Severity = 'critical'; feature = 'tag' } {
     $True;
 }
 
-# Description: Test for tags
+# Synopsis: Test for tags
 Rule 'WithTag5' -Tag @{ severity = 'Critical'; feature = 'tag' } {
     $True;
 }
 
-# Description: Test for type preconditions
+# Synopsis: Test for type preconditions
 Rule 'WithTypeTrue' -Type 'TestType' -Tag @{ category = 'precondition-type' } {
     $True;
 }
 
-# Description: Test for type preconditions
+# Synopsis: Test for type preconditions
 Rule 'WithTypeFalse' -Type 'NotTestType' -Tag @{ category = 'precondition-type' } {
     $True;
 }
 
-# Description: Test for script preconditions
+# Synopsis: Test for script preconditions
 Rule 'WithPreconditionTrue' -If { $True } -Tag @{ category = 'precondition-if' } {
     $True;
 }
 
-# Description: Test for script preconditions
+# Synopsis: Test for script preconditions
 Rule 'WithPreconditionFalse' -If { $False } -Tag @{ category = 'precondition-if' } {
     $True;
 }
 
-# Description: Should fail, because of dependency fail
+# Synopsis: Should fail, because of dependency fail
 Rule 'WithDependency1' -DependsOn 'WithDependency3','WithDependency2' {
     # Pass
     $True;
 }
 
-# Description: Should fail, because of dependency fail
+# Synopsis: Should fail, because of dependency fail
 Rule 'WithDependency2' -DependsOn 'WithDependency5' {
     # Pass
     $True;
 }
 
-# Description: Should pass, with a passing dependency
+# Synopsis: Should pass, with a passing dependency
 Rule 'WithDependency3' -DependsOn 'WithDependency4' {
     # Pass
     $True
 }
 
-# Description: Pass
+# Synopsis: Pass
 Rule 'WithDependency4' {
     # Pass
     $True
 }
 
-# Description: Fail
+# Synopsis: Fail
 Rule 'WithDependency5' {
     # Fail
     $False
 }
 
-# Description: Test for constrained language
+# Synopsis: Test for constrained language
 Rule 'ConstrainedTest1' {
     $True;
 }
 
-# Description: Test for constrained language, should not execute
+# Synopsis: Test for constrained language, should not execute
 Rule 'ConstrainedTest2' {
     $Null = [Console]::WriteLine('Should fail');
     $True;
 }
 
-# Description: Test for constrained language, should not execute
+# Synopsis: Test for constrained language, should not execute
 Rule 'ConstrainedTest3' -If { $Null = [Console]::WriteLine('Should fail'); return $True; } {
     $True;
 }
 
-# Description: Test automatic variables
+# Synopsis: Test automatic variables
 Rule 'VariableTest' {
     $TargetObject.Name -eq $Rule.RuleName;
     $TargetObject.Name -eq $Rule.TargetName;
@@ -136,17 +136,32 @@ Rule 'WithFormat' {
     ($TargetObject.spec.properties.array2 | Measure-Object).Count -eq 3
 }
 
-# Description: Test for Hint keyword
-Rule 'HintTest' {
-    Hint 'This is a message'
+# Synopsis: Test for Recommend keyword
+Rule 'RecommendTest' {
+    Recommend 'This is a recommendation'
 }
 
-# Description: Test for Hint keyword
-Rule 'HintTestWithDescription' {
+# Synopsis: Test for Recommend keyword
+Rule 'RecommendTest2' {
+    Recommend 'This is a recommendation'
+}
+
+# Synopsis: Test for Recommend keyword alias
+Rule 'HintTest' {
+    Hint 'This is a recommendation'
+}
+
+# Synopsis: Test for Recommend keyword
+Rule 'TestWithSynopsis' {
     $True
 }
 
-# Description: Test for Exists keyword
+# Description: Test for Recommend keyword
+Rule 'TestWithDescription' {
+    $True
+}
+
+# Synopsis: Test for Exists keyword
 Rule 'ExistsTest' -Tag @{ keyword = 'Exists' } {
     Exists 'Name'
     Exists -Not 'NotName'
@@ -155,7 +170,7 @@ Rule 'ExistsTest' -Tag @{ keyword = 'Exists' } {
     @{ Pipeline = 'Value' } | Exists 'Pipeline'
 }
 
-# Description: Test for Exists keyword
+# Synopsis: Test for Exists keyword
 Rule 'ExistsTestNegative' -Tag @{ keyword = 'Exists' } {
     AnyOf {
         Exists 'NotName'
@@ -166,7 +181,7 @@ Rule 'ExistsTestNegative' -Tag @{ keyword = 'Exists' } {
     }
 }
 
-# Description: Test for Within keyword
+# Synopsis: Test for Within keyword
 Rule 'WithinTest' -Tag @{ keyword = 'Within' } {
     AnyOf {
         Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
@@ -174,12 +189,12 @@ Rule 'WithinTest' -Tag @{ keyword = 'Within' } {
     }
 }
 
-# Description: Test for Within keyword
+# Synopsis: Test for Within keyword
 Rule 'WithinTestCaseSensitive' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms' -CaseSensitive
 }
 
-# Description: Test for Match keyword
+# Synopsis: Test for Match keyword
 Rule 'MatchTest' -Tag @{ keyword = 'Match' } {
     AnyOf {
         Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$', '^(0{1,3})$'
@@ -190,12 +205,12 @@ Rule 'MatchTest' -Tag @{ keyword = 'Match' } {
     [PSCustomObject]@{ Key = 'Value' } | Match 'Key' 'Value'
 }
 
-# Description: Test for Match keyword
+# Synopsis: Test for Match keyword
 Rule 'MatchTestCaseSensitive' -Tag @{ keyword = 'Match' } {
     Match 'Title' '^(Mr|Miss|Mrs|Ms)$' -CaseSensitive
 }
 
-# Description: Test for TypeOf keyword
+# Synopsis: Test for TypeOf keyword
 Rule 'TypeOfTest' {
     TypeOf 'System.Collections.Hashtable', 'PSRule.Test.OtherType'
 
@@ -205,7 +220,7 @@ Rule 'TypeOfTest' {
     $inlineObject | TypeOf 'PSRule.Test.OtherOtherType'
 }
 
-# Description: Test for AllOf keyword
+# Synopsis: Test for AllOf keyword
 Rule 'AllOfTest' {
     AllOf {
         $True
@@ -213,7 +228,7 @@ Rule 'AllOfTest' {
     }
 }
 
-# Description: Test for AllOf keyword
+# Synopsis: Test for AllOf keyword
 Rule 'AllOfTestNegative' {
     AllOf {
         $True
@@ -221,7 +236,7 @@ Rule 'AllOfTestNegative' {
     }
 }
 
-# Description: Test for AnyOf keyword
+# Synopsis: Test for AnyOf keyword
 Rule 'AnyOfTest' {
     AnyOf {
         $True
@@ -230,7 +245,7 @@ Rule 'AnyOfTest' {
     }
 }
 
-# Description: Test for AnyOf keyword
+# Synopsis: Test for AnyOf keyword
 Rule 'AnyOfTestNegative' {
     AnyOf {
         $False

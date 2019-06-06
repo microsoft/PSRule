@@ -21,6 +21,7 @@ The following are the built-in keywords that can be used within PSRule:
 - [AllOf](#allof) - Assert that all of the child expressions must be true
 - [Within](#within) - Assert that the field must match any of the values
 - [TypeOf](#typeof) - Assert that the object must be of a specific type
+- [Recommend](#recommend) - Return the process to resolve the issue and pass the rule.
 
 ### Rule
 
@@ -47,21 +48,21 @@ Rule [-Name] <string> [-Tag <hashtable>] [-Type <string[]>] [-If <scriptBlock>] 
 Examples:
 
 ```powershell
-# Description: This rule checks for the presence of a name field
+# Synopsis: This rule checks for the presence of a name field
 Rule 'NameMustExist' {
     Exists 'Name'
 }
 ```
 
 ```powershell
-# Description: This rule checks that the title field is valid, when the rule NameMustExist is successful
+# Synopsis: This rule checks that the title field is valid, when the rule NameMustExist is successful
 Rule 'TitleIsValid' -DependsOn 'NameMustExist' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
 ```
 
 ```powershell
-# Description: This rule uses a threshold stored as $Configuration.minInstanceCount
+# Synopsis: This rule uses a threshold stored as $Configuration.minInstanceCount
 Rule 'HasMinInstances' {
     $TargetObject.Sku.capacity -ge $Configuration.minInstanceCount
 } -Configure @{ minInstanceCount = 2 }
@@ -85,21 +86,21 @@ Exists [-Field] <string[]> [-CaseSensitive] [-Not] [-InputObject <PSObject>]
 Examples:
 
 ```powershell
-# Description: Checks for the presence of a name property
+# Synopsis: Checks for the presence of a name property
 Rule 'nameMustExist' {
     Exists 'Name'
 }
 ```
 
 ```powershell
-# Description: Checks for the presence of name nested under the metadata property
+# Synopsis: Checks for the presence of name nested under the metadata property
 Rule 'nameMustExist' {
     Exists 'metadata.name'
 }
 ```
 
 ```powershell
-# Description: Checks for the presence of name nested under the metadata property
+# Synopsis: Checks for the presence of name nested under the metadata property
 Rule 'nameMustExist' {
     $TargetObject.metadata | Exists 'name'
 }
@@ -129,7 +130,7 @@ Match [-Field] <string> [-Expression] <string[]> [-CaseSensitive] [-InputObject 
 Examples:
 
 ```powershell
-# Description: Check that PhoneNumber is complete and formatted correctly
+# Synopsis: Check that PhoneNumber is complete and formatted correctly
 Rule 'validatePhoneNumber' {
     Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$'
 }
@@ -157,7 +158,7 @@ Within [-Field] <string> [-AllowedValue] <PSObject[]]> [-CaseSensitive] [-InputO
 Examples:
 
 ```powershell
-# Description: Ensure that the title field has one of the allowed values
+# Synopsis: Ensure that the title field has one of the allowed values
 Rule 'validateTitle' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
@@ -186,7 +187,7 @@ AllOf [-Body] {
 Examples:
 
 ```powershell
-# Description: The Name field must exist and have a value of either John or Jane
+# Synopsis: The Name field must exist and have a value of either John or Jane
 Rule 'nameCheck' {
     AllOf {
         Exists 'Name'
@@ -218,7 +219,7 @@ AnyOf [-Body] {
 Examples:
 
 ```powershell
-# Description: The Last or Surname field must exist
+# Synopsis: The Last or Surname field must exist
 Rule 'personCheck' {
     AnyOf {
         Exists 'Last'
@@ -247,7 +248,7 @@ TypeOf [-TypeName] <string[]> [-InputObject <PSObject>]
 Examples:
 
 ```powershell
-# Description: The object must be a hashtable
+# Synopsis: The object must be a hashtable
 Rule 'objectType' {
     TypeOf 'System.Collections.Hashtable'
 }
@@ -257,12 +258,40 @@ Output:
 
 If **any** the specified type names match the pipeline object then TypeOf will return `$True`, otherwise `$False`.
 
+### Recommend
+
+The `Recommend` keyword is used within a `Rule` definition to provide a process to resolve the issue and pass the rule. This may include manual steps to change that state of the object or the desired state accessed by the rule.
+
+Previously this keyword was `Hint`. The previous keyword `Hint` is aliased by deprecated.
+
+Syntax:
+
+```text
+Recommend [-Message] <string>
+```
+
+- `Message` - A message that includes the process to resolve the issue and pass the rule.
+
+Examples:
+
+```powershell
+# Synopsis: Provide recommendation to resolve the issue
+Rule 'objectRecommend' {
+    Recommend 'Use at least two (2) instances'
+    $TargetObject.count -ge 2
+}
+```
+
+Output:
+
+None.
+
 ## EXAMPLES
 
 ```powershell
-# Description: App Service Plan has multiple instances
+# Synopsis: App Service Plan has multiple instances
 Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
-    Hint 'Use at least two (2) instances'
+    Recommend 'Use at least two (2) instances'
 
     $TargetObject.Sku.capacity -ge 2
 }
@@ -285,5 +314,6 @@ An online version of this document is available at https://github.com/BernieWhit
 - AllOf
 - Within
 - TypeOf
+- Recommend
 
 [Invoke-PSRule]: https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md

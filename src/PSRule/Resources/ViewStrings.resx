@@ -138,6 +138,9 @@
   <data name="Pass" xml:space="preserve">
     <value>Pass</value>
   </data>
+  <data name="Recommendation" xml:space="preserve">
+    <value>Recommendation</value>
+  </data>
   <data name="RuleName" xml:space="preserve">
     <value>RuleName</value>
   </data>

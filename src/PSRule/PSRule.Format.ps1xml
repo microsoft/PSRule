@@ -46,6 +46,28 @@
       </CustomControl>
     </Control>
     <Control>
+      <Name>Help-Description</Name>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+              <CustomItem>
+                <Text AssemblyName="PSRule" BaseName="PSRule.Resources.DocumentStrings" ResourceId="Description"/>
+                <NewLine />
+                <Frame>
+                  <LeftIndent>4</LeftIndent>
+                  <CustomItem>
+                    <ExpressionBinding>
+                      <PropertyName>Description</PropertyName>
+                    </ExpressionBinding>
+                    <NewLine/>
+                  </CustomItem>
+                </Frame>
+              </CustomItem>
+            </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </Control>
+    <Control>
       <Name>Help-Recommendation</Name>
       <CustomControl>
         <CustomEntries>
@@ -81,7 +103,7 @@
             <Width>35</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Description"/>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Synopsis"/>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="ModuleName"/>
@@ -94,7 +116,7 @@
               <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Description</PropertyName>
+                <PropertyName>Synopsis</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>ModuleName</PropertyName>
@@ -123,7 +145,7 @@
             <Width>10</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Message"/>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Recommendation"/>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
@@ -136,7 +158,7 @@
                 <PropertyName>Outcome</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Message</PropertyName>
+                <PropertyName>Recommendation</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
@@ -208,8 +230,16 @@
                         <CustomItem>
                           <NewLine />
                           <ExpressionBinding>
-                            <CustomControlName>Help-Recommendation</CustomControlName>
+                            <CustomControlName>Help-Description</CustomControlName>
                           </ExpressionBinding>
+                          <Frame>
+                            <CustomItem>
+                              <NewLine />
+                              <ExpressionBinding>
+                                <CustomControlName>Help-Recommendation</CustomControlName>
+                              </ExpressionBinding>
+                            </CustomItem>
+                          </Frame>
                         </CustomItem>
                       </Frame>
                     </CustomItem>

@@ -17,7 +17,7 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId} @{SourcePath}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     {
-        internal RuleBlock(string sourcePath, string moduleName, string ruleName, string description, string recommendation, PowerShell condition, TagSet tag, TagSet annotations, string[] dependsOn, Hashtable configuration)
+        internal RuleBlock(string sourcePath, string moduleName, string ruleName, RuleHelpInfo info, PowerShell condition, TagSet tag, string[] dependsOn, Hashtable configuration)
         {
             SourcePath = sourcePath;
             ModuleName = moduleName;
@@ -29,11 +29,9 @@ namespace PSRule.Rules
             RuleId = (ModuleName == null) ?
                 string.Concat(scriptFileName, '/', RuleName) : string.Concat(ModuleName, '/', scriptFileName, '/', RuleName);
 
-            Description = description;
-            Recommendation = recommendation;
+            Info = info;
             Condition = condition;
             Tag = tag;
-            Annotations = annotations;
             DependsOn = dependsOn;
             Configuration = configuration;
         }
@@ -61,12 +59,12 @@ namespace PSRule.Rules
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
         /// </summary>
-        public readonly string Description;
+        //public readonly string Synopsis;
 
         /// <summary>
         /// A human readable block of text that identifies the recommendation to address the rule when failed.
         /// </summary>
-        public readonly string Recommendation;
+        //public readonly string Recommendation;
 
         /// <summary>
         /// The body of the rule definition where conditions are provided that either pass or fail the rule.
@@ -83,7 +81,7 @@ namespace PSRule.Rules
         /// </summary>
         public readonly TagSet Tag;
 
-        public readonly TagSet Annotations;
+        //public readonly TagSet Annotations;
 
         /// <summary>
         /// Configuration defaults for the rule definition.
@@ -93,9 +91,10 @@ namespace PSRule.Rules
         /// </remarks>
         public readonly Hashtable Configuration;
 
-        //string ILanguageBlock.Name => RuleName;
+        // Alias to synopsis
+        //public string Description => Synopsis;
 
-        //string ILanguageBlock.Synopsis => Description;
+        public readonly RuleHelpInfo Info;
 
         string ILanguageBlock.SourcePath => SourcePath;
 

@@ -30,12 +30,12 @@ Our business rules for configuration Kubernetes resources can be defined with th
 In the example below:
 
 - We use `metadata.Name` directly after the `Rule` keyword to name the rule definition. Each rule must be named uniquely.
-- The `# Description: ` comment is used to add additional metadata interpreted by PSRule.
+- The `# Synopsis: ` comment is used to add additional metadata interpreted by PSRule.
 - One or more conditions are defined within the curly braces `{ }`.
 - The rule definition is saved within a file named `kubernetes.Rule.ps1`.
 
 ```powershell
-# Description: Must have the app.kubernetes.io/name label
+# Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' {
     # Rule conditions go here
 }
@@ -59,7 +59,7 @@ In the example below:
   - Kubernetes supports and recommends label namespaces, which often use `.` in their name. PSRule supports this by enclosing the field name (`app.kubernetes.io/name`) in apostrophes (`'`) so that `app.kubernetes.io/name` is checked instead of `app`.
 
 ```powershell
-# Description: Must have the app.kubernetes.io/name label
+# Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' {
     Exists "metadata.labels.'app.kubernetes.io/name'"
 }
@@ -73,12 +73,12 @@ In the example below:
 - The `Within` keyword is used to validate that the `app.kubernetes.io/component` only uses one of four (4) allowed values.
 
 ```powershell
-# Description: Must have the app.kubernetes.io/version label
+# Synopsis: Must have the app.kubernetes.io/version label
 Rule 'metadata.Version' {
     Exists 'metadata.labels.''app.kubernetes.io/version'''
 }
 
-# Description: Must have the app.kubernetes.io/component label
+# Synopsis: Must have the app.kubernetes.io/component label
 Rule 'metadata.Component' {
     Exists 'metadata.labels.''app.kubernetes.io/component'''
     Within 'metadata.labels.''app.kubernetes.io/component''' 'web', 'api', 'database', 'gateway' -CaseSensitive
@@ -148,7 +148,7 @@ In the example below:
 - In a previous step, `TypeName` was bound to the `kind` property which will be _Deployment_ or _Service_ for these resource types.
 
 ```powershell
-# Description: Must have the app.kubernetes.io/name label
+# Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -Type 'Deployment', 'Service' {
     Exists "metadata.labels.'app.kubernetes.io/name'"
 }
@@ -157,7 +157,7 @@ Rule 'metadata.Name' -Type 'Deployment', 'Service' {
 Using a type precondition satisfies our business rules and will deliver faster performance then using a script block. An example using a script block precondition is also shown below.
 
 ```powershell
-# Description: Must have the app.kubernetes.io/name label
+# Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -If { $TargetObject.kind -eq 'Deployment' -or $TargetObject.kind -eq 'Service' } {
     Exists "metadata.labels.'app.kubernetes.io/name'"
 }
@@ -173,13 +173,13 @@ In the example below:
   - Built-in keywords like `Exists` automatically default to `$TargetObject`, but can be piped alternative input as shown in the rule definition named `deployment.ResourcesSet`.
 
 ```powershell
-# Description: Deployments use a minimum of 2 replicas
+# Synopsis: Deployments use a minimum of 2 replicas
 Rule 'deployment.HasMinimumReplicas' -Type 'Deployment' {
     Exists 'spec.replicas'
     $TargetObject.spec.replicas -ge 2
 }
 
-# Description: Deployments use specific tags
+# Synopsis: Deployments use specific tags
 Rule 'deployment.NotLatestImage' -Type 'Deployment' {
     foreach ($container in $TargetObject.spec.template.spec.containers) {
         $container.image -like '*:*' -and
@@ -187,7 +187,7 @@ Rule 'deployment.NotLatestImage' -Type 'Deployment' {
     }
 }
 
-# Description: Resource requirements are set for each container
+# Synopsis: Resource requirements are set for each container
 Rule 'deployment.ResourcesSet' -Type 'Deployment' {
     foreach ($container in $TargetObject.spec.template.spec.containers) {
         $container | Exists 'resources.requests.cpu'
