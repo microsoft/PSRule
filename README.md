@@ -164,6 +164,10 @@ The following commands exist in the `PSRule` module:
 
 The following conceptual topics exist in the `PSRule` module:
 
+- [Docs](docs/concepts/PSRule/en-US/about_PSRule_Docs.md)
+  - [Getting documentation](docs/concepts/PSRule/en-US/about_PSRule_Docs.md#getting-documentation)
+  - [Online help](docs/concepts/PSRule/en-US/about_PSRule_Docs.md#online-help)
+  - [Creating documentation](docs/concepts/PSRule/en-US/about_PSRule_Docs.md#creating-documentation)
 - [Options](docs/concepts/PSRule/en-US/about_PSRule_Options.md)
   - [Baseline.RuleName](docs/concepts/PSRule/en-US/about_PSRule_Options.md#baselinerulename)
   - [Baseline.Exclude](docs/concepts/PSRule/en-US/about_PSRule_Options.md#baselineexclude)
