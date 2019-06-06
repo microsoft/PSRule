@@ -30,7 +30,7 @@ namespace PSRule.Pipeline
             foreach (var result in o)
             {
                 var records = result.AsRecord()
-                    .Select(r => new TestCase(name: string.Concat(result.TargetName, " -- ", r.RuleName), description: r.Message, success: r.IsSuccess(), executed: r.IsProcessed(), time: r.Time))
+                    .Select(r => new TestCase(name: string.Concat(result.TargetName, " -- ", r.RuleName), description: r.Info.Synopsis, success: r.IsSuccess(), executed: r.IsProcessed(), time: r.Time))
                     .ToArray();
                 var failedCount = records.Count(r => !r.Success);
                 var fixture = new TestFixture(name: result.TargetName, description: "", success: result.IsSuccess(), executed: result.IsProcessed(), time: result.Time, asserts: failedCount, testCases: records);

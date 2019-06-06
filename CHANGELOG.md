@@ -1,11 +1,18 @@
 
 ## Unreleased
 
+- **Important change**: Changed `Hint` keyword to `Recommend` to align with rule documentation. [#165](https://github.com/BernieWhite/PSRule/issues/165)
+  - Use of `Hint` keyword is deprecated and will be removed in a future release. Currently `Hint` is aliased to `Recommend` for compatibility.
+- **Breaking change**: Changed rule properties to align with rule documentation. [#164](https://github.com/BernieWhite/PSRule/issues/164)
+  - Rule `Synopsis`, is a brief summary of the rule and `Description` is a detailed purpose of the rule.
+  - `Description:` metadata keyword used in comment help is now `Synopsis:`, use of `Description:` will set synopsis. Description metadata keyword is deprecated and will be removed in a future update.
+  - Output property `Message` on rule results is now `Recommendation`.
+
 ## v0.6.0-B190614 (pre-release)
 
 - Added rule documentation, which allows additional rule information to be stored in markdown files. [#157](https://github.com/BernieWhite/PSRule/issues/157)
   - Rule documentation also adds culture support. [#18](https://github.com/BernieWhite/PSRule/issues/18)
-  - Rule documentation can be access like help with the `Get-PSRuleHelp` cmdlet.
+  - Rule documentation can be accessed like help with the `Get-PSRuleHelp` cmdlet.
 - Added annotations, which are non-indexed metadata stored in rule documentation. [#148](https://github.com/BernieWhite/PSRule/issues/148)
   - Annotations can contain a link to online version of the documentation. [#147](https://github.com/BernieWhite/PSRule/issues/147)
 
@@ -56,7 +63,7 @@ What's changed since v0.3.0:
   - `-Format` is automatically detected for `.yaml`, `.yml` and `.json` file extensions.
 - Added `-OutputFormat` parameter to serialize output from `Invoke-PSRule` as YAML or JSON. [#29](https://github.com/BernieWhite/PSRule/issues/29)
 - Added support for logging pass or fail outcomes to a data stream such as Error, Warning or Information. [#97](https://github.com/BernieWhite/PSRule/issues/97)
-- **Breaking change** - Deprecated usage of the `-TargetName` parameter on the `Hint` keyword has been removed. [#81](https://github.com/BernieWhite/PSRule/issues/81)
+- **Breaking change**: Deprecated usage of the `-TargetName` parameter on the `Hint` keyword has been removed. [#81](https://github.com/BernieWhite/PSRule/issues/81)
 
 What's changed since pre-release v0.4.0-B190328:
 
@@ -79,7 +86,7 @@ What's changed since pre-release v0.4.0-B190328:
   - `-Format` is automatically detected for `.yaml`, `.yml` and `.json` file extensions.
 - Added `-OutputFormat` parameter to serialize output from `Invoke-PSRule`. [#29](https://github.com/BernieWhite/PSRule/issues/29)
 - Added support for logging pass or fail outcomes to a data stream such as Error, Warning or Information. [#97](https://github.com/BernieWhite/PSRule/issues/97)
-- **Breaking change** - Deprecated usage of the `-TargetName` parameter on the `Hint` keyword has been removed. [#81](https://github.com/BernieWhite/PSRule/issues/81)
+- **Breaking change**: Deprecated usage of the `-TargetName` parameter on the `Hint` keyword has been removed. [#81](https://github.com/BernieWhite/PSRule/issues/81)
 
 ## v0.3.0
 
@@ -99,15 +106,15 @@ What's changed since v0.2.0:
   - Support TargetName binding of nested properties [#71](https://github.com/BernieWhite/PSRule/issues/71)
 - Added online help links to keywords [#72](https://github.com/BernieWhite/PSRule/issues/72)
 - Added schema for PSRule options [#74](https://github.com/BernieWhite/PSRule/issues/74)
-- **Breaking change** - Changed parameter alias for `-Path` from `-f` to `-p` [#99](https://github.com/BernieWhite/PSRule/issues/99)
-- **Breaking change** - The `-TargetName` parameter of the `Hint` keyword has been deprecated [#81](https://github.com/BernieWhite/PSRule/issues/81)
+- **Important change**: The `-TargetName` parameter of the `Hint` keyword has been deprecated [#81](https://github.com/BernieWhite/PSRule/issues/81)
   - `-TargetName` parameter not longer sets the pipeline object _TargetName_ and generates a warning instead.
   - The `-TargetName` will be completely removed in **v0.4.0**, at which time using the parameter will generate an error.
+- **Breaking change**: Changed parameter alias for `-Path` from `-f` to `-p` [#99](https://github.com/BernieWhite/PSRule/issues/99)
 
 What's changed since pre-release v0.3.0-B190231:
 
 - Added support for input de-serialization from FileInfo objects [#95](https://github.com/BernieWhite/PSRule/issues/95)
-- **Breaking change** - Changed parameter alias for `-Path` from `-f` to `-p` [#99](https://github.com/BernieWhite/PSRule/issues/99)
+- **Breaking change**: Changed parameter alias for `-Path` from `-f` to `-p` [#99](https://github.com/BernieWhite/PSRule/issues/99)
 
 ## v0.3.0-B190231 (pre-release)
 
@@ -122,7 +129,7 @@ What's changed since pre-release v0.3.0-B190231:
 - Added object type binding and dynamic filtering for rules [#82](https://github.com/BernieWhite/PSRule/issues/82)
 - Added support for case-sensitive binding operations [#87](https://github.com/BernieWhite/PSRule/issues/87)
   - Binding ignores case by default. Set option `Binding.CaseSensitive` to `true` to enable case-sensitivity.
-- **Breaking change** - The `-TargetName` parameter of the `Hint` keyword has been deprecated [#81](https://github.com/BernieWhite/PSRule/issues/81)
+- **Important change**: The `-TargetName` parameter of the `Hint` keyword has been deprecated [#81](https://github.com/BernieWhite/PSRule/issues/81)
   - `-TargetName` parameter not longer sets the pipeline object _TargetName_ and generates a warning instead.
   - The `-TargetName` will be completely removed in **v0.4.0**, at which time using the parameter will generate an error.
 
@@ -167,7 +174,7 @@ What's changed since pre-release v0.2.0-B190121:
 
 - Fix Get-PSRule generates exception when no .rule.ps1 scripts exist in path [#53](https://github.com/BernieWhite/PSRule/issues/53)
 - Fix LocalizedData.PathNotFound warning when no .rule.ps1 scripts exist in path [#54](https://github.com/BernieWhite/PSRule/issues/54)
-- **Breaking change** - Renamed `Test-PSRule` cmdlet to `Test-PSRuleTarget` which aligns more closely to the verb-noun naming standard [#57](https://github.com/BernieWhite/PSRule/issues/57)
+- **Breaking change**: Renamed `Test-PSRule` cmdlet to `Test-PSRuleTarget` which aligns more closely to the verb-noun naming standard [#57](https://github.com/BernieWhite/PSRule/issues/57)
 
 ## v0.2.0-B190105 (pre-release)
 
@@ -197,7 +204,7 @@ What's changed since pre-release v0.1.0-B181235:
   - Rules with the same name can exist and be cross linked with DependsOn, as long a the script file name is different
 - Added `-Not` to `Exists` keyword
 - Improved verbose logging of `Exists`, `AllOf`, `AnyOf` keywords and core engine
-- **Breaking change** - Renamed outcome filtering parameters to align to type name and increase clarity
+- **Breaking change**: Renamed outcome filtering parameters to align to type name and increase clarity
   - `Invoke-PSRule` has a `-Outcome` parameter instead of `-Status`
   - `-Outcome` supports values of `Pass`, `Fail`, `Error`, `None`, `Processed` and `All`
 

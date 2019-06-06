@@ -125,8 +125,10 @@ namespace PSRule.Commands
                 {
                      return new RuleHelpInfo(name: name)
                      {
-                         Synopsis = document.Synopsis.Text,
+                         Synopsis = document.Synopsis?.Text,
+                         Description = document.Description?.Text,
                          Recommendation = document.Recommendation?.Text ?? document.Synopsis?.Text,
+                         Notes = document.Notes?.Text,
                          Annotations = document.Annotations?.ToHashtable()
                      };
                 }

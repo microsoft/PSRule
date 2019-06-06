@@ -23,22 +23,27 @@ namespace PSRule.Rules
         /// <summary>
         /// The synopsis of the rule.
         /// </summary>
-        public string Synopsis { get; set; }
+        public string Synopsis { get; internal set; }
+
+        /// <summary>
+        /// An extented description of the rule.
+        /// </summary>
+        public string Description { get; internal set; }
 
         /// <summary>
         /// The recommendation for the rule.
         /// </summary>
-        public string Recommendation { get; set; }
+        public string Recommendation { get; internal set; }
 
         /// <summary>
         /// Additional notes for the rule.
         /// </summary>
-        public string Notes { get; set; }
+        public string Notes { get; internal set; }
 
         /// <summary>
         /// Metadata annotations for the rule.
         /// </summary>
-        public Hashtable Annotations { get; set; }
+        public Hashtable Annotations { get; internal set; }
 
         /// <summary>
         /// Get the URI for the online version of the documentation.

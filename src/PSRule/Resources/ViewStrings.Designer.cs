@@ -124,6 +124,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recommendation.
+        /// </summary>
+        internal static string Recommendation {
+            get {
+                return ResourceManager.GetString("Recommendation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RuleName.
         /// </summary>
         internal static string RuleName {

@@ -33,7 +33,7 @@ Describe 'PSRule -- Recommend keyword' -Tag 'Recommend' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result.RuleName | Should -BeIn 'HintTest', 'RecommendTest';
-            $result.Message | Should -BeIn 'This is a recommendation';
+            $result.Recommendation | Should -BeIn 'This is a recommendation';
             $warningMessages.Length | Should -Be 0;
         }
 
@@ -43,7 +43,7 @@ Describe 'PSRule -- Recommend keyword' -Tag 'Recommend' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result.RuleName | Should -BeIn 'TestWithDescription', 'TestWithSynopsis';
-            $result.Message | Should -BeIn 'Test for Recommend keyword';
+            $result.Recommendation | Should -BeIn 'Test for Recommend keyword';
         }
 
         It 'Uses documentation' {
@@ -52,7 +52,7 @@ Describe 'PSRule -- Recommend keyword' -Tag 'Recommend' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
             $result.RuleName | Should -BeIn 'RecommendTest2';
-            $result.Message | Should -BeIn 'This is a recommendation from documentation.';
+            $result.Recommendation | Should -BeIn 'This is a recommendation from documentation.';
         }
     }
 }

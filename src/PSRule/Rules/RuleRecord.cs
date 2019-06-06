@@ -54,8 +54,8 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "outcomeReason")]
         public RuleOutcomeReason OutcomeReason { get; internal set; }
 
-        [JsonProperty(PropertyName = "message")]
-        public string Message => Info.Recommendation ?? Info.Synopsis;
+        [JsonProperty(PropertyName = "recommendation")]
+        public string Recommendation => Info.Recommendation ?? Info.Synopsis;
 
         /// <summary>
         /// A name to identify the processed object.

@@ -64,6 +64,8 @@ namespace PSRule.Parser
         public readonly string Name;
 
         public TextBlock Synopsis;
+
+        public TextBlock Description;
         
         public TextBlock Notes;
 

@@ -46,7 +46,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.IsSuccess() | Should -Be $True;
             $result.TargetName | Should -Be 'TestObject1';
             $result.Info.Annotations.culture | Should -Be 'en-ZZ';
-            $result.Message | Should -Be 'This is a recommendation.';
+            $result.Recommendation | Should -Be 'This is a recommendation.';
             Assert-VerifiableMock;
         }
 
@@ -929,13 +929,35 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
     $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
 
     Context 'With defaults' {
-        $result = @(Get-PSRuleHelp -Module 'TestModule');
-        $result.Length | Should -Be 2;
+        It 'Docs from imported module' {
+            $result = @(Get-PSRuleHelp);
+            $result.Length | Should -Be 2;
+        }
+
+        It 'Using wildcard in name' {
+            $result = @(Get-PSRuleHelp M1.*);
+            $result.Length | Should -Be 2;
+        }
+    }
+
+    Context 'With -Path' {
+        It 'Docs from loose files' {
+            $result = @(Get-PSRuleHelp -Name 'FromFile1' -Culture 'en-ZZ' -Path $ruleFilePath -WarningAction SilentlyContinue);
+            $result.Length | Should -Be 1;
+            $result[0].Name | Should -Be 'FromFile1';
+            $result[0].Synopsis | Should -Be 'This is a synopsis.';
+            $result[0].Description | Should -Be 'This is a description.';
+            $result[0].Recommendation | Should -Be 'This is a recommendation.';
+            $result[0].Notes | Should -Be 'These are notes.';
+            $result[0].Annotations.culture | Should -Be 'en-ZZ';
+        }
     }
 
     Context 'With -Module' {
-        $result = @(Get-PSRuleHelp -Module 'TestModule');
-        $result.Length | Should -Be 2;
+        It 'Docs from module' {
+            $result = @(Get-PSRuleHelp -Module 'TestModule');
+            $result.Length | Should -Be 2;
+        }
     }
 
     Context 'With -Online' {
