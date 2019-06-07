@@ -114,7 +114,6 @@ AliasesToExport = @(
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.

@@ -528,7 +528,7 @@ function Get-PSRuleHelp {
 
                     if ($Online -and $result.Length -eq 1) {
                         $launchUri = $result.GetOnlineHelpUri();
-    
+
                         if ($Null -ne $launchUri) {
                             Write-Verbose -Message "[Get-PSRuleHelp] -- Launching online version: $($launchUri.OriginalString)";
                             LaunchOnlineHelp -Uri $launchUri -Verbose:$VerbosePreference;
@@ -604,7 +604,7 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInconclusiveWarning')]
         [System.Boolean]$InconclusiveWarning = $True,
-    
+
         # Sets the Execution.NotProcessedWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionNotProcessedWarning')]
@@ -758,7 +758,7 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInconclusiveWarning')]
         [System.Boolean]$InconclusiveWarning = $True,
-    
+
         # Sets the Execution.NotProcessedWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionNotProcessedWarning')]
@@ -1218,7 +1218,7 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInconclusiveWarning')]
         [System.Boolean]$InconclusiveWarning = $True,
-    
+
         # Sets the Execution.NotProcessedWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionNotProcessedWarning')]
@@ -1377,6 +1377,7 @@ function LaunchOnlineHelp {
 }
 
 function InitEditorServices {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalAliases', '', Justification = 'Alias is used for editor discovery only.', Scope = 'Function')]
     [CmdletBinding()]
     param ()
 
@@ -1393,8 +1394,8 @@ function InitEditorServices {
                 'Recommend'
             );
 
-            $Null = New-Alias -Name 'Hint' -Value 'Recommend' -Force -Scope Global;
-
+            # Define aliases
+            $Null = New-Alias -Name Hint -Value Recommend -Scope Global -Force;
             Export-ModuleMember -Alias @(
                 'Hint'
             );
