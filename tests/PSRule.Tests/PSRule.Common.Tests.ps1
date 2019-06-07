@@ -842,8 +842,10 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
     }
 
     Context 'Using -Module' {
+        $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule';
+
         It 'Returns module rules' {
-            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
+            $Null = Import-Module $testModuleSourcePath -Force;
             $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-US');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
@@ -852,8 +854,43 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result[0].Info.Annotations.culture | Should -Be 'en-US';
         }
 
+        if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
+            $Null = Remove-Module -Name TestModule;
+        }
+
+        It 'Handles path spaces' {
+            # Copy file
+            $testParentPath = Join-Path -Path $outputPath -ChildPath 'Program Files\';
+            $testRuleDestinationPath = Join-Path -Path $testParentPath -ChildPath 'FromFile.Rule.ps1';
+            if (!(Test-Path -Path $testParentPath)) {
+                $Null = New-Item -Path $testParentPath -ItemType Directory -Force;
+            }
+            $Null = Copy-Item -Path $ruleFilePath -Destination $testRuleDestinationPath -Force;
+
+            $result = @(Get-PSRule -Path $testRuleDestinationPath);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -BeGreaterThan 10;
+
+            # Copy module to test path
+            $testModuleDestinationPath = Join-Path -Path $testParentPath -ChildPath 'TestModule';
+            $Null = Copy-Item -Path $testModuleSourcePath -Destination $testModuleDestinationPath -Recurse -Force;
+
+            # Test modules with spaces in paths
+            $Null = Import-Module $testModuleDestinationPath -Force;
+            $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-US');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result[0].RuleName | Should -Be 'M1.Rule1';
+            $result[0].Description | Should -Be 'Synopsis en-US.';
+            $result[0].Info.Annotations.culture | Should -Be 'en-US';
+        }
+
+        if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
+            $Null = Remove-Module -Name TestModule;
+        }
+
         It 'Returns module and path rules' {
-            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
+            $Null = Import-Module $testModuleSourcePath -Force;
             $result = @(Get-PSRule -Path (Join-Path $here -ChildPath 'TestModule') -Module 'TestModule');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 4;
@@ -866,7 +903,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             }
 
             # en-US default
-            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
+            $Null = Import-Module $testModuleSourcePath -Force;
             $result = @(Get-PSRule -Module 'TestModule');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
@@ -875,7 +912,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result[0].Info.Annotations.culture | Should -Be 'en-US';
 
             # en-AU
-            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
+            $Null = Import-Module $testModuleSourcePath -Force;
             $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-AU');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
@@ -888,7 +925,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             }
 
             # en-AU default
-            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
+            $Null = Import-Module $testModuleSourcePath -Force;
             $result = @(Get-PSRule -Module 'TestModule');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
@@ -926,7 +963,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
 
 Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
     $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
-    $Null = Import-Module (Join-Path $here -ChildPath 'TestModule');
+    $Null = Import-Module (Join-Path $here -ChildPath 'TestModule') -Force;
 
     Context 'With defaults' {
         It 'Docs from imported module' {

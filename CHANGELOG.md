@@ -1,6 +1,9 @@
 
 ## Unreleased
 
+- Fix discovery of rules within paths that contain spaces fails. [#168](https://github.com/BernieWhite/PSRule/issues/168)
+- Fix exporting of `Recommend` keyword and `Hint` alias. [#171](https://github.com/BernieWhite/PSRule/issues/171)
+
 ## v0.6.0-B190627 (pre-release)
 
 - **Important change**: Changed `Hint` keyword to `Recommend` to align with rule documentation. [#165](https://github.com/BernieWhite/PSRule/issues/165)

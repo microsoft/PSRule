@@ -115,7 +115,7 @@ namespace PSRule.Host
                     //PipelineContext.CurrentThread.UseSource(source: source);
 
                     // Invoke script
-                    ps.AddScript(source.Path, true);
+                    ps.AddScript(string.Concat("& '", source.Path, "'"), true);
                     var invokeResults = ps.Invoke();
 
                     if (ps.HadErrors)
