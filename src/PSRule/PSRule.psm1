@@ -1393,7 +1393,7 @@ function InitEditorServices {
                 'Recommend'
             );
 
-            New-Alias -Name 'Hint' -Value 'Recommend' -Force;
+            $Null = New-Alias -Name 'Hint' -Value 'Recommend' -Force -Scope Global;
 
             Export-ModuleMember -Alias @(
                 'Hint'
