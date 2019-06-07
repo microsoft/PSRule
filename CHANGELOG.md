@@ -1,6 +1,27 @@
 
 ## Unreleased
 
+## v0.6.0
+
+What's changed since v0.5.0:
+
+- Fix operation is not supported on this platform failure. [#152](https://github.com/BernieWhite/PSRule/issues/152)
+- Fix FullName cannot be found on this object error. [#149](https://github.com/BernieWhite/PSRule/issues/149)
+- Fix discovery of rules within paths that contain spaces fails. [#168](https://github.com/BernieWhite/PSRule/issues/168)
+- Added rule documentation, which allows additional rule information to be stored in markdown files. [#157](https://github.com/BernieWhite/PSRule/issues/157)
+  - Rule documentation also adds culture support. [#18](https://github.com/BernieWhite/PSRule/issues/18)
+  - Rule documentation can be accessed like help with the `Get-PSRuleHelp` cmdlet.
+- Added annotations, which are non-indexed metadata stored in rule documentation. [#148](https://github.com/BernieWhite/PSRule/issues/148)
+  - Annotations can contain a link to online version of the documentation. [#147](https://github.com/BernieWhite/PSRule/issues/147)
+- **Important change**: Changed `Hint` keyword to `Recommend` to align with rule documentation. [#165](https://github.com/BernieWhite/PSRule/issues/165)
+  - Use of `Hint` keyword is deprecated and will be removed in a future release. Currently `Hint` is aliased to `Recommend` for compatibility.
+- **Breaking change**: Changed rule properties to align with rule documentation. [#164](https://github.com/BernieWhite/PSRule/issues/164)
+  - Rule `Synopsis`, is a brief summary of the rule and `Description` is a detailed purpose of the rule.
+  - `Description:` metadata keyword used in comment help is now `Synopsis:`, use of `Description:` will set synopsis. Description metadata keyword is deprecated and will be removed in a future update.
+  - Output property `Message` on rule results is now `Recommendation`.
+
+What's changed since pre-release v0.6.0-B190627:
+
 - Fix discovery of rules within paths that contain spaces fails. [#168](https://github.com/BernieWhite/PSRule/issues/168)
 - Fix exporting of `Recommend` keyword and `Hint` alias. [#171](https://github.com/BernieWhite/PSRule/issues/171)
 
