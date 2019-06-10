@@ -1,113 +1,152 @@
 # Azure DevOps
-# Build pipeline for PSRule
-
-strategy:
-  matrix:
-    Linux:
-      imageName: 'ubuntu-16.04'
-    MacOS:
-      imageName: 'macos-10.13'
-    Windows:
-      imageName: 'vs2017-win2016'
-      publishModule: 'true'
-      analysis: 'true'
-      coverage: 'true'
+# CI pipeline for PSRule
 
 variables:
-  buildConfiguration: 'Release'
   version: '0.7.0'
+  buildConfiguration: 'Release'
 
 # Use build number format, i.e. 0.1.0-B181101
 name: $(version)-B$(date:yyMM)$(rev:rr)
 
 trigger:
-- master
+  branches:
+    include:
+    - 'master'
+  tags:
+    include:
+    - 'v0.*'
 
-pool:
-  vmImage: $(imageName)
+pr:
+  branches:
+    include:
+    - 'master'
 
-steps:
+stages:
 
-# Install pipeline dependencies and build module
-- powershell: ./.azure-pipelines/pipeline-build.ps1 -File ./pipeline.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion "$(Release.Version)"
-  displayName: 'Build module'
+# Build pipeline
+- stage: Build
+  displayName: Build
+  jobs:
+  - job:
+    strategy:
+      matrix:
+        Linux:
+          imageName: 'ubuntu-16.04'
+        MacOS:
+          imageName: 'macos-10.13'
+        Windows:
+          imageName: 'vs2017-win2016'
+          publish: 'true'
+          analysis: 'true'
+          coverage: 'true'
+    pool:
+      vmImage: $(imageName)
+    steps:
 
-# Run module benchmark
-- powershell: ./.azure-pipelines/pipeline-build.ps1 -Task Benchmark -File ./pipeline.build.ps1 -Configuration $(buildConfiguration) -ModuleVersion $(Build.BuildNumber) -ReleaseVersion "$(Release.Version)"
-  displayName: 'Benchmark'
-  condition: eq(variables['benchmark'], 'true')
+    # Install pipeline dependencies
+    - powershell: ./.azure-pipelines/pipeline-deps.ps1
+      displayName: 'Install dependencies'
 
-# Run SonarCloud analysis
-- powershell: dotnet tool install --global dotnet-sonarscanner
-  displayName: 'Install Sonar scanner'
-  condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
+    # Build module
+    - powershell: Invoke-Build -Configuration $(buildConfiguration) -Build $(Build.BuildNumber)
+      displayName: 'Build module'
 
-- script: dotnet sonarscanner begin /k:"BernieWhite_PSRule" /o:"berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken) /v:"$(Build.BuildNumber)"
-  displayName: 'Prepare SonarCloud'
-  condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
+    # Run module benchmark
+    - powershell: Invoke-Build Benchmark -Configuration $(buildConfiguration) -Build $(Build.BuildNumber)
+      displayName: 'Benchmark'
+      condition: eq(variables['benchmark'], 'true')
 
-- script: dotnet build
-  displayName: 'Build solution for analysis'
-  condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
+    # Run SonarCloud analysis
+    - powershell: dotnet tool install --global dotnet-sonarscanner
+      displayName: 'Install Sonar scanner'
+      condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
 
-- script: dotnet sonarscanner end /d:sonar.login=$(sonarQubeToken)
-  displayName: 'Complete SonarCloud'
-  condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
+    - script: dotnet sonarscanner begin /k:"BernieWhite_PSRule" /o:"berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken) /v:"$(Build.BuildNumber)"
+      displayName: 'Prepare SonarCloud'
+      condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
 
-# DotNet test results
-- task: PublishTestResults@2
-  displayName: 'Publish unit test results'
-  inputs:
-    testRunTitle: 'DotNet on $(imageName)'
-    testRunner: VSTest
-    testResultsFiles: 'reports/*.trx'
-    mergeTestResults: true
-    platform: $(imageName)
-    configuration: $(buildConfiguration)
-    publishRunAttachments: true
-  condition: succeededOrFailed()
+    - script: dotnet build
+      displayName: 'Build solution for analysis'
+      condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
 
-# Pester test results
-- task: PublishTestResults@2
-  displayName: 'Publish Pester results'
-  inputs:
-    testRunTitle: 'Pester on $(imageName)'
-    testRunner: NUnit
-    testResultsFiles: 'reports/pester-unit.xml'
-    mergeTestResults: true
-    platform: $(imageName)
-    configuration: $(buildConfiguration)
-    publishRunAttachments: true
-  condition: succeededOrFailed()
+    - script: dotnet sonarscanner end /d:sonar.login=$(sonarQubeToken)
+      displayName: 'Complete SonarCloud'
+      condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
 
-# PSRule results
-- task: PublishTestResults@2
-  displayName: 'Publish PSRule results'
-  inputs:
-    testRunTitle: 'PSRule on $(imageName)'
-    testRunner: NUnit
-    testResultsFiles: 'reports/rule.report.xml'
-    mergeTestResults: true
-    platform: $(imageName)
-    configuration: $(buildConfiguration)
-    publishRunAttachments: true
-  condition: succeededOrFailed()
+    # DotNet test results
+    - task: PublishTestResults@2
+      displayName: 'Publish unit test results'
+      inputs:
+        testRunTitle: 'DotNet on $(imageName)'
+        testRunner: VSTest
+        testResultsFiles: 'reports/*.trx'
+        mergeTestResults: true
+        platform: $(imageName)
+        configuration: $(buildConfiguration)
+        publishRunAttachments: true
+      condition: succeededOrFailed()
 
-# Publish Code Coverage Results
-- task: PublishCodeCoverageResults@1
-  displayName: 'Publish Pester code coverage'
-  inputs:
-    codeCoverageTool: 'JaCoCo'
-    summaryFileLocation: 'reports/pester-coverage.xml'
-    #reportDirectory: # Optional
-    #additionalCodeCoverageFiles: # Optional
-    #failIfCoverageEmpty: false # Optional
-  condition: eq(variables['coverage'], 'true')
+    # Pester test results
+    - task: PublishTestResults@2
+      displayName: 'Publish Pester results'
+      inputs:
+        testRunTitle: 'Pester on $(imageName)'
+        testRunner: NUnit
+        testResultsFiles: 'reports/pester-unit.xml'
+        mergeTestResults: true
+        platform: $(imageName)
+        configuration: $(buildConfiguration)
+        publishRunAttachments: true
+      condition: succeededOrFailed()
 
-# Generate artifacts
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish PSRule module'
-  inputs:
-    PathtoPublish: out/modules/PSRule
-    ArtifactName: PSRule
-  condition: and(succeeded(), eq(variables['publishModule'], 'true'))
+    # PSRule results
+    - task: PublishTestResults@2
+      displayName: 'Publish PSRule results'
+      inputs:
+        testRunTitle: 'PSRule on $(imageName)'
+        testRunner: NUnit
+        testResultsFiles: 'reports/rule.report.xml'
+        mergeTestResults: true
+        platform: $(imageName)
+        configuration: $(buildConfiguration)
+        publishRunAttachments: true
+      condition: succeededOrFailed()
+
+    # Publish Code Coverage Results
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish Pester code coverage'
+      inputs:
+        codeCoverageTool: 'JaCoCo'
+        summaryFileLocation: 'reports/pester-coverage.xml'
+      condition: eq(variables['coverage'], 'true')
+
+    # Generate artifacts
+    - task: PublishPipelineArtifact@0
+      displayName: 'Publish module'
+      inputs:
+        artifactName: PSRule
+        targetPath: out/modules/PSRule
+      condition: and(succeeded(), eq(variables['publish'], 'true'))
+
+# Release pipeline
+- stage: Release
+  displayName: Release
+  dependsOn: Build
+  condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/v0.')
+  jobs:
+  - job:
+    displayName: Live
+    pool:
+      vmImage: 'ubuntu-16.04'
+    steps:
+    - task: DownloadPipelineArtifact@1
+      displayName: 'Download module'
+      inputs:
+        artifactName: PSRule
+        downloadPath: $(Build.SourcesDirectory)/out/modules/PSRule
+    # Install pipeline dependencies
+    - powershell: ./.azure-pipelines/pipeline-deps.ps1
+      displayName: 'Install dependencies'
+    # Install pipeline dependencies and build module
+    - powershell: Invoke-Build Release -ApiKey $(apiKey)
+      displayName: 'Publish module'

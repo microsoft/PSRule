@@ -80,7 +80,7 @@ The markdown of each file uses following structure.
 
 ## SYNOPSIS
 
-{{ A short description of the rule }}
+{{ A brief summary of the rule }}
 
 ## DESCRIPTION
 
