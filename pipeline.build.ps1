@@ -1,17 +1,14 @@
+
 [CmdletBinding()]
 param (
     [Parameter(Mandatory = $False)]
-    [String]$ModuleVersion = '0.0.1',
-
-    [Parameter(Mandatory = $False)]
-    [AllowNull()]
-    [String]$ReleaseVersion,
+    [String]$Build = '0.0.1',
 
     [Parameter(Mandatory = $False)]
     [String]$Configuration = 'Debug',
 
     [Parameter(Mandatory = $False)]
-    [String]$NuGetApiKey,
+    [String]$ApiKey,
 
     [Parameter(Mandatory = $False)]
     [Switch]$CodeCoverage = $False,
@@ -33,22 +30,11 @@ if ($Env:SYSTEM_DEBUG -eq 'true') {
     $VerbosePreference = 'Continue';
 }
 
-if ($Env:coverage -eq 'true') {
-    $CodeCoverage = $True;
-}
-
 if ($Env:BUILD_SOURCEBRANCH -like '*/tags/*' -and $Env:BUILD_SOURCEBRANCHNAME -like 'v0.*') {
-    $ModuleVersion = $Env:BUILD_SOURCEBRANCHNAME.Substring(1);
+    $Build = $Env:BUILD_SOURCEBRANCHNAME.Substring(1);
 }
 
-if (![String]::IsNullOrEmpty($ReleaseVersion)) {
-    Write-Host -Object "[Pipeline] -- ReleaseVersion: $ReleaseVersion" -ForegroundColor Green;
-    $ModuleVersion = $ReleaseVersion;
-}
-
-Write-Host -Object "[Pipeline] -- ModuleVersion: $ModuleVersion" -ForegroundColor Green;
-
-$version = $ModuleVersion;
+$version = $Build;
 $versionSuffix = [String]::Empty;
 
 if ($version -like '*-*') {
@@ -143,59 +129,66 @@ task Clean {
 }
 
 task VersionModule {
-    if (![String]::IsNullOrEmpty($ModuleVersion)) {
-        Write-Verbose -Message "[VersionModule] -- ModuleVersion: $ModuleVersion";
+    $modulePath = Join-Path -Path $ArtifactPath -ChildPath 'PSRule';
+    $manifestPath = Join-Path -Path $modulePath -ChildPath 'PSRule.psd1';
+    Write-Verbose -Message "[VersionModule] -- Checking module path: $modulePath";
 
+    if (![String]::IsNullOrEmpty($Build)) {
         # Update module version
         if (![String]::IsNullOrEmpty($version)) {
             Write-Verbose -Message "[VersionModule] -- Updating module manifest ModuleVersion";
-            Update-ModuleManifest -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule/PSRule.psd1) -ModuleVersion $version;
+            Update-ModuleManifest -Path $manifestPath -ModuleVersion $version;
         }
 
         # Update pre-release version
         if (![String]::IsNullOrEmpty($versionSuffix)) {
             Write-Verbose -Message "[VersionModule] -- Updating module manifest Prerelease";
-            Update-ModuleManifest -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule/PSRule.psd1) -Prerelease $versionSuffix;
+            Update-ModuleManifest -Path $manifestPath -Prerelease $versionSuffix;
         }
     }
 }
 
 task ReleaseModule VersionModule, {
-    if (![String]::IsNullOrEmpty($NuGetApiKey)) {
-        # Publish to PowerShell Gallery
-        Publish-Module -Path (Join-Path -Path $ArtifactPath -ChildPath PSRule) -NuGetApiKey $NuGetApiKey;
+    $modulePath = (Join-Path -Path $ArtifactPath -ChildPath 'PSRule');
+    Write-Verbose -Message "[ReleaseModule] -- Checking module path: $modulePath";
+
+    if (!(Test-Path -Path $modulePath)) {
+        Write-Error -Message "[ReleaseModule] -- Module path does not exist";
+    }
+    elseif (![String]::IsNullOrEmpty($ApiKey)) {
+        Publish-Module -Path $modulePath -NuGetApiKey $ApiKey;
     }
 }
 
+# Synopsis: Install NuGet provider
 task NuGet {
-    $Null = Install-PackageProvider -Name NuGet -Force -Scope CurrentUser;
+    if ($Null -eq (Get-PackageProvider -Name NuGet -ErrorAction Ignore)) {
+        Install-PackageProvider -Name NuGet -Force -Scope CurrentUser;
+    }
 }
 
 # Synopsis: Install Pester module
-task Pester {
-    if ($Null -eq (Get-InstalledModule -Name Pester -MinimumVersion '4.0.0' -ErrorAction Ignore)) {
-        Install-Module -Name Pester -Scope CurrentUser -MinimumVersion '4.0.0' -Force -SkipPublisherCheck;
+task Pester NuGet, {
+    if ($Null -eq (Get-InstalledModule -Name Pester -MinimumVersion 4.0.0 -ErrorAction Ignore)) {
+        Install-Module -Name Pester -MinimumVersion 4.0.0 -Scope CurrentUser -Force -SkipPublisherCheck;
     }
-
     Import-Module -Name Pester -Verbose:$False;
+}
+
+# Synopsis: Install PSScriptAnalyzer module
+task PSScriptAnalyzer NuGet, {
+    if ($Null -eq (Get-InstalledModule -Name PSScriptAnalyzer -MinimumVersion 1.17.0 -ErrorAction Ignore)) {
+        Install-Module -Name PSScriptAnalyzer -MinimumVersion 1.17.0 -Scope CurrentUser -Force;
+    }
+    Import-Module -Name PSScriptAnalyzer -Verbose:$False;
 }
 
 # Synopsis: Install PlatyPS module
 task platyPS {
-    if ($Null -eq (Get-InstalledModule -Name PlatyPS -MinimumVersion '0.14.0' -ErrorAction Ignore)) {
-        Install-Module -Name PlatyPS -Scope CurrentUser -MinimumVersion '0.14.0' -Force;
+    if ($Null -eq (Get-InstalledModule -Name PlatyPS -MinimumVersion 0.14.0 -ErrorAction Ignore)) {
+        Install-Module -Name PlatyPS -Scope CurrentUser -MinimumVersion 0.14.0 -Force;
     }
-
     Import-Module -Name PlatyPS -Verbose:$False;
-}
-
-# Synopsis: Install PSScriptAnalyzer module
-task PSScriptAnalyzer {
-    if ($Null -eq (Get-InstalledModule -Name PSScriptAnalyzer -ErrorAction Ignore)) {
-        Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force;
-    }
-
-    Import-Module -Name PSScriptAnalyzer -Verbose:$False;
 }
 
 task TestModule TestDotNet, Pester, PSScriptAnalyzer, {
@@ -225,6 +218,13 @@ task TestModule TestDotNet, Pester, PSScriptAnalyzer, {
 task Benchmark {
     if ($Benchmark -or $BuildTask -eq 'Benchmark') {
         dotnet run -p src/PSRule.Benchmark -f netcoreapp2.1 -c Release -- benchmark --output $PWD;
+    }
+}
+
+# Synopsis: Add shipit build tag
+task TagBuild {
+    if ($Null -ne $Env:BUILD_DEFINITIONNAME) {
+        Write-Host "`#`#vso[build.addbuildtag]shipit";
     }
 }
 
@@ -270,4 +270,4 @@ task Build Clean, BuildModule, BuildHelp, VersionModule
 
 task Test Build, TestModule
 
-task Release ReleaseModule
+task Release ReleaseModule, TagBuild
