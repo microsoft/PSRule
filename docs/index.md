@@ -4,14 +4,14 @@ PSRule is an open-source, general-purpose rules engine built on top of PowerShel
 
 PSRule provides an easy way to:
 
-- Define reusable business rules like scripts
-- Validate PowerShell objects with rules by piping them to PSRule
+- Define reusable business rules like scripts.
+- Validate PowerShell objects with rules by piping them to PSRule.
 
 Because PSRule is based on PowerShell:
 
-- It builds on existing PowerShell skills
-- Works with other PowerShell modules and .NET classes
-- Works great with source control and DevOps pipelines
+- It builds on existing PowerShell skills.
+- Works with other PowerShell modules and .NET classes.
+- Works great with source control and DevOps pipelines.
 
 ## Installing the module
 

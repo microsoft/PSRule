@@ -18,7 +18,7 @@ A PowerShell rules engine.
 
 Get a list of matching rule definitions within the search path.
 
-### [Get-PSRule](Get-PSRuleHelp.md)
+### [Get-PSRuleHelp](Get-PSRuleHelp.md)
 
 Get documentation for a rule.
 
