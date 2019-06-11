@@ -68,7 +68,7 @@ function Invoke-PSRule {
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3')]
+        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv')]
         [PSRule.Configuration.OutputFormat]$OutputFormat,
 
         [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]

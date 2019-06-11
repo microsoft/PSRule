@@ -2,6 +2,7 @@
 using PSRule.Configuration;
 using PSRule.Rules;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -82,6 +83,11 @@ namespace PSRule.Pipeline
                 else if (_OutputFormat == OutputFormat.NUnit3)
                 {
                     WriteObjectNUnit3(_Results);
+                    _Results.Clear();
+                }
+                else if (_OutputFormat == OutputFormat.Csv)
+                {
+                    WriteObjectCSV(_Results);
                     _Results.Clear();
                 }
             }
@@ -181,6 +187,14 @@ namespace PSRule.Pipeline
             var xml = s.Serialize(o);
 
             _OutputVisitor(xml, false);
+        }
+
+        private void WriteObjectCSV(IEnumerable<InvokeResult> o)
+        {
+            var s = new CSVSerializer();
+            var csv = s.Serialize(o);
+
+            _OutputVisitor(csv, false);
         }
 
         private RuleRecord[] GetRecords()

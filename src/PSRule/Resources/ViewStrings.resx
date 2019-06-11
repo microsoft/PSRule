@@ -135,6 +135,9 @@
   <data name="Outcome" xml:space="preserve">
     <value>Outcome</value>
   </data>
+  <data name="OutcomeReason" xml:space="preserve">
+    <value>OutcomeReason</value>
+  </data>
   <data name="Pass" xml:space="preserve">
     <value>Pass</value>
   </data>
@@ -146,5 +149,11 @@
   </data>
   <data name="Synopsis" xml:space="preserve">
     <value>Synopsis</value>
+  </data>
+  <data name="TargetName" xml:space="preserve">
+    <value>TargetName</value>
+  </data>
+  <data name="TargetType" xml:space="preserve">
+    <value>TargetType</value>
   </data>
 </root>

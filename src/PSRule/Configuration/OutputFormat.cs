@@ -12,6 +12,8 @@ namespace PSRule.Configuration
 
         Json = 2,
 
-        NUnit3 = 3
+        NUnit3 = 3,
+
+        Csv = 4
     }
 }
