@@ -81,11 +81,11 @@ Get-AzResource -ExpandProperties | ConvertTo-Json -Depth 10 | Set-Content -path 
 <p>In the example below:</p>
 <ul>
 <li>We use <code>storageAccounts.UseHttps</code> directly after the <code>Rule</code> keyword to name the rule definition. Each rule must be named uniquely.</li>
-<li>The <code># Description:</code> comment is used to add additional metadata interpreted by PSRule.</li>
+<li>The <code># Synopsis:</code> comment is used to add additional metadata interpreted by PSRule.</li>
 <li>One or more conditions are defined within the curly braces <code>{ }</code>.</li>
 <li>The rule definition is saved within a file named <code>storageAccounts.Rule.ps1</code>.</li>
 </ul>
-<pre><code class="lang-powershell"># Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+<pre><code class="lang-powershell"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' {
     # Rule conditions go here
 }
@@ -118,9 +118,8 @@ Rule 'storageAccounts.UseHttps' {
 </ul>
 </li>
 </ul>
-<pre><code class="lang-powershell"># Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+<pre><code class="lang-powershell"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' {
-
     # This property returns true or false, so nothing more needs to be done
     $TargetObject.Properties.supportsHttpsTrafficOnly
 
@@ -135,7 +134,7 @@ Rule 'storageAccounts.UseHttps' {
 <ul>
 <li>Directly after the <code>Hint</code> keyword is a message to help understand why the rule failed or passed.</li>
 </ul>
-<pre><code class="lang-powershell"># Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+<pre><code class="lang-powershell"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' {
     Hint 'Storage accounts should only allow secure traffic'
 
@@ -149,7 +148,7 @@ Rule 'storageAccounts.UseHttps' {
 <ul>
 <li>A check against <code>$TargetObject.ResourceType</code> ensured that our rule is only processed for Storage Accounts.</li>
 </ul>
-<pre><code class="lang-powershell"># Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+<pre><code class="lang-powershell"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { $TargetObject.ResourceType -eq 'Microsoft.Storage/storageAccounts' } {
     Hint 'Storage accounts should only allow secure traffic'
 
@@ -162,17 +161,16 @@ Rule 'storageAccounts.UseHttps' -If { $TargetObject.ResourceType -eq 'Microsoft.
 <pre><code class="lang-powershell"># Read resources in from file
 $resources = Get-Content -Path .\resources.json | ConvertFrom-Json;
 
-# For each resource
+# Process resources
 $resources | Invoke-PSRule;
 </code></pre>
+<p>PSRule natively supports reading from YAML and JSON files so this command-line can be simplified to:</p>
+<pre><code class="lang-powershell">Invoke-PSRule -InputPath .\resources.json;
+</code></pre>
 <p>You will notice, we didn't specify the rule. By default PSRule will look for any <code>.Rule.ps1</code> files in the current working path.</p>
-<p><code>Invoke-PSRule</code> also supports <code>-Path</code>, <code>-Name</code> and <code>-Tag</code> parameters that can be used to specify the path to look for rules in or filter rules if you want to run a subset of the rules.</p>
+<p><code>Invoke-PSRule</code> supports <code>-Path</code>, <code>-Name</code> and <code>-Tag</code> parameters that can be used to specify the path to look for rules in or filter rules if you want to run a subset of the rules.</p>
 <p>For this example we ran these commands:</p>
-<pre><code class="lang-powershell"># Read resources in from file
-$resources = Get-Content -Path docs/scenarios/azure-resources/resources.json | ConvertFrom-Json;
-
-# For each resource
-$resources | Invoke-PSRule -Path docs/scenarios/azure-resources;
+<pre><code class="lang-powershell">Invoke-PSRule -Path docs/scenarios/azure-resources -InputPath docs/scenarios/azure-resources/resources.json;
 </code></pre>
 <p>Our output looked like this:</p>
 <pre><code class="lang-text">   TargetName: storage
@@ -204,7 +202,7 @@ function global:ResourceType {
 }
 </code></pre>
 <p>Updating our existing <code>storageAccounts.UseHttps</code> rule, our rule definition becomes:</p>
-<pre><code class="lang-powershell"># Description: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+<pre><code class="lang-powershell"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAccounts' } {
     Hint 'Storage accounts should only allow secure traffic'
 

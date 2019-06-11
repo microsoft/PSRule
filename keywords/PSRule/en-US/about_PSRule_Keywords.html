@@ -86,6 +86,7 @@
 <li><a href="#allof">AllOf</a> - Assert that all of the child expressions must be true</li>
 <li><a href="#within">Within</a> - Assert that the field must match any of the values</li>
 <li><a href="#typeof">TypeOf</a> - Assert that the object must be of a specific type</li>
+<li><a href="#recommend">Recommend</a> - Return the process to resolve the issue and pass the rule.</li>
 </ul>
 <h3 id="rule">Rule</h3>
 <p>A <code>Rule</code> definition describes an individual business rule that will be applied to pipeline objects.</p>
@@ -105,17 +106,17 @@
 <li><code>Body</code> - A script block definition of the rule containing one or more PSRule keywords and PowerShell expressions.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># Description: This rule checks for the presence of a name field
+<pre><code class="lang-powershell"># Synopsis: This rule checks for the presence of a name field
 Rule 'NameMustExist' {
     Exists 'Name'
 }
 </code></pre>
-<pre><code class="lang-powershell"># Description: This rule checks that the title field is valid, when the rule NameMustExist is successful
+<pre><code class="lang-powershell"># Synopsis: This rule checks that the title field is valid, when the rule NameMustExist is successful
 Rule 'TitleIsValid' -DependsOn 'NameMustExist' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
 </code></pre>
-<pre><code class="lang-powershell"># Description: This rule uses a threshold stored as $Configuration.minInstanceCount
+<pre><code class="lang-powershell"># Synopsis: This rule uses a threshold stored as $Configuration.minInstanceCount
 Rule 'HasMinInstances' {
     $TargetObject.Sku.capacity -ge $Configuration.minInstanceCount
 } -Configure @{ minInstanceCount = 2 }
@@ -132,17 +133,17 @@ Rule 'HasMinInstances' {
 <li><code>InputObject</code> - Supports objects being piped directly.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># Description: Checks for the presence of a name property
+<pre><code class="lang-powershell"># Synopsis: Checks for the presence of a name property
 Rule 'nameMustExist' {
     Exists 'Name'
 }
 </code></pre>
-<pre><code class="lang-powershell"># Description: Checks for the presence of name nested under the metadata property
+<pre><code class="lang-powershell"># Synopsis: Checks for the presence of name nested under the metadata property
 Rule 'nameMustExist' {
     Exists 'metadata.name'
 }
 </code></pre>
-<pre><code class="lang-powershell"># Description: Checks for the presence of name nested under the metadata property
+<pre><code class="lang-powershell"># Synopsis: Checks for the presence of name nested under the metadata property
 Rule 'nameMustExist' {
     $TargetObject.metadata | Exists 'name'
 }
@@ -162,7 +163,7 @@ Rule 'nameMustExist' {
 <li><code>InputObject</code> - Supports objects being piped directly.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># Description: Check that PhoneNumber is complete and formatted correctly
+<pre><code class="lang-powershell"># Synopsis: Check that PhoneNumber is complete and formatted correctly
 Rule 'validatePhoneNumber' {
     Match 'PhoneNumber' '^(\+61|0)([0-9] {0,1}){8}[0-9]$'
 }
@@ -181,7 +182,7 @@ Rule 'validatePhoneNumber' {
 <li><code>InputObject</code> - Supports objects being piped directly.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># Description: Ensure that the title field has one of the allowed values
+<pre><code class="lang-powershell"># Synopsis: Ensure that the title field has one of the allowed values
 Rule 'validateTitle' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms'
 }
@@ -201,7 +202,7 @@ Rule 'validateTitle' {
 <li><code>Body</code> - A script block definition of the containing one or more PSRule keywords and PowerShell expressions.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># Description: The Name field must exist and have a value of either John or Jane
+<pre><code class="lang-powershell"># Synopsis: The Name field must exist and have a value of either John or Jane
 Rule 'nameCheck' {
     AllOf {
         Exists 'Name'
@@ -224,7 +225,7 @@ Rule 'nameCheck' {
 <li><code>Body</code> - A script block definition of the containing one or more PSRule keywords and PowerShell expressions.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># Description: The Last or Surname field must exist
+<pre><code class="lang-powershell"># Synopsis: The Last or Surname field must exist
 Rule 'personCheck' {
     AnyOf {
         Exists 'Last'
@@ -244,17 +245,35 @@ Rule 'personCheck' {
 <li><code>InputObject</code> - Supports objects being piped directly.</li>
 </ul>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># Description: The object must be a hashtable
+<pre><code class="lang-powershell"># Synopsis: The object must be a hashtable
 Rule 'objectType' {
     TypeOf 'System.Collections.Hashtable'
 }
 </code></pre>
 <p>Output:</p>
 <p>If <strong>any</strong> the specified type names match the pipeline object then TypeOf will return <code>$True</code>, otherwise <code>$False</code>.</p>
+<h3 id="recommend">Recommend</h3>
+<p>The <code>Recommend</code> keyword is used within a <code>Rule</code> definition to provide a process to resolve the issue and pass the rule. This may include manual steps to change that state of the object or the desired state accessed by the rule.</p>
+<p>Previously this keyword was <code>Hint</code>. The previous keyword <code>Hint</code> is aliased by deprecated.</p>
+<p>Syntax:</p>
+<pre><code class="lang-text">Recommend [-Message] &lt;string&gt;
+</code></pre>
+<ul>
+<li><code>Message</code> - A message that includes the process to resolve the issue and pass the rule.</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell"># Synopsis: Provide recommendation to resolve the issue
+Rule 'objectRecommend' {
+    Recommend 'Use at least two (2) instances'
+    $TargetObject.count -ge 2
+}
+</code></pre>
+<p>Output:</p>
+<p>None.</p>
 <h2 id="examples">EXAMPLES</h2>
-<pre><code class="lang-powershell"># Description: App Service Plan has multiple instances
+<pre><code class="lang-powershell"># Synopsis: App Service Plan has multiple instances
 Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
-    Hint 'Use at least two (2) instances'
+    Recommend 'Use at least two (2) instances'
 
     $TargetObject.Sku.capacity -ge 2
 }
@@ -274,6 +293,7 @@ Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Mic
 <li>AllOf</li>
 <li>Within</li>
 <li>TypeOf</li>
+<li>Recommend</li>
 </ul>
 </article>
           </div>

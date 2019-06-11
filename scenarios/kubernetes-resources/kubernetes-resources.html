@@ -92,11 +92,11 @@
 <p>In the example below:</p>
 <ul>
 <li>We use <code>metadata.Name</code> directly after the <code>Rule</code> keyword to name the rule definition. Each rule must be named uniquely.</li>
-<li>The <code># Description:</code> comment is used to add additional metadata interpreted by PSRule.</li>
+<li>The <code># Synopsis:</code> comment is used to add additional metadata interpreted by PSRule.</li>
 <li>One or more conditions are defined within the curly braces <code>{ }</code>.</li>
 <li>The rule definition is saved within a file named <code>kubernetes.Rule.ps1</code>.</li>
 </ul>
-<pre><code class="lang-powershell"># Description: Must have the app.kubernetes.io/name label
+<pre><code class="lang-powershell"># Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' {
     # Rule conditions go here
 }
@@ -118,7 +118,7 @@ Rule 'metadata.Name' {
 </ul>
 </li>
 </ul>
-<pre><code class="lang-powershell"># Description: Must have the app.kubernetes.io/name label
+<pre><code class="lang-powershell"># Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' {
     Exists &quot;metadata.labels.'app.kubernetes.io/name'&quot;
 }
@@ -129,12 +129,12 @@ Rule 'metadata.Name' {
 <li>Double apostrophes (<code>''</code>) are used to enclose <code>app.kubernetes.io/name</code> because the field name uses <code>'</code> at the start and end of the string instead of <code>&quot;</code> in the previous example.</li>
 <li>The <code>Within</code> keyword is used to validate that the <code>app.kubernetes.io/component</code> only uses one of four (4) allowed values.</li>
 </ul>
-<pre><code class="lang-powershell"># Description: Must have the app.kubernetes.io/version label
+<pre><code class="lang-powershell"># Synopsis: Must have the app.kubernetes.io/version label
 Rule 'metadata.Version' {
     Exists 'metadata.labels.''app.kubernetes.io/version'''
 }
 
-# Description: Must have the app.kubernetes.io/component label
+# Synopsis: Must have the app.kubernetes.io/component label
 Rule 'metadata.Component' {
     Exists 'metadata.labels.''app.kubernetes.io/component'''
     Within 'metadata.labels.''app.kubernetes.io/component''' 'web', 'api', 'database', 'gateway' -CaseSensitive
@@ -159,8 +159,13 @@ Rule 'metadata.Component' {
   targetType:
   - kind
 </code></pre>
+<p>These options can be set in the file <code>.\ps-rule.yaml</code> to be automatically loaded at when PSRule cmdlets are called. To set these configuration options either edit the file manually or use the following command.</p>
+<pre><code class="lang-powershell"># Set options in ps-rule.yaml
+Set-PSRuleOption -TargetName 'metadata.Name' -TargetType 'kind';
+</code></pre>
 <p>Alternatively, these options can be set at runtime using the hashtable syntax.</p>
-<pre><code class="lang-powershell">$option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'metadata.name'; 'Binding.TargetType' = 'kind' };
+<pre><code class="lang-powershell"># Save options to a variable
+$option = New-PSRuleOption -TargetName 'metadata.Name' -TargetType 'kind';
 </code></pre>
 <p>These options will be passed to <code>Invoke-PSRule</code> using the <code>-Option</code> parameter in a later step.</p>
 <h2 id="define-preconditions">Define preconditions</h2>
@@ -187,13 +192,13 @@ Rule 'metadata.Component' {
 <li>We update our <code>metadata.Name</code> rule to use the <code>-Type</code> parameter to specify a type precondition of either <em>Deployment</em> or <em>Service</em>.</li>
 <li>In a previous step, <code>TypeName</code> was bound to the <code>kind</code> property which will be <em>Deployment</em> or <em>Service</em> for these resource types.</li>
 </ul>
-<pre><code class="lang-powershell"># Description: Must have the app.kubernetes.io/name label
+<pre><code class="lang-powershell"># Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -Type 'Deployment', 'Service' {
     Exists &quot;metadata.labels.'app.kubernetes.io/name'&quot;
 }
 </code></pre>
 <p>Using a type precondition satisfies our business rules and will deliver faster performance then using a script block. An example using a script block precondition is also shown below.</p>
-<pre><code class="lang-powershell"># Description: Must have the app.kubernetes.io/name label
+<pre><code class="lang-powershell"># Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -If { $TargetObject.kind -eq 'Deployment' -or $TargetObject.kind -eq 'Service' } {
     Exists &quot;metadata.labels.'app.kubernetes.io/name'&quot;
 }
@@ -208,13 +213,13 @@ Rule 'metadata.Name' -If { $TargetObject.kind -eq 'Deployment' -or $TargetObject
 </ul>
 </li>
 </ul>
-<pre><code class="lang-powershell"># Description: Deployments use a minimum of 2 replicas
+<pre><code class="lang-powershell"># Synopsis: Deployments use a minimum of 2 replicas
 Rule 'deployment.HasMinimumReplicas' -Type 'Deployment' {
     Exists 'spec.replicas'
     $TargetObject.spec.replicas -ge 2
 }
 
-# Description: Deployments use specific tags
+# Synopsis: Deployments use specific tags
 Rule 'deployment.NotLatestImage' -Type 'Deployment' {
     foreach ($container in $TargetObject.spec.template.spec.containers) {
         $container.image -like '*:*' -and
@@ -222,7 +227,7 @@ Rule 'deployment.NotLatestImage' -Type 'Deployment' {
     }
 }
 
-# Description: Resource requirements are set for each container
+# Synopsis: Resource requirements are set for each container
 Rule 'deployment.ResourcesSet' -Type 'Deployment' {
     foreach ($container in $TargetObject.spec.template.spec.containers) {
         $container | Exists 'resources.requests.cpu'
@@ -237,21 +242,22 @@ Rule 'deployment.ResourcesSet' -Type 'Deployment' {
 <p>In our example we are using the YAML format to store Kubernetes resources. PSRule has built-in support for YAML so we can import these files directly from disk or process output from a command such as <code>kubectl</code>.</p>
 <p>In the examples below:</p>
 <ul>
-<li><code>Get-Content</code> is piped to <code>Invoke-PSRule</code> with the <code>-Raw</code> switch. The <code>-Raw</code> switch reads the full contents of the rule as a string. In contrast, without the <code>-Raw</code> switch, each line would be passed to <code>Invoke-PSRule</code> individually as separate objects.</li>
-<li>The <code>-Format</code> parameter informs PSRule that the string is YAML and it should convert the string into structured objects.</li>
-<li>The <code>-Option</code> parameter sets the location of the configuration file that contains custom binding options.</li>
+<li>The <code>-InputPath</code> parameter is used to load objects from disk as YAML. YAML is automatically detected based on the <code>.yaml</code> file extension. Alternatively the <code>-Foramt Yaml</code> parameter can be used.</li>
+<li>Binding parameters are read from <code>ps-rule.yaml</code> in the current working path. Alternatively the <code>-Option</code> parameter could be used to specify an alternative file path.</li>
 <li><code>kubectl</code> is called with the <code>-o yaml</code> to output resources as YAML.</li>
 <li><code>kubectl</code> is piped to <code>Out-String</code> to convert the multi-line output to a single string.</li>
+<li>The <code>-Format</code> parameter informs PSRule that the string is YAML and it should convert the string into structured objects.</li>
 <li>The <code>-ObjectPath</code> parameter is used with the output from <code>kubectl</code>. This is required because the output from <code>kubectl</code> is a collection of resources instead of individual resources. Specifically <code>-ObjectPath items</code> gets the resources from the <code>items</code> property of the output.</li>
 </ul>
 <pre><code class="lang-powershell"># Validate resources from file
-Get-Content .\resources.yaml -Raw | Invoke-PSRule -Format Yaml -Option .\PSRule.yaml;
+Invoke-PSRule -InputPath resources.yaml;
 </code></pre>
 <pre><code class="lang-powershell"># Validate resources directly from kubectl output
-kubectl get services -o yaml | Out-String | Invoke-PSRule -Format Yaml -Option .\PSRule.yaml -ObjectPath items;
+kubectl get services -o yaml | Out-String | Invoke-PSRule -Format Yaml -ObjectPath items;
 </code></pre>
 <p>For this example, we limited the output to failed results with the following command:</p>
-<pre><code class="lang-powershell">Get-Content docs/scenarios/kubernetes-resources/resources.yaml -Raw | Invoke-PSRule -Path docs/scenarios/kubernetes-resources -Format Yaml -Option docs/scenarios/kubernetes-resources/PSRule.yaml -Outcome Fail;
+<pre><code class="lang-powershell"># Validate resources from file
+Invoke-PSRule -Path docs/scenarios/kubernetes-resources -InputPath docs/scenarios/kubernetes-resources/resources.yaml -Option docs/scenarios/kubernetes-resources/ps-rule.yaml -Outcome Fail;
 </code></pre>
 <p>The resulting output is:</p>
 <pre><code class="lang-text">   TargetName: app1-cache
@@ -282,7 +288,7 @@ metadata.Version                    Fail       Must have the app.kubernetes.io/v
 <ul>
 <li><a href="kubernetes.Rule.ps1">kubernetes.Rule.ps1</a> - Example rules for validating Kubernetes resources.</li>
 <li><a href="resources.yaml">resources.yaml</a> - An example Kubernetes manifest.</li>
-<li><a href="PSRule.yaml">PSRule.yaml</a> - PSRule options configuration file.</li>
+<li><a href="ps-rule.yaml">ps-rule.yaml</a> - PSRule options configuration file.</li>
 </ul>
 </article>
           </div>

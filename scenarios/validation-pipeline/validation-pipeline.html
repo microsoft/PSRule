@@ -88,8 +88,8 @@
     $Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
 }
 
-if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.4.0' -ErrorAction Ignore)) {
-    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.4.0' -Force;
+if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.5.0' -ErrorAction Ignore)) {
+    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.5.0' -Force;
 }
 </code></pre>
 <h3 id="using-invoke-build">Using Invoke-Build</h3>
@@ -103,8 +103,8 @@ task InstallNuGet {
 
 # Synopsis: Install PSRule
 task InstallPSRule InstallNuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.4.0' -ErrorAction Ignore)) {
-        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.4.0' -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.5.0' -ErrorAction Ignore)) {
+        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.5.0' -Force;
     }
 }
 </code></pre>
@@ -118,7 +118,7 @@ if ($Null -ne $result) {
 </code></pre>
 <p>Extending on this further, PSRule has additional options that we can use to log passing/ failing validation rules to informational streams.</p>
 <p>By using the <code>Logging.RuleFail</code> option shown in the next example an error will be created for each failure so that meaningful information is logged to the CI pipeline.</p>
-<pre><code class="lang-powershell">$option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+<pre><code class="lang-powershell">$option = New-PSRuleOption -LoggingRuleFail Error;
 $result = $inputObjects | Invoke-PSRule -Option $option -Outcome Fail,Error;
 if ($Null -ne $result) {
     throw 'PSRule validation failed.'
@@ -136,7 +136,7 @@ if ($Null -ne $result) {
 <pre><code class="lang-powershell">Describe 'Project files' {
     Context 'Script files' {
         It 'Use content rules' {
-            $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+            $option = New-PSRuleOption -LoggingRuleFail Error;
             $inputObjects = Get-ChildItem -Path *.ps1 -Recurse;
             $inputObjects | Invoke-PSRule -Option $option -Outcome Fail,Error | Should -BeNullOrEmpty;
         }
@@ -146,9 +146,9 @@ if ($Null -ne $result) {
 <h2 id="generating-nunit-output">Generating NUnit output</h2>
 <p>NUnit is a popular unit test framework for .NET. NUnit generates a test report format that is widely interpreted by CI systems. While PSRule does not use NUnit, it can output the same test report format allowing integration with any system that supports the NUnit3 for publishing test results.</p>
 <p>To generate an NUnit report use the <code>-OutputFormat NUnit3</code> parameter.</p>
-<pre><code class="lang-powershell">$option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+<pre><code class="lang-powershell">$option = New-PSRuleOption -LoggingRuleFail Error;
 $inputObjects = Get-ChildItem -Path *.ps1 -Recurse;
-$inputObjects | Invoke-PSRule -OutputFormat NUnit3 | Set-Content -Path reports/rule.report.xml;
+$inputObjects | Invoke-PSRule -Option $option -OutputFormat NUnit3 | Set-Content -Path reports/rule.report.xml;
 </code></pre>
 <h3 id="publishing-nunit-report-with-azure-devops">Publishing NUnit report with Azure DevOps</h3>
 <p>With Azure DevOps, an NUnit report can be published using <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results">Publish Test Results task</a>.</p>
@@ -166,9 +166,9 @@ $inputObjects | Invoke-PSRule -OutputFormat NUnit3 | Set-Content -Path reports/r
 </code></pre>
 <h2 id="examples">Examples</h2>
 <p>For our example we ran:</p>
-<pre><code class="lang-powershell">$option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
+<pre><code class="lang-powershell">$option = New-PSRuleOption -LoggingRuleFail Error;
 $inputObjects = Get-ChildItem -Path src/PSRule -Include *.ps1,*.psm1,*.psd1 -Recurse;
-$inputObjects | Invoke-PSRule -Path docs/scenarios/validation-pipeline  -OutputFormat NUnit3 | Set-Content -Path reports/rule.report.xml;
+$inputObjects | Invoke-PSRule -Path docs/scenarios/validation-pipeline -Option $option -OutputFormat NUnit3 | Set-Content -Path reports/rule.report.xml;
 </code></pre>
 <h2 id="more-information">More information</h2>
 <ul>
