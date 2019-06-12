@@ -85,15 +85,15 @@ The output of this example is:
 ```text
    TargetName: Fridge
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 isFruit                             Fail       Fruit is only Apple, Orange and Pear
 
 
    TargetName: Apple
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 isFruit                             Pass       Fruit is only Apple, Orange and Pear
 ```
 
