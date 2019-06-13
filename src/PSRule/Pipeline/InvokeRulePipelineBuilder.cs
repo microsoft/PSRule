@@ -350,7 +350,15 @@ namespace PSRule.Pipeline
         /// <param name="o">The text to write.</param>
         private static void WriteToFile(string path, Encoding encoding, object o)
         {
-            File.AppendAllText(path: PSRuleOption.GetRootedPath(path: path), contents: o.ToString(), encoding: encoding);
+            var rootedPath = PSRuleOption.GetRootedPath(path: path);
+            var parentPath = Directory.GetParent(rootedPath);
+
+            if (!parentPath.Exists)
+            {
+                Directory.CreateDirectory(path: parentPath.FullName);
+            }
+
+            File.WriteAllText(path: rootedPath, contents: o.ToString(), encoding: encoding);
         }
     }
 }

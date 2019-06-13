@@ -388,8 +388,10 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 Option = (New-PSRuleOption -OutputEncoding UTF7)
             }
             $Null = Invoke-PSRule @testOptions -OutputFormat Json -OutputPath $testOutputPath;
-            $result = Get-Content -Path $testOutputPath -Encoding utf7 -Raw | ConvertFrom-Json;
-            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
+            $result = @(Get-Content -Path $testOutputPath -Encoding utf7 -Raw | ConvertFrom-Json);
+            $result.Length | Should -Be 2;
+            $result.RuleName | Should -BeIn 'WithFormat';
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
         }
     }
 
