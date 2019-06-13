@@ -314,9 +314,19 @@ namespace PSRule.Configuration
                 option.Output.As = (ResultFormat)Enum.Parse(typeof(ResultFormat), (string)value);
             }
 
+            if (index.TryGetValue("output.encoding", out value))
+            {
+                option.Output.Encoding = (OutputEncoding)Enum.Parse(typeof(OutputEncoding), (string)value);
+            }
+
             if (index.TryGetValue("output.format", out value))
             {
                 option.Output.Format = (OutputFormat)Enum.Parse(typeof(OutputFormat), (string)value);
+            }
+
+            if (index.TryGetValue("output.path", out value))
+            {
+                option.Output.Path = (string)value;
             }
 
             return option;
@@ -395,7 +405,7 @@ namespace PSRule.Configuration
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        private static string GetRootedPath(string path)
+        internal static string GetRootedPath(string path)
         {
             return Path.IsPathRooted(path) ? path : Path.Combine(GetWorkingPath(), path);
         }

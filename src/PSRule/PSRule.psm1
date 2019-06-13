@@ -24,12 +24,35 @@ Import-LocalizedData -BindingVariable LocalizedData -FileName 'PSRule.Resources.
 
 # .ExternalHelp PSRule-Help.xml
 function Invoke-PSRule {
-
     [CmdletBinding(DefaultParameterSetName = 'Input')]
     [OutputType([PSRule.Rules.RuleRecord])]
     [OutputType([PSRule.Rules.RuleSummaryRecord])]
     [OutputType([System.String])]
     param (
+        [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
+        [String[]]$InputPath,
+
+        [Parameter(Mandatory = $False)]
+        [String[]]$Module,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Rules.RuleOutcome]$Outcome = [PSRule.Rules.RuleOutcome]::Processed,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Detail', 'Summary')]
+        [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Detail,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [PSRule.Configuration.InputFormat]$Format,
+
+        [Parameter(Mandatory = $False)]
+        [String]$OutputPath,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv')]
+        [PSRule.Configuration.OutputFormat]$OutputFormat,
+
         # A list of paths to check for rule definitions
         [Parameter(Position = 0)]
         [Alias('p')]
@@ -43,39 +66,18 @@ function Invoke-PSRule {
         [Parameter(Mandatory = $False)]
         [Hashtable]$Tag,
 
-        [Parameter(Mandatory = $True, ValueFromPipeline = $True, ParameterSetName = 'Input')]
-        [Alias('TargetObject')]
-        [PSObject]$InputObject,
-
-        [Parameter(Mandatory = $False)]
-        [PSRule.Rules.RuleOutcome]$Outcome = [PSRule.Rules.RuleOutcome]::Processed,
-
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option,
-
-        [Parameter(Mandatory = $False)]
-        [ValidateSet('Detail', 'Summary')]
-        [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Detail,
-
-        [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
-        [PSRule.Configuration.InputFormat]$Format,
 
         [Parameter(Mandatory = $False)]
         [String]$ObjectPath,
 
         [Parameter(Mandatory = $False)]
-        [String[]]$Module,
+        [String]$Culture,
 
-        [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv')]
-        [PSRule.Configuration.OutputFormat]$OutputFormat,
-
-        [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
-        [String[]]$InputPath,
-
-        [Parameter(Mandatory = $False)]
-        [String]$Culture
+        [Parameter(Mandatory = $True, ValueFromPipeline = $True, ParameterSetName = 'Input')]
+        [Alias('TargetObject')]
+        [PSObject]$InputObject
     )
 
     begin {
@@ -141,6 +143,10 @@ function Invoke-PSRule {
             $Option.Output.Format = $OutputFormat;
         }
 
+        if ($PSBoundParameters.ContainsKey('OutputPath')) {
+            $Option.Output.Path = $OutputPath;
+        }
+
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
         $builder.FilterBy($Tag);
         $builder.Source($sourceFiles);
@@ -188,6 +194,16 @@ function Test-PSRuleTarget {
     [CmdletBinding(DefaultParameterSetName = 'Input')]
     [OutputType([System.Boolean])]
     param (
+        [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
+        [String[]]$InputPath,
+
+        [Parameter(Mandatory = $False)]
+        [String[]]$Module,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [PSRule.Configuration.InputFormat]$Format,
+
         # A list of paths to check for rule definitions
         [Parameter(Position = 0)]
         [Alias('p')]
@@ -209,17 +225,7 @@ function Test-PSRuleTarget {
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
-        [PSRule.Configuration.InputFormat]$Format,
-
-        [Parameter(Mandatory = $False)]
         [String]$ObjectPath,
-
-        [Parameter(Mandatory = $False)]
-        [String[]]$Module,
-
-        [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
-        [String[]]$InputPath,
 
         [Parameter(Mandatory = $False)]
         [String]$Culture
@@ -329,6 +335,12 @@ function Get-PSRule {
     [CmdletBinding()]
     [OutputType([PSRule.Rules.Rule])]
     param (
+        [Parameter(Mandatory = $False)]
+        [String[]]$Module,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$ListAvailable,
+
         # A list of paths to check for rule definitions
         [Parameter(Position = 0, Mandatory = $False)]
         [Alias('p')]
@@ -344,12 +356,6 @@ function Get-PSRule {
 
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option,
-
-        [Parameter(Mandatory = $False)]
-        [String[]]$Module,
-
-        [Parameter(Mandatory = $False)]
-        [Switch]$ListAvailable,
 
         [Parameter(Mandatory = $False)]
         [String]$Culture
@@ -441,6 +447,12 @@ function Get-PSRuleHelp {
     [CmdletBinding()]
     [OutputType([PSRule.Rules.RuleHelpInfo])]
     param (
+        [Parameter(Mandatory = $False)]
+        [String]$Module,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$Online = $False,
+
         # The name of the rule to get documentation for.
         [Parameter(Position = 0, Mandatory = $False)]
         [Alias('n')]
@@ -453,16 +465,10 @@ function Get-PSRuleHelp {
         [String]$Path,
 
         [Parameter(Mandatory = $False)]
-        [String]$Module,
-
-        [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
-        [String]$Culture,
-
-        [Parameter(Mandatory = $False)]
-        [Switch]$Online = $False
+        [String]$Culture
     )
 
     begin {
@@ -634,10 +640,19 @@ function New-PSRuleOption {
         [ValidateSet('Detail', 'Summary')]
         [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
 
+        # Sets the Output.Encoding option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII')]
+        [PSRule.Configuration.OutputEncoding]$OutputEncoding = 'Default',
+
         # Sets the Output.Format option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3')]
-        [PSRule.Configuration.OutputFormat]$OutputFormat = 'None'
+        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv')]
+        [PSRule.Configuration.OutputFormat]$OutputFormat = 'None',
+
+        # Sets the Output.Path option
+        [Parameter(Mandatory = $False)]
+        [String]$OutputPath = ''
     )
 
     begin {
@@ -788,10 +803,19 @@ function Set-PSRuleOption {
         [ValidateSet('Detail', 'Summary')]
         [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
 
+        # Sets the Output.Encoding option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII')]
+        [PSRule.Configuration.OutputEncoding]$OutputEncoding = 'Default',
+
         # Sets the Output.Format option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3')]
-        [PSRule.Configuration.OutputFormat]$OutputFormat = 'None'
+        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv')]
+        [PSRule.Configuration.OutputFormat]$OutputFormat = 'None',
+
+        # Sets the Output.Path option
+        [Parameter(Mandatory = $False)]
+        [String]$OutputPath = ''
     )
 
     begin {
@@ -1135,9 +1159,7 @@ function GetRuleScriptPath {
         }
 
         if ($moduleParams.Count -gt 0 -or $PreferModule) {
-            $modules = @(Microsoft.PowerShell.Core\Get-Module @moduleParams | Where-Object -FilterScript {
-                'PSRule' -in $_.Tags
-            })
+            $modules = @(GetRuleModule @moduleParams);
             Write-Verbose -Message "[PSRule][D] -- Found $($modules.Length) PSRule module(s)";
 
             if ($Null -ne $modules) {
@@ -1154,6 +1176,23 @@ function GetRuleScriptPath {
         }
 
         $builder.Build();
+    }
+}
+
+function GetRuleModule {
+    [CmdletBinding()]
+    [OutputType([System.Management.Automation.PSModuleInfo])]
+    param (
+        [Parameter(Mandatory = $False)]
+        [String[]]$Name,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$ListAvailable
+    )
+    process {
+        Microsoft.PowerShell.Core\Get-Module @PSBoundParameters | Where-Object -FilterScript {
+            'PSRule' -in $_.Tags
+        }
     }
 }
 
@@ -1248,10 +1287,19 @@ function SetOptions {
         [ValidateSet('Detail', 'Summary')]
         [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
 
+        # Sets the Output.Encoding option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII')]
+        [PSRule.Configuration.OutputEncoding]$OutputEncoding = 'Default',
+
         # Sets the Output.Format option
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'NUnit3')]
-        [PSRule.Configuration.OutputFormat]$OutputFormat = 'None'
+        [PSRule.Configuration.OutputFormat]$OutputFormat = 'None',
+
+        # Sets the Output.Path option
+        [Parameter(Mandatory = $False)]
+        [String]$OutputPath = ''
     )
 
     process {
@@ -1307,9 +1355,19 @@ function SetOptions {
             $Option.Output.As = $OutputAs;
         }
 
+        # Sets option Output.Encoding
+        if ($PSBoundParameters.ContainsKey('OutputEncoding')) {
+            $Option.Output.Encoding = $OutputEncoding;
+        }
+
         # Sets option Output.Format
         if ($PSBoundParameters.ContainsKey('OutputFormat')) {
             $Option.Output.Format = $OutputFormat;
+        }
+
+        # Sets option Output.Path
+        if ($PSBoundParameters.ContainsKey('OutputPath')) {
+            $Option.Output.Path = $OutputPath;
         }
 
         return $Option;
@@ -1410,6 +1468,20 @@ function InitEditorServices {
     }
 }
 
+function InitCompletionServices {
+    [CmdletBinding()]
+    param ()
+    process {
+        # Complete -Module parameter
+        Register-ArgumentCompleter -CommandName Get-PSRule,Get-PSRuleHelp,Invoke-PSRule,Test-PSRuleTarget -ParameterName Module -ScriptBlock {
+            param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+            GetRuleModule -Name "$wordToComplete*" | ForEach-Object -Process {
+                [System.Management.Automation.CompletionResult]::new($_.Name, $_.Name, 'ParameterValue', ([String]::Concat("ModuleName: ", $_.Name, ", ModuleVersion: ", $_.Version.ToString())))
+            }
+        }
+    }
+}
+
 #
 # Editor services
 #
@@ -1423,6 +1495,7 @@ function InitEditorServices {
 [PSObject]$TargetObject = New-Object -TypeName 'PSObject';
 
 InitEditorServices;
+InitCompletionServices;
 
 #
 # Export module

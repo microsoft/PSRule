@@ -38,7 +38,9 @@ logging:
 # Configure output options
 output:
   as: Summary
+  encoding: UTF7
   format: Json
+  path: 'out/OutputPath.txt'
 
 # Configure rule suppression
 suppression:

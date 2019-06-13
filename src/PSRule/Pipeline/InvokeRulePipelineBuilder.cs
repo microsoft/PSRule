@@ -2,8 +2,10 @@
 using PSRule.Rules;
 using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using System.Text;
 
 namespace PSRule.Pipeline
 {
@@ -129,7 +131,9 @@ namespace PSRule.Pipeline
             _Option.Logging.RulePass = option.Logging.RulePass ?? LoggingOption.Default.RulePass;
 
             _Option.Output.As = option.Output.As ?? OutputOption.Default.As;
+            _Option.Output.Encoding = option.Output.Encoding ?? OutputOption.Default.Encoding;
             _Option.Output.Format = option.Output.Format ?? OutputOption.Default.Format;
+            _Option.Output.Path = option.Output.Path ?? OutputOption.Default.Path;
 
             _Option.Binding.IgnoreCase = option.Binding.IgnoreCase ?? BindingOption.Default.IgnoreCase;
 
@@ -278,6 +282,18 @@ namespace PSRule.Pipeline
                 });
             }
 
+            // Redirect to file instead
+            if (!string.IsNullOrEmpty(_Option.Output.Path))
+            {
+                var encoding = GetEncoding(_Option.Output.Encoding);
+
+                _Output = (object o, bool enumerate) => WriteToFile(
+                    path: _Option.Output.Path,
+                    encoding: encoding,
+                    o: o
+                );
+            }
+
             if (_Stream == null)
             {
                 _Stream = new PowerShellPipelineStream(option: _Option, output: _Output, returnBoolean: _ReturnBoolean, inputPath: _InputPath);
@@ -295,6 +311,46 @@ namespace PSRule.Pipeline
             );
 
             return pipeline;
+        }
+
+        /// <summary>
+        /// Get the character encoding for the specified output encoding.
+        /// </summary>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        private static Encoding GetEncoding(OutputEncoding? encoding)
+        {
+            switch (encoding)
+            {
+                case OutputEncoding.UTF8:
+                    return Encoding.UTF8;
+
+                case OutputEncoding.UTF7:
+                    return Encoding.UTF7;
+
+                case OutputEncoding.Unicode:
+                    return Encoding.Unicode;
+
+                case OutputEncoding.UTF32:
+                    return Encoding.UTF32;
+
+                case OutputEncoding.ASCII:
+                    return Encoding.ASCII;
+
+                default:
+                    return new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+            }
+        }
+
+        /// <summary>
+        /// Write output to file.
+        /// </summary>
+        /// <param name="path">The file path to write.</param>
+        /// <param name="encoding">The file encoding to use.</param>
+        /// <param name="o">The text to write.</param>
+        private static void WriteToFile(string path, Encoding encoding, object o)
+        {
+            File.AppendAllText(path: PSRuleOption.GetRootedPath(path: path), contents: o.ToString(), encoding: encoding);
         }
     }
 }

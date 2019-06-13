@@ -1,6 +1,14 @@
 
 ## Unreleased
 
+- Added support for `Invoke-PSRule` to return CSV formatted results. [#169](https://github.com/BernieWhite/PSRule/issues/169)
+  - To generate CSV results use the `-OutputFormat Csv` parameter.
+  - Added `Output.Path` option to allow output to be saved directly to file.
+  - Added `Output.Encoding` option configure encoding used to write to file.
+  - By default, UTF-8 encoding without BOM is used.
+  - `Invoke-PSRule` cmdlet also provides a parameter `-OutputPath` to write results to file.
+- Reordered cmdlet parameters to improve usage of frequently used parameters. [#175](https://github.com/BernieWhite/PSRule/issues/175)
+
 ## v0.6.0
 
 What's changed since v0.5.0:

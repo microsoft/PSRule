@@ -54,7 +54,8 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "outcomeReason")]
         public RuleOutcomeReason OutcomeReason { get; internal set; }
 
-        [JsonProperty(PropertyName = "recommendation")]
+        [JsonIgnore]
+        [YamlIgnore]
         public string Recommendation => Info.Recommendation ?? Info.Synopsis;
 
         /// <summary>
@@ -78,7 +79,7 @@ namespace PSRule.Rules
         public Hashtable Tag { get; }
 
         [DefaultValue(null)]
-        [JsonProperty(PropertyName = "helpInfo")]
+        [JsonProperty(PropertyName = "info")]
         public RuleHelpInfo Info { get; }
 
         [DefaultValue(0f)]
