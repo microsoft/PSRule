@@ -34,7 +34,7 @@ Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd','azure-resources' {
 
             # Should pass
             ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServicePlan.MinPlan' }).Outcome | Should -Be 'Pass';
-            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServiceApp.ARRAfinity' }).Outcome | Should -Be 'Pass';
+            ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServiceApp.ARRAffinity' }).Outcome | Should -Be 'Pass';
 
             # Should fail
             ($scopedResult | Where-Object -FilterScript { $_.RuleName -eq 'appServicePlan.MinInstanceCount' }).Outcome | Should -Be 'Fail';
