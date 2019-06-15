@@ -14,8 +14,8 @@ Get documentation for a rule.
 ## SYNTAX
 
 ```text
-Get-PSRuleHelp [[-Name] <String>] [-Path <String>] [-Module <String>] [-Option <PSRuleOption>]
- [-Culture <String>] [-Online] [<CommonParameters>]
+Get-PSRuleHelp [-Module <String>] [-Online] [[-Name] <String>] [-Path <String>] [-Option <PSRuleOption>]
+ [-Culture <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

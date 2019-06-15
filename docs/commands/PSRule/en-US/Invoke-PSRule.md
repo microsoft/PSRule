@@ -16,19 +16,19 @@ Evaluate objects against matching rules.
 ### Input (Default)
 
 ```text
-Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
- [-Outcome <RuleOutcome>] [-Option <PSRuleOption>] [-As <ResultFormat>] [-Format <InputFormat>]
- [-ObjectPath <String>] [-Module <String[]>] [-OutputFormat <OutputFormat>] [-Culture <String>]
- [<CommonParameters>]
+Invoke-PSRule [-Module <String[]>] [-Outcome <RuleOutcome>] [-As <ResultFormat>] [-Format <InputFormat>]
+ [-OutputPath <String>] [-OutputFormat <OutputFormat>] [[-Path] <String[]>] [-Name <String[]>]
+ [-Tag <Hashtable>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-Culture <String>] -InputObject <PSObject>
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### InputPath
 
 ```text
-Invoke-PSRule [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Outcome <RuleOutcome>]
- [-Option <PSRuleOption>] [-As <ResultFormat>] [-Format <InputFormat>] [-ObjectPath <String>]
- [-Module <String[]>] [-OutputFormat <OutputFormat>] -InputPath <String[]> [-Culture <String>]
- [<CommonParameters>]
+Invoke-PSRule -InputPath <String[]> [-Module <String[]>] [-Outcome <RuleOutcome>] [-As <ResultFormat>]
+ [-Format <InputFormat>] [-OutputPath <String>] [-OutputFormat <OutputFormat>] [[-Path] <String[]>]
+ [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-Culture <String>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -315,6 +315,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -OutputPath
+
+Specifies the output file path to write results. Directories along the file path will automatically be created if they do not exist.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -OutputFormat
 
 Configures the format that output is presented in.
@@ -323,7 +339,7 @@ Configures the format that output is presented in.
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json, NUnit3
+Accepted values: None, Yaml, Json, NUnit3, Csv
 
 Required: False
 Position: Named
@@ -344,6 +360,38 @@ The PowerShell cmdlet `Get-Culture` shows the current culture of PowerShell.
 Type: String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+
+Shows what would happen if the cmdlet runs. The cmdlet is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
 
 Required: False
 Position: Named
