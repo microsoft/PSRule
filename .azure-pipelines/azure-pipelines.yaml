@@ -132,7 +132,7 @@ stages:
 - stage: Release
   displayName: Release
   dependsOn: Build
-  condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/v0.')
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v0.'))
   jobs:
   - job:
     displayName: Live
