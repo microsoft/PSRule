@@ -143,4 +143,10 @@
   <data name="SerializeNullPSObject" xml:space="preserve">
     <value>Can not serialize a null PSObject.</value>
   </data>
+  <data name="ShouldCreatePath" xml:space="preserve">
+    <value>Create path</value>
+  </data>
+  <data name="ShouldWriteFile" xml:space="preserve">
+    <value>Write file</value>
+  </data>
 </root>

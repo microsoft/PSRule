@@ -4,16 +4,18 @@ using Newtonsoft.Json.Converters;
 namespace PSRule.Configuration
 {
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum OutputFormat : byte
+    public enum OutputEncoding : byte
     {
-        None = 0,
+        Default = 0,
 
-        Yaml = 1,
+        UTF8,
 
-        Json = 2,
+        UTF7,
 
-        NUnit3 = 3,
+        Unicode,
 
-        Csv = 4
+        UTF32,
+
+        ASCII
     }
 }

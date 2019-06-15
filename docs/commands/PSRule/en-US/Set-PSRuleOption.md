@@ -18,7 +18,8 @@ Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force
  [-BindingIgnoreCase <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-Format <InputFormat>]
  [-ObjectPath <String>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
- [-OutputAs <ResultFormat>] [-OutputFormat <OutputFormat>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-OutputAs <ResultFormat>] [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>]
+ [-OutputPath <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -295,6 +296,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -OutputEncoding
+
+Sets the option `Output.Encoding`. The `Output.Encoding` option configured the encoding used to write results to file.
+
+```yaml
+Type: OutputEncoding
+Parameter Sets: (All)
+Aliases:
+Accepted values: Default, UTF8, UTF7, Unicode, UTF32, ASCII
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -OutputFormat
 
 Sets the option `Output.Format`. The `Output.Format` option configures the format that results will be presented in.
@@ -303,7 +321,23 @@ Sets the option `Output.Format`. The `Output.Format` option configures the forma
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json, NUnit3
+Accepted values: None, Yaml, Json, NUnit3, Csv
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputPath
+
+Sets the option `Output.Path`. The `Output.Path` option configures an output file path to write results.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

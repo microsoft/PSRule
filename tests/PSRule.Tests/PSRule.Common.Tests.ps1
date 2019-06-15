@@ -356,6 +356,47 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $resultXml.Schemas = $schemas;
             { $resultXml.Validate($Null) } | Should -Not -Throw;
         }
+
+        It 'Csv' {
+            $option = @{
+                Path = $ruleFilePath
+                OutputFormat = 'Csv'
+                Name = 'FromFile1', 'FromFile3', 'WithCsv'
+                WarningAction = 'SilentlyContinue'
+                Culture = 'en-ZZ'
+            }
+            $result = $testObject | Invoke-PSRule @option | Out-String;
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $resultCsv = @($result | ConvertFrom-Csv);
+            $resultCsv.Length | Should -Be 3;
+            $resultCsv.RuleName | Should -BeIn 'FromFile1', 'FromFile3', 'WithCsv';
+            $resultCsv[0].Outcome | Should -Be 'Pass';
+            $resultCsv[1].Outcome | Should -Be 'Fail';
+            $resultCsv[1].Synopsis | Should -Be 'Test rule 3';
+            $resultCsv[2].RuleName | Should -Be 'WithCsv';
+            $resultCsv[2].Synopsis | Should -Be 'This is "a" synopsis.';
+            ($resultCsv[2].Recommendation -replace "`r`n", "`n") | Should -Be "This is an extended recommendation.`n`n- That includes line breaks`n- And lists";
+        }
+    }
+
+    Context 'Using -OutputPath' {
+        It 'Json' {
+            $testInputPath = (Join-Path -Path $here -ChildPath 'ObjectFromFile.yaml');
+            $testOutputPath = (Join-Path -Path $outputPath -ChildPath 'newPath/outputPath.results.json');
+            $testOptions = @{
+                Path = $ruleFilePath
+                Name = 'WithFormat'
+                InputPath = $testInputPath
+                Format = 'Yaml'
+                Option = (New-PSRuleOption -OutputEncoding UTF7)
+            }
+            $Null = Invoke-PSRule @testOptions -OutputFormat Json -OutputPath $testOutputPath;
+            $result = @((Get-Content -Path $testOutputPath -Encoding utf7 -Raw | ConvertFrom-Json));
+            $result.Length | Should -Be 2;
+            $result.RuleName | Should -BeIn 'WithFormat';
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
+        }
     }
 
     Context 'Using -InputPath' {

@@ -16,16 +16,16 @@ Pass or fail objects against matching rules.
 ### Input (Default)
 
 ```text
-Test-PSRuleTarget [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
- [-Option <PSRuleOption>] [-Format <InputFormat>] [-ObjectPath <String>] [-Module <String[]>]
- [-Culture <String>] [<CommonParameters>]
+Test-PSRuleTarget [-Module <String[]>] [-Format <InputFormat>] [[-Path] <String[]>] [-Name <String[]>]
+ [-Tag <Hashtable>] -InputObject <PSObject> [-Option <PSRuleOption>] [-ObjectPath <String>] [-Culture <String>]
+ [<CommonParameters>]
 ```
 
 ### InputPath
 
 ```text
-Test-PSRuleTarget [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>]
- [-Format <InputFormat>] [-ObjectPath <String>] [-Module <String[]>] -InputPath <String[]> [-Culture <String>]
+Test-PSRuleTarget -InputPath <String[]> [-Module <String[]>] [-Format <InputFormat>] [[-Path] <String[]>]
+ [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-Culture <String>]
  [<CommonParameters>]
 ```
 
@@ -237,6 +237,10 @@ Accept wildcard characters: False
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
+
+### System.Management.Automation.PSObject
+
+You can pipe any object to **Test-PSRuleTarget**.
 
 ## OUTPUTS
 

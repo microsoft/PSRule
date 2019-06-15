@@ -26,7 +26,9 @@ The following options are available for use:
 - [Logging.RuleFail](#loggingrulefail)
 - [Logging.RulePass](#loggingrulepass)
 - [Output.As](#outputas)
+- [Output.Encoding](#outputencoding)
 - [Output.Format](#outputformat)
+- [Output.Path](#outputpath)
 - [Suppression](#rule-suppression)
 
 Options can be used with the following PSRule cmdlets:
@@ -585,6 +587,42 @@ output:
   as: Summary
 ```
 
+### Output.Encoding
+
+Configures the encoding used when output is written to file. This option has no affect when `Output.Path` is not set.
+
+The following encoding options are available:
+
+- Default
+- UTF-8
+- UTF-7
+- Unicode
+- UTF-32
+- ASCII
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the OutputEncoding parameter
+$option = New-PSRuleOption -OutputEncoding UTF8;
+```
+
+```powershell
+# PowerShell: Using the Output.Format hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Encoding' = 'UTF8' };
+```
+
+```powershell
+# PowerShell: Using the OutputEncoding parameter to set YAML
+Set-PSRuleOption -OutputEncoding UTF8;
+```
+
+```yaml
+# YAML: Using the output/encoding property
+output:
+  encoding: UTF8
+```
+
 ### Output.Format
 
 Configures the format that results will be presented in.
@@ -595,6 +633,15 @@ The following format options are available:
 - Yaml - Output is serialized as YAML.
 - Json - Output is serialized as JSON.
 - NUnit3 - Output is serialized as NUnit3 (XML).
+- Csv - Output is serialized as a comma separated values (CSV).
+  - The following columns are included:
+    - RuleName
+    - TargetName
+    - TargetType
+    - Outcome
+    - OutcomeReason
+    - Synopsis
+    - Recommendation
 
 This option can be specified using:
 
@@ -617,6 +664,35 @@ Set-PSRuleOption -OutputFormat Yaml;
 # YAML: Using the output/format property
 output:
   format: Yaml
+```
+
+### Output.Path
+
+Specifies the output file path to write results. Directories along the file path will automatically be created if they do not exist.
+
+This option only applies to `Invoke-PSRule`. `Invoke-PSRule` also includes a parameter `-OutputPath` to set this option at runtime. If specified, the `-OutputPath` parameter take precedence, over this option.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the OutputPath parameter
+$option = New-PSRuleOption -OutputPath 'out/results.yaml';
+```
+
+```powershell
+# PowerShell: Using the Output.Path hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Path' = 'out/results.yaml' };
+```
+
+```powershell
+# PowerShell: Using the OutputPath parameter to set YAML
+Set-PSRuleOption -OutputPath 'out/results.yaml';
+```
+
+```yaml
+# YAML: Using the output/path property
+output:
+  path: 'out/results.yaml'
 ```
 
 ### Rule suppression

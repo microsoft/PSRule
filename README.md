@@ -85,15 +85,15 @@ The output of this example is:
 ```text
    TargetName: Fridge
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 isFruit                             Fail       Fruit is only Apple, Orange and Pear
 
 
    TargetName: Apple
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 isFruit                             Pass       Fruit is only Apple, Orange and Pear
 ```
 
@@ -183,7 +183,9 @@ The following conceptual topics exist in the `PSRule` module:
   - [Logging.RuleFail](docs/concepts/PSRule/en-US/about_PSRule_Options.md#loggingrulefail)
   - [Logging.RulePass](docs/concepts/PSRule/en-US/about_PSRule_Options.md#loggingrulepass)
   - [Output.As](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputas)
+  - [Output.Encoding](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputencoding)
   - [Output.Format](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputformat)
+  - [Output.Path](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputpath)
   - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#rule-suppression)
 - [Variables](docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
   - [$Configuration](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#configuration)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 
 namespace PSRule.Rules
@@ -18,31 +19,37 @@ namespace PSRule.Rules
         /// <summary>
         /// The name of the rule.
         /// </summary>
+        [JsonProperty(PropertyName = "name")]
         public string Name { get; private set; }
 
         /// <summary>
         /// The synopsis of the rule.
         /// </summary>
+        [JsonProperty(PropertyName = "synopsis")]
         public string Synopsis { get; internal set; }
 
         /// <summary>
         /// An extented description of the rule.
         /// </summary>
+        [JsonProperty(PropertyName = "description")]
         public string Description { get; internal set; }
 
         /// <summary>
         /// The recommendation for the rule.
         /// </summary>
+        [JsonProperty(PropertyName = "recommendation")]
         public string Recommendation { get; internal set; }
 
         /// <summary>
         /// Additional notes for the rule.
         /// </summary>
+        [JsonProperty(PropertyName = "notes")]
         public string Notes { get; internal set; }
 
         /// <summary>
         /// Metadata annotations for the rule.
         /// </summary>
+        [JsonProperty(PropertyName = "annotations")]
         public Hashtable Annotations { get; internal set; }
 
         /// <summary>

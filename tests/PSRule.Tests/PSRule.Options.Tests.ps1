@@ -380,6 +380,28 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Output.Encoding' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Output.Encoding | Should -Be 'Default';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Output.Encoding' = 'UTF7' };
+            $option.Output.Encoding | Should -Be 'UTF7';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Output.Encoding | Should -Be 'UTF7';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -OutputEncoding 'UTF7' -Path $emptyOptionsFilePath;
+            $option.Output.Encoding | Should -Be 'UTF7';
+        }
+    }
+
     Context 'Read Output.Format' {
         It 'from default' {
             $option = New-PSRuleOption;
@@ -399,6 +421,28 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         It 'from parameter' {
             $option = New-PSRuleOption -OutputFormat 'Yaml' -Path $emptyOptionsFilePath;
             $option.Output.Format | Should -Be 'Yaml';
+        }
+    }
+
+    Context 'Read Output.Path' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Output.Path | Should -BeNullOrEmpty;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Output.Path' = 'out/OutputPath.txt' };
+            $option.Output.Path | Should -Be 'out/OutputPath.txt';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Output.Path | Should -Be 'out/OutputPath.txt';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -OutputPath 'out/OutputPath.txt' -Path $emptyOptionsFilePath;
+            $option.Output.Path | Should -Be 'out/OutputPath.txt';
         }
     }
 
@@ -569,10 +613,24 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         }
     }
 
+    Context 'Read Output.Encoding' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -OutputEncoding 'UTF7' @optionParams;
+            $option.Output.Encoding | Should -Be 'UTF7';
+        }
+    }
+
     Context 'Read Output.Format' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputFormat 'Yaml' @optionParams;
             $option.Output.Format | Should -Be 'Yaml';
+        }
+    }
+
+    Context 'Read Output.Path' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -OutputPath 'out/OutputPath.txt' @optionParams;
+            $option.Output.Path | Should -Be 'out/OutputPath.txt';
         }
     }
 }

@@ -115,6 +115,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OutcomeReason.
+        /// </summary>
+        internal static string OutcomeReason {
+            get {
+                return ResourceManager.GetString("OutcomeReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pass.
         /// </summary>
         internal static string Pass {
@@ -147,6 +156,24 @@ namespace PSRule.Resources {
         internal static string Synopsis {
             get {
                 return ResourceManager.GetString("Synopsis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TargetName.
+        /// </summary>
+        internal static string TargetName {
+            get {
+                return ResourceManager.GetString("TargetName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TargetType.
+        /// </summary>
+        internal static string TargetType {
+            get {
+                return ResourceManager.GetString("TargetType", resourceCulture);
             }
         }
     }

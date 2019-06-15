@@ -80,20 +80,20 @@ Rule 'storageAccounts.UseHttps' {
 }
 ```
 
-### Add rule hint
+### Add rule recommendation
 
-Additionally to provide feedback to the person or process running the rules, we can use the `Hint` keyword to set a message that appears in results.
+Additionally to provide feedback to the person or process running the rules, we can use the `Recommend` keyword to set a message that appears in results.
 
-If a hint message is not provided the description will be used instead.
+If a recommend message is not provided the synopsis will be used instead.
 
 In the example below:
 
-- Directly after the `Hint` keyword is a message to help understand why the rule failed or passed.
+- Directly after the `Recommend` keyword is a message to help understand why the rule failed or passed.
 
 ```powershell
 # Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' {
-    Hint 'Storage accounts should only allow secure traffic'
+    Recommend 'Storage accounts should only allow secure traffic'
 
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }
@@ -112,7 +112,7 @@ In the example below:
 ```powershell
 # Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { $TargetObject.ResourceType -eq 'Microsoft.Storage/storageAccounts' } {
-    Hint 'Storage accounts should only allow secure traffic'
+    Recommend 'Storage accounts should only allow secure traffic'
 
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }
@@ -153,8 +153,8 @@ Our output looked like this:
 ```text
    TargetName: storage
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 storageAccounts.UseHttps            Fail       Storage accounts should only allow secure traffic
 ```
 
@@ -196,7 +196,7 @@ Updating our existing `storageAccounts.UseHttps` rule, our rule definition becom
 ```powershell
 # Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAccounts' } {
-    Hint 'Storage accounts should only allow secure traffic'
+    Recommend 'Storage accounts should only allow secure traffic'
 
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }

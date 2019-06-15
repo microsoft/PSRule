@@ -136,6 +136,10 @@ Rule 'WithFormat' {
     ($TargetObject.spec.properties.array2 | Measure-Object).Count -eq 3
 }
 
+Rule 'WithCsv' {
+    $True;
+}
+
 # Synopsis: Test for Recommend keyword
 Rule 'RecommendTest' {
     Recommend 'This is a recommendation'
