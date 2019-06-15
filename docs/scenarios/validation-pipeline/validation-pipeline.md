@@ -38,8 +38,8 @@ if ($Null -eq (Get-PackageProvider -Name NuGet -ErrorAction Ignore)) {
     $Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
 }
 
-if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.5.0' -ErrorAction Ignore)) {
-    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.5.0' -Force;
+if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.6.0' -ErrorAction Ignore)) {
+    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.6.0' -Force;
 }
 ```
 
@@ -57,8 +57,8 @@ task InstallNuGet {
 
 # Synopsis: Install PSRule
 task InstallPSRule InstallNuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.5.0' -ErrorAction Ignore)) {
-        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.5.0' -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.6.0' -ErrorAction Ignore)) {
+        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.6.0' -Force;
     }
 }
 ```
