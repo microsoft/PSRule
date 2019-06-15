@@ -4,7 +4,7 @@
     "description": "A schema for PSRule YAML options files.",
     "oneOf": [
         {
-            "$ref": "#/definitions/options-v0.5.0"
+            "$ref": "#/definitions/options-v0.7.0"
         }
     ],
     "definitions": {
@@ -175,7 +175,8 @@
                         "None",
                         "Yaml",
                         "Json",
-                        "NUnit3"
+                        "NUnit3",
+                        "Csv"
                     ],
                     "default": "None"
                 },
@@ -186,7 +187,7 @@
             },
             "additionalProperties": false
         },
-        "options-v0.5.0": {
+        "options-v0.7.0": {
             "properties": {
                 "baseline": {
                     "type": "object",
