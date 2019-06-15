@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using PSRule.Configuration;
 using PSRule.Runtime;
-using System;
 using System.Globalization;
 using System.Linq;
 using System.Management.Automation;
@@ -9,6 +8,8 @@ using System.Text;
 
 namespace PSRule.Pipeline
 {
+    internal delegate bool ShouldProcess(string target, string action);
+
     internal static class PipelineHookActions
     {
         private const string Property_TargetName = "TargetName";

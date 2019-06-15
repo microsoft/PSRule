@@ -1,4 +1,5 @@
 ﻿using PSRule.Configuration;
+using PSRule.Resources;
 using PSRule.Rules;
 using System;
 using System.Collections;
@@ -27,6 +28,7 @@ namespace PSRule.Pipeline
         private bool _LogWarning;
         private bool _LogVerbose;
         private bool _LogInformation;
+        private ShouldProcess _ShouldProcess;
         private Action<object, bool> _Output;
         private bool _ReturnBoolean;
         private IPipelineStream _Stream;
@@ -68,6 +70,7 @@ namespace PSRule.Pipeline
             _Logger.OnWriteError = commandRuntime.WriteError;
             _Logger.OnWriteInformation = commandRuntime.WriteInformation;
             _Logger.OnWriteObject = commandRuntime.WriteObject;
+            _ShouldProcess = commandRuntime.ShouldProcess;
             _Output = commandRuntime.WriteObject;
         }
 
@@ -289,6 +292,7 @@ namespace PSRule.Pipeline
 
                 _Output = (object o, bool enumerate) => WriteToFile(
                     path: _Option.Output.Path,
+                    shouldProcess: _ShouldProcess,
                     encoding: encoding,
                     o: o
                 );
@@ -348,17 +352,23 @@ namespace PSRule.Pipeline
         /// <param name="path">The file path to write.</param>
         /// <param name="encoding">The file encoding to use.</param>
         /// <param name="o">The text to write.</param>
-        private static void WriteToFile(string path, Encoding encoding, object o)
+        private static void WriteToFile(string path, ShouldProcess shouldProcess, Encoding encoding, object o)
         {
             var rootedPath = PSRuleOption.GetRootedPath(path: path);
             var parentPath = Directory.GetParent(rootedPath);
 
             if (!parentPath.Exists)
             {
-                Directory.CreateDirectory(path: parentPath.FullName);
+                if (shouldProcess(target: parentPath.FullName, action: PSRuleResources.ShouldCreatePath))
+                {
+                    Directory.CreateDirectory(path: parentPath.FullName);
+                }
             }
 
-            File.WriteAllText(path: rootedPath, contents: o.ToString(), encoding: encoding);
+            if (shouldProcess(target: rootedPath, action: PSRuleResources.ShouldWriteFile))
+            {
+                File.WriteAllText(path: rootedPath, contents: o.ToString(), encoding: encoding);
+            }
         }
     }
 }

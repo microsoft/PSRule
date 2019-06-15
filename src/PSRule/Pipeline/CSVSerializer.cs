@@ -74,10 +74,15 @@ namespace PSRule.Pipeline
             _Builder.Append(Environment.NewLine);
         }
 
-        private void WriteColumn(string col)
+        private void WriteColumn(string value)
         {
+            if (string.IsNullOrEmpty(value))
+            {
+                return;
+            }
+
             _Builder.Append(QUOTE);
-            _Builder.Append(col);
+            _Builder.Append(value.Replace("\"", "\"\""));
             _Builder.Append(QUOTE);
         }
     }

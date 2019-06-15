@@ -24,7 +24,7 @@ Import-LocalizedData -BindingVariable LocalizedData -FileName 'PSRule.Resources.
 
 # .ExternalHelp PSRule-Help.xml
 function Invoke-PSRule {
-    [CmdletBinding(DefaultParameterSetName = 'Input')]
+    [CmdletBinding(DefaultParameterSetName = 'Input', SupportsShouldProcess = $True)]
     [OutputType([PSRule.Rules.RuleRecord])]
     [OutputType([PSRule.Rules.RuleSummaryRecord])]
     [OutputType([System.String])]

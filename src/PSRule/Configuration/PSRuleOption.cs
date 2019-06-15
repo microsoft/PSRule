@@ -407,7 +407,7 @@ namespace PSRule.Configuration
         /// <returns></returns>
         internal static string GetRootedPath(string path)
         {
-            return Path.IsPathRooted(path) ? path : Path.Combine(GetWorkingPath(), path);
+            return Path.IsPathRooted(path) ? path : Path.GetFullPath(Path.Combine(GetWorkingPath(), path));
         }
 
         /// <summary>

@@ -131,5 +131,23 @@ namespace PSRule.Resources {
                 return ResourceManager.GetString("SerializeNullPSObject", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create path.
+        /// </summary>
+        internal static string ShouldCreatePath {
+            get {
+                return ResourceManager.GetString("ShouldCreatePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write file.
+        /// </summary>
+        internal static string ShouldWriteFile {
+            get {
+                return ResourceManager.GetString("ShouldWriteFile", resourceCulture);
+            }
+        }
     }
 }
