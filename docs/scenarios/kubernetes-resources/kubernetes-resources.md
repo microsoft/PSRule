@@ -235,8 +235,8 @@ The resulting output is:
 ```text
    TargetName: app1-cache
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 deployment.HasMinimumReplicas       Fail       Deployments use a minimum of 2 replicas
 deployment.NotLatestImage           Fail       Deployments use specific tags
 deployment.ResourcesSet             Fail       Resource requirements are set for each container
@@ -244,8 +244,8 @@ deployment.ResourcesSet             Fail       Resource requirements are set for
 
    TargetName: app1-cache-service
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 metadata.Name                       Fail       Must have the app.kubernetes.io/name label
 metadata.Version                    Fail       Must have the app.kubernetes.io/version label
 metadata.Component                  Fail       Must have the app.kubernetes.io/component label
@@ -253,8 +253,8 @@ metadata.Component                  Fail       Must have the app.kubernetes.io/c
 
    TargetName: app1-ui
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 metadata.Version                    Fail       Must have the app.kubernetes.io/version label
 ```
 

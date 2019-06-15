@@ -32,7 +32,7 @@ The following example shows basic PSRule usage. For specific use cases see [scen
 
 ### Define a rule
 
-To define a rule use the `Rule` keyword.
+To define a rule, use a `Rule` block saved to a file with the `.Rule.ps1` extension.
 
 ```powershell
 Rule 'NameOfRule' {
@@ -45,24 +45,25 @@ Within the body of the rule provide one or more conditions. A condition is valid
 For example:
 
 ```powershell
-# Saved to isFruit.Rule.ps1
 Rule 'isFruit' {
     # Condition to determine if the object is fruit
     $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
 }
 ```
 
-An optional result message can be added to by using the `Hint` keyword.
+An optional result message can be added to by using the `Recommend` keyword.
 
 ```powershell
 Rule 'isFruit' {
     # An additional message to display in output
-    Hint 'Fruit is only Apple, Orange and Pear'
+    Recommend 'Fruit is only Apple, Orange and Pear'
 
     # Condition to determine if the object is fruit
     $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
 }
 ```
+
+The rule above is saved to the [`isFruit.Rule.ps1`](docs/scenarios/fruit/isFruit.Rule.ps1) file. One or more rules can be defined within a single file.
 
 ### Execute a rule
 

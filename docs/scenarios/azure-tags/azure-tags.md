@@ -244,24 +244,24 @@ Our output looked like this:
 ```text
    TargetName: storage
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 costCentreTag                       Fail       Resource must have costCentre tag
 businessUnitTag                     Fail       Resource must have businessUnit tag
 
 
    TargetName: web-app
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 environmentTag                      Fail       Resource must have environment tag
 costCentreTag                       Fail       Resource must have costCentre tag
 
 
    TargetName: web-app/staging
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 environmentTag                      Fail       Resource must have environment tag
 costCentreTag                       Fail       Resource must have costCentre tag
 ```
