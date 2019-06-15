@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.7.0-B190613 (pre-release)
+
 - Added support for `Invoke-PSRule` to return CSV formatted results. [#169](https://github.com/BernieWhite/PSRule/issues/169)
   - To generate CSV results use the `-OutputFormat Csv` parameter.
   - Added `Output.Path` option to allow output to be saved directly to file.
