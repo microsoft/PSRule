@@ -32,7 +32,7 @@ The following example shows basic PSRule usage. For specific use cases see [scen
 
 ### Define a rule
 
-To define a rule use the `Rule` keyword in a file with the `.Rule.ps1` extension.
+To define a rule, use a `Rule` block saved to a file with the `.Rule.ps1` extension.
 
 ```powershell
 Rule 'NameOfRule' {
@@ -63,7 +63,7 @@ Rule 'isFruit' {
 }
 ```
 
-The rule above is save to the [`isFruit.Rule.ps1`](docs/scenarios/fruit/isFruit.Rule.ps1) file.
+The rule above is saved to the [`isFruit.Rule.ps1`](docs/scenarios/fruit/isFruit.Rule.ps1) file. One or more rules can be defined within a single file.
 
 ### Execute a rule
 

@@ -1,3 +1,4 @@
+
 # Synopsis: An example rule
 Rule 'isFruit' {
     # An additional message to display in output
