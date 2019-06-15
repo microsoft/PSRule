@@ -63,6 +63,8 @@ Rule 'isFruit' {
 }
 ```
 
+The rule above is save to the [`isFruit.Rule.ps1`](docs/scenarios/fruit/isFruit.Rule.ps1) file.
+
 ### Execute a rule
 
 To execute the rule use `Invoke-PSRule`.
