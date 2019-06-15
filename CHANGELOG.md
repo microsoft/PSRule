@@ -8,6 +8,7 @@
   - By default, UTF-8 encoding without BOM is used.
   - `Invoke-PSRule` cmdlet also provides a parameter `-OutputPath` to write results to file.
 - Reordered cmdlet parameters to improve usage of frequently used parameters. [#175](https://github.com/BernieWhite/PSRule/issues/175)
+  - `-Module` parameter will tab-complete with imported rule modules.
 
 ## v0.6.0
 
