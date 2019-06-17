@@ -1147,6 +1147,17 @@ function GetRuleScriptPath {
                 $helpPath = Join-Path -Path $file.Directory.FullName -ChildPath $Culture;
                 $builder.Add($file.FullName, $helpPath);
             }
+
+            # Handle direct files without .rule.ps1 extension
+            foreach ($p in $Path) {
+                if ($p -like "*.ps1" -and $p -notlike "*.rule.ps1") {
+                    if ((Test-Path -Path $p -PathType Leaf)) {
+                        $file = Get-Item -Path $p;
+                        $helpPath = Join-Path -Path $file.Directory.FullName -ChildPath $Culture;
+                        $builder.Add($file.FullName, $helpPath);
+                    }
+                }
+            }
         }
 
         $moduleParams = @{};

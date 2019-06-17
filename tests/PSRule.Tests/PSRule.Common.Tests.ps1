@@ -109,22 +109,6 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $outErrors | Should -Be 'You cannot call a method on a null-valued expression.';
         }
 
-        It 'Returns error with bad path' {
-            { $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'NotAFile.ps1') } | Should -Throw -ExceptionType System.Management.Automation.ItemNotFoundException;
-        }
-
-        It 'Returns warning with empty path' {
-            $emptyPath = Join-Path -Path $outputPath -ChildPath 'empty';
-            if (!(Test-Path -Path $emptyPath)) {
-                $Null = New-Item -Path $emptyPath -ItemType Directory -Force;
-            }
-            $Null = $testObject | Invoke-PSRule -Path $emptyPath -WarningVariable outWarnings -WarningAction SilentlyContinue;
-            $warningMessages = $outwarnings.ToArray();
-            $warningMessages.Length | Should -Be 1;
-            $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-            $warningMessages[0].Message | Should -Be 'Path not found';
-        }
-
         It 'Processes rule tags' {
             # Ensure that rules can be selected by tag and that tags are mapped back to the rule results
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Tag @{ feature = 'tag' };
@@ -198,6 +182,29 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name WithConfiguration;
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $True;
+        }
+    }
+
+    Context 'Using -Path' {
+        $testObject = [PSCustomObject]@{
+            Name = 'TestObject1'
+            Value = 1
+        }
+
+        It 'Returns error with bad path' {
+            { $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'NotAFile.ps1') } | Should -Throw -ExceptionType System.Management.Automation.ItemNotFoundException;
+        }
+
+        It 'Returns warning with empty path' {
+            $emptyPath = Join-Path -Path $outputPath -ChildPath 'empty';
+            if (!(Test-Path -Path $emptyPath)) {
+                $Null = New-Item -Path $emptyPath -ItemType Directory -Force;
+            }
+            $Null = $testObject | Invoke-PSRule -Path $emptyPath -WarningVariable outWarnings -WarningAction SilentlyContinue;
+            $warningMessages = $outwarnings.ToArray();
+            $warningMessages.Length | Should -Be 1;
+            $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
+            $warningMessages[0].Message | Should -Be 'Path not found';
         }
     }
 
@@ -841,6 +848,20 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result = Get-PSRule -Path $ruleFilePath;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -BeGreaterThan 0;
+        }
+
+        It 'Finds .Rule.ps1 files' {
+            $searchPath = Join-Path -Path $here -ChildPath 'TestModule';
+            $result = @(Get-PSRule -Path $searchPath);
+            $result.Length | Should -Be 2;
+            $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2';
+        }
+
+        It 'Accepts .ps1 files' {
+            $searchPath = Join-Path -Path $here -ChildPath 'TestModule/rules/Test2.ps1';
+            $result = @(Get-PSRule -Path $searchPath);
+            $result.Length | Should -Be 2;
+            $result.RuleName | Should -BeIn 'M1.Rule3', 'M1.Rule4';
         }
 
         It 'Filters by name' {

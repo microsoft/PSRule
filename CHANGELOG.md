@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Include .ps1 files that are specified directly with `-Path`, instead of only .rule.ps1 files.
+
 ## v0.7.0-B190613 (pre-release)
 
 - Added support for `Invoke-PSRule` to return CSV formatted results. [#169](https://github.com/BernieWhite/PSRule/issues/169)
