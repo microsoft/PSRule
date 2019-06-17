@@ -113,7 +113,7 @@ function Invoke-PSRule {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Warning -Message $LocalizedData.PathNotFound;
+            Write-Warning -Message $LocalizedData.RulePathNotFound;
             return; # continue causes issues with Pester
         }
 
@@ -264,7 +264,7 @@ function Test-PSRuleTarget {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Warning -Message $LocalizedData.PathNotFound;
+            Write-Warning -Message $LocalizedData.RulePathNotFound;
             return; # continue causes issues with Pester
         }
 

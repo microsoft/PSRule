@@ -204,7 +204,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $warningMessages = $outwarnings.ToArray();
             $warningMessages.Length | Should -Be 1;
             $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-            $warningMessages[0].Message | Should -Be 'Path not found';
+            $warningMessages[0].Message | Should -Be 'No matching .Rule.ps1 files were found. Rule definitions should be saved into script files with the .Rule.ps1 extension.';
         }
     }
 
@@ -789,7 +789,7 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
             $warningMessages = $outwarnings.ToArray();
             $warningMessages.Length | Should -Be 1;
             $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-            $warningMessages[0].Message | Should -Be 'Path not found';
+            $warningMessages[0].Message | Should -Be 'No matching .Rule.ps1 files were found. Rule definitions should be saved into script files with the .Rule.ps1 extension.';
         }
 
         It 'Returns warning when not processed' {

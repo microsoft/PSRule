@@ -1,7 +1,8 @@
 
 ## Unreleased
 
-- Include .ps1 files that are specified directly with `-Path`, instead of only .rule.ps1 files.
+- Include .ps1 files that are specified directly with `-Path`, instead of only .rule.ps1 files. [#182](https://github.com/BernieWhite/PSRule/issues/182)
+  - Improved warning message displayed when no Rule.ps1 files are founds.
 
 ## v0.7.0-B190613 (pre-release)
 
