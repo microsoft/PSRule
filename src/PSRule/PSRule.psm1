@@ -113,7 +113,7 @@ function Invoke-PSRule {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Warning -Message $LocalizedData.PathNotFound;
+            Write-Warning -Message $LocalizedData.RulePathNotFound;
             return; # continue causes issues with Pester
         }
 
@@ -264,7 +264,7 @@ function Test-PSRuleTarget {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Warning -Message $LocalizedData.PathNotFound;
+            Write-Warning -Message $LocalizedData.RulePathNotFound;
             return; # continue causes issues with Pester
         }
 
@@ -1146,6 +1146,17 @@ function GetRuleScriptPath {
             foreach ($file in $fileObjects) {
                 $helpPath = Join-Path -Path $file.Directory.FullName -ChildPath $Culture;
                 $builder.Add($file.FullName, $helpPath);
+            }
+
+            # Handle direct files without .rule.ps1 extension
+            foreach ($p in $Path) {
+                if ($p -like "*.ps1" -and $p -notlike "*.rule.ps1") {
+                    if ((Test-Path -Path $p -PathType Leaf)) {
+                        $file = Get-Item -Path $p;
+                        $helpPath = Join-Path -Path $file.Directory.FullName -ChildPath $Culture;
+                        $builder.Add($file.FullName, $helpPath);
+                    }
+                }
             }
         }
 

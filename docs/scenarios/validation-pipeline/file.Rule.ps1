@@ -3,7 +3,7 @@
 # Synopsis: Check file includes copyright header
 Rule 'file.Header' -If { $TargetObject.Extension -in '.ps1', '.psm1', '.psd1', '.yaml', '.yml' } {
     $fileContent = Get-Content -Path $TargetObject.FullName -Raw;
-    $fileContent -match '(# Copyright \(c\) Bernie White\. All rights reserved\.)';
+    $fileContent -match '(\# Copyright \(c\) Bernie White\. All rights reserved\.)';
 }
 
 # Synopsis: File encoding should be UTF-8

@@ -197,7 +197,7 @@ Describe 'Scenarios -- validation-pipeline' -Tag 'EndToEnd', 'validation-pipelin
             $report.Save((Join-Path -Path $reportPath -ChildPath 'rule.report.xml'));
             $items = @($report.DocumentElement.'test-suite');
             Test-Path -Path (Join-Path -Path $reportPath -ChildPath 'rule.report.xml') | Should -be $True;
-            $items.Length | Should -Be 4;
+            $items.Length | Should -Be 5;
         }
     }
 }
