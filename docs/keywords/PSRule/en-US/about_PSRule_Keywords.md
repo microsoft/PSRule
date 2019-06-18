@@ -4,30 +4,31 @@
 
 ## SHORT DESCRIPTION
 
-Describes the language keywords that can be used within PSRule document definitions.
+Describes the language keywords that can be used within PSRule rule definitions.
 
 ## LONG DESCRIPTION
 
-PSRule lets you define rules using PowerShell blocks. To create a rule use the `Rule` keyword. Within a rule several assertions can be used.
+PSRule lets you define rules using PowerShell blocks. To define a rule use the `Rule` keyword.
 
-- Assertion - A specific test that always evaluates to true or false.
+- [Rule](#rule) - Creates a rule definition.
 
-The following are the built-in keywords that can be used within PSRule:
+The following are the built-in keywords that can be used within a rule definition:
 
-- [Rule](#rule) - A rule definition
-- [Exists](#exists) - Assert that a field or property must exist
-- [Match](#match) - Assert that the field must match any of the regular expressions
-- [AnyOf](#anyof) - Assert that any of the child expressions must be true
-- [AllOf](#allof) - Assert that all of the child expressions must be true
-- [Within](#within) - Assert that the field must match any of the values
-- [TypeOf](#typeof) - Assert that the object must be of a specific type
+- [Exists](#exists) - Assert that a field or property must exist.
+- [Match](#match) - Assert that the field must match any of the regular expressions.
+- [AnyOf](#anyof) - Assert that any of the child expressions must be true.
+- [AllOf](#allof) - Assert that all of the child expressions must be true.
+- [Within](#within) - Assert that the field must match any of the values.
+- [TypeOf](#typeof) - Assert that the object must be of a specific type.
 - [Recommend](#recommend) - Return the process to resolve the issue and pass the rule.
 
 ### Rule
 
-A `Rule` definition describes an individual business rule that will be applied to pipeline objects.
+A `Rule` definition describes an individual business rule that will be executed against each input object. Input objects can be passed on the PowerShell pipeline or supplied from file.
 
-To define a Rule use the `Rule` keyword followed by a name and a pair of squiggly brackets `{`. Within the `{ }` one or more expressions can be used.
+To define a Rule use the `Rule` keyword followed by a name and a pair of squiggly brackets `{`. Within the `{ }` one or more conditions can be used.
+
+Conditions determine if the input object either _Pass_ or _Fail_ the rule.
 
 Syntax:
 
@@ -43,7 +44,18 @@ Rule [-Name] <string> [-Tag <hashtable>] [-Type <string[]>] [-If <scriptBlock>] 
 - `If` - A script precondition that must evaluate to `$True` before the rule is executed.
 - `DependsOn` - A list of rules this rule depends on. Rule dependencies must execute successfully before this rule is executed.
 - `Configure` - A set of default configuration values. These values are only used when the baseline configuration does not contain the key.
-- `Body` - A script block definition of the rule containing one or more PSRule keywords and PowerShell expressions.
+- `Body` - A script block that specifies one or more conditions that are required for the rule to _Pass_.
+
+A condition is any valid PowerShell that return either `$True` or `$False`. Optionally, PSRule keywords can be used to help build out conditions quickly. When a rule contains more then one condition, all must return `$True` for the rule to _Pass_. If any one condition returns `$False` the rule has failed.
+
+The following restrictions apply:
+
+- Rule conditions should only return `$True` or `$False`. Other objects should be caught with `Out-Null` or null assigned like `$Null = `.
+- The `Rule` keyword can not be nested in a `Rule` definition.
+- Variables and functions defined within `.Rule.ps1` files, but outside the `Rule` definition block are not accessible unless the `Global` scope is applied.
+- Functions and variables within the caller's scope (the scope calling `Invoke-PSRule`, `Get-PSRule`, `Test-PSRuleTarget`) are not accessible.
+- Cmdlets that require user interaction are not supported, i.e. `Read-Host`.
+- `Write-Debug` is not currently supported, `Write-Error`, `Write-Warning`, `Write-Verbose` and `Write-Information` are.
 
 Examples:
 
