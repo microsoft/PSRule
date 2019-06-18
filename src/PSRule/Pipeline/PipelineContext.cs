@@ -297,7 +297,7 @@ namespace PSRule.Pipeline
                 return;
             }
 
-            DoWriteWarning(string.Format(PSRuleResources.ObjectNotProcessed, TargetName));
+            DoWriteWarning(message: string.Format(PSRuleResources.ObjectNotProcessed, TargetName));
         }
 
         public void WarnRuleNotFound()
@@ -307,7 +307,22 @@ namespace PSRule.Pipeline
                 return;
             }
 
-            DoWriteWarning(PSRuleResources.RuleNotFound);
+            DoWriteWarning(message: PSRuleResources.RuleNotFound);
+        }
+
+        public void ErrorInvaildRuleResult()
+        {
+            if (!_LogError)
+            {
+                return;
+            }
+
+            DoWriteError(errorRecord: new ErrorRecord(
+                exception: new RuleRuntimeException(message: string.Format(PSRuleResources.InvalidRuleResult, RuleBlock.RuleId)),
+                errorId: "PSRule.Runtime.InvalidRuleResult",
+                errorCategory: ErrorCategory.InvalidResult,
+                targetObject: null
+            ));
         }
 
         #endregion Logging

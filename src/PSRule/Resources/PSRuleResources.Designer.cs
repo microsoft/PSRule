@@ -61,6 +61,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An invalid rule result was returned for {0}. Conditions must return boolean $True or $False..
+        /// </summary>
+        internal static string InvalidRuleResult {
+            get {
+                return ResourceManager.GetString("InvalidRuleResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Target object &apos;{0}&apos; has not been processed because no matching rules were found..
         /// </summary>
         internal static string ObjectNotProcessed {
