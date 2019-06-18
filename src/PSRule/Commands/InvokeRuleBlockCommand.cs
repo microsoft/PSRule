@@ -2,7 +2,6 @@
 using PSRule.Rules;
 using System;
 using System.Linq;
-using System.Collections.ObjectModel;
 using System.Management.Automation;
 
 namespace PSRule.Commands

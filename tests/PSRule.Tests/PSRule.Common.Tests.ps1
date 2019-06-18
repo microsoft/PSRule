@@ -1092,3 +1092,26 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
 }
 
 #endregion Get-PSRuleHelp
+
+#region Rule processing
+
+Describe 'Rule processing' -Tag 'Common', 'RuleProcessing' {
+    Context 'Error handling' {
+        $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1');
+        $testObject = [PSCustomObject]@{
+            Name = 'TestObject1'
+            Value = 1
+        }
+
+        It 'Handles non-boolean results' {
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath  -ErrorVariable outError -ErrorAction SilentlyContinue;
+            $messages = @($outError);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $False;
+            $messages.Length | Should -BeGreaterThan 0;
+            $messages.Exception.Message | Should -BeLike 'An invalid rule result was returned for *';
+        }
+    }
+}
+
+#endregion Rule processing

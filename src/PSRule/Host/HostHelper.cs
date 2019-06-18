@@ -1,5 +1,4 @@
 ﻿using PSRule.Annotations;
-using PSRule.Configuration;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using PSRule.Pipeline;
+using System.Collections.Generic;
 using System.Management.Automation;
 
 namespace PSRule.Rules
@@ -38,17 +39,44 @@ namespace PSRule.Rules
             {
                 count++;
 
-                if (v is bool && (bool)v)
+                if (!TryBoolean(v, out bool bresult))
                 {
-                    pass++;
+                    PipelineContext.CurrentThread.ErrorInvaildRuleResult();
+
+                    continue;
                 }
-                else if (v is PSObject && (bool)((PSObject)v).BaseObject)
+
+                if (bresult)
                 {
                     pass++;
                 }
             }
 
             return new RuleConditionResult(pass: pass, count: count);
+        }
+
+        private static bool TryBoolean(object o, out bool result)
+        {
+            result = false;
+
+            if (o == null)
+            {
+                return false;
+            }
+
+            if (o is bool bresult)
+            {
+                result = bresult;
+                return true;
+            }
+
+            if (o is PSObject pso && pso.BaseObject is bool psoresult)
+            {
+                result = psoresult;
+                return true;
+            }
+
+            return false;
         }
     }
 }

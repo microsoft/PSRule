@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="InvalidRuleResult" xml:space="preserve">
+    <value>An invalid rule result was returned for {0}. Conditions must return boolean $True or $False.</value>
+  </data>
   <data name="ObjectNotProcessed" xml:space="preserve">
     <value>Target object '{0}' has not been processed because no matching rules were found.</value>
   </data>
