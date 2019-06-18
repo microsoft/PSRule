@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.7.0-B190624 (pre-release)
+
 - Fix handling of non-boolean results in rules. Rule is failed with more specific error message. [#187](https://github.com/BernieWhite/PSRule/issues/187)
 - Include .ps1 files that are specified directly with `-Path`, instead of only .rule.ps1 files. [#182](https://github.com/BernieWhite/PSRule/issues/182)
   - Improved warning message displayed when no Rule.ps1 files are founds.
