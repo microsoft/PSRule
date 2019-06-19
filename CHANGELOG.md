@@ -1,6 +1,9 @@
 
 ## Unreleased
 
+- Fix circular rule dependency issue. [#190](https://github.com/BernieWhite/PSRule/issues/190)
+- Fix error message when attempting to use the rule keyword in a rule definition. [#189](https://github.com/BernieWhite/PSRule/issues/189)
+
 ## v0.7.0-B190624 (pre-release)
 
 - Fix handling of non-boolean results in rules. Rule is failed with more specific error message. [#187](https://github.com/BernieWhite/PSRule/issues/187)

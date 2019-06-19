@@ -117,6 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DependencyCircularReference" xml:space="preserve">
+    <value>A circular rule dependency was detected. The rule '{0}' depends on '{1}' which also depend on '{0}'.</value>
+    <comment>Occurs when rules interdepend on each other.</comment>
+  </data>
+  <data name="DependencyNotFound" xml:space="preserve">
+    <value>The dependency '{0}' for '{1}' could not be found. Check that the rule is defined in a .Rule.ps1 file within the search path.</value>
+    <comment>Occurs when a rule dependency is not discovered.</comment>
+  </data>
+  <data name="DuplicateRuleId" xml:space="preserve">
+    <value>A rule with the same name '{0}' already exists.</value>
+    <comment>Occurs when the same rule name is used.</comment>
+  </data>
+  <data name="InvalidRuleNesting" xml:space="preserve">
+    <value>Rule nesting was detected in rule '{0}'. Rules must not be nested.</value>
+    <comment>Occurs when a rule is nested in another rule.</comment>
+  </data>
   <data name="InvalidRuleResult" xml:space="preserve">
     <value>An invalid rule result was returned for {0}. Conditions must return boolean $True or $False.</value>
   </data>

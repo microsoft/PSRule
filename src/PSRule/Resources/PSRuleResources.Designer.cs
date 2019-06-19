@@ -61,6 +61,42 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A circular rule dependency was detected. The rule &apos;{0}&apos; depends on &apos;{1}&apos; which also depend on &apos;{0}&apos;..
+        /// </summary>
+        internal static string DependencyCircularReference {
+            get {
+                return ResourceManager.GetString("DependencyCircularReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The dependency &apos;{0}&apos; for &apos;{1}&apos; could not be found. Check that the rule is defined in a .Rule.ps1 file within the search path..
+        /// </summary>
+        internal static string DependencyNotFound {
+            get {
+                return ResourceManager.GetString("DependencyNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A rule with the same name &apos;{0}&apos; already exists..
+        /// </summary>
+        internal static string DuplicateRuleId {
+            get {
+                return ResourceManager.GetString("DuplicateRuleId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rule nesting was detected in rule &apos;{0}&apos;. Rules must not be nested..
+        /// </summary>
+        internal static string InvalidRuleNesting {
+            get {
+                return ResourceManager.GetString("InvalidRuleNesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An invalid rule result was returned for {0}. Conditions must return boolean $True or $False..
         /// </summary>
         internal static string InvalidRuleResult {

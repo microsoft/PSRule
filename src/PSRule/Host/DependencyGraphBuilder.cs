@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PSRule.Pipeline;
+using PSRule.Resources;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,11 +10,13 @@ namespace PSRule.Host
     {
         private readonly StringComparer _Comparer;
         private readonly Dictionary<string, T> _Targets;
+        private readonly Stack<string> _Stack;
 
         public DependencyGraphBuilder()
         {
             _Comparer = StringComparer.OrdinalIgnoreCase;
             _Targets = new Dictionary<string, T>(_Comparer);
+            _Stack = new Stack<string>();
         }
 
         public void Include(IEnumerable<T> items, Func<T, bool> filter)
@@ -24,7 +28,7 @@ namespace PSRule.Host
             {
                 if (index.ContainsKey(item.RuleId))
                 {
-                    throw new Exception("RuleId already exists in index");
+                    throw new RuleRuntimeException(message: string.Format(PSRuleResources.DuplicateRuleId, item.RuleId));
                 }
 
                 index.Add(item.RuleId, item);
@@ -35,7 +39,7 @@ namespace PSRule.Host
             {
                 if (filter == null || filter(item))
                 {
-                    Include(item.RuleId, index);
+                    Include(ruleId: item.RuleId, parentId: null, index: index);
                 }
             }
         }
@@ -45,35 +49,50 @@ namespace PSRule.Host
             return new DependencyGraph<T>(_Targets.Values.ToArray());
         }
 
-        private void Include(string name, IDictionary<string, T> index)
+        private void Include(string ruleId, string parentId, IDictionary<string, T> index)
         {
             // Check that the item is not already in the list of targets
-            if (_Targets.ContainsKey(name))
+            if (_Targets.ContainsKey(ruleId))
             {
                 return;
             }
 
-            var item = index[name];
-
-            // Check for dependencies
-            if (item.DependsOn != null)
+            // Check for circular dependencies
+            if (_Stack.Contains(value: ruleId, comparer: _Comparer))
             {
-                foreach (var d in item.DependsOn)
-                {
-                    if (!index.ContainsKey(d))
-                    {
-                        throw new Exception("Dependency name does not exist in index");
-                    }
-
-                    // Handle nested dependencies
-                    if (!_Targets.ContainsKey(d))
-                    {
-                        Include(d, index);
-                    }
-                }
+                throw new RuleRuntimeException(message: string.Format(PSRuleResources.DependencyCircularReference, parentId, ruleId));
             }
 
-            _Targets.Add(name, item);
+            try
+            {
+                _Stack.Push(item: ruleId);
+
+                var item = index[ruleId];
+
+                // Check for dependencies
+                if (item.DependsOn != null)
+                {
+                    foreach (var d in item.DependsOn)
+                    {
+                        if (!index.ContainsKey(d))
+                        {
+                            throw new RuleRuntimeException(message: string.Format(PSRuleResources.DependencyNotFound, d, ruleId));
+                        }
+
+                        // Handle dependencies
+                        if (!_Targets.ContainsKey(d))
+                        {
+                            Include(ruleId: d, parentId: ruleId, index: index);
+                        }
+                    }
+                }
+
+                _Targets.Add(key: ruleId, value: item);
+            }
+            finally
+            {
+                _Stack.Pop();
+            }
         }
     }
 }
