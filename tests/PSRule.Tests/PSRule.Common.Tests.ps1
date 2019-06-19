@@ -1102,14 +1102,36 @@ Describe 'Rule processing' -Tag 'Common', 'RuleProcessing' {
             Name = 'TestObject1'
             Value = 1
         }
+        $testParams = @{
+            ErrorVariable = 'outError'
+            ErrorAction = 'SilentlyContinue'
+            WarningAction = 'SilentlyContinue'
+        }
 
-        It 'Handles non-boolean results' {
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath  -ErrorVariable outError -ErrorAction SilentlyContinue;
+        It 'Error on non-boolean results' {
+            $result = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithNonBoolean;
             $messages = @($outError);
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $False;
             $messages.Length | Should -BeGreaterThan 0;
+            $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
             $messages.Exception.Message | Should -BeLike 'An invalid rule result was returned for *';
+        }
+
+        It 'Error on nested rules' {
+            $nestedRulePath = (Join-Path -Path $here -ChildPath 'FromFileNested.Rule.ps1');
+            $Null = $testObject | Invoke-PSRule @testParams -Path $nestedRulePath -Name WithNestedRule;
+            $messages = @($outError);
+            $messages.Length | Should -BeGreaterThan 0;
+            $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
+            $messages.Exception.Message | Should -BeLike 'Rule nesting was detected in rule *';
+        }
+
+        It 'Error on circular dependency' {
+            $messages = @({ $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithDependency1; $outError; } | Should -Throw -PassThru);
+            $messages.Length | Should -BeGreaterThan 0;
+            $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
+            $messages.Exception.Message | Should -BeLike 'A circular rule dependency was detected.*';
         }
     }
 }
