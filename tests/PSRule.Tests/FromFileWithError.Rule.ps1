@@ -19,3 +19,7 @@ Rule 'WithDependency2' -DependsOn 'WithDependency3' {
 Rule 'WithDependency3' -DependsOn 'WithDependency1' {
     $True;
 }
+
+Rule 'WithDependency4' -DependsOn 'WithDependency5' {
+    $True;
+}

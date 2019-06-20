@@ -2,6 +2,7 @@
 ## Unreleased
 
 - Fix circular rule dependency issue. [#190](https://github.com/BernieWhite/PSRule/issues/190)
+- Fix rule `DependsOn` parameter allows null. [#191](https://github.com/BernieWhite/PSRule/issues/191)
 - Fix error message when attempting to use the rule keyword in a rule definition. [#189](https://github.com/BernieWhite/PSRule/issues/189)
 
 ## v0.7.0-B190624 (pre-release)
