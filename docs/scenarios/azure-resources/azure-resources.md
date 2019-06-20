@@ -118,6 +118,8 @@ Rule 'storageAccounts.UseHttps' -If { $TargetObject.ResourceType -eq 'Microsoft.
 }
 ```
 
+Skipped rules have the outcome `None` and are not included in output by default. To include skipped rules use the `-Outcome All` parameter.
+
 ## Execute rules
 
 With a rule defined, the next step is to execute it. To execute rules, pipe the target object to `Invoke-PSRule`.

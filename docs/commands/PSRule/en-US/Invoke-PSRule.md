@@ -162,7 +162,7 @@ Filter output to only show rules with a specific outcome.
 Type: RuleOutcome
 Parameter Sets: (All)
 Aliases:
-Accepted values: Pass, Fail, Error, None
+Accepted values: Pass, Fail, Error, None, Processed, All
 
 Required: False
 Position: Named
