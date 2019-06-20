@@ -441,6 +441,7 @@ namespace PSRule.Pipeline
 
             RuleBlock = ruleBlock;
 
+            // Starts rule execution timer
             _RuleTimer.Restart();
 
             return RuleRecord;
@@ -451,9 +452,9 @@ namespace PSRule.Pipeline
         /// </summary>
         public void ExitRuleBlock()
         {
+            // Stop rule execution time
             _RuleTimer.Stop();
-            var time = _RuleTimer.ElapsedMilliseconds;
-            RuleRecord.Time = time > 0 ? time / 1000 : 0f;
+            RuleRecord.Time = _RuleTimer.ElapsedMilliseconds;
 
             _LogPrefix = null;
             RuleRecord = null;

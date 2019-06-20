@@ -65,6 +65,13 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.OutcomeReason | Should -Be 'Inconclusive';
         }
 
+        It 'Returns rule timing' {
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'WithSleep';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
+            $result.Time | Should -BeGreaterThan 0;
+        }
+
         It 'Propagates PowerShell logging' {
             $withLoggingRulePath = (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1');
             $loggingParams = @{
