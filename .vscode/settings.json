@@ -4,7 +4,8 @@
         "out/": true,
         "reports/": true,
         "**/bin/": true,
-        "**/obj/": true
+        "**/obj/": true,
+        "TestResults/": true
     },
     "search.exclude": {
         "out/": true
