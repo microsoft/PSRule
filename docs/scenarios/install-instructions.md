@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Windows PowerShell 5.1 with .NET Framework 4.7.2+ or
-- PowerShell Core 6.0 or greater on Windows, macOS and Linux
+- PowerShell Core 6.2 or greater on Windows, MacOS and Linux
 
 For a list of platforms that PowerShell Core is supported on [see](https://github.com/PowerShell/PowerShell#get-powershell).
 
