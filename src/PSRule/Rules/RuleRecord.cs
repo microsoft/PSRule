@@ -84,7 +84,7 @@ namespace PSRule.Rules
 
         [DefaultValue(0f)]
         [JsonProperty(PropertyName = "time")]
-        public float Time { get; internal set; }
+        public long Time { get; internal set; }
 
         public bool IsSuccess()
         {

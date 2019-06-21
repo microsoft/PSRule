@@ -1,8 +1,15 @@
 # PSRule
 
-A cross-platform PowerShell module (Windows, Linux, and macOS) with commands to validate objects on the pipeline using PowerShell syntax.
+A cross-platform PowerShell module (Windows, Linux, and MacOS) with commands to validate objects on the pipeline using PowerShell syntax.
 
 ![ci-badge]
+
+Features of PSRule include:
+
+- [Extensible](docs/features.md#extensible) - Use PowerShell, a flexible scripting language.
+- [Cross-platform](docs/features.md#cross-platform) - Run on MacOS, Linux and Windows.
+- [Reusable](docs/features.md#reusable) - Share rules across teams or organizations.
+- [Recommendations](docs/features.md#recommendations) - Include detailed instructions to remediate issues.
 
 ## Disclaimer
 

@@ -12,7 +12,7 @@ namespace PSRule.Pipeline
 
         private readonly List<RuleRecord> _Record;
         private RuleOutcome _Outcome;
-        private float _Time;
+        private long _Time;
         private int _Total;
         private int _Error;
         private int _Fail;
@@ -21,13 +21,13 @@ namespace PSRule.Pipeline
         {
             TargetName = targetName;
             _Record = new List<RuleRecord>();
-            _Time = 0f;
+            _Time = 0;
             _Total = 0;
             _Error = 0;
             _Fail = 0;
         }
 
-        internal float Time
+        internal long Time
         {
             get { return _Time; }
         }

@@ -140,6 +140,11 @@ Rule 'WithCsv' {
     $True;
 }
 
+Rule 'WithSleep' {
+    Start-Sleep -Milliseconds 50;
+    $True;
+}
+
 # Synopsis: Test for Recommend keyword
 Rule 'RecommendTest' {
     Recommend 'This is a recommendation'

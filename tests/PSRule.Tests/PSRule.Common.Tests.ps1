@@ -65,6 +65,13 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.OutcomeReason | Should -Be 'Inconclusive';
         }
 
+        It 'Returns rule timing' {
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'WithSleep';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
+            $result.Time | Should -BeGreaterThan 0;
+        }
+
         It 'Propagates PowerShell logging' {
             $withLoggingRulePath = (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1');
             $loggingParams = @{
@@ -1093,22 +1100,33 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
 
 #endregion Get-PSRuleHelp
 
-#region Rule processing
+#region Rules
 
-Describe 'Rule processing' -Tag 'Common', 'RuleProcessing' {
-    Context 'Error handling' {
-        $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1');
-        $testObject = [PSCustomObject]@{
-            Name = 'TestObject1'
-            Value = 1
-        }
-        $testParams = @{
-            ErrorVariable = 'outError'
-            ErrorAction = 'SilentlyContinue'
-            WarningAction = 'SilentlyContinue'
-        }
+Describe 'Rules' -Tag 'Common', 'Rules' {
+    $testObject = [PSCustomObject]@{
+        Name = 'TestObject1'
+        Value = 1
+    }
+    $testParams = @{
+        ErrorVariable = 'outError'
+        ErrorAction = 'SilentlyContinue'
+        WarningAction = 'SilentlyContinue'
+    }
 
+    Context 'Rule definition' {
+        It 'Error on nested rules' {
+            $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileNested.Rule.ps1');
+            $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithNestedRule;
+            $messages = @($outError);
+            $messages.Length | Should -BeGreaterThan 0;
+            $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
+            $messages.Exception.Message | Should -BeLike 'Rule nesting was detected in rule *';
+        }
+    }
+
+    Context 'Conditions' {
         It 'Error on non-boolean results' {
+            $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1');
             $result = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithNonBoolean;
             $messages = @($outError);
             $result | Should -Not -BeNullOrEmpty;
@@ -1117,23 +1135,34 @@ Describe 'Rule processing' -Tag 'Common', 'RuleProcessing' {
             $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
             $messages.Exception.Message | Should -BeLike 'An invalid rule result was returned for *';
         }
+    }
 
-        It 'Error on nested rules' {
-            $nestedRulePath = (Join-Path -Path $here -ChildPath 'FromFileNested.Rule.ps1');
-            $Null = $testObject | Invoke-PSRule @testParams -Path $nestedRulePath -Name WithNestedRule;
-            $messages = @($outError);
-            $messages.Length | Should -BeGreaterThan 0;
-            $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
-            $messages.Exception.Message | Should -BeLike 'Rule nesting was detected in rule *';
-        }
-
+    Context 'Dependencies' {
         It 'Error on circular dependency' {
+            $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1');
             $messages = @({ $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithDependency1; $outError; } | Should -Throw -PassThru);
             $messages.Length | Should -BeGreaterThan 0;
             $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
             $messages.Exception.Message | Should -BeLike 'A circular rule dependency was detected.*';
         }
+
+        It 'Error on $null DependsOn' {
+            $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileInvalid.Rule.ps1');
+            $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name InvalidRule1, InvalidRule2;
+            $messages = @($outError);
+            $messages.Length | Should -Be 2;
+            $messages.Exception | Should -BeOfType System.Management.Automation.ParameterBindingException;
+            $messages.Exception.Message | Should -BeLike '*The argument is null*';
+        }
+
+        It 'Error on missing dependency' {
+            $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1');
+            $messages = @({ $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithDependency4; $outError; } | Should -Throw -PassThru);
+            $messages.Length | Should -BeGreaterThan 0;
+            $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
+            $messages.Exception.Message | Should -BeLike 'The dependency * for * could not be found.*';
+        }
     }
 }
 
-#endregion Rule processing
+#endregion Rules

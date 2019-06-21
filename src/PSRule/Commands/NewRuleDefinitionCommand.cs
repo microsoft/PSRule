@@ -1,10 +1,10 @@
 ﻿using PSRule.Parser;
 using PSRule.Pipeline;
 using PSRule.Rules;
+using System;
 using System.Collections;
 using System.IO;
 using System.Management.Automation;
-using System.Runtime.Serialization;
 
 namespace PSRule.Commands
 {
@@ -23,6 +23,7 @@ namespace PSRule.Commands
         /// The name of the rule.
         /// </summary>
         [Parameter(Mandatory = true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
         public string Name { get; set; }
 
         /// <summary>
@@ -53,6 +54,7 @@ namespace PSRule.Commands
         /// Deployments that this deployment depends on.
         /// </summary>
         [Parameter(Mandatory = false)]
+        [ValidateNotNullOrEmpty()]
         public string[] DependsOn { get; set; }
 
         /// <summary>
@@ -80,6 +82,8 @@ namespace PSRule.Commands
                     WriteError(errorRecord: errorRecord);
                 }
             }
+
+            CheckDependsOn();
 
             var ps = PowerShell.Create();
             ps.Runspace = context.GetRunspace();
@@ -109,6 +113,23 @@ namespace PSRule.Commands
             );
 
             WriteObject(block);
+        }
+
+        private void CheckDependsOn()
+        {
+            if (MyInvocation.BoundParameters.ContainsKey(nameof(DependsOn)))
+            {
+                if (DependsOn == null || DependsOn.Length == 0)
+                {
+                    WriteError(new ErrorRecord(
+                        exception: new ArgumentNullException(paramName: nameof(DependsOn)),
+                        errorId: "PSRule.Runtime.ArgumentNull",
+                        errorCategory: ErrorCategory.InvalidArgument,
+                        targetObject: null
+                    ));
+                }
+                //else if (DependsOn.Length )
+            }
         }
 
         private RuleHelpInfo GetHelpInfo(PipelineContext context, string name)
