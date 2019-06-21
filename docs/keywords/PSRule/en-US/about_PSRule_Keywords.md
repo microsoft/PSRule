@@ -254,7 +254,7 @@ Syntax:
 TypeOf [-TypeName] <string[]> [-InputObject <PSObject>]
 ```
 
-- `TypeName` - One or more type names which will be evaluated against the pipeline object. `TypeName` is case insensitive.
+- `TypeName` - One or more type names which will be evaluated against the pipeline object. `TypeName` is case sensitive.
 - `InputObject` - Supports objects being piped directly.
 
 Examples:
