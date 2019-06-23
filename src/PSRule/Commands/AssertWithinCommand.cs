@@ -22,9 +22,15 @@ namespace PSRule.Commands
         public string Field { get; set; }
 
         [Parameter(Mandatory = true, Position = 1)]
-        public PSObject[] AllowedValue { get; set; }
+        [Alias("AllowedValue")]
+        public PSObject[] Value { get; set; }
 
         [Parameter(Mandatory = false)]
+        [PSDefaultValue(Value = false)]
+        public SwitchParameter Not { get; set; }
+
+        [Parameter(Mandatory = false)]
+        [PSDefaultValue(Value = false)]
         public SwitchParameter CaseSensitive { get; set; }
 
         [Parameter(Mandatory = false, ValueFromPipeline = true)]
@@ -38,28 +44,32 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             var targetObject = InputObject ?? GetTargetObject();
-            var result = false;
+            bool expected = !Not;
+            bool match = false;
+
+            // Pass with any match, or (-Not) fail with any match
 
             if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field, caseSensitive: false, value: out object fieldValue))
             {
-                foreach (var item in AllowedValue)
+                for (var i = 0; i < Value.Length && !match; i++)
                 {
-                    if (fieldValue is string && item.BaseObject is string)
+                    if (fieldValue is string && Value[i].BaseObject is string)
                     {
-                        if (_Comparer.Equals(fieldValue, item.BaseObject))
+                        if (_Comparer.Equals(fieldValue, Value[i].BaseObject))
                         {
-                            result = true;
+                            match = true;
                         }
                     }
-                    else if (item == fieldValue)
+                    else if (Value[i] == fieldValue)
                     {
-                        result = true;
+                        match = true;
                     }
                 }
             }
 
-            PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Within, outcome: result);
+            var result = expected == match;
 
+            PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Within, outcome: result);
             WriteObject(result);
         }
     }

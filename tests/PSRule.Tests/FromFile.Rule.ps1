@@ -203,6 +203,11 @@ Rule 'WithinTestCaseSensitive' {
     Within 'Title' 'Mr', 'Miss', 'Mrs', 'Ms' -CaseSensitive
 }
 
+# Synopsis: Test for Within keyword
+Rule 'WithinNot' {
+    Within 'Title' 'Mr', 'Sir' -Not
+}
+
 # Synopsis: Test for Match keyword
 Rule 'MatchTest' -Tag @{ keyword = 'Match' } {
     AnyOf {
@@ -217,6 +222,11 @@ Rule 'MatchTest' -Tag @{ keyword = 'Match' } {
 # Synopsis: Test for Match keyword
 Rule 'MatchTestCaseSensitive' -Tag @{ keyword = 'Match' } {
     Match 'Title' '^(Mr|Miss|Mrs|Ms)$' -CaseSensitive
+}
+
+# Synopsis: Test for Match keyword
+Rule 'MatchNot' {
+    Match 'Title' '^(Mr|Sir)$' -Not
 }
 
 # Synopsis: Test for TypeOf keyword

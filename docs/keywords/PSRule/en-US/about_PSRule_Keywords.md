@@ -131,12 +131,13 @@ The `Match` assertion is used within a `Rule` definition to assert that the valu
 Syntax:
 
 ```text
-Match [-Field] <string> [-Expression] <string[]> [-CaseSensitive] [-InputObject <PSObject>]
+Match [-Field] <string> [-Expression] <string[]> [-CaseSensitive] [-Not] [-InputObject <PSObject>]
 ```
 
 - `Field` - The name of the field that will be evaluated on the pipeline object.
 - `Expression` - One or more regular expressions that will be used to match the value of the field.
 - `CaseSensitive` - The field _value_ must match exact case.
+- `Not` - Instead of checking the field value matches, the field value must not match any of the expressions.
 - `InputObject` - Supports objects being piped directly.
 
 Examples:
@@ -150,7 +151,9 @@ Rule 'validatePhoneNumber' {
 
 Output:
 
-If **any** of the specified regular expressions match the field value then Match returns `$True`, otherwise `$False`.
+If **any** of the specified regular expressions match the field value then `Match` returns `$True`, otherwise `$False`.
+
+When `-Not` is used, if any of the regular expressions match the field value with `Match` return `$False`, otherwise `$True`.
 
 ### Within
 
@@ -159,12 +162,13 @@ The `Within` assertion is used within a `Rule` definition to assert that the val
 Syntax:
 
 ```text
-Within [-Field] <string> [-AllowedValue] <PSObject[]]> [-CaseSensitive] [-InputObject <PSObject>]
+Within [-Field] <string> [[-Value] <PSObject[]>] [-CaseSensitive] [-Not] [-InputObject <PSObject>]
 ```
 
 - `Field` - The name of the field that will be evaluated on the pipeline object.
-- `AllowedValue` - A list of allowed values that the field value must match.
+- `Value` - A list of values that the field value must match.
 - `CaseSensitive` - The field _value_ must match exact case. Only applies when the field value and allowed values are strings.
+- `Not` - Instead of checking the field value matches, the field value must not match any of the supplied values.
 - `InputObject` - Supports objects being piped directly.
 
 Examples:
@@ -176,9 +180,18 @@ Rule 'validateTitle' {
 }
 ```
 
+```powershell
+# Synopsis: Ensure that the title field is not one of the specified values
+Rule 'validateTitle' {
+    Within 'Title' 'Mr', 'Sir' -Not
+}
+```
+
 Output:
 
-If **any** of the allow values match the field value then Within returns `$True`, otherwise `$False`.
+If **any** of the values match the field value then `Within` returns `$True`, otherwise `$False`.
+
+When `-Not` is used, if any of the values match the field value with `Within` return `$False`, otherwise `$True`.
 
 ### AllOf
 
