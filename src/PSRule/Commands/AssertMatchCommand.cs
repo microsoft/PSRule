@@ -16,6 +16,7 @@ namespace PSRule.Commands
         public AssertMatchCommand()
         {
             CaseSensitive = false;
+            Not = false;
         }
 
         [Parameter(Mandatory = true, Position = 0)]
@@ -25,7 +26,12 @@ namespace PSRule.Commands
         public string[] Expression { get; set; }
 
         [Parameter(Mandatory = false)]
+        [PSDefaultValue(Value = false)]
         public SwitchParameter CaseSensitive { get; set; }
+
+        [Parameter(Mandatory = false)]
+        [PSDefaultValue(Value = false)]
+        public SwitchParameter Not { get; set; }
 
         [Parameter(Mandatory = false, ValueFromPipeline = true)]
         public PSObject InputObject { get; set; }
@@ -45,21 +51,25 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             var targetObject = InputObject ?? GetTargetObject();
-            var result = false;
+            bool expected = !Not;
+            bool match = false;
+
+            // Pass with any match, or (-Not) fail with any match
 
             if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field, caseSensitive: false, value: out object fieldValue))
             {
-                for (var i = 0; i < _Expressions.Length && !result; i++)
+                for (var i = 0; i < _Expressions.Length && !match; i++)
                 {
                     if (_Expressions[i].IsMatch(fieldValue.ToString()))
                     {
-                        result = true;
+                        match = true;
                     }
                 }
             }
 
-            PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Match, outcome: result);
+            var result = expected == match;
 
+            PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Match, outcome: result);
             WriteObject(result);
         }
     }

@@ -1046,6 +1046,9 @@ function Match {
         [Parameter(Mandatory = $False)]
         [Switch]$CaseSensitive = $False,
 
+        [Parameter(Mandatory = $False)]
+        [Switch]$Not = $False,
+
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
     )
@@ -1068,10 +1071,14 @@ function Within {
         [String]$Field,
 
         [Parameter(Mandatory = $True, Position = 1)]
-        [PSObject[]]$AllowedValue,
+        [Alias('AllowedValue')]
+        [PSObject[]]$Value,
 
         [Parameter(Mandatory = $False)]
         [Switch]$CaseSensitive = $False,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$Not = $False,
 
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
