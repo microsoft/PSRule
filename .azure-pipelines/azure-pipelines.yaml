@@ -162,4 +162,4 @@ stages:
         releaseNotes: 'See [change log](https://github.com/BernieWhite/PSRule/blob/master/CHANGELOG.md)'
         assetUploadMode: replace
         addChangeLog: false
-        isPreRelease: $[ contains(variables['Build.SourceBranchName'], '-B') ]
+        isPreRelease: contains(variables['Build.SourceBranchName'], '-B')
