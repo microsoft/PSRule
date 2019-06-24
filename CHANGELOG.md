@@ -2,6 +2,7 @@
 ## Unreleased
 
 - Add `-Not` switch to `Within` and `Match` keywords to allow negative comparison. [#208](https://github.com/BernieWhite/PSRule/issues/208)
+- Fix TargetName binding when TargetName or Name property is null. [#202](https://github.com/BernieWhite/PSRule/issues/202)
 
 ## v0.7.0-B190633 (pre-release)
 

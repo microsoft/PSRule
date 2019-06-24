@@ -18,6 +18,8 @@ Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 $here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- TypeOf keyword' -Tag 'TypeOf' {
+    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+
     Context 'TypeOf' {
         It 'Matches type names' {
             $hashTableObject = @{ Key = 'Value' }
@@ -26,7 +28,7 @@ Describe 'PSRule -- TypeOf keyword' -Tag 'TypeOf' {
             $customObjectWithName = [PSCustomObject]@{ Key = 'Value' }; $customObjectWithName.PSObject.TypeNames.Add('PSRule.Test.OtherType');
             $testObject = @($hashTableObject, $hashTableObjectWithName1, $hashTableObjectWithName2, $customObjectWithName);
 
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'TypeOfTest';
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'TypeOfTest';
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 4;
             $result.IsSuccess() | Should -BeIn $True;
@@ -38,7 +40,7 @@ Describe 'PSRule -- TypeOf keyword' -Tag 'TypeOf' {
                 Key = 'Value'
             }
 
-            $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'TypeOfTest';
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'TypeOfTest';
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $False;
             $result.RuleName | Should -Be 'TypeOfTest';

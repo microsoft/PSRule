@@ -527,8 +527,8 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
     Context 'TargetName binding' {
         It 'Binds to TargetName' {
             $testObject = [PSCustomObject]@{
-                TargetName = "ObjectTargetName"
-                Name = "ObjectName"
+                TargetName = 'ObjectTargetName'
+                Name = 'ObjectName'
                 Value = 1
             }
 
@@ -539,25 +539,32 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         It 'Binds to Name' {
-            $testObject = [PSCustomObject]@{
-                Name = 'TestObject1'
-            }
+            $testObject = @(
+                [PSCustomObject]@{ Name = 'TestObject1' }
+                (1 | Select-Object -Property Name)
+            )
 
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1';
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1');
             $result | Should -Not -BeNullOrEmpty;
-            $result.IsSuccess() | Should -Be $True;
-            $result.TargetName | Should -Be 'TestObject1';
+            $result.Length | Should -Be 2;
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
         }
 
         It 'Binds to object hash' {
-            $testObject = [PSCustomObject]@{
-                NotName = 'TestObject1'
-            }
+            $testObject = @(
+                [PSCustomObject]@{ NotName = 'TestObject1' }
+                (1 | Select-Object -Property Name)
+            )
 
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1';
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1');
             $result | Should -Not -BeNullOrEmpty;
-            $result.IsSuccess() | Should -BeIn $True;
-            $result.TargetName | Should -BeIn 'f209c623345144be61087d91f30c17b01c6e86d2';
+            $result.Length | Should -Be 2;
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -BeIn 'f209c623345144be61087d91f30c17b01c6e86d2';
+            $result[1].TargetName | Should -BeIn '3b8eeb35831ea8f7b5de4e0cf04f32b9a1233a0d';
         }
 
         It 'Binds to custom name' {
@@ -655,7 +662,6 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         It 'Binds to custom type by script' {
-
             $bindFn = {
                 param ($TargetObject)
 
