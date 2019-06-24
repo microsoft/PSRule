@@ -22,21 +22,13 @@ namespace PSRule.Pipeline
         /// <returns>The TargetName of the object.</returns>
         public static string DefaultTargetNameBinding(PSObject targetObject)
         {
-            string targetName = null;
-
-            targetName = targetObject.Properties[Property_TargetName]?.Value.ToString();
-
-            if (targetName == null)
+            if (TryGetTargetName(targetObject: targetObject, propertyName: Property_TargetName, out string targetName) ||
+                TryGetTargetName(targetObject: targetObject, propertyName: Property_Name, out targetName))
             {
-                targetName = targetObject.Properties[Property_Name]?.Value.ToString();
+                return targetName;
             }
 
-            if (targetName == null)
-            {
-                return GetUnboundObjectTargetName(targetObject);
-            }
-
-            return targetName;
+            return GetUnboundObjectTargetName(targetObject);
         }
 
         /// <summary>
@@ -96,6 +88,15 @@ namespace PSRule.Pipeline
             var json = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(targetObject, settings));
             var hash = PipelineContext.CurrentThread.ObjectHashAlgorithm.ComputeHash(json);
             return string.Join("", hash.Select(b => b.ToString("x2")).ToArray());
+        }
+
+        /// <summary>
+        /// Try to get TargetName from specified property.
+        /// </summary>
+        private static bool TryGetTargetName(PSObject targetObject, string propertyName, out string targetName)
+        {
+            targetName = targetObject.Properties[propertyName]?.Value?.ToString();
+            return targetName != null;
         }
 
         /// <summary>
