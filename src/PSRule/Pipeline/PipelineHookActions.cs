@@ -22,8 +22,8 @@ namespace PSRule.Pipeline
         /// <returns>The TargetName of the object.</returns>
         public static string DefaultTargetNameBinding(PSObject targetObject)
         {
-            if (TryGetTargetName(targetObject: targetObject, propertyName: Property_TargetName, out string targetName) ||
-                TryGetTargetName(targetObject: targetObject, propertyName: Property_Name, out targetName))
+            if (TryGetTargetName(targetObject: targetObject, propertyName: Property_TargetName, targetName: out string targetName) ||
+                TryGetTargetName(targetObject: targetObject, propertyName: Property_Name, targetName: out targetName))
             {
                 return targetName;
             }
