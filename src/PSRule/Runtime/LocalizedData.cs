@@ -38,7 +38,7 @@ namespace PSRule.Runtime
                 return PipelineContext.CurrentThread.DataCache[path];
             }
 
-            var ast = System.Management.Automation.Language.Parser.ParseFile(fileName: path, out Token[] tokens, out ParseError[] errors);
+            var ast = System.Management.Automation.Language.Parser.ParseFile(path, out Token[] tokens, out ParseError[] errors);
             var data = ast.Find(a => a is HashtableAst, false);
 
             if (data != null)
