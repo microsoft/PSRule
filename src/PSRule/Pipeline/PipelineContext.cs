@@ -1,9 +1,10 @@
-using PSRule.Configuration;
+﻿using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Management.Automation;
@@ -52,6 +53,7 @@ namespace PSRule.Pipeline
         internal RuleBlock RuleBlock;
         internal PSRuleOption Option;
         internal RuleSource Source;
+        internal Dictionary<string, Hashtable> DataCache;
 
         public HashAlgorithm ObjectHashAlgorithm
         {
@@ -93,6 +95,7 @@ namespace PSRule.Pipeline
             }
 
             _NameTokenCache = new Dictionary<string, NameToken>();
+            DataCache = new Dictionary<string, Hashtable>();
         }
 
         public static PipelineContext New(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, BindTargetName bindTargetType, bool logError = true, bool logWarning = true, bool logVerbose = false, bool logInformation = false)
@@ -279,9 +282,11 @@ namespace PSRule.Pipeline
                 }
 
                 _Runspace.Open();
-                _Runspace.SessionStateProxy.PSVariable.Set(new RuleVariable("Rule"));
-                _Runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable("TargetObject"));
-                _Runspace.SessionStateProxy.PSVariable.Set(new ConfigurationVariable("Configuration"));
+                _Runspace.SessionStateProxy.PSVariable.Set(new RuleVariable());
+                _Runspace.SessionStateProxy.PSVariable.Set(new LocalizedDataVariable());
+                _Runspace.SessionStateProxy.PSVariable.Set(new AssertVariable());
+                _Runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable());
+                _Runspace.SessionStateProxy.PSVariable.Set(new ConfigurationVariable());
                 _Runspace.SessionStateProxy.PSVariable.Set("ErrorActionPreference", ActionPreference.Continue);
                 _Runspace.SessionStateProxy.PSVariable.Set("WarningPreference", ActionPreference.Continue);
                 _Runspace.SessionStateProxy.PSVariable.Set("VerbosePreference", ActionPreference.Continue);
@@ -517,6 +522,7 @@ namespace PSRule.Pipeline
 
                     _RuleTimer.Stop();
                     _NameTokenCache.Clear();
+                    DataCache.Clear();
                 }
 
                 _Disposed = true;

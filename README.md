@@ -197,6 +197,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#rule-suppression)
 - [Variables](docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
   - [$Configuration](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#configuration)
+  - [$LocalizedData](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#localizeddata)
   - [$Rule](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#rule)
   - [$TargetObject](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#targetobject)
 

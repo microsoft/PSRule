@@ -1,8 +1,10 @@
 
 ## Unreleased
 
-- Add `-Not` switch to `Within` and `Match` keywords to allow negative comparison. [#208](https://github.com/BernieWhite/PSRule/issues/208)
 - Fix TargetName binding when TargetName or Name property is null. [#202](https://github.com/BernieWhite/PSRule/issues/202)
+- Add culture support for PowerShell informational messages. [#158](https://github.com/BernieWhite/PSRule/issues/158)
+  - A new `$LocalizedData` variable can be used within rule definitions.
+- Add `-Not` switch to `Within` and `Match` keywords to allow negative comparison. [#208](https://github.com/BernieWhite/PSRule/issues/208)
 
 ## v0.7.0-B190633 (pre-release)
 
