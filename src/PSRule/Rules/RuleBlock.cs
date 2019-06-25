@@ -17,17 +17,16 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId} @{SourcePath}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     {
-        internal RuleBlock(string sourcePath, string moduleName, string ruleName, RuleHelpInfo info, PowerShell condition, TagSet tag, string[] dependsOn, Hashtable configuration)
+        internal RuleBlock(RuleSource source, string ruleName, RuleHelpInfo info, PowerShell condition, TagSet tag, string[] dependsOn, Hashtable configuration)
         {
-            SourcePath = sourcePath;
-            ModuleName = moduleName;
+            Source = source;
             RuleName = ruleName;
 
-            var scriptFileName = Path.GetFileName(sourcePath);
+            var scriptFileName = Path.GetFileName(Source.Path);
 
             // Get either scriptFileName/RuleName or Module/scriptFileName/RuleName
-            RuleId = (ModuleName == null) ?
-                string.Concat(scriptFileName, '/', RuleName) : string.Concat(ModuleName, '/', scriptFileName, '/', RuleName);
+            RuleId = (Source.ModuleName == null) ?
+                string.Concat(scriptFileName, '/', RuleName) : string.Concat(Source.ModuleName, '/', scriptFileName, '/', RuleName);
 
             Info = info;
             Condition = condition;
@@ -49,12 +48,12 @@ namespace PSRule.Rules
         /// <summary>
         /// The script file path where the rule is defined.
         /// </summary>
-        public readonly string SourcePath;
+        //public readonly string SourcePath;
 
         /// <summary>
         /// The name of the module where the rule is defined, or null if the rule is not defined in a module.
         /// </summary>
-        public readonly string ModuleName;
+        //public readonly string ModuleName;
 
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
@@ -96,9 +95,11 @@ namespace PSRule.Rules
 
         public readonly RuleHelpInfo Info;
 
-        string ILanguageBlock.SourcePath => SourcePath;
+        public readonly RuleSource Source;
 
-        string ILanguageBlock.Module => ModuleName;
+        string ILanguageBlock.SourcePath => Source.Path;
+
+        string ILanguageBlock.Module => Source.ModuleName;
 
         string IDependencyTarget.RuleId => RuleId;
 

@@ -7,23 +7,73 @@ using System.Management.Automation.Runspaces;
 namespace PSRule.Host
 {
     /// <summary>
-    /// A dynamic variable used during Rule execution.
+    /// A dynamic variable $Rule used during Rule execution.
     /// </summary>
     internal sealed class RuleVariable : PSVariable
     {
-        private readonly Runtime.Rule _View;
+        private const string VARIABLE_NAME = "Rule";
 
-        public RuleVariable(string name)
-            : base(name, null, ScopedItemOptions.ReadOnly)
+        private readonly Runtime.Rule _Value;
+
+        public RuleVariable()
+            : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
         {
-            _View = new Runtime.Rule();
+            _Value = new Runtime.Rule();
         }
 
         public override object Value
         {
             get
             {
-                return _View;
+                return _Value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// A dynamic variable $LocalizedData used during Rule execution.
+    /// </summary>
+    internal sealed class LocalizedDataVariable : PSVariable
+    {
+        private const string VARIABLE_NAME = "LocalizedData";
+
+        private readonly Runtime.LocalizedData _Value;
+
+        public LocalizedDataVariable()
+            : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
+        {
+            _Value = new Runtime.LocalizedData();
+        }
+
+        public override object Value
+        {
+            get
+            {
+                return _Value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// An assertion helper variable $Assert used during Rule execution.
+    /// </summary>
+    internal sealed class AssertVariable : PSVariable
+    {
+        private const string VARIABLE_NAME = "Assert";
+
+        private readonly Runtime.Assert _Value;
+
+        public AssertVariable()
+            : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
+        {
+            _Value = new Runtime.Assert();
+        }
+
+        public override object Value
+        {
+            get
+            {
+                return _Value;
             }
         }
     }
@@ -33,8 +83,10 @@ namespace PSRule.Host
     /// </summary>
     internal sealed class TargetObjectVariable : PSVariable
     {
-        public TargetObjectVariable(string name)
-            : base(name, null, ScopedItemOptions.ReadOnly)
+        private const string VARIABLE_NAME = "TargetObject";
+
+        public TargetObjectVariable()
+            : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
         {
 
         }
@@ -50,10 +102,12 @@ namespace PSRule.Host
 
     internal sealed class ConfigurationVariable : PSVariable
     {
+        private const string VARIABLE_NAME = "Configuration";
+
         private readonly RuntimeRuleConfigurationView _Value;
 
-        public ConfigurationVariable(string name)
-            : base(name, null, ScopedItemOptions.ReadOnly)
+        public ConfigurationVariable()
+            : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
         {
             _Value = new RuntimeRuleConfigurationView(); 
         }

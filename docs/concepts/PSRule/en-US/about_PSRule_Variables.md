@@ -17,16 +17,17 @@ These variables are only available while `Invoke-PSRule` is executing.
 The following variables are available for use:
 
 - [$Configuration](#configuration)
+- [$LocalizedData](#localizeddata)
 - [$Rule](#rule)
 - [$TargetObject](#targetobject)
 
 ### Configuration
 
-A configuration object with properties names for each configuration value set in the baseline.
+A hashtable object with properties names for each configuration value set in the baseline.
 
 When accessing configuration:
 
-- Configuration values are read only.
+- Property values are read only.
 - Property names are case sensitive.
 
 Syntax:
@@ -38,10 +39,54 @@ $Configuration
 Examples:
 
 ```powershell
-# This rule uses a threshold stored as $Configuration.appServiceMinInstanceCount
+# Synopsis: This rule uses a threshold stored as $Configuration.appServiceMinInstanceCount
 Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
     $TargetObject.Sku.capacity -ge $Configuration.appServiceMinInstanceCount
 } -Configure @{ appServiceMinInstanceCount = 2 }
+```
+
+### LocalizedData
+
+A hashtable object with properties that map to localized data in a `.psd1` file.
+
+When using localized data, PSRule loads localized strings as a hashtable from `PSRule-rules.psd1`.
+
+The following logic is used to locate `PSRule-rules.psd1`:
+
+- If the rules are loose (not part of a module), PSRule will search for `PSRule-rules.psd1` in the `.\<culture>\` subdirectory relative to where the rule script _.ps1_ file is located.
+- When the rules are shipped as part of a module, PSRule will search for `PSRule-rules.psd1` in the `.\<culture>\` subdirectory relative to where the module manifest _.psd1_ file is located.
+
+When accessing localized data:
+
+- Property values are read only.
+- Property names are case sensitive.
+
+Syntax:
+
+```powershell
+$LocalizedData
+```
+
+Examples:
+
+```powershell
+# Data for rules stored in PSRule-rules.psd1
+@{
+    WithLocalizedDataMessage = 'LocalizedMessage for en-ZZ. Format={0}.'
+}
+```
+
+```powershell
+# Synopsis: Use -f to generate a formatted localized warning
+Rule 'WithLocalizedData' {
+    Write-Warning -Message ($LocalizedData.WithLocalizedDataMessage -f $TargetObject.Type)
+}
+```
+
+This rule returns a warning message similar to:
+
+```text
+LocalizedMessage for en-ZZ. Format=TestType.
 ```
 
 ### Rule

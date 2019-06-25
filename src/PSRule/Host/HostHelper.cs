@@ -204,8 +204,8 @@ namespace PSRule.Host
                     {
                         RuleId = block.RuleId,
                         RuleName = block.RuleName,
-                        SourcePath = block.SourcePath,
-                        ModuleName = block.ModuleName,
+                        SourcePath = block.Source.Path,
+                        ModuleName = block.Source.ModuleName,
                         Tag = block.Tag,
                         Info = block.Info
                     };

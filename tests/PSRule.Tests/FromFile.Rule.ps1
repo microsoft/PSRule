@@ -136,6 +136,12 @@ Rule 'WithFormat' {
     ($TargetObject.spec.properties.array2 | Measure-Object).Count -eq 3
 }
 
+# Synopsis: Test $LocalizedData automatic variable
+Rule 'WithLocalizedData' {
+    Write-Warning -Message ($LocalizedData.WithLocalizedDataMessage -f $TargetObject.Type)
+    $LocalizedData.WithLocalizedDataMessage -like "LocalizedMessage for en-*"
+}
+
 Rule 'WithCsv' {
     $True;
 }
