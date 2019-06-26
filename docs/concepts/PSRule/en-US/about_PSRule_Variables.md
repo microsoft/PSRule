@@ -23,17 +23,17 @@ The following variables are available for use:
 
 ### Configuration
 
-A hashtable object with properties names for each configuration value set in the baseline.
+A dynamic object with properties names that map to configuration values set in the baseline.
 
 When accessing configuration:
 
-- Property values are read only.
-- Property names are case sensitive.
+- Configuration keys are case sensitive.
+- Configuration values are read only.
 
 Syntax:
 
 ```powershell
-$Configuration
+$Configuration.<configurationKey>
 ```
 
 Examples:
@@ -47,7 +47,7 @@ Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Mic
 
 ### LocalizedData
 
-A hashtable object with properties that map to localized data in a `.psd1` file.
+A dynamic object with properties names that map to localized data messages in a `.psd1` file.
 
 When using localized data, PSRule loads localized strings as a hashtable from `PSRule-rules.psd1`.
 
@@ -58,13 +58,13 @@ The following logic is used to locate `PSRule-rules.psd1`:
 
 When accessing localized data:
 
-- Property values are read only.
-- Property names are case sensitive.
+- Message names are case sensitive.
+- Message values are read only.
 
 Syntax:
 
 ```powershell
-$LocalizedData
+$LocalizedData.<messageName>
 ```
 
 Examples:
@@ -110,7 +110,7 @@ $Rule
 Examples:
 
 ```powershell
-# This rule determined if the target object matches the naming convention
+# Synopsis: This rule determines if the target object matches the naming convention
 Rule 'resource.NamingConvention' {
     $Rule.TargetName.ToLower() -ceq $Rule.TargetName
 }
@@ -131,7 +131,7 @@ $TargetObject
 Examples:
 
 ```powershell
-# Check that sku capacity is set to at least 2
+# Synopsis: Check that sku capacity is set to at least 2
 Rule 'HasMinInstances' {
     $TargetObject.Sku.capacity -ge 2
 }
@@ -148,5 +148,6 @@ An online version of this document is available at https://github.com/BernieWhit
 ## KEYWORDS
 
 - Configuration
+- LocalizedData
 - Rule
 - TargetObject

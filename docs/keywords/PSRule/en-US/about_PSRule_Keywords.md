@@ -162,7 +162,7 @@ The `Within` assertion is used within a `Rule` definition to assert that the val
 Syntax:
 
 ```text
-Within [-Field] <string> [[-Value] <PSObject[]>] [-CaseSensitive] [-Not] [-InputObject <PSObject>]
+Within [-Field] <string> [-Value] <PSObject[]> [-CaseSensitive] [-Not] [-InputObject <PSObject>]
 ```
 
 - `Field` - The name of the field that will be evaluated on the pipeline object.
@@ -287,7 +287,7 @@ If **any** the specified type names match the pipeline object then TypeOf will r
 
 The `Recommend` keyword is used within a `Rule` definition to provide a process to resolve the issue and pass the rule. This may include manual steps to change that state of the object or the desired state accessed by the rule.
 
-Previously this keyword was `Hint`. The previous keyword `Hint` is aliased by deprecated.
+Previously this keyword was `Hint`. The previous keyword `Hint` is aliased but deprecated.
 
 Syntax:
 

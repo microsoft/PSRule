@@ -56,7 +56,7 @@ As an example, the `storageAccounts.UseHttps.md` markdown file would be created.
 ```powershell
 # Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAccounts' } {
-    Hint 'Storage accounts should only allow secure traffic'
+    Recommend 'Storage accounts should only allow secure traffic'
 
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }
