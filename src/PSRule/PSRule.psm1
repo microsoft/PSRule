@@ -1539,6 +1539,8 @@ function InitCompletionServices {
 [PSRule.Runtime.Rule]$Rule = New-Object -TypeName 'PSRule.Runtime.Rule';
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
 [PSObject]$TargetObject = New-Object -TypeName 'PSObject';
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
+[PSObject]$LocalizedData = New-Object -TypeName 'PSObject';
 
 InitEditorServices;
 InitCompletionServices;
