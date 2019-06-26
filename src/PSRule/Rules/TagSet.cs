@@ -8,18 +8,18 @@ namespace PSRule.Rules
 {
     public sealed class TagSet : DynamicObject
     {
-        private readonly IEqualityComparer<string> _Comparer;
+        private readonly IEqualityComparer<string> _ValueComparer;
         private readonly Dictionary<string, string> _Tag;
 
         public TagSet()
         {
-            _Comparer = StringComparer.Ordinal;
+            _ValueComparer = StringComparer.OrdinalIgnoreCase;
             _Tag = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
         private TagSet(Dictionary<string, string> tag)
         {
-            _Comparer = StringComparer.Ordinal;
+            _ValueComparer = StringComparer.OrdinalIgnoreCase;
             _Tag = tag;
         }
 
@@ -41,7 +41,7 @@ namespace PSRule.Rules
                 return true;
             }
 
-            return _Comparer.Equals(v, _Tag[k]);
+            return _ValueComparer.Equals(v, _Tag[k]);
         }
 
         public static TagSet FromHashtable(Hashtable hashtable)

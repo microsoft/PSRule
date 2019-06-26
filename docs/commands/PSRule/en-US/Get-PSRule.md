@@ -31,12 +31,58 @@ Get-PSRule;
 ```
 
 ```text
-RuleName                            Description
---------                            -----------
-isFruit                             An example rule
+RuleName                            ModuleName                 Synopsis
+--------                            ----------                 --------
+isFruit                                                        An example rule
 ```
 
 Get a list of rule definitions from the current working path.
+
+### Example 2
+
+```powershell
+Get-PSRule -Module PSRule.Rules.Azure;
+```
+
+```text
+RuleName                            ModuleName                 Synopsis
+--------                            ----------                 --------
+Azure.ACR.AdminUser                 PSRule.Rules.Azure         Use Azure AD accounts instead of using the registry adm…
+Azure.ACR.MinSku                    PSRule.Rules.Azure         ACR should use the Premium or Standard SKU for producti…
+Azure.AKS.MinNodeCount              PSRule.Rules.Azure         AKS clusters should have minimum number of nodes for fa…
+Azure.AKS.Version                   PSRule.Rules.Azure         AKS clusters should meet the minimum version.
+Azure.AKS.UseRBAC                   PSRule.Rules.Azure         AKS cluster should use role-based access control (RBAC).
+```
+
+Get a list of rule definitions included in the module `PSRule.Rules.Azure`.
+
+### Example 3
+
+```powershell
+Get-PSRule -Module PSRule.Rules.Azure -OutputFormat Wide;
+```
+
+```text
+RuleName                            ModuleName                 Synopsis                     Tag
+--------                            ----------                 --------                     ---
+Azure.ACR.AdminUser                 PSRule.Rules.Azure         Use Azure AD accounts        severity='Critical'
+                                                               instead of using the         category='Security
+                                                               registry admin user.         configuration'
+Azure.ACR.MinSku                    PSRule.Rules.Azure         ACR should use the Premium   severity='Important'
+                                                               or Standard SKU for          category='Performance'
+                                                               production deployments.
+Azure.AKS.MinNodeCount              PSRule.Rules.Azure         AKS clusters should have     severity='Important'
+                                                               minimum number of nodes for  category='Reliability'
+                                                               failover and updates.
+Azure.AKS.Version                   PSRule.Rules.Azure         AKS clusters should meet     severity='Important'
+                                                               the minimum version.         category='Operations
+                                                                                            management'
+Azure.AKS.UseRBAC                   PSRule.Rules.Azure         AKS cluster should use       severity='Important'
+                                                               role-based access control    category='Security
+                                                               (RBAC).                      configuration'
+```
+
+Get a list of rule definitions included in the module `PSRule.Rules.Azure` including tags with line wrapping.
 
 ## PARAMETERS
 
@@ -80,7 +126,7 @@ Accept wildcard characters: False
 
 Only get rules with the specified tags set. If this parameter is not specified all rules in search paths will be returned.
 
-When more then one tag is used, all tags must match. Tag names are not case sensitive, tag values are case sensitive. A tag value of `*` may be used to filter rules to any rule with the tag set, regardless of tag value.
+When more than one tag is used, all tags must match. Tags are not case sensitive. A tag value of `*` may be used to filter rules to any rule with the tag set, regardless of tag value.
 
 ```yaml
 Type: Hashtable

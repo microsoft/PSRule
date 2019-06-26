@@ -124,10 +124,10 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.Tag.feature | Should -BeIn 'tag';
 
             # Ensure that tag selection is and'ed together, requiring all tags to be selected
-            # Tag values, will be matched without case sensitivity, but values are case sensitive
+            # Tag values, will be matched without case sensitivity
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Tag @{ feature = 'tag'; severity = 'critical'; };
             $result | Should -Not -BeNullOrEmpty;
-            $result.Count | Should -Be 2;
+            $result.Count | Should -Be 3;
             $result.Tag.feature | Should -BeIn 'tag';
 
             # Using a * wildcard in tag filter, matches rules with the tag regardless of value 

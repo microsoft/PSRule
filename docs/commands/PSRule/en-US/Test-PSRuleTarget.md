@@ -94,7 +94,7 @@ Accept wildcard characters: False
 
 Only evaluate rules with the specified tags set. If this parameter is not specified all rules in search paths will be evaluated.
 
-When more than one tag is used, all tags must match. Tag names are not case sensitive, tag values are case sensitive. A tag value of `*` may be used to filter rules to any rule with the tag set, regardless of tag value.
+When more than one tag is used, all tags must match. Tags are not case sensitive. A tag value of `*` may be used to filter rules to any rule with the tag set, regardless of tag value.
 
 ```yaml
 Type: Hashtable
