@@ -625,11 +625,11 @@ output:
 
 ### Output.Format
 
-Configures the format that results will be presented in.
+Configures the format that results will be presented in. This option only applies to output generated from `Invoke-PSRule`.
 
 The following format options are available:
 
-- None - Output is presented as an object using PowerShell defaults. This is the default configuration.
+- None - Output is presented as an object using PowerShell defaults. This is the default.
 - Yaml - Output is serialized as YAML.
 - Json - Output is serialized as JSON.
 - NUnit3 - Output is serialized as NUnit3 (XML).

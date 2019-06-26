@@ -16,4 +16,12 @@ namespace PSRule.Configuration
 
         Csv = 4
     }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum OutputFormatGet : byte
+    {
+        None = 0,
+
+        Wide = 5
+    }
 }

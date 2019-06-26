@@ -14,8 +14,8 @@ Get a list of rule definitions.
 ## SYNTAX
 
 ```text
-Get-PSRule [-Module <String[]>] [-ListAvailable] [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>]
- [-Option <PSRuleOption>] [-Culture <String>] [<CommonParameters>]
+Get-PSRule [-Module <String[]>] [-ListAvailable] [-OutputFormat <OutputFormatGet>] [[-Path] <String[]>]
+ [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-Culture <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -160,6 +160,28 @@ The PowerShell cmdlet `Get-Culture` shows the current culture of PowerShell.
 Type: String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputFormat
+
+Configures the format that output is presented in.
+
+The following format options are available:
+
+- None - Output is presented as an object using PowerShell defaults. This is the default.
+- Wide - Output is presented using the wide table format, which includes tags and wraps columns.
+
+```yaml
+Type: OutputFormatGet
+Parameter Sets: (All)
+Aliases:
+Accepted values: None, Wide
 
 Required: False
 Position: Named

@@ -352,6 +352,10 @@ function Get-PSRule {
         [Parameter(Mandatory = $False)]
         [Switch]$ListAvailable,
 
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Wide')]
+        [PSRule.Configuration.OutputFormatGet]$OutputFormat,
+
         # A list of paths to check for rule definitions
         [Parameter(Position = 0, Mandatory = $False)]
         [Alias('p')]
@@ -441,7 +445,15 @@ function Get-PSRule {
         if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
             try {
                 # Get matching rule definitions
-                $pipeline.Process();
+                foreach ($item in $pipeline.Process()) {
+                    if ($OutputFormat -eq [PSRule.Configuration.OutputFormatGet]::Wide) {
+                        $item.PSObject.TypeNames.Insert(0, 'PSRule.Rules.Rule+Wide');
+                        $item;
+                    }
+                    else {
+                        $item;
+                    }
+                }
             }
             catch {
                 $pipeline.Dispose();

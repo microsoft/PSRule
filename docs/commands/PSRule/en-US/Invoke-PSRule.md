@@ -335,6 +335,14 @@ Accept wildcard characters: False
 
 Configures the format that output is presented in.
 
+The following format options are available:
+
+- None - Output is presented as an object using PowerShell defaults. This is the default.
+- Yaml - Output is serialized as YAML.
+- Json - Output is serialized as JSON.
+- NUnit3 - Output is serialized as NUnit3 (XML).
+- Csv - Output is serialized as a comma separated values (CSV).
+
 ```yaml
 Type: OutputFormat
 Parameter Sets: (All)

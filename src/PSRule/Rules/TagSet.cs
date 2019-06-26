@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Text;
 
 namespace PSRule.Rules
 {
@@ -73,6 +74,29 @@ namespace PSRule.Rules
         public Hashtable ToHashtable()
         {
             return new Hashtable(_Tag, StringComparer.OrdinalIgnoreCase);
+        }
+
+        public string ToViewString()
+        {
+            var sb = new StringBuilder();
+            var i = 0;
+
+            foreach (var kv in _Tag)
+            {
+                if (i > 0)
+                {
+                    sb.Append(Environment.NewLine);
+                }
+
+                sb.Append(kv.Key.ToString());
+                sb.Append('=');
+                sb.Append('\'');
+                sb.Append(kv.Value.ToString());
+                sb.Append('\'');
+                i++;
+            }
+
+            return sb.ToString();
         }
 
         public bool ContainsKey(string key)

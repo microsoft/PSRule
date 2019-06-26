@@ -150,6 +150,9 @@
   <data name="Synopsis" xml:space="preserve">
     <value>Synopsis</value>
   </data>
+  <data name="Tag" xml:space="preserve">
+    <value>Tag</value>
+  </data>
   <data name="TargetName" xml:space="preserve">
     <value>TargetName</value>
   </data>
