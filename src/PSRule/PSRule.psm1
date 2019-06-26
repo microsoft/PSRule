@@ -12,11 +12,11 @@ Set-StrictMode -Version latest;
 # Localization
 #
 
-# $LocalizedData = data {
+# $LocalizedHelp = data {
 
 # }
 
-Import-LocalizedData -BindingVariable LocalizedData -FileName 'PSRule.Resources.psd1' -ErrorAction SilentlyContinue;
+Import-LocalizedData -BindingVariable LocalizedHelp -FileName 'PSRule.Resources.psd1' -ErrorAction SilentlyContinue;
 
 #
 # Public functions
@@ -113,7 +113,7 @@ function Invoke-PSRule {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Warning -Message $LocalizedData.RulePathNotFound;
+            Write-Warning -Message $LocalizedHelp.RulePathNotFound;
             return; # continue causes issues with Pester
         }
 
@@ -269,7 +269,7 @@ function Test-PSRuleTarget {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Warning -Message $LocalizedData.RulePathNotFound;
+            Write-Warning -Message $LocalizedHelp.RulePathNotFound;
             return; # continue causes issues with Pester
         }
 
@@ -906,7 +906,7 @@ function Set-PSRuleOption {
                 $result;
             }
             elseif ($containsComments -and !$AllowClobber) {
-                Write-Error -Message $LocalizedData.YamlContainsComments -Category ResourceExists -ErrorId 'PSRule.PSRuleOption.YamlContainsComments';
+                Write-Error -Message $LocalizedHelp.YamlContainsComments -Category ResourceExists -ErrorId 'PSRule.PSRuleOption.YamlContainsComments';
             }
             else {
                 $parentPath = Split-Path -Path $filePath -Parent;
@@ -917,7 +917,7 @@ function Set-PSRuleOption {
                         }
                     }
                     else {
-                        Write-Error -Message $LocalizedData.PathNotFound -Category ObjectNotFound -ErrorId 'PSRule.PSRuleOption.ParentPathNotFound';
+                        Write-Error -Message $LocalizedHelp.PathNotFound -Category ObjectNotFound -ErrorId 'PSRule.PSRuleOption.ParentPathNotFound';
                     }
                 }
                 if ($PSCmdlet.ShouldProcess('Write options to file', $filePath)) {
@@ -974,7 +974,7 @@ function Rule {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
+        Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -992,7 +992,7 @@ function AllOf {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
+        Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -1010,7 +1010,7 @@ function AnyOf {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
+        Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -1037,7 +1037,7 @@ function Exists {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
+        Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -1067,7 +1067,7 @@ function Match {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
+        Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -1098,7 +1098,7 @@ function Within {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
+        Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -1119,7 +1119,7 @@ function TypeOf {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
+        Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
@@ -1137,7 +1137,7 @@ function Recommend {
 
     begin {
         # This is just a stub to improve rule authoring and discovery
-        Write-Error -Message $LocalizedData.KeywordOutsideEngine -Category InvalidOperation;
+        Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
     }
 }
 
