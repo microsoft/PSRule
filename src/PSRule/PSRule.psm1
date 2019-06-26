@@ -1507,6 +1507,7 @@ function InitEditorServices {
             # Export variables
             Export-ModuleMember -Variable @(
                 'Configuration'
+                'LocalizedData'
                 'Rule'
                 'TargetObject'
             );
@@ -1540,7 +1541,7 @@ function InitCompletionServices {
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
 [PSObject]$TargetObject = New-Object -TypeName 'PSObject';
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
-[PSObject]$LocalizedData = New-Object -TypeName 'PSObject';
+[PSObject]$LocalizedData = $Null;
 
 InitEditorServices;
 InitCompletionServices;
