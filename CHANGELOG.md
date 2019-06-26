@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.7.0-B190652 (pre-release)
+
 - Fix TargetName binding when TargetName or Name property is null. [#202](https://github.com/BernieWhite/PSRule/issues/202)
 - Add culture support for PowerShell informational messages. [#158](https://github.com/BernieWhite/PSRule/issues/158)
   - A new `$LocalizedData` variable can be used within rule definitions.
