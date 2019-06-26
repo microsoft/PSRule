@@ -2,23 +2,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Text;
 
 namespace PSRule.Rules
 {
     public sealed class TagSet : DynamicObject
     {
-        private readonly IEqualityComparer<string> _Comparer;
+        private readonly IEqualityComparer<string> _ValueComparer;
         private readonly Dictionary<string, string> _Tag;
 
         public TagSet()
         {
-            _Comparer = StringComparer.Ordinal;
+            _ValueComparer = StringComparer.OrdinalIgnoreCase;
             _Tag = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
         private TagSet(Dictionary<string, string> tag)
         {
-            _Comparer = StringComparer.Ordinal;
+            _ValueComparer = StringComparer.OrdinalIgnoreCase;
             _Tag = tag;
         }
 
@@ -40,7 +41,7 @@ namespace PSRule.Rules
                 return true;
             }
 
-            return _Comparer.Equals(v, _Tag[k]);
+            return _ValueComparer.Equals(v, _Tag[k]);
         }
 
         public static TagSet FromHashtable(Hashtable hashtable)
@@ -73,6 +74,29 @@ namespace PSRule.Rules
         public Hashtable ToHashtable()
         {
             return new Hashtable(_Tag, StringComparer.OrdinalIgnoreCase);
+        }
+
+        public string ToViewString()
+        {
+            var sb = new StringBuilder();
+            var i = 0;
+
+            foreach (var kv in _Tag)
+            {
+                if (i > 0)
+                {
+                    sb.Append(Environment.NewLine);
+                }
+
+                sb.Append(kv.Key.ToString());
+                sb.Append('=');
+                sb.Append('\'');
+                sb.Append(kv.Value.ToString());
+                sb.Append('\'');
+                i++;
+            }
+
+            return sb.ToString();
         }
 
         public bool ContainsKey(string key)

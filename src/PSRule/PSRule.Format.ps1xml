@@ -103,10 +103,11 @@
             <Width>35</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Synopsis"/>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="ModuleName"/>
+            <Width>26</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="ModuleName"/>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Synopsis"/>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
@@ -116,10 +117,53 @@
               <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
+                <PropertyName>ModuleName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
                 <PropertyName>Synopsis</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>PSRule.Rules.Rule+Wide</Name>
+      <ViewSelectedBy>
+        <TypeName>PSRule.Rules.Rule+Wide</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="RuleName"/>
+            <Width>35</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="ModuleName"/>
+            <Width>26</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Synopsis"/>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Tag"/>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <Wrap/>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>ModuleName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Synopsis</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>$_.Tag.ToViewString()</ScriptBlock>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
@@ -152,7 +196,7 @@
           <TableRowEntry>
             <TableColumnItems>
               <TableColumnItem>
-              <PropertyName>RuleName</PropertyName>
+                <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Outcome</PropertyName>

@@ -5,6 +5,10 @@
 - Add culture support for PowerShell informational messages. [#158](https://github.com/BernieWhite/PSRule/issues/158)
   - A new `$LocalizedData` variable can be used within rule definitions.
 - Add `-Not` switch to `Within` and `Match` keywords to allow negative comparison. [#208](https://github.com/BernieWhite/PSRule/issues/208)
+- Improve discovery of rule tags. [#209](https://github.com/BernieWhite/PSRule/issues/209)
+  - Add wide format `-OutputFormat Wide` to `Get-PSRule` to allow output of rule tags.
+- **Breaking change**: Change rule filtering by tag to be case-insensitive. [#204](https://github.com/BernieWhite/PSRule/issues/204)
+  - Previously tag value was case-sensitive, however this is confusing since PowerShell is case-insensitive by default.
 
 ## v0.7.0-B190633 (pre-release)
 

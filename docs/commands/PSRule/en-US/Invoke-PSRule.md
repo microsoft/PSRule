@@ -175,7 +175,7 @@ Accept wildcard characters: False
 
 Only evaluate rules with the specified tags set. If this parameter is not specified all rules in search paths will be evaluated.
 
-When more than one tag is used, all tags must match. Tag names are not case sensitive, tag values are case sensitive. A tag value of `*` may be used to filter rules to any rule with the tag set, regardless of tag value.
+When more than one tag is used, all tags must match. Tags are not case sensitive. A tag value of `*` may be used to filter rules to any rule with the tag set, regardless of tag value.
 
 ```yaml
 Type: Hashtable
@@ -334,6 +334,14 @@ Accept wildcard characters: False
 ### -OutputFormat
 
 Configures the format that output is presented in.
+
+The following format options are available:
+
+- None - Output is presented as an object using PowerShell defaults. This is the default.
+- Yaml - Output is serialized as YAML.
+- Json - Output is serialized as JSON.
+- NUnit3 - Output is serialized as NUnit3 (XML).
+- Csv - Output is serialized as a comma separated values (CSV).
 
 ```yaml
 Type: OutputFormat
