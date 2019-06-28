@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Fix reading nested arrays from JSON input. [#223](https://github.com/BernieWhite/PSRule/issues/223)
+
 ## v0.7.0-B190652 (pre-release)
 
 - Fix TargetName binding when TargetName or Name property is null. [#202](https://github.com/BernieWhite/PSRule/issues/202)

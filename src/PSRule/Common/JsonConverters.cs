@@ -161,7 +161,6 @@ namespace PSRule
             reader.Read();
 
             var result = new PSObject();
-
             string name = null;
 
             // Read each token
@@ -179,25 +178,8 @@ namespace PSRule
                         break;
 
                     case JsonToken.StartArray:
-                        var items = new List<PSObject>();
-                        reader.Read();
-
-                        while (reader.TokenType != JsonToken.EndArray)
-                        {
-                            if (reader.TokenType == JsonToken.StartObject)
-                            {
-                                var item = ReadObject(reader: reader);
-                                items.Add(item);
-                            }
-                            else
-                            {
-                                items.Add(PSObject.AsPSObject(reader.Value));
-                            }
-                            
-                            reader.Read();
-                        }
-
-                        result.Properties.Add(new PSNoteProperty(name: name, value: items.ToArray()));
+                        var items = ReadArray(reader: reader);
+                        result.Properties.Add(new PSNoteProperty(name: name, value: items));
 
                         break;
 
@@ -210,6 +192,38 @@ namespace PSRule
             }
 
             return result;
+        }
+
+        private PSObject[] ReadArray(JsonReader reader)
+        {
+            if (reader.TokenType != JsonToken.StartArray)
+            {
+                throw new Exception("Read json failed");
+            }
+
+            reader.Read();
+
+            var result = new List<PSObject>();
+
+            while (reader.TokenType != JsonToken.EndArray)
+            {
+                if (reader.TokenType == JsonToken.StartObject)
+                {
+                    result.Add(ReadObject(reader: reader));
+                }
+                else if (reader.TokenType == JsonToken.StartArray)
+                {
+                    result.Add(PSObject.AsPSObject(ReadArray(reader)));
+                }
+                else
+                {
+                    result.Add(PSObject.AsPSObject(reader.Value));
+                }
+
+                reader.Read();
+            }
+
+            return result.ToArray();
         }
     }
 }
