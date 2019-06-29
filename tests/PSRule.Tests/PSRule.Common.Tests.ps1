@@ -55,6 +55,11 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $False;
             $result.TargetName | Should -Be 'TestObject1';
+
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile5' -ErrorAction Stop;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Outcome | Should -Be 'Fail';
+            $result.TargetName | Should -Be 'TestObject1';
         }
 
         It 'Returns inconclusive' {

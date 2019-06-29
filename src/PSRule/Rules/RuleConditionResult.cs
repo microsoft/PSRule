@@ -39,14 +39,17 @@ namespace PSRule.Rules
             {
                 count++;
 
-                if (!TryBoolean(v, out bool bresult))
+                if (v == null)
+                {
+                    continue;
+                }
+                else if (!TryBoolean(v, out bool bresult))
                 {
                     PipelineContext.CurrentThread.ErrorInvaildRuleResult();
 
                     continue;
                 }
-
-                if (bresult)
+                else if (bresult)
                 {
                     pass++;
                 }
