@@ -214,6 +214,11 @@ Rule 'WithinNot' {
     Within 'Title' 'Mr', 'Sir' -Not
 }
 
+Rule 'WithinTypes' {
+    Within 'BooleanValue' $True
+    Within 'IntValue' 0, 1, 2, 3
+}
+
 # Synopsis: Test for Match keyword
 Rule 'MatchTest' -Tag @{ keyword = 'Match' } {
     AnyOf {
