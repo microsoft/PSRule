@@ -60,7 +60,7 @@ namespace PSRule.Commands
                             match = true;
                         }
                     }
-                    else if (Value[i] == fieldValue)
+                    else if (Value[i]?.BaseObject == fieldValue)
                     {
                         match = true;
                     }

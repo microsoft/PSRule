@@ -2,6 +2,7 @@
 ## Unreleased
 
 - Fix reading nested arrays from JSON input. [#223](https://github.com/BernieWhite/PSRule/issues/223)
+- Fix comparison of non-string types with `Within`. [#226](https://github.com/BernieWhite/PSRule/issues/226)
 
 ## v0.7.0-B190652 (pre-release)
 

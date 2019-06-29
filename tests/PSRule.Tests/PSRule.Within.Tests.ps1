@@ -39,6 +39,19 @@ Describe 'PSRule -- Within keyword' -Tag 'Within' {
             $result[2].IsSuccess() | Should -Be $True;
             $result[3].IsSuccess() | Should -Be $True;
             $result[4].IsSuccess() | Should -Be $False;
+
+            # Check non-string types
+            $testObject = @(
+                [PSCustomObject]@{ BooleanValue = $True; IntValue = 1 }
+                [PSCustomObject]@{ BooleanValue = $False; IntValue = 100 }
+            )
+
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'WithinTypes' -Outcome All;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 2;
+            $result.RuleName | Should -BeIn 'WithinTypes';
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[1].IsSuccess() | Should -Be $False;
         }
 
         It 'With -CaseSensitive' {
