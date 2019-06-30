@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.7.0-B190664 (pre-release)
+
 - Fix reading nested arrays from JSON input. [#223](https://github.com/BernieWhite/PSRule/issues/223)
 - Fix comparison of non-string types with `Within`. [#226](https://github.com/BernieWhite/PSRule/issues/226)
 - Improve handling of null rule result. [#224](https://github.com/BernieWhite/PSRule/issues/224)
