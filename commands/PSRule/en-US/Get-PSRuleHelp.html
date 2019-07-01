@@ -8,7 +8,7 @@
     <title>Get-PSRuleHelp </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Get-PSRuleHelp ">
-    <meta name="generator" content="docfx 2.42.1.0">
+    <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -72,8 +72,8 @@
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>Get documentation for a rule.</p>
 <h2 id="syntax">SYNTAX</h2>
-<pre><code class="lang-text">Get-PSRuleHelp [-Name] &lt;String&gt; [-Path &lt;String&gt;] [-Module &lt;String&gt;] [-Culture &lt;String&gt;] [-Online]
- [&lt;CommonParameters&gt;]
+<pre><code class="lang-text">Get-PSRuleHelp [-Module &lt;String&gt;] [-Online] [[-Name] &lt;String&gt;] [-Path &lt;String&gt;] [-Option &lt;PSRuleOption&gt;]
+ [-Culture &lt;String&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Get documentation for a rule.</p>
@@ -93,7 +93,7 @@
 Parameter Sets: (All)
 Aliases: n
 
-Required: True
+Required: False
 Position: 1
 Default value: None
 Accept pipeline input: False
@@ -149,8 +149,23 @@ Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
+<h3 id="-option">-Option</h3>
+<p>Additional options that configure execution. A <code>PSRuleOption</code> can be created by using the <code>New-PSRuleOption</code> cmdlet. Alternatively a hashtable or path to YAML file can be specified with options.</p>
+<p>For more information on PSRule options see about_PSRule_Options.</p>
+<pre><code class="lang-yaml">Type: PSRuleOption
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
 <h3 id="commonparameters">CommonParameters</h3>
 <p>This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see <a href="http://go.microsoft.com/fwlink/?LinkID=113216">about_CommonParameters</a>.</p>
+<h2 id="inputs">INPUTS</h2>
+<h3 id="none">None</h3>
 <h2 id="outputs">OUTPUTS</h2>
 <h3 id="psrulerulesrulehelpinfo">PSRule.Rules.RuleHelpInfo</h3>
 <h2 id="notes">NOTES</h2>

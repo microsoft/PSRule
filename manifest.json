@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRule.html",
-          "hash": "CBPmEFxLJor8fhPCMjabtA=="
+          "hash": "QUeptZQh9+sw91uf7iT0NQ=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRuleHelp.html",
-          "hash": "LZ4aWxaJd4/Nj/8j2Ryzdg=="
+          "hash": "bhgNw93jj7t/kvYScVYeBw=="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Invoke-PSRule.html",
-          "hash": "O38tTs+8cRe/ytHTvjLBGg=="
+          "hash": "v4lM2kAkfr22GxsYRGcPvQ=="
         }
       },
       "is_incremental": false,
@@ -45,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "S5yx+AyNVkvE3r0uH1Q0Eg=="
+          "hash": "JHjY0+44TrTYr0SPE/nR3w=="
         }
       },
       "is_incremental": false,
@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/PSRule.html",
-          "hash": "/Lb2Uz5N8Ie8tHZ+IFYi/A=="
+          "hash": "SXpeFa4kxTkQ3piFPsjEJw=="
         }
       },
       "is_incremental": false,
@@ -69,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Set-PSRuleOption.html",
-          "hash": "U3I7iHRk6nxQz/8/8w7RrQ=="
+          "hash": "cl4pgzIG4ZdrW4sg+JNAsg=="
         }
       },
       "is_incremental": false,
@@ -81,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Test-PSRuleTarget.html",
-          "hash": "9j5XYkpnVAnmD57dmHoNsg=="
+          "hash": "YXu9QsVVeJTDL6CbD5Jv6g=="
         }
       },
       "is_incremental": false,
@@ -105,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Docs.html",
-          "hash": "rtoD8HWEh2VbDyNxniMHbg=="
+          "hash": "/i3Jhdx6tWnhOWrmQdaxYA=="
         }
       },
       "is_incremental": false,
@@ -117,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "FXHmDfYeeGiHKPcUtNubMg=="
+          "hash": "xiPlTTCgXG9Db6tVC12CWQ=="
         }
       },
       "is_incremental": false,
@@ -129,7 +129,19 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Variables.html",
-          "hash": "REMIQuvjxGKJNvWGrsjBxw=="
+          "hash": "Bny65KjGOzbLy1Dnvzy3fg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "features.md",
+      "output": {
+        ".html": {
+          "relative_path": "features.html",
+          "hash": "ScFiMScEtdpdd4Vhi0UgNA=="
         }
       },
       "is_incremental": false,
@@ -141,7 +153,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "mBuObkdOS27GpFzjbGSk7g=="
+          "hash": "0FEz4t7O8xC0o3aOQSbkjg=="
         }
       },
       "is_incremental": false,
@@ -153,7 +165,7 @@
       "output": {
         ".html": {
           "relative_path": "keywords/PSRule/en-US/about_PSRule_Keywords.html",
-          "hash": "PIR6sOG3u6k505Du3n25Tg=="
+          "hash": "tsimlf2DIMImGr+oqi4r0w=="
         }
       },
       "is_incremental": false,
@@ -176,7 +188,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/azure-resources/azure-resources.html",
-          "hash": "liItFGyOoC1Bko/duQwFOA=="
+          "hash": "DIUBQAOs/U24oS4khpA9zQ=="
         }
       },
       "is_incremental": false,
@@ -221,7 +233,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/azure-tags/azure-tags.html",
-          "hash": "ja79C9Eo69/BLDyts5nbVw=="
+          "hash": "CVraDeVoBGDGYtBBtiTKcA=="
         }
       },
       "is_incremental": false,
@@ -266,7 +278,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/benchmark/PSRule.Benchmark.PSRule-report-github.html",
-          "hash": "/SxOfE8ZElFuM3tnfAsyng=="
+          "hash": "1DrXSpwsR4A8aXRUm7QytA=="
         }
       },
       "is_incremental": false,
@@ -300,7 +312,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/install-instructions.html",
-          "hash": "i6XDfNG51gaQ1sO6QDwYEQ=="
+          "hash": "ksdDZyRkblFPeJj1H+LsSw=="
         }
       },
       "is_incremental": false,
@@ -312,7 +324,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/kubernetes-resources/kubernetes-resources.html",
-          "hash": "lboEptcS8AZHy2Te++JoiA=="
+          "hash": "mGCzC4sDjRZsHVghMYnN9Q=="
         }
       },
       "is_incremental": false,
@@ -357,7 +369,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/rule-docs/rule1.html",
-          "hash": "p6FVWT+3DEC+okAZgf7Gmg=="
+          "hash": "3KYCSWgjxrvs6ySFlfnkQA=="
         }
       },
       "is_incremental": false,
@@ -380,7 +392,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/validation-pipeline/validation-pipeline.html",
-          "hash": "wrFWwS2lvvDTxZ3CIuumag=="
+          "hash": "o0P/w2Cco87gQ3OltpzYzA=="
         }
       },
       "is_incremental": false,
@@ -410,13 +422,6 @@
         "full_build_reason_code": "ForceRebuild"
       },
       "processors": {
-        "ResourceDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build",
-          "total_file_count": 0,
-          "skipped_file_count": 0
-        },
         "TocDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
@@ -424,10 +429,17 @@
           "total_file_count": 0,
           "skipped_file_count": 0
         },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 19,
+          "total_file_count": 20,
           "skipped_file_count": 0
         }
       }

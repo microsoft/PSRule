@@ -8,7 +8,7 @@
     <title>PSRule_Docs </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="PSRule_Docs ">
-    <meta name="generator" content="docfx 2.42.1.0">
+    <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -102,7 +102,7 @@ When included, the <code>-Online</code> parameter can be used to open the online
 <p>As an example, the <code>storageAccounts.UseHttps.md</code> markdown file would be created.</p>
 <pre><code class="lang-powershell"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAccounts' } {
-    Hint 'Storage accounts should only allow secure traffic'
+    Recommend 'Storage accounts should only allow secure traffic'
 
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }

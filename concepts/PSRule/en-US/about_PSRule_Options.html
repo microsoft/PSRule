@@ -8,7 +8,7 @@
     <title>PSRule_Options </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="PSRule_Options ">
-    <meta name="generator" content="docfx 2.42.1.0">
+    <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -90,7 +90,9 @@
 <li><a href="#loggingrulefail">Logging.RuleFail</a></li>
 <li><a href="#loggingrulepass">Logging.RulePass</a></li>
 <li><a href="#outputas">Output.As</a></li>
+<li><a href="#outputencoding">Output.Encoding</a></li>
 <li><a href="#outputformat">Output.Format</a></li>
+<li><a href="#outputpath">Output.Path</a></li>
 <li><a href="#rule-suppression">Suppression</a></li>
 </ul>
 <p>Options can be used with the following PSRule cmdlets:</p>
@@ -500,14 +502,54 @@ Set-PSRuleOption -OutputAs Yaml;
 output:
   as: Summary
 </code></pre>
+<h3 id="outputencoding">Output.Encoding</h3>
+<p>Configures the encoding used when output is written to file. This option has no affect when <code>Output.Path</code> is not set.</p>
+<p>The following encoding options are available:</p>
+<ul>
+<li>Default</li>
+<li>UTF-8</li>
+<li>UTF-7</li>
+<li>Unicode</li>
+<li>UTF-32</li>
+<li>ASCII</li>
+</ul>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputEncoding parameter
+$option = New-PSRuleOption -OutputEncoding UTF8;
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Output.Format hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Encoding' = 'UTF8' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputEncoding parameter to set YAML
+Set-PSRuleOption -OutputEncoding UTF8;
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the output/encoding property
+output:
+  encoding: UTF8
+</code></pre>
 <h3 id="outputformat">Output.Format</h3>
-<p>Configures the format that results will be presented in.</p>
+<p>Configures the format that results will be presented in. This option only applies to output generated from <code>Invoke-PSRule</code>.</p>
 <p>The following format options are available:</p>
 <ul>
-<li>None - Output is presented as an object using PowerShell defaults. This is the default configuration.</li>
+<li>None - Output is presented as an object using PowerShell defaults. This is the default.</li>
 <li>Yaml - Output is serialized as YAML.</li>
 <li>Json - Output is serialized as JSON.</li>
 <li>NUnit3 - Output is serialized as NUnit3 (XML).</li>
+<li>Csv - Output is serialized as a comma separated values (CSV).
+<ul>
+<li>The following columns are included:
+<ul>
+<li>RuleName</li>
+<li>TargetName</li>
+<li>TargetType</li>
+<li>Outcome</li>
+<li>OutcomeReason</li>
+<li>Synopsis</li>
+<li>Recommendation</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the OutputFormat parameter
@@ -522,6 +564,23 @@ Set-PSRuleOption -OutputFormat Yaml;
 <pre><code class="lang-yaml"># YAML: Using the output/format property
 output:
   format: Yaml
+</code></pre>
+<h3 id="outputpath">Output.Path</h3>
+<p>Specifies the output file path to write results. Directories along the file path will automatically be created if they do not exist.</p>
+<p>This option only applies to <code>Invoke-PSRule</code>. <code>Invoke-PSRule</code> also includes a parameter <code>-OutputPath</code> to set this option at runtime. If specified, the <code>-OutputPath</code> parameter take precedence, over this option.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputPath parameter
+$option = New-PSRuleOption -OutputPath 'out/results.yaml';
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Output.Path hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Path' = 'out/results.yaml' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputPath parameter to set YAML
+Set-PSRuleOption -OutputPath 'out/results.yaml';
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the output/path property
+output:
+  path: 'out/results.yaml'
 </code></pre>
 <h3 id="rule-suppression">Rule suppression</h3>
 <p>In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.</p>

@@ -8,7 +8,7 @@
     <title>Azure Resource Manager example </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Azure Resource Manager example ">
-    <meta name="generator" content="docfx 2.42.1.0">
+    <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -127,16 +127,16 @@ Rule 'storageAccounts.UseHttps' {
     # $TargetObject.Properties.supportsHttpsTrafficOnly -eq $True
 }
 </code></pre>
-<h3 id="add-rule-hint">Add rule hint</h3>
-<p>Additionally to provide feedback to the person or process running the rules, we can use the <code>Hint</code> keyword to set a message that appears in results.</p>
-<p>If a hint message is not provided the description will be used instead.</p>
+<h3 id="add-rule-recommendation">Add rule recommendation</h3>
+<p>Additionally to provide feedback to the person or process running the rules, we can use the <code>Recommend</code> keyword to set a message that appears in results.</p>
+<p>If a recommend message is not provided the synopsis will be used instead.</p>
 <p>In the example below:</p>
 <ul>
-<li>Directly after the <code>Hint</code> keyword is a message to help understand why the rule failed or passed.</li>
+<li>Directly after the <code>Recommend</code> keyword is a message to help understand why the rule failed or passed.</li>
 </ul>
 <pre><code class="lang-powershell"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' {
-    Hint 'Storage accounts should only allow secure traffic'
+    Recommend 'Storage accounts should only allow secure traffic'
 
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }
@@ -150,11 +150,12 @@ Rule 'storageAccounts.UseHttps' {
 </ul>
 <pre><code class="lang-powershell"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { $TargetObject.ResourceType -eq 'Microsoft.Storage/storageAccounts' } {
-    Hint 'Storage accounts should only allow secure traffic'
+    Recommend 'Storage accounts should only allow secure traffic'
 
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }
 </code></pre>
+<p>Skipped rules have the outcome <code>None</code> and are not included in output by default. To include skipped rules use the <code>-Outcome All</code> parameter.</p>
 <h2 id="execute-rules">Execute rules</h2>
 <p>With a rule defined, the next step is to execute it. To execute rules, pipe the target object to <code>Invoke-PSRule</code>.</p>
 <p>For example:</p>
@@ -175,8 +176,8 @@ $resources | Invoke-PSRule;
 <p>Our output looked like this:</p>
 <pre><code class="lang-text">   TargetName: storage
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 storageAccounts.UseHttps            Fail       Storage accounts should only allow secure traffic
 </code></pre>
 <p>In our case <code>storageAccounts.UseHttps</code> returns a <code>Fail</code> outcome because our storage account has <code>supportsHttpsTrafficOnly</code> = <code>false</code>, which is exactly what should happen.</p>
@@ -204,7 +205,7 @@ function global:ResourceType {
 <p>Updating our existing <code>storageAccounts.UseHttps</code> rule, our rule definition becomes:</p>
 <pre><code class="lang-powershell"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAccounts' } {
-    Hint 'Storage accounts should only allow secure traffic'
+    Recommend 'Storage accounts should only allow secure traffic'
 
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }

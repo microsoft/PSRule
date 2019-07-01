@@ -8,7 +8,7 @@
     <title>Validation pipeline example </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Validation pipeline example ">
-    <meta name="generator" content="docfx 2.42.1.0">
+    <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -88,8 +88,8 @@
     $Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
 }
 
-if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.5.0' -ErrorAction Ignore)) {
-    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.5.0' -Force;
+if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.6.0' -ErrorAction Ignore)) {
+    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.6.0' -Force;
 }
 </code></pre>
 <h3 id="using-invoke-build">Using Invoke-Build</h3>
@@ -103,8 +103,8 @@ task InstallNuGet {
 
 # Synopsis: Install PSRule
 task InstallPSRule InstallNuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.5.0' -ErrorAction Ignore)) {
-        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.5.0' -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.6.0' -ErrorAction Ignore)) {
+        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.6.0' -Force;
     }
 }
 </code></pre>

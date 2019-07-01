@@ -8,7 +8,7 @@
     <title>PSRule_Variables </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="PSRule_Variables ">
-    <meta name="generator" content="docfx 2.42.1.0">
+    <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -79,24 +79,55 @@
 <p>The following variables are available for use:</p>
 <ul>
 <li><a href="#configuration">$Configuration</a></li>
+<li><a href="#localizeddata">$LocalizedData</a></li>
 <li><a href="#rule">$Rule</a></li>
 <li><a href="#targetobject">$TargetObject</a></li>
 </ul>
 <h3 id="configuration">Configuration</h3>
-<p>A configuration object with properties names for each configuration value set in the baseline.</p>
+<p>A dynamic object with properties names that map to configuration values set in the baseline.</p>
 <p>When accessing configuration:</p>
 <ul>
+<li>Configuration keys are case sensitive.</li>
 <li>Configuration values are read only.</li>
-<li>Property names are case sensitive.</li>
 </ul>
 <p>Syntax:</p>
-<pre><code class="lang-powershell">$Configuration
+<pre><code class="lang-powershell">$Configuration.&lt;configurationKey&gt;
 </code></pre>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># This rule uses a threshold stored as $Configuration.appServiceMinInstanceCount
+<pre><code class="lang-powershell"># Synopsis: This rule uses a threshold stored as $Configuration.appServiceMinInstanceCount
 Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Microsoft.Web/serverfarms' } {
     $TargetObject.Sku.capacity -ge $Configuration.appServiceMinInstanceCount
 } -Configure @{ appServiceMinInstanceCount = 2 }
+</code></pre>
+<h3 id="localizeddata">LocalizedData</h3>
+<p>A dynamic object with properties names that map to localized data messages in a <code>.psd1</code> file.</p>
+<p>When using localized data, PSRule loads localized strings as a hashtable from <code>PSRule-rules.psd1</code>.</p>
+<p>The following logic is used to locate <code>PSRule-rules.psd1</code>:</p>
+<ul>
+<li>If the rules are loose (not part of a module), PSRule will search for <code>PSRule-rules.psd1</code> in the <code>.\&lt;culture&gt;\</code> subdirectory relative to where the rule script <em>.ps1</em> file is located.</li>
+<li>When the rules are shipped as part of a module, PSRule will search for <code>PSRule-rules.psd1</code> in the <code>.\&lt;culture&gt;\</code> subdirectory relative to where the module manifest <em>.psd1</em> file is located.</li>
+</ul>
+<p>When accessing localized data:</p>
+<ul>
+<li>Message names are case sensitive.</li>
+<li>Message values are read only.</li>
+</ul>
+<p>Syntax:</p>
+<pre><code class="lang-powershell">$LocalizedData.&lt;messageName&gt;
+</code></pre>
+<p>Examples:</p>
+<pre><code class="lang-powershell"># Data for rules stored in PSRule-rules.psd1
+@{
+    WithLocalizedDataMessage = 'LocalizedMessage for en-ZZ. Format={0}.'
+}
+</code></pre>
+<pre><code class="lang-powershell"># Synopsis: Use -f to generate a formatted localized warning
+Rule 'WithLocalizedData' {
+    Write-Warning -Message ($LocalizedData.WithLocalizedDataMessage -f $TargetObject.Type)
+}
+</code></pre>
+<p>This rule returns a warning message similar to:</p>
+<pre><code class="lang-text">LocalizedMessage for en-ZZ. Format=TestType.
 </code></pre>
 <h3 id="rule">Rule</h3>
 <p>An object representing the current object model of the rule during execution.</p>
@@ -112,7 +143,7 @@ Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Mic
 <pre><code class="lang-powershell">$Rule
 </code></pre>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># This rule determined if the target object matches the naming convention
+<pre><code class="lang-powershell"># Synopsis: This rule determines if the target object matches the naming convention
 Rule 'resource.NamingConvention' {
     $Rule.TargetName.ToLower() -ceq $Rule.TargetName
 }
@@ -124,7 +155,7 @@ Rule 'resource.NamingConvention' {
 <pre><code class="lang-powershell">$TargetObject
 </code></pre>
 <p>Examples:</p>
-<pre><code class="lang-powershell"># Check that sku capacity is set to at least 2
+<pre><code class="lang-powershell"># Synopsis: Check that sku capacity is set to at least 2
 Rule 'HasMinInstances' {
     $TargetObject.Sku.capacity -ge 2
 }
@@ -138,6 +169,7 @@ Rule 'HasMinInstances' {
 <h2 id="keywords">KEYWORDS</h2>
 <ul>
 <li>Configuration</li>
+<li>LocalizedData</li>
 <li>Rule</li>
 <li>TargetObject</li>
 </ul>

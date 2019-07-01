@@ -8,7 +8,7 @@
     <title>Kubernetes resource validation example </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Kubernetes resource validation example ">
-    <meta name="generator" content="docfx 2.42.1.0">
+    <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -262,8 +262,8 @@ Invoke-PSRule -Path docs/scenarios/kubernetes-resources -InputPath docs/scenario
 <p>The resulting output is:</p>
 <pre><code class="lang-text">   TargetName: app1-cache
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 deployment.HasMinimumReplicas       Fail       Deployments use a minimum of 2 replicas
 deployment.NotLatestImage           Fail       Deployments use specific tags
 deployment.ResourcesSet             Fail       Resource requirements are set for each container
@@ -271,8 +271,8 @@ deployment.ResourcesSet             Fail       Resource requirements are set for
 
    TargetName: app1-cache-service
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 metadata.Name                       Fail       Must have the app.kubernetes.io/name label
 metadata.Version                    Fail       Must have the app.kubernetes.io/version label
 metadata.Component                  Fail       Must have the app.kubernetes.io/component label
@@ -280,8 +280,8 @@ metadata.Component                  Fail       Must have the app.kubernetes.io/c
 
    TargetName: app1-ui
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 metadata.Version                    Fail       Must have the app.kubernetes.io/version label
 </code></pre>
 <h2 id="more-information">More information</h2>

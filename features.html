@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>PSRule </title>
+    <title>PSRule features </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="PSRule ">
+    <meta name="title" content="PSRule features ">
     <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="favicon.ico">
@@ -60,61 +60,33 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="psrule">PSRule</h1>
+<h1 id="psrule-features">PSRule features</h1>
 
-<p>PSRule is an open-source, general-purpose rules engine built on top of PowerShell and maintained on GitHub.</p>
-<p>PSRule provides an easy way to:</p>
+<p>The following sections describe key features of PSRule.</p>
 <ul>
-<li>Define reusable business rules like scripts.</li>
-<li>Validate PowerShell objects with rules by piping them to PSRule.</li>
+<li><a href="#extensible">Extensible</a></li>
+<li><a href="#cross-platform">Cross-platform</a></li>
+<li><a href="#reusable">Reusable</a></li>
+<li><a href="#recommendations">Recommendations</a></li>
 </ul>
-<p>Because PSRule is based on PowerShell:</p>
-<ul>
-<li>It builds on existing PowerShell skills.</li>
-<li>Works with other PowerShell modules and .NET classes.</li>
-<li>Works great with source control and DevOps pipelines.</li>
-</ul>
-<h2 id="installing-the-module">Installing the module</h2>
-<p>You can download and install the PSRule module from the PowerShell Gallery.</p>
-<table>
-<thead>
-<tr>
-<th>Module</th>
-<th>Description</th>
-<th>Downloads / instructions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PSRule</td>
-<td>Validate objects using PowerShell rules</td>
-<td><a href="https://www.powershellgallery.com/packages/PSRule">latest</a> / <a href="scenarios/install-instructions.html">instructions</a></td>
-</tr>
-</tbody>
-</table>
-<p><img src="https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=master" alt="module-ci-badge"> <img src="https://img.shields.io/powershellgallery/v/PSRule.svg?label=PowerShell%20Gallery&amp;color=brightgreen" alt="module-version-badge"> <img src="https://img.shields.io/powershellgallery/dt/PSRule.svg?color=brightgreen" alt="module-downloads-badge"></p>
-<h2 id="installing-the-extension">Installing the extension</h2>
-<p>You can download and install the companion extension for Visual Studio Code from the Visual Studio Marketplace.</p>
-<table>
-<thead>
-<tr>
-<th>Extension</th>
-<th>Description</th>
-<th>Downloads / instructions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PSRule</td>
-<td>An extension for IT Pros using the PSRule PowerShell module</td>
-<td><a href="https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview">latest</a> / <a href="scenarios/install-instructions.html">instructions</a></td>
-</tr>
-</tbody>
-</table>
-<p><img src="https://dev.azure.com/bewhite/PSRule-vscode/_apis/build/status/PSRule-vscode-CI?branchName=master" alt="extension-ci-badge"> <img src="https://vsmarketplacebadge.apphb.com/version/bewhite.psrule-vscode-preview.svg" alt="extension-version-badge"> <img src="https://vsmarketplacebadge.apphb.com/installs-short/bewhite.psrule-vscode-preview.svg" alt="extension-installs-badge"></p>
-<h2 id="support">Support</h2>
-<p>This project is to be considered a <strong>proof-of-concept</strong> and <strong>not a supported product</strong>.</p>
-<p>If you have any problems please check our GitHub <a href="https://github.com/BernieWhite/PSRule/issues">issues</a> page. If you do not see your problem captured, please file a new issue and follow the provided template.</p>
+<h2 id="extensible">Extensible</h2>
+<p>Authors define rules using PowerShell, a flexible scripting language. If you or your team already can write a basic PowerShell script, you can already define a rule. What's more, you can leverage a large world-wide community of PowerShell users with scripts and cmdlets to help you build out rules quickly.</p>
+<h2 id="cross-platform">Cross-platform</h2>
+<p>PSRule uses modern PowerShell libraries at it's core, allowing it to go anywhere Windows PowerShell 5.1 or PowerShell Core 6.2 can go. PSRule runs on MacOS, Linux and Windows.</p>
+<p>To install PSRule use the <code>Install-Module</code> cmdlet within Windows PowerShell or PowerShell Core.</p>
+<pre><code class="lang-powershell">Install-Module -Name PSRule -Scope CurrentUser;
+</code></pre>
+<p>PSRule also has editor support for Visual Studio Code with the companion extension, which can be installed on MacOS, Linux and Windows.</p>
+<p>To install the extension:</p>
+<pre><code class="lang-text">code --install-extension bewhite.psrule-vscode-preview
+</code></pre>
+<p>For additional installation options see <a href="scenarios/install-instructions.html">install instructions</a>.</p>
+<h2 id="reusable">Reusable</h2>
+<p>Define rules once then reuse and share rules across teams or organizations. Rules can be packaged up into a module then distributed.</p>
+<p>PSRule uses PowerShell modules as the standard way to distribute rules. Modules containing rules can be published on the PowerShell Gallery or network share using the same process as regular PowerShell modules.</p>
+<h2 id="recommendations">Recommendations</h2>
+<p>PSRule allows rule authors to define recommendations in markdown. This allows not only the cause of the issue to be identified but detailed instructions to be included to remediate issues.</p>
+<p>For more information see <a href="concepts/PSRule/en-US/about_PSRule_Docs.html">about_PSRule_docs</a>.</p>
 </article>
           </div>
           
@@ -123,7 +95,7 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/index.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/features.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

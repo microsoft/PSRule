@@ -8,7 +8,7 @@
     <title>Invoke-PSRule </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Invoke-PSRule ">
-    <meta name="generator" content="docfx 2.42.1.0">
+    <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -73,16 +73,16 @@
 <p>Evaluate objects against matching rules.</p>
 <h2 id="syntax">SYNTAX</h2>
 <h3 id="input-default">Input (Default)</h3>
-<pre><code class="lang-text">Invoke-PSRule [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] -InputObject &lt;PSObject&gt;
- [-Outcome &lt;RuleOutcome&gt;] [-Option &lt;PSRuleOption&gt;] [-As &lt;ResultFormat&gt;] [-Format &lt;InputFormat&gt;]
- [-ObjectPath &lt;String&gt;] [-Module &lt;String[]&gt;] [-OutputFormat &lt;OutputFormat&gt;] [-Culture &lt;String&gt;]
- [&lt;CommonParameters&gt;]
+<pre><code class="lang-text">Invoke-PSRule [-Module &lt;String[]&gt;] [-Outcome &lt;RuleOutcome&gt;] [-As &lt;ResultFormat&gt;] [-Format &lt;InputFormat&gt;]
+ [-OutputPath &lt;String&gt;] [-OutputFormat &lt;OutputFormat&gt;] [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;]
+ [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;] [-Culture &lt;String&gt;] -InputObject &lt;PSObject&gt;
+ [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
 </code></pre>
 <h3 id="inputpath">InputPath</h3>
-<pre><code class="lang-text">Invoke-PSRule [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Outcome &lt;RuleOutcome&gt;]
- [-Option &lt;PSRuleOption&gt;] [-As &lt;ResultFormat&gt;] [-Format &lt;InputFormat&gt;] [-ObjectPath &lt;String&gt;]
- [-Module &lt;String[]&gt;] [-OutputFormat &lt;OutputFormat&gt;] -InputPath &lt;String[]&gt; [-Culture &lt;String&gt;]
- [&lt;CommonParameters&gt;]
+<pre><code class="lang-text">Invoke-PSRule -InputPath &lt;String[]&gt; [-Module &lt;String[]&gt;] [-Outcome &lt;RuleOutcome&gt;] [-As &lt;ResultFormat&gt;]
+ [-Format &lt;InputFormat&gt;] [-OutputPath &lt;String&gt;] [-OutputFormat &lt;OutputFormat&gt;] [[-Path] &lt;String[]&gt;]
+ [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;] [-Culture &lt;String&gt;]
+ [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Evaluate objects against matching rules.</p>
@@ -102,15 +102,15 @@ $items | Invoke-PSRule;
 </code></pre>
 <pre><code class="lang-text">TargetName: Fridge
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 isFruit                             Fail       Fruit is only Apple, Orange and Pear
 
 
    TargetName: Apple
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 isFruit                             Pass       Fruit is only Apple, Orange and Pear
 </code></pre>
 <p>Evaluate an array of objects on the pipeline against rules loaded from the current working path.</p>
@@ -125,8 +125,8 @@ $items | Invoke-PSRule -Outcome Fail;
 </code></pre>
 <pre><code class="lang-text">TargetName: Fridge
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 isFruit                             Fail       Fruit is only Apple, Orange and Pear
 </code></pre>
 <p>Evaluate an array of objects, only failing object results are returned.</p>
@@ -176,7 +176,7 @@ Accept wildcard characters: False
 <pre><code class="lang-yaml">Type: RuleOutcome
 Parameter Sets: (All)
 Aliases:
-Accepted values: Pass, Fail, Error, None
+Accepted values: Pass, Fail, Error, None, Processed, All
 
 Required: False
 Position: Named
@@ -186,7 +186,7 @@ Accept wildcard characters: False
 </code></pre>
 <h3 id="-tag">-Tag</h3>
 <p>Only evaluate rules with the specified tags set. If this parameter is not specified all rules in search paths will be evaluated.</p>
-<p>When more than one tag is used, all tags must match. Tag names are not case sensitive, tag values are case sensitive. A tag value of <code>*</code> may be used to filter rules to any rule with the tag set, regardless of tag value.</p>
+<p>When more than one tag is used, all tags must match. Tags are not case sensitive. A tag value of <code>*</code> may be used to filter rules to any rule with the tag set, regardless of tag value.</p>
 <pre><code class="lang-yaml">Type: Hashtable
 Parameter Sets: (All)
 Aliases:
@@ -294,12 +294,32 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
+<h3 id="-outputpath">-OutputPath</h3>
+<p>Specifies the output file path to write results. Directories along the file path will automatically be created if they do not exist.</p>
+<pre><code class="lang-yaml">Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
 <h3 id="-outputformat">-OutputFormat</h3>
 <p>Configures the format that output is presented in.</p>
+<p>The following format options are available:</p>
+<ul>
+<li>None - Output is presented as an object using PowerShell defaults. This is the default.</li>
+<li>Yaml - Output is serialized as YAML.</li>
+<li>Json - Output is serialized as JSON.</li>
+<li>NUnit3 - Output is serialized as NUnit3 (XML).</li>
+<li>Csv - Output is serialized as a comma separated values (CSV).</li>
+</ul>
 <pre><code class="lang-yaml">Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json, NUnit3
+Accepted values: None, Yaml, Json, NUnit3, Csv
 
 Required: False
 Position: Named
@@ -314,6 +334,30 @@ Accept wildcard characters: False
 <pre><code class="lang-yaml">Type: String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-confirm">-Confirm</h3>
+<p>Prompts you for confirmation before running the cmdlet.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-whatif">-WhatIf</h3>
+<p>Shows what would happen if the cmdlet runs. The cmdlet is not run.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
 
 Required: False
 Position: Named

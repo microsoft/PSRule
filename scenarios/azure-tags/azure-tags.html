@@ -8,7 +8,7 @@
     <title>Azure resource tagging example </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Azure resource tagging example ">
-    <meta name="generator" content="docfx 2.42.1.0">
+    <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -264,24 +264,24 @@ Invoke-PSRule -Path docs/scenarios/azure-tags -InputPath docs/scenarios/azure-ta
 <p>Our output looked like this:</p>
 <pre><code class="lang-text">   TargetName: storage
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 costCentreTag                       Fail       Resource must have costCentre tag
 businessUnitTag                     Fail       Resource must have businessUnit tag
 
 
    TargetName: web-app
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 environmentTag                      Fail       Resource must have environment tag
 costCentreTag                       Fail       Resource must have costCentre tag
 
 
    TargetName: web-app/staging
 
-RuleName                            Outcome    Message
---------                            -------    -------
+RuleName                            Outcome    Recommendation
+--------                            -------    --------------
 environmentTag                      Fail       Resource must have environment tag
 costCentreTag                       Fail       Resource must have costCentre tag
 </code></pre>
