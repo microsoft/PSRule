@@ -1,6 +1,40 @@
 
 ## Unreleased
 
+## v0.7.0
+
+What's changed since v0.6.0:
+
+- Fix reading nested arrays from JSON input. [#223](https://github.com/BernieWhite/PSRule/issues/223)
+- Fix comparison of non-string types with `Within`. [#226](https://github.com/BernieWhite/PSRule/issues/226)
+- Fix circular rule dependency issue. [#190](https://github.com/BernieWhite/PSRule/issues/190)
+- Fix rule `DependsOn` parameter allows null. [#191](https://github.com/BernieWhite/PSRule/issues/191)
+- Fix error message when attempting to use the rule keyword in a rule definition. [#189](https://github.com/BernieWhite/PSRule/issues/189)
+- Fix TargetName binding when TargetName or Name property is null. [#202](https://github.com/BernieWhite/PSRule/issues/202)
+- Fix handling of non-boolean results in rules. Rule is failed with more specific error message. [#187](https://github.com/BernieWhite/PSRule/issues/187) [#224](https://github.com/BernieWhite/PSRule/issues/224)
+- Include .ps1 files that are specified directly with `-Path`, instead of only .Rule.ps1 files. [#182](https://github.com/BernieWhite/PSRule/issues/182)
+  - Improved warning message displayed when no Rule.ps1 files are founds.
+- Added support for `Invoke-PSRule` to return CSV formatted results. [#169](https://github.com/BernieWhite/PSRule/issues/169)
+  - To generate CSV results use the `-OutputFormat Csv` parameter.
+  - Added `Output.Path` option to allow output to be saved directly to file.
+  - Added `Output.Encoding` option configure encoding used to write to file.
+  - By default, UTF-8 encoding without BOM is used.
+  - `Invoke-PSRule` cmdlet also provides a parameter `-OutputPath` to write results to file.
+- Reordered cmdlet parameters to improve usage of frequently used parameters. [#175](https://github.com/BernieWhite/PSRule/issues/175)
+  - `-Module` parameter will tab-complete with imported rule modules.
+- Added culture support for PowerShell informational messages. [#158](https://github.com/BernieWhite/PSRule/issues/158)
+  - A new `$LocalizedData` variable can be used within rule definitions.
+- Added `-Not` switch to `Within` and `Match` keywords to allow negative comparison. [#208](https://github.com/BernieWhite/PSRule/issues/208)
+- Improve discovery of rule tags. [#209](https://github.com/BernieWhite/PSRule/issues/209)
+  - Add wide format `-OutputFormat Wide` to `Get-PSRule` to allow output of rule tags.
+- **Breaking change**: Changed rule filtering by tag to be case-insensitive. [#204](https://github.com/BernieWhite/PSRule/issues/204)
+  - Previously tag value was case-sensitive, however this is confusing since PowerShell is case-insensitive by default.
+- **Breaking change**: Rule time is recorded in milliseconds instead of seconds. [#192](https://github.com/BernieWhite/PSRule/issues/192)
+
+What's changed since pre-release v0.7.0-B190664:
+
+- No additional changes
+
 ## v0.7.0-B190664 (pre-release)
 
 - Fix reading nested arrays from JSON input. [#223](https://github.com/BernieWhite/PSRule/issues/223)
