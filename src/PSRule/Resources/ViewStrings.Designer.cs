@@ -106,6 +106,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to # PSRule options.
+        /// </summary>
+        internal static string OptionsComment {
+            get {
+                return ResourceManager.GetString("OptionsComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Outcome.
         /// </summary>
         internal static string Outcome {

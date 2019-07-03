@@ -124,6 +124,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to # Source: {0}.
+        /// </summary>
+        internal static string OptionsSourceComment {
+            get {
+                return ResourceManager.GetString("OptionsSourceComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [FAIL] -- {0}:: Reported for &apos;{1}&apos;.
         /// </summary>
         internal static string OutcomeRuleFail {

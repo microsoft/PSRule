@@ -89,6 +89,26 @@
         </CustomEntries>
       </CustomControl>
     </Control>
+    <Control>
+      <Name>Option-Yaml</Name>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+              <CustomItem>
+                <Text AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="OptionsComment"/>
+                <NewLine />
+                <Frame>
+                  <CustomItem>
+                    <ExpressionBinding>
+                      <ScriptBlock>$_.ToYaml();</ScriptBlock>
+                    </ExpressionBinding>
+                  </CustomItem>
+                </Frame>
+              </CustomItem>
+            </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </Control>
   </Controls>
   <ViewDefinitions>
     <View>
@@ -328,6 +348,23 @@
           </TableRowEntry>
         </TableRowEntries>
       </TableControl>
+    </View>
+    <View>
+      <Name>PSRule.Configuration.PSRuleOption</Name>
+      <ViewSelectedBy>
+        <TypeName>PSRule.Configuration.PSRuleOption</TypeName>
+      </ViewSelectedBy>
+      <CustomControl>
+         <CustomEntries>
+              <CustomEntry>
+                <CustomItem>
+                  <ExpressionBinding>
+                    <CustomControlName>Option-Yaml</CustomControlName>
+                  </ExpressionBinding>
+                </CustomItem>
+              </CustomEntry>
+            </CustomEntries>
+      </CustomControl>
     </View>
   </ViewDefinitions>
 </Configuration>

@@ -132,6 +132,9 @@
   <data name="Name" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="OptionsComment" xml:space="preserve">
+    <value># PSRule options</value>
+  </data>
   <data name="Outcome" xml:space="preserve">
     <value>Outcome</value>
   </data>

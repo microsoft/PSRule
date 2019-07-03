@@ -30,6 +30,30 @@ $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
     $emptyOptionsFilePath = (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml');
 
+    Context 'Use -Path' {
+        It 'With file' {
+            $filePath = Join-Path -Path $outputPath -ChildPath 'new.file/ps-rule.yaml';
+            Set-PSRuleOption -Path $filePath -Force;
+            { New-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Not -Throw;
+        }
+
+        It 'With directory' {
+            $filePath = Join-Path -Path $outputPath -ChildPath 'new.file';
+            Set-PSRuleOption -Path $filePath -Force;
+            { New-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Not -Throw;
+        }
+
+        It 'With missing file' {
+            $filePath = (Join-Path -Path $outputPath -ChildPath 'new-not-a-file.yaml');
+            { New-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Throw;
+        }
+
+        It 'With missing directory' {
+            $filePath = (Join-Path -Path $outputPath -ChildPath 'new-dir/ps-rule.yaml');
+            { New-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Throw;
+        }
+    }
+
     Context 'Read Baseline.RuleName' {
         It 'from default' {
             $option = New-PSRuleOption;
@@ -493,19 +517,19 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
 
     Context 'Use -Path' {
         It 'With missing file' {
-            $filePath = (Join-Path -Path $outputPath -ChildPath 'not-a-file.yml');
+            $filePath = (Join-Path -Path $outputPath -ChildPath 'set-not-a-file.yml');
             { Set-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Not -Throw;
             Test-Path -Path $filePath | Should -Be $True;
         }
 
         It 'With missing directory' {
-            $filePath = (Join-Path -Path $outputPath -ChildPath 'dir/ps-rule.yaml');
+            $filePath = (Join-Path -Path $outputPath -ChildPath 'set-dir/ps-rule.yaml');
             { Set-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Throw -ErrorId 'PSRule.PSRuleOption.ParentPathNotFound';
             Test-Path -Path $filePath | Should -Be $False;
         }
 
         It 'With missing directory with -Force' {
-            $filePath = (Join-Path -Path $outputPath -ChildPath 'dir/ps-rule.yaml');
+            $filePath = (Join-Path -Path $outputPath -ChildPath 'set-dir/ps-rule.yaml');
             Set-PSRuleOption -Path $filePath -Force;
             Test-Path -Path $filePath | Should -Be $True;
         }
