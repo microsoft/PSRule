@@ -32,8 +32,12 @@ input:
 
 # Configures outcome logging options
 logging:
+  limitDebug:
+  - TestRule2
+  limitVerbose:
+  - TestRule2
   ruleFail: Warning
-  rulePass: Warning
+  rulePass: Warning  
 
 # Configure output options
 output:

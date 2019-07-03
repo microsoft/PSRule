@@ -43,13 +43,13 @@ namespace PSRule.Commands
 
                 if (expected && actual == expected)
                 {
-                    PipelineContext.CurrentThread.WriteVerbose($"[Exists] -- The field {Field[i]} exists");
+                    PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Exists, message: $"The field {Field[i]} exists");
                 }
             }
 
             if (!actual)
             {
-                PipelineContext.CurrentThread.WriteVerbose($"[Exists] -- The field(s) {string.Join(", ", Field)} do not exist");
+                PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Exists, message: $"The field(s) {string.Join(", ", Field)} do not exist");
             }
 
             WriteObject(expected == actual);

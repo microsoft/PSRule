@@ -1,4 +1,6 @@
-﻿namespace PSRule.Pipeline
+﻿using PSRule.Rules;
+
+namespace PSRule.Pipeline
 {
     public static class PipelineBuilder
     {
@@ -15,6 +17,11 @@
         public static GetRuleHelpPipelineBuilder GetHelp()
         {
             return new GetRuleHelpPipelineBuilder();
+        }
+
+        public static RuleSourceBuilder RuleSource()
+        {
+            return new RuleSourceBuilder();
         }
     }
 }

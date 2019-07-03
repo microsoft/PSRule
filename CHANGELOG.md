@@ -3,6 +3,8 @@
 
 - Fix YAML options file discovery issue in dotted directory. [#232](https://github.com/BernieWhite/PSRule/issues/232)
 - PSRule options are now displayed as YAML instead of complex object. [#233](https://github.com/BernieWhite/PSRule/issues/233)
+- Add support for debug messages and `Write-Debug` in rule definitions. [#146](https://github.com/BernieWhite/PSRule/issues/146)
+- Added `Logging.LimitDebug` and `Logging.LimitVerbose` options to limit logging to named scopes. [#235](https://github.com/BernieWhite/PSRule/issues/235)
 
 ## v0.7.0
 

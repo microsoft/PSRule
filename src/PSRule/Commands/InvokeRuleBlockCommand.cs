@@ -34,6 +34,7 @@ namespace PSRule.Commands
 
                 if (!Type.Contains(value: PipelineContext.CurrentThread.TargetType, comparer: comparer))
                 {
+                    PipelineContext.CurrentThread.Logger.DebugMessage("Target failed Type precondition");
                     return;
                 }
             }
@@ -45,6 +46,7 @@ namespace PSRule.Commands
 
                 if (ifResult == null || !(ifResult.BaseObject is bool) || !(bool)ifResult.BaseObject)
                 {
+                    PipelineContext.CurrentThread.Logger.DebugMessage("Target failed If precondition");
                     return;
                 }
             }

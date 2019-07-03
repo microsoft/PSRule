@@ -129,6 +129,9 @@
     <value>A rule with the same name '{0}' already exists.</value>
     <comment>Occurs when the same rule name is used.</comment>
   </data>
+  <data name="FoundModules" xml:space="preserve">
+    <value>[PSRule][D] -- Found {0} PSRule module(s)</value>
+  </data>
   <data name="InvalidRuleNesting" xml:space="preserve">
     <value>Rule nesting was detected in rule '{0}'. Rules must not be nested.</value>
     <comment>Occurs when a rule is nested in another rule.</comment>
@@ -157,6 +160,12 @@
   </data>
   <data name="RuleNotFound" xml:space="preserve">
     <value>Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.</value>
+  </data>
+  <data name="ScanModule" xml:space="preserve">
+    <value>[PSRule][D] -- Scanning for source files in module: {0}</value>
+  </data>
+  <data name="ScanSource" xml:space="preserve">
+    <value>[PSRule][D] -- Scanning for source files: {0}</value>
   </data>
   <data name="ScriptNotFound" xml:space="preserve">
     <value>The script was not found.</value>

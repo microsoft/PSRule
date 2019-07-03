@@ -752,6 +752,58 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $messages | Should -Not -BeNullOrEmpty;
             $messages | Should -Be "[PASS] -- FromFile1:: Reported for 'LoggingTest'"
         }
+
+        It 'LimitDebug' {
+            $withLoggingRulePath = (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1');
+            $loggingParams = @{
+                Path = $withLoggingRulePath
+                Name = 'WithDebug', 'WithDebug2'
+                WarningAction = 'SilentlyContinue'
+                ErrorAction = 'SilentlyContinue'
+                InformationAction = 'SilentlyContinue'
+            }
+            $option = New-PSRuleOption -LoggingLimitDebug 'WithDebug2', '[Discovery.Rule]';
+
+            $testObject = [PSCustomObject]@{
+                Name = 'LoggingTest'
+            }
+
+            $DebugPreference = 'Continue';
+            $outDebug = @($testObject | Invoke-PSRule @loggingParams -Option $option -Debug 5>&1 | Where-Object {
+                $_ -like "* debug message*"
+            });
+
+            # Debug
+            $outDebug.Length | Should -Be 2;
+            $outDebug[0] | Should -Be 'Script debug message';
+            $outDebug[1] | Should -Be 'Rule debug message 2';
+        }
+
+        It 'LimitVerbose' {
+            $withLoggingRulePath = (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1');
+            $loggingParams = @{
+                Path = $withLoggingRulePath
+                Name = 'WithVerbose', 'WithVerbose2'
+                WarningAction = 'SilentlyContinue'
+                ErrorAction = 'SilentlyContinue'
+                InformationAction = 'SilentlyContinue'
+            }
+            $option = New-PSRuleOption -LoggingLimitVerbose 'WithVerbose2', '[Discovery.Rule]';
+
+            $testObject = [PSCustomObject]@{
+                Name = 'LoggingTest'
+            }
+
+            $outVerbose = @($testObject | Invoke-PSRule @loggingParams -Option $option -Verbose 4>&1 | Where-Object {
+                $_ -is [System.Management.Automation.VerboseRecord] -and
+                $_.Message -like "* verbose message*"
+            });
+
+            # Verbose
+            $outVerbose.Length | Should -Be 2;
+            $outVerbose[0] | Should -Be 'Script verbose message';
+            $outVerbose[1] | Should -Be 'Rule verbose message 2';
+        }
     }
 }
 

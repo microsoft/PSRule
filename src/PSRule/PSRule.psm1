@@ -95,7 +95,7 @@ function Invoke-PSRule {
         $Option = New-PSRuleOption @optionParams;
 
         # Discover scripts in the specified paths
-        $sourceParams = @{ };
+        $sourceParams = @{ Option = $Option };
 
         if ($PSBoundParameters.ContainsKey('Path')) {
             $sourceParams['Path'] = $Path;
@@ -159,7 +159,7 @@ function Invoke-PSRule {
         }
 
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
-        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
+        $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
             $pipeline.Begin();
@@ -251,7 +251,7 @@ function Test-PSRuleTarget {
         $Option = New-PSRuleOption @optionParams;
 
         # Discover scripts in the specified paths
-        $sourceParams = @{ };
+        $sourceParams = @{ Option = $Option };
 
         if ($PSBoundParameters.ContainsKey('Path')) {
             $sourceParams['Path'] = $Path;
@@ -302,7 +302,7 @@ function Test-PSRuleTarget {
         }
 
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
-        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
+        $builder.UseExecutionContext($ExecutionContext);
         $builder.ReturnBoolean();
         try {
             $pipeline = $builder.Build();
@@ -390,7 +390,7 @@ function Get-PSRule {
         $Option = New-PSRuleOption @optionParams;
 
         # Discover scripts in the specified paths
-        $sourceParams = @{ };
+        $sourceParams = @{ Option = $Option };
 
         if ($PSBoundParameters.ContainsKey('Path')) {
             $sourceParams['Path'] = $Path;
@@ -432,7 +432,7 @@ function Get-PSRule {
         $builder.FilterBy($Tag);
         $builder.Source($sourceFiles);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
-        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
+        $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
         }
@@ -513,7 +513,7 @@ function Get-PSRuleHelp {
         $Option = New-PSRuleOption @optionParams;
 
         # Discover scripts in the specified paths
-        $sourceParams = @{ };
+        $sourceParams = @{ Option = $Option };
 
         if ($PSBoundParameters.ContainsKey('Path')) {
             $sourceParams['Path'] = $Path;
@@ -548,7 +548,7 @@ function Get-PSRuleHelp {
         $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp().Configure($Option);
         $builder.Source($sourceFiles);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
-        $builder.UseLoggingPreferences($ErrorActionPreference, $WarningPreference, $VerbosePreference, $InformationPreference);
+        $builder.UseExecutionContext($ExecutionContext);
         $pipeline = $builder.Build();
     }
 
@@ -654,6 +654,14 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('InputObjectPath')]
         [String]$ObjectPath = '',
+
+        # Sets the Logging.LimitDebug option
+        [Parameter(Mandatory = $False)]
+        [String[]]$LoggingLimitDebug = $Null,
+
+        # Sets the Logging.LimitVerbose option
+        [Parameter(Mandatory = $False)]
+        [String[]]$LoggingLimitVerbose = $Null,
 
         # Sets the Logging.RuleFail option
         [Parameter(Mandatory = $False)]
@@ -817,6 +825,14 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('InputObjectPath')]
         [String]$ObjectPath = '',
+
+        # Sets the Logging.LimitDebug option
+        [Parameter(Mandatory = $False)]
+        [String[]]$LoggingLimitDebug = $Null,
+
+        # Sets the Logging.LimitVerbose option
+        [Parameter(Mandatory = $False)]
+        [String[]]$LoggingLimitVerbose = $Null,
 
         # Sets the Logging.RuleFail option
         [Parameter(Mandatory = $False)]
@@ -1164,17 +1180,23 @@ function GetRuleScriptPath {
         [String]$Culture,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$PreferModule = $False
+        [Switch]$PreferModule = $False,
+
+        [Parameter(Mandatory = $True)]
+        [PSRule.Configuration.PSRuleOption]$Option
     )
 
     process {
-        $builder = New-Object -TypeName 'PSRule.Rules.RuleSourceBuilder';
+        $builder = [PSRule.Pipeline.PipelineBuilder]::RuleSource().Configure($Option);
+        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseExecutionContext($ExecutionContext);
+
         if ([String]::IsNullOrEmpty($Culture)) {
             $Culture = GetCulture;
         }
 
         if ($PSBoundParameters.ContainsKey('Path')) {
-            Write-Verbose -Message "[PSRule][D] -- Scanning for source files: $Path";
+            $builder.VerboseScanSource($Path);
             $fileObjects = (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
 
             foreach ($file in $fileObjects) {
@@ -1206,11 +1228,11 @@ function GetRuleScriptPath {
 
         if ($moduleParams.Count -gt 0 -or $PreferModule) {
             $modules = @(GetRuleModule @moduleParams);
-            Write-Verbose -Message "[PSRule][D] -- Found $($modules.Length) PSRule module(s)";
+            $builder.VerboseFoundModules($modules.Length);
 
             if ($Null -ne $modules) {
                 foreach ($m in $modules) {
-                    Write-Verbose -Message "[PSRule][D] -- Scanning for source files in module: $($m.Name)";
+                    $builder.VerboseScanModule($m.Name);
                     $fileObjects = (Get-ChildItem -Path $m.ModuleBase -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
                     $helpPath = Join-Path $m.ModuleBase -ChildPath $Culture;
 
@@ -1320,6 +1342,14 @@ function SetOptions {
         [Alias('InputObjectPath')]
         [String]$ObjectPath = '',
 
+        # Sets the Logging.LimitDebug option
+        [Parameter(Mandatory = $False)]
+        [String[]]$LoggingLimitDebug = $Null,
+
+        # Sets the Logging.LimitVerbose option
+        [Parameter(Mandatory = $False)]
+        [String[]]$LoggingLimitVerbose = $Null,
+
         # Sets the Logging.RuleFail option
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.OutcomeLogStream]$LoggingRuleFail = 'None',
@@ -1384,6 +1414,16 @@ function SetOptions {
         # Sets option Input.ObjectPath
         if ($PSBoundParameters.ContainsKey('ObjectPath')) {
             $Option.Input.ObjectPath = $ObjectPath;
+        }
+
+        # Sets option Logging.LimitDebug
+        if ($PSBoundParameters.ContainsKey('LoggingLimitDebug')) {
+            $Option.Logging.LimitDebug = $LoggingLimitDebug;
+        }
+
+        # Sets option Logging.LimitVerbose
+        if ($PSBoundParameters.ContainsKey('LoggingLimitVerbose')) {
+            $Option.Logging.LimitVerbose = $LoggingLimitVerbose;
         }
 
         # Sets option Logging.RuleFail

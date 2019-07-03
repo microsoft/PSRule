@@ -338,6 +338,50 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Logging.LimitDebug' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Logging.LimitDebug | Should -BeNullOrEmpty;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Logging.LimitDebug' = 'TestRule1' };
+            $option.Logging.LimitDebug | Should -Be 'TestRule1';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Logging.LimitDebug | Should -Be 'TestRule2';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -LoggingLimitDebug 'TestRule2' -Path $emptyOptionsFilePath;
+            $option.Logging.LimitDebug | Should -Be 'TestRule2';
+        }
+    }
+
+    Context 'Read Logging.LimitVerbose' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Logging.LimitVerbose | Should -BeNullOrEmpty;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Logging.LimitVerbose' = 'TestRule1' };
+            $option.Logging.LimitVerbose | Should -Be 'TestRule1';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Logging.LimitVerbose | Should -Be 'TestRule2';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -LoggingLimitVerbose 'TestRule2' -Path $emptyOptionsFilePath;
+            $option.Logging.LimitVerbose | Should -Be 'TestRule2';
+        }
+    }
+
     Context 'Read Logging.RuleFail' {
         It 'from default' {
             $option = New-PSRuleOption;
@@ -613,6 +657,20 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -ObjectPath 'items' @optionParams;
             $option.Input.ObjectPath | Should -Be 'items';
+        }
+    }
+
+    Context 'Read Logging.LimitDebug' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -LoggingLimitDebug 'TestRule2' @optionParams;
+            $option.Logging.LimitDebug | Should -Be 'TestRule2';
+        }
+    }
+
+    Context 'Read Logging.LimitVerbose' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -LoggingLimitVerbose 'TestRule2' @optionParams;
+            $option.Logging.LimitVerbose | Should -Be 'TestRule2';
         }
     }
 

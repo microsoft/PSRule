@@ -10,10 +10,26 @@ namespace PSRule.Pipeline
     {
         void WriteVerbose(string message);
 
+        bool ShouldWriteVerbose();
+
         void WriteWarning(string message);
+
+        bool ShouldWriteWarning();
 
         void WriteError(ErrorRecord errorRecord);
 
+        bool ShouldWriteError();
+
         void WriteInformation(InformationRecord informationRecord);
+
+        bool ShouldWriteInformation();
+
+        void WriteDebug(DebugRecord debugRecord);
+
+        bool ShouldWriteDebug();
+
+        void EnterScope(string scopeName);
+
+        void ExitScope();
     }
 }

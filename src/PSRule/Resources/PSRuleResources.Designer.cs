@@ -88,6 +88,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [PSRule][D] -- Found {0} PSRule module(s).
+        /// </summary>
+        internal static string FoundModules {
+            get {
+                return ResourceManager.GetString("FoundModules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rule nesting was detected in rule &apos;{0}&apos;. Rules must not be nested..
         /// </summary>
         internal static string InvalidRuleNesting {
@@ -165,6 +174,24 @@ namespace PSRule.Resources {
         internal static string RuleNotFound {
             get {
                 return ResourceManager.GetString("RuleNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [PSRule][D] -- Scanning for source files in module: {0}.
+        /// </summary>
+        internal static string ScanModule {
+            get {
+                return ResourceManager.GetString("ScanModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [PSRule][D] -- Scanning for source files: {0}.
+        /// </summary>
+        internal static string ScanSource {
+            get {
+                return ResourceManager.GetString("ScanSource", resourceCulture);
             }
         }
         

@@ -24,10 +24,6 @@ namespace PSRule.Pipeline
         private BindTargetName _BindTargetNameHook;
         private BindTargetName _BindTargetTypeHook;
         private VisitTargetObject _VisitTargetObject;
-        private bool _LogError;
-        private bool _LogWarning;
-        private bool _LogVerbose;
-        private bool _LogInformation;
         private ShouldProcess _ShouldProcess;
         private Action<object, bool> _Output;
         private bool _ReturnBoolean;
@@ -42,7 +38,6 @@ namespace PSRule.Pipeline
             _BindTargetNameHook = PipelineHookActions.DefaultTargetNameBinding;
             _BindTargetTypeHook = PipelineHookActions.DefaultTargetTypeBinding;
             _VisitTargetObject = PipelineReceiverActions.PassThru;
-            _LogError = _LogWarning = _LogVerbose = _LogInformation = false;
             _Output = (r, b) => { };
             _Stream = null;
             _InputPath = null;
@@ -65,21 +60,14 @@ namespace PSRule.Pipeline
 
         public void UseCommandRuntime(ICommandRuntime2 commandRuntime)
         {
-            _Logger.OnWriteVerbose = commandRuntime.WriteVerbose;
-            _Logger.OnWriteWarning = commandRuntime.WriteWarning;
-            _Logger.OnWriteError = commandRuntime.WriteError;
-            _Logger.OnWriteInformation = commandRuntime.WriteInformation;
-            _Logger.OnWriteObject = commandRuntime.WriteObject;
+            _Logger.UseCommandRuntime(commandRuntime);
             _ShouldProcess = commandRuntime.ShouldProcess;
             _Output = commandRuntime.WriteObject;
         }
 
-        public void UseLoggingPreferences(ActionPreference error, ActionPreference warning, ActionPreference verbose, ActionPreference information)
+        public void UseExecutionContext(EngineIntrinsics executionContext)
         {
-            _LogError = (error != ActionPreference.Ignore);
-            _LogWarning = (warning != ActionPreference.Ignore);
-            _LogVerbose = !(verbose == ActionPreference.Ignore || verbose == ActionPreference.SilentlyContinue);
-            _LogInformation = (information != ActionPreference.Ignore);
+            _Logger.UseExecutionContext(executionContext);
         }
 
         public void AddBindTargetNameAction(BindTargetNameAction action)
@@ -132,6 +120,8 @@ namespace PSRule.Pipeline
 
             _Option.Logging.RuleFail = option.Logging.RuleFail ?? LoggingOption.Default.RuleFail;
             _Option.Logging.RulePass = option.Logging.RulePass ?? LoggingOption.Default.RulePass;
+            _Option.Logging.LimitVerbose = option.Logging.LimitVerbose;
+            _Option.Logging.LimitDebug = option.Logging.LimitDebug;
 
             _Option.Output.As = option.Output.As ?? OutputOption.Default.As;
             _Option.Output.Encoding = option.Output.Encoding ?? OutputOption.Default.Encoding;
@@ -250,6 +240,7 @@ namespace PSRule.Pipeline
                 _Option.Suppression = new SuppressionOption(option.Suppression);
             }
 
+            _Logger.Configure(_Option);
             return this;
         }
 
@@ -304,7 +295,7 @@ namespace PSRule.Pipeline
             }
 
             var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
-            var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: _BindTargetNameHook, bindTargetType: _BindTargetTypeHook, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);
+            var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: _BindTargetNameHook, bindTargetType: _BindTargetTypeHook);
             var pipeline = new InvokeRulePipeline(
                 streamManager: new StreamManager(option: _Option, stream: _Stream, input: _VisitTargetObject),
                 option: _Option,

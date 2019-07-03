@@ -23,6 +23,8 @@ The following options are available for use:
 - [Execution.NotProcessedWarning](#not-processed-warning)
 - [Input.Format](#inputformat)
 - [Input.ObjectPath](#inputobjectpath)
+- [Logging.LimitDebug](#logginglimitdebug)
+- [Logging.LimitVerbose](#logginglimitverbose)
 - [Logging.RuleFail](#loggingrulefail)
 - [Logging.RulePass](#loggingrulepass)
 - [Output.As](#outputas)
@@ -477,6 +479,82 @@ input:
   objectPath: items
 ```
 
+### Logging.LimitDebug
+
+Limits debug messages to a list of named debug scopes.
+
+When using the `-Debug` switch or preference variable, by default PSRule cmdlets log all debug output. When using debug output for debugging a specific rule, it my be helpful to limit debug message to a specific rule.
+
+To identify a rule to include in debug output use the rule name.
+
+The following built-in scopes exist in addition to rule names:
+
+- `[Discovery.Source]` - Discovery messages for `.Rule.ps1` files and rule modules.
+- `[Discovery.Rule]` - Discovery messages for individual rules within `.Rule.ps1` files.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the LoggingLimitDebug parameter
+$option = New-PSRuleOption -LoggingLimitDebug Rule1, Rule2;
+```
+
+```powershell
+# PowerShell: Using the Logging.LimitDebug hashtable key
+$option = New-PSRuleOption -Option @{ 'Logging.LimitDebug' = Rule1, Rule2 };
+```
+
+```powershell
+# PowerShell: Using the LoggingLimitDebug parameter to set YAML
+Set-PSRuleOption -LoggingLimitDebug Rule1, Rule2;
+```
+
+```yaml
+# YAML: Using the logging/limitDebug property
+logging:
+  limitDebug:
+  - Rule1
+  - Rule2
+```
+
+### Logging.LimitVerbose
+
+Limits verbose messages to a list of named verbose scopes.
+
+When using the `-Verbose` switch or preference variable, by default PSRule cmdlets log all verbose output. When using verbose output for troubleshooting a specific rule, it may be helpful to limit verbose messages to a specific rule.
+
+To identify a rule to include in verbose output use the rule name.
+
+The following built-in scopes exist in addition to rule names:
+
+- `[Discovery.Source]` - Discovery messages for `.Rule.ps1` files and rule modules.
+- `[Discovery.Rule]` - Discovery messages for individual rules within `.Rule.ps1` files.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the LoggingLimitVerbose parameter
+$option = New-PSRuleOption -LoggingLimitVerbose Rule1, Rule2;
+```
+
+```powershell
+# PowerShell: Using the Logging.LimitVerbose hashtable key
+$option = New-PSRuleOption -Option @{ 'Logging.LimitVerbose' = Rule1, Rule2 };
+```
+
+```powershell
+# PowerShell: Using the LoggingLimitVerbose parameter to set YAML
+Set-PSRuleOption -LoggingLimitVerbose Rule1, Rule2;
+```
+
+```yaml
+# YAML: Using the logging/limitVerbose property
+logging:
+  limitVerbose:
+  - Rule1
+  - Rule2
+```
+
 ### Logging.RuleFail
 
 When an object fails a rule condition the results are written to output as a structured object marked with the outcome of _Fail_. If the rule executed successfully regardless of outcome no other informational messages are shown by default.
@@ -796,6 +874,12 @@ input:
 
 # Configures outcome logging options
 logging:
+  limitDebug:
+  - Rule1
+  - Rule2
+  limitVerbose:
+  - Rule1
+  - Rule2
   ruleFail: Error
   rulePass: Information
 
@@ -848,6 +932,8 @@ input:
 
 # Configures outcome logging options
 logging:
+  limitDebug: [ ]
+  limitVerbose: [ ]
   ruleFail: None
   rulePass: None
 

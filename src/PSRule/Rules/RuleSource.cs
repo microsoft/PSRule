@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using PSRule.Configuration;
+using PSRule.Pipeline;
+using PSRule.Resources;
+using System.Collections.Generic;
+using System.Management.Automation;
 
 namespace PSRule.Rules
 {
@@ -25,10 +29,56 @@ namespace PSRule.Rules
     public sealed class RuleSourceBuilder
     {
         private readonly List<RuleSource> _Source;
+        private readonly PipelineLogger _Logger;
 
-        public RuleSourceBuilder()
+        internal RuleSourceBuilder()
         {
             _Source = new List<RuleSource>();
+            _Logger = new PipelineLogger();
+        }
+
+        public RuleSourceBuilder Configure(PSRuleOption option)
+        {
+            _Logger.Configure(option);
+            _Logger.EnterScope("[Discovery.Source]");
+            return this;
+        }
+
+        public void UseCommandRuntime(ICommandRuntime2 commandRuntime)
+        {
+            _Logger.UseCommandRuntime(commandRuntime);
+        }
+
+        public void UseExecutionContext(EngineIntrinsics executionContext)
+        {
+            _Logger.UseExecutionContext(executionContext);
+        }
+
+        public void VerboseScanSource(string path)
+        {
+            if (!_Logger.ShouldWriteVerbose())
+            {
+                return;
+            }
+            _Logger.WriteVerbose(string.Format(PSRuleResources.ScanSource, path));
+        }
+
+        public void VerboseFoundModules(int count)
+        {
+            if (!_Logger.ShouldWriteVerbose())
+            {
+                return;
+            }
+            _Logger.WriteVerbose(string.Format(PSRuleResources.FoundModules, count));
+        }
+
+        public void VerboseScanModule(string moduleName)
+        {
+            if (!_Logger.ShouldWriteVerbose())
+            {
+                return;
+            }
+            _Logger.WriteVerbose(string.Format(PSRuleResources.ScanModule, moduleName));
         }
 
         public void Add(string path, string moduleName, string helpPath)
@@ -37,7 +87,6 @@ namespace PSRule.Rules
             {
                 return;
             }
-
             _Source.Add(new RuleSource(path, moduleName, new string[] { helpPath }));
         }
 
@@ -47,7 +96,6 @@ namespace PSRule.Rules
             {
                 return;
             }
-
             _Source.Add(new RuleSource(path, null, new string[] { helpPath }));
         }
 
