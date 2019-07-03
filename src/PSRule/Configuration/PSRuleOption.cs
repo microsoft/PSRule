@@ -1,11 +1,11 @@
-﻿using PSRule.Resources;
+﻿using Newtonsoft.Json;
+using PSRule.Resources;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
-using System.Text.RegularExpressions;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -22,6 +22,8 @@ namespace PSRule.Configuration
     public sealed class PSRuleOption : IEquatable<PSRuleOption>
     {
         private const string DEFAULT_FILENAME = "ps-rule.yaml";
+
+        private string SourcePath;
 
         private static readonly PSRuleOption Default = new PSRuleOption
         {
@@ -50,8 +52,10 @@ namespace PSRule.Configuration
             Pipeline = new PipelineHook();
         }
 
-        public PSRuleOption(PSRuleOption option)
+        private PSRuleOption(string sourcePath, PSRuleOption option)
         {
+            SourcePath = sourcePath;
+
             // Set from existing option instance
             Baseline = new BaselineOption(option.Baseline);
             Binding = new BindingOption(option.Binding);
@@ -98,21 +102,34 @@ namespace PSRule.Configuration
         /// </summary>
         public SuppressionOption Suppression { get; set; }
 
-        [YamlIgnore()]
+        [YamlIgnore]
+        [JsonIgnore]
         public PipelineHook Pipeline { get; set; }
 
+        /// <summary>
+        /// Return options as YAML.
+        /// </summary>
+        /// <remarks>
+        /// Called from PowerShell.
+        /// </remarks>
         public string ToYaml()
         {
-            var s = new SerializerBuilder()
-                .WithNamingConvention(new CamelCaseNamingConvention())
-                .Build();
+            var yaml = GetYaml();
+            if (string.IsNullOrEmpty(SourcePath))
+            {
+                return yaml;
+            }
 
-            return s.Serialize(this);
+            return string.Concat(
+                string.Format(PSRuleResources.OptionsSourceComment, SourcePath),
+                Environment.NewLine,
+                yaml
+            );
         }
 
         public PSRuleOption Clone()
         {
-            return new PSRuleOption(this);
+            return new PSRuleOption(sourcePath: SourcePath, option: this);
         }
 
         /// <summary>
@@ -123,7 +140,7 @@ namespace PSRule.Configuration
         {
             // Get a rooted file path instead of directory or relative path
             var filePath = GetFilePath(path: path);
-            File.WriteAllText(path: filePath, contents: ToYaml());
+            File.WriteAllText(path: filePath, contents: GetYaml());
         }
 
         /// <summary>
@@ -150,8 +167,7 @@ namespace PSRule.Configuration
                     return Default.Clone();
                 }
             }
-
-            return FromYaml(yaml: File.ReadAllText(filePath));
+            return FromYaml(path: filePath, yaml: File.ReadAllText(filePath));
         }
 
         /// <summary>
@@ -169,21 +185,28 @@ namespace PSRule.Configuration
             {
                 return new PSRuleOption();
             }
-
-            return FromYaml(yaml: File.ReadAllText(filePath));
+            return FromYaml(path: filePath, yaml: File.ReadAllText(filePath));
         }
 
-        public static PSRuleOption FromYaml(string yaml)
+        public static PSRuleOption FromYaml(string path, string yaml)
         {
             var d = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
                 .WithNamingConvention(new CamelCaseNamingConvention())
                 .WithTypeConverter(new SuppressionRuleYamlTypeConverter())
                 .Build();
-
-            return d.Deserialize<PSRuleOption>(yaml) ?? new PSRuleOption();
+            var option = d.Deserialize<PSRuleOption>(yaml) ?? new PSRuleOption();
+            option.SourcePath = path;
+            return option;
         }
 
+        /// <summary>
+        /// Set working path from PowerShell host environment.
+        /// </summary>
+        /// <param name="executionContext">An $ExecutionContext object.</param>
+        /// <remarks>
+        /// Called from PowerShell.
+        /// </remarks>
         public static void UseExecutionContext(EngineIntrinsics executionContext)
         {
             if (executionContext == null)
@@ -389,15 +412,19 @@ namespace PSRule.Configuration
             var rootedPath = GetRootedPath(path);
             if (Path.HasExtension(rootedPath))
             {
-                return rootedPath;
+                var ext = Path.GetExtension(rootedPath);
+                if (string.Equals(ext, ".yaml", StringComparison.OrdinalIgnoreCase) || string.Equals(ext, ".yml", StringComparison.OrdinalIgnoreCase))
+                {
+                    return rootedPath;
+                }
             }
 
             // Check if default files exist and 
-            return UseFilePath(path: path, name: "ps-rule.yaml") ??
-                UseFilePath(path: path, name: "ps-rule.yml") ??
-                UseFilePath(path: path, name: "psrule.yaml") ??
-                UseFilePath(path: path, name: "psrule.yml") ??
-                Path.Combine(path, DEFAULT_FILENAME);
+            return UseFilePath(path: rootedPath, name: "ps-rule.yaml") ??
+                UseFilePath(path: rootedPath, name: "ps-rule.yml") ??
+                UseFilePath(path: rootedPath, name: "psrule.yaml") ??
+                UseFilePath(path: rootedPath, name: "psrule.yml") ??
+                Path.Combine(rootedPath, DEFAULT_FILENAME);
         }
 
         /// <summary>
@@ -420,6 +447,14 @@ namespace PSRule.Configuration
         {
             var filePath = Path.Combine(path, name);
             return File.Exists(filePath) ? filePath : null;
+        }
+
+        private string GetYaml()
+        {
+            var s = new SerializerBuilder()
+                .WithNamingConvention(new CamelCaseNamingConvention())
+                .Build();
+            return s.Serialize(this);
         }
     }
 }

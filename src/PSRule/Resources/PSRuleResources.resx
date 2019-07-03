@@ -143,6 +143,9 @@
     <value>Options file does not exist.</value>
     <comment>Occurs when explicit path to a YAML file is specified and doesn't exist.</comment>
   </data>
+  <data name="OptionsSourceComment" xml:space="preserve">
+    <value># Source: {0}</value>
+  </data>
   <data name="OutcomeRuleFail" xml:space="preserve">
     <value>[FAIL] -- {0}:: Reported for '{1}'</value>
   </data>

@@ -1,6 +1,9 @@
 
 ## Unreleased
 
+- Fix YAML options file discovery issue in dotted directory. [#232](https://github.com/BernieWhite/PSRule/issues/232)
+- PSRule options are now displayed as YAML instead of complex object. [#233](https://github.com/BernieWhite/PSRule/issues/233)
+
 ## v0.7.0
 
 What's changed since v0.6.0:
