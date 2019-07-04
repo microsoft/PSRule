@@ -768,10 +768,18 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 Name = 'LoggingTest'
             }
 
-            $DebugPreference = 'Continue';
-            $outDebug = @($testObject | Invoke-PSRule @loggingParams -Option $option -Debug 5>&1 | Where-Object {
-                $_ -like "* debug message*"
-            });
+            $outDebug = @()
+            $originalDebugPreference = $DebugPreference;
+
+            try {
+                $Global:DebugPreference = [System.Management.Automation.ActionPreference]::Continue;
+                $outDebug += ($testObject | Invoke-PSRule @loggingParams -Option $option 5>&1 | Where-Object {
+                    $_ -like "* debug message*"
+                });
+            }
+            finally {
+                $Global:DebugPreference = $originalDebugPreference;
+            }
 
             # Debug
             $outDebug.Length | Should -Be 2;
