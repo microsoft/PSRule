@@ -254,14 +254,14 @@ namespace PSRule.Pipeline
             _Logger.WriteVerbose(string.Concat(GetLogPrefix(), " :: ", TargetName));
         }
 
-        public void VerboseConditionMessage(string condition, string message)
+        public void VerboseConditionMessage(string condition, string message, params object[] args)
         {
             if (!_Logger.ShouldWriteVerbose())
             {
                 return;
             }
 
-            _Logger.WriteVerbose(string.Concat(GetLogPrefix(), "[", condition, "] -- ", message));
+            _Logger.WriteVerbose(string.Concat(GetLogPrefix(), "[", condition, "] -- ", string.Format(message, args)));
         }
 
         public void VerboseConditionResult(string condition, int pass, int count, bool outcome)

@@ -1,4 +1,5 @@
 ﻿using PSRule.Pipeline;
+using PSRule.Resources;
 using PSRule.Runtime;
 using System;
 using System.Management.Automation;
@@ -23,6 +24,7 @@ namespace PSRule.Commands
 
         [Parameter(Mandatory = true, Position = 1)]
         [Alias("AllowedValue")]
+        [AllowNull()]
         public PSObject[] Value { get; set; }
 
         [Parameter(Mandatory = false)]
@@ -51,24 +53,40 @@ namespace PSRule.Commands
 
             if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field, caseSensitive: false, value: out object fieldValue))
             {
-                for (var i = 0; i < Value.Length && !match; i++)
+                for (var i = 0; (Value == null || i < Value.Length) && !match; i++)
                 {
-                    if (fieldValue is string && Value[i].BaseObject is string)
+                    // Null compare
+                    if (fieldValue == null || Value == null || Value[i] == null)
                     {
-                        if (_Comparer.Equals(fieldValue, Value[i].BaseObject))
+                        if (fieldValue == null && (Value == null || Value[i] == null))
                         {
                             match = true;
+                            PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: fieldValue);
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
-                    else if (Value[i]?.BaseObject == fieldValue)
+                    // String compare
+                    else if (fieldValue is string && Value[i].BaseObject is string)
+                    {
+                        if (_Comparer.Equals(Value[i].BaseObject, fieldValue))
+                        {
+                            match = true;
+                            PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: fieldValue);
+                        }
+                    }
+                    // Everything else
+                    else if (Value[i].Equals(fieldValue))
                     {
                         match = true;
+                        PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: fieldValue);
                     }
                 }
             }
 
             var result = expected == match;
-
             PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Within, outcome: result);
             WriteObject(result);
         }

@@ -88,6 +88,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exists: {0}.
+        /// </summary>
+        internal static string ExistsTrue {
+            get {
+                return ResourceManager.GetString("ExistsTrue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [PSRule][D] -- Found {0} PSRule module(s).
         /// </summary>
         internal static string FoundModules {
@@ -111,6 +120,15 @@ namespace PSRule.Resources {
         internal static string InvalidRuleResult {
             get {
                 return ResourceManager.GetString("InvalidRuleResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches: {0}.
+        /// </summary>
+        internal static string MatchTrue {
+            get {
+                return ResourceManager.GetString("MatchTrue", resourceCulture);
             }
         }
         
@@ -228,6 +246,15 @@ namespace PSRule.Resources {
         internal static string ShouldWriteFile {
             get {
                 return ResourceManager.GetString("ShouldWriteFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Within: {0}.
+        /// </summary>
+        internal static string WithinTrue {
+            get {
+                return ResourceManager.GetString("WithinTrue", resourceCulture);
             }
         }
     }

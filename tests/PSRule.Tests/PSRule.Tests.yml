@@ -37,7 +37,7 @@ logging:
   limitVerbose:
   - TestRule2
   ruleFail: Warning
-  rulePass: Warning  
+  rulePass: Warning
 
 # Configure output options
 output:
