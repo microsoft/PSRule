@@ -18,9 +18,10 @@ New-PSRuleOption [[-Path] <String>] [[-Option] <PSRuleOption>] [-BaselineConfigu
  [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>]
  [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
- [-Format <InputFormat>] [-ObjectPath <String>] [-LoggingRuleFail <OutcomeLogStream>]
- [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputEncoding <OutputEncoding>]
- [-OutputFormat <OutputFormat>] [-OutputPath <String>] [<CommonParameters>]
+ [-Format <InputFormat>] [-ObjectPath <String>] [-LoggingLimitDebug <String[]>]
+ [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
+ [-OutputAs <ResultFormat>] [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>]
+ [-OutputPath <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -292,6 +293,38 @@ Sets the `Input.ObjectPath` option to use an object path to use instead of the p
 Type: String
 Parameter Sets: (All)
 Aliases: InputObjectPath
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -LoggingLimitDebug
+
+Sets the `Logging.LimitDebug` option to limit debug messages to a list of named debug scopes.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -LoggingLimitVerbose
+
+Sets the `Logging.LimitVerbose` option to limit verbose messages to a list of named verbose scopes.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

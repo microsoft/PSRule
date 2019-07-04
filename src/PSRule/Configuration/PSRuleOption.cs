@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using PSRule.Resources;
 using System;
 using System.Collections;
@@ -320,6 +320,30 @@ namespace PSRule.Configuration
             if (index.TryGetValue("input.objectpath", out value))
             {
                 option.Input.ObjectPath = (string)value;
+            }
+
+            if (index.TryGetValue("logging.limitdebug", out value))
+            {
+                if (value.GetType().IsArray)
+                {
+                    option.Logging.LimitDebug = ((object[])value).OfType<string>().ToArray();
+                }
+                else
+                {
+                    option.Logging.LimitDebug = new string[] { value.ToString() };
+                }
+            }
+
+            if (index.TryGetValue("logging.limitverbose", out value))
+            {
+                if (value.GetType().IsArray)
+                {
+                    option.Logging.LimitVerbose = ((object[])value).OfType<string>().ToArray();
+                }
+                else
+                {
+                    option.Logging.LimitVerbose = new string[] { value.ToString() };
+                }
             }
 
             if (index.TryGetValue("logging.rulefail", out value))

@@ -42,16 +42,20 @@ Describe 'PSRule -- Within keyword' -Tag 'Within' {
 
             # Check non-string types
             $testObject = @(
-                [PSCustomObject]@{ BooleanValue = $True; IntValue = 1 }
-                [PSCustomObject]@{ BooleanValue = $False; IntValue = 100 }
+                [PSCustomObject]@{ BooleanValue = $True; IntValue = 1; NullValue = $Null; }
+                [PSCustomObject]@{ BooleanValue = $False; IntValue = 100; NullValue = $Null; }
+                ([PSCustomObject]@{ BooleanValue = $True; IntValue = 1; NullValue = $Null; } | ConvertTo-Json | ConvertFrom-Json)
+                [PSCustomObject]@{ BooleanValue = $Null; IntValue = $Null; NullValue = 'NotNull'; }
             )
 
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'WithinTypes' -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
-            $result.Count | Should -Be 2;
+            $result.Count | Should -Be 4;
             $result.RuleName | Should -BeIn 'WithinTypes';
             $result[0].IsSuccess() | Should -Be $True;
             $result[1].IsSuccess() | Should -Be $False;
+            $result[2].IsSuccess() | Should -Be $True;
+            $result[3].IsSuccess() | Should -Be $False;
         }
 
         It 'With -CaseSensitive' {

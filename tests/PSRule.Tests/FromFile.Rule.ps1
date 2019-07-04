@@ -222,6 +222,7 @@ Rule 'WithinNot' {
 Rule 'WithinTypes' {
     Within 'BooleanValue' $True
     Within 'IntValue' 0, 1, 2, 3
+    Within 'NullValue' $Null
 }
 
 # Synopsis: Test for Match keyword

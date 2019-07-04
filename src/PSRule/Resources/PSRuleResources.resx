@@ -129,12 +129,21 @@
     <value>A rule with the same name '{0}' already exists.</value>
     <comment>Occurs when the same rule name is used.</comment>
   </data>
+  <data name="ExistsTrue" xml:space="preserve">
+    <value>Exists: {0}</value>
+  </data>
+  <data name="FoundModules" xml:space="preserve">
+    <value>[PSRule][D] -- Found {0} PSRule module(s)</value>
+  </data>
   <data name="InvalidRuleNesting" xml:space="preserve">
     <value>Rule nesting was detected in rule '{0}'. Rules must not be nested.</value>
     <comment>Occurs when a rule is nested in another rule.</comment>
   </data>
   <data name="InvalidRuleResult" xml:space="preserve">
     <value>An invalid rule result was returned for {0}. Conditions must return boolean $True or $False.</value>
+  </data>
+  <data name="MatchTrue" xml:space="preserve">
+    <value>Matches: {0}</value>
   </data>
   <data name="ObjectNotProcessed" xml:space="preserve">
     <value>Target object '{0}' has not been processed because no matching rules were found.</value>
@@ -158,6 +167,12 @@
   <data name="RuleNotFound" xml:space="preserve">
     <value>Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.</value>
   </data>
+  <data name="ScanModule" xml:space="preserve">
+    <value>[PSRule][D] -- Scanning for source files in module: {0}</value>
+  </data>
+  <data name="ScanSource" xml:space="preserve">
+    <value>[PSRule][D] -- Scanning for source files: {0}</value>
+  </data>
   <data name="ScriptNotFound" xml:space="preserve">
     <value>The script was not found.</value>
     <comment>Occurs when the script rule file specified does not exist.</comment>
@@ -170,5 +185,8 @@
   </data>
   <data name="ShouldWriteFile" xml:space="preserve">
     <value>Write file</value>
+  </data>
+  <data name="WithinTrue" xml:space="preserve">
+    <value>Within: {0}</value>
   </data>
 </root>

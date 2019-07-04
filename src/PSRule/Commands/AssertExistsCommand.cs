@@ -1,4 +1,5 @@
 ﻿using PSRule.Pipeline;
+using PSRule.Resources;
 using PSRule.Runtime;
 using System.Management.Automation;
 
@@ -41,17 +42,14 @@ namespace PSRule.Commands
             {
                 actual = ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field[i], caseSensitive: CaseSensitive, value: out object fieldValue);
 
-                if (expected && actual == expected)
+                if (actual)
                 {
-                    PipelineContext.CurrentThread.WriteVerbose($"[Exists] -- The field {Field[i]} exists");
+                    PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Exists, message: PSRuleResources.ExistsTrue, args: Field[i]);
                 }
             }
 
-            if (!actual)
-            {
-                PipelineContext.CurrentThread.WriteVerbose($"[Exists] -- The field(s) {string.Join(", ", Field)} do not exist");
-            }
-
+            var result = expected == actual;
+            PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Exists, outcome: result);
             WriteObject(expected == actual);
         }
     }

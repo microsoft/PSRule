@@ -97,6 +97,7 @@ namespace PSRule.Host
             {
                 ps.Runspace = runspace;
                 PipelineContext.EnableLogging(ps);
+                PipelineContext.CurrentThread.Logger.EnterScope("[Discovery.Rule]");
 
                 // Process scripts
 
@@ -140,6 +141,7 @@ namespace PSRule.Host
             }
             finally
             {
+                PipelineContext.CurrentThread.Logger.ExitScope();
                 PipelineContext.CurrentThread.Source = null;
                 ps.Runspace = null;
                 ps.Dispose();

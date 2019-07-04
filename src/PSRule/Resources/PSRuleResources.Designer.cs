@@ -88,6 +88,24 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exists: {0}.
+        /// </summary>
+        internal static string ExistsTrue {
+            get {
+                return ResourceManager.GetString("ExistsTrue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [PSRule][D] -- Found {0} PSRule module(s).
+        /// </summary>
+        internal static string FoundModules {
+            get {
+                return ResourceManager.GetString("FoundModules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rule nesting was detected in rule &apos;{0}&apos;. Rules must not be nested..
         /// </summary>
         internal static string InvalidRuleNesting {
@@ -102,6 +120,15 @@ namespace PSRule.Resources {
         internal static string InvalidRuleResult {
             get {
                 return ResourceManager.GetString("InvalidRuleResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches: {0}.
+        /// </summary>
+        internal static string MatchTrue {
+            get {
+                return ResourceManager.GetString("MatchTrue", resourceCulture);
             }
         }
         
@@ -169,6 +196,24 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [PSRule][D] -- Scanning for source files in module: {0}.
+        /// </summary>
+        internal static string ScanModule {
+            get {
+                return ResourceManager.GetString("ScanModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [PSRule][D] -- Scanning for source files: {0}.
+        /// </summary>
+        internal static string ScanSource {
+            get {
+                return ResourceManager.GetString("ScanSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The script was not found..
         /// </summary>
         internal static string ScriptNotFound {
@@ -201,6 +246,15 @@ namespace PSRule.Resources {
         internal static string ShouldWriteFile {
             get {
                 return ResourceManager.GetString("ShouldWriteFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Within: {0}.
+        /// </summary>
+        internal static string WithinTrue {
+            get {
+                return ResourceManager.GetString("WithinTrue", resourceCulture);
             }
         }
     }

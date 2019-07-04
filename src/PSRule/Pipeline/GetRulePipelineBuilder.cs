@@ -2,6 +2,7 @@
 using PSRule.Rules;
 using System.Collections;
 using System.Management.Automation;
+using System.Management.Automation.Runspaces;
 
 namespace PSRule.Pipeline
 {
@@ -15,10 +16,6 @@ namespace PSRule.Pipeline
 
         private RuleSource[] _Source;
         private Hashtable _Tag;
-        private bool _LogError;
-        private bool _LogWarning;
-        private bool _LogVerbose;
-        private bool _LogInformation;
 
         internal GetRulePipelineBuilder()
         {
@@ -51,29 +48,24 @@ namespace PSRule.Pipeline
                 _Option.Baseline.Exclude = option.Baseline.Exclude;
             }
 
+            _Logger.Configure(_Option);
             return this;
         }
 
         public void UseCommandRuntime(ICommandRuntime2 commandRuntime)
         {
-            _Logger.OnWriteVerbose = commandRuntime.WriteVerbose;
-            _Logger.OnWriteWarning = commandRuntime.WriteWarning;
-            _Logger.OnWriteError = commandRuntime.WriteError;
-            _Logger.OnWriteInformation = commandRuntime.WriteInformation;
+            _Logger.UseCommandRuntime(commandRuntime);
         }
 
-        public void UseLoggingPreferences(ActionPreference error, ActionPreference warning, ActionPreference verbose, ActionPreference information)
+        public void UseExecutionContext(EngineIntrinsics executionContext)
         {
-            _LogError = (error != ActionPreference.Ignore);
-            _LogWarning = (warning != ActionPreference.Ignore);
-            _LogVerbose = !(verbose == ActionPreference.Ignore || verbose == ActionPreference.SilentlyContinue);
-            _LogInformation = !(information == ActionPreference.Ignore || information == ActionPreference.SilentlyContinue);
+            _Logger.UseExecutionContext(executionContext);
         }
 
         public GetRulePipeline Build()
         {
             var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
-            var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: null, bindTargetType: null, logError: _LogError, logWarning: _LogWarning, logVerbose: _LogVerbose, logInformation: _LogInformation);
+            var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: null, bindTargetType: null);
             return new GetRulePipeline(option: _Option, source: _Source, filter: filter, context: context);
         }
     }

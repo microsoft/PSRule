@@ -1,4 +1,5 @@
 ﻿using PSRule.Pipeline;
+using PSRule.Resources;
 using PSRule.Runtime;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
@@ -63,12 +64,12 @@ namespace PSRule.Commands
                     if (_Expressions[i].IsMatch(fieldValue.ToString()))
                     {
                         match = true;
+                        PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Match, message: PSRuleResources.MatchTrue, args: fieldValue);
                     }
                 }
             }
 
             var result = expected == match;
-
             PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Match, outcome: result);
             WriteObject(result);
         }
