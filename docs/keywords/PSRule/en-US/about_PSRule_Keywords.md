@@ -55,7 +55,6 @@ The following restrictions apply:
 - Variables and functions defined within `.Rule.ps1` files, but outside the `Rule` definition block are not accessible unless the `Global` scope is applied.
 - Functions and variables within the caller's scope (the scope calling `Invoke-PSRule`, `Get-PSRule`, `Test-PSRuleTarget`) are not accessible.
 - Cmdlets that require user interaction are not supported, i.e. `Read-Host`.
-- `Write-Debug` is not currently supported, `Write-Error`, `Write-Warning`, `Write-Verbose` and `Write-Information` are.
 
 Examples:
 
