@@ -375,6 +375,7 @@ An online version of this document is available at https://github.com/BernieWhit
 - AllOf
 - Within
 - TypeOf
+- Reason
 - Recommend
 
 [Invoke-PSRule]: https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md
