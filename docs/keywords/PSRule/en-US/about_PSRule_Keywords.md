@@ -20,7 +20,8 @@ The following are the built-in keywords that can be used within a rule definitio
 - [AllOf](#allof) - Assert that all of the child expressions must be true.
 - [Within](#within) - Assert that the field must match any of the values.
 - [TypeOf](#typeof) - Assert that the object must be of a specific type.
-- [Recommend](#recommend) - Return the process to resolve the issue and pass the rule.
+- [Reason](#reason) - Return a reason for why the rule failed.
+- [Recommend](#recommend) - Return a recommendation to resolve the issue and pass the rule.
 
 ### Rule
 
@@ -86,12 +87,13 @@ The `Exists` assertion is used within a `Rule` definition to assert that a _fiel
 Syntax:
 
 ```text
-Exists [-Field] <string[]> [-CaseSensitive] [-Not] [-InputObject <PSObject>]
+Exists [-Field] <string[]> [-CaseSensitive] [-Not] [-Reason <string>] [-InputObject <PSObject>]
 ```
 
 - `Field` - One or more fields/ properties that must exist on the pipeline object.
 - `CaseSensitive` - The field name must match exact case.
 - `Not` - Instead of checking if the field names exists they should not exist.
+- `Reason` - A custom reason provided if the condition fails.
 - `InputObject` - Supports objects being piped directly.
 
 Examples:
@@ -130,13 +132,14 @@ The `Match` assertion is used within a `Rule` definition to assert that the valu
 Syntax:
 
 ```text
-Match [-Field] <string> [-Expression] <string[]> [-CaseSensitive] [-Not] [-InputObject <PSObject>]
+Match [-Field] <string> [-Expression] <string[]> [-CaseSensitive] [-Not] [-Reason <string>] [-InputObject <PSObject>]
 ```
 
 - `Field` - The name of the field that will be evaluated on the pipeline object.
 - `Expression` - One or more regular expressions that will be used to match the value of the field.
 - `CaseSensitive` - The field _value_ must match exact case.
 - `Not` - Instead of checking the field value matches, the field value must not match any of the expressions.
+- `Reason` - A custom reason provided if the condition fails.
 - `InputObject` - Supports objects being piped directly.
 
 Examples:
@@ -161,13 +164,14 @@ The `Within` assertion is used within a `Rule` definition to assert that the val
 Syntax:
 
 ```text
-Within [-Field] <string> [-Value] <PSObject[]> [-CaseSensitive] [-Not] [-InputObject <PSObject>]
+Within [-Field] <string> [-Value] <PSObject[]> [-CaseSensitive] [-Not] [-Reason <string>] [-InputObject <PSObject>]
 ```
 
 - `Field` - The name of the field that will be evaluated on the pipeline object.
 - `Value` - A list of values that the field value must match.
 - `CaseSensitive` - The field _value_ must match exact case. Only applies when the field value and allowed values are strings.
 - `Not` - Instead of checking the field value matches, the field value must not match any of the supplied values.
+- `Reason` - A custom reason provided if the condition fails.
 - `InputObject` - Supports objects being piped directly.
 
 Examples:
@@ -263,10 +267,11 @@ The `TypeOf` assertion is used within a `Rule` definition to evaluate if the pip
 Syntax:
 
 ```text
-TypeOf [-TypeName] <string[]> [-InputObject <PSObject>]
+TypeOf [-TypeName] <string[]> [-Reason <string>] [-InputObject <PSObject>]
 ```
 
 - `TypeName` - One or more type names which will be evaluated against the pipeline object. `TypeName` is case sensitive.
+- `Reason` - A custom reason provided if the condition fails.
 - `InputObject` - Supports objects being piped directly.
 
 Examples:
@@ -282,19 +287,51 @@ Output:
 
 If **any** the specified type names match the pipeline object then TypeOf will return `$True`, otherwise `$False`.
 
+### Reason
+
+The `Reason` keyword is used within a `Rule` definition to provide a message that indicates the reason the rule failed. The reason is included in detailed results.
+
+A reason is only included when the rule fails or errors. The outcomes `Pass` and `None` do not include reason.
+
+Use this keyword when you want to implement custom logic. Built-in keywords including `Exists`, `Match`, `Within` and `TypeOf` automatically include a reason when they fail.
+
+Syntax:
+
+```text
+Reason [-Text] <string>
+```
+
+- `Text` - A message that includes the reason for the failure.
+
+Examples:
+
+```powershell
+# Synopsis: Provide reason the rule failed
+Rule 'objectRecommend' {
+    Reason 'A minimum of two (2) instances are required'
+    $TargetObject.count -ge 2
+}
+```
+
+Output:
+
+None.
+
 ### Recommend
 
-The `Recommend` keyword is used within a `Rule` definition to provide a process to resolve the issue and pass the rule. This may include manual steps to change that state of the object or the desired state accessed by the rule.
+The `Recommend` keyword is used within a `Rule` definition to provide a recommendation to resolve the issue and pass the rule. This may include manual steps to change that state of the object or the desired state accessed by the rule.
+
+The recommendation can only be set once per rule. Each object will use the same recommendation.
 
 Previously this keyword was `Hint`. The previous keyword `Hint` is aliased but deprecated.
 
 Syntax:
 
 ```text
-Recommend [-Message] <string>
+Recommend [-Text] <string>
 ```
 
-- `Message` - A message that includes the process to resolve the issue and pass the rule.
+- `Text` - A message that includes the process to resolve the issue and pass the rule.
 
 Examples:
 

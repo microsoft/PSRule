@@ -342,12 +342,13 @@ The following format options are available:
 - Json - Output is serialized as JSON.
 - NUnit3 - Output is serialized as NUnit3 (XML).
 - Csv - Output is serialized as a comma separated values (CSV).
+- Wide - Output is presented using the wide table format, which includes reason and wraps columns.
 
 ```yaml
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json, NUnit3, Csv
+Accepted values: None, Yaml, Json, NUnit3, Csv, Wide
 
 Required: False
 Position: Named

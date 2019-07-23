@@ -21,6 +21,9 @@ namespace PSRule.Commands
         public string[] Field { get; set; }
 
         [Parameter(Mandatory = false)]
+        public string Reason { get; set; }
+
+        [Parameter(Mandatory = false)]
         [PSDefaultValue(Value = false)]
         public SwitchParameter CaseSensitive { get; set; }
 
@@ -37,6 +40,7 @@ namespace PSRule.Commands
 
             bool expected = !Not;
             bool actual = Not;
+            string found = string.Empty;
 
             for (var i = 0; i < Field.Length && actual != expected; i++)
             {
@@ -45,11 +49,16 @@ namespace PSRule.Commands
                 if (actual)
                 {
                     PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Exists, message: PSRuleResources.ExistsTrue, args: Field[i]);
+                    found = Field[i];
                 }
             }
 
             var result = expected == actual;
             PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Exists, outcome: result);
+            if (!(result || TryReason(Reason)))
+            {
+                WriteReason(Not ? string.Format(ReasonStrings.ExistsNot, found) : string.Format(ReasonStrings.Exists, string.Join(", ", Field)));
+            }
             WriteObject(expected == actual);
         }
     }

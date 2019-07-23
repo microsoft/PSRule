@@ -23,5 +23,10 @@
     },
     "[markdown]": {
         "editor.tabSize": 2
-    }
+    },
+    "cSpell.words": [
+        "Kubernetes",
+        "cmdlet",
+        "cmdlets"
+    ]
 }

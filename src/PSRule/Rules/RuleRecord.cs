@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Management.Automation;
+using System.Text;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Rules
@@ -59,6 +61,12 @@ namespace PSRule.Rules
         public string Recommendation => Info.Recommendation ?? Info.Synopsis;
 
         /// <summary>
+        /// The reason for the failed condition.
+        /// </summary>
+        [JsonProperty(PropertyName = "reason")]
+        public string[] Reason { get; internal set; }
+
+        /// <summary>
         /// A name to identify the processed object.
         /// </summary>
         [JsonProperty(PropertyName = "targetName")]
@@ -94,6 +102,18 @@ namespace PSRule.Rules
         public bool IsProcessed()
         {
             return Outcome == RuleOutcome.Processed;
+        }
+
+        public string GetReasonViewString()
+        {
+            var sb = new StringBuilder();
+
+            foreach (var item in Reason)
+            {
+                sb.AppendLine(item);
+            }
+
+            return sb.ToString();
         }
     }
 }

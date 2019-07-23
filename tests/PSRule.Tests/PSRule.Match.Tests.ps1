@@ -34,6 +34,7 @@ Describe 'PSRule -- Match keyword' -Tag 'Match' {
             $result.Count | Should -Be 4;
             $result.Outcome | Should -BeIn 'Pass';
             $result.RuleName | Should -BeIn 'MatchTest';
+            $result[0].Reason | Should -BeNullOrEmpty;
 
             # Test negative cases
             $badObjects = @(
@@ -47,6 +48,7 @@ Describe 'PSRule -- Match keyword' -Tag 'Match' {
             $result.Count | Should -Be 4;
             $result.Outcome | Should -BeIn 'Fail';
             $result.RuleName | Should -BeIn 'MatchTest';
+            $result.Reason | Should -BeLike "None of the regex(s) matched: *";
         }
 
         It 'With -CaseSensitive' {
@@ -87,6 +89,7 @@ Describe 'PSRule -- Match keyword' -Tag 'Match' {
             $result.RuleName | Should -BeIn 'MatchNot';
             $result[0].IsSuccess() | Should -Be $True;
             $result[1].IsSuccess() | Should -Be $False;
+            $result[1].Reason | Should -BeLike "The regex '*' matched.";
         }
     }
 }

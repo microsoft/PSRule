@@ -62,8 +62,23 @@ An optional result message can be added to by using the `Recommend` keyword.
 
 ```powershell
 Rule 'isFruit' {
-    # An additional message to display in output
+    # An recommendation to display in output
     Recommend 'Fruit is only Apple, Orange and Pear'
+
+    # Condition to determine if the object is fruit
+    $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
+}
+```
+
+An optional failure reason can be added to by using the `Reason` keyword.
+
+```powershell
+Rule 'isFruit' {
+    # An recommendation to display in output
+    Recommend 'Fruit is only Apple, Orange and Pear'
+
+    # An failure reason to display for non-fruit
+    Reason 'The item is not fruit'
 
     # Condition to determine if the object is fruit
     $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
@@ -155,7 +170,8 @@ The following language keywords are used by the `PSRule` module:
 - [AllOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#allof) - Assert that all of the child expressions must be true.
 - [Within](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#within) - Assert that the field must match any of the values.
 - [TypeOf](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#typeof) - Assert that the object must be of a specific type.
-- [Recommend](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#recommend) - Return the process to resolve the issue and pass the rule.
+- [Reason](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#reason) - Return a reason for why the rule failed.
+- [Recommend](docs/keywords/PSRule/en-US/about_PSRule_Keywords.md#recommend) - Return a recommendation to resolve the issue and pass the rule.
 
 ### Commands
 

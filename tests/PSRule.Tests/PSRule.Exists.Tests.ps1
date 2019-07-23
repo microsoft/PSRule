@@ -18,6 +18,8 @@ Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 $here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
+    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+
     Context 'Exists' {
         $testObject = [PSCustomObject]@{
             Name = "TestObject1"
@@ -27,18 +29,20 @@ Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
             Properties = $Null
         }
 
-        $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Tag @{ keyword = 'Exists' };
+        $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Tag @{ keyword = 'Exists' };
 
         It 'Return pass' {
             $filteredResult = $result | Where-Object { $_.RuleName -eq 'ExistsTest' };
             $filteredResult | Should -Not -BeNullOrEmpty;
             $filteredResult.IsSuccess() | Should -Be $True;
+            $filteredResult.Reason | Should -BeNullOrEmpty;
         }
 
         It 'Return fail' {
             $filteredResult = $result | Where-Object { $_.RuleName -eq 'ExistsTestNegative' };
             $filteredResult | Should -Not -BeNullOrEmpty;
             $filteredResult.IsSuccess() | Should -Be $False;
+            $filteredResult.Reason | Should -BeLike "None of the field(s) existed: *";
         }
     }
 }

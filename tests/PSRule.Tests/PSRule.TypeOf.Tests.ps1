@@ -33,6 +33,7 @@ Describe 'PSRule -- TypeOf keyword' -Tag 'TypeOf' {
             $result.Count | Should -Be 4;
             $result.IsSuccess() | Should -BeIn $True;
             $result.RuleName | Should -BeIn 'TypeOfTest';
+            $result[0].Reason | Should -BeNullOrEmpty;
         }
 
         It 'Does not match type names' {
@@ -44,6 +45,7 @@ Describe 'PSRule -- TypeOf keyword' -Tag 'TypeOf' {
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $False;
             $result.RuleName | Should -Be 'TypeOfTest';
+            $result.Reason | Should -BeLike "None of the type name(s) match: *";
         }
     }
 }

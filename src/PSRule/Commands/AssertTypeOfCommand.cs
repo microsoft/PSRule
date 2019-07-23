@@ -1,4 +1,5 @@
 ﻿using PSRule.Pipeline;
+using PSRule.Resources;
 using System.Linq;
 using System.Management.Automation;
 
@@ -12,6 +13,9 @@ namespace PSRule.Commands
     {
         [Parameter(Mandatory = true, Position = 0)]
         public string[] TypeName { get; set; }
+
+        [Parameter(Mandatory = false)]
+        public string Reason { get; set; }
 
         [Parameter(Mandatory = false, ValueFromPipeline = true)]
         public PSObject InputObject { get; set; }
@@ -28,7 +32,10 @@ namespace PSRule.Commands
             }
 
             PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.TypeOf, outcome: result);
-
+            if (!(result || TryReason(Reason)))
+            {
+                WriteReason(string.Format(ReasonStrings.TypeOf, string.Join(", ", TypeName)));
+            }
             WriteObject(result);
         }
     }

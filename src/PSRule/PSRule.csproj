@@ -38,6 +38,11 @@ This project is to be considered a proof-of-concept and not a supported product.
       <AutoGen>True</AutoGen>
       <DependentUpon>PSRuleResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\ReasonStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReasonStrings.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\ViewStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -53,6 +58,10 @@ This project is to be considered a proof-of-concept and not a supported product.
     <EmbeddedResource Update="Resources\PSRuleResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PSRuleResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ReasonStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReasonStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\ViewStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -51,7 +51,7 @@ function Invoke-PSRule {
         [String]$OutputPath,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv')]
+        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv', 'Wide')]
         [PSRule.Configuration.OutputFormat]$OutputFormat,
 
         # A list of paths to check for rule definitions
@@ -1047,6 +1047,9 @@ function Exists {
         [Parameter(Mandatory = $False)]
         [Switch]$Not = $False,
 
+        [Parameter(Mandatory = $False)]
+        [String]$Reason,
+
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
     )
@@ -1076,6 +1079,9 @@ function Match {
 
         [Parameter(Mandatory = $False)]
         [Switch]$Not = $False,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Reason,
 
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
@@ -1108,6 +1114,9 @@ function Within {
         [Parameter(Mandatory = $False)]
         [Switch]$Not = $False,
 
+        [Parameter(Mandatory = $False)]
+        [String]$Reason,
+
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
     )
@@ -1129,8 +1138,29 @@ function TypeOf {
         [Parameter(Mandatory = $True, Position = 0)]
         [String[]]$TypeName,
 
+        [Parameter(Mandatory = $False)]
+        [String]$Reason,
+
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
+    )
+
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
+    }
+}
+
+<#
+.LINK
+https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#reason
+#>
+function Reason {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory = $False, Position = 0)]
+        [String]$Text
     )
 
     begin {
@@ -1148,7 +1178,7 @@ function Recommend {
     [OutputType([void])]
     param (
         [Parameter(Mandatory = $False, Position = 0)]
-        [String]$Message
+        [String]$Text
     )
 
     begin {
@@ -1535,6 +1565,7 @@ function InitEditorServices {
                 'Match'
                 'TypeOf'
                 'Within'
+                'Reason'
                 'Recommend'
             );
 

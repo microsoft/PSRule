@@ -14,7 +14,9 @@ namespace PSRule.Configuration
 
         NUnit3 = 3,
 
-        Csv = 4
+        Csv = 4,
+
+        Wide = 5
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
