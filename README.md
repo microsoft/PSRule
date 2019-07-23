@@ -62,8 +62,23 @@ An optional result message can be added to by using the `Recommend` keyword.
 
 ```powershell
 Rule 'isFruit' {
-    # An additional message to display in output
+    # An recommendation to display in output
     Recommend 'Fruit is only Apple, Orange and Pear'
+
+    # Condition to determine if the object is fruit
+    $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
+}
+```
+
+An optional failure reason can be added to by using the `Reason` keyword.
+
+```powershell
+Rule 'isFruit' {
+    # An recommendation to display in output
+    Recommend 'Fruit is only Apple, Orange and Pear'
+
+    # An failure reason to display for non-fruit
+    Reason 'The item is not fruit'
 
     # Condition to determine if the object is fruit
     $TargetObject.Name -in 'Apple', 'Orange', 'Pear'

@@ -87,12 +87,13 @@ The `Exists` assertion is used within a `Rule` definition to assert that a _fiel
 Syntax:
 
 ```text
-Exists [-Field] <string[]> [-CaseSensitive] [-Not] [-InputObject <PSObject>]
+Exists [-Field] <string[]> [-CaseSensitive] [-Not] [-Reason <string>] [-InputObject <PSObject>]
 ```
 
 - `Field` - One or more fields/ properties that must exist on the pipeline object.
 - `CaseSensitive` - The field name must match exact case.
 - `Not` - Instead of checking if the field names exists they should not exist.
+- `Reason` - A custom reason provided if the condition fails.
 - `InputObject` - Supports objects being piped directly.
 
 Examples:
@@ -131,13 +132,14 @@ The `Match` assertion is used within a `Rule` definition to assert that the valu
 Syntax:
 
 ```text
-Match [-Field] <string> [-Expression] <string[]> [-CaseSensitive] [-Not] [-InputObject <PSObject>]
+Match [-Field] <string> [-Expression] <string[]> [-CaseSensitive] [-Not] [-Reason <string>] [-InputObject <PSObject>]
 ```
 
 - `Field` - The name of the field that will be evaluated on the pipeline object.
 - `Expression` - One or more regular expressions that will be used to match the value of the field.
 - `CaseSensitive` - The field _value_ must match exact case.
 - `Not` - Instead of checking the field value matches, the field value must not match any of the expressions.
+- `Reason` - A custom reason provided if the condition fails.
 - `InputObject` - Supports objects being piped directly.
 
 Examples:
@@ -162,13 +164,14 @@ The `Within` assertion is used within a `Rule` definition to assert that the val
 Syntax:
 
 ```text
-Within [-Field] <string> [-Value] <PSObject[]> [-CaseSensitive] [-Not] [-InputObject <PSObject>]
+Within [-Field] <string> [-Value] <PSObject[]> [-CaseSensitive] [-Not] [-Reason <string>] [-InputObject <PSObject>]
 ```
 
 - `Field` - The name of the field that will be evaluated on the pipeline object.
 - `Value` - A list of values that the field value must match.
 - `CaseSensitive` - The field _value_ must match exact case. Only applies when the field value and allowed values are strings.
 - `Not` - Instead of checking the field value matches, the field value must not match any of the supplied values.
+- `Reason` - A custom reason provided if the condition fails.
 - `InputObject` - Supports objects being piped directly.
 
 Examples:
@@ -264,10 +267,11 @@ The `TypeOf` assertion is used within a `Rule` definition to evaluate if the pip
 Syntax:
 
 ```text
-TypeOf [-TypeName] <string[]> [-InputObject <PSObject>]
+TypeOf [-TypeName] <string[]> [-Reason <string>] [-InputObject <PSObject>]
 ```
 
 - `TypeName` - One or more type names which will be evaluated against the pipeline object. `TypeName` is case sensitive.
+- `Reason` - A custom reason provided if the condition fails.
 - `InputObject` - Supports objects being piped directly.
 
 Examples:

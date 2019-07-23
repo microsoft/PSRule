@@ -1047,6 +1047,9 @@ function Exists {
         [Parameter(Mandatory = $False)]
         [Switch]$Not = $False,
 
+        [Parameter(Mandatory = $False)]
+        [String]$Reason,
+
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
     )
@@ -1076,6 +1079,9 @@ function Match {
 
         [Parameter(Mandatory = $False)]
         [Switch]$Not = $False,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Reason,
 
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
@@ -1108,6 +1114,9 @@ function Within {
         [Parameter(Mandatory = $False)]
         [Switch]$Not = $False,
 
+        [Parameter(Mandatory = $False)]
+        [String]$Reason,
+
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
     )
@@ -1128,6 +1137,9 @@ function TypeOf {
     param (
         [Parameter(Mandatory = $True, Position = 0)]
         [String[]]$TypeName,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Reason,
 
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
