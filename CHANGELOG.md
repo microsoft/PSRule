@@ -1,6 +1,15 @@
 
 ## Unreleased
 
+- Added per object reason for failing rules. [#200](https://github.com/BernieWhite/PSRule/issues/200)
+  - The keywords `Exists`, `Match`, `Within` and `TypeOf` automatically add a reason when they fail.
+  - Added `-Reason` parameter to `Exists`, `Match`, `Within` and `TypeOf` keywords to allow a custom reason to be set.
+  - Added `Reason` keyword to add to reason for custom logic.
+  - Added wide output display for `Invoke-PSRule` which include the reason why rule failed.
+    - To use wide output use the `-OutputFormat Wide` parameter.
+  - Renamed `-Message` parameter to `-Text` on the `Recommend` keyword.
+    - The `-Message` is an alias of `-Text` and will be deprecated in the future.
+
 ## v0.8.0-B190708 (pre-release)
 
 - Fix YAML options file discovery issue in dotted directory. [#232](https://github.com/BernieWhite/PSRule/issues/232)

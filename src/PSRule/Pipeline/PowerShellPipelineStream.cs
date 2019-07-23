@@ -123,6 +123,10 @@ namespace PSRule.Pipeline
                 {
                     WriteObject(result.AsRecord(), true);
                 }
+                else if (_OutputFormat == OutputFormat.Wide)
+                {
+                    WriteWideObject<RuleRecord>(result.AsRecord());
+                }
                 else
                 {
                     _Results.Add(result);
@@ -133,6 +137,18 @@ namespace PSRule.Pipeline
         private void WriteObject(object o, bool expandCollection)
         {
             _OutputVisitor(o, expandCollection);
+        }
+
+        private void WriteWideObject<T>(IEnumerable<T> collection)
+        {
+            var typeName = string.Concat(typeof(T).FullName, "+Wide");
+
+            foreach (var item in collection)
+            {
+                var o = PSObject.AsPSObject(item);
+                o.TypeNames.Insert(0, typeName);
+                WriteObject(o: o, expandCollection: false);
+            }
         }
 
         private void WriteObjectJson(IEnumerable<RuleRecord> o)

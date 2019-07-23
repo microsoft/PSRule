@@ -85,6 +85,7 @@ FunctionsToExport = @(
     'Match'
     'TypeOf'
     'Within'
+    'Reason'
     'Recommend'
 )
 

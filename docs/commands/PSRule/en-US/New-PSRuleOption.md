@@ -406,7 +406,7 @@ Sets the option `Output.Format`. The `Output.Format` option configures the forma
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json, NUnit3, Csv
+Accepted values: None, Yaml, Json, NUnit3, Csv, Wide
 
 Required: False
 Position: Named

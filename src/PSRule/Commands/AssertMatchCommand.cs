@@ -27,6 +27,9 @@ namespace PSRule.Commands
         public string[] Expression { get; set; }
 
         [Parameter(Mandatory = false)]
+        public string Reason { get; set; }
+
+        [Parameter(Mandatory = false)]
         [PSDefaultValue(Value = false)]
         public SwitchParameter CaseSensitive { get; set; }
 
@@ -54,6 +57,7 @@ namespace PSRule.Commands
             var targetObject = InputObject ?? GetTargetObject();
             bool expected = !Not;
             bool match = false;
+            string found = string.Empty;
 
             // Pass with any match, or (-Not) fail with any match
 
@@ -65,12 +69,17 @@ namespace PSRule.Commands
                     {
                         match = true;
                         PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Match, message: PSRuleResources.MatchTrue, args: fieldValue);
+                        found = Expression[i];
                     }
                 }
             }
 
             var result = expected == match;
             PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Match, outcome: result);
+            if (!(result || TryReason(Reason)))
+            {
+                WriteReason(Not ? string.Format(ReasonStrings.MatchNot, found) : string.Format(ReasonStrings.Match, string.Join(", ", Expression)));
+            }
             WriteObject(result);
         }
     }

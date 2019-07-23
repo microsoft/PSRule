@@ -30,6 +30,8 @@ namespace PSRule.Pipeline
         private readonly Dictionary<string, NameToken> _NameTokenCache;
         private readonly Stopwatch _RuleTimer;
 
+        private readonly List<string> _Reason;
+
         // Pipeline logging
         private string _LogPrefix;
         private int _ObjectNumber;
@@ -91,6 +93,8 @@ namespace PSRule.Pipeline
 
             _NameTokenCache = new Dictionary<string, NameToken>();
             DataCache = new Dictionary<string, Hashtable>();
+
+            _Reason = new List<string>();
         }
 
         public static PipelineContext New(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, BindTargetName bindTargetType)
@@ -393,11 +397,27 @@ namespace PSRule.Pipeline
             _RuleTimer.Stop();
             RuleRecord.Time = _RuleTimer.ElapsedMilliseconds;
 
+            if (!RuleRecord.IsSuccess())
+            {
+                RuleRecord.Reason = _Reason.ToArray();
+            }
+
             _Logger.ExitScope();
 
             _LogPrefix = null;
             RuleRecord = null;
             RuleBlock = null;
+            _Reason.Clear();
+        }
+
+        public void WriteReason(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return;
+            }
+
+            _Reason.Add(text);
         }
 
         private string GetLogPrefix()

@@ -55,7 +55,9 @@ Describe 'PSRule -- Within keyword' -Tag 'Within' {
             $result[0].IsSuccess() | Should -Be $True;
             $result[1].IsSuccess() | Should -Be $False;
             $result[2].IsSuccess() | Should -Be $True;
+            $result[2].Reason | Should -BeNullOrEmpty;
             $result[3].IsSuccess() | Should -Be $False;
+            $result[3].Reason | Should -BeLike "The field value didn't match the set.";
         }
 
         It 'With -CaseSensitive' {
@@ -86,6 +88,7 @@ Describe 'PSRule -- Within keyword' -Tag 'Within' {
             $result.RuleName | Should -BeIn 'WithinNot';
             $result[0].IsSuccess() | Should -Be $True;
             $result[1].IsSuccess() | Should -Be $False;
+            $result[1].Reason | Should -BeLike "The value '*' was within the set.";
         }
     }
 }

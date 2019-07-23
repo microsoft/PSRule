@@ -720,6 +720,7 @@ The following format options are available:
     - OutcomeReason
     - Synopsis
     - Recommendation
+- Wide -  Output is presented using the wide table format, which includes reason and wraps columns.
 
 This option can be specified using:
 

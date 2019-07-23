@@ -289,3 +289,22 @@ Rule 'AnyOfTestNegative' {
         $False
     }
 }
+
+# Synopsis: Test for Reason keyword
+Rule 'ReasonTest' {
+    Reason "This is a reason for $($TargetObject.Name)"
+    $False
+}
+
+# Synopsis: Test for Reason keyword
+Rule 'ReasonTest2' {
+    Reason 'This is a reason 1'
+    Reason 'This is a reason 2'
+    $False
+}
+
+# Synopsis: Test for Reason keyword
+Rule 'ReasonTest3' {
+    Reason 'This is a reason'
+    $True
+}

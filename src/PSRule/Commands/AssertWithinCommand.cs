@@ -28,6 +28,9 @@ namespace PSRule.Commands
         public PSObject[] Value { get; set; }
 
         [Parameter(Mandatory = false)]
+        public string Reason { get; set; }
+
+        [Parameter(Mandatory = false)]
         [PSDefaultValue(Value = false)]
         public SwitchParameter Not { get; set; }
 
@@ -48,6 +51,7 @@ namespace PSRule.Commands
             var targetObject = InputObject ?? GetTargetObject();
             bool expected = !Not;
             bool match = false;
+            string found = string.Empty;
 
             // Pass with any match, or (-Not) fail with any match
 
@@ -75,6 +79,7 @@ namespace PSRule.Commands
                         {
                             match = true;
                             PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: fieldValue);
+                            found = Value[i].BaseObject.ToString();
                         }
                     }
                     // Everything else
@@ -82,12 +87,17 @@ namespace PSRule.Commands
                     {
                         match = true;
                         PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: fieldValue);
+                        found = Value[i].ToString();
                     }
                 }
             }
 
             var result = expected == match;
             PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Within, outcome: result);
+            if (!(result || TryReason(Reason)))
+            {
+                WriteReason(Not ? string.Format(ReasonStrings.WithinNot, found) : ReasonStrings.Within);
+            }
             WriteObject(result);
         }
     }

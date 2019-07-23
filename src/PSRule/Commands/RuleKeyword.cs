@@ -96,5 +96,21 @@ namespace PSRule.Commands
 
             return value;
         }
+
+        protected void WriteReason(string text)
+        {
+            PipelineContext.CurrentThread.WriteReason(text);
+        }
+
+        protected bool TryReason(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return false;
+            }
+
+            WriteReason(text);
+            return true;
+        }
     }
 }

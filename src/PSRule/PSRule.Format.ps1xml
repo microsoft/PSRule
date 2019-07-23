@@ -230,6 +230,53 @@
       </TableControl>
     </View>
     <View>
+      <Name>PSRule.Rules.RuleRecord+Wide</Name>
+      <ViewSelectedBy>
+        <TypeName>PSRule.Rules.RuleRecord+Wide</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <PropertyName>TargetName</PropertyName>
+      </GroupBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="RuleName"/>
+            <Width>35</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Outcome"/>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Reason"/>
+            <Width>35</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label AssemblyName="PSRule" BaseName="PSRule.Resources.ViewStrings" ResourceId="Recommendation"/>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <Wrap/>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>RuleName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Outcome</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>$_.GetReasonViewString()</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Recommendation</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
       <Name>PSRule.Rules.RuleSummaryRecord</Name>
       <ViewSelectedBy>
         <TypeName>PSRule.Rules.RuleSummaryRecord</TypeName>

@@ -20,7 +20,8 @@ The following are the built-in keywords that can be used within a rule definitio
 - [AllOf](#allof) - Assert that all of the child expressions must be true.
 - [Within](#within) - Assert that the field must match any of the values.
 - [TypeOf](#typeof) - Assert that the object must be of a specific type.
-- [Recommend](#recommend) - Return the process to resolve the issue and pass the rule.
+- [Reason](#reason) - Return a reason for why the rule failed.
+- [Recommend](#recommend) - Return a recommendation to resolve the issue and pass the rule.
 
 ### Rule
 
@@ -282,19 +283,51 @@ Output:
 
 If **any** the specified type names match the pipeline object then TypeOf will return `$True`, otherwise `$False`.
 
+### Reason
+
+The `Reason` keyword is used within a `Rule` definition to provide a message that indicates the reason the rule failed. The reason is included in detailed results.
+
+A reason is only included when the rule fails or errors. The outcomes `Pass` and `None` do not include reason.
+
+Use this keyword when you want to implement custom logic. Built-in keywords including `Exists`, `Match`, `Within` and `TypeOf` automatically include a reason when they fail.
+
+Syntax:
+
+```text
+Reason [-Text] <string>
+```
+
+- `Text` - A message that includes the reason for the failure.
+
+Examples:
+
+```powershell
+# Synopsis: Provide reason the rule failed
+Rule 'objectRecommend' {
+    Reason 'A minimum of two (2) instances are required'
+    $TargetObject.count -ge 2
+}
+```
+
+Output:
+
+None.
+
 ### Recommend
 
-The `Recommend` keyword is used within a `Rule` definition to provide a process to resolve the issue and pass the rule. This may include manual steps to change that state of the object or the desired state accessed by the rule.
+The `Recommend` keyword is used within a `Rule` definition to provide a recommendation to resolve the issue and pass the rule. This may include manual steps to change that state of the object or the desired state accessed by the rule.
+
+The recommendation can only be set once per rule. Each object will use the same recommendation.
 
 Previously this keyword was `Hint`. The previous keyword `Hint` is aliased but deprecated.
 
 Syntax:
 
 ```text
-Recommend [-Message] <string>
+Recommend [-Text] <string>
 ```
 
-- `Message` - A message that includes the process to resolve the issue and pass the rule.
+- `Text` - A message that includes the process to resolve the issue and pass the rule.
 
 Examples:
 

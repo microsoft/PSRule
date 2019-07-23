@@ -1,5 +1,5 @@
 #
-# Unit tests for the Hint keyword
+# Unit tests for the Recommend keyword
 #
 
 [CmdletBinding()]
