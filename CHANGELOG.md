@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.8.0-B190716 (pre-release)
+
 - Added per object reason for failing rules. [#200](https://github.com/BernieWhite/PSRule/issues/200)
   - The keywords `Exists`, `Match`, `Within` and `TypeOf` automatically add a reason when they fail.
   - Added `-Reason` parameter to `Exists`, `Match`, `Within` and `TypeOf` keywords to allow a custom reason to be set.
