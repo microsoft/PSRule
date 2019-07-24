@@ -1,5 +1,6 @@
 ﻿using PSRule.Annotations;
 using PSRule.Host;
+using PSRule.Pipeline;
 using PSRule.Rules;
 using System.Collections;
 using System.Management.Automation;
@@ -19,6 +20,11 @@ namespace PSRule.Commands
         protected TagSet GetTag(Hashtable hashtable)
         {
             return TagSet.FromHashtable(hashtable);
+        }
+
+        protected bool IsScriptScope()
+        {
+            return PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Script;
         }
     }
 }

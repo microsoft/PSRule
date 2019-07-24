@@ -112,5 +112,15 @@ namespace PSRule.Commands
             WriteReason(text);
             return true;
         }
+
+        protected bool IsRuleScope()
+        {
+            return PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition || PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Precondition;
+        }
+
+        protected bool IsConditionScope()
+        {
+            return PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition;
+        }
     }
 }

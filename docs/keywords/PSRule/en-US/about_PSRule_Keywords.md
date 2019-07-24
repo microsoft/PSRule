@@ -14,14 +14,21 @@ PSRule lets you define rules using PowerShell blocks. To define a rule use the `
 
 The following are the built-in keywords that can be used within a rule definition:
 
-- [Exists](#exists) - Assert that a field or property must exist.
-- [Match](#match) - Assert that the field must match any of the regular expressions.
 - [AnyOf](#anyof) - Assert that any of the child expressions must be true.
 - [AllOf](#allof) - Assert that all of the child expressions must be true.
-- [Within](#within) - Assert that the field must match any of the values.
-- [TypeOf](#typeof) - Assert that the object must be of a specific type.
+- [Exists](#exists) - Assert that a field or property must exist.
+- [Match](#match) - Assert that the field must match any of the regular expressions.
 - [Reason](#reason) - Return a reason for why the rule failed.
 - [Recommend](#recommend) - Return a recommendation to resolve the issue and pass the rule.
+- [TypeOf](#typeof) - Assert that the object must be of a specific type.
+- [Within](#within) - Assert that the field must match any of the values.
+
+A subset of built-in keywords can be used within script preconditions:
+
+- [Exists](#exists) - Assert that a field or property must exist.
+- [Match](#match) - Assert that the field must match any of the regular expressions.
+- [TypeOf](#typeof) - Assert that the object must be of a specific type.
+- [Within](#within) - Assert that the field must match any of the values.
 
 ### Rule
 
@@ -56,6 +63,7 @@ The following restrictions apply:
 - Variables and functions defined within `.Rule.ps1` files, but outside the `Rule` definition block are not accessible unless the `Global` scope is applied.
 - Functions and variables within the caller's scope (the scope calling `Invoke-PSRule`, `Get-PSRule`, `Test-PSRuleTarget`) are not accessible.
 - Cmdlets that require user interaction are not supported, i.e. `Read-Host`.
+- Script preconditions can contain `Exists`, `Match`, `TypeOf` and `Within` keywords.
 
 Examples:
 

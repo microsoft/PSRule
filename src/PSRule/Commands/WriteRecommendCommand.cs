@@ -1,4 +1,6 @@
-﻿using System.Management.Automation;
+﻿using PSRule.Pipeline;
+using PSRule.Resources;
+using System.Management.Automation;
 
 namespace PSRule.Commands
 {
@@ -14,6 +16,11 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
+            if (!IsConditionScope())
+            {
+                throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordConditionScope, LanguageKeywords.Recommend));
+            }
+
             var result = GetResult();
 
             if (MyInvocation.BoundParameters.ContainsKey(nameof(Text)) && string.IsNullOrEmpty(result.Info.Recommendation))

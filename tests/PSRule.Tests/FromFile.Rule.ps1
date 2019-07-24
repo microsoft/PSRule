@@ -201,6 +201,11 @@ Rule 'ExistsTestNegative' -Tag @{ keyword = 'Exists' } {
     }
 }
 
+# Synopsis: Test for Exists keyword
+Rule 'ExistsCondition' -If { Exists 'Name' } {
+    $True
+}
+
 # Synopsis: Test for Within keyword
 Rule 'WithinTest' -Tag @{ keyword = 'Within' } {
     AnyOf {
@@ -219,10 +224,16 @@ Rule 'WithinNot' {
     Within 'Title' 'Mr', 'Sir' -Not
 }
 
+# Synopsis: Test for Within keyword
 Rule 'WithinTypes' {
     Within 'BooleanValue' $True
     Within 'IntValue' 0, 1, 2, 3
     Within 'NullValue' $Null
+}
+
+# Synopsis: Test for Within keyword
+Rule 'WithinCondition' -If { Within 'Name' 'TestObject1' } {
+    $True
 }
 
 # Synopsis: Test for Match keyword
@@ -246,6 +257,11 @@ Rule 'MatchNot' {
     Match 'Title' '^(Mr|Sir)$' -Not
 }
 
+# Synopsis: Test for Match keyword
+Rule 'MatchCondition' -If { Match -Field Name -Expression 'TestObject1' } {
+    $True
+}
+
 # Synopsis: Test for TypeOf keyword
 Rule 'TypeOfTest' {
     TypeOf 'System.Collections.Hashtable', 'PSRule.Test.OtherType'
@@ -254,6 +270,11 @@ Rule 'TypeOfTest' {
     $inlineObject = [PSCustomObject]@{ Key = 'Value' }
     $inlineObject.PSObject.TypeNames.Add('PSRule.Test.OtherOtherType')
     $inlineObject | TypeOf 'PSRule.Test.OtherOtherType'
+}
+
+# Synopsis: Test for TypeOf keyword
+Rule 'TypeOfCondition' -If { TypeOf 'PSRule.Test.OtherType' } {
+    $True
 }
 
 # Synopsis: Test for AllOf keyword
