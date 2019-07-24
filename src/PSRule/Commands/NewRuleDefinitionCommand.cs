@@ -1,5 +1,6 @@
 ﻿using PSRule.Parser;
 using PSRule.Pipeline;
+using PSRule.Resources;
 using PSRule.Rules;
 using System;
 using System.Collections;
@@ -65,6 +66,11 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
+            if (!IsScriptScope())
+            {
+                throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordScriptScope, LanguageKeywords.Rule));
+            }
+
             var context = PipelineContext.CurrentThread;
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);

@@ -54,6 +54,11 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
+            if (!IsRuleScope())
+            {
+                throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordRuleScope, RuleLanguageNouns.Match));
+            }
+
             var targetObject = InputObject ?? GetTargetObject();
             bool expected = !Not;
             bool match = false;

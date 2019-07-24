@@ -21,7 +21,8 @@ Describe 'PSRule -- TypeOf keyword' -Tag 'TypeOf' {
     $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
 
     Context 'TypeOf' {
-        It 'Matches type names' {
+        It 'With defaults' {
+            # Test positive cases
             $hashTableObject = @{ Key = 'Value' }
             $hashTableObjectWithName1 = @{ Key = 'Value' }; $hashTableObjectWithName1.PSObject.TypeNames.Insert(0, 'AdditionalTypeName');
             $hashTableObjectWithName2 = @{ Key = 'Value' }; $hashTableObjectWithName2.PSObject.TypeNames.Add('AdditionalTypeName');
@@ -34,9 +35,8 @@ Describe 'PSRule -- TypeOf keyword' -Tag 'TypeOf' {
             $result.IsSuccess() | Should -BeIn $True;
             $result.RuleName | Should -BeIn 'TypeOfTest';
             $result[0].Reason | Should -BeNullOrEmpty;
-        }
 
-        It 'Does not match type names' {
+            # Test negative cases
             $testObject = [PSCustomObject]@{
                 Key = 'Value'
             }
@@ -46,6 +46,30 @@ Describe 'PSRule -- TypeOf keyword' -Tag 'TypeOf' {
             $result.IsSuccess() | Should -Be $False;
             $result.RuleName | Should -Be 'TypeOfTest';
             $result.Reason | Should -BeLike "None of the type name(s) match: *";
+        }
+
+        It 'If pre-condition' {
+            $testObject = @(
+                [PSCustomObject]@{
+                    PSTypeName = 'PSRule.Test.OtherType'
+                    Name = 'TestObject1'
+                }
+                [PSCustomObject]@{
+                    Name = 'TestObject2'
+                }
+            )
+            $option = New-PSRuleOption -NotProcessedWarning $False
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'TypeOfCondition' -Outcome All -Option $option;
+
+            # Test positive cases
+            $filteredResult = $result | Where-Object { $_.TargetName -eq 'TestObject1' };
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult.Outcome | Should -Be 'Pass';
+
+            # Test negative cases
+            $filteredResult = $result | Where-Object { $_.TargetName -eq 'TestObject2' };
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult.Outcome | Should -Be 'None';
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using PSRule.Pipeline;
+using PSRule.Resources;
 using PSRule.Rules;
 using System.Management.Automation;
 
@@ -15,6 +16,11 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
+            if (!IsConditionScope())
+            {
+                throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordConditionScope, LanguageKeywords.AllOf));
+            }
+
             var invokeResult = RuleConditionResult.Create(Body.Invoke());
             var result = invokeResult.AllOf();
 

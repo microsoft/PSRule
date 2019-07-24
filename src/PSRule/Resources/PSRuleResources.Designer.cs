@@ -124,6 +124,33 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The keyword &apos;{0}&apos; can only be used within a Rule block..
+        /// </summary>
+        internal static string KeywordConditionScope {
+            get {
+                return ResourceManager.GetString("KeywordConditionScope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The keyword &apos;{0}&apos; can only be used within a Rule block or script precondition..
+        /// </summary>
+        internal static string KeywordRuleScope {
+            get {
+                return ResourceManager.GetString("KeywordRuleScope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The keyword &apos;{0}&apos; can not be nested in a Rule block..
+        /// </summary>
+        internal static string KeywordScriptScope {
+            get {
+                return ResourceManager.GetString("KeywordScriptScope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Matches: {0}.
         /// </summary>
         internal static string MatchTrue {

@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Add detection for improper keyword use. [#203](https://github.com/BernieWhite/PSRule/issues/203)
+
 ## v0.8.0-B190716 (pre-release)
 
 - Added per object reason for failing rules. [#200](https://github.com/BernieWhite/PSRule/issues/200)

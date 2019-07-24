@@ -52,6 +52,7 @@ namespace PSRule.Pipeline
         internal PSRuleOption Option;
         internal RuleSource Source;
         internal Dictionary<string, Hashtable> DataCache;
+        internal ExecutionScope ExecutionScope;
 
         public HashAlgorithm ObjectHashAlgorithm
         {
@@ -412,7 +413,7 @@ namespace PSRule.Pipeline
 
         public void WriteReason(string text)
         {
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text) || ExecutionScope != ExecutionScope.Condition)
             {
                 return;
             }

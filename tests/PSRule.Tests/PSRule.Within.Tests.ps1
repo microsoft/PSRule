@@ -90,5 +90,28 @@ Describe 'PSRule -- Within keyword' -Tag 'Within' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].Reason | Should -BeLike "The value '*' was within the set.";
         }
+
+        It 'If pre-condition' {
+            $testObject = @(
+                [PSCustomObject]@{
+                    Name = 'TestObject1'
+                }
+                [PSCustomObject]@{
+                    Name = 'TestObject2'
+                }
+            )
+            $option = New-PSRuleOption -NotProcessedWarning $False
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'WithinCondition' -Outcome All -Option $option;
+
+            # Test positive cases
+            $filteredResult = $result | Where-Object { $_.TargetName -eq 'TestObject1' };
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult.Outcome | Should -Be 'Pass';
+
+            # Test negative cases
+            $filteredResult = $result | Where-Object { $_.TargetName -eq 'TestObject2' };
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult.Outcome | Should -Be 'None';
+        }
     }
 }

@@ -22,6 +22,11 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
+            if (!IsRuleScope())
+            {
+                throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordRuleScope, RuleLanguageNouns.TypeOf));
+            }
+
             var inputObject = InputObject ?? GetTargetObject();
             var result = false;
 

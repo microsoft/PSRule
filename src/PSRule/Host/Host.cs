@@ -144,16 +144,16 @@ namespace PSRule.Host
         /// </summary>
         private readonly static SessionStateAliasEntry[] BuiltInAliases = new SessionStateAliasEntry[]
         {
-            new SessionStateAliasEntry("rule", "New-RuleDefinition", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry("recommend", "Write-Recommendation", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry(LanguageKeywords.Rule, "New-RuleDefinition", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry(LanguageKeywords.Recommend, "Write-Recommendation", string.Empty, ScopedItemOptions.ReadOnly),
             new SessionStateAliasEntry("hint", "Write-Recommendation", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry("reason", "Write-Reason", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry("exists", "Assert-Exists", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry("within", "Assert-Within", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry("match", "Assert-Match", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry("typeof", "Assert-TypeOf", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry("allof", "Assert-AllOf", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry("anyof", "Assert-AnyOf", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry(LanguageKeywords.Reason, "Write-Reason", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry(LanguageKeywords.Exists, "Assert-Exists", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry(LanguageKeywords.Within, "Assert-Within", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry(LanguageKeywords.Match, "Assert-Match", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry(LanguageKeywords.TypeOf, "Assert-TypeOf", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry(LanguageKeywords.AllOf, "Assert-AllOf", string.Empty, ScopedItemOptions.ReadOnly),
+            new SessionStateAliasEntry(LanguageKeywords.AnyOf, "Assert-AnyOf", string.Empty, ScopedItemOptions.ReadOnly),
         };
 
         /// <summary>

@@ -142,6 +142,15 @@
   <data name="InvalidRuleResult" xml:space="preserve">
     <value>An invalid rule result was returned for {0}. Conditions must return boolean $True or $False.</value>
   </data>
+  <data name="KeywordConditionScope" xml:space="preserve">
+    <value>The keyword '{0}' can only be used within a Rule block.</value>
+  </data>
+  <data name="KeywordRuleScope" xml:space="preserve">
+    <value>The keyword '{0}' can only be used within a Rule block or script precondition.</value>
+  </data>
+  <data name="KeywordScriptScope" xml:space="preserve">
+    <value>The keyword '{0}' can not be nested in a Rule block.</value>
+  </data>
   <data name="MatchTrue" xml:space="preserve">
     <value>Matches: {0}</value>
   </data>
