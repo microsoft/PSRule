@@ -1308,7 +1308,7 @@ function GetRuleModule {
 
         if ($Null -ne $moduleResults) {
             foreach ($m in $moduleResults) {
-                $m.Group | Sort-Object -Descending -Property Version -Top 1;
+                @($m.Group | Sort-Object -Descending -Property Version)[0];
             }
         }
     }
