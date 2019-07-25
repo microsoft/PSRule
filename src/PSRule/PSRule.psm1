@@ -1193,7 +1193,6 @@ function Recommend {
 
 # Get a list of rule script files in the matching paths
 function GetRuleScriptPath {
-
     [CmdletBinding()]
     [OutputType([PSRule.Rules.RuleSource])]
     param (
@@ -1250,6 +1249,11 @@ function GetRuleScriptPath {
 
         if ($PSBoundParameters.ContainsKey('Module')) {
             $moduleParams['Name'] = $Module;
+
+            # Determine if module should be automatically loaded
+            if (GetAutoloadPreference) {
+                LoadModule -Name $Module -Verbose:$VerbosePreference;
+            }
         }
 
         if ($PSBoundParameters.ContainsKey('ListAvailable')) {
@@ -1277,6 +1281,16 @@ function GetRuleScriptPath {
     }
 }
 
+function GetAutoloadPreference {
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param ()
+    process {
+        $v = Get-Variable -Name 'PSModuleAutoLoadingPreference' -ErrorAction SilentlyContinue;
+        return ($Null -eq $v) -or ($v.Value -eq [System.Management.Automation.PSModuleAutoLoadingPreference]::All);
+    }
+}
+
 function GetRuleModule {
     [CmdletBinding()]
     [OutputType([System.Management.Automation.PSModuleInfo])]
@@ -1285,12 +1299,30 @@ function GetRuleModule {
         [String[]]$Name,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$ListAvailable
+        [Switch]$ListAvailable = $False
     )
     process {
-        Microsoft.PowerShell.Core\Get-Module @PSBoundParameters | Where-Object -FilterScript {
+        $moduleResults = (Microsoft.PowerShell.Core\Get-Module $Name -ListAvailable:$ListAvailable | Where-Object -FilterScript {
             'PSRule' -in $_.Tags
+        } | Group-Object -Property Name)
+
+        if ($Null -ne $moduleResults) {
+            foreach ($m in $moduleResults) {
+                $m.Group | Sort-Object -Descending -Property Version -Top 1;
+            }
         }
+    }
+}
+
+function LoadModule {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory = $True)]
+        [String[]]$Name
+    )
+    process{
+        $Null = GetRuleModule -Name $Name -ListAvailable | Import-Module -Global;
     }
 }
 
@@ -1301,7 +1333,6 @@ function GetFilePath {
         [Parameter(Mandatory = $True)]
         [String[]]$Path
     )
-
     process {
         $builder = New-Object -TypeName 'PSRule.Pipeline.InputPathBuilder';
         Write-Verbose -Message "[PSRule][D] -- Scanning for input files: $Path";
@@ -1593,7 +1624,7 @@ function InitCompletionServices {
         # Complete -Module parameter
         Register-ArgumentCompleter -CommandName Get-PSRule,Get-PSRuleHelp,Invoke-PSRule,Test-PSRuleTarget -ParameterName Module -ScriptBlock {
             param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
-            GetRuleModule -Name "$wordToComplete*" | ForEach-Object -Process {
+            GetRuleModule -Name "$wordToComplete*" -ListAvailable | ForEach-Object -Process {
                 [System.Management.Automation.CompletionResult]::new($_.Name, $_.Name, 'ParameterValue', ([String]::Concat("ModuleName: ", $_.Name, ", ModuleVersion: ", $_.Version.ToString())))
             }
         }

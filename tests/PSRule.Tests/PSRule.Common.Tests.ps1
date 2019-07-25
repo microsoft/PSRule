@@ -998,6 +998,31 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $Null = Remove-Module -Name TestModule;
         }
 
+        It 'Loads module with preference' {
+            Mock -CommandName 'LoadModule' -ModuleName 'PSRule';
+            $currentLoadingPreference = Get-Variable -Name PSModuleAutoLoadingPreference -ErrorAction SilentlyContinue -ValueOnly;
+
+            try {
+                # Test negative case
+                $Global:PSModuleAutoLoadingPreference = [System.Management.Automation.PSModuleAutoLoadingPreference]::None;
+                $Null = Get-PSRule -Module 'TestModule';
+                Assert-MockCalled -CommandName 'LoadModule' -ModuleName 'PSRule' -Times 0 -Scope 'It';
+
+                # Test positive case
+                $Global:PSModuleAutoLoadingPreference = [System.Management.Automation.PSModuleAutoLoadingPreference]::All;
+                $Null = Get-PSRule -Module 'TestModule';
+                Assert-MockCalled -CommandName 'LoadModule' -ModuleName 'PSRule' -Times 1 -Scope 'It';
+            }
+            finally {
+                if ($Null -eq $currentLoadingPreference) {
+                    Remove-Variable -Name PSModuleAutoLoadingPreference -Force -ErrorAction SilentlyContinue;
+                }
+                else {
+                    $Global:PSModuleAutoLoadingPreference = $currentLoadingPreference;
+                }
+            }
+        }
+
         It 'Handles path spaces' {
             # Copy file
             $testParentPath = Join-Path -Path $outputPath -ChildPath 'Program Files\';
