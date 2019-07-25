@@ -1302,7 +1302,7 @@ function GetRuleModule {
         [Switch]$ListAvailable = $False
     )
     process {
-        $moduleResults = (Microsoft.PowerShell.Core\Get-Module $Name -ListAvailable:$ListAvailable | Where-Object -FilterScript {
+        $moduleResults = (Microsoft.PowerShell.Core\Get-Module @PSBoundParameters | Where-Object -FilterScript {
             'PSRule' -in $_.Tags
         } | Group-Object -Property Name)
 
