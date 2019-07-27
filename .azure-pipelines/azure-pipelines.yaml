@@ -121,8 +121,8 @@ stages:
     - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
       displayName: 'Code coverage report generator'
       inputs:
-        reports: 'reports/pester-coverage.xml'
-        targetdir: 'reports/coverage'
+        reports: 'reports\pester-coverage.xml'
+        targetdir: 'reports\coverage'
         reporttypes: 'HtmlInline_AzurePipelines;Cobertura;Badges'
         tag: $(Build.BuildNumber)
       condition: eq(variables['coverage'], 'true')
@@ -132,8 +132,8 @@ stages:
       displayName: 'Publish Pester code coverage'
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: 'reports/pester-coverage.xml'
-        reportDirectory: 'reports/coverage/reports'
+        summaryFileLocation: 'reports/coverage/Cobertura.xml'
+        reportDirectory: 'reports/coverage'
       condition: eq(variables['coverage'], 'true')
 
     # Generate artifacts
