@@ -12,3 +12,4 @@ src/**/*.help.txt
 BenchmarkDotNet.Artifacts/
 .sonarqube/
 TestResults/
+*.diagsession
