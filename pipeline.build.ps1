@@ -49,6 +49,10 @@ if ($version -like '*-*') {
 Write-Host -Object "[Pipeline] -- Using version: $version" -ForegroundColor Green;
 Write-Host -Object "[Pipeline] -- Using versionSuffix: $versionSuffix" -ForegroundColor Green;
 
+if ($Env:coverage -eq 'true') {
+    $CodeCoverage = $True;
+}
+
 # Copy the PowerShell modules files to the destination path
 function CopyModuleFiles {
 
@@ -88,9 +92,17 @@ task BuildDotNet {
 }
 
 task TestDotNet {
-    exec {
-        # Test library
-        dotnet test --collect:"Code Coverage" --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Tests
+    if ($CodeCoverage) {
+        exec {
+            # Test library
+            dotnet test --collect:"Code Coverage" --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Tests
+        }
+    }
+    else {
+        exec {
+            # Test library
+            dotnet test --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Tests
+        }
     }
 }
 
@@ -177,8 +189,8 @@ task Pester NuGet, {
 
 # Synopsis: Install PSScriptAnalyzer module
 task PSScriptAnalyzer NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSScriptAnalyzer -MinimumVersion 1.17.0 -ErrorAction Ignore)) {
-        Install-Module -Name PSScriptAnalyzer -MinimumVersion 1.17.0 -Scope CurrentUser -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSScriptAnalyzer -MinimumVersion 1.18.1 -ErrorAction Ignore)) {
+        Install-Module -Name PSScriptAnalyzer -MinimumVersion 1.18.1 -Scope CurrentUser -Force;
     }
     Import-Module -Name PSScriptAnalyzer -Verbose:$False;
 }

@@ -2,6 +2,9 @@
     "recommendations": [
         "ms-azure-devops.azure-pipelines",
         "github.vscode-pull-request-github",
-        "ms-vscode.powershell"
+        "ms-vscode.powershell",
+        "davidanson.vscode-markdownlint",
+        "redhat.vscode-yaml",
+        "streetsidesoftware.code-spell-checker"
     ]
 }

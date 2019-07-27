@@ -65,16 +65,16 @@ Describe 'PSRule' -Tag 'PowerShellGallery' {
     }
 
     Context 'Static analysis' {
-        $result = Invoke-ScriptAnalyzer -Path $modulePath;
-
-        $warningCount = ($result | Where-Object { $_.Severity -eq 'Warning' } | Measure-Object).Count;
-        $errorCount = ($result | Where-Object { $_.Severity -eq 'Error' } | Measure-Object).Count;
-
-        if ($warningCount -gt 0) {
-            Write-Warning -Message "PSScriptAnalyzer reports $warningCount warnings.";
-        }
-
         It 'Has no quality errors' {
+            $result = Invoke-ScriptAnalyzer -Path $modulePath;
+
+            $warningCount = ($result | Where-Object { $_.Severity -eq 'Warning' } | Measure-Object).Count;
+            $errorCount = ($result | Where-Object { $_.Severity -eq 'Error' } | Measure-Object).Count;
+
+            if ($warningCount -gt 0) {
+                Write-Warning -Message "PSScriptAnalyzer reports $warningCount warnings.";
+            }
+
             $errorCount | Should -BeLessOrEqual 0;
         }
     }
