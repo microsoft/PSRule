@@ -44,7 +44,7 @@ stages:
           coverage: 'true'
     pool:
       vmImage: $(imageName)
-    displayName: $(displayName)
+    displayName: 'PowerShell'
     steps:
 
     # Install pipeline dependencies
