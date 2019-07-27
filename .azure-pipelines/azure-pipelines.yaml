@@ -4,6 +4,7 @@
 variables:
   version: '0.8.0'
   buildConfiguration: 'Release'
+  disable.coverage.autogenerate: 'true'
 
 # Use build number format, i.e. 0.1.0-B181101
 name: $(version)-B$(date:yyMM)$(rev:rr)
@@ -116,12 +117,23 @@ stages:
         publishRunAttachments: true
       condition: succeededOrFailed()
 
-    # Publish Code Coverage Results
+    # Generate Code Coverage report
+    - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
+      displayName: 'Code coverage report generator'
+      inputs:
+        reports: 'reports/pester-coverage.xml'
+        targetdir: 'reports/coverage'
+        reporttypes: 'HtmlInline_AzurePipelines;Cobertura;Badges'
+        tag: $(Build.BuildNumber)
+      condition: eq(variables['coverage'], 'true')
+
+    # Publish Code Coverage report
     - task: PublishCodeCoverageResults@1
       displayName: 'Publish Pester code coverage'
       inputs:
-        codeCoverageTool: 'JaCoCo'
+        codeCoverageTool: 'Cobertura'
         summaryFileLocation: 'reports/pester-coverage.xml'
+        reportDirectory: 'reports/coverage/reports'
       condition: eq(variables['coverage'], 'true')
 
     # Generate artifacts
