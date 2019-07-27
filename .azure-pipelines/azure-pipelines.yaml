@@ -34,6 +34,7 @@ stages:
           displayName: 'Linux'
           imageName: 'ubuntu-16.04'
         MacOS:
+          displayName: 'MacOS'
           imageName: 'macos-10.13'
         Windows:
           displayName: 'Windows'
@@ -43,6 +44,7 @@ stages:
           coverage: 'true'
     pool:
       vmImage: $(imageName)
+    displayName: $(displayName)
     steps:
 
     # Install pipeline dependencies
