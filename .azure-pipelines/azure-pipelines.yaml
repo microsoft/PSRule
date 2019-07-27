@@ -31,10 +31,12 @@ stages:
     strategy:
       matrix:
         Linux:
+          displayName: 'Linux'
           imageName: 'ubuntu-16.04'
         MacOS:
           imageName: 'macos-10.13'
         Windows:
+          displayName: 'Windows'
           imageName: 'vs2017-win2016'
           publish: 'true'
           analysis: 'true'
@@ -138,6 +140,8 @@ stages:
     displayName: Live
     pool:
       vmImage: 'ubuntu-16.04'
+    variables:
+      isPreRelease: $[contains(variables['Build.SourceBranchName'], '-B')]
     steps:
     - task: DownloadPipelineArtifact@1
       displayName: 'Download module'
@@ -162,4 +166,4 @@ stages:
         releaseNotes: 'See [change log](https://github.com/BernieWhite/PSRule/blob/master/CHANGELOG.md)'
         assetUploadMode: replace
         addChangeLog: false
-        isPreRelease: contains(variables['Build.SourceBranchName'], '-B')
+        isPreRelease: $(isPreRelease)
