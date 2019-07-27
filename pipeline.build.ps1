@@ -189,8 +189,8 @@ task Pester NuGet, {
 
 # Synopsis: Install PSScriptAnalyzer module
 task PSScriptAnalyzer NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSScriptAnalyzer -MinimumVersion 1.17.0 -ErrorAction Ignore)) {
-        Install-Module -Name PSScriptAnalyzer -MinimumVersion 1.17.0 -Scope CurrentUser -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSScriptAnalyzer -MinimumVersion 1.18.1 -ErrorAction Ignore)) {
+        Install-Module -Name PSScriptAnalyzer -MinimumVersion 1.18.1 -Scope CurrentUser -Force;
     }
     Import-Module -Name PSScriptAnalyzer -Verbose:$False;
 }
