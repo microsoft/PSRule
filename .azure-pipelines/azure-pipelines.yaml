@@ -123,6 +123,7 @@ stages:
       inputs:
         reports: 'reports\pester-coverage.xml'
         targetdir: 'reports\coverage'
+        sourcedirs: 'src\PSRule'
         reporttypes: 'HtmlInline_AzurePipelines;Cobertura;Badges'
         tag: $(Build.BuildNumber)
       condition: eq(variables['coverage'], 'true')
