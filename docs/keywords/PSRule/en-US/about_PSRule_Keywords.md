@@ -46,7 +46,7 @@ Rule [-Name] <string> [-Tag <hashtable>] [-Type <string[]>] [-If <scriptBlock>] 
 }
 ```
 
-- `Name` - The name of the rule definition. This must be unique with in the same script file.
+- `Name` - The name of the rule definition. Each rule name must be unique. When packaging rules within a module, rule names must only be unique within the module.
 - `Tag` - A hashtable of key/ value metadata that can be used to filter and identify rules and rule results.
 - `Type` - A type precondition that must match the _TargetType_ of the pipeline object before the rule is executed.
 - `If` - A script precondition that must evaluate to `$True` before the rule is executed.
