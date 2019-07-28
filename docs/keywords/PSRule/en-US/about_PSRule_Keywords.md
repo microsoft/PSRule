@@ -58,7 +58,7 @@ A condition is any valid PowerShell that return either `$True` or `$False`. Opti
 
 The following restrictions apply:
 
-- Rule conditions should only return `$True` or `$False`. Other objects should be caught with `Out-Null` or null assigned like `$Null = `.
+- Rule conditions should only return `$True` or `$False`. Other objects should be caught with `Out-Null` or null assigned like `$Null = SomeCommand`.
 - The `Rule` keyword can not be nested in a `Rule` definition.
 - Variables and functions defined within `.Rule.ps1` files, but outside the `Rule` definition block are not accessible unless the `Global` scope is applied.
 - Functions and variables within the caller's scope (the scope calling `Invoke-PSRule`, `Get-PSRule`, `Test-PSRuleTarget`) are not accessible.

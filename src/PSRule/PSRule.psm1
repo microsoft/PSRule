@@ -109,7 +109,7 @@ function Invoke-PSRule {
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $sourceParams['Culture'] = $Culture;
         }
-        [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Rules.RuleSource[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -265,7 +265,7 @@ function Test-PSRuleTarget {
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $sourceParams['Culture'] = $Culture;
         }
-        [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Rules.RuleSource[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -407,7 +407,7 @@ function Get-PSRule {
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $sourceParams['Culture'] = $Culture;
         }
-        [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Rules.RuleSource[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -524,7 +524,7 @@ function Get-PSRuleHelp {
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $sourceParams['Culture'] = $Culture;
         }
-        [PSRule.Rules.RuleSource[]]$sourceFiles = GetRuleScriptPath @sourceParams -PreferModule -Verbose:$VerbosePreference;
+        [PSRule.Rules.RuleSource[]]$sourceFiles = GetSource @sourceParams -PreferModule -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -1192,7 +1192,7 @@ function Recommend {
 #
 
 # Get a list of rule script files in the matching paths
-function GetRuleScriptPath {
+function GetSource {
     [CmdletBinding()]
     [OutputType([PSRule.Rules.RuleSource])]
     param (

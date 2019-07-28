@@ -69,27 +69,27 @@ namespace PSRule.Benchmark
             var profile = new PSRule();
             profile.Prepare();
 
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 20; i++)
             {
                 profile.Invoke();
             }
 
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 20; i++)
             {
                profile.InvokeType();
             }
 
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 20; i++)
             {
                profile.DefaultTargetNameBinding();
             }
 
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 20; i++)
             {
                profile.CustomTargetNameBinding();
             }
 
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 20; i++)
             {
                profile.NestedTargetNameBinding();
             }

@@ -160,6 +160,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         It 'Processes rule dependencies' {
+            # Same file
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name WithDependency1 -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 5;
@@ -168,6 +169,26 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency3' }).Outcome | Should -Be 'Pass';
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency2' }).Outcome | Should -Be 'None';
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency1' }).Outcome | Should -Be 'None';
+
+            # Same module, cross file
+            $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule2';
+            $Null = Import-Module $testModuleSourcePath;
+            $result = $testObject | Invoke-PSRule -Module 'TestModule2' -Name 'M2.Rule2' -Outcome Pass;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 3;
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'M2.Rule1' }).Outcome | Should -Be 'Pass';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'M2.Rule2' }).Outcome | Should -Be 'Pass';
+            ($result | Where-Object -FilterScript { $_.RuleId -eq 'TestModule2\OtherRule' }).Outcome | Should -Be 'Pass';
+
+            # Cross module
+            $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule3';
+            $Null = Import-Module $testModuleSourcePath;
+            $result = $testObject | Invoke-PSRule -Module 'TestModule3','TestModule2' -Name 'M3.Rule1' -Outcome Pass;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 3;
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'M2.Rule1' }).Outcome | Should -Be 'Pass';
+            ($result | Where-Object -FilterScript { $_.RuleName -eq 'M3.Rule1' }).Outcome | Should -Be 'Pass';
+            ($result | Where-Object -FilterScript { $_.RuleId -eq 'TestModule3\OtherRule' }).Outcome | Should -Be 'Pass';
         }
 
         It 'Suppresses rules' {
@@ -848,7 +869,7 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.Boolean;
             $result | Should -Be $False;
-            $outWarnings | Should -Be "Inconclusive result reported for 'TestObject1' @FromFile.Rule.ps1/FromFile3.";
+            $outWarnings | Should -BeLike "Inconclusive result reported for *";
         }
 
         It 'Returns warnings on no rules' {
@@ -876,7 +897,7 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.Boolean;
             $result | Should -Be $True;
-            $outWarnings | Should -Be "Target object 'TestObject1' has not been processed because no matching rules were found.";
+            $outWarnings | Should -Be 'Target object ''TestObject1'' has not been processed because no matching rules were found.';
         }
     }
 
@@ -1132,7 +1153,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
 
     Context 'With defaults' {
         It 'Docs from imported module' {
-            $result = @(Get-PSRuleHelp);
+            $result = @(Get-PSRuleHelp -Module 'TestModule');
             $result.Length | Should -Be 2;
         }
 
