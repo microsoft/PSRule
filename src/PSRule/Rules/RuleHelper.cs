@@ -30,14 +30,18 @@ namespace PSRule.Rules
                 }
 
                 // The name is not already qualified
-                if (ruleNames[i].IndexOf('/') == -1)
+                if (ruleNames[i].IndexOf('\\') == -1)
                 {
-                    result[i] = (moduleName == null) ?
-                        string.Concat(scriptFileName, '/', ruleNames[i]) : string.Concat(moduleName, '/', scriptFileName, '/', ruleNames[i]);
+                    result[i] = ExpandRuleName(ruleName: ruleNames[i], scriptFileName: scriptFileName, moduleName: moduleName);
                 }
             }
 
             return (result.Length == 0) ? null : result;
+        }
+
+        public static string ExpandRuleName(string ruleName, string scriptFileName, string moduleName)
+        {
+            return (moduleName == null) ? ruleName : string.Concat(moduleName, '\\', ruleName);
         }
     }
 }

@@ -14,7 +14,7 @@ ModuleVersion = '0.0.1'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '55f9d25b-1a4b-441d-bbd2-656a34518c30'
+GUID = '397f4767-f927-48ff-b7ec-a50733f96baa'
 
 # Author of this module
 Author = 'Bernie White'
@@ -28,13 +28,13 @@ Copyright = '(c) Bernie White. All rights reserved.'
 # Description of the functionality provided by this module
 Description = 'A module for Pester testing for PSRule.'
 
-# Minimum version of the Windows PowerShell engine required by this module
+# Minimum version of the PowerShell engine required by this module
 # PowerShellVersion = ''
 
-# Name of the Windows PowerShell host required by this module
+# Name of the PowerShell host required by this module
 # PowerShellHostName = ''
 
-# Minimum version of the Windows PowerShell host required by this module
+# Minimum version of the PowerShell host required by this module
 # PowerShellHostVersion = ''
 
 # Minimum version of Microsoft .NET Framework required by this module. This prerequisite is valid for the PowerShell Desktop edition only.

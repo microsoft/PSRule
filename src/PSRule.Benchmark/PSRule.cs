@@ -1,14 +1,14 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Engines;
+using BenchmarkDotNet.Exporters;
+using PSRule.Configuration;
 using PSRule.Pipeline;
 using PSRule.Rules;
 using System;
 using System.Collections.Generic;
-using System.Management.Automation;
-using System.Linq;
-using BenchmarkDotNet.Engines;
 using System.IO;
+using System.Management.Automation;
 using System.Reflection;
-using PSRule.Configuration;
 
 namespace PSRule.Benchmark
 {

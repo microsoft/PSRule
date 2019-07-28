@@ -24,9 +24,8 @@ namespace PSRule.Rules
 
             var scriptFileName = Path.GetFileName(Source.Path);
 
-            // Get either scriptFileName/RuleName or Module/scriptFileName/RuleName
-            RuleId = (Source.ModuleName == null) ?
-                string.Concat(scriptFileName, '/', RuleName) : string.Concat(Source.ModuleName, '/', scriptFileName, '/', RuleName);
+            // Get fully qualified Id, either RuleName or Module\RuleName
+            RuleId = RuleHelper.ExpandRuleName(ruleName: ruleName, scriptFileName: scriptFileName, moduleName: Source.ModuleName);
 
             Info = info;
             Condition = condition;

@@ -3,6 +3,10 @@
 
 - Add detection for improper keyword use. [#203](https://github.com/BernieWhite/PSRule/issues/203)
 - Automatically load rule modules. [#218](https://github.com/BernieWhite/PSRule/issues/218)
+- **Breaking change**: Use rule references consistent with cmdlet fully qualified syntax. [#217](https://github.com/BernieWhite/PSRule/issues/217)
+  - Previously rule names only had to be unique within a single file, now rule names have to be unique within the current execution path or within a module.
+  - Previously the `filename.rule.ps1/RuleName` was supported to reference rules across files. Because rule names must be unique this syntax is no longer required or supported.
+  - You can reference a rule from a loaded module by using the syntax `ModuleName\RuleName`.
 
 ## v0.8.0-B190716 (pre-release)
 

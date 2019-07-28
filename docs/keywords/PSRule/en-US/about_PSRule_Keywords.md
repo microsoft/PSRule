@@ -46,7 +46,7 @@ Rule [-Name] <string> [-Tag <hashtable>] [-Type <string[]>] [-If <scriptBlock>] 
 }
 ```
 
-- `Name` - The name of the rule definition. This must be unique with in the same script file.
+- `Name` - The name of the rule definition. Each rule name must be unique. When packaging rules within a module, rule names must only be unique within the module.
 - `Tag` - A hashtable of key/ value metadata that can be used to filter and identify rules and rule results.
 - `Type` - A type precondition that must match the _TargetType_ of the pipeline object before the rule is executed.
 - `If` - A script precondition that must evaluate to `$True` before the rule is executed.
@@ -58,7 +58,7 @@ A condition is any valid PowerShell that return either `$True` or `$False`. Opti
 
 The following restrictions apply:
 
-- Rule conditions should only return `$True` or `$False`. Other objects should be caught with `Out-Null` or null assigned like `$Null = `.
+- Rule conditions should only return `$True` or `$False`. Other objects should be caught with `Out-Null` or null assigned like `$Null = SomeCommand`.
 - The `Rule` keyword can not be nested in a `Rule` definition.
 - Variables and functions defined within `.Rule.ps1` files, but outside the `Rule` definition block are not accessible unless the `Global` scope is applied.
 - Functions and variables within the caller's scope (the scope calling `Invoke-PSRule`, `Get-PSRule`, `Test-PSRuleTarget`) are not accessible.

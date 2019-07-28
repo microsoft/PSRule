@@ -1,0 +1,13 @@
+#
+# A set of test rules in a module
+#
+
+# Synopsis: Test rule in TestModule3
+Rule 'M3.Rule1' -DependsOn 'TestModule2\M2.Rule1', 'OtherRule' {
+    $True
+}
+
+# Synopsis: Test rule in TestModule3
+Rule 'OtherRule' -Tag @{ module = "TestModule3"} {
+    $True
+}
