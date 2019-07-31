@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.8.0-B190742 (pre-release)
+
 - Fix inconsistent handling of `$PWD`. [#249](https://github.com/BernieWhite/PSRule/issues/249)
 - Add detection for improper keyword use. [#203](https://github.com/BernieWhite/PSRule/issues/203)
 - Automatically load rule modules. [#218](https://github.com/BernieWhite/PSRule/issues/218)
