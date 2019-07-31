@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Globalization;
 using System.Management.Automation;
 
 namespace PSRule
@@ -49,6 +51,13 @@ namespace PSRule
 
             value = p.Value;
             return true;
+        }
+
+        public static string ToJson(this PSObject o)
+        {
+            var settings = new JsonSerializerSettings { Formatting = Formatting.None, TypeNameHandling = TypeNameHandling.None, MaxDepth = 1024, Culture = CultureInfo.InvariantCulture };
+            settings.Converters.Insert(0, new PSObjectJsonConverter());
+            return JsonConvert.SerializeObject(o, settings);
         }
     }
 }

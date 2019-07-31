@@ -2,6 +2,9 @@
 # Unit tests for PSRule variables
 #
 
+# Notes:
+# $Assert variable is included in PSRule.Assert.Tests.ps1
+
 [CmdletBinding()]
 param (
 
@@ -30,6 +33,9 @@ Describe 'PSRule variables' -Tag 'Variables' {
         $testObject = [PSCustomObject]@{
             Name = 'VariableTest'
             Type = 'TestType'
+            PSScriptRoot = $PSScriptRoot
+            PWD = $PWD
+            PSCommandPath = $ruleFilePath
         }
         $testObject.PSObject.TypeNames.Insert(0, $testObject.Type);
 
@@ -53,6 +59,24 @@ Describe 'PSRule variables' -Tag 'Variables' {
             $result.IsSuccess() | Should -Be $True;
             $result.TargetName | Should -Be 'VariableTest';
             $messages[0] | Should -Be 'LocalizedMessage for en-ZZ. Format=TestType.';
+        }
+
+        It '$PSScriptRoot' {
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'WithPSScriptRoot';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
+        }
+
+        It '$PWD' {
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'WithPWD';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
+        }
+
+        It '$PSCommandPath' {
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'WithPSCommandPath';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
         }
     }
 }

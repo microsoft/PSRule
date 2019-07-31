@@ -1,0 +1,30 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Unit test schema",
+    "description": "A schema for PSRule YAML options files.",
+    "oneOf": [
+        {
+            "$ref": "#/definitions/structure"
+        }
+    ],
+    "definitions": {
+        "structure": {
+            "type": "object",
+            "properties": {
+                "Name": {
+                    "type": "string",
+                    "enum": [
+                        "TestObject1"
+                    ]
+                },
+                "Type": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "Type",
+                "Name"
+            ]
+        }
+    }
+}

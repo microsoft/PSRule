@@ -188,6 +188,11 @@ The following commands exist in the `PSRule` module:
 
 The following conceptual topics exist in the `PSRule` module:
 
+- [Assert](docs/concepts/PSRule/en-US/about_PSRule_Assert.md)
+  - [HasField](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasfield)
+  - [HasFieldValue](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasfieldvalue)
+  - [JsonSchema](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#jsonschema)
+  - [NullOrEmpty](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#nullorempty)
 - [Docs](docs/concepts/PSRule/en-US/about_PSRule_Docs.md)
   - [Getting documentation](docs/concepts/PSRule/en-US/about_PSRule_Docs.md#getting-documentation)
   - [Online help](docs/concepts/PSRule/en-US/about_PSRule_Docs.md#online-help)
@@ -214,6 +219,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Output.Path](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputpath)
   - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#rule-suppression)
 - [Variables](docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
+  - [$Assert](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#assert)
   - [$Configuration](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#configuration)
   - [$LocalizedData](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#localizeddata)
   - [$Rule](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#rule)

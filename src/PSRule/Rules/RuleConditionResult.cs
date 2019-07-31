@@ -1,4 +1,5 @@
 ﻿using PSRule.Pipeline;
+using PSRule.Runtime;
 using System.Collections.Generic;
 using System.Management.Automation;
 
@@ -43,7 +44,7 @@ namespace PSRule.Rules
                 {
                     continue;
                 }
-                else if (!TryBoolean(v, out bool bresult))
+                else if (!(TryAssertResult(v, out bool bresult) || TryBoolean(v, out bresult)))
                 {
                     PipelineContext.CurrentThread.ErrorInvaildRuleResult();
 
@@ -76,6 +77,31 @@ namespace PSRule.Rules
             if (o is PSObject pso && pso.BaseObject is bool psoresult)
             {
                 result = psoresult;
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryAssertResult(object o, out bool result)
+        {
+            result = false;
+
+            if (o == null)
+            {
+                return false;
+            }
+
+            // Complete results
+            if (o is AssertResult aresult)
+            {
+                result = aresult.Complete();
+                return true;
+            }
+
+            if (o is PSObject pso && pso.BaseObject is AssertResult psoresult)
+            {
+                result = psoresult.Complete();
                 return true;
             }
 

@@ -132,6 +132,7 @@ namespace PSRule.Pipeline
                 _Runspace.SessionStateProxy.PSVariable.Set("WarningPreference", ActionPreference.Continue);
                 _Runspace.SessionStateProxy.PSVariable.Set("VerbosePreference", ActionPreference.Continue);
                 _Runspace.SessionStateProxy.PSVariable.Set("DebugPreference", ActionPreference.Continue);
+                _Runspace.SessionStateProxy.Path.SetLocation(PSRuleOption.GetWorkingPath());
             }
 
             return _Runspace;

@@ -128,6 +128,7 @@ task BuildHelp BuildModule, PlatyPS, {
     # Copy generated help into module out path
     $Null = Copy-Item -Path out/docs/PSRule/* -Destination out/modules/PSRule/en-US;
     $Null = Copy-Item -Path out/docs/PSRule/* -Destination out/modules/PSRule/en-AU;
+    $Null = Copy-Item -Path out/docs/PSRule/* -Destination out/modules/PSRule/en-GB;
 }
 
 task ScaffoldHelp Build, {

@@ -277,6 +277,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The variable &apos;${0}&apos; can only be used within a Rule block..
+        /// </summary>
+        internal static string VariableConditionScope {
+            get {
+                return ResourceManager.GetString("VariableConditionScope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Within: {0}.
         /// </summary>
         internal static string WithinTrue {
