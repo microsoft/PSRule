@@ -195,6 +195,9 @@
   <data name="ShouldWriteFile" xml:space="preserve">
     <value>Write file</value>
   </data>
+  <data name="VariableConditionScope" xml:space="preserve">
+    <value>The variable '${0}' can only be used within a Rule block.</value>
+  </data>
   <data name="WithinTrue" xml:space="preserve">
     <value>Within: {0}</value>
   </data>

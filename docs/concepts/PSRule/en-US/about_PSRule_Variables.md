@@ -16,10 +16,44 @@ These variables are only available while `Invoke-PSRule` is executing.
 
 The following variables are available for use:
 
+- [$Assert](#assert)
 - [$Configuration](#configuration)
 - [$LocalizedData](#localizeddata)
 - [$Rule](#rule)
 - [$TargetObject](#targetobject)
+
+### Assert
+
+An assertion helper with methods to evaluate objects. The `$Assert` object provides a set of built-in methods and provides a consistent variable for extension.
+
+Each `$Assert` method returns an `AssertResult` object that contains the result of the condition.
+
+The following built-in assertion methods are provided:
+
+- `JsonSchema` - Validates an object against a JSON schema.
+
+The following built-in helper methods are provided for working with `AssertResult`:
+
+- `Create` - Returns a result either pass or fail.
+- `Pass` - Returns a pass result.
+- `Fail` - Results a fail result.
+
+For detailed information on the assertion helper see [about_PSRule_Assert](about_PSRule_Assert.md).
+
+Syntax:
+
+```powershell
+$Assert
+```
+
+Examples:
+
+```powershell
+# Synopsis: Determine if $TargetObject is valid against the provided schema
+Rule 'UseJsonSchema' {
+    $Assert.JsonSchema('schemas/PSRule-options.schema.json')
+}
+```
 
 ### Configuration
 

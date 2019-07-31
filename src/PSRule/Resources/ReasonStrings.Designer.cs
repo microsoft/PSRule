@@ -79,6 +79,51 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The field &apos;{0}&apos; is set to &apos;{1}&apos;..
+        /// </summary>
+        internal static string HasExpectedFieldValue {
+            get {
+                return ResourceManager.GetString("HasExpectedFieldValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field &apos;{0}&apos; does not exist..
+        /// </summary>
+        internal static string HasField {
+            get {
+                return ResourceManager.GetString("HasField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value of &apos;{0}&apos; is null or empty..
+        /// </summary>
+        internal static string HasFieldValue {
+            get {
+                return ResourceManager.GetString("HasFieldValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed schema validation on {0}. {1}.
+        /// </summary>
+        internal static string JsonSchemaInvalid {
+            get {
+                return ResourceManager.GetString("JsonSchemaInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The JSON schema &apos;{0}&apos; chould not be found..
+        /// </summary>
+        internal static string JsonSchemaNotFound {
+            get {
+                return ResourceManager.GetString("JsonSchemaNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None of the regex(s) matched: {0}.
         /// </summary>
         internal static string Match {
@@ -93,6 +138,33 @@ namespace PSRule.Resources {
         internal static string MatchNot {
             get {
                 return ResourceManager.GetString("MatchNot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field &apos;{0}&apos; is not empty..
+        /// </summary>
+        internal static string NullOrEmpty {
+            get {
+                return ResourceManager.GetString("NullOrEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The parameter &apos;{0}&apos; is null or empty..
+        /// </summary>
+        internal static string NullOrEmptyParameter {
+            get {
+                return ResourceManager.GetString("NullOrEmptyParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The parameter &apos;{0}&apos; is null..
+        /// </summary>
+        internal static string NullParameter {
+            get {
+                return ResourceManager.GetString("NullParameter", resourceCulture);
             }
         }
         

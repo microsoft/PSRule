@@ -147,6 +147,22 @@ Rule 'WithLocalizedData' {
     $LocalizedData.WithLocalizedDataMessage -like "LocalizedMessage for en-*"
 }
 
+# Synopsis: Test $PSScriptRoot automatic variable
+Rule 'WithPSScriptRoot' {
+    $PSScriptRoot -eq $TargetObject.PSScriptRoot
+}
+
+# Synopsis: Test $PWD automatic variable
+Rule 'WithPWD' {
+    $PWD.ToString() -eq $TargetObject.PWD.ToString()
+
+}
+
+# Synopsis: Test $WithPSCommandPath automatic variable
+Rule 'WithPSCommandPath' {
+    $WithPSCommandPath -eq $TargetObject.WithPSCommandPath
+}
+
 Rule 'WithCsv' {
     $True;
 }

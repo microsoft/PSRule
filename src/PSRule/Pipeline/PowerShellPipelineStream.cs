@@ -2,12 +2,10 @@
 using PSRule.Configuration;
 using PSRule.Rules;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
-using System.Text;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -51,7 +49,7 @@ namespace PSRule.Pipeline
 
                 foreach (var p in _InputPath)
                 {
-                    if (p.StartsWith("http://") || p.StartsWith("https://"))
+                    if (p.IsUri())
                     {
                         Manager.Process(targetObject: PSObject.AsPSObject(new Uri(p)));
                     }
