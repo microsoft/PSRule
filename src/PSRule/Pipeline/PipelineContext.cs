@@ -7,9 +7,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace PSRule.Pipeline
 {
@@ -52,6 +54,7 @@ namespace PSRule.Pipeline
         internal PSRuleOption Option;
         internal RuleSource Source;
         internal Dictionary<string, Hashtable> DataCache;
+        internal string[] SourceContentCache;
         internal ExecutionScope ExecutionScope;
 
         public HashAlgorithm ObjectHashAlgorithm
@@ -136,6 +139,23 @@ namespace PSRule.Pipeline
             }
 
             return _Runspace;
+        }
+
+        internal void EnterSourceScope(RuleSource source)
+        {
+            if (!File.Exists(source.Path))
+            {
+                throw new FileNotFoundException(PSRuleResources.ScriptNotFound, source.Path);
+            }
+
+            Source = source;
+            SourceContentCache = File.ReadAllLines(source.Path, Encoding.UTF8);
+        }
+
+        internal void ExitSourceScope()
+        {
+            Source = null;
+            SourceContentCache = null;
         }
 
         public void Pass()
