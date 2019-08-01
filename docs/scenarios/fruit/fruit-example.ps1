@@ -12,3 +12,6 @@ $items | Invoke-PSRule -Outcome Fail;
 
 # Show rule summary
 $items | Invoke-PSRule -As Summary;
+
+# Show failure reason for failing results
+$items | Invoke-PSRule -OutputFormat Wide;

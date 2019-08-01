@@ -5,7 +5,7 @@ Rule 'isFruit' {
     Recommend 'Fruit is only Apple, Orange and Pear'
 
     # An failure reason to display for non-fruit
-    Reason 'The item is not fruit'
+    Reason "$($Rule.TargetName) is not fruit."
 
     # Condition to determine if the object is fruit
     $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
