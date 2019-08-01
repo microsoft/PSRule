@@ -1,14 +1,11 @@
 ﻿using PSRule.Annotations;
 using PSRule.Pipeline;
-using PSRule.Resources;
 using PSRule.Rules;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Management.Automation;
-using System.Text;
 
 namespace PSRule.Host
 {
@@ -39,22 +36,22 @@ namespace PSRule.Host
         /// <returns></returns>
         public static BlockMetadata GetCommentMeta(string path, int lineNumber, int offset)
         {
-            if (lineNumber == 1)
+            var context = PipelineContext.CurrentThread;
+
+            if (lineNumber <= 2 || context.ExecutionScope == ExecutionScope.None || context.SourceContentCache == null)
             {
                 return new BlockMetadata();
             }
 
-            var lines = File.ReadAllLines(path, Encoding.UTF8);
+            var lines = context.SourceContentCache;
 
-            var i = lineNumber - 1;
+            var i = lineNumber - 2;
             var comments = new List<string>();
 
-            for (; i >= 0; i--)
+            // Back track lines with comments immediately before block
+            for (; i >= 0 && lines[i].Contains("#"); i--)
             {
-                if (lines[i].Contains("#"))
-                {
-                    comments.Insert(0, lines[i]);
-                }
+                comments.Insert(0, lines[i]);
             }
 
             var metadata = new BlockMetadata();
@@ -68,13 +65,11 @@ namespace PSRule.Host
                     {
                         metadata.Synopsis = comment.Substring(15);
                     }
-
                     if (comment.StartsWith("# Synopsis: "))
                     {
                         metadata.Synopsis = comment.Substring(12);
                     }
                 }
-
             }
 
             return metadata;
@@ -106,14 +101,8 @@ namespace PSRule.Host
                 {
                     ps.Commands.Clear();
 
-                    if (!File.Exists(source.Path))
-                    {
-                        throw new FileNotFoundException(PSRuleResources.ScriptNotFound, source.Path);
-                    }
-
-                    PipelineContext.CurrentThread.Source = source;
                     PipelineContext.CurrentThread.VerboseRuleDiscovery(path: source.Path);
-                    //PipelineContext.CurrentThread.UseSource(source: source);
+                    PipelineContext.CurrentThread.EnterSourceScope(source: source);
 
                     // Invoke script
                     ps.AddScript(string.Concat("& '", source.Path, "'"), true);
@@ -144,7 +133,7 @@ namespace PSRule.Host
             {
                 PipelineContext.CurrentThread.Logger.ExitScope();
                 PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.None;
-                PipelineContext.CurrentThread.Source = null;
+                PipelineContext.CurrentThread.ExitSourceScope();
                 ps.Runspace = null;
                 ps.Dispose();
             }

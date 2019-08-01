@@ -164,12 +164,16 @@ Rule 'WithPSCommandPath' {
 }
 
 Rule 'WithCsv' {
-    $True;
+    $True
 }
 
 Rule 'WithSleep' {
-    Start-Sleep -Milliseconds 50;
-    $True;
+    Start-Sleep -Milliseconds 50
+    $True
+}
+
+Rule 'WithNoSynopsis' {
+    $True
 }
 
 # Synopsis: Test for Recommend keyword

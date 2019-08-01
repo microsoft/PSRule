@@ -997,17 +997,25 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -Verifiable -MockWith {
                 return 'en-ZZ';
             }
+            # From markdown
             $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.RuleName | Should -Be 'FromFile1';
             $result.Synopsis | Should -Be 'This is a synopsis.';
             $result.Info.Annotations.culture | Should -Be 'en-ZZ';
+            Assert-VerifiableMock;
 
+            # From comments
             $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile2';
             $result | Should -Not -BeNullOrEmpty;
             $result.RuleName | Should -Be 'FromFile2';
             $result.Synopsis | Should -Be 'Test rule 2';
-            Assert-VerifiableMock;
+
+            # No comments
+            $result = Get-PSRule -Path $ruleFilePath -Name 'WithNoSynopsis';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.RuleName | Should -Be 'WithNoSynopsis';
+            $result.Synopsis | Should -BeNullOrEmpty;
         }
 
         It 'Handles empty path' {
@@ -1074,6 +1082,10 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2';
         }
 
+        if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
+            $Null = Remove-Module -Name TestModule;
+        }
+
         It 'Handles path spaces' {
             # Copy file
             $testParentPath = Join-Path -Path $outputPath -ChildPath 'Program Files\';
@@ -1113,6 +1125,10 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2';
         }
 
+        if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
+            $Null = Remove-Module -Name TestModule;
+        }
+
         It 'Read from documentation' {
             Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -MockWith {
                 return 'en-US';
@@ -1148,6 +1164,10 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result[0].RuleName | Should -Be 'M1.Rule1';
             $result[0].Description | Should -Be 'Synopsis en-AU.';
             $result[0].Info.Annotations.culture | Should -Be 'en-AU';
+        }
+
+        if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
+            $Null = Remove-Module -Name TestModule;
         }
     }
 
