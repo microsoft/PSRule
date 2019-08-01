@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.8.0-B190806 (pre-release)
+
 - Fix module reloading with different versions. [#254](https://github.com/BernieWhite/PSRule/issues/254)
 - Fix not finding rules in current path by default. [#256](https://github.com/BernieWhite/PSRule/issues/256)
 - Fix rule synopsis comment capture. [#214](https://github.com/BernieWhite/PSRule/issues/214)
