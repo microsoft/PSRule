@@ -941,6 +941,23 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
 Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
     $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
 
+    Context 'With defaults' {
+        It 'Returns rules in current path' {
+            # Get a list of rules
+            $searchPath = Join-Path -Path $here -ChildPath 'TestModule';
+            try {
+                Push-Location -Path $searchPath;
+                $result = @(Get-PSRule)
+                $result | Should -Not -BeNullOrEmpty;
+                $result.Length | Should -Be 2;
+                $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2';
+            }
+            finally {
+                Pop-Location;
+            }
+        }
+    }
+
     Context 'Using -Path' {
         It 'Returns rules' {
             # Get a list of rules
@@ -1042,6 +1059,19 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
                     $Global:PSModuleAutoLoadingPreference = $currentLoadingPreference;
                 }
             }
+        }
+
+        It 'Use modules already loaded' {
+            Mock -CommandName 'GetAutoloadPreference' -ModuleName 'PSRule' -MockWith {
+                return [System.Management.Automation.PSModuleAutoLoadingPreference]::All;
+            }
+            Mock -CommandName 'LoadModule' -ModuleName 'PSRule';
+            $Null = Import-Module $testModuleSourcePath -Force;
+            $result = @(Get-PSRule -Module 'TestModule')
+            Assert-MockCalled -CommandName 'LoadModule' -ModuleName 'PSRule' -Times 0 -Scope 'It';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2';
         }
 
         It 'Handles path spaces' {
