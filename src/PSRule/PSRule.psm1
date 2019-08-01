@@ -95,7 +95,7 @@ function Invoke-PSRule {
         $Option = New-PSRuleOption @optionParams;
 
         # Discover scripts in the specified paths
-        $sourceParams = @{ Option = $Option };
+        $sourceParams = @{ };
 
         if ($PSBoundParameters.ContainsKey('Path')) {
             $sourceParams['Path'] = $Path;
@@ -109,6 +109,7 @@ function Invoke-PSRule {
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $sourceParams['Culture'] = $Culture;
         }
+        $sourceParams['Option'] = $Option;
         [PSRule.Rules.RuleSource[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
@@ -251,7 +252,7 @@ function Test-PSRuleTarget {
         $Option = New-PSRuleOption @optionParams;
 
         # Discover scripts in the specified paths
-        $sourceParams = @{ Option = $Option };
+        $sourceParams = @{ };
 
         if ($PSBoundParameters.ContainsKey('Path')) {
             $sourceParams['Path'] = $Path;
@@ -265,6 +266,7 @@ function Test-PSRuleTarget {
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $sourceParams['Culture'] = $Culture;
         }
+        $sourceParams['Option'] = $Option;
         [PSRule.Rules.RuleSource[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
@@ -390,7 +392,7 @@ function Get-PSRule {
         $Option = New-PSRuleOption @optionParams;
 
         # Discover scripts in the specified paths
-        $sourceParams = @{ Option = $Option };
+        $sourceParams = @{ };
 
         if ($PSBoundParameters.ContainsKey('Path')) {
             $sourceParams['Path'] = $Path;
@@ -407,6 +409,7 @@ function Get-PSRule {
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $sourceParams['Culture'] = $Culture;
         }
+        $sourceParams['Option'] = $Option;
         [PSRule.Rules.RuleSource[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
@@ -513,7 +516,7 @@ function Get-PSRuleHelp {
         $Option = New-PSRuleOption @optionParams;
 
         # Discover scripts in the specified paths
-        $sourceParams = @{ Option = $Option };
+        $sourceParams = @{ };
 
         if ($PSBoundParameters.ContainsKey('Path')) {
             $sourceParams['Path'] = $Path;
@@ -524,7 +527,9 @@ function Get-PSRuleHelp {
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $sourceParams['Culture'] = $Culture;
         }
-        [PSRule.Rules.RuleSource[]]$sourceFiles = GetSource @sourceParams -PreferModule -Verbose:$VerbosePreference;
+        $sourceParams['Option'] = $Option;
+        $sourceParams['PreferModule'] = $True;
+        [PSRule.Rules.RuleSource[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -1252,7 +1257,11 @@ function GetSource {
 
             # Determine if module should be automatically loaded
             if (GetAutoloadPreference) {
-                LoadModule -Name $Module -Verbose:$VerbosePreference;
+                foreach ($m in $Module) {
+                    if ($Null -eq (GetRuleModule -Name $m)) {
+                        LoadModule -Name $m -Verbose:$VerbosePreference;
+                    }
+                }
             }
         }
 
@@ -1286,7 +1295,7 @@ function GetAutoloadPreference {
     [OutputType([System.Boolean])]
     param ()
     process {
-        $v = Get-Variable -Name 'PSModuleAutoLoadingPreference' -ErrorAction SilentlyContinue;
+        $v = Microsoft.PowerShell.Utility\Get-Variable -Name 'PSModuleAutoLoadingPreference' -ErrorAction SilentlyContinue;
         return ($Null -eq $v) -or ($v.Value -eq [System.Management.Automation.PSModuleAutoLoadingPreference]::All);
     }
 }
@@ -1302,13 +1311,13 @@ function GetRuleModule {
         [Switch]$ListAvailable = $False
     )
     process {
-        $moduleResults = (Microsoft.PowerShell.Core\Get-Module @PSBoundParameters | Where-Object -FilterScript {
-            'PSRule' -in $_.Tags
-        } | Group-Object -Property Name)
+        $moduleResults = (Microsoft.PowerShell.Core\Get-Module @PSBoundParameters | Microsoft.PowerShell.Core\Where-Object -FilterScript {
+            'PSRule' -in $_.Tags -or 'PSRule-rules' -in $_.Tags
+        } | Microsoft.PowerShell.Utility\Group-Object -Property Name)
 
         if ($Null -ne $moduleResults) {
             foreach ($m in $moduleResults) {
-                @($m.Group | Sort-Object -Descending -Property Version)[0];
+                @($m.Group | Microsoft.PowerShell.Utility\Sort-Object -Descending -Property Version)[0];
             }
         }
     }
@@ -1319,10 +1328,10 @@ function LoadModule {
     [OutputType([void])]
     param (
         [Parameter(Mandatory = $True)]
-        [String[]]$Name
+        [String]$Name
     )
     process{
-        $Null = GetRuleModule -Name $Name -ListAvailable | Import-Module -Global;
+        $Null = GetRuleModule -Name $Name -ListAvailable | Microsoft.PowerShell.Core\Import-Module -Global;
     }
 }
 
