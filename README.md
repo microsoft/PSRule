@@ -70,22 +70,7 @@ Rule 'isFruit' {
 }
 ```
 
-An optional failure reason can be added to by using the `Reason` keyword.
-
-```powershell
-Rule 'isFruit' {
-    # An recommendation to display in output
-    Recommend 'Fruit is only Apple, Orange and Pear'
-
-    # An failure reason to display for non-fruit
-    Reason 'The item is not fruit'
-
-    # Condition to determine if the object is fruit
-    $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
-}
-```
-
-The rule above is saved to the [`isFruit.Rule.ps1`](docs/scenarios/fruit/isFruit.Rule.ps1) file. One or more rules can be defined within a single file.
+The rule is saved to a file named [`isFruit.Rule.ps1`](docs/scenarios/fruit/isFruit.Rule.ps1) file. One or more rules can be defined within a single file.
 
 ### Execute a rule
 
@@ -145,6 +130,50 @@ RuleName                            Pass  Fail  Outcome
 --------                            ----  ----  -------
 isFruit                             1     1     Fail
 ```
+
+An optional failure reason can be added to the rule block by using the `Reason` keyword.
+
+```powershell
+Rule 'isFruit' {
+    # An recommendation to display in output
+    Recommend 'Fruit is only Apple, Orange and Pear'
+
+    # An failure reason to display for non-fruit
+    Reason "$($Rule.TargetName) is not fruit."
+
+    # Condition to determine if the object is fruit
+    $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
+}
+```
+
+To include the reason with output use `Invoke-PSRule -OutputFormat Wide`.
+
+For example:
+
+```powershell
+# Show failure reason for failing results
+$items | Invoke-PSRule -OutputFormat Wide;
+```
+
+The output of this example is:
+
+```text
+
+   TargetName: Fridge
+
+RuleName                            Outcome    Reason                              Recommendation
+--------                            -------    ------                              --------------
+isFruit                             Fail       Fridge is not fruit.                Fruit is only Apple, Orange and Pear
+
+
+   TargetName: Apple
+
+RuleName                            Outcome    Reason                              Recommendation
+--------                            -------    ------                              --------------
+isFruit                             Pass                                           Fruit is only Apple, Orange and Pear
+```
+
+The final rule is saved to [`isFruit.Rule.ps1`](docs/scenarios/fruit/isFruit.Rule.ps1).
 
 ### Scenarios
 
