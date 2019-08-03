@@ -181,6 +181,7 @@ An online version of this document is available at https://github.com/BernieWhit
 
 ## KEYWORDS
 
+- Assert
 - Configuration
 - LocalizedData
 - Rule
