@@ -12,6 +12,7 @@
     },
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
+    "yaml.format.singleQuote": true,
     "yaml.schemas": {
         "./schemas/PSRule-options.schema.json": [
             "/tests/PSRule.Tests/PSRule.*.yml",
