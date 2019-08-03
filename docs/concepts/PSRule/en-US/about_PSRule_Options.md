@@ -19,8 +19,8 @@ The following options are available for use:
 - [Binding.TargetName](#bindingtargetname)
 - [Binding.TargetType](#bindingtargettype)
 - [Execution.LanguageMode](#executionlanguagemode)
-- [Execution.InconclusiveWarning](#inconclusive-warning)
-- [Execution.NotProcessedWarning](#not-processed-warning)
+- [Execution.InconclusiveWarning](#executioninconclusivewarning)
+- [Execution.NotProcessedWarning](#executionnotprocessedwarning)
 - [Input.Format](#inputformat)
 - [Input.ObjectPath](#inputobjectpath)
 - [Logging.LimitDebug](#logginglimitdebug)
@@ -31,7 +31,7 @@ The following options are available for use:
 - [Output.Encoding](#outputencoding)
 - [Output.Format](#outputformat)
 - [Output.Path](#outputpath)
-- [Suppression](#rule-suppression)
+- [Suppression](#suppression)
 
 Options can be used with the following PSRule cmdlets:
 
@@ -334,7 +334,7 @@ execution:
   languageMode: ConstrainedLanguage
 ```
 
-### Inconclusive warning
+### Execution.InconclusiveWarning
 
 When defining rules it is possible not return a valid `$True` or `$False` result within the definition script block.
 
@@ -372,7 +372,7 @@ execution:
   inconclusiveWarning: false
 ```
 
-### Not processed warning
+### Execution.NotProcessedWarning
 
 When evaluating rules it is possible to incorrectly select a path with rules that use pre-conditions that do not accept the pipeline object.
 
@@ -774,7 +774,7 @@ output:
   path: 'out/results.yaml'
 ```
 
-### Rule suppression
+### Suppression
 
 In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.
 
