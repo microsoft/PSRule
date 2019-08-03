@@ -94,6 +94,7 @@ CmdletsToExport = @()
 
 # Variables to export from this module
 VariablesToExport = @(
+    'Assert'
     'Configuration'
     'LocalizedData'
     'Rule'

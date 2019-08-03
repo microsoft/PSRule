@@ -30,13 +30,12 @@ Each `$Assert` method returns an `AssertResult` object that contains the result 
 
 The following built-in assertion methods are provided:
 
-- `JsonSchema` - Validates an object against a JSON schema.
+- `HasField` - Asserts that the object must have the specified field.
+- `HasFieldValue` - Asserts that the object must have the specified field and that field is not empty.
+- `JsonSchema` - Asserts that the object must validate successfully against a JSON schema.
+- `NullOrEmpty` - Asserts that the object must not have the specified field or it must be empty.
 
-The following built-in helper methods are provided for working with `AssertResult`:
-
-- `Create` - Returns a result either pass or fail.
-- `Pass` - Returns a pass result.
-- `Fail` - Results a fail result.
+The `$Assert` variable can only be used within a rule definition block.
 
 For detailed information on the assertion helper see [about_PSRule_Assert](about_PSRule_Assert.md).
 
@@ -51,7 +50,7 @@ Examples:
 ```powershell
 # Synopsis: Determine if $TargetObject is valid against the provided schema
 Rule 'UseJsonSchema' {
-    $Assert.JsonSchema('schemas/PSRule-options.schema.json')
+    $Assert.JsonSchema($TargetObject, 'schemas/PSRule-options.schema.json')
 }
 ```
 

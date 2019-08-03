@@ -1617,6 +1617,7 @@ function InitEditorServices {
 
             # Export variables
             Export-ModuleMember -Variable @(
+                'Assert'
                 'Configuration'
                 'LocalizedData'
                 'Rule'
@@ -1645,6 +1646,8 @@ function InitCompletionServices {
 #
 
 # Define variables and types
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
+[PSRule.Runtime.Assert]$Assert = New-Object -TypeName 'PSRule.Runtime.Assert';
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
 [PSObject]$Configuration = $Null;
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
