@@ -5,7 +5,7 @@ baseline:
   ruleName: [ 'rule1' ]
   exclude: [ 'rule3' ]
 
-# Configure TargetName binding
+# Configure binding
 binding:
   targetName: [ 'ResourceName' ]
   targetType: [ 'ResourceType' ]

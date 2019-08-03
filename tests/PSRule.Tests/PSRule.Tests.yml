@@ -11,7 +11,7 @@ baseline:
     option2: 2
     option3: [ 'option3a', 'option3b' ]
 
-# Configure TargetName binding
+# Configure binding
 binding:
   ignoreCase: false
   targetName:
@@ -30,7 +30,7 @@ input:
   format: Yaml
   objectPath: items
 
-# Configures outcome logging options
+# Configure logging options
 logging:
   limitDebug:
   - TestRule2

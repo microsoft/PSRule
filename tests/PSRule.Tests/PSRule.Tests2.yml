@@ -9,7 +9,7 @@ baseline:
   - rule3
   - rule4
 
-# Configure TargetName binding
+# Configure binding
 binding:
   targetName:
   - ResourceName

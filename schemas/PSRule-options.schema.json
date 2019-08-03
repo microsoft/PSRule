@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "PSRule options",
     "description": "A schema for PSRule YAML options files.",
     "oneOf": [
@@ -10,11 +10,13 @@
     "definitions": {
         "baseline-v0.2.0": {
             "type": "object",
+            "title": "Baseline options",
             "description": "Options that include/ exclude and configure rules.",
             "properties": {
                 "ruleName": {
                     "type": "array",
-                    "description": "Optionally filter rules by name.",
+                    "title": "Include rules",
+                    "description": "Optionally filter to rules by name.",
                     "items": {
                         "type": "string"
                     },
@@ -22,6 +24,7 @@
                 },
                 "exclude": {
                     "type": "array",
+                    "title": "Exclude rules",
                     "description": "Specifies rules to exclude by name.",
                     "items": {
                         "type": "string"
@@ -30,6 +33,7 @@
                 },
                 "configuration": {
                     "type": "object",
+                    "title": "Configuration values",
                     "description": "A set of key/ value configuration options for rules."
                 }
             },
@@ -37,37 +41,45 @@
         },
         "binding-v0.3.0": {
             "type": "object",
+            "title": "Object binding",
             "description": "Configure property/ object binding options.",
             "properties": {
                 "ignoreCase": {
                     "type": "boolean",
-                    "description": "Determines if custom binding uses ignores case when matching properties.",
+                    "title": "Ignore case",
+                    "description": "Determines if custom binding uses ignores case when matching properties. The default is true.",
                     "default": true
                 },
                 "targetName": {
                     "type": "array",
+                    "title": "Bind TargetName",
                     "description": "Specifies one or more property names to bind TargetName to.",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "uniqueItems": true
                 },
                 "targetType": {
                     "type": "array",
+                    "title": "Bind TargetType",
                     "description": "Specifies one or more property names to bind TargetType to.",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "uniqueItems": true
                 }
             },
             "additionalProperties": false
         },
         "execution-v0.2.0": {
             "type": "object",
+            "title": "Execution options",
             "description": "Options that affect rule execution.",
             "properties": {
                 "languageMode": {
                     "type": "string",
-                    "description": "The PowerShell language mode to use for rule execution.",
+                    "title": "Language mode",
+                    "description": "The PowerShell language mode to use for rule execution. The default is FullLanguage.",
                     "enum": [
                         "FullLanguage",
                         "ConstrainedLanguage"
@@ -76,12 +88,14 @@
                 },
                 "inconclusiveWarning": {
                     "type": "boolean",
-                    "description": "Enable or disable warnings for inconclusive rules.",
+                    "title": "Warn on inconclusive rules",
+                    "description": "Enable or disable warnings for inconclusive rules. The default is true.",
                     "default": true
                 },
                 "notProcessedWarning": {
                     "type": "boolean",
-                    "description": "Enable or disable warnings for objects that are not processed by any rule.",
+                    "title": "Warn on unprocessed objects",
+                    "description": "Enable or disable warnings for objects that are not processed by any rule. The default is true.",
                     "default": true
                 }
             },
@@ -89,11 +103,13 @@
         },
         "input-v0.4.0": {
             "type": "object",
+            "title": "Input options",
             "description": "Options that affect how input types are processed.",
             "properties": {
                 "format": {
                     "type": "string",
-                    "description": "The input string format.",
+                    "title": "Input format",
+                    "description": "The input string format. The default is Detect, which will try to detect the format when the -InputPath parameter is used.",
                     "enum": [
                         "None",
                         "Yaml",
@@ -104,6 +120,7 @@
                 },
                 "objectPath": {
                     "type": "string",
+                    "title": "Object path",
                     "description": "The object path to a property to use instead of the pipeline object."
                 }
             },
@@ -111,11 +128,13 @@
         },
         "logging-v0.8.0": {
             "type": "object",
-            "description": "Options for logging outcomes to a informational streams.",
+            "title": "Logging options",
+            "description": "Options for configuring information logging.",
             "properties": {
                 "limitDebug": {
                     "type": "array",
-                    "description": "Limits debug messages to a list of named debug scopes.",
+                    "title": "Scopes for debug messages",
+                    "description": "Limits debug messages to a list of named debug scopes. No scopes are set by default.",
                     "items": {
                         "type": "string"
                     },
@@ -123,7 +142,8 @@
                 },
                 "limitVerbose": {
                     "type": "array",
-                    "description": "Limits verbose messages to a list of named verbose scopes.",
+                    "title": "Scopes for verbose messages",
+                    "description": "Limits verbose messages to a list of named verbose scopes. No scopes are set by default.",
                     "items": {
                         "type": "string"
                     },
@@ -131,7 +151,8 @@
                 },
                 "ruleFail": {
                     "type": "string",
-                    "description": "Log fail outcomes for each rule to a specific informational stream.",
+                    "title": "Report fail to stream",
+                    "description": "Log fail outcomes for each rule to a specific informational stream. The default is None.",
                     "enum": [
                         "None",
                         "Error",
@@ -142,7 +163,8 @@
                 },
                 "rulePass": {
                     "type": "string",
-                    "description": "Log pass outcomes for each rule to a specific informational stream.",
+                    "title": "Report pass to stream",
+                    "description": "Log pass outcomes for each rule to a specific informational stream. The default is None.",
                     "enum": [
                         "None",
                         "Error",
@@ -156,15 +178,54 @@
         },
         "suppression-v0.2.0": {
             "type": "object",
-            "description": "Specifies suppression rules."
+            "title": "Suppress rules",
+            "description": "Specifies suppression rules.",
+            "uniqueItems": true,
+            "additionalProperties": {
+                "oneOf": [
+                    {
+                        "type": "array",
+                        "title": "Suppressed rule",
+                        "description": "The name of the rule to suppress.",
+                        "items": {
+                            "type": "string",
+                            "title": "Suppress when",
+                            "description": "Suppress the rule on TargetNames to suppress."
+                        },
+                        "uniqueItems": true
+                    },
+                    {
+                        "type": "object",
+                        "title": "Suppressed rule",
+                        "description": "The name of the rule to suppress.",
+                        "properties": {
+                            "targetName": {
+                                "type": "array",
+                                "title": "Suppress when",
+                                "description": "One or more TargetNames to suppress.",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "uniqueItems": true
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "targetName"
+                        ]
+                    }
+                ]
+            }
         },
         "output-v0.8.0": {
             "type": "object",
+            "title": "Output options",
             "description": "Options that affect how output is generated.",
             "properties": {
                 "as": {
                     "type": "string",
-                    "description": "Determine if detailed or summary results are generated.",
+                    "title": "Result type",
+                    "description": "Determine if detailed or summary results are generated. The default is Detail.",
                     "enum": [
                         "Detail",
                         "Summary"
@@ -173,7 +234,8 @@
                 },
                 "encoding": {
                     "type": "string",
-                    "description": "The encoding to use when writing results to file.",
+                    "title": "Encoding",
+                    "description": "The encoding to use when writing results to file. The default is Default, UTF-8 without BOM.",
                     "enum": [
                         "Default",
                         "UTF8",
@@ -186,7 +248,8 @@
                 },
                 "format": {
                     "type": "string",
-                    "description": "The output format.",
+                    "title": "Output format",
+                    "description": "The output format to use when returning results. The default is None.",
                     "enum": [
                         "None",
                         "Yaml",
@@ -199,6 +262,7 @@
                 },
                 "path": {
                     "type": "string",
+                    "title": "Output path",
                     "description": "The file path location to save results."
                 }
             },
