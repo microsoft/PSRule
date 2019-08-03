@@ -1,6 +1,41 @@
 
 ## Unreleased
 
+## v0.8.0
+
+What's changed since v0.7.0:
+
+- Quality of life improvements:
+  - PSRule options are now displayed as YAML instead of a complex object. [#233](https://github.com/BernieWhite/PSRule/issues/233)
+  - Add detection for improper keyword use. [#203](https://github.com/BernieWhite/PSRule/issues/203)
+  - Automatically load rule modules. [#218](https://github.com/BernieWhite/PSRule/issues/218)
+  - Added support for debug messages and `Write-Debug` in rule definitions. [#146](https://github.com/BernieWhite/PSRule/issues/146)
+  - Added `Logging.LimitDebug` and `Logging.LimitVerbose` options to limit logging to named scopes. [#235](https://github.com/BernieWhite/PSRule/issues/235)
+- Engine features:
+  - Added per object reason for failing rules. [#200](https://github.com/BernieWhite/PSRule/issues/200)
+    - Keywords `Exists`, `Match`, `Within` and `TypeOf` automatically add a reason when they fail.
+    - Custom reason can be set for keywords `Exists`, `Match`, `Within` and `TypeOf` with `-Reason`.
+    - Added `Reason` keyword to add to reason for custom logic.
+    - Added wide output display for `Invoke-PSRule` which include the reason why rule failed.
+      - To use wide output use the `-OutputFormat Wide` parameter.
+    - Renamed `-Message` parameter to `-Text` on the `Recommend` keyword.
+      - The `-Message` is an alias of `-Text` and will be deprecated in the future.
+  - Added assertion helper `$Assert` for extensibility. [#250](https://github.com/BernieWhite/PSRule/issues/250)
+    - Add built-in assertions for `HasField`, `HasFieldValue` and `NullOrEmpty`.
+    - Add JSON schema assertion method `JsonSchema`. [#42](https://github.com/BernieWhite/PSRule/issues/42)
+- Bug fixes:
+  - Fix rule synopsis comment capture. [#214](https://github.com/BernieWhite/PSRule/issues/214)
+  - Fix YAML options file discovery issue in dotted directory. [#232](https://github.com/BernieWhite/PSRule/issues/232)
+  - Fix comparison of wrapped types and null with `Within`. [#237](https://github.com/BernieWhite/PSRule/issues/237)
+- **Breaking change**: Use rule references consistent with cmdlet fully qualified syntax. [#217](https://github.com/BernieWhite/PSRule/issues/217)
+  - Rule names have to be unique within the current execution path or within a module.
+    - Previously rule names only had to be unique within a single file.
+  - Previously the `filename.rule.ps1/RuleName` was required to reference rules across files.
+    - This is no longer required because rule names are unique.
+  - You can reference a rule from a loaded module by using the syntax `ModuleName\RuleName`.
+
+What's changed since pre-release v0.8.0-B190806:
+
 - Fix export of assertion helper variable `$Assert`. [#262](https://github.com/BernieWhite/PSRule/issues/262)
 
 ## v0.8.0-B190806 (pre-release)
@@ -18,8 +53,10 @@
   - Add built-in assertions for `HasField`, `HasFieldValue` and `NullOrEmpty`.
   - Add JSON schema assertion method `JsonSchema`. [#42](https://github.com/BernieWhite/PSRule/issues/42)
 - **Breaking change**: Use rule references consistent with cmdlet fully qualified syntax. [#217](https://github.com/BernieWhite/PSRule/issues/217)
-  - Previously rule names only had to be unique within a single file, now rule names have to be unique within the current execution path or within a module.
-  - Previously the `filename.rule.ps1/RuleName` was supported to reference rules across files. Because rule names must be unique this syntax is no longer required or supported.
+  - Rule names have to be unique within the current execution path or within a module.
+    - Previously rule names only had to be unique within a single file.
+  - Previously the `filename.rule.ps1/RuleName` was required to reference rules across files.
+    - This is no longer required because rule names are unique.
   - You can reference a rule from a loaded module by using the syntax `ModuleName\RuleName`.
 
 ## v0.8.0-B190716 (pre-release)
@@ -37,7 +74,7 @@
 
 - Fix YAML options file discovery issue in dotted directory. [#232](https://github.com/BernieWhite/PSRule/issues/232)
 - Fix comparison of wrapped types and null with `Within`. [#237](https://github.com/BernieWhite/PSRule/issues/237)
-- PSRule options are now displayed as YAML instead of complex object. [#233](https://github.com/BernieWhite/PSRule/issues/233)
+- PSRule options are now displayed as YAML instead of a complex object. [#233](https://github.com/BernieWhite/PSRule/issues/233)
 - Added support for debug messages and `Write-Debug` in rule definitions. [#146](https://github.com/BernieWhite/PSRule/issues/146)
 - Added `Logging.LimitDebug` and `Logging.LimitVerbose` options to limit logging to named scopes. [#235](https://github.com/BernieWhite/PSRule/issues/235)
 
