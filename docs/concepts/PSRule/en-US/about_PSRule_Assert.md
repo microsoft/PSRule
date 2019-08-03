@@ -188,4 +188,8 @@ An online version of this document is available at https://github.com/BernieWhit
 ## KEYWORDS
 
 - Assert
+- HasField
+- HasFieldValue
+- JsonSchema
+- NullOrEmpty
 - Rule

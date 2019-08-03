@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Fix export of assertion helper variable `$Assert`. [#262](https://github.com/BernieWhite/PSRule/issues/262)
+
 ## v0.8.0-B190806 (pre-release)
 
 - Fix module reloading with different versions. [#254](https://github.com/BernieWhite/PSRule/issues/254)
