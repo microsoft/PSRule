@@ -1,0 +1,256 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>PSRule_Assert </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="PSRule_Assert ">
+    <meta name="generator" content="docfx 2.43.2.0">
+    
+    <link rel="shortcut icon" href="../../../favicon.ico">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="../../../toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="psrule_assert">PSRule_Assert</h1>
+
+<h2 id="about_psrule_assert">about_PSRule_Assert</h2>
+<h2 id="short-description">SHORT DESCRIPTION</h2>
+<p>Describes the assertion helper that can be used within PSRule rule definitions.</p>
+<h2 id="long-description">LONG DESCRIPTION</h2>
+<p>PSRule includes an assertion helper exposed as a built-in variable <code>$Assert</code>. The <code>$Assert</code> object provides a consistent set of methods to evaluate objects.</p>
+<p>Each <code>$Assert</code> method returns an <code>AssertResult</code> object that contains the result of the assertion.</p>
+<p>The following built-in assertion methods are provided:</p>
+<ul>
+<li><a href="#hasfield">HasField</a> - Asserts that the object must have the specified field.</li>
+<li><a href="#hasfieldvalue">HasFieldValue</a> - Asserts that the object must have the specified field and that field is not empty.</li>
+<li><a href="#jsonschema">JsonSchema</a> - Asserts that the object must validate successfully against a JSON schema.</li>
+<li><a href="#nullorempty">NullOrEmpty</a> - Asserts that the object must not have the specified field or it must be empty.</li>
+</ul>
+<p>The <code>$Assert</code> variable can only be used within a rule definition block.</p>
+<h3 id="using-assertion-methods">Using assertion methods</h3>
+<p>An assertion method can be used like other methods in PowerShell. i.e. <code>$Assert.methodName(parameters)</code>.</p>
+<p>Assertion methods use the following standard pattern:</p>
+<ul>
+<li>The first parameter is <em>always</em> the input object of type <code>PSObject</code>, additional parameters can be included based on the functionality required by the method.
+<ul>
+<li>In many cases the input object will be <code>$TargetObject</code>, however assertion methods must not assume that <code>$TargetObject</code> will be used.</li>
+<li>Assertion methods must a <code>$Null</code> input object.</li>
+</ul>
+</li>
+<li>Assertion methods return the <code>AssertResult</code> object that is interpreted by the rule pipeline.</li>
+</ul>
+<p>Some assertion methods may overlap or provide similar functionality to built-in keywords. Where you have the choice, use built-in keywords. Use assertion methods for advanced cases or increased flexibility.</p>
+<p>In the following example, <code>Assert.HasFieldValue</code> asserts that <code>$TargetObject</code> should have a field named <code>Type</code> with a non-empty value.</p>
+<pre><code class="lang-powershell">Rule 'Assert.HasTypeField' {
+    $Assert.HasFieldValue($TargetObject, 'Type')
+}
+</code></pre>
+<p>To find perform multiple assertions use.</p>
+<pre><code class="lang-powershell">Rule 'Assert.HasRequiredFields' {
+    $Assert.HasFieldValue($TargetObject, 'Name')
+    $Assert.HasFieldValue($TargetObject, 'Type')
+    $Assert.HasFieldValue($TargetObject, 'Value')
+}
+</code></pre>
+<h3 id="hasfield">HasField</h3>
+<p>The <code>HasField</code> assertion method checks the object has the specified field.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. By default, a case insensitive compare is used.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field name.</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'HasField' {
+    $Assert.HasField($TargetObject, 'Name')
+    $Assert.HasField($TargetObject, 'tag.Environment', $True)
+}
+</code></pre>
+<h3 id="hasfieldvalue">HasFieldValue</h3>
+<p>The <code>HasFieldValue</code> assertion method checks the field value of the object is not empty.</p>
+<p>A field value is empty if any of the following are true:</p>
+<ul>
+<li>The field does not exist.</li>
+<li>The field value is <code>$Null</code>.</li>
+<li>The field value is an empty array or collection.</li>
+<li>The field value is an empty string <code>''</code>.</li>
+</ul>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>expectedValue</code> (optional) - Check that the field value is set to a specific value. To check <code>$Null</code> use <code>NullOrEmpty</code> instead. If <code>expectedValue</code> is <code>$Null</code> the field value will not be compared.</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'HasFieldValue' {
+    $Assert.HasFieldValue($TargetObject, 'Name')
+    $Assert.HasFieldValue($TargetObject, 'tag.Environment', 'production')
+}
+</code></pre>
+<h3 id="jsonschema">JsonSchema</h3>
+<p>The <code>JsonSchema</code> assertion method compares the input object against a defined JSON schema.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being compared against the JSON schema.</li>
+<li><code>uri</code> - A URL or file path to a JSON schema file formatted as UTF-8. Either a file path or URL can be used to specify the location of the schema file.</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'JsonSchema' {
+    $Assert.JsonSchema($TargetObject, 'tests/PSRule.Tests/FromFile.Json.schema.json')
+}
+</code></pre>
+<h3 id="nullorempty">NullOrEmpty</h3>
+<p>The <code>NullOrEmpty</code> assertion method checks the field value of the object is null or empty.</p>
+<p>A field value is null or empty if any of the following are true:</p>
+<ul>
+<li>The field does not exist.</li>
+<li>The field value is <code>$Null</code>.</li>
+<li>The field value is an empty array or collection.</li>
+<li>The field value is an empty string <code>''</code>.</li>
+</ul>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'NullOrEmpty' {
+    $Assert.NullOrEmpty($TargetObject, 'Name')
+    $Assert.NullOrEmpty($TargetObject, 'tag.Environment')
+}
+</code></pre>
+<h3 id="advanced-usage">Advanced usage</h3>
+<p>The <code>AssertResult</code> object returned from assertion methods:</p>
+<ul>
+<li>Handles pass/ fail conditions and collection of reason information.</li>
+<li>Allows rules to implement their own handling or forward it up the stack to affect the rule outcome.</li>
+</ul>
+<p>The following properties are available:</p>
+<ul>
+<li><code>Result</code> - Either <code>$True</code> (Pass) or <code>$False</code> (Fail).</li>
+</ul>
+<p>The following methods are available:</p>
+<ul>
+<li><code>AddReason(&lt;string&gt; text)</code> - Can be used to add additional reasons to the result. A reason can only be set if the assertion failed. Reason text should be localized before calling this method. Localization can be done using the <code>$LocalizedData</code> automatic variable.</li>
+<li><code>GetReason()</code> - Gets any reasons currently associated with the failed result.</li>
+<li><code>Complete()</code> - Returns <code>$True</code> (Pass) or <code>$False</code> (Fail) to the rule record. If the assertion failed, any reasons are automatically added to the rule record. To read the result without adding reason to the rule record use the <code>Result</code> property.</li>
+<li><code>Ignore()</code> - Ignores the result. Nothing future is returned and any reasons are cleared. Use this method when implementing custom handling.</li>
+</ul>
+<p>Use of <code>Complete()</code> is optional, uncompleted results are automatically completed after the rule has executed. Uncompleted results may return reasons out of sequence.</p>
+<p>In this example <code>Complete()</code> is used to find the first field with an empty value.</p>
+<pre><code class="lang-powershell">Rule 'Assert.HasFieldValue' {
+    $Assert.HasFieldValue($TargetObject, 'Name').Complete() -and
+        $Assert.HasFieldValue($TargetObject, 'Type').Complete() -and
+        $Assert.HasFieldValue($TargetObject, 'Value').Complete()
+}
+</code></pre>
+<h3 id="authoring-assertion-methods">Authoring assertion methods</h3>
+<p>The following built-in helper methods are provided for working with <code>$Assert</code> when authoring new assertion methods:</p>
+<ul>
+<li><code>Create(&lt;bool&gt; condition, &lt;string&gt; reason)</code> - Returns a result either pass or fail assertion result.</li>
+<li><code>Pass()</code> - Returns a pass assertion result.</li>
+<li><code>Fail(&lt;string&gt; reason)</code> - Results a fail assertion result.</li>
+</ul>
+<h2 id="note">NOTE</h2>
+<p>An online version of this document is available at <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Assert.md">https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Assert.md</a>.</p>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a href="https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Variables.md">about_PSRule_Variables</a></li>
+</ul>
+<h2 id="keywords">KEYWORDS</h2>
+<ul>
+<li>Assert</li>
+<li>HasField</li>
+<li>HasFieldValue</li>
+<li>JsonSchema</li>
+<li>NullOrEmpty</li>
+<li>Rule</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Assert.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

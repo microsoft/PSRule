@@ -78,11 +78,33 @@
 <p>These variables are only available while <code>Invoke-PSRule</code> is executing.</p>
 <p>The following variables are available for use:</p>
 <ul>
+<li><a href="#assert">$Assert</a></li>
 <li><a href="#configuration">$Configuration</a></li>
 <li><a href="#localizeddata">$LocalizedData</a></li>
 <li><a href="#rule">$Rule</a></li>
 <li><a href="#targetobject">$TargetObject</a></li>
 </ul>
+<h3 id="assert">Assert</h3>
+<p>An assertion helper with methods to evaluate objects. The <code>$Assert</code> object provides a set of built-in methods and provides a consistent variable for extension.</p>
+<p>Each <code>$Assert</code> method returns an <code>AssertResult</code> object that contains the result of the condition.</p>
+<p>The following built-in assertion methods are provided:</p>
+<ul>
+<li><code>HasField</code> - Asserts that the object must have the specified field.</li>
+<li><code>HasFieldValue</code> - Asserts that the object must have the specified field and that field is not empty.</li>
+<li><code>JsonSchema</code> - Asserts that the object must validate successfully against a JSON schema.</li>
+<li><code>NullOrEmpty</code> - Asserts that the object must not have the specified field or it must be empty.</li>
+</ul>
+<p>The <code>$Assert</code> variable can only be used within a rule definition block.</p>
+<p>For detailed information on the assertion helper see <a href="about_PSRule_Assert.html">about_PSRule_Assert</a>.</p>
+<p>Syntax:</p>
+<pre><code class="lang-powershell">$Assert
+</code></pre>
+<p>Examples:</p>
+<pre><code class="lang-powershell"># Synopsis: Determine if $TargetObject is valid against the provided schema
+Rule 'UseJsonSchema' {
+    $Assert.JsonSchema($TargetObject, 'schemas/PSRule-options.schema.json')
+}
+</code></pre>
 <h3 id="configuration">Configuration</h3>
 <p>A dynamic object with properties names that map to configuration values set in the baseline.</p>
 <p>When accessing configuration:</p>
@@ -168,6 +190,7 @@ Rule 'HasMinInstances' {
 </ul>
 <h2 id="keywords">KEYWORDS</h2>
 <ul>
+<li>Assert</li>
 <li>Configuration</li>
 <li>LocalizedData</li>
 <li>Rule</li>

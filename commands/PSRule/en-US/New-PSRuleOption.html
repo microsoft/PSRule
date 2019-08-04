@@ -76,9 +76,10 @@
  [-SuppressTargetName &lt;SuppressionOption&gt;] [-BindTargetName &lt;BindTargetName[]&gt;]
  [-BindTargetType &lt;BindTargetName[]&gt;] [-BindingIgnoreCase &lt;Boolean&gt;] [-TargetName &lt;String[]&gt;]
  [-TargetType &lt;String[]&gt;] [-InconclusiveWarning &lt;Boolean&gt;] [-NotProcessedWarning &lt;Boolean&gt;]
- [-Format &lt;InputFormat&gt;] [-ObjectPath &lt;String&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;]
- [-LoggingRulePass &lt;OutcomeLogStream&gt;] [-OutputAs &lt;ResultFormat&gt;] [-OutputEncoding &lt;OutputEncoding&gt;]
- [-OutputFormat &lt;OutputFormat&gt;] [-OutputPath &lt;String&gt;] [&lt;CommonParameters&gt;]
+ [-Format &lt;InputFormat&gt;] [-ObjectPath &lt;String&gt;] [-LoggingLimitDebug &lt;String[]&gt;]
+ [-LoggingLimitVerbose &lt;String[]&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;] [-LoggingRulePass &lt;OutcomeLogStream&gt;]
+ [-OutputAs &lt;ResultFormat&gt;] [-OutputEncoding &lt;OutputEncoding&gt;] [-OutputFormat &lt;OutputFormat&gt;]
+ [-OutputPath &lt;String&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>The <strong>New-PSRuleOption</strong> cmdlet creates an options object that can be passed to PSRule cmdlets to configure execution.</p>
@@ -278,6 +279,30 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
+<h3 id="-logginglimitdebug">-LoggingLimitDebug</h3>
+<p>Sets the <code>Logging.LimitDebug</code> option to limit debug messages to a list of named debug scopes.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-logginglimitverbose">-LoggingLimitVerbose</h3>
+<p>Sets the <code>Logging.LimitVerbose</code> option to limit verbose messages to a list of named verbose scopes.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
 <h3 id="-loggingrulefail">-LoggingRuleFail</h3>
 <p>Sets the <code>Logging.RuleFail</code> option to generate an informational message for each rule fail.</p>
 <pre><code class="lang-yaml">Type: OutcomeLogStream
@@ -332,7 +357,7 @@ Accept wildcard characters: False
 <pre><code class="lang-yaml">Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json, NUnit3, Csv
+Accepted values: None, Yaml, Json, NUnit3, Csv, Wide
 
 Required: False
 Position: Named

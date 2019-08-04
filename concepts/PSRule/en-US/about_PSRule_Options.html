@@ -83,17 +83,19 @@
 <li><a href="#bindingtargetname">Binding.TargetName</a></li>
 <li><a href="#bindingtargettype">Binding.TargetType</a></li>
 <li><a href="#executionlanguagemode">Execution.LanguageMode</a></li>
-<li><a href="#inconclusive-warning">Execution.InconclusiveWarning</a></li>
-<li><a href="#not-processed-warning">Execution.NotProcessedWarning</a></li>
+<li><a href="#executioninconclusivewarning">Execution.InconclusiveWarning</a></li>
+<li><a href="#executionnotprocessedwarning">Execution.NotProcessedWarning</a></li>
 <li><a href="#inputformat">Input.Format</a></li>
 <li><a href="#inputobjectpath">Input.ObjectPath</a></li>
+<li><a href="#logginglimitdebug">Logging.LimitDebug</a></li>
+<li><a href="#logginglimitverbose">Logging.LimitVerbose</a></li>
 <li><a href="#loggingrulefail">Logging.RuleFail</a></li>
 <li><a href="#loggingrulepass">Logging.RulePass</a></li>
 <li><a href="#outputas">Output.As</a></li>
 <li><a href="#outputencoding">Output.Encoding</a></li>
 <li><a href="#outputformat">Output.Format</a></li>
 <li><a href="#outputpath">Output.Path</a></li>
-<li><a href="#rule-suppression">Suppression</a></li>
+<li><a href="#suppression">Suppression</a></li>
 </ul>
 <p>Options can be used with the following PSRule cmdlets:</p>
 <ul>
@@ -336,7 +338,7 @@ $option = New-PSRuleOption -Option @{ 'Execution.LanguageMode' = 'ConstrainedLan
 execution:
   languageMode: ConstrainedLanguage
 </code></pre>
-<h3 id="inconclusive-warning">Inconclusive warning</h3>
+<h3 id="executioninconclusivewarning">Execution.InconclusiveWarning</h3>
 <p>When defining rules it is possible not return a valid <code>$True</code> or <code>$False</code> result within the definition script block.</p>
 <p>Rule authors should not intentionally avoid returning a result, however a possible cause for not returning a result may be a rule logic error.</p>
 <p>If a rule should not be evaluated, use pre-conditions to avoid processing the rule for objects where the rule is not applicable.</p>
@@ -360,7 +362,7 @@ Set-PSRuleOption -InconclusiveWarning $False;
 execution:
   inconclusiveWarning: false
 </code></pre>
-<h3 id="not-processed-warning">Not processed warning</h3>
+<h3 id="executionnotprocessedwarning">Execution.NotProcessedWarning</h3>
 <p>When evaluating rules it is possible to incorrectly select a path with rules that use pre-conditions that do not accept the pipeline object.</p>
 <p>In this case the object has not been processed by any rule.</p>
 <p>Not processed objects will:</p>
@@ -429,6 +431,56 @@ Set-PSRuleOption -ObjectPath 'items';
 <pre><code class="lang-yaml"># YAML: Using the input/objectPath property
 input:
   objectPath: items
+</code></pre>
+<h3 id="logginglimitdebug">Logging.LimitDebug</h3>
+<p>Limits debug messages to a list of named debug scopes.</p>
+<p>When using the <code>-Debug</code> switch or preference variable, by default PSRule cmdlets log all debug output. When using debug output for debugging a specific rule, it my be helpful to limit debug message to a specific rule.</p>
+<p>To identify a rule to include in debug output use the rule name.</p>
+<p>The following built-in scopes exist in addition to rule names:</p>
+<ul>
+<li><code>[Discovery.Source]</code> - Discovery messages for <code>.Rule.ps1</code> files and rule modules.</li>
+<li><code>[Discovery.Rule]</code> - Discovery messages for individual rules within <code>.Rule.ps1</code> files.</li>
+</ul>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the LoggingLimitDebug parameter
+$option = New-PSRuleOption -LoggingLimitDebug Rule1, Rule2;
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Logging.LimitDebug hashtable key
+$option = New-PSRuleOption -Option @{ 'Logging.LimitDebug' = Rule1, Rule2 };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the LoggingLimitDebug parameter to set YAML
+Set-PSRuleOption -LoggingLimitDebug Rule1, Rule2;
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the logging/limitDebug property
+logging:
+  limitDebug:
+  - Rule1
+  - Rule2
+</code></pre>
+<h3 id="logginglimitverbose">Logging.LimitVerbose</h3>
+<p>Limits verbose messages to a list of named verbose scopes.</p>
+<p>When using the <code>-Verbose</code> switch or preference variable, by default PSRule cmdlets log all verbose output. When using verbose output for troubleshooting a specific rule, it may be helpful to limit verbose messages to a specific rule.</p>
+<p>To identify a rule to include in verbose output use the rule name.</p>
+<p>The following built-in scopes exist in addition to rule names:</p>
+<ul>
+<li><code>[Discovery.Source]</code> - Discovery messages for <code>.Rule.ps1</code> files and rule modules.</li>
+<li><code>[Discovery.Rule]</code> - Discovery messages for individual rules within <code>.Rule.ps1</code> files.</li>
+</ul>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the LoggingLimitVerbose parameter
+$option = New-PSRuleOption -LoggingLimitVerbose Rule1, Rule2;
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Logging.LimitVerbose hashtable key
+$option = New-PSRuleOption -Option @{ 'Logging.LimitVerbose' = Rule1, Rule2 };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the LoggingLimitVerbose parameter to set YAML
+Set-PSRuleOption -LoggingLimitVerbose Rule1, Rule2;
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the logging/limitVerbose property
+logging:
+  limitVerbose:
+  - Rule1
+  - Rule2
 </code></pre>
 <h3 id="loggingrulefail">Logging.RuleFail</h3>
 <p>When an object fails a rule condition the results are written to output as a structured object marked with the outcome of <em>Fail</em>. If the rule executed successfully regardless of outcome no other informational messages are shown by default.</p>
@@ -550,6 +602,7 @@ output:
 </li>
 </ul>
 </li>
+<li>Wide -  Output is presented using the wide table format, which includes reason and wraps columns.</li>
 </ul>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the OutputFormat parameter
@@ -582,7 +635,7 @@ Set-PSRuleOption -OutputPath 'out/results.yaml';
 output:
   path: 'out/results.yaml'
 </code></pre>
-<h3 id="rule-suppression">Rule suppression</h3>
+<h3 id="suppression">Suppression</h3>
 <p>In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.</p>
 <p>PSRule allows objects to be suppressed for a rule by TargetName. Objects that are suppressed are not processed by the rule at all but will continue to be processed by other rules.</p>
 <p>Rule suppression complements pre-filtering and pre-conditions.</p>
@@ -664,6 +717,12 @@ input:
 
 # Configures outcome logging options
 logging:
+  limitDebug:
+  - Rule1
+  - Rule2
+  limitVerbose:
+  - Rule1
+  - Rule2
   ruleFail: Error
   rulePass: Information
 
@@ -713,6 +772,8 @@ input:
 
 # Configures outcome logging options
 logging:
+  limitDebug: [ ]
+  limitVerbose: [ ]
   ruleFail: None
   rulePass: None
 
