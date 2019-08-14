@@ -78,17 +78,6 @@ namespace PSRule.Commands
 
             context.VerboseFoundRule(ruleName: Name, scriptName: MyInvocation.ScriptName);
 
-            var visitor = new RuleLanguageAst(ruleName: Name, context: context);
-            Body.Ast.Visit(visitor);
-
-            if (visitor.Errors != null)
-            {
-                foreach (var errorRecord in visitor.Errors)
-                {
-                    WriteError(errorRecord: errorRecord);
-                }
-            }
-
             CheckDependsOn();
 
             var ps = PowerShell.Create();
