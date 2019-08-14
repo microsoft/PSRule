@@ -2,6 +2,7 @@
 ## Unreleased
 
 - Improve feedback of parsing errors. [#185](https://github.com/BernieWhite/PSRule/issues/185)
+- Fix outcome reported when error or exception is raised. [#211](https://github.com/BernieWhite/PSRule/issues/211)
 
 ## v0.8.0
 

@@ -62,6 +62,14 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.TargetName | Should -Be 'TestObject1';
         }
 
+        It 'Returns error' {
+            $withLoggingRulePath = (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1');
+            $result = $testObject | Invoke-PSRule -Path $withLoggingRulePath -Name 'WithError' -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Outcome | Should -Be 'Error';
+            $result.TargetName | Should -Be 'TestObject1';
+        }
+
         It 'Returns inconclusive' {
             $option = @{ 'Execution.InconclusiveWarning' = $False };
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile3' -Outcome All -Option $option;
@@ -784,7 +792,6 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 InformationAction = 'SilentlyContinue'
             }
             $option = New-PSRuleOption -LoggingLimitDebug 'WithDebug2', '[Discovery.Rule]';
-
             $testObject = [PSCustomObject]@{
                 Name = 'LoggingTest'
             }
@@ -818,7 +825,6 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 InformationAction = 'SilentlyContinue'
             }
             $option = New-PSRuleOption -LoggingLimitVerbose 'WithVerbose2', '[Discovery.Rule]';
-
             $testObject = [PSCustomObject]@{
                 Name = 'LoggingTest'
             }
@@ -1309,6 +1315,7 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
             $messages = @($outError);
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $False;
+            $result.Outcome | Should -Be 'Error';
             $messages.Length | Should -BeGreaterThan 0;
             $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
             $messages.Exception.Message | Should -BeLike 'An invalid rule result was returned for *';

@@ -167,10 +167,8 @@ namespace PSRule.Host
         public static void InvokeRuleBlock(PipelineContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)
         {
             PipelineContext.CurrentThread = context;
-
             var ps = ruleBlock.Condition;
             ps.Streams.ClearStreams();
-
             context.VerboseObjectStart();
 
             var invokeResult = ps.Invoke<RuleConditionResult>().FirstOrDefault();
@@ -179,6 +177,11 @@ namespace PSRule.Host
             {
                 ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
                 return;
+            }
+            else if (invokeResult.HadErrors || ps.HadErrors)
+            {
+                ruleRecord.OutcomeReason = RuleOutcomeReason.None;
+                ruleRecord.Outcome = RuleOutcome.Error;
             }
             else if (invokeResult.Count == 0)
             {
@@ -191,7 +194,6 @@ namespace PSRule.Host
                 ruleRecord.OutcomeReason = RuleOutcomeReason.Processed;
                 ruleRecord.Outcome = invokeResult.AllOf() ? RuleOutcome.Pass : RuleOutcome.Fail;
             }
-
             context.VerboseConditionResult(pass: invokeResult.Pass, count: invokeResult.Count, outcome: ruleRecord.Outcome);
         }
 
