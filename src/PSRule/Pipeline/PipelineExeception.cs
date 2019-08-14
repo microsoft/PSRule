@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace PSRule.Pipeline
 {
@@ -27,8 +28,12 @@ namespace PSRule.Pipeline
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
         /// <param name="innerException">A nested exception that caused the issue.</param>
-        protected PipelineExeception(string message, Exception innerException) :
-            base(message, innerException)
+        protected PipelineExeception(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected PipelineExeception(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

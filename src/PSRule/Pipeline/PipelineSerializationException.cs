@@ -5,38 +5,36 @@ using System.Security.Permissions;
 namespace PSRule.Pipeline
 {
     /// <summary>
-    /// A pipeline configuration exception.
+    /// A serialization exception.
     /// </summary>
     [Serializable]
-    public sealed class PipelineConfigurationException : PipelineExeception
+    public sealed class PipelineSerializationException : PipelineExeception
     {
         /// <summary>
-        /// Creates a pipeline configuration exception.
+        /// Creates a serialization exception.
         /// </summary>
-        public PipelineConfigurationException()
+        public PipelineSerializationException()
         {
         }
 
         /// <summary>
-        /// Creates a pipeline configuration exception.
+        /// Creates a serialization exception.
         /// </summary>
-        /// <param name="optionName">The name of the option that caused the exception.</param>
         /// <param name="message">The detail of the exception.</param>
-        public PipelineConfigurationException(string optionName, string message) : base(message)
+        public PipelineSerializationException(string message) : base(message)
         {
         }
 
         /// <summary>
-        /// Creates a pipeline configuration exception.
+        /// Creates a serialization exception.
         /// </summary>
-        /// <param name="optionName">The name of the option that caused the exception.</param>
         /// <param name="message">The detail of the exception.</param>
         /// <param name="innerException">A nested exception that caused the issue.</param>
-        public PipelineConfigurationException(string optionName, string message, Exception innerException) : base(message, innerException)
+        public PipelineSerializationException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
-        private PipelineConfigurationException(SerializationInfo info, StreamingContext context) : base(info, context)
+        private PipelineSerializationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 

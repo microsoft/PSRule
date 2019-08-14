@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PSRule.Pipeline;
 using PSRule.Resources;
 using System;
 using System.Collections.Generic;
@@ -124,7 +125,7 @@ namespace PSRule
         {
             if (reader.TokenType != JsonToken.StartObject && reader.TokenType != JsonToken.StartArray)
             {
-                throw new Exception("Read json failed");
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
             }
 
             var result = new List<PSObject>();
@@ -155,7 +156,7 @@ namespace PSRule
         {
             if (reader.TokenType != JsonToken.StartObject)
             {
-                throw new Exception("Read json failed");
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
             }
 
             reader.Read();
@@ -198,7 +199,7 @@ namespace PSRule
         {
             if (reader.TokenType != JsonToken.StartArray)
             {
-                throw new Exception("Read json failed");
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
             }
 
             reader.Read();

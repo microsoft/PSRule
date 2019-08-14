@@ -90,10 +90,6 @@ namespace PSRule.Parser
             // If the previous token was text, lessen the break but still don't allow merging
             if (current.Flag.HasFlag(MarkdownTokenFlag.LineBreak) && !current.Flag.ShouldPreserve())
             {
-                //current.Flag |= MarkdownTokenFlag.LineEnding | MarkdownTokenFlag.Preserve;
-
-                //current.Flag -= MarkdownTokenFlag.LineBreak;
-
                 return false;
             }
 
@@ -119,8 +115,6 @@ namespace PSRule.Parser
             }
             else if (current.Flag == MarkdownTokenFlag.LineEnding)
             {
-                //current.Text = string.Concat(current.Text, " ", text);
-
                 return false;
             }
 
@@ -277,24 +271,20 @@ namespace PSRule.Parser
         public MarkdownTokenType PeakTokenType(int offset = 1)
         {
             var p = _Position + offset;
-
             if (p < 0 || p >= _Token.Count)
             {
                 return MarkdownTokenType.None;
             }
-
             return _Token[p].Type;
         }
 
         public MarkdownToken Peak(int offset = 1)
         {
             var p = _Position + offset;
-
             if (p < 0 || p >= _Token.Count)
             {
                 return null;
             }
-
             return _Token[p];
         }
 
@@ -315,14 +305,12 @@ namespace PSRule.Parser
         {
             var start = Position;
             var count = 0;
-
             while (!EOF && Current.Type != tokenType)
             {
                 count++;
 
                 Next();
             }
-
             return _Token.GetRange(start, count);
         }
 
@@ -330,14 +318,12 @@ namespace PSRule.Parser
         {
             var start = Position;
             var count = 0;
-
             while (!EOF && IsTokenType(tokenType))
             {
                 count++;
 
                 Next();
             }
-
             return _Token.GetRange(start, count);
         }
 
@@ -367,12 +353,9 @@ namespace PSRule.Parser
             {
                 return null;
             }
-
             var token = _Token[_Position];
-
             _Token.RemoveAt(_Position);
             _Position = _Token.Count - 1;
-
             return token;
         }
 
@@ -387,7 +370,6 @@ namespace PSRule.Parser
             {
                 return null;
             }
-
             return _LinkTargetIndex[name];
         }
 
