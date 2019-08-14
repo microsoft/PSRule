@@ -15,7 +15,9 @@ bugs:
 tasks:
   clear:
     steps:
-      - gitPrune: origin
+      - gitPrune:
+          name: origin
+          removeGone: true
   build:
     steps:
       - powershell: Invoke-Build Build
