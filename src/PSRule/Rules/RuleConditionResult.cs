@@ -9,11 +9,13 @@ namespace PSRule.Rules
     {
         public readonly int Pass;
         public readonly int Count;
+        public readonly bool HadErrors;
 
-        private RuleConditionResult(int pass, int count)
+        private RuleConditionResult(int pass, int count, bool hadErrors)
         {
             Pass = pass;
             Count = count;
+            HadErrors = hadErrors;
         }
 
         public bool AllOf()
@@ -30,10 +32,11 @@ namespace PSRule.Rules
         {
             var count = 0;
             var pass = 0;
+            var hasError = false;
 
             if (value == null)
             {
-                return new RuleConditionResult(pass: 0, count: 0);
+                return new RuleConditionResult(pass: 0, count: 0, hadErrors: false);
             }
 
             foreach (var v in value)
@@ -47,7 +50,7 @@ namespace PSRule.Rules
                 else if (!(TryAssertResult(v, out bool bresult) || TryBoolean(v, out bresult)))
                 {
                     PipelineContext.CurrentThread.ErrorInvaildRuleResult();
-
+                    hasError = true;
                     continue;
                 }
                 else if (bresult)
@@ -56,7 +59,7 @@ namespace PSRule.Rules
                 }
             }
 
-            return new RuleConditionResult(pass: pass, count: count);
+            return new RuleConditionResult(pass: pass, count: count, hadErrors: hasError);
         }
 
         private static bool TryBoolean(object o, out bool result)
