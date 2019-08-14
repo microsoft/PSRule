@@ -223,6 +223,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not find required rule definition parameter &apos;{0}&apos; on rule at {1}..
+        /// </summary>
+        internal static string RuleParameterNotFound {
+            get {
+                return ResourceManager.GetString("RuleParameterNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [PSRule][D] -- Scanning for source files in module: {0}.
         /// </summary>
         internal static string ScanModule {

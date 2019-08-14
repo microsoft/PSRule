@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Improve feedback of parsing errors. [#185](https://github.com/BernieWhite/PSRule/issues/185)
+
 ## v0.8.0
 
 What's changed since v0.7.0:

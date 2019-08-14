@@ -3,14 +3,16 @@
 namespace PSRule.Pipeline
 {
     /// <summary>
-    /// A runtime exception.
+    /// A parser exception.
     /// </summary>
-    public sealed class RuleRuntimeException : PipelineExeception
+    public sealed class RuleParseException : PipelineExeception
     {
+        public readonly string ErrorId;
+
         /// <summary>
         /// Creates a rule exception.
         /// </summary>
-        public RuleRuntimeException()
+        public RuleParseException()
         {
         }
 
@@ -18,8 +20,9 @@ namespace PSRule.Pipeline
         /// Creates a rule exception.
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
-        public RuleRuntimeException(string message) : base(message)
+        public RuleParseException(string message, string errorId) : base(message)
         {
+            ErrorId = errorId;
         }
 
         /// <summary>
@@ -27,8 +30,9 @@ namespace PSRule.Pipeline
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
         /// <param name="innerException">A nested exception that caused the issue.</param>
-        public RuleRuntimeException(string message, Exception innerException) : base(message, innerException)
+        public RuleParseException(string message, string errorId, Exception innerException) : base(message, innerException)
         {
+            ErrorId = errorId;
         }
     }
 }

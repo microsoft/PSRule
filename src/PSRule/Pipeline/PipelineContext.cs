@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Management.Automation;
+using System.Management.Automation.Language;
 using System.Management.Automation.Runspaces;
 using System.Security.Cryptography;
 using System.Text;
@@ -318,6 +319,31 @@ namespace PSRule.Pipeline
             }
 
             _Logger.WriteVerbose(string.Concat(GetLogPrefix(), " -- [", pass, "/", count, "] [", outcome, "]"));
+        }
+
+        public void WriteError(ErrorRecord record)
+        {
+            if (!_Logger.ShouldWriteError())
+            {
+                return;
+            }
+            _Logger.WriteError(errorRecord: record);
+        }
+
+        public void WriteError(ParseError error)
+        {
+            if (!_Logger.ShouldWriteError())
+            {
+                return;
+            }
+            var record = new ErrorRecord
+            (
+                exception: new RuleParseException(message: error.Message, errorId: error.ErrorId),
+                errorId: error.ErrorId,
+                errorCategory: ErrorCategory.InvalidOperation,
+                targetObject: null
+            );
+            _Logger.WriteError(errorRecord: record);
         }
 
         internal static void EnableLogging(PowerShell ps)

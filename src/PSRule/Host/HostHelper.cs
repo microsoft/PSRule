@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Management.Automation;
+using System.Management.Automation.Language;
 
 namespace PSRule.Host
 {
@@ -103,6 +104,28 @@ namespace PSRule.Host
 
                     PipelineContext.CurrentThread.VerboseRuleDiscovery(path: source.Path);
                     PipelineContext.CurrentThread.EnterSourceScope(source: source);
+
+                    var scriptAst = System.Management.Automation.Language.Parser.ParseFile(source.Path, out Token[] tokens, out ParseError[] errors);
+                    var visitor = new RuleLanguageAst(PipelineContext.CurrentThread);
+                    scriptAst.Visit(visitor);
+
+                    if (visitor.Errors != null && visitor.Errors.Count > 0)
+                    {
+                        foreach (var record in visitor.Errors)
+                        {
+                            PipelineContext.CurrentThread.WriteError(record);
+                        }
+                        continue;
+                    }
+
+                    if (errors != null && errors.Length > 0)
+                    {
+                        foreach (var error in errors)
+                        {
+                            PipelineContext.CurrentThread.WriteError(error);
+                        }
+                        continue;
+                    }
 
                     // Invoke script
                     ps.AddScript(string.Concat("& '", source.Path, "'"), true);

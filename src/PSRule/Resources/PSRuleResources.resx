@@ -176,6 +176,10 @@
   <data name="RuleNotFound" xml:space="preserve">
     <value>Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.</value>
   </data>
+  <data name="RuleParameterNotFound" xml:space="preserve">
+    <value>Could not find required rule definition parameter '{0}' on rule at {1}.</value>
+    <comment>Occurs when a rule definition is missing a mandatory parameter.</comment>
+  </data>
   <data name="ScanModule" xml:space="preserve">
     <value>[PSRule][D] -- Scanning for source files in module: {0}</value>
   </data>

@@ -1280,14 +1280,25 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
         WarningAction = 'SilentlyContinue'
     }
 
-    Context 'Rule definition' {
+    Context 'Parsing' {
+        $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileParseError.Rule.ps1');
+        $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithNestedRule;
+        $messages = @($outError);
+
         It 'Error on nested rules' {
-            $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileNested.Rule.ps1');
-            $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithNestedRule;
-            $messages = @($outError);
-            $messages.Length | Should -BeGreaterThan 0;
-            $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
-            $messages.Exception.Message | Should -BeLike 'Rule nesting was detected in rule *';
+            $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidRuleNesting' });
+            $filteredResult.Length | Should -Be 1;
+            $filteredResult[0].Exception | Should -BeOfType PSRule.Pipeline.RuleParseException;
+            $filteredResult[0].Exception.Message | Should -BeLike 'Rule nesting was detected in rule *';
+        }
+
+        It 'Error on missing parameter' {
+            $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.RuleParameterNotFound' });
+            $filteredResult.Length | Should -Be 3;
+            $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.RuleParseException;
+            $filteredResult[0].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Name'' on rule at * line *';
+            $filteredResult[1].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Name'' on rule at * line *';
+            $filteredResult[2].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Body'' on rule at * line *';
         }
     }
 
