@@ -1,0 +1,21 @@
+
+info:
+  name: PSRule
+  description: |
+    A cross-platform PowerShell module (Windows, Linux, and MacOS) with commands to validate objects on the pipeline using PowerShell syntax.
+  url: https://berniewhite.github.io/PSRule/
+
+repository:
+  type: git
+  url: https://github.com/BernieWhite/PSRule.git
+
+bugs:
+  url: https://github.com/BernieWhite/PSRule/issues
+
+tasks:
+  clear:
+    steps:
+      - gitPrune: origin
+  build:
+    steps:
+      - powershell: Invoke-Build Build
