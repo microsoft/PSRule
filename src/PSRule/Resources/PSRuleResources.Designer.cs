@@ -205,6 +205,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Read JSON failed..
+        /// </summary>
+        internal static string ReadJsonFailed {
+            get {
+                return ResourceManager.GetString("ReadJsonFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inconclusive result reported for &apos;{1}&apos; @{0}..
         /// </summary>
         internal static string RuleInconclusive {

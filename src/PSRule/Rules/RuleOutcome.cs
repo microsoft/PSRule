@@ -1,13 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
 
 namespace PSRule.Rules
 {
     /// <summary>
     /// The outcome of a rule.
     /// </summary>
-    [Flags]
     [JsonConverter(typeof(StringEnumConverter))]
     public enum RuleOutcome : byte
     {

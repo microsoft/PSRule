@@ -13,11 +13,8 @@ namespace PSRule.Pipeline
     /// <summary>
     /// A helper to construct an invoke pipeline.
     /// </summary>
-    public sealed class InvokeRulePipelineBuilder
+    public sealed class InvokeRulePipelineBuilder : PipelineBuilderBase
     {
-        private readonly PSRuleOption _Option;
-        private readonly PipelineLogger _Logger;
-
         private RuleSource[] _Source;
         private Hashtable _Tag;
         private RuleOutcome _Outcome;
@@ -32,8 +29,6 @@ namespace PSRule.Pipeline
 
         internal InvokeRulePipelineBuilder()
         {
-            _Logger = new PipelineLogger();
-            _Option = new PSRuleOption();
             _Outcome = RuleOutcome.Processed;
             _BindTargetNameHook = PipelineHookActions.DefaultTargetNameBinding;
             _BindTargetTypeHook = PipelineHookActions.DefaultTargetTypeBinding;
@@ -58,16 +53,11 @@ namespace PSRule.Pipeline
             _Outcome = outcome;
         }
 
-        public void UseCommandRuntime(ICommandRuntime2 commandRuntime)
+        public override void UseCommandRuntime(ICommandRuntime2 commandRuntime)
         {
-            _Logger.UseCommandRuntime(commandRuntime);
+            base.UseCommandRuntime(commandRuntime);
             _ShouldProcess = commandRuntime.ShouldProcess;
             _Output = commandRuntime.WriteObject;
-        }
-
-        public void UseExecutionContext(EngineIntrinsics executionContext)
-        {
-            _Logger.UseExecutionContext(executionContext);
         }
 
         public void AddBindTargetNameAction(BindTargetNameAction action)
@@ -240,7 +230,7 @@ namespace PSRule.Pipeline
                 _Option.Suppression = new SuppressionOption(option.Suppression);
             }
 
-            _Logger.Configure(_Option);
+            ConfigureLogger(_Option);
             return this;
         }
 
@@ -295,7 +285,7 @@ namespace PSRule.Pipeline
             }
 
             var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
-            var context = PipelineContext.New(logger: _Logger, option: _Option, bindTargetName: _BindTargetNameHook, bindTargetType: _BindTargetTypeHook);
+            var context = PrepareContext(bindTargetName: _BindTargetNameHook, bindTargetType: _BindTargetTypeHook);
             var pipeline = new InvokeRulePipeline(
                 streamManager: new StreamManager(option: _Option, stream: _Stream, input: _VisitTargetObject),
                 option: _Option,
@@ -347,15 +337,10 @@ namespace PSRule.Pipeline
         {
             var rootedPath = PSRuleOption.GetRootedPath(path: path);
             var parentPath = Directory.GetParent(rootedPath);
-
-            if (!parentPath.Exists)
+            if (!parentPath.Exists && shouldProcess(target: parentPath.FullName, action: PSRuleResources.ShouldCreatePath))
             {
-                if (shouldProcess(target: parentPath.FullName, action: PSRuleResources.ShouldCreatePath))
-                {
-                    Directory.CreateDirectory(path: parentPath.FullName);
-                }
+                Directory.CreateDirectory(path: parentPath.FullName);
             }
-
             if (shouldProcess(target: rootedPath, action: PSRuleResources.ShouldWriteFile))
             {
                 File.WriteAllText(path: rootedPath, contents: o.ToString(), encoding: encoding);
