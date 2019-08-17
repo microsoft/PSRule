@@ -19,7 +19,7 @@ You can download and install the PSRule module from the PowerShell Gallery.
 
 Module | Description | Downloads / instructions
 ------ | ----------- | ------------------------
-PSRule | Validate objects using PowerShell rules | [latest][module] / [instructions][install]
+PSRule | Validate objects using PowerShell rules. | [latest][module] / [instructions][install]
 
 ![module-ci-badge] ![module-version-badge] ![module-downloads-badge]
 
@@ -29,9 +29,17 @@ You can download and install the companion extension for Visual Studio Code from
 
 Extension | Description | Downloads / instructions
 --------- | ----------- | ------------------------
-PSRule    | An extension for IT Pros using the PSRule PowerShell module | [latest][extension] / [instructions][install]
+PSRule    | An extension for IT Pros using the PSRule PowerShell module. | [latest][extension] / [instructions][install]
 
 ![extension-ci-badge] ![extension-version-badge] ![extension-installs-badge]
+
+## Additional modules
+
+You can optionally download and install rules modules from the PowerShell Gallery.
+
+Module             | Description | Version / downloads
+------             | ----------- | -------------------
+PSRule.Rules.Azure | A suite of rules to validate Azure resources using PSRule. | [![rules-azure-version-badge]][rules-azure-version-module] [![rules-azure-downloads-badge]][rules-azure-version-module]
 
 ## Support
 
@@ -48,3 +56,6 @@ If you have any problems please check our GitHub [issues](https://github.com/Ber
 [extension-ci-badge]: https://dev.azure.com/bewhite/PSRule-vscode/_apis/build/status/PSRule-vscode-CI?branchName=master
 [extension-version-badge]: https://vsmarketplacebadge.apphb.com/version/bewhite.psrule-vscode-preview.svg
 [extension-installs-badge]: https://vsmarketplacebadge.apphb.com/installs-short/bewhite.psrule-vscode-preview.svg
+[rules-azure-version-badge]: https://img.shields.io/powershellgallery/v/PSRule.Rules.Azure.svg?label=PowerShell%20Gallery&color=brightgreen
+[rules-azure-downloads-badge]: https://img.shields.io/powershellgallery/dt/PSRule.Rules.Azure.svg?color=brightgreen
+[rules-azure-version-module]: https://www.powershellgallery.com/packages/PSRule.Rules.Azure
