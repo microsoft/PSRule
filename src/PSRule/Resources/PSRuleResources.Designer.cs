@@ -304,6 +304,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Within parameter Value must be a string when the Like parameter is used..
+        /// </summary>
+        internal static string WithinLikeNotString {
+            get {
+                return ResourceManager.GetString("WithinLikeNotString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Within: {0}.
         /// </summary>
         internal static string WithinTrue {

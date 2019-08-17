@@ -245,6 +245,11 @@ Rule 'WithinNot' {
 }
 
 # Synopsis: Test for Within keyword
+Rule 'WithinLike' {
+    Within 'Title' -Like 'M*s'
+}
+
+# Synopsis: Test for Within keyword
 Rule 'WithinTypes' {
     Within 'BooleanValue' $True
     Within 'IntValue' 0, 1, 2, 3

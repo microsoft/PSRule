@@ -172,13 +172,14 @@ The `Within` assertion is used within a `Rule` definition to assert that the val
 Syntax:
 
 ```text
-Within [-Field] <string> [-Value] <PSObject[]> [-CaseSensitive] [-Not] [-Reason <string>] [-InputObject <PSObject>]
+Within [-Field] <string> [-Not] [-Like] [-Value] <PSObject[]> [-CaseSensitive] [-Reason <string>] [-InputObject <PSObject>]
 ```
 
 - `Field` - The name of the field that will be evaluated on the pipeline object.
 - `Value` - A list of values that the field value must match.
 - `CaseSensitive` - The field _value_ must match exact case. Only applies when the field value and allowed values are strings.
 - `Not` - Instead of checking the field value matches, the field value must not match any of the supplied values.
+- `Like` - Instead of using an exact match, a wildcard match is used. This switch can only be used when `Value` a string type.
 - `Reason` - A custom reason provided if the condition fails.
 - `InputObject` - Supports objects being piped directly.
 
@@ -194,7 +195,14 @@ Rule 'validateTitle' {
 ```powershell
 # Synopsis: Ensure that the title field is not one of the specified values
 Rule 'validateTitle' {
-    Within 'Title' 'Mr', 'Sir' -Not
+    Within 'Title' -Not 'Mr', 'Sir'
+}
+```
+
+```powershell
+# Synopsis: Ensure that the title field has one of the allowed values
+Rule 'validateTitle' {
+    Within 'Title' -Like 'Mr', 'M*s'
 }
 ```
 
@@ -203,6 +211,8 @@ Output:
 If **any** of the values match the field value then `Within` returns `$True`, otherwise `$False`.
 
 When `-Not` is used, if any of the values match the field value with `Within` return `$False`, otherwise `$True`.
+
+When `-Like` is used, the field value is matched against one or more wildcard expressions.
 
 ### AllOf
 

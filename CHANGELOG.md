@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Added support for a wildcard match using the `Within` keyword. [#272](https://github.com/BernieWhite/PSRule/issues/272)
+
 ## v0.9.0-B190810 (pre-release)
 
 - Improve feedback of parsing errors. [#185](https://github.com/BernieWhite/PSRule/issues/185)

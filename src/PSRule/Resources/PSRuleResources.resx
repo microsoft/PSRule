@@ -205,6 +205,9 @@
   <data name="VariableConditionScope" xml:space="preserve">
     <value>The variable '${0}' can only be used within a Rule block.</value>
   </data>
+  <data name="WithinLikeNotString" xml:space="preserve">
+    <value>The Within parameter Value must be a string when the Like parameter is used.</value>
+  </data>
   <data name="WithinTrue" xml:space="preserve">
     <value>Within: {0}</value>
   </data>
