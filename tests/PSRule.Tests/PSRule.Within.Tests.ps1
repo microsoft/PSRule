@@ -91,6 +91,24 @@ Describe 'PSRule -- Within keyword' -Tag 'Within' {
             $result[1].Reason | Should -BeLike "The value '*' was within the set.";
         }
 
+        It 'With -Like' {
+            $testObject = @(
+                [PSCustomObject]@{ Title = 'Miss' }
+                [PSCustomObject]@{ Title = 'Mr' }
+                [PSCustomObject]@{ Title = 'Ms' }
+                [PSCustomObject]@{ Title = 'Mrs' }
+            )
+
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'WithinLike';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 4;
+            $result.RuleName | Should -BeIn 'WithinLike';
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[2].IsSuccess() | Should -Be $True;
+            $result[3].IsSuccess() | Should -Be $True;
+        }
+
         It 'If pre-condition' {
             $testObject = @(
                 [PSCustomObject]@{

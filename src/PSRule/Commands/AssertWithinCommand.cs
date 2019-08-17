@@ -13,10 +13,12 @@ namespace PSRule.Commands
     internal sealed class AssertWithinCommand : RuleKeyword
     {
         private StringComparer _Comparer;
+        private WildcardPattern[] _LikePattern;
 
         public AssertWithinCommand()
         {
             CaseSensitive = false;
+            Like = false;
         }
 
         [Parameter(Mandatory = true, Position = 0)]
@@ -38,20 +40,23 @@ namespace PSRule.Commands
         [PSDefaultValue(Value = false)]
         public SwitchParameter CaseSensitive { get; set; }
 
+        [Parameter(Mandatory = false)]
+        [PSDefaultValue(Value = false)]
+        public SwitchParameter Like { get; set; }
+
         [Parameter(Mandatory = false, ValueFromPipeline = true)]
         public PSObject InputObject { get; set; }
 
         protected override void BeginProcessing()
         {
             _Comparer = CaseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
+            BuildPattern();
         }
 
         protected override void ProcessRecord()
         {
             if (!IsRuleScope())
-            {
                 throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordRuleScope, LanguageKeywords.Within));
-            }
 
             var targetObject = InputObject ?? GetTargetObject();
             bool expected = !Not;
@@ -78,12 +83,12 @@ namespace PSRule.Commands
                         }
                     }
                     // String compare
-                    else if (fieldValue is string && Value[i].BaseObject is string)
+                    else if (fieldValue is string strValue && Value[i].BaseObject is string)
                     {
-                        if (_Comparer.Equals(Value[i].BaseObject, fieldValue))
+                        if ((_LikePattern == null && _Comparer.Equals(Value[i].BaseObject, strValue)) || (_LikePattern != null && _LikePattern[i].IsMatch(strValue)))
                         {
                             match = true;
-                            PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: fieldValue);
+                            PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: strValue);
                             found = Value[i].BaseObject.ToString();
                         }
                     }
@@ -104,6 +109,44 @@ namespace PSRule.Commands
                 WriteReason(Not ? string.Format(ReasonStrings.WithinNot, found) : ReasonStrings.Within);
             }
             WriteObject(result);
+        }
+
+        private void BuildPattern()
+        {
+            if (!Like || Value.Length == 0)
+                return;
+
+            if (TryExpressionCache())
+                return;
+
+            _LikePattern = new WildcardPattern[Value.Length];
+            for (var i = 0; i < _LikePattern.Length; i++)
+            {
+                if (!TryStringValue(Value[i], out string value))
+                {
+                    throw new RuleRuntimeException(PSRuleResources.WithinLikeNotString);
+                }
+                _LikePattern[i] = WildcardPattern.Get(value, CaseSensitive ? WildcardOptions.None : WildcardOptions.IgnoreCase);
+            }
+            PipelineContext.CurrentThread.ExpressionCache[MyInvocation.PositionMessage] = _LikePattern;
+        }
+
+        private bool TryExpressionCache()
+        {
+            if (!PipelineContext.CurrentThread.ExpressionCache.TryGetValue(MyInvocation.PositionMessage, out object cacheValue))
+                return false;
+
+            _LikePattern = (WildcardPattern[])cacheValue;
+            return true;
+        }
+
+        private static bool TryStringValue(PSObject o, out string value)
+        {
+            value = null;
+            if (o == null || !(o.BaseObject is string))
+                return false;
+            value = o.BaseObject.ToString();
+            return true;
         }
     }
 }

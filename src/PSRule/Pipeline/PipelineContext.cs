@@ -57,6 +57,7 @@ namespace PSRule.Pipeline
         internal Dictionary<string, Hashtable> DataCache;
         internal string[] SourceContentCache;
         internal ExecutionScope ExecutionScope;
+        internal Dictionary<string, object> ExpressionCache;
 
         public HashAlgorithm ObjectHashAlgorithm
         {
@@ -98,6 +99,7 @@ namespace PSRule.Pipeline
 
             _NameTokenCache = new Dictionary<string, NameToken>();
             DataCache = new Dictionary<string, Hashtable>();
+            ExpressionCache = new Dictionary<string, object>();
 
             _Reason = new List<string>();
         }
@@ -525,6 +527,7 @@ namespace PSRule.Pipeline
                     _RuleTimer.Stop();
                     _NameTokenCache.Clear();
                     DataCache.Clear();
+                    ExpressionCache.Clear();
                 }
 
                 _Disposed = true;
