@@ -11,9 +11,11 @@ namespace PSRule.Rules
     {
         private const string ONLINE_HELP_LINK_ANNOTATION = "online version";
 
-        internal RuleHelpInfo(string name)
+        internal RuleHelpInfo(string name, string displayName, string moduleName)
         {
             Name = name;
+            DisplayName = displayName;
+            ModuleName = moduleName;
         }
 
         /// <summary>
@@ -21,6 +23,21 @@ namespace PSRule.Rules
         /// </summary>
         [JsonProperty(PropertyName = "name")]
         public string Name { get; private set; }
+
+        /// <summary>
+        /// A localized display name for the rule.
+        /// </summary>
+        [JsonProperty(PropertyName = "displayName")]
+        public string DisplayName { get; private set; }
+
+        /// <summary>
+        /// The name of the module.
+        /// </summary>
+        /// <remarks>
+        /// This will be null if the rule is not contained within a module.
+        /// </remarks>
+        [JsonProperty(PropertyName = "moduleName")]
+        public string ModuleName { get; private set; }
 
         /// <summary>
         /// The synopsis of the rule.

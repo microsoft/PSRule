@@ -1224,6 +1224,8 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
             $result = @(Get-PSRuleHelp -Name 'FromFile1' -Culture 'en-ZZ' -Path $ruleFilePath -WarningAction SilentlyContinue);
             $result.Length | Should -Be 1;
             $result[0].Name | Should -Be 'FromFile1';
+            $result[0].DisplayName | Should -Be 'Is FromFile1'
+            $result[0].ModuleName | Should -BeNullOrEmpty;
             $result[0].Synopsis | Should -Be 'This is a synopsis.';
             $result[0].Description | Should -Be 'This is a description.';
             $result[0].Recommendation | Should -Be 'This is a recommendation.';
@@ -1234,8 +1236,16 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
 
     Context 'With -Module' {
         It 'Docs from module' {
-            $result = @(Get-PSRuleHelp -Module 'TestModule');
+            $result = @(Get-PSRuleHelp -Module 'TestModule' -Culture 'en-US');
             $result.Length | Should -Be 2;
+            $result[0].Name | Should -Be 'M1.Rule1';
+            $result[0].DisplayName | Should -Be 'Module Rule1';
+            $result[0].ModuleName | Should -Be 'TestModule';
+            $result[0].Synopsis | Should -Be 'Synopsis en-US.'
+            $result[0].Recommendation | Should -Be 'Recommendation en-US.'
+            $result[1].Name | Should -Be 'M1.Rule2';
+            $result[1].DisplayName | Should -Be 'M1.Rule2';
+            $result[1].ModuleName | Should -Be 'TestModule';
         }
     }
 

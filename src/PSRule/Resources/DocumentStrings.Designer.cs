@@ -70,11 +70,29 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DISPLAY NAME.
+        /// </summary>
+        internal static string DisplayName {
+            get {
+                return ResourceManager.GetString("DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RELATED LINKS.
         /// </summary>
         internal static string Links {
             get {
                 return ResourceManager.GetString("Links", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MODULE NAME.
+        /// </summary>
+        internal static string ModuleName {
+            get {
+                return ResourceManager.GetString("ModuleName", resourceCulture);
             }
         }
         

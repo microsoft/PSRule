@@ -120,8 +120,14 @@
   <data name="Description" xml:space="preserve">
     <value>DESCRIPTION</value>
   </data>
+  <data name="DisplayName" xml:space="preserve">
+    <value>DISPLAY NAME</value>
+  </data>
   <data name="Links" xml:space="preserve">
     <value>RELATED LINKS</value>
+  </data>
+  <data name="ModuleName" xml:space="preserve">
+    <value>MODULE NAME</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>NAME</value>
