@@ -13,7 +13,29 @@
                   <LeftIndent>4</LeftIndent>
                   <CustomItem>
                     <ExpressionBinding>
-                      <PropertyName>NAME</PropertyName>
+                      <PropertyName>Name</PropertyName>
+                    </ExpressionBinding>
+                    <NewLine/>
+                  </CustomItem>
+                </Frame>
+              </CustomItem>
+            </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </Control>
+    <Control>
+      <Name>Help-DisplayName</Name>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+              <CustomItem>
+                <Text AssemblyName="PSRule" BaseName="PSRule.Resources.DocumentStrings" ResourceId="DisplayName"/>
+                <NewLine />
+                <Frame>
+                  <LeftIndent>4</LeftIndent>
+                  <CustomItem>
+                    <ExpressionBinding>
+                      <PropertyName>DisplayName</PropertyName>
                     </ExpressionBinding>
                     <NewLine/>
                   </CustomItem>
@@ -335,20 +357,28 @@
                     <CustomItem>
                       <NewLine />
                       <ExpressionBinding>
-                        <CustomControlName>Help-Synopsis</CustomControlName>
+                        <CustomControlName>Help-DisplayName</CustomControlName>
                       </ExpressionBinding>
                       <Frame>
                         <CustomItem>
                           <NewLine />
                           <ExpressionBinding>
-                            <CustomControlName>Help-Description</CustomControlName>
+                            <CustomControlName>Help-Synopsis</CustomControlName>
                           </ExpressionBinding>
                           <Frame>
                             <CustomItem>
                               <NewLine />
                               <ExpressionBinding>
-                                <CustomControlName>Help-Recommendation</CustomControlName>
+                                <CustomControlName>Help-Description</CustomControlName>
                               </ExpressionBinding>
+                              <Frame>
+                                <CustomItem>
+                                  <NewLine />
+                                  <ExpressionBinding>
+                                    <CustomControlName>Help-Recommendation</CustomControlName>
+                                  </ExpressionBinding>
+                                </CustomItem>
+                              </Frame>
                             </CustomItem>
                           </Frame>
                         </CustomItem>

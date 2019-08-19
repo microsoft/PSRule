@@ -2,6 +2,8 @@
 ## Unreleased
 
 - Added support for a wildcard match using the `Within` keyword. [#272](https://github.com/BernieWhite/PSRule/issues/272)
+- Added rule info display name. [#276](https://github.com/BernieWhite/PSRule/issues/276)
+- Fix ModuleName not displayed in Get-PSRuleHelp list. [#275](https://github.com/BernieWhite/PSRule/issues/275)
 
 ## v0.9.0-B190810 (pre-release)
 

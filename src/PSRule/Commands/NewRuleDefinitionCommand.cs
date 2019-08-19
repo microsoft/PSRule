@@ -67,9 +67,7 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             if (!IsScriptScope())
-            {
                 throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordScriptScope, LanguageKeywords.Rule));
-            }
 
             var context = PipelineContext.CurrentThread;
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
@@ -89,12 +87,10 @@ namespace PSRule.Commands
 
             PipelineContext.EnableLogging(ps);
 
-            var helpInfo = GetHelpInfo(context: context, name: Name) ?? new RuleHelpInfo(name: Name);
+            var helpInfo = GetHelpInfo(context: context, name: Name) ?? new RuleHelpInfo(name: Name, displayName: Name, moduleName: source.ModuleName);
 
             if (helpInfo.Synopsis == null)
-            {
                 helpInfo.Synopsis = metadata.Synopsis;
-            }
 
             var block = new RuleBlock(
                 source: source,
@@ -105,7 +101,6 @@ namespace PSRule.Commands
                 dependsOn: RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName, source.ModuleName),
                 configuration: Configure
             );
-
             WriteObject(block);
         }
 
@@ -122,25 +117,20 @@ namespace PSRule.Commands
                         targetObject: null
                     ));
                 }
-                //else if (DependsOn.Length )
             }
         }
 
         private RuleHelpInfo GetHelpInfo(PipelineContext context, string name)
         {
             if (context.Source.HelpPath == null || context.Source.HelpPath.Length == 0)
-            {
                 return null;
-            }
 
             for (var i = 0; i < context.Source.HelpPath.Length; i++)
             {
                 var path = Path.Combine(context.Source.HelpPath[i], $"{name}.md");
 
                 if (!File.Exists(path))
-                {
                     continue;
-                }
 
                 var reader = new MarkdownReader(yamlHeaderOnly: false);
                 var stream = reader.Read(markdown: File.ReadAllText(path: path), path: path);
@@ -149,7 +139,7 @@ namespace PSRule.Commands
 
                 if (document != null)
                 {
-                     return new RuleHelpInfo(name: name)
+                     return new RuleHelpInfo(name: name, displayName: document.Name ?? name, moduleName: context.Source.ModuleName)
                      {
                          Synopsis = document.Synopsis?.Text,
                          Description = document.Description?.Text,
@@ -159,7 +149,6 @@ namespace PSRule.Commands
                      };
                 }
             }
-
             return null;
         }
     }
