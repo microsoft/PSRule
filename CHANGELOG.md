@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Fix export of `Like` parameter for `Within` keyword. [#279](https://github.com/BernieWhite/PSRule/issues/279)
+
 ## v0.9.0-B190819 (pre-release)
 
 - Added support for a wildcard match using the `Within` keyword. [#272](https://github.com/BernieWhite/PSRule/issues/272)
