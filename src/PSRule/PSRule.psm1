@@ -1109,15 +1109,18 @@ function Within {
         [Parameter(Mandatory = $True, Position = 0)]
         [String]$Field,
 
+        [Parameter(Mandatory = $False)]
+        [Switch]$Not = $False,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$Like = $False,
+
         [Parameter(Mandatory = $True, Position = 1)]
         [Alias('AllowedValue')]
         [PSObject[]]$Value,
 
         [Parameter(Mandatory = $False)]
         [Switch]$CaseSensitive = $False,
-
-        [Parameter(Mandatory = $False)]
-        [Switch]$Not = $False,
 
         [Parameter(Mandatory = $False)]
         [String]$Reason,
