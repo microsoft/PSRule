@@ -3,9 +3,13 @@ using System.Management.Automation;
 
 namespace PSRule.Configuration
 {
+    /// <summary>
+    /// Used by custom binding functions.
+    /// </summary>
     public delegate string BindTargetName(PSObject targetObject);
 
-    public delegate string BindTargetNameAction(PSObject targetObject, BindTargetName next);
+    internal delegate string BindTargetMethod(string[] propertyNames, bool caseSensitive, PSObject targetObject);
+    internal delegate string BindTargetFunc(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetMethod next);
 
     /// <summary>
     /// Hooks that provide customize pipeline execution.

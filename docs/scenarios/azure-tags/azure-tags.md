@@ -195,12 +195,11 @@ An extract from _ps-rule.yaml_:
 
 ```yaml
 # Configure business units that are allowed
-baseline:
-  configuration:
-    allowedBusinessUnits:
-    - 'IT Operations'
-    - 'Finance'
-    - 'HR'
+configuration:
+  allowedBusinessUnits:
+  - 'IT Operations'
+  - 'Finance'
+  - 'HR'
 ```
 
 ## Execute rules

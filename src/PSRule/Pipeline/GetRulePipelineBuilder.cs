@@ -1,6 +1,5 @@
 ﻿using PSRule.Configuration;
-using PSRule.Rules;
-using System.Collections;
+using System.Threading;
 
 namespace PSRule.Pipeline
 {
@@ -9,19 +8,6 @@ namespace PSRule.Pipeline
     /// </summary>
     public sealed class GetRulePipelineBuilder : PipelineBuilderBase
     {
-        private RuleSource[] _Source;
-        private Hashtable _Tag;
-
-        public void FilterBy(Hashtable tag)
-        {
-            _Tag = tag;
-        }
-
-        public void Source(RuleSource[] source)
-        {
-            _Source = source;
-        }
-
         public GetRulePipelineBuilder Configure(PSRuleOption option)
         {
             if (option == null)
@@ -30,11 +16,11 @@ namespace PSRule.Pipeline
             }
 
             _Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
+            _Option.Output.Culture = option.Output.Culture ?? new string[] { Thread.CurrentThread.CurrentCulture.ToString() };
 
-            if (option.Baseline != null)
+            if (option.Rule != null)
             {
-                _Option.Baseline.RuleName = option.Baseline.RuleName;
-                _Option.Baseline.Exclude = option.Baseline.Exclude;
+                _Option.Rule = new RuleOption(option.Rule);
             }
 
             ConfigureLogger(_Option);
@@ -43,9 +29,8 @@ namespace PSRule.Pipeline
 
         public GetRulePipeline Build()
         {
-            var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
             var context = PrepareContext(bindTargetName: null, bindTargetType: null);
-            return new GetRulePipeline(option: _Option, source: _Source, filter: filter, context: context);
+            return new GetRulePipeline(source: GetSource(), context: context);
         }
     }
 }

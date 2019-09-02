@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -23,7 +22,7 @@ namespace PSRule.Rules
             TargetObject = targetObject;
             TargetName = targetName;
             TargetType = targetType;
-            
+
             if (tag != null)
             {
                 Tag = tag.ToHashtable();

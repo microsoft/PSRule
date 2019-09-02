@@ -54,86 +54,86 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
-    Context 'Read Baseline.RuleName' {
+    Context 'Read Rule.Include' {
         It 'from default' {
             $option = New-PSRuleOption;
-            $option.Baseline.RuleName | Should -Be $Null;
+            $option.Rule.Include | Should -Be $Null;
         }
 
         It 'from Hashtable' {
             # With single item
-            $option = New-PSRuleOption -Option @{ 'Baseline.RuleName' = 'rule1' };
-            $option.Baseline.RuleName | Should -BeIn 'rule1';
+            $option = New-PSRuleOption -Option @{ 'Rule.Include' = 'rule1' };
+            $option.Rule.Include | Should -BeIn 'rule1';
 
             # With array
-            $option = New-PSRuleOption -Option @{ 'Baseline.RuleName' = 'rule1', 'rule2' };
-            $option.Baseline.RuleName | Should -BeIn 'rule1', 'rule2';
+            $option = New-PSRuleOption -Option @{ 'Rule.Include' = 'rule1', 'rule2' };
+            $option.Rule.Include | Should -BeIn 'rule1', 'rule2';
         }
 
         It 'from YAML' {
             # With single item
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Baseline.RuleName | Should -BeIn 'rule1';
+            $option.Rule.Include | Should -BeIn 'rule1';
 
             # With array
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests2.yml');
-            $option.Baseline.RuleName | Should -BeIn 'rule1', 'rule2';
+            $option.Rule.Include | Should -BeIn 'rule1', 'rule2';
 
             # With flat single item
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests3.yml');
-            $option.Baseline.RuleName | Should -BeIn 'rule1';
+            $option.Rule.Include | Should -BeIn 'rule1';
         }
     }
 
-    Context 'Read Baseline.Exclude' {
+    Context 'Read Rule.Exclude' {
         It 'from default' {
             $option = New-PSRuleOption;
-            $option.Baseline.Exclude | Should -Be $Null;
+            $option.Rule.Exclude | Should -Be $Null;
         }
 
         It 'from Hashtable' {
             # With single item
-            $option = New-PSRuleOption -Option @{ 'Baseline.Exclude' = 'rule3' };
-            $option.Baseline.Exclude | Should -BeIn 'rule3';
+            $option = New-PSRuleOption -Option @{ 'Rule.Exclude' = 'rule3' };
+            $option.Rule.Exclude | Should -BeIn 'rule3';
 
             # With array
-            $option = New-PSRuleOption -Option @{ 'Baseline.Exclude' = 'rule3', 'rule4' };
-            $option.Baseline.Exclude | Should -BeIn 'rule3', 'rule4';
+            $option = New-PSRuleOption -Option @{ 'Rule.Exclude' = 'rule3', 'rule4' };
+            $option.Rule.Exclude | Should -BeIn 'rule3', 'rule4';
         }
 
         It 'from YAML' {
             # With single item
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Baseline.Exclude | Should -BeIn 'rule3';
+            $option.Rule.Exclude | Should -BeIn 'rule3';
 
             # With array
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests2.yml');
-            $option.Baseline.Exclude | Should -BeIn 'rule3', 'rule4';
+            $option.Rule.Exclude | Should -BeIn 'rule3', 'rule4';
 
             # With flat single item
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests3.yml');
-            $option.Baseline.Exclude | Should -BeIn 'rule3';
+            $option.Rule.Exclude | Should -BeIn 'rule3';
         }
     }
 
     Context 'Read Baseline.Configuration' {
         It 'from default' {
             $option = New-PSRuleOption;
-            $option.Baseline.Configuration.Count | Should -Be 0;
+            $option.Configuration.Count | Should -Be 0;
         }
 
         It 'from Hashtable' {
             $option = New-PSRuleOption -BaselineConfiguration @{ 'option1' = 'option'; 'option2' = 2; option3 = 'option3a', 'option3b' };
-            $option.Baseline.Configuration.option1 | Should -BeIn 'option';
-            $option.Baseline.Configuration.option2 | Should -Be 2;
-            $option.Baseline.Configuration.option3 | Should -BeIn 'option3a', 'option3b';
+            $option.Configuration.option1 | Should -BeIn 'option';
+            $option.Configuration.option2 | Should -Be 2;
+            $option.Configuration.option3 | Should -BeIn 'option3a', 'option3b';
         }
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Baseline.Configuration.option1 | Should -Be 'option';
-            $option.Baseline.Configuration.option2 | Should -Be 2;
-            $option.Baseline.Configuration.option3 | Should -BeIn 'option3a', 'option3b';
+            $option.Configuration.option1 | Should -Be 'option';
+            $option.Configuration.option2 | Should -Be 2;
+            $option.Configuration.option3 | Should -BeIn 'option3a', 'option3b';
         }
     }
 

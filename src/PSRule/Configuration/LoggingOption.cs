@@ -44,7 +44,7 @@ namespace PSRule.Configuration
         /// Limits verbose messages to a list of named verbose scopes.
         /// </summary>
         [DefaultValue(null)]
-        public string[] LimitVerbose { get; set; }        
+        public string[] LimitVerbose { get; set; }
 
         /// <summary>
         /// Log fail outcomes for each rule to a specific informational stream.

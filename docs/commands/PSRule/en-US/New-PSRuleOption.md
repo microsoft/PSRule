@@ -14,7 +14,7 @@ Create options to configure PSRule execution.
 ## SYNTAX
 
 ```text
-New-PSRuleOption [[-Path] <String>] [[-Option] <PSRuleOption>] [-BaselineConfiguration <BaselineConfiguration>]
+New-PSRuleOption [[-Path] <String>] [[-Option] <PSRuleOption>] [-Configuration <ConfigurationOption>]
  [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>]
  [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
@@ -72,7 +72,7 @@ Creates an options object that uses a custom function to bind the _TargetName_ o
 ### Example 4
 
 ```powershell
-$option = New-PSRuleOption -BaselineConfiguration @{ 'appServiceMinInstanceCount' = 2 };
+$option = New-PSRuleOption -Configuration @{ 'appServiceMinInstanceCount' = 2 };
 ```
 
 Create an options object that sets the `appServiceMinInstanceCount` baseline configuration option to `2`.
@@ -153,16 +153,17 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -BaselineConfiguration
+### -Configuration
 
-Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values. BaselineConfiguration also accepts a hashtable of configuration values as key/ value pairs.
+Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values.
+Configuration also accepts a hashtable of configuration values as key/ value pairs.
 
-For more information on PSRule options see about_PSRule_Options.
+For more information on PSRule options see about_PSRule_Baseline.
 
 ```yaml
-Type: BaselineConfiguration
+Type: ConfigurationOption
 Parameter Sets: (All)
-Aliases:
+Aliases: BaselineConfiguration
 
 Required: False
 Position: Named
@@ -175,7 +176,7 @@ Accept wildcard characters: False
 
 Configures a custom function to use to bind TargetType of an object.
 
-For more information on PSRule options see about_PSRule_Options.
+For more information on PSRule options see about_PSRule_Baseline.
 
 ```yaml
 Type: BindTargetName[]
@@ -191,7 +192,8 @@ Accept wildcard characters: False
 
 ### -BindingIgnoreCase
 
-Sets the option `Binding.IgnoreCase`. The option `Binding.IgnoreCase` determines if binding operations are case-sensitive or not. See about_PSRule_Options for more information.
+Sets the option `Binding.IgnoreCase`. The option `Binding.IgnoreCase` determines if binding operations are case-sensitive or not.
+See about_PSRule_Baseline for more information.
 
 ```yaml
 Type: Boolean
@@ -207,7 +209,8 @@ Accept wildcard characters: False
 
 ### -TargetName
 
-Sets the option `Binding.TargetName`. This option specifies one or more properties of _TargetObject_ to use to bind _TargetName_ to. See about_PSRule_Options for more information.
+Sets the option `Binding.TargetName`. This option specifies one or more properties of _TargetObject_ to use to bind _TargetName_ to.
+See about_PSRule_Baseline for more information.
 
 ```yaml
 Type: String[]
@@ -223,7 +226,8 @@ Accept wildcard characters: False
 
 ### -TargetType
 
-Sets the option `Binding.TargetType`. This option specifies one or more properties of _TargetObject_ to use to bind _TargetType_ to. See about_PSRule_Options for more information.
+Sets the option `Binding.TargetType`. This option specifies one or more properties of _TargetObject_ to use to bind _TargetType_ to.
+See about_PSRule_Baseline for more information.
 
 ```yaml
 Type: String[]

@@ -38,7 +38,8 @@ namespace PSRule.Parser
         /// </summary>
         public static void FencedBlock(this TokenStream stream, string meta, string text, SourceExtent extent, bool lineBreak)
         {
-            stream.Add(new MarkdownToken() {
+            stream.Add(new MarkdownToken()
+            {
                 Extent = extent,
                 Meta = meta,
                 Text = text,
@@ -321,7 +322,6 @@ namespace PSRule.Parser
             while (!EOF && IsTokenType(tokenType))
             {
                 count++;
-
                 Next();
             }
             return _Token.GetRange(start, count);
@@ -343,16 +343,14 @@ namespace PSRule.Parser
         public bool Next()
         {
             _Position++;
-
             return !EOF;
         }
 
         public MarkdownToken Pop()
         {
             if (Count == 0)
-            {
                 return null;
-            }
+
             var token = _Token[_Position];
             _Token.RemoveAt(_Position);
             _Position = _Token.Count - 1;
@@ -367,9 +365,8 @@ namespace PSRule.Parser
         public MarkdownToken ResolveLinkTarget(string name)
         {
             if (!_LinkTargetIndex.ContainsKey(name))
-            {
                 return null;
-            }
+
             return _LinkTargetIndex[name];
         }
 

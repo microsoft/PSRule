@@ -8,8 +8,6 @@ namespace PSRule.Pipeline
     /// </summary>
     public sealed class InvokeResult
     {
-        public readonly string TargetName;
-
         private readonly List<RuleRecord> _Record;
         private RuleOutcome _Outcome;
         private long _Time;
@@ -17,9 +15,8 @@ namespace PSRule.Pipeline
         private int _Error;
         private int _Fail;
 
-        internal InvokeResult(string targetName)
+        internal InvokeResult()
         {
-            TargetName = targetName;
             _Record = new List<RuleRecord>();
             _Time = 0;
             _Total = 0;
@@ -51,9 +48,9 @@ namespace PSRule.Pipeline
         /// Get the individual records for the target object.
         /// </summary>
         /// <returns>Returns an enumeration of RuleRecords.</returns>
-        public IEnumerable<RuleRecord> AsRecord()
+        public RuleRecord[] AsRecord()
         {
-            return _Record;
+            return _Record.ToArray();
         }
 
         /// <summary>
@@ -79,7 +76,7 @@ namespace PSRule.Pipeline
             _Outcome = GetWorstCase(ruleRecord.Outcome);
             _Time += ruleRecord.Time;
             _Total++;
-            
+
             if (ruleRecord.Outcome == RuleOutcome.Error)
             {
                 _Error++;

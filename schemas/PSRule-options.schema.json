@@ -328,6 +328,32 @@
                 }
             },
             "additionalProperties": false
+        },
+        "rule-option": {
+            "type": "object",
+            "title": "Baseline options",
+            "description": "Options that include/ exclude and configure rules.",
+            "properties": {
+                "ruleName": {
+                    "type": "array",
+                    "title": "Include rules",
+                    "description": "Optionally filter to rules by name.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "exclude": {
+                    "type": "array",
+                    "title": "Exclude rules",
+                    "description": "Specifies rules to exclude by name.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                }
+            },
+            "additionalProperties": false
         }
     }
 }

@@ -25,9 +25,9 @@ namespace PSRule
             var pso1 = PSObject.AsPSObject(testObject1);
             var pso2 = PSObject.AsPSObject(testObject2);
 
-            PipelineContext.CurrentThread = PipelineContext.New(logger: null, option: new PSRuleOption(), bindTargetName: null, bindTargetType: null);
-            var actual1 = PipelineHookActions.DefaultTargetNameBinding(pso1);
-            var actual2 = PipelineHookActions.DefaultTargetNameBinding(pso2);
+            PipelineContext.CurrentThread = PipelineContext.New(logger: null, option: new PSRuleOption(), new TargetBinder(bindTargetName: null, bindTargetType: null), null, null);
+            var actual1 = PipelineHookActions.BindTargetName(null, false, pso1);
+            var actual2 = PipelineHookActions.BindTargetName(null, false, pso2);
 
             Assert.Equal(expected: "f209c623345144be61087d91f30c17b01c6e86d2", actual: actual1);
             Assert.Equal(expected: "f209c623345144be61087d91f30c17b01c6e86d2", actual: actual2);

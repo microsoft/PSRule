@@ -1,12 +1,9 @@
 ﻿using BenchmarkDotNet.Analysers;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Running;
 using Microsoft.Extensions.CommandLineUtils;
-using PSRule.Pipeline;
-using System;
 
 namespace PSRule.Benchmark
 {
@@ -76,22 +73,22 @@ namespace PSRule.Benchmark
 
             for (var i = 0; i < 20; i++)
             {
-               profile.InvokeType();
+                profile.InvokeType();
             }
 
             for (var i = 0; i < 20; i++)
             {
-               profile.DefaultTargetNameBinding();
+                profile.DefaultTargetNameBinding();
             }
 
             for (var i = 0; i < 20; i++)
             {
-               profile.CustomTargetNameBinding();
+                profile.CustomTargetNameBinding();
             }
 
             for (var i = 0; i < 20; i++)
             {
-               profile.NestedTargetNameBinding();
+                profile.NestedTargetNameBinding();
             }
         }
     }

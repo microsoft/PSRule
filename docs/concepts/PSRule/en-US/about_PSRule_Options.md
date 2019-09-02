@@ -8,16 +8,11 @@ Describes additional options that can be used during rule execution.
 
 ## LONG DESCRIPTION
 
-PSRule lets you use options when calling cmdlets such as `Invoke-PSRule` and `Test-PSRuleTarget` to change how rules are processed. This topic describes what options are available, when to and how to use them.
+PSRule lets you use options when calling cmdlets such as `Invoke-PSRule` and `Test-PSRuleTarget` to change how rules are processed.
+This topic describes what options are available, when to and how to use them.
 
 The following options are available for use:
 
-- [Baseline.RuleName](#baselinerulename)
-- [Baseline.Exclude](#baselineexclude)
-- [Baseline.Configuration](#baselineconfiguration)
-- [Binding.IgnoreCase](#bindingignorecase)
-- [Binding.TargetName](#bindingtargetname)
-- [Binding.TargetType](#bindingtargettype)
 - [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InconclusiveWarning](#executioninconclusivewarning)
 - [Execution.NotProcessedWarning](#executionnotprocessedwarning)
@@ -33,9 +28,22 @@ The following options are available for use:
 - [Output.Path](#outputpath)
 - [Suppression](#suppression)
 
+Additionally the following baseline options can be included:
+
+- [Binding.IgnoreCase](about_PSRule_Baseline.md#bindingignorecase)
+- [Binding.TargetName](about_PSRule_Baseline.md#bindingtargetname)
+- [Binding.TargetType](about_PSRule_Baseline.md#bindingtargettype)
+- [Configuration](about_PSRule_Baseline.md#configuration)
+- [Rule.Include](about_PSRule_Baseline.md#ruleinclude)
+- [Rule.Exclude](about_PSRule_Baseline.md#ruleexclude)
+
+See [about_PSRule_Baseline](about_PSRule_Baseline.md) for more information on baseline options.
+
 Options can be used with the following PSRule cmdlets:
 
 - Get-PSRule
+- Get-PSRuleBaseline
+- Get-PSRuleHelp
 - Invoke-PSRule
 - Test-PSRuleTarget
 
@@ -54,9 +62,15 @@ $option = @{ 'Output.Format' = 'Yaml' };
 Invoke-PSRule -Path . -Option $option;
 ```
 
-The above example shows how the `Output.Format` option as a hashtable key can be used. Continue reading for a full list of options and how each can be used.
+```powershell
+Invoke-PSRule -Path . -Option @{ 'Output.Format' = 'Yaml' };
+```
 
-Alternatively, options can be stored in a YAML formatted file and loaded from disk. Storing options as YAML allows different configurations to be loaded in a repeatable way instead of having to create an options object each time.
+The above example shows how the `Output.Format` option as a hashtable key can be used.
+Continue reading for a full list of options and how each can be used.
+
+Alternatively, options can be stored in a YAML formatted file and loaded from disk.
+Storing options as YAML allows different configurations to be loaded in a repeatable way instead of having to create an options object each time.
 
 Options are stored as YAML properties using a lower camel case naming convention, for example:
 
@@ -71,7 +85,7 @@ The `Set-PSRuleOption` cmdlet can be used to set options stored in YAML or the Y
 Set-PSRuleOption -OutputFormat Yaml;
 ```
 
-By default PSRule will automatically look for a default YAML options file in the current working directory. Alternatively, you can specify a specific file path.
+By default, PSRule will automatically look for a default YAML options file in the current working directory. Alternatively, you can specify a specific file path.
 
 For example:
 
@@ -83,81 +97,27 @@ Invoke-PSRule -Option '.\myconfig.yml';
 New-PSRuleOption -Path '.\myconfig.yaml';
 ```
 
-PSRule uses any of the following file names (in order) as the default YAML options file. If more then one of these files exist the following order will be used to find the first match.
+PSRule uses any of the following file names (in order) as the default YAML options file.
+If more than one of these files exist, the following order will be used to find the first match.
 
 - `ps-rule.yaml`
 - `ps-rule.yml`
 - `psrule.yaml`
 - `psrule.yml`
 
-We recommend only using lowercase characters as shown above. This is because not all operation systems treat case in the same way.
-
-### Baseline.RuleName
-
-The name of specific rules to evaluate. If this option is not specified all rules in search paths will be evaluated.
-
-This option can be overridden at runtime by using the `-Name` parameter of `Invoke-PSRule`, `Get-PSRule` and `Test-PSRuleTarget`.
-
-This option can be specified using:
-
-```powershell
-# PowerShell: Using the Baseline.RuleName hashtable key
-$option = New-PSRuleOption -Option @{ 'Baseline.RuleName' = 'Rule1','Rule2' };
-```
-
-```yaml
-# YAML: Using the baseline/ruleName property
-baseline:
-  ruleName:
-  - rule1
-  - rule2
-```
-
-### Baseline.Exclude
-
-The name of specific rules to exclude from being evaluated. This will exclude rules specified by `Baseline.RuleName` or discovered from a search path.
-
-This option can be specified using:
-
-```powershell
-# PowerShell: Using the Baseline.Exclude hashtable key
-$option = New-PSRuleOption -Option @{ 'Baseline.Exclude' = 'Rule3','Rule4' };
-```
-
-```yaml
-# YAML: Using the baseline/exclude property
-baseline:
-  exclude:
-  - rule3
-  - rule4
-```
-
-### Baseline.Configuration
-
-Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values.
-
-This option can be specified using:
-
-```powershell
-# PowerShell: Using the BaselineConfiguration option with a hashtable
-$option = New-PSRuleOption -BaselineConfiguration @{ appServiceMinInstanceCount = 2 };
-```
-
-```yaml
-# YAML: Using the baseline/configuration property
-baseline:
-  configuration:
-    appServiceMinInstanceCount: 2
-```
+We recommend only using lowercase characters as shown above.
+This is because not all operation systems treat case in the same way.
 
 ### Binding.IgnoreCase
 
-When evaluating an object, PSRule extracts a few key properties from the object to help filter rules and display output results. The process of extract these key properties is called _binding_. The properties that PSRule uses for binding can be customized by providing a order list of alternative properties to use. See [`Binding.TargetName`](#bindingtargetname) and [`Binding.TargetType`](#bindingtargettype) for these options.
+When evaluating an object, PSRule extracts a few key properties from the object to help filter rules and display output results.
+The process of extract these key properties is called _binding_. The properties that PSRule uses for binding can be customized by providing a order list of alternative properties to use.
+See [`Binding.TargetName`](#bindingtargetname) and [`Binding.TargetType`](#bindingtargettype) for these options.
 
 - By default, custom property binding finds the first matching property by name regardless of case. i.e. `Binding.IgnoreCase` is `true`.
-- To change the default, set the `Binding.IgnoreCase` option to `false` and a case sensitive match will be used.
-  - Changing this option will affect all custom property bindings, including _TargetName_ and _TargetType_.
-- PSRule also has binding defaults, and an option to use a custom script. Setting this option has no affect on binding defaults or custom scripts.
+- To make custom bindings case sensitive, set the `Binding.IgnoreCase` option to `false`.
+  - Changing this option will affect custom property bindings for both _TargetName_ and _TargetType_.
+  - Setting this option has no affect on binding defaults or custom scripts.
 
 This option can be specified using:
 
@@ -184,7 +144,10 @@ binding:
 
 ### Binding.TargetName
 
-When an object is passed from the pipeline, PSRule assigns the object a _TargetName_. _TargetName_ is used in output results to identify one object from another. Many objects could be passed down the pipeline at the same time, so using a _TargetName_ that is meaningful is important. _TargetName_ is also used for advanced features such as rule suppression.
+When an object is passed from the pipeline, PSRule assigns the object a _TargetName_.
+_TargetName_ is used in output results to identify one object from another.
+Many objects could be passed down the pipeline at the same time, so using a _TargetName_ that is meaningful is important.
+_TargetName_ is also used for advanced features such as rule suppression.
 
 The value that PSRule uses for _TargetName_ is configurable. PSRule uses the following logic to determine what _TargetName_ should be used:
 
@@ -196,7 +159,7 @@ The value that PSRule uses for _TargetName_ is configurable. PSRule uses the fol
   - If **none** of the configured property names exist, PSRule will revert back to `TargetName` then `Name`.
   - If more then one property name is configured, the order they are specified in the configuration determines precedence.
     - i.e. The first configured property name will take precedence over the second property name.
-  - By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the [`Binding.IgnoreCase`](#bindingignorecase) option.
+  - By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the [Binding.IgnoreCase](#bindingignorecase) option.
 - If a custom _TargetName_ binding function is specified, the function will be evaluated first before any other option.
   - If the function returns `$Null` then custom properties, `TargetName` and `Name` properties will be used.
   - The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.
@@ -235,11 +198,7 @@ $bindFn = {
     param ($TargetObject)
 
     $otherName = $TargetObject.PSObject.Properties['OtherName'];
-
-    if ($otherName -eq $Null) {
-        return $Null
-    }
-
+    if ($Null -eq $otherName) { return $Null }
     return $otherName.Value;
 }
 
@@ -249,9 +208,11 @@ $option = New-PSRuleOption -BindTargetName $bindFn;
 
 ### Binding.TargetType
 
-When an object is passed from the pipeline, PSRule assigns the object a _TargetType_. _TargetType_ is used to filter rules based on object type and appears in output results.
+When an object is passed from the pipeline, PSRule assigns the object a _TargetType_.
+_TargetType_ is used to filter rules based on object type and appears in output results.
 
-The value that PSRule uses for _TargetType_ is configurable. PSRule uses the following logic to determine what _TargetType_ should be used:
+The value that PSRule uses for _TargetType_ is configurable.
+PSRule uses the following logic to determine what _TargetType_ should be used:
 
 - By default PSRule will:
   - Use the default type presented by PowerShell from `TypeNames`. i.e. `.PSObject.TypeNames[0]`
@@ -310,9 +271,27 @@ $bindFn = {
 $option = New-PSRuleOption -BindTargetType $bindFn;
 ```
 
+### Configuration
+
+Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the BaselineConfiguration option with a hashtable
+$option = New-PSRuleOption -BaselineConfiguration @{ appServiceMinInstanceCount = 2 };
+```
+
+```yaml
+# YAML: Using the configuration property
+configuration:
+  appServiceMinInstanceCount: 2
+```
+
 ### Execution.LanguageMode
 
-Unless PowerShell has been constrained, full language features of PowerShell are available to use within rule definitions. In locked down environments, a reduced set of language features may be desired.
+Unless PowerShell has been constrained, full language features of PowerShell are available to use within rule definitions.
+In locked down environments, a reduced set of language features may be desired.
 
 When PSRule is executed in an environment configured for Device Guard, only constrained language features are available.
 
@@ -336,7 +315,7 @@ execution:
 
 ### Execution.InconclusiveWarning
 
-When defining rules it is possible not return a valid `$True` or `$False` result within the definition script block.
+When defining rules, it is possible not return a valid `$True` or `$False` result within the definition script block.
 
 Rule authors should not intentionally avoid returning a result, however a possible cause for not returning a result may be a rule logic error.
 
@@ -374,7 +353,7 @@ execution:
 
 ### Execution.NotProcessedWarning
 
-When evaluating rules it is possible to incorrectly select a path with rules that use pre-conditions that do not accept the pipeline object.
+When evaluating rules, it is possible to incorrectly select a path with rules that use pre-conditions that do not accept the pipeline object.
 
 In this case the object has not been processed by any rule.
 
@@ -450,7 +429,9 @@ input:
 
 The object path to a property to use instead of the pipeline object.
 
-By default, PSRule processes objects passed from the pipeline against selected rules. When this option is set, instead of evaluating the pipeline object, PSRule looks for a property of the pipeline object specified by `ObjectPath` and uses that instead. If the property specified by `ObjectPath` is a collection/ array, then each item is evaluated separately.
+By default, PSRule processes objects passed from the pipeline against selected rules.
+When this option is set, instead of evaluating the pipeline object, PSRule looks for a property of the pipeline object specified by `ObjectPath` and uses that instead.
+If the property specified by `ObjectPath` is a collection/ array, then each item is evaluated separately.
 
 If the property specified by `ObjectPath` does not exist, PSRule skips the object.
 
@@ -483,7 +464,8 @@ input:
 
 Limits debug messages to a list of named debug scopes.
 
-When using the `-Debug` switch or preference variable, by default PSRule cmdlets log all debug output. When using debug output for debugging a specific rule, it my be helpful to limit debug message to a specific rule.
+When using the `-Debug` switch or preference variable, by default PSRule cmdlets log all debug output.
+When using debug output for debugging a specific rule, it may be helpful to limit debug message to a specific rule.
 
 To identify a rule to include in debug output use the rule name.
 
@@ -521,7 +503,8 @@ logging:
 
 Limits verbose messages to a list of named verbose scopes.
 
-When using the `-Verbose` switch or preference variable, by default PSRule cmdlets log all verbose output. When using verbose output for troubleshooting a specific rule, it may be helpful to limit verbose messages to a specific rule.
+When using the `-Verbose` switch or preference variable, by default PSRule cmdlets log all verbose output.
+When using verbose output for troubleshooting a specific rule, it may be helpful to limit verbose messages to a specific rule.
 
 To identify a rule to include in verbose output use the rule name.
 
@@ -557,11 +540,13 @@ logging:
 
 ### Logging.RuleFail
 
-When an object fails a rule condition the results are written to output as a structured object marked with the outcome of _Fail_. If the rule executed successfully regardless of outcome no other informational messages are shown by default.
+When an object fails a rule condition the results are written to output as a structured object marked with the outcome of _Fail_.
+If the rule executed successfully regardless of outcome no other informational messages are shown by default.
 
 In some circumstances such as a continuous integration (CI) pipeline, it may be preferable to see informational messages or abort the CI process if one or more _Fail_ outcomes are returned.
 
-By settings this option, error, warning or information messages will be generated for each rule _fail_ outcome in addition to structured output. By default, outcomes are not logged to an informational stream (i.e. None).
+By settings this option, error, warning or information messages will be generated for each rule _fail_ outcome in addition to structured output.
+By default, outcomes are not logged to an informational stream (i.e. None).
 
 The following streams available:
 
@@ -595,11 +580,13 @@ logging:
 
 ### Logging.RulePass
 
-When an object passes a rule condition the results are written to output as a structured object marked with the outcome of _Pass_. If the rule executed successfully regardless of outcome no other informational messages are shown by default.
+When an object passes a rule condition the results are written to output as a structured object marked with the outcome of _Pass_.
+If the rule executed successfully regardless of outcome no other informational messages are shown by default.
 
 In some circumstances such as a continuous integration (CI) pipeline, it may be preferable to see informational messages.
 
-By settings this option, error, warning or information messages will be generated for each rule _pass_ outcome in addition to structured output. By default, outcomes are not logged to an informational stream (i.e. None).
+By settings this option, error, warning or information messages will be generated for each rule _pass_ outcome in addition to structured output.
+By default, outcomes are not logged to an informational stream (i.e. None).
 
 The following streams available:
 
@@ -635,7 +622,8 @@ logging:
 
 Configures the type of results to produce.
 
-This option only applies to `Invoke-PSRule`. `Invoke-PSRule` also includes a parameter `-As` to set this option at runtime. If specified, the `-As` parameter take precedence, over this option.
+This option only applies to `Invoke-PSRule`. `Invoke-PSRule` also includes a parameter `-As` to set this option at runtime.
+If specified, the `-As` parameter take precedence, over this option.
 
 The following options are available:
 
@@ -667,7 +655,8 @@ output:
 
 ### Output.Encoding
 
-Configures the encoding used when output is written to file. This option has no affect when `Output.Path` is not set.
+Configures the encoding used when output is written to file.
+This option has no affect when `Output.Path` is not set.
 
 The following encoding options are available:
 
@@ -703,7 +692,8 @@ output:
 
 ### Output.Format
 
-Configures the format that results will be presented in. This option only applies to output generated from `Invoke-PSRule`.
+Configures the format that results will be presented in.
+This option only applies to output generated from `Invoke-PSRule`.
 
 The following format options are available:
 
@@ -747,9 +737,11 @@ output:
 
 ### Output.Path
 
-Specifies the output file path to write results. Directories along the file path will automatically be created if they do not exist.
+Specifies the output file path to write results.
+Directories along the file path will automatically be created if they do not exist.
 
-This option only applies to `Invoke-PSRule`. `Invoke-PSRule` also includes a parameter `-OutputPath` to set this option at runtime. If specified, the `-OutputPath` parameter take precedence, over this option.
+This option only applies to `Invoke-PSRule`. `Invoke-PSRule` also includes a parameter `-OutputPath` to set this option at runtime.
+If specified, the `-OutputPath` parameter take precedence, over this option.
 
 This option can be specified using:
 
@@ -774,11 +766,54 @@ output:
   path: 'out/results.yaml'
 ```
 
+### Rule.Include
+
+The name of specific rules to evaluate.
+If this option is not specified all rules in search paths will be evaluated.
+
+This option can be overridden at runtime by using the `-Name` parameter of `Invoke-PSRule`, `Get-PSRule` and `Test-PSRuleTarget`.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Rule.Include hashtable key
+$option = New-PSRuleOption -Option @{ 'Rule.Include' = 'Rule1','Rule2' };
+```
+
+```yaml
+# YAML: Using the rule/include property
+rule:
+  include:
+  - rule1
+  - rule2
+```
+
+### Rule.Exclude
+
+The name of specific rules to exclude from being evaluated.
+This will exclude rules specified by `Rule.Exclude` or discovered from a search path.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Rule.Exclude hashtable key
+$option = New-PSRuleOption -Option @{ 'Rule.Exclude' = 'Rule3','Rule4' };
+```
+
+```yaml
+# YAML: Using the rule/exclude property
+rule:
+  exclude:
+  - rule3
+  - rule4
+```
+
 ### Suppression
 
 In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.
 
-PSRule allows objects to be suppressed for a rule by TargetName. Objects that are suppressed are not processed by the rule at all but will continue to be processed by other rules.
+PSRule allows objects to be suppressed for a rule by TargetName.
+Objects that are suppressed are not processed by the rule at all but will continue to be processed by other rules.
 
 Rule suppression complements pre-filtering and pre-conditions.
 
@@ -841,27 +876,6 @@ Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
 # PSRule example configuration
 #
 
-# Configure baseline
-baseline:
-  ruleName:
-  - rule1
-  - rule2
-  exclude:
-  - rule3
-  - rule4
-  configuration:
-    appServiceMinInstanceCount: 2
-
-# Configure TargetName binding
-binding:
-  ignoreCase: false
-  targetName:
-  - ResourceName
-  - AlternateName
-  targetType:
-  - ResourceType
-  - kind
-
 # Configure execution options
 execution:
   languageMode: ConstrainedLanguage
@@ -894,6 +908,27 @@ suppression:
     targetName:
     - TestObject1
     - TestObject3
+
+# Configure baseline options
+binding:
+  ignoreCase: false
+  targetName:
+  - ResourceName
+  - AlternateName
+  targetType:
+  - ResourceType
+  - kind
+
+configuration:
+  appServiceMinInstanceCount: 2
+
+rule:
+  include:
+  - rule1
+  - rule2
+  exclude:
+  - rule3
+  - rule4
 ```
 
 ### Default PSRule.yml
@@ -904,21 +939,6 @@ suppression:
 #
 
 # Note: Only properties that differ from the default values need to be specified.
-
-# Configure baseline
-baseline:
-  ruleName: [ ]
-  exclude: [ ]
-  configuration: { }
-
-# Configure TargetName binding
-binding:
-  ignoreCase: true
-  targetName:
-  - TargetName
-  - Name
-  targetType:
-  - PSObject.TypeNames[0]
 
 # Configure execution options
 execution:
@@ -944,6 +964,21 @@ output:
 
 # Configure rule suppression
 suppression: { }
+
+# Configure baseline options
+binding:
+  ignoreCase: true
+  targetName:
+  - TargetName
+  - Name
+  targetType:
+  - PSObject.TypeNames[0]
+
+configuration: { }
+
+rule:
+  include: [ ]
+  exclude: [ ]
 ```
 
 ## NOTE

@@ -3,7 +3,6 @@ using PSRule.Rules;
 using System;
 using System.Collections;
 using System.IO;
-using System.Security.Cryptography.Xml;
 using Xunit;
 
 namespace PSRule

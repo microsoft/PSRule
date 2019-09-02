@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using PSRule.Resources;
+using PSRule.Rules;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace PSRule.Configuration
     /// <summary>
     /// A structure that stores PSRule configuration options.
     /// </summary>
-    public sealed class PSRuleOption : IEquatable<PSRuleOption>
+    public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineSpec
     {
         private const string DEFAULT_FILENAME = "ps-rule.yaml";
 
@@ -42,14 +43,15 @@ namespace PSRule.Configuration
         public PSRuleOption()
         {
             // Set defaults
-            Baseline = new BaselineOption();
             Binding = new BindingOption();
+            Configuration = new ConfigurationOption();
             Input = new InputOption();
             Logging = new LoggingOption();
             Output = new OutputOption();
             Suppression = new SuppressionOption();
             Execution = new ExecutionOption();
             Pipeline = new PipelineHook();
+            Rule = new RuleOption();
         }
 
         private PSRuleOption(string sourcePath, PSRuleOption option)
@@ -57,25 +59,28 @@ namespace PSRule.Configuration
             SourcePath = sourcePath;
 
             // Set from existing option instance
-            Baseline = new BaselineOption(option.Baseline);
             Binding = new BindingOption(option.Binding);
+            Configuration = new ConfigurationOption(option.Configuration);
             Input = new InputOption(option.Input);
             Logging = new LoggingOption(option.Logging);
             Output = new OutputOption(option.Output);
             Suppression = new SuppressionOption(option.Suppression);
             Execution = new ExecutionOption(option.Execution);
             Pipeline = new PipelineHook(option.Pipeline);
+            Rule = new RuleOption(option.Rule);
         }
 
         /// <summary>
         /// Options that specify the rules to evaluate or exclude and their configuration.
         /// </summary>
-        public BaselineOption Baseline { get; set; }
+        //public BaselineOption Baseline { get; set; }
 
         /// <summary>
         /// Options tht affect property binding of TargetName.
         /// </summary>
         public BindingOption Binding { get; set; }
+
+        public ConfigurationOption Configuration { get; set; }
 
         /// <summary>
         /// Options that affect script execution.
@@ -105,6 +110,8 @@ namespace PSRule.Configuration
         [YamlIgnore]
         [JsonIgnore]
         public PipelineHook Pipeline { get; set; }
+
+        public RuleOption Rule { get; set; }
 
         /// <summary>
         /// Return options as YAML.
@@ -233,95 +240,30 @@ namespace PSRule.Configuration
             var option = new PSRuleOption();
 
             // Build index to allow mapping
-            var index = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (DictionaryEntry entry in hashtable)
-            {
-                index.Add(entry.Key.ToString(), entry.Value);
-            }
+            var index = BuildIndex(hashtable);
 
             // Start loading matching values
 
-            object value;
-
-            if (index.TryGetValue("baseline.rulename", out value))
-            {
-                if (value.GetType().IsArray)
-                {
-                    option.Baseline.RuleName = ((object[])value).OfType<string>().ToArray();
-                }
-                else
-                {
-                    option.Baseline.RuleName = new string[] { value.ToString() };
-                }
-            }
-
-            if (index.TryGetValue("baseline.exclude", out value))
-            {
-                if (value.GetType().IsArray)
-                {
-                    option.Baseline.Exclude = ((object[])value).OfType<string>().ToArray();
-                }
-                else
-                {
-                    option.Baseline.Exclude = new string[] { value.ToString() };
-                }
-            }
-
-            if (index.TryGetValue("binding.ignorecase", out value))
-            {
-                option.Binding.IgnoreCase = bool.Parse(value.ToString());
-            }
-
-            if (index.TryGetValue("binding.targetname", out value))
-            {
-                if (value.GetType().IsArray)
-                {
-                    option.Binding.TargetName = ((object[])value).OfType<string>().ToArray();
-                }
-                else
-                {
-                    option.Binding.TargetName = new string[] { value.ToString() };
-                }
-            }
-
-            if (index.TryGetValue("binding.targettype", out value))
-            {
-                if (value.GetType().IsArray)
-                {
-                    option.Binding.TargetType = ((object[])value).OfType<string>().ToArray();
-                }
-                else
-                {
-                    option.Binding.TargetType = new string[] { value.ToString() };
-                }
-            }
-
-            if (index.TryGetValue("execution.languagemode", out value))
+            if (index.TryGetValue("execution.languagemode", out object value))
             {
                 option.Execution.LanguageMode = (LanguageMode)Enum.Parse(typeof(LanguageMode), (string)value);
             }
-
             if (index.TryGetValue("execution.inconclusivewarning", out value))
             {
                 option.Execution.InconclusiveWarning = bool.Parse(value.ToString());
             }
-
             if (index.TryGetValue("execution.notprocessedwarning", out value))
             {
                 option.Execution.NotProcessedWarning = bool.Parse(value.ToString());
             }
-
             if (index.TryGetValue("input.format", out value))
             {
                 option.Input.Format = (InputFormat)Enum.Parse(typeof(InputFormat), (string)value);
             }
-
             if (index.TryGetValue("input.objectpath", out value))
             {
                 option.Input.ObjectPath = (string)value;
             }
-
             if (index.TryGetValue("logging.limitdebug", out value))
             {
                 if (value.GetType().IsArray)
@@ -333,7 +275,6 @@ namespace PSRule.Configuration
                     option.Logging.LimitDebug = new string[] { value.ToString() };
                 }
             }
-
             if (index.TryGetValue("logging.limitverbose", out value))
             {
                 if (value.GetType().IsArray)
@@ -345,37 +286,32 @@ namespace PSRule.Configuration
                     option.Logging.LimitVerbose = new string[] { value.ToString() };
                 }
             }
-
             if (index.TryGetValue("logging.rulefail", out value))
             {
                 option.Logging.RuleFail = (OutcomeLogStream)Enum.Parse(typeof(OutcomeLogStream), (string)value);
             }
-
             if (index.TryGetValue("logging.rulepass", out value))
             {
                 option.Logging.RulePass = (OutcomeLogStream)Enum.Parse(typeof(OutcomeLogStream), (string)value);
             }
-
             if (index.TryGetValue("output.as", out value))
             {
                 option.Output.As = (ResultFormat)Enum.Parse(typeof(ResultFormat), (string)value);
             }
-
             if (index.TryGetValue("output.encoding", out value))
             {
                 option.Output.Encoding = (OutputEncoding)Enum.Parse(typeof(OutputEncoding), (string)value);
             }
-
             if (index.TryGetValue("output.format", out value))
             {
                 option.Output.Format = (OutputFormat)Enum.Parse(typeof(OutputFormat), (string)value);
             }
-
             if (index.TryGetValue("output.path", out value))
             {
                 option.Output.Path = (string)value;
             }
 
+            BaselineOption.Load(option, index);
             return option;
         }
 
@@ -401,14 +337,15 @@ namespace PSRule.Configuration
             unchecked // Overflow is fine
             {
                 int hash = 17;
-                hash = hash * 23 + (Baseline != null ? Baseline.GetHashCode() : 0);
                 hash = hash * 23 + (Binding != null ? Binding.GetHashCode() : 0);
+                hash = hash * 23 + (Configuration != null ? Configuration.GetHashCode() : 0);
                 hash = hash * 23 + (Execution != null ? Execution.GetHashCode() : 0);
                 hash = hash * 23 + (Input != null ? Input.GetHashCode() : 0);
                 hash = hash * 23 + (Logging != null ? Logging.GetHashCode() : 0);
                 hash = hash * 23 + (Output != null ? Output.GetHashCode() : 0);
                 hash = hash * 23 + (Suppression != null ? Suppression.GetHashCode() : 0);
                 hash = hash * 23 + (Pipeline != null ? Pipeline.GetHashCode() : 0);
+                hash = hash * 23 + (Rule != null ? Rule.GetHashCode() : 0);
                 return hash;
             }
         }
@@ -416,14 +353,15 @@ namespace PSRule.Configuration
         public bool Equals(PSRuleOption other)
         {
             return other != null &&
-                Baseline == other.Baseline &&
                 Binding == other.Binding &&
+                Configuration == other.Configuration &&
                 Execution == other.Execution &&
                 Input == other.Input &&
                 Logging == other.Logging &&
                 Output == other.Output &&
                 Suppression == other.Suppression &&
-                Pipeline == other.Pipeline;
+                Pipeline == other.Pipeline &&
+                Rule == other.Rule;
         }
 
         /// <summary>
@@ -459,6 +397,16 @@ namespace PSRule.Configuration
         internal static string GetRootedPath(string path)
         {
             return Path.IsPathRooted(path) ? path : Path.GetFullPath(Path.Combine(GetWorkingPath(), path));
+        }
+
+        internal static Dictionary<string, object> BuildIndex(Hashtable hashtable)
+        {
+            var index = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            foreach (DictionaryEntry entry in hashtable)
+            {
+                index.Add(entry.Key.ToString(), entry.Value);
+            }
+            return index;
         }
 
         /// <summary>

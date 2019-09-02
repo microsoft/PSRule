@@ -1,6 +1,5 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
-using BenchmarkDotNet.Exporters;
 using PSRule.Configuration;
 using PSRule.Pipeline;
 using PSRule.Rules;
@@ -8,9 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Management.Automation;
-using System.Net.Http.Headers;
 using System.Reflection;
-using YamlDotNet.Core.Tokens;
 
 namespace PSRule.Benchmark
 {
@@ -64,84 +61,93 @@ namespace PSRule.Benchmark
         private void PrepareGetPipeline()
         {
             var option = new PSRuleOption();
-            option.Baseline.RuleName = new string[] { "Benchmark" };
+            option.Rule.Include = new string[] { "Benchmark" };
             var builder = PipelineBuilder.Get().Configure(option);
-            builder.Source(new RuleSource[] { new RuleSource(path: GetSource(), moduleName: null) });
+            builder.Source(GetSource());
             _GetPipeline = builder.Build();
         }
 
         private void PrepareInvokePipeline()
         {
             var option = new PSRuleOption();
-            option.Baseline.RuleName = new string[] { "Benchmark" };
+            option.Rule.Include = new string[] { "Benchmark" };
             var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(new RuleSource[] { new RuleSource(path: GetSource(), moduleName: null) });
+            builder.Source(GetSource());
             _InvokePipeline = builder.Build();
         }
 
         private void PrepareInvokeIfPipeline()
         {
             var option = new PSRuleOption();
-            option.Baseline.RuleName = new string[] { "BenchmarkIf" };
+            option.Rule.Include = new string[] { "BenchmarkIf" };
             var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(new RuleSource[] { new RuleSource(path: GetSource(), moduleName: null) });
+            builder.Source(GetSource());
             _InvokeIfPipeline = builder.Build();
         }
 
         private void PrepareInvokeTypePipeline()
         {
             var option = new PSRuleOption();
-            option.Baseline.RuleName = new string[] { "BenchmarkType" };
+            option.Rule.Include = new string[] { "BenchmarkType" };
             var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(new RuleSource[] { new RuleSource(path: GetSource(), moduleName: null) });
+            builder.Source(GetSource());
             _InvokeTypePipeline = builder.Build();
         }
 
         private void PrepareInvokeSummaryPipeline()
         {
             var option = new PSRuleOption();
-            option.Baseline.RuleName = new string[] { "Benchmark" };
+            option.Rule.Include = new string[] { "Benchmark" };
             option.Output.As = ResultFormat.Summary;
             var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(new RuleSource[] { new RuleSource(path: GetSource(), moduleName: null) });
+            builder.Source(GetSource());
             _InvokeSummaryPipeline = builder.Build();
         }
 
         private void PrepareInvokeWithinPipeline()
         {
             var option = new PSRuleOption();
-            option.Baseline.RuleName = new string[] { "BenchmarkWithin" };
+            option.Rule.Include = new string[] { "BenchmarkWithin" };
             var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(new RuleSource[] { new RuleSource(path: GetWithinSource(), moduleName: null) });
+            builder.Source(GetWithinSource());
             _InvokeWithinPipeline = builder.Build();
         }
 
         private void PrepareInvokeWithinBulkPipeline()
         {
             var option = new PSRuleOption();
-            option.Baseline.RuleName = new string[] { "BenchmarkWithinBulk" };
+            option.Rule.Include = new string[] { "BenchmarkWithinBulk" };
             var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(new RuleSource[] { new RuleSource(path: GetWithinSource(), moduleName: null) });
+            builder.Source(GetWithinSource());
             _InvokeWithinBulkPipeline = builder.Build();
         }
 
         private void PrepareInvokeWithinLikePipeline()
         {
             var option = new PSRuleOption();
-            option.Baseline.RuleName = new string[] { "BenchmarkWithinLike" };
+            option.Rule.Include = new string[] { "BenchmarkWithinLike" };
             var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(new RuleSource[] { new RuleSource(path: GetWithinSource(), moduleName: null) });
+            builder.Source(GetWithinSource());
             _InvokeWithinLikePipeline = builder.Build();
         }
 
-        private string GetSource()
+        private Source[] GetSource()
         {
-            return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Rule.ps1");
+            var builder = new RuleSourceBuilder();
+            builder.Directory(GetSourcePath("Benchmark.Rule.ps1"));
+            return builder.Build();
         }
 
-        private string GetWithinSource()
+        private Source[] GetWithinSource()
         {
-            return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Benchmark.Within.Rule.ps1");
+            var builder = new RuleSourceBuilder();
+            builder.Directory(GetSourcePath("Benchmark.Within.Rule.ps1"));
+            return builder.Build();
+        }
+
+        private string GetSourcePath(string fileName)
+        {
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), fileName);
         }
 
         private void PrepareTargetObjects()
@@ -189,7 +195,7 @@ namespace PSRule.Benchmark
         {
             foreach (var targetObject in _TargetObject)
             {
-                PipelineHookActions.DefaultTargetNameBinding(targetObject);
+                PipelineHookActions.BindTargetName(null, false, targetObject);
             }
         }
 
@@ -198,11 +204,10 @@ namespace PSRule.Benchmark
         {
             foreach (var targetObject in _TargetObject)
             {
-                PipelineHookActions.CustomTargetNameBinding(
+                PipelineHookActions.BindTargetName(
                     propertyNames: new string[] { "TargetName", "Name" },
                     caseSensitive: true,
-                    targetObject: targetObject,
-                    next: (o) => { return null; }
+                    targetObject: targetObject
                 );
             }
         }
@@ -212,11 +217,10 @@ namespace PSRule.Benchmark
         {
             foreach (var targetObject in _TargetObject)
             {
-                PipelineHookActions.NestedTargetNameBinding(
+                PipelineHookActions.BindTargetName(
                     propertyNames: new string[] { "TargetName", "Name" },
                     caseSensitive: true,
-                    targetObject: targetObject,
-                    next: (o) => { return null; }
+                    targetObject: targetObject
                 );
             }
         }

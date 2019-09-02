@@ -1,0 +1,56 @@
+
+---
+# Synopsis: This is an example baseline
+kind: Baseline
+metadata:
+  name: TestBaseline1
+spec:
+  binding:
+    targetName:
+      #field:
+      - AlternateName
+    targetType:
+      #field:
+      - kind
+      #aggregate:
+      #- virtualNetwork:
+      #  - 'Microsoft.Networking/virtualNetworks'
+  rule:
+    include:
+    - 'WithBaseline'
+  configuration:
+    key1: value1
+
+---
+# Synopsis: This is an example baseline
+kind: Baseline
+metadata:
+  name: TestBaseline2
+spec:
+  binding:
+    targetName:
+      #field:
+      - metadata.name
+    targetType:
+      #field:
+      - kind
+      #aggregate:
+      #- virtualNetwork:
+      #  - 'Microsoft.Networking/virtualNetworks'
+  rule:
+    include:
+    - ''
+  configuration:
+    key1: value1
+
+---
+kind: ObjectSelector
+metadata:
+  name: TestSelector1
+spec:
+  selector:
+    allOf:
+      - not:
+          equals:
+            field: ResourceType
+            value: virtualNetwork

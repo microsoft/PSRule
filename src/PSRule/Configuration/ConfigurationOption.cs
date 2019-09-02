@@ -8,16 +8,16 @@ namespace PSRule.Configuration
     /// <summary>
     /// A set of configuration values that can be used within rule definitions.
     /// </summary>
-    public sealed class BaselineConfiguration : DynamicObject, IDictionary<string, object>
+    public sealed class ConfigurationOption : DynamicObject, IDictionary<string, object>
     {
         private readonly Dictionary<string, object> _Configuration;
 
-        public BaselineConfiguration()
+        public ConfigurationOption()
         {
             _Configuration = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
 
-        internal BaselineConfiguration(IDictionary<string, object> rules)
+        internal ConfigurationOption(IDictionary<string, object> rules)
         {
             _Configuration = new Dictionary<string, object>(rules, StringComparer.OrdinalIgnoreCase);
         }
@@ -91,9 +91,9 @@ namespace PSRule.Configuration
             return GetEnumerator();
         }
 
-        public static implicit operator BaselineConfiguration(Hashtable hashtable)
+        public static implicit operator ConfigurationOption(Hashtable hashtable)
         {
-            var option = new BaselineConfiguration();
+            var option = new ConfigurationOption();
 
             foreach (DictionaryEntry entry in hashtable)
             {

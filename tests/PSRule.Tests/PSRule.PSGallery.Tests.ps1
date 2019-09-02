@@ -66,7 +66,7 @@ Describe 'PSRule' -Tag 'PowerShellGallery' {
 
     Context 'Static analysis' {
         It 'Has no quality errors' {
-            $result = Invoke-ScriptAnalyzer -Path $modulePath;
+            $result = @(Invoke-ScriptAnalyzer -Path $modulePath);
 
             $warningCount = ($result | Where-Object { $_.Severity -eq 'Warning' } | Measure-Object).Count;
             $errorCount = ($result | Where-Object { $_.Severity -eq 'Error' } | Measure-Object).Count;

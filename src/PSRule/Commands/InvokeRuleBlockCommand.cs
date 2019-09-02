@@ -34,7 +34,7 @@ namespace PSRule.Commands
                 {
                     var comparer = PipelineContext.CurrentThread.Option.Binding.IgnoreCase.Value ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
 
-                    if (!Type.Contains(value: PipelineContext.CurrentThread.TargetType, comparer: comparer))
+                    if (!Type.Contains(value: PipelineContext.CurrentThread.RuleRecord.TargetType, comparer: comparer))
                     {
                         PipelineContext.CurrentThread.Logger.DebugMessage("Target failed Type precondition");
                         return;

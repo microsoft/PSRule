@@ -1,15 +1,17 @@
 # These are options for unit tests
 
 # Configure baseline
-baseline:
-  ruleName:
+rule:
+  include:
   - rule1
   exclude:
   - rule3
-  configuration:
-    option1: option
-    option2: 2
-    option3: [ 'option3a', 'option3b' ]
+
+# Rule configuration
+configuration:
+  option1: option
+  option2: 2
+  option3: [ 'option3a', 'option3b' ]
 
 # Configure binding
 binding:

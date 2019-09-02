@@ -1,5 +1,4 @@
-﻿using PSRule.Configuration;
-using PSRule.Rules;
+﻿using PSRule.Rules;
 using System;
 
 namespace PSRule.Pipeline
@@ -7,19 +6,15 @@ namespace PSRule.Pipeline
     public abstract class RulePipeline : IDisposable
     {
         internal readonly PipelineContext _Context;
-        protected readonly PSRuleOption _Option;
-        protected readonly RuleSource[] _Source;
-        protected readonly RuleFilter _Filter;
+        protected readonly Source[] _Source;
 
         // Track whether Dispose has been called.
         private bool _Disposed = false;
 
-        internal RulePipeline(PipelineContext context, PSRuleOption option, RuleSource[] source, RuleFilter filter)
+        internal RulePipeline(PipelineContext context, Source[] source)
         {
             _Context = context;
-            _Option = option;
             _Source = source;
-            _Filter = filter;
         }
 
         #region IDisposable
@@ -38,7 +33,6 @@ namespace PSRule.Pipeline
                 {
                     _Context.Dispose();
                 }
-
                 _Disposed = true;
             }
         }

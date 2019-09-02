@@ -77,6 +77,7 @@ FunctionsToExport = @(
     'Test-PSRuleTarget'
     'Get-PSRule'
     'Get-PSRuleHelp'
+    'Get-PSRuleBaseline'
     'New-PSRuleOption'
     'Set-PSRuleOption'
     'AllOf'

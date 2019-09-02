@@ -18,5 +18,10 @@
         /// Execution is occuring in a rule precondition.
         /// </summary>
         Precondition = 3,
+
+        /// <summary>
+        /// Execuition is currently parsing YAML objects.
+        /// </summary>
+        Yaml = 4
     }
 }

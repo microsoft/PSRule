@@ -12,9 +12,9 @@ namespace PSRule.Commands
     /// </summary>
     internal abstract class LanguageBlock : PSCmdlet
     {
-        protected BlockMetadata GetMetadata(string path, int lineNumber, int offset)
+        protected CommentMetadata GetMetadata(string path, int lineNumber, int offset)
         {
-            return HostHelper.GetCommentMeta(path, lineNumber, offset);
+            return HostHelper.GetCommentMeta(path, lineNumber - 2, offset);
         }
 
         protected TagSet GetTag(Hashtable hashtable)

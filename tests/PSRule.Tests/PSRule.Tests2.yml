@@ -1,8 +1,8 @@
 # These are options for unit tests
 
 # Configure baseline
-baseline:
-  ruleName:
+rule:
+  include:
   - rule1
   - rule2
   exclude:

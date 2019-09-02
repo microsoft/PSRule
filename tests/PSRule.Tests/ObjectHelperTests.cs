@@ -1,5 +1,4 @@
-﻿using PSRule.Commands;
-using System.Collections;
+﻿using System.Collections;
 using Xunit;
 
 namespace PSRule
