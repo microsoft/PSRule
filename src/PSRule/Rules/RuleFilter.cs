@@ -32,9 +32,8 @@ namespace PSRule.Rules
             if (include != null && include.Length > 0 && WildcardPattern.ContainsWildcardCharacters(include[0]))
             {
                 if (include.Length > 1)
-                {
                     throw new NotSupportedException(PSRuleResources.MatchSingleName);
-                }
+
                 _WildcardMatch = new WildcardPattern(include[0]);
             }
         }

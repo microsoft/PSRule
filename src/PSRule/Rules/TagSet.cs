@@ -29,19 +29,20 @@ namespace PSRule.Rules
 
         public bool Contains(object key, object value)
         {
-            var k = key.ToString();
-            var v = value.ToString();
+            if (key == null || value == null || !(key is string k) || !_Tag.ContainsKey(k))
+                return false;
 
-            if (k == null || !_Tag.ContainsKey(k))
+            if (value is object[] oValues)
             {
+                for (var i = 0; i < oValues.Length; i++)
+                {
+                    if (_ValueComparer.Equals(oValues[i].ToString(), _Tag[k]))
+                        return true;
+                }
                 return false;
             }
-            else if (v == "*")
-            {
-                return true;
-            }
-
-            return _ValueComparer.Equals(v, _Tag[k]);
+            var v = value.ToString();
+            return (v == "*") ? true : _ValueComparer.Equals(v, _Tag[k]);
         }
 
         public static TagSet FromHashtable(Hashtable hashtable)

@@ -833,13 +833,19 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1', 'FromFile3';
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
-            $result.RuleName | Should -BeIn @('FromFile1', 'FromFile3');
+            $result.RuleName | Should -BeIn 'FromFile1', 'FromFile3';
         }
 
         It 'Filters by tag' {
             $result = Get-PSRule -Path $ruleFilePath -Tag @{ Test = 'Test1' };
             $result | Should -Not -BeNullOrEmpty;
             $result.RuleName | Should -Be 'FromFile1';
+
+            # Test1 or Test2
+            $result = Get-PSRule -Path $ruleFilePath -Tag @{ Test = 'Test1', 'Test2' };
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 2;
+            $result.RuleName | Should -BeIn 'FromFile1', 'FromFile2';
         }
 
         It 'Reads metadata' {

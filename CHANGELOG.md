@@ -12,6 +12,7 @@
   - The previous `configuration` property is now a top level option.
   - See [about_PSRule_Baseline](docs/concepts/PSRule/en-US/about_PSRule_Baseline.md) for more information.
 - Fix can not serialize nested System.IO.DirectoryInfo property. [#281](https://github.com/BernieWhite/PSRule/issues/281)
+- Added multi-match tags.
 
 ## v0.9.0-B190819 (pre-release)
 
