@@ -116,6 +116,25 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Rule.Tag' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Rule.Tag | Should -BeNullOrEmpty;
+        }
+
+        # It 'from Hashtable' {
+        #     $option = New-PSRuleOption -BaselineConfiguration @{ 'option1' = 'option'; 'option2' = 2; option3 = 'option3a', 'option3b' };
+        #     $option.Configuration.option1 | Should -BeIn 'option';
+        #     $option.Configuration.option2 | Should -Be 2;
+        #     $option.Configuration.option3 | Should -BeIn 'option3a', 'option3b';
+        # }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Rule.Tag.key1 | Should -Be 'value1';
+        }
+    }
+
     Context 'Read Baseline.Configuration' {
         It 'from default' {
             $option = New-PSRuleOption;

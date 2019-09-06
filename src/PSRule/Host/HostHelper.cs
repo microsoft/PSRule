@@ -191,7 +191,7 @@ namespace PSRule.Host
 
             try
             {
-                PipelineContext.CurrentThread.Logger.EnterScope("[Discovery.Resource]");
+                PipelineContext.CurrentThread.Logger?.EnterScope("[Discovery.Resource]");
                 PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Yaml;
                 foreach (var source in sources)
                 {
@@ -230,7 +230,7 @@ namespace PSRule.Host
             }
             finally
             {
-                PipelineContext.CurrentThread.Logger.ExitScope();
+                PipelineContext.CurrentThread.Logger?.ExitScope();
                 PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.None;
                 PipelineContext.CurrentThread.ExitSourceScope();
             }

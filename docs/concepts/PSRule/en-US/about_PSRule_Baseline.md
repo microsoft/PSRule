@@ -9,18 +9,26 @@ Describes usage of baselines within PSRule.
 ## LONG DESCRIPTION
 
 PSRule lets you define a baseline.
-A baseline can include a set of rule and configuration options that are used for evaluating objects.
+A baseline includes a set of rule and configuration options that are used for evaluating objects.
 
 The following baseline options can be configured:
 
-- [Binding](#binding)
+- [Binding.IgnoreCase](#bindingignorecase)
+- [Binding.TargetName](#bindingtargetname)
+- [Binding.TargetType](#bindingtargettype)
 - [Configuration](#configuration)
-- [Rule](#rule)
+- [Rule.Include](#ruleinclude)
+- [Rule.Exclude](#ruleexclude)
+- [Rule.Tag](#ruletag)
 
 Baseline options can be:
 
-- Included in a YAML file within a baseline spec.
+- Included as a baseline spec within a YAML file.
+  - When using this method, multiple baseline specs can be defined within the same YAML file.
+  - Each baseline spec is separated using `---`.
 - Set within a workspace options file like `ps-rule.yaml`.
+  - Only a single baseline can be specified using the `binding`, `configuration` and `rule` options.
+  - See [about_PSRule_Options](about_PSRule_Options.md) for details on using this method.
 
 ### Baseline specs
 
@@ -29,7 +37,63 @@ A baseline spec is defined and saved within a YAML file with a `.rule.yaml` exte
 To define a baseline spec use the following structure:
 
 ```yaml
+---
+# Synopsis: <synopsis>
+kind: Baseline
+metadata:
+  name: <name>
+spec:
+  # One or more baseline options
+  binding: { }
+  rule: { }
+  configuration: { }
+```
 
+For example:
+
+```yaml
+---
+# Synopsis: This is an example baseline
+kind: Baseline
+metadata:
+  name: Baseline1
+spec:
+  binding:
+    targetName:
+    - Name
+    - ResourceName
+    - ResourceGroupName
+    targetType:
+    - ResourceType
+  rule:
+    include:
+    - Rule1
+    - Rule2
+  configuration:
+    allowedLocations:
+    - 'Australia East'
+    - 'Australia South East'
+
+---
+# Synopsis: This is an example baseline
+kind: Baseline
+metadata:
+  name: Baseline2
+spec:
+  binding:
+    targetName:
+    - Name
+    - ResourceName
+    - ResourceGroupName
+    targetType:
+    - ResourceType
+  rule:
+    include:
+    - Rule1
+    - Rule3
+  configuration:
+    allowedLocations:
+    - 'Australia East'
 ```
 
 ### Baseline scopes

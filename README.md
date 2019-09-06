@@ -253,6 +253,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Output.Path](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputpath)
   - [Rule.Include](docs/concepts/PSRule/en-US/about_PSRule_Options.md#ruleinclude)
   - [Rule.Exclude](docs/concepts/PSRule/en-US/about_PSRule_Options.md#ruleexclude)
+  - [Rule.Tag](docs/concepts/PSRule/en-US/about_PSRule_Options.md#ruletag)
   - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#suppression)
 - [Variables](docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
   - [$Assert](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#assert)

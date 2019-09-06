@@ -2,6 +2,16 @@
 ## Unreleased
 
 - Fix export of `Like` parameter for `Within` keyword. [#279](https://github.com/BernieWhite/PSRule/issues/279)
+- **Breaking change**: Added named baselines. This changes how baselines work. [#274](https://github.com/BernieWhite/PSRule/issues/274)
+  - Previously, baselines were specified as workspace options.
+  - Now, baselines are a separate resource that can be individually used. Additionally:
+    - Baselines can be packaged within module.
+    - Modules can specify a default baseline in module manifest.
+    - Target binding options (`Binding`) are now part of baselines.
+  - The previous `baseline` options property has been renamed to `rule`.
+  - The previous `configuration` property is now a top level option.
+  - See [about_PSRule_Baseline](docs/concepts/PSRule/en-US/about_PSRule_Baseline.md) for more information.
+- Fix can not serialize nested System.IO.DirectoryInfo property. [#281](https://github.com/BernieWhite/PSRule/issues/281)
 
 ## v0.9.0-B190819 (pre-release)
 

@@ -6,6 +6,8 @@ rule:
   - rule1
   exclude:
   - rule3
+  tag:
+    key1: value1
 
 # Rule configuration
 configuration:

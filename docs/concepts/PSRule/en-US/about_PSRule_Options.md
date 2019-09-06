@@ -30,12 +30,13 @@ The following options are available for use:
 
 Additionally the following baseline options can be included:
 
-- [Binding.IgnoreCase](about_PSRule_Baseline.md#bindingignorecase)
-- [Binding.TargetName](about_PSRule_Baseline.md#bindingtargetname)
-- [Binding.TargetType](about_PSRule_Baseline.md#bindingtargettype)
-- [Configuration](about_PSRule_Baseline.md#configuration)
-- [Rule.Include](about_PSRule_Baseline.md#ruleinclude)
-- [Rule.Exclude](about_PSRule_Baseline.md#ruleexclude)
+- [Binding.IgnoreCase](#bindingignorecase)
+- [Binding.TargetName](#bindingtargetname)
+- [Binding.TargetType](#bindingtargettype)
+- [Configuration](#configuration)
+- [Rule.Include](#ruleinclude)
+- [Rule.Exclude](#ruleexclude)
+- [Rule.Tag](#ruletag)
 
 See [about_PSRule_Baseline](about_PSRule_Baseline.md) for more information on baseline options.
 
@@ -791,7 +792,7 @@ rule:
 ### Rule.Exclude
 
 The name of specific rules to exclude from being evaluated.
-This will exclude rules specified by `Rule.Exclude` or discovered from a search path.
+This will exclude rules specified by `Rule.Include` or discovered from a search path.
 
 This option can be specified using:
 
@@ -806,6 +807,24 @@ rule:
   exclude:
   - rule3
   - rule4
+```
+
+### Rule.Tag
+
+A set of required key value pairs (tags) that rules must have applied to them to be included.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Rule.Tag hashtable key
+# $option = New-PSRuleOption -Option @{ 'Rule.Tag' = 'Rule3','Rule4' };
+```
+
+```yaml
+# YAML: Using the rule/tag property
+rule:
+  tag:
+    key1: value1
 ```
 
 ### Suppression

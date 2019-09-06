@@ -65,7 +65,6 @@ namespace PSRule.Rules
         public static ISpecDescriptor[] BuiltinTypes = new ISpecDescriptor[]
         {
             new SpecDescriptor<Baseline, BaselineSpec>("Baseline"),
-            //new SpecDescriptor<RuleObject, RuleSpec>("Rule"),
         };
     }
 }
