@@ -107,7 +107,11 @@ Accept wildcard characters: False
 
 ### -Option
 
-{{ Fill Option Description }}
+Additional options that configure execution.
+A `PSRuleOption` can be created by using the `New-PSRuleOption` cmdlet.
+Alternatively a hashtable or path to YAML file can be specified with options.
+
+For more information on PSRule options see about_PSRule_Options.
 
 ```yaml
 Type: PSRuleOption

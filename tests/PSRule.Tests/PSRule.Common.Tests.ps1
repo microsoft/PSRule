@@ -1057,14 +1057,28 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
     $Null = Import-Module (Join-Path $here -ChildPath 'TestModule') -Force;
 
     Context 'With defaults' {
-        It 'Docs from imported module' {
-            $result = @(Get-PSRuleHelp -Module 'TestModule');
-            $result.Length | Should -Be 2;
-        }
+        try {
+            Push-Location (Join-Path $here -ChildPath 'TestModule');
+            It 'Docs from imported module' {
+                $result = @(Get-PSRuleHelp);
+                $result.Length | Should -Be 4;
+                $result[0].Name | Should -Be 'M1.Rule1';
+                $result[1].Name | Should -Be 'M1.Rule2';
+                $result[2].Name | Should -Be 'M1.Rule1';
+                $result[3].Name | Should -Be 'M1.Rule2';
+            }
 
-        It 'Using wildcard in name' {
-            $result = @(Get-PSRuleHelp M1.* -Module 'TestModule');
-            $result.Length | Should -Be 2;
+            It 'Using wildcard in name' {
+                $result = @(Get-PSRuleHelp -Name M1.*);
+                $result.Length | Should -Be 4;
+                $result[0].Name | Should -Be 'M1.Rule1';
+                $result[1].Name | Should -Be 'M1.Rule2';
+                $result[2].Name | Should -Be 'M1.Rule1';
+                $result[3].Name | Should -Be 'M1.Rule2';
+            }
+        }
+        finally {
+            Pop-Location;
         }
     }
 

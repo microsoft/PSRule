@@ -27,12 +27,20 @@ Get documentation for a rule.
 ### Example 1
 
 ```powershell
+Get-PSRuleHelp;
+```
+
+Get a list of rule help within the current path or loaded modules.
+
+### Example 2
+
+```powershell
 Get-PSRuleHelp Azure.ACR.AdminUser;
 ```
 
 Get rule documentation for the rule `Azure.ACR.AdminUser`.
 
-### Example 2
+### Example 3
 
 ```powershell
 Get-PSRuleHelp Azure.ACR.AdminUser -Online;
@@ -60,7 +68,9 @@ Accept wildcard characters: True
 
 ### -Path
 
-A path to check documentation for. If this is not specified, documentation is sourced for imported modules.
+A path to check documentation for.
+By default, help from the current working path and loaded modules is listed.
+Results can be filtered by using `-Name`, `-Path` or `-Module`.
 
 ```yaml
 Type: String
@@ -77,6 +87,8 @@ Accept wildcard characters: False
 ### -Module
 
 Limit returned information to rules in the specified module.
+By default, help from the current working path and loaded modules is listed.
+Results can be filtered by using `-Name`, `-Path` or `-Module`.
 
 ```yaml
 Type: String
@@ -128,7 +140,9 @@ Accept wildcard characters: False
 
 ### -Option
 
-Additional options that configure execution. A `PSRuleOption` can be created by using the `New-PSRuleOption` cmdlet. Alternatively a hashtable or path to YAML file can be specified with options.
+Additional options that configure execution.
+A `PSRuleOption` can be created by using the `New-PSRuleOption` cmdlet.
+Alternatively a hashtable or path to YAML file can be specified with options.
 
 For more information on PSRule options see about_PSRule_Options.
 

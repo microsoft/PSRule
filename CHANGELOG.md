@@ -1,6 +1,9 @@
 
 ## Unreleased
 
+- Added multi-match tags.
+- Updated `Get-PSRuleHelp` to include help within the current path by default. [#197](https://github.com/BernieWhite/PSRule/issues/197)
+- Fix can not serialize nested System.IO.DirectoryInfo property. [#281](https://github.com/BernieWhite/PSRule/issues/281)
 - Fix export of `Like` parameter for `Within` keyword. [#279](https://github.com/BernieWhite/PSRule/issues/279)
 - **Breaking change**: Added named baselines. This changes how baselines work. [#274](https://github.com/BernieWhite/PSRule/issues/274)
   - Previously, baselines were specified as workspace options.
@@ -11,8 +14,6 @@
   - The previous `baseline` options property has been renamed to `rule`.
   - The previous `configuration` property is now a top level option.
   - See [about_PSRule_Baseline](docs/concepts/PSRule/en-US/about_PSRule_Baseline.md) for more information.
-- Fix can not serialize nested System.IO.DirectoryInfo property. [#281](https://github.com/BernieWhite/PSRule/issues/281)
-- Added multi-match tags.
 
 ## v0.9.0-B190819 (pre-release)
 
