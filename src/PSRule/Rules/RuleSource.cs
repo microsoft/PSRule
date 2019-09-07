@@ -207,7 +207,7 @@ namespace PSRule.Rules
             }
             else if (System.IO.Directory.Exists(rootedPath))
             {
-                var files = System.IO.Directory.EnumerateFiles(rootedPath, "*.rule.*", SearchOption.AllDirectories);
+                var files = System.IO.Directory.EnumerateFiles(rootedPath, "*.Rule.*", SearchOption.AllDirectories);
                 foreach (var file in files)
                 {
                     if (Include(file))

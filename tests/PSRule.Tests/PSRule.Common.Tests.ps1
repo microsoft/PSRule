@@ -1054,6 +1054,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
 
 Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
     $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    Remove-Module TestModule*;
     $Null = Import-Module (Join-Path $here -ChildPath 'TestModule') -Force;
 
     Context 'With defaults' {
