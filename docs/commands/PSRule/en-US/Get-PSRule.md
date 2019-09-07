@@ -185,7 +185,8 @@ Accept wildcard characters: False
 
 ### -Module
 
-Search for rule definitions within a module. When specified without the `-Path` parameter, only rule definitions in the module will be discovered.
+Search for rule definitions within a module.
+When specified without the `-Path` parameter, only rule definitions in the module will be discovered.
 
 When both `-Path` and `-Module` are specified, rule definitions from both are discovered.
 
@@ -203,7 +204,7 @@ Accept wildcard characters: False
 
 ### -Culture
 
-Specifies the culture to use for rule documentation and messages. By default, the culture of PowerShell is used.
+Specifies the culture to use for documentation and messages. By default, the culture of PowerShell is used.
 
 This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.
 

@@ -114,13 +114,15 @@ RuleName                            Pass  Fail  Outcome
 isFruit                             1     1     Fail
 ```
 
-Evaluate an array of objects. The results for each rule is returned as a summary. Outcome is represented as the worst outcome.
+Evaluate an array of objects. The results for each rule is returned as a summary.
+Outcome is represented as the worst outcome.
 
 ## PARAMETERS
 
 ### -Name
 
-The name of a specific rule to evaluate. If this parameter is not specified all rules in search paths will be evaluated.
+The name of a specific rule to evaluate.
+If this parameter is not specified all rules in search paths will be evaluated.
 
 ```yaml
 Type: String[]
@@ -274,7 +276,8 @@ Accept wildcard characters: False
 
 ### -ObjectPath
 
-The name of a property to use instead of the pipeline object. If the property specified by `ObjectPath` is a collection or an array, then each item in evaluated separately.
+The name of a property to use instead of the pipeline object.
+If the property specified by `ObjectPath` is a collection or an array, then each item in evaluated separately.
 
 ```yaml
 Type: String
@@ -290,7 +293,8 @@ Accept wildcard characters: False
 
 ### -Module
 
-Search for rule definitions within a module. When specified without the `-Path` parameter, only rule definitions in the module will be discovered.
+Search for rule definitions within a module.
+When specified without the `-Path` parameter, only rule definitions in the module will be discovered.
 
 When both `-Path` and `-Module` are specified, rule definitions from both are discovered.
 

@@ -13,13 +13,13 @@ A baseline includes a set of rule and configuration options that are used for ev
 
 The following baseline options can be configured:
 
-- [Binding.IgnoreCase](#bindingignorecase)
-- [Binding.TargetName](#bindingtargetname)
-- [Binding.TargetType](#bindingtargettype)
-- [Configuration](#configuration)
-- [Rule.Include](#ruleinclude)
-- [Rule.Exclude](#ruleexclude)
-- [Rule.Tag](#ruletag)
+- [Binding.IgnoreCase](about_PSRule_Options.md#bindingignorecase)
+- [Binding.TargetName](about_PSRule_Options.md#bindingtargetname)
+- [Binding.TargetType](about_PSRule_Options.md#bindingtargettype)
+- [Configuration](about_PSRule_Options.md#configuration)
+- [Rule.Include](about_PSRule_Options.md#ruleinclude)
+- [Rule.Exclude](about_PSRule_Options.md#ruleexclude)
+- [Rule.Tag](about_PSRule_Options.md#ruletag)
 
 Baseline options can be:
 
@@ -27,7 +27,7 @@ Baseline options can be:
   - When using this method, multiple baseline specs can be defined within the same YAML file.
   - Each baseline spec is separated using `---`.
 - Set within a workspace options file like `ps-rule.yaml`.
-  - Only a single baseline can be specified using the `binding`, `configuration` and `rule` options.
+  - Only a single baseline can be specified.
   - See [about_PSRule_Options](about_PSRule_Options.md) for details on using this method.
 
 ### Baseline specs
@@ -98,23 +98,18 @@ spec:
 
 ### Baseline scopes
 
-When more then one baseline is available during execution, PSRule uses the following order to
-determine precedence.
+When baseline options are set, PSRule uses the following order to determine precedence.
 
 1. Parameter - `-Name` and `-Tag`.
-2. Explicit - A named baseline called out with `-Baseline`.
+2. Explicit - A named baseline specified with `-Baseline`.
 3. Workspace - Included in `ps-rule.yaml` or specified on the command line with `-Option`.
 4. Module - A baseline object included in a `.rule.yaml` file.
 
 After precedence is determined, baselines are merged and null values are ignored, such that:
 
-### Creating a module baseline
-
-zzz
-
 ## EXAMPLES
 
-### Example PSRule.yml
+### Example ps-rule.yaml
 
 ```yaml
 #

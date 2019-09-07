@@ -36,7 +36,10 @@ Get a list of baselines from the current working path.
 
 ### -Module
 
-{{ Fill Module Description }}
+Search for baselines definitions within a module.
+When specified without the `-Path` parameter, only baseline definitions in the module will be discovered.
+
+When both `-Path` and `-Module` are specified, baseline definitions from both are discovered.
 
 ```yaml
 Type: String[]
@@ -127,7 +130,11 @@ Accept wildcard characters: False
 
 ### -Culture
 
-{{ Fill Culture Description }}
+Specifies the culture to use for documentation and messages. By default, the culture of PowerShell is used.
+
+This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.
+
+The PowerShell cmdlet `Get-Culture` shows the current culture of PowerShell.
 
 ```yaml
 Type: String
@@ -154,3 +161,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[Get-PSRule](Get-PSRule.md)

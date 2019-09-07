@@ -11,7 +11,7 @@ Describes additional options that can be used during rule execution.
 PSRule lets you use options when calling cmdlets such as `Invoke-PSRule` and `Test-PSRuleTarget` to change how rules are processed.
 This topic describes what options are available, when to and how to use them.
 
-The following options are available for use:
+The following workspace options are available for use:
 
 - [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InconclusiveWarning](#executioninconclusivewarning)
@@ -772,7 +772,7 @@ output:
 The name of specific rules to evaluate.
 If this option is not specified all rules in search paths will be evaluated.
 
-This option can be overridden at runtime by using the `-Name` parameter of `Invoke-PSRule`, `Get-PSRule` and `Test-PSRuleTarget`.
+This option can be overridden at runtime by using the `-Name` cmdlet parameter.
 
 This option can be specified using:
 
@@ -812,6 +812,8 @@ rule:
 ### Rule.Tag
 
 A set of required key value pairs (tags) that rules must have applied to them to be included.
+
+This option can be overridden at runtime by using the `-Tag` cmdlet parameter.
 
 This option can be specified using:
 
