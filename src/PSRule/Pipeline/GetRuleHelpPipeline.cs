@@ -14,7 +14,7 @@ namespace PSRule.Pipeline
 
         public IEnumerable<RuleHelpInfo> Process()
         {
-            return HostHelper.GetRuleHelp(source: _Source, _Context);
+            return HostHelper.GetRuleHelp(source: _Source, context: _Context);
         }
     }
 }
