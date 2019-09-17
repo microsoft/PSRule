@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+## v0.9.0-B190905 (pre-release)
+
 - Added support for matching an array of tag values. [#282](https://github.com/BernieWhite/PSRule/issues/282)
 - Updated `Get-PSRuleHelp` to include help within the current path by default. [#197](https://github.com/BernieWhite/PSRule/issues/197)
 - Fix can not serialize nested System.IO.DirectoryInfo property. [#281](https://github.com/BernieWhite/PSRule/issues/281)
