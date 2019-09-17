@@ -124,9 +124,14 @@ Accept wildcard characters: False
 
 ### -Tag
 
-Only get rules with the specified tags set. If this parameter is not specified all rules in search paths will be returned.
+Only get rules with the specified tags set.
+If this parameter is not specified all rules in search paths will be returned.
 
-When more than one tag is used, all tags must match. Tags are not case sensitive. A tag value of `*` may be used to filter rules to any rule with the tag set, regardless of tag value.
+When more than one tag is used, all tags must match. Tags are not case sensitive.
+A tag value of `*` may be used to filter rules to any rule with the tag set, regardless of tag value.
+
+An array of tag values can be used to match a rule with either value.
+i.e. `severity = important, critical` matches rules with a category of either `important` or `critical`.
 
 ```yaml
 Type: Hashtable
@@ -142,7 +147,9 @@ Accept wildcard characters: False
 
 ### -Option
 
-Additional options that configure execution. A `PSRuleOption` can be created by using the `New-PSRuleOption` cmdlet. Alternatively a hashtable or path to YAML file can be specified with options.
+Additional options that configure execution.
+A `PSRuleOption` can be created by using the `New-PSRuleOption` cmdlet.
+Alternatively a hashtable or path to YAML file can be specified with options.
 
 For more information on PSRule options see about_PSRule_Options.
 
@@ -178,7 +185,8 @@ Accept wildcard characters: False
 
 ### -Module
 
-Search for rule definitions within a module. When specified without the `-Path` parameter, only rule definitions in the module will be discovered.
+Search for rule definitions within a module.
+When specified without the `-Path` parameter, only rule definitions in the module will be discovered.
 
 When both `-Path` and `-Module` are specified, rule definitions from both are discovered.
 
@@ -196,7 +204,7 @@ Accept wildcard characters: False
 
 ### -Culture
 
-Specifies the culture to use for rule documentation and messages. By default, the culture of PowerShell is used.
+Specifies the culture to use for documentation and messages. By default, the culture of PowerShell is used.
 
 This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.
 

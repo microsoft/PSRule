@@ -23,8 +23,10 @@ namespace PSRule.Pipeline
 
         // Configuration parameters
         private readonly ILogger _Logger;
-        private readonly BindTargetName _BindTargetName;
-        private readonly BindTargetName _BindTargetType;
+        private readonly TargetBinder _Binder;
+        private readonly BaselineContext _Baseline;
+        private readonly IDictionary<string, ResourceRef> _Unresolved;
+
         private readonly LanguageMode _LanguageMode;
         private readonly bool _InconclusiveWarning;
         private readonly bool _NotProcessedWarning;
@@ -32,7 +34,6 @@ namespace PSRule.Pipeline
         private readonly OutcomeLogStream _PassStream;
         private readonly Dictionary<string, NameToken> _NameTokenCache;
         private readonly Stopwatch _RuleTimer;
-
         private readonly List<string> _Reason;
 
         // Pipeline logging
@@ -48,25 +49,23 @@ namespace PSRule.Pipeline
 
         // Fields exposed to engine
         internal RuleRecord RuleRecord;
-        internal string TargetName;
-        internal string TargetType;
         internal PSObject TargetObject;
         internal RuleBlock RuleBlock;
         internal PSRuleOption Option;
-        internal RuleSource Source;
-        internal Dictionary<string, Hashtable> DataCache;
-        internal string[] SourceContentCache;
+        internal SourceScope Source;
+
         internal ExecutionScope ExecutionScope;
-        internal Dictionary<string, object> ExpressionCache;
+
+        internal readonly Dictionary<string, Hashtable> DataCache;
+        internal readonly Dictionary<string, object> ExpressionCache;
+        internal readonly string[] Culture;
 
         public HashAlgorithm ObjectHashAlgorithm
         {
             get
             {
                 if (_Hash == null)
-                {
                     _Hash = new SHA1Managed();
-                }
 
                 return _Hash;
             }
@@ -74,18 +73,13 @@ namespace PSRule.Pipeline
 
         internal ILogger Logger
         {
-            get
-            {
-                return _Logger;
-            }
+            get { return _Logger; }
         }
 
-        private PipelineContext(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, BindTargetName bindTargetType)
+        private PipelineContext(ILogger logger, PSRuleOption option, TargetBinder binder, BaselineContext baseline, IDictionary<string, ResourceRef> unresolved)
         {
             _ObjectNumber = -1;
             _Logger = logger;
-            _BindTargetName = bindTargetName;
-            _BindTargetType = bindTargetType;
             _RuleTimer = new Stopwatch();
 
             Option = option;
@@ -102,13 +96,33 @@ namespace PSRule.Pipeline
             ExpressionCache = new Dictionary<string, object>();
 
             _Reason = new List<string>();
+            _Binder = binder;
+            _Baseline = baseline;
+            _Unresolved = unresolved;
+            Culture = option.Output.Culture;
         }
 
-        public static PipelineContext New(ILogger logger, PSRuleOption option, BindTargetName bindTargetName, BindTargetName bindTargetType)
+        public static PipelineContext New(ILogger logger, PSRuleOption option, TargetBinder binder, BaselineContext baseline, IDictionary<string, ResourceRef> unresolved)
         {
-            var context = new PipelineContext(logger, option, bindTargetName, bindTargetType);
+            var context = new PipelineContext(logger, option, binder, baseline, unresolved);
             CurrentThread = context;
             return context;
+        }
+
+        internal sealed class SourceScope
+        {
+            public readonly SourceFile File;
+            public readonly string[] SourceContentCache;
+            public readonly IResourceFilter Filter;
+            public readonly Dictionary<string, object> Configuration;
+
+            public SourceScope(SourceFile source, string[] content, IResourceFilter filter, Dictionary<string, object> configuration)
+            {
+                File = source;
+                SourceContentCache = content;
+                Filter = filter;
+                Configuration = configuration;
+            }
         }
 
         internal Runspace GetRunspace()
@@ -124,9 +138,7 @@ namespace PSRule.Pipeline
                 _Runspace.ThreadOptions = PSThreadOptions.UseCurrentThread;
 
                 if (Runspace.DefaultRunspace == null)
-                {
                     Runspace.DefaultRunspace = _Runspace;
-                }
 
                 _Runspace.Open();
                 _Runspace.SessionStateProxy.PSVariable.Set(new RuleVariable());
@@ -140,109 +152,107 @@ namespace PSRule.Pipeline
                 _Runspace.SessionStateProxy.PSVariable.Set("DebugPreference", ActionPreference.Continue);
                 _Runspace.SessionStateProxy.Path.SetLocation(PSRuleOption.GetWorkingPath());
             }
-
             return _Runspace;
         }
 
-        internal void EnterSourceScope(RuleSource source)
+        internal SourceScope EnterSourceScope(SourceFile source)
         {
             if (!File.Exists(source.Path))
-            {
                 throw new FileNotFoundException(PSRuleResources.ScriptNotFound, source.Path);
-            }
 
-            Source = source;
-            SourceContentCache = File.ReadAllLines(source.Path, Encoding.UTF8);
+            if (Source != null && Source.File == source)
+                return Source;
+
+            // Change scope
+            _Baseline.UseScope(moduleName: source.ModuleName);
+            Source = new SourceScope(source, File.ReadAllLines(source.Path, Encoding.UTF8), _Baseline.RuleFilter(), _Baseline.GetConfiguration());
+            return Source;
         }
 
         internal void ExitSourceScope()
         {
             Source = null;
-            SourceContentCache = null;
+        }
+
+        internal void Import(IResource resource)
+        {
+            if (resource.Kind == ResourceKind.Baseline && resource is Baseline baseline && _Unresolved.TryGetValue(resource.Id, out ResourceRef rr) && rr is BaselineRef baselineRef)
+            {
+                _Unresolved.Remove(resource.Id);
+                _Baseline.Add(new BaselineContext.BaselineContextScope(baselineRef.Type, resource.Module, baseline.Spec));
+            }
         }
 
         public void Pass()
         {
-            if (_PassStream == OutcomeLogStream.None)
-            {
+            if (_Logger == null || _PassStream == OutcomeLogStream.None)
                 return;
-            }
 
             if (_PassStream == OutcomeLogStream.Warning && _Logger.ShouldWriteWarning())
             {
-                _Logger.WriteWarning(string.Format(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, TargetName));
+                _Logger.WriteWarning(string.Format(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, _Binder.TargetName));
             }
 
             if (_PassStream == OutcomeLogStream.Error && _Logger.ShouldWriteError())
             {
-                _Logger.WriteError(new ErrorRecord(new RuleRuntimeException(string.Format(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, TargetName)), "Rule.Outcome.Pass", ErrorCategory.InvalidData, null));
+                _Logger.WriteError(new ErrorRecord(new RuleRuntimeException(string.Format(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, _Binder.TargetName)), "Rule.Outcome.Pass", ErrorCategory.InvalidData, null));
             }
 
             if (_PassStream == OutcomeLogStream.Information && _Logger.ShouldWriteInformation())
             {
-                _Logger.WriteInformation(new InformationRecord(messageData: string.Format(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, TargetName), source: "Rule.Outcome.Pass"));
+                _Logger.WriteInformation(new InformationRecord(messageData: string.Format(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, _Binder.TargetName), source: "Rule.Outcome.Pass"));
             }
         }
 
         public void Fail()
         {
-            if (_FailStream == OutcomeLogStream.None)
-            {
+            if (_Logger == null || _FailStream == OutcomeLogStream.None)
                 return;
-            }
 
             if (_FailStream == OutcomeLogStream.Warning && _Logger.ShouldWriteWarning())
             {
-                _Logger.WriteWarning(string.Format(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, TargetName));
+                _Logger.WriteWarning(string.Format(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, _Binder.TargetName));
             }
 
             if (_FailStream == OutcomeLogStream.Error && _Logger.ShouldWriteError())
             {
-                _Logger.WriteError(new ErrorRecord(new RuleRuntimeException(string.Format(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, TargetName)), "Rule.Outcome.Fail", ErrorCategory.InvalidData, null));
+                _Logger.WriteError(new ErrorRecord(new RuleRuntimeException(string.Format(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, _Binder.TargetName)), "Rule.Outcome.Fail", ErrorCategory.InvalidData, null));
             }
 
             if (_FailStream == OutcomeLogStream.Information && _Logger.ShouldWriteInformation())
             {
-                _Logger.WriteInformation(new InformationRecord(messageData: string.Format(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, TargetName), source: "Rule.Outcome.Fail"));
+                _Logger.WriteInformation(new InformationRecord(messageData: string.Format(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, _Binder.TargetName), source: "Rule.Outcome.Fail"));
             }
         }
 
         public void WarnRuleInconclusive(string ruleId)
         {
-            if (!_Logger.ShouldWriteWarning() || !_InconclusiveWarning)
-            {
+            if (_Logger == null || !_Logger.ShouldWriteWarning() || !_InconclusiveWarning)
                 return;
-            }
 
-            _Logger.WriteWarning(string.Format(PSRuleResources.RuleInconclusive, ruleId, TargetName));
+            _Logger.WriteWarning(string.Format(PSRuleResources.RuleInconclusive, ruleId, _Binder.TargetName));
         }
 
         public void WarnObjectNotProcessed()
         {
-            if (!_Logger.ShouldWriteWarning() || !_NotProcessedWarning)
-            {
+            if (_Logger == null || !_Logger.ShouldWriteWarning() || !_NotProcessedWarning)
                 return;
-            }
 
-            _Logger.WriteWarning(message: string.Format(PSRuleResources.ObjectNotProcessed, TargetName));
+            _Logger.WriteWarning(message: string.Format(PSRuleResources.ObjectNotProcessed, _Binder.TargetName));
         }
 
         public void WarnRuleNotFound()
         {
-            if (!_Logger.ShouldWriteWarning())
-            {
+            if (_Logger == null || !_Logger.ShouldWriteWarning())
                 return;
-            }
 
             _Logger.WriteWarning(message: PSRuleResources.RuleNotFound);
         }
 
         public void ErrorInvaildRuleResult()
         {
-            if (!_Logger.ShouldWriteError())
-            {
+            if (_Logger == null || !_Logger.ShouldWriteError())
                 return;
-            }
 
             _Logger.WriteError(errorRecord: new ErrorRecord(
                 exception: new RuleRuntimeException(message: string.Format(PSRuleResources.InvalidRuleResult, RuleBlock.RuleId)),
@@ -254,90 +264,73 @@ namespace PSRule.Pipeline
 
         public void VerboseRuleDiscovery(string path)
         {
-            if (!_Logger.ShouldWriteVerbose() || string.IsNullOrEmpty(path))
-            {
+            if (_Logger == null || !_Logger.ShouldWriteVerbose() || string.IsNullOrEmpty(path))
                 return;
-            }
 
             _Logger.WriteVerbose($"[PSRule][D] -- Discovering rules in: {path}");
         }
 
         public void VerboseFoundRule(string ruleName, string scriptName)
         {
-            if (!_Logger.ShouldWriteVerbose())
-            {
+            if (_Logger == null || !_Logger.ShouldWriteVerbose())
                 return;
-            }
-
 
             _Logger.WriteVerbose($"[PSRule][D] -- Found {ruleName} in {scriptName}");
         }
 
         public void VerboseObjectStart()
         {
-            if (!_Logger.ShouldWriteVerbose())
-            {
+            if (_Logger == null || !_Logger.ShouldWriteVerbose())
                 return;
-            }
 
-            _Logger.WriteVerbose(string.Concat(GetLogPrefix(), " :: ", TargetName));
+            _Logger.WriteVerbose(string.Concat(GetLogPrefix(), " :: ", _Binder.TargetName));
         }
 
         public void VerboseConditionMessage(string condition, string message, params object[] args)
         {
-            if (!_Logger.ShouldWriteVerbose())
-            {
+            if (_Logger == null || !_Logger.ShouldWriteVerbose())
                 return;
-            }
 
             _Logger.WriteVerbose(string.Concat(GetLogPrefix(), "[", condition, "] -- ", string.Format(message, args)));
         }
 
         public void VerboseConditionResult(string condition, int pass, int count, bool outcome)
         {
-            if (!_Logger.ShouldWriteVerbose())
-            {
+            if (_Logger == null || !_Logger.ShouldWriteVerbose())
                 return;
-            }
 
             _Logger.WriteVerbose(string.Concat(GetLogPrefix(), "[", condition, "] -- [", pass, "/", count, "] [", outcome, "]"));
         }
 
         public void VerboseConditionResult(string condition, bool outcome)
         {
-            if (!_Logger.ShouldWriteVerbose())
-            {
+            if (_Logger == null || !_Logger.ShouldWriteVerbose())
                 return;
-            }
 
             _Logger.WriteVerbose(string.Concat(GetLogPrefix(), "[", condition, "] -- [", outcome, "]"));
         }
 
         public void VerboseConditionResult(int pass, int count, RuleOutcome outcome)
         {
-            if (!_Logger.ShouldWriteVerbose())
-            {
+            if (_Logger == null || !_Logger.ShouldWriteVerbose())
                 return;
-            }
 
             _Logger.WriteVerbose(string.Concat(GetLogPrefix(), " -- [", pass, "/", count, "] [", outcome, "]"));
         }
 
         public void WriteError(ErrorRecord record)
         {
-            if (!_Logger.ShouldWriteError())
-            {
+            if (_Logger == null || !_Logger.ShouldWriteError())
                 return;
-            }
+
             _Logger.WriteError(errorRecord: record);
         }
 
         public void WriteError(ParseError error)
         {
-            if (!_Logger.ShouldWriteError())
-            {
+            if (_Logger == null || !_Logger.ShouldWriteError())
                 return;
-            }
+
             var record = new ErrorRecord
             (
                 exception: new RuleParseException(message: error.Message, errorId: error.ErrorId),
@@ -359,41 +352,52 @@ namespace PSRule.Pipeline
 
         private static void Debug_DataAdded(object sender, DataAddedEventArgs e)
         {
+            if (CurrentThread._Logger == null)
+            {
+                return;
+            }
             var collection = sender as PSDataCollection<DebugRecord>;
             var record = collection[e.Index];
-
             CurrentThread._Logger.WriteDebug(debugRecord: record);
         }
 
         private static void Information_DataAdded(object sender, DataAddedEventArgs e)
         {
+            if (CurrentThread._Logger == null)
+                return;
+
             var collection = sender as PSDataCollection<InformationRecord>;
             var record = collection[e.Index];
-
             CurrentThread._Logger.WriteInformation(informationRecord: record);
         }
 
         private static void Verbose_DataAdded(object sender, DataAddedEventArgs e)
         {
+            if (CurrentThread._Logger == null)
+                return;
+
             var collection = sender as PSDataCollection<VerboseRecord>;
             var record = collection[e.Index];
-
             CurrentThread._Logger.WriteVerbose(record.Message);
         }
 
         private static void Warning_DataAdded(object sender, DataAddedEventArgs e)
         {
+            if (CurrentThread._Logger == null)
+                return;
+
             var collection = sender as PSDataCollection<WarningRecord>;
             var record = collection[e.Index];
-
             CurrentThread._Logger.WriteWarning(message: record.Message);
         }
 
         private static void Error_DataAdded(object sender, DataAddedEventArgs e)
         {
+            if (CurrentThread._Logger == null)
+                return;
+
             var collection = sender as PSDataCollection<ErrorRecord>;
             var record = collection[e.Index];
-
             CurrentThread._Logger.WriteError(errorRecord: record);
         }
 
@@ -403,14 +407,8 @@ namespace PSRule.Pipeline
         public void SetTargetObject(PSObject targetObject)
         {
             _ObjectNumber++;
-
             TargetObject = targetObject;
-
-            // Bind TargetName
-            TargetName = _BindTargetName(targetObject);
-
-            // Bind TargetType
-            TargetType = _BindTargetType(targetObject);
+            _Binder.Bind(_Baseline, targetObject);
         }
 
         /// <summary>
@@ -422,15 +420,18 @@ namespace PSRule.Pipeline
                 ruleId: ruleBlock.RuleId,
                 ruleName: ruleBlock.RuleName,
                 targetObject: TargetObject,
-                targetName: TargetName,
-                targetType: TargetType,
+                targetName: _Binder.TargetName,
+                targetType: _Binder.TargetType,
                 tag: ruleBlock.Tag,
                 info: ruleBlock.Info
             );
 
             RuleBlock = ruleBlock;
 
-            _Logger.EnterScope(ruleBlock.RuleName);
+            _Binder.Bind(_Baseline, TargetObject);
+
+            if (_Logger != null)
+                _Logger.EnterScope(ruleBlock.RuleName);
 
             // Starts rule execution timer
             _RuleTimer.Restart();
@@ -448,11 +449,10 @@ namespace PSRule.Pipeline
             RuleRecord.Time = _RuleTimer.ElapsedMilliseconds;
 
             if (!RuleRecord.IsSuccess())
-            {
                 RuleRecord.Reason = _Reason.ToArray();
-            }
 
-            _Logger.ExitScope();
+            if (_Logger != null)
+                _Logger.ExitScope();
 
             _LogPrefix = null;
             RuleRecord = null;
@@ -463,9 +463,7 @@ namespace PSRule.Pipeline
         public void WriteReason(string text)
         {
             if (string.IsNullOrEmpty(text) || ExecutionScope != ExecutionScope.Condition)
-            {
                 return;
-            }
 
             _Reason.Add(text);
         }
@@ -473,9 +471,7 @@ namespace PSRule.Pipeline
         private string GetLogPrefix()
         {
             if (_LogPrefix == null)
-            {
                 _LogPrefix = $"[PSRule][R][{_ObjectNumber}][{RuleRecord?.RuleId}]";
-            }
 
             return _LogPrefix ?? string.Empty;
         }

@@ -2,11 +2,10 @@
 using PSRule.Resources;
 using PSRule.Rules;
 using System;
-using System.Collections;
 using System.IO;
-using System.Linq;
 using System.Management.Automation;
 using System.Text;
+using System.Threading;
 
 namespace PSRule.Pipeline
 {
@@ -15,11 +14,9 @@ namespace PSRule.Pipeline
     /// </summary>
     public sealed class InvokeRulePipelineBuilder : PipelineBuilderBase
     {
-        private RuleSource[] _Source;
-        private Hashtable _Tag;
         private RuleOutcome _Outcome;
-        private BindTargetName _BindTargetNameHook;
-        private BindTargetName _BindTargetTypeHook;
+        private BindTargetMethod _BindTargetNameHook;
+        private BindTargetMethod _BindTargetTypeHook;
         private VisitTargetObject _VisitTargetObject;
         private ShouldProcess _ShouldProcess;
         private Action<object, bool> _Output;
@@ -30,22 +27,12 @@ namespace PSRule.Pipeline
         internal InvokeRulePipelineBuilder()
         {
             _Outcome = RuleOutcome.Processed;
-            _BindTargetNameHook = PipelineHookActions.DefaultTargetNameBinding;
-            _BindTargetTypeHook = PipelineHookActions.DefaultTargetTypeBinding;
+            _BindTargetNameHook = PipelineHookActions.BindTargetName;
+            _BindTargetTypeHook = PipelineHookActions.BindTargetType;
             _VisitTargetObject = PipelineReceiverActions.PassThru;
             _Output = (r, b) => { };
             _Stream = null;
             _InputPath = null;
-        }
-
-        public void FilterBy(Hashtable tag)
-        {
-            _Tag = tag;
-        }
-
-        public void Source(RuleSource[] source)
-        {
-            _Source = source;
         }
 
         public void Limit(RuleOutcome outcome)
@@ -58,30 +45,6 @@ namespace PSRule.Pipeline
             base.UseCommandRuntime(commandRuntime);
             _ShouldProcess = commandRuntime.ShouldProcess;
             _Output = commandRuntime.WriteObject;
-        }
-
-        public void AddBindTargetNameAction(BindTargetNameAction action)
-        {
-            // Nest the previous write action in the new supplied action
-            // Execution chain will be: action -> previous -> previous..n
-            var previous = _BindTargetNameHook;
-            _BindTargetNameHook = (targetObject) => action(targetObject, previous);
-        }
-
-        public void AddBindTargetTypeAction(BindTargetNameAction action)
-        {
-            // Nest the previous write action in the new supplied action
-            // Execution chain will be: action -> previous -> previous..n
-            var previous = _BindTargetTypeHook;
-            _BindTargetTypeHook = (targetObject) => action(targetObject, previous);
-        }
-
-        private void AddVisitTargetObjectAction(VisitTargetObjectAction action)
-        {
-            // Nest the previous write action in the new supplied action
-            // Execution chain will be: action -> previous -> previous..n
-            var previous = _VisitTargetObject;
-            _VisitTargetObject = (targetObject) => action(targetObject, previous);
         }
 
         public void ReturnBoolean()
@@ -114,114 +77,72 @@ namespace PSRule.Pipeline
             _Option.Logging.LimitDebug = option.Logging.LimitDebug;
 
             _Option.Output.As = option.Output.As ?? OutputOption.Default.As;
+            _Option.Output.Culture = option.Output.Culture ?? new string[] { Thread.CurrentThread.CurrentCulture.ToString() };
             _Option.Output.Encoding = option.Output.Encoding ?? OutputOption.Default.Encoding;
             _Option.Output.Format = option.Output.Format ?? OutputOption.Default.Format;
             _Option.Output.Path = option.Output.Path ?? OutputOption.Default.Path;
 
             _Option.Binding.IgnoreCase = option.Binding.IgnoreCase ?? BindingOption.Default.IgnoreCase;
+            _Option.Binding.TargetName = option.Binding.TargetName;
+            _Option.Binding.TargetType = option.Binding.TargetType;
 
-            if (option.Baseline != null)
+            if (option.Rule != null)
             {
-                _Option.Baseline = new BaselineOption(option.Baseline);
+                _Option.Rule = new RuleOption(option.Rule);
             }
 
-            if (option.Binding.TargetName != null && option.Binding.TargetName.Length > 0)
+            if (option.Configuration != null)
             {
-                // Use nested TargetName binding when '.' is included in field name because it's slower then custom
-                var useNested = option.Binding.TargetName.Any(n => n.Contains('.'));
-
-                if (useNested)
-                {
-                    AddBindTargetNameAction((targetObject, next) =>
-                    {
-                        return PipelineHookActions.NestedTargetNameBinding(
-                            propertyNames: option.Binding.TargetName,
-                            caseSensitive: !_Option.Binding.IgnoreCase.Value,
-                            targetObject: targetObject,
-                            next: next
-                        );
-                    });
-                }
-                else
-                {
-                    AddBindTargetNameAction((targetObject, next) =>
-                    {
-                        return PipelineHookActions.CustomTargetNameBinding(
-                            propertyNames: option.Binding.TargetName,
-                            caseSensitive: !_Option.Binding.IgnoreCase.Value,
-                            targetObject: targetObject,
-                            next: next
-                        );
-                    });
-                }
+                _Option.Configuration = new ConfigurationOption(option.Configuration);
             }
+
+            //if (option.Binding.TargetName != null && option.Binding.TargetName.Length > 0)
+            //{
+            //    // Use nested TargetName binding when '.' is included in field name because it's slower then custom
+            //    var useNested = option.Binding.TargetName.Any(n => n.Contains('.'));
+
+            //    if (useNested)
+            //        _BindTargetNameHook = AddBindTargetAction(PipelineHookActions.NestedTargetPropertyBinding, _BindTargetNameHook);
+            //    else
+            //        _BindTargetNameHook = AddBindTargetAction(PipelineHookActions.CustomTargetPropertyBinding, _BindTargetNameHook);
+            //}
 
             if (option.Pipeline.BindTargetName != null && option.Pipeline.BindTargetName.Count > 0)
             {
                 // Do not allow custom binding functions to be used with constrained language mode
                 if (_Option.Execution.LanguageMode == LanguageMode.ConstrainedLanguage)
                 {
-                    throw new PipelineConfigurationException(optionName: "BindTargetName", message: "Binding functions are not supported in this language mode.");
+                    throw new PipelineConfigurationException(optionName: "BindTargetName", message: PSRuleResources.ConstrainedTargetBinding);
                 }
 
                 foreach (var action in option.Pipeline.BindTargetName)
                 {
-                    AddBindTargetNameAction((targetObject, next) =>
-                    {
-                        var targetName = action(targetObject);
-
-                        return string.IsNullOrEmpty(targetName) ? next(targetObject) : targetName;
-                    });
+                    _BindTargetNameHook = AddBindTargetAction(action, _BindTargetNameHook);
                 }
             }
 
-            if (option.Binding.TargetType != null && option.Binding.TargetType.Length > 0)
-            {
-                // Use nested TargetType binding when '.' is included in field name because it's slower then custom
-                var useNested = option.Binding.TargetType.Any(n => n.Contains('.'));
+            //if (option.Binding.TargetType != null && option.Binding.TargetType.Length > 0)
+            //{
+            //    // Use nested TargetType binding when '.' is included in field name because it's slower then custom
+            //    var useNested = option.Binding.TargetType.Any(n => n.Contains('.'));
 
-                if (useNested)
-                {
-                    AddBindTargetTypeAction((targetObject, next) =>
-                    {
-                        return PipelineHookActions.NestedTargetNameBinding(
-                            propertyNames: option.Binding.TargetType,
-                            caseSensitive: !_Option.Binding.IgnoreCase.Value,
-                            targetObject: targetObject,
-                            next: next
-                        );
-                    });
-                }
-                else
-                {
-                    AddBindTargetTypeAction((targetObject, next) =>
-                    {
-                        return PipelineHookActions.CustomTargetNameBinding(
-                            propertyNames: option.Binding.TargetType,
-                            caseSensitive: !_Option.Binding.IgnoreCase.Value,
-                            targetObject: targetObject,
-                            next: next
-                        );
-                    });
-                }
-            }
+            //    if (useNested)
+            //        _BindTargetTypeHook = AddBindTargetAction(PipelineHookActions.NestedTargetPropertyBinding, _BindTargetTypeHook);
+            //    else
+            //        _BindTargetTypeHook = AddBindTargetAction(PipelineHookActions.CustomTargetPropertyBinding, _BindTargetTypeHook);
+            //}
 
             if (option.Pipeline.BindTargetType != null && option.Pipeline.BindTargetType.Count > 0)
             {
                 // Do not allow custom binding functions to be used with constrained language mode
                 if (_Option.Execution.LanguageMode == LanguageMode.ConstrainedLanguage)
                 {
-                    throw new PipelineConfigurationException(optionName: "BindTargetType", message: "Binding functions are not supported in this language mode.");
+                    throw new PipelineConfigurationException(optionName: "BindTargetType", message: PSRuleResources.ConstrainedTargetBinding);
                 }
 
                 foreach (var action in option.Pipeline.BindTargetType)
                 {
-                    AddBindTargetTypeAction((targetObject, next) =>
-                    {
-                        var targetType = action(targetObject);
-
-                        return string.IsNullOrEmpty(targetType) ? next(targetObject) : targetType;
-                    });
+                    _BindTargetTypeHook = AddBindTargetAction(action, _BindTargetTypeHook);
                 }
             }
 
@@ -266,36 +187,60 @@ namespace PSRule.Pipeline
                 });
             }
 
+            if (_Stream == null)
+            {
+                _Stream = new PowerShellPipelineStream(option: _Option, output: GetOutput(), returnBoolean: _ReturnBoolean, inputPath: _InputPath);
+            }
+
+            //var filter = new RuleFilter(include: _Option.Rule.Include, tag: _Tag, exclude: _Option.Rule.Exclude);
+            var context = PrepareContext(bindTargetName: _BindTargetNameHook, bindTargetType: _BindTargetTypeHook);
+            var pipeline = new InvokeRulePipeline(
+                streamManager: new StreamManager(option: _Option, stream: _Stream, input: _VisitTargetObject),
+                source: GetSource(),
+                outcome: _Outcome,
+                context: context
+            );
+            return pipeline;
+        }
+
+        private BindTargetMethod AddBindTargetAction(BindTargetFunc action, BindTargetMethod previous)
+        {
+            // Nest the previous write action in the new supplied action
+            // Execution chain will be: action -> previous -> previous..n
+            return (propertyNames, caseSensitive, targetObject) => action(propertyNames, caseSensitive, targetObject, previous);
+        }
+
+        private BindTargetMethod AddBindTargetAction(BindTargetName action, BindTargetMethod previous)
+        {
+            return AddBindTargetAction((parameterNames, caseSensitive, targetObject, next) =>
+            {
+                var targetType = action(targetObject);
+                return string.IsNullOrEmpty(targetType) ? next(parameterNames, caseSensitive, targetObject) : targetType;
+            }, previous);
+        }
+
+        private void AddVisitTargetObjectAction(VisitTargetObjectAction action)
+        {
+            // Nest the previous write action in the new supplied action
+            // Execution chain will be: action -> previous -> previous..n
+            var previous = _VisitTargetObject;
+            _VisitTargetObject = (targetObject) => action(targetObject, previous);
+        }
+
+        private Action<object, bool> GetOutput()
+        {
             // Redirect to file instead
             if (!string.IsNullOrEmpty(_Option.Output.Path))
             {
                 var encoding = GetEncoding(_Option.Output.Encoding);
-
-                _Output = (object o, bool enumerate) => WriteToFile(
+                return (object o, bool enumerate) => WriteToFile(
                     path: _Option.Output.Path,
                     shouldProcess: _ShouldProcess,
                     encoding: encoding,
                     o: o
                 );
             }
-
-            if (_Stream == null)
-            {
-                _Stream = new PowerShellPipelineStream(option: _Option, output: _Output, returnBoolean: _ReturnBoolean, inputPath: _InputPath);
-            }
-
-            var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: _Tag, exclude: _Option.Baseline.Exclude);
-            var context = PrepareContext(bindTargetName: _BindTargetNameHook, bindTargetType: _BindTargetTypeHook);
-            var pipeline = new InvokeRulePipeline(
-                streamManager: new StreamManager(option: _Option, stream: _Stream, input: _VisitTargetObject),
-                option: _Option,
-                source: _Source,
-                filter: filter,
-                outcome: _Outcome,
-                context: context
-            );
-
-            return pipeline;
+            return _Output;
         }
 
         /// <summary>

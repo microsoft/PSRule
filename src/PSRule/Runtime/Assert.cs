@@ -134,7 +134,7 @@ namespace PSRule.Runtime
 
             // Assert
             if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue) && !IsEmpty(fieldValue))
-            { 
+            {
                 return Fail(string.Format(ReasonStrings.NullOrEmpty, field));
             }
             return Pass();

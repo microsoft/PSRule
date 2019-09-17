@@ -1,17 +1,10 @@
 ﻿using PSRule.Configuration;
-using PSRule.Rules;
+using System.Threading;
 
 namespace PSRule.Pipeline
 {
     public sealed class GetRuleHelpPipelineBuilder : PipelineBuilderBase
     {
-        private RuleSource[] _Source;
-
-        public void Source(RuleSource[] source)
-        {
-            _Source = source;
-        }
-
         public GetRuleHelpPipelineBuilder Configure(PSRuleOption option)
         {
             if (option == null)
@@ -20,11 +13,11 @@ namespace PSRule.Pipeline
             }
 
             _Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
+            _Option.Output.Culture = option.Output.Culture ?? new string[] { Thread.CurrentThread.CurrentCulture.ToString() };
 
-            if (option.Baseline != null)
+            if (option.Rule != null)
             {
-                _Option.Baseline.RuleName = option.Baseline.RuleName;
-                _Option.Baseline.Exclude = option.Baseline.Exclude;
+                _Option.Rule = new RuleOption(option.Rule);
             }
 
             ConfigureLogger(_Option);
@@ -33,9 +26,8 @@ namespace PSRule.Pipeline
 
         public GetRuleHelpPipeline Build()
         {
-            var filter = new RuleFilter(ruleName: _Option.Baseline.RuleName, tag: null, exclude: _Option.Baseline.Exclude, wildcardMatch: true);
             var context = PrepareContext(bindTargetName: null, bindTargetType: null);
-            return new GetRuleHelpPipeline(option: _Option, source: _Source, filter: filter, context: context);
+            return new GetRuleHelpPipeline(source: GetSource(), context: context);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace PSRule.Runtime
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             var hashtable = TryGetLocalized();
-            
+
             if (hashtable.ContainsKey(binder.Name))
             {
                 result = hashtable[binder.Name];
@@ -27,7 +27,7 @@ namespace PSRule.Runtime
         private Hashtable TryGetLocalized()
         {
             var path = GetFilePath();
-            
+
             if (path == null)
             {
                 return Empty;
@@ -54,10 +54,11 @@ namespace PSRule.Runtime
         private string GetFilePath()
         {
             var helpPath = PipelineContext.CurrentThread.RuleBlock.Source.HelpPath;
+            var culture = PipelineContext.CurrentThread.Culture;
 
-            for (var i = 0; i < helpPath.Length; i++)
+            for (var i = 0; i < culture.Length; i++)
             {
-                var path = Path.Combine(helpPath[i], "PSRule-rules.psd1");
+                var path = Path.Combine(helpPath, string.Concat(culture[i], "/PSRule-rules.psd1"));
 
                 if (File.Exists(path))
                 {

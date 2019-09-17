@@ -18,6 +18,10 @@ A PowerShell rules engine.
 
 Get a list of matching rule definitions within the search path.
 
+### [Get-PSRuleBaseline](Get-PSRuleBaseline.md)
+
+Get a list of matching baselines within the search path.
+
 ### [Get-PSRuleHelp](Get-PSRuleHelp.md)
 
 Get documentation for a rule.

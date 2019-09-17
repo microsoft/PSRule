@@ -72,6 +72,11 @@ namespace PSRule.Pipeline
             _Stream.Output(result);
         }
 
+        internal void Output(Baseline result)
+        {
+            _Stream.Output(result);
+        }
+
         /// <summary>
         /// Get the next object.
         /// </summary>

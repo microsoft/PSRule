@@ -8,36 +8,10 @@
         }
     ],
     "definitions": {
-        "baseline-v0.2.0": {
+        "configuration": {
             "type": "object",
-            "title": "Baseline options",
-            "description": "Options that include/ exclude and configure rules.",
-            "properties": {
-                "ruleName": {
-                    "type": "array",
-                    "title": "Include rules",
-                    "description": "Optionally filter to rules by name.",
-                    "items": {
-                        "type": "string"
-                    },
-                    "uniqueItems": true
-                },
-                "exclude": {
-                    "type": "array",
-                    "title": "Exclude rules",
-                    "description": "Specifies rules to exclude by name.",
-                    "items": {
-                        "type": "string"
-                    },
-                    "uniqueItems": true
-                },
-                "configuration": {
-                    "type": "object",
-                    "title": "Configuration values",
-                    "description": "A set of key/ value configuration options for rules."
-                }
-            },
-            "additionalProperties": false
+            "title": "Configuration values",
+            "description": "A set of key/ value configuration options for rules."
         },
         "binding-v0.3.0": {
             "type": "object",
@@ -270,19 +244,19 @@
         },
         "options-v0.8.0": {
             "properties": {
-                "baseline": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/baseline-v0.2.0"
-                        }
-                    ]
-                },
                 "binding": {
                     "type": "object",
                     "oneOf": [
                         {
                             "$ref": "#/definitions/binding-v0.3.0"
+                        }
+                    ]
+                },
+                "configuration": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/configuration"
                         }
                     ]
                 },
@@ -318,6 +292,14 @@
                         }
                     ]
                 },
+                "rule": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/rule-option"
+                        }
+                    ]
+                },
                 "suppression": {
                     "type": "object",
                     "oneOf": [
@@ -328,6 +310,46 @@
                 }
             },
             "additionalProperties": false
+        },
+        "rule-option": {
+            "type": "object",
+            "title": "Baseline options",
+            "description": "Options that include/ exclude and configure rules.",
+            "properties": {
+                "include": {
+                    "type": "array",
+                    "title": "Include rules",
+                    "description": "Optionally filter to rules by name.",
+                    "$ref": "#/definitions/rule-names"
+                },
+                "exclude": {
+                    "type": "array",
+                    "title": "Exclude rules",
+                    "description": "Specifies rules to exclude by name.",
+                    "$ref": "#/definitions/rule-names"
+                },
+                "tag": {
+                    "type": "object",
+                    "title": "Tags",
+                    "description": "Rules to include by tag in the baseline.",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "rule-names": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "$ref": "#/definitions/rule-name"
+            },
+            "uniqueItems": true
+        },
+        "rule-name": {
+            "type": "string",
+            "minLength": 3
         }
     }
 }

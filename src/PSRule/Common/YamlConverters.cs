@@ -1,4 +1,8 @@
-﻿using PSRule.Configuration;
+﻿using PSRule.Annotations;
+using PSRule.Configuration;
+using PSRule.Host;
+using PSRule.Pipeline;
+using PSRule.Rules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -207,7 +211,7 @@ namespace PSRule
             {
                 yield return f;
             }
-            
+
             foreach (var p in SelectProperty(type: type))
             {
                 yield return p;
@@ -316,6 +320,108 @@ namespace PSRule
                 var actualType = TypeOverride ?? _TypeResolver.Resolve(Type, propertyValue);
                 return new ObjectDescriptor(propertyValue, actualType, Type, ScalarStyle);
             }
+        }
+    }
+
+    internal sealed class LanguageBlockDeserializer : INodeDeserializer
+    {
+        private readonly INodeDeserializer _Next;
+        private readonly SpecFactory _Factory;
+
+        public LanguageBlockDeserializer(INodeDeserializer next)
+        {
+            _Next = next;
+            _Factory = new SpecFactory();
+        }
+
+        bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
+        {
+            if (typeof(ResourceObject).IsAssignableFrom(expectedType))
+            {
+                var comment = HostHelper.GetCommentMeta(PipelineContext.CurrentThread.Source.File.Path, parser.Current.Start.Line - 2, parser.Current.Start.Column);
+                var resource = MapResource(parser, nestedObjectDeserializer, comment);
+                value = new ResourceObject(resource);
+                return true;
+            }
+            else
+            {
+                return _Next.Deserialize(parser, expectedType, nestedObjectDeserializer, out value);
+            }
+        }
+
+        private IResource MapResource(IParser parser, Func<IParser, Type, object> nestedObjectDeserializer, CommentMetadata comment)
+        {
+            IResource result = null;
+            string kind = null;
+            ResourceMetadata metadata = null;
+
+            if (parser.Accept<MappingStart>())
+            {
+                parser.MoveNext();
+                while (!parser.Accept<MappingEnd>())
+                {
+                    // Read kind
+                    var propertyName = parser.Allow<Scalar>().Value;
+
+                    if (propertyName == "kind")
+                    {
+                        kind = parser.Allow<Scalar>().Value;
+                    }
+                    else if (propertyName == "metadata")
+                    {
+                        if (!TryMetadata(parser, nestedObjectDeserializer, out metadata))
+                        {
+                            parser.SkipThisAndNestedEvents();
+                        }
+                    }
+                    else if (propertyName == "spec" && kind != null)
+                    {
+                        if (!TryResource(kind, parser, nestedObjectDeserializer, metadata, comment, out IResource resource))
+                        {
+                            parser.SkipThisAndNestedEvents();
+                        }
+                        result = resource;
+                    }
+                    else
+                    {
+                        parser.SkipThisAndNestedEvents();
+                    }
+                }
+                parser.MoveNext();
+            }
+            return result;
+        }
+
+        private bool TryMetadata(IParser parser, Func<IParser, Type, object> nestedObjectDeserializer, out ResourceMetadata metadata)
+        {
+            metadata = null;
+            if (parser.Accept<MappingStart>())
+            {
+                if (!_Next.Deserialize(parser, typeof(ResourceMetadata), nestedObjectDeserializer, out object value))
+                    return false;
+
+                metadata = (ResourceMetadata)value;
+                return true;
+            }
+            return false;
+        }
+
+        private bool TryResource(string name, IParser parser, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
+        {
+            spec = null;
+            if (_Factory.TryDescriptor(name, out ISpecDescriptor descriptor))
+            {
+                // Using object style
+                if (parser.Accept<MappingStart>())
+                {
+                    if (!_Next.Deserialize(parser, descriptor.SpecType, nestedObjectDeserializer, out object value))
+                        return false;
+
+                    spec = descriptor.CreateInstance(PipelineContext.CurrentThread.Source.File, metadata, comment, value);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

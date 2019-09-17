@@ -18,5 +18,7 @@ namespace PSRule.Pipeline
         void End(IEnumerable<RuleSummaryRecord> summary);
 
         void Output(InvokeResult result);
+
+        void Output(object result);
     }
 }

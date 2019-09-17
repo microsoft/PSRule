@@ -61,6 +61,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Binding functions are not supported in this language mode..
+        /// </summary>
+        internal static string ConstrainedTargetBinding {
+            get {
+                return ResourceManager.GetString("ConstrainedTargetBinding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A circular rule dependency was detected. The rule &apos;{0}&apos; depends on &apos;{1}&apos; which also depend on &apos;{0}&apos;..
         /// </summary>
         internal static string DependencyCircularReference {
@@ -147,6 +156,15 @@ namespace PSRule.Resources {
         internal static string KeywordScriptScope {
             get {
                 return ResourceManager.GetString("KeywordScriptScope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wildcard match requires exactly one name..
+        /// </summary>
+        internal static string MatchSingleName {
+            get {
+                return ResourceManager.GetString("MatchSingleName", resourceCulture);
             }
         }
         
@@ -291,6 +309,24 @@ namespace PSRule.Resources {
         internal static string ShouldWriteFile {
             get {
                 return ResourceManager.GetString("ShouldWriteFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SourceNotFound {
+            get {
+                return ResourceManager.GetString("SourceNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The source was not found..
+        /// </summary>
+        internal static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
         

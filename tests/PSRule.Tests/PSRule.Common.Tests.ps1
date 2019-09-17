@@ -39,7 +39,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         It 'Returns passed' {
             Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -Verifiable -MockWith {
-                return 'en-ZZ';
+                return @('en-ZZ');
             }
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
@@ -233,7 +233,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         It 'Returns error with bad path' {
-            { $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'NotAFile.ps1') } | Should -Throw -ExceptionType System.Management.Automation.ItemNotFoundException;
+            { $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'NotAFile.ps1') } | Should -Throw -ExceptionType System.IO.FileNotFoundException;
         }
 
         It 'Returns warning with empty path' {
@@ -270,7 +270,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         It 'Returns summary' {
             Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -Verifiable -MockWith {
-                return 'en-ZZ';
+                return @('en-ZZ');
             }
             $option = @{ 'Execution.InconclusiveWarning' = $False };
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Tag @{ category = 'group1' } -As Summary -Outcome All -Option $option;
@@ -558,163 +558,6 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
     }
 
-    Context 'TargetName binding' {
-        It 'Binds to TargetName' {
-            $testObject = [PSCustomObject]@{
-                TargetName = 'ObjectTargetName'
-                Name = 'ObjectName'
-                Value = 1
-            }
-
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.IsSuccess() | Should -Be $True;
-            $result.TargetName | Should -Be 'ObjectTargetName';
-        }
-
-        It 'Binds to Name' {
-            $testObject = @(
-                [PSCustomObject]@{ Name = 'TestObject1' }
-                (1 | Select-Object -Property Name)
-            )
-
-            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1');
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 2;
-            $result[0].IsSuccess() | Should -Be $True;
-            $result[1].IsSuccess() | Should -Be $True;
-            $result[0].TargetName | Should -Be 'TestObject1';
-        }
-
-        It 'Binds to object hash' {
-            $testObject = @(
-                [PSCustomObject]@{ NotName = 'TestObject1' }
-                (1 | Select-Object -Property Name)
-            )
-
-            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1');
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 2;
-            $result[0].IsSuccess() | Should -Be $True;
-            $result[1].IsSuccess() | Should -Be $True;
-            $result[0].TargetName | Should -BeIn 'f209c623345144be61087d91f30c17b01c6e86d2';
-            $result[1].TargetName | Should -BeIn '3b8eeb35831ea8f7b5de4e0cf04f32b9a1233a0d';
-        }
-
-        It 'Binds to custom name' {
-            $testObject = @(
-                [PSCustomObject]@{
-                    resourceName = 'ResourceName'
-                    AlternateName = 'AlternateName'
-                    TargetName = 'TargetName'
-                }
-                [PSCustomObject]@{
-                    AlternateName = 'AlternateName'
-                    TargetName = 'TargetName'
-                }
-                [PSCustomObject]@{
-                    TargetName = 'TargetName'
-                }
-                [PSCustomObject]@{
-                    OtherName = 'OtherName'
-                    resourceName = 'ResourceName'
-                    AlternateName = 'AlternateName'
-                    TargetName = 'TargetName'
-                }
-                [PSCustomObject]@{
-                    Metadata = @{
-                        Name = 'MetadataName'
-                    }
-                }
-            )
-
-            $bindFn = {
-                param ($TargetObject)
-
-                $otherName = $TargetObject.PSObject.Properties['OtherName'];
-
-                if ($otherName -eq $Null) {
-                    return $Null
-                }
-
-                return $otherName.Value;
-            }
-
-            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName', 'Metadata.Name'; 'Binding.IgnoreCase' = $True } -BindTargetName $bindFn;
-            $result = $testObject | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile1';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Count | Should -Be 5;
-            $result[0].TargetName | Should -Be 'ResourceName';
-            $result[1].TargetName | Should -Be 'AlternateName';
-            $result[2].TargetName | Should -Be 'TargetName';
-            $result[3].TargetName | Should -Be 'OtherName';
-            $result[4].TargetName | Should -Be 'MetadataName';
-
-            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName'; 'Binding.IgnoreCase' = $False } -BindTargetName $bindFn;
-            $result = $testObject[0..1] | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile1';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Count | Should -Be 2;
-            $result[0].TargetName | Should -Be 'AlternateName';
-            $result[1].TargetName | Should -Be 'AlternateName';
-        }
-    }
-
-    Context 'TargetType binding' {
-        $testObject = [PSCustomObject]@{
-            ResourceType = 'ResourceType'
-            kind = 'kind'
-            OtherType = 'OtherType'
-        }
-        $testObject.PSObject.TypeNames.Insert(0, 'TestType');
-
-        It 'Uses default TypeName' {
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.TargetType | Should -Be 'TestType';
-        }
-
-        It 'Binds to custom type property by order' {
-            $option = @{ 'Binding.TargetType' = 'ResourceType' };
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $option;
-            $result | Should -Not -BeNullOrEmpty;
-            $result.TargetType | Should -Be 'ResourceType';
-
-            $option = @{ 'Binding.TargetType' = 'NotType', 'ResourceType' };
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $option;
-            $result | Should -Not -BeNullOrEmpty;
-            $result.TargetType | Should -Be 'ResourceType';
-
-            $option = @{ 'Binding.TargetType' = 'ResourceType', 'kind' };
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $option;
-            $result | Should -Not -BeNullOrEmpty;
-            $result.TargetType | Should -Be 'ResourceType';
-
-            $option = @{ 'Binding.TargetType' = 'kind', 'ResourceType' };
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $option;
-            $result | Should -Not -BeNullOrEmpty;
-            $result.TargetType | Should -Be 'kind';
-        }
-
-        It 'Binds to custom type by script' {
-            $bindFn = {
-                param ($TargetObject)
-
-                $otherType = $TargetObject.PSObject.Properties['OtherType'];
-
-                if ($otherType -eq $Null) {
-                    return $Null
-                }
-
-                return $otherType.Value;
-            }
-
-            $option = New-PSRuleOption -Option @{ 'Binding.TargetType' = 'kind' } -BindTargetType $bindFn;
-            $result = $testObject | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile1';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.TargetType | Should -Be 'OtherType';
-        }
-    }
-
     Context 'Logging' {
         It 'RuleFail' {
             $testObject = [PSCustomObject]@{
@@ -990,18 +833,24 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1', 'FromFile3';
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
-            $result.RuleName | Should -BeIn @('FromFile1', 'FromFile3');
+            $result.RuleName | Should -BeIn 'FromFile1', 'FromFile3';
         }
 
         It 'Filters by tag' {
             $result = Get-PSRule -Path $ruleFilePath -Tag @{ Test = 'Test1' };
             $result | Should -Not -BeNullOrEmpty;
             $result.RuleName | Should -Be 'FromFile1';
+
+            # Test1 or Test2
+            $result = Get-PSRule -Path $ruleFilePath -Tag @{ Test = 'Test1', 'Test2' };
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 2;
+            $result.RuleName | Should -BeIn 'FromFile1', 'FromFile2';
         }
 
         It 'Reads metadata' {
             Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -Verifiable -MockWith {
-                return 'en-ZZ';
+                return @('en-ZZ');
             }
             # From markdown
             $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1';
@@ -1125,7 +974,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
 
         It 'Returns module and path rules' {
             $Null = Import-Module $testModuleSourcePath -Force;
-            $result = @(Get-PSRule -Path (Join-Path $here -ChildPath 'TestModule') -Module 'TestModule');
+            $result = @(Get-PSRule -Path $testModuleSourcePath -Module 'TestModule');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 4;
             $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2';
@@ -1205,17 +1054,32 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
 
 Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
     $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    Remove-Module TestModule*;
     $Null = Import-Module (Join-Path $here -ChildPath 'TestModule') -Force;
 
     Context 'With defaults' {
-        It 'Docs from imported module' {
-            $result = @(Get-PSRuleHelp -Module 'TestModule');
-            $result.Length | Should -Be 2;
-        }
+        try {
+            Push-Location (Join-Path $here -ChildPath 'TestModule');
+            It 'Docs from imported module' {
+                $result = @(Get-PSRuleHelp);
+                $result.Length | Should -Be 4;
+                $result[0].Name | Should -Be 'M1.Rule1';
+                $result[1].Name | Should -Be 'M1.Rule2';
+                $result[2].Name | Should -Be 'M1.Rule1';
+                $result[3].Name | Should -Be 'M1.Rule2';
+            }
 
-        It 'Using wildcard in name' {
-            $result = @(Get-PSRuleHelp M1.*);
-            $result.Length | Should -Be 2;
+            It 'Using wildcard in name' {
+                $result = @(Get-PSRuleHelp -Name M1.*);
+                $result.Length | Should -Be 4;
+                $result[0].Name | Should -Be 'M1.Rule1';
+                $result[1].Name | Should -Be 'M1.Rule2';
+                $result[2].Name | Should -Be 'M1.Rule1';
+                $result[3].Name | Should -Be 'M1.Rule2';
+            }
+        }
+        finally {
+            Pop-Location;
         }
     }
 
@@ -1361,3 +1225,168 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
 }
 
 #endregion Rules
+
+#region Binding
+
+Describe 'Binding' -Tag Common, Binding {
+    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+
+    Context 'TargetName binding' {
+        It 'Binds to TargetName' {
+            $testObject = [PSCustomObject]@{
+                TargetName = 'ObjectTargetName'
+                Name = 'ObjectName'
+                Value = 1
+            }
+
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
+            $result.TargetName | Should -Be 'ObjectTargetName';
+        }
+
+        It 'Binds to Name' {
+            $testObject = @(
+                [PSCustomObject]@{ Name = 'TestObject1' }
+                (1 | Select-Object -Property Name)
+            )
+
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+        }
+
+        It 'Binds to object hash' {
+            $testObject = @(
+                [PSCustomObject]@{ NotName = 'TestObject1' }
+                (1 | Select-Object -Property Name)
+            )
+
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -BeIn 'f209c623345144be61087d91f30c17b01c6e86d2';
+            $result[1].TargetName | Should -BeIn '3b8eeb35831ea8f7b5de4e0cf04f32b9a1233a0d';
+        }
+
+        It 'Binds to custom name' {
+            $testObject = @(
+                [PSCustomObject]@{
+                    resourceName = 'ResourceName'
+                    AlternateName = 'AlternateName'
+                    TargetName = 'TargetName'
+                }
+                [PSCustomObject]@{
+                    AlternateName = 'AlternateName'
+                    TargetName = 'TargetName'
+                }
+                [PSCustomObject]@{
+                    TargetName = 'TargetName'
+                }
+                [PSCustomObject]@{
+                    OtherName = 'OtherName'
+                    resourceName = 'ResourceName'
+                    AlternateName = 'AlternateName'
+                    TargetName = 'TargetName'
+                }
+                [PSCustomObject]@{
+                    Metadata = @{
+                        Name = 'MetadataName'
+                    }
+                }
+            )
+
+            $bindFn = {
+                param ($TargetObject)
+
+                $otherName = $TargetObject.PSObject.Properties['OtherName'];
+
+                if ($otherName -eq $Null) {
+                    return $Null
+                }
+
+                return $otherName.Value;
+            }
+
+            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName', 'Metadata.Name'; 'Binding.IgnoreCase' = $True } -BindTargetName $bindFn;
+            $result = $testObject | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 5;
+            $result[0].TargetName | Should -Be 'ResourceName';
+            $result[1].TargetName | Should -Be 'AlternateName';
+            $result[2].TargetName | Should -Be 'TargetName';
+            $result[3].TargetName | Should -Be 'OtherName';
+            $result[4].TargetName | Should -Be 'MetadataName';
+
+            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName'; 'Binding.IgnoreCase' = $False } -BindTargetName $bindFn;
+            $result = $testObject[0..1] | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 2;
+            $result[0].TargetName | Should -Be 'AlternateName';
+            $result[1].TargetName | Should -Be 'AlternateName';
+        }
+    }
+
+    Context 'TargetType binding' {
+        $testObject = [PSCustomObject]@{
+            ResourceType = 'ResourceType'
+            kind = 'kind'
+            OtherType = 'OtherType'
+        }
+        $testObject.PSObject.TypeNames.Insert(0, 'TestType');
+
+        It 'Uses default TypeName' {
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.TargetType | Should -Be 'TestType';
+        }
+
+        It 'Binds to custom type property by order' {
+            $option = @{ 'Binding.TargetType' = 'ResourceType' };
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $option;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.TargetType | Should -Be 'ResourceType';
+
+            $option = @{ 'Binding.TargetType' = 'NotType', 'ResourceType' };
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $option;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.TargetType | Should -Be 'ResourceType';
+
+            $option = @{ 'Binding.TargetType' = 'ResourceType', 'kind' };
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $option;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.TargetType | Should -Be 'ResourceType';
+
+            $option = @{ 'Binding.TargetType' = 'kind', 'ResourceType' };
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $option;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.TargetType | Should -Be 'kind';
+        }
+
+        It 'Binds to custom type by script' {
+            $bindFn = {
+                param ($TargetObject)
+
+                $otherType = $TargetObject.PSObject.Properties['OtherType'];
+
+                if ($otherType -eq $Null) {
+                    return $Null
+                }
+
+                return $otherType.Value;
+            }
+
+            $option = New-PSRuleOption -Option @{ 'Binding.TargetType' = 'kind' } -BindTargetType $bindFn;
+            $result = $testObject | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile1';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.TargetType | Should -Be 'OtherType';
+        }
+    }
+}
+
+#ednregion Binding

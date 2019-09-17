@@ -155,7 +155,6 @@ Rule 'WithPSScriptRoot' {
 # Synopsis: Test $PWD automatic variable
 Rule 'WithPWD' {
     $PWD.ToString() -eq $TargetObject.PWD.ToString()
-
 }
 
 # Synopsis: Test $WithPSCommandPath automatic variable

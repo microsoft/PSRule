@@ -22,22 +22,21 @@ namespace PSRule.Pipeline
         // Track whether Dispose has been called.
         private bool _Disposed = false;
 
-        internal InvokeRulePipeline(StreamManager streamManager, PSRuleOption option, RuleSource[] source, RuleFilter filter, RuleOutcome outcome, PipelineContext context)
-            : base(context, option, source, filter)
+        internal InvokeRulePipeline(StreamManager streamManager, Source[] source, RuleOutcome outcome, PipelineContext context)
+            : base(context, source)
         {
             _StreamManager = streamManager;
-            _RuleGraph = HostHelper.GetRuleBlockGraph(source: _Source, filter: _Filter);
+            HostHelper.ImportResource(source: _Source, context: context);
+            _RuleGraph = HostHelper.GetRuleBlockGraph(source: _Source, context: context);
             RuleCount = _RuleGraph.Count;
 
             if (RuleCount == 0)
-            {
                 _Context.WarnRuleNotFound();
-            }
 
             _Outcome = outcome;
             _Summary = new Dictionary<string, RuleSummaryRecord>();
-            _ResultFormat = option.Output.As.Value;
-            _SuppressionFilter = new RuleSuppressionFilter(option.Suppression);
+            _ResultFormat = context.Option.Output.As.Value;
+            _SuppressionFilter = new RuleSuppressionFilter(context.Option.Suppression);
         }
 
         public int RuleCount { get; private set; }
@@ -53,11 +52,9 @@ namespace PSRule.Pipeline
             {
                 _StreamManager.Process(targetObject);
             }
-
             while (_StreamManager.Next(out PSObject next))
             {
                 var result = ProcessTargetObject(next);
-
                 _StreamManager.Output(result);
             }
         }
@@ -65,11 +62,9 @@ namespace PSRule.Pipeline
         public void Process(PSObject targetObject)
         {
             _StreamManager.Process(targetObject);
-
             while (_StreamManager.Next(out PSObject next))
             {
                 var result = ProcessTargetObject(next);
-
                 _StreamManager.Output(result);
             }
         }
@@ -82,9 +77,7 @@ namespace PSRule.Pipeline
         private InvokeResult ProcessTargetObject(PSObject targetObject)
         {
             _Context.SetTargetObject(targetObject: targetObject);
-
-            var result = new InvokeResult(_Context.TargetName);
-
+            var result = new InvokeResult();
             var ruleCounter = 0;
 
             // Process rule blocks ordered by dependency graph
@@ -102,36 +95,26 @@ namespace PSRule.Pipeline
                         ruleRecord.OutcomeReason = RuleOutcomeReason.DependencyFail;
                     }
                     // Check for suppression
-                    else if (_SuppressionFilter.Match(ruleName: ruleBlockTarget.Value.RuleName, targetName: _Context.TargetName))
+                    else if (_SuppressionFilter.Match(ruleName: ruleRecord.RuleName, targetName: ruleRecord.TargetName))
                     {
                         ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
                     }
                     else
                     {
                         HostHelper.InvokeRuleBlock(context: _Context, ruleBlock: ruleBlockTarget.Value, ruleRecord: ruleRecord);
-
                         if (ruleRecord.OutcomeReason == RuleOutcomeReason.PreconditionFail)
-                        {
                             ruleCounter--;
-                        }
                     }
 
                     // Report outcome to dependency graph
                     if (ruleRecord.Outcome == RuleOutcome.Pass)
-                    {
                         ruleBlockTarget.Pass();
-                    }
                     else if (ruleRecord.Outcome == RuleOutcome.Fail || ruleRecord.Outcome == RuleOutcome.Error)
-                    {
                         ruleBlockTarget.Fail();
-                    }
 
                     AddToSummary(ruleBlock: ruleBlockTarget.Value, outcome: ruleRecord.Outcome);
-
                     if (ShouldOutput(ruleRecord.Outcome))
-                    {
                         result.Add(ruleRecord);
-                    }
                 }
                 finally
                 {
@@ -141,9 +124,7 @@ namespace PSRule.Pipeline
             }
 
             if (ruleCounter == 0)
-            {
                 _Context.WarnObjectNotProcessed();
-            }
 
             return result;
         }
@@ -182,9 +163,7 @@ namespace PSRule.Pipeline
                 _Context.Fail();
             }
             else if (outcome == RuleOutcome.Error)
-            {
                 s.Error++;
-            }
         }
 
         protected override void Dispose(bool disposing)
@@ -192,13 +171,10 @@ namespace PSRule.Pipeline
             if (!_Disposed)
             {
                 if (disposing)
-                {
                     _RuleGraph.Dispose();
-                }
 
                 _Disposed = true;
             }
-
             base.Dispose(disposing);
         }
     }

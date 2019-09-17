@@ -132,6 +132,11 @@ namespace PSRule.Pipeline
             }
         }
 
+        public void Output(object result)
+        {
+            WriteObject(result, false);
+        }
+
         private void WriteObject(object o, bool expandCollection)
         {
             _OutputVisitor(o, expandCollection);

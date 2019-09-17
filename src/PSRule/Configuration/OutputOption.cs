@@ -18,6 +18,7 @@ namespace PSRule.Configuration
         public OutputOption()
         {
             As = null;
+            Culture = null;
             Encoding = null;
             Format = null;
             Path = null;
@@ -26,6 +27,7 @@ namespace PSRule.Configuration
         public OutputOption(OutputOption option)
         {
             As = option.As;
+            Culture = option.Culture;
             Encoding = option.Encoding;
             Format = option.Format;
             Path = option.Path;
@@ -36,6 +38,9 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public ResultFormat? As { get; set; }
+
+        [DefaultValue(null)]
+        public string[] Culture { get; set; }
 
         /// <summary>
         /// The encoding to use when writing results to file.

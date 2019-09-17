@@ -4,29 +4,45 @@ using PSRule.Rules;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Language;
+using YamlDotNet.Core;
+using YamlDotNet.Core.Events;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
+using YamlDotNet.Serialization.NodeDeserializers;
 
 namespace PSRule.Host
 {
     internal static class HostHelper
     {
-        public static IEnumerable<Rule> GetRule(RuleSource[] source, RuleFilter filter)
+        public static IEnumerable<Rule> GetRule(Source[] source, PipelineContext context)
         {
-            return ToRule(GetLanguageBlock(sources: source), filter);
+            return ToRule(GetLanguageBlock(sources: source), context);
         }
 
-        public static IEnumerable<RuleHelpInfo> GetRuleHelp(RuleSource[] source, RuleFilter filter)
+        public static IEnumerable<RuleHelpInfo> GetRuleHelp(Source[] source, PipelineContext context)
         {
-            return ToRuleHelp(GetLanguageBlock(sources: source), filter);
+            return ToRuleHelp(GetLanguageBlock(sources: source), context);
         }
 
-        public static DependencyGraph<RuleBlock> GetRuleBlockGraph(RuleSource[] source, RuleFilter filter)
+        public static DependencyGraph<RuleBlock> GetRuleBlockGraph(Source[] source, PipelineContext context)
         {
             var builder = new DependencyGraphBuilder<RuleBlock>();
-            builder.Include(items: GetLanguageBlock(sources: source).OfType<RuleBlock>(), filter: (b) => filter == null || filter.Match(b));
+            builder.Include(items: GetLanguageBlock(sources: source).OfType<RuleBlock>(), filter: (b) => Match(context, b));
             return builder.Build();
+        }
+
+        public static IEnumerable<Baseline> GetBaseline(Source[] source, PipelineContext context)
+        {
+            return ToBaseline(ReadYamlObjects(source, context), context);
+        }
+
+        public static void ImportResource(Source[] source, PipelineContext context)
+        {
+            Import(ReadYamlObjects(source, context), context);
         }
 
         /// <summary>
@@ -35,18 +51,14 @@ namespace PSRule.Host
         /// <param name="path"></param>
         /// <param name="start"></param>
         /// <returns></returns>
-        public static BlockMetadata GetCommentMeta(string path, int lineNumber, int offset)
+        public static CommentMetadata GetCommentMeta(string path, int lineNumber, int offset)
         {
             var context = PipelineContext.CurrentThread;
+            if (lineNumber < 0 || context.ExecutionScope == ExecutionScope.None || context.Source.SourceContentCache == null)
+                return new CommentMetadata();
 
-            if (lineNumber <= 2 || context.ExecutionScope == ExecutionScope.None || context.SourceContentCache == null)
-            {
-                return new BlockMetadata();
-            }
-
-            var lines = context.SourceContentCache;
-
-            var i = lineNumber - 2;
+            var lines = context.Source.SourceContentCache;
+            var i = lineNumber;
             var comments = new List<string>();
 
             // Back track lines with comments immediately before block
@@ -55,34 +67,28 @@ namespace PSRule.Host
                 comments.Insert(0, lines[i]);
             }
 
-            var metadata = new BlockMetadata();
-
             // Check if any comments were found
+            var metadata = new CommentMetadata();
             if (comments.Count > 0)
             {
                 foreach (var comment in comments)
                 {
                     if (comment.StartsWith("# Description: "))
-                    {
                         metadata.Synopsis = comment.Substring(15);
-                    }
+
                     if (comment.StartsWith("# Synopsis: "))
-                    {
                         metadata.Synopsis = comment.Substring(12);
-                    }
                 }
             }
-
             return metadata;
         }
 
         /// <summary>
         /// Execute one or more PowerShell script files to get language blocks.
         /// </summary>
-        /// <param name="context"></param>
         /// <param name="sources"></param>
         /// <returns></returns>
-        private static IEnumerable<ILanguageBlock> GetLanguageBlock(RuleSource[] sources)
+        private static IEnumerable<ILanguageBlock> GetLanguageBlock(Source[] sources)
         {
             var results = new Collection<ILanguageBlock>();
 
@@ -100,55 +106,63 @@ namespace PSRule.Host
 
                 foreach (var source in sources)
                 {
-                    ps.Commands.Clear();
-
-                    PipelineContext.CurrentThread.VerboseRuleDiscovery(path: source.Path);
-                    PipelineContext.CurrentThread.EnterSourceScope(source: source);
-
-                    var scriptAst = System.Management.Automation.Language.Parser.ParseFile(source.Path, out Token[] tokens, out ParseError[] errors);
-                    var visitor = new RuleLanguageAst(PipelineContext.CurrentThread);
-                    scriptAst.Visit(visitor);
-
-                    if (visitor.Errors != null && visitor.Errors.Count > 0)
+                    foreach (var file in source.File)
                     {
-                        foreach (var record in visitor.Errors)
+                        if (file.Type != RuleSourceType.Script)
                         {
-                            PipelineContext.CurrentThread.WriteError(record);
+                            continue;
                         }
-                        continue;
-                    }
 
-                    if (errors != null && errors.Length > 0)
-                    {
-                        foreach (var error in errors)
+                        ps.Commands.Clear();
+
+                        PipelineContext.CurrentThread.VerboseRuleDiscovery(path: file.Path);
+                        PipelineContext.CurrentThread.EnterSourceScope(source: file);
+
+                        var scriptAst = System.Management.Automation.Language.Parser.ParseFile(file.Path, out Token[] tokens, out ParseError[] errors);
+                        var visitor = new RuleLanguageAst(PipelineContext.CurrentThread);
+                        scriptAst.Visit(visitor);
+
+                        if (visitor.Errors != null && visitor.Errors.Count > 0)
                         {
-                            PipelineContext.CurrentThread.WriteError(error);
+                            foreach (var record in visitor.Errors)
+                            {
+                                PipelineContext.CurrentThread.WriteError(record);
+                            }
+                            continue;
                         }
-                        continue;
-                    }
 
-                    // Invoke script
-                    ps.AddScript(string.Concat("& '", source.Path, "'"), true);
-                    var invokeResults = ps.Invoke();
-
-                    if (ps.HadErrors)
-                    {
-                        // Discovery has errors so skip this file
-                        continue;
-                    }
-
-                    foreach (var ir in invokeResults)
-                    {
-                        if (ir.BaseObject is RuleBlock)
+                        if (errors != null && errors.Length > 0)
                         {
-                            var block = ir.BaseObject as RuleBlock;
-                            results.Add(block);
+                            foreach (var error in errors)
+                            {
+                                PipelineContext.CurrentThread.WriteError(error);
+                            }
+                            continue;
                         }
-                        //else if (ir.BaseObject is ILanguageBlock)
-                        //{
-                        //    var block = ir.BaseObject as ILanguageBlock;
-                        //    results.Add(block);
-                        //}
+
+                        // Invoke script
+                        ps.AddScript(string.Concat("& '", file.Path, "'"), true);
+                        var invokeResults = ps.Invoke();
+
+                        if (ps.HadErrors)
+                        {
+                            // Discovery has errors so skip this file
+                            continue;
+                        }
+
+                        foreach (var ir in invokeResults)
+                        {
+                            if (ir.BaseObject is RuleBlock)
+                            {
+                                var block = ir.BaseObject as RuleBlock;
+                                results.Add(block);
+                            }
+                            //else if (ir.BaseObject is ILanguageBlock)
+                            //{
+                            //    var block = ir.BaseObject as ILanguageBlock;
+                            //    results.Add(block);
+                            //}
+                        }
                     }
                 }
             }
@@ -162,6 +176,65 @@ namespace PSRule.Host
             }
 
             return results;
+        }
+
+        private static IEnumerable<ILanguageBlock> ReadYamlObjects(Source[] sources, PipelineContext context)
+        {
+            var result = new Collection<ILanguageBlock>();
+            var d = new DeserializerBuilder()
+                .IgnoreUnmatchedProperties()
+                .WithNamingConvention(new CamelCaseNamingConvention())
+                .WithNodeDeserializer(
+                    inner => new LanguageBlockDeserializer(inner),
+                    s => s.InsteadOf<ObjectNodeDeserializer>())
+                .Build();
+
+            try
+            {
+                PipelineContext.CurrentThread.Logger?.EnterScope("[Discovery.Resource]");
+                PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Yaml;
+                foreach (var source in sources)
+                {
+
+
+                    foreach (var file in source.File)
+                    {
+                        if (file.Type != RuleSourceType.Yaml)
+                        {
+                            continue;
+                        }
+                        PipelineContext.CurrentThread.VerboseRuleDiscovery(path: file.Path);
+                        PipelineContext.CurrentThread.EnterSourceScope(source: file);
+                        using (var reader = new StreamReader(file.Path))
+                        {
+                            var parser = new YamlDotNet.Core.Parser(reader);
+                            parser.Expect<StreamStart>();
+
+                            while (parser.Accept<DocumentStart>())
+                            {
+                                var item = d.Deserialize<ResourceObject>(parser: parser);
+                                if (item == null || item.Block == null)
+                                {
+                                    continue;
+                                }
+                                result.Add(item.Block);
+                            }
+                            if (result.Count == 0)
+                            {
+                                return null;
+                            }
+                            return result.ToArray();
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                PipelineContext.CurrentThread.Logger?.ExitScope();
+                PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.None;
+                PipelineContext.CurrentThread.ExitSourceScope();
+            }
+            return result;
         }
 
         public static void InvokeRuleBlock(PipelineContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)
@@ -203,56 +276,111 @@ namespace PSRule.Host
         /// <param name="blocks"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        private static Rule[] ToRule(IEnumerable<ILanguageBlock> blocks, RuleFilter filter)
+        private static Rule[] ToRule(IEnumerable<ILanguageBlock> blocks, PipelineContext context)
         {
-            // Index deployments by environment/name
+            // Index rules by RuleId
             var results = new Dictionary<string, Rule>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (var block in blocks.OfType<RuleBlock>())
+            try
             {
-                // Ignore deployment blocks that don't match
-                if (filter != null && !filter.Match(block))
+                foreach (var block in blocks.OfType<RuleBlock>())
                 {
-                    continue;
-                }
-
-                if (!results.ContainsKey(block.RuleId))
-                {
-                    results[block.RuleId] = new Rule
+                    // Ignore rule blocks that don't match
+                    if (!Match(context, block))
                     {
-                        RuleId = block.RuleId,
-                        RuleName = block.RuleName,
-                        SourcePath = block.Source.Path,
-                        ModuleName = block.Source.ModuleName,
-                        Tag = block.Tag,
-                        Info = block.Info
-                    };
+                        continue;
+                    }
+
+                    if (!results.ContainsKey(block.RuleId))
+                    {
+                        results[block.RuleId] = new Rule
+                        {
+                            RuleId = block.RuleId,
+                            RuleName = block.RuleName,
+                            SourcePath = block.Source.Path,
+                            ModuleName = block.Source.ModuleName,
+                            Tag = block.Tag,
+                            Info = block.Info
+                        };
+                    }
                 }
             }
-
+            finally
+            {
+                context.ExitSourceScope();
+            }
             return results.Values.ToArray();
         }
 
-        private static RuleHelpInfo[] ToRuleHelp(IEnumerable<ILanguageBlock> blocks, RuleFilter filter)
+        private static RuleHelpInfo[] ToRuleHelp(IEnumerable<ILanguageBlock> blocks, PipelineContext context)
         {
-            // Index deployments by environment/name
+            // Index rules by RuleId
             var results = new Dictionary<string, RuleHelpInfo>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (var block in blocks.OfType<RuleBlock>())
+            try
             {
-                // Ignore deployment blocks that don't match
-                if (filter != null && !filter.Match(block))
+                foreach (var block in blocks.OfType<RuleBlock>())
                 {
-                    continue;
-                }
-
-                if (!results.ContainsKey(block.RuleId))
-                {
-                    results[block.RuleId] = block.Info;
+                    // Ignore rule blocks that don't match
+                    if (!Match(context, block))
+                    {
+                        continue;
+                    }
+                    if (!results.ContainsKey(block.RuleId))
+                    {
+                        results[block.RuleId] = block.Info;
+                    }
                 }
             }
-
+            finally
+            {
+                context.ExitSourceScope();
+            }
             return results.Values.ToArray();
+        }
+
+        private static Baseline[] ToBaseline(IEnumerable<ILanguageBlock> blocks, PipelineContext context)
+        {
+            // Index baselines by BaselineId
+            var results = new Dictionary<string, Baseline>(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+                foreach (var block in blocks.OfType<Baseline>().ToArray())
+                {
+                    // Ignore baselines that don't match
+                    if (!Match(context, block))
+                    {
+                        continue;
+                    }
+                    if (!results.ContainsKey(block.BaselineId))
+                    {
+                        results[block.BaselineId] = block;
+                    }
+                }
+            }
+            finally
+            {
+                context.ExitSourceScope();
+            }
+            return results.Values.ToArray();
+        }
+
+        private static void Import(IEnumerable<ILanguageBlock> blocks, PipelineContext context)
+        {
+            foreach (var resource in blocks.OfType<IResource>().ToArray())
+            {
+                context.Import(resource);
+            }
+        }
+
+        private static bool Match(PipelineContext context, RuleBlock resource)
+        {
+            var scope = context.EnterSourceScope(source: resource.Source);
+            return scope.Filter.Match(resource.RuleName, resource.Tag);
+        }
+
+        private static bool Match(PipelineContext context, Baseline resource)
+        {
+            var scope = context.EnterSourceScope(source: resource.Source);
+            return scope.Filter.Match(resource.Name, null);
         }
     }
 }

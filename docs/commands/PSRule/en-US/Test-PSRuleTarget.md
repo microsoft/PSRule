@@ -76,7 +76,8 @@ Accept wildcard characters: False
 
 ### -Name
 
-The name of a specific rule to evaluate. If this parameter is not specified all rules in search paths will be evaluated.
+The name of a specific rule to evaluate.
+If this parameter is not specified all rules in search paths will be evaluated.
 
 ```yaml
 Type: String[]
@@ -92,9 +93,14 @@ Accept wildcard characters: False
 
 ### -Tag
 
-Only evaluate rules with the specified tags set. If this parameter is not specified all rules in search paths will be evaluated.
+Only get rules with the specified tags set.
+If this parameter is not specified all rules in search paths will be returned.
 
-When more than one tag is used, all tags must match. Tags are not case sensitive. A tag value of `*` may be used to filter rules to any rule with the tag set, regardless of tag value.
+When more than one tag is used, all tags must match. Tags are not case sensitive.
+A tag value of `*` may be used to filter rules to any rule with the tag set, regardless of tag value.
+
+An array of tag values can be used to match a rule with either value.
+i.e. `severity = important, critical` matches rules with a category of either `important` or `critical`.
 
 ```yaml
 Type: Hashtable
@@ -126,7 +132,9 @@ Accept wildcard characters: False
 
 ### -Option
 
-Additional options that configure execution. A `PSRuleOption` can be created by using the `New-PSRuleOption` cmdlet. Alternatively, a hashtable or path to YAML file can be specified with options.
+Additional options that configure execution.
+A `PSRuleOption` can be created by using the `New-PSRuleOption` cmdlet.
+Alternatively, a hashtable or path to YAML file can be specified with options.
 
 For more information on PSRule options see about_PSRule_Options.
 
@@ -164,7 +172,8 @@ Accept wildcard characters: False
 
 ### -ObjectPath
 
-The name of a property to use instead of the pipeline object. If the property specified by `ObjectPath` is a collection or an array, then each item in evaluated separately.
+The name of a property to use instead of the pipeline object.
+If the property specified by `ObjectPath` is a collection or an array, then each item in evaluated separately.
 
 ```yaml
 Type: String
@@ -180,7 +189,8 @@ Accept wildcard characters: False
 
 ### -Module
 
-Search for rule definitions within a module. When specified without the `-Path` parameter, only rule definitions in the module will be discovered.
+Search for rule definitions within a module.
+When specified without the `-Path` parameter, only rule definitions in the module will be discovered.
 
 When both `-Path` and `-Module` are specified, rule definitions from both are discovered.
 

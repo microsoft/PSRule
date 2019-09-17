@@ -21,7 +21,7 @@ namespace PSRule
         {
             var option = new PSRuleOption();
             var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(GetTestSource());
+            builder.Source(GetSource());
             var pipeline = builder.Build();
 
             Assert.NotNull(pipeline);
@@ -32,9 +32,9 @@ namespace PSRule
         {
             var testObject1 = new TestObject { Name = "TestObject1" };
             var option = new PSRuleOption();
-            option.Baseline.RuleName = new string[] { "FromFile1" };
+            option.Rule.Include = new string[] { "FromFile1" };
             var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(GetTestSource());
+            builder.Source(GetSource());
             var pipeline = builder.Build();
             pipeline.Begin();
 
@@ -52,15 +52,22 @@ namespace PSRule
         public void BuildGetPipeline()
         {
             var builder = PipelineBuilder.Get();
-            builder.Source(GetTestSource());
+            builder.Source(GetSource());
             var pipeline = builder.Build();
 
             Assert.NotNull(pipeline);
         }
 
-        private static RuleSource[] GetTestSource()
+        private static Source[] GetSource()
         {
-            return new RuleSource[] { new RuleSource(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FromFile.Rule.ps1"), null) };
+            var builder = new RuleSourceBuilder();
+            builder.Directory(GetSourcePath("FromFile.Rule.ps1"));
+            return builder.Build();
+        }
+
+        private static string GetSourcePath(string fileName)
+        {
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
         }
     }
 }

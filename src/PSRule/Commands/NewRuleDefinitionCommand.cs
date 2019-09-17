@@ -72,7 +72,7 @@ namespace PSRule.Commands
             var context = PipelineContext.CurrentThread;
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
-            var source = context.Source;
+            var source = context.Source.File;
 
             context.VerboseFoundRule(ruleName: Name, scriptName: MyInvocation.ScriptName);
 
@@ -122,12 +122,14 @@ namespace PSRule.Commands
 
         private RuleHelpInfo GetHelpInfo(PipelineContext context, string name)
         {
-            if (context.Source.HelpPath == null || context.Source.HelpPath.Length == 0)
+            if (string.IsNullOrEmpty(context.Source.File.HelpPath))
                 return null;
 
-            for (var i = 0; i < context.Source.HelpPath.Length; i++)
+            var culture = context.Culture;
+
+            for (var i = 0; i < culture.Length; i++)
             {
-                var path = Path.Combine(context.Source.HelpPath[i], $"{name}.md");
+                var path = Path.Combine(context.Source.File.HelpPath, string.Concat(culture[i], "/", name, ".md"));
 
                 if (!File.Exists(path))
                     continue;
@@ -139,14 +141,14 @@ namespace PSRule.Commands
 
                 if (document != null)
                 {
-                     return new RuleHelpInfo(name: name, displayName: document.Name ?? name, moduleName: context.Source.ModuleName)
-                     {
-                         Synopsis = document.Synopsis?.Text,
-                         Description = document.Description?.Text,
-                         Recommendation = document.Recommendation?.Text ?? document.Synopsis?.Text,
-                         Notes = document.Notes?.Text,
-                         Annotations = document.Annotations?.ToHashtable()
-                     };
+                    return new RuleHelpInfo(name: name, displayName: document.Name ?? name, moduleName: context.Source.File.ModuleName)
+                    {
+                        Synopsis = document.Synopsis?.Text,
+                        Description = document.Description?.Text,
+                        Recommendation = document.Recommendation?.Text ?? document.Synopsis?.Text,
+                        Notes = document.Notes?.Text,
+                        Annotations = document.Annotations?.ToHashtable()
+                    };
                 }
             }
             return null;

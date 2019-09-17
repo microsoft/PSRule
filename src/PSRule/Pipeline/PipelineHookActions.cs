@@ -15,19 +15,38 @@ namespace PSRule.Pipeline
         private const string Property_TargetName = "TargetName";
         private const string Property_Name = "Name";
 
+        public static string BindTargetName(string[] propertyNames, bool caseSensitive, PSObject targetObject)
+        {
+            if (propertyNames != null)
+                if (propertyNames.Any(n => n.Contains('.')))
+                    return NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding);
+                else
+                    return CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding);
+
+            return DefaultTargetNameBinding(targetObject);
+        }
+
+        public static string BindTargetType(string[] propertyNames, bool caseSensitive, PSObject targetObject)
+        {
+            if (propertyNames != null)
+                if (propertyNames.Any(n => n.Contains('.')))
+                    return NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding);
+                else
+                    return CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding);
+
+            return DefaultTargetTypeBinding(targetObject);
+        }
+
         /// <summary>
         /// Get the TargetName of the object by looking for a TargetName or Name property.
         /// </summary>
         /// <param name="targetObject">A PSObject to bind.</param>
         /// <returns>The TargetName of the object.</returns>
-        public static string DefaultTargetNameBinding(PSObject targetObject)
+        private static string DefaultTargetNameBinding(PSObject targetObject)
         {
             if (TryGetTargetName(targetObject: targetObject, propertyName: Property_TargetName, targetName: out string targetName) ||
                 TryGetTargetName(targetObject: targetObject, propertyName: Property_Name, targetName: out targetName))
-            {
                 return targetName;
-            }
-
             return GetUnboundObjectTargetName(targetObject);
         }
 
@@ -38,15 +57,13 @@ namespace PSRule.Pipeline
         /// <param name="targetObject">A PSObject to bind.</param>
         /// <param name="next">The next delegate function to check if all of the property names can not be found.</param>
         /// <returns>The TargetName of the object.</returns>
-        public static string CustomTargetNameBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next)
+        private static string CustomTargetPropertyBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next)
         {
             string targetName = null;
-
             for (var i = 0; i < propertyNames.Length && targetName == null; i++)
             {
                 targetName = targetObject.ValueAsString(propertyName: propertyNames[i], caseSensitive: caseSensitive);
             }
-
             // If TargetName is found return, otherwise continue to next delegate
             return targetName ?? next(targetObject);
         }
@@ -58,11 +75,10 @@ namespace PSRule.Pipeline
         /// <param name="targetObject">A PSObject to bind.</param>
         /// <param name="next">The next delegate function to check if all of the property names can not be found.</param>
         /// <returns>The TargetName of the object.</returns>
-        public static string NestedTargetNameBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next)
+        private static string NestedTargetPropertyBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next)
         {
             string targetName = null;
             int score = int.MaxValue;
-
             for (var i = 0; i < propertyNames.Length && score > propertyNames.Length; i++)
             {
                 if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: propertyNames[i], caseSensitive: caseSensitive, value: out object value))
@@ -71,7 +87,6 @@ namespace PSRule.Pipeline
                     score = i;
                 }
             }
-
             // If TargetName is found return, otherwise continue to next delegate
             return targetName ?? next(targetObject);
         }
@@ -104,7 +119,7 @@ namespace PSRule.Pipeline
         /// </summary>
         /// <param name="targetObject">A PSObject to bind.</param>
         /// <returns>The TargetObject of the object.</returns>
-        public static string DefaultTargetTypeBinding(PSObject targetObject)
+        private static string DefaultTargetTypeBinding(PSObject targetObject)
         {
             return targetObject.TypeNames[0];
         }

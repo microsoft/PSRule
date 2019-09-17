@@ -1,0 +1,141 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "PSRule language",
+    "description": "A schema for PSRule YAML language files.",
+    "oneOf": [
+        {
+            "$ref": "#/definitions/baseline"
+        }
+    ],
+    "definitions": {
+        "resource-metadata": {
+            "type": "object",
+            "title": "Metadata",
+            "description": "Additional information to identify the resource.",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "title": "Name",
+                    "description": "The name of the resource. This must be unique.",
+                    "minLength": 3
+                }
+            },
+            "required": [
+                "name"
+            ]
+        },
+        "baseline": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "title": "Kind",
+                    "description": "The type of PSRule resource.",
+                    "enum": [
+                        "Baseline"
+                    ]
+                },
+                "metadata": {
+                    "type": "object",
+                    "$ref": "#/definitions/resource-metadata"
+                },
+                "spec": {
+                    "type": "object",
+                    "$ref": "#/definitions/baseline-spec"
+                }
+            },
+            "required": [
+                "kind",
+                "metadata",
+                "spec"
+            ],
+            "additionalProperties": false
+        },
+        "baseline-spec": {
+            "type": "object",
+            "title": "Baseline",
+            "description": "A specification for a baseline.",
+            "properties": {
+                "binding": {
+                    "type": "object",
+                    "title": "Object binding",
+                    "description": "Configure property/ object binding options.",
+                    "properties": {
+                        "ignoreCase": {
+                            "type": "boolean",
+                            "title": "Ignore case",
+                            "description": "Determines if custom binding uses ignores case when matching properties. The default is true.",
+                            "default": true
+                        },
+                        "targetName": {
+                            "type": "array",
+                            "title": "Bind TargetName",
+                            "description": "Specifies one or more property names to bind TargetName to.",
+                            "items": {
+                                "type": "string"
+                            },
+                            "uniqueItems": true
+                        },
+                        "targetType": {
+                            "type": "array",
+                            "title": "Bind TargetType",
+                            "description": "Specifies one or more property names to bind TargetType to.",
+                            "items": {
+                                "type": "string"
+                            },
+                            "uniqueItems": true
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "configuration": {
+                    "type": "object",
+                    "title": "Configuration",
+                    "description": "Baseline specific configuration options.",
+                    "uniqueItems": true
+                },
+                "rule": {
+                    "type": "object",
+                    "title": "Rule",
+                    "description": "A filter for included or excluded rules.",
+                    "properties": {
+                        "include": {
+                            "type": "array",
+                            "title": "Include rules",
+                            "description": "Rules to include by name in the baseline.",
+                            "$ref": "#/definitions/rule-names"
+                        },
+                        "exclude": {
+                            "type": "array",
+                            "title": "Exclude rules",
+                            "description": "Rules to exclude by name from the baseline.",
+                            "$ref": "#/definitions/rule-names"
+                        },
+                        "tag": {
+                            "type": "object",
+                            "title": "Tags",
+                            "description": "Rules to include by tag in the baseline.",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "rule-names": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "$ref": "#/definitions/rule-name"
+            },
+            "uniqueItems": true
+        },
+        "rule-name": {
+            "type": "string",
+            "minLength": 3
+        }
+    }
+}

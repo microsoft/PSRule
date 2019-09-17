@@ -60,7 +60,6 @@ namespace PSRule.Host
     internal sealed class AssertVariable : PSVariable
     {
         private const string VARIABLE_NAME = "Assert";
-
         private readonly Runtime.Assert _Value;
 
         public AssertVariable()
@@ -69,13 +68,7 @@ namespace PSRule.Host
             _Value = new Runtime.Assert();
         }
 
-        public override object Value
-        {
-            get
-            {
-                return _Value;
-            }
-        }
+        public override object Value => _Value;
     }
 
     /// <summary>
@@ -103,22 +96,15 @@ namespace PSRule.Host
     internal sealed class ConfigurationVariable : PSVariable
     {
         private const string VARIABLE_NAME = "Configuration";
-
-        private readonly RuntimeRuleConfigurationView _Value;
+        private readonly Runtime.Configuration _Value;
 
         public ConfigurationVariable()
             : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
         {
-            _Value = new RuntimeRuleConfigurationView(); 
+            _Value = new Runtime.Configuration();
         }
 
-        public override object Value
-        {
-            get
-            {
-                return _Value;
-            }
-        }
+        public override object Value => _Value;
     }
 
     internal static class HostState

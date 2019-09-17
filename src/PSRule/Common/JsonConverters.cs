@@ -3,6 +3,7 @@ using PSRule.Pipeline;
 using PSRule.Resources;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Management.Automation;
 
 namespace PSRule
@@ -20,24 +21,23 @@ namespace PSRule
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             if (!(value is PSObject obj))
-            {
                 throw new ArgumentException(message: PSRuleResources.SerializeNullPSObject, paramName: nameof(value));
+
+            if (value is FileSystemInfo fileSystemInfo)
+            {
+                WriteFileSystemInfo(writer, fileSystemInfo, serializer);
+                return;
             }
-
             writer.WriteStartObject();
-
             foreach (var property in obj.Properties)
             {
                 // Ignore properties that are not readable or can cause race condition
-                if (!property.IsGettable || property.Value is PSDriveInfo || property.Value is ProviderInfo)
-                {
+                if (!property.IsGettable || property.Value is PSDriveInfo || property.Value is ProviderInfo || property.Value is DirectoryInfo)
                     continue;
-                }
 
                 writer.WritePropertyName(property.Name);
                 serializer.Serialize(writer, property.Value);
             }
-
             writer.WriteEndObject();
         }
 
@@ -101,6 +101,11 @@ namespace PSRule
 
                 reader.Read();
             }
+        }
+
+        private void WriteFileSystemInfo(JsonWriter writer, FileSystemInfo value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, value.FullName);
         }
     }
 

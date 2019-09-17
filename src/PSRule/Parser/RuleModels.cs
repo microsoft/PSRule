@@ -66,7 +66,7 @@ namespace PSRule.Parser
         public TextBlock Synopsis;
 
         public TextBlock Description;
-        
+
         public TextBlock Notes;
 
         public TextBlock Recommendation;

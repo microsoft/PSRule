@@ -1,5 +1,4 @@
-﻿using PSRule.Configuration;
-using PSRule.Host;
+﻿using PSRule.Host;
 using PSRule.Rules;
 using System.Collections.Generic;
 
@@ -7,15 +6,15 @@ namespace PSRule.Pipeline
 {
     public sealed class GetRuleHelpPipeline : RulePipeline
     {
-        internal GetRuleHelpPipeline(PSRuleOption option, RuleSource[] source, RuleFilter filter, PipelineContext context)
-            : base(context, option, source, filter)
+        internal GetRuleHelpPipeline(Source[] source, PipelineContext context)
+            : base(context, source)
         {
             // Do nothing
         }
 
         public IEnumerable<RuleHelpInfo> Process()
         {
-            return HostHelper.GetRuleHelp(source: _Source, filter: _Filter);
+            return HostHelper.GetRuleHelp(source: _Source, context: _Context);
         }
     }
 }

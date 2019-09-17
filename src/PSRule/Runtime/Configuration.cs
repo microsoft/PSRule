@@ -1,18 +1,17 @@
 ﻿using PSRule.Pipeline;
 using System.Dynamic;
-using System.Management.Automation;
 
-namespace PSRule.Host
+namespace PSRule.Runtime
 {
     /// <summary>
     /// A set of rule configuration values that are exposed at runtime and automatically failback to defaults when not set in configuration.
     /// </summary>
-    public sealed class RuntimeRuleConfigurationView : DynamicObject
+    public sealed class Configuration : DynamicObject
     {
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             // Get from baseline configuration
-            if (PipelineContext.CurrentThread.Option.Baseline.Configuration.TryGetValue(binder.Name, out object value))
+            if (PipelineContext.CurrentThread.Source.Configuration.TryGetValue(binder.Name, out object value))
             {
                 result = value;
                 return true;

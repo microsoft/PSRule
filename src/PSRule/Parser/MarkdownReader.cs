@@ -199,7 +199,7 @@
             // Get info-string
             var info = _Stream.CaptureLine();
             _Stream.SkipLineEnding();
-            
+
             // Capture text within code fence
             var text = _Stream.CaptureUntil(TripleBacktick, onNewLine: true, ignoreEscaping: true);
 
@@ -419,7 +419,7 @@
             // Skip ]
             _Stream.Next();
 
-            if(string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text))
             {
                 var ending = GetEnding(_Stream.SkipLineEnding(max: 0));
 

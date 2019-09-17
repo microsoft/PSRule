@@ -1,9 +1,12 @@
-﻿namespace PSRule.Annotations
+﻿using System.Diagnostics;
+
+namespace PSRule.Annotations
 {
     /// <summary>
     /// Metadata properties that can be exposed by comment help.
     /// </summary>
-    internal sealed class BlockMetadata
+    [DebuggerDisplay("Synopsis = {Synopsis}")]
+    internal sealed class CommentMetadata
     {
         public string Synopsis;
     }

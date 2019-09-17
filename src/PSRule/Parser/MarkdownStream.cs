@@ -423,7 +423,7 @@ namespace PSRule.Parser
                 var next = _Source[position + 1];
 
                 // Check against list of escapable characters
-                if (next == Backslash || next == BracketOpen || next == ParenthesesOpen ||next == AngleOpen || next == AngleClose || next == Backtick || next == BracketClose || next == ParenthesesClose)
+                if (next == Backslash || next == BracketOpen || next == ParenthesesOpen || next == AngleOpen || next == AngleClose || next == Backtick || next == BracketClose || next == ParenthesesClose)
                 {
                     return 1;
                 }
@@ -571,7 +571,7 @@ namespace PSRule.Parser
             {
                 return false;
             }
-            
+
             for (var i = 0; i < sequence.Length; i++)
             {
                 if (Peak(i) != sequence[i])

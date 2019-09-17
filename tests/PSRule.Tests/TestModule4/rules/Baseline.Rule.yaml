@@ -1,0 +1,32 @@
+
+---
+kind: Baseline
+metadata:
+  name: Module4
+spec:
+  binding:
+    targetName:
+      - AlternateName
+    targetType:
+      - Kind
+  rule:
+    include:
+    - 'M4.Rule1'
+  configuration:
+    ruleConfig1: 'Test'
+
+---
+kind: Baseline
+metadata:
+  name: Baseline2
+spec:
+  binding:
+    targetName:
+      - AlternateName
+    targetType:
+      - Kind
+  rule:
+    include:
+    - 'M4.Rule1'
+  configuration:
+    ruleConfig2: 'Test3'

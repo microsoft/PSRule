@@ -54,8 +54,11 @@ function Invoke-PSRule {
         [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv', 'Wide')]
         [PSRule.Configuration.OutputFormat]$OutputFormat,
 
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.BaselineOption]$Baseline,
+
         # A list of paths to check for rule definitions
-        [Parameter(Position = 0)]
+        [Parameter(Mandatory = $False, Position = 0)]
         [Alias('p')]
         [String[]]$Path = $PWD,
 
@@ -74,7 +77,7 @@ function Invoke-PSRule {
         [String]$ObjectPath,
 
         [Parameter(Mandatory = $False)]
-        [String]$Culture,
+        [String[]]$Culture,
 
         [Parameter(Mandatory = $True, ValueFromPipeline = $True, ParameterSetName = 'Input')]
         [Alias('TargetObject')]
@@ -82,13 +85,13 @@ function Invoke-PSRule {
     )
 
     begin {
-        Write-Verbose -Message "[Invoke-PSRule] BEGIN::";
+        Write-Verbose -Message '[Invoke-PSRule] BEGIN::';
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
 
         if ($PSBoundParameters.ContainsKey('Option')) {
-            $optionParams['Option'] =  $Option;
+            $optionParams['Option'] = $Option;
         }
 
         # Get an options object
@@ -106,11 +109,8 @@ function Invoke-PSRule {
         if ($sourceParams.Count -eq 0) {
             $sourceParams['Path'] = $Path;
         }
-        if ($PSBoundParameters.ContainsKey('Culture')) {
-            $sourceParams['Culture'] = $Culture;
-        }
         $sourceParams['Option'] = $Option;
-        [PSRule.Rules.RuleSource[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -124,35 +124,34 @@ function Invoke-PSRule {
         if ($isDeviceGuard) {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
-
-        if ($PSBoundParameters.ContainsKey('Name')) {
-            $Option.Baseline.RuleName = $Name;
-        }
-
         if ($PSBoundParameters.ContainsKey('Format')) {
             $Option.Input.Format = $Format;
         }
-
         if ($PSBoundParameters.ContainsKey('ObjectPath')) {
             $Option.Input.ObjectPath = $ObjectPath;
         }
-
         if ($PSBoundParameters.ContainsKey('As')) {
             $Option.Output.As = $As;
         }
-
         if ($PSBoundParameters.ContainsKey('OutputFormat')) {
             $Option.Output.Format = $OutputFormat;
         }
-
         if ($PSBoundParameters.ContainsKey('OutputPath')) {
             $Option.Output.Path = $OutputPath;
         }
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $Option.Output.Culture = $Culture;
+        }
+        else {
+            $Option.Output.Culture = GetCulture;
+        }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
-        $builder.FilterBy($Tag);
+        $builder.Name($Name);
+        $builder.Tag($Tag);
         $builder.Source($sourceFiles);
         $builder.Limit($Outcome);
+        $builder.UseBaseline($Baseline);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $inputPaths = GetFilePath -Path $InputPath -Verbose:$VerbosePreference;
@@ -192,7 +191,7 @@ function Invoke-PSRule {
                 $pipeline.Dispose();
             }
         }
-        Write-Verbose -Message "[Invoke-PSRule] END::";
+        Write-Verbose -Message '[Invoke-PSRule] END::';
     }
 }
 
@@ -212,7 +211,7 @@ function Test-PSRuleTarget {
         [PSRule.Configuration.InputFormat]$Format,
 
         # A list of paths to check for rule definitions
-        [Parameter(Position = 0)]
+        [Parameter(Mandatory = $False, Position = 0)]
         [Alias('p')]
         [String[]]$Path = $PWD,
 
@@ -263,11 +262,8 @@ function Test-PSRuleTarget {
         if ($sourceParams.Count -eq 0) {
             $sourceParams['Path'] = $Path;
         }
-        if ($PSBoundParameters.ContainsKey('Culture')) {
-            $sourceParams['Culture'] = $Culture;
-        }
         $sourceParams['Option'] = $Option;
-        [PSRule.Rules.RuleSource[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -281,21 +277,22 @@ function Test-PSRuleTarget {
         if ($isDeviceGuard) {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
-
-        if ($PSBoundParameters.ContainsKey('Name')) {
-            $Option.Baseline.RuleName = $Name;
-        }
-
         if ($PSBoundParameters.ContainsKey('Format')) {
             $Option.Input.Format = $Format;
         }
-
         if ($PSBoundParameters.ContainsKey('ObjectPath')) {
             $Option.Input.ObjectPath = $ObjectPath;
         }
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $Option.Output.Culture = $Culture;
+        }
+        else {
+            $Option.Output.Culture = GetCulture;
+        }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
-        $builder.FilterBy($Tag);
+        $builder.Name($Name);
+        $builder.Tag($Tag);
         $builder.Source($sourceFiles);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
@@ -359,7 +356,7 @@ function Get-PSRule {
         [PSRule.Configuration.OutputFormatGet]$OutputFormat,
 
         # A list of paths to check for rule definitions
-        [Parameter(Position = 0, Mandatory = $False)]
+        [Parameter(Mandatory = $False, Position = 0)]
         [Alias('p')]
         [String[]]$Path = $PWD,
 
@@ -406,11 +403,8 @@ function Get-PSRule {
         if ($sourceParams.Count -eq 0) {
             $sourceParams['Path'] = $Path;
         }
-        if ($PSBoundParameters.ContainsKey('Culture')) {
-            $sourceParams['Culture'] = $Culture;
-        }
         $sourceParams['Option'] = $Option;
-        [PSRule.Rules.RuleSource[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -426,13 +420,16 @@ function Get-PSRule {
         if ($isDeviceGuard) {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
-
-        if ($PSBoundParameters.ContainsKey('Name')) {
-            $Option.Baseline.RuleName = $Name;
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $Option.Output.Culture = $Culture;
+        }
+        else {
+            $Option.Output.Culture = GetCulture;
         }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::Get().Configure($Option);
-        $builder.FilterBy($Tag);
+        $builder.Name($Name);
+        $builder.Tag($Tag);
         $builder.Source($sourceFiles);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseExecutionContext($ExecutionContext);
@@ -474,6 +471,118 @@ function Get-PSRule {
 }
 
 # .ExternalHelp PSRule-Help.xml
+function Get-PSRuleBaseline {
+    [CmdletBinding()]
+    [OutputType([PSRule.Rules.Baseline])]
+    param (
+        [Parameter(Mandatory = $False)]
+        [String[]]$Module,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$ListAvailable,
+
+        [Parameter(Mandatory = $False, Position = 0)]
+        [Alias('p')]
+        [String[]]$Path = $PWD,
+
+        [Parameter(Mandatory = $False)]
+        [Alias('n')]
+        [SupportsWildcards()]
+        [String[]]$Name,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Culture
+    )
+
+    begin {
+        Write-Verbose -Message "[Get-PSRuleBaseline] BEGIN::";
+
+        # Get parameter options, which will override options from other sources
+        $optionParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Option')) {
+            $optionParams['Option'] = $Option;
+        }
+
+        # Get an options object
+        $Option = New-PSRuleOption @optionParams;
+
+        # Discover scripts in the specified paths
+        $sourceParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Path')) {
+            $sourceParams['Path'] = $Path;
+        }
+        if ($PSBoundParameters.ContainsKey('Module')) {
+            $sourceParams['Module'] = $Module;
+        }
+        if ($PSBoundParameters.ContainsKey('ListAvailable')) {
+            $sourceParams['ListAvailable'] = $ListAvailable;
+        }
+        if ($sourceParams.Count -eq 0) {
+            $sourceParams['Path'] = $Path;
+        }
+        $sourceParams['Option'] = $Option;
+        [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
+
+        # Check that some matching script files were found
+        if ($Null -eq $sourceFiles) {
+            Write-Verbose -Message "[Get-PSRuleBaseline] -- Could not find any .Rule.ps1 script files in the path";
+            return; # continue causes issues with Pester
+        }
+
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $Option.Output.Culture = $Culture;
+        }
+        else {
+            $Option.Output.Culture = GetCulture;
+        }
+
+        $builder = [PSRule.Pipeline.PipelineBuilder]::GetBaseline().Configure($Option);
+        $builder.Source($sourceFiles);
+        $builder.Name($Name);
+
+        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseExecutionContext($ExecutionContext);
+        try {
+            $pipeline = $builder.Build();
+            $pipeline.Begin();
+        }
+        catch {
+            throw $_.Exception.GetBaseException();
+        }
+    }
+
+    process {
+        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+            try {
+                # Process pipeline objects
+                $pipeline.Process();
+            }
+            catch {
+                $pipeline.Dispose();
+                throw;
+            }
+        }
+    }
+
+    end {
+        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+            try {
+                $pipeline.End();
+            }
+            finally {
+                $pipeline.Dispose();
+            }
+        }
+        Write-Verbose -Message '[Get-PSRuleBaseline] END::';
+    }
+}
+
+# .ExternalHelp PSRule-Help.xml
 function Get-PSRuleHelp {
     [CmdletBinding()]
     [OutputType([PSRule.Rules.RuleHelpInfo])]
@@ -493,7 +602,7 @@ function Get-PSRuleHelp {
         # A path to check documentation for.
         [Parameter(Mandatory = $False)]
         [Alias('p')]
-        [String]$Path,
+        [String]$Path = $PWD,
 
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option,
@@ -517,19 +626,25 @@ function Get-PSRuleHelp {
 
         # Discover scripts in the specified paths
         $sourceParams = @{ };
+        $sourceParams['PreferModule'] = $True;
+        $sourceParams['PreferPath'] = $True;
 
         if ($PSBoundParameters.ContainsKey('Path')) {
             $sourceParams['Path'] = $Path;
+            $sourceParams['PreferModule'] = $False;
         }
         if ($PSBoundParameters.ContainsKey('Module')) {
             $sourceParams['Module'] = $Module;
+            $sourceParams['PreferPath'] = $False;
         }
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $sourceParams['Culture'] = $Culture;
         }
+        if ($sourceParams['PreferPath']) {
+            $sourceParams['Path'] = $Path;
+        }
         $sourceParams['Option'] = $Option;
-        $sourceParams['PreferModule'] = $True;
-        [PSRule.Rules.RuleSource[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -545,9 +660,14 @@ function Get-PSRuleHelp {
         if ($isDeviceGuard) {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
-
         if ($PSBoundParameters.ContainsKey('Name')) {
-            $Option.Baseline.RuleName = $Name;
+            $Option.Rule.Include = $Name;
+        }
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $Option.Output.Culture = $Culture;
+        }
+        else {
+            $Option.Output.Culture = GetCulture;
         }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp().Configure($Option);
@@ -612,7 +732,8 @@ function New-PSRuleOption {
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.BaselineConfiguration]$BaselineConfiguration,
+        [Alias('BaselineConfiguration')]
+        [PSRule.Configuration.ConfigurationOption]$Configuration,
 
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.SuppressionOption]$SuppressTargetName,
@@ -707,31 +828,24 @@ function New-PSRuleOption {
         if ($optionParams.ContainsKey('Path')) {
             $optionParams.Remove('Path');
         }
-
         if ($optionParams.ContainsKey('Option')) {
             $optionParams.Remove('Option');
         }
-
         if ($optionParams.ContainsKey('Verbose')) {
             $optionParams.Remove('Verbose');
         }
-
-        if ($optionParams.ContainsKey('BaselineConfiguration')) {
-            $optionParams.Remove('BaselineConfiguration');
+        if ($optionParams.ContainsKey('Configuration')) {
+            $optionParams.Remove('Configuration');
         }
-
         if ($optionParams.ContainsKey('SuppressTargetName')) {
             $optionParams.Remove('SuppressTargetName');
         }
-
         if ($optionParams.ContainsKey('BindTargetName')) {
             $optionParams.Remove('BindTargetName');
         }
-
         if ($optionParams.ContainsKey('BindTargetType')) {
             $optionParams.Remove('BindTargetType');
         }
-
         if ($PSBoundParameters.ContainsKey('Option')) {
             $Option = $Option.Clone();
         }
@@ -746,19 +860,16 @@ function New-PSRuleOption {
     }
 
     end {
-        if ($PSBoundParameters.ContainsKey('BaselineConfiguration')) {
-            $Option.Baseline.Configuration = $BaselineConfiguration;
+        if ($PSBoundParameters.ContainsKey('Configuration')) {
+            $Option.Configuration = $Configuration;
         }
-
         if ($PSBoundParameters.ContainsKey('SuppressTargetName')) {
             $Option.Suppression = $SuppressTargetName;
         }
-
         if ($PSBoundParameters.ContainsKey('BindTargetName')) {
             Write-Verbose -Message 'Set BindTargetName pipeline hook';
             $Option.Pipeline.BindTargetName.AddRange($BindTargetName);
         }
-
         if ($PSBoundParameters.ContainsKey('BindTargetType')) {
             Write-Verbose -Message 'Set BindTargetType pipeline hook';
             $Option.Pipeline.BindTargetType.AddRange($BindTargetType);
@@ -1202,7 +1313,7 @@ function Recommend {
 # Get a list of rule script files in the matching paths
 function GetSource {
     [CmdletBinding()]
-    [OutputType([PSRule.Rules.RuleSource])]
+    [OutputType([PSRule.Rules.Source])]
     param (
         [Parameter(Mandatory = $False)]
         [String[]]$Path,
@@ -1217,44 +1328,29 @@ function GetSource {
         [String]$Culture,
 
         [Parameter(Mandatory = $False)]
+        [Switch]$PreferPath = $False,
+
+        [Parameter(Mandatory = $False)]
         [Switch]$PreferModule = $False,
 
         [Parameter(Mandatory = $True)]
         [PSRule.Configuration.PSRuleOption]$Option
     )
-
     process {
         $builder = [PSRule.Pipeline.PipelineBuilder]::RuleSource().Configure($Option);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseExecutionContext($ExecutionContext);
 
-        if ([String]::IsNullOrEmpty($Culture)) {
-            $Culture = GetCulture;
-        }
-
         if ($PSBoundParameters.ContainsKey('Path')) {
-            $builder.VerboseScanSource($Path);
-            $fileObjects = (Get-ChildItem -Path $Path -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
-
-            foreach ($file in $fileObjects) {
-                $helpPath = Join-Path -Path $file.Directory.FullName -ChildPath $Culture;
-                $builder.Add($file.FullName, $helpPath);
+            try {
+                $builder.Directory($Path);
             }
-
-            # Handle direct files without .rule.ps1 extension
-            foreach ($p in $Path) {
-                if ($p -like "*.ps1" -and $p -notlike "*.rule.ps1") {
-                    if ((Test-Path -Path $p -PathType Leaf)) {
-                        $file = Get-Item -Path $p;
-                        $helpPath = Join-Path -Path $file.Directory.FullName -ChildPath $Culture;
-                        $builder.Add($file.FullName, $helpPath);
-                    }
-                }
+            catch {
+                throw $_.Exception.GetBaseException();
             }
         }
 
         $moduleParams = @{};
-
         if ($PSBoundParameters.ContainsKey('Module')) {
             $moduleParams['Name'] = $Module;
 
@@ -1274,21 +1370,8 @@ function GetSource {
 
         if ($moduleParams.Count -gt 0 -or $PreferModule) {
             $modules = @(GetRuleModule @moduleParams);
-            $builder.VerboseFoundModules($modules.Length);
-
-            if ($Null -ne $modules) {
-                foreach ($m in $modules) {
-                    $builder.VerboseScanModule($m.Name);
-                    $fileObjects = (Get-ChildItem -Path $m.ModuleBase -Recurse -File -Include '*.rule.ps1' -ErrorAction Stop);
-                    $helpPath = Join-Path $m.ModuleBase -ChildPath $Culture;
-
-                    foreach ($file in $fileObjects) {
-                        $builder.Add($file.FullName, $m.Name, $helpPath);
-                    }
-                }
-            }
+            $builder.Module($modules);
         }
-
         $builder.Build();
     }
 }
@@ -1570,10 +1653,10 @@ function IsDeviceGuardEnabled {
 
 function GetCulture {
     [CmdletBinding()]
-    [OutputType([System.String])]
+    [OutputType([System.String[]])]
     param ()
     process {
-        return [System.Threading.Thread]::CurrentThread.CurrentCulture.ToString();
+        return @([System.Threading.Thread]::CurrentThread.CurrentCulture.ToString());
     }
 }
 
@@ -1635,7 +1718,7 @@ function InitCompletionServices {
     param ()
     process {
         # Complete -Module parameter
-        Register-ArgumentCompleter -CommandName Get-PSRule,Get-PSRuleHelp,Invoke-PSRule,Test-PSRuleTarget -ParameterName Module -ScriptBlock {
+        Register-ArgumentCompleter -CommandName Get-PSRule,Get-PSRuleBaseline,Get-PSRuleHelp,Invoke-PSRule,Test-PSRuleTarget -ParameterName Module -ScriptBlock {
             param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
             GetRuleModule -Name "$wordToComplete*" -ListAvailable | ForEach-Object -Process {
                 [System.Management.Automation.CompletionResult]::new($_.Name, $_.Name, 'ParameterValue', ([String]::Concat("ModuleName: ", $_.Name, ", ModuleVersion: ", $_.Version.ToString())))
@@ -1673,6 +1756,7 @@ Export-ModuleMember -Function @(
     'Test-PSRuleTarget'
     'Get-PSRule'
     'Get-PSRuleHelp'
+    'Get-PSRuleBaseline'
     'New-PSRuleOption'
     'Set-PSRuleOption'
 )
