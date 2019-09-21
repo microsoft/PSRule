@@ -1,6 +1,35 @@
 
 ## Unreleased
 
+## v0.9.0
+
+What's changed since v0.8.0:
+
+- Quality of life improvements:
+  - Improve feedback of parsing errors. [#185](https://github.com/BernieWhite/PSRule/issues/185)
+  - Updated `Get-PSRuleHelp` to include help within the current path by default. [#197](https://github.com/BernieWhite/PSRule/issues/197)
+- Engine features:
+  - Added support for a wildcard match using the `Within` keyword. [#272](https://github.com/BernieWhite/PSRule/issues/272)
+  - Added rule info display name. [#276](https://github.com/BernieWhite/PSRule/issues/276)
+  - Added support for matching an array of tag values. [#282](https://github.com/BernieWhite/PSRule/issues/282)
+  - Added named baselines. Now baselines are a separate resource that can be individually used.
+    - Baselines can be packaged within module.
+    - Modules can specify a default baseline in module manifest.
+    - Target binding options (`Binding`) are now part of baselines.
+    - See [about_PSRule_Baseline](docs/concepts/PSRule/en-US/about_PSRule_Baseline.md) for more information.
+- Bug fixes:
+  - Fix can not serialize nested System.IO.DirectoryInfo property. [#281](https://github.com/BernieWhite/PSRule/issues/281)
+  - Fix ModuleName not displayed in Get-PSRuleHelp list. [#275](https://github.com/BernieWhite/PSRule/issues/275)
+  - Fix outcome reported when error or exception is raised. [#211](https://github.com/BernieWhite/PSRule/issues/211)
+- **Breaking change**: Baseline improvements, fundamentally changes how baselines work. [#274](https://github.com/BernieWhite/PSRule/issues/274)
+  - Previously, baselines were specified as workspace options.
+  - The previous `baseline` options property has been renamed to `rule`.
+  - The previous `configuration` property is now a top level option.
+
+What's changed since pre-release v0.9.0-B190905:
+
+- No additional changes
+
 ## v0.9.0-B190905 (pre-release)
 
 - Added support for matching an array of tag values. [#282](https://github.com/BernieWhite/PSRule/issues/282)
