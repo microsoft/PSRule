@@ -22,6 +22,10 @@
       href: Test-PSRuleTarget.md
       topicHref: Test-PSRuleTarget.md
 
+- name: Baseline
+  href: ../../../concepts/PSRule/en-US/about_PSRule_Baseline.md
+  topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Baseline.md
+
 - name: Documentation
   href: ../../../concepts/PSRule/en-US/about_PSRule_Docs.md
   topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Docs.md
