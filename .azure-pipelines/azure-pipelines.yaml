@@ -2,12 +2,12 @@
 # CI pipeline for PSRule
 
 variables:
-  version: '0.9.0'
+  version: '0.10.0'
   buildConfiguration: 'Release'
   disable.coverage.autogenerate: 'true'
 
-# Use build number format, i.e. 0.1.0-B181101
-name: $(version)-B$(date:yyMM)$(rev:rr)
+# Use build number format, i.e. 0.1.0-B1811001
+name: $(version)-B$(date:yyMM)$(rev:rrr)
 
 trigger:
   branches:
