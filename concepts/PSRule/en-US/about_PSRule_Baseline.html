@@ -1,0 +1,238 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>PSRule_Baseline </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="PSRule_Baseline ">
+    <meta name="generator" content="docfx 2.43.2.0">
+    
+    <link rel="shortcut icon" href="../../../favicon.ico">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="../../../commands/PSRule/en-US/toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="psrule_baseline">PSRule_Baseline</h1>
+
+<h2 id="about_psrule_baseline">about_PSRule_Baseline</h2>
+<h2 id="short-description">SHORT DESCRIPTION</h2>
+<p>Describes usage of baselines within PSRule.</p>
+<h2 id="long-description">LONG DESCRIPTION</h2>
+<p>PSRule lets you define a baseline.
+A baseline includes a set of rule and configuration options that are used for evaluating objects.</p>
+<p>The following baseline options can be configured:</p>
+<ul>
+<li><a href="about_PSRule_Options.html#bindingignorecase">Binding.IgnoreCase</a></li>
+<li><a href="about_PSRule_Options.html#bindingtargetname">Binding.TargetName</a></li>
+<li><a href="about_PSRule_Options.html#bindingtargettype">Binding.TargetType</a></li>
+<li><a href="about_PSRule_Options.html#configuration">Configuration</a></li>
+<li><a href="about_PSRule_Options.html#ruleinclude">Rule.Include</a></li>
+<li><a href="about_PSRule_Options.html#ruleexclude">Rule.Exclude</a></li>
+<li><a href="about_PSRule_Options.html#ruletag">Rule.Tag</a></li>
+</ul>
+<p>Baseline options can be:</p>
+<ul>
+<li>Included as a baseline spec within a YAML file.
+<ul>
+<li>When using this method, multiple baseline specs can be defined within the same YAML file.</li>
+<li>Each baseline spec is separated using <code>---</code>.</li>
+</ul>
+</li>
+<li>Set within a workspace options file like <code>ps-rule.yaml</code>.
+<ul>
+<li>Only a single baseline can be specified.</li>
+<li>See <a href="about_PSRule_Options.html">about_PSRule_Options</a> for details on using this method.</li>
+</ul>
+</li>
+</ul>
+<h3 id="baseline-specs">Baseline specs</h3>
+<p>A baseline spec is defined and saved within a YAML file with a <code>.rule.yaml</code> extension, for example <code>Baseline.rule.yaml</code>.</p>
+<p>To define a baseline spec use the following structure:</p>
+<pre><code class="lang-yaml">---
+# Synopsis: &lt;synopsis&gt;
+kind: Baseline
+metadata:
+  name: &lt;name&gt;
+spec:
+  # One or more baseline options
+  binding: { }
+  rule: { }
+  configuration: { }
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">---
+# Synopsis: This is an example baseline
+kind: Baseline
+metadata:
+  name: Baseline1
+spec:
+  binding:
+    targetName:
+    - Name
+    - ResourceName
+    - ResourceGroupName
+    targetType:
+    - ResourceType
+  rule:
+    include:
+    - Rule1
+    - Rule2
+  configuration:
+    allowedLocations:
+    - 'Australia East'
+    - 'Australia South East'
+
+---
+# Synopsis: This is an example baseline
+kind: Baseline
+metadata:
+  name: Baseline2
+spec:
+  binding:
+    targetName:
+    - Name
+    - ResourceName
+    - ResourceGroupName
+    targetType:
+    - ResourceType
+  rule:
+    include:
+    - Rule1
+    - Rule3
+  configuration:
+    allowedLocations:
+    - 'Australia East'
+</code></pre>
+<h3 id="baseline-scopes">Baseline scopes</h3>
+<p>When baseline options are set, PSRule uses the following order to determine precedence.</p>
+<ol>
+<li>Parameter - <code>-Name</code> and <code>-Tag</code>.</li>
+<li>Explicit - A named baseline specified with <code>-Baseline</code>.</li>
+<li>Workspace - Included in <code>ps-rule.yaml</code> or specified on the command line with <code>-Option</code>.</li>
+<li>Module - A baseline object included in a <code>.rule.yaml</code> file.</li>
+</ol>
+<p>After precedence is determined, baselines are merged and null values are ignored, such that:</p>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="example-ps-ruleyaml">Example ps-rule.yaml</h3>
+<pre><code class="lang-yaml">#
+# PSRule example configuration
+#
+
+# Configures binding
+binding:
+  ignoreCase: false
+  targetName:
+  - ResourceName
+  - AlternateName
+  targetType:
+  - ResourceType
+  - kind
+
+# Adds rule configuration
+configuration:
+  appServiceMinInstanceCount: 2
+
+# Configure rule filtering
+rule:
+  include:
+  - rule1
+  - rule2
+  exclude:
+  - rule3
+  - rule4
+
+</code></pre>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Baseline.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

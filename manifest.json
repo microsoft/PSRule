@@ -1,6 +1,6 @@
 {
   "homepages": [],
-  "source_base_path": "C:/Dev/Workspace/PSRule/docs",
+  "source_base_path": "C:/dev/workspace/PSRule/docs",
   "xrefmap": "xrefmap.yml",
   "files": [
     {
@@ -9,7 +9,19 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRule.html",
-          "hash": "QUeptZQh9+sw91uf7iT0NQ=="
+          "hash": "EmTuM17MYdWwJljzSFV6Dg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "commands/PSRule/en-US/Get-PSRuleBaseline.md",
+      "output": {
+        ".html": {
+          "relative_path": "commands/PSRule/en-US/Get-PSRuleBaseline.html",
+          "hash": "6YYLJ2579YtkhzrmsGqCzQ=="
         }
       },
       "is_incremental": false,
@@ -21,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRuleHelp.html",
-          "hash": "bhgNw93jj7t/kvYScVYeBw=="
+          "hash": "UQyaYZ9fNMNfRW11mnQ4Aw=="
         }
       },
       "is_incremental": false,
@@ -33,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Invoke-PSRule.html",
-          "hash": "+/uMJiZjMxVnm8QtOc8o2g=="
+          "hash": "2p3jYF/8jjx5Sz46GwY9Ag=="
         }
       },
       "is_incremental": false,
@@ -45,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "zG8MB0s9R+3YMBvkpGO5Zw=="
+          "hash": "Fy29rdOjIMrg/79DLjwTtg=="
         }
       },
       "is_incremental": false,
@@ -57,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/PSRule.html",
-          "hash": "SXpeFa4kxTkQ3piFPsjEJw=="
+          "hash": "Cdb90anEY+rPr+CR4mzrXg=="
         }
       },
       "is_incremental": false,
@@ -81,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Test-PSRuleTarget.html",
-          "hash": "YXu9QsVVeJTDL6CbD5Jv6g=="
+          "hash": "ZJZ5AzRLvJubs8FxZ8E6Lw=="
         }
       },
       "is_incremental": false,
@@ -93,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/toc.html",
-          "hash": "YJ6e8PIzDAc/Hk7dv/GiIA=="
+          "hash": "8y8eg/ABSb5fzM4sCJrKyg=="
         }
       },
       "is_incremental": false,
@@ -106,6 +118,18 @@
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Assert.html",
           "hash": "1M32Ja/tNY1qoIdZuTDmZw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "concepts/PSRule/en-US/about_PSRule_Baseline.md",
+      "output": {
+        ".html": {
+          "relative_path": "concepts/PSRule/en-US/about_PSRule_Baseline.html",
+          "hash": "rqfJdH7BTgAo7L2q51OIXQ=="
         }
       },
       "is_incremental": false,
@@ -129,7 +153,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "zc+5iCFR70JTTy0RiLW4wA=="
+          "hash": "3xtCpifqyd+0SPKBYwfREw=="
         }
       },
       "is_incremental": false,
@@ -141,7 +165,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Variables.html",
-          "hash": "pc5r0QhDxrgMkktxJaRWeQ=="
+          "hash": "aYHVIVMTNE0k5SlnAAyZ3w=="
         }
       },
       "is_incremental": false,
@@ -177,7 +201,7 @@
       "output": {
         ".html": {
           "relative_path": "keywords/PSRule/en-US/about_PSRule_Keywords.html",
-          "hash": "3LlQJjUvOs4Ib0enw6FDiw=="
+          "hash": "bK4YtlO+1cFiTCjn2LMvUg=="
         }
       },
       "is_incremental": false,
@@ -245,7 +269,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/azure-tags/azure-tags.html",
-          "hash": "CVraDeVoBGDGYtBBtiTKcA=="
+          "hash": "NtUhrluSoMow/t0Jguzv9A=="
         }
       },
       "is_incremental": false,
@@ -279,6 +303,17 @@
       "output": {
         "resource": {
           "relative_path": "scenarios/azure-tags/resources.json"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "scenarios/baselines/Baseline.rule.yaml",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/baselines/Baseline.rule.yaml"
         }
       },
       "is_incremental": false,
@@ -434,6 +469,13 @@
         "full_build_reason_code": "ForceRebuild"
       },
       "processors": {
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
@@ -444,14 +486,7 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 21,
-          "skipped_file_count": 0
-        },
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build",
-          "total_file_count": 0,
+          "total_file_count": 23,
           "skipped_file_count": 0
         }
       }

@@ -233,12 +233,11 @@ Rule 'businessUnitTag' {
 </code></pre>
 <p>An extract from <em>ps-rule.yaml</em>:</p>
 <pre><code class="lang-yaml"># Configure business units that are allowed
-baseline:
-  configuration:
-    allowedBusinessUnits:
-    - 'IT Operations'
-    - 'Finance'
-    - 'HR'
+configuration:
+  allowedBusinessUnits:
+  - 'IT Operations'
+  - 'Finance'
+  - 'HR'
 </code></pre>
 <h2 id="execute-rules">Execute rules</h2>
 <p>With a rule defined, the next step is to execute it. To execute rules, pipe the target object to <code>Invoke-PSRule</code>.</p>

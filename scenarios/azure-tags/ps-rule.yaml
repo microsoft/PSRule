@@ -3,9 +3,8 @@
 #
 
 # Configure business units that are allowed
-baseline:
-  configuration:
-    allowedBusinessUnits:
-    - 'IT Operations'
-    - 'Finance'
-    - 'HR'
+configuration:
+  allowedBusinessUnits:
+  - 'IT Operations'
+  - 'Finance'
+  - 'HR'

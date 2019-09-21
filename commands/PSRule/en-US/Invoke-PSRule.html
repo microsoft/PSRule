@@ -143,10 +143,12 @@ $items | Invoke-PSRule -As Summary;
 --------                            ----  ----  -------
 isFruit                             1     1     Fail
 </code></pre>
-<p>Evaluate an array of objects. The results for each rule is returned as a summary. Outcome is represented as the worst outcome.</p>
+<p>Evaluate an array of objects. The results for each rule is returned as a summary.
+Outcome is represented as the worst outcome.</p>
 <h2 id="parameters">PARAMETERS</h2>
 <h3 id="-name">-Name</h3>
-<p>The name of a specific rule to evaluate. If this parameter is not specified all rules in search paths will be evaluated.</p>
+<p>The name of a specific rule to evaluate.
+If this parameter is not specified all rules in search paths will be evaluated.</p>
 <pre><code class="lang-yaml">Type: String[]
 Parameter Sets: (All)
 Aliases: n
@@ -185,8 +187,12 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-tag">-Tag</h3>
-<p>Only evaluate rules with the specified tags set. If this parameter is not specified all rules in search paths will be evaluated.</p>
-<p>When more than one tag is used, all tags must match. Tags are not case sensitive. A tag value of <code>*</code> may be used to filter rules to any rule with the tag set, regardless of tag value.</p>
+<p>Only get rules with the specified tags set.
+If this parameter is not specified all rules in search paths will be returned.</p>
+<p>When more than one tag is used, all tags must match. Tags are not case sensitive.
+A tag value of <code>*</code> may be used to filter rules to any rule with the tag set, regardless of tag value.</p>
+<p>An array of tag values can be used to match a rule with either value.
+i.e. <code>severity = important, critical</code> matches rules with a category of either <code>important</code> or <code>critical</code>.</p>
 <pre><code class="lang-yaml">Type: Hashtable
 Parameter Sets: (All)
 Aliases:
@@ -210,7 +216,9 @@ Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-option">-Option</h3>
-<p>Additional options that configure execution. A <code>PSRuleOption</code> can be created by using the <code>New-PSRuleOption</code> cmdlet. Alternatively, a hashtable or path to YAML file can be specified with options.</p>
+<p>Additional options that configure execution.
+A <code>PSRuleOption</code> can be created by using the <code>New-PSRuleOption</code> cmdlet.
+Alternatively, a hashtable or path to YAML file can be specified with options.</p>
 <p>For more information on PSRule options see about_PSRule_Options.</p>
 <pre><code class="lang-yaml">Type: PSRuleOption
 Parameter Sets: (All)
@@ -258,7 +266,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-objectpath">-ObjectPath</h3>
-<p>The name of a property to use instead of the pipeline object. If the property specified by <code>ObjectPath</code> is a collection or an array, then each item in evaluated separately.</p>
+<p>The name of a property to use instead of the pipeline object.
+If the property specified by <code>ObjectPath</code> is a collection or an array, then each item in evaluated separately.</p>
 <pre><code class="lang-yaml">Type: String
 Parameter Sets: (All)
 Aliases:
@@ -270,7 +279,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-module">-Module</h3>
-<p>Search for rule definitions within a module. When specified without the <code>-Path</code> parameter, only rule definitions in the module will be discovered.</p>
+<p>Search for rule definitions within a module.
+When specified without the <code>-Path</code> parameter, only rule definitions in the module will be discovered.</p>
 <p>When both <code>-Path</code> and <code>-Module</code> are specified, rule definitions from both are discovered.</p>
 <pre><code class="lang-yaml">Type: String[]
 Parameter Sets: (All)

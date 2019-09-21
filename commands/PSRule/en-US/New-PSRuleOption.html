@@ -72,7 +72,7 @@
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>Create options to configure PSRule execution.</p>
 <h2 id="syntax">SYNTAX</h2>
-<pre><code class="lang-text">New-PSRuleOption [[-Path] &lt;String&gt;] [[-Option] &lt;PSRuleOption&gt;] [-BaselineConfiguration &lt;BaselineConfiguration&gt;]
+<pre><code class="lang-text">New-PSRuleOption [[-Path] &lt;String&gt;] [[-Option] &lt;PSRuleOption&gt;] [-Configuration &lt;ConfigurationOption&gt;]
  [-SuppressTargetName &lt;SuppressionOption&gt;] [-BindTargetName &lt;BindTargetName[]&gt;]
  [-BindTargetType &lt;BindTargetName[]&gt;] [-BindingIgnoreCase &lt;Boolean&gt;] [-TargetName &lt;String[]&gt;]
  [-TargetType &lt;String[]&gt;] [-InconclusiveWarning &lt;Boolean&gt;] [-NotProcessedWarning &lt;Boolean&gt;]
@@ -112,7 +112,7 @@ $option = New-PSRuleOption -BindTargetName $bindFn;
 </code></pre>
 <p>Creates an options object that uses a custom function to bind the <em>TargetName</em> of an object.</p>
 <h3 id="example-4">Example 4</h3>
-<pre><code class="lang-powershell">$option = New-PSRuleOption -BaselineConfiguration @{ 'appServiceMinInstanceCount' = 2 };
+<pre><code class="lang-powershell">$option = New-PSRuleOption -Configuration @{ 'appServiceMinInstanceCount' = 2 };
 </code></pre>
 <p>Create an options object that sets the <code>appServiceMinInstanceCount</code> baseline configuration option to <code>2</code>.</p>
 <h2 id="parameters">PARAMETERS</h2>
@@ -169,12 +169,13 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
-<h3 id="-baselineconfiguration">-BaselineConfiguration</h3>
-<p>Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values. BaselineConfiguration also accepts a hashtable of configuration values as key/ value pairs.</p>
-<p>For more information on PSRule options see about_PSRule_Options.</p>
-<pre><code class="lang-yaml">Type: BaselineConfiguration
+<h3 id="-configuration">-Configuration</h3>
+<p>Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values.
+Configuration also accepts a hashtable of configuration values as key/ value pairs.</p>
+<p>For more information on PSRule options see about_PSRule_Baseline.</p>
+<pre><code class="lang-yaml">Type: ConfigurationOption
 Parameter Sets: (All)
-Aliases:
+Aliases: BaselineConfiguration
 
 Required: False
 Position: Named
@@ -184,7 +185,7 @@ Accept wildcard characters: False
 </code></pre>
 <h3 id="-bindtargettype">-BindTargetType</h3>
 <p>Configures a custom function to use to bind TargetType of an object.</p>
-<p>For more information on PSRule options see about_PSRule_Options.</p>
+<p>For more information on PSRule options see about_PSRule_Baseline.</p>
 <pre><code class="lang-yaml">Type: BindTargetName[]
 Parameter Sets: (All)
 Aliases:
@@ -196,7 +197,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-bindingignorecase">-BindingIgnoreCase</h3>
-<p>Sets the option <code>Binding.IgnoreCase</code>. The option <code>Binding.IgnoreCase</code> determines if binding operations are case-sensitive or not. See about_PSRule_Options for more information.</p>
+<p>Sets the option <code>Binding.IgnoreCase</code>. The option <code>Binding.IgnoreCase</code> determines if binding operations are case-sensitive or not.
+See about_PSRule_Baseline for more information.</p>
 <pre><code class="lang-yaml">Type: Boolean
 Parameter Sets: (All)
 Aliases:
@@ -208,7 +210,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-targetname">-TargetName</h3>
-<p>Sets the option <code>Binding.TargetName</code>. This option specifies one or more properties of <em>TargetObject</em> to use to bind <em>TargetName</em> to. See about_PSRule_Options for more information.</p>
+<p>Sets the option <code>Binding.TargetName</code>. This option specifies one or more properties of <em>TargetObject</em> to use to bind <em>TargetName</em> to.
+See about_PSRule_Baseline for more information.</p>
 <pre><code class="lang-yaml">Type: String[]
 Parameter Sets: (All)
 Aliases: BindingTargetName
@@ -220,7 +223,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-targettype">-TargetType</h3>
-<p>Sets the option <code>Binding.TargetType</code>. This option specifies one or more properties of <em>TargetObject</em> to use to bind <em>TargetType</em> to. See about_PSRule_Options for more information.</p>
+<p>Sets the option <code>Binding.TargetType</code>. This option specifies one or more properties of <em>TargetObject</em> to use to bind <em>TargetType</em> to.
+See about_PSRule_Baseline for more information.</p>
 <pre><code class="lang-yaml">Type: String[]
 Parameter Sets: (All)
 Aliases: BindingTargetType

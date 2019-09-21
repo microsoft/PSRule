@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Get-PSRuleHelp </title>
+    <title>Get-PSRuleBaseline </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Get-PSRuleHelp ">
+    <meta name="title" content="Get-PSRuleBaseline ">
     <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
@@ -67,61 +67,27 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="get-psrulehelp">Get-PSRuleHelp</h1>
+<h1 id="get-psrulebaseline">Get-PSRuleBaseline</h1>
 
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>Get documentation for a rule.</p>
+<p>Get a list of baselines.</p>
 <h2 id="syntax">SYNTAX</h2>
-<pre><code class="lang-text">Get-PSRuleHelp [-Module &lt;String&gt;] [-Online] [[-Name] &lt;String&gt;] [-Path &lt;String&gt;] [-Option &lt;PSRuleOption&gt;]
- [-Culture &lt;String&gt;] [&lt;CommonParameters&gt;]
+<pre><code>Get-PSRuleBaseline [-Module &lt;String[]&gt;] [-ListAvailable] [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;]
+ [-Option &lt;PSRuleOption&gt;] [-Culture &lt;String&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
-<p>Get documentation for a rule.</p>
+<p>Get a list of matching baselines within the search path.</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">Example 1</h3>
-<pre><code class="lang-powershell">Get-PSRuleHelp;
+<pre><code class="lang-powershell">Get-PSRuleBaseline;
 </code></pre>
-<p>Get a list of rule help within the current path or loaded modules.</p>
-<h3 id="example-2">Example 2</h3>
-<pre><code class="lang-powershell">Get-PSRuleHelp Azure.ACR.AdminUser;
-</code></pre>
-<p>Get rule documentation for the rule <code>Azure.ACR.AdminUser</code>.</p>
-<h3 id="example-3">Example 3</h3>
-<pre><code class="lang-powershell">Get-PSRuleHelp Azure.ACR.AdminUser -Online;
-</code></pre>
-<p>Browse to the online version of documentation for <code>Azure.ACR.AdminUser</code> using the default web browser.</p>
+<p>Get a list of baselines from the current working path.</p>
 <h2 id="parameters">PARAMETERS</h2>
-<h3 id="-name">-Name</h3>
-<p>The name of the rule to get documentation for.</p>
-<pre><code class="lang-yaml">Type: String
-Parameter Sets: (All)
-Aliases: n
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: True
-</code></pre>
-<h3 id="-path">-Path</h3>
-<p>A path to check documentation for.
-By default, help from the current working path and loaded modules is listed.
-Results can be filtered by using <code>-Name</code>, <code>-Path</code> or <code>-Module</code>.</p>
-<pre><code class="lang-yaml">Type: String
-Parameter Sets: (All)
-Aliases: p
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-</code></pre>
 <h3 id="-module">-Module</h3>
-<p>Limit returned information to rules in the specified module.
-By default, help from the current working path and loaded modules is listed.
-Results can be filtered by using <code>-Name</code>, <code>-Path</code> or <code>-Module</code>.</p>
-<pre><code class="lang-yaml">Type: String
+<p>Search for baselines definitions within a module.
+When specified without the <code>-Path</code> parameter, only baseline definitions in the module will be discovered.</p>
+<p>When both <code>-Path</code> and <code>-Module</code> are specified, baseline definitions from both are discovered.</p>
+<pre><code class="lang-yaml">Type: String[]
 Parameter Sets: (All)
 Aliases:
 
@@ -131,22 +97,9 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
-<h3 id="-culture">-Culture</h3>
-<p>Specifies the culture to use for rule documentation and messages. By default, the culture of PowerShell is used.</p>
-<p>This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.</p>
-<p>The PowerShell cmdlet <code>Get-Culture</code> shows the current culture of PowerShell.</p>
-<pre><code class="lang-yaml">Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-</code></pre>
-<h3 id="-online">-Online</h3>
-<p>Instead of displaying documentation within PowerShell, browse to the online version using the default web browser.</p>
+<h3 id="-listavailable">-ListAvailable</h3>
+<p>Look for modules containing baselines including modules that are currently not imported.</p>
+<p>This switch is used with the <code>-Module</code> parameter.</p>
 <pre><code class="lang-yaml">Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
@@ -154,6 +107,33 @@ Aliases:
 Required: False
 Position: Named
 Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-path">-Path</h3>
+<p>One or more paths to search for baselines within.</p>
+<p>If this parameter is not specified the current working path will be used, unless the <code>-Module</code> parameter is used.</p>
+<p>If the <code>-Module</code> parameter is used, baselines from the currently working path will not be included by default.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases: p
+
+Required: False
+Position: 1
+Default value: $PWD
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-name">-Name</h3>
+<p>The name of a specific baseline to list.
+If this parameter is not specified all baselines in search paths will be listed.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases: n
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
@@ -172,14 +152,28 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
+<h3 id="-culture">-Culture</h3>
+<p>Specifies the culture to use for documentation and messages. By default, the culture of PowerShell is used.</p>
+<p>This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.</p>
+<p>The PowerShell cmdlet <code>Get-Culture</code> shows the current culture of PowerShell.</p>
+<pre><code class="lang-yaml">Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
 <h3 id="commonparameters">CommonParameters</h3>
 <p>This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see <a href="http://go.microsoft.com/fwlink/?LinkID=113216">about_CommonParameters</a>.</p>
 <h2 id="inputs">INPUTS</h2>
-<h3 id="none">None</h3>
 <h2 id="outputs">OUTPUTS</h2>
-<h3 id="psrulerulesrulehelpinfo">PSRule.Rules.RuleHelpInfo</h3>
+<h3 id="psrulerulesbaseline">PSRule.Rules.Baseline</h3>
 <h2 id="notes">NOTES</h2>
 <h2 id="related-links">RELATED LINKS</h2>
+<p><a href="Get-PSRule.html">Get-PSRule</a></p>
 </article>
           </div>
           
@@ -188,7 +182,7 @@ Accept wildcard characters: False
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Get-PSRuleHelp.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Get-PSRuleBaseline.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>
