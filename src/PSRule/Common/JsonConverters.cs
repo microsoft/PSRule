@@ -48,19 +48,15 @@ namespace PSRule
 
             // Read tokens
             ReadObject(value: result, reader: reader);
-
             return result;
         }
 
         private void ReadObject(PSObject value, JsonReader reader)
         {
             if (reader.TokenType != JsonToken.StartObject)
-            {
-                throw new Exception("Read json failed");
-            }
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
 
             reader.Read();
-
             string name = null;
 
             // Read each token
@@ -91,14 +87,12 @@ namespace PSRule
                         }
 
                         value.Properties.Add(new PSNoteProperty(name: name, value: items.ToArray()));
-
                         break;
 
                     default:
                         value.Properties.Add(new PSNoteProperty(name: name, value: reader.Value));
                         break;
                 }
-
                 reader.Read();
             }
         }
@@ -129,18 +123,13 @@ namespace PSRule
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader.TokenType != JsonToken.StartObject && reader.TokenType != JsonToken.StartArray)
-            {
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
-            }
 
             var result = new List<PSObject>();
-
             var isArray = reader.TokenType == JsonToken.StartArray;
 
             if (isArray)
-            {
                 reader.Read();
-            }
 
             while (!isArray || (isArray && reader.TokenType != JsonToken.EndArray))
             {
@@ -153,19 +142,15 @@ namespace PSRule
                     reader.Read();
                 }
             }
-
             return result.ToArray();
         }
 
         private PSObject ReadObject(JsonReader reader)
         {
             if (reader.TokenType != JsonToken.StartObject)
-            {
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
-            }
 
             reader.Read();
-
             var result = new PSObject();
             string name = null;
 
@@ -193,22 +178,17 @@ namespace PSRule
                         result.Properties.Add(new PSNoteProperty(name: name, value: reader.Value));
                         break;
                 }
-
                 reader.Read();
             }
-
             return result;
         }
 
         private PSObject[] ReadArray(JsonReader reader)
         {
             if (reader.TokenType != JsonToken.StartArray)
-            {
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
-            }
 
             reader.Read();
-
             var result = new List<PSObject>();
 
             while (reader.TokenType != JsonToken.EndArray)
@@ -225,10 +205,8 @@ namespace PSRule
                 {
                     result.Add(PSObject.AsPSObject(reader.Value));
                 }
-
                 reader.Read();
             }
-
             return result.ToArray();
         }
     }

@@ -45,26 +45,6 @@ namespace PSRule.Rules
         public readonly string RuleName;
 
         /// <summary>
-        /// The script file path where the rule is defined.
-        /// </summary>
-        //public readonly string SourcePath;
-
-        /// <summary>
-        /// The name of the module where the rule is defined, or null if the rule is not defined in a module.
-        /// </summary>
-        //public readonly string ModuleName;
-
-        /// <summary>
-        /// A human readable block of text, used to identify the purpose of the rule.
-        /// </summary>
-        //public readonly string Synopsis;
-
-        /// <summary>
-        /// A human readable block of text that identifies the recommendation to address the rule when failed.
-        /// </summary>
-        //public readonly string Recommendation;
-
-        /// <summary>
         /// The body of the rule definition where conditions are provided that either pass or fail the rule.
         /// </summary>
         public readonly PowerShell Condition;
@@ -79,8 +59,6 @@ namespace PSRule.Rules
         /// </summary>
         public readonly TagSet Tag;
 
-        //public readonly TagSet Annotations;
-
         /// <summary>
         /// Configuration defaults for the rule definition.
         /// </summary>
@@ -88,9 +66,6 @@ namespace PSRule.Rules
         /// These defaults are used when the value does not exist in the baseline configuration.
         /// </remarks>
         public readonly Hashtable Configuration;
-
-        // Alias to synopsis
-        //public string Description => Synopsis;
 
         public readonly RuleHelpInfo Info;
 

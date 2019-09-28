@@ -247,11 +247,6 @@ namespace PSRule.Parser
             get { return _Token.Count; }
         }
 
-        private int Remaining
-        {
-            get { return _Token.Count - Position; }
-        }
-
         #endregion Properties
 
         public bool IsTokenType(params MarkdownTokenType[] tokenType)

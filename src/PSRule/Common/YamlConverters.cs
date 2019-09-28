@@ -103,61 +103,60 @@ namespace PSRule
             }
 
             var result = new PSObject();
-
             if (parser.Accept<MappingStart>())
             {
                 parser.MoveNext();
-
                 while (!parser.Accept<MappingEnd>())
                 {
-                    var name = parser.Allow<Scalar>().Value;
-
-                    if (parser.Accept<SequenceStart>())
-                    {
-                        parser.MoveNext();
-
-                        var values = new List<PSObject>();
-
-                        while (!parser.Accept<SequenceEnd>())
-                        {
-                            if (parser.Accept<MappingStart>())
-                            {
-                                values.Add(PSObject.AsPSObject(ReadYaml(parser, type)));
-                            }
-                            else if (parser.Accept<Scalar>())
-                            {
-                                values.Add(PSObject.AsPSObject(parser.Allow<Scalar>().Value));
-                            }
-                        }
-
-                        result.Properties.Add(new PSNoteProperty(name, values.ToArray()));
-
-                        parser.MoveNext();
-                    }
-                    else if (parser.Accept<MappingStart>())
-                    {
-                        var value = ReadYaml(parser, type);
-                        result.Properties.Add(new PSNoteProperty(name, value));
-                    }
-                    else if (parser.Accept<Scalar>())
-                    {
-                        result.Properties.Add(new PSNoteProperty(name, parser.Allow<Scalar>().Value));
-                    }
-                    else
-                    {
+                    var property = ReadNoteProperty(parser);
+                    if (property == null)
                         throw new NotImplementedException();
-                    }
-                }
 
+                    result.Properties.Add(property);
+                }
                 parser.MoveNext();
             }
-
             return result;
         }
 
         public void WriteYaml(IEmitter emitter, object value, Type type)
         {
             throw new NotImplementedException();
+        }
+
+        private PSNoteProperty ReadNoteProperty(IParser parser)
+        {
+            var name = parser.Allow<Scalar>().Value;
+
+            if (parser.Accept<SequenceStart>())
+            {
+                parser.MoveNext();
+
+                var values = new List<PSObject>();
+
+                while (!parser.Accept<SequenceEnd>())
+                {
+                    if (parser.Accept<MappingStart>())
+                    {
+                        values.Add(PSObject.AsPSObject(ReadYaml(parser, typeof(PSObject))));
+                    }
+                    else if (parser.Accept<Scalar>())
+                    {
+                        values.Add(PSObject.AsPSObject(parser.Allow<Scalar>().Value));
+                    }
+                }
+                parser.MoveNext();
+                return new PSNoteProperty(name, values.ToArray());
+            }
+            else if (parser.Accept<MappingStart>())
+            {
+                return new PSNoteProperty(name, ReadYaml(parser, typeof(PSObject)));
+            }
+            else if (parser.Accept<Scalar>())
+            {
+                return new PSNoteProperty(name, parser.Allow<Scalar>().Value);
+            }
+            return null;
         }
     }
 
@@ -168,20 +167,11 @@ namespace PSRule
     {
         public bool Resolve(NodeEvent nodeEvent, ref Type currentType)
         {
-            if (currentType == typeof(Dictionary<object, object>))
+            if (currentType == typeof(Dictionary<object, object>) || nodeEvent is MappingStart)
             {
                 currentType = typeof(PSObject);
-
                 return true;
             }
-
-            if (nodeEvent is MappingStart)
-            {
-                currentType = typeof(PSObject);
-
-                return true;
-            }
-
             return false;
         }
     }
@@ -334,70 +324,70 @@ namespace PSRule
             _Factory = new SpecFactory();
         }
 
-        bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
+        bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
         {
             if (typeof(ResourceObject).IsAssignableFrom(expectedType))
             {
-                var comment = HostHelper.GetCommentMeta(PipelineContext.CurrentThread.Source.File.Path, parser.Current.Start.Line - 2, parser.Current.Start.Column);
-                var resource = MapResource(parser, nestedObjectDeserializer, comment);
+                var comment = HostHelper.GetCommentMeta(PipelineContext.CurrentThread.Source.File.Path, reader.Current.Start.Line - 2, reader.Current.Start.Column);
+                var resource = MapResource(reader, nestedObjectDeserializer, comment);
                 value = new ResourceObject(resource);
                 return true;
             }
             else
             {
-                return _Next.Deserialize(parser, expectedType, nestedObjectDeserializer, out value);
+                return _Next.Deserialize(reader, expectedType, nestedObjectDeserializer, out value);
             }
         }
 
-        private IResource MapResource(IParser parser, Func<IParser, Type, object> nestedObjectDeserializer, CommentMetadata comment)
+        private IResource MapResource(IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, CommentMetadata comment)
         {
             IResource result = null;
             string kind = null;
             ResourceMetadata metadata = null;
 
-            if (parser.Accept<MappingStart>())
+            if (reader.Accept<MappingStart>())
             {
-                parser.MoveNext();
-                while (!parser.Accept<MappingEnd>())
+                reader.MoveNext();
+                while (!reader.Accept<MappingEnd>())
                 {
                     // Read kind
-                    var propertyName = parser.Allow<Scalar>().Value;
+                    var propertyName = reader.Allow<Scalar>().Value;
 
                     if (propertyName == "kind")
                     {
-                        kind = parser.Allow<Scalar>().Value;
+                        kind = reader.Allow<Scalar>().Value;
                     }
                     else if (propertyName == "metadata")
                     {
-                        if (!TryMetadata(parser, nestedObjectDeserializer, out metadata))
+                        if (!TryMetadata(reader, nestedObjectDeserializer, out metadata))
                         {
-                            parser.SkipThisAndNestedEvents();
+                            reader.SkipThisAndNestedEvents();
                         }
                     }
                     else if (propertyName == "spec" && kind != null)
                     {
-                        if (!TryResource(kind, parser, nestedObjectDeserializer, metadata, comment, out IResource resource))
+                        if (!TryResource(kind, reader, nestedObjectDeserializer, metadata, comment, out IResource resource))
                         {
-                            parser.SkipThisAndNestedEvents();
+                            reader.SkipThisAndNestedEvents();
                         }
                         result = resource;
                     }
                     else
                     {
-                        parser.SkipThisAndNestedEvents();
+                        reader.SkipThisAndNestedEvents();
                     }
                 }
-                parser.MoveNext();
+                reader.MoveNext();
             }
             return result;
         }
 
-        private bool TryMetadata(IParser parser, Func<IParser, Type, object> nestedObjectDeserializer, out ResourceMetadata metadata)
+        private bool TryMetadata(IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, out ResourceMetadata metadata)
         {
             metadata = null;
-            if (parser.Accept<MappingStart>())
+            if (reader.Accept<MappingStart>())
             {
-                if (!_Next.Deserialize(parser, typeof(ResourceMetadata), nestedObjectDeserializer, out object value))
+                if (!_Next.Deserialize(reader, typeof(ResourceMetadata), nestedObjectDeserializer, out object value))
                     return false;
 
                 metadata = (ResourceMetadata)value;
@@ -406,15 +396,15 @@ namespace PSRule
             return false;
         }
 
-        private bool TryResource(string name, IParser parser, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
+        private bool TryResource(string name, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
         {
             spec = null;
             if (_Factory.TryDescriptor(name, out ISpecDescriptor descriptor))
             {
                 // Using object style
-                if (parser.Accept<MappingStart>())
+                if (reader.Accept<MappingStart>())
                 {
-                    if (!_Next.Deserialize(parser, descriptor.SpecType, nestedObjectDeserializer, out object value))
+                    if (!_Next.Deserialize(reader, descriptor.SpecType, nestedObjectDeserializer, out object value))
                         return false;
 
                     spec = descriptor.CreateInstance(PipelineContext.CurrentThread.Source.File, metadata, comment, value);

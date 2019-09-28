@@ -254,20 +254,14 @@ namespace PSRule.Runtime
         private static object GetBaseObject(object value)
         {
             if (value == null)
-            {
                 return null;
-            }
 
-            if (value is PSObject)
+            if (value is PSObject ovalue)
             {
-                var baseObject = ((PSObject)value).BaseObject;
-
+                var baseObject = ovalue.BaseObject;
                 if (baseObject != null)
-                {
                     return baseObject;
-                }
             }
-
             return value;
         }
     }
