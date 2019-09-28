@@ -157,11 +157,6 @@ namespace PSRule.Host
                                 var block = ir.BaseObject as RuleBlock;
                                 results.Add(block);
                             }
-                            //else if (ir.BaseObject is ILanguageBlock)
-                            //{
-                            //    var block = ir.BaseObject as ILanguageBlock;
-                            //    results.Add(block);
-                            //}
                         }
                     }
                 }

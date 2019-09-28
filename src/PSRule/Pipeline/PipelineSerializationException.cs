@@ -8,7 +8,7 @@ namespace PSRule.Pipeline
     /// A serialization exception.
     /// </summary>
     [Serializable]
-    public sealed class PipelineSerializationException : PipelineExeception
+    public sealed class PipelineSerializationException : PipelineException
     {
         /// <summary>
         /// Creates a serialization exception.

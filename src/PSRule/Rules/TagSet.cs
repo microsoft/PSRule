@@ -42,32 +42,26 @@ namespace PSRule.Rules
                 return false;
             }
             var v = value.ToString();
-            return (v == "*") ? true : _ValueComparer.Equals(v, _Tag[k]);
+            return v == "*" || _ValueComparer.Equals(v, _Tag[k]);
         }
 
         public static TagSet FromHashtable(Hashtable hashtable)
         {
             if (hashtable == null || hashtable.Count == 0)
-            {
                 return null;
-            }
 
             var dictionary = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
             foreach (DictionaryEntry kv in hashtable)
             {
                 dictionary[kv.Key.ToString()] = kv.Value.ToString();
             }
-
             return new TagSet(dictionary);
         }
 
         internal static TagSet FromDictionary(Dictionary<string, string> dictionary)
         {
             if (dictionary == null)
-            {
                 return null;
-            }
 
             return new TagSet(dictionary);
         }
@@ -85,9 +79,7 @@ namespace PSRule.Rules
             foreach (var kv in _Tag)
             {
                 if (i > 0)
-                {
                     sb.Append(Environment.NewLine);
-                }
 
                 sb.Append(kv.Key.ToString());
                 sb.Append('=');
@@ -96,7 +88,6 @@ namespace PSRule.Rules
                 sb.Append('\'');
                 i++;
             }
-
             return sb.ToString();
         }
 

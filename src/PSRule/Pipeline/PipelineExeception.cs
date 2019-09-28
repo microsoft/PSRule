@@ -6,12 +6,12 @@ namespace PSRule.Pipeline
     /// <summary>
     /// A base class for all pipeline exceptions.
     /// </summary>
-    public abstract class PipelineExeception : Exception
+    public abstract class PipelineException : Exception
     {
         /// <summary>
         /// Creates a pipeline exception.
         /// </summary>
-        protected PipelineExeception()
+        protected PipelineException()
         {
         }
 
@@ -19,7 +19,7 @@ namespace PSRule.Pipeline
         /// Creates a pipeline exception.
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
-        protected PipelineExeception(string message) : base(message)
+        protected PipelineException(string message) : base(message)
         {
         }
 
@@ -28,11 +28,11 @@ namespace PSRule.Pipeline
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
         /// <param name="innerException">A nested exception that caused the issue.</param>
-        protected PipelineExeception(string message, Exception innerException) : base(message, innerException)
+        protected PipelineException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
-        protected PipelineExeception(SerializationInfo info, StreamingContext context)
+        protected PipelineException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

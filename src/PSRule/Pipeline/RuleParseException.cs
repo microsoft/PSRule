@@ -8,7 +8,7 @@ namespace PSRule.Pipeline
     /// A parser exception.
     /// </summary>
     [Serializable]
-    public sealed class RuleParseException : PipelineExeception
+    public sealed class RuleParseException : PipelineException
     {
         public readonly string ErrorId;
 

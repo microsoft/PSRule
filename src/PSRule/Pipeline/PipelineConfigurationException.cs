@@ -8,7 +8,7 @@ namespace PSRule.Pipeline
     /// A pipeline configuration exception.
     /// </summary>
     [Serializable]
-    public sealed class PipelineConfigurationException : PipelineExeception
+    public sealed class PipelineConfigurationException : PipelineException
     {
         /// <summary>
         /// Creates a pipeline configuration exception.

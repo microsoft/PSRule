@@ -8,7 +8,7 @@ namespace PSRule.Pipeline
     /// A rule runtime exception.
     /// </summary>
     [Serializable]
-    public sealed class RuleRuntimeException : PipelineExeception
+    public sealed class RuleRuntimeException : PipelineException
     {
         /// <summary>
         /// Creates a rule runtime exception.

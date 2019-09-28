@@ -106,17 +106,14 @@ namespace PSRule.Commands
 
         private void CheckDependsOn()
         {
-            if (MyInvocation.BoundParameters.ContainsKey(nameof(DependsOn)))
+            if (MyInvocation.BoundParameters.ContainsKey(nameof(DependsOn)) && (DependsOn == null || DependsOn.Length == 0))
             {
-                if (DependsOn == null || DependsOn.Length == 0)
-                {
-                    WriteError(new ErrorRecord(
-                        exception: new ArgumentNullException(paramName: nameof(DependsOn)),
-                        errorId: "PSRule.Runtime.ArgumentNull",
-                        errorCategory: ErrorCategory.InvalidArgument,
-                        targetObject: null
-                    ));
-                }
+                WriteError(new ErrorRecord(
+                    exception: new ArgumentNullException(paramName: nameof(DependsOn)),
+                    errorId: "PSRule.Runtime.ArgumentNull",
+                    errorCategory: ErrorCategory.InvalidArgument,
+                    targetObject: null
+                ));
             }
         }
 

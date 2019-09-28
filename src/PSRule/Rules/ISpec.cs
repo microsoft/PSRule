@@ -62,7 +62,7 @@ namespace PSRule.Rules
 
     internal static class Specs
     {
-        public static ISpecDescriptor[] BuiltinTypes = new ISpecDescriptor[]
+        public readonly static ISpecDescriptor[] BuiltinTypes = new ISpecDescriptor[]
         {
             new SpecDescriptor<Baseline, BaselineSpec>("Baseline"),
         };

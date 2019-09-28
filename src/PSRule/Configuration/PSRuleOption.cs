@@ -71,11 +71,6 @@ namespace PSRule.Configuration
         }
 
         /// <summary>
-        /// Options that specify the rules to evaluate or exclude and their configuration.
-        /// </summary>
-        //public BaselineOption Baseline { get; set; }
-
-        /// <summary>
         /// Options tht affect property binding of TargetName.
         /// </summary>
         public BindingOption Binding { get; set; }
