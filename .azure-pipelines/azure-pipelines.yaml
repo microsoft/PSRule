@@ -182,7 +182,7 @@ stages:
       displayName: 'Publish module'
 
     # Update GitHub release
-    - task: GitHubRelease@0
+    - task: GitHubRelease@1
       displayName: 'GitHub release'
       inputs:
         gitHubConnection: 'AzureDevOps-PSRule'
