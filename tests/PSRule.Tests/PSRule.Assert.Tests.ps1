@@ -46,6 +46,8 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 String = ''
                 Int = 2
                 Bool = $False
+                OtherBool = $False
+                OtherInt = 2
             }
         )
 
@@ -113,6 +115,22 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].Reason[0] | Should -BeLike "The field '*' does not exist.";
             $result[1].Reason[1..3] | Should -BeLike "The value of '*' is null or empty.";
             $result[1].Reason[4..6] | Should -BeLike "The field '*' is set to '*'.";
+        }
+
+        It 'HasDefaultValue' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.HasDefaultValue');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 3;
+            $result[1].Reason[0..2] | Should -BeLike "The field '*' is set to '*'.";
         }
 
         It 'NullOrEmpty' {

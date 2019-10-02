@@ -43,6 +43,15 @@ Rule 'Assert.HasFieldValue' {
     }
 }
 
+# Synopsis: Test for $Assert.HasDefaultValue
+Rule 'Assert.HasDefaultValue' {
+    $Assert.HasDefaultValue($TargetObject, 'OtherField', 'Other')
+    $Assert.HasDefaultValue($TargetObject, 'NotBool', $True)
+    $Assert.HasDefaultValue($TargetObject, 'Bool', $True)
+    $Assert.HasDefaultValue($TargetObject, 'OtherBool', $True)
+    $Assert.HasDefaultValue($TargetObject, 'OtherInt', 1)
+}
+
 # Synopsis: Test for $Assert.HasEmptyField
 Rule 'Assert.NullOrEmpty' {
     AllOf {
