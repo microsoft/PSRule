@@ -14,10 +14,11 @@ Each `$Assert` method returns an `AssertResult` object that contains the result 
 
 The following built-in assertion methods are provided:
 
-- [HasField](#hasfield) - Asserts that the object must have the specified field.
-- [HasFieldValue](#hasfieldvalue) - Asserts that the object must have the specified field and that field is not empty.
-- [JsonSchema](#jsonschema) - Asserts that the object must validate successfully against a JSON schema.
-- [NullOrEmpty](#nullorempty) - Asserts that the object must not have the specified field or it must be empty.
+- [HasDefaultValue](#hasdefaultvalue) - The object should not have the field or the field value is set to the default value.
+- [HasField](#hasfield) - The object must have the specified field.
+- [HasFieldValue](#hasfieldvalue) - The object must have the specified field and that field is not empty.
+- [JsonSchema](#jsonschema) - The object must validate successfully against a JSON schema.
+- [NullOrEmpty](#nullorempty) - The object must not have the specified field or it must be empty.
 
 The `$Assert` variable can only be used within a rule definition block.
 
@@ -32,7 +33,8 @@ Assertion methods use the following standard pattern:
   - Assertion methods must a `$Null` input object.
 - Assertion methods return the `AssertResult` object that is interpreted by the rule pipeline.
 
-Some assertion methods may overlap or provide similar functionality to built-in keywords. Where you have the choice, use built-in keywords. Use assertion methods for advanced cases or increased flexibility.
+Some assertion methods may overlap or provide similar functionality to built-in keywords. Where you have the choice, use built-in keywords.
+Use assertion methods for advanced cases or increased flexibility.
 
 In the following example, `Assert.HasFieldValue` asserts that `$TargetObject` should have a field named `Type` with a non-empty value.
 
@@ -49,6 +51,33 @@ Rule 'Assert.HasRequiredFields' {
     $Assert.HasFieldValue($TargetObject, 'Name')
     $Assert.HasFieldValue($TargetObject, 'Type')
     $Assert.HasFieldValue($TargetObject, 'Value')
+}
+```
+
+### HasDefaultValue
+
+The `HasDefaultValue` assertion method check that the field does not exist or the field value is set to the default value.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `defaultValue` - The expected value if the field exists.
+
+This assertion will pass if:
+
+- The field does not exist.
+- The field value is set to `defaultValue`.
+
+This assertion will fail if:
+
+- The field value is set to a value different from `defaultValue`.
+
+Examples:
+
+```powershell
+Rule 'HasDefaultValue' {
+    $Assert.HasDefaultValue($TargetObject, 'Properties.osProfile.linuxConfiguration.provisionVMAgent', $True)
 }
 ```
 
@@ -188,6 +217,7 @@ An online version of this document is available at https://github.com/BernieWhit
 ## KEYWORDS
 
 - Assert
+- HasDefaultValue
 - HasField
 - HasFieldValue
 - JsonSchema

@@ -1,6 +1,8 @@
 
 ## Unreleased
 
+- Added assertion helper for checking field default value. [#289](https://github.com/BernieWhite/PSRule/issues/289)
+
 ## v0.9.0
 
 What's changed since v0.8.0:

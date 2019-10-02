@@ -124,6 +124,25 @@ namespace PSRule.Runtime
             return Pass();
         }
 
+        /// <summary>
+        /// The object should not have the field or the field value is set to the default value.
+        /// </summary>
+        public AssertResult HasDefaultValue(PSObject inputObject, string field, object defaultValue)
+        {
+            // Guard parameters
+            if (TryNull(inputObject, nameof(inputObject), out AssertResult result) || TryNullOrEmpty(field, nameof(field), out result))
+            {
+                return result;
+            }
+
+            // Assert
+            if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue) || IsValue(fieldValue, defaultValue))
+            {
+                return Pass();
+            }
+            return Fail(string.Format(ReasonStrings.HasExpectedFieldValue, field, fieldValue));
+        }
+
         public AssertResult NullOrEmpty(PSObject inputObject, string field)
         {
             // Guard parameters

@@ -218,6 +218,7 @@ The following commands exist in the `PSRule` module:
 The following conceptual topics exist in the `PSRule` module:
 
 - [Assert](docs/concepts/PSRule/en-US/about_PSRule_Assert.md)
+  - [HasDefaultValue](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasdefaultvalue)
   - [HasField](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasfield)
   - [HasFieldValue](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasfieldvalue)
   - [JsonSchema](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#jsonschema)
