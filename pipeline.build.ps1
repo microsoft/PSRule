@@ -161,6 +161,24 @@ task VersionModule {
     }
 }
 
+task PackageModule {
+    if ($Env:PUBLISH) {
+        $modulePath = Join-Path -Path $ArtifactPath -ChildPath 'PSRule';
+        $nugetPath = Join-Path -Path $PWD -ChildPath 'out/nuget/';
+        if (!(Test-Path -Path $nugetPath)) {
+            $Null = New-Item -Path $nugetPath -ItemType Directory -Force;
+        }
+        Write-Verbose -Message "[PackageModule] -- Checking module path: $modulePath";
+        try {
+            Register-PSRepository -Name 'OutPath' -SourceLocation $nugetPath -PublishLocation $nugetPath;
+            Publish-Module -Path $modulePath -NuGetApiKey na -Repository 'OutPath';
+        }
+        finally {
+            Unregister-PSRepository -Name 'OutPath';
+        }
+    }
+}
+
 task ReleaseModule VersionModule, {
     $modulePath = (Join-Path -Path $ArtifactPath -ChildPath 'PSRule');
     Write-Verbose -Message "[ReleaseModule] -- Checking module path: $modulePath";
@@ -279,7 +297,7 @@ task PublishSite CleanSite, {
 task . Build, Test, Benchmark
 
 # Synopsis: Build the project
-task Build Clean, BuildModule, BuildHelp, VersionModule
+task Build Clean, BuildModule, BuildHelp, VersionModule, PackageModule
 
 task Test Build, TestModule
 
