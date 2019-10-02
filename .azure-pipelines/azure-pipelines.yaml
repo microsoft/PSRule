@@ -149,7 +149,7 @@ stages:
       displayName: 'Publish module package'
       inputs:
         artifactName: PSRule.nupkg
-        targetPath: out/nuget/PSRule-$(Build.BuildNumber).nupkg
+        targetPath: out/nuget/PSRule.$(Build.BuildNumber).nupkg
       condition: and(succeeded(), eq(variables['publish'], 'true'))
 
 # Release pipeline
