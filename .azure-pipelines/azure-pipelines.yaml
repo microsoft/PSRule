@@ -189,8 +189,8 @@ stages:
         repositoryName: '$(Build.Repository.Name)'
         action: edit
         tag: '$(Build.SourceBranchName)'
-        releaseNotesSource: input
-        releaseNotes: 'See [change log](https://github.com/BernieWhite/PSRule/blob/master/CHANGELOG.md)'
+        releaseNotesSource: inline
+        releaseNotesInline: 'See [change log](https://github.com/BernieWhite/PSRule/blob/master/CHANGELOG.md)'
         assetUploadMode: replace
         addChangeLog: false
         isPreRelease: $(isPreRelease)
