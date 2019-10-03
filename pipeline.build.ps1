@@ -172,6 +172,7 @@ task PackageModule {
         try {
             Register-PSRepository -Name 'OutPath' -SourceLocation $nugetPath -PublishLocation $nugetPath;
             Publish-Module -Path $modulePath -NuGetApiKey na -Repository 'OutPath';
+            Out-Host -InputObject "`#`#vso[artifact.upload containerfolder=PSRule.nupkg;artifactname=PSRule.nupkg;]$nugetPath"
         }
         finally {
             Unregister-PSRepository -Name 'OutPath';

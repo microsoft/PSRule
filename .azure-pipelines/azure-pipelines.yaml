@@ -145,12 +145,12 @@ stages:
         targetPath: out/modules/PSRule
       condition: and(succeeded(), eq(variables['publish'], 'true'))
 
-    - task: PublishPipelineArtifact@1
-      displayName: 'Publish module package'
-      inputs:
-        artifactName: PSRule.nupkg
-        targetPath: out/nuget/PSRule.$(Build.BuildNumber).nupkg
-      condition: and(succeeded(), eq(variables['publish'], 'true'))
+    # - task: PublishPipelineArtifact@1
+    #   displayName: 'Publish module package'
+    #   inputs:
+    #     artifactName: PSRule.nupkg
+    #     targetPath: out/nuget/PSRule.$(Build.BuildNumber).nupkg
+    #   condition: and(succeeded(), eq(variables['publish'], 'true'))
 
 # Release pipeline
 - stage: Release
