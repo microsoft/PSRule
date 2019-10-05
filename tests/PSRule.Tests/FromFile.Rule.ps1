@@ -185,11 +185,6 @@ Rule 'RecommendTest2' {
     Recommend 'This is a recommendation'
 }
 
-# Synopsis: Test for Recommend keyword alias
-Rule 'HintTest' {
-    Hint 'This is a recommendation'
-}
-
 # Synopsis: Test for Recommend keyword
 Rule 'TestWithSynopsis' {
     $True

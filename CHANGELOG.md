@@ -7,6 +7,8 @@
 - Added input format for reading markdown front matter. [#301](https://github.com/BernieWhite/PSRule/issues/301)
   - Markdown front matter is deserialized and evaluated as an object.
 - Added source note properties to input objects read from disk with `-InputPath`. [#302](https://github.com/BernieWhite/PSRule/issues/302)
+- **Breaking change**: Removed previously deprecated alias `Hint` for `Recommend`. [#165](https://github.com/BernieWhite/PSRule/issues/165)
+  - Use the `Recommend` keyword instead.
 
 ## v0.10.0-B1910025 (pre-release)
 

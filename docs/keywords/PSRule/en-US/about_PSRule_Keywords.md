@@ -337,11 +337,10 @@ None.
 
 ### Recommend
 
-The `Recommend` keyword is used within a `Rule` definition to provide a recommendation to resolve the issue and pass the rule. This may include manual steps to change that state of the object or the desired state accessed by the rule.
+The `Recommend` keyword is used within a `Rule` definition to provide a recommendation to resolve the issue and pass the rule.
+This may include manual steps to change that state of the object or the desired state accessed by the rule.
 
 The recommendation can only be set once per rule. Each object will use the same recommendation.
-
-Previously this keyword was `Hint`. The previous keyword `Hint` is aliased but deprecated.
 
 Syntax:
 

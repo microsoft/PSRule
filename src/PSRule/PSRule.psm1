@@ -1808,12 +1808,6 @@ function InitEditorServices {
                 'Recommend'
             );
 
-            # Define aliases
-            $Null = New-Alias -Name Hint -Value Recommend -Scope Global -Force;
-            Export-ModuleMember -Alias @(
-                'Hint'
-            );
-
             # Export variables
             Export-ModuleMember -Variable @(
                 'Assert'

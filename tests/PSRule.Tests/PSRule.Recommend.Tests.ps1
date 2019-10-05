@@ -28,11 +28,11 @@ Describe 'PSRule -- Recommend keyword' -Tag 'Recommend' {
 
         It 'Sets result properties' {
             $option = @{ 'Execution.InconclusiveWarning' = $False };
-            $result = @($testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Option $option -Name 'HintTest', 'RecommendTest' -Outcome All -WarningVariable outWarning);
+            $result = @($testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Option $option -Name 'RecommendTest' -Outcome All -WarningVariable outWarning);
             $warningMessages = @($outWarning);
             $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 2;
-            $result.RuleName | Should -BeIn 'HintTest', 'RecommendTest';
+            $result.Length | Should -Be 1;
+            $result.RuleName | Should -BeIn 'RecommendTest';
             $result.Recommendation | Should -BeIn 'This is a recommendation';
             $warningMessages.Length | Should -Be 0;
         }
