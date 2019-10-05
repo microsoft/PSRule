@@ -132,7 +132,6 @@ namespace PSRule.Host
         {
             new SessionStateAliasEntry(LanguageKeywords.Rule, "New-RuleDefinition", string.Empty, ScopedItemOptions.ReadOnly),
             new SessionStateAliasEntry(LanguageKeywords.Recommend, "Write-Recommendation", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry("hint", "Write-Recommendation", string.Empty, ScopedItemOptions.ReadOnly),
             new SessionStateAliasEntry(LanguageKeywords.Reason, "Write-Reason", string.Empty, ScopedItemOptions.ReadOnly),
             new SessionStateAliasEntry(LanguageKeywords.Exists, "Assert-Exists", string.Empty, ScopedItemOptions.ReadOnly),
             new SessionStateAliasEntry(LanguageKeywords.Within, "Assert-Within", string.Empty, ScopedItemOptions.ReadOnly),

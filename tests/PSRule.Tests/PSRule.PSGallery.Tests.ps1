@@ -52,16 +52,6 @@ Describe 'PSRule' -Tag 'PowerShellGallery' {
             $expected | Should -BeIn $filteredCommands.Name;
             $expected | Should -BeIn $result.ExportedFunctions.Keys;
         }
-
-        It 'Exports aliases' {
-            $filteredCommands = @($commands | Where-Object -FilterScript { $_ -is [System.Management.Automation.AliasInfo] });
-            $filteredCommands | Should -Not -BeNullOrEmpty;
-            $expected = @(
-                'Hint'
-            )
-            $expected | Should -BeIn $filteredCommands.Name;
-            $expected | Should -BeIn $result.ExportedAliases.Keys;
-        }
     }
 
     Context 'Static analysis' {
