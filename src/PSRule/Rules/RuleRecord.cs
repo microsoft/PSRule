@@ -106,11 +106,8 @@ namespace PSRule.Rules
         public string GetReasonViewString()
         {
             var sb = new StringBuilder();
-
             foreach (var item in Reason)
-            {
                 sb.AppendLine(item);
-            }
 
             return sb.ToString();
         }

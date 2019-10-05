@@ -45,14 +45,14 @@ function Invoke-PSRule {
 
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
-        [PSRule.Configuration.InputFormat]$Format,
+        [PSRule.Configuration.InputFormat]$Format = [PSRule.Configuration.InputFormat]::Detect,
 
         [Parameter(Mandatory = $False)]
         [String]$OutputPath,
 
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv', 'Wide')]
-        [PSRule.Configuration.OutputFormat]$OutputFormat,
+        [PSRule.Configuration.OutputFormat]$OutputFormat = [PSRule.Configuration.OutputFormat]::None,
 
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.BaselineOption]$Baseline,
@@ -146,10 +146,9 @@ function Invoke-PSRule {
             $Option.Output.Culture = GetCulture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
-        $builder.Source($sourceFiles);
         $builder.Limit($Outcome);
         $builder.UseBaseline($Baseline);
 
@@ -290,10 +289,9 @@ function Test-PSRuleTarget {
             $Option.Output.Culture = GetCulture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke().Configure($Option);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Test($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
-        $builder.Source($sourceFiles);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $inputPaths = GetFilePath -Path $InputPath -Verbose:$VerbosePreference;
@@ -302,7 +300,6 @@ function Test-PSRuleTarget {
 
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseExecutionContext($ExecutionContext);
-        $builder.ReturnBoolean();
         try {
             $pipeline = $builder.Build();
             $pipeline.Begin();
@@ -327,16 +324,176 @@ function Test-PSRuleTarget {
 
     end {
         if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
-            try
-            {
+            try {
                 $pipeline.End();
             }
-            finally
-            {
+            finally {
                 $pipeline.Dispose();
             }
         }
         Write-Verbose -Message "[Test-PSRuleTarget] END::";
+    }
+}
+
+function Assert-PSRule {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess', '', Justification = 'ShouldProcess is used within CSharp code.')]
+    [CmdletBinding(DefaultParameterSetName = 'Input', SupportsShouldProcess = $True)]
+    [OutputType([System.String])]
+    param (
+        [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
+        [String[]]$InputPath,
+
+        [Parameter(Mandatory = $False)]
+        [String[]]$Module,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [PSRule.Configuration.InputFormat]$Format = [PSRule.Configuration.InputFormat]::Detect,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.BaselineOption]$Baseline,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions')]
+        [PSRule.Configuration.OutputStyle]$Style = [PSRule.Configuration.OutputStyle]::Client,
+
+        # A list of paths to check for rule definitions
+        [Parameter(Mandatory = $False, Position = 0)]
+        [Alias('p')]
+        [String[]]$Path = $PWD,
+
+        # Filter to rules with the following names
+        [Parameter(Mandatory = $False)]
+        [Alias('n')]
+        [String[]]$Name,
+
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$Tag,
+
+        [Parameter(Mandatory = $False)]
+        [String]$OutputPath,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv')]
+        [PSRule.Configuration.OutputFormat]$OutputFormat,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $False)]
+        [String]$ObjectPath,
+
+        [Parameter(Mandatory = $False)]
+        [String[]]$Culture,
+
+        [Parameter(Mandatory = $True, ValueFromPipeline = $True, ParameterSetName = 'Input')]
+        [Alias('TargetObject')]
+        [PSObject]$InputObject
+    )
+    begin {
+        Write-Verbose -Message '[Assert-PSRule] BEGIN::';
+
+        # Get parameter options, which will override options from other sources
+        $optionParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Option')) {
+            $optionParams['Option'] = $Option;
+        }
+
+        # Get an options object
+        $Option = New-PSRuleOption @optionParams;
+
+        # Discover scripts in the specified paths
+        $sourceParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Path')) {
+            $sourceParams['Path'] = $Path;
+        }
+        if ($PSBoundParameters.ContainsKey('Module')) {
+            $sourceParams['Module'] = $Module;
+        }
+        if ($sourceParams.Count -eq 0) {
+            $sourceParams['Path'] = $Path;
+        }
+        $sourceParams['Option'] = $Option;
+        [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
+
+        # Check that some matching script files were found
+        if ($Null -eq $sourceFiles) {
+            Write-Warning -Message $LocalizedHelp.RulePathNotFound;
+            return; # continue causes issues with Pester
+        }
+
+        $isDeviceGuard = IsDeviceGuardEnabled;
+
+        # If DeviceGuard is enabled, force a contrained execution environment
+        if ($isDeviceGuard) {
+            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
+        }
+        if ($PSBoundParameters.ContainsKey('Format')) {
+            $Option.Input.Format = $Format;
+        }
+        if ($PSBoundParameters.ContainsKey('ObjectPath')) {
+            $Option.Input.ObjectPath = $ObjectPath;
+        }
+        if ($PSBoundParameters.ContainsKey('Style')) {
+            $Option.Output.Style = $Style;
+        }
+        if ($PSBoundParameters.ContainsKey('OutputFormat')) {
+            $Option.Output.Format = $OutputFormat;
+        }
+        if ($PSBoundParameters.ContainsKey('OutputPath')) {
+            $Option.Output.Path = $OutputPath;
+        }
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $Option.Output.Culture = $Culture;
+        }
+        else {
+            $Option.Output.Culture = GetCulture;
+        }
+
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Assert($sourceFiles, $Option);
+        $builder.Name($Name);
+        $builder.Tag($Tag);
+        $builder.UseBaseline($Baseline);
+
+        if ($PSBoundParameters.ContainsKey('InputPath')) {
+            $inputPaths = GetFilePath -Path $InputPath -Verbose:$VerbosePreference;
+            $builder.InputPath($inputPaths);
+        }
+
+        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseExecutionContext($ExecutionContext);
+        try {
+            $pipeline = $builder.Build();
+            $pipeline.Begin();
+        }
+        catch {
+            throw $_.Exception.GetBaseException();
+        }
+    }
+    process {
+        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue) -and $pipeline.RuleCount -gt 0) {
+            try {
+                # Process pipeline objects
+                $pipeline.Process($InputObject);
+            }
+            catch {
+                $pipeline.Dispose();
+                throw;
+            }
+        }
+    }
+    end {
+        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+            try {
+                $pipeline.End();
+            }
+            finally {
+                $pipeline.Dispose();
+            }
+        }
+        Write-Verbose -Message '[Assert-PSRule] END::';
     }
 }
 
@@ -353,7 +510,7 @@ function Get-PSRule {
 
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Wide')]
-        [PSRule.Configuration.OutputFormatGet]$OutputFormat,
+        [PSRule.Configuration.OutputFormat]$OutputFormat,
 
         # A list of paths to check for rule definitions
         [Parameter(Mandatory = $False, Position = 0)]
@@ -420,6 +577,9 @@ function Get-PSRule {
         if ($isDeviceGuard) {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
+        if ($PSBoundParameters.ContainsKey('OutputFormat')) {
+            $Option.Output.Format = $OutputFormat;
+        }
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $Option.Output.Culture = $Culture;
         }
@@ -427,10 +587,9 @@ function Get-PSRule {
             $Option.Output.Culture = GetCulture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Get().Configure($Option);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Get($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
-        $builder.Source($sourceFiles);
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseExecutionContext($ExecutionContext);
         try {
@@ -441,30 +600,14 @@ function Get-PSRule {
         }
     }
 
-    process {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
-            try {
-                # Get matching rule definitions
-                foreach ($item in $pipeline.Process()) {
-                    if ($OutputFormat -eq [PSRule.Configuration.OutputFormatGet]::Wide) {
-                        $item.PSObject.TypeNames.Insert(0, 'PSRule.Rules.Rule+Wide');
-                        $item;
-                    }
-                    else {
-                        $item;
-                    }
-                }
-            }
-            catch {
-                $pipeline.Dispose();
-                throw;
-            }
-        }
-    }
-
     end {
         if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
-            $pipeline.Dispose();
+            try {
+                $pipeline.End();
+            }
+            finally {
+                $pipeline.Dispose();
+            }
         }
         Write-Verbose -Message "[Get-PSRule]::END";
     }
@@ -541,10 +684,8 @@ function Get-PSRuleBaseline {
             $Option.Output.Culture = GetCulture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::GetBaseline().Configure($Option);
-        $builder.Source($sourceFiles);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::GetBaseline($sourceFiles, $Option);
         $builder.Name($Name);
-
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseExecutionContext($ExecutionContext);
         try {
@@ -553,19 +694,6 @@ function Get-PSRuleBaseline {
         }
         catch {
             throw $_.Exception.GetBaseException();
-        }
-    }
-
-    process {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
-            try {
-                # Process pipeline objects
-                $pipeline.Process();
-            }
-            catch {
-                $pipeline.Dispose();
-                throw;
-            }
         }
     }
 
@@ -670,50 +798,25 @@ function Get-PSRuleHelp {
             $Option.Output.Culture = GetCulture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp().Configure($Option);
-        $builder.Source($sourceFiles);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp($sourceFiles, $Option);
+
+        if ($Online) {
+            $builder.Online();
+        }
+
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseExecutionContext($ExecutionContext);
         $pipeline = $builder.Build();
     }
 
-    process {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
-            try {
-                # Get matching rule help
-                $result = @($pipeline.Process());
-
-                if ($Null -ne $result -and $result.Length -gt 0) {
-
-                    if ($Online -and $result.Length -eq 1) {
-                        $launchUri = $result.GetOnlineHelpUri();
-
-                        if ($Null -ne $launchUri) {
-                            Write-Verbose -Message "[Get-PSRuleHelp] -- Launching online version: $($launchUri.OriginalString)";
-                            LaunchOnlineHelp -Uri $launchUri -Verbose:$VerbosePreference;
-                        }
-                    }
-                    elseif ($result.Length -gt 1) {
-                        $result | ForEach-Object -Process {
-                            $Null = $_.PSObject.TypeNames.Insert(0, 'PSRule.Rules.RuleHelpInfo+Collection');
-                            $_;
-                        }
-                    }
-                    else {
-                        $result;
-                    }
-                }
-            }
-            catch {
-                $pipeline.Dispose();
-                throw;
-            }
-        }
-    }
-
     end {
         if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
-            $pipeline.Dispose();
+            try {
+                $pipeline.End();
+            }
+            finally {
+                $pipeline.Dispose();
+            }
         }
         Write-Verbose -Message "[Get-PSRuleHelp]::END";
     }
@@ -814,7 +917,12 @@ function New-PSRuleOption {
 
         # Sets the Output.Path option
         [Parameter(Mandatory = $False)]
-        [String]$OutputPath = ''
+        [String]$OutputPath = '',
+
+        # Sets the Output.Style option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions')]
+        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Client
     )
 
     begin {
@@ -975,7 +1083,12 @@ function Set-PSRuleOption {
 
         # Sets the Output.Path option
         [Parameter(Mandatory = $False)]
-        [String]$OutputPath = ''
+        [String]$OutputPath = '',
+
+        # Sets the Output.Style option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions')]
+        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Client
     )
 
     begin {
@@ -1531,7 +1644,12 @@ function SetOptions {
 
         # Sets the Output.Path option
         [Parameter(Mandatory = $False)]
-        [String]$OutputPath = ''
+        [String]$OutputPath = '',
+
+        # Sets the Output.Style option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions')]
+        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Client
     )
 
     process {
@@ -1612,6 +1730,11 @@ function SetOptions {
             $Option.Output.Path = $OutputPath;
         }
 
+        # Sets option Output.Style
+        if ($PSBoundParameters.ContainsKey('OutputStyle')) {
+            $Option.Output.Style = $OutputStyle;
+        }
+
         return $Option;
     }
 }
@@ -1637,7 +1760,6 @@ function IsDeviceGuardEnabled {
     [OutputType([System.Boolean])]
     param ()
     process {
-
         if ((Get-Variable -Name IsMacOS -ErrorAction Ignore) -or (Get-Variable -Name IsLinux -ErrorAction Ignore)) {
             return $False;
         }
@@ -1646,7 +1768,6 @@ function IsDeviceGuardEnabled {
         if ($PSVersionTable.PSVersion -ge '6.0' -and $PSVersionTable.PSVersion -lt '6.1') {
             return $False;
         }
-
         return [System.Management.Automation.Security.SystemPolicy]::GetSystemLockdownPolicy() -eq [System.Management.Automation.Security.SystemEnforcementMode]::Enforce;
     }
 }
@@ -1656,23 +1777,7 @@ function GetCulture {
     [OutputType([System.String[]])]
     param ()
     process {
-        return @([System.Threading.Thread]::CurrentThread.CurrentCulture.ToString());
-    }
-}
-
-function LaunchOnlineHelp {
-    [CmdletBinding()]
-    [OutputType([void])]
-    param (
-        [Parameter(Mandatory = $True)]
-        [System.Uri]$Uri
-    )
-
-    process {
-        $launchProcess = New-Object -TypeName System.Diagnostics.Process;
-        $launchProcess.StartInfo.FileName = $Uri.OriginalString;
-        $launchProcess.StartInfo.UseShellExecute = $True;
-        $Null = $launchProcess.Start();
+        return [String[]]@([System.Threading.Thread]::CurrentThread.CurrentCulture.ToString());
     }
 }
 
@@ -1718,7 +1823,7 @@ function InitCompletionServices {
     param ()
     process {
         # Complete -Module parameter
-        Register-ArgumentCompleter -CommandName Get-PSRule,Get-PSRuleBaseline,Get-PSRuleHelp,Invoke-PSRule,Test-PSRuleTarget -ParameterName Module -ScriptBlock {
+        Register-ArgumentCompleter -CommandName Assert-PSRule,Get-PSRule,Get-PSRuleBaseline,Get-PSRuleHelp,Invoke-PSRule,Test-PSRuleTarget -ParameterName Module -ScriptBlock {
             param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
             GetRuleModule -Name "$wordToComplete*" -ListAvailable | ForEach-Object -Process {
                 [System.Management.Automation.CompletionResult]::new($_.Name, $_.Name, 'ParameterValue', ([String]::Concat("ModuleName: ", $_.Name, ", ModuleVersion: ", $_.Version.ToString())))
@@ -1754,6 +1859,7 @@ Export-ModuleMember -Function @(
     'Rule'
     'Invoke-PSRule'
     'Test-PSRuleTarget'
+    'Assert-PSRule'
     'Get-PSRule'
     'Get-PSRuleHelp'
     'Get-PSRuleBaseline'

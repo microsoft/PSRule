@@ -106,6 +106,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to One or more rules reported failure..
+        /// </summary>
+        internal static string FailPipelineException {
+            get {
+                return ResourceManager.GetString("FailPipelineException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [PSRule][D] -- Found {0} PSRule module(s).
         /// </summary>
         internal static string FoundModules {
@@ -156,6 +165,15 @@ namespace PSRule.Resources {
         internal static string KeywordScriptScope {
             get {
                 return ResourceManager.GetString("KeywordScriptScope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please open your browser to the following location: {0}.
+        /// </summary>
+        internal static string LaunchBrowser {
+            get {
+                return ResourceManager.GetString("LaunchBrowser", resourceCulture);
             }
         }
         
@@ -313,20 +331,11 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to The source was not found..
         /// </summary>
         internal static string SourceNotFound {
             get {
                 return ResourceManager.GetString("SourceNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The source was not found..
-        /// </summary>
-        internal static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
         

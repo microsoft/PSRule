@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace PSRule.Configuration
 {
     /// <summary>
-    /// Options tht affect property binding of TargetName.
+    /// Options tht affect property binding of TargetName and TargetType.
     /// </summary>
     public sealed class BindingOption : IEquatable<BindingOption>
     {
@@ -35,6 +35,7 @@ namespace PSRule.Configuration
                 obj is BindingOption &&
                 Equals(obj as BindingOption);
         }
+
         public override int GetHashCode()
         {
             unchecked // Overflow is fine

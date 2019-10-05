@@ -13,7 +13,7 @@ Get a list of baselines.
 
 ## SYNTAX
 
-```
+```text
 Get-PSRuleBaseline [-Module <String[]>] [-ListAvailable] [[-Path] <String[]>] [-Name <String[]>]
  [-Option <PSRuleOption>] [-Culture <String>] [<CommonParameters>]
 ```

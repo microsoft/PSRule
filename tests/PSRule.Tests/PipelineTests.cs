@@ -20,8 +20,7 @@ namespace PSRule
         public void BuildInvokePipeline()
         {
             var option = new PSRuleOption();
-            var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(GetSource());
+            var builder = PipelineBuilder.Invoke(GetSource(), option);
             var pipeline = builder.Build();
 
             Assert.NotNull(pipeline);
@@ -33,8 +32,7 @@ namespace PSRule
             var testObject1 = new TestObject { Name = "TestObject1" };
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "FromFile1" };
-            var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(GetSource());
+            var builder = PipelineBuilder.Invoke(GetSource(), option);
             var pipeline = builder.Build();
             pipeline.Begin();
 
@@ -51,8 +49,7 @@ namespace PSRule
         [Fact]
         public void BuildGetPipeline()
         {
-            var builder = PipelineBuilder.Get();
-            builder.Source(GetSource());
+            var builder = PipelineBuilder.Get(GetSource(), new PSRuleOption());
             var pipeline = builder.Build();
 
             Assert.NotNull(pipeline);

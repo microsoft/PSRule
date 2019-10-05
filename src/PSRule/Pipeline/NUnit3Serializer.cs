@@ -5,13 +5,29 @@ using System.Text;
 
 namespace PSRule.Pipeline
 {
-    internal sealed class NUnit3Serializer
+    internal sealed class NUnit3Serializer : PipelineWriter
     {
         private readonly StringBuilder _Builder;
+        private readonly List<InvokeResult> _Result;
 
-        public NUnit3Serializer()
+        internal NUnit3Serializer(WriteOutput output)
+            : base(output)
         {
             _Builder = new StringBuilder();
+            _Result = new List<InvokeResult>();
+        }
+
+        public override void Write(object o, bool enumerate)
+        {
+            if (!(o is InvokeResult result))
+                return;
+
+            _Result.Add(result);
+        }
+
+        public override void End()
+        {
+            base.Write(Serialize(_Result.ToArray()), false);
         }
 
         internal string Serialize(IEnumerable<InvokeResult> o)

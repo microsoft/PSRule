@@ -12,6 +12,8 @@ namespace PSRule.Pipeline
         private const string VerbosePreference = "VerbosePreference";
         private const string InformationPreference = "InformationPreference";
         private const string DebugPreference = "DebugPreference";
+        private const string Source = "PSRule";
+        private const string HostTag = "PSHOST";
 
         private HashSet<string> _VerboseFilter;
         private HashSet<string> _DebugFilter;
@@ -36,9 +38,7 @@ namespace PSRule.Pipeline
         public void WriteError(ErrorRecord errorRecord)
         {
             if (!ShouldWriteError() || errorRecord == null)
-            {
                 return;
-            }
 
             DoWriteError(errorRecord);
         }
@@ -46,9 +46,7 @@ namespace PSRule.Pipeline
         public void WriteVerbose(string message)
         {
             if (!ShouldWriteVerbose() || string.IsNullOrEmpty(message))
-            {
                 return;
-            }
 
             DoWriteVerbose(message);
         }
@@ -56,9 +54,7 @@ namespace PSRule.Pipeline
         public void WriteDebug(DebugRecord debugRecord)
         {
             if (!ShouldWriteDebug())
-            {
                 return;
-            }
 
             DoWriteDebug(debugRecord);
         }
@@ -66,19 +62,22 @@ namespace PSRule.Pipeline
         public void WriteInformation(InformationRecord informationRecord)
         {
             if (!ShouldWriteInformation())
-            {
                 return;
-            }
 
             DoWriteInformation(informationRecord);
+        }
+
+        public void WriteHost(HostInformationMessage info)
+        {
+            var record = new InformationRecord(info, Source);
+            record.Tags.Add(HostTag);
+            DoWriteInformation(record);
         }
 
         public void WriteWarning(string message)
         {
             if (!ShouldWriteWarning())
-            {
                 return;
-            }
 
             DoWriteWarning(message);
         }
@@ -98,9 +97,7 @@ namespace PSRule.Pipeline
         public void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
             if (OnWriteObject == null)
-            {
                 return;
-            }
 
             OnWriteObject(sendToPipeline, enumerateCollection);
         }
@@ -127,24 +124,17 @@ namespace PSRule.Pipeline
         internal void Configure(PSRuleOption option)
         {
             if (option.Logging.LimitVerbose != null && option.Logging.LimitVerbose.Length > 0)
-            {
                 _VerboseFilter = new HashSet<string>(option.Logging.LimitVerbose);
-            }
 
             if (option.Logging.LimitDebug != null && option.Logging.LimitDebug.Length > 0)
-            {
                 _DebugFilter = new HashSet<string>(option.Logging.LimitDebug);
-            }
         }
 
         private bool GetPreferenceVariable(EngineIntrinsics executionContext, string variableName)
         {
             var preference = (ActionPreference)executionContext.SessionState.PSVariable.GetValue(variableName);
-
             if (preference == ActionPreference.Ignore)
-            {
                 return false;
-            }
 
             return !(preference == ActionPreference.SilentlyContinue && (variableName == VerbosePreference || variableName == DebugPreference));
         }
@@ -158,9 +148,7 @@ namespace PSRule.Pipeline
         private void DoWriteError(ErrorRecord errorRecord)
         {
             if (OnWriteError == null)
-            {
                 return;
-            }
 
             OnWriteError(errorRecord);
         }
@@ -172,9 +160,7 @@ namespace PSRule.Pipeline
         private void DoWriteVerbose(string message)
         {
             if (OnWriteVerbose == null)
-            {
                 return;
-            }
 
             OnWriteVerbose(message);
         }
@@ -186,9 +172,7 @@ namespace PSRule.Pipeline
         private void DoWriteWarning(string message)
         {
             if (OnWriteWarning == null)
-            {
                 return;
-            }
 
             OnWriteWarning(message);
         }
@@ -199,9 +183,7 @@ namespace PSRule.Pipeline
         private void DoWriteInformation(InformationRecord informationRecord)
         {
             if (OnWriteInformation == null)
-            {
                 return;
-            }
 
             OnWriteInformation(informationRecord);
         }
@@ -212,9 +194,7 @@ namespace PSRule.Pipeline
         private void DoWriteDebug(DebugRecord debugRecord)
         {
             if (OnWriteDebug == null)
-            {
                 return;
-            }
 
             OnWriteDebug(debugRecord.Message);
         }

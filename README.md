@@ -206,9 +206,11 @@ The following language keywords are used by the `PSRule` module:
 
 The following commands exist in the `PSRule` module:
 
+- [Assert-PSRule](docs/commands/PSRule/en-US/Assert-PSRule.md) - Evaluate objects against matching rules and assert any failures.
 - [Get-PSRule](docs/commands/PSRule/en-US/Get-PSRule.md) - Get a list of rule definitions.
+- [Get-PSRuleBaseline](docs/commands/PSRule/en-US/Get-PSRuleBaseline.md) - Get a list of baselines.
 - [Get-PSRuleHelp](docs/commands/PSRule/en-US/Get-PSRuleHelp.md) - Get documentation for a rule.
-- [Invoke-PSRule](docs/commands/PSRule/en-US/Invoke-PSRule.md) - Evaluate objects against matching rules.
+- [Invoke-PSRule](docs/commands/PSRule/en-US/Invoke-PSRule.md) - Evaluate objects against matching rules and output the results.
 - [New-PSRuleOption](docs/commands/PSRule/en-US/New-PSRuleOption.md) - Create options to configure PSRule execution.
 - [Set-PSRuleOption](docs/commands/PSRule/en-US/Set-PSRuleOption.md) - Sets options that configure PSRule execution.
 - [Test-PSRuleTarget](docs/commands/PSRule/en-US/Test-PSRuleTarget.md) - Pass or fail objects against matching rules.
@@ -248,6 +250,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Output.Encoding](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputencoding)
   - [Output.Format](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputformat)
   - [Output.Path](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputpath)
+  - [Output.Style](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputstyle)
   - [Rule.Include](docs/concepts/PSRule/en-US/about_PSRule_Options.md#ruleinclude)
   - [Rule.Exclude](docs/concepts/PSRule/en-US/about_PSRule_Options.md#ruleexclude)
   - [Rule.Tag](docs/concepts/PSRule/en-US/about_PSRule_Options.md#ruletag)

@@ -22,6 +22,8 @@ namespace PSRule.Pipeline
 
         void WriteInformation(InformationRecord informationRecord);
 
+        void WriteHost(HostInformationMessage info);
+
         bool ShouldWriteInformation();
 
         void WriteDebug(DebugRecord debugRecord);

@@ -14,6 +14,10 @@ A PowerShell rules engine.
 
 ## PSRule Cmdlets
 
+### [Assert-PSRule](Assert-PSRule.md)
+
+Evaluate objects against matching rules and assert any failures.
+
 ### [Get-PSRule](Get-PSRule.md)
 
 Get a list of matching rule definitions within the search path.
@@ -28,7 +32,7 @@ Get documentation for a rule.
 
 ### [Invoke-PSRule](Invoke-PSRule.md)
 
-Evaluate pipeline objects against matching rules.
+Evaluate objects against matching rules and output the results.
 
 ### [New-PSRuleOption](New-PSRuleOption.md)
 

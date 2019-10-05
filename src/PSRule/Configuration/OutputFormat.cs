@@ -3,6 +3,9 @@ using Newtonsoft.Json.Converters;
 
 namespace PSRule.Configuration
 {
+    /// <summary>
+    /// The formats to return results in.
+    /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
     public enum OutputFormat : byte
     {
@@ -15,14 +18,6 @@ namespace PSRule.Configuration
         NUnit3 = 3,
 
         Csv = 4,
-
-        Wide = 5
-    }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum OutputFormatGet : byte
-    {
-        None = 0,
 
         Wide = 5
     }

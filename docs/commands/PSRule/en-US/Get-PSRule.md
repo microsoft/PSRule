@@ -14,7 +14,7 @@ Get a list of rule definitions.
 ## SYNTAX
 
 ```text
-Get-PSRule [-Module <String[]>] [-ListAvailable] [-OutputFormat <OutputFormatGet>] [[-Path] <String[]>]
+Get-PSRule [-Module <String[]>] [-ListAvailable] [-OutputFormat <OutputFormat>] [[-Path] <String[]>]
  [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-Culture <String>] [<CommonParameters>]
 ```
 
@@ -232,7 +232,7 @@ The following format options are available:
 - Wide - Output is presented using the wide table format, which includes tags and wraps columns.
 
 ```yaml
-Type: OutputFormatGet
+Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
 Accepted values: None, Wide

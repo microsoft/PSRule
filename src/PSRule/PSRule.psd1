@@ -75,6 +75,7 @@ FunctionsToExport = @(
     'Rule'
     'Invoke-PSRule'
     'Test-PSRuleTarget'
+    'Assert-PSRule'
     'Get-PSRule'
     'Get-PSRuleHelp'
     'Get-PSRuleBaseline'

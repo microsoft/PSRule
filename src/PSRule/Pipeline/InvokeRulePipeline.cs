@@ -1,16 +1,190 @@
 ﻿using PSRule.Configuration;
 using PSRule.Host;
+using PSRule.Resources;
 using PSRule.Rules;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
+using System.Threading;
 
 namespace PSRule.Pipeline
 {
-    public sealed class InvokeRulePipeline : RulePipeline
+    public interface IInvokePipelineBuilder : IPipelineBuilder
+    {
+        void Limit(RuleOutcome outcome);
+
+        void InputPath(string[] path);
+    }
+
+    internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvokePipelineBuilder
+    {
+        protected RuleOutcome Outcome;
+        protected string[] _InputPath;
+        private VisitTargetObject _VisitTargetObject;
+
+        protected BindTargetMethod _BindTargetNameHook;
+        protected BindTargetMethod _BindTargetTypeHook;
+
+        internal InvokePipelineBuilderBase(Source[] source)
+            : base(source)
+        {
+            Outcome = RuleOutcome.Processed;
+            _InputPath = null;
+            _VisitTargetObject = PipelineReceiverActions.PassThru;
+            _BindTargetNameHook = PipelineHookActions.BindTargetName;
+            _BindTargetTypeHook = PipelineHookActions.BindTargetType;
+        }
+
+        public void Limit(RuleOutcome outcome)
+        {
+            Outcome = outcome;
+        }
+
+        public void InputPath(string[] path)
+        {
+            _InputPath = path;
+        }
+
+        public override IPipelineBuilder Configure(PSRuleOption option)
+        {
+            if (option == null)
+                return this;
+
+            base.Configure(option);
+
+            Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
+            Option.Execution.InconclusiveWarning = option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning;
+            Option.Execution.NotProcessedWarning = option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning;
+
+            Option.Input.Format = option.Input.Format ?? InputOption.Default.Format;
+            Option.Input.ObjectPath = option.Input.ObjectPath ?? InputOption.Default.ObjectPath;
+
+            Option.Logging.RuleFail = option.Logging.RuleFail ?? LoggingOption.Default.RuleFail;
+            Option.Logging.RulePass = option.Logging.RulePass ?? LoggingOption.Default.RulePass;
+            Option.Logging.LimitVerbose = option.Logging.LimitVerbose;
+            Option.Logging.LimitDebug = option.Logging.LimitDebug;
+
+            Option.Output.As = option.Output.As ?? OutputOption.Default.As;
+            Option.Output.Culture = option.Output.Culture ?? new string[] { Thread.CurrentThread.CurrentCulture.ToString() };
+            Option.Output.Encoding = option.Output.Encoding ?? OutputOption.Default.Encoding;
+            Option.Output.Format = option.Output.Format ?? OutputOption.Default.Format;
+            Option.Output.Path = option.Output.Path ?? OutputOption.Default.Path;
+
+            if (option.Rule != null)
+                Option.Rule = new RuleOption(option.Rule);
+
+            if (option.Configuration != null)
+                Option.Configuration = new ConfigurationOption(option.Configuration);
+
+            if (option.Pipeline.BindTargetName != null && option.Pipeline.BindTargetName.Count > 0)
+            {
+                // Do not allow custom binding functions to be used with constrained language mode
+                if (Option.Execution.LanguageMode == LanguageMode.ConstrainedLanguage)
+                    throw new PipelineConfigurationException(optionName: "BindTargetName", message: PSRuleResources.ConstrainedTargetBinding);
+
+                foreach (var action in option.Pipeline.BindTargetName)
+                {
+                    _BindTargetNameHook = AddBindTargetAction(action, _BindTargetNameHook);
+                }
+            }
+
+            if (option.Pipeline.BindTargetType != null && option.Pipeline.BindTargetType.Count > 0)
+            {
+                // Do not allow custom binding functions to be used with constrained language mode
+                if (Option.Execution.LanguageMode == LanguageMode.ConstrainedLanguage)
+                    throw new PipelineConfigurationException(optionName: "BindTargetType", message: PSRuleResources.ConstrainedTargetBinding);
+
+                foreach (var action in option.Pipeline.BindTargetType)
+                {
+                    _BindTargetTypeHook = AddBindTargetAction(action, _BindTargetTypeHook);
+                }
+            }
+
+            if (option.Suppression.Count > 0)
+                Option.Suppression = new SuppressionOption(option.Suppression);
+
+            ConfigureLogger(Option);
+            return this;
+        }
+
+        public sealed override IPipeline Build()
+        {
+            return new InvokeRulePipeline(PrepareContext(bindTargetName: _BindTargetNameHook, bindTargetType: _BindTargetTypeHook), Source, PrepareReader(), PrepareWriter(), Outcome);
+        }
+
+        private BindTargetMethod AddBindTargetAction(BindTargetFunc action, BindTargetMethod previous)
+        {
+            // Nest the previous write action in the new supplied action
+            // Execution chain will be: action -> previous -> previous..n
+            return (propertyNames, caseSensitive, targetObject) => action(propertyNames, caseSensitive, targetObject, previous);
+        }
+
+        private BindTargetMethod AddBindTargetAction(BindTargetName action, BindTargetMethod previous)
+        {
+            return AddBindTargetAction((parameterNames, caseSensitive, targetObject, next) =>
+            {
+                var targetType = action(targetObject);
+                return string.IsNullOrEmpty(targetType) ? next(parameterNames, caseSensitive, targetObject) : targetType;
+            }, previous);
+        }
+
+        private void AddVisitTargetObjectAction(VisitTargetObjectAction action)
+        {
+            // Nest the previous write action in the new supplied action
+            // Execution chain will be: action -> previous -> previous..n
+            var previous = _VisitTargetObject;
+            _VisitTargetObject = (targetObject) => action(targetObject, previous);
+        }
+
+        protected override PipelineReader PrepareReader()
+        {
+            if (!string.IsNullOrEmpty(Option.Input.ObjectPath))
+            {
+                AddVisitTargetObjectAction((sourceObject, next) =>
+                {
+                    return PipelineReceiverActions.ReadObjectPath(sourceObject, next, Option.Input.ObjectPath, true);
+                });
+            }
+
+            if (Option.Input.Format == InputFormat.Yaml)
+            {
+                AddVisitTargetObjectAction((sourceObject, next) =>
+                {
+                    return PipelineReceiverActions.ConvertFromYaml(sourceObject, next);
+                });
+            }
+            else if (Option.Input.Format == InputFormat.Json)
+            {
+                AddVisitTargetObjectAction((sourceObject, next) =>
+                {
+                    return PipelineReceiverActions.ConvertFromJson(sourceObject, next);
+                });
+            }
+            else if (Option.Input.Format == InputFormat.Detect && _InputPath != null)
+            {
+                AddVisitTargetObjectAction((sourceObject, next) =>
+                {
+                    return PipelineReceiverActions.DetectInputFormat(sourceObject, next);
+                });
+            }
+
+            return new PipelineReader(_VisitTargetObject, _InputPath);
+        }
+    }
+
+    /// <summary>
+    /// A helper to construct an invoke pipeline.
+    /// </summary>
+    internal sealed class InvokeRulePipelineBuilder : InvokePipelineBuilderBase
+    {
+        internal InvokeRulePipelineBuilder(Source[] source)
+            : base(source) { }
+    }
+
+    internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     {
         private readonly RuleOutcome _Outcome;
-        private readonly StreamManager _StreamManager;
+        //private readonly StreamManager _StreamManager;
         private readonly DependencyGraph<RuleBlock> _RuleGraph;
 
         // A per rule summary of rules that have been processed and the outcome
@@ -22,16 +196,16 @@ namespace PSRule.Pipeline
         // Track whether Dispose has been called.
         private bool _Disposed = false;
 
-        internal InvokeRulePipeline(StreamManager streamManager, Source[] source, RuleOutcome outcome, PipelineContext context)
-            : base(context, source)
+        internal InvokeRulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer, RuleOutcome outcome)
+            : base(context, source, reader, writer)
         {
-            _StreamManager = streamManager;
-            HostHelper.ImportResource(source: _Source, context: context);
-            _RuleGraph = HostHelper.GetRuleBlockGraph(source: _Source, context: context);
+            //_StreamManager = streamManager;
+            HostHelper.ImportResource(source: Source, context: context);
+            _RuleGraph = HostHelper.GetRuleBlockGraph(source: Source, context: context);
             RuleCount = _RuleGraph.Count;
 
             if (RuleCount == 0)
-                _Context.WarnRuleNotFound();
+                Context.WarnRuleNotFound();
 
             _Outcome = outcome;
             _Summary = new Dictionary<string, RuleSummaryRecord>();
@@ -41,42 +215,27 @@ namespace PSRule.Pipeline
 
         public int RuleCount { get; private set; }
 
-        public void Begin()
+        public override void Process(PSObject targetObject)
         {
-            _StreamManager.Begin();
-        }
-
-        public void Process(PSObject[] targetObjects)
-        {
-            foreach (var targetObject in targetObjects)
-            {
-                _StreamManager.Process(targetObject);
-            }
-            while (_StreamManager.Next(out PSObject next))
+            Reader.Enqueue(targetObject);
+            while (Reader.TryDequeue(out PSObject next))
             {
                 var result = ProcessTargetObject(next);
-                _StreamManager.Output(result);
+                Writer.Write(result, false);
             }
         }
 
-        public void Process(PSObject targetObject)
+        public override void End()
         {
-            _StreamManager.Process(targetObject);
-            while (_StreamManager.Next(out PSObject next))
-            {
-                var result = ProcessTargetObject(next);
-                _StreamManager.Output(result);
-            }
-        }
-
-        public void End()
-        {
-            _StreamManager.End(_Summary.Values.Where(r => _Outcome == RuleOutcome.All || (r.Outcome & _Outcome) > 0));
+            if (_ResultFormat == ResultFormat.Summary)
+                Writer.Write(_Summary.Values.Where(r => _Outcome == RuleOutcome.All || (r.Outcome & _Outcome) > 0), true);
+            
+            Writer.End();
         }
 
         private InvokeResult ProcessTargetObject(PSObject targetObject)
         {
-            _Context.SetTargetObject(targetObject: targetObject);
+            Context.SetTargetObject(targetObject);
             var result = new InvokeResult();
             var ruleCounter = 0;
 
@@ -84,7 +243,7 @@ namespace PSRule.Pipeline
             foreach (var ruleBlockTarget in _RuleGraph.GetSingleTarget())
             {
                 // Enter rule block scope
-                var ruleRecord = _Context.EnterRuleBlock(ruleBlock: ruleBlockTarget.Value);
+                var ruleRecord = Context.EnterRuleBlock(ruleBlock: ruleBlockTarget.Value);
                 ruleCounter++;
 
                 try
@@ -101,7 +260,7 @@ namespace PSRule.Pipeline
                     }
                     else
                     {
-                        HostHelper.InvokeRuleBlock(context: _Context, ruleBlock: ruleBlockTarget.Value, ruleRecord: ruleRecord);
+                        HostHelper.InvokeRuleBlock(context: Context, ruleBlock: ruleBlockTarget.Value, ruleRecord: ruleRecord);
                         if (ruleRecord.OutcomeReason == RuleOutcomeReason.PreconditionFail)
                             ruleCounter--;
                     }
@@ -119,12 +278,12 @@ namespace PSRule.Pipeline
                 finally
                 {
                     // Exit rule block scope
-                    _Context.ExitRuleBlock();
+                    Context.ExitRuleBlock();
                 }
             }
 
             if (ruleCounter == 0)
-                _Context.WarnObjectNotProcessed();
+                Context.WarnObjectNotProcessed();
 
             return result;
         }
@@ -155,12 +314,12 @@ namespace PSRule.Pipeline
             if (outcome == RuleOutcome.Pass)
             {
                 s.Pass++;
-                _Context.Pass();
+                Context.Pass();
             }
             else if (outcome == RuleOutcome.Fail)
             {
                 s.Fail++;
-                _Context.Fail();
+                Context.Fail();
             }
             else if (outcome == RuleOutcome.Error)
                 s.Error++;

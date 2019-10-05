@@ -1,21 +1,45 @@
 ﻿using PSRule.Rules;
 using System;
+using System.Management.Automation;
 
 namespace PSRule.Pipeline
 {
-    public abstract class RulePipeline : IDisposable
+    internal abstract class RulePipeline : IDisposable, IPipeline
     {
-        internal readonly PipelineContext _Context;
-        protected readonly Source[] _Source;
+        protected readonly PipelineContext Context;
+        protected readonly Source[] Source;
+        protected readonly PipelineReader Reader;
+        protected readonly PipelineWriter Writer;
 
         // Track whether Dispose has been called.
         private bool _Disposed = false;
 
-        internal RulePipeline(PipelineContext context, Source[] source)
+        internal RulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer)
         {
-            _Context = context;
-            _Source = source;
+            Context = context;
+            Source = source;
+            Reader = reader;
+            Writer = writer;
         }
+
+        #region IPipeline
+
+        public virtual void Begin()
+        {
+            Reader.Open();
+        }
+
+        public virtual void Process(PSObject sourceObject)
+        {
+            // Do nothing
+        }
+
+        public virtual void End()
+        {
+            Writer.End();
+        }
+
+        #endregion IPipeline
 
         #region IDisposable
 
@@ -31,7 +55,7 @@ namespace PSRule.Pipeline
             {
                 if (disposing)
                 {
-                    _Context.Dispose();
+                    Context.Dispose();
                 }
                 _Disposed = true;
             }

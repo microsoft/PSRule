@@ -4,7 +4,7 @@ using Newtonsoft.Json.Converters;
 namespace PSRule.Configuration
 {
     /// <summary>
-    /// The format to convert input strings to.
+    /// The formats to convert input from.
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
     public enum InputFormat : byte
