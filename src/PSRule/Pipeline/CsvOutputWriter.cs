@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PSRule.Pipeline
 {
-    internal sealed class CSVSerializer : PipelineWriter
+    internal sealed class CsvOutputWriter : PipelineWriter
     {
         private const char COMMA = ',';
         private const char QUOTE = '"';
@@ -14,7 +14,7 @@ namespace PSRule.Pipeline
         private readonly StringBuilder _Builder;
         private readonly List<InvokeResult> _Result;
 
-        internal CSVSerializer(WriteOutput output)
+        internal CsvOutputWriter(WriteOutput output)
             : base(output)
         {
             _Builder = new StringBuilder();
@@ -34,7 +34,7 @@ namespace PSRule.Pipeline
             base.Write(Serialize(_Result.ToArray()), false);
         }
 
-        internal string Serialize(IEnumerable<InvokeResult> o)
+        private string Serialize(IEnumerable<InvokeResult> o)
         {
             WriteHeader();
             foreach (var result in o)

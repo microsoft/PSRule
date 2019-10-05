@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PSRule.Host;
 using System.ComponentModel;
 using YamlDotNet.Serialization;
 
@@ -8,7 +9,7 @@ namespace PSRule.Rules
     /// Define a single rule.
     /// </summary>
     [JsonObject]
-    public sealed class Rule
+    public sealed class Rule : IDependencyTarget
     {
         /// <summary>
         /// A unique identifier for the rule.
@@ -25,14 +26,16 @@ namespace PSRule.Rules
         /// <summary>
         /// The script file path where the rule is defined.
         /// </summary>
-        [JsonProperty(PropertyName = "sourcePath")]
-        public string SourcePath { get; set; }
+        [JsonIgnore]
+        [YamlIgnore]
+        public string SourcePath => Source.Path;
 
         /// <summary>
         /// The name of the module where the rule is defined, or null if the rule is not defined in a module.
         /// </summary>
-        [JsonProperty(PropertyName = "moduleName")]
-        public string ModuleName { get; set; }
+        [JsonIgnore]
+        [YamlIgnore]
+        public string ModuleName => Source.ModuleName;
 
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
@@ -56,5 +59,15 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "info")]
         [DefaultValue(null)]
         public RuleHelpInfo Info { get; set; }
+
+        [JsonProperty(PropertyName = "source")]
+        [DefaultValue(null)]
+        public SourceFile Source { get; set; }
+
+        /// <summary>
+        /// Other rules that must completed successfully before calling this rule.
+        /// </summary>
+        [JsonProperty(PropertyName = "dependsOn")]
+        public string[] DependsOn { get; set; }
     }
 }

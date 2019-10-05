@@ -10,7 +10,7 @@ namespace PSRule.Pipeline
     {
         private readonly WriteOutput _Output;
 
-        internal PipelineWriter(WriteOutput output)
+        protected PipelineWriter(WriteOutput output)
         {
             _Output = output;
         }

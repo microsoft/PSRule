@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added dependency `DependsOn` information to results from `Get-PSRule`. [#210](https://github.com/BernieWhite/PSRule/issues/210)
+  - To include dependencies that would normally be filtered out use `-IncludeDependencies`.
+
 ## v0.10.0-B1910025 (pre-release)
 
 - Fix `Get-PSRuleHelp` -Online in constrained language mode. [#296](https://github.com/BernieWhite/PSRule/issues/296)

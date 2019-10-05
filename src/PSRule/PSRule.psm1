@@ -529,7 +529,10 @@ function Get-PSRule {
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
-        [String]$Culture
+        [String]$Culture,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$IncludeDependencies
     )
 
     begin {
@@ -590,6 +593,11 @@ function Get-PSRule {
         $builder = [PSRule.Pipeline.PipelineBuilder]::Get($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
+
+        if ($IncludeDependencies) {
+            $builder.IncludeDependencies();
+        }
+
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
         $builder.UseExecutionContext($ExecutionContext);
         try {

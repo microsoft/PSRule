@@ -5,11 +5,18 @@ using System.Threading;
 
 namespace PSRule.Pipeline
 {
+    public interface IGetPipelineBuilder : IPipelineBuilder
+    {
+        void IncludeDependencies();
+    }
+
     /// <summary>
     /// A helper to construct a get pipeline.
     /// </summary>
-    internal sealed class GetRulePipelineBuilder : PipelineBuilderBase
+    internal sealed class GetRulePipelineBuilder : PipelineBuilderBase, IGetPipelineBuilder
     {
+        private bool _IncludeDependencies;
+
         internal GetRulePipelineBuilder(Source[] source)
             : base(source) { }
 
@@ -28,10 +35,14 @@ namespace PSRule.Pipeline
             ConfigureLogger(Option);
             return this;
         }
+        public void IncludeDependencies()
+        {
+            _IncludeDependencies = true;
+        }
 
         public override IPipeline Build()
         {
-            return new GetRulePipeline(PrepareContext(null, null), Source, PrepareReader(), PrepareWriter());
+            return new GetRulePipeline(PrepareContext(null, null), Source, PrepareReader(), PrepareWriter(), _IncludeDependencies);
         }
 
         private OutputFormat SuppressFormat(OutputFormat? format)
@@ -45,15 +56,17 @@ namespace PSRule.Pipeline
 
     internal sealed class GetRulePipeline : RulePipeline, IPipeline
     {
-        internal GetRulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer)
+        private readonly bool _IncludeDependencies;
+
+        internal GetRulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer, bool includeDependencies)
             : base(context, source, reader, writer)
         {
-            // Do nothing
+            _IncludeDependencies = includeDependencies;
         }
 
         public override void End()
         {
-            Writer.Write(HostHelper.GetRule(source: Source, context: Context), true);
+            Writer.Write(HostHelper.GetRule(Source, Context, _IncludeDependencies), true);
             Writer.End();
         }
     }

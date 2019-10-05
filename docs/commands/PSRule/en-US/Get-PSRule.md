@@ -15,7 +15,8 @@ Get a list of rule definitions.
 
 ```text
 Get-PSRule [-Module <String[]>] [-ListAvailable] [-OutputFormat <OutputFormat>] [[-Path] <String[]>]
- [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-Culture <String>] [<CommonParameters>]
+ [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-Culture <String>] [-IncludeDependencies]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -236,6 +237,24 @@ Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
 Accepted values: None, Wide
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludeDependencies
+
+When this switch is specified, dependencies of the rules that meet the `-Name` and `-Tag` filters are included even if they would normally be excluded.
+
+This switch has no affect when getting an unfiltered list of rules.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

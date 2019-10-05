@@ -1166,6 +1166,24 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         }
     }
 
+    Context 'Using -IncludeDependencies' {
+        It 'Returns rules' {
+            # Get a list of rules without dependencies
+            $result = @(Get-PSRule -Path $ruleFilePath -Name 'FromFile4');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result[0].DependsOn | Should -BeIn 'FromFile3';
+
+            # Get a list of rules with dependencies
+            $result = @(Get-PSRule -Path $ruleFilePath -Name 'FromFile4' -IncludeDependencies);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result[0].RuleName | Should -Be 'FromFile3';
+            $result[1].RuleName | Should -Be 'FromFile4';
+            $result[1].DependsOn | Should -BeIn 'FromFile3';
+        }
+    }
+
     # Context 'Using -OutputFormat' {
     #     It 'Yaml' {
     #         $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Yaml;

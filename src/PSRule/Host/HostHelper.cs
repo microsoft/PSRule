@@ -18,9 +18,11 @@ namespace PSRule.Host
 {
     internal static class HostHelper
     {
-        public static IEnumerable<Rule> GetRule(Source[] source, PipelineContext context)
+        public static Rule[] GetRule(Source[] source, PipelineContext context, bool includeDependencies)
         {
-            return ToRule(GetLanguageBlock(sources: source), context);
+            var builder = new DependencyGraphBuilder<Rule>(includeDependencies: includeDependencies);
+            builder.Include(items: ToRule(GetLanguageBlock(sources: source), context), filter: (b) => Match(context, b));
+            return builder.GetItems();
         }
 
         public static RuleHelpInfo[] GetRuleHelp(Source[] source, PipelineContext context)
@@ -30,7 +32,7 @@ namespace PSRule.Host
 
         public static DependencyGraph<RuleBlock> GetRuleBlockGraph(Source[] source, PipelineContext context)
         {
-            var builder = new DependencyGraphBuilder<RuleBlock>();
+            var builder = new DependencyGraphBuilder<RuleBlock>(includeDependencies: true);
             builder.Include(items: GetLanguageBlock(sources: source).OfType<RuleBlock>(), filter: (b) => Match(context, b));
             return builder.Build();
         }
@@ -268,9 +270,6 @@ namespace PSRule.Host
         /// <summary>
         /// Convert matching langauge blocks to rules.
         /// </summary>
-        /// <param name="blocks"></param>
-        /// <param name="filter"></param>
-        /// <returns></returns>
         private static Rule[] ToRule(IEnumerable<ILanguageBlock> blocks, PipelineContext context)
         {
             // Index rules by RuleId
@@ -279,22 +278,16 @@ namespace PSRule.Host
             {
                 foreach (var block in blocks.OfType<RuleBlock>())
                 {
-                    // Ignore rule blocks that don't match
-                    if (!Match(context, block))
-                    {
-                        continue;
-                    }
-
                     if (!results.ContainsKey(block.RuleId))
                     {
                         results[block.RuleId] = new Rule
                         {
                             RuleId = block.RuleId,
                             RuleName = block.RuleName,
-                            SourcePath = block.Source.Path,
-                            ModuleName = block.Source.ModuleName,
+                            Source = block.Source,
                             Tag = block.Tag,
-                            Info = block.Info
+                            Info = block.Info,
+                            DependsOn = block.DependsOn
                         };
                     }
                 }
@@ -367,6 +360,12 @@ namespace PSRule.Host
         }
 
         private static bool Match(PipelineContext context, RuleBlock resource)
+        {
+            var scope = context.EnterSourceScope(source: resource.Source);
+            return scope.Filter.Match(resource.RuleName, resource.Tag);
+        }
+
+        private static bool Match(PipelineContext context, Rule resource)
         {
             var scope = context.EnterSourceScope(source: resource.Source);
             return scope.Filter.Match(resource.RuleName, resource.Tag);
