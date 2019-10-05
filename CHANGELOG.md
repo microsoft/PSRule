@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.10.0-B1910025 (pre-release)
+
 - Fix `Get-PSRuleHelp` -Online in constrained language mode. [#296](https://github.com/BernieWhite/PSRule/issues/296)
 - Added `Assert-PSRule` cmdlet to improve integration into CI processes. [#290](https://github.com/BernieWhite/PSRule/issues/290)
   - Added `Output.Style` option to support output in the following styles:
