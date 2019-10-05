@@ -235,7 +235,7 @@ namespace PSRule.Parser
                 stream.Next();
             }
 
-            if (stream.EOF && stream.Peak(-1).Flag.HasFlag(MarkdownTokenFlag.Preserve) && stream.Peak(-1).Flag.HasFlag(MarkdownTokenFlag.LineEnding))
+            if (stream.EOF && stream.Peak(-1).Flag.HasFlag(MarkdownTokenFlags.Preserve) && stream.Peak(-1).Flag.HasFlag(MarkdownTokenFlags.LineEnding))
             {
                 AppendEnding(sb, stream.Peak(-1));
             }

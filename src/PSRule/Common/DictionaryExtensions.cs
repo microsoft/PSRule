@@ -27,7 +27,7 @@ namespace PSRule
         [DebuggerStepThrough]
         public static bool TryPopValue(this IDictionary<string, object> dictionary, string key, out object value)
         {
-            return dictionary.TryGetValue(key, out value) ? dictionary.Remove(key) : false;
+            return dictionary.TryGetValue(key, out value) && dictionary.Remove(key);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace PSRule.Pipeline
             return pipeline;
         }
 
-        public static IPipelineBuilder Get(Source[] source, PSRuleOption option)
+        public static IGetPipelineBuilder Get(Source[] source, PSRuleOption option)
         {
             var pipeline = new GetRulePipelineBuilder(source);
             pipeline.Configure(option);
@@ -194,13 +194,13 @@ namespace PSRule.Pipeline
             switch (Option.Output.Format)
             {
                 case OutputFormat.Csv:
-                    return new CSVSerializer(output);
+                    return new CsvOutputWriter(output);
 
                 case OutputFormat.Json:
                     return new JsonOutputWriter(output);
 
                 case OutputFormat.NUnit3:
-                    return new NUnit3Serializer(output);
+                    return new NUnit3OutputWriter(output);
 
                 case OutputFormat.Yaml:
                     return new YamlOutputWriter(output);

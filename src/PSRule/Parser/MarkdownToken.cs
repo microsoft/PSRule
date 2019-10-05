@@ -29,7 +29,7 @@ namespace PSRule.Parser
     }
 
     [Flags()]
-    public enum MarkdownTokenFlag
+    public enum MarkdownTokenFlags
     {
         None = 0,
 
@@ -51,19 +51,19 @@ namespace PSRule.Parser
 
     public static class MarkdownTokenFlagExtensions
     {
-        public static bool IsEnding(this MarkdownTokenFlag flag)
+        public static bool IsEnding(this MarkdownTokenFlags flags)
         {
-            return flag.HasFlag(MarkdownTokenFlag.LineEnding) || flag.HasFlag(MarkdownTokenFlag.LineBreak);
+            return flags.HasFlag(MarkdownTokenFlags.LineEnding) || flags.HasFlag(MarkdownTokenFlags.LineBreak);
         }
 
-        public static bool IsLineBreak(this MarkdownTokenFlag flag)
+        public static bool IsLineBreak(this MarkdownTokenFlags flags)
         {
-            return flag.HasFlag(MarkdownTokenFlag.LineBreak);
+            return flags.HasFlag(MarkdownTokenFlags.LineBreak);
         }
 
-        public static bool ShouldPreserve(this MarkdownTokenFlag flag)
+        public static bool ShouldPreserve(this MarkdownTokenFlags flags)
         {
-            return flag.HasFlag(MarkdownTokenFlag.Preserve);
+            return flags.HasFlag(MarkdownTokenFlags.Preserve);
         }
     }
 
@@ -82,6 +82,6 @@ namespace PSRule.Parser
 
         //public MarkdownTokenEnding Ending { get; set; }
 
-        public MarkdownTokenFlag Flag { get; set; }
+        public MarkdownTokenFlags Flag { get; set; }
     }
 }

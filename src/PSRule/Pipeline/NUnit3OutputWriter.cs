@@ -5,12 +5,12 @@ using System.Text;
 
 namespace PSRule.Pipeline
 {
-    internal sealed class NUnit3Serializer : PipelineWriter
+    internal sealed class NUnit3OutputWriter : PipelineWriter
     {
         private readonly StringBuilder _Builder;
         private readonly List<InvokeResult> _Result;
 
-        internal NUnit3Serializer(WriteOutput output)
+        internal NUnit3OutputWriter(WriteOutput output)
             : base(output)
         {
             _Builder = new StringBuilder();
@@ -30,7 +30,7 @@ namespace PSRule.Pipeline
             base.Write(Serialize(_Result.ToArray()), false);
         }
 
-        internal string Serialize(IEnumerable<InvokeResult> o)
+        private string Serialize(IEnumerable<InvokeResult> o)
         {
             _Builder.Append("<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>");
 
@@ -55,7 +55,6 @@ namespace PSRule.Pipeline
             }
 
             _Builder.Append("</test-results>");
-
             return _Builder.ToString();
         }
 

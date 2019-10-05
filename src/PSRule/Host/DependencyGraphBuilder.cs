@@ -11,12 +11,14 @@ namespace PSRule.Host
         private readonly StringComparer _Comparer;
         private readonly Dictionary<string, T> _Targets;
         private readonly Stack<string> _Stack;
+        private readonly bool _IncludeDependencies;
 
-        public DependencyGraphBuilder()
+        public DependencyGraphBuilder(bool includeDependencies)
         {
             _Comparer = StringComparer.OrdinalIgnoreCase;
             _Targets = new Dictionary<string, T>(_Comparer);
             _Stack = new Stack<string>();
+            _IncludeDependencies = includeDependencies;
         }
 
         public void Include(IEnumerable<T> items, Func<T, bool> filter)
@@ -27,9 +29,7 @@ namespace PSRule.Host
             foreach (var item in items)
             {
                 if (index.ContainsKey(item.RuleId))
-                {
                     throw new RuleRuntimeException(message: string.Format(PSRuleResources.DuplicateRuleId, item.RuleId));
-                }
 
                 index.Add(item.RuleId, item);
             }
@@ -38,9 +38,7 @@ namespace PSRule.Host
             foreach (var item in index.Values)
             {
                 if (filter == null || filter(item))
-                {
                     Include(ruleId: item.RuleId, parentId: null, index: index);
-                }
             }
         }
 
@@ -49,44 +47,39 @@ namespace PSRule.Host
             return new DependencyGraph<T>(_Targets.Values.ToArray());
         }
 
+        public T[] GetItems()
+        {
+            return _Targets.Values.ToArray();
+        }
+
         private void Include(string ruleId, string parentId, IDictionary<string, T> index)
         {
             // Check that the item is not already in the list of targets
             if (_Targets.ContainsKey(ruleId))
-            {
                 return;
-            }
 
             // Check for circular dependencies
             if (_Stack.Contains(value: ruleId, comparer: _Comparer))
-            {
                 throw new RuleRuntimeException(message: string.Format(PSRuleResources.DependencyCircularReference, parentId, ruleId));
-            }
 
             try
             {
                 _Stack.Push(item: ruleId);
-
                 var item = index[ruleId];
 
                 // Check for dependencies
-                if (item.DependsOn != null)
+                if (item.DependsOn != null && _IncludeDependencies)
                 {
                     foreach (var d in item.DependsOn)
                     {
                         if (!index.ContainsKey(d))
-                        {
                             throw new RuleRuntimeException(message: string.Format(PSRuleResources.DependencyNotFound, d, ruleId));
-                        }
 
                         // Handle dependencies
                         if (!_Targets.ContainsKey(d))
-                        {
                             Include(ruleId: d, parentId: ruleId, index: index);
-                        }
                     }
                 }
-
                 _Targets.Add(key: ruleId, value: item);
             }
             finally

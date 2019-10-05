@@ -19,7 +19,7 @@ namespace PSRule.Parser
                 Extent = extent,
                 Text = text,
                 Type = MarkdownTokenType.Header,
-                Flag = lineBreak ? MarkdownTokenFlag.LineBreak : MarkdownTokenFlag.LineEnding | MarkdownTokenFlag.Preserve
+                Flag = lineBreak ? MarkdownTokenFlags.LineBreak : MarkdownTokenFlags.LineEnding | MarkdownTokenFlags.Preserve
             });
         }
 
@@ -44,7 +44,7 @@ namespace PSRule.Parser
                 Meta = meta,
                 Text = text,
                 Type = MarkdownTokenType.FencedBlock,
-                Flag = (lineBreak ? MarkdownTokenFlag.LineBreak : MarkdownTokenFlag.LineEnding) | MarkdownTokenFlag.Preserve
+                Flag = (lineBreak ? MarkdownTokenFlags.LineBreak : MarkdownTokenFlags.LineEnding) | MarkdownTokenFlags.Preserve
             });
         }
 
@@ -61,11 +61,11 @@ namespace PSRule.Parser
 
             for (var i = 0; i < count; i++)
             {
-                stream.Add(new MarkdownToken() { Type = MarkdownTokenType.LineBreak, Flag = MarkdownTokenFlag.LineBreak });
+                stream.Add(new MarkdownToken() { Type = MarkdownTokenType.LineBreak, Flag = MarkdownTokenFlags.LineBreak });
             }
         }
 
-        public static void Text(this TokenStream stream, string text, MarkdownTokenFlag flag = MarkdownTokenFlag.None)
+        public static void Text(this TokenStream stream, string text, MarkdownTokenFlags flag = MarkdownTokenFlags.None)
         {
             if (MergeText(stream.Current, text, flag))
             {
@@ -75,7 +75,7 @@ namespace PSRule.Parser
             stream.Add(new MarkdownToken() { Type = MarkdownTokenType.Text, Text = text, Flag = flag });
         }
 
-        private static bool MergeText(MarkdownToken current, string text, MarkdownTokenFlag flag)
+        private static bool MergeText(MarkdownToken current, string text, MarkdownTokenFlags flag)
         {
             // Only allow merge if the previous token was text
             if (current == null || current.Type != MarkdownTokenType.Text)
@@ -89,23 +89,23 @@ namespace PSRule.Parser
             }
 
             // If the previous token was text, lessen the break but still don't allow merging
-            if (current.Flag.HasFlag(MarkdownTokenFlag.LineBreak) && !current.Flag.ShouldPreserve())
+            if (current.Flag.HasFlag(MarkdownTokenFlags.LineBreak) && !current.Flag.ShouldPreserve())
             {
                 return false;
             }
 
             // Text must have the same flags set
-            if (current.Flag.HasFlag(MarkdownTokenFlag.Italic) != flag.HasFlag(MarkdownTokenFlag.Italic))
+            if (current.Flag.HasFlag(MarkdownTokenFlags.Italic) != flag.HasFlag(MarkdownTokenFlags.Italic))
             {
                 return false;
             }
 
-            if (current.Flag.HasFlag(MarkdownTokenFlag.Bold) != flag.HasFlag(MarkdownTokenFlag.Bold))
+            if (current.Flag.HasFlag(MarkdownTokenFlags.Bold) != flag.HasFlag(MarkdownTokenFlags.Bold))
             {
                 return false;
             }
 
-            if (current.Flag.HasFlag(MarkdownTokenFlag.Code) != flag.HasFlag(MarkdownTokenFlag.Code))
+            if (current.Flag.HasFlag(MarkdownTokenFlags.Code) != flag.HasFlag(MarkdownTokenFlags.Code))
             {
                 return false;
             }
@@ -114,7 +114,7 @@ namespace PSRule.Parser
             {
                 current.Text = string.Concat(current.Text, text);
             }
-            else if (current.Flag == MarkdownTokenFlag.LineEnding)
+            else if (current.Flag == MarkdownTokenFlags.LineEnding)
             {
                 return false;
             }

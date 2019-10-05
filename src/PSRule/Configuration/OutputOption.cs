@@ -1,11 +1,12 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace PSRule.Configuration
 {
     /// <summary>
     /// Options for generating and formatting output.
     /// </summary>
-    public sealed class OutputOption
+    public sealed class OutputOption : IEquatable<OutputOption>
     {
         private const ResultFormat DEFAULT_AS = ResultFormat.Detail;
         private const OutputEncoding DEFAULT_ENCODING = OutputEncoding.Default;

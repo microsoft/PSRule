@@ -15,7 +15,6 @@ namespace PSRule.Host
         {
             _Targets = new DependencyTarget[targets.Length];
             _Index = new Dictionary<string, DependencyTarget>(targets.Length);
-
             Prepare(targets);
         }
 

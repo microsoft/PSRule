@@ -25,7 +25,7 @@ namespace PSRule.Pipeline
         protected BindTargetMethod _BindTargetNameHook;
         protected BindTargetMethod _BindTargetTypeHook;
 
-        internal InvokePipelineBuilderBase(Source[] source)
+        protected InvokePipelineBuilderBase(Source[] source)
             : base(source)
         {
             Outcome = RuleOutcome.Processed;
@@ -184,7 +184,6 @@ namespace PSRule.Pipeline
     internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     {
         private readonly RuleOutcome _Outcome;
-        //private readonly StreamManager _StreamManager;
         private readonly DependencyGraph<RuleBlock> _RuleGraph;
 
         // A per rule summary of rules that have been processed and the outcome
@@ -199,7 +198,6 @@ namespace PSRule.Pipeline
         internal InvokeRulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer, RuleOutcome outcome)
             : base(context, source, reader, writer)
         {
-            //_StreamManager = streamManager;
             HostHelper.ImportResource(source: Source, context: context);
             _RuleGraph = HostHelper.GetRuleBlockGraph(source: Source, context: context);
             RuleCount = _RuleGraph.Count;

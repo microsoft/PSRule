@@ -4,19 +4,19 @@
     {
         public static bool IsSingleLineEnding(this MarkdownToken token)
         {
-            return token.Flag.HasFlag(MarkdownTokenFlag.LineEnding) ||
+            return token.Flag.HasFlag(MarkdownTokenFlags.LineEnding) ||
                 token.Type == MarkdownTokenType.LineBreak;
         }
 
         public static bool IsPreservableLineEnding(this MarkdownToken token)
         {
-            return (token.Flag.HasFlag(MarkdownTokenFlag.LineEnding) && token.Flag.HasFlag(MarkdownTokenFlag.Preserve)) ||
+            return (token.Flag.HasFlag(MarkdownTokenFlags.LineEnding) && token.Flag.HasFlag(MarkdownTokenFlags.Preserve)) ||
                 token.Type == MarkdownTokenType.LineBreak;
         }
 
         public static bool IsDoubleLineEnding(this MarkdownToken token)
         {
-            return token.Flag.HasFlag(MarkdownTokenFlag.LineBreak) && token.Type != MarkdownTokenType.LineBreak;
+            return token.Flag.HasFlag(MarkdownTokenFlags.LineBreak) && token.Type != MarkdownTokenType.LineBreak;
         }
     }
 }

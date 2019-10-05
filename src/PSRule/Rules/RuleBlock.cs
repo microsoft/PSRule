@@ -50,7 +50,7 @@ namespace PSRule.Rules
         public readonly PowerShell Condition;
 
         /// <summary>
-        /// Other deployments that must completed successfully before calling this rule.
+        /// Other rules that must completed successfully before calling this rule.
         /// </summary>
         public readonly string[] DependsOn;
 

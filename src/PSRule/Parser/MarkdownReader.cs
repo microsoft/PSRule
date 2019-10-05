@@ -239,7 +239,7 @@
             _Stream.MarkExtentStart();
 
             // Set the default style
-            var textStyle = MarkdownTokenFlag.None;
+            var textStyle = MarkdownTokenFlags.None;
 
             var startOfLine = _Stream.IsStartOfLine;
 
@@ -260,14 +260,14 @@
 
                 if (_Output.Current != null && _Output.Current.Flag.IsEnding() && !_Output.Current.Flag.ShouldPreserve())
                 {
-                    _Output.Current.Flag |= MarkdownTokenFlag.Preserve;
+                    _Output.Current.Flag |= MarkdownTokenFlags.Preserve;
                 }
             }
 
             // Override line ending if the line was a list item so that the line ending is preserved
             if (_Context == MarkdownReaderMode.List && ending.IsEnding())
             {
-                ending |= MarkdownTokenFlag.Preserve;
+                ending |= MarkdownTokenFlags.Preserve;
             }
 
             // Add the text to the output stream
@@ -279,9 +279,9 @@
             }
         }
 
-        private string UnwrapStyleMarkers(MarkdownStream stream, out MarkdownTokenFlag flag)
+        private string UnwrapStyleMarkers(MarkdownStream stream, out MarkdownTokenFlags flag)
         {
-            flag = MarkdownTokenFlag.None;
+            flag = MarkdownTokenFlags.None;
 
             // Check for style
             var styleChar = stream.Current;
@@ -312,12 +312,12 @@
 
                     if (styleEnding == 1 || styleEnding == 3)
                     {
-                        flag |= MarkdownTokenFlag.Italic;
+                        flag |= MarkdownTokenFlags.Italic;
                     }
 
                     if (styleEnding >= 2)
                     {
-                        flag |= MarkdownTokenFlag.Bold;
+                        flag |= MarkdownTokenFlags.Bold;
                     }
                 }
                 else
@@ -341,7 +341,7 @@
 
                     if (codeEnding == 1)
                     {
-                        flag |= MarkdownTokenFlag.Code;
+                        flag |= MarkdownTokenFlags.Code;
                     }
                 }
                 else
@@ -378,9 +378,9 @@
             return false;
         }
 
-        private MarkdownTokenFlag GetEnding(int lineEndings)
+        private MarkdownTokenFlags GetEnding(int lineEndings)
         {
-            return lineEndings == 0 ? MarkdownTokenFlag.None : (lineEndings == 1) ? MarkdownTokenFlag.LineEnding : MarkdownTokenFlag.LineBreak;
+            return lineEndings == 0 ? MarkdownTokenFlags.None : (lineEndings == 1) ? MarkdownTokenFlags.LineEnding : MarkdownTokenFlags.LineBreak;
         }
 
         /// <summary>

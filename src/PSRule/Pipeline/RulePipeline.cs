@@ -14,7 +14,7 @@ namespace PSRule.Pipeline
         // Track whether Dispose has been called.
         private bool _Disposed = false;
 
-        internal RulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer)
+        protected RulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer)
         {
             Context = context;
             Source = source;
