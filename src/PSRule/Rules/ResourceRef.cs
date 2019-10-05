@@ -5,7 +5,7 @@
         public readonly string Id;
         public readonly ResourceKind Kind;
 
-        public ResourceRef(string id, ResourceKind kind)
+        protected ResourceRef(string id, ResourceKind kind)
         {
             Kind = kind;
             Id = id;

@@ -391,18 +391,29 @@ execution:
 
 Configures the input format for when a string is passed in as a target object.
 
-Using this option with `Invoke-PSRule` or `Test-PSRuleTarget`:
+Use this option with `Assert-PSRule`, `Invoke-PSRule` or `Test-PSRuleTarget`.
 
-- When the `-InputObject` parameter or pipeline input is used, strings are treated as plain text by default. When this option is used and set to either `Yaml` or `Json`, strings are read as YAML or JSON and are converted to an object.
-- When the `-InputPath` parameter is used with a file path or URL, by default the file extension (either `.yaml`, `.yml` or `.json`) will be used to automatically detect the format as YAML or JSON.
-- The `-Format` parameter will override any value set in configuration.
+When the `-InputObject` parameter or pipeline input is used, strings are treated as plain text by default.
+Set this option to either `Yaml`, `Json` or `Markdown` to have PSRule deserialize the object.
+
+When the `-InputPath` parameter is used with a file path or URL.
+If the `Detect` format is used, the file extension (either `.yaml`, `.yml`, `.json` or `.md`) will be used to automatically detect the format as YAML, JSON or Markdown.
+
+The `-Format` parameter will override any value set in configuration.
 
 The following formats are available:
 
 - None - Treat strings as plain text.
 - Yaml - Treat strings as one or more YAML objects.
 - Json - Treat strings as one or more JSON objects.
-- Detect - Detect format based on file extension. Detection only applies when used with the `-InputPath` parameter. In all other cases, `Detect` is the same as `None`. This is the default configuration.
+- Markdown - Treat strings as a markdown object.
+- Detect - Detect format based on file extension.
+
+Detection only applies when used with the `-InputPath` parameter.
+In all other cases, `Detect` is the same as `None`. This is the default configuration.
+
+The `Markdown` format does not parse the whole markdown document.
+Specifically this format deserializes YAML front matter from the top of the document if any exists.
 
 This option can be specified using:
 

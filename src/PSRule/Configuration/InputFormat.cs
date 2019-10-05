@@ -15,6 +15,8 @@ namespace PSRule.Configuration
 
         Json = 2,
 
+        Markdown = 3,
+
         Detect = 255
     }
 }

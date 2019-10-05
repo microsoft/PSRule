@@ -296,7 +296,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleSummaryRecord;
-            $result.RuleName | Should -BeIn 'FromFile2', 'FromFile3'
+            $result.RuleName | Should -BeIn 'FromFile2', 'FromFile3';
             $result.Tag.category | Should -BeIn 'group1';
         }
     }
@@ -308,7 +308,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
-            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
         }
 
         It 'Yaml FileInfo' {
@@ -317,7 +317,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
-            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
         }
 
         It 'Json String' {
@@ -326,7 +326,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
-            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
         }
 
         It 'Json FileInfo' {
@@ -335,7 +335,27 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
-            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
+        }
+
+        It 'Markdown String' {
+            $markdown = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.md') -Raw;
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $markdown -Format Markdown);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1';
+            $result.IsSuccess() | Should -Be $True;
+        }
+
+        It 'Markdown FileInfo' {
+            $file = Get-ChildItem -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.md') -File;
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $file -Format Markdown);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1';
+            $result.IsSuccess() | Should -Be $True;
         }
     }
 
@@ -346,7 +366,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
-            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2'
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
         }
     }
 

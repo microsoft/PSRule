@@ -141,14 +141,19 @@ Accept wildcard characters: False
 
 Configures the input format for when a string is passed in as a target object.
 
-- When the `-InputObject` parameter or pipeline input is used, strings are treated as plain text by default. When this option is used and set to either `Yaml` or `Json`, strings are read as YAML or JSON and are converted to an object.
-- When the `-InputPath` parameter is used with a file path or URL, by default the file extension (either `.yaml`, `.yml` or `.json`) will be used to automatically detect the format as YAML or JSON.
+When the `-InputObject` parameter or pipeline input is used, strings are treated as plain text by default.
+Set this option to either `Yaml`, `Json` or `Markdown` to have PSRule deserialize the object.
+
+When the `-InputPath` parameter is used with a file path or URL.
+If the `Detect` format is used, the file extension (either `.yaml`, `.yml`, `.json` or `.md`) will be used to automatically detect the format as YAML, JSON or Markdown.
+
+This parameter takes precedence over the `Input.Format` option if set.
 
 ```yaml
 Type: InputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json, Detect
+Accepted values: None, Yaml, Json, Markdown, Detect
 
 Required: False
 Position: Named

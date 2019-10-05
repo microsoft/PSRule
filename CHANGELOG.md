@@ -4,6 +4,9 @@
 
 - Added dependency `DependsOn` information to results from `Get-PSRule`. [#210](https://github.com/BernieWhite/PSRule/issues/210)
   - To include dependencies that would normally be filtered out use `-IncludeDependencies`.
+- Added input format for reading markdown front matter. [#301](https://github.com/BernieWhite/PSRule/issues/301)
+  - Markdown front matter is deserialized and evaluated as an object.
+- Added source note properties to input objects read from disk with `-InputPath`. [#302](https://github.com/BernieWhite/PSRule/issues/302)
 
 ## v0.10.0-B1910025 (pre-release)
 
