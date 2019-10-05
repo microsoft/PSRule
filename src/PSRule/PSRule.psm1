@@ -44,7 +44,7 @@ function Invoke-PSRule {
         [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Detail,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'Detect')]
         [PSRule.Configuration.InputFormat]$Format = [PSRule.Configuration.InputFormat]::Detect,
 
         [Parameter(Mandatory = $False)]
@@ -206,7 +206,7 @@ function Test-PSRuleTarget {
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'Detect')]
         [PSRule.Configuration.InputFormat]$Format,
 
         # A list of paths to check for rule definitions
@@ -347,7 +347,7 @@ function Assert-PSRule {
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'Detect')]
         [PSRule.Configuration.InputFormat]$Format = [PSRule.Configuration.InputFormat]::Detect,
 
         [Parameter(Mandatory = $False)]
@@ -883,7 +883,7 @@ function New-PSRuleOption {
 
         # Sets the Input.Format option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'Detect')]
         [Alias('InputFormat')]
         [PSRule.Configuration.InputFormat]$Format = 'Detect',
 
@@ -1049,7 +1049,7 @@ function Set-PSRuleOption {
 
         # Sets the Input.Format option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'Detect')]
         [Alias('InputFormat')]
         [PSRule.Configuration.InputFormat]$Format = 'Detect',
 
@@ -1610,7 +1610,7 @@ function SetOptions {
 
         # Sets the Input.Format option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Detect')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'Detect')]
         [Alias('InputFormat')]
         [PSRule.Configuration.InputFormat]$Format = 'Detect',
 

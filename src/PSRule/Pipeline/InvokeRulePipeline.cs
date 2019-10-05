@@ -160,6 +160,13 @@ namespace PSRule.Pipeline
                     return PipelineReceiverActions.ConvertFromJson(sourceObject, next);
                 });
             }
+            else if (Option.Input.Format == InputFormat.Markdown)
+            {
+                AddVisitTargetObjectAction((sourceObject, next) =>
+                {
+                    return PipelineReceiverActions.ConvertFromMarkdown(sourceObject, next);
+                });
+            }
             else if (Option.Input.Format == InputFormat.Detect && _InputPath != null)
             {
                 AddVisitTargetObjectAction((sourceObject, next) =>

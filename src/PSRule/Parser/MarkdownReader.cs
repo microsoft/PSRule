@@ -62,9 +62,7 @@
             YamlHeader();
 
             if (_YamlHeaderOnly)
-            {
                 return _Output;
-            }
 
             while (!_Stream.EOF)
             {
@@ -75,9 +73,7 @@
                     LineBreak();
 
                 if (!processed)
-                {
                     Text();
-                }
             }
 
             return _Output;
@@ -86,15 +82,11 @@
         private void YamlHeader()
         {
             if (_Stream.EOF || _Stream.Line > 1 || _Stream.Current != Dash)
-            {
                 return;
-            }
 
             // Check if the line is just dashes indicating start of yaml header
             if (!_Stream.PeakLine(Dash, out int count) || count < 2)
-            {
                 return;
-            }
 
             _Stream.Skip(count + 1);
             _Stream.SkipLineEnding();
@@ -102,7 +94,6 @@
             while (!_Stream.EOF && !_Stream.IsSequence(TripleDash, onNewLine: true))
             {
                 var key = _Stream.CaptureUntil(YamlHeaderStopCharacters).Trim();
-
                 _Stream.SkipWhitespace();
 
                 if (!string.IsNullOrEmpty(key) && _Stream.Skip(Colon))
@@ -111,7 +102,6 @@
 
                     var value = _Stream.CaptureUntil(LineEndingCharacters).TrimEnd();
                     _Stream.SkipLineEnding();
-
                     _Output.YamlKeyValue(key, value);
                 }
                 else
@@ -119,7 +109,6 @@
                     _Stream.Next();
                 }
             }
-
             _Stream.Skip(TripleDash);
             _Stream.SkipLineEnding();
         }
@@ -127,15 +116,11 @@
         private bool UnderlineHeader()
         {
             if ((_Stream.Current != Dash && _Stream.Current != EqualSign) || !_Stream.IsStartOfLine)
-            {
                 return false;
-            }
 
             // Check the line is made up of the same characters
             if (!_Stream.PeakLine(_Stream.Current, out int count))
-            {
                 return false;
-            }
 
             char currentChar = _Stream.Current;
 
@@ -145,12 +130,10 @@
                 var previousToken = _Output.Pop();
 
                 _Stream.Skip(count + 1);
-
                 _Output.Header(currentChar == EqualSign ? 1 : 2, previousToken.Text, null, lineBreak: (_Stream.SkipLineEnding(max: 0) > 1));
 
                 return true;
             }
-
             return false;
         }
 
@@ -160,9 +143,7 @@
         private bool HashHeader()
         {
             if (_Stream.Current != Hash || !_Stream.IsStartOfLine)
-            {
                 return false;
-            }
 
             _Stream.MarkExtentStart();
             _Stream.Next();
@@ -173,11 +154,9 @@
             // Capture to the end of the line
             _Stream.SkipWhitespace();
             var text = _Stream.CaptureLine();
-
             var extent = _Stream.GetExtent();
 
             _Output.Header(headerDepth, text, extent, lineBreak: (_Stream.SkipLineEnding(max: 0) > 1));
-
             return true;
         }
 
@@ -208,29 +187,23 @@
 
             // Write code fence beginning
             _Output.FencedBlock(info, text, null, lineBreak: _Stream.SkipLineEnding(max: 0) > 1);
-
             return true;
         }
 
         private bool LineBreak()
         {
             if (_Stream.Current != '\r' && _Stream.Current != '\n')
-            {
                 return false;
-            }
 
             if (_Stream.IsSequence("\r\n"))
             {
                 var breakCount = _Stream.SkipLineEnding(max: 0, ignoreEscaping: _PreserveFormatting);
 
                 if (_PreserveFormatting)
-                {
                     _Output.LineBreak(count: breakCount);
-                }
 
                 return true;
             }
-
             return false;
         }
 
@@ -250,33 +223,25 @@
             var ending = GetEnding(_Stream.SkipLineEnding(max: 2));
 
             if (string.IsNullOrWhiteSpace(text) && !_PreserveFormatting)
-            {
                 return;
-            }
 
             if (_Context != MarkdownReaderMode.List && startOfLine && IsList(text))
             {
                 _Context = MarkdownReaderMode.List;
 
                 if (_Output.Current != null && _Output.Current.Flag.IsEnding() && !_Output.Current.Flag.ShouldPreserve())
-                {
                     _Output.Current.Flag |= MarkdownTokenFlags.Preserve;
-                }
             }
 
             // Override line ending if the line was a list item so that the line ending is preserved
             if (_Context == MarkdownReaderMode.List && ending.IsEnding())
-            {
                 ending |= MarkdownTokenFlags.Preserve;
-            }
 
             // Add the text to the output stream
             _Output.Text(text, flag: textStyle | ending);
 
             if (_Context == MarkdownReaderMode.List && ending.IsEnding())
-            {
                 _Context = MarkdownReaderMode.None;
-            }
         }
 
         private string UnwrapStyleMarkers(MarkdownStream stream, out MarkdownTokenFlags flag)
@@ -300,25 +265,17 @@
 
                     // Add back underscores within text
                     if (styleChar == Underscore && stylePrevious != Whitespace)
-                    {
                         return Pad(text, styleChar, left: styleCount, right: styleCount);
-                    }
 
                     // Add back asterixes/underscores that are part of text
                     if (styleEnding < styleCount)
-                    {
                         text = Pad(text, styleChar, left: styleCount - styleEnding);
-                    }
 
                     if (styleEnding == 1 || styleEnding == 3)
-                    {
                         flag |= MarkdownTokenFlags.Italic;
-                    }
 
                     if (styleEnding >= 2)
-                    {
                         flag |= MarkdownTokenFlags.Bold;
-                    }
                 }
                 else
                 {
@@ -335,14 +292,10 @@
 
                     // Add back backticks that are part of text
                     if (codeEnding < codeCount)
-                    {
                         text = Pad(text, styleChar, left: codeCount - codeEnding);
-                    }
 
                     if (codeEnding == 1)
-                    {
                         flag |= MarkdownTokenFlags.Code;
-                    }
                 }
                 else
                 {
@@ -350,7 +303,6 @@
                     text = Pad(text, styleChar, left: codeCount);
                 }
             }
-
             return text;
         }
 
@@ -364,16 +316,12 @@
             var clean = text.Trim();
 
             if (string.IsNullOrEmpty(clean))
-            {
                 return false;
-            }
 
             var firstChar = clean[0];
 
             if (firstChar == Dash || firstChar == Asterix)
-            {
                 return true;
-            }
 
             return false;
         }
@@ -389,9 +337,7 @@
         private bool Link()
         {
             if (_Stream.Current != BracketOpen || _Stream.IsEscaped)
-            {
                 return false;
-            }
 
             _Stream.MarkExtentStart();
             _Stream.Checkpoint();
@@ -470,7 +416,6 @@
             }
 
             var extent = _Stream.GetExtent();
-
             return true;
         }
 

@@ -10,9 +10,7 @@ namespace PSRule
         public static T PropertyValue<T>(this PSObject o, string propertyName)
         {
             if (typeof(T).IsValueType)
-            {
                 return (T)Convert.ChangeType(o.Properties[propertyName].Value, typeof(T));
-            }
 
             return (T)o.Properties[propertyName].Value;
         }
@@ -20,16 +18,11 @@ namespace PSRule
         public static string ValueAsString(this PSObject o, string propertyName, bool caseSensitive)
         {
             var p = o.Properties[propertyName];
-
             if (p == null)
-            {
                 return null;
-            }
 
             if (caseSensitive && !StringComparer.Ordinal.Equals(p.Name, propertyName))
-            {
                 return null;
-            }
 
             return p.Value.ToString();
         }
@@ -38,19 +31,19 @@ namespace PSRule
         {
             value = null;
             var p = o.Properties[propertyName];
-
             if (p == null)
-            {
                 return false;
-            }
 
             if (caseSensitive && !StringComparer.Ordinal.Equals(p.Name, propertyName))
-            {
                 return false;
-            }
 
             value = p.Value;
             return true;
+        }
+
+        public static bool HasProperty(this PSObject o, string propertyName)
+        {
+            return o.Properties[propertyName] != null;
         }
 
         public static string ToJson(this PSObject o)
