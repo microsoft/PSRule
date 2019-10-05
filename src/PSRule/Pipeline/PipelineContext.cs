@@ -24,7 +24,6 @@ namespace PSRule.Pipeline
         // Configuration parameters
         private readonly ILogger _Logger;
         private readonly TargetBinder _Binder;
-        private readonly BaselineContext _Baseline;
         private readonly IDictionary<string, ResourceRef> _Unresolved;
 
         private readonly LanguageMode _LanguageMode;
@@ -59,6 +58,8 @@ namespace PSRule.Pipeline
         internal readonly Dictionary<string, Hashtable> DataCache;
         internal readonly Dictionary<string, object> ExpressionCache;
         internal readonly string[] Culture;
+        internal readonly BaselineContext Baseline;
+        internal readonly HostContext HostContext;
 
         public HashAlgorithm ObjectHashAlgorithm
         {
@@ -76,13 +77,15 @@ namespace PSRule.Pipeline
             get { return _Logger; }
         }
 
-        private PipelineContext(ILogger logger, PSRuleOption option, TargetBinder binder, BaselineContext baseline, IDictionary<string, ResourceRef> unresolved)
+        private PipelineContext(ILogger logger, PSRuleOption option, HostContext hostContext, TargetBinder binder, BaselineContext baseline, IDictionary<string, ResourceRef> unresolved)
         {
             _ObjectNumber = -1;
             _Logger = logger;
             _RuleTimer = new Stopwatch();
 
             Option = option;
+
+            HostContext = hostContext;
 
             _LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode.Value;
 
@@ -97,14 +100,14 @@ namespace PSRule.Pipeline
 
             _Reason = new List<string>();
             _Binder = binder;
-            _Baseline = baseline;
+            Baseline = baseline;
             _Unresolved = unresolved;
             Culture = option.Output.Culture;
         }
 
-        public static PipelineContext New(ILogger logger, PSRuleOption option, TargetBinder binder, BaselineContext baseline, IDictionary<string, ResourceRef> unresolved)
+        public static PipelineContext New(ILogger logger, PSRuleOption option, HostContext hostContext, TargetBinder binder, BaselineContext baseline, IDictionary<string, ResourceRef> unresolved)
         {
-            var context = new PipelineContext(logger, option, binder, baseline, unresolved);
+            var context = new PipelineContext(logger, option, hostContext, binder, baseline, unresolved);
             CurrentThread = context;
             return context;
         }
@@ -164,8 +167,8 @@ namespace PSRule.Pipeline
                 return Source;
 
             // Change scope
-            _Baseline.UseScope(moduleName: source.ModuleName);
-            Source = new SourceScope(source, File.ReadAllLines(source.Path, Encoding.UTF8), _Baseline.RuleFilter(), _Baseline.GetConfiguration());
+            Baseline.UseScope(moduleName: source.ModuleName);
+            Source = new SourceScope(source, File.ReadAllLines(source.Path, Encoding.UTF8), Baseline.RuleFilter(), Baseline.GetConfiguration());
             return Source;
         }
 
@@ -179,7 +182,7 @@ namespace PSRule.Pipeline
             if (resource.Kind == ResourceKind.Baseline && resource is Baseline baseline && _Unresolved.TryGetValue(resource.Id, out ResourceRef rr) && rr is BaselineRef baselineRef)
             {
                 _Unresolved.Remove(resource.Id);
-                _Baseline.Add(new BaselineContext.BaselineContextScope(baselineRef.Type, resource.Module, baseline.Spec));
+                Baseline.Add(new BaselineContext.BaselineContextScope(baselineRef.Type, resource.Module, baseline.Spec));
             }
         }
 
@@ -408,7 +411,7 @@ namespace PSRule.Pipeline
         {
             _ObjectNumber++;
             TargetObject = targetObject;
-            _Binder.Bind(_Baseline, targetObject);
+            _Binder.Bind(Baseline, targetObject);
         }
 
         /// <summary>
@@ -428,7 +431,7 @@ namespace PSRule.Pipeline
 
             RuleBlock = ruleBlock;
 
-            _Binder.Bind(_Baseline, TargetObject);
+            _Binder.Bind(Baseline, TargetObject);
 
             if (_Logger != null)
                 _Logger.EnterScope(ruleBlock.RuleName);

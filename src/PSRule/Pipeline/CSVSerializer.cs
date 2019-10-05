@@ -6,22 +6,37 @@ using System.Text;
 
 namespace PSRule.Pipeline
 {
-    internal sealed class CSVSerializer
+    internal sealed class CSVSerializer : PipelineWriter
     {
         private const char COMMA = ',';
         private const char QUOTE = '"';
 
         private readonly StringBuilder _Builder;
+        private readonly List<InvokeResult> _Result;
 
-        public CSVSerializer()
+        internal CSVSerializer(WriteOutput output)
+            : base(output)
         {
             _Builder = new StringBuilder();
+            _Result = new List<InvokeResult>();
+        }
+
+        public override void Write(object o, bool enumerate)
+        {
+            if (!(o is InvokeResult result))
+                return;
+
+            _Result.Add(result);
+        }
+
+        public override void End()
+        {
+            base.Write(Serialize(_Result.ToArray()), false);
         }
 
         internal string Serialize(IEnumerable<InvokeResult> o)
         {
             WriteHeader();
-
             foreach (var result in o)
             {
                 foreach (var record in result.AsRecord())
@@ -29,7 +44,6 @@ namespace PSRule.Pipeline
                     VisitRecord(record: record);
                 }
             }
-
             return _Builder.ToString();
         }
 

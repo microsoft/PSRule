@@ -264,4 +264,6 @@ Returns `$True` when the object passes and `$False` when the object fails.
 
 [Invoke-PSRule](Invoke-PSRule.md)
 
+[Assert-PSRule](Assert-PSRule.md)
+
 [Get-PSRule](Get-PSRule.md)

@@ -1,66 +1,71 @@
-﻿using PSRule.Host;
+﻿using PSRule.Configuration;
+using PSRule.Host;
 using PSRule.Rules;
-using System;
+using System.Linq;
+using System.Threading;
 
 namespace PSRule.Pipeline
 {
-    public sealed class GetBaselinePipeline : IDisposable
+    internal sealed class GetBaselinePipelineBuilder : PipelineBuilderBase
     {
-        private readonly StreamManager _StreamManager;
-        private readonly PipelineContext _Context;
-        private readonly Source[] _Source;
+        private string[] _Name;
+
+        internal GetBaselinePipelineBuilder(Source[] source)
+            : base(source) { }
+
+        /// <summary>
+        /// Filter returned baselines by name.
+        /// </summary>
+        public new void Name(string[] name)
+        {
+            if (name == null || name.Length == 0)
+                return;
+
+            _Name = name;
+        }
+
+        public override IPipelineBuilder Configure(PSRuleOption option)
+        {
+            if (option == null)
+                return this;
+
+            Option.Output.As = ResultFormat.Detail;
+            Option.Output.Culture = option.Output.Culture ?? new string[] { Thread.CurrentThread.CurrentCulture.ToString() };
+            Option.Output.Format = OutputFormat.None;
+            return this;
+        }
+
+        public override IPipeline Build()
+        {
+            var filter = new BaselineFilter(_Name);
+            return new GetBaselinePipeline(
+                context: PrepareContext(null, null),
+                source: Source,
+                reader: PrepareReader(),
+                writer: PrepareWriter(),
+                filter: filter
+            );
+        }
+    }
+
+    internal sealed class GetBaselinePipeline : RulePipeline
+    {
         private readonly IResourceFilter _Filter;
 
-        // Track whether Dispose has been called.
-        private bool _Disposed = false;
-
-        internal GetBaselinePipeline(StreamManager streamManager, PipelineContext context, Source[] source, IResourceFilter filter)
+        internal GetBaselinePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer, IResourceFilter filter)
+            : base(context, source, reader, writer)
         {
-            _StreamManager = streamManager;
-            _Context = context;
-            _Source = source;
             _Filter = filter;
         }
 
-        public void Begin()
+        public override void End()
         {
-
+            Writer.Write(HostHelper.GetBaseline(Source, Context).Where(Match), true);
         }
 
-        public void Process()
+        private bool Match(Baseline baseline)
         {
-            foreach (var baseline in HostHelper.GetBaseline(_Source, _Context))
-            {
-                if (_Filter == null || _Filter.Match(baseline))
-                    _StreamManager.Output(baseline);
-            }
+            return _Filter == null || _Filter.Match(baseline);
         }
-
-        public void End()
-        {
-
-        }
-
-        #region IDisposable
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (!_Disposed)
-            {
-                if (disposing)
-                {
-                    _Context.Dispose();
-                }
-                _Disposed = true;
-            }
-        }
-
-        #endregion IDisposable
     }
 }

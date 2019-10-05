@@ -23,7 +23,7 @@ namespace PSRule.Host
             return ToRule(GetLanguageBlock(sources: source), context);
         }
 
-        public static IEnumerable<RuleHelpInfo> GetRuleHelp(Source[] source, PipelineContext context)
+        public static RuleHelpInfo[] GetRuleHelp(Source[] source, PipelineContext context)
         {
             return ToRuleHelp(GetLanguageBlock(sources: source), context);
         }

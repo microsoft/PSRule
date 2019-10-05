@@ -305,6 +305,10 @@ namespace PSRule.Configuration
             {
                 option.Output.Path = (string)value;
             }
+            if (index.TryGetValue("output.style", out value))
+            {
+                option.Output.Style = (OutputStyle)Enum.Parse(typeof(OutputStyle), (string)value);
+            }
 
             BaselineOption.Load(option, index);
             return option;

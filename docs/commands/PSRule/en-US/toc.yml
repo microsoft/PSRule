@@ -3,9 +3,15 @@
   href: PSRule.md
   topicHref: PSRule.md
   items:
+    - name: Assert-PSRule
+      href: Assert-PSRule.md
+      topicHref: Assert-PSRule.md
     - name: Get-PSRule
       href: Get-PSRule.md
       topicHref: Get-PSRule.md
+    - name: Get-PSRuleBaseline
+      href: Get-PSRuleBaseline.md
+      topicHref: Get-PSRuleBaseline.md
     - name: Get-PSRuleHelp
       href: Get-PSRuleHelp.md
       topicHref: Get-PSRuleHelp.md
@@ -21,6 +27,10 @@
     - name: Test-PSRuleTarget
       href: Test-PSRuleTarget.md
       topicHref: Test-PSRuleTarget.md
+
+- name: Assert
+  href: ../../../concepts/PSRule/en-US/about_PSRule_Assert.md
+  topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Assert.md
 
 - name: Baseline
   href: ../../../concepts/PSRule/en-US/about_PSRule_Baseline.md

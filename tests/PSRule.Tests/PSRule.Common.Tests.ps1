@@ -785,6 +785,146 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
 
 #endregion Test-PSRuleTarget
 
+#region Assert-PSRule
+
+Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
+    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+
+    Context 'With defaults' {
+        $testObject = [PSCustomObject]@{
+            Name = 'TestObject1'
+        }
+
+        It 'Returns output' {
+            # Check single
+            $result = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'FromFile1' -Style Plain | Out-String;
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $result | Should -Match "\[PASS\] FromFile1";
+
+            # Check multiple
+            $assertParams = @{
+                Path = $ruleFilePath
+                Option = @{ 'Execution.InconclusiveWarning' = $False; 'Output.Style' = 'Plain' }
+                Name = 'FromFile1', 'FromFile2', 'FromFile3'
+                ErrorVariable = 'errorOut'
+            }
+            $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue | Out-String;
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $result | Should -Match "\[PASS\] FromFile1";
+            $result | Should -Match "\[FAIL\] FromFile2";
+            $result | Should -Match "\[FAIL\] FromFile3";
+            $errorOut | Should -Not -BeNullOrEmpty;
+        }
+    }
+
+    Context 'With -OutputPath' {
+        $testOutputPath = (Join-Path -Path $outputPath -ChildPath 'newPath/assert.results.json');
+        $testObject = [PSCustomObject]@{
+            Name = 'TestObject1'
+        }
+        $assertParams = @{
+            Path = $ruleFilePath
+            Option = @{ 'Execution.InconclusiveWarning' = $False; 'Output.Style' = 'Plain' }
+            Name = 'FromFile1', 'FromFile2', 'FromFile3'
+            ErrorVariable = 'errorOut'
+            OutputFormat = 'Json'
+            OutputPath = $testOutputPath
+        }
+        $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue | Out-String;
+        
+        It 'Returns output' {
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $result | Should -Match "\[PASS\] FromFile1";
+            $result | Should -Match "\[FAIL\] FromFile2";
+            $result | Should -Match "\[FAIL\] FromFile3";
+            $errorOut | Should -Not -BeNullOrEmpty;
+        }
+
+        It 'Writes output to file' {
+            $resultContent = @((Get-Content -Path $testOutputPath -Raw | ConvertFrom-Json));
+            $resultContent.Length | Should -Be 3;
+            $resultContent.RuleName | Should -BeIn 'FromFile1', 'FromFile2', 'FromFile3';
+            $resultContent.TargetName | Should -BeIn 'TestObject1';
+        }
+    }
+
+    Context 'With -Style' {
+        $testObject = [PSCustomObject]@{
+            Name = 'TestObject1'
+        }
+
+        It 'GitHub Actions' {
+            $assertParams = @{
+                Path = $ruleFilePath
+                Option = @{ 'Output.Style' = 'GitHubActions' }
+                Name = 'FromFile1', 'FromFile2', 'FromFile3'
+                ErrorVariable = 'errorOut'
+                WarningAction = 'SilentlyContinue'
+            }
+            $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue | Out-String;
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $result | Should -Match '\[\+\] FromFile1';
+            $result | Should -Match '::error:: TestObject1 \[FAIL\] FromFile2';
+            $result | Should -Match '::error:: TestObject1 \[FAIL\] FromFile3';
+            $errorOut | Should -Not -BeNullOrEmpty;
+        }
+
+        It 'Azure Pipelines' {
+            $assertParams = @{
+                Path = $ruleFilePath
+                Option = @{ 'Output.Style' = 'AzurePipelines' }
+                Name = 'FromFile1', 'FromFile2', 'FromFile3'
+                ErrorVariable = 'errorOut'
+                WarningAction = 'SilentlyContinue'
+            }
+            $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue | Out-String;
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $result | Should -Match '\[\+\] FromFile1';
+            $result | Should -Match "`#`#vso\[task\.logissue type=error\]TestObject1 \[FAIL\] FromFile2";
+            $result | Should -Match "`#`#vso\[task\.logissue type=error\]TestObject1 \[FAIL\] FromFile3";
+            $errorOut | Should -Not -BeNullOrEmpty;
+        }
+    }
+
+    Context 'With constrained language' {
+        $testObject = [PSCustomObject]@{
+            Name = 'TestObject1'
+            Value = 1
+        }
+
+        It 'Checks if DeviceGuard is enabled' {
+            Mock -CommandName IsDeviceGuardEnabled -ModuleName PSRule -Verifiable -MockWith {
+                return $True;
+            }
+            $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest1' -Style Plain;
+            Assert-MockCalled -CommandName IsDeviceGuardEnabled -ModuleName PSRule -Times 1;
+        }
+
+        # Check that '[Console]::WriteLine('Should fail')' is not executed
+        It 'Should fail to execute blocked code' {
+            $option = @{ 'execution.mode' = 'ConstrainedLanguage' };
+            { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest2' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
+            { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest3' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
+
+            $bindFn = {
+                param ($TargetObject)
+                $Null = [Console]::WriteLine('Should fail');
+                return 'BadName';
+            }
+
+            $option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -BindTargetName $bindFn;
+            { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop } | Should -Throw 'Binding functions are not supported in this language mode.';
+        }
+    }
+}
+
+#endregion Assert-PSRule
+
 #region Get-PSRule
 
 Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
@@ -1026,6 +1166,22 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         }
     }
 
+    # Context 'Using -OutputFormat' {
+    #     It 'Yaml' {
+    #         $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Yaml;
+    #         $result | Should -Not -BeNullOrEmpty;
+    #         $result | Should -BeOfType System.String;
+    #         $result -cmatch 'ruleName: FromFile1' | Should -Be $True;
+    #     }
+
+    #     It 'Json' {
+    #         $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Json;
+    #         $result | Should -Not -BeNullOrEmpty;
+    #         $result | Should -BeOfType System.String;
+    #         $result -cmatch '"ruleName":"FromFile1"' | Should -Be $True;
+    #     }
+    # }
+
     # Context 'Get rule with invalid path' {
     #     # TODO: Test with invalid path
     #     $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath invalid);
@@ -1115,15 +1271,18 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
 
     Context 'With -Online' {
         It 'Launches browser with single result' {
-            Mock -CommandName LaunchOnlineHelp -ModuleName PSRule -Verifiable;
-            $Null = Get-PSRuleHelp -Module 'TestModule' -Name 'M1.Rule1' -Online;
-            Assert-VerifiableMock;
+            $getParams = @{
+                Module = 'TestModule'
+                Name = 'M1.Rule1'
+                Option = @{ 'Execution.LanguageMode' = 'ConstrainedLanguage' }
+            }
+            $result = @(Get-PSRuleHelp @getParams -Online);
+            $result.Length | Should -Be 1;
+            $result[0] | Should -BeLike 'Please open your browser to the following location: *';
         }
 
         It 'Returns collection' {
-            Mock -CommandName LaunchOnlineHelp -ModuleName PSRule;
             $result = @(Get-PSRuleHelp -Module 'TestModule' -Online);
-            Assert-MockCalled -CommandName LaunchOnlineHelp -ModuleName PSRule -Times 0 -Exactly -Scope It;
             $result.Length | Should -Be 2;
         }
     }
@@ -1389,4 +1548,4 @@ Describe 'Binding' -Tag Common, Binding {
     }
 }
 
-#ednregion Binding
+#endregion Binding

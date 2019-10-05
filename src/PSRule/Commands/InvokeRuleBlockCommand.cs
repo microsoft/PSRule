@@ -25,15 +25,12 @@ namespace PSRule.Commands
             try
             {
                 if (Body == null)
-                {
                     return;
-                }
 
                 // Evalute type pre-condition
                 if (Type != null)
                 {
-                    var comparer = PipelineContext.CurrentThread.Option.Binding.IgnoreCase.Value ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
-
+                    var comparer = PipelineContext.CurrentThread.Baseline.GetTargetBinding().IgnoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
                     if (!Type.Contains(value: PipelineContext.CurrentThread.RuleRecord.TargetType, comparer: comparer))
                     {
                         PipelineContext.CurrentThread.Logger.DebugMessage("Target failed Type precondition");

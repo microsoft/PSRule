@@ -23,7 +23,7 @@ This project is to be considered a proof-of-concept and not a supported product.
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Manatee.Json" Version="11.0.0-beta6" />
+    <PackageReference Include="Manatee.Json" Version="11.0.1" />
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.0" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="YamlDotNet" Version="5.0.1" />

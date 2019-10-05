@@ -135,6 +135,9 @@
   <data name="ExistsTrue" xml:space="preserve">
     <value>Exists: {0}</value>
   </data>
+  <data name="FailPipelineException" xml:space="preserve">
+    <value>One or more rules reported failure.</value>
+  </data>
   <data name="FoundModules" xml:space="preserve">
     <value>[PSRule][D] -- Found {0} PSRule module(s)</value>
   </data>
@@ -153,6 +156,9 @@
   </data>
   <data name="KeywordScriptScope" xml:space="preserve">
     <value>The keyword '{0}' can not be nested in a Rule block.</value>
+  </data>
+  <data name="LaunchBrowser" xml:space="preserve">
+    <value>Please open your browser to the following location: {0}</value>
   </data>
   <data name="MatchSingleName" xml:space="preserve">
     <value>Wildcard match requires exactly one name.</value>
@@ -209,9 +215,6 @@
     <value>Write file</value>
   </data>
   <data name="SourceNotFound" xml:space="preserve">
-    <value />
-  </data>
-  <data name="String1" xml:space="preserve">
     <value>The source was not found.</value>
     <comment>Occurs when the source file specified does not exist.</comment>
   </data>

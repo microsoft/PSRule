@@ -35,14 +35,14 @@ namespace PSRule.Benchmark
     public class PSRule
     {
         private PSObject[] _TargetObject;
-        private GetRulePipeline _GetPipeline;
-        private InvokeRulePipeline _InvokePipeline;
-        private InvokeRulePipeline _InvokeIfPipeline;
-        private InvokeRulePipeline _InvokeTypePipeline;
-        private InvokeRulePipeline _InvokeSummaryPipeline;
-        private InvokeRulePipeline _InvokeWithinPipeline;
-        private InvokeRulePipeline _InvokeWithinBulkPipeline;
-        private InvokeRulePipeline _InvokeWithinLikePipeline;
+        private IPipeline _GetPipeline;
+        private IPipeline _InvokePipeline;
+        private IPipeline _InvokeIfPipeline;
+        private IPipeline _InvokeTypePipeline;
+        private IPipeline _InvokeSummaryPipeline;
+        private IPipeline _InvokeWithinPipeline;
+        private IPipeline _InvokeWithinBulkPipeline;
+        private IPipeline _InvokeWithinLikePipeline;
 
         [GlobalSetup]
         public void Prepare()
@@ -62,8 +62,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "Benchmark" };
-            var builder = PipelineBuilder.Get().Configure(option);
-            builder.Source(GetSource());
+            var builder = PipelineBuilder.Get(GetSource(), option);
             _GetPipeline = builder.Build();
         }
 
@@ -71,8 +70,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "Benchmark" };
-            var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(GetSource());
+            var builder = PipelineBuilder.Invoke(GetSource(), option);
             _InvokePipeline = builder.Build();
         }
 
@@ -80,8 +78,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkIf" };
-            var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(GetSource());
+            var builder = PipelineBuilder.Invoke(GetSource(), option);
             _InvokeIfPipeline = builder.Build();
         }
 
@@ -89,8 +86,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkType" };
-            var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(GetSource());
+            var builder = PipelineBuilder.Invoke(GetSource(), option);
             _InvokeTypePipeline = builder.Build();
         }
 
@@ -99,8 +95,7 @@ namespace PSRule.Benchmark
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "Benchmark" };
             option.Output.As = ResultFormat.Summary;
-            var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(GetSource());
+            var builder = PipelineBuilder.Invoke(GetSource(), option);
             _InvokeSummaryPipeline = builder.Build();
         }
 
@@ -108,8 +103,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkWithin" };
-            var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(GetWithinSource());
+            var builder = PipelineBuilder.Invoke(GetWithinSource(), option);
             _InvokeWithinPipeline = builder.Build();
         }
 
@@ -117,8 +111,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkWithinBulk" };
-            var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(GetWithinSource());
+            var builder = PipelineBuilder.Invoke(GetWithinSource(), option);
             _InvokeWithinBulkPipeline = builder.Build();
         }
 
@@ -126,8 +119,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkWithinLike" };
-            var builder = PipelineBuilder.Invoke().Configure(option);
-            builder.Source(GetWithinSource());
+            var builder = PipelineBuilder.Invoke(GetWithinSource(), option);
             _InvokeWithinLikePipeline = builder.Build();
         }
 
@@ -167,28 +159,28 @@ namespace PSRule.Benchmark
         }
 
         [Benchmark]
-        public void Invoke() => _InvokePipeline.Process(_TargetObject);
+        public void Invoke() => RunPipelineTargets(_InvokePipeline);
 
         [Benchmark]
-        public void InvokeIf() => _InvokeIfPipeline.Process(_TargetObject);
+        public void InvokeIf() => RunPipelineTargets(_InvokeIfPipeline);
 
         [Benchmark]
-        public void InvokeType() => _InvokeTypePipeline.Process(_TargetObject);
+        public void InvokeType() => RunPipelineTargets(_InvokeTypePipeline);
 
         [Benchmark]
-        public void InvokeSummary() => _InvokeSummaryPipeline.Process(_TargetObject);
+        public void InvokeSummary() => RunPipelineTargets(_InvokeSummaryPipeline);
 
         [Benchmark]
-        public void Get() => _GetPipeline.Process().Consume(new Consumer());
+        public void Get() => RunPipelineNull(_GetPipeline);
 
         [Benchmark]
-        public void Within() => _InvokeWithinPipeline.Process(_TargetObject);
+        public void Within() => RunPipelineTargets(_InvokeWithinPipeline);
 
         [Benchmark]
-        public void WithinBulk() => _InvokeWithinBulkPipeline.Process(_TargetObject);
+        public void WithinBulk() => RunPipelineTargets(_InvokeWithinBulkPipeline);
 
         [Benchmark]
-        public void WithinLike() => _InvokeWithinLikePipeline.Process(_TargetObject);
+        public void WithinLike() => RunPipelineTargets(_InvokeWithinLikePipeline);
 
         [Benchmark]
         public void DefaultTargetNameBinding()
@@ -223,6 +215,23 @@ namespace PSRule.Benchmark
                     targetObject: targetObject
                 );
             }
+        }
+
+        private void RunPipelineNull(IPipeline pipeline)
+        {
+            pipeline.Begin();
+            pipeline.Process(null);
+            pipeline.End();
+        }
+
+        private void RunPipelineTargets(IPipeline pipeline)
+        {
+            pipeline.Begin();
+
+            for (var i = 0; i < _TargetObject.Length; i++)
+                pipeline.Process(_TargetObject[i]);
+
+            pipeline.End();
         }
     }
 }

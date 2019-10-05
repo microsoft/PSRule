@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Evaluate objects against matching rules.
+Evaluate objects against matching rules and output the results.
 
 ## SYNTAX
 
@@ -17,23 +17,29 @@ Evaluate objects against matching rules.
 
 ```text
 Invoke-PSRule [-Module <String[]>] [-Outcome <RuleOutcome>] [-As <ResultFormat>] [-Format <InputFormat>]
- [-OutputPath <String>] [-OutputFormat <OutputFormat>] [[-Path] <String[]>] [-Name <String[]>]
- [-Tag <Hashtable>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-Culture <String>] -InputObject <PSObject>
- [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-OutputPath <String>] [-OutputFormat <OutputFormat>] [-Baseline <BaselineOption>] [[-Path] <String[]>]
+ [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-Culture <String[]>]
+ -InputObject <PSObject> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### InputPath
 
 ```text
 Invoke-PSRule -InputPath <String[]> [-Module <String[]>] [-Outcome <RuleOutcome>] [-As <ResultFormat>]
- [-Format <InputFormat>] [-OutputPath <String>] [-OutputFormat <OutputFormat>] [[-Path] <String[]>]
- [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-Culture <String>]
- [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-Format <InputFormat>] [-OutputPath <String>] [-OutputFormat <OutputFormat>] [-Baseline <BaselineOption>]
+ [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-ObjectPath <String>]
+ [-Culture <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Evaluate objects against matching rules.
+Evaluate objects against matching rules and output the results.
+Objects can be specified directly from the pipeline or provided from file.
+
+The commands `Invoke-PSRule` and `Assert-PSRule` provide similar functionality, as differ as follows:
+
+- `Invoke-PSRule` writes results as structured objects
+- `Assert-PSRule` writes results as a formatted string.
 
 ## EXAMPLES
 
@@ -328,7 +334,8 @@ Accept wildcard characters: False
 
 ### -OutputPath
 
-Specifies the output file path to write results. Directories along the file path will automatically be created if they do not exist.
+Specifies the output file path to write results.
+Directories along the file path will automatically be created if they do not exist.
 
 ```yaml
 Type: String
@@ -377,7 +384,7 @@ This option does not affect the culture used for the PSRule engine, which always
 The PowerShell cmdlet `Get-Culture` shows the current culture of PowerShell.
 
 ```yaml
-Type: String
+Type: String[]
 Parameter Sets: (All)
 Aliases:
 
@@ -420,6 +427,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Baseline
+
+Specifies an explicit baseline by name to use for evaluating rules.
+Baselines can contain filters and custom configuration that overrides the defaults.
+
+```yaml
+Type: BaselineOption
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
@@ -445,5 +469,7 @@ When you use the `-As Summary`. Otherwise, it returns a `RuleRecord` object.
 ## RELATED LINKS
 
 [Get-PSRule](Get-PSRule.md)
+
+[Assert-PSRule](Assert-PSRule.md)
 
 [Test-PSRuleTarget](Test-PSRuleTarget.md)

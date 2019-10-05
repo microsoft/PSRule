@@ -19,8 +19,8 @@ Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-Format <InputFormat>]
  [-ObjectPath <String>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
- [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>] [-OutputPath <String>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>] [-OutputPath <String>]
+ [-OutputStyle <OutputStyle>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -35,7 +35,9 @@ Sets options that configure PSRule execution.
 PS C:\> Set-PSRuleOption -OutputFormat Yaml;
 ```
 
-Sets the `Output.Format` to `Yaml` for `ps-rule.yaml` in the current working path. If the `ps-rule.yaml` file exists, it is merged with the existing file and overwritten. If the file does not exist, a new file is created.
+Sets the `Output.Format` to `Yaml` for `ps-rule.yaml` in the current working path.
+If the `ps-rule.yaml` file exists, it is merged with the existing file and overwritten.
+If the file does not exist, a new file is created.
 
 ### Example 2
 
@@ -43,7 +45,9 @@ Sets the `Output.Format` to `Yaml` for `ps-rule.yaml` in the current working pat
 PS C:\> Set-PSRuleOption -OutputFormat Yaml -Path .\project-options.yaml;
 ```
 
-Sets the `Output.Format` to `Yaml` for `project-options.yaml` in the current working path. If the `project-options.yaml` file exists, it is merged with the existing file and overwritten. If the file does not exist, a new file is created.
+Sets the `Output.Format` to `Yaml` for `project-options.yaml` in the current working path.
+If the `project-options.yaml` file exists, it is merged with the existing file and overwritten.
+If the file does not exist, a new file is created.
 
 ## PARAMETERS
 
@@ -51,11 +55,14 @@ Sets the `Output.Format` to `Yaml` for `project-options.yaml` in the current wor
 
 The path to a YAML file where options will be set. By default the current working path (`$PWD`) is used.
 
-Either a directory or file path can be specified. When a directory is used, `ps-rule.yaml` will be used as the file name.
+Either a directory or file path can be specified.
+When a directory is used, `ps-rule.yaml` will be used as the file name.
 
-The file will be created if it does not exist. If the file already exists it will be merged with the existing options and **overwritten**.
+The file will be created if it does not exist.
+If the file already exists it will be merged with the existing options and **overwritten**.
 
-If the directory does not exist an error will be generated. To force the creation of the directory path use the `-Force` switch.
+If the directory does not exist an error will be generated.
+To force the creation of the directory path use the `-Force` switch.
 
 ```yaml
 Type: String
@@ -314,7 +321,8 @@ Accept wildcard characters: False
 
 ### -OutputAs
 
-Sets the option `Output.As`. The `Output.As` option configures the type of results to produce, either detail or summary.
+Sets the option `Output.As`.
+The `Output.As` option configures the type of results to produce, either detail or summary.
 
 ```yaml
 Type: ResultFormat
@@ -331,7 +339,8 @@ Accept wildcard characters: False
 
 ### -OutputEncoding
 
-Sets the option `Output.Encoding`. The `Output.Encoding` option configured the encoding used to write results to file.
+Sets the option `Output.Encoding`.
+The `Output.Encoding` option configured the encoding used to write results to file.
 
 ```yaml
 Type: OutputEncoding
@@ -348,7 +357,8 @@ Accept wildcard characters: False
 
 ### -OutputFormat
 
-Sets the option `Output.Format`. The `Output.Format` option configures the format that results will be presented in.
+Sets the option `Output.Format`.
+The `Output.Format` option configures the format that results will be presented in.
 
 ```yaml
 Type: OutputFormat
@@ -365,7 +375,8 @@ Accept wildcard characters: False
 
 ### -OutputPath
 
-Sets the option `Output.Path`. The `Output.Path` option configures an output file path to write results.
+Sets the option `Output.Path`.
+The `Output.Path` option configures an output file path to write results.
 
 ```yaml
 Type: String
@@ -375,6 +386,26 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputStyle
+
+Sets the option `Option.Style`.
+The `Output.Style` option configures the style that results will be presented in.
+
+This option only applies to `Assert-PSRule`.
+
+```yaml
+Type: OutputStyle
+Parameter Sets: (All)
+Aliases:
+Accepted values: Client, Plain, AzurePipelines, GitHubActions
+
+Required: False
+Position: Named
+Default value: Client
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

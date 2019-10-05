@@ -49,6 +49,7 @@ output:
   encoding: UTF7
   format: Json
   path: 'out/OutputPath.txt'
+  style: GitHubActions
 
 # Configure rule suppression
 suppression:

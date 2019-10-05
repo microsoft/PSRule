@@ -533,6 +533,28 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Output.Style' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Output.Style | Should -Be 'Client';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Output.Style' = 'AzurePipelines' };
+            $option.Output.Style | Should -Be 'AzurePipelines';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Output.Style | Should -Be 'GitHubActions';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -OutputStyle 'AzurePipelines' -Path $emptyOptionsFilePath;
+            $option.Output.Style | Should -Be 'AzurePipelines';
+        }
+    }
+
     Context 'Read Suppression' {
         It 'from default' {
             $option = New-PSRuleOption;
@@ -732,6 +754,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputPath 'out/OutputPath.txt' @optionParams;
             $option.Output.Path | Should -Be 'out/OutputPath.txt';
+        }
+    }
+
+    Context 'Read Output.Style' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -OutputStyle 'AzurePipelines' @optionParams;
+            $option.Output.Style | Should -Be 'AzurePipelines';
         }
     }
 }

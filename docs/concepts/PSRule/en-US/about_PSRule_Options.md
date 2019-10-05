@@ -26,6 +26,7 @@ The following workspace options are available for use:
 - [Output.Encoding](#outputencoding)
 - [Output.Format](#outputformat)
 - [Output.Path](#outputpath)
+- [Output.Style](#outputstyle)
 - [Suppression](#suppression)
 
 Additionally the following baseline options can be included:
@@ -694,7 +695,8 @@ output:
 ### Output.Format
 
 Configures the format that results will be presented in.
-This option only applies to output generated from `Invoke-PSRule`.
+This option applies to `Invoke-PSRule`, `Assert-PSRule` and `Get-PSRule`.
+This options is ignored by other cmdlets.
 
 The following format options are available:
 
@@ -712,6 +714,9 @@ The following format options are available:
     - Synopsis
     - Recommendation
 - Wide -  Output is presented using the wide table format, which includes reason and wraps columns.
+
+The Wide format is ignored by `Assert-PSRule`. `Get-PSRule` only accepts `Wide` or `None`.
+Usage of other formats are treated as `None`.
 
 This option can be specified using:
 
@@ -741,7 +746,8 @@ output:
 Specifies the output file path to write results.
 Directories along the file path will automatically be created if they do not exist.
 
-This option only applies to `Invoke-PSRule`. `Invoke-PSRule` also includes a parameter `-OutputPath` to set this option at runtime.
+This option only applies to `Invoke-PSRule`.
+`Invoke-PSRule` also includes a parameter `-OutputPath` to set this option at runtime.
 If specified, the `-OutputPath` parameter take precedence, over this option.
 
 This option can be specified using:
@@ -765,6 +771,44 @@ Set-PSRuleOption -OutputPath 'out/results.yaml';
 # YAML: Using the output/path property
 output:
   path: 'out/results.yaml'
+```
+
+### Output.Style
+
+Configures the style that results will be presented in.
+
+This option only applies to output generated from `Assert-PSRule`.
+`Assert-PSRule` also include a parameter `-Style` to set this option at runtime.
+If specified, the `-Style` parameter takes precedence, over this option.
+
+The following styles are available:
+
+- Client - Output is written to the host directly in green/ red to indicate outcome. This is the default.
+- Plain - Output is written as an unformatted string. This option can be redirected to a file.
+- AzurePipelines - Output is written with commands that can be interpreted by Azure Pipelines.
+- GitHubActions - Output is written with commands that can be interpreted by GitHub Actions.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the OutputStyle parameter
+$option = New-PSRuleOption -OutputStyle AzurePipelines;
+```
+
+```powershell
+# PowerShell: Using the Output.Style hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Style' = 'AzurePipelines' };
+```
+
+```powershell
+# PowerShell: Using the OutputStyle parameter to set YAML
+Set-PSRuleOption -OutputFormat AzurePipelines;
+```
+
+```yaml
+# YAML: Using the output/style property
+output:
+  style: AzurePipelines
 ```
 
 ### Rule.Include

@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Fix `Get-PSRuleHelp` -Online in constrained language mode. [#296](https://github.com/BernieWhite/PSRule/issues/296)
+- Added `Assert-PSRule` cmdlet to improve integration into CI processes. [#290](https://github.com/BernieWhite/PSRule/issues/290)
+  - Added `Output.Style` option to support output in the following styles:
+    - Client/ Plain - Output returns easy to read log of rule pass/ fail.
+    - Azure Pipelines - Report rule failures as errors collected by Azure Pipelines.
+    - GitHub Actions - Reports rule failures as errors collected by GitHub Actions.
+
 ## v0.10.0-B1910011 (pre-release)
 
 - Added assertion helper for checking field default value. [#289](https://github.com/BernieWhite/PSRule/issues/289)

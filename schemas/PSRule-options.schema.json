@@ -191,7 +191,7 @@
                 ]
             }
         },
-        "output-v0.8.0": {
+        "output": {
             "type": "object",
             "title": "Output options",
             "description": "Options that affect how output is generated.",
@@ -238,6 +238,18 @@
                     "type": "string",
                     "title": "Output path",
                     "description": "The file path location to save results."
+                },
+                "style": {
+                    "type": "string",
+                    "title": "Output Style",
+                    "description": "The style that results will be presented in.",
+                    "enum": [
+                        "Client",
+                        "Plain",
+                        "AzurePipelines",
+                        "GitHubActions"
+                    ],
+                    "default": "Client"
                 }
             },
             "additionalProperties": false
@@ -286,11 +298,7 @@
                 },
                 "output": {
                     "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/output-v0.8.0"
-                        }
-                    ]
+                    "$ref": "#/definitions/output"
                 },
                 "rule": {
                     "type": "object",
