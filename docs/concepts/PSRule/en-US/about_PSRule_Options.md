@@ -976,7 +976,11 @@ logging:
 
 output:
   as: Summary
+  culture:
+  - en-US
+  encoding: UTF8
   format: Json
+  style: GitHubActions
 
 # Configure rule suppression
 suppression:
@@ -1025,7 +1029,7 @@ execution:
 # Configures input options
 input:
   format: Detect
-  objectPath:
+  objectPath: null
 
 # Configures outcome logging options
 logging:
@@ -1036,7 +1040,9 @@ logging:
 
 output:
   as: Detail
+  encoding: Default
   format: None
+  style: Client
 
 # Configure rule suppression
 suppression: { }
