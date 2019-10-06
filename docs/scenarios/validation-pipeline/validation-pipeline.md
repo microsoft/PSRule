@@ -38,14 +38,19 @@ if ($Null -eq (Get-PackageProvider -Name NuGet -ErrorAction Ignore)) {
     $Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
 }
 
-if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.6.0' -ErrorAction Ignore)) {
-    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.6.0' -Force;
+if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.9.0' -ErrorAction Ignore)) {
+    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.9.0' -Force;
 }
 ```
 
+See the [change log](https://github.com/BernieWhite/PSRule/blob/master/CHANGELOG.md) for the latest version.
+
 ### Using Invoke-Build
 
-`Invoke-Build` is a build automation cmdlet that can be installed from the PowerShell Gallery by installing the _InvokeBuild_ module. Within Invoke-Build, each build process is broken into tasks as shown in the example below.
+`Invoke-Build` is a build automation cmdlet that can be installed from the PowerShell Gallery by installing the _InvokeBuild_ module.
+Within Invoke-Build, each build process is broken into tasks.
+
+The following example shows an example of installing _PSRule_ using _InvokeBuild_ tasks.
 
 ```powershell
 # Synopsis: Install NuGet
@@ -57,8 +62,8 @@ task InstallNuGet {
 
 # Synopsis: Install PSRule
 task InstallPSRule InstallNuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.6.0' -ErrorAction Ignore)) {
-        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.6.0' -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.9.0' -ErrorAction Ignore)) {
+        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.9.0' -Force;
     }
 }
 ```
@@ -90,9 +95,11 @@ if ($Null -ne $result) {
 
 ### Calling from Pester
 
-If you are looking at integrating PSRule into a CI pipeline, there is a good chance that you are already using Pester. Pester is a unit test framework for PowerShell that can be installed from the PowerShell Gallery.
+If you are looking at integrating PSRule into a CI pipeline, there is a good chance that you are already using Pester.
+Pester is a unit test framework for PowerShell that can be installed from the PowerShell Gallery.
 
-PSRule can complement Pester unit tests with dynamic validation rules. By using `-If` or `-Type` pre-conditions rules can dynamically provide validation for a range of use cases.
+PSRule can complement Pester unit tests with dynamic validation rules.
+By using `-If` or `-Type` pre-conditions rules can dynamically provide validation for a range of use cases.
 
 In our example we are going to validate the script files themselves:
 
@@ -115,7 +122,8 @@ Describe 'Project files' {
 
 ## Generating NUnit output
 
-NUnit is a popular unit test framework for .NET. NUnit generates a test report format that is widely interpreted by CI systems. While PSRule does not use NUnit, it can output the same test report format allowing integration with any system that supports the NUnit3 for publishing test results.
+NUnit is a popular unit test framework for .NET. NUnit generates a test report format that is widely interpreted by CI systems.
+While PSRule does not use NUnit, it can output the same test report format allowing integration with any system that supports the NUnit3 for publishing test results.
 
 To generate an NUnit report use the `-OutputFormat NUnit3` parameter.
 
