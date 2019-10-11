@@ -2,6 +2,32 @@
 
 ## Unreleased
 
+## v0.10.0
+
+What's changed since v0.9.0:
+
+- Quality of life improvements:
+  - Added source note properties to input objects read from disk with `-InputPath`. [#302](https://github.com/BernieWhite/PSRule/issues/302)
+- Engine features:
+  - Added assertion helper for checking field default value. [#289](https://github.com/BernieWhite/PSRule/issues/289)
+  - Added dependency `DependsOn` information to results from `Get-PSRule`. [#210](https://github.com/BernieWhite/PSRule/issues/210)
+    - To include dependencies that would normally be filtered out use `-IncludeDependencies`.
+  - Added input format for reading markdown front matter. [#301](https://github.com/BernieWhite/PSRule/issues/301)
+    - Markdown front matter is deserialized and evaluated as an object.
+  - Added `Assert-PSRule` cmdlet to improve integration into CI processes. [#290](https://github.com/BernieWhite/PSRule/issues/290)
+    - Added `Output.Style` option to support output in the following styles:
+      - Client/ Plain - Output returns easy to read log of rule pass/ fail.
+      - Azure Pipelines - Report rule failures as errors collected by Azure Pipelines.
+      - GitHub Actions - Reports rule failures as errors collected by GitHub Actions.
+- Bug fixes:
+  - Fix `Get-PSRuleHelp` -Online in constrained language mode. [#296](https://github.com/BernieWhite/PSRule/issues/296)
+- **Breaking change**: Removed previously deprecated alias `Hint` for `Recommend`. [#165](https://github.com/BernieWhite/PSRule/issues/165)
+  - Use the `Recommend` keyword instead.
+
+What's changed since pre-release v0.10.0-B1910036:
+
+- No additional changes
+
 ## v0.10.0-B1910036 (pre-release)
 
 - Added dependency `DependsOn` information to results from `Get-PSRule`. [#210](https://github.com/BernieWhite/PSRule/issues/210)
