@@ -1,9 +1,10 @@
-# Copyright Bernie White
+#  Copyright (c) Microsoft Corporation.
+#  Licensed under the MIT License.
 
 # Synopsis: Check file includes copyright header
 Rule 'file.Header' -If { $TargetObject.Extension -in '.ps1', '.psm1', '.psd1', '.yaml', '.yml' } {
     $fileContent = Get-Content -Path $TargetObject.FullName -Raw;
-    $fileContent -match '(\# Copyright \(c\) Bernie White\. All rights reserved\.)';
+    $fileContent -match '^(\# Copyright \(c\) Microsoft Corporation.(\r|\n|\r\n)\# Licensed under the MIT License\.)';
 }
 
 # Synopsis: File encoding should be UTF-8

@@ -1,4 +1,7 @@
-﻿namespace PSRule.Pipeline
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace PSRule.Pipeline
 {
     internal enum ExecutionScope : byte
     {

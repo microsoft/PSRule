@@ -12,7 +12,9 @@ This scenario covers the following:
 
 Typically PSRule is not pre-installed on CI worker nodes, so within a CI pipeline the PSRule PowerShell module needs to be installed prior to calling PSRule cmdlets such as `Invoke-PSRule`.
 
-If your CI pipeline runs on a persistent virtual machine that you control consider pre-installing PSRule. The following examples focus on installing PSRule dynamically during execution of the pipeline. Which is suitable for cloud based CI worker nodes.
+If your CI pipeline runs on a persistent virtual machine that you control consider pre-installing PSRule.
+The following examples focus on installing PSRule dynamically during execution of the pipeline.
+Which is suitable for cloud based CI worker nodes.
 
 To install PSRule within a CI pipeline execute the `Install-Module` PowerShell cmdlet.
 
@@ -25,7 +27,8 @@ In the example below:
 $Null = Install-Module -Name PSRule -Scope CurrentUser -Force;
 ```
 
-In some cases installing NuGet may be required before the module can be installed. The NuGet package provider can be installed using the `Install-PackageProvider` PowerShell cmdlet.
+In some cases installing NuGet may be required before the module can be installed.
+The NuGet package provider can be installed using the `Install-PackageProvider` PowerShell cmdlet.
 
 ```powershell
 $Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
@@ -72,7 +75,9 @@ task InstallPSRule InstallNuGet, {
 
 When using PSRule within a continuous integration pipeline, typically we need to catch errors and failures and stop the pipeline if any occur.
 
-When using `Invoke-PSRule` an easy way to catch an failure or error conditions is to use the `-Outcome Fail,Error` parameter. By using this parameter only errors or failures are returned to the pipeline. A simple `$Null` test can then throw a terminating error to stop the pipeline.
+When using `Invoke-PSRule` an easy way to catch an failure or error conditions is to use the `-Outcome Fail,Error` parameter.
+By using this parameter only errors or failures are returned to the pipeline.
+A simple `$Null` test can then throw a terminating error to stop the pipeline.
 
 ```powershell
 $result = Invoke-PSRule -Outcome Fail,Error;

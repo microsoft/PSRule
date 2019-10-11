@@ -1,4 +1,5 @@
-# Copyright (c) Bernie White. All rights reserved.
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
 
 #
 # PSRule module
@@ -19,13 +20,13 @@ CompatiblePSEditions = 'Core', 'Desktop'
 GUID = '0130215d-58eb-4887-b6fa-31ed02500569'
 
 # Author of this module
-Author = 'Bernie White'
+Author = 'Microsoft Corporation'
 
 # Company or vendor of this module
-CompanyName = 'Bernie White'
+CompanyName = 'Microsoft Corporation'
 
 # Copyright statement for this module
-Copyright = '(c) Bernie White. All rights reserved.'
+Copyright = '(c) Microsoft Corporation. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Validate objects using PowerShell rules.
@@ -123,7 +124,7 @@ PrivateData = @{
         Tags = @('Rule', 'Test')
 
         # A URL to the license for this module.
-        LicenseUri = 'https://github.com/BernieWhite/PSRule/blob/master/LICENSE'
+        LicenseUri = 'https://github.com/BernieWhite/PSRule/blob/master/LICENSE.txt'
 
         # A URL to the main website for this project.
         ProjectUri = 'https://github.com/BernieWhite/PSRule'

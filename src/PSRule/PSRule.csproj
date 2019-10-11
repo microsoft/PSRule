@@ -10,9 +10,9 @@
     <Authors>Bernie White</Authors>
     <AssemblyTitle>PSRule</AssemblyTitle>
     <RepositoryUrl>https://github.com/BernieWhite/PSRule</RepositoryUrl>
-    <PackageLicenseExpression>https://github.com/BernieWhite/PSRule/blob/master/LICENSE</PackageLicenseExpression>
+    <PackageLicenseExpression>https://github.com/BernieWhite/PSRule/blob/master/LICENSE.txt</PackageLicenseExpression>
     <!--<Version>0.0.1</Version>-->
-    <Copyright>(c) Bernie White. All rights reserved.</Copyright>
+    <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
     <Description>Validate objects using PowerShell rules.
 
 This project is to be considered a proof-of-concept and not a supported product.</Description>

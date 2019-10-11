@@ -1,4 +1,7 @@
-﻿namespace PSRule.Rules
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace PSRule.Rules
 {
     internal abstract class ResourceRef
     {

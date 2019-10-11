@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 using Newtonsoft.Json;
 using PSRule.Resources;
 using PSRule.Rules;

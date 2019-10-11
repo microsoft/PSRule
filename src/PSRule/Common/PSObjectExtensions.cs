@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using Newtonsoft.Json;
 using System;
 using System.Globalization;
 using System.Management.Automation;

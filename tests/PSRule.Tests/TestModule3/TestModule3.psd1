@@ -1,3 +1,6 @@
+#  Copyright (c) Microsoft Corporation.
+#  Licensed under the MIT License.
+
 #
 # A module for Pester testing for PSRule
 #

@@ -1,3 +1,6 @@
+#  Copyright (c) Microsoft Corporation.
+#  Licensed under the MIT License.
+
 #
 # A set of benchmark rules for testing PSRule performance
 #

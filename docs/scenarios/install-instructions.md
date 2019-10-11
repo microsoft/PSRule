@@ -13,24 +13,28 @@ Install from [PowerShell Gallery][module-psrule] for all users (requires permiss
 
 ```powershell
 # Install PSRule module
-Install-Module -Name 'PSRule';
+Install-Module -Name 'PSRule' -Repository PSGallery;
 ```
 
 Install from [PowerShell Gallery][module-psrule] for current user only:
 
 ```powershell
 # Install PSRule module
-Install-Module -Name 'PSRule' -Scope CurrentUser;
+Install-Module -Name 'PSRule' -Repository PSGallery -Scope CurrentUser;
 ```
 
 Save for offline use from PowerShell Gallery:
 
 ```powershell
 # Save PSRule module, in the .\modules directory
-Save-Module -Name 'PSRule' -Path '.\modules';
+Save-Module -Name 'PSRule' -Repository PSGallery -Path '.\modules';
 ```
 
 > For pre-release versions the `-AllowPrerelease` switch must be added when calling `Install-Module` or `Save-Module`.
+>
+> To install pre-release module versions, upgrading to the latest version of _PowerShellGet_ may be required. To do this use:
+>
+> `Install-Module -Name PowerShellGet -Repository PSGallery -Scope CurrentUser -Force`
 
 ## Getting the extension
 

@@ -1,4 +1,7 @@
-﻿using PSRule.Host;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using PSRule.Host;
 using System;
 using System.Collections;
 using System.Diagnostics;

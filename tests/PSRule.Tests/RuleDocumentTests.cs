@@ -1,4 +1,7 @@
-﻿using PSRule.Parser;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using PSRule.Parser;
 using PSRule.Rules;
 using System;
 using System.Collections;

@@ -1,4 +1,7 @@
-﻿namespace PSRule.Commands
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace PSRule.Commands
 {
     internal static class LanguageKeywords
     {
