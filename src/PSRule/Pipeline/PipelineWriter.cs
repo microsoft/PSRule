@@ -1,4 +1,7 @@
-﻿using PSRule.Rules;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using PSRule.Rules;
 using System.Collections.Generic;
 using System.Management.Automation;
 

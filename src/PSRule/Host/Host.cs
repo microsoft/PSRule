@@ -1,4 +1,7 @@
-﻿using PSRule.Commands;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using PSRule.Commands;
 using PSRule.Pipeline;
 using System;
 using System.Management.Automation;

@@ -1,4 +1,7 @@
-﻿namespace PSRule.Runtime
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace PSRule.Runtime
 {
     internal interface IBindingContext
     {

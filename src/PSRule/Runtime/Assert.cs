@@ -1,4 +1,7 @@
-﻿using Manatee.Json;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using Manatee.Json;
 using Manatee.Json.Schema;
 using Manatee.Json.Serialization;
 using PSRule.Configuration;

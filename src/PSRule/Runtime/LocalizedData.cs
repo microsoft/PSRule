@@ -1,4 +1,7 @@
-﻿using PSRule.Pipeline;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using PSRule.Pipeline;
 using System.Collections;
 using System.Dynamic;
 using System.IO;

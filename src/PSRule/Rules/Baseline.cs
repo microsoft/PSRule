@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using Newtonsoft.Json;
 using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Pipeline;

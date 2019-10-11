@@ -1,4 +1,7 @@
-﻿using BenchmarkDotNet.Analysers;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using BenchmarkDotNet.Analysers;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Loggers;

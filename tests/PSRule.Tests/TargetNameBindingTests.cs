@@ -1,4 +1,7 @@
-﻿using PSRule.Configuration;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using PSRule.Configuration;
 using PSRule.Pipeline;
 using System.Management.Automation;
 using Xunit;
