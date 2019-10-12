@@ -1,7 +1,7 @@
 ---
 external help file: PSRule-help.xml
 Module Name: PSRule
-online version: https://berniewhite.github.io/PSRule/commands/PSRule/en-US/Invoke-PSRule.html
+online version: https://microsoft.github.io/PSRule/commands/PSRule/en-US/Invoke-PSRule.html
 schema: 2.0.0
 ---
 

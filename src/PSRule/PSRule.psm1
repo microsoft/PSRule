@@ -1195,7 +1195,7 @@ function Set-PSRuleOption {
 
 <#
 .LINK
-https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#rule
+https://microsoft.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#rule
 #>
 function Rule {
     [CmdletBinding()]
@@ -1234,7 +1234,7 @@ function Rule {
 
 <#
 .LINK
-https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#allof
+https://microsoft.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#allof
 #>
 function AllOf {
     [CmdletBinding()]
@@ -1252,7 +1252,7 @@ function AllOf {
 
 <#
 .LINK
-https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#anyof
+https://microsoft.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#anyof
 #>
 function AnyOf {
     [CmdletBinding()]
@@ -1270,7 +1270,7 @@ function AnyOf {
 
 <#
 .LINK
-https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#exists
+https://microsoft.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#exists
 #>
 function Exists {
     [CmdletBinding()]
@@ -1300,7 +1300,7 @@ function Exists {
 
 <#
 .LINK
-https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#match
+https://microsoft.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#match
 #>
 function Match {
     [CmdletBinding()]
@@ -1333,7 +1333,7 @@ function Match {
 
 <#
 .LINK
-https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#within
+https://microsoft.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#within
 #>
 function Within {
     [CmdletBinding()]
@@ -1370,7 +1370,7 @@ function Within {
 
 <#
 .LINK
-https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#typeof
+https://microsoft.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#typeof
 #>
 function TypeOf {
     [CmdletBinding()]
@@ -1394,7 +1394,7 @@ function TypeOf {
 
 <#
 .LINK
-https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#reason
+https://microsoft.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#reason
 #>
 function Reason {
     [CmdletBinding()]
@@ -1412,7 +1412,7 @@ function Reason {
 
 <#
 .LINK
-https://berniewhite.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#recommend
+https://microsoft.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#recommend
 #>
 function Recommend {
     [CmdletBinding()]

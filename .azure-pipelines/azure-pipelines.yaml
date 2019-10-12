@@ -190,7 +190,7 @@ stages:
         action: edit
         tag: '$(Build.SourceBranchName)'
         releaseNotesSource: inline
-        releaseNotesInline: 'See [change log](https://github.com/BernieWhite/PSRule/blob/master/CHANGELOG.md)'
+        releaseNotesInline: 'See [change log](https://github.com/Microsoft/PSRule/blob/master/CHANGELOG.md)'
         assetUploadMode: replace
         addChangeLog: false
         isPreRelease: $(isPreRelease)

@@ -46,7 +46,7 @@ if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.9.0' -ErrorAc
 }
 ```
 
-See the [change log](https://github.com/BernieWhite/PSRule/blob/master/CHANGELOG.md) for the latest version.
+See the [change log](https://github.com/Microsoft/PSRule/blob/master/CHANGELOG.md) for the latest version.
 
 ### Using Invoke-Build
 

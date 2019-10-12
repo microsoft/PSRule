@@ -100,11 +100,11 @@ Optionally, one or more annotations formatted as YAML key value pairs can be inc
 
 ## NOTE
 
-An online version of this document is available at https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Docs.md.
+An online version of this document is available at https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Docs.md.
 
 ## SEE ALSO
 
-- [Get-PSRuleHelp](https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Get-PSRuleHelp.md)
+- [Get-PSRuleHelp](https://github.com/Microsoft/PSRule/blob/master/docs/commands/PSRule/en-US/Get-PSRuleHelp.md)
 
 ## KEYWORDS
 

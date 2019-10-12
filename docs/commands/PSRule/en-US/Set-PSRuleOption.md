@@ -1,7 +1,7 @@
 ---
 external help file: PSRule-help.xml
 Module Name: PSRule
-online version: https://berniewhite.github.io/PSRule/commands/PSRule/en-US/Set-PSRuleOption.html
+online version: https://microsoft.github.io/PSRule/commands/PSRule/en-US/Set-PSRuleOption.html
 schema: 2.0.0
 ---
 

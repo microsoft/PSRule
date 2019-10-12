@@ -1,7 +1,7 @@
 ---
 Module Name: PSRule
 Module Guid: 0130215d-58eb-4887-b6fa-31ed02500569
-Download Help Link: https://github.com/BernieWhite/PSRule
+Download Help Link: https://github.com/Microsoft/PSRule
 Help Version: 0.1.0.0
 Locale: en-US
 ---
