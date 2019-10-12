@@ -178,14 +178,15 @@ Accept wildcard characters: False
 </code></pre>
 <h3 id="-format">-Format</h3>
 <p>Configures the input format for when a string is passed in as a target object.</p>
-<ul>
-<li>When the <code>-InputObject</code> parameter or pipeline input is used, strings are treated as plain text by default. When this option is used and set to either <code>Yaml</code> or <code>Json</code>, strings are read as YAML or JSON and are converted to an object.</li>
-<li>When the <code>-InputPath</code> parameter is used with a file path or URL, by default the file extension (either <code>.yaml</code>, <code>.yml</code> or <code>.json</code>) will be used to automatically detect the format as YAML or JSON.</li>
-</ul>
+<p>When the <code>-InputObject</code> parameter or pipeline input is used, strings are treated as plain text by default.
+Set this option to either <code>Yaml</code>, <code>Json</code> or <code>Markdown</code> to have PSRule deserialize the object.</p>
+<p>When the <code>-InputPath</code> parameter is used with a file path or URL.
+If the <code>Detect</code> format is used, the file extension (either <code>.yaml</code>, <code>.yml</code>, <code>.json</code> or <code>.md</code>) will be used to automatically detect the format as YAML, JSON or Markdown.</p>
+<p>This parameter takes precedence over the <code>Input.Format</code> option if set.</p>
 <pre><code class="lang-yaml">Type: InputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json, Detect
+Accepted values: None, Yaml, Json, Markdown, Detect
 
 Required: False
 Position: Named
@@ -257,6 +258,7 @@ Accept wildcard characters: False
 <h2 id="notes">NOTES</h2>
 <h2 id="related-links">RELATED LINKS</h2>
 <p><a href="Invoke-PSRule.html">Invoke-PSRule</a></p>
+<p><a href="Assert-PSRule.html">Assert-PSRule</a></p>
 <p><a href="Get-PSRule.html">Get-PSRule</a></p>
 </article>
           </div>
@@ -266,7 +268,7 @@ Accept wildcard characters: False
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Test-PSRuleTarget.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/bewhite/add-security-policy/docs/commands/PSRule/en-US/Test-PSRuleTarget.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

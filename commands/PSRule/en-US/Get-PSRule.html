@@ -72,8 +72,9 @@
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>Get a list of rule definitions.</p>
 <h2 id="syntax">SYNTAX</h2>
-<pre><code class="lang-text">Get-PSRule [-Module &lt;String[]&gt;] [-ListAvailable] [-OutputFormat &lt;OutputFormatGet&gt;] [[-Path] &lt;String[]&gt;]
- [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-Culture &lt;String&gt;] [&lt;CommonParameters&gt;]
+<pre><code class="lang-text">Get-PSRule [-Module &lt;String[]&gt;] [-ListAvailable] [-OutputFormat &lt;OutputFormat&gt;] [[-Path] &lt;String[]&gt;]
+ [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-Culture &lt;String&gt;] [-IncludeDependencies]
+ [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Get a list of matching rule definitions within the search path.</p>
@@ -227,10 +228,23 @@ Accept wildcard characters: False
 <li>None - Output is presented as an object using PowerShell defaults. This is the default.</li>
 <li>Wide - Output is presented using the wide table format, which includes tags and wraps columns.</li>
 </ul>
-<pre><code class="lang-yaml">Type: OutputFormatGet
+<pre><code class="lang-yaml">Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
 Accepted values: None, Wide
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-includedependencies">-IncludeDependencies</h3>
+<p>When this switch is specified, dependencies of the rules that meet the <code>-Name</code> and <code>-Tag</code> filters are included even if they would normally be excluded.</p>
+<p>This switch has no affect when getting an unfiltered list of rules.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named
@@ -255,7 +269,7 @@ Accept wildcard characters: False
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Get-PSRule.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/bewhite/add-security-policy/docs/commands/PSRule/en-US/Get-PSRule.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

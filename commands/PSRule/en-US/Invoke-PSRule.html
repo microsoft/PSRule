@@ -70,22 +70,28 @@
 <h1 id="invoke-psrule">Invoke-PSRule</h1>
 
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>Evaluate objects against matching rules.</p>
+<p>Evaluate objects against matching rules and output the results.</p>
 <h2 id="syntax">SYNTAX</h2>
 <h3 id="input-default">Input (Default)</h3>
 <pre><code class="lang-text">Invoke-PSRule [-Module &lt;String[]&gt;] [-Outcome &lt;RuleOutcome&gt;] [-As &lt;ResultFormat&gt;] [-Format &lt;InputFormat&gt;]
- [-OutputPath &lt;String&gt;] [-OutputFormat &lt;OutputFormat&gt;] [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;]
- [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;] [-Culture &lt;String&gt;] -InputObject &lt;PSObject&gt;
- [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
+ [-OutputPath &lt;String&gt;] [-OutputFormat &lt;OutputFormat&gt;] [-Baseline &lt;BaselineOption&gt;] [[-Path] &lt;String[]&gt;]
+ [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;] [-Culture &lt;String[]&gt;]
+ -InputObject &lt;PSObject&gt; [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
 </code></pre>
 <h3 id="inputpath">InputPath</h3>
 <pre><code class="lang-text">Invoke-PSRule -InputPath &lt;String[]&gt; [-Module &lt;String[]&gt;] [-Outcome &lt;RuleOutcome&gt;] [-As &lt;ResultFormat&gt;]
- [-Format &lt;InputFormat&gt;] [-OutputPath &lt;String&gt;] [-OutputFormat &lt;OutputFormat&gt;] [[-Path] &lt;String[]&gt;]
- [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;] [-Culture &lt;String&gt;]
- [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
+ [-Format &lt;InputFormat&gt;] [-OutputPath &lt;String&gt;] [-OutputFormat &lt;OutputFormat&gt;] [-Baseline &lt;BaselineOption&gt;]
+ [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;]
+ [-Culture &lt;String[]&gt;] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
-<p>Evaluate objects against matching rules.</p>
+<p>Evaluate objects against matching rules and output the results.
+Objects can be specified directly from the pipeline or provided from file.</p>
+<p>The commands <code>Invoke-PSRule</code> and <code>Assert-PSRule</code> provide similar functionality, as differ as follows:</p>
+<ul>
+<li><code>Invoke-PSRule</code> writes results as structured objects</li>
+<li><code>Assert-PSRule</code> writes results as a formatted string.</li>
+</ul>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">Example 1</h3>
 <pre><code class="lang-powershell">@{ Name = 'Item 1' } | Invoke-PSRule;
@@ -250,14 +256,15 @@ Accept wildcard characters: False
 </code></pre>
 <h3 id="-format">-Format</h3>
 <p>Configures the input format for when a string is passed in as a target object.</p>
-<ul>
-<li>When the <code>-InputObject</code> parameter or pipeline input is used, strings are treated as plain text by default. When this option is used and set to either <code>Yaml</code> or <code>Json</code>, strings are read as YAML or JSON and are converted to an object.</li>
-<li>When the <code>-InputPath</code> parameter is used with a file path or URL, by default the file extension (either <code>.yaml</code>, <code>.yml</code> or <code>.json</code>) will be used to automatically detect the format as YAML or JSON.</li>
-</ul>
+<p>When the <code>-InputObject</code> parameter or pipeline input is used, strings are treated as plain text by default.
+Set this option to either <code>Yaml</code>, <code>Json</code> or <code>Markdown</code> to have PSRule deserialize the object.</p>
+<p>When the <code>-InputPath</code> parameter is used with a file path or URL.
+If the <code>Detect</code> format is used, the file extension (either <code>.yaml</code>, <code>.yml</code>, <code>.json</code> or <code>.md</code>) will be used to automatically detect the format as YAML, JSON or Markdown.</p>
+<p>This parameter takes precedence over the <code>Input.Format</code> option if set.</p>
 <pre><code class="lang-yaml">Type: InputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json, Detect
+Accepted values: None, Yaml, Json, Markdown, Detect
 
 Required: False
 Position: Named
@@ -305,7 +312,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-outputpath">-OutputPath</h3>
-<p>Specifies the output file path to write results. Directories along the file path will automatically be created if they do not exist.</p>
+<p>Specifies the output file path to write results.
+Directories along the file path will automatically be created if they do not exist.</p>
 <pre><code class="lang-yaml">Type: String
 Parameter Sets: (All)
 Aliases:
@@ -342,7 +350,7 @@ Accept wildcard characters: False
 <p>Specifies the culture to use for rule documentation and messages. By default, the culture of PowerShell is used.</p>
 <p>This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.</p>
 <p>The PowerShell cmdlet <code>Get-Culture</code> shows the current culture of PowerShell.</p>
-<pre><code class="lang-yaml">Type: String
+<pre><code class="lang-yaml">Type: String[]
 Parameter Sets: (All)
 Aliases:
 
@@ -376,6 +384,19 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
+<h3 id="-baseline">-Baseline</h3>
+<p>Specifies an explicit baseline by name to use for evaluating rules.
+Baselines can contain filters and custom configuration that overrides the defaults.</p>
+<pre><code class="lang-yaml">Type: BaselineOption
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
 <h3 id="commonparameters">CommonParameters</h3>
 <p>This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see <a href="http://go.microsoft.com/fwlink/?LinkID=113216">about_CommonParameters</a>.</p>
 <h2 id="inputs">INPUTS</h2>
@@ -389,6 +410,7 @@ Accept wildcard characters: False
 <h2 id="notes">NOTES</h2>
 <h2 id="related-links">RELATED LINKS</h2>
 <p><a href="Get-PSRule.html">Get-PSRule</a></p>
+<p><a href="Assert-PSRule.html">Assert-PSRule</a></p>
 <p><a href="Test-PSRuleTarget.html">Test-PSRuleTarget</a></p>
 </article>
           </div>
@@ -398,7 +420,7 @@ Accept wildcard characters: False
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/bewhite/add-security-policy/docs/commands/PSRule/en-US/Invoke-PSRule.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

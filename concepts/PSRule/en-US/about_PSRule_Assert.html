@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="../../../styles/docfx.css">
     <link rel="stylesheet" href="../../../styles/main.css">
     <meta property="docfx:navrel" content="../../../toc.html">
-    <meta property="docfx:tocrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="../../../commands/PSRule/en-US/toc.html">
     
     
     
@@ -57,7 +57,14 @@
         </div>
       </header>
       <div role="main" class="container body-content hide-when-search">
-        <div class="article row grid">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="psrule_assert">PSRule_Assert</h1>
@@ -70,10 +77,11 @@
 <p>Each <code>$Assert</code> method returns an <code>AssertResult</code> object that contains the result of the assertion.</p>
 <p>The following built-in assertion methods are provided:</p>
 <ul>
-<li><a href="#hasfield">HasField</a> - Asserts that the object must have the specified field.</li>
-<li><a href="#hasfieldvalue">HasFieldValue</a> - Asserts that the object must have the specified field and that field is not empty.</li>
-<li><a href="#jsonschema">JsonSchema</a> - Asserts that the object must validate successfully against a JSON schema.</li>
-<li><a href="#nullorempty">NullOrEmpty</a> - Asserts that the object must not have the specified field or it must be empty.</li>
+<li><a href="#hasdefaultvalue">HasDefaultValue</a> - The object should not have the field or the field value is set to the default value.</li>
+<li><a href="#hasfield">HasField</a> - The object must have the specified field.</li>
+<li><a href="#hasfieldvalue">HasFieldValue</a> - The object must have the specified field and that field is not empty.</li>
+<li><a href="#jsonschema">JsonSchema</a> - The object must validate successfully against a JSON schema.</li>
+<li><a href="#nullorempty">NullOrEmpty</a> - The object must not have the specified field or it must be empty.</li>
 </ul>
 <p>The <code>$Assert</code> variable can only be used within a rule definition block.</p>
 <h3 id="using-assertion-methods">Using assertion methods</h3>
@@ -88,7 +96,8 @@
 </li>
 <li>Assertion methods return the <code>AssertResult</code> object that is interpreted by the rule pipeline.</li>
 </ul>
-<p>Some assertion methods may overlap or provide similar functionality to built-in keywords. Where you have the choice, use built-in keywords. Use assertion methods for advanced cases or increased flexibility.</p>
+<p>Some assertion methods may overlap or provide similar functionality to built-in keywords. Where you have the choice, use built-in keywords.
+Use assertion methods for advanced cases or increased flexibility.</p>
 <p>In the following example, <code>Assert.HasFieldValue</code> asserts that <code>$TargetObject</code> should have a field named <code>Type</code> with a non-empty value.</p>
 <pre><code class="lang-powershell">Rule 'Assert.HasTypeField' {
     $Assert.HasFieldValue($TargetObject, 'Type')
@@ -99,6 +108,28 @@
     $Assert.HasFieldValue($TargetObject, 'Name')
     $Assert.HasFieldValue($TargetObject, 'Type')
     $Assert.HasFieldValue($TargetObject, 'Value')
+}
+</code></pre>
+<h3 id="hasdefaultvalue">HasDefaultValue</h3>
+<p>The <code>HasDefaultValue</code> assertion method check that the field does not exist or the field value is set to the default value.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>defaultValue</code> - The expected value if the field exists.</li>
+</ul>
+<p>This assertion will pass if:</p>
+<ul>
+<li>The field does not exist.</li>
+<li>The field value is set to <code>defaultValue</code>.</li>
+</ul>
+<p>This assertion will fail if:</p>
+<ul>
+<li>The field value is set to a value different from <code>defaultValue</code>.</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'HasDefaultValue' {
+    $Assert.HasDefaultValue($TargetObject, 'Properties.osProfile.linuxConfiguration.provisionVMAgent', $True)
 }
 </code></pre>
 <h3 id="hasfield">HasField</h3>
@@ -201,14 +232,15 @@
 <li><code>Fail(&lt;string&gt; reason)</code> - Results a fail assertion result.</li>
 </ul>
 <h2 id="note">NOTE</h2>
-<p>An online version of this document is available at <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Assert.md">https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Assert.md</a>.</p>
+<p>An online version of this document is available at <a href="https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Assert.md">https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Assert.md</a>.</p>
 <h2 id="see-also">SEE ALSO</h2>
 <ul>
-<li><a href="https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Variables.md">about_PSRule_Variables</a></li>
+<li><a href="https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Variables.md">about_PSRule_Variables</a></li>
 </ul>
 <h2 id="keywords">KEYWORDS</h2>
 <ul>
 <li>Assert</li>
+<li>HasDefaultValue</li>
 <li>HasField</li>
 <li>HasFieldValue</li>
 <li>JsonSchema</li>
@@ -223,7 +255,7 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Assert.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/bewhite/add-security-policy/docs/concepts/PSRule/en-US/about_PSRule_Assert.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

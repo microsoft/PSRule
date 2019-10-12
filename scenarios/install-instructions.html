@@ -71,18 +71,20 @@
 <h2 id="getting-the-module">Getting the module</h2>
 <p>Install from <a href="https://www.powershellgallery.com/packages/PSRule">PowerShell Gallery</a> for all users (requires permissions):</p>
 <pre><code class="lang-powershell"># Install PSRule module
-Install-Module -Name 'PSRule';
+Install-Module -Name 'PSRule' -Repository PSGallery;
 </code></pre>
 <p>Install from <a href="https://www.powershellgallery.com/packages/PSRule">PowerShell Gallery</a> for current user only:</p>
 <pre><code class="lang-powershell"># Install PSRule module
-Install-Module -Name 'PSRule' -Scope CurrentUser;
+Install-Module -Name 'PSRule' -Repository PSGallery -Scope CurrentUser;
 </code></pre>
 <p>Save for offline use from PowerShell Gallery:</p>
 <pre><code class="lang-powershell"># Save PSRule module, in the .\modules directory
-Save-Module -Name 'PSRule' -Path '.\modules';
+Save-Module -Name 'PSRule' -Repository PSGallery -Path '.\modules';
 </code></pre>
 <blockquote>
 <p>For pre-release versions the <code>-AllowPrerelease</code> switch must be added when calling <code>Install-Module</code> or <code>Save-Module</code>.</p>
+<p>To install pre-release module versions, upgrading to the latest version of <em>PowerShellGet</em> may be required. To do this use:</p>
+<p><code>Install-Module -Name PowerShellGet -Repository PSGallery -Scope CurrentUser -Force</code></p>
 </blockquote>
 <h2 id="getting-the-extension">Getting the extension</h2>
 <p>You can install the <a href="https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview">latest release</a> of the Visual Studio Code (VSCode) companion extension by searching for <code>PSRule</code> in the extensions pane within VSCode and installing it.</p>
@@ -101,7 +103,7 @@ Save-Module -Name 'PSRule' -Path '.\modules';
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/scenarios/install-instructions.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/bewhite/add-security-policy/docs/scenarios/install-instructions.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

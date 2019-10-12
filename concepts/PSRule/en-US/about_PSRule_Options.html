@@ -90,6 +90,7 @@ This topic describes what options are available, when to and how to use them.</p
 <li><a href="#outputencoding">Output.Encoding</a></li>
 <li><a href="#outputformat">Output.Format</a></li>
 <li><a href="#outputpath">Output.Path</a></li>
+<li><a href="#outputstyle">Output.Style</a></li>
 <li><a href="#suppression">Suppression</a></li>
 </ul>
 <p>Additionally the following baseline options can be included:</p>
@@ -378,19 +379,24 @@ execution:
 </code></pre>
 <h3 id="inputformat">Input.Format</h3>
 <p>Configures the input format for when a string is passed in as a target object.</p>
-<p>Using this option with <code>Invoke-PSRule</code> or <code>Test-PSRuleTarget</code>:</p>
-<ul>
-<li>When the <code>-InputObject</code> parameter or pipeline input is used, strings are treated as plain text by default. When this option is used and set to either <code>Yaml</code> or <code>Json</code>, strings are read as YAML or JSON and are converted to an object.</li>
-<li>When the <code>-InputPath</code> parameter is used with a file path or URL, by default the file extension (either <code>.yaml</code>, <code>.yml</code> or <code>.json</code>) will be used to automatically detect the format as YAML or JSON.</li>
-<li>The <code>-Format</code> parameter will override any value set in configuration.</li>
-</ul>
+<p>Use this option with <code>Assert-PSRule</code>, <code>Invoke-PSRule</code> or <code>Test-PSRuleTarget</code>.</p>
+<p>When the <code>-InputObject</code> parameter or pipeline input is used, strings are treated as plain text by default.
+Set this option to either <code>Yaml</code>, <code>Json</code> or <code>Markdown</code> to have PSRule deserialize the object.</p>
+<p>When the <code>-InputPath</code> parameter is used with a file path or URL.
+If the <code>Detect</code> format is used, the file extension (either <code>.yaml</code>, <code>.yml</code>, <code>.json</code> or <code>.md</code>) will be used to automatically detect the format as YAML, JSON or Markdown.</p>
+<p>The <code>-Format</code> parameter will override any value set in configuration.</p>
 <p>The following formats are available:</p>
 <ul>
 <li>None - Treat strings as plain text.</li>
 <li>Yaml - Treat strings as one or more YAML objects.</li>
 <li>Json - Treat strings as one or more JSON objects.</li>
-<li>Detect - Detect format based on file extension. Detection only applies when used with the <code>-InputPath</code> parameter. In all other cases, <code>Detect</code> is the same as <code>None</code>. This is the default configuration.</li>
+<li>Markdown - Treat strings as a markdown object.</li>
+<li>Detect - Detect format based on file extension.</li>
 </ul>
+<p>Detection only applies when used with the <code>-InputPath</code> parameter.
+In all other cases, <code>Detect</code> is the same as <code>None</code>. This is the default configuration.</p>
+<p>The <code>Markdown</code> format does not parse the whole markdown document.
+Specifically this format deserializes YAML front matter from the top of the document if any exists.</p>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the Format parameter
 $option = New-PSRuleOption -Format Yaml;
@@ -583,7 +589,8 @@ output:
 </code></pre>
 <h3 id="outputformat">Output.Format</h3>
 <p>Configures the format that results will be presented in.
-This option only applies to output generated from <code>Invoke-PSRule</code>.</p>
+This option applies to <code>Invoke-PSRule</code>, <code>Assert-PSRule</code> and <code>Get-PSRule</code>.
+This options is ignored by other cmdlets.</p>
 <p>The following format options are available:</p>
 <ul>
 <li>None - Output is presented as an object using PowerShell defaults. This is the default.</li>
@@ -607,6 +614,8 @@ This option only applies to output generated from <code>Invoke-PSRule</code>.</p
 </li>
 <li>Wide -  Output is presented using the wide table format, which includes reason and wraps columns.</li>
 </ul>
+<p>The Wide format is ignored by <code>Assert-PSRule</code>. <code>Get-PSRule</code> only accepts <code>Wide</code> or <code>None</code>.
+Usage of other formats are treated as <code>None</code>.</p>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the OutputFormat parameter
 $option = New-PSRuleOption -OutputFormat Yaml;
@@ -624,7 +633,8 @@ output:
 <h3 id="outputpath">Output.Path</h3>
 <p>Specifies the output file path to write results.
 Directories along the file path will automatically be created if they do not exist.</p>
-<p>This option only applies to <code>Invoke-PSRule</code>. <code>Invoke-PSRule</code> also includes a parameter <code>-OutputPath</code> to set this option at runtime.
+<p>This option only applies to <code>Invoke-PSRule</code>.
+<code>Invoke-PSRule</code> also includes a parameter <code>-OutputPath</code> to set this option at runtime.
 If specified, the <code>-OutputPath</code> parameter take precedence, over this option.</p>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the OutputPath parameter
@@ -639,6 +649,32 @@ Set-PSRuleOption -OutputPath 'out/results.yaml';
 <pre><code class="lang-yaml"># YAML: Using the output/path property
 output:
   path: 'out/results.yaml'
+</code></pre>
+<h3 id="outputstyle">Output.Style</h3>
+<p>Configures the style that results will be presented in.</p>
+<p>This option only applies to output generated from <code>Assert-PSRule</code>.
+<code>Assert-PSRule</code> also include a parameter <code>-Style</code> to set this option at runtime.
+If specified, the <code>-Style</code> parameter takes precedence, over this option.</p>
+<p>The following styles are available:</p>
+<ul>
+<li>Client - Output is written to the host directly in green/ red to indicate outcome. This is the default.</li>
+<li>Plain - Output is written as an unformatted string. This option can be redirected to a file.</li>
+<li>AzurePipelines - Output is written with commands that can be interpreted by Azure Pipelines.</li>
+<li>GitHubActions - Output is written with commands that can be interpreted by GitHub Actions.</li>
+</ul>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputStyle parameter
+$option = New-PSRuleOption -OutputStyle AzurePipelines;
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Output.Style hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Style' = 'AzurePipelines' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputStyle parameter to set YAML
+Set-PSRuleOption -OutputFormat AzurePipelines;
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the output/style property
+output:
+  style: AzurePipelines
 </code></pre>
 <h3 id="ruleinclude">Rule.Include</h3>
 <p>The name of specific rules to evaluate.
@@ -752,7 +788,11 @@ logging:
 
 output:
   as: Summary
+  culture:
+  - en-US
+  encoding: UTF8
   format: Json
+  style: GitHubActions
 
 # Configure rule suppression
 suppression:
@@ -798,7 +838,7 @@ execution:
 # Configures input options
 input:
   format: Detect
-  objectPath:
+  objectPath: null
 
 # Configures outcome logging options
 logging:
@@ -809,7 +849,9 @@ logging:
 
 output:
   as: Detail
+  encoding: Default
   format: None
+  style: Client
 
 # Configure rule suppression
 suppression: { }
@@ -830,12 +872,12 @@ rule:
   exclude: [ ]
 </code></pre>
 <h2 id="note">NOTE</h2>
-<p>An online version of this document is available at <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md">https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md</a>.</p>
+<p>An online version of this document is available at <a href="https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md">https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md</a>.</p>
 <h2 id="see-also">SEE ALSO</h2>
 <ul>
-<li><a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md">Invoke-PSRule</a></li>
-<li><a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/New-PSRuleOption.md">New-PSRuleOption</a></li>
-<li><a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/Set-PSRuleOption.md">Set-PSRuleOption</a></li>
+<li><a href="https://github.com/Microsoft/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md">Invoke-PSRule</a></li>
+<li><a href="https://github.com/Microsoft/PSRule/blob/master/docs/commands/PSRule/en-US/New-PSRuleOption.md">New-PSRuleOption</a></li>
+<li><a href="https://github.com/Microsoft/PSRule/blob/master/docs/commands/PSRule/en-US/Set-PSRuleOption.md">Set-PSRuleOption</a></li>
 </ul>
 <h2 id="keywords">KEYWORDS</h2>
 <ul>
@@ -850,7 +892,7 @@ rule:
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/bewhite/add-security-policy/docs/concepts/PSRule/en-US/about_PSRule_Options.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

@@ -79,7 +79,7 @@
  [-Format &lt;InputFormat&gt;] [-ObjectPath &lt;String&gt;] [-LoggingLimitDebug &lt;String[]&gt;]
  [-LoggingLimitVerbose &lt;String[]&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;] [-LoggingRulePass &lt;OutcomeLogStream&gt;]
  [-OutputAs &lt;ResultFormat&gt;] [-OutputEncoding &lt;OutputEncoding&gt;] [-OutputFormat &lt;OutputFormat&gt;]
- [-OutputPath &lt;String&gt;] [&lt;CommonParameters&gt;]
+ [-OutputPath &lt;String&gt;] [-OutputStyle &lt;OutputStyle&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>The <strong>New-PSRuleOption</strong> cmdlet creates an options object that can be passed to PSRule cmdlets to configure execution.</p>
@@ -332,7 +332,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-outputas">-OutputAs</h3>
-<p>Sets the option <code>Output.As</code>. The <code>Output.As</code> option configures the type of results to produce, either detail or summary.</p>
+<p>Sets the option <code>Output.As</code>.
+The <code>Output.As</code> option configures the type of results to produce, either detail or summary.</p>
 <pre><code class="lang-yaml">Type: ResultFormat
 Parameter Sets: (All)
 Aliases:
@@ -344,7 +345,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-outputencoding">-OutputEncoding</h3>
-<p>Sets the option <code>Output.Encoding</code>. The <code>Output.Encoding</code> option configured the encoding used to write results to file.</p>
+<p>Sets the option <code>Output.Encoding</code>.
+The <code>Output.Encoding</code> option configured the encoding used to write results to file.</p>
 <pre><code class="lang-yaml">Type: OutputEncoding
 Parameter Sets: (All)
 Aliases:
@@ -357,7 +359,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-outputformat">-OutputFormat</h3>
-<p>Sets the option <code>Output.Format</code>. The <code>Output.Format</code> option configures the format that results will be presented in.</p>
+<p>Sets the option <code>Output.Format</code>.
+The <code>Output.Format</code> option configures the format that results will be presented in.</p>
 <pre><code class="lang-yaml">Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
@@ -370,7 +373,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-outputpath">-OutputPath</h3>
-<p>Sets the option <code>Output.Path</code>. The <code>Output.Path</code> option configures an output file path to write results.</p>
+<p>Sets the option <code>Output.Path</code>.
+The <code>Output.Path</code> option configures an output file path to write results.</p>
 <pre><code class="lang-yaml">Type: String
 Parameter Sets: (All)
 Aliases:
@@ -378,6 +382,21 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-outputstyle">-OutputStyle</h3>
+<p>Sets the option <code>Option.Style</code>.
+The <code>Output.Style</code> option configures the style that results will be presented in.</p>
+<p>This option only applies to <code>Assert-PSRule</code>.</p>
+<pre><code class="lang-yaml">Type: OutputStyle
+Parameter Sets: (All)
+Aliases:
+Accepted values: Client, Plain, AzurePipelines, GitHubActions
+
+Required: False
+Position: Named
+Default value: Client
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
@@ -399,7 +418,7 @@ Accept wildcard characters: False
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/commands/PSRule/en-US/New-PSRuleOption.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/bewhite/add-security-policy/docs/commands/PSRule/en-US/New-PSRuleOption.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

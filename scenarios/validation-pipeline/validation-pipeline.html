@@ -71,7 +71,9 @@
 </ul>
 <h2 id="installing-psrule-within-a-ci-pipeline">Installing PSRule within a CI pipeline</h2>
 <p>Typically PSRule is not pre-installed on CI worker nodes, so within a CI pipeline the PSRule PowerShell module needs to be installed prior to calling PSRule cmdlets such as <code>Invoke-PSRule</code>.</p>
-<p>If your CI pipeline runs on a persistent virtual machine that you control consider pre-installing PSRule. The following examples focus on installing PSRule dynamically during execution of the pipeline. Which is suitable for cloud based CI worker nodes.</p>
+<p>If your CI pipeline runs on a persistent virtual machine that you control consider pre-installing PSRule.
+The following examples focus on installing PSRule dynamically during execution of the pipeline.
+Which is suitable for cloud based CI worker nodes.</p>
 <p>To install PSRule within a CI pipeline execute the <code>Install-Module</code> PowerShell cmdlet.</p>
 <p>In the example below:</p>
 <ul>
@@ -80,7 +82,8 @@
 </ul>
 <pre><code class="lang-powershell">$Null = Install-Module -Name PSRule -Scope CurrentUser -Force;
 </code></pre>
-<p>In some cases installing NuGet may be required before the module can be installed. The NuGet package provider can be installed using the <code>Install-PackageProvider</code> PowerShell cmdlet.</p>
+<p>In some cases installing NuGet may be required before the module can be installed.
+The NuGet package provider can be installed using the <code>Install-PackageProvider</code> PowerShell cmdlet.</p>
 <pre><code class="lang-powershell">$Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
 </code></pre>
 <p>The example below includes both steps together with checks:</p>
@@ -88,12 +91,15 @@
     $Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
 }
 
-if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.6.0' -ErrorAction Ignore)) {
-    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.6.0' -Force;
+if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.9.0' -ErrorAction Ignore)) {
+    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.9.0' -Force;
 }
 </code></pre>
+<p>See the <a href="https://github.com/Microsoft/PSRule/blob/master/CHANGELOG.md">change log</a> for the latest version.</p>
 <h3 id="using-invoke-build">Using Invoke-Build</h3>
-<p><code>Invoke-Build</code> is a build automation cmdlet that can be installed from the PowerShell Gallery by installing the <em>InvokeBuild</em> module. Within Invoke-Build, each build process is broken into tasks as shown in the example below.</p>
+<p><code>Invoke-Build</code> is a build automation cmdlet that can be installed from the PowerShell Gallery by installing the <em>InvokeBuild</em> module.
+Within Invoke-Build, each build process is broken into tasks.</p>
+<p>The following example shows an example of installing <em>PSRule</em> using <em>InvokeBuild</em> tasks.</p>
 <pre><code class="lang-powershell"># Synopsis: Install NuGet
 task InstallNuGet {
     if ($Null -eq (Get-PackageProvider -Name NuGet -ErrorAction Ignore)) {
@@ -103,14 +109,16 @@ task InstallNuGet {
 
 # Synopsis: Install PSRule
 task InstallPSRule InstallNuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.6.0' -ErrorAction Ignore)) {
-        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.6.0' -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.9.0' -ErrorAction Ignore)) {
+        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.9.0' -Force;
     }
 }
 </code></pre>
 <h2 id="fail-the-pipeline">Fail the pipeline</h2>
 <p>When using PSRule within a continuous integration pipeline, typically we need to catch errors and failures and stop the pipeline if any occur.</p>
-<p>When using <code>Invoke-PSRule</code> an easy way to catch an failure or error conditions is to use the <code>-Outcome Fail,Error</code> parameter. By using this parameter only errors or failures are returned to the pipeline. A simple <code>$Null</code> test can then throw a terminating error to stop the pipeline.</p>
+<p>When using <code>Invoke-PSRule</code> an easy way to catch an failure or error conditions is to use the <code>-Outcome Fail,Error</code> parameter.
+By using this parameter only errors or failures are returned to the pipeline.
+A simple <code>$Null</code> test can then throw a terminating error to stop the pipeline.</p>
 <pre><code class="lang-powershell">$result = Invoke-PSRule -Outcome Fail,Error;
 if ($Null -ne $result) {
     throw 'PSRule validation failed.'
@@ -125,8 +133,10 @@ if ($Null -ne $result) {
 }
 </code></pre>
 <h3 id="calling-from-pester">Calling from Pester</h3>
-<p>If you are looking at integrating PSRule into a CI pipeline, there is a good chance that you are already using Pester. Pester is a unit test framework for PowerShell that can be installed from the PowerShell Gallery.</p>
-<p>PSRule can complement Pester unit tests with dynamic validation rules. By using <code>-If</code> or <code>-Type</code> pre-conditions rules can dynamically provide validation for a range of use cases.</p>
+<p>If you are looking at integrating PSRule into a CI pipeline, there is a good chance that you are already using Pester.
+Pester is a unit test framework for PowerShell that can be installed from the PowerShell Gallery.</p>
+<p>PSRule can complement Pester unit tests with dynamic validation rules.
+By using <code>-If</code> or <code>-Type</code> pre-conditions rules can dynamically provide validation for a range of use cases.</p>
 <p>In our example we are going to validate the script files themselves:</p>
 <ul>
 <li>Have a copyright file header</li>
@@ -144,7 +154,8 @@ if ($Null -ne $result) {
 }
 </code></pre>
 <h2 id="generating-nunit-output">Generating NUnit output</h2>
-<p>NUnit is a popular unit test framework for .NET. NUnit generates a test report format that is widely interpreted by CI systems. While PSRule does not use NUnit, it can output the same test report format allowing integration with any system that supports the NUnit3 for publishing test results.</p>
+<p>NUnit is a popular unit test framework for .NET. NUnit generates a test report format that is widely interpreted by CI systems.
+While PSRule does not use NUnit, it can output the same test report format allowing integration with any system that supports the NUnit3 for publishing test results.</p>
 <p>To generate an NUnit report use the <code>-OutputFormat NUnit3</code> parameter.</p>
 <pre><code class="lang-powershell">$option = New-PSRuleOption -LoggingRuleFail Error;
 $inputObjects = Get-ChildItem -Path *.ps1 -Recurse;
@@ -182,7 +193,7 @@ $inputObjects | Invoke-PSRule -Path docs/scenarios/validation-pipeline -Option $
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/master/docs/scenarios/validation-pipeline/validation-pipeline.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/bewhite/add-security-policy/docs/scenarios/validation-pipeline/validation-pipeline.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

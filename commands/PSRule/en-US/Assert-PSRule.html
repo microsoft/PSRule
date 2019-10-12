@@ -1,0 +1,411 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Assert-PSRule </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Assert-PSRule ">
+    <meta name="generator" content="docfx 2.43.2.0">
+    
+    <link rel="shortcut icon" href="../../../favicon.ico">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="assert-psrule">Assert-PSRule</h1>
+
+<h2 id="synopsis">SYNOPSIS</h2>
+<p>Evaluate objects against matching rules and assert any failures.</p>
+<h2 id="syntax">SYNTAX</h2>
+<h3 id="input-default">Input (Default)</h3>
+<pre><code class="lang-text">Assert-PSRule [-Module &lt;String[]&gt;] [-Format &lt;InputFormat&gt;] [-Baseline &lt;BaselineOption&gt;] [-Style &lt;OutputStyle&gt;]
+ [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-OutputPath &lt;String&gt;]
+ [-OutputFormat &lt;OutputFormat&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;] [-Culture &lt;String[]&gt;]
+ -InputObject &lt;PSObject&gt; [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
+</code></pre>
+<h3 id="inputpath">InputPath</h3>
+<pre><code class="lang-text">Assert-PSRule -InputPath &lt;String[]&gt; [-Module &lt;String[]&gt;] [-Format &lt;InputFormat&gt;] [-Baseline &lt;BaselineOption&gt;]
+ [-Style &lt;OutputStyle&gt;] [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-OutputPath &lt;String&gt;]
+ [-OutputFormat &lt;OutputFormat&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;] [-Culture &lt;String[]&gt;] [-WhatIf]
+ [-Confirm] [&lt;CommonParameters&gt;]
+</code></pre>
+<h2 id="description">DESCRIPTION</h2>
+<p>Evaluate objects against matching rules and assert any failures.
+Objects can be specified directly from the pipeline or provided from file.</p>
+<p>The commands <code>Invoke-PSRule</code> and <code>Assert-PSRule</code> provide similar functionality, as differ as follows:</p>
+<ul>
+<li><code>Invoke-PSRule</code> writes results as structured objects</li>
+<li><code>Assert-PSRule</code> writes results as a formatted string.</li>
+</ul>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="example-1">Example 1</h3>
+<pre><code class="lang-powershell">@{ Name = 'Item 1' } | Assert-PSRule;
+</code></pre>
+<p>Evaluate a simple hashtable on the pipeline against rules loaded from the current working path.</p>
+<h3 id="example-2">Example 2</h3>
+<pre><code class="lang-powershell"># Define objects to validate
+$items = @();
+$items += [PSCustomObject]@{ Name = 'Fridge' };
+$items += [PSCustomObject]@{ Name = 'Apple' };
+
+# Validate each item using rules saved in current working path
+$items | Assert-PSRule -Path .\docs\scenarios\fruit\
+</code></pre>
+<pre><code class="lang-text"> -&gt; Fridge : System.Management.Automation.PSCustomObject
+
+    [FAIL] isFruit
+
+ -&gt; Apple : System.Management.Automation.PSCustomObject
+
+    [PASS] isFruit
+
+Assert-PSRule : One or more rules reported failure.
+At line:1 char:10
++ $items | Assert-PSRule -Path .\docs\scenarios\fruit\
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ CategoryInfo          : InvalidData: (:) [Assert-PSRule], FailPipelineException
++ FullyQualifiedErrorId : PSRule.Fail,Assert-PSRule
+</code></pre>
+<p>Evaluate an array of objects on the pipeline against rules loaded a specified relative path.</p>
+<h2 id="parameters">PARAMETERS</h2>
+<h3 id="-baseline">-Baseline</h3>
+<p>Specifies an explicit baseline by name to use for evaluating rules.
+Baselines can contain filters and custom configuration that overrides the defaults.</p>
+<pre><code class="lang-yaml">Type: BaselineOption
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-confirm">-Confirm</h3>
+<p>Prompts you for confirmation before running the cmdlet.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-culture">-Culture</h3>
+<p>Specifies the culture to use for rule documentation and messages. By default, the culture of PowerShell is used.</p>
+<p>This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.</p>
+<p>The PowerShell cmdlet <code>Get-Culture</code> shows the current culture of PowerShell.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-format">-Format</h3>
+<p>Configures the input format for when a string is passed in as a target object.</p>
+<p>When the <code>-InputObject</code> parameter or pipeline input is used, strings are treated as plain text by default.
+Set this option to either <code>Yaml</code>, <code>Json</code> or <code>Markdown</code> to have PSRule deserialize the object.</p>
+<p>When the <code>-InputPath</code> parameter is used with a file path or URL.
+If the <code>Detect</code> format is used, the file extension (either <code>.yaml</code>, <code>.yml</code>, <code>.json</code> or <code>.md</code>) will be used to automatically detect the format as YAML, JSON or Markdown.</p>
+<p>This parameter takes precedence over the <code>Input.Format</code> option if set.</p>
+<pre><code class="lang-yaml">Type: InputFormat
+Parameter Sets: (All)
+Aliases:
+Accepted values: None, Yaml, Json, Markdown, Detect
+
+Required: False
+Position: Named
+Default value: Detect
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-inputobject">-InputObject</h3>
+<p>The pipeline object to process rules for.</p>
+<pre><code class="lang-yaml">Type: PSObject
+Parameter Sets: Input
+Aliases: TargetObject
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-inputpath">-InputPath</h3>
+<p>Instead of processing objects from the pipeline, import objects file the specified file paths.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: InputPath
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-module">-Module</h3>
+<p>Search for rule definitions within a module.
+When specified without the <code>-Path</code> parameter, only rule definitions in the module will be discovered.</p>
+<p>When both <code>-Path</code> and <code>-Module</code> are specified, rule definitions from both are discovered.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-name">-Name</h3>
+<p>The name of a specific rule to evaluate.
+If this parameter is not specified all rules in search paths will be evaluated.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases: n
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-objectpath">-ObjectPath</h3>
+<p>The name of a property to use instead of the pipeline object.
+If the property specified by <code>ObjectPath</code> is a collection or an array, then each item in evaluated separately.</p>
+<pre><code class="lang-yaml">Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-option">-Option</h3>
+<p>Additional options that configure execution.
+A <code>PSRuleOption</code> can be created by using the <code>New-PSRuleOption</code> cmdlet.
+Alternatively, a hashtable or path to YAML file can be specified with options.</p>
+<p>For more information on PSRule options see about_PSRule_Options.</p>
+<pre><code class="lang-yaml">Type: PSRuleOption
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-outputformat">-OutputFormat</h3>
+<p>Configures the format that output is presented in.</p>
+<p>The following format options are available:</p>
+<ul>
+<li>None - Output is presented as an object using PowerShell defaults. This is the default.</li>
+<li>Yaml - Output is serialized as YAML.</li>
+<li>Json - Output is serialized as JSON.</li>
+<li>NUnit3 - Output is serialized as NUnit3 (XML).</li>
+<li>Csv - Output is serialized as a comma separated values (CSV).</li>
+</ul>
+<p>The <code>Wide</code> format is not applicable to <code>Assert-PSRule</code>.</p>
+<pre><code class="lang-yaml">Type: OutputFormat
+Parameter Sets: (All)
+Aliases:
+Accepted values: None, Yaml, Json, NUnit3, Csv
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-outputpath">-OutputPath</h3>
+<p>Specifies the output file path to write results.
+Directories along the file path will automatically be created if they do not exist.</p>
+<pre><code class="lang-yaml">Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-style">-Style</h3>
+<p>Configures the style that results will be presented in.</p>
+<p>The following styles are available:</p>
+<ul>
+<li>Client - Output is written to the host directly in green/ red to indicate outcome. This is the default.</li>
+<li>Plain - Output is written as an unformatted string. This option can be redirected to a file.</li>
+<li>AzurePipelines - Output is written with commands that can be interpreted by Azure Pipelines.</li>
+<li>GitHubActions - Output is written with commands that can be interpreted by GitHub Actions.</li>
+</ul>
+<pre><code class="lang-yaml">Type: OutputStyle
+Parameter Sets: (All)
+Aliases:
+Accepted values: Client, Plain, AzurePipelines, GitHubActions
+
+Required: False
+Position: Named
+Default value: Client
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-path">-Path</h3>
+<p>One or more paths to search for rule definitions within.</p>
+<p>If this parameter is not specified the current working path will be used, unless the <code>-Module</code> parameter is used.</p>
+<p>If the <code>-Module</code> parameter is used, rule definitions from the currently working path will not be included by default.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases: p
+
+Required: False
+Position: 0
+Default value: $PWD
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-tag">-Tag</h3>
+<p>Only get rules with the specified tags set.
+If this parameter is not specified all rules in search paths will be returned.</p>
+<p>When more than one tag is used, all tags must match. Tags are not case sensitive.
+A tag value of <code>*</code> may be used to filter rules to any rule with the tag set, regardless of tag value.</p>
+<p>An array of tag values can be used to match a rule with either value.
+i.e. <code>severity = important, critical</code> matches rules with a category of either <code>important</code> or <code>critical</code>.</p>
+<pre><code class="lang-yaml">Type: Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-whatif">-WhatIf</h3>
+<p>Shows what would happen if the cmdlet runs.
+The cmdlet is not run.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="commonparameters">CommonParameters</h3>
+<p>This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see <a href="http://go.microsoft.com/fwlink/?LinkID=113216">about_CommonParameters</a>.</p>
+<h2 id="inputs">INPUTS</h2>
+<h3 id="systemmanagementautomationpsobject">System.Management.Automation.PSObject</h3>
+<p>You can pipe any object to <strong>Assert-PSRule</strong>.</p>
+<h2 id="outputs">OUTPUTS</h2>
+<h3 id="systemstring">System.String</h3>
+<h2 id="notes">NOTES</h2>
+<h2 id="related-links">RELATED LINKS</h2>
+<p><a href="Get-PSRule.html">Get-PSRule</a></p>
+<p><a href="Invoke-PSRule.html">Invoke-PSRule</a></p>
+<p><a href="Test-PSRuleTarget.html">Test-PSRuleTarget</a></p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Microsoft/PSRule/blob/bewhite/add-security-policy/docs/commands/PSRule/en-US/Assert-PSRule.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>
