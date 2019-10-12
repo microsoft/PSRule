@@ -138,11 +138,9 @@ stages:
       condition: eq(variables['coverage'], 'true')
 
     # Generate artifacts
-    - task: PublishPipelineArtifact@1
+    - publish: out/modules/PSRule
       displayName: 'Publish module'
-      inputs:
-        artifactName: PSRule
-        targetPath: out/modules/PSRule
+      artifact: PSRule
       condition: and(succeeded(), eq(variables['publish'], 'true'))
 
     # - task: PublishPipelineArtifact@1
