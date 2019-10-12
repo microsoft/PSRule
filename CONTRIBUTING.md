@@ -24,7 +24,7 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 
 ## Contributing to Issues
 
-- Check if the issue you are going to file already exists in our GitHub [issues](https://github.com/BernieWhite/PSRule/issues).
+- Check if the issue you are going to file already exists in our GitHub [issues](https://github.com/Microsoft/PSRule/issues).
 - If you do not see your problem captured, please file a new issue and follow the provided template.
 
 [learn-git]: https://help.github.com/en/articles/git-and-github-learning-resources

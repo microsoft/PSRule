@@ -15,7 +15,8 @@ Features of PSRule include:
 
 This project is to be considered a **proof-of-concept** and **not a supported product**.
 
-If you have any problems please check our GitHub [issues](https://github.com/BernieWhite/PSRule/issues) page. If you do not see your problem captured, please file a new issue and follow the provided template.
+If you have any problems please check our GitHub [issues](https://github.com/Microsoft/PSRule/issues) page.
+If you do not see your problem captured, please file a new issue and follow the provided template.
 
 ## Getting the module
 
@@ -47,7 +48,8 @@ Rule 'NameOfRule' {
 }
 ```
 
-Within the body of the rule provide one or more conditions. A condition is valid PowerShell that results in `$True` or `$False`.
+Within the body of the rule provide one or more conditions.
+A condition is valid PowerShell that results in `$True` or `$False`.
 
 For example:
 
@@ -70,7 +72,8 @@ Rule 'isFruit' {
 }
 ```
 
-The rule is saved to a file named [`isFruit.Rule.ps1`](docs/scenarios/fruit/isFruit.Rule.ps1) file. One or more rules can be defined within a single file.
+The rule is saved to a file named [`isFruit.Rule.ps1`](docs/scenarios/fruit/isFruit.Rule.ps1) file.
+One or more rules can be defined within a single file.
 
 ### Execute a rule
 
