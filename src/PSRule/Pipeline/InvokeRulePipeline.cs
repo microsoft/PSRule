@@ -183,7 +183,7 @@ namespace PSRule.Pipeline
     }
 
     /// <summary>
-    /// A helper to construct an invoke pipeline.
+    /// A helper to construct the pipeline for Invoke-PSRule.
     /// </summary>
     internal sealed class InvokeRulePipelineBuilder : InvokePipelineBuilderBase
     {
@@ -237,7 +237,7 @@ namespace PSRule.Pipeline
         {
             if (_ResultFormat == ResultFormat.Summary)
                 Writer.Write(_Summary.Values.Where(r => _Outcome == RuleOutcome.All || (r.Outcome & _Outcome) > 0), true);
-            
+
             Writer.End();
         }
 

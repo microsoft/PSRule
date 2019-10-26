@@ -104,16 +104,12 @@ namespace PSRule.Parser
             _EscapeLength = 0;
 
             if (_Length < 0 || _Length > MaxLength)
-            {
                 throw new ArgumentOutOfRangeException(nameof(markdown));
-            }
 
             UpdateCurrent();
 
             if (_Source.Length > 0)
-            {
                 _Line = 1;
-            }
         }
 
         #region Properties
@@ -200,20 +196,14 @@ namespace PSRule.Parser
             while ((Current == CarrageReturn || Current == NewLine) && (max == 0 || skipped < max))
             {
                 if (Remaining == 0)
-                {
                     break;
-                }
 
                 if (Current == CarrageReturn && Peak() == NewLine)
-                {
                     Next();
-                }
 
                 Next(ignoreEscaping: ignoreEscaping);
-
                 skipped++;
             }
-
             return skipped;
         }
 
@@ -224,26 +214,20 @@ namespace PSRule.Parser
         public int SkipNext(char c)
         {
             var skipped = 0;
-
             while (Peak() == c)
             {
                 Next();
-
                 skipped++;
             }
-
             return skipped;
         }
 
         public bool Skip(char c)
         {
             if (_Current != c)
-            {
                 return false;
-            }
 
             Next();
-
             return true;
         }
 
@@ -435,6 +419,22 @@ namespace PSRule.Parser
             return 0;
         }
 
+        public string CaptureWithinLineUntil(char c)
+        {
+            var start = Position;
+            var length = 0;
+
+            while (Current != c && !EOF)
+            {
+                if (NewLineStopCharacters.Contains(Current))
+                    break;
+
+                length++;
+                Next();
+            }
+            return Substring(start, length);
+        }
+
         /// <summary>
         /// Capture text until the sequence is found.
         /// </summary>
@@ -450,7 +450,6 @@ namespace PSRule.Parser
             while (!IsSequence(sequence, onNewLine) && !EOF)
             {
                 length++;
-
                 Next(ignoreEscaping);
             }
 
@@ -458,34 +457,11 @@ namespace PSRule.Parser
             for (var i = 1; i < length; i++)
             {
                 if (!IsLineEnding(Peak(-i)))
-                {
                     break;
-                }
 
                 length--;
             }
-
             return Substring(start, length, ignoreEscaping);
-        }
-
-        public string CaptureWithinLineUntil(char c)
-        {
-            var start = Position;
-            var length = 0;
-
-            while (Current != c && !EOF)
-            {
-                if (NewLineStopCharacters.Contains(Current))
-                {
-                    break;
-                }
-
-                length++;
-
-                Next();
-            }
-
-            return Substring(start, length);
         }
 
         public string CaptureUntil(char[] c, bool ignoreEscaping = false)
@@ -496,15 +472,11 @@ namespace PSRule.Parser
             while (!EOF)
             {
                 if (!IsEscaped && c.Contains(Current))
-                {
                     break;
-                }
 
                 length++;
-
                 Next(ignoreEscaping);
             }
-
             return Substring(start, length, ignoreEscaping);
         }
 
@@ -516,41 +488,29 @@ namespace PSRule.Parser
             while (!EOF)
             {
                 if (!IsEscaped && match(Current))
-                {
                     break;
-                }
 
                 length++;
-
                 Next(ignoreEscaping);
             }
-
             return Substring(start, length, ignoreEscaping);
         }
 
         private string Substring(int start, int length, bool ignoreEscaping = false)
         {
             if (ignoreEscaping)
-            {
                 return _Source.Substring(start, length);
-            }
 
             var position = start;
             var i = 0;
-
             var buffer = new char[length];
-
             while (i < length)
             {
                 var offset = GetEscapeCount(position);
-
                 buffer[i] = _Source[position + offset];
-
                 position += offset + 1;
-
                 i++;
             }
-
             return new string(buffer);
         }
 
@@ -566,23 +526,16 @@ namespace PSRule.Parser
         public bool IsSequence(string sequence, bool onNewLine = false)
         {
             if (onNewLine && !IsStartOfLine)
-            {
                 return false;
-            }
 
             if (!HasRemaining(sequence.Length))
-            {
                 return false;
-            }
 
             for (var i = 0; i < sequence.Length; i++)
             {
                 if (Peak(i) != sequence[i])
-                {
                     return false;
-                }
             }
-
             return true;
         }
 

@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Engines;
 using PSRule.Configuration;
 using PSRule.Pipeline;
 using PSRule.Rules;

@@ -195,50 +195,67 @@ namespace PSRule.Rules
 
         private SourceFile[] GetFiles(string path, string helpPath, string moduleName = null)
         {
-            var result = new List<SourceFile>();
             var rootedPath = PSRuleOption.GetRootedPath(path);
             var extension = Path.GetExtension(rootedPath);
-            if (extension == ".ps1" || extension == ".yaml" || extension == ".yml")
+            if (IsSourceFile(extension))
             {
-                if (!File.Exists(rootedPath))
-                    throw new FileNotFoundException(PSRuleResources.SourceNotFound, rootedPath);
-
-                if (helpPath == null)
-                    helpPath = Path.GetDirectoryName(rootedPath);
-
-                result.Add(new SourceFile(rootedPath, null, GetSourceType(rootedPath), helpPath));
+                return IncludeFile(rootedPath, helpPath);
             }
             else if (System.IO.Directory.Exists(rootedPath))
             {
-                var files = System.IO.Directory.EnumerateFiles(rootedPath, "*.Rule.*", SearchOption.AllDirectories);
-                foreach (var file in files)
-                {
-                    if (Include(file))
-                    {
-                        if (helpPath == null)
-                            helpPath = Path.GetDirectoryName(file);
-
-                        result.Add(new SourceFile(file, moduleName, GetSourceType(file), helpPath));
-                    }
-                }
+                return IncludePath(rootedPath, helpPath, moduleName);
             }
-            else
-            {
-                return null;
-            }
-            return result.ToArray();
+            return null;
         }
 
-        private bool Include(string path)
+        private bool ShouldInclude(string path)
         {
             return path.EndsWith(".rule.ps1", System.StringComparison.OrdinalIgnoreCase) ||
                 path.EndsWith(".rule.yaml", System.StringComparison.OrdinalIgnoreCase);
         }
 
+        private SourceFile[] IncludeFile(string path, string helpPath)
+        {
+            if (!File.Exists(path))
+                throw new FileNotFoundException(PSRuleResources.SourceNotFound, path);
+
+            if (helpPath == null)
+                helpPath = Path.GetDirectoryName(path);
+
+            return new SourceFile[] { new SourceFile(path, null, GetSourceType(path), helpPath) };
+        }
+
+        private SourceFile[] IncludePath(string path, string helpPath, string moduleName)
+        {
+            var result = new List<SourceFile>();
+            var files = System.IO.Directory.EnumerateFiles(path, "*.Rule.*", SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                if (ShouldInclude(file))
+                {
+                    if (helpPath == null)
+                        helpPath = Path.GetDirectoryName(file);
+
+                    result.Add(new SourceFile(file, moduleName, GetSourceType(file), helpPath));
+                }
+            }
+            return result.ToArray();
+        }
+
         private RuleSourceType GetSourceType(string path)
         {
             var extension = Path.GetExtension(path);
-            return (extension == ".yaml" || extension == ".yml") ? RuleSourceType.Yaml : RuleSourceType.Script;
+            return IsYamlFile(extension) ? RuleSourceType.Yaml : RuleSourceType.Script;
+        }
+
+        private bool IsSourceFile(string extension)
+        {
+            return extension == ".ps1" || extension == ".yaml" || extension == ".yml";
+        }
+
+        private bool IsYamlFile(string extension)
+        {
+            return extension == ".yaml" || extension == ".yml";
         }
     }
 }

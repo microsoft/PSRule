@@ -194,7 +194,7 @@ namespace PSRule.Pipeline
             else
             {
                 var uri = sourceObject.BaseObject as Uri;
-                sourceInfo = new PSSourceInfo(uri); 
+                sourceInfo = new PSSourceInfo(uri);
                 using (var webClient = new WebClient())
                 {
                     return webClient.DownloadString(uri);

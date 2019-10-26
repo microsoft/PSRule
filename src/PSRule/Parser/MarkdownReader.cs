@@ -215,7 +215,7 @@ namespace PSRule.Parser
             _Stream.MarkExtentStart();
 
             // Set the default style
-            var textStyle = MarkdownTokenFlags.None;
+            var textStyle = MarkdownTokens.None;
 
             var startOfLine = _Stream.IsStartOfLine;
 
@@ -233,12 +233,12 @@ namespace PSRule.Parser
                 _Context = MarkdownReaderMode.List;
 
                 if (_Output.Current != null && _Output.Current.Flag.IsEnding() && !_Output.Current.Flag.ShouldPreserve())
-                    _Output.Current.Flag |= MarkdownTokenFlags.Preserve;
+                    _Output.Current.Flag |= MarkdownTokens.Preserve;
             }
 
             // Override line ending if the line was a list item so that the line ending is preserved
             if (_Context == MarkdownReaderMode.List && ending.IsEnding())
-                ending |= MarkdownTokenFlags.Preserve;
+                ending |= MarkdownTokens.Preserve;
 
             // Add the text to the output stream
             _Output.Text(text, flag: textStyle | ending);
@@ -247,9 +247,9 @@ namespace PSRule.Parser
                 _Context = MarkdownReaderMode.None;
         }
 
-        private string UnwrapStyleMarkers(MarkdownStream stream, out MarkdownTokenFlags flag)
+        private string UnwrapStyleMarkers(MarkdownStream stream, out MarkdownTokens flag)
         {
-            flag = MarkdownTokenFlags.None;
+            flag = MarkdownTokens.None;
 
             // Check for style
             var styleChar = stream.Current;
@@ -275,10 +275,10 @@ namespace PSRule.Parser
                         text = Pad(text, styleChar, left: styleCount - styleEnding);
 
                     if (styleEnding == 1 || styleEnding == 3)
-                        flag |= MarkdownTokenFlags.Italic;
+                        flag |= MarkdownTokens.Italic;
 
                     if (styleEnding >= 2)
-                        flag |= MarkdownTokenFlags.Bold;
+                        flag |= MarkdownTokens.Bold;
                 }
                 else
                 {
@@ -298,7 +298,7 @@ namespace PSRule.Parser
                         text = Pad(text, styleChar, left: codeCount - codeEnding);
 
                     if (codeEnding == 1)
-                        flag |= MarkdownTokenFlags.Code;
+                        flag |= MarkdownTokens.Code;
                 }
                 else
                 {
@@ -329,9 +329,12 @@ namespace PSRule.Parser
             return false;
         }
 
-        private MarkdownTokenFlags GetEnding(int lineEndings)
+        private MarkdownTokens GetEnding(int lineEndings)
         {
-            return lineEndings == 0 ? MarkdownTokenFlags.None : (lineEndings == 1) ? MarkdownTokenFlags.LineEnding : MarkdownTokenFlags.LineBreak;
+            if (lineEndings == 0)
+                return MarkdownTokens.None;
+
+            return (lineEndings == 1) ? MarkdownTokens.LineEnding : MarkdownTokens.LineBreak;
         }
 
         /// <summary>

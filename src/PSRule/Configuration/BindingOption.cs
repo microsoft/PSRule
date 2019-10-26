@@ -34,9 +34,15 @@ namespace PSRule.Configuration
 
         public override bool Equals(object obj)
         {
-            return obj != null &&
-                obj is BindingOption &&
-                Equals(obj as BindingOption);
+            return obj is BindingOption option && Equals(option);
+        }
+
+        public bool Equals(BindingOption other)
+        {
+            return other != null &&
+                IgnoreCase == other.IgnoreCase &&
+                TargetName == other.TargetName &&
+                TargetType == other.TargetType;
         }
 
         public override int GetHashCode()
@@ -49,14 +55,6 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (TargetType != null ? TargetType.GetHashCode() : 0);
                 return hash;
             }
-        }
-
-        public bool Equals(BindingOption other)
-        {
-            return other != null &&
-                IgnoreCase == other.IgnoreCase &&
-                TargetName == other.TargetName &&
-                TargetType == other.TargetType;
         }
 
         /// <summary>

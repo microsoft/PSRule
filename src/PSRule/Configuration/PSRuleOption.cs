@@ -324,16 +324,28 @@ namespace PSRule.Configuration
         public static implicit operator PSRuleOption(string path)
         {
             var option = FromFile(path: path, silentlyContinue: false);
-
             return option;
         }
 
         public override bool Equals(object obj)
         {
-            return obj != null &&
-                obj is PSRuleOption &&
-                Equals(obj as PSRuleOption);
+            return obj is PSRuleOption option && Equals(option);
         }
+
+        public bool Equals(PSRuleOption other)
+        {
+            return other != null &&
+                Binding == other.Binding &&
+                Configuration == other.Configuration &&
+                Execution == other.Execution &&
+                Input == other.Input &&
+                Logging == other.Logging &&
+                Output == other.Output &&
+                Suppression == other.Suppression &&
+                Pipeline == other.Pipeline &&
+                Rule == other.Rule;
+        }
+
         public override int GetHashCode()
         {
             unchecked // Overflow is fine
@@ -350,20 +362,6 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (Rule != null ? Rule.GetHashCode() : 0);
                 return hash;
             }
-        }
-
-        public bool Equals(PSRuleOption other)
-        {
-            return other != null &&
-                Binding == other.Binding &&
-                Configuration == other.Configuration &&
-                Execution == other.Execution &&
-                Input == other.Input &&
-                Logging == other.Logging &&
-                Output == other.Output &&
-                Suppression == other.Suppression &&
-                Pipeline == other.Pipeline &&
-                Rule == other.Rule;
         }
 
         /// <summary>

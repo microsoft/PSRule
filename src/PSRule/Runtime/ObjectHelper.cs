@@ -41,7 +41,6 @@ namespace PSRule.Runtime
                 if (Position < Last)
                 {
                     Position++;
-
                     if (Name[Position] == Separator)
                     {
                         Position++;
@@ -53,10 +52,8 @@ namespace PSRule.Runtime
                     }
 
                     Current = Name[Position];
-
                     return true;
                 }
-
                 return false;
             }
 
@@ -103,7 +100,6 @@ namespace PSRule.Runtime
                         return Position - 1;
                     }
                 }
-
                 return Position;
             }
 
@@ -115,7 +111,6 @@ namespace PSRule.Runtime
                 while (Next())
                 {
                     var start = Position;
-
                     if (start > 0)
                     {
                         token.Next = new NameToken();
@@ -135,7 +130,6 @@ namespace PSRule.Runtime
                         token.Index = int.Parse(Name.Substring(start, end - start + 1));
                     }
                 }
-
                 return result;
             }
         }
@@ -148,18 +142,14 @@ namespace PSRule.Runtime
                 nameToken = GetNameToken(expression: name);
 
                 if (bindingContext != null)
-                {
                     bindingContext.CacheNameToken(expression: name, nameToken: nameToken);
-                }
             }
-
             return GetField(targetObject: targetObject, token: nameToken, caseSensitive: caseSensitive, value: out value);
         }
 
         private static bool GetField(object targetObject, NameToken token, bool caseSensitive, out object value)
         {
             var baseObject = GetBaseObject(targetObject);
-
             if (baseObject == null)
             {
                 value = null;
@@ -167,7 +157,6 @@ namespace PSRule.Runtime
             }
 
             var baseType = baseObject.GetType();
-
             object field = null;
             bool foundField = false;
 
@@ -178,42 +167,20 @@ namespace PSRule.Runtime
                 if (typeof(IDictionary).IsAssignableFrom(baseType))
                 {
                     var dictionary = (IDictionary)baseObject;
-
                     if (dictionary.GetFieldName(fieldName: token.Name, caseSensitive: caseSensitive, value: out field))
-                    {
                         foundField = true;
-                    }
                 }
                 // Handle PSObjects
                 else if (targetObject is PSObject pso)
                 {
                     if (pso.PropertyValue(propertyName: token.Name, caseSensitive: caseSensitive, value: out field))
-                    {
                         foundField = true;
-                    }
                 }
                 // Handle all other CLR types
                 else
                 {
-                    var bindingFlags = caseSensitive ? BindingFlags.Default : BindingFlags.IgnoreCase;
-
-                    var propertyInfo = baseType.GetProperty(token.Name, bindingAttr: bindingFlags | BindingFlags.Instance | BindingFlags.Public);
-
-                    if (propertyInfo != null)
-                    {
-                        field = propertyInfo.GetValue(targetObject);
+                    if (GetPropertyValue(targetObject, token.Name, baseType, caseSensitive, out field) || GetFieldValue(targetObject, token.Name, baseType, caseSensitive, out field))
                         foundField = true;
-                    }
-                    else
-                    {
-                        var fieldInfo = baseType.GetField(token.Name, bindingAttr: bindingFlags | BindingFlags.Instance | BindingFlags.Public);
-
-                        if (fieldInfo != null)
-                        {
-                            field = fieldInfo.GetValue(targetObject);
-                            foundField = true;
-                        }
-                    }
                 }
             }
             // Handle Index tokens
@@ -222,7 +189,6 @@ namespace PSRule.Runtime
                 if (baseType.IsArray)
                 {
                     var array = (Array)baseObject;
-
                     if (token.Index < array.Length)
                     {
                         field = array.GetValue(token.Index);
@@ -243,9 +209,34 @@ namespace PSRule.Runtime
                     return GetField(targetObject: field, token: token.Next, caseSensitive: caseSensitive, value: out value);
                 }
             }
-
             value = null;
             return false;
+        }
+
+        private static bool GetPropertyValue(object targetObject, string propertyName, Type baseType, bool caseSensitive, out object value)
+        {
+            value = null;
+            var bindingFlags = caseSensitive ? BindingFlags.Default : BindingFlags.IgnoreCase;
+            var propertyInfo = baseType.GetProperty(propertyName, bindingAttr: bindingFlags | BindingFlags.Instance | BindingFlags.Public);
+
+            if (propertyInfo == null)
+                return false;
+
+            value = propertyInfo.GetValue(targetObject);
+            return true;
+        }
+
+        private static bool GetFieldValue(object targetObject, string fieldName, Type baseType, bool caseSensitive, out object value)
+        {
+            value = null;
+            var bindingFlags = caseSensitive ? BindingFlags.Default : BindingFlags.IgnoreCase;
+            var fieldInfo = baseType.GetField(fieldName, bindingAttr: bindingFlags | BindingFlags.Instance | BindingFlags.Public);
+
+            if (fieldInfo == null)
+                return false;
+
+            value = fieldInfo.GetValue(targetObject);
+            return true;
         }
 
         private static NameToken GetNameToken(string expression)

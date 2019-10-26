@@ -7,19 +7,19 @@ namespace PSRule.Parser
     {
         public static bool IsSingleLineEnding(this MarkdownToken token)
         {
-            return token.Flag.HasFlag(MarkdownTokenFlags.LineEnding) ||
+            return token.Flag.HasFlag(MarkdownTokens.LineEnding) ||
                 token.Type == MarkdownTokenType.LineBreak;
         }
 
         public static bool IsPreservableLineEnding(this MarkdownToken token)
         {
-            return (token.Flag.HasFlag(MarkdownTokenFlags.LineEnding) && token.Flag.HasFlag(MarkdownTokenFlags.Preserve)) ||
+            return (token.Flag.HasFlag(MarkdownTokens.LineEnding) && token.Flag.HasFlag(MarkdownTokens.Preserve)) ||
                 token.Type == MarkdownTokenType.LineBreak;
         }
 
         public static bool IsDoubleLineEnding(this MarkdownToken token)
         {
-            return token.Flag.HasFlag(MarkdownTokenFlags.LineBreak) && token.Type != MarkdownTokenType.LineBreak;
+            return token.Flag.HasFlag(MarkdownTokens.LineBreak) && token.Type != MarkdownTokenType.LineBreak;
         }
     }
 }

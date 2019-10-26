@@ -46,9 +46,18 @@ namespace PSRule.Configuration
 
         public override bool Equals(object obj)
         {
-            return obj != null &&
-                obj is OutputOption &&
-                Equals(obj as OutputOption);
+            return obj is OutputOption option && Equals(option);
+        }
+
+        public bool Equals(OutputOption other)
+        {
+            return other != null &&
+                As == other.As &&
+                Culture == other.Culture &&
+                Encoding == other.Encoding &&
+                Format == other.Format &&
+                Path == other.Path &&
+                Style == other.Style;
         }
 
         public override int GetHashCode()
@@ -64,17 +73,6 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (Style.HasValue ? Style.Value.GetHashCode() : 0);
                 return hash;
             }
-        }
-
-        public bool Equals(OutputOption other)
-        {
-            return other != null &&
-                As == other.As &&
-                Culture == other.Culture &&
-                Encoding == other.Encoding &&
-                Format == other.Format &&
-                Path == other.Path &&
-                Style == other.Style;
         }
 
         /// <summary>
