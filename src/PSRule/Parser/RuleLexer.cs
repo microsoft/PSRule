@@ -181,7 +181,7 @@ namespace PSRule.Parser
 
             var text = ReadText(stream);
 
-            return new TextBlock(text: text, formatOption: useBreak ? FormatOption.LineBreak : FormatOption.None);
+            return new TextBlock(text: text, formatOption: useBreak ? FormatOptions.LineBreak : FormatOptions.None);
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace PSRule.Parser
                 stream.Next();
             }
 
-            if (stream.EOF && stream.Peak(-1).Flag.HasFlag(MarkdownTokenFlags.Preserve) && stream.Peak(-1).Flag.HasFlag(MarkdownTokenFlags.LineEnding))
+            if (stream.EOF && stream.Peak(-1).Flag.HasFlag(MarkdownTokens.Preserve) && stream.Peak(-1).Flag.HasFlag(MarkdownTokens.LineEnding))
             {
                 AppendEnding(sb, stream.Peak(-1));
             }

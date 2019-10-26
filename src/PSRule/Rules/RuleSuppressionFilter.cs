@@ -53,10 +53,8 @@ namespace PSRule.Rules
 
             public override bool Equals(object obj)
             {
-                if (obj == null || !(obj is SuppressionKey))
-                {
+                if (!(obj is SuppressionKey))
                     return false;
-                }
 
                 var k2 = obj as SuppressionKey;
 

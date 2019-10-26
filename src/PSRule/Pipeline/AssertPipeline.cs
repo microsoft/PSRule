@@ -199,7 +199,7 @@ namespace PSRule.Pipeline
                             _Logger.WriteObject(string.Empty, false);
                             _Logger.WriteObject(string.Concat("::error:: ", records[i].TargetName, " [FAIL] ", records[i].RuleName), false);
                             Reason(records[i]);
-                            if (i+1 < records.Length)
+                            if (i + 1 < records.Length)
                                 _Logger.WriteObject(string.Empty, false);
                         }
                     }

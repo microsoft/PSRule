@@ -402,17 +402,13 @@ namespace PSRule
         private bool TryResource(string name, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
         {
             spec = null;
-            if (_Factory.TryDescriptor(name, out ISpecDescriptor descriptor))
+            if (_Factory.TryDescriptor(name, out ISpecDescriptor descriptor) && reader.Accept<MappingStart>())
             {
-                // Using object style
-                if (reader.Accept<MappingStart>())
-                {
-                    if (!_Next.Deserialize(reader, descriptor.SpecType, nestedObjectDeserializer, out object value))
-                        return false;
+                if (!_Next.Deserialize(reader, descriptor.SpecType, nestedObjectDeserializer, out object value))
+                    return false;
 
-                    spec = descriptor.CreateInstance(PipelineContext.CurrentThread.Source.File, metadata, comment, value);
-                    return true;
-                }
+                spec = descriptor.CreateInstance(PipelineContext.CurrentThread.Source.File, metadata, comment, value);
+                return true;
             }
             return false;
         }

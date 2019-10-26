@@ -10,7 +10,7 @@ namespace PSRule.Parser
     /// Define options that determine how markdown will be rendered.
     /// </summary>
     [Flags()]
-    internal enum FormatOption : byte
+    internal enum FormatOptions : byte
     {
         None = 0,
 
@@ -33,9 +33,9 @@ namespace PSRule.Parser
         /// <summary>
         /// Additional options that determine how the section will be formated when rendering markdown.
         /// </summary>
-        public readonly FormatOption FormatOption;
+        public readonly FormatOptions FormatOption;
 
-        public TextBlock(string text, FormatOption formatOption = FormatOption.None)
+        public TextBlock(string text, FormatOptions formatOption = FormatOptions.None)
         {
             Text = text;
             FormatOption = formatOption;

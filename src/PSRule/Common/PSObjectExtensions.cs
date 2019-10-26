@@ -18,18 +18,6 @@ namespace PSRule
             return (T)o.Properties[propertyName].Value;
         }
 
-        public static string ValueAsString(this PSObject o, string propertyName, bool caseSensitive)
-        {
-            var p = o.Properties[propertyName];
-            if (p == null)
-                return null;
-
-            if (caseSensitive && !StringComparer.Ordinal.Equals(p.Name, propertyName))
-                return null;
-
-            return p.Value.ToString();
-        }
-
         public static bool PropertyValue(this PSObject o, string propertyName, bool caseSensitive, out object value)
         {
             value = null;
@@ -42,6 +30,18 @@ namespace PSRule
 
             value = p.Value;
             return true;
+        }
+
+        public static string ValueAsString(this PSObject o, string propertyName, bool caseSensitive)
+        {
+            var p = o.Properties[propertyName];
+            if (p == null)
+                return null;
+
+            if (caseSensitive && !StringComparer.Ordinal.Equals(p.Name, propertyName))
+                return null;
+
+            return p.Value.ToString();
         }
 
         public static bool HasProperty(this PSObject o, string propertyName)
