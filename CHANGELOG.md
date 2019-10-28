@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.11.0-B1910014 (pre-release)
+
 - Fixed missing `Markdown` input format in options schema. [#315](https://github.com/Microsoft/PSRule/issues/315)
 - Added `-TargetType` parameter to filter input objects by target type. [#176](https://github.com/Microsoft/PSRule/issues/176)
   - This parameter applies to `Invoke-PSRule`, `Assert-PSRule` and `Test-PSRuleTarget`.
