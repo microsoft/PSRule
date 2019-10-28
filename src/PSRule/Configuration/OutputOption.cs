@@ -16,7 +16,7 @@ namespace PSRule.Configuration
         private const OutputFormat DEFAULT_FORMAT = OutputFormat.None;
         private const OutputStyle DEFAULT_STYLE = OutputStyle.Client;
 
-        public static readonly OutputOption Default = new OutputOption
+        internal static readonly OutputOption Default = new OutputOption
         {
             As = DEFAULT_AS,
             Encoding = DEFAULT_ENCODING,

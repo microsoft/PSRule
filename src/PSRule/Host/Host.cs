@@ -156,6 +156,9 @@ namespace PSRule.Host
             state.Commands.Add(BuiltInCmdlets);
             state.Commands.Add(BuiltInAliases);
 
+            // Set thread options
+            state.ThreadOptions = PSThreadOptions.UseCurrentThread;
+
             // Set execution policy
             SetExecutionPolicy(state: state, executionPolicy: Microsoft.PowerShell.ExecutionPolicy.RemoteSigned);
 

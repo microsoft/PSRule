@@ -29,7 +29,7 @@ namespace PSRule.Configuration
 
         private string SourcePath;
 
-        private static readonly PSRuleOption Default = new PSRuleOption
+        internal static readonly PSRuleOption Default = new PSRuleOption
         {
             Binding = BindingOption.Default,
             Execution = ExecutionOption.Default,
@@ -262,27 +262,17 @@ namespace PSRule.Configuration
             {
                 option.Input.ObjectPath = (string)value;
             }
+            if (index.TryPopValue("input.targettype", out value))
+            {
+                option.Input.TargetType = AsStringArray(value);
+            }
             if (index.TryGetValue("logging.limitdebug", out value))
             {
-                if (value.GetType().IsArray)
-                {
-                    option.Logging.LimitDebug = ((object[])value).OfType<string>().ToArray();
-                }
-                else
-                {
-                    option.Logging.LimitDebug = new string[] { value.ToString() };
-                }
+                option.Logging.LimitDebug = AsStringArray(value);
             }
             if (index.TryGetValue("logging.limitverbose", out value))
             {
-                if (value.GetType().IsArray)
-                {
-                    option.Logging.LimitVerbose = ((object[])value).OfType<string>().ToArray();
-                }
-                else
-                {
-                    option.Logging.LimitVerbose = new string[] { value.ToString() };
-                }
+                option.Logging.LimitVerbose = AsStringArray(value);
             }
             if (index.TryGetValue("logging.rulefail", out value))
             {
@@ -427,6 +417,11 @@ namespace PSRule.Configuration
                 .WithNamingConvention(new CamelCaseNamingConvention())
                 .Build();
             return s.Serialize(this);
+        }
+
+        private static string[] AsStringArray(object value)
+        {
+            return value.GetType().IsArray ? ((object[])value).OfType<string>().ToArray() : new string[] { value.ToString() };
         }
     }
 }

@@ -83,7 +83,7 @@ namespace PSRule.Pipeline
             }
         }
 
-        private sealed class BindingOption : IBindingOption
+        private sealed class BindingOption : IBindingOption, IEquatable<BindingOption>
         {
             public BindingOption(string[] targetName, string[] targetType, bool ignoreCase)
             {
@@ -97,6 +97,31 @@ namespace PSRule.Pipeline
             public string[] TargetName { get; }
 
             public string[] TargetType { get; }
+
+            public override bool Equals(object obj)
+            {
+                return obj is BindingOption option && Equals(option);
+            }
+
+            public bool Equals(BindingOption other)
+            {
+                return other != null &&
+                    IgnoreCase == other.IgnoreCase &&
+                    TargetName == other.TargetName &&
+                    TargetType == other.TargetType;
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked // Overflow is fine
+                {
+                    int hash = 17;
+                    hash = hash * 23 + (IgnoreCase ? IgnoreCase.GetHashCode() : 0);
+                    hash = hash * 23 + (TargetName != null ? TargetName.GetHashCode() : 0);
+                    hash = hash * 23 + (TargetType != null ? TargetType.GetHashCode() : 0);
+                    return hash;
+                }
+            }
         }
 
         public void UseScope(string moduleName)

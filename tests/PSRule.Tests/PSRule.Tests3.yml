@@ -1,11 +1,15 @@
 # These are options for unit tests
 
-# Configure baseline
-rule:
-  include: [ 'rule1' ]
-  exclude: [ 'rule3' ]
-
 # Configure binding
 binding:
   targetName: [ 'ResourceName' ]
   targetType: [ 'ResourceType' ]
+
+# Configure input
+input:
+  targetType: [ 'virtualMachine' ]
+
+# Configure baseline
+rule:
+  include: [ 'rule1' ]
+  exclude: [ 'rule3' ]

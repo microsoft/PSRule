@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.ComponentModel;
 
 namespace PSRule.Configuration
@@ -8,27 +9,56 @@ namespace PSRule.Configuration
     /// <summary>
     /// Options that affect how input types are processed.
     /// </summary>
-    public sealed class InputOption
+    public sealed class InputOption : IEquatable<InputOption>
     {
         private const InputFormat DEFAULT_FORMAT = PSRule.Configuration.InputFormat.Detect;
         private const string DEFAULT_OBJECTPATH = null;
+        private const string[] DEFAULT_TARGETTYPE = null;
 
-        public static readonly InputOption Default = new InputOption
+        internal static readonly InputOption Default = new InputOption
         {
             Format = DEFAULT_FORMAT,
-            ObjectPath = DEFAULT_OBJECTPATH
+            ObjectPath = DEFAULT_OBJECTPATH,
+            TargetType = DEFAULT_TARGETTYPE,
         };
 
         public InputOption()
         {
             Format = null;
             ObjectPath = null;
+            TargetType = null;
         }
 
         public InputOption(InputOption option)
         {
             Format = option.Format;
             ObjectPath = option.ObjectPath;
+            TargetType = option.TargetType;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is InputOption option && Equals(option);
+        }
+
+        public bool Equals(InputOption other)
+        {
+            return other != null &&
+                Format == other.Format &&
+                ObjectPath == other.ObjectPath &&
+                TargetType == other.TargetType;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine
+            {
+                int hash = 17;
+                hash = hash * 23 + (Format.HasValue ? Format.Value.GetHashCode() : 0);
+                hash = hash * 23 + (ObjectPath != null ? ObjectPath.GetHashCode() : 0);
+                hash = hash * 23 + (TargetType != null ? TargetType.GetHashCode() : 0);
+                return hash;
+            }
         }
 
         /// <summary>
@@ -42,5 +72,11 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public string ObjectPath { get; set; }
+
+        /// <summary>
+        /// Only process objects that match one of the included types.
+        /// </summary>
+        [DefaultValue(null)]
+        public string[] TargetType { get; set; }
     }
 }

@@ -362,17 +362,6 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
     }
 
-    Context 'Using -ObjectPath' {
-        It 'Processes nested objects' {
-            $yaml = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromNestedFile.yaml') -Raw;
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $yaml -Format Yaml -ObjectPath items);
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 2;
-            $result | Should -BeOfType PSRule.Rules.RuleRecord;
-            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
-        }
-    }
-
     Context 'Using -OutputFormat' {
         $testObject = [PSCustomObject]@{
             Name = 'TestObject1'
@@ -546,6 +535,72 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $records | Should -Not -BeNullOrEmpty;
             $records.Length | Should -Be 2;
             $records.CategoryInfo.Category | Should -BeIn 'ObjectNotFound';
+        }
+    }
+
+    Context 'Using -ObjectPath' {
+        It 'Processes nested objects' {
+            $yaml = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromNestedFile.yaml') -Raw;
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $yaml -Format Yaml -ObjectPath items);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
+        }
+    }
+
+    Context 'Using -TargetType' {
+        It 'Filters target object' {
+            $testObject = [PSCustomObject]@{
+                PSTypeName = 'TestType'
+                Name = 'TestObject1'
+                Value = 1
+            }
+            $invokeParams = @{
+                Path = $ruleFilePath
+                Name = 'FromFile1'
+            }
+
+            # Include
+            $result = @(Invoke-PSRule @invokeParams -InputObject $testObject -TargetType 'TestType');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+
+            # Exclude
+            $result = @(Invoke-PSRule @invokeParams -InputObject $testObject -TargetType 'NotTestType');
+            $result | Should -BeNullOrEmpty;
+
+            $testObject = @(
+                [PSCustomObject]@{
+                    PSTypeName = 'TestType'
+                    Name = 'TestObject1'
+                    Value = 1
+                }
+                [PSCustomObject]@{
+                    PSTypeName = 'NotTestType'
+                    Name = 'TestObject2'
+                    Value = 2
+                }
+            )
+
+            # Multiple objects
+            $result = @($testObject | Invoke-PSRule @invokeParams -TargetType 'TestType' -Outcome All);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].TargetType | Should -Be 'TestType';
+            $result[0].Outcome | Should -Be 'Pass';
+
+            # Mutliple types
+            $result = @($testObject | Invoke-PSRule @invokeParams -TargetType 'TestType','NotTestType');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].TargetType | Should -Be 'TestType';
+            $result[0].Outcome | Should -Be 'Pass';
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].TargetType | Should -Be 'NotTestType';
+            $result[1].Outcome | Should -Be 'Pass';
         }
     }
 
@@ -764,12 +819,66 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
         }
 
         It 'Returns warning when not processed' {
-            # Check result with no rules matching precondition
+            # Default outcome
             $result = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'WithPreconditionFalse' -WarningVariable outWarnings -WarningAction SilentlyContinue;
+            $result | Should -BeNullOrEmpty;
+            $outWarnings | Should -Be 'Target object ''TestObject1'' has not been processed because no matching rules were found.';
+
+            # Outcome All
+            $result = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'WithPreconditionFalse' -WarningVariable outWarnings -WarningAction SilentlyContinue -Outcome All;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.Boolean;
             $result | Should -Be $True;
             $outWarnings | Should -Be 'Target object ''TestObject1'' has not been processed because no matching rules were found.';
+        }
+    }
+
+    Context 'Using -TargetType' {
+        It 'Filters target object' {
+            $testObject = [PSCustomObject]@{
+                PSTypeName = 'TestType'
+                Name = 'TestObject1'
+                Value = 1
+            }
+            $testParams = @{
+                Path = $ruleFilePath
+                Name = 'FromFile1'
+            }
+
+            # Include
+            $result = @(Test-PSRuleTarget @testParams -InputObject $testObject -TargetType 'TestType');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+
+            # Exclude
+            $result = @(Test-PSRuleTarget @testParams -InputObject $testObject -TargetType 'NotTestType');
+            $result | Should -BeNullOrEmpty;
+
+            $testObject = @(
+                [PSCustomObject]@{
+                    PSTypeName = 'TestType'
+                    Name = 'TestObject1'
+                    Value = 1
+                }
+                [PSCustomObject]@{
+                    PSTypeName = 'NotTestType'
+                    Name = 'TestObject2'
+                    Value = 2
+                }
+            )
+
+            # Multiple objects
+            $result = @($testObject | Test-PSRuleTarget @testParams -TargetType 'TestType');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result[0] | Should -Be $True;
+
+            # Mutliple types
+            $result = @($testObject | Test-PSRuleTarget @testParams -TargetType 'TestType','NotTestType');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result[0] | Should -Be $True;
+            $result[1] | Should -Be $True;
         }
     }
 

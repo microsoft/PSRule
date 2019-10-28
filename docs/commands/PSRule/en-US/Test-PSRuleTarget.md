@@ -16,17 +16,17 @@ Pass or fail objects against matching rules.
 ### Input (Default)
 
 ```text
-Test-PSRuleTarget [-Module <String[]>] [-Format <InputFormat>] [[-Path] <String[]>] [-Name <String[]>]
- [-Tag <Hashtable>] -InputObject <PSObject> [-Option <PSRuleOption>] [-ObjectPath <String>] [-Culture <String>]
- [<CommonParameters>]
+Test-PSRuleTarget [-Module <String[]>] [-Outcome <RuleOutcome>] [-Format <InputFormat>] [[-Path] <String[]>]
+ [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject> [-Option <PSRuleOption>] [-ObjectPath <String>]
+ [-TargetType <String[]>] [-Culture <String>] [<CommonParameters>]
 ```
 
 ### InputPath
 
 ```text
-Test-PSRuleTarget -InputPath <String[]> [-Module <String[]>] [-Format <InputFormat>] [[-Path] <String[]>]
- [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-Culture <String>]
- [<CommonParameters>]
+Test-PSRuleTarget -InputPath <String[]> [-Module <String[]>] [-Outcome <RuleOutcome>] [-Format <InputFormat>]
+ [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-ObjectPath <String>]
+ [-TargetType <String[]>] [-Culture <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -39,8 +39,11 @@ PSRule uses the following logic to determine overall pass or fail for an object:
   - Any rules fail or error.
   - Any rules are inconclusive.
 - The object passes if:
-  - No rules were found that match preconditions, name and tag filters.
+  - No matching rules were found.
   - All rules pass.
+
+By default, objects that do match any rules are not returned in results.
+To return `$True` for these objects, use `-Outcome All`.
 
 ## EXAMPLES
 
@@ -87,6 +90,23 @@ Aliases: n
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Outcome
+
+Filter output to only show pipeline objects with a specific outcome.
+
+```yaml
+Type: RuleOutcome
+Parameter Sets: (All)
+Aliases:
+Accepted values: Pass, Fail, Error, None, Processed, All
+
+Required: False
+Position: Named
+Default value: Pass, Fail, Error
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -182,6 +202,33 @@ If the property specified by `ObjectPath` is a collection or an array, then each
 
 ```yaml
 Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TargetType
+
+Filters input objects by TargetType.
+
+If specified, only objects with the specified TargetType are processed.
+Objects that do not match TargetType are ignored.
+If multiple values are specified, only one TargetType must match. This parameter is not case-sensitive.
+
+By default, all objects are processed.
+
+This parameter if set, overrides the `Input.TargetType` option.
+
+To change the field TargetType is bound to set the `Binding.TargetType` option.
+For details see the about_PSRule_Options help topic.
+
+```yaml
+Type: String[]
 Parameter Sets: (All)
 Aliases:
 

@@ -59,9 +59,6 @@ namespace PSRule.Pipeline
             Option.Execution.InconclusiveWarning = option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning;
             Option.Execution.NotProcessedWarning = option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning;
 
-            Option.Input.Format = option.Input.Format ?? InputOption.Default.Format;
-            Option.Input.ObjectPath = option.Input.ObjectPath ?? InputOption.Default.ObjectPath;
-
             Option.Logging.RuleFail = option.Logging.RuleFail ?? LoggingOption.Default.RuleFail;
             Option.Logging.RulePass = option.Logging.RulePass ?? LoggingOption.Default.RulePass;
             Option.Logging.LimitVerbose = option.Logging.LimitVerbose;
@@ -256,6 +253,9 @@ namespace PSRule.Pipeline
 
                 try
                 {
+                    if (Context.ShouldFilter())
+                        continue;
+
                     // Check if dependency failed
                     if (ruleBlockTarget.Skipped)
                     {

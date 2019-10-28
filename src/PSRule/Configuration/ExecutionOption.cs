@@ -11,7 +11,7 @@ namespace PSRule.Configuration
         private const bool DEFAULT_INCONCLUSIVEWARNING = true;
         private const bool DEFAULT_NOTPROCESSEDWARNING = true;
 
-        public static readonly ExecutionOption Default = new ExecutionOption
+        internal static readonly ExecutionOption Default = new ExecutionOption
         {
             LanguageMode = DEFAULT_LANGUAGEMODE,
             InconclusiveWarning = DEFAULT_INCONCLUSIVEWARNING,
