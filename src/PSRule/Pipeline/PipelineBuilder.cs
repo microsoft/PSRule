@@ -142,6 +142,8 @@ namespace PSRule.Pipeline
 
             Option.Binding = new BindingOption(option.Binding);
             Option.Execution = new ExecutionOption(option.Execution);
+            Option.Input = new InputOption(option.Input);
+            Option.Input.Format = Option.Input.Format ?? InputOption.Default.Format;
             Option.Output = new OutputOption(option.Output);
             return this;
         }
@@ -180,7 +182,7 @@ namespace PSRule.Pipeline
                 logger: Logger,
                 option: Option,
                 hostContext: HostContext,
-                binder: new TargetBinder(bindTargetName: bindTargetName, bindTargetType: bindTargetType),
+                binder: new TargetBinder(bindTargetName, bindTargetType, Option.Input.TargetType),
                 baseline: GetBaselineContext(),
                 unresolved: unresolved
             );

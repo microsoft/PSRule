@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Fixed missing `Markdown` input format in options schema. [#315](https://github.com/Microsoft/PSRule/issues/315)
+- Added `-TargetType` parameter to filter input objects by target type. [#176](https://github.com/Microsoft/PSRule/issues/176)
+  - This parameter applies to `Invoke-PSRule`, `Assert-PSRule` and `Test-PSRuleTarget`.
+- **Breaking change**: Unprocessed object results are not returned from `Test-PSRuleTarget` by default. [#318](https://github.com/Microsoft/PSRule/issues/318)
+  - Previously unprocessed objects returned `$True`, now unprocessed objects return no result.
+  - Use `-Outcome All` to return `$True` for unprocessed objects the same as <= v0.10.0.
+
 ## v0.10.0
 
 What's changed since v0.9.0:

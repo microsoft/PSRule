@@ -4,7 +4,7 @@
     "description": "A schema for PSRule YAML options files.",
     "oneOf": [
         {
-            "$ref": "#/definitions/options-v0.8.0"
+            "$ref": "#/definitions/options"
         }
     ],
     "definitions": {
@@ -75,7 +75,7 @@
             },
             "additionalProperties": false
         },
-        "input-v0.4.0": {
+        "input-option": {
             "type": "object",
             "title": "Input options",
             "description": "Options that affect how input types are processed.",
@@ -88,6 +88,7 @@
                         "None",
                         "Yaml",
                         "Json",
+                        "Markdown",
                         "Detect"
                     ],
                     "default": "Detect"
@@ -96,6 +97,15 @@
                     "type": "string",
                     "title": "Object path",
                     "description": "The object path to a property to use instead of the pipeline object."
+                },
+                "targetType": {
+                    "type": "array",
+                    "title": "Target type",
+                    "description": "Only process objects that match one of the included types.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
                 }
             },
             "additionalProperties": false
@@ -254,7 +264,7 @@
             },
             "additionalProperties": false
         },
-        "options-v0.8.0": {
+        "options": {
             "properties": {
                 "binding": {
                     "type": "object",
@@ -284,7 +294,7 @@
                     "type": "object",
                     "oneOf": [
                         {
-                            "$ref": "#/definitions/input-v0.4.0"
+                            "$ref": "#/definitions/input-option"
                         }
                     ]
                 },

@@ -73,6 +73,8 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result.Length | Should -Be 1;
             $result[0].RuleName | Should -Be 'WithBaseline';
             $result[0].Outcome | Should -Be 'Pass';
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].TargetType | Should -Be 'TestObjectType';
         }
 
         It 'With -Module' {
@@ -95,8 +97,12 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result.Length | Should -Be 2;
             $result[0].RuleName | Should -Be 'M4.Rule1';
             $result[0].Outcome | Should -Be 'Fail';
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].TargetType | Should -Be 'TestObjectType';
             $result[1].RuleName | Should -Be 'M4.Rule2';
             $result[1].Outcome | Should -Be 'Pass';
+            $result[1].TargetName | Should -Be 'TestObject1';
+            $result[1].TargetType | Should -Be 'TestObjectType';
 
             # Module + Workspace + Parameter
             $option = @{

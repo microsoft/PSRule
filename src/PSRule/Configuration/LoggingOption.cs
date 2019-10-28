@@ -13,7 +13,7 @@ namespace PSRule.Configuration
         private const OutcomeLogStream DEFAULT_RULEFAIL = OutcomeLogStream.None;
         private const OutcomeLogStream DEFAULT_RULEPASS = OutcomeLogStream.None;
 
-        public static readonly LoggingOption Default = new LoggingOption
+        internal static readonly LoggingOption Default = new LoggingOption
         {
             RuleFail = DEFAULT_RULEFAIL,
             RulePass = DEFAULT_RULEPASS,

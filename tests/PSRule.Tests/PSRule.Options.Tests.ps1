@@ -360,6 +360,43 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Input.TargetType' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Input.TargetType | Should -Be $Null;
+        }
+
+        It 'from Hashtable' {
+            # With single item
+            $option = New-PSRuleOption -Option @{ 'Input.TargetType' = 'virtualMachine' };
+            $option.Input.TargetType | Should -BeIn 'virtualMachine';
+
+            # With array
+            $option = New-PSRuleOption -Option @{ 'Input.TargetType' = 'virtualMachine', 'virtualNetwork' };
+            $option.Input.TargetType.Length | Should -Be 2;
+            $option.Input.TargetType | Should -BeIn 'virtualMachine', 'virtualNetwork';
+        }
+
+        It 'from YAML' {
+            # With single item
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Input.TargetType | Should -BeIn 'virtualMachine';
+
+            # With array
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests2.yml');
+            $option.Input.TargetType | Should -BeIn 'virtualMachine', 'virtualNetwork';
+
+            # With flat single item
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests3.yml');
+            $option.Input.TargetType | Should -BeIn 'virtualMachine';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -InputTargetType 'virtualMachine', 'virtualNetwork' -Path $emptyOptionsFilePath;
+            $option.Input.TargetType | Should -BeIn 'virtualMachine', 'virtualNetwork';
+        }
+    }
+
     Context 'Read Logging.LimitDebug' {
         It 'from default' {
             $option = New-PSRuleOption;

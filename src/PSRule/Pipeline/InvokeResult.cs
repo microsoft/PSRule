@@ -47,6 +47,11 @@ namespace PSRule.Pipeline
             get { return _Fail; }
         }
 
+        internal RuleOutcome Outcome
+        {
+            get { return _Outcome; }
+        }
+
         /// <summary>
         /// Get the individual records for the target object.
         /// </summary>
@@ -105,7 +110,6 @@ namespace PSRule.Pipeline
             {
                 return RuleOutcome.Pass;
             }
-
             return outcome;
         }
     }

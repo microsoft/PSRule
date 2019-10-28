@@ -245,6 +245,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Execution.NotProcessedWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#executionnotprocessedwarning)
   - [Input.Format](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inputformat)
   - [Input.ObjectPath](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inputobjectpath)
+  - [Input.TargetType](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inputtargettype)
   - [Logging.LimitDebug](docs/concepts/PSRule/en-US/about_PSRule_Options.md#logginglimitdebug)
   - [Logging.LimitVerbose](docs/concepts/PSRule/en-US/about_PSRule_Options.md#logginglimitverbose)
   - [Logging.RuleFail](docs/concepts/PSRule/en-US/about_PSRule_Options.md#loggingrulefail)

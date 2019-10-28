@@ -13,7 +13,7 @@ namespace PSRule.Configuration
     {
         private const bool DEFAULT_IGNORECASE = true;
 
-        public static readonly BindingOption Default = new BindingOption
+        internal static readonly BindingOption Default = new BindingOption
         {
             IgnoreCase = DEFAULT_IGNORECASE
         };

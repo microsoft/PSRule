@@ -78,6 +78,9 @@ function Invoke-PSRule {
         [String]$ObjectPath,
 
         [Parameter(Mandatory = $False)]
+        [String[]]$TargetType,
+
+        [Parameter(Mandatory = $False)]
         [String[]]$Culture,
 
         [Parameter(Mandatory = $True, ValueFromPipeline = $True, ParameterSetName = 'Input')]
@@ -130,6 +133,9 @@ function Invoke-PSRule {
         }
         if ($PSBoundParameters.ContainsKey('ObjectPath')) {
             $Option.Input.ObjectPath = $ObjectPath;
+        }
+        if ($PSBoundParameters.ContainsKey('TargetType')) {
+            $Option.Input.TargetType = $TargetType;
         }
         if ($PSBoundParameters.ContainsKey('As')) {
             $Option.Output.As = $As;
@@ -207,6 +213,9 @@ function Test-PSRuleTarget {
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
+        [PSRule.Rules.RuleOutcome]$Outcome = [PSRule.Rules.RuleOutcome]::Processed,
+
+        [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'Detect')]
         [PSRule.Configuration.InputFormat]$Format,
 
@@ -232,6 +241,9 @@ function Test-PSRuleTarget {
 
         [Parameter(Mandatory = $False)]
         [String]$ObjectPath,
+
+        [Parameter(Mandatory = $False)]
+        [String[]]$TargetType,
 
         [Parameter(Mandatory = $False)]
         [String]$Culture
@@ -283,6 +295,9 @@ function Test-PSRuleTarget {
         if ($PSBoundParameters.ContainsKey('ObjectPath')) {
             $Option.Input.ObjectPath = $ObjectPath;
         }
+        if ($PSBoundParameters.ContainsKey('TargetType')) {
+            $Option.Input.TargetType = $TargetType;
+        }
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $Option.Output.Culture = $Culture;
         }
@@ -293,6 +308,7 @@ function Test-PSRuleTarget {
         $builder = [PSRule.Pipeline.PipelineBuilder]::Test($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
+        $builder.Limit($Outcome);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $inputPaths = GetFilePath -Path $InputPath -Verbose:$VerbosePreference;
@@ -385,6 +401,9 @@ function Assert-PSRule {
         [String]$ObjectPath,
 
         [Parameter(Mandatory = $False)]
+        [String[]]$TargetType,
+
+        [Parameter(Mandatory = $False)]
         [String[]]$Culture,
 
         [Parameter(Mandatory = $True, ValueFromPipeline = $True, ParameterSetName = 'Input')]
@@ -436,6 +455,9 @@ function Assert-PSRule {
         }
         if ($PSBoundParameters.ContainsKey('ObjectPath')) {
             $Option.Input.ObjectPath = $ObjectPath;
+        }
+        if ($PSBoundParameters.ContainsKey('TargetType')) {
+            $Option.Input.TargetType = $TargetType;
         }
         if ($PSBoundParameters.ContainsKey('Style')) {
             $Option.Output.Style = $Style;
@@ -893,6 +915,10 @@ function New-PSRuleOption {
         [Alias('InputObjectPath')]
         [String]$ObjectPath = '',
 
+        # Sets the Input.TargetType option
+        [Parameter(Mandatory = $False)]
+        [String[]]$InputTargetType,
+
         # Sets the Logging.LimitDebug option
         [Parameter(Mandatory = $False)]
         [String[]]$LoggingLimitDebug = $Null,
@@ -1058,6 +1084,10 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('InputObjectPath')]
         [String]$ObjectPath = '',
+
+        # Sets the Input.TargetType option
+        [Parameter(Mandatory = $False)]
+        [String[]]$InputTargetType,
 
         # Sets the Logging.LimitDebug option
         [Parameter(Mandatory = $False)]
@@ -1620,6 +1650,10 @@ function SetOptions {
         [Alias('InputObjectPath')]
         [String]$ObjectPath = '',
 
+        # Sets the Input.TargetType option
+        [Parameter(Mandatory = $False)]
+        [String[]]$InputTargetType,
+
         # Sets the Logging.LimitDebug option
         [Parameter(Mandatory = $False)]
         [String[]]$LoggingLimitDebug = $Null,
@@ -1697,6 +1731,11 @@ function SetOptions {
         # Sets option Input.ObjectPath
         if ($PSBoundParameters.ContainsKey('ObjectPath')) {
             $Option.Input.ObjectPath = $ObjectPath;
+        }
+
+         # Sets option Input.TargetType
+         if ($PSBoundParameters.ContainsKey('InputTargetType')) {
+            $Option.Input.TargetType = $InputTargetType;
         }
 
         # Sets option Logging.LimitDebug

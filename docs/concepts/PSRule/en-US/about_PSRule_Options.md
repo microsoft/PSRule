@@ -18,6 +18,7 @@ The following workspace options are available for use:
 - [Execution.NotProcessedWarning](#executionnotprocessedwarning)
 - [Input.Format](#inputformat)
 - [Input.ObjectPath](#inputobjectpath)
+- [Input.TargetType](#inputtargettype)
 - [Logging.LimitDebug](#logginglimitdebug)
 - [Logging.LimitVerbose](#logginglimitverbose)
 - [Logging.RuleFail](#loggingrulefail)
@@ -448,7 +449,7 @@ If the property specified by `ObjectPath` is a collection/ array, then each item
 
 If the property specified by `ObjectPath` does not exist, PSRule skips the object.
 
-When using `Invoke-PSRule` and `Test-PSRuleTarget` the `-ObjectPath` parameter will override any value set in configuration.
+When using `Invoke-PSRule`, `Test-PSRuleTarget` and `Assert-PSRule` the `-ObjectPath` parameter will override any value set in configuration.
 
 This option can be specified using:
 
@@ -471,6 +472,44 @@ Set-PSRuleOption -ObjectPath 'items';
 # YAML: Using the input/objectPath property
 input:
   objectPath: items
+```
+
+### Input.TargetType
+
+Filters input objects by TargetType.
+
+If specified, only objects with the specified TargetType are processed.
+Objects that do not match TargetType are ignored.
+If multiple values are specified, only one TargetType must match. This option is not case-sensitive.
+
+By default, all objects are processed.
+
+To change the field TargetType is bound to set the `Binding.TargetType` option.
+
+When using `Invoke-PSRule`, `Test-PSRuleTarget` and `Assert-PSRule` the `-TargetType` parameter will override any value set in configuration.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the InputTargetType parameter
+$option = New-PSRuleOption -InputTargetType 'virtualMachine';
+```
+
+```powershell
+# PowerShell: Using the Input.TargetType hashtable key
+$option = New-PSRuleOption -Option @{ 'Input.TargetType' = 'virtualMachine' };
+```
+
+```powershell
+# PowerShell: Using the InputTargetType parameter to set YAML
+Set-PSRuleOption -InputTargetType 'virtualMachine';
+```
+
+```yaml
+# YAML: Using the input/targetType property
+input:
+  targetType:
+  - virtualMachine
 ```
 
 ### Logging.LimitDebug
@@ -962,6 +1001,9 @@ execution:
 input:
   format: Yaml
   objectPath: items
+  targetType:
+  - Microsoft.Compute/virtualMachines
+  - Microsoft.Network/virtualNetworks
 
 # Configures outcome logging options
 logging:
@@ -1030,6 +1072,7 @@ execution:
 input:
   format: Detect
   objectPath: null
+  targetType: [ ]
 
 # Configures outcome logging options
 logging:

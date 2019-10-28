@@ -21,6 +21,16 @@ namespace PSRule.Pipeline
 {
     internal sealed class PipelineContext : IDisposable, IBindingContext
     {
+        private const string SOURCE_OUTCOME_FAIL = "Rule.Outcome.Fail";
+        private const string SOURCE_OUTCOME_PASS = "Rule.Outcome.Pass";
+
+        private const string ERRORID_INVALIDRULERESULT = "PSRule.Runtime.InvalidRuleResult";
+
+        private const string ErrorPreference = "ErrorActionPreference";
+        private const string WarningPreference = "WarningPreference";
+        private const string VerbosePreference = "VerbosePreference";
+        private const string DebugPreference = "DebugPreference";
+
         [ThreadStatic]
         internal static PipelineContext CurrentThread;
 
@@ -136,13 +146,9 @@ namespace PSRule.Pipeline
             if (_Runspace == null)
             {
                 var state = HostState.CreateSessionState();
-
-                // Set PowerShell language mode
                 state.LanguageMode = _LanguageMode == LanguageMode.FullLanguage ? PSLanguageMode.FullLanguage : PSLanguageMode.ConstrainedLanguage;
 
                 _Runspace = RunspaceFactory.CreateRunspace(state);
-                _Runspace.ThreadOptions = PSThreadOptions.UseCurrentThread;
-
                 if (Runspace.DefaultRunspace == null)
                     Runspace.DefaultRunspace = _Runspace;
 
@@ -152,10 +158,10 @@ namespace PSRule.Pipeline
                 _Runspace.SessionStateProxy.PSVariable.Set(new AssertVariable());
                 _Runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable());
                 _Runspace.SessionStateProxy.PSVariable.Set(new ConfigurationVariable());
-                _Runspace.SessionStateProxy.PSVariable.Set("ErrorActionPreference", ActionPreference.Continue);
-                _Runspace.SessionStateProxy.PSVariable.Set("WarningPreference", ActionPreference.Continue);
-                _Runspace.SessionStateProxy.PSVariable.Set("VerbosePreference", ActionPreference.Continue);
-                _Runspace.SessionStateProxy.PSVariable.Set("DebugPreference", ActionPreference.Continue);
+                _Runspace.SessionStateProxy.PSVariable.Set(ErrorPreference, ActionPreference.Continue);
+                _Runspace.SessionStateProxy.PSVariable.Set(WarningPreference, ActionPreference.Continue);
+                _Runspace.SessionStateProxy.PSVariable.Set(VerbosePreference, ActionPreference.Continue);
+                _Runspace.SessionStateProxy.PSVariable.Set(DebugPreference, ActionPreference.Continue);
                 _Runspace.SessionStateProxy.Path.SetLocation(PSRuleOption.GetWorkingPath());
             }
             return _Runspace;
@@ -201,12 +207,12 @@ namespace PSRule.Pipeline
 
             if (_PassStream == OutcomeLogStream.Error && _Logger.ShouldWriteError())
             {
-                _Logger.WriteError(new ErrorRecord(new RuleRuntimeException(string.Format(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, _Binder.TargetName)), "Rule.Outcome.Pass", ErrorCategory.InvalidData, null));
+                _Logger.WriteError(new ErrorRecord(new RuleRuntimeException(string.Format(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, _Binder.TargetName)), SOURCE_OUTCOME_PASS, ErrorCategory.InvalidData, null));
             }
 
             if (_PassStream == OutcomeLogStream.Information && _Logger.ShouldWriteInformation())
             {
-                _Logger.WriteInformation(new InformationRecord(messageData: string.Format(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, _Binder.TargetName), source: "Rule.Outcome.Pass"));
+                _Logger.WriteInformation(new InformationRecord(messageData: string.Format(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, _Binder.TargetName), source: SOURCE_OUTCOME_PASS));
             }
         }
 
@@ -222,12 +228,12 @@ namespace PSRule.Pipeline
 
             if (_FailStream == OutcomeLogStream.Error && _Logger.ShouldWriteError())
             {
-                _Logger.WriteError(new ErrorRecord(new RuleRuntimeException(string.Format(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, _Binder.TargetName)), "Rule.Outcome.Fail", ErrorCategory.InvalidData, null));
+                _Logger.WriteError(new ErrorRecord(new RuleRuntimeException(string.Format(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, _Binder.TargetName)), SOURCE_OUTCOME_FAIL, ErrorCategory.InvalidData, null));
             }
 
             if (_FailStream == OutcomeLogStream.Information && _Logger.ShouldWriteInformation())
             {
-                _Logger.WriteInformation(new InformationRecord(messageData: string.Format(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, _Binder.TargetName), source: "Rule.Outcome.Fail"));
+                _Logger.WriteInformation(new InformationRecord(messageData: string.Format(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, _Binder.TargetName), source: SOURCE_OUTCOME_FAIL));
             }
         }
 
@@ -262,7 +268,7 @@ namespace PSRule.Pipeline
 
             _Logger.WriteError(errorRecord: new ErrorRecord(
                 exception: new RuleRuntimeException(message: string.Format(PSRuleResources.InvalidRuleResult, RuleBlock.RuleId)),
-                errorId: "PSRule.Runtime.InvalidRuleResult",
+                errorId: ERRORID_INVALIDRULERESULT,
                 errorCategory: ErrorCategory.InvalidResult,
                 targetObject: null
             ));
@@ -422,6 +428,8 @@ namespace PSRule.Pipeline
         /// </summary>
         public RuleRecord EnterRuleBlock(RuleBlock ruleBlock)
         {
+            _Binder.Bind(Baseline, TargetObject);
+            RuleBlock = ruleBlock;
             RuleRecord = new RuleRecord(
                 ruleId: ruleBlock.RuleId,
                 ruleName: ruleBlock.RuleName,
@@ -432,16 +440,11 @@ namespace PSRule.Pipeline
                 info: ruleBlock.Info
             );
 
-            RuleBlock = ruleBlock;
-
-            _Binder.Bind(Baseline, TargetObject);
-
             if (_Logger != null)
                 _Logger.EnterScope(ruleBlock.RuleName);
 
             // Starts rule execution timer
             _RuleTimer.Restart();
-
             return RuleRecord;
         }
 
@@ -464,6 +467,11 @@ namespace PSRule.Pipeline
             RuleRecord = null;
             RuleBlock = null;
             _Reason.Clear();
+        }
+
+        public bool ShouldFilter()
+        {
+            return _Binder.ShouldFilter;
         }
 
         public void WriteReason(string text)

@@ -18,8 +18,8 @@ Evaluate objects against matching rules and assert any failures.
 ```text
 Assert-PSRule [-Module <String[]>] [-Format <InputFormat>] [-Baseline <BaselineOption>] [-Style <OutputStyle>]
  [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-OutputPath <String>]
- [-OutputFormat <OutputFormat>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-Culture <String[]>]
- -InputObject <PSObject> [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-OutputFormat <OutputFormat>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-TargetType <String[]>]
+ [-Culture <String[]>] -InputObject <PSObject> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### InputPath
@@ -27,8 +27,8 @@ Assert-PSRule [-Module <String[]>] [-Format <InputFormat>] [-Baseline <BaselineO
 ```text
 Assert-PSRule -InputPath <String[]> [-Module <String[]>] [-Format <InputFormat>] [-Baseline <BaselineOption>]
  [-Style <OutputStyle>] [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-OutputPath <String>]
- [-OutputFormat <OutputFormat>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-Culture <String[]>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+ [-OutputFormat <OutputFormat>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-TargetType <String[]>]
+ [-Culture <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -64,7 +64,7 @@ $items | Assert-PSRule -Path .\docs\scenarios\fruit\
 ```
 
 ```text
- -> Fridge : System.Management.Automation.PSCustomObject
+-> Fridge : System.Management.Automation.PSCustomObject
 
     [FAIL] isFruit
 
@@ -237,6 +237,33 @@ If the property specified by `ObjectPath` is a collection or an array, then each
 
 ```yaml
 Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TargetType
+
+Filters input objects by TargetType.
+
+If specified, only objects with the specified TargetType are processed.
+Objects that do not match TargetType are ignored.
+If multiple values are specified, only one TargetType must match. This parameter is not case-sensitive.
+
+By default, all objects are processed.
+
+This parameter if set, overrides the `Input.TargetType` option.
+
+To change the field TargetType is bound to set the `Binding.TargetType` option.
+For details see the about_PSRule_Options help topic.
+
+```yaml
+Type: String[]
 Parameter Sets: (All)
 Aliases:
 

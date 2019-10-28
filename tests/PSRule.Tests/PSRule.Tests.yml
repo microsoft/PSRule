@@ -33,6 +33,8 @@ execution:
 input:
   format: Yaml
   objectPath: items
+  targetType:
+  - virtualMachine
 
 # Configure logging options
 logging:

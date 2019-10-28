@@ -28,7 +28,7 @@ namespace PSRule
             var pso1 = PSObject.AsPSObject(testObject1);
             var pso2 = PSObject.AsPSObject(testObject2);
 
-            PipelineContext.CurrentThread = PipelineContext.New(logger: null, option: new PSRuleOption(), hostContext: null, binder: new TargetBinder(bindTargetName: null, bindTargetType: null), baseline: null, unresolved: null);
+            PipelineContext.CurrentThread = PipelineContext.New(logger: null, option: new PSRuleOption(), hostContext: null, binder: new TargetBinder(null, null, null), baseline: null, unresolved: null);
             var actual1 = PipelineHookActions.BindTargetName(null, false, pso1);
             var actual2 = PipelineHookActions.BindTargetName(null, false, pso2);
 

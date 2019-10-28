@@ -1,14 +1,5 @@
 # These are options for unit tests
 
-# Configure baseline
-rule:
-  include:
-  - rule1
-  - rule2
-  exclude:
-  - rule3
-  - rule4
-
 # Configure binding
 binding:
   targetName:
@@ -17,3 +8,18 @@ binding:
   targetType:
   - ResourceType
   - kind
+
+# Configure input
+input:
+  targetType:
+  - virtualMachine
+  - virtualNetwork
+
+# Configure baseline
+rule:
+  include:
+  - rule1
+  - rule2
+  exclude:
+  - rule3
+  - rule4
