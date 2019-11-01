@@ -68,7 +68,7 @@ $items | Assert-PSRule -Path .\docs\scenarios\fruit\
 
     [FAIL] isFruit
 
- -> Apple : System.Management.Automation.PSCustomObject
+-> Apple : System.Management.Automation.PSCustomObject
 
     [PASS] isFruit
 
@@ -84,53 +84,16 @@ Evaluate an array of objects on the pipeline against rules loaded a specified re
 
 ## PARAMETERS
 
-### -Baseline
+### -InputPath
 
-Specifies an explicit baseline by name to use for evaluating rules.
-Baselines can contain filters and custom configuration that overrides the defaults.
-
-```yaml
-Type: BaselineOption
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Confirm
-
-Prompts you for confirmation before running the cmdlet.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: cf
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Culture
-
-Specifies the culture to use for rule documentation and messages. By default, the culture of PowerShell is used.
-
-This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.
-
-The PowerShell cmdlet `Get-Culture` shows the current culture of PowerShell.
+Instead of processing objects from the pipeline, import objects file the specified file paths.
 
 ```yaml
 Type: String[]
-Parameter Sets: (All)
+Parameter Sets: InputPath
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -162,32 +125,37 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -InputObject
+### -Baseline
 
-The pipeline object to process rules for.
+Specifies an explicit baseline by name to use for evaluating rules.
+Baselines can contain filters and custom configuration that overrides the defaults.
 
 ```yaml
-Type: PSObject
-Parameter Sets: Input
-Aliases: TargetObject
+Type: BaselineOption
+Parameter Sets: (All)
+Aliases:
 
-Required: True
+Required: False
 Position: Named
 Default value: None
-Accept pipeline input: True (ByValue)
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -InputPath
+### -Culture
 
-Instead of processing objects from the pipeline, import objects file the specified file paths.
+Specifies the culture to use for rule documentation and messages. By default, the culture of PowerShell is used.
+
+This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.
+
+The PowerShell cmdlet `Get-Culture` shows the current culture of PowerShell.
 
 ```yaml
 Type: String[]
-Parameter Sets: InputPath
+Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -294,9 +262,27 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -OutputPath
+
+Specifies the output file path to write results.
+Directories along the file path will automatically be created if they do not exist.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -OutputFormat
 
-Configures the format that output is presented in.
+Configures the format that output is written.
+This parameter has no affect when `-OutputPath` is not specified.
 
 The following format options are available:
 
@@ -313,23 +299,6 @@ Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
 Accepted values: None, Yaml, Json, NUnit3, Csv
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -OutputPath
-
-Specifies the output file path to write results.
-Directories along the file path will automatically be created if they do not exist.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
 
 Required: False
 Position: Named
@@ -405,6 +374,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -InputObject
+
+The pipeline object to process rules for.
+
+```yaml
+Type: PSObject
+Parameter Sets: Input
+Aliases: TargetObject
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
 ### -WhatIf
 
 Shows what would happen if the cmdlet runs.
@@ -414,6 +399,22 @@ The cmdlet is not run.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
 
 Required: False
 Position: Named
