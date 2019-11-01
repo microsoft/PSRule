@@ -35,7 +35,7 @@ namespace PSRule
         public static string ValueAsString(this PSObject o, string propertyName, bool caseSensitive)
         {
             var p = o.Properties[propertyName];
-            if (p == null)
+            if (p == null || p.Value == null)
                 return null;
 
             if (caseSensitive && !StringComparer.Ordinal.Equals(p.Name, propertyName))
