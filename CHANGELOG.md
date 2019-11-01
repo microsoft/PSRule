@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed null reference exception when bound property is null. [#323](https://github.com/Microsoft/PSRule/issues/323)
+
 ## v0.11.0-B1910014 (pre-release)
 
 - Fixed missing `Markdown` input format in options schema. [#315](https://github.com/Microsoft/PSRule/issues/315)
