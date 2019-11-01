@@ -1,0 +1,19 @@
+#
+# Pull Request Labeler
+#
+
+# Add 'documentation' label to docs changes
+documentation:
+- docs/**/*
+
+# Add 'repo' label to any root file changes
+repo:
+  - ./*
+
+# Add 'tests' label to any unit tests files
+tests:
+  - tests/**/*
+
+# Add 'module' label to any module files
+module:
+  - src/PSRule/*
