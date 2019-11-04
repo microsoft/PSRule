@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+## v0.11.0
+
+What's changed since v0.10.0:
+
+- Quality of life improvements:
+  - Added `-TargetType` parameter to filter input objects by target type. [#176](https://github.com/Microsoft/PSRule/issues/176)
+    - This parameter applies to `Invoke-PSRule`, `Assert-PSRule` and `Test-PSRuleTarget`.
+- Bug fixes:
+  - Fixed null reference exception when bound property is null. [#323](https://github.com/Microsoft/PSRule/issues/323)
+  - Fixed missing `Markdown` input format in options schema. [#315](https://github.com/Microsoft/PSRule/issues/315)
+- **Breaking change**: Unprocessed object results are not returned from `Test-PSRuleTarget` by default. [#318](https://github.com/Microsoft/PSRule/issues/318)
+  - Previously unprocessed objects returned `$True`, now unprocessed objects return no result.
+  - Use `-Outcome All` to return `$True` for unprocessed objects the same as <= v0.10.0.
+
+What's changed since pre-release v0.11.0-B1911002:
+
+- No additional changes
+
 ## v0.11.0-B1911002 (pre-release)
 
 - Fixed null reference exception when bound property is null. [#323](https://github.com/Microsoft/PSRule/issues/323)
