@@ -75,14 +75,14 @@
 <h3 id="input-default">Input (Default)</h3>
 <pre><code class="lang-text">Invoke-PSRule [-Module &lt;String[]&gt;] [-Outcome &lt;RuleOutcome&gt;] [-As &lt;ResultFormat&gt;] [-Format &lt;InputFormat&gt;]
  [-OutputPath &lt;String&gt;] [-OutputFormat &lt;OutputFormat&gt;] [-Baseline &lt;BaselineOption&gt;] [[-Path] &lt;String[]&gt;]
- [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;] [-Culture &lt;String[]&gt;]
- -InputObject &lt;PSObject&gt; [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
+ [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;] [-TargetType &lt;String[]&gt;]
+ [-Culture &lt;String[]&gt;] -InputObject &lt;PSObject&gt; [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
 </code></pre>
 <h3 id="inputpath">InputPath</h3>
 <pre><code class="lang-text">Invoke-PSRule -InputPath &lt;String[]&gt; [-Module &lt;String[]&gt;] [-Outcome &lt;RuleOutcome&gt;] [-As &lt;ResultFormat&gt;]
  [-Format &lt;InputFormat&gt;] [-OutputPath &lt;String&gt;] [-OutputFormat &lt;OutputFormat&gt;] [-Baseline &lt;BaselineOption&gt;]
  [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;]
- [-Culture &lt;String[]&gt;] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
+ [-TargetType &lt;String[]&gt;] [-Culture &lt;String[]&gt;] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Evaluate objects against matching rules and output the results.
@@ -180,7 +180,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-outcome">-Outcome</h3>
-<p>Filter output to only show rules with a specific outcome.</p>
+<p>Filter output to only show rule results with a specific outcome.</p>
 <pre><code class="lang-yaml">Type: RuleOutcome
 Parameter Sets: (All)
 Aliases:
@@ -276,6 +276,25 @@ Accept wildcard characters: False
 <p>The name of a property to use instead of the pipeline object.
 If the property specified by <code>ObjectPath</code> is a collection or an array, then each item in evaluated separately.</p>
 <pre><code class="lang-yaml">Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-targettype">-TargetType</h3>
+<p>Filters input objects by TargetType.</p>
+<p>If specified, only objects with the specified TargetType are processed.
+Objects that do not match TargetType are ignored.
+If multiple values are specified, only one TargetType must match. This parameter is not case-sensitive.</p>
+<p>By default, all objects are processed.</p>
+<p>This parameter if set, overrides the <code>Input.TargetType</code> option.</p>
+<p>To change the field TargetType is bound to set the <code>Binding.TargetType</code> option.
+For details see the about_PSRule_Options help topic.</p>
+<pre><code class="lang-yaml">Type: String[]
 Parameter Sets: (All)
 Aliases:
 
@@ -420,7 +439,7 @@ Accept wildcard characters: False
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/Microsoft/PSRule/blob/bewhite/add-security-policy/docs/commands/PSRule/en-US/Invoke-PSRule.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

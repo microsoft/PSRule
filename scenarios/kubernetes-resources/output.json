@@ -1,0 +1,257 @@
+[
+    {
+        "ruleName": "metadata.Name",
+        "outcome": "Pass",
+        "outcomeReason": "Processed",
+        "targetName": "app1-cache",
+        "targetType": "Deployment",
+        "info": {
+            "name": "metadata.Name",
+            "displayName": "metadata.Name",
+            "synopsis": "Must have the app.kubernetes.io/name label"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "metadata.Version",
+        "outcome": "Pass",
+        "outcomeReason": "Processed",
+        "targetName": "app1-cache",
+        "targetType": "Deployment",
+        "info": {
+            "name": "metadata.Version",
+            "displayName": "metadata.Version",
+            "synopsis": "Must have the app.kubernetes.io/version label"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "metadata.Component",
+        "outcome": "Pass",
+        "outcomeReason": "Processed",
+        "targetName": "app1-cache",
+        "targetType": "Deployment",
+        "info": {
+            "name": "metadata.Component",
+            "displayName": "metadata.Component",
+            "synopsis": "Must have the app.kubernetes.io/component label"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "deployment.HasMinimumReplicas",
+        "outcome": "Fail",
+        "outcomeReason": "Processed",
+        "reason": [],
+        "targetName": "app1-cache",
+        "targetType": "Deployment",
+        "info": {
+            "name": "deployment.HasMinimumReplicas",
+            "displayName": "deployment.HasMinimumReplicas",
+            "synopsis": "Deployments use a minimum of 2 replicas"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "deployment.NotLatestImage",
+        "outcome": "Fail",
+        "outcomeReason": "Processed",
+        "reason": [],
+        "targetName": "app1-cache",
+        "targetType": "Deployment",
+        "info": {
+            "name": "deployment.NotLatestImage",
+            "displayName": "deployment.NotLatestImage",
+            "synopsis": "Deployments use specific tags"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "deployment.ResourcesSet",
+        "outcome": "Fail",
+        "outcomeReason": "Processed",
+        "reason": [
+            "None of the field(s) existed: resources.requests.cpu",
+            "None of the field(s) existed: resources.requests.memory",
+            "None of the field(s) existed: resources.limits.cpu",
+            "None of the field(s) existed: resources.limits.memory"
+        ],
+        "targetName": "app1-cache",
+        "targetType": "Deployment",
+        "info": {
+            "name": "deployment.ResourcesSet",
+            "displayName": "deployment.ResourcesSet",
+            "synopsis": "Resource requirements are set for each container"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "metadata.Name",
+        "outcome": "Fail",
+        "outcomeReason": "Processed",
+        "reason": [
+            "None of the field(s) existed: metadata.labels.'app.kubernetes.io/name'"
+        ],
+        "targetName": "app1-cache-service",
+        "targetType": "Service",
+        "info": {
+            "name": "metadata.Name",
+            "displayName": "metadata.Name",
+            "synopsis": "Must have the app.kubernetes.io/name label"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "metadata.Version",
+        "outcome": "Fail",
+        "outcomeReason": "Processed",
+        "reason": [
+            "None of the field(s) existed: metadata.labels.'app.kubernetes.io/version'"
+        ],
+        "targetName": "app1-cache-service",
+        "targetType": "Service",
+        "info": {
+            "name": "metadata.Version",
+            "displayName": "metadata.Version",
+            "synopsis": "Must have the app.kubernetes.io/version label"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "metadata.Component",
+        "outcome": "Fail",
+        "outcomeReason": "Processed",
+        "reason": [
+            "None of the field(s) existed: metadata.labels.'app.kubernetes.io/component'",
+            "The field value didn't match the set."
+        ],
+        "targetName": "app1-cache-service",
+        "targetType": "Service",
+        "info": {
+            "name": "metadata.Component",
+            "displayName": "metadata.Component",
+            "synopsis": "Must have the app.kubernetes.io/component label"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "metadata.Name",
+        "outcome": "Pass",
+        "outcomeReason": "Processed",
+        "targetName": "app1-ui",
+        "targetType": "Deployment",
+        "info": {
+            "name": "metadata.Name",
+            "displayName": "metadata.Name",
+            "synopsis": "Must have the app.kubernetes.io/name label"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "metadata.Version",
+        "outcome": "Fail",
+        "outcomeReason": "Processed",
+        "reason": [
+            "None of the field(s) existed: metadata.labels.'app.kubernetes.io/version'"
+        ],
+        "targetName": "app1-ui",
+        "targetType": "Deployment",
+        "info": {
+            "name": "metadata.Version",
+            "displayName": "metadata.Version",
+            "synopsis": "Must have the app.kubernetes.io/version label"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "metadata.Component",
+        "outcome": "Pass",
+        "outcomeReason": "Processed",
+        "targetName": "app1-ui",
+        "targetType": "Deployment",
+        "info": {
+            "name": "metadata.Component",
+            "displayName": "metadata.Component",
+            "synopsis": "Must have the app.kubernetes.io/component label"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "deployment.HasMinimumReplicas",
+        "outcome": "Pass",
+        "outcomeReason": "Processed",
+        "targetName": "app1-ui",
+        "targetType": "Deployment",
+        "info": {
+            "name": "deployment.HasMinimumReplicas",
+            "displayName": "deployment.HasMinimumReplicas",
+            "synopsis": "Deployments use a minimum of 2 replicas"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "deployment.NotLatestImage",
+        "outcome": "Pass",
+        "outcomeReason": "Processed",
+        "targetName": "app1-ui",
+        "targetType": "Deployment",
+        "info": {
+            "name": "deployment.NotLatestImage",
+            "displayName": "deployment.NotLatestImage",
+            "synopsis": "Deployments use specific tags"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "deployment.ResourcesSet",
+        "outcome": "Pass",
+        "outcomeReason": "Processed",
+        "targetName": "app1-ui",
+        "targetType": "Deployment",
+        "info": {
+            "name": "deployment.ResourcesSet",
+            "displayName": "deployment.ResourcesSet",
+            "synopsis": "Resource requirements are set for each container"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "metadata.Name",
+        "outcome": "Pass",
+        "outcomeReason": "Processed",
+        "targetName": "app1-ui-service",
+        "targetType": "Service",
+        "info": {
+            "name": "metadata.Name",
+            "displayName": "metadata.Name",
+            "synopsis": "Must have the app.kubernetes.io/name label"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "metadata.Version",
+        "outcome": "Pass",
+        "outcomeReason": "Processed",
+        "targetName": "app1-ui-service",
+        "targetType": "Service",
+        "info": {
+            "name": "metadata.Version",
+            "displayName": "metadata.Version",
+            "synopsis": "Must have the app.kubernetes.io/version label"
+        },
+        "time": 0
+    },
+    {
+        "ruleName": "metadata.Component",
+        "outcome": "Pass",
+        "outcomeReason": "Processed",
+        "targetName": "app1-ui-service",
+        "targetType": "Service",
+        "info": {
+            "name": "metadata.Component",
+            "displayName": "metadata.Component",
+            "synopsis": "Must have the app.kubernetes.io/component label"
+        },
+        "time": 0
+    }
+]

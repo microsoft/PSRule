@@ -73,14 +73,14 @@
 <p>Pass or fail objects against matching rules.</p>
 <h2 id="syntax">SYNTAX</h2>
 <h3 id="input-default">Input (Default)</h3>
-<pre><code class="lang-text">Test-PSRuleTarget [-Module &lt;String[]&gt;] [-Format &lt;InputFormat&gt;] [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;]
- [-Tag &lt;Hashtable&gt;] -InputObject &lt;PSObject&gt; [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;] [-Culture &lt;String&gt;]
- [&lt;CommonParameters&gt;]
+<pre><code class="lang-text">Test-PSRuleTarget [-Module &lt;String[]&gt;] [-Outcome &lt;RuleOutcome&gt;] [-Format &lt;InputFormat&gt;] [[-Path] &lt;String[]&gt;]
+ [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] -InputObject &lt;PSObject&gt; [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;]
+ [-TargetType &lt;String[]&gt;] [-Culture &lt;String&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h3 id="inputpath">InputPath</h3>
-<pre><code class="lang-text">Test-PSRuleTarget -InputPath &lt;String[]&gt; [-Module &lt;String[]&gt;] [-Format &lt;InputFormat&gt;] [[-Path] &lt;String[]&gt;]
- [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;] [-Culture &lt;String&gt;]
- [&lt;CommonParameters&gt;]
+<pre><code class="lang-text">Test-PSRuleTarget -InputPath &lt;String[]&gt; [-Module &lt;String[]&gt;] [-Outcome &lt;RuleOutcome&gt;] [-Format &lt;InputFormat&gt;]
+ [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;]
+ [-TargetType &lt;String[]&gt;] [-Culture &lt;String&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Evaluate objects against matching rules and return an overall pass or fail for the object as <code>$True</code> (pass) or <code>$False</code> (fail).</p>
@@ -94,11 +94,13 @@
 </li>
 <li>The object passes if:
 <ul>
-<li>No rules were found that match preconditions, name and tag filters.</li>
+<li>No matching rules were found.</li>
 <li>All rules pass.</li>
 </ul>
 </li>
 </ul>
+<p>By default, objects that do match any rules are not returned in results.
+To return <code>$True</code> for these objects, use <code>-Outcome All</code>.</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">Example 1</h3>
 <pre><code class="lang-powershell">@{ Name = 'Item 1' } | Test-PSRuleTarget;
@@ -129,6 +131,19 @@ Aliases: n
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-outcome">-Outcome</h3>
+<p>Filter output to only show pipeline objects with a specific outcome.</p>
+<pre><code class="lang-yaml">Type: RuleOutcome
+Parameter Sets: (All)
+Aliases:
+Accepted values: Pass, Fail, Error, None, Processed, All
+
+Required: False
+Position: Named
+Default value: Pass, Fail, Error
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
@@ -207,6 +222,25 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
+<h3 id="-targettype">-TargetType</h3>
+<p>Filters input objects by TargetType.</p>
+<p>If specified, only objects with the specified TargetType are processed.
+Objects that do not match TargetType are ignored.
+If multiple values are specified, only one TargetType must match. This parameter is not case-sensitive.</p>
+<p>By default, all objects are processed.</p>
+<p>This parameter if set, overrides the <code>Input.TargetType</code> option.</p>
+<p>To change the field TargetType is bound to set the <code>Binding.TargetType</code> option.
+For details see the about_PSRule_Options help topic.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
 <h3 id="-module">-Module</h3>
 <p>Search for rule definitions within a module.
 When specified without the <code>-Path</code> parameter, only rule definitions in the module will be discovered.</p>
@@ -268,7 +302,7 @@ Accept wildcard characters: False
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/Microsoft/PSRule/blob/bewhite/add-security-policy/docs/commands/PSRule/en-US/Test-PSRuleTarget.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/master/docs/commands/PSRule/en-US/Test-PSRuleTarget.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

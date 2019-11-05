@@ -82,6 +82,7 @@ This topic describes what options are available, when to and how to use them.</p
 <li><a href="#executionnotprocessedwarning">Execution.NotProcessedWarning</a></li>
 <li><a href="#inputformat">Input.Format</a></li>
 <li><a href="#inputobjectpath">Input.ObjectPath</a></li>
+<li><a href="#inputtargettype">Input.TargetType</a></li>
 <li><a href="#logginglimitdebug">Logging.LimitDebug</a></li>
 <li><a href="#logginglimitverbose">Logging.LimitVerbose</a></li>
 <li><a href="#loggingrulefail">Logging.RuleFail</a></li>
@@ -417,7 +418,7 @@ input:
 When this option is set, instead of evaluating the pipeline object, PSRule looks for a property of the pipeline object specified by <code>ObjectPath</code> and uses that instead.
 If the property specified by <code>ObjectPath</code> is a collection/ array, then each item is evaluated separately.</p>
 <p>If the property specified by <code>ObjectPath</code> does not exist, PSRule skips the object.</p>
-<p>When using <code>Invoke-PSRule</code> and <code>Test-PSRuleTarget</code> the <code>-ObjectPath</code> parameter will override any value set in configuration.</p>
+<p>When using <code>Invoke-PSRule</code>, <code>Test-PSRuleTarget</code> and <code>Assert-PSRule</code> the <code>-ObjectPath</code> parameter will override any value set in configuration.</p>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the ObjectPath parameter
 $option = New-PSRuleOption -ObjectPath 'items';
@@ -431,6 +432,29 @@ Set-PSRuleOption -ObjectPath 'items';
 <pre><code class="lang-yaml"># YAML: Using the input/objectPath property
 input:
   objectPath: items
+</code></pre>
+<h3 id="inputtargettype">Input.TargetType</h3>
+<p>Filters input objects by TargetType.</p>
+<p>If specified, only objects with the specified TargetType are processed.
+Objects that do not match TargetType are ignored.
+If multiple values are specified, only one TargetType must match. This option is not case-sensitive.</p>
+<p>By default, all objects are processed.</p>
+<p>To change the field TargetType is bound to set the <code>Binding.TargetType</code> option.</p>
+<p>When using <code>Invoke-PSRule</code>, <code>Test-PSRuleTarget</code> and <code>Assert-PSRule</code> the <code>-TargetType</code> parameter will override any value set in configuration.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the InputTargetType parameter
+$option = New-PSRuleOption -InputTargetType 'virtualMachine';
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Input.TargetType hashtable key
+$option = New-PSRuleOption -Option @{ 'Input.TargetType' = 'virtualMachine' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the InputTargetType parameter to set YAML
+Set-PSRuleOption -InputTargetType 'virtualMachine';
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the input/targetType property
+input:
+  targetType:
+  - virtualMachine
 </code></pre>
 <h3 id="logginglimitdebug">Logging.LimitDebug</h3>
 <p>Limits debug messages to a list of named debug scopes.</p>
@@ -774,6 +798,9 @@ execution:
 input:
   format: Yaml
   objectPath: items
+  targetType:
+  - Microsoft.Compute/virtualMachines
+  - Microsoft.Network/virtualNetworks
 
 # Configures outcome logging options
 logging:
@@ -839,6 +866,7 @@ execution:
 input:
   format: Detect
   objectPath: null
+  targetType: [ ]
 
 # Configures outcome logging options
 logging:
@@ -892,7 +920,7 @@ rule:
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/Microsoft/PSRule/blob/bewhite/add-security-policy/docs/concepts/PSRule/en-US/about_PSRule_Options.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>
