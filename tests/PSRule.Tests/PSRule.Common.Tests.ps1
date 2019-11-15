@@ -393,7 +393,15 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         It 'NUnit3' {
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat NUnit3 | Out-String;
+            $invokeParams = @{
+                Path = $ruleFilePath
+                OutputFormat = 'NUnit3'
+            }
+            $result = $testObject | Invoke-PSRule @invokeParams -Name 'WithPreconditionFalse' -WarningAction SilentlyContinue | Out-String;
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+
+            $result = $testObject | Invoke-PSRule @invokeParams -Name 'FromFile1' | Out-String;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
 

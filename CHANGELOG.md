@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed NUnit serialization issue for unprocessed rules. [#332](https://github.com/Microsoft/PSRule/issues/332)
+
 ## v0.11.0
 
 What's changed since v0.10.0:

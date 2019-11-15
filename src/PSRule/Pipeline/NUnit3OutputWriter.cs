@@ -48,6 +48,9 @@ namespace PSRule.Pipeline
 
             foreach (var result in o)
             {
+                if (result.Total == 0)
+                    continue;
+
                 var records = result.AsRecord();
                 var testCases = records.Select(r => new TestCase(name: string.Concat(r.TargetName, " -- ", r.RuleName), description: r.Info.Synopsis, success: r.IsSuccess(), executed: r.IsProcessed(), time: r.Time))
                     .ToArray();
