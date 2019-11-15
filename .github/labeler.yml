@@ -8,12 +8,13 @@ documentation:
 
 # Add 'repo' label to any root file changes
 repo:
-  - ./*
+- ./*
 
 # Add 'tests' label to any unit tests files
 tests:
-  - tests/**/*
+- tests/**/*
 
 # Add 'module' label to any module files
 module:
-  - src/PSRule/*
+- src/PSRule/*
+- src/PSRule/**/*
