@@ -169,7 +169,7 @@ namespace PSRule.Pipeline
         protected PipelineContext PrepareContext(BindTargetMethod bindTargetName, BindTargetMethod bindTargetType)
         {
             var unresolved = new Dictionary<string, ResourceRef>(StringComparer.OrdinalIgnoreCase);
-            if (_Baseline != null && _Baseline is BaselineOption.BaselineRef baselineRef)
+            if (_Baseline is BaselineOption.BaselineRef baselineRef)
                 unresolved.Add(baselineRef.Name, new BaselineRef(baselineRef.Name, BaselineContext.ScopeType.Explicit));
 
             for (var i = 0; i < Source.Length; i++)
