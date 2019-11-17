@@ -22,9 +22,7 @@ namespace PSRule.Runtime
             {
                 _Reason = new List<string>();
                 if (!string.IsNullOrEmpty(reason))
-                {
                     _Reason.Add(reason);
-                }
             }
         }
 
@@ -46,9 +44,8 @@ namespace PSRule.Runtime
         {
             // Ignore reasons if this is a pass.
             if (Result)
-            {
                 return;
-            }
+
             _Reason.Add(text);
         }
 
@@ -59,9 +56,8 @@ namespace PSRule.Runtime
         public string[] GetReason()
         {
             if (!Result || _Reason == null || _Reason.Count == 0)
-            {
                 return null;
-            }
+
             return _Reason.ToArray();
         }
 
@@ -73,9 +69,7 @@ namespace PSRule.Runtime
         {
             // Check that the scope is still valid
             if (PipelineContext.CurrentThread.ExecutionScope != ExecutionScope.Condition)
-            {
                 throw new RuleRuntimeException(string.Format(PSRuleResources.VariableConditionScope, "Assert"));
-            }
 
             // Continue
             for (var i = 0; _Reason != null && i < _Reason.Count; i++)

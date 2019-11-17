@@ -140,7 +140,6 @@ namespace PSRule.Runtime
             if (bindingContext == null || !bindingContext.GetNameToken(expression: name, nameToken: out NameToken nameToken))
             {
                 nameToken = GetNameToken(expression: name);
-
                 if (bindingContext != null)
                     bindingContext.CacheNameToken(expression: name, nameToken: nameToken);
             }
@@ -149,52 +148,38 @@ namespace PSRule.Runtime
 
         private static bool GetField(object targetObject, NameToken token, bool caseSensitive, out object value)
         {
+            value = null;
             var baseObject = GetBaseObject(targetObject);
             if (baseObject == null)
-            {
-                value = null;
                 return false;
-            }
 
             var baseType = baseObject.GetType();
             object field = null;
             bool foundField = false;
 
-            // Handle field tokens
-            if (token.Type == NameTokenType.Field)
+            // Handle dictionaries and hashtables
+            if (token.Type == NameTokenType.Field && baseObject is IDictionary dictionary)
             {
-                // Handle dictionaries and hashtables
-                if (typeof(IDictionary).IsAssignableFrom(baseType))
-                {
-                    var dictionary = (IDictionary)baseObject;
-                    if (dictionary.GetFieldName(fieldName: token.Name, caseSensitive: caseSensitive, value: out field))
-                        foundField = true;
-                }
-                // Handle PSObjects
-                else if (targetObject is PSObject pso)
-                {
-                    if (pso.PropertyValue(propertyName: token.Name, caseSensitive: caseSensitive, value: out field))
-                        foundField = true;
-                }
-                // Handle all other CLR types
-                else
-                {
-                    if (GetPropertyValue(targetObject, token.Name, baseType, caseSensitive, out field) || GetFieldValue(targetObject, token.Name, baseType, caseSensitive, out field))
-                        foundField = true;
-                }
+                if (TryDictionary(dictionary, token.Name, caseSensitive, out field))
+                    foundField = true;
+            }
+            // Handle PSObjects
+            else if (token.Type == NameTokenType.Field && targetObject is PSObject pso)
+            {
+                if (TryPropertyValue(pso, token.Name, caseSensitive, out field))
+                    foundField = true;
+            }
+            // Handle all other CLR types
+            else if (token.Type == NameTokenType.Field)
+            {
+                if (TryPropertyValue(targetObject, token.Name, baseType, caseSensitive, out field) || TryFieldValue(targetObject, token.Name, baseType, caseSensitive, out field))
+                    foundField = true;
             }
             // Handle Index tokens
-            else
+            else if (baseType.IsArray && baseObject is Array array && token.Index < array.Length)
             {
-                if (baseType.IsArray)
-                {
-                    var array = (Array)baseObject;
-                    if (token.Index < array.Length)
-                    {
-                        field = array.GetValue(token.Index);
-                        foundField = true;
-                    }
-                }
+                field = array.GetValue(token.Index);
+                foundField = true;
             }
 
             if (foundField)
@@ -209,16 +194,29 @@ namespace PSRule.Runtime
                     return GetField(targetObject: field, token: token.Next, caseSensitive: caseSensitive, value: out value);
                 }
             }
-            value = null;
             return false;
         }
 
-        private static bool GetPropertyValue(object targetObject, string propertyName, Type baseType, bool caseSensitive, out object value)
+        private static bool TryDictionary(IDictionary dictionary, string key, bool caseSensitive, out object value)
+        {
+            value = null;
+            var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
+            foreach (var k in dictionary.Keys)
+            {
+                if (comparer.Equals(key, k))
+                {
+                    value = dictionary[k];
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static bool TryPropertyValue(object targetObject, string propertyName, Type baseType, bool caseSensitive, out object value)
         {
             value = null;
             var bindingFlags = caseSensitive ? BindingFlags.Default : BindingFlags.IgnoreCase;
             var propertyInfo = baseType.GetProperty(propertyName, bindingAttr: bindingFlags | BindingFlags.Instance | BindingFlags.Public);
-
             if (propertyInfo == null)
                 return false;
 
@@ -226,7 +224,21 @@ namespace PSRule.Runtime
             return true;
         }
 
-        private static bool GetFieldValue(object targetObject, string fieldName, Type baseType, bool caseSensitive, out object value)
+        private static bool TryPropertyValue(PSObject targetObject, string propertyName, bool caseSensitive, out object value)
+        {
+            value = null;
+            var p = targetObject.Properties[propertyName];
+            if (p == null)
+                return false;
+
+            if (caseSensitive && !StringComparer.Ordinal.Equals(p.Name, propertyName))
+                return false;
+
+            value = p.Value;
+            return true;
+        }
+
+        private static bool TryFieldValue(object targetObject, string fieldName, Type baseType, bool caseSensitive, out object value)
         {
             value = null;
             var bindingFlags = caseSensitive ? BindingFlags.Default : BindingFlags.IgnoreCase;
