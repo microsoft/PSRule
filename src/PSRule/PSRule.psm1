@@ -1316,6 +1316,9 @@ function Exists {
         [Switch]$Not = $False,
 
         [Parameter(Mandatory = $False)]
+        [Switch]$All = $False,
+
+        [Parameter(Mandatory = $False)]
         [String]$Reason,
 
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]

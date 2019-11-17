@@ -100,12 +100,13 @@ The `Exists` assertion is used within a `Rule` definition to assert that a _fiel
 Syntax:
 
 ```text
-Exists [-Field] <string[]> [-CaseSensitive] [-Not] [-Reason <string>] [-InputObject <PSObject>]
+Exists [-Field] <string[]> [-CaseSensitive] [-Not] [-All] [-Reason <string>] [-InputObject <PSObject>]
 ```
 
 - `Field` - One or more fields/ properties that must exist on the pipeline object.
 - `CaseSensitive` - The field name must match exact case.
 - `Not` - Instead of checking if the field names exists they should not exist.
+- `All` - All fields must exist on the pipeline object, instead of only one.
 - `Reason` - A custom reason provided if the condition fails.
 - `InputObject` - Supports objects being piped directly.
 
@@ -129,6 +130,27 @@ Rule 'nameMustExist' {
 # Synopsis: Checks for the presence of name nested under the metadata property
 Rule 'nameMustExist' {
     $TargetObject.metadata | Exists 'name'
+}
+```
+
+```powershell
+# Synopsis: Checks that the NotName property does not exist
+Rule 'NotNameMustNotExist' {
+    Exists -Not 'NotName'
+}
+```
+
+```powershell
+# Synopsis: Checks one of Name or AlternativeName properties exist
+Rule 'EitherMustExist' {
+    Exists 'Name', 'AlternativeName'
+}
+```
+
+```powershell
+# Synopsis: Checks that both Name and Type properties exist
+Rule 'AllMustExist' {
+    Exists 'Name', 'Type' -All
 }
 ```
 
