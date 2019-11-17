@@ -30,6 +30,7 @@ Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
                 Value = @{
                     Value1 = 1
                 }
+                Value2 = '2'
                 Properties = $Null
             }
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Tag @{ keyword = 'Exists' };
@@ -44,7 +45,10 @@ Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
             $filteredResult = $result | Where-Object { $_.RuleName -eq 'ExistsTestNegative' };
             $filteredResult | Should -Not -BeNullOrEmpty;
             $filteredResult.IsSuccess() | Should -Be $False;
-            $filteredResult.Reason | Should -BeLike "None of the field(s) existed: *";
+            $filteredResult.Reason[0..4] | Should -BeLike "None of the field(s) existed: *";
+            $filteredResult.Reason[5] | Should -BeLike "The field(s) existed: *";
+            $filteredResult.Reason[6] | Should -BeLike "None of the field(s) existed: *";
+            $filteredResult.Reason[7] | Should -BeLike "The field(s) existed: *";
         }
 
         It 'If pre-condition' {

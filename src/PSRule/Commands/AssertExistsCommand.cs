@@ -4,6 +4,7 @@
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
+using System.Collections.Generic;
 using System.Management.Automation;
 
 namespace PSRule.Commands
@@ -18,6 +19,7 @@ namespace PSRule.Commands
         {
             CaseSensitive = false;
             Not = false;
+            All = false;
         }
 
         [Parameter(Mandatory = true, Position = 0)]
@@ -34,40 +36,43 @@ namespace PSRule.Commands
         [PSDefaultValue(Value = false)]
         public SwitchParameter Not { get; set; }
 
+        [Parameter(Mandatory = false)]
+        [PSDefaultValue(Value = false)]
+        public SwitchParameter All { get; set; }
+
         [Parameter(Mandatory = false, ValueFromPipeline = true)]
         public PSObject InputObject { get; set; }
 
         protected override void ProcessRecord()
         {
             if (!IsRuleScope())
-            {
                 throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordRuleScope, RuleLanguageNouns.Exists));
-            }
-
+            
             var targetObject = InputObject ?? GetTargetObject();
+            var foundFields = new List<string>();
+            var notFoundFields = new List<string>();
+            int found = 0;
+            int required = All ? Field.Length : 1;
 
-            bool expected = !Not;
-            bool actual = Not;
-            string found = string.Empty;
-
-            for (var i = 0; i < Field.Length && actual != expected; i++)
+            for (var i = 0; i < Field.Length && found < required; i++)
             {
-                actual = ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field[i], caseSensitive: CaseSensitive, value: out object fieldValue);
-
-                if (actual)
+                if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field[i], caseSensitive: CaseSensitive, value: out object fieldValue))
                 {
                     PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Exists, message: PSRuleResources.ExistsTrue, args: Field[i]);
-                    found = Field[i];
+                    foundFields.Add(Field[i]);
+                    found++;
                 }
+                else
+                    notFoundFields.Add(Field[i]);
             }
 
-            var result = expected == actual;
+            var result = Not ? found < required : found == required;
             PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Exists, outcome: result);
             if (!(result || TryReason(Reason)))
             {
-                WriteReason(Not ? string.Format(ReasonStrings.ExistsNot, found) : string.Format(ReasonStrings.Exists, string.Join(", ", Field)));
+                WriteReason(Not ? string.Format(ReasonStrings.ExistsNot, string.Join(", ", foundFields)) : string.Format(ReasonStrings.Exists, string.Join(", ", notFoundFields)));
             }
-            WriteObject(expected == actual);
+            WriteObject(result);
         }
     }
 }
