@@ -122,7 +122,7 @@
     <comment>Included when none of the fields exist.</comment>
   </data>
   <data name="ExistsNot" xml:space="preserve">
-    <value>The field '{0}' exists.</value>
+    <value>The field(s) existed: {0}</value>
     <comment>Included when any of the fields exist and the -Not switch is used.</comment>
   </data>
   <data name="HasExpectedFieldValue" xml:space="preserve">

@@ -204,6 +204,9 @@ Rule 'ExistsTest' -Tag @{ keyword = 'Exists' } {
     Exists -Not 'NotName'
     Exists 'Value.Value1'
     Exists 'NotName','Value'
+    Exists 'Value', 'Value2' -All
+    Exists -Not 'NotName1','NotName2'
+    Exists -Not 'Value','NotName2' -All
     @{ Pipeline = 'Value' } | Exists 'Pipeline'
 }
 
@@ -215,6 +218,9 @@ Rule 'ExistsTestNegative' -Tag @{ keyword = 'Exists' } {
         Exists 'name' -CaseSensitive
         Exists 'NotValue.Value1'
         Exists 'Properties.value'
+        Exists -Not 'NotName', 'Value'
+        Exists 'NotName', 'Value2' -All
+        Exists -Not 'Value','Value2' -All
     }
 }
 

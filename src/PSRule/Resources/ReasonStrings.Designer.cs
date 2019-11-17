@@ -70,7 +70,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The field &apos;{0}&apos; exists..
+        ///   Looks up a localized string similar to The field(s) existed: {0}.
         /// </summary>
         internal static string ExistsNot {
             get {

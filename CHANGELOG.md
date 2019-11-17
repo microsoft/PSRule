@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Fixed NUnit serialization issue for unprocessed rules. [#332](https://github.com/Microsoft/PSRule/issues/332)
+- Added `-All` option to `Exists` keyword. [#331](https://github.com/Microsoft/PSRule/issues/331)
 
 ## v0.11.0
 

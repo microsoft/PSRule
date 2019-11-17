@@ -32,9 +32,11 @@ A subset of built-in keywords can be used within script preconditions:
 
 ### Rule
 
-A `Rule` definition describes an individual business rule that will be executed against each input object. Input objects can be passed on the PowerShell pipeline or supplied from file.
+A `Rule` definition describes an individual business rule that will be executed against each input object.
+Input objects can be passed on the PowerShell pipeline or supplied from file.
 
-To define a Rule use the `Rule` keyword followed by a name and a pair of squiggly brackets `{`. Within the `{ }` one or more conditions can be used.
+To define a Rule use the `Rule` keyword followed by a name and a pair of squiggly brackets `{`.
+Within the `{ }` one or more conditions can be used.
 
 Conditions determine if the input object either _Pass_ or _Fail_ the rule.
 
@@ -54,7 +56,10 @@ Rule [-Name] <string> [-Tag <hashtable>] [-Type <string[]>] [-If <scriptBlock>] 
 - `Configure` - A set of default configuration values. These values are only used when the baseline configuration does not contain the key.
 - `Body` - A script block that specifies one or more conditions that are required for the rule to _Pass_.
 
-A condition is any valid PowerShell that return either `$True` or `$False`. Optionally, PSRule keywords can be used to help build out conditions quickly. When a rule contains more then one condition, all must return `$True` for the rule to _Pass_. If any one condition returns `$False` the rule has failed.
+A condition is any valid PowerShell that return either `$True` or `$False`.
+Optionally, PSRule keywords can be used to help build out conditions quickly.
+When a rule contains more then one condition, all must return `$True` for the rule to _Pass_.
+If any one condition returns `$False` the rule has failed.
 
 The following restrictions apply:
 
@@ -129,9 +134,13 @@ Rule 'nameMustExist' {
 
 Output:
 
-If **any** the specified field exists then Exists will return `$True`, otherwise `$False`.
+If **any** the specified fields exists then `Exists` will return `$True`, otherwise `$False`.
 
-If `-Not` is used, then if **any** of the specified fields exist then Exists will return `$False` otherwise `$True`.
+If `-Not` is used, then if **any** of the fields exist then `Exists` will return `$False` otherwise `$True`.
+
+If `-All` is used, then then **all** of the fields must exist, or not with the `-Not` switch.
+If all fields exist then `Exists` will return `$True`, otherwise `$False`.
+If `-Not` is used with `-All`, if **all** of the fields exist `Exists` will return `$False` otherwise `$True`.
 
 ### Match
 
