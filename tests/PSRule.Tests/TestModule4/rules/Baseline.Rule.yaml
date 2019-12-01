@@ -5,6 +5,12 @@ metadata:
   name: Module4
 spec:
   binding:
+    field:
+      kind:
+      - Id
+      uniqueIdentifer:
+      - Id
+      - AlternateName
     targetName:
       - AlternateName
     targetType:

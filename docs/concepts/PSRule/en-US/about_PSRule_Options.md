@@ -33,6 +33,7 @@ The following workspace options are available for use:
 Additionally the following baseline options can be included:
 
 - [Binding.IgnoreCase](#bindingignorecase)
+- [Binding.Field](#bindingfield)
 - [Binding.TargetName](#bindingtargetname)
 - [Binding.TargetType](#bindingtargettype)
 - [Configuration](#configuration)
@@ -114,7 +115,8 @@ This is because not all operation systems treat case in the same way.
 ### Binding.IgnoreCase
 
 When evaluating an object, PSRule extracts a few key properties from the object to help filter rules and display output results.
-The process of extract these key properties is called _binding_. The properties that PSRule uses for binding can be customized by providing a order list of alternative properties to use.
+The process of extract these key properties is called _binding_.
+The properties that PSRule uses for binding can be customized by providing a order list of alternative properties to use.
 See [`Binding.TargetName`](#bindingtargetname) and [`Binding.TargetType`](#bindingtargettype) for these options.
 
 - By default, custom property binding finds the first matching property by name regardless of case. i.e. `Binding.IgnoreCase` is `true`.
@@ -143,6 +145,48 @@ Set-PSRuleOption -BindingIgnoreCase $False;
 # YAML: Using the binding/ignoreCase property
 binding:
   ignoreCase: false
+```
+
+### Binding.Field
+
+When an object is passed from the pipeline, PSRule automatically extracts fields from object properties.
+PSRule provides standard fields such as `TargetName` and `TargetType`.
+In addition to standard fields, custom fields can be bound.
+Custom fields are available to rules and included in output.
+
+PSRule uses the following logic to determine which property should be used for binding:
+
+- By default PSRule will not extract any custom fields.
+- If custom fields are configured, PSRule will attempt to bind the field.
+  - If **none** of the configured property names exist, the field will be skipped.
+  - If more then one property name is configured, the order they are specified in the configuration determines precedence.
+    - i.e. The first configured property name will take precedence over the second property name.
+  - By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the [Binding.IgnoreCase](#bindingignorecase) option.
+
+Custom field bindings can be specified using:
+
+```powershell
+# PowerShell: Using the BindingField parameter
+$option = New-PSRuleOption -BindingField @{ id = 'ResourceId', 'AlternativeId' };
+```
+
+```powershell
+# PowerShell: Using the Binding.Field hashtable key
+$option = New-PSRuleOption -Option @{ 'Binding.Field' = @{ id = 'ResourceId', 'AlternativeId' } };
+```
+
+```powershell
+# PowerShell: Using the BindingField parameter to set YAML
+Set-PSRuleOption -BindingField @{ id = 'ResourceId', 'AlternativeId' };
+```
+
+```yaml
+# YAML: Using the binding/field property
+binding:
+  field:
+    id:
+    - ResourceId
+    - AlternativeId
 ```
 
 ### Binding.TargetName
@@ -1034,6 +1078,10 @@ suppression:
 # Configure baseline options
 binding:
   ignoreCase: false
+  field:
+    id:
+    - ResourceId
+    - AlternativeId
   targetName:
   - ResourceName
   - AlternateName
@@ -1093,6 +1141,7 @@ suppression: { }
 # Configure baseline options
 binding:
   ignoreCase: true
+  field: { }
   targetName:
   - TargetName
   - Name

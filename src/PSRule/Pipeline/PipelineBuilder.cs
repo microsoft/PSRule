@@ -166,7 +166,7 @@ namespace PSRule.Pipeline
             _Baseline = baseline;
         }
 
-        protected PipelineContext PrepareContext(BindTargetMethod bindTargetName, BindTargetMethod bindTargetType)
+        protected PipelineContext PrepareContext(BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField)
         {
             var unresolved = new Dictionary<string, ResourceRef>(StringComparer.OrdinalIgnoreCase);
             if (_Baseline is BaselineOption.BaselineRef baselineRef)
@@ -182,7 +182,7 @@ namespace PSRule.Pipeline
                 logger: Logger,
                 option: Option,
                 hostContext: HostContext,
-                binder: new TargetBinder(bindTargetName, bindTargetType, Option.Input.TargetType),
+                binder: new TargetBinder(bindTargetName, bindTargetType, bindField, Option.Input.TargetType),
                 baseline: GetBaselineContext(),
                 unresolved: unresolved
             );

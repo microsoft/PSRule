@@ -87,6 +87,62 @@ namespace PSRule
     }
 
     /// <summary>
+    /// A YAML converter for de/serializing a field map.
+    /// </summary>
+    internal sealed class FieldMapYamlTypeConverter : IYamlTypeConverter
+    {
+        public bool Accepts(Type type)
+        {
+            return type == typeof(FieldMap);
+        }
+
+        public object ReadYaml(IParser parser, Type type)
+        {
+            var result = new FieldMap();
+            if (parser.Accept<MappingStart>())
+            {
+                parser.MoveNext();
+                while (!parser.Accept<MappingEnd>())
+                {
+                    var fieldName = parser.Allow<Scalar>().Value;
+                    if (parser.Accept<SequenceStart>())
+                    {
+                        parser.MoveNext();
+                        var fields = new List<string>();
+
+                        while (!parser.Accept<SequenceEnd>())
+                            fields.Add(parser.Allow<Scalar>().Value);
+
+                        result.Set(fieldName, fields.ToArray());
+                        parser.MoveNext();
+                    }
+                }
+                parser.MoveNext();
+            }
+            return result;
+        }
+
+        public void WriteYaml(IEmitter emitter, object value, Type type)
+        {
+            if (!(value is FieldMap map))
+                return;
+
+            emitter.Emit(new MappingStart());
+            foreach (var field in map)
+            {
+                emitter.Emit(new Scalar(field.Key));
+                emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
+                for (var i = 0; i < field.Value.Length; i++)
+                {
+                    emitter.Emit(new Scalar(field.Value[i]));
+                }
+                emitter.Emit(new SequenceEnd());
+            }
+            emitter.Emit(new MappingEnd());
+        }
+    }
+
+    /// <summary>
     /// A YAML converter to deserialize a map/ object as a PSObject.
     /// </summary>
     internal sealed class PSObjectYamlTypeConverter : IYamlTypeConverter

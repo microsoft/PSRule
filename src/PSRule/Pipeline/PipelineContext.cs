@@ -153,6 +153,7 @@ namespace PSRule.Pipeline
                     Runspace.DefaultRunspace = _Runspace;
 
                 _Runspace.Open();
+                _Runspace.SessionStateProxy.PSVariable.Set(new PSRuleVariable());
                 _Runspace.SessionStateProxy.PSVariable.Set(new RuleVariable());
                 _Runspace.SessionStateProxy.PSVariable.Set(new LocalizedDataVariable());
                 _Runspace.SessionStateProxy.PSVariable.Set(new AssertVariable());
@@ -437,7 +438,8 @@ namespace PSRule.Pipeline
                 targetName: _Binder.TargetName,
                 targetType: _Binder.TargetType,
                 tag: ruleBlock.Tag,
-                info: ruleBlock.Info
+                info: ruleBlock.Info,
+                field: _Binder.Field
             );
 
             if (_Logger != null)

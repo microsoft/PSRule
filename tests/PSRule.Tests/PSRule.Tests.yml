@@ -18,6 +18,9 @@ configuration:
 # Configure binding
 binding:
   ignoreCase: false
+  field:
+    id:
+    - resourceId
   targetName:
   - ResourceName
   targetType:

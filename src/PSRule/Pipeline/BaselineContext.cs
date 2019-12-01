@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Configuration;
 using PSRule.Rules;
 using System;
 using System.Collections;
@@ -11,6 +12,8 @@ namespace PSRule.Pipeline
     internal interface IBindingOption
     {
         bool IgnoreCase { get; }
+
+        FieldMap[] Field { get; }
 
         string[] TargetName { get; }
 
@@ -57,6 +60,7 @@ namespace PSRule.Pipeline
 
             // Binding
             public bool? IgnoreCase;
+            public FieldMap Field;
             public string[] TargetName;
             public string[] TargetType;
 
@@ -65,6 +69,7 @@ namespace PSRule.Pipeline
                 Type = type;
                 ModuleName = moduleName;
                 IgnoreCase = option.Binding?.IgnoreCase;
+                Field = option.Binding?.Field;
                 TargetName = option.Binding?.TargetName;
                 TargetType = option.Binding?.TargetType;
                 Include = option.Rule?.Include;
@@ -85,14 +90,17 @@ namespace PSRule.Pipeline
 
         private sealed class BindingOption : IBindingOption, IEquatable<BindingOption>
         {
-            public BindingOption(string[] targetName, string[] targetType, bool ignoreCase)
+            public BindingOption(bool ignoreCase, FieldMap[] field, string[] targetName, string[] targetType)
             {
+                IgnoreCase = ignoreCase;
+                Field = field;
                 TargetName = targetName;
                 TargetType = targetType;
-                IgnoreCase = ignoreCase;
             }
 
             public bool IgnoreCase { get; }
+
+            public FieldMap[] Field { get; }
 
             public string[] TargetName { get; }
 
@@ -107,6 +115,7 @@ namespace PSRule.Pipeline
             {
                 return other != null &&
                     IgnoreCase == other.IgnoreCase &&
+                    Field == other.Field &&
                     TargetName == other.TargetName &&
                     TargetType == other.TargetType;
             }
@@ -117,6 +126,7 @@ namespace PSRule.Pipeline
                 {
                     int hash = 17;
                     hash = hash * 23 + (IgnoreCase ? IgnoreCase.GetHashCode() : 0);
+                    hash = hash * 23 + (Field != null ? Field.GetHashCode() : 0);
                     hash = hash * 23 + (TargetName != null ? TargetName.GetHashCode() : 0);
                     hash = hash * 23 + (TargetType != null ? TargetType.GetHashCode() : 0);
                     return hash;
@@ -148,10 +158,11 @@ namespace PSRule.Pipeline
             if (_Binding != null)
                 return _Binding;
 
+            bool ignoreCase = _Explicit?.IgnoreCase ?? _Workspace?.IgnoreCase ?? _Module?.IgnoreCase ?? PSRule.Configuration.BindingOption.Default.IgnoreCase.Value;
+            FieldMap[] field = new FieldMap[] { _Explicit?.Field, _Workspace?.Field, _Module?.Field };
             string[] targetName = _Explicit?.TargetName ?? _Workspace?.TargetName ?? _Module?.TargetName;
             string[] targetType = _Explicit?.TargetType ?? _Workspace?.TargetType ?? _Module?.TargetType;
-            bool ignoreCase = _Explicit?.IgnoreCase ?? _Workspace?.IgnoreCase ?? _Module?.IgnoreCase ?? PSRule.Configuration.BindingOption.Default.IgnoreCase.Value;
-            return _Binding = new BindingOption(targetName, targetType, ignoreCase);
+            return _Binding = new BindingOption(ignoreCase, field, targetName, targetType);
         }
 
         public Dictionary<string, object> GetConfiguration()

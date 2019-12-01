@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Fixed TargetType fall back to type name. [#339](https://github.com/Microsoft/PSRule/issues/339)
+- Added custom field binding. [#321](https://github.com/Microsoft/PSRule/issues/321)
+  - Added new option `Binding.Field` available in baselines to configure binding.
+- Added parameter alias `-f` for `-InputPath`. [#340](https://github.com/Microsoft/PSRule/issues/340)
+  - `-f` was added to `Invoke-PSRule`, `Assert-PSRule` and `Test-PSRuleTarget` cmdlets.
+- **Important change**: Added `$PSRule` generic context variable. [#341](https://github.com/Microsoft/PSRule/issues/341)
+  - Deprecated `TargetName`, `TargetType` and `TargetObject` properties on `$Rule`.
+  - Use `TargetName`, `TargetType` and `TargetObject` on `$PSRule` instead.
+  - Properties `TargetName`, `TargetType` and `TargetObject` on `$Rule` will be removed in the future.
+  - Going forward `$Rule` will only contain properties that relate to the current rule context.
+
 ## v0.12.0-B1911013 (pre-release)
 
 - Fixed NUnit serialization issue for unprocessed rules. [#332](https://github.com/Microsoft/PSRule/issues/332)

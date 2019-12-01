@@ -19,8 +19,8 @@
             "/docs/scenarios/*/ps-rule.yaml"
         ],
         "./schemas/PSRule-language.schema.json": [
-            "/tests/PSRule.Tests/**.rule.yaml",
-            "/docs/scenarios/*/*.rule.yaml"
+            "/tests/PSRule.Tests/**.Rule.yaml",
+            "/docs/scenarios/*/*.Rule.yaml"
         ]
     },
     "[yaml]": {

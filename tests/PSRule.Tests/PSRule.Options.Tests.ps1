@@ -181,6 +181,33 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Binding.Field' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Binding.Field | Should -BeNullOrEmpty;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Binding.Field' = @{ id = 'resourceId' } };
+            $option.Binding.Field | Should -Not -BeNullOrEmpty;
+            $option.Binding.Field.id.Length | Should -Be 1;
+            $option.Binding.Field.id[0] | Should -Be 'resourceId';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Binding.Field | Should -Not -BeNullOrEmpty;
+            $option.Binding.Field.id.Length | Should -Be 1;
+            $option.Binding.Field.id[0] | Should -Be 'resourceId';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -BindingField @{ id = 'resourceId' } -Path $emptyOptionsFilePath;
+            $option.Binding.Field | Should -Not -BeNullOrEmpty;
+            $option.Binding.Field.id.Length | Should -Be 1;
+        }
+    }
+
     Context 'Read Binding.TargetName' {
         It 'from default' {
             $option = New-PSRuleOption;
@@ -696,6 +723,14 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -BindingIgnoreCase $False @optionParams;
             $option.Binding.IgnoreCase | Should -Be $False;
+        }
+    }
+
+    Context 'Read Binding.Field' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -BindingField @{ id = 'resourceId' } @optionParams;
+            $option.Binding.Field | Should -Not -BeNullOrEmpty;
+            $option.Binding.Field.id[0] | Should -Be 'resourceId';
         }
     }
 

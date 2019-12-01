@@ -20,6 +20,7 @@ The following variables are available for use:
 - [$Assert](#assert)
 - [$Configuration](#configuration)
 - [$LocalizedData](#localizeddata)
+- [$PSRule](#psrule)
 - [$Rule](#rule)
 - [$TargetObject](#targetobject)
 
@@ -123,17 +124,45 @@ This rule returns a warning message similar to:
 LocalizedMessage for en-ZZ. Format=TestType.
 ```
 
+### PSRule
+
+An object representing the current context during execution.
+
+The following section properties are available for public read access:
+
+- `Field` - A hashtable of custom bound fields. See option `Binding.Field` for more information.
+- `TargetObject` - The object currently being processed on the pipeline.
+- `TargetName` - The name of the object currently being processed on the pipeline. This property will automatically default to `TargetName` or `Name` properties of the object if they exist.
+- `TargetType` - The type of the object currently being processed on the pipeline. This property will automatically bind to `PSObject.TypeNames[0]` by default.
+
+Syntax:
+
+```powershell
+$PSRule
+```
+
+Examples:
+
+```powershell
+# Synopsis: This rule determines if the target object matches the naming convention
+Rule 'resource.NamingConvention' {
+    $PSRule.TargetName.ToLower() -ceq $PSRule.TargetName
+}
+```
+
 ### Rule
 
-An object representing the current object model of the rule during execution.
+An object representing the current rule during execution.
 
 The following section properties are available for public read access:
 
 - `RuleName` - The name of the rule.
 - `RuleId` - A unique identifier for the rule.
-- `TargetObject` - The object currently being processed on the pipeline.
-- `TargetName` - The name of the object currently being processed on the pipeline. This property will automatically default to `TargetName` or `Name` properties of the object if they exist.
-- `TargetType` - The type of the object currently being processed on the pipeline. This property will automatically bind to `PSObject.TypeNames[0]` by default.
+- `TargetObject` - (deprecated) The object currently being processed on the pipeline.
+- `TargetName` - (deprecated) The name of the object currently being processed on the pipeline. This property will automatically default to `TargetName` or `Name` properties of the object if they exist.
+- `TargetType` - (deprecated) The type of the object currently being processed on the pipeline. This property will automatically bind to `PSObject.TypeNames[0]` by default.
+
+**Note:** Use `TargetName`, `TargetType` and `TargetObject` on `$PSRule` instead.
 
 Syntax:
 
@@ -184,5 +213,6 @@ An online version of this document is available at https://github.com/Microsoft/
 - Assert
 - Configuration
 - LocalizedData
+- PSRule
 - Rule
 - TargetObject

@@ -64,6 +64,7 @@ Describe 'Baseline' -Tag 'Baseline' {
             [PSCustomObject]@{
                 AlternateName = 'TestObject1'
                 Kind = 'TestObjectType'
+                Id = '1'
             }
         )
         $result = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline1');
@@ -75,6 +76,7 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result[0].Outcome | Should -Be 'Pass';
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].TargetType | Should -Be 'TestObjectType';
+            $result[0].Field.kind | Should -Be 'TestObjectType';
         }
 
         It 'With -Module' {
@@ -91,6 +93,7 @@ Describe 'Baseline' -Tag 'Baseline' {
             $option = @{
                 'Configuration.ruleConfig1' = 'Test2'
                 'Rule.Include' = @('M4.Rule1', 'M4.Rule2')
+                'Binding.Field' = @{ kind = 'Kind' }
             }
             $result = @($testObject | Invoke-PSRule -Module TestModule4 -Option $option);
             $result | Should -Not -BeNullOrEmpty;
@@ -99,6 +102,8 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result[0].Outcome | Should -Be 'Fail';
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].TargetType | Should -Be 'TestObjectType';
+            $result[0].Field.kind | Should -Be 'TestObjectType';
+            $result[0].Field.uniqueIdentifer | Should -Be '1';
             $result[1].RuleName | Should -Be 'M4.Rule2';
             $result[1].Outcome | Should -Be 'Pass';
             $result[1].TargetName | Should -Be 'TestObject1';
@@ -114,6 +119,8 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result.Length | Should -Be 1;
             $result[0].RuleName | Should -Be 'M4.Rule2';
             $result[0].Outcome | Should -Be 'Pass';
+            $result[0].Field.kind | Should -Be '1';
+            $result[0].Field.uniqueIdentifer | Should -Be '1';
 
             # Module + Workspace + Parameter + Explicit
             $option = @{

@@ -42,7 +42,7 @@ namespace PSRule.Pipeline
         {
             var filter = new BaselineFilter(_Name);
             return new GetBaselinePipeline(
-                context: PrepareContext(null, null),
+                context: PrepareContext(null, null, null),
                 source: Source,
                 reader: PrepareReader(),
                 writer: PrepareWriter(),

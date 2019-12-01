@@ -62,6 +62,9 @@ namespace PSRule.Configuration
             if (properties.TryPopValue("binding.ignorecase", out object value))
                 option.Binding.IgnoreCase = bool.Parse(value.ToString());
 
+            if (properties.TryPopValue("binding.field", out value) && value is Hashtable map)
+                option.Binding.Field = new FieldMap(map);
+
             if (properties.TryPopValue("binding.targetname", out value))
             {
                 if (value.GetType().IsArray)

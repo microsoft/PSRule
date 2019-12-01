@@ -198,6 +198,7 @@ namespace PSRule.Configuration
             var d = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
                 .WithNamingConvention(new CamelCaseNamingConvention())
+                .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .WithTypeConverter(new SuppressionRuleYamlTypeConverter())
                 .Build();
             var option = d.Deserialize<PSRuleOption>(yaml) ?? new PSRuleOption();
@@ -242,23 +243,23 @@ namespace PSRule.Configuration
 
             // Start loading matching values
 
-            if (index.TryGetValue("execution.languagemode", out object value))
+            if (index.TryPopValue("execution.languagemode", out object value))
             {
                 option.Execution.LanguageMode = (LanguageMode)Enum.Parse(typeof(LanguageMode), (string)value);
             }
-            if (index.TryGetValue("execution.inconclusivewarning", out value))
+            if (index.TryPopValue("execution.inconclusivewarning", out value))
             {
                 option.Execution.InconclusiveWarning = bool.Parse(value.ToString());
             }
-            if (index.TryGetValue("execution.notprocessedwarning", out value))
+            if (index.TryPopValue("execution.notprocessedwarning", out value))
             {
                 option.Execution.NotProcessedWarning = bool.Parse(value.ToString());
             }
-            if (index.TryGetValue("input.format", out value))
+            if (index.TryPopValue("input.format", out value))
             {
                 option.Input.Format = (InputFormat)Enum.Parse(typeof(InputFormat), (string)value);
             }
-            if (index.TryGetValue("input.objectpath", out value))
+            if (index.TryPopValue("input.objectpath", out value))
             {
                 option.Input.ObjectPath = (string)value;
             }
@@ -266,39 +267,39 @@ namespace PSRule.Configuration
             {
                 option.Input.TargetType = AsStringArray(value);
             }
-            if (index.TryGetValue("logging.limitdebug", out value))
+            if (index.TryPopValue("logging.limitdebug", out value))
             {
                 option.Logging.LimitDebug = AsStringArray(value);
             }
-            if (index.TryGetValue("logging.limitverbose", out value))
+            if (index.TryPopValue("logging.limitverbose", out value))
             {
                 option.Logging.LimitVerbose = AsStringArray(value);
             }
-            if (index.TryGetValue("logging.rulefail", out value))
+            if (index.TryPopValue("logging.rulefail", out value))
             {
                 option.Logging.RuleFail = (OutcomeLogStream)Enum.Parse(typeof(OutcomeLogStream), (string)value);
             }
-            if (index.TryGetValue("logging.rulepass", out value))
+            if (index.TryPopValue("logging.rulepass", out value))
             {
                 option.Logging.RulePass = (OutcomeLogStream)Enum.Parse(typeof(OutcomeLogStream), (string)value);
             }
-            if (index.TryGetValue("output.as", out value))
+            if (index.TryPopValue("output.as", out value))
             {
                 option.Output.As = (ResultFormat)Enum.Parse(typeof(ResultFormat), (string)value);
             }
-            if (index.TryGetValue("output.encoding", out value))
+            if (index.TryPopValue("output.encoding", out value))
             {
                 option.Output.Encoding = (OutputEncoding)Enum.Parse(typeof(OutputEncoding), (string)value);
             }
-            if (index.TryGetValue("output.format", out value))
+            if (index.TryPopValue("output.format", out value))
             {
                 option.Output.Format = (OutputFormat)Enum.Parse(typeof(OutputFormat), (string)value);
             }
-            if (index.TryGetValue("output.path", out value))
+            if (index.TryPopValue("output.path", out value))
             {
                 option.Output.Path = (string)value;
             }
-            if (index.TryGetValue("output.style", out value))
+            if (index.TryPopValue("output.style", out value))
             {
                 option.Output.Style = (OutputStyle)Enum.Parse(typeof(OutputStyle), (string)value);
             }
@@ -393,9 +394,8 @@ namespace PSRule.Configuration
         {
             var index = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             foreach (DictionaryEntry entry in hashtable)
-            {
                 index.Add(entry.Key.ToString(), entry.Value);
-            }
+
             return index;
         }
 
@@ -415,6 +415,7 @@ namespace PSRule.Configuration
         {
             var s = new SerializerBuilder()
                 .WithNamingConvention(new CamelCaseNamingConvention())
+                .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .Build();
             return s.Serialize(this);
         }
