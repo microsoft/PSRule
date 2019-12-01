@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.12.0-B1912002 (pre-release)
+
 - Fixed TargetType fall back to type name. [#339](https://github.com/Microsoft/PSRule/issues/339)
 - Added custom field binding. [#321](https://github.com/Microsoft/PSRule/issues/321)
   - Added new option `Binding.Field` available in baselines to configure binding.
