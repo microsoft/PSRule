@@ -27,6 +27,7 @@ namespace PSRule.Pipeline
 
         protected BindTargetMethod _BindTargetNameHook;
         protected BindTargetMethod _BindTargetTypeHook;
+        protected BindTargetMethod _BindFieldHook;
 
         protected InvokePipelineBuilderBase(Source[] source)
             : base(source)
@@ -36,6 +37,7 @@ namespace PSRule.Pipeline
             _VisitTargetObject = PipelineReceiverActions.PassThru;
             _BindTargetNameHook = PipelineHookActions.BindTargetName;
             _BindTargetTypeHook = PipelineHookActions.BindTargetType;
+            _BindFieldHook = PipelineHookActions.BindField;
         }
 
         public void Limit(RuleOutcome outcome)
@@ -109,7 +111,7 @@ namespace PSRule.Pipeline
 
         public sealed override IPipeline Build()
         {
-            return new InvokeRulePipeline(PrepareContext(bindTargetName: _BindTargetNameHook, bindTargetType: _BindTargetTypeHook), Source, PrepareReader(), PrepareWriter(), Outcome);
+            return new InvokeRulePipeline(PrepareContext(_BindTargetNameHook, _BindTargetTypeHook, _BindFieldHook), Source, PrepareReader(), PrepareWriter(), Outcome);
         }
 
         private BindTargetMethod AddBindTargetAction(BindTargetFunc action, BindTargetMethod previous)

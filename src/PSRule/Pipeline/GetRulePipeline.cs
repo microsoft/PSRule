@@ -45,7 +45,7 @@ namespace PSRule.Pipeline
 
         public override IPipeline Build()
         {
-            return new GetRulePipeline(PrepareContext(null, null), Source, PrepareReader(), PrepareWriter(), _IncludeDependencies);
+            return new GetRulePipeline(PrepareContext(null, null, null), Source, PrepareReader(), PrepareWriter(), _IncludeDependencies);
         }
 
         private OutputFormat SuppressFormat(OutputFormat? format)

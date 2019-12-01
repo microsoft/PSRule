@@ -126,13 +126,21 @@ Rule 'ConstrainedTest3' -If { $Null = [Console]::WriteLine('Should fail'); retur
     $True;
 }
 
-# Synopsis: Test automatic variables
-Rule 'VariableTest' {
-    $TargetObject.Name -eq $Rule.RuleName;
+# Synopsis: Test $PSRule automatic variables
+Rule 'VariableContextVariable' {
+    $TargetObject.Name -eq $PSRule.TargetName;
+    $TargetObject.Type -eq $PSRule.TargetType;
+    $TargetObject.Type -eq $PSRule.Field.Kind;
+}
+
+# Synopsis: Test $Rule automatic variables
+Rule 'WithRuleVariable' {
+    $TargetObject.RuleTest -eq $Rule.RuleName;
     $TargetObject.Name -eq $Rule.TargetName;
     $TargetObject.Type -eq $Rule.TargetType;
 }
 
+# Synopsis: Test $Configuration automatic variables
 Rule 'WithConfiguration' {
     $Configuration.Value1 -eq 1
     $Configuration.Value2 -eq 2
@@ -160,9 +168,9 @@ Rule 'WithPWD' {
     $PWD.ToString() -eq $TargetObject.PWD.ToString()
 }
 
-# Synopsis: Test $WithPSCommandPath automatic variable
+# Synopsis: Test $PSCommandPath automatic variable
 Rule 'WithPSCommandPath' {
-    $WithPSCommandPath -eq $TargetObject.WithPSCommandPath
+    $PSCommandPath -eq $TargetObject.PSCommandPath
 }
 
 Rule 'WithCsv' {

@@ -51,7 +51,7 @@ namespace PSRule.Pipeline
 
         public override IPipeline Build()
         {
-            return new GetRuleHelpPipeline(PrepareContext(null, null), Source, PrepareReader(), PrepareWriter());
+            return new GetRuleHelpPipeline(PrepareContext(null, null, null), Source, PrepareReader(), PrepareWriter());
         }
 
         private sealed class HelpWriter : PipelineWriter

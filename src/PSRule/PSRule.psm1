@@ -32,6 +32,7 @@ function Invoke-PSRule {
     [OutputType([System.String])]
     param (
         [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
+        [Alias('f')]
         [String[]]$InputPath,
 
         [Parameter(Mandatory = $False)]
@@ -207,6 +208,7 @@ function Test-PSRuleTarget {
     [OutputType([System.Boolean])]
     param (
         [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
+        [Alias('f')]
         [String[]]$InputPath,
 
         [Parameter(Mandatory = $False)]
@@ -358,6 +360,7 @@ function Assert-PSRule {
     [OutputType([System.String])]
     param (
         [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
+        [Alias('f')]
         [String[]]$InputPath,
 
         [Parameter(Mandatory = $False)]
@@ -884,6 +887,10 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [System.Boolean]$BindingIgnoreCase = $True,
 
+        # Sets the Binding.Field option
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$BindingField,
+
         # Sets the Binding.TargetName option
         [Parameter(Mandatory = $False)]
         [Alias('BindingTargetName')]
@@ -1053,6 +1060,10 @@ function Set-PSRuleOption {
         # Sets the Binding.IgnoreCase option
         [Parameter(Mandatory = $False)]
         [System.Boolean]$BindingIgnoreCase = $True,
+
+        # Sets the Binding.Field option
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$BindingField,
 
         # Sets the Binding.TargetName option
         [Parameter(Mandatory = $False)]
@@ -1622,6 +1633,10 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [System.Boolean]$BindingIgnoreCase = $True,
 
+        # Sets the Binding.Field option
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$BindingField,
+
         # Sets the Binding.TargetName option
         [Parameter(Mandatory = $False)]
         [Alias('BindingTargetName')]
@@ -1704,6 +1719,11 @@ function SetOptions {
         # Sets option Binding.IgnoreCase
         if ($PSBoundParameters.ContainsKey('BindingIgnoreCase')) {
             $Option.Binding.IgnoreCase = $BindingIgnoreCase;
+        }
+
+        # Sets option Binding.Field
+        if ($PSBoundParameters.ContainsKey('BindingField')) {
+            $Option.Binding.Field = $BindingField;
         }
 
         # Sets option Binding.TargetName
@@ -1856,6 +1876,7 @@ function InitEditorServices {
                 'Assert'
                 'Configuration'
                 'LocalizedData'
+                'PSRule'
                 'Rule'
                 'TargetObject'
             );
@@ -1886,6 +1907,8 @@ function InitCompletionServices {
 [PSRule.Runtime.Assert]$Assert = New-Object -TypeName 'PSRule.Runtime.Assert';
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
 [PSObject]$Configuration = $Null;
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
+[PSRule.Runtime.PSRule]$PSRule = New-Object -TypeName 'PSRule.Runtime.PSRule';
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]
 [PSRule.Runtime.Rule]$Rule = New-Object -TypeName 'PSRule.Runtime.Rule';
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignment', '', Justification = 'Variable is used for editor discovery only.')]

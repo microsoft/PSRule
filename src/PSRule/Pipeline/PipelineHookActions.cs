@@ -33,11 +33,22 @@ namespace PSRule.Pipeline
         {
             if (propertyNames != null)
                 if (propertyNames.Any(n => n.Contains('.')))
-                    return NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding);
+                    return NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetTypeBinding);
                 else
-                    return CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding);
+                    return CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetTypeBinding);
 
             return DefaultTargetTypeBinding(targetObject);
+        }
+
+        public static string BindField(string[] propertyNames, bool caseSensitive, PSObject targetObject)
+        {
+            if (propertyNames != null)
+                if (propertyNames.Any(n => n.Contains('.')))
+                    return NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultFieldBinding);
+                else
+                    return CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultFieldBinding);
+
+            return DefaultFieldBinding(targetObject);
         }
 
         /// <summary>
@@ -125,6 +136,11 @@ namespace PSRule.Pipeline
         private static string DefaultTargetTypeBinding(PSObject targetObject)
         {
             return targetObject.TypeNames[0];
+        }
+
+        private static string DefaultFieldBinding(PSObject targetObject)
+        {
+            return null;
         }
     }
 }

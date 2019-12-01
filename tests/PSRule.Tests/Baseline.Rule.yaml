@@ -6,6 +6,12 @@ metadata:
   name: TestBaseline1
 spec:
   binding:
+    field:
+      kind:
+      - kind
+      uniqueIdentifer:
+      - Id
+      - AlternateName
     targetName:
       #field:
       - AlternateName

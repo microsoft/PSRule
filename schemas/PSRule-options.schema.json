@@ -13,7 +13,7 @@
             "title": "Configuration values",
             "description": "A set of key/ value configuration options for rules."
         },
-        "binding-v0.3.0": {
+        "binding-option": {
             "type": "object",
             "title": "Object binding",
             "description": "Configure property/ object binding options.",
@@ -23,6 +23,19 @@
                     "title": "Ignore case",
                     "description": "Determines if custom binding uses ignores case when matching properties. The default is true.",
                     "default": true
+                },
+                "field": {
+                    "type": "object",
+                    "title": "Field",
+                    "description": "Custom fields to bind.",
+                    "additionalProperties": {
+                        "type": "array",
+                        "description": "A custom field to bind.",
+                        "items": {
+                            "type": "string"
+                        },
+                        "uniqueItems": true
+                    }
                 },
                 "targetName": {
                     "type": "array",
@@ -270,7 +283,7 @@
                     "type": "object",
                     "oneOf": [
                         {
-                            "$ref": "#/definitions/binding-v0.3.0"
+                            "$ref": "#/definitions/binding-option"
                         }
                     ]
                 },

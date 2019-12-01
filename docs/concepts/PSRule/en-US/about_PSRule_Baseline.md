@@ -14,6 +14,7 @@ A baseline includes a set of rule and configuration options that are used for ev
 The following baseline options can be configured:
 
 - [Binding.IgnoreCase](about_PSRule_Options.md#bindingignorecase)
+- [Binding.Field](about_PSRule_Options.md#bindingfield)
 - [Binding.TargetName](about_PSRule_Options.md#bindingtargetname)
 - [Binding.TargetType](about_PSRule_Options.md#bindingtargettype)
 - [Configuration](about_PSRule_Options.md#configuration)
@@ -59,6 +60,9 @@ metadata:
   name: Baseline1
 spec:
   binding:
+    field:
+      id:
+      - ResourceId
     targetName:
     - Name
     - ResourceName
@@ -119,6 +123,9 @@ After precedence is determined, baselines are merged and null values are ignored
 # Configures binding
 binding:
   ignoreCase: false
+  field:
+    id:
+    - ResourceId
   targetName:
   - ResourceName
   - AlternateName

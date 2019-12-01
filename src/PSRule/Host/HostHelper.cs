@@ -184,6 +184,7 @@ namespace PSRule.Host
             var d = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
                 .WithNamingConvention(new CamelCaseNamingConvention())
+                .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .WithNodeDeserializer(
                     inner => new LanguageBlockDeserializer(inner),
                     s => s.InsteadOf<ObjectNodeDeserializer>())

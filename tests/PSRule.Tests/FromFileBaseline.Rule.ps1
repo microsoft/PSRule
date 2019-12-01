@@ -9,6 +9,7 @@
 Rule 'WithBaseline' {
     $Rule.TargetName -eq 'TestObject1'
     $Rule.TargetType -eq 'TestObjectType'
+    $PSRule.Field.kind -eq 'TestObjectType'
 }
 
 # Synopsis: Test for baseline

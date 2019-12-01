@@ -21,6 +21,7 @@ namespace PSRule.Configuration
         public BindingOption()
         {
             IgnoreCase = null;
+            Field = null;
             TargetName = null;
             TargetType = null;
         }
@@ -28,6 +29,7 @@ namespace PSRule.Configuration
         public BindingOption(BindingOption option)
         {
             IgnoreCase = option.IgnoreCase;
+            Field = option.Field;
             TargetName = option.TargetName;
             TargetType = option.TargetType;
         }
@@ -41,6 +43,7 @@ namespace PSRule.Configuration
         {
             return other != null &&
                 IgnoreCase == other.IgnoreCase &&
+                Field == other.Field &&
                 TargetName == other.TargetName &&
                 TargetType == other.TargetType;
         }
@@ -51,6 +54,7 @@ namespace PSRule.Configuration
             {
                 int hash = 17;
                 hash = hash * 23 + (IgnoreCase.HasValue ? IgnoreCase.Value.GetHashCode() : 0);
+                hash = hash * 23 + (Field != null ? Field.GetHashCode() : 0);
                 hash = hash * 23 + (TargetName != null ? TargetName.GetHashCode() : 0);
                 hash = hash * 23 + (TargetType != null ? TargetType.GetHashCode() : 0);
                 return hash;
@@ -62,6 +66,12 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public bool? IgnoreCase { get; set; }
+
+        /// <summary>
+        /// One or more custom fields to bind.
+        /// </summary>
+        [DefaultValue(null)]
+        public FieldMap Field { get; set; }
 
         /// <summary>
         /// One or more property names to use to bind TargetName.

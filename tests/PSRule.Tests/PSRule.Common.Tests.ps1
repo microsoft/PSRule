@@ -966,7 +966,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
         }
         $assertParams = @{
             Path = $ruleFilePath
-            Option = @{ 'Execution.InconclusiveWarning' = $False; 'Output.Style' = 'Plain' }
+            Option = @{ 'Execution.InconclusiveWarning' = $False; 'Output.Style' = 'Plain'; 'Binding.Field' = @{ extra = 'Name'} }
             Name = 'FromFile1', 'FromFile2', 'FromFile3'
             ErrorVariable = 'errorOut'
             OutputFormat = 'Json'
@@ -988,6 +988,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             $resultContent.Length | Should -Be 3;
             $resultContent.RuleName | Should -BeIn 'FromFile1', 'FromFile2', 'FromFile3';
             $resultContent.TargetName | Should -BeIn 'TestObject1';
+            $resultContent.Field.extra | Should -BeIn 'TestObject1';
         }
     }
 
@@ -1683,6 +1684,11 @@ Describe 'Binding' -Tag Common, Binding {
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $option;
             $result | Should -Not -BeNullOrEmpty;
             $result.TargetType | Should -Be 'kind';
+
+            $option = @{ 'Binding.TargetType' = 'NotType' };
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $option;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.TargetType | Should -Be 'TestType';
         }
 
         It 'Binds to custom type by script' {

@@ -100,6 +100,7 @@ VariablesToExport = @(
     'Assert'
     'Configuration'
     'LocalizedData'
+    'PSRule'
     'Rule'
     'TargetObject'
 )

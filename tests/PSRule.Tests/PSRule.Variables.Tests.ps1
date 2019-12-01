@@ -39,11 +39,20 @@ Describe 'PSRule variables' -Tag 'Variables' {
             PSScriptRoot = $PSScriptRoot
             PWD = $PWD
             PSCommandPath = $ruleFilePath
+            RuleTest = 'WithRuleVariable'
         }
         $testObject.PSObject.TypeNames.Insert(0, $testObject.Type);
 
+        It '$PSRule' {
+            $option = New-PSRuleOption -BindingField @{ kind = 'Type' };
+            $result = $testObject | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'VariableContextVariable';
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
+            $result.TargetName | Should -Be 'VariableTest';
+        }
+
         It '$Rule' {
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'VariableTest';
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'WithRuleVariable';
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $True;
             $result.TargetName | Should -Be 'VariableTest';

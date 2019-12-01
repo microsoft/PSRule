@@ -1,34 +1,25 @@
-﻿// Copyright (c) Microsoft Corporation.
+﻿// Copyright(c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using PSRule.Pipeline;
-using System;
+using System.Collections;
 using System.Management.Automation;
 
 namespace PSRule.Runtime
 {
     /// <summary>
-    /// A set of rule properties that are exposed at runtime through the $Rule variable.
+    /// A set of context properties that are exposed at runtime through the $PSRule variable.
     /// </summary>
-    public sealed class Rule
+    public sealed class PSRule
     {
-        public string RuleName
+        public Hashtable Field
         {
             get
             {
-                return PipelineContext.CurrentThread.RuleRecord.RuleName;
+                return PipelineContext.CurrentThread.RuleRecord.Field;
             }
         }
 
-        public string RuleId
-        {
-            get
-            {
-                return PipelineContext.CurrentThread.RuleRecord.RuleId;
-            }
-        }
-
-        [Obsolete("Use property on $PSRule instead")]
         public PSObject TargetObject
         {
             get
@@ -37,7 +28,6 @@ namespace PSRule.Runtime
             }
         }
 
-        [Obsolete("Use property on $PSRule instead")]
         public string TargetName
         {
             get
@@ -46,7 +36,6 @@ namespace PSRule.Runtime
             }
         }
 
-        [Obsolete("Use property on $PSRule instead")]
         public string TargetType
         {
             get

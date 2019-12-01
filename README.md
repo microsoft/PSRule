@@ -237,6 +237,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Creating documentation](docs/concepts/PSRule/en-US/about_PSRule_Docs.md#creating-documentation)
 - [Options](docs/concepts/PSRule/en-US/about_PSRule_Options.md)
   - [Binding.IgnoreCase](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingignorecase)
+  - [Binding.Field](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingfield)
   - [Binding.TargetName](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingtargetname)
   - [Binding.TargetType](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingtargettype)
   - [Configuration](docs/concepts/PSRule/en-US/about_PSRule_Options.md#configuration)
@@ -263,6 +264,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [$Assert](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#assert)
   - [$Configuration](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#configuration)
   - [$LocalizedData](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#localizeddata)
+  - [$PSRule](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#psrule)
   - [$Rule](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#rule)
   - [$TargetObject](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#targetobject)
 

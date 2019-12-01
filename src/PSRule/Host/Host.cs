@@ -10,6 +10,30 @@ using System.Management.Automation.Runspaces;
 namespace PSRule.Host
 {
     /// <summary>
+    /// A dynamic variable $PSRule used during Rule execution.
+    /// </summary>
+    internal sealed class PSRuleVariable : PSVariable
+    {
+        private const string VARIABLE_NAME = "PSRule";
+
+        private readonly Runtime.PSRule _Value;
+
+        public PSRuleVariable()
+            : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
+        {
+            _Value = new Runtime.PSRule();
+        }
+
+        public override object Value
+        {
+            get
+            {
+                return _Value;
+            }
+        }
+    }
+
+    /// <summary>
     /// A dynamic variable $Rule used during Rule execution.
     /// </summary>
     internal sealed class RuleVariable : PSVariable

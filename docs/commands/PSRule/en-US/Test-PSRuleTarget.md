@@ -265,7 +265,7 @@ Instead of processing objects from the pipeline, import objects file the specifi
 ```yaml
 Type: String[]
 Parameter Sets: InputPath
-Aliases:
+Aliases: f
 
 Required: True
 Position: Named
