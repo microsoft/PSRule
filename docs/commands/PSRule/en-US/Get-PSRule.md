@@ -14,9 +14,9 @@ Get a list of rule definitions.
 ## SYNTAX
 
 ```text
-Get-PSRule [-Module <String[]>] [-ListAvailable] [-OutputFormat <OutputFormat>] [[-Path] <String[]>]
- [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-Culture <String>] [-IncludeDependencies]
- [<CommonParameters>]
+Get-PSRule [-Module <String[]>] [-ListAvailable] [-OutputFormat <OutputFormat>] [-Baseline <BaselineOption>]
+ [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-Culture <String>]
+ [-IncludeDependencies] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -253,6 +253,22 @@ This switch has no affect when getting an unfiltered list of rules.
 
 ```yaml
 Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Baseline
+
+When specified, rules are filtered so that only rules that are included in the baselines are returned.
+
+```yaml
+Type: BaselineOption
 Parameter Sets: (All)
 Aliases:
 

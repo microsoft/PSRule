@@ -538,6 +538,9 @@ function Get-PSRule {
         [ValidateSet('None', 'Wide')]
         [PSRule.Configuration.OutputFormat]$OutputFormat,
 
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.BaselineOption]$Baseline,
+
         # A list of paths to check for rule definitions
         [Parameter(Mandatory = $False, Position = 0)]
         [Alias('p')]
@@ -619,6 +622,7 @@ function Get-PSRule {
         $builder = [PSRule.Pipeline.PipelineBuilder]::Get($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
+        $builder.UseBaseline($Baseline);
 
         if ($IncludeDependencies) {
             $builder.IncludeDependencies();

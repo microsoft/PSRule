@@ -125,12 +125,15 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
             $option.Rule.Tag | Should -BeNullOrEmpty;
         }
 
-        # It 'from Hashtable' {
-        #     $option = New-PSRuleOption -BaselineConfiguration @{ 'option1' = 'option'; 'option2' = 2; option3 = 'option3a', 'option3b' };
-        #     $option.Configuration.option1 | Should -BeIn 'option';
-        #     $option.Configuration.option2 | Should -Be 2;
-        #     $option.Configuration.option3 | Should -BeIn 'option3a', 'option3b';
-        # }
+        It 'from Hashtable' {
+            # With single item
+            $option = New-PSRuleOption -Option @{ 'Rule.Tag' = @{ key1 = 'rule3' } };
+            $option.Rule.Tag.key1 | Should -Be 'rule3';
+
+            # With array
+            $option = New-PSRuleOption -Option @{ 'Rule.Tag' = @{ key1 = 'rule3', 'rule4' } };
+            $option.Rule.Tag.key1 | Should -BeIn 'rule3', 'rule4';
+        }
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');

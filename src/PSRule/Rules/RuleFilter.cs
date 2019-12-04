@@ -61,9 +61,7 @@ namespace PSRule.Rules
                 foreach (DictionaryEntry entry in _Tag)
                 {
                     if (!tag.Contains(entry.Key, entry.Value))
-                    {
                         return false;
-                    }
                 }
                 return true;
             }

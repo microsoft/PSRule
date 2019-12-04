@@ -93,6 +93,8 @@ namespace PSRule.Configuration
                 else
                     option.Rule.Exclude = new string[] { value.ToString() };
             }
+            if (properties.TryPopValue("rule.tag" , out value) && value is Hashtable tag)
+                option.Rule.Tag = tag;
 
             // Process configuration values
             if (properties.Count > 0)

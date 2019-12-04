@@ -362,9 +362,22 @@
                 "tag": {
                     "type": "object",
                     "title": "Tags",
-                    "description": "Rules to include by tag in the baseline.",
+                    "description": "Require rules to have the following tags.",
                     "additionalProperties": {
-                        "type": "string"
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "description": "A required tag."
+                            },
+                            {
+                                "type": "array",
+                                "description": "A required tag.",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "uniqueItems": true
+                            }
+                        ]
                     }
                 }
             },

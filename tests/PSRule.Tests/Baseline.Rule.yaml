@@ -50,6 +50,28 @@ spec:
     key1: value1
 
 ---
+# Synopsis: This is an example baseline
+kind: Baseline
+metadata:
+  name: TestBaseline3
+spec:
+  rule:
+    tag:
+      category: group2
+
+---
+# Synopsis: This is an example baseline
+kind: Baseline
+metadata:
+  name: TestBaseline4
+spec:
+  rule:
+    tag:
+      severity:
+      - 'high'
+      - 'low'
+
+---
 kind: ObjectSelector
 metadata:
   name: TestSelector1
