@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.12.0-B1912007 (pre-release)
+
 - Fixed multiple value tag filtering. [#346](https://github.com/Microsoft/PSRule/issues/346)
 - Added filtering for rules against a baseline with `Get-PSRule`. [#345](https://github.com/Microsoft/PSRule/issues/345)
 
