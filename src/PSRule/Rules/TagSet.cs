@@ -35,11 +35,11 @@ namespace PSRule.Rules
             if (key == null || value == null || !(key is string k) || !_Tag.ContainsKey(k))
                 return false;
 
-            if (value is object[] oValues)
+            if (TryArray(value, out string[] values))
             {
-                for (var i = 0; i < oValues.Length; i++)
+                for (var i = 0; i < values.Length; i++)
                 {
-                    if (_ValueComparer.Equals(oValues[i].ToString(), _Tag[k]))
+                    if (_ValueComparer.Equals(values[i], _Tag[k]))
                         return true;
                 }
                 return false;
@@ -109,6 +109,26 @@ namespace PSRule.Rules
             var found = _Tag.TryGetValue(binder.Name, out string value);
             result = value;
             return found;
+        }
+
+        private static bool TryArray(object o, out string[] values)
+        {
+            values = null;
+            if (o is string[] sArray)
+            {
+                values = sArray;
+                return true;
+            }
+            if (o is IEnumerable<object> oValues)
+            {
+                var result = new List<string>();
+                foreach (var obj in oValues)
+                    result.Add(obj.ToString());
+
+                values = result.ToArray();
+                return true;
+            }
+            return false;
         }
     }
 }

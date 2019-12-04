@@ -951,21 +951,35 @@ rule:
 
 A set of required key value pairs (tags) that rules must have applied to them to be included.
 
+Multiple values can be specified for the same tag.
+When multiple values are used, only one must match.
+
 This option can be overridden at runtime by using the `-Tag` cmdlet parameter.
 
 This option can be specified using:
 
 ```powershell
 # PowerShell: Using the Rule.Tag hashtable key
-# $option = New-PSRuleOption -Option @{ 'Rule.Tag' = 'Rule3','Rule4' };
+$option = New-PSRuleOption -Option @{ 'Rule.Tag' = @{ severity = 'Critical','Warning' } };
 ```
 
 ```yaml
 # YAML: Using the rule/tag property
 rule:
   tag:
-    key1: value1
+    severity: Critical
 ```
+
+```yaml
+# YAML: Using the rule/tag property, with multiple values
+rule:
+  tag:
+    severity:
+    - Critical
+    - Warning
+```
+
+In the example above, rules must have a tag of `severity` set to either `Critical` or `Warning` to be included.
 
 ### Suppression
 
@@ -1099,6 +1113,10 @@ rule:
   exclude:
   - rule3
   - rule4
+  tag:
+    severity:
+    - Critical
+    - Warning
 ```
 
 ### Default PSRule.yml
@@ -1153,6 +1171,7 @@ configuration: { }
 rule:
   include: [ ]
   exclude: [ ]
+  tag: { }
 ```
 
 ## NOTE
