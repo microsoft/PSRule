@@ -2,6 +2,31 @@
 
 ## Unreleased
 
+## v0.12.0
+
+What's changed since v0.11.0:
+
+- Engine features:
+  - Added `-All` option to `Exists` keyword. [#331](https://github.com/Microsoft/PSRule/issues/331)
+  - Added custom field binding. [#321](https://github.com/Microsoft/PSRule/issues/321)
+    - Added new option `Binding.Field` available in baselines to configure binding.
+- Quality of life improvements:
+  - Added filtering for rules against a baseline with `Get-PSRule`. [#345](https://github.com/Microsoft/PSRule/issues/345)
+  - Added parameter alias `-f` for `-InputPath`. [#340](https://github.com/Microsoft/PSRule/issues/340)
+    - `-f` was added to `Invoke-PSRule`, `Assert-PSRule` and `Test-PSRuleTarget` cmdlets.
+- **Important change**: Added `$PSRule` generic context variable. [#341](https://github.com/Microsoft/PSRule/issues/341)
+  - Deprecated `TargetName`, `TargetType` and `TargetObject` properties on `$Rule`.
+  - Use `TargetName`, `TargetType` and `TargetObject` on `$PSRule` instead.
+  - Properties `TargetName`, `TargetType` and `TargetObject` on `$Rule` will be removed in the future.
+  - Going forward `$Rule` will only contain properties that relate to the current rule context.
+- Bug fixes:
+  - Fixed key has already been added for default baseline. [#349](https://github.com/Microsoft/PSRule/issues/349)
+  - Fixed multiple value tag filtering. [#346](https://github.com/Microsoft/PSRule/issues/346)
+  - Fixed TargetType fall back to type name. [#339](https://github.com/Microsoft/PSRule/issues/339)
+  - Fixed NUnit serialization issue for unprocessed rules. [#332](https://github.com/Microsoft/PSRule/issues/332)
+
+What's changed since pre-release v0.12.0-B1912007:
+
 - Fixed key has already been added for default baseline. [#349](https://github.com/Microsoft/PSRule/issues/349)
 
 ## v0.12.0-B1912007 (pre-release)
