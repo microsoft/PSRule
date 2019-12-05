@@ -82,6 +82,7 @@ Overwriting these variables or variable properties is not supported.</p>
 <li><a href="#assert">$Assert</a></li>
 <li><a href="#configuration">$Configuration</a></li>
 <li><a href="#localizeddata">$LocalizedData</a></li>
+<li><a href="#psrule">$PSRule</a></li>
 <li><a href="#rule">$Rule</a></li>
 <li><a href="#targetobject">$TargetObject</a></li>
 </ul>
@@ -152,16 +153,35 @@ Rule 'WithLocalizedData' {
 <p>This rule returns a warning message similar to:</p>
 <pre><code class="lang-text">LocalizedMessage for en-ZZ. Format=TestType.
 </code></pre>
-<h3 id="rule">Rule</h3>
-<p>An object representing the current object model of the rule during execution.</p>
+<h3 id="psrule">PSRule</h3>
+<p>An object representing the current context during execution.</p>
 <p>The following section properties are available for public read access:</p>
 <ul>
-<li><code>RuleName</code> - The name of the rule.</li>
-<li><code>RuleId</code> - A unique identifier for the rule.</li>
+<li><code>Field</code> - A hashtable of custom bound fields. See option <code>Binding.Field</code> for more information.</li>
 <li><code>TargetObject</code> - The object currently being processed on the pipeline.</li>
 <li><code>TargetName</code> - The name of the object currently being processed on the pipeline. This property will automatically default to <code>TargetName</code> or <code>Name</code> properties of the object if they exist.</li>
 <li><code>TargetType</code> - The type of the object currently being processed on the pipeline. This property will automatically bind to <code>PSObject.TypeNames[0]</code> by default.</li>
 </ul>
+<p>Syntax:</p>
+<pre><code class="lang-powershell">$PSRule
+</code></pre>
+<p>Examples:</p>
+<pre><code class="lang-powershell"># Synopsis: This rule determines if the target object matches the naming convention
+Rule 'resource.NamingConvention' {
+    $PSRule.TargetName.ToLower() -ceq $PSRule.TargetName
+}
+</code></pre>
+<h3 id="rule">Rule</h3>
+<p>An object representing the current rule during execution.</p>
+<p>The following section properties are available for public read access:</p>
+<ul>
+<li><code>RuleName</code> - The name of the rule.</li>
+<li><code>RuleId</code> - A unique identifier for the rule.</li>
+<li><code>TargetObject</code> - (deprecated) The object currently being processed on the pipeline.</li>
+<li><code>TargetName</code> - (deprecated) The name of the object currently being processed on the pipeline. This property will automatically default to <code>TargetName</code> or <code>Name</code> properties of the object if they exist.</li>
+<li><code>TargetType</code> - (deprecated) The type of the object currently being processed on the pipeline. This property will automatically bind to <code>PSObject.TypeNames[0]</code> by default.</li>
+</ul>
+<p><strong>Note:</strong> Use <code>TargetName</code>, <code>TargetType</code> and <code>TargetObject</code> on <code>$PSRule</code> instead.</p>
 <p>Syntax:</p>
 <pre><code class="lang-powershell">$Rule
 </code></pre>
@@ -194,6 +214,7 @@ Rule 'HasMinInstances' {
 <li>Assert</li>
 <li>Configuration</li>
 <li>LocalizedData</li>
+<li>PSRule</li>
 <li>Rule</li>
 <li>TargetObject</li>
 </ul>

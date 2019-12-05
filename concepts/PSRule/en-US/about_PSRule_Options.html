@@ -97,6 +97,7 @@ This topic describes what options are available, when to and how to use them.</p
 <p>Additionally the following baseline options can be included:</p>
 <ul>
 <li><a href="#bindingignorecase">Binding.IgnoreCase</a></li>
+<li><a href="#bindingfield">Binding.Field</a></li>
 <li><a href="#bindingtargetname">Binding.TargetName</a></li>
 <li><a href="#bindingtargettype">Binding.TargetType</a></li>
 <li><a href="#configuration">Configuration</a></li>
@@ -155,7 +156,8 @@ If more than one of these files exist, the following order will be used to find 
 This is because not all operation systems treat case in the same way.</p>
 <h3 id="bindingignorecase">Binding.IgnoreCase</h3>
 <p>When evaluating an object, PSRule extracts a few key properties from the object to help filter rules and display output results.
-The process of extract these key properties is called <em>binding</em>. The properties that PSRule uses for binding can be customized by providing a order list of alternative properties to use.
+The process of extract these key properties is called <em>binding</em>.
+The properties that PSRule uses for binding can be customized by providing a order list of alternative properties to use.
 See <a href="#bindingtargetname"><code>Binding.TargetName</code></a> and <a href="#bindingtargettype"><code>Binding.TargetType</code></a> for these options.</p>
 <ul>
 <li>By default, custom property binding finds the first matching property by name regardless of case. i.e. <code>Binding.IgnoreCase</code> is <code>true</code>.</li>
@@ -179,6 +181,43 @@ Set-PSRuleOption -BindingIgnoreCase $False;
 <pre><code class="lang-yaml"># YAML: Using the binding/ignoreCase property
 binding:
   ignoreCase: false
+</code></pre>
+<h3 id="bindingfield">Binding.Field</h3>
+<p>When an object is passed from the pipeline, PSRule automatically extracts fields from object properties.
+PSRule provides standard fields such as <code>TargetName</code> and <code>TargetType</code>.
+In addition to standard fields, custom fields can be bound.
+Custom fields are available to rules and included in output.</p>
+<p>PSRule uses the following logic to determine which property should be used for binding:</p>
+<ul>
+<li>By default PSRule will not extract any custom fields.</li>
+<li>If custom fields are configured, PSRule will attempt to bind the field.
+<ul>
+<li>If <strong>none</strong> of the configured property names exist, the field will be skipped.</li>
+<li>If more then one property name is configured, the order they are specified in the configuration determines precedence.
+<ul>
+<li>i.e. The first configured property name will take precedence over the second property name.</li>
+</ul>
+</li>
+<li>By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the <a href="#bindingignorecase">Binding.IgnoreCase</a> option.</li>
+</ul>
+</li>
+</ul>
+<p>Custom field bindings can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the BindingField parameter
+$option = New-PSRuleOption -BindingField @{ id = 'ResourceId', 'AlternativeId' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Binding.Field hashtable key
+$option = New-PSRuleOption -Option @{ 'Binding.Field' = @{ id = 'ResourceId', 'AlternativeId' } };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the BindingField parameter to set YAML
+Set-PSRuleOption -BindingField @{ id = 'ResourceId', 'AlternativeId' };
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the binding/field property
+binding:
+  field:
+    id:
+    - ResourceId
+    - AlternativeId
 </code></pre>
 <h3 id="bindingtargetname">Binding.TargetName</h3>
 <p>When an object is passed from the pipeline, PSRule assigns the object a <em>TargetName</em>.
@@ -729,16 +768,26 @@ rule:
 </code></pre>
 <h3 id="ruletag">Rule.Tag</h3>
 <p>A set of required key value pairs (tags) that rules must have applied to them to be included.</p>
+<p>Multiple values can be specified for the same tag.
+When multiple values are used, only one must match.</p>
 <p>This option can be overridden at runtime by using the <code>-Tag</code> cmdlet parameter.</p>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the Rule.Tag hashtable key
-# $option = New-PSRuleOption -Option @{ 'Rule.Tag' = 'Rule3','Rule4' };
+$option = New-PSRuleOption -Option @{ 'Rule.Tag' = @{ severity = 'Critical','Warning' } };
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the rule/tag property
 rule:
   tag:
-    key1: value1
+    severity: Critical
 </code></pre>
+<pre><code class="lang-yaml"># YAML: Using the rule/tag property, with multiple values
+rule:
+  tag:
+    severity:
+    - Critical
+    - Warning
+</code></pre>
+<p>In the example above, rules must have a tag of <code>severity</code> set to either <code>Critical</code> or <code>Warning</code> to be included.</p>
 <h3 id="suppression">Suppression</h3>
 <p>In certain circumstances it may be necessary to exclude or suppress rules from processing objects that are in a known failed state.</p>
 <p>PSRule allows objects to be suppressed for a rule by TargetName.
@@ -831,6 +880,10 @@ suppression:
 # Configure baseline options
 binding:
   ignoreCase: false
+  field:
+    id:
+    - ResourceId
+    - AlternativeId
   targetName:
   - ResourceName
   - AlternateName
@@ -848,6 +901,10 @@ rule:
   exclude:
   - rule3
   - rule4
+  tag:
+    severity:
+    - Critical
+    - Warning
 </code></pre>
 <h3 id="default-psruleyml">Default PSRule.yml</h3>
 <pre><code class="lang-yaml">#
@@ -887,6 +944,7 @@ suppression: { }
 # Configure baseline options
 binding:
   ignoreCase: true
+  field: { }
   targetName:
   - TargetName
   - Name
@@ -898,6 +956,7 @@ configuration: { }
 rule:
   include: [ ]
   exclude: [ ]
+  tag: { }
 </code></pre>
 <h2 id="note">NOTE</h2>
 <p>An online version of this document is available at <a href="https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md">https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md</a>.</p>

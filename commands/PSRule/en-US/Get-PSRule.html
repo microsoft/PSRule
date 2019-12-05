@@ -72,9 +72,9 @@
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>Get a list of rule definitions.</p>
 <h2 id="syntax">SYNTAX</h2>
-<pre><code class="lang-text">Get-PSRule [-Module &lt;String[]&gt;] [-ListAvailable] [-OutputFormat &lt;OutputFormat&gt;] [[-Path] &lt;String[]&gt;]
- [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-Culture &lt;String&gt;] [-IncludeDependencies]
- [&lt;CommonParameters&gt;]
+<pre><code class="lang-text">Get-PSRule [-Module &lt;String[]&gt;] [-ListAvailable] [-OutputFormat &lt;OutputFormat&gt;] [-Baseline &lt;BaselineOption&gt;]
+ [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-Culture &lt;String&gt;]
+ [-IncludeDependencies] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Get a list of matching rule definitions within the search path.</p>
@@ -243,6 +243,18 @@ Accept wildcard characters: False
 <p>When this switch is specified, dependencies of the rules that meet the <code>-Name</code> and <code>-Tag</code> filters are included even if they would normally be excluded.</p>
 <p>This switch has no affect when getting an unfiltered list of rules.</p>
 <pre><code class="lang-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-baseline">-Baseline</h3>
+<p>When specified, rules are filtered so that only rules that are included in the baselines are returned.</p>
+<pre><code class="lang-yaml">Type: BaselineOption
 Parameter Sets: (All)
 Aliases:
 

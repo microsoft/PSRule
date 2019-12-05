@@ -96,8 +96,10 @@
 <li><a href="#within">Within</a> - Assert that the field must match any of the values.</li>
 </ul>
 <h3 id="rule">Rule</h3>
-<p>A <code>Rule</code> definition describes an individual business rule that will be executed against each input object. Input objects can be passed on the PowerShell pipeline or supplied from file.</p>
-<p>To define a Rule use the <code>Rule</code> keyword followed by a name and a pair of squiggly brackets <code>{</code>. Within the <code>{ }</code> one or more conditions can be used.</p>
+<p>A <code>Rule</code> definition describes an individual business rule that will be executed against each input object.
+Input objects can be passed on the PowerShell pipeline or supplied from file.</p>
+<p>To define a Rule use the <code>Rule</code> keyword followed by a name and a pair of squiggly brackets <code>{</code>.
+Within the <code>{ }</code> one or more conditions can be used.</p>
 <p>Conditions determine if the input object either <em>Pass</em> or <em>Fail</em> the rule.</p>
 <p>Syntax:</p>
 <pre><code class="lang-text">Rule [-Name] &lt;string&gt; [-Tag &lt;hashtable&gt;] [-Type &lt;string[]&gt;] [-If &lt;scriptBlock&gt;] [-DependsOn &lt;string[]&gt;] [-Configure &lt;hashtable&gt;] [-Body] {
@@ -113,7 +115,10 @@
 <li><code>Configure</code> - A set of default configuration values. These values are only used when the baseline configuration does not contain the key.</li>
 <li><code>Body</code> - A script block that specifies one or more conditions that are required for the rule to <em>Pass</em>.</li>
 </ul>
-<p>A condition is any valid PowerShell that return either <code>$True</code> or <code>$False</code>. Optionally, PSRule keywords can be used to help build out conditions quickly. When a rule contains more then one condition, all must return <code>$True</code> for the rule to <em>Pass</em>. If any one condition returns <code>$False</code> the rule has failed.</p>
+<p>A condition is any valid PowerShell that return either <code>$True</code> or <code>$False</code>.
+Optionally, PSRule keywords can be used to help build out conditions quickly.
+When a rule contains more then one condition, all must return <code>$True</code> for the rule to <em>Pass</em>.
+If any one condition returns <code>$False</code> the rule has failed.</p>
 <p>The following restrictions apply:</p>
 <ul>
 <li>Rule conditions should only return <code>$True</code> or <code>$False</code>. Other objects should be caught with <code>Out-Null</code> or null assigned like <code>$Null = SomeCommand</code>.</li>
@@ -142,12 +147,13 @@ Rule 'HasMinInstances' {
 <h3 id="exists">Exists</h3>
 <p>The <code>Exists</code> assertion is used within a <code>Rule</code> definition to assert that a <em>field</em> or property must exist on the pipeline object.</p>
 <p>Syntax:</p>
-<pre><code class="lang-text">Exists [-Field] &lt;string[]&gt; [-CaseSensitive] [-Not] [-Reason &lt;string&gt;] [-InputObject &lt;PSObject&gt;]
+<pre><code class="lang-text">Exists [-Field] &lt;string[]&gt; [-CaseSensitive] [-Not] [-All] [-Reason &lt;string&gt;] [-InputObject &lt;PSObject&gt;]
 </code></pre>
 <ul>
 <li><code>Field</code> - One or more fields/ properties that must exist on the pipeline object.</li>
 <li><code>CaseSensitive</code> - The field name must match exact case.</li>
 <li><code>Not</code> - Instead of checking if the field names exists they should not exist.</li>
+<li><code>All</code> - All fields must exist on the pipeline object, instead of only one.</li>
 <li><code>Reason</code> - A custom reason provided if the condition fails.</li>
 <li><code>InputObject</code> - Supports objects being piped directly.</li>
 </ul>
@@ -167,9 +173,27 @@ Rule 'nameMustExist' {
     $TargetObject.metadata | Exists 'name'
 }
 </code></pre>
+<pre><code class="lang-powershell"># Synopsis: Checks that the NotName property does not exist
+Rule 'NotNameMustNotExist' {
+    Exists -Not 'NotName'
+}
+</code></pre>
+<pre><code class="lang-powershell"># Synopsis: Checks one of Name or AlternativeName properties exist
+Rule 'EitherMustExist' {
+    Exists 'Name', 'AlternativeName'
+}
+</code></pre>
+<pre><code class="lang-powershell"># Synopsis: Checks that both Name and Type properties exist
+Rule 'AllMustExist' {
+    Exists 'Name', 'Type' -All
+}
+</code></pre>
 <p>Output:</p>
-<p>If <strong>any</strong> the specified field exists then Exists will return <code>$True</code>, otherwise <code>$False</code>.</p>
-<p>If <code>-Not</code> is used, then if <strong>any</strong> of the specified fields exist then Exists will return <code>$False</code> otherwise <code>$True</code>.</p>
+<p>If <strong>any</strong> the specified fields exists then <code>Exists</code> will return <code>$True</code>, otherwise <code>$False</code>.</p>
+<p>If <code>-Not</code> is used, then if <strong>any</strong> of the fields exist then <code>Exists</code> will return <code>$False</code> otherwise <code>$True</code>.</p>
+<p>If <code>-All</code> is used, then then <strong>all</strong> of the fields must exist, or not with the <code>-Not</code> switch.
+If all fields exist then <code>Exists</code> will return <code>$True</code>, otherwise <code>$False</code>.
+If <code>-Not</code> is used with <code>-All</code>, if <strong>all</strong> of the fields exist <code>Exists</code> will return <code>$False</code> otherwise <code>$True</code>.</p>
 <h3 id="match">Match</h3>
 <p>The <code>Match</code> assertion is used within a <code>Rule</code> definition to assert that the value of a <em>field</em> or property from pipeline data must match one or more regular expressions. To optionally perform a case sensitive match use the <code>-CaseSensitive</code> switch, otherwise a case insensitive match will be used.</p>
 <p>Syntax:</p>
