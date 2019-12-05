@@ -174,7 +174,7 @@ namespace PSRule.Pipeline
 
             for (var i = 0; i < Source.Length; i++)
             {
-                if (Source[i].Module != null && Source[i].Module.Baseline != null)
+                if (Source[i].Module != null && Source[i].Module.Baseline != null && !unresolved.ContainsKey(Source[i].Module.Baseline))
                     unresolved.Add(Source[i].Module.Baseline, new BaselineRef(Source[i].Module.Baseline, BaselineContext.ScopeType.Module));
             }
 

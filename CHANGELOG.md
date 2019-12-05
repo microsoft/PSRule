@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed key has already been added for default baseline. [#349](https://github.com/Microsoft/PSRule/issues/349)
+
 ## v0.12.0-B1912007 (pre-release)
 
 - Fixed multiple value tag filtering. [#346](https://github.com/Microsoft/PSRule/issues/346)
