@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.13.0-B1912005 (pre-release)
+
 - Added semantic version assertion helper `Version`. [#344](https://github.com/Microsoft/PSRule/issues/344)
 - Added string affix assertion helpers. [#353](https://github.com/Microsoft/PSRule/issues/353)
   - Added methods `StartsWith`, `EndsWith` and `Contains`. See `about_PSRule_Assert` for usage details.
