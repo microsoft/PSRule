@@ -176,6 +176,9 @@
   <data name="Version" xml:space="preserve">
     <value>The field value '{0}' is not a version string.</value>
   </data>
+  <data name="VersionContraint" xml:space="preserve">
+    <value>The version '{0}' does not match the constraint '{1}'.</value>
+  </data>
   <data name="Within" xml:space="preserve">
     <value>The field value didn't match the set.</value>
     <comment>Included when the value does not match the set.</comment>

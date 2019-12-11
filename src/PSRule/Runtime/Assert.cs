@@ -199,7 +199,7 @@ namespace PSRule.Runtime
         /// <summary>
         /// The object field value should match the version constraint. Only applies to strings.
         /// </summary>
-        public AssertResult Version(PSObject inputObject, string field, string version = null)
+        public AssertResult Version(PSObject inputObject, string field, string constraint = null)
         {
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
@@ -208,11 +208,11 @@ namespace PSRule.Runtime
                 GuardSemanticVersion(fieldValue, out SemanticVersion.Version value, out result))
                 return result;
 
-            var constraint = Runtime.SemanticVersion.TryParseConstraint(version, out SemanticVersion.Constraint c) ? c : null;
+            Runtime.SemanticVersion.TryParseConstraint(constraint, out SemanticVersion.Constraint c);
 
             // Assert
-            if (constraint != null && !constraint.Equals(value))
-                return Fail();
+            if (c != null && !c.Equals(value))
+                return Fail(string.Format(ReasonStrings.VersionContraint, value, constraint));
 
             return Pass();
         }

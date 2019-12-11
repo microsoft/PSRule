@@ -23,6 +23,16 @@ Rule 'Assert.Complete' {
         $Assert.HasField($TargetObject, 'OtherField').Complete()
 }
 
+# Synopsis: Test for $Assert.Contains
+Rule 'Assert.Contains' {
+    $Assert.Contains($TargetObject, 'OtherField', @('abc', 'th'))
+}
+
+# Synopsis: Test for $Assert.EndsWith
+Rule 'Assert.EndsWith' {
+    $Assert.EndsWith($TargetObject, 'Name', '1')
+}
+
 # Synopsis: Test for $Assert.JsonSchema
 Rule 'Assert.JsonSchema' {
     $Assert.JsonSchema($TargetObject, 'tests/PSRule.Tests/FromFile.Json.schema.json')
@@ -61,4 +71,14 @@ Rule 'Assert.NullOrEmpty' {
     $Assert.NullOrEmpty($TargetObject, 'Value')
     $Assert.NullOrEmpty($TargetObject, 'String')
     $Assert.NullOrEmpty($TargetObject, 'Array')
+}
+
+# Synopsis: Test for $Assert.StartsWith
+Rule 'Assert.StartsWith' {
+    $Assert.StartsWith($TargetObject, 'Version', '2.0')
+}
+
+# Synopsis: Test for $Assert.Version
+Rule 'Assert.Version' {
+    $Assert.Version($TargetObject, 'Version', '>1.0.0')
 }

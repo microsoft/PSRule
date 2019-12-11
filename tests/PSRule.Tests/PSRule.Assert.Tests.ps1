@@ -40,6 +40,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 OtherField = 'Other'
                 Int = 1
                 Bool = $True
+                Version = '2.0.0'
             }
             [PSCustomObject]@{
                 Name = 'TestObject2'
@@ -51,6 +52,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 Bool = $False
                 OtherBool = $False
                 OtherInt = 2
+                Version = '1.0.0'
             }
         )
 
@@ -68,6 +70,38 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
             $result[1].Reason | Should -Be 'The field ''Type'' does not exist.';
+        }
+
+        It 'Contains' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.Contains');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 1;
+            $result[1].Reason | Should -BeLike "The field '*' does not exist.";
+        }
+
+        It 'EndsWith' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.EndsWith');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 1;
+            $result[1].Reason | Should -BeLike "The field '*' does not end with '*'.";
         }
 
         It 'JsonSchema' {
@@ -150,6 +184,38 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 4;
             $result[0].Reason | Should -BeLike "The field '*' is not empty.";
+        }
+
+        It 'StartsWith' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.StartsWith');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 1;
+            $result[1].Reason | Should -BeLike "The field '*' does not start with '*'.";
+        }
+
+        It 'Version' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.Version');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 1;
+            $result[1].Reason | Should -BeLike "The version '*' does not match the constraint '*'.";
         }
     }
 

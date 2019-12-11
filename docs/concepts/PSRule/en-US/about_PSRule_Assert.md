@@ -244,7 +244,7 @@ The following parameters are accepted:
 
 - `inputObject` - The object being checked for the specified field.
 - `field` - The name of the field to check. This is a case insensitive compare.
-- `version` (optional) - A version constraint, see below for details of version constrain format.
+- `constraint` (optional) - A version constraint, see below for details of version constrain format.
 
 The following are supported constraints:
 

@@ -223,6 +223,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The version &apos;{0}&apos; does not match the constraint &apos;{1}&apos;..
+        /// </summary>
+        internal static string VersionContraint {
+            get {
+                return ResourceManager.GetString("VersionContraint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The field value didn&apos;t match the set..
         /// </summary>
         internal static string Within {
