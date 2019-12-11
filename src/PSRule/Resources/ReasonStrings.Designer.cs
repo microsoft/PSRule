@@ -61,6 +61,24 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The field &apos;{0}&apos; does not contain &apos;{1}&apos;..
+        /// </summary>
+        internal static string Contains {
+            get {
+                return ResourceManager.GetString("Contains", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field &apos;{0}&apos; does not end with &apos;{1}&apos;..
+        /// </summary>
+        internal static string EndsWith {
+            get {
+                return ResourceManager.GetString("EndsWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None of the field(s) existed: {0}.
         /// </summary>
         internal static string Exists {
@@ -169,11 +187,38 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The field &apos;{0}&apos; does not start with &apos;{1}&apos;..
+        /// </summary>
+        internal static string StartsWith {
+            get {
+                return ResourceManager.GetString("StartsWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field value &apos;{0}&apos; is not a string..
+        /// </summary>
+        internal static string String {
+            get {
+                return ResourceManager.GetString("String", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None of the type name(s) match: {0}.
         /// </summary>
         internal static string TypeOf {
             get {
                 return ResourceManager.GetString("TypeOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field value &apos;{0}&apos; is not a version string..
+        /// </summary>
+        internal static string Version {
+            get {
+                return ResourceManager.GetString("Version", resourceCulture);
             }
         }
         

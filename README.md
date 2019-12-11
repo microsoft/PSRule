@@ -223,11 +223,15 @@ The following commands exist in the `PSRule` module:
 The following conceptual topics exist in the `PSRule` module:
 
 - [Assert](docs/concepts/PSRule/en-US/about_PSRule_Assert.md)
+  - [Contains](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#contains)
+  - [EndsWith](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#endswith)
   - [HasDefaultValue](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasdefaultvalue)
   - [HasField](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasfield)
   - [HasFieldValue](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasfieldvalue)
   - [JsonSchema](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#jsonschema)
   - [NullOrEmpty](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#nullorempty)
+  - [StartsWith](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#startswith)
+  - [Version](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#version)
 - [Baselines](docs/concepts/PSRule/en-US/about_PSRule_Baseline.md)
   - [Baseline specs](docs/concepts/PSRule/en-US/about_PSRule_Baseline.md#baseline-specs)
   - [Baseline scopes](docs/concepts/PSRule/en-US/about_PSRule_Baseline.md#baseline-scopes)

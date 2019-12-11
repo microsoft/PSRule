@@ -57,10 +57,8 @@ Rule 'Assert.HasDefaultValue' {
 
 # Synopsis: Test for $Assert.HasEmptyField
 Rule 'Assert.NullOrEmpty' {
-    AllOf {
-        $Assert.NullOrEmpty($TargetObject, 'Type')
-        $Assert.NullOrEmpty($TargetObject, 'Value')
-        $Assert.NullOrEmpty($TargetObject, 'String')
-        $Assert.NullOrEmpty($TargetObject, 'Array')
-    }
+    $Assert.NullOrEmpty($TargetObject, 'Type')
+    $Assert.NullOrEmpty($TargetObject, 'Value')
+    $Assert.NullOrEmpty($TargetObject, 'String')
+    $Assert.NullOrEmpty($TargetObject, 'Array')
 }

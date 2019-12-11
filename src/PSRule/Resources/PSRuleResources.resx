@@ -221,6 +221,10 @@
   <data name="VariableConditionScope" xml:space="preserve">
     <value>The variable '${0}' can only be used within a Rule block.</value>
   </data>
+  <data name="VersionConstraintInvalid" xml:space="preserve">
+    <value>The version constraint '{0}' is not valid.</value>
+    <comment>When a version constrain is used with $Assert.Version that is invalid.</comment>
+  </data>
   <data name="WithinLikeNotString" xml:space="preserve">
     <value>The Within parameter Value must be a string when the Like parameter is used.</value>
   </data>

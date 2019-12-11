@@ -17,12 +17,10 @@ namespace PSRule.Runtime
         {
             _Assert = assert;
             Result = value;
-
             if (!Result)
             {
                 _Reason = new List<string>();
-                if (!string.IsNullOrEmpty(reason))
-                    _Reason.Add(reason);
+                AddReason(reason);
             }
         }
 
@@ -43,10 +41,24 @@ namespace PSRule.Runtime
         public void AddReason(string text)
         {
             // Ignore reasons if this is a pass.
-            if (Result)
+            if (Result || string.IsNullOrEmpty(text))
                 return;
 
             _Reason.Add(text);
+        }
+
+        /// <summary>
+        /// Adds a reason, and optionally replace existing reasons.
+        /// </summary>
+        /// <param name="text">The text of a reason to add. This text should already be localized for the currently culture.</param>
+        /// <param name="replace">When set to true, existing reasons are cleared.</param>
+        public AssertResult WithReason(string text, bool replace = false)
+        {
+            if (replace && _Reason != null)
+                _Reason.Clear();
+
+            AddReason(text);
+            return this;
         }
 
         /// <summary>
@@ -87,6 +99,14 @@ namespace PSRule.Runtime
         public bool Equals(bool other)
         {
             return Result == other;
+        }
+
+        public override string ToString()
+        {
+            if (_Reason == null)
+                return string.Empty;
+
+            return string.Join(" ", _Reason.ToArray());
         }
     }
 }

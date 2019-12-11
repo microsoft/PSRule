@@ -14,11 +14,15 @@ Each `$Assert` method returns an `AssertResult` object that contains the result 
 
 The following built-in assertion methods are provided:
 
+- [Contains](#contains) - The field value must contain at least one of the strings.
+- [EndsWith](#endswith) - The field value must match at least one suffix.
 - [HasDefaultValue](#hasdefaultvalue) - The object should not have the field or the field value is set to the default value.
 - [HasField](#hasfield) - The object must have the specified field.
 - [HasFieldValue](#hasfieldvalue) - The object must have the specified field and that field is not empty.
 - [JsonSchema](#jsonschema) - The object must validate successfully against a JSON schema.
 - [NullOrEmpty](#nullorempty) - The object must not have the specified field or it must be empty.
+- [StartsWith](#startswith) - The field value must match at least one prefix.
+- [Version](#version) - The field value must be a semantic version string.
 
 The `$Assert` variable can only be used within a rule definition block.
 
@@ -51,6 +55,48 @@ Rule 'Assert.HasRequiredFields' {
     $Assert.HasFieldValue($TargetObject, 'Name')
     $Assert.HasFieldValue($TargetObject, 'Type')
     $Assert.HasFieldValue($TargetObject, 'Value')
+}
+```
+
+### Contains
+
+The `Contains` assertion method checks the field value contains with the specified string.
+Optionally a case-sensitive compare can be used, however case is ignored by default.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `text` - One or more strings to compare the field value with. Only one string must match.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
+
+Examples:
+
+```powershell
+Rule 'Contains' {
+    $Assert.Contains($TargetObject, 'ResourceGroupName', 'prod')
+    $Assert.Contains($TargetObject, 'Name', @('prod', 'test'), $True)
+}
+```
+
+### EndsWith
+
+The `EndsWith` assertion method checks the field value ends with the specified suffix.
+Optionally a case-sensitive compare can be used, however case is ignored by default.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `suffix` - One or more suffixes to compare the field value with. Only one suffix must match.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
+
+Examples:
+
+```powershell
+Rule 'EndsWith' {
+    $Assert.EndsWith($TargetObject, 'ResourceGroupName', 'eus')
+    $Assert.EndsWith($TargetObject, 'Name', @('db', 'web'), $True)
 }
 ```
 
@@ -168,6 +214,69 @@ Rule 'NullOrEmpty' {
 }
 ```
 
+### StartsWith
+
+The `StartsWith` assertion method checks the field value starts with the specified prefix.
+Optionally a case-sensitive compare can be used, however case is ignored by default.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `prefix` - One or more prefixes to compare the field value with. Only one prefix must match.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
+
+Examples:
+
+```powershell
+Rule 'StartsWith' {
+    $Assert.StartsWith($TargetObject, 'ResourceGroupName', 'rg-')
+    $Assert.StartsWith($TargetObject, 'Name', @('st', 'diag'), $True)
+}
+```
+
+### Version
+
+The `Version` assertion method checks the field value is a valid semantic version.
+A constraint can optionally be provided to require the semantic version to be within a range.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `version` (optional) - A version constraint, see below for details of version constrain format.
+
+The following are supported constraints:
+
+- `version` - Must match version exactly. This also accepts the following prefixes; `=`, `v`, `V`.
+  - e.g. `1.2.3`, `=1.2.3`
+- `>version` - Must be greater than version.
+  - e.g. `>1.2.3`
+- `>=version` - Must be greater than or equal to version.
+  - e.g. `>=1.2.3`
+- `<version` - Must be less than version.
+  - e.g. `<1.2.3`
+- `<=version` - Must be less than or equal to version.
+  - e.g. `<=1.2.3`
+- `^version` - Compatible with version.
+  - e.g. `^1.2.3` - >=1.2.3, <2.0.0
+- `~version` - Approximately equivalent to version
+  - e.g. `~1.2.3` - >=1.2.3, <1.3.0
+
+An empty, null or `*` version constraint matches all valid semantic versions.
+
+Examples:
+
+```powershell
+Rule 'ValidVersion' {
+    $Assert.Version($TargetObject, 'version')
+}
+
+Rule 'MinimumVersion' {
+    $Assert.Version($TargetObject, 'version', '>=1.2.3')
+}
+```
+
 ### Advanced usage
 
 The `AssertResult` object returned from assertion methods:
@@ -181,20 +290,32 @@ The following properties are available:
 
 The following methods are available:
 
-- `AddReason(<string> text)` - Can be used to add additional reasons to the result. A reason can only be set if the assertion failed. Reason text should be localized before calling this method. Localization can be done using the `$LocalizedData` automatic variable.
+- `AddReason(<string> text)` - Can be used to append additional reasons to the result. A reason can only be set if the assertion failed. Reason text should be localized before calling this method. Localization can be done using the `$LocalizedData` automatic variable.
+- `WithReason(<string> text, <bool> replace)` - Can be used to append or replace reasons on the result. In addition, `WithReason` can be chained.
 - `GetReason()` - Gets any reasons currently associated with the failed result.
 - `Complete()` - Returns `$True` (Pass) or `$False` (Fail) to the rule record. If the assertion failed, any reasons are automatically added to the rule record. To read the result without adding reason to the rule record use the `Result` property.
 - `Ignore()` - Ignores the result. Nothing future is returned and any reasons are cleared. Use this method when implementing custom handling.
 
-Use of `Complete()` is optional, uncompleted results are automatically completed after the rule has executed. Uncompleted results may return reasons out of sequence.
+Use of `Complete()` is optional, uncompleted results are automatically completed after the rule has executed.
+Uncompleted results may return reasons out of sequence.
 
-In this example `Complete()` is used to find the first field with an empty value.
+In this example, `Complete()` is used to find the first field with an empty value.
 
 ```powershell
 Rule 'Assert.HasFieldValue' {
     $Assert.HasFieldValue($TargetObject, 'Name').Complete() -and
         $Assert.HasFieldValue($TargetObject, 'Type').Complete() -and
         $Assert.HasFieldValue($TargetObject, 'Value').Complete()
+}
+```
+
+The this example, the built-in reason is replaced with a custom reason, and immediately returned.
+
+```powershell
+Rule 'Assert.HasCustomValue' {
+    $Assert.
+        HasDefaultValue($TargetObject, 'value', 'test').
+        WithReason('Value is set to custom value', $True)
 }
 ```
 
@@ -217,9 +338,13 @@ An online version of this document is available at https://github.com/Microsoft/
 ## KEYWORDS
 
 - Assert
+- Contains
+- EndsWith
 - HasDefaultValue
 - HasField
 - HasFieldValue
 - JsonSchema
 - NullOrEmpty
+- StartsWith
+- Version
 - Rule

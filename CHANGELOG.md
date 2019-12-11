@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added semantic version assertion helper `Version`. [#344](https://github.com/Microsoft/PSRule/issues/344)
+- Added string affix assertion helpers. [#353](https://github.com/Microsoft/PSRule/issues/353)
+  - Added methods `StartsWith`, `EndsWith` and `Contains`. See `about_PSRule_Assert` for usage details.
+- Added `WithReason` to append/ replace reasons from assertion result. [#354](https://github.com/Microsoft/PSRule/issues/354)
+
 ## v0.12.0
 
 What's changed since v0.11.0:
