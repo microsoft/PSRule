@@ -349,6 +349,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The version constraint &apos;{0}&apos; is not valid..
+        /// </summary>
+        internal static string VersionConstraintInvalid {
+            get {
+                return ResourceManager.GetString("VersionConstraintInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Within parameter Value must be a string when the Like parameter is used..
         /// </summary>
         internal static string WithinLikeNotString {
