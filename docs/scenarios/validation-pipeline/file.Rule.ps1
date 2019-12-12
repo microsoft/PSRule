@@ -1,5 +1,5 @@
-#  Copyright (c) Microsoft Corporation.
-#  Licensed under the MIT License.
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
 
 # Synopsis: Check file includes copyright header
 Rule 'file.Header' -If { $TargetObject.Extension -in '.ps1', '.psm1', '.psd1', '.yaml', '.yml' } {

@@ -19,7 +19,10 @@ param (
     [Switch]$Benchmark = $False,
 
     [Parameter(Mandatory = $False)]
-    [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules)
+    [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules),
+
+    [Parameter(Mandatory = $False)]
+    [String]$AssertStyle = 'AzurePipelines'
 )
 
 Write-Host -Object "[Pipeline] -- PWD: $PWD" -ForegroundColor Green;
@@ -82,6 +85,44 @@ function CopyModuleFiles {
 
             Copy-Item -Path $_.FullName -Destination $filePath -Force;
         };
+    }
+}
+
+function Get-RepoRuleData {
+    [CmdletBinding()]
+    param (
+        [Parameter(Position = 0, Mandatory = $False)]
+        [String]$Path = $PWD
+    )
+    process {
+        GetPathInfo -Path $Path -Verbose:$VerbosePreference;
+    }
+}
+
+function GetPathInfo {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $True)]
+        [String]$Path
+    )
+    begin {
+        $items = New-Object -TypeName System.Collections.ArrayList;
+    }
+    process {
+        $Null = $items.Add((Get-Item -Path $Path));
+        $files = @(Get-ChildItem -Path $Path -File -Recurse -Include *.ps1,*.psm1,*.psd1,*.cs | Where-Object {
+            !($_.FullName -like "*.Designer.cs") -and
+            !($_.FullName -like "*/bin/*") -and
+            !($_.FullName -like "*/obj/*") -and
+            !($_.FullName -like "*\obj\*") -and
+            !($_.FullName -like "*\bin\*") -and
+            !($_.FullName -like "*\out\*") -and
+            !($_.FullName -like "*/out/*")
+        });
+        $Null = $items.AddRange($files);
+    }
+    end {
+        $items;
     }
 }
 
@@ -249,6 +290,18 @@ task TestModule TestDotNet, Pester, PSScriptAnalyzer, {
     }
 }
 
+# Synopsis: Run validation
+task Rules {
+    $assertParams = @{
+        Path = './.ps-rule/'
+        Style = $AssertStyle
+        OutputFormat = 'NUnit3';
+    }
+    Import-Module (Join-Path -Path $PWD -ChildPath out/modules/PSRule) -Force;
+    Get-RepoRuleData -Path $PWD |
+        Assert-PSRule @assertParams -OutputPath reports/ps-rule-file.xml -Option @{ 'Binding.TargetName' = 'FullName' };
+}
+
 task Benchmark {
     if ($Benchmark -or $BuildTask -eq 'Benchmark') {
         dotnet run -p src/PSRule.Benchmark -f netcoreapp2.1 -c Release -- benchmark --output $PWD;
@@ -302,6 +355,6 @@ task . Build, Test, Benchmark
 # Synopsis: Build the project
 task Build Clean, BuildModule, BuildHelp, VersionModule, PackageModule
 
-task Test Build, TestModule
+task Test Build, Rules, TestModule
 
 task Release ReleaseModule, TagBuild
