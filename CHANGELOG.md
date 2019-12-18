@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Improves output logging and formatting for Assert-PSRule. [#357](https://github.com/Microsoft/PSRule/issues/357)
+  - Formatting now includes errors and warnings using style.
+  - Added PSRule banner with module information.
+  - Added rule success summary.
+
 ## v0.13.0-B1912005 (pre-release)
 
 - Added semantic version assertion helper `Version`. [#344](https://github.com/Microsoft/PSRule/issues/344)

@@ -12,7 +12,7 @@
     <AssemblyTitle>PSRule</AssemblyTitle>
     <RepositoryUrl>https://github.com/Microsoft/PSRule</RepositoryUrl>
     <PackageLicenseExpression>https://github.com/Microsoft/PSRule/blob/master/LICENSE.txt</PackageLicenseExpression>
-    <!--<Version>0.0.1</Version>-->
+    <Version>0.0.1</Version>
     <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
     <Description>Validate objects using PowerShell rules.
 
@@ -36,6 +36,11 @@ This project is to be considered a proof-of-concept and not a supported product.
       <AutoGen>True</AutoGen>
       <DependentUpon>DocumentStrings.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\FormatterStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FormatterStrings.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\PSRuleResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -57,6 +62,10 @@ This project is to be considered a proof-of-concept and not a supported product.
     <EmbeddedResource Update="Resources\DocumentStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DocumentStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\FormatterStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FormatterStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\PSRuleResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

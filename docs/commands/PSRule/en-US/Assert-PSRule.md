@@ -314,9 +314,12 @@ Configures the style that results will be presented in.
 The following styles are available:
 
 - Client - Output is written to the host directly in green/ red to indicate outcome. This is the default.
-- Plain - Output is written as an unformatted string. This option can be redirected to a file.
+- Plain - Output is written to the host as a plain string.
 - AzurePipelines - Output is written with commands that can be interpreted by Azure Pipelines.
 - GitHubActions - Output is written with commands that can be interpreted by GitHub Actions.
+
+Each of these styles outputs to the host. To capture output as a string redirect the information stream.
+For example: `6>&1`
 
 ```yaml
 Type: OutputStyle

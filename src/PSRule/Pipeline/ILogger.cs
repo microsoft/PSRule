@@ -33,6 +33,8 @@ namespace PSRule.Pipeline
 
         bool ShouldWriteDebug();
 
+        void WriteObject(object sendToPipeline, bool enumerateCollection);
+
         void EnterScope(string scopeName);
 
         void ExitScope();

@@ -179,7 +179,7 @@ namespace PSRule.Pipeline
             }
 
             return PipelineContext.New(
-                logger: Logger,
+                logger: PrepareLogger(),
                 option: Option,
                 hostContext: HostContext,
                 binder: new TargetBinder(bindTargetName, bindTargetType, bindField, Option.Input.TargetType),
@@ -213,6 +213,11 @@ namespace PSRule.Pipeline
                 default:
                     return new PassThruWriter(output, Option.Output.Format == OutputFormat.Wide);
             }
+        }
+
+        protected virtual ILogger PrepareLogger()
+        {
+            return Logger; 
         }
 
         protected WriteOutput GetOutput()

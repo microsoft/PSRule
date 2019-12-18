@@ -25,6 +25,7 @@ namespace PSRule.Runtime
         private const char PLUS = '+';
         private const char ZERO = '0';
 
+        [Flags]
         internal enum CompareFlag : byte
         {
             None = 0,
@@ -203,19 +204,19 @@ namespace PSRule.Runtime
                     patch == Patch;
             }
 
-            public int CompareTo(Version value)
+            public int CompareTo(Version other)
             {
-                if (value == null)
+                if (other == null)
                     return 1;
 
-                if (Major != value.Major)
-                    return Major > value.Major ? 32 : -32;
+                if (Major != other.Major)
+                    return Major > other.Major ? 32 : -32;
 
-                if (Minor != value.Minor)
-                    return Minor > value.Minor ? 16 : -16;
+                if (Minor != other.Minor)
+                    return Minor > other.Minor ? 16 : -16;
 
-                if (Patch != value.Patch)
-                    return Patch > value.Patch ? 8 : -8;
+                if (Patch != other.Patch)
+                    return Patch > other.Patch ? 8 : -8;
 
                 return 0;
             }
@@ -247,7 +248,7 @@ namespace PSRule.Runtime
                 _Current = _Value[_Position];
             }
 
-            internal bool TryConstraint(out CompareFlag flag)
+            internal void GetConstraint(out CompareFlag flag)
             {
                 SkipLeading();
                 flag = CompareFlag.None;
@@ -266,7 +267,6 @@ namespace PSRule.Runtime
 
                     Next();
                 }
-                return flag != CompareFlag.None;
             }
 
             private void SkipLeading()
@@ -413,7 +413,7 @@ namespace PSRule.Runtime
             var stream = new VersionStream(value);
             while (!stream.EOF)
             {
-                stream.TryConstraint(out CompareFlag flag);
+                stream.GetConstraint(out CompareFlag flag);
                 if (!stream.TrySegments(out int[] segments))
                     throw new RuleRuntimeException(string.Format(PSRuleResources.VersionConstraintInvalid, value));
 

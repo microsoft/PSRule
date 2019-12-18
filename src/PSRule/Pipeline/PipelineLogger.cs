@@ -8,33 +8,12 @@ using System.Management.Automation;
 
 namespace PSRule.Pipeline
 {
-    internal sealed class PipelineLogger : ILogger
+    internal abstract class PipelineLoggerBase : ILogger
     {
-        private const string ErrorPreference = "ErrorActionPreference";
-        private const string WarningPreference = "WarningPreference";
-        private const string VerbosePreference = "VerbosePreference";
-        private const string InformationPreference = "InformationPreference";
-        private const string DebugPreference = "DebugPreference";
         private const string Source = "PSRule";
         private const string HostTag = "PSHOST";
 
-        private HashSet<string> _VerboseFilter;
-        private HashSet<string> _DebugFilter;
-
-        private Action<string> OnWriteWarning;
-        private Action<string> OnWriteVerbose;
-        private Action<ErrorRecord> OnWriteError;
-        private Action<InformationRecord> OnWriteInformation;
-        private Action<string> OnWriteDebug;
-        internal Action<object, bool> OnWriteObject;
-
-        private string _ScopeName;
-
-        private bool _LogError;
-        private bool _LogWarning;
-        private bool _LogVerbose;
-        private bool _LogInformation;
-        private bool _LogDebug;
+        protected string ScopeName { get; private set; }
 
         #region Logging
 
@@ -85,25 +64,84 @@ namespace PSRule.Pipeline
             DoWriteWarning(message);
         }
 
+        public void WriteObject(object sendToPipeline, bool enumerateCollection)
+        {
+            DoWriteObject(sendToPipeline, enumerateCollection);
+        }
+
         public void EnterScope(string scopeName)
         {
-            _ScopeName = scopeName;
+            ScopeName = scopeName;
         }
 
         public void ExitScope()
         {
-            _ScopeName = null;
+            ScopeName = null;
         }
 
         #endregion Logging
 
-        public void WriteObject(object sendToPipeline, bool enumerateCollection)
+        public virtual bool ShouldWriteError()
         {
-            if (OnWriteObject == null)
-                return;
-
-            OnWriteObject(sendToPipeline, enumerateCollection);
+            return true;
         }
+
+        public virtual bool ShouldWriteWarning()
+        {
+            return true;
+        }
+
+        public virtual bool ShouldWriteVerbose()
+        {
+            return true;
+        }
+
+        public virtual bool ShouldWriteInformation()
+        {
+            return true;
+        }
+
+        public virtual bool ShouldWriteDebug()
+        {
+            return true;
+        }
+
+        protected abstract void DoWriteError(ErrorRecord errorRecord);
+
+        protected abstract void DoWriteVerbose(string message);
+
+        protected abstract void DoWriteWarning(string message);
+
+        protected abstract void DoWriteInformation(InformationRecord informationRecord);
+
+        protected abstract void DoWriteDebug(DebugRecord debugRecord);
+
+        protected abstract void DoWriteObject(object sendToPipeline, bool enumerateCollection);
+    }
+
+    internal sealed class PipelineLogger : PipelineLoggerBase
+    {
+        private const string ErrorPreference = "ErrorActionPreference";
+        private const string WarningPreference = "WarningPreference";
+        private const string VerbosePreference = "VerbosePreference";
+        private const string InformationPreference = "InformationPreference";
+        private const string DebugPreference = "DebugPreference";
+
+        private HashSet<string> _VerboseFilter;
+        private HashSet<string> _DebugFilter;
+
+        private Action<string> OnWriteWarning;
+        private Action<string> OnWriteVerbose;
+        private Action<ErrorRecord> OnWriteError;
+        private Action<InformationRecord> OnWriteInformation;
+        private Action<string> OnWriteDebug;
+        internal Action<object, bool> OnWriteObject;
+
+        private bool _LogError;
+        private bool _LogWarning;
+        private bool _LogVerbose;
+        private bool _LogInformation;
+        private bool _LogDebug;
 
         internal void UseCommandRuntime(ICommandRuntime2 commandRuntime)
         {
@@ -148,7 +186,7 @@ namespace PSRule.Pipeline
         /// Core methods to hand off to logger.
         /// </summary>
         /// <param name="errorRecord">A valid PowerShell error record.</param>
-        private void DoWriteError(ErrorRecord errorRecord)
+        protected override void DoWriteError(ErrorRecord errorRecord)
         {
             if (OnWriteError == null)
                 return;
@@ -160,7 +198,7 @@ namespace PSRule.Pipeline
         /// Core method to hand off verbose messages to logger.
         /// </summary>
         /// <param name="message">A message to log.</param>
-        private void DoWriteVerbose(string message)
+        protected override void DoWriteVerbose(string message)
         {
             if (OnWriteVerbose == null)
                 return;
@@ -172,7 +210,7 @@ namespace PSRule.Pipeline
         /// Core method to hand off warning messages to logger.
         /// </summary>
         /// <param name="message">A message to log</param>
-        private void DoWriteWarning(string message)
+        protected override void DoWriteWarning(string message)
         {
             if (OnWriteWarning == null)
                 return;
@@ -183,7 +221,7 @@ namespace PSRule.Pipeline
         /// <summary>
         /// Core method to hand off information messages to logger.
         /// </summary>
-        private void DoWriteInformation(InformationRecord informationRecord)
+        protected override void DoWriteInformation(InformationRecord informationRecord)
         {
             if (OnWriteInformation == null)
                 return;
@@ -194,7 +232,7 @@ namespace PSRule.Pipeline
         /// <summary>
         /// Core method to hand off debug messages to logger.
         /// </summary>
-        private void DoWriteDebug(DebugRecord debugRecord)
+        protected override void DoWriteDebug(DebugRecord debugRecord)
         {
             if (OnWriteDebug == null)
                 return;
@@ -202,31 +240,29 @@ namespace PSRule.Pipeline
             OnWriteDebug(debugRecord.Message);
         }
 
+        protected override void DoWriteObject(object sendToPipeline, bool enumerateCollection)
+        {
+            if (OnWriteObject == null)
+                return;
+
+            OnWriteObject(sendToPipeline, enumerateCollection);
+        }
+
         #endregion Internal logging methods
 
-        public bool ShouldWriteError()
+        public override bool ShouldWriteVerbose()
+        {
+            return _LogVerbose && (_VerboseFilter == null || ScopeName == null || _VerboseFilter.Contains(ScopeName));
+        }
+
+        public override bool ShouldWriteInformation()
         {
             return true;
         }
 
-        public bool ShouldWriteWarning()
+        public override bool ShouldWriteDebug()
         {
-            return true;
-        }
-
-        public bool ShouldWriteVerbose()
-        {
-            return _LogVerbose && (_VerboseFilter == null || _ScopeName == null || _VerboseFilter.Contains(_ScopeName));
-        }
-
-        public bool ShouldWriteInformation()
-        {
-            return true;
-        }
-
-        public bool ShouldWriteDebug()
-        {
-            return _LogDebug && (_DebugFilter == null || _ScopeName == null || _DebugFilter.Contains(_ScopeName));
+            return _LogDebug && (_DebugFilter == null || ScopeName == null || _DebugFilter.Contains(ScopeName));
         }
     }
 }
