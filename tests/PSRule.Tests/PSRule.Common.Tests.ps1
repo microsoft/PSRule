@@ -937,7 +937,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
 
         It 'Returns output' {
             # Check single
-            $result = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'FromFile1' -Style Plain | Out-String;
+            $result = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'FromFile1' -Style Plain 6>&1 | Out-String;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
             $result | Should -Match "\[PASS\] FromFile1";
@@ -949,7 +949,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
                 Name = 'FromFile1', 'FromFile2', 'FromFile3'
                 ErrorVariable = 'errorOut'
             }
-            $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue | Out-String;
+            $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue 6>&1 | Out-String;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
             $result | Should -Match "\[PASS\] FromFile1";
@@ -972,7 +972,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             OutputFormat = 'Json'
             OutputPath = $testOutputPath
         }
-        $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue | Out-String;
+        $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue 6>&1 | Out-String;
         
         It 'Returns output' {
             $result | Should -Not -BeNullOrEmpty;
@@ -1005,12 +1005,12 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
                 ErrorVariable = 'errorOut'
                 WarningAction = 'SilentlyContinue'
             }
-            $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue | Out-String;
+            $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue 6>&1 | Out-String;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
             $result | Should -Match '\[\+\] FromFile1';
-            $result | Should -Match '::error:: TestObject1 \[FAIL\] FromFile2';
-            $result | Should -Match '::error:: TestObject1 \[FAIL\] FromFile3';
+            $result | Should -Match '::error::\[FAIL\] TestObject1 failed FromFile2';
+            $result | Should -Match '::error::\[FAIL\] TestObject1 failed FromFile3';
             $errorOut | Should -Not -BeNullOrEmpty;
         }
 
@@ -1022,12 +1022,12 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
                 ErrorVariable = 'errorOut'
                 WarningAction = 'SilentlyContinue'
             }
-            $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue | Out-String;
+            $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue 6>&1 | Out-String;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
             $result | Should -Match '\[\+\] FromFile1';
-            $result | Should -Match "`#`#vso\[task\.logissue type=error\]TestObject1 \[FAIL\] FromFile2";
-            $result | Should -Match "`#`#vso\[task\.logissue type=error\]TestObject1 \[FAIL\] FromFile3";
+            $result | Should -Match "`#`#vso\[task\.logissue type=error\]\[FAIL\] TestObject1 failed FromFile2";
+            $result | Should -Match "`#`#vso\[task\.logissue type=error\]\[FAIL\] TestObject1 failed FromFile3";
             $errorOut | Should -Not -BeNullOrEmpty;
         }
     }
@@ -1042,15 +1042,15 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             Mock -CommandName IsDeviceGuardEnabled -ModuleName PSRule -Verifiable -MockWith {
                 return $True;
             }
-            $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest1' -Style Plain;
+            $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest1' -Style Plain 6>&1;
             Assert-MockCalled -CommandName IsDeviceGuardEnabled -ModuleName PSRule -Times 1;
         }
 
         # Check that '[Console]::WriteLine('Should fail')' is not executed
         It 'Should fail to execute blocked code' {
             $option = @{ 'execution.mode' = 'ConstrainedLanguage' };
-            { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest2' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
-            { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest3' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
+            { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest2' -Option $option -ErrorAction Stop 6>&1 } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
+            { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest3' -Option $option -ErrorAction Stop 6>&1 } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
 
             $bindFn = {
                 param ($TargetObject)
@@ -1059,7 +1059,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             }
 
             $option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -BindTargetName $bindFn;
-            { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop } | Should -Throw 'Binding functions are not supported in this language mode.';
+            { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop 6>&1 } | Should -Throw 'Binding functions are not supported in this language mode.';
         }
     }
 }

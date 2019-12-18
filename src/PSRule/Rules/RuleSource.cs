@@ -64,13 +64,29 @@ namespace PSRule.Rules
             public readonly string Path;
             public readonly string Name;
             public readonly string Baseline;
+            public readonly string Version;
 
             public ModuleInfo(PSModuleInfo info)
             {
                 Path = info.ModuleBase;
                 Name = info.Name;
-                if (info.PrivateData is Hashtable privateData && privateData.ContainsKey("PSRule") && privateData["PSRule"] is Hashtable moduleData)
+                Version = info.Version.ToString();
+                if (TryPrivateData(info, "PSRule", out Hashtable moduleData))
                     Baseline = moduleData.ContainsKey("Baseline") ? moduleData["Baseline"] as string : null;
+
+                if (TryPrivateData(info, "PSData", out Hashtable psData) && psData.ContainsKey("Prerelease"))
+                    Version = string.Concat(Version, "-", psData["Prerelease"].ToString());
+            }
+
+            private static bool TryPrivateData(PSModuleInfo info, string propertyName, out Hashtable value)
+            {
+                value = null;
+                if (info.PrivateData is Hashtable privateData && privateData.ContainsKey(propertyName) && privateData[propertyName] is Hashtable data)
+                {
+                    value = data;
+                    return true;
+                }
+                return false;
             }
         }
     }

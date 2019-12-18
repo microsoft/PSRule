@@ -129,8 +129,7 @@ function GetPathInfo {
 task BuildDotNet {
     exec {
         # Build library
-        # Add build version -p:versionPrefix=$ModuleVersion
-        dotnet publish src/PSRule -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule)
+        dotnet publish src/PSRule -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule) -p:version=$Build
     }
 }
 
