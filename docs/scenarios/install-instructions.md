@@ -50,6 +50,34 @@ code --install-extension bewhite.psrule-vscode-preview
 
 For detailed instructions, follow the steps in the [Visual Studio Code documentation][vscode-ext-gallery].
 
+## Building from source
+
+To build this module from source run `./build.ps1`.
+This build script will compile the module and documentation then output the result into `out/modules/PSRule`.
+
+The following PowerShell modules will be automatically downloaded if the required versions are not present:
+
+- PlatyPS
+- Pester
+- PSScriptAnalyzer
+- PowerShellGet
+- PackageManagement
+- InvokeBuild
+
+These additional modules are only required for building PSRule and are not required for running PSRule.
+
+If you are on a network that does not permit Internet access to the PowerShell Gallery, download these modules on an alternative device that has access.
+The following script can be used to download the required modules to an alternative device.
+After downloading the modules copy the module directories to devices with restricted Internet access.
+
+```powershell
+# Save modules, in the .\modules directory
+Save-Module -Name PlatyPS, Pester, PSScriptAnalyzer, PowerShellGet, PackageManagement, InvokeBuild -Repository PSGallery -Path '.\modules';
+```
+
+Additionally .NET Core SDK v2.1 is required. .NET Core will not be automatically downloaded and installed.
+To download and install .NET Core SDK see [Download .NET Core 2.1](https://dotnet.microsoft.com/download/dotnet-core/2.1).
+
 [module-psrule]: https://www.powershellgallery.com/packages/PSRule
 [ext-psrule]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
 [vscode-ext-gallery]: https://code.visualstudio.com/docs/editor/extension-gallery
