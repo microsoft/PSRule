@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added configuration helper for strings arrays. [#363](https://github.com/Microsoft/PSRule/issues/363)
+
 ## v0.13.0-B1912012 (pre-release)
 
 - Improves output logging and formatting for Assert-PSRule. [#357](https://github.com/Microsoft/PSRule/issues/357)

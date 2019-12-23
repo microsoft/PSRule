@@ -64,11 +64,20 @@ When accessing configuration:
 
 - Configuration keys are case sensitive.
 - Configuration values are read only.
+- Configuration values can be accessed through helper methods.
+
+The following helper methods are available:
+
+- `GetStringValues(string configurationKey)` - Returns an array of strings, based on `configurationKey`.
 
 Syntax:
 
 ```powershell
 $Configuration.<configurationKey>
+```
+
+```powershell
+$Configuration.GetStringValues(<configurationKey>)
 ```
 
 Examples:
