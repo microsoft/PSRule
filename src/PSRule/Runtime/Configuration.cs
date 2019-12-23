@@ -2,6 +2,8 @@
 // Licensed under the MIT License.
 
 using PSRule.Pipeline;
+using System.Collections;
+using System.Collections.Generic;
 using System.Dynamic;
 
 namespace PSRule.Runtime
@@ -30,6 +32,28 @@ namespace PSRule.Runtime
             // Get from rule default
             result = PipelineContext.CurrentThread.RuleBlock.Configuration[binder.Name];
             return true;
+        }
+
+        public string[] GetStringValues(string configurationKey)
+        {
+            if (!PipelineContext.CurrentThread.Source.Configuration.TryGetValue(configurationKey, out object value) || value == null)
+                return new string[] { };
+
+            if (value is string valueT)
+                return new string[] { valueT };
+
+            if (value is string[] result)
+                return result;
+
+            if (value is IEnumerable c)
+            {
+                var cList = new List<string>();
+                foreach (var v in c)
+                    cList.Add(v.ToString());
+
+                return cList.ToArray();
+            }
+            return new string[] { value.ToString() };
         }
     }
 }
