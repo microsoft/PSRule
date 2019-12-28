@@ -1300,6 +1300,28 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result[0].RuleName | Should -Be 'M1.Rule1';
             $result[0].Description | Should -Be 'Synopsis en-AU.';
             $result[0].Info.Annotations.culture | Should -Be 'en-AU';
+
+            # en-ZZ using parent
+            $Null = Import-Module $testModuleSourcePath -Force;
+            $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-ZZ');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result[0].RuleName | Should -Be 'M1.Rule1';
+            $result[0].Description | Should -Be 'Synopsis en.';
+            $result[0].Info.Annotations.culture | Should -Be 'en';
+
+            Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -MockWith {
+                return 'en-ZZ';
+            }
+
+            # en-ZZ default parent
+            $Null = Import-Module $testModuleSourcePath -Force;
+            $result = @(Get-PSRule -Module 'TestModule');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result[0].RuleName | Should -Be 'M1.Rule1';
+            $result[0].Description | Should -Be 'Synopsis en.';
+            $result[0].Info.Annotations.culture | Should -Be 'en';
         }
 
         if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {

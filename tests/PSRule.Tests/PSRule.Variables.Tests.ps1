@@ -71,6 +71,15 @@ Describe 'PSRule variables' -Tag 'Variables' {
             $result.IsSuccess() | Should -Be $True;
             $result.TargetName | Should -Be 'VariableTest';
             $messages[0] | Should -Be 'LocalizedMessage for en-ZZ. Format=TestType.';
+
+            # Using parent culture
+            $invokeParams['Culture'] = 'en-US'
+            $result = $testObject | Invoke-PSRule @invokeParams -WarningVariable outWarning;
+            $messages = @($outwarning);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -Be $True;
+            $result.TargetName | Should -Be 'VariableTest';
+            $messages[0] | Should -Be 'LocalizedMessage for en. Format=TestType.';
         }
 
         It '$PSScriptRoot' {

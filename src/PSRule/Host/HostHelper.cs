@@ -68,9 +68,7 @@ namespace PSRule.Host
 
             // Back track lines with comments immediately before block
             for (; i >= 0 && lines[i].Contains("#"); i--)
-            {
                 comments.Insert(0, lines[i]);
-            }
 
             // Check if any comments were found
             var metadata = new CommentMetadata();
@@ -96,7 +94,6 @@ namespace PSRule.Host
         private static IEnumerable<ILanguageBlock> GetLanguageBlock(Source[] sources)
         {
             var results = new Collection<ILanguageBlock>();
-
             var runspace = PipelineContext.CurrentThread.GetRunspace();
             var ps = PowerShell.Create();
 
@@ -108,18 +105,14 @@ namespace PSRule.Host
                 PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Script;
 
                 // Process scripts
-
                 foreach (var source in sources)
                 {
                     foreach (var file in source.File)
                     {
                         if (file.Type != RuleSourceType.Script)
-                        {
                             continue;
-                        }
 
                         ps.Commands.Clear();
-
                         PipelineContext.CurrentThread.VerboseRuleDiscovery(path: file.Path);
                         PipelineContext.CurrentThread.EnterSourceScope(source: file);
 
@@ -135,7 +128,6 @@ namespace PSRule.Host
                             }
                             continue;
                         }
-
                         if (errors != null && errors.Length > 0)
                         {
                             foreach (var error in errors)
@@ -149,11 +141,9 @@ namespace PSRule.Host
                         ps.AddScript(string.Concat("& '", file.Path, "'"), true);
                         var invokeResults = ps.Invoke();
 
+                        // Discovery has errors so skip this file
                         if (ps.HadErrors)
-                        {
-                            // Discovery has errors so skip this file
                             continue;
-                        }
 
                         foreach (var ir in invokeResults)
                         {
@@ -174,7 +164,6 @@ namespace PSRule.Host
                 ps.Runspace = null;
                 ps.Dispose();
             }
-
             return results;
         }
 
@@ -196,14 +185,11 @@ namespace PSRule.Host
                 PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Yaml;
                 foreach (var source in sources)
                 {
-
-
                     foreach (var file in source.File)
                     {
                         if (file.Type != RuleSourceType.Yaml)
-                        {
                             continue;
-                        }
+
                         PipelineContext.CurrentThread.VerboseRuleDiscovery(path: file.Path);
                         PipelineContext.CurrentThread.EnterSourceScope(source: file);
                         using (var reader = new StreamReader(file.Path))
@@ -215,15 +201,13 @@ namespace PSRule.Host
                             {
                                 var item = d.Deserialize<ResourceObject>(parser: parser);
                                 if (item == null || item.Block == null)
-                                {
                                     continue;
-                                }
+
                                 result.Add(item.Block);
                             }
                             if (result.Count == 0)
-                            {
                                 return null;
-                            }
+
                             return result.ToArray();
                         }
                     }
@@ -313,13 +297,10 @@ namespace PSRule.Host
                 {
                     // Ignore rule blocks that don't match
                     if (!Match(context, block))
-                    {
                         continue;
-                    }
+
                     if (!results.ContainsKey(block.RuleId))
-                    {
                         results[block.RuleId] = block.Info;
-                    }
                 }
             }
             finally
@@ -339,13 +320,10 @@ namespace PSRule.Host
                 {
                     // Ignore baselines that don't match
                     if (!Match(context, block))
-                    {
                         continue;
-                    }
+
                     if (!results.ContainsKey(block.BaselineId))
-                    {
                         results[block.BaselineId] = block;
-                    }
                 }
             }
             finally
@@ -358,9 +336,7 @@ namespace PSRule.Host
         private static void Import(IEnumerable<ILanguageBlock> blocks, PipelineContext context)
         {
             foreach (var resource in blocks.OfType<IResource>().ToArray())
-            {
                 context.Import(resource);
-            }
         }
 
         private static bool Match(PipelineContext context, RuleBlock resource)

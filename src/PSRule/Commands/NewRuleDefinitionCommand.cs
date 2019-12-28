@@ -126,11 +126,9 @@ namespace PSRule.Commands
                 return null;
 
             var culture = context.Culture;
-
             for (var i = 0; i < culture.Length; i++)
             {
                 var path = Path.Combine(context.Source.File.HelpPath, string.Concat(culture[i], "/", name, ".md"));
-
                 if (!File.Exists(path))
                     continue;
 
