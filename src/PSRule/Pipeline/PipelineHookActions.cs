@@ -124,7 +124,7 @@ namespace PSRule.Pipeline
         /// </summary>
         private static bool TryGetTargetName(PSObject targetObject, string propertyName, out string targetName)
         {
-            targetName = targetObject.Properties[propertyName]?.Value?.ToString();
+            targetName = targetObject.ValueAsString(propertyName, false);
             return targetName != null;
         }
 

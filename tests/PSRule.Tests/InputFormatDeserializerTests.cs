@@ -18,33 +18,73 @@ namespace PSRule
             var actual = PipelineReceiverActions.ConvertFromYaml(GetYamlContent(), PipelineReceiverActions.PassThru).ToArray();
 
             Assert.Equal(2, actual.Length);
-            Assert.Equal("TestObject1", actual[0].Properties["targetName"].Value);
-            Assert.Equal("Test", actual[0].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<string>("kind"));
-            Assert.Equal(2, actual[1].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<int>("value2"));
-            Assert.Equal(2, actual[1].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<PSObject[]>("array").Length);
+            Assert.Equal("TestObject1", actual[0].PropertyValue<string>("targetName"));
+            Assert.Equal("Test", actual[0].PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
+            Assert.Equal(2, actual[1].PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value2"));
+            Assert.Equal(2, actual[1].PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
+            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, actual[0]));
         }
 
         [Fact]
-        public void DeserialObjectsJson()
+        public void DeserializeObjectsJson()
         {
             var actual = PipelineReceiverActions.ConvertFromJson(GetJsonContent(), PipelineReceiverActions.PassThru).ToArray();
 
             Assert.Equal(2, actual.Length);
-            Assert.Equal("TestObject1", actual[0].Properties["targetName"].Value);
-            Assert.Equal("Test", actual[0].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<string>("kind"));
-            Assert.Equal(2, actual[1].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<int>("value2"));
-            Assert.Equal(2, actual[1].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<PSObject[]>("array").Length);
+            Assert.Equal("TestObject1", actual[0].PropertyValue<string>("targetName"));
+            Assert.Equal("Test", actual[0].PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
+            Assert.Equal(2, actual[1].PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value2"));
+            Assert.Equal(2, actual[1].PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
+            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, actual[0]));
         }
 
-        private string GetYamlContent()
+        [Fact]
+        public void DeserializeObjectsMarkdown()
+        {
+            var actual = PipelineReceiverActions.ConvertFromMarkdown(GetMarkdownContent(), PipelineReceiverActions.PassThru).ToArray();
+
+            Assert.Single(actual);
+            Assert.Equal("TestObject1", actual[0].PropertyValue<string>("targetName"));
+            Assert.Equal("Test", actual[0].PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
+            Assert.Equal(1, actual[0].PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value1"));
+            Assert.Equal(2, actual[0].PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
+            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, actual[0]));
+        }
+
+        [Fact]
+        public void DeserializeObjectsPowerShellData()
+        {
+            var actual = PipelineReceiverActions.ConvertFromPowerShellData(GetDataContent(), PipelineReceiverActions.PassThru).ToArray();
+
+            Assert.Single(actual);
+            Assert.Equal("TestObject1", actual[0].PropertyValue<string>("targetName"));
+            Assert.Equal("Test", actual[0].PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
+            Assert.Equal(1, actual[0].PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value1"));
+            Assert.Equal(2, actual[0].PropertyValue("spec").PropertyValue("properties").PropertyValue<Array>("array").Length);
+            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, actual[0]));
+        }
+
+        private static string GetYamlContent()
         {
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ObjectFromFile.yaml");
             return File.ReadAllText(path);
         }
 
-        private string GetJsonContent()
+        private static string GetJsonContent()
         {
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ObjectFromFile.json");
+            return File.ReadAllText(path);
+        }
+
+        private static string GetMarkdownContent()
+        {
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ObjectFromFile.md");
+            return File.ReadAllText(path);
+        }
+
+        private static string GetDataContent()
+        {
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ObjectFromFile.psd1");
             return File.ReadAllText(path);
         }
     }

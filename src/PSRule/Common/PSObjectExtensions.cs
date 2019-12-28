@@ -2,7 +2,9 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
+using PSRule.Runtime;
 using System;
+using System.Collections;
 using System.Globalization;
 using System.Management.Automation;
 
@@ -12,22 +14,23 @@ namespace PSRule
     {
         public static T PropertyValue<T>(this PSObject o, string propertyName)
         {
-            if (typeof(T).IsValueType)
-                return (T)Convert.ChangeType(o.Properties[propertyName].Value, typeof(T));
+            if (o.BaseObject is Hashtable hashtable)
+                return ConvertValue<T>(hashtable[propertyName]);
 
-            return (T)o.Properties[propertyName].Value;
+            return ConvertValue<T>(o.Properties[propertyName].Value);
+        }
+
+        public static PSObject PropertyValue(this PSObject o, string propertyName)
+        {
+            if (o.BaseObject is Hashtable hashtable)
+                return PSObject.AsPSObject(hashtable[propertyName]);
+
+            return PSObject.AsPSObject(o.Properties[propertyName].Value);
         }
 
         public static string ValueAsString(this PSObject o, string propertyName, bool caseSensitive)
         {
-            var p = o.Properties[propertyName];
-            if (p == null || p.Value == null)
-                return null;
-
-            if (caseSensitive && !StringComparer.Ordinal.Equals(p.Name, propertyName))
-                return null;
-
-            return p.Value.ToString();
+            return ObjectHelper.GetField(o, propertyName, caseSensitive, out object value) && value != null ? value.ToString() : null;
         }
 
         public static bool HasProperty(this PSObject o, string propertyName)
@@ -40,6 +43,14 @@ namespace PSRule
             var settings = new JsonSerializerSettings { Formatting = Formatting.None, TypeNameHandling = TypeNameHandling.None, MaxDepth = 1024, Culture = CultureInfo.InvariantCulture };
             settings.Converters.Insert(0, new PSObjectJsonConverter());
             return JsonConvert.SerializeObject(o, settings);
+        }
+
+        private static T ConvertValue<T>(object value)
+        {
+            if (value == null)
+                return default(T);
+
+            return typeof(T).IsValueType ? (T)Convert.ChangeType(value, typeof(T)) : (T)value;
         }
     }
 }
