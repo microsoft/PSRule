@@ -4,7 +4,6 @@
 using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Rules;
-using System.Threading;
 
 namespace PSRule.Pipeline
 {
@@ -29,7 +28,7 @@ namespace PSRule.Pipeline
                 return this;
 
             Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
-            Option.Output.Culture = option.Output.Culture ?? new string[] { Thread.CurrentThread.CurrentCulture.ToString() };
+            Option.Output.Culture = GetCulture(option.Output.Culture);
             Option.Output.Format = SuppressFormat(option.Output.Format);
 
             if (option.Rule != null)

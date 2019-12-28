@@ -155,7 +155,7 @@ Rule 'WithFormat' {
 # Synopsis: Test $LocalizedData automatic variable
 Rule 'WithLocalizedData' {
     Write-Warning -Message ($LocalizedData.WithLocalizedDataMessage -f $TargetObject.Type)
-    $LocalizedData.WithLocalizedDataMessage -like "LocalizedMessage for en-*"
+    $LocalizedData.WithLocalizedDataMessage -like "LocalizedMessage for en*"
 }
 
 # Synopsis: Test $PSScriptRoot automatic variable

@@ -7,9 +7,11 @@ using PSRule.Rules;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Management.Automation;
 using System.Text;
+using System.Threading;
 
 namespace PSRule.Pipeline
 {
@@ -234,6 +236,41 @@ namespace PSRule.Pipeline
                 );
             }
             return _Output;
+        }
+
+        protected static string[] GetCulture(string[] culture)
+        {
+            var result = new List<string>();
+            var parent = new List<string>();
+            var set = new HashSet<string>();
+            for (var i = 0; culture != null && i < culture.Length; i++)
+            {
+                var c = CultureInfo.CreateSpecificCulture(culture[i]);
+                if (!set.Contains(c.Name))
+                {
+                    result.Add(c.Name);
+                    set.Add(c.Name);
+                }
+                if (c.Parent != null && !set.Contains(c.Parent.Name))
+                {
+                    parent.Add(c.Parent.Name);
+                    set.Add(c.Parent.Name);
+                }
+            }
+            if (parent.Count > 0)
+                result.AddRange(parent);
+
+            // Fallback to current culture
+            var current = Thread.CurrentThread.CurrentCulture;
+            if (!set.Contains(current.Name))
+            {
+                result.Add(current.Name);
+                set.Add(current.Name);
+            }
+            if (current.Parent != null && !set.Contains(current.Parent.Name))
+                result.Add(current.Parent.Name);
+
+            return result.ToArray();
         }
 
         /// <summary>

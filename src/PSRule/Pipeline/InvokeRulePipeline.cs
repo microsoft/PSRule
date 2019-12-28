@@ -8,7 +8,6 @@ using PSRule.Rules;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
-using System.Threading;
 
 namespace PSRule.Pipeline
 {
@@ -67,7 +66,7 @@ namespace PSRule.Pipeline
             Option.Logging.LimitDebug = option.Logging.LimitDebug;
 
             Option.Output.As = option.Output.As ?? OutputOption.Default.As;
-            Option.Output.Culture = option.Output.Culture ?? new string[] { Thread.CurrentThread.CurrentCulture.ToString() };
+            Option.Output.Culture = GetCulture(option.Output.Culture);
             Option.Output.Encoding = option.Output.Encoding ?? OutputOption.Default.Encoding;
             Option.Output.Format = option.Output.Format ?? OutputOption.Default.Format;
             Option.Output.Path = option.Output.Path ?? OutputOption.Default.Path;

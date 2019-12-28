@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Management.Automation;
-using System.Threading;
 
 namespace PSRule.Pipeline
 {
@@ -33,7 +32,7 @@ namespace PSRule.Pipeline
             }
 
             Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
-            Option.Output.Culture = option.Output.Culture ?? new string[] { Thread.CurrentThread.CurrentCulture.ToString() };
+            Option.Output.Culture = GetCulture(option.Output.Culture);
 
             if (option.Rule != null)
             {

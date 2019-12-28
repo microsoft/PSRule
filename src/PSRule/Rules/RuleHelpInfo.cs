@@ -79,14 +79,10 @@ namespace PSRule.Rules
         public Uri GetOnlineHelpUri()
         {
             if (Annotations == null || !Annotations.ContainsKey(ONLINE_HELP_LINK_ANNOTATION))
-            {
                 return null;
-            }
 
             if (Uri.TryCreate(Annotations[ONLINE_HELP_LINK_ANNOTATION].ToString(), UriKind.Absolute, out Uri result))
-            {
                 return result;
-            }
 
             return null;
         }

@@ -5,7 +5,6 @@ using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Rules;
 using System.Linq;
-using System.Threading;
 
 namespace PSRule.Pipeline
 {
@@ -33,7 +32,7 @@ namespace PSRule.Pipeline
                 return this;
 
             Option.Output.As = ResultFormat.Detail;
-            Option.Output.Culture = option.Output.Culture ?? new string[] { Thread.CurrentThread.CurrentCulture.ToString() };
+            Option.Output.Culture = GetCulture(option.Output.Culture);
             Option.Output.Format = OutputFormat.None;
             return this;
         }
