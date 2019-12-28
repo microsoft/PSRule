@@ -20,6 +20,8 @@ namespace PSRule.Configuration
 
         Markdown = 3,
 
+        PowerShellData = 4,
+
         Detect = 255
     }
 }

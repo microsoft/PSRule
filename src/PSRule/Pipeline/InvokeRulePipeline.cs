@@ -168,6 +168,13 @@ namespace PSRule.Pipeline
                     return PipelineReceiverActions.ConvertFromMarkdown(sourceObject, next);
                 });
             }
+            else if (Option.Input.Format == InputFormat.PowerShellData)
+            {
+                AddVisitTargetObjectAction((sourceObject, next) =>
+                {
+                    return PipelineReceiverActions.ConvertFromPowerShellData(sourceObject, next);
+                });
+            }
             else if (Option.Input.Format == InputFormat.Detect && _InputPath != null)
             {
                 AddVisitTargetObjectAction((sourceObject, next) =>

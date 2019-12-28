@@ -25,6 +25,8 @@ namespace PSRule.Pipeline
         private const string PropertyName_PSParentPath = "PSParentPath";
         private const string PropertyName_PSChildName = "PSChildName";
 
+        private static readonly PSObject[] EmptyArray = new PSObject[] { };
+
         private sealed class PSSourceInfo
         {
             public readonly string PSPath;
@@ -51,33 +53,27 @@ namespace PSRule.Pipeline
 
         public static IEnumerable<PSObject> DetectInputFormat(PSObject sourceObject, VisitTargetObject next)
         {
-            string pathExtension = null;
-
-            if (sourceObject.BaseObject is FileInfo)
-            {
-                var fileInfo = sourceObject.BaseObject as FileInfo;
-                pathExtension = fileInfo.Extension;
-            }
-            else if (sourceObject.BaseObject is Uri)
-            {
-                var uri = sourceObject.BaseObject as Uri;
-                pathExtension = Path.GetExtension(uri.OriginalString);
-            }
+            var pathExtension = GetPathExtension(sourceObject);
 
             // Handle JSON
             if (pathExtension == ".json")
             {
-                return ConvertFromJson(sourceObject: sourceObject, next: next);
+                return ConvertFromJson(sourceObject, next);
             }
             // Handle YAML
             else if (pathExtension == ".yaml" || pathExtension == ".yml")
             {
-                return ConvertFromYaml(sourceObject: sourceObject, next: next);
+                return ConvertFromYaml(sourceObject, next);
             }
             // Handle Markdown
             else if (pathExtension == ".md")
             {
-                return ConvertFromMarkdown(sourceObject: sourceObject, next: next);
+                return ConvertFromMarkdown(sourceObject, next);
+            }
+            // Handle PowerShell Data
+            else if (pathExtension == ".psd1")
+            {
+                return ConvertFromPowerShellData(sourceObject, next);
             }
             return new PSObject[] { sourceObject };
         }
@@ -145,23 +141,40 @@ namespace PSRule.Pipeline
             return VisitItems(value, next);
         }
 
+        public static IEnumerable<PSObject> ConvertFromPowerShellData(PSObject sourceObject, VisitTargetObject next)
+        {
+            // Only attempt to deserialize if the input is a string or a file
+            if (!IsAcceptedType(sourceObject: sourceObject))
+                return new PSObject[] { sourceObject };
+
+            var data = ReadAsString(sourceObject, out PSSourceInfo source);
+            var ast = System.Management.Automation.Language.Parser.ParseInput(data, out _, out _);
+            var hashtables = ast.FindAll(item => item is System.Management.Automation.Language.HashtableAst, false);
+            if (hashtables == null)
+                return EmptyArray;
+
+            var result = new List<PSObject>();
+            foreach (var hashtable in hashtables)
+            {
+                if (hashtable?.Parent?.Parent?.Parent?.Parent == ast)
+                    result.Add(PSObject.AsPSObject(hashtable.SafeGetValue()));
+            }
+            var value = result.ToArray();
+            NoteSource(value, source);
+            return VisitItems(value, next);
+        }
+
         public static IEnumerable<PSObject> ReadObjectPath(PSObject sourceObject, VisitTargetObject source, string objectPath, bool caseSensitive)
         {
             if (!ObjectHelper.GetField(bindingContext: null, targetObject: sourceObject, name: objectPath, caseSensitive: caseSensitive, value: out object nestedObject))
-            {
                 return null;
-            }
 
             var nestedType = nestedObject.GetType();
-
             if (typeof(IEnumerable).IsAssignableFrom(nestedType))
             {
                 var result = new List<PSObject>();
-
                 foreach (var item in (nestedObject as IEnumerable))
-                {
                     result.Add(PSObject.AsPSObject(item));
-                }
 
                 return result.ToArray();
             }
@@ -169,6 +182,17 @@ namespace PSRule.Pipeline
             {
                 return new PSObject[] { PSObject.AsPSObject(nestedObject) };
             }
+        }
+
+        private static string GetPathExtension(PSObject sourceObject)
+        {
+            if (sourceObject.BaseObject is FileInfo fileInfo)
+                return fileInfo.Extension;
+
+            if (sourceObject.BaseObject is Uri uri)
+                return Path.GetExtension(uri.OriginalString);
+
+            return null;
         }
 
         private static bool IsAcceptedType(PSObject sourceObject)
@@ -228,10 +252,9 @@ namespace PSRule.Pipeline
         private static IEnumerable<PSObject> VisitItems(PSObject[] value, VisitTargetObject next)
         {
             if (value == null)
-                return null;
+                return EmptyArray;
 
             var result = new List<PSObject>();
-
             foreach (var item in value)
             {
                 var items = next(item);
@@ -242,7 +265,7 @@ namespace PSRule.Pipeline
             }
 
             if (result.Count == 0)
-                return null;
+                return EmptyArray;
 
             return result.ToArray();
         }

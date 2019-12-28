@@ -360,6 +360,26 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.TargetName | Should -BeIn 'TestObject1';
             $result.IsSuccess() | Should -Be $True;
         }
+
+        It 'PowerShellData String' {
+            $data = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.psd1') -Raw;
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $data -Format PowerShellData);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1';
+            $result.IsSuccess() | Should -Be $True;
+        }
+
+        It 'PowerShellData FileInfo' {
+            $file = Get-ChildItem -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.psd1') -File;
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $file -Format PowerShellData);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1';
+            $result.IsSuccess() | Should -Be $True;
+        }
     }
 
     Context 'Using -OutputFormat' {

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added input format for reading PowerShell data `.psd1` files. [#368](https://github.com/Microsoft/PSRule/issues/368)
+  - `PowerShellData` has been added to `Input.Format`.
+  - See `about_PSRule_Options` for details.
+
 ## v0.13.0-B1912027 (pre-release)
 
 - Added configuration helper for strings arrays. [#363](https://github.com/Microsoft/PSRule/issues/363)

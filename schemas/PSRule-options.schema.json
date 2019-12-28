@@ -102,6 +102,7 @@
                         "Yaml",
                         "Json",
                         "Markdown",
+                        "PowerShellData",
                         "Detect"
                     ],
                     "default": "Detect"
