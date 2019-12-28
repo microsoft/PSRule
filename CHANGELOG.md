@@ -4,6 +4,10 @@
 
 - Added configuration helper for strings arrays. [#363](https://github.com/Microsoft/PSRule/issues/363)
 - Added support for using a parent culture in rule help. [#316](https://github.com/Microsoft/PSRule/issues/316)
+  - Rule help will use parent culture when a more specific culture is not available.
+- Added custom rule data to results. [#322](https://github.com/Microsoft/PSRule/issues/322)
+  - `$PSRule.Data` can be used to set custom data during rule execution that is included in output.
+  - See `about_PSRule_Variables` for usage details.
 
 ## v0.13.0-B1912012 (pre-release)
 

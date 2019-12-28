@@ -131,6 +131,12 @@ Rule 'VariableContextVariable' {
     $TargetObject.Name -eq $PSRule.TargetName;
     $TargetObject.Type -eq $PSRule.TargetType;
     $TargetObject.Type -eq $PSRule.Field.Kind;
+
+    # Set data
+    $PSRule.Data.property1 = 'value1';
+    $PSRule.Data['property2'] = 'value2';
+    $PSRule.Data.Add('property3', 'value3');
+    $PSRule.Data.Count -eq 3;
 }
 
 # Synopsis: Test $Rule automatic variables

@@ -32,6 +32,8 @@ namespace PSRule.Rules
                 Tag = tag.ToHashtable();
             if (field != null && field.Count > 0)
                 Field = field;
+
+            Data = new Hashtable();
         }
 
         /// <summary>
@@ -67,32 +69,53 @@ namespace PSRule.Rules
         public string[] Reason { get; internal set; }
 
         /// <summary>
-        /// A name to identify the processed object.
+        /// A name to identify the target object.
         /// </summary>
         [JsonProperty(PropertyName = "targetName")]
         public string TargetName { get; internal set; }
 
         /// <summary>
-        /// The type of the processed object.
+        /// The type of the target object.
         /// </summary>
         [JsonProperty(PropertyName = "targetType")]
         public string TargetType { get; internal set; }
 
+        /// <summary>
+        /// The current target object.
+        /// </summary>
         [JsonIgnore]
         [YamlIgnore]
         public PSObject TargetObject { get; internal set; }
 
+        /// <summary>
+        /// Custom data set by the rule for this target object.
+        /// </summary>
+        [JsonProperty(PropertyName = "data")]
+        public Hashtable Data { get; private set; }
+
+        /// <summary>
+        /// A set of custom fields bound for the target object.
+        /// </summary>
         [JsonProperty(PropertyName = "field")]
         public Hashtable Field { get; internal set; }
 
+        /// <summary>
+        /// Tags set for the current rule.
+        /// </summary>
         [DefaultValue(null)]
         [JsonProperty(PropertyName = "tag")]
         public Hashtable Tag { get; }
 
+        /// <summary>
+        /// Help info for the current rule.
+        /// </summary>
         [DefaultValue(null)]
         [JsonProperty(PropertyName = "info")]
         public RuleHelpInfo Info { get; }
 
+        /// <summary>
+        /// The execution time of the rule in millisecond.
+        /// </summary>
         [DefaultValue(0f)]
         [JsonProperty(PropertyName = "time")]
         public long Time { get; internal set; }

@@ -32,10 +32,15 @@ Each `$Assert` method returns an `AssertResult` object that contains the result 
 
 The following built-in assertion methods are provided:
 
+- `Contains` - The field value must contain at least one of the strings.
+- `EndsWith` - The field value must match at least one suffix.
+- `HasDefaultValue` - The object should not have the field or the field value is set to the default value.
 - `HasField` - Asserts that the object must have the specified field.
 - `HasFieldValue` - Asserts that the object must have the specified field and that field is not empty.
 - `JsonSchema` - Asserts that the object must validate successfully against a JSON schema.
 - `NullOrEmpty` - Asserts that the object must not have the specified field or it must be empty.
+- `StartsWith` - The field value must match at least one prefix.
+- `Version` - The field value must be a semantic version string.
 
 The `$Assert` variable can only be used within a rule definition block.
 
@@ -137,12 +142,19 @@ LocalizedMessage for en-ZZ. Format=TestType.
 
 An object representing the current context during execution.
 
-The following section properties are available for public read access:
+The following properties are available for read access:
 
 - `Field` - A hashtable of custom bound fields. See option `Binding.Field` for more information.
 - `TargetObject` - The object currently being processed on the pipeline.
 - `TargetName` - The name of the object currently being processed on the pipeline. This property will automatically default to `TargetName` or `Name` properties of the object if they exist.
 - `TargetType` - The type of the object currently being processed on the pipeline. This property will automatically bind to `PSObject.TypeNames[0]` by default.
+
+The following properties are available for read/ write access:
+
+- `Data` - A hashtable of custom data. This property can be populated during rule execution. Custom data is not used by PSRule directly, and is intended to be used by downstream processes that need to interpret PSRule results.
+
+To bind fields that already exist on the target object use custom binding and `Binding.Field`.
+Use custom data to store data that must be calculated during rule execution.
 
 Syntax:
 
@@ -154,8 +166,26 @@ Examples:
 
 ```powershell
 # Synopsis: This rule determines if the target object matches the naming convention
-Rule 'resource.NamingConvention' {
+Rule 'NamingConvention' {
     $PSRule.TargetName.ToLower() -ceq $PSRule.TargetName
+}
+```
+
+```powershell
+# Synopsis: Use allowed environment tags
+Rule 'CustomData' {
+    Recommend 'Environment must be set to an allowed value'
+    Within 'Tags.environment' 'production', 'test', 'development'
+
+    if ($TargetObject.Tags.environment -in 'prod') {
+        $PSRule.Data['targetEnvironment'] = 'production'
+    }
+    elseif ($TargetObject.Tags.environment -in 'dev', 'develop') {
+        $PSRule.Data['targetEnvironment'] = 'development'
+    }
+    elseif ($TargetObject.Tags.environment -in 'tst', 'testing') {
+        $PSRule.Data['targetEnvironment'] = 'test'
+    }
 }
 ```
 
@@ -163,7 +193,7 @@ Rule 'resource.NamingConvention' {
 
 An object representing the current rule during execution.
 
-The following section properties are available for public read access:
+The following properties are available for read access:
 
 - `RuleName` - The name of the rule.
 - `RuleId` - A unique identifier for the rule.
