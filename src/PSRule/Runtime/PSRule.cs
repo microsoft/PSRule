@@ -12,6 +12,20 @@ namespace PSRule.Runtime
     /// </summary>
     public sealed class PSRule
     {
+        /// <summary>
+        /// Custom data set by the rule for this target object.
+        /// </summary>
+        public Hashtable Data
+        {
+            get
+            {
+                return PipelineContext.CurrentThread.RuleRecord.Data;
+            }
+        }
+
+        /// <summary>
+        /// A set of custom fields bound for the target object.
+        /// </summary>
         public Hashtable Field
         {
             get
@@ -20,6 +34,9 @@ namespace PSRule.Runtime
             }
         }
 
+        /// <summary>
+        /// The current target object.
+        /// </summary>
         public PSObject TargetObject
         {
             get
@@ -28,6 +45,9 @@ namespace PSRule.Runtime
             }
         }
 
+        /// <summary>
+        /// The bound name of the target object.
+        /// </summary>
         public string TargetName
         {
             get
@@ -36,6 +56,9 @@ namespace PSRule.Runtime
             }
         }
 
+        /// <summary>
+        /// The bound type of the target object.
+        /// </summary>
         public string TargetType
         {
             get

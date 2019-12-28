@@ -49,6 +49,12 @@ Describe 'PSRule variables' -Tag 'Variables' {
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $True;
             $result.TargetName | Should -Be 'VariableTest';
+
+            # Check custom data
+            $result.Data.Count | Should -Be 3;
+            $result.Data.property1 | Should -Be 'value1';
+            $result.Data.property2 | Should -Be 'value2';
+            $result.Data.property3 | Should -Be 'value3';
         }
 
         It '$Rule' {
