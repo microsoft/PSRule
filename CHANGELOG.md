@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.13.0-B1912027 (pre-release)
+
 - Added configuration helper for strings arrays. [#363](https://github.com/Microsoft/PSRule/issues/363)
 - Added support for using a parent culture in rule help. [#316](https://github.com/Microsoft/PSRule/issues/316)
   - Rule help will use parent culture when a more specific culture is not available.
