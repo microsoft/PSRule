@@ -16,7 +16,6 @@ When authoring rules in PowerShell, PSRule provides the following syntax feature
 - Comment metadata.
 - `Recommend` keyword.
 - `Reason` keyword.
-- `$LocalizedData` automatic variable.
 
 These features are each describe in detail in the following sections.
 
@@ -175,7 +174,7 @@ Some examples of annotations include; `severity`, `category`, `author`.
 
 Annotations differ from tags in two key ways:
 
-- Annotations are localized, and can have a different value for different languages. Tags are not.
+- Annotations are localized, and can have a different value for different languages; tags are not.
 - Tags are indexed and can be used to filter rules; annotations have no affect on rule filtering.
 
 The following reserved annotation exists:
@@ -195,7 +194,8 @@ The front matter start and end `---` are not required and can be removed if no a
 The document title, indicated by a level one heading `#` is the display name of the rule.
 The rule display name is shown when using `Get-PSRuleHelp` and is included in output.
 
-Specify the display name on a single line, wrapping the display name across multiple lines is not supported.
+Specify the display name on a single line.
+Wrapping the display name across multiple lines is not supported.
 
 For example:
 
@@ -209,9 +209,9 @@ The synopsis section is indicated by the heading `## SYNOPSIS`.
 Any text following the heading is interpreted by PSRule and included in output.
 The synopsis is displayed when using `Get-PSRule` and `Get-PSRuleHelp` cmdlets.
 
-The synopsis is intended to be a brief description of the rule, a single line.
+The _synopsis_ is intended to be a brief description of the rule, over a single line.
 A good synopsis should convey the purpose of the rule.
-For a more verbose description can be included in the description section.
+A more verbose description can be included in the _description_ section.
 
 For example:
 
@@ -227,7 +227,7 @@ The description section is indicated by the heading `## DESCRIPTION`.
 Any text following the heading is interpreted by PSRule and included in output.
 The description is displayed when using the `Get-PSRuleHelp` cmdlet.
 
-The description is intended to be a verbose description of the rule.
+The _description_ is intended to be a verbose description of the rule.
 If your rule documentation needs to include background information include it here.
 
 PSRule supports semantic line breaks, and will automatically run together lines into a single paragraph.
@@ -250,7 +250,7 @@ The recommendation section is indicated by the heading `## RECOMMENDATION`.
 Any text following the heading is interpreted by PSRule and included in output.
 The recommendation is displayed when using the `Invoke-PSRule` and `Get-PSRuleHelp` cmdlets.
 
-The recommendation is intended to identify corrective actions that can be taken to address any failures.
+The _recommendation_ is intended to identify corrective actions that can be taken to address any failures.
 
 PSRule supports semantic line breaks, and will automatically run together lines into a single paragraph.
 Use a blank line to separate paragraphs.
