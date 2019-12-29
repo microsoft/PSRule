@@ -186,6 +186,7 @@ For walk through examples of PSRule usage see:
 - [Validate Azure resources tags](docs/scenarios/azure-tags/azure-tags.md)
 - [Validate Kubernetes resources](docs/scenarios/kubernetes-resources/kubernetes-resources.md)
 - [Using within continuous integration](docs/scenarios/validation-pipeline/validation-pipeline.md)
+- [Packaging rules in a module](docs/scenarios/rule-module/rule-module.md)
 - [Writing rule help](docs/scenarios/rule-docs/rule-docs.md)
 
 ## Language reference
