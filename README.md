@@ -28,11 +28,11 @@ PSRule | Validate objects using PowerShell rules | [latest][module-psrule] / [in
 
 ## Getting the extension
 
-A companion extension for Visual Studio Code can be downloaded or installed from the [Visual Studio Marketplace][ext-psrule].
+A companion extension for Visual Studio Code can be downloaded or installed from the [Visual Studio Marketplace][extension].
 
 Extension | Description | Downloads / instructions
 --------- | ----------- | ------------------------
-PSRule    | An extension for IT Pros using the PSRule PowerShell module | [latest][ext-psrule] / [instructions][install]
+PSRule    | An extension for IT Pros using the PSRule PowerShell module | [latest][extension] / [instructions][install]
 
 ## Getting started
 
@@ -186,6 +186,7 @@ For walk through examples of PSRule usage see:
 - [Validate Azure resources tags](docs/scenarios/azure-tags/azure-tags.md)
 - [Validate Kubernetes resources](docs/scenarios/kubernetes-resources/kubernetes-resources.md)
 - [Using within continuous integration](docs/scenarios/validation-pipeline/validation-pipeline.md)
+- [Writing rule help](docs/scenarios/rule-docs/rule-docs.md)
 
 ## Language reference
 
@@ -311,4 +312,4 @@ This project is [licensed under the MIT License](LICENSE.txt).
 [install]: docs/scenarios/install-instructions.md
 [ci-badge]: https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=master
 [module-psrule]: https://www.powershellgallery.com/packages/PSRule
-[ext-psrule]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
+[extension]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
