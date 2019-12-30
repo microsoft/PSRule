@@ -48,6 +48,19 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
+        /// Add a reason.
+        /// </summary>
+        /// <param name="text">The text of a reason to add. This text should already be localized for the currently culture.</param>
+        internal void AddReason(string text, params object[] args)
+        {
+            // Ignore reasons if this is a pass.
+            if (Result || string.IsNullOrEmpty(text))
+                return;
+
+            _Reason.Add(string.Format(text, args));
+        }
+
+        /// <summary>
         /// Adds a reason, and optionally replace existing reasons.
         /// </summary>
         /// <param name="text">The text of a reason to add. This text should already be localized for the currently culture.</param>

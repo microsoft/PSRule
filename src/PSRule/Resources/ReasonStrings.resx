@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Compare" xml:space="preserve">
+    <value>The field value '{0}' can not be compared with '{1}'.</value>
+  </data>
   <data name="Contains" xml:space="preserve">
     <value>The field '{0}' does not contain '{1}'.</value>
   </data>
@@ -131,6 +134,12 @@
     <value>The field(s) existed: {0}</value>
     <comment>Included when any of the fields exist and the -Not switch is used.</comment>
   </data>
+  <data name="Greater" xml:space="preserve">
+    <value>The value '{0}' was not &gt; '{1}'.</value>
+  </data>
+  <data name="GreaterOrEqual" xml:space="preserve">
+    <value>The value '{0}' was not &gt;= '{1}'.</value>
+  </data>
   <data name="HasExpectedFieldValue" xml:space="preserve">
     <value>The field '{0}' is set to '{1}'.</value>
   </data>
@@ -144,7 +153,13 @@
     <value>Failed schema validation on {0}. {1}</value>
   </data>
   <data name="JsonSchemaNotFound" xml:space="preserve">
-    <value>The JSON schema '{0}' chould not be found.</value>
+    <value>The JSON schema '{0}' could not be found.</value>
+  </data>
+  <data name="Less" xml:space="preserve">
+    <value>The value '{0}' was not &lt; '{1}'.</value>
+  </data>
+  <data name="LessOrEqual" xml:space="preserve">
+    <value>The value '{0}' was not &lt;= '{1}'.</value>
   </data>
   <data name="Match" xml:space="preserve">
     <value>None of the regex(s) matched: {0}</value>

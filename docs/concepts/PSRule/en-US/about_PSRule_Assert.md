@@ -16,10 +16,14 @@ The following built-in assertion methods are provided:
 
 - [Contains](#contains) - The field value must contain at least one of the strings.
 - [EndsWith](#endswith) - The field value must match at least one suffix.
+- [Greater](#greater) - The field value must be greater.
+- [GreaterOrEqual](#greaterorequal) - The field value must be greater or equal to.
 - [HasDefaultValue](#hasdefaultvalue) - The object should not have the field or the field value is set to the default value.
 - [HasField](#hasfield) - The object must have the specified field.
 - [HasFieldValue](#hasfieldvalue) - The object must have the specified field and that field is not empty.
 - [JsonSchema](#jsonschema) - The object must validate successfully against a JSON schema.
+- [Less](#less) - The field value must be less.
+- [LessOrEqual](#lessorequal) - The field value must be less or equal to.
 - [NullOrEmpty](#nullorempty) - The object must not have the specified field or it must be empty.
 - [StartsWith](#startswith) - The field value must match at least one prefix.
 - [Version](#version) - The field value must be a semantic version string.
@@ -70,6 +74,14 @@ The following parameters are accepted:
 - `text` - One or more strings to compare the field value with. Only one string must match.
 - `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
 
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is not a string._
+- _The field '{0}' does not contain '{1}'._
+
 Examples:
 
 ```powershell
@@ -91,12 +103,80 @@ The following parameters are accepted:
 - `suffix` - One or more suffixes to compare the field value with. Only one suffix must match.
 - `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
 
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is not a string._
+- _The field '{0}' does not end with '{1}'._
+
 Examples:
 
 ```powershell
 Rule 'EndsWith' {
     $Assert.EndsWith($TargetObject, 'ResourceGroupName', 'eus')
     $Assert.EndsWith($TargetObject, 'Name', @('db', 'web'), $True)
+}
+```
+
+### Greater
+
+The `Greater` assertion method checks the field value is greater than the specified value.
+The field value can either be an integer or an array.
+When the field value is:
+
+- An integer, a numerical comparison is used.
+- An array, the number of elements is compared.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `value` - A integer to compare the field value against.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The value '{0}' was not > '{1}'._
+- _The field value '{0}' can not be compared with '{1}'._
+
+Examples:
+
+```powershell
+Rule 'Greater' {
+    $Assert.Greater($TargetObject, 'value', 3)
+}
+```
+
+### GreaterOrEqual
+
+The `GreaterOrEqual` assertion method checks the field value is greater or equal to the specified value.
+The field value can either be an integer or an array.
+When the field value is:
+
+- An integer, a numerical comparison is used.
+- An array, the number of elements is compared.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `value` - A integer to compare the field value against.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The value '{0}' was not >= '{1}'._
+- _The field value '{0}' can not be compared with '{1}'._
+
+Examples:
+
+```powershell
+Rule 'GreaterOrEqual' {
+    $Assert.GreaterOrEqual($TargetObject, 'value', 3)
 }
 ```
 
@@ -119,6 +199,12 @@ This assertion will fail if:
 
 - The field value is set to a value different from `defaultValue`.
 
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' is set to '{1}'._
+
 Examples:
 
 ```powershell
@@ -136,6 +222,12 @@ The following parameters are accepted:
 - `inputObject` - The object being checked for the specified field.
 - `field` - The name of the field to check. By default, a case insensitive compare is used.
 - `caseSensitive` (optional) - Use a case sensitive compare of the field name.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
 
 Examples:
 
@@ -163,6 +255,14 @@ The following parameters are accepted:
 - `field` - The name of the field to check. This is a case insensitive compare.
 - `expectedValue` (optional) - Check that the field value is set to a specific value. To check `$Null` use `NullOrEmpty` instead. If `expectedValue` is `$Null` the field value will not be compared.
 
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The value of '{0}' is null or empty._
+- _The field '{0}' is set to '{1}'._
+
 Examples:
 
 ```powershell
@@ -181,11 +281,80 @@ The following parameters are accepted:
 - `inputObject` - The object being compared against the JSON schema.
 - `uri` - A URL or file path to a JSON schema file formatted as UTF-8. Either a file path or URL can be used to specify the location of the schema file.
 
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'uri' is null or empty._
+- _The JSON schema '{0}' could not be found._
+- _Failed schema validation on {0}. {1}_
+
 Examples:
 
 ```powershell
 Rule 'JsonSchema' {
     $Assert.JsonSchema($TargetObject, 'tests/PSRule.Tests/FromFile.Json.schema.json')
+}
+```
+
+### Less
+
+The `Less` assertion method checks the field value is less than the specified value.
+The field value can either be an integer or an array.
+When the field value is:
+
+- An integer, a numerical comparison is used.
+- An array, the number of elements is compared.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `value` - A integer to compare the field value against.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The value '{0}' was not < '{1}'._
+- _The field value '{0}' can not be compared with '{1}'._
+
+Examples:
+
+```powershell
+Rule 'Less' {
+    $Assert.Less($TargetObject, 'value', 3)
+}
+```
+
+### LessOrEqual
+
+The `LessOrEqual` assertion method checks the field value is less or equal to the specified value.
+The field value can either be an integer or an array.
+When the field value is:
+
+- An integer, a numerical comparison is used.
+- An array, the number of elements is compared.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `value` - A integer to compare the field value against.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The value '{0}' was not <= '{1}'._
+- _The field value '{0}' can not be compared with '{1}'._
+
+Examples:
+
+```powershell
+Rule 'LessOrEqual' {
+    $Assert.LessOrEqual($TargetObject, 'value', 3)
 }
 ```
 
@@ -204,6 +373,12 @@ The following parameters are accepted:
 
 - `inputObject` - The object being checked for the specified field.
 - `field` - The name of the field to check. This is a case insensitive compare.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' is not empty._
 
 Examples:
 
@@ -225,6 +400,14 @@ The following parameters are accepted:
 - `field` - The name of the field to check. This is a case insensitive compare.
 - `prefix` - One or more prefixes to compare the field value with. Only one prefix must match.
 - `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is not a string._
+- _The field '{0}' does not start with '{1}'._
 
 Examples:
 
@@ -264,6 +447,14 @@ The following are supported constraints:
   - e.g. `~1.2.3` - >=1.2.3, <1.3.0
 
 An empty, null or `*` version constraint matches all valid semantic versions.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is not a version string._
+- _The version '{0}' does not match the constraint '{1}'._
 
 Examples:
 
@@ -340,10 +531,14 @@ An online version of this document is available at https://github.com/Microsoft/
 - Assert
 - Contains
 - EndsWith
+- Greater
+- GreaterOrEqual
 - HasDefaultValue
 - HasField
 - HasFieldValue
 - JsonSchema
+- Less
+- LessOrEqual
 - NullOrEmpty
 - StartsWith
 - Version

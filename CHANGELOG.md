@@ -5,6 +5,8 @@
 - Added input format for reading PowerShell data `.psd1` files. [#368](https://github.com/Microsoft/PSRule/issues/368)
   - `PowerShellData` has been added to `Input.Format`.
   - See `about_PSRule_Options` for details.
+- Added numeric comparison assertion helpers. [#374](https://github.com/Microsoft/PSRule/issues/374)
+  - Added methods `Greater`, `GreaterOrEquals`, `Less` and `LessOrEqual`. See `about_PSRule_Assert` for usage details.
 
 ## v0.13.0-B1912027 (pre-release)
 

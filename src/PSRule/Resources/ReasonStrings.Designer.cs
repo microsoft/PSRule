@@ -61,6 +61,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The field value &apos;{0}&apos; can not be compared with &apos;{1}&apos;..
+        /// </summary>
+        internal static string Compare {
+            get {
+                return ResourceManager.GetString("Compare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The field &apos;{0}&apos; does not contain &apos;{1}&apos;..
         /// </summary>
         internal static string Contains {
@@ -93,6 +102,24 @@ namespace PSRule.Resources {
         internal static string ExistsNot {
             get {
                 return ResourceManager.GetString("ExistsNot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; was not &gt; &apos;{1}&apos;..
+        /// </summary>
+        internal static string Greater {
+            get {
+                return ResourceManager.GetString("Greater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; was not &gt;= &apos;{1}&apos;..
+        /// </summary>
+        internal static string GreaterOrEqual {
+            get {
+                return ResourceManager.GetString("GreaterOrEqual", resourceCulture);
             }
         }
         
@@ -133,11 +160,29 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The JSON schema &apos;{0}&apos; chould not be found..
+        ///   Looks up a localized string similar to The JSON schema &apos;{0}&apos; could not be found..
         /// </summary>
         internal static string JsonSchemaNotFound {
             get {
                 return ResourceManager.GetString("JsonSchemaNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; was not &lt; &apos;{1}&apos;..
+        /// </summary>
+        internal static string Less {
+            get {
+                return ResourceManager.GetString("Less", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; was not &lt;= &apos;{1}&apos;..
+        /// </summary>
+        internal static string LessOrEqual {
+            get {
+                return ResourceManager.GetString("LessOrEqual", resourceCulture);
             }
         }
         
