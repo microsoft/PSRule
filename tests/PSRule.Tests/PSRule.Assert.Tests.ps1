@@ -41,6 +41,8 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 Int = 1
                 Bool = $True
                 Version = '2.0.0'
+                CompareNumeric = 3
+                CompareArray = 1, 2, 3
             }
             [PSCustomObject]@{
                 Name = 'TestObject2'
@@ -53,6 +55,8 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 OtherBool = $False
                 OtherInt = 2
                 Version = '1.0.0'
+                CompareNumeric = 0
+                CompareArray = @()
             }
         )
 
@@ -104,8 +108,8 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].Reason | Should -BeLike "The field '*' does not end with '*'.";
         }
 
-        It 'JsonSchema' {
-            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.JsonSchema');
+        It 'Greater' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.Greater');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
 
@@ -117,7 +121,23 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 2;
-            $result[1].Reason | Should -BeLike "Failed schema validation on `#*. *";
+            $result[1].Reason | Should -BeLike "The value '*' was not > '*'.";
+        }
+
+        It 'GreaterOrEqual' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.GreaterOrEqual');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 2;
+            $result[1].Reason | Should -BeLike "The value '*' was not >= '*'.";
         }
 
         It 'HasField' {
@@ -168,6 +188,54 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 3;
             $result[1].Reason[0..2] | Should -BeLike "The field '*' is set to '*'.";
+        }
+
+        It 'JsonSchema' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.JsonSchema');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 2;
+            $result[1].Reason | Should -BeLike "Failed schema validation on `#*. *";
+        }
+
+        It 'Less' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.Less');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[1].TargetName | Should -Be 'TestObject2';
+
+            # Negative case
+            $result[0].IsSuccess() | Should -Be $False;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].Reason.Length | Should -Be 2;
+            $result[0].Reason | Should -BeLike "The value '*' was not < '*'.";
+        }
+
+        It 'LessOrEqual' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.LessOrEqual');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[1].TargetName | Should -Be 'TestObject2';
+
+            # Negative case
+            $result[0].IsSuccess() | Should -Be $False;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].Reason.Length | Should -Be 2;
+            $result[0].Reason | Should -BeLike "The value '*' was not <= '*'.";
         }
 
         It 'NullOrEmpty' {

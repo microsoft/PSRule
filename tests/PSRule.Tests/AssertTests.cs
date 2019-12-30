@@ -180,6 +180,130 @@ namespace PSRule
             Assert.Throws<RuleRuntimeException>(() => assert.Version(value, "version", "z2.0.0").Result);
         }
 
+        [Fact]
+        public void Greater()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject((name: "value", value: 3));
+
+            // Int
+            Assert.True(assert.Greater(value, "value", 2).Result);
+            Assert.False(assert.Greater(value, "value", 3).Result);
+            Assert.False(assert.Greater(value, "value", 4).Result);
+            Assert.True(assert.Greater(value, "value", 0).Result);
+            Assert.True(assert.Greater(value, "value", -1).Result);
+
+            // String int
+            value = GetObject((name: "value", value: "3"));
+            Assert.True(assert.Greater(value, "value", 2).Result);
+            Assert.False(assert.Greater(value, "value", 3).Result);
+            Assert.False(assert.Greater(value, "value", 4).Result);
+            Assert.True(assert.Greater(value, "value", 0).Result);
+            Assert.True(assert.Greater(value, "value", -1).Result);
+
+            // Array
+            value = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
+            Assert.True(assert.Greater(value, "value", 2).Result);
+            Assert.False(assert.Greater(value, "value", 3).Result);
+            Assert.False(assert.Greater(value, "value", 4).Result);
+            Assert.True(assert.Greater(value, "value", 0).Result);
+            Assert.True(assert.Greater(value, "value", -1).Result);
+        }
+
+        [Fact]
+        public void GreaterOrEqual()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject((name: "value", value: 3));
+
+            // Int
+            Assert.True(assert.GreaterOrEqual(value, "value", 2).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", 3).Result);
+            Assert.False(assert.GreaterOrEqual(value, "value", 4).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", 0).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", -1).Result);
+
+            // String int
+            value = GetObject((name: "value", value: "3"));
+            Assert.True(assert.GreaterOrEqual(value, "value", 2).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", 3).Result);
+            Assert.False(assert.GreaterOrEqual(value, "value", 4).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", 0).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", -1).Result);
+
+            // Array
+            value = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
+            Assert.True(assert.GreaterOrEqual(value, "value", 2).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", 3).Result);
+            Assert.False(assert.GreaterOrEqual(value, "value", 4).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", 0).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", -1).Result);
+        }
+
+        [Fact]
+        public void Less()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject((name: "value", value: 3));
+
+            // Int
+            Assert.False(assert.Less(value, "value", 2).Result);
+            Assert.False(assert.Less(value, "value", 3).Result);
+            Assert.True(assert.Less(value, "value", 4).Result);
+            Assert.False(assert.Less(value, "value", 0).Result);
+            Assert.False(assert.Less(value, "value", -1).Result);
+
+            // String int
+            value = GetObject((name: "value", value: "3"));
+            Assert.False(assert.Less(value, "value", 2).Result);
+            Assert.False(assert.Less(value, "value", 3).Result);
+            Assert.True(assert.Less(value, "value", 4).Result);
+            Assert.False(assert.Less(value, "value", 0).Result);
+            Assert.False(assert.Less(value, "value", -1).Result);
+
+            // Array
+            value = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
+            Assert.False(assert.Less(value, "value", 2).Result);
+            Assert.False(assert.Less(value, "value", 3).Result);
+            Assert.True(assert.Less(value, "value", 4).Result);
+            Assert.False(assert.Less(value, "value", 0).Result);
+            Assert.False(assert.Less(value, "value", -1).Result);
+        }
+
+        [Fact]
+        public void LessOrEqual()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject((name: "value", value: 3));
+
+            // Int
+            Assert.False(assert.LessOrEqual(value, "value", 2).Result);
+            Assert.True(assert.LessOrEqual(value, "value", 3).Result);
+            Assert.True(assert.LessOrEqual(value, "value", 4).Result);
+            Assert.False(assert.LessOrEqual(value, "value", 0).Result);
+            Assert.False(assert.LessOrEqual(value, "value", -1).Result);
+
+            // String int
+            value = GetObject((name: "value", value: "3"));
+            Assert.False(assert.LessOrEqual(value, "value", 2).Result);
+            Assert.True(assert.LessOrEqual(value, "value", 3).Result);
+            Assert.True(assert.LessOrEqual(value, "value", 4).Result);
+            Assert.False(assert.LessOrEqual(value, "value", 0).Result);
+            Assert.False(assert.LessOrEqual(value, "value", -1).Result);
+
+            // Array
+            value = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
+            Assert.False(assert.LessOrEqual(value, "value", 2).Result);
+            Assert.True(assert.LessOrEqual(value, "value", 3).Result);
+            Assert.True(assert.LessOrEqual(value, "value", 4).Result);
+            Assert.False(assert.LessOrEqual(value, "value", 0).Result);
+            Assert.False(assert.LessOrEqual(value, "value", -1).Result);
+        }
+
         private static void SetContext()
         {
             var context = PipelineContext.New(null, new Configuration.PSRuleOption(), null, null, null, null);

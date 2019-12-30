@@ -30,25 +30,46 @@ namespace PSRule.Runtime
             return new AssertResult(this, condition, reason);
         }
 
+        /// <summary>
+        /// Pass the assertion.
+        /// </summary>
         public AssertResult Pass()
         {
             return Create(condition: true);
         }
 
+        /// <summary>
+        /// Fail the assertion.
+        /// </summary>
+        /// <param name="reason">An optional reason why the assertion failed.</param>
         public AssertResult Fail(string reason = null)
         {
             return Create(condition: false, reason: reason);
         }
 
+        /// <summary>
+        /// Fail the assertion.
+        /// </summary>
+        /// <param name="reason">An unformatted reason why the assertion failed.</param>
+        /// <param name="args">Additional parameters for the reason format.</param>
+        private AssertResult Fail(string reason, params object[] args)
+        {
+            return Create(condition: false, reason: string.Format(reason, args));
+        }
+
+        /// <summary>
+        /// The object should match the defined schema.
+        /// </summary>
         public AssertResult JsonSchema(PSObject inputObject, string uri)
         {
             // Guard parameters
-            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) || GuardNullOrEmptyParam(uri, nameof(uri), out result))
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(uri, nameof(uri), out result))
                 return result;
 
             // Get the schema
             if (!(TryReadJson(uri, out string schemaContent)))
-                return Fail(reason: string.Format(ReasonStrings.JsonSchemaNotFound, uri));
+                return Fail(ReasonStrings.JsonSchemaNotFound, uri);
 
             var s = new JsonSerializer();
             JsonSchemaOptions.OutputFormat = SchemaValidationOutputFormat.Basic;
@@ -68,15 +89,18 @@ namespace PSRule.Runtime
             result = Fail();
 
             if (!string.IsNullOrEmpty(schemaResults.ErrorMessage))
-                result.AddReason(string.Format(ReasonStrings.JsonSchemaInvalid, schemaResults.InstanceLocation.ToString(), schemaResults.ErrorMessage));
+                result.AddReason(ReasonStrings.JsonSchemaInvalid, schemaResults.InstanceLocation.ToString(), schemaResults.ErrorMessage);
 
             foreach (var r in schemaResults.NestedResults)
                 if (!string.IsNullOrEmpty(r.ErrorMessage))
-                    result.AddReason(string.Format(ReasonStrings.JsonSchemaInvalid, r.InstanceLocation.ToString(), r.ErrorMessage));
+                    result.AddReason(ReasonStrings.JsonSchemaInvalid, r.InstanceLocation.ToString(), r.ErrorMessage);
 
             return result;
         }
 
+        /// <summary>
+        /// The object should have a specific field.
+        /// </summary>
         public AssertResult HasField(PSObject inputObject, string field, bool caseSensitive = false)
         {
             // Guard parameters
@@ -89,19 +113,23 @@ namespace PSRule.Runtime
             return Pass();
         }
 
+        /// <summary>
+        /// The object should have a specific field with a value set.
+        /// </summary>
         public AssertResult HasFieldValue(PSObject inputObject, string field, object expectedValue = null)
         {
             // Guard parameters
-            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) || GuardNullOrEmptyParam(field, nameof(field), out result))
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result))
                 return result;
 
             // Assert
             if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue))
-                return Fail(string.Format(ReasonStrings.HasField, field));
+                return Fail(ReasonStrings.HasField, field);
             else if (IsEmpty(fieldValue))
-                return Fail(string.Format(ReasonStrings.HasFieldValue, field));
+                return Fail(ReasonStrings.HasFieldValue, field);
             else if (expectedValue != null && !IsValue(fieldValue, expectedValue))
-                return Fail(string.Format(ReasonStrings.HasExpectedFieldValue, field, fieldValue));
+                return Fail(ReasonStrings.HasExpectedFieldValue, field, fieldValue);
 
             return Pass();
         }
@@ -112,16 +140,21 @@ namespace PSRule.Runtime
         public AssertResult HasDefaultValue(PSObject inputObject, string field, object defaultValue)
         {
             // Guard parameters
-            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) || GuardNullOrEmptyParam(field, nameof(field), out result))
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result))
                 return result;
 
             // Assert
-            if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue) || IsValue(fieldValue, defaultValue))
+            if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue)
+                || IsValue(fieldValue, defaultValue))
                 return Pass();
 
-            return Fail(string.Format(ReasonStrings.HasExpectedFieldValue, field, fieldValue));
+            return Fail(ReasonStrings.HasExpectedFieldValue, field, fieldValue);
         }
 
+        /// <summary>
+        /// The object should not have the field or the field value is null or empty.
+        /// </summary>
         public AssertResult NullOrEmpty(PSObject inputObject, string field)
         {
             // Guard parameters
@@ -131,7 +164,7 @@ namespace PSRule.Runtime
 
             // Assert
             if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue) && !IsEmpty(fieldValue))
-                return Fail(string.Format(ReasonStrings.NullOrEmpty, field));
+                return Fail(ReasonStrings.NullOrEmpty, field);
 
             return Pass();
         }
@@ -153,7 +186,7 @@ namespace PSRule.Runtime
                 if (value.StartsWith(prefix[i], caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
                     return Pass();
             
-            return Fail(string.Format(ReasonStrings.StartsWith, field, string.Join(COMMASEPARATOR, prefix)));
+            return Fail(ReasonStrings.StartsWith, field, FormatArray(prefix));
         }
 
         /// <summary>
@@ -173,7 +206,7 @@ namespace PSRule.Runtime
                 if (value.EndsWith(suffix[i], caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
                     return Pass();
 
-            return Fail(string.Format(ReasonStrings.EndsWith, field, string.Join(COMMASEPARATOR, suffix)));
+            return Fail(ReasonStrings.EndsWith, field, FormatArray(suffix));
         }
 
         /// <summary>
@@ -193,7 +226,7 @@ namespace PSRule.Runtime
                 if (value.IndexOf(text[i], caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) >= 0)
                     return Pass();
 
-            return Fail(string.Format(ReasonStrings.Contains, field, string.Join(COMMASEPARATOR, text)));
+            return Fail(ReasonStrings.Contains, field, FormatArray(text));
         }
 
         /// <summary>
@@ -212,19 +245,77 @@ namespace PSRule.Runtime
 
             // Assert
             if (c != null && !c.Equals(value))
-                return Fail(string.Format(ReasonStrings.VersionContraint, value, constraint));
+                return Fail(ReasonStrings.VersionContraint, value, constraint);
 
             return Pass();
         }
 
-        private bool IsEmpty(object fieldValue)
+        public AssertResult Greater(PSObject inputObject, string field, int value)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result))
+                return result;
+
+            if (TryInt(fieldValue, out int actual) || TryArrayLength(fieldValue, out actual))
+                return actual > value ? Pass() : Fail(ReasonStrings.Greater, actual, value);
+
+            return Fail(ReasonStrings.Compare, fieldValue, value);
+        }
+
+        public AssertResult GreaterOrEqual(PSObject inputObject, string field, int value)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result))
+                return result;
+
+            if (TryInt(fieldValue, out int actual) || TryArrayLength(fieldValue, out actual))
+                return actual >= value ? Pass() : Fail(ReasonStrings.GreaterOrEqual, actual, value);
+
+            return Fail(ReasonStrings.Compare, fieldValue, value);
+        }
+
+        public AssertResult Less(PSObject inputObject, string field, int value)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result))
+                return result;
+
+            if (TryInt(fieldValue, out int actual) || TryArrayLength(fieldValue, out actual))
+                return actual < value ? Pass() : Fail(ReasonStrings.Less, actual, value);
+
+            return Fail(ReasonStrings.Compare, fieldValue, value);
+        }
+
+        public AssertResult LessOrEqual(PSObject inputObject, string field, int value)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result))
+                return result;
+
+            if (TryInt(fieldValue, out int actual) || TryArrayLength(fieldValue, out actual))
+                return actual <= value ? Pass() : Fail(ReasonStrings.LessOrEqual, actual, value);
+
+            return Fail(ReasonStrings.Compare, fieldValue, value);
+        }
+
+        #region Helper methods
+
+        private static bool IsEmpty(object fieldValue)
         {
             return fieldValue == null ||
                 (fieldValue is ICollection cvalue && cvalue.Count == 0) ||
                 (fieldValue is string svalue && string.IsNullOrEmpty(svalue));
         }
 
-        private bool IsValue(object fieldValue, object expectedValue)
+        private static bool IsValue(object fieldValue, object expectedValue)
         {
             // Unwrap as required
             var expectedBase = expectedValue;
@@ -237,7 +328,7 @@ namespace PSRule.Runtime
             return expectedBase.Equals(fieldValue);
         }
 
-        private bool TryString(object obj, out string value)
+        private static bool TryString(object obj, out string value)
         {
             value = null;
             if (obj is string svalue)
@@ -248,15 +339,37 @@ namespace PSRule.Runtime
             return false;
         }
 
-        private bool GuardNullParam(object value, string parameterName, out AssertResult result)
+        private static bool TryInt(object obj, out int value)
         {
-            result = value == null ? GuardNullParam(parameterName) : null;
-            return result != null;
+            if (obj is int ivalue)
+            {
+                value = ivalue;
+                return true;
+            }
+            if (int.TryParse(obj.ToString(), out value))
+                return true;
+
+            return false;
         }
 
-        private AssertResult GuardNullParam(string parameterName)
+        private static bool TryArrayLength(object obj, out int value)
         {
-            return Fail(reason: string.Format(ReasonStrings.NullParameter, parameterName));
+            if (obj is Array array)
+            {
+                value = array.Length;
+                return true;
+            }
+            value = 0;
+            return false;
+        }
+
+        /// <summary>
+        /// Fails if the value is null.
+        /// </summary>
+        private bool GuardNullParam(object value, string parameterName, out AssertResult result)
+        {
+            result = value == null ? Fail(ReasonStrings.NullParameter, parameterName) : null;
+            return result != null;
         }
 
         /// <summary>
@@ -265,13 +378,8 @@ namespace PSRule.Runtime
         /// <returns>Returns true if the field does not exist.</returns>
         private bool GuardNullOrEmptyParam(string value, string parameterName, out AssertResult result)
         {
-            result = string.IsNullOrEmpty(value) ? GuardNullOrEmptyParam(parameterName) : null;
+            result = string.IsNullOrEmpty(value) ? Fail(ReasonStrings.NullOrEmptyParameter, parameterName) : null;
             return result != null;
-        }
-
-        private AssertResult GuardNullOrEmptyParam(string parameterName)
-        {
-            return Fail(reason: string.Format(ReasonStrings.NullOrEmptyParameter, parameterName));
         }
 
         /// <summary>
@@ -284,7 +392,7 @@ namespace PSRule.Runtime
             if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: caseSensitive, value: out fieldValue))
                 return false;
 
-            result = Fail(string.Format(ReasonStrings.HasField, field));
+            result = Fail(ReasonStrings.HasField, field);
             return true;
         }
 
@@ -295,7 +403,7 @@ namespace PSRule.Runtime
             if (TryString(fieldValue, out string sversion) && Runtime.SemanticVersion.TryParseVersion(sversion, out value))
                 return false;
 
-            result = Fail(string.Format(ReasonStrings.Version, fieldValue));
+            result = Fail(ReasonStrings.Version, fieldValue);
             return true;
         }
 
@@ -305,14 +413,13 @@ namespace PSRule.Runtime
             if (TryString(fieldValue, out value))
                 return false;
 
-            result = Fail(string.Format(ReasonStrings.String, fieldValue));
+            result = Fail(ReasonStrings.String, fieldValue);
             return true;
         }
 
-        private bool TryReadJson(string uri, out string json)
+        private static bool TryReadJson(string uri, out string json)
         {
             json = null;
-
             if (uri == null)
             {
                 return false;
@@ -336,10 +443,17 @@ namespace PSRule.Runtime
             return false;
         }
 
-        private bool TryFilePath(string uri, out string path)
+        private static bool TryFilePath(string uri, out string path)
         {
             path = PSRuleOption.GetRootedPath(uri);
             return File.Exists(path);
         }
+
+        private static string FormatArray(string[] values)
+        {
+            return string.Join(COMMASEPARATOR, values);
+        }
+
+        #endregion Helper methods
     }
 }
