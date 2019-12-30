@@ -33,9 +33,16 @@ Rule 'Assert.EndsWith' {
     $Assert.EndsWith($TargetObject, 'Name', '1')
 }
 
-# Synopsis: Test for $Assert.JsonSchema
-Rule 'Assert.JsonSchema' {
-    $Assert.JsonSchema($TargetObject, 'tests/PSRule.Tests/FromFile.Json.schema.json')
+# Synopsis: Test for $Assert.Greater
+Rule 'Assert.Greater' {
+    $Assert.Greater($TargetObject, 'CompareNumeric', 2)
+    $Assert.Greater($TargetObject, 'CompareArray', 2)
+}
+
+# Synopsis: Test for $Assert.GreaterOrEqual
+Rule 'Assert.GreaterOrEqual' {
+    $Assert.GreaterOrEqual($TargetObject, 'CompareNumeric', 3)
+    $Assert.GreaterOrEqual($TargetObject, 'CompareArray', 3)
 }
 
 # Synopsis: Test for $Assert.HasField
@@ -63,6 +70,23 @@ Rule 'Assert.HasDefaultValue' {
     $Assert.HasDefaultValue($TargetObject, 'Bool', $True)
     $Assert.HasDefaultValue($TargetObject, 'OtherBool', $True)
     $Assert.HasDefaultValue($TargetObject, 'OtherInt', 1)
+}
+
+# Synopsis: Test for $Assert.JsonSchema
+Rule 'Assert.JsonSchema' {
+    $Assert.JsonSchema($TargetObject, 'tests/PSRule.Tests/FromFile.Json.schema.json')
+}
+
+# Synopsis: Test for $Assert.Less
+Rule 'Assert.Less' {
+    $Assert.Less($TargetObject, 'CompareNumeric', 2)
+    $Assert.Less($TargetObject, 'CompareArray', 2)
+}
+
+# Synopsis: Test for $Assert.LessOrEqual
+Rule 'Assert.LessOrEqual' {
+    $Assert.LessOrEqual($TargetObject, 'CompareNumeric', 0)
+    $Assert.LessOrEqual($TargetObject, 'CompareArray', 0)
 }
 
 # Synopsis: Test for $Assert.HasEmptyField
