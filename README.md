@@ -36,7 +36,10 @@ PSRule    | An extension for IT Pros using the PSRule PowerShell module | [lates
 
 ## Getting started
 
-The following example shows basic PSRule usage. For specific use cases see [scenarios](#scenarios).
+The following example shows basic PSRule usage.
+For specific use cases see [scenarios](#scenarios).
+
+For frequently asked questions, see the [FAQ](docs/features.md#frequently-asked-questions-faq).
 
 ### Define a rule
 

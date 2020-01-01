@@ -251,10 +251,10 @@ steps:
 
 ### Using Invoke-Build
 
-`Invoke-Build` is a build automation cmdlet that can be installed from the PowerShell Gallery by installing the _InvokeBuild_ module.
+Invoke-Build is a build automation cmdlet that can be installed from the PowerShell Gallery by installing the _InvokeBuild_ module.
 Within Invoke-Build, each build process is broken into tasks.
 
-The following example shows an example of using PSRule with _InvokeBuild_ tasks.
+The following example shows an example of using PSRule with Invoke-Build tasks.
 
 ```powershell
 # Synopsis: Install PSRule
@@ -273,7 +273,7 @@ task ValidateFiles PSRule, {
         OutputPath = 'reports/rule-report.xml'
     }
     $items = Get-ChildItem -Recurse -Path .\src\,.\tests\ -Include *.ps1,*.psd1,*.psm1,*.yaml;
-    $items | Assert-PSRule $assertParams -ErrorAction Stop;
+    $items | Assert-PSRule @assertParams -ErrorAction Stop;
 }
 
 # Synopsis: Run all build tasks
