@@ -1,4 +1,4 @@
-# Packaging rules in modules
+# Packaging rules in a module
 
 PSRule supports distribution of rules within modules.
 Using a module, rules can be published and installed using standard PowerShell cmdlets.
