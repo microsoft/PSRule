@@ -139,22 +139,30 @@ The basic structure of markdown help is as follows:
 
 ```text
 ---
-{{ Info.Annotations }}
+{{ Annotations }}
 ---
 
-# {{ Info.DisplayName }}
+# {{ Name of rule }}
 
 ## SYNOPSIS
 
-{{ Info.Synopsis }}
+{{ A brief summary of the rule }}
 
 ## DESCRIPTION
 
-{{ Info.Description }}
+{{ A detailed description of the rule }}
 
 ## RECOMMENDATION
 
-{{ Info.Recommendation }}
+{{ A detailed explanation of the steps required to pass the rule }}
+
+## NOTES
+
+{{ Additional information or configuration options }}
+
+## LINKS
+
+{{ Links to external references }}
 
 ```
 
@@ -251,6 +259,8 @@ Any text following the heading is interpreted by PSRule and included in output.
 The recommendation is displayed when using the `Invoke-PSRule` and `Get-PSRuleHelp` cmdlets.
 
 The _recommendation_ is intended to identify corrective actions that can be taken to address any failures.
+Avoid using URLs within the recommendations.
+Use the _links_ section to include references to external sources.
 
 PSRule supports semantic line breaks, and will automatically run together lines into a single paragraph.
 Use a blank line to separate paragraphs.
@@ -261,6 +271,58 @@ For example:
 ## RECOMMENDATION
 
 Consider setting the recommended label `app.kubernetes.io/name` on deployment and service resources.
+```
+
+### Notes section
+
+The notes section is indicated by the heading `## NOTES`.
+Any text following the heading is interpreted by PSRule and included in pipeline output.
+Notes are excluded when formating output as YAML and JSON.
+
+To view any included notes use the `Get-PSRuleHelp` cmdlet with the `-Full` switch.
+
+Use notes to include additional information such configuration options.
+
+PSRule supports semantic line breaks, and will automatically run together lines into a single paragraph.
+Use a blank line to separate paragraphs.
+
+For example:
+
+```text
+## NOTES
+
+The Kubernetes recommended labels include:
+
+- `app.kubernetes.io/name`
+- `app.kubernetes.io/instance`
+- `app.kubernetes.io/version`
+- `app.kubernetes.io/component`
+- `app.kubernetes.io/part-of`
+- `app.kubernetes.io/managed-by`
+```
+
+### Links section
+
+The links section is indicated by the heading `## LINKS`.
+Any markdown links following the heading are interpreted by PSRule and included in pipeline output.
+Links are excluded when formating output as YAML and JSON.
+
+To view any included links use the `Get-PSRuleHelp` cmdlet with the `-Full` switch.
+
+Use links to reference external sources with a URL.
+
+To specify links, use the markdown syntax `[display name](url)`.
+Include each link on a separate line.
+To improve display in web rendered markdown, use a list of links by prefixing the line with `-`.
+
+Additional text such as `See additional information:` is useful for web rendered views, but ignored by PSRule.
+
+For example:
+
+```text
+## LINKS
+
+- [Recommended Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/)
 ```
 
 ## Localizing documentation files

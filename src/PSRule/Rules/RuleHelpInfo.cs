@@ -4,6 +4,8 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections;
+using System.Text;
+using YamlDotNet.Serialization;
 
 namespace PSRule.Rules
 {
@@ -19,6 +21,19 @@ namespace PSRule.Rules
             Name = name;
             DisplayName = displayName;
             ModuleName = moduleName;
+        }
+
+        public sealed class Link
+        {
+            internal Link(string name, string uri)
+            {
+                Name = name;
+                Uri = uri;
+            }
+
+            public string Name { get; private set; }
+
+            public string Uri { get; private set; }
         }
 
         /// <summary>
@@ -63,8 +78,14 @@ namespace PSRule.Rules
         /// <summary>
         /// Additional notes for the rule.
         /// </summary>
-        [JsonProperty(PropertyName = "notes")]
+        [JsonIgnore, YamlIgnore]
         public string Notes { get; internal set; }
+
+        /// <summary>
+        /// Reference links for the rule.
+        /// </summary>
+        [JsonIgnore, YamlIgnore]
+        public Link[] Links { get; internal set; }
 
         /// <summary>
         /// Metadata annotations for the rule.
@@ -85,6 +106,28 @@ namespace PSRule.Rules
                 return result;
 
             return null;
+        }
+
+        /// <summary>
+        /// Get a view link string for display in rule help.
+        /// </summary>
+        public string GetLinkString()
+        {
+            if (Links == null)
+                return null;
+
+            var sb = new StringBuilder();
+            for (var i = 0; i < Links.Length; i++)
+            {
+                sb.Append(Links[i].Name);
+                if (!string.IsNullOrEmpty(Links[i].Uri))
+                {
+                    sb.Append(": ");
+                    sb.Append(Links[i].Uri);
+                }
+                sb.Append(Environment.NewLine);
+            }
+            return sb.ToString();
         }
     }
 }

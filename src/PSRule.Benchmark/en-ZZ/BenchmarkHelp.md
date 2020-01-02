@@ -1,7 +1,6 @@
 ---
 category: Security
 severity: Critical
-online version:
 ---
 
 # Use specific tags
@@ -25,7 +24,4 @@ The `latest` tag automatically uses `imagePullPolicy: Always` instead of the def
 
 ## LINKS
 
-- [PSRule]
 - [Stable tags](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-image-tag-version#stable-tags)
-
-[PSRule]: https://github.com/Microsoft/PSRule

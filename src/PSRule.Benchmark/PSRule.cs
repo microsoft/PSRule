@@ -38,6 +38,7 @@ namespace PSRule.Benchmark
     {
         private PSObject[] _TargetObject;
         private IPipeline _GetPipeline;
+        private IPipeline _GetHelpPipeline;
         private IPipeline _InvokePipeline;
         private IPipeline _InvokeIfPipeline;
         private IPipeline _InvokeTypePipeline;
@@ -50,6 +51,7 @@ namespace PSRule.Benchmark
         public void Prepare()
         {
             PrepareGetPipeline();
+            PrepareGetHelpPipeline();
             PrepareInvokePipeline();
             PrepareInvokeIfPipeline();
             PrepareInvokeTypePipeline();
@@ -66,6 +68,15 @@ namespace PSRule.Benchmark
             option.Rule.Include = new string[] { "Benchmark" };
             var builder = PipelineBuilder.Get(GetSource(), option);
             _GetPipeline = builder.Build();
+        }
+
+        private void PrepareGetHelpPipeline()
+        {
+            var option = new PSRuleOption();
+            option.Rule.Include = new string[] { "BenchmarkHelp" };
+            option.Output.Culture = new string[] { "en-ZZ" };
+            var builder = PipelineBuilder.GetHelp(GetSource(), option);
+            _GetHelpPipeline = builder.Build();
         }
 
         private void PrepareInvokePipeline()
@@ -174,6 +185,9 @@ namespace PSRule.Benchmark
 
         [Benchmark]
         public void Get() => RunPipelineNull(_GetPipeline);
+
+        [Benchmark]
+        public void GetHelp() => RunPipelineNull(_GetHelpPipeline);
 
         [Benchmark]
         public void Within() => RunPipelineTargets(_InvokeWithinPipeline);

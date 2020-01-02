@@ -9,18 +9,23 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Get documentation for a rule.
+Displays information about a rule.
 
 ## SYNTAX
 
 ```text
-Get-PSRuleHelp [-Module <String>] [-Online] [[-Name] <String>] [-Path <String>] [-Option <PSRuleOption>]
- [-Culture <String>] [<CommonParameters>]
+Get-PSRuleHelp [-Module <String>] [-Online] [-Full] [[-Name] <String>] [-Path <String>]
+ [-Option <PSRuleOption>] [-Culture <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Get documentation for a rule.
+The `Get-PSRuleHelp` cmdlet display information about a rule.
+
+By default, this cmdlet will look for rules in the current path and loaded modules.
+To get help for a specific rule or module use the `-Name` or `-Module` parameters.
+
+If the rule has an online version of the documentation, use the `-Online` parameter to view it in your default web browser.
 
 ## EXAMPLES
 
@@ -134,6 +139,22 @@ Aliases:
 Required: False
 Position: Named
 Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Full
+
+Display additional information such as notes and links.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

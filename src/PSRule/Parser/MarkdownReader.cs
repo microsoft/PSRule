@@ -220,7 +220,7 @@ namespace PSRule.Parser
             var startOfLine = _Stream.IsStartOfLine;
 
             // Get the text
-            var text = (_PreserveFormatting) ? _Stream.CaptureUntil(LineEndingCharacters, ignoreEscaping: true) : UnwrapStyleMarkers(_Stream, out textStyle);
+            var text = _PreserveFormatting ? _Stream.CaptureUntil(LineEndingCharacters, ignoreEscaping: true) : UnwrapStyleMarkers(_Stream, out textStyle);
 
             // Set the line ending
             var ending = GetEnding(_Stream.SkipLineEnding(max: 2));
@@ -231,7 +231,6 @@ namespace PSRule.Parser
             if (_Context != MarkdownReaderMode.List && startOfLine && IsList(text))
             {
                 _Context = MarkdownReaderMode.List;
-
                 if (_Output.Current != null && _Output.Current.Flag.IsEnding() && !_Output.Current.Flag.ShouldPreserve())
                     _Output.Current.Flag |= MarkdownTokens.Preserve;
             }

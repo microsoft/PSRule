@@ -79,7 +79,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to RELATED LINKS.
+        ///   Looks up a localized string similar to LINKS.
         /// </summary>
         internal static string Links {
             get {

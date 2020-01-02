@@ -759,6 +759,9 @@ function Get-PSRuleHelp {
         [Parameter(Mandatory = $False)]
         [Switch]$Online = $False,
 
+        [Parameter(Mandatory = $False)]
+        [Switch]$Full = $False,
+
         # The name of the rule to get documentation for.
         [Parameter(Position = 0, Mandatory = $False)]
         [Alias('n')]
@@ -840,6 +843,9 @@ function Get-PSRuleHelp {
 
         if ($Online) {
             $builder.Online();
+        }
+        if ($Full) {
+            $builder.Full();
         }
 
         $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
