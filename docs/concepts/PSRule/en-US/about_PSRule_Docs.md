@@ -28,7 +28,8 @@ Each rule can include the following documentation:
 - Synopsis - A brief description on the intended purpose of the rule.
 - Description - A detailed description on the intended purpose of the rule.
 - Recommendation - A detailed explanation of the requirements to pass the rule.
-- Note - Any additional information or background.
+- Notes - Any additional information or configuration options.
+- Links - Any links to external references.
 
 See cmdlet help for detailed information on the `Get-PSRuleHelp` cmdlet.
 
@@ -49,7 +50,8 @@ Rule documentation is composed of markdown files, one per rule. When creating ru
 
 The markdown files for each rule is automatically discovered based on naming convention.
 
-Markdown is saved in a file with the same filename as the rule name with the `.md` extension. The file name should match the same case exactly, with a lower case extension.
+Markdown is saved in a file with the same filename as the rule name with the `.md` extension.
+The file name should match the same case exactly, with a lower case extension.
 
 As an example, the `storageAccounts.UseHttps.md` markdown file would be created.
 
@@ -67,7 +69,8 @@ This directory PSRule will look for these markdown files depends on how the rule
 - If the rules are loose (not part of a module), PSRule will search for documentation in the `.\<culture>\` subdirectory relative to where the rule script _.ps1_ file is located.
 - When the rules are shipped as part of a module, PSRule will search for documentation in the `.\<culture>\` subdirectory relative to where the module manifest _.psd1_ file is located.
 
-The `<culture>` subdirectory will be the current culture that PowerShell is executed under (the same as `(Get-Culture).Name`). Alternatively, the culture can set by using the `-Culture` parameter of PSRule cmdlets.
+The `<culture>` subdirectory will be the current culture that PowerShell is executed under (the same as `(Get-Culture).Name`).
+Alternatively, the culture can set by using the `-Culture` parameter of PSRule cmdlets.
 
 The markdown of each file uses following structure.
 
@@ -92,11 +95,16 @@ The markdown of each file uses following structure.
 
 ## NOTES
 
-{{ Additional information or background }}
+{{ Additional information or configuration options }}
+
+## LINKS
+
+{{ Links to external references }}
 
 ```
 
-Optionally, one or more annotations formatted as YAML key value pairs can be included. i.e. `severity: Critical`
+Optionally, one or more annotations formatted as YAML key value pairs can be included.
+i.e. `severity: Critical`
 
 ## NOTE
 

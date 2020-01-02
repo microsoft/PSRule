@@ -112,6 +112,50 @@
       </CustomControl>
     </Control>
     <Control>
+      <Name>Help-Notes</Name>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+              <CustomItem>
+                <Text AssemblyName="PSRule" BaseName="PSRule.Resources.DocumentStrings" ResourceId="Notes"/>
+                <NewLine />
+                <Frame>
+                  <LeftIndent>4</LeftIndent>
+                  <CustomItem>
+                    <ExpressionBinding>
+                      <PropertyName>Notes</PropertyName>
+                    </ExpressionBinding>
+                    <NewLine/>
+                  </CustomItem>
+                </Frame>
+              </CustomItem>
+            </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </Control>
+    <Control>
+      <Name>Help-Links</Name>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+              <CustomItem>
+                <Text AssemblyName="PSRule" BaseName="PSRule.Resources.DocumentStrings" ResourceId="Links"/>
+                <NewLine />
+                <Frame>
+                  <LeftIndent>4</LeftIndent>
+                  <CustomItem>
+                    <ExpressionBinding>
+                      <ScriptBlock>$_.GetLinkString();</ScriptBlock>
+                    </ExpressionBinding>
+                    <NewLine/>
+                  </CustomItem>
+                </Frame>
+              </CustomItem>
+            </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </Control>
+    <Control>
       <Name>Option-Yaml</Name>
       <CustomControl>
         <CustomEntries>
@@ -377,6 +421,71 @@
                                   <ExpressionBinding>
                                     <CustomControlName>Help-Recommendation</CustomControlName>
                                   </ExpressionBinding>
+                                </CustomItem>
+                              </Frame>
+                            </CustomItem>
+                          </Frame>
+                        </CustomItem>
+                      </Frame>
+                    </CustomItem>
+                  </Frame>
+                </CustomItem>
+              </CustomEntry>
+            </CustomEntries>
+      </CustomControl>
+    </View>
+    <View>
+      <Name>PSRule.Rules.RuleHelpInfo+Full</Name>
+      <ViewSelectedBy>
+        <TypeName>PSRule.Rules.RuleHelpInfo+Full</TypeName>
+      </ViewSelectedBy>
+      <CustomControl>
+         <CustomEntries>
+              <CustomEntry>
+                <CustomItem>
+                  <ExpressionBinding>
+                    <CustomControlName>Help-Name</CustomControlName>
+                  </ExpressionBinding>
+                  <Frame>
+                    <CustomItem>
+                      <NewLine />
+                      <ExpressionBinding>
+                        <CustomControlName>Help-DisplayName</CustomControlName>
+                      </ExpressionBinding>
+                      <Frame>
+                        <CustomItem>
+                          <NewLine />
+                          <ExpressionBinding>
+                            <CustomControlName>Help-Synopsis</CustomControlName>
+                          </ExpressionBinding>
+                          <Frame>
+                            <CustomItem>
+                              <NewLine />
+                              <ExpressionBinding>
+                                <CustomControlName>Help-Description</CustomControlName>
+                              </ExpressionBinding>
+                              <Frame>
+                                <CustomItem>
+                                  <NewLine />
+                                  <ExpressionBinding>
+                                    <CustomControlName>Help-Recommendation</CustomControlName>
+                                  </ExpressionBinding>
+                                  <Frame>
+                                    <CustomItem>
+                                      <NewLine />
+                                      <ExpressionBinding>
+                                        <CustomControlName>Help-Notes</CustomControlName>
+                                      </ExpressionBinding>
+                                      <Frame>
+                                        <CustomItem>
+                                          <NewLine />
+                                          <ExpressionBinding>
+                                            <CustomControlName>Help-Links</CustomControlName>
+                                          </ExpressionBinding>
+                                        </CustomItem>
+                                      </Frame>
+                                    </CustomItem>
+                                  </Frame>
                                 </CustomItem>
                               </Frame>
                             </CustomItem>

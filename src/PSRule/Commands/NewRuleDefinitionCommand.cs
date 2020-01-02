@@ -120,7 +120,7 @@ namespace PSRule.Commands
             }
         }
 
-        private RuleHelpInfo GetHelpInfo(PipelineContext context, string name)
+        private static RuleHelpInfo GetHelpInfo(PipelineContext context, string name)
         {
             if (string.IsNullOrEmpty(context.Source.File.HelpPath))
                 return null;
@@ -132,12 +132,7 @@ namespace PSRule.Commands
                 if (!File.Exists(path))
                     continue;
 
-                var reader = new MarkdownReader(yamlHeaderOnly: false);
-                var stream = reader.Read(markdown: File.ReadAllText(path: path), path: path);
-                var lexer = new RuleLexer();
-                var document = lexer.Process(stream: stream);
-
-                if (document != null)
+                if (TryDocument(path, out RuleDocument document))
                 {
                     return new RuleHelpInfo(name: name, displayName: document.Name ?? name, moduleName: context.Source.File.ModuleName)
                     {
@@ -145,11 +140,33 @@ namespace PSRule.Commands
                         Description = document.Description?.Text,
                         Recommendation = document.Recommendation?.Text ?? document.Synopsis?.Text,
                         Notes = document.Notes?.Text,
+                        Links = GetLinks(document.Links),
                         Annotations = document.Annotations?.ToHashtable()
                     };
                 }
             }
             return null;
+        }
+
+        private static bool TryDocument(string path, out RuleDocument document)
+        {
+            var reader = new MarkdownReader(yamlHeaderOnly: false);
+            var stream = reader.Read(markdown: File.ReadAllText(path), path);
+            var lexer = new RuleLexer();
+            document = lexer.Process(stream);
+            return document != null;
+        }
+
+        private static RuleHelpInfo.Link[] GetLinks(Link[] links)
+        {
+            if (links == null || links.Length == 0)
+                return null;
+
+            var result = new RuleHelpInfo.Link[links.Length];
+            for (var i = 0; i < links.Length; i++)
+                result[i] = new RuleHelpInfo.Link(links[i].Name, links[i].Uri);
+
+            return result;
         }
     }
 }

@@ -5,6 +5,7 @@ using PSRule.Parser;
 using PSRule.Rules;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
@@ -23,6 +24,11 @@ namespace PSRule
             Assert.Equal(expected.Recommendation.Text, document.Recommendation.Text);
             Assert.Equal(expected.Annotations["severity"], document.Annotations["severity"]);
             Assert.Equal(expected.Annotations["category"], document.Annotations["category"]);
+            Assert.Equal(expected.Links.Length, document.Links.Length);
+            Assert.Equal(expected.Links[0].Name, document.Links[0].Name);
+            Assert.Equal(expected.Links[0].Uri, document.Links[0].Uri);
+            Assert.Equal(expected.Links[1].Name, document.Links[1].Name);
+            Assert.Equal(expected.Links[1].Uri, document.Links[1].Uri);
         }
 
         [Fact]
@@ -36,23 +42,32 @@ namespace PSRule
             Assert.Equal(expected.Recommendation.Text, document.Recommendation.Text);
             Assert.Equal(expected.Annotations["severity"], document.Annotations["severity"]);
             Assert.Equal(expected.Annotations["category"], document.Annotations["category"]);
+            Assert.Equal(expected.Links.Length, document.Links.Length);
+            Assert.Equal(expected.Links[0].Name, document.Links[0].Name);
+            Assert.Equal(expected.Links[0].Uri, document.Links[0].Uri);
+            Assert.Equal(expected.Links[1].Name, document.Links[1].Name);
+            Assert.Equal(expected.Links[1].Uri, document.Links[1].Uri);
         }
 
         private RuleDocument GetExpected()
         {
             var annotations = new Hashtable();
             annotations["severity"] = "Critical";
-            annotations["category"] = "Pod security";
+            annotations["category"] = "Security";
 
-            var result = new RuleDocument(name: "Kubernetes.Deployment.NotLatestImage")
+            var links = new List<Link>();
+            links.Add(new Link { Name = "PSRule", Uri = "https://github.com/Microsoft/PSRule" });
+            links.Add(new Link { Name = "Stable tags", Uri = "https://docs.microsoft.com/en-us/azure/container-registry/container-registry-image-tag-version#stable-tags" });
+
+            var result = new RuleDocument(name: "Use specific tags")
             {
                 Synopsis = new TextBlock(text: "Containers should use specific tags instead of latest."),
                 Annotations = TagSet.FromHashtable(annotations),
                 Recommendation = new TextBlock(text: @"Deployments or pods should identify a specific tag to use for container images instead of latest. When latest is used it may be hard to determine which version of the image is running.
 When using variable tags such as v1.0 (which may refer to v1.0.0 or v1.0.1) consider using imagePullPolicy: Always to ensure that the an out-of-date cached image is not used.
-The latest tag automatically uses imagePullPolicy: Always instead of the default imagePullPolicy: IfNotPresent.")
+The latest tag automatically uses imagePullPolicy: Always instead of the default imagePullPolicy: IfNotPresent."),
+                Links = links.ToArray()
             };
-
             return result;
         }
 
@@ -66,19 +81,14 @@ The latest tag automatically uses imagePullPolicy: Always instead of the default
         {
             var reader = new MarkdownReader(yamlHeaderOnly: false);
             var content = GetMarkdownContent();
-
             if (nx)
             {
                 content = content.Replace("\r\n", "\n");
             }
-            else
+            else if (!content.Contains("\r\n"))
             {
-                if (!content.Contains("\r\n"))
-                {
-                    content = content.Replace("\n", "\r\n");
-                }
+                content = content.Replace("\n", "\r\n");
             }
-
             return reader.Read(content, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RuleDocument.md"));
         }
 

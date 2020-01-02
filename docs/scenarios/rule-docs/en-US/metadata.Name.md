@@ -20,3 +20,18 @@ The `app.kubernetes.io/name` label should be used to specify the name of the app
 ## RECOMMENDATION
 
 Consider setting the recommended label `app.kubernetes.io/name` on deployment and service resources.
+
+## NOTES
+
+The Kubernetes recommended labels include:
+
+- `app.kubernetes.io/name`
+- `app.kubernetes.io/instance`
+- `app.kubernetes.io/version`
+- `app.kubernetes.io/component`
+- `app.kubernetes.io/part-of`
+- `app.kubernetes.io/managed-by`
+
+## LINKS
+
+- [Recommended Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/)
