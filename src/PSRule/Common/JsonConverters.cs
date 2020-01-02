@@ -134,26 +134,22 @@ namespace PSRule
             if (isArray)
                 reader.Read();
 
-            while (!isArray || (isArray && reader.TokenType != JsonToken.EndArray))
+            while (reader.TokenType != JsonToken.None && (!isArray || (isArray && reader.TokenType != JsonToken.EndArray)))
             {
                 var value = ReadObject(reader: reader);
                 result.Add(value);
 
                 // Consume the EndObject token
-                if (isArray)
-                {
-                    reader.Read();
-                }
+                reader.Read();
             }
             return result.ToArray();
         }
 
-        private PSObject ReadObject(JsonReader reader)
+        private static PSObject ReadObject(JsonReader reader)
         {
-            if (reader.TokenType != JsonToken.StartObject)
+            if (reader.TokenType != JsonToken.StartObject || !reader.Read())
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
 
-            reader.Read();
             var result = new PSObject();
             string name = null;
 
@@ -174,41 +170,43 @@ namespace PSRule
                     case JsonToken.StartArray:
                         var items = ReadArray(reader: reader);
                         result.Properties.Add(new PSNoteProperty(name: name, value: items));
-
                         break;
-
                     default:
                         result.Properties.Add(new PSNoteProperty(name: name, value: reader.Value));
                         break;
                 }
-                reader.Read();
+                if (!reader.Read() || reader.TokenType == JsonToken.None)
+                    throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
             }
             return result;
         }
 
-        private PSObject[] ReadArray(JsonReader reader)
+        private static PSObject[] ReadArray(JsonReader reader)
         {
-            if (reader.TokenType != JsonToken.StartArray)
+            if (reader.TokenType != JsonToken.StartArray || !reader.Read())
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
 
-            reader.Read();
             var result = new List<PSObject>();
 
+            // Read until the end of the array
             while (reader.TokenType != JsonToken.EndArray)
             {
-                if (reader.TokenType == JsonToken.StartObject)
+                switch (reader.TokenType)
                 {
-                    result.Add(ReadObject(reader: reader));
+                    case JsonToken.StartObject:
+                        result.Add(ReadObject(reader: reader));
+                        break;
+
+                    case JsonToken.StartArray:
+                        result.Add(PSObject.AsPSObject(ReadArray(reader)));
+                        break;
+
+                    default:
+                        result.Add(PSObject.AsPSObject(reader.Value));
+                        break;
                 }
-                else if (reader.TokenType == JsonToken.StartArray)
-                {
-                    result.Add(PSObject.AsPSObject(ReadArray(reader)));
-                }
-                else
-                {
-                    result.Add(PSObject.AsPSObject(reader.Value));
-                }
-                reader.Read();
+                if (!reader.Read() || reader.TokenType == JsonToken.None)
+                    throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
             }
             return result.ToArray();
         }

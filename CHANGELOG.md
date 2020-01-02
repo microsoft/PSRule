@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Fixed JSON de-serialization fails with single object. [#379](https://github.com/Microsoft/PSRule/issues/379)
+- Fixed stack overflow when parsing malformed JSON. [#380](https://github.com/Microsoft/PSRule/issues/380)
+
 ## v0.13.0-B1912043 (pre-release)
 
 - Added input format for reading PowerShell data `.psd1` files. [#368](https://github.com/Microsoft/PSRule/issues/368)
