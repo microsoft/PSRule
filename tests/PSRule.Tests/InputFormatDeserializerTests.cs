@@ -36,6 +36,16 @@ namespace PSRule
             Assert.Equal(2, actual[1].PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value2"));
             Assert.Equal(2, actual[1].PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
             Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, actual[0]));
+
+            // Single item
+            actual = PipelineReceiverActions.ConvertFromJson(GetJsonContent("Single"), PipelineReceiverActions.PassThru).ToArray();
+            Assert.Single(actual);
+            Assert.Equal("TestObject1", actual[0].PropertyValue<string>("targetName"));
+            Assert.Equal("Test", actual[0].PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
+
+            // Malformed item
+            Assert.Throws<PipelineSerializationException>(() => PipelineReceiverActions.ConvertFromJson("{", PipelineReceiverActions.PassThru).ToArray());
+            Assert.Throws<PipelineSerializationException>(() => PipelineReceiverActions.ConvertFromJson("{ \"key\": ", PipelineReceiverActions.PassThru).ToArray());
         }
 
         [Fact]
@@ -70,9 +80,9 @@ namespace PSRule
             return File.ReadAllText(path);
         }
 
-        private static string GetJsonContent()
+        private static string GetJsonContent(string suffix = "")
         {
-            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ObjectFromFile.json");
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"ObjectFromFile{suffix}.json");
             return File.ReadAllText(path);
         }
 
