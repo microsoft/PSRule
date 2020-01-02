@@ -151,7 +151,7 @@ namespace PSRule.Commands
         private static bool TryDocument(string path, out RuleDocument document)
         {
             var reader = new MarkdownReader(yamlHeaderOnly: false);
-            var stream = reader.Read(markdown: File.ReadAllText(path), path);
+            var stream = reader.Read(File.ReadAllText(path), path);
             var lexer = new RuleLexer();
             document = lexer.Process(stream);
             return document != null;
