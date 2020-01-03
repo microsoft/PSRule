@@ -194,7 +194,7 @@ When both `-Path` and `-Module` are specified, rule definitions from both are di
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases:
+Aliases: m
 
 Required: False
 Position: Named
@@ -235,7 +235,7 @@ The following format options are available:
 ```yaml
 Type: OutputFormat
 Parameter Sets: (All)
-Aliases:
+Aliases: o
 Accepted values: None, Wide
 
 Required: False
