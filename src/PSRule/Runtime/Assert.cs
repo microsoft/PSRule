@@ -24,7 +24,7 @@ namespace PSRule.Runtime
 
         public AssertResult Create(bool condition, string reason = null)
         {
-            if (PipelineContext.CurrentThread.ExecutionScope != ExecutionScope.Condition)
+            if (!(PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition || PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Precondition))
                 throw new RuleRuntimeException(string.Format(PSRuleResources.VariableConditionScope, "Assert"));
 
             return new AssertResult(this, condition, reason);
@@ -258,7 +258,7 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (TryInt(fieldValue, out int actual) || TryArrayLength(fieldValue, out actual))
+            if (TryInt(fieldValue, out int actual) || TryStringLength(fieldValue, out actual) || TryArrayLength(fieldValue, out actual))
                 return actual > value ? Pass() : Fail(ReasonStrings.Greater, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
@@ -272,7 +272,7 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (TryInt(fieldValue, out int actual) || TryArrayLength(fieldValue, out actual))
+            if (TryInt(fieldValue, out int actual) || TryStringLength(fieldValue, out actual) || TryArrayLength(fieldValue, out actual))
                 return actual >= value ? Pass() : Fail(ReasonStrings.GreaterOrEqual, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
@@ -286,7 +286,7 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (TryInt(fieldValue, out int actual) || TryArrayLength(fieldValue, out actual))
+            if (TryInt(fieldValue, out int actual) || TryStringLength(fieldValue, out actual) || TryArrayLength(fieldValue, out actual))
                 return actual < value ? Pass() : Fail(ReasonStrings.Less, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
@@ -300,7 +300,7 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (TryInt(fieldValue, out int actual) || TryArrayLength(fieldValue, out actual))
+            if (TryInt(fieldValue, out int actual) || TryStringLength(fieldValue, out actual) || TryArrayLength(fieldValue, out actual))
                 return actual <= value ? Pass() : Fail(ReasonStrings.LessOrEqual, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
@@ -346,9 +346,18 @@ namespace PSRule.Runtime
                 value = ivalue;
                 return true;
             }
-            if (int.TryParse(obj.ToString(), out value))
-                return true;
+            value = 0;
+            return false;
+        }
 
+        private static bool TryStringLength(object obj, out int value)
+        {
+            if (obj is string s)
+            {
+                value = s.Length;
+                return true;
+            }
+            value = 0;
             return false;
         }
 

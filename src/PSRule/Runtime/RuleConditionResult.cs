@@ -2,13 +2,12 @@
 // Licensed under the MIT License.
 
 using PSRule.Pipeline;
-using PSRule.Runtime;
 using System.Collections.Generic;
 using System.Management.Automation;
 
-namespace PSRule.Rules
+namespace PSRule.Runtime
 {
-    public sealed class RuleConditionResult
+    internal sealed class RuleConditionResult
     {
         public readonly int Pass;
         public readonly int Count;
@@ -33,85 +32,64 @@ namespace PSRule.Rules
 
         internal static RuleConditionResult Create(IEnumerable<object> value)
         {
+            if (value == null)
+                return new RuleConditionResult(pass: 0, count: 0, hadErrors: false);
+
             var count = 0;
             var pass = 0;
             var hasError = false;
-
-            if (value == null)
-            {
-                return new RuleConditionResult(pass: 0, count: 0, hadErrors: false);
-            }
-
             foreach (var v in value)
             {
                 count++;
-
                 if (v == null)
                 {
                     continue;
                 }
-                else if (!(TryAssertResult(v, out bool bresult) || TryBoolean(v, out bresult)))
+                else if (!(TryAssertResult(v, out bool result) || TryBoolean(v, out result)))
                 {
                     PipelineContext.CurrentThread.ErrorInvaildRuleResult();
                     hasError = true;
                     continue;
                 }
-                else if (bresult)
+                else if (result)
                 {
                     pass++;
                 }
             }
-
             return new RuleConditionResult(pass: pass, count: count, hadErrors: hasError);
         }
 
         private static bool TryBoolean(object o, out bool result)
         {
             result = false;
-
             if (o == null)
-            {
                 return false;
-            }
 
-            if (o is bool bresult)
-            {
-                result = bresult;
-                return true;
-            }
+            var baseObject = o is PSObject pso ? pso.BaseObject : o;
+            if (!(baseObject is bool bresult))
+                return false;
 
-            if (o is PSObject pso && pso.BaseObject is bool psoresult)
-            {
-                result = psoresult;
-                return true;
-            }
-
-            return false;
+            result = bresult;
+            return true;
         }
 
         private static bool TryAssertResult(object o, out bool result)
         {
             result = false;
-
             if (o == null)
-            {
                 return false;
-            }
+
+            var baseObject = o is PSObject pso ? pso.BaseObject : o;
+            if (!(baseObject is AssertResult assert))
+                return false;
+
+            result = assert.Result;
 
             // Complete results
-            if (o is AssertResult aresult)
-            {
-                result = aresult.Complete();
-                return true;
-            }
+            if (PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition)
+                assert.Complete();
 
-            if (o is PSObject pso && pso.BaseObject is AssertResult psoresult)
-            {
-                result = psoresult.Complete();
-                return true;
-            }
-
-            return false;
+            return true;
         }
     }
 }

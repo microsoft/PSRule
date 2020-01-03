@@ -229,7 +229,7 @@ namespace PSRule.Host
             ps.Streams.ClearStreams();
             context.VerboseObjectStart();
 
-            var invokeResult = ps.Invoke<RuleConditionResult>().FirstOrDefault();
+            var invokeResult = ps.Invoke<Runtime.RuleConditionResult>().FirstOrDefault();
 
             if (invokeResult == null)
             {

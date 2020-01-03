@@ -8,7 +8,8 @@ Describes the assertion helper that can be used within PSRule rule definitions.
 
 ## LONG DESCRIPTION
 
-PSRule includes an assertion helper exposed as a built-in variable `$Assert`. The `$Assert` object provides a consistent set of methods to evaluate objects.
+PSRule includes an assertion helper exposed as a built-in variable `$Assert`.
+The `$Assert` object provides a consistent set of methods to evaluate objects.
 
 Each `$Assert` method returns an `AssertResult` object that contains the result of the assertion.
 
@@ -28,7 +29,7 @@ The following built-in assertion methods are provided:
 - [StartsWith](#startswith) - The field value must match at least one prefix.
 - [Version](#version) - The field value must be a semantic version string.
 
-The `$Assert` variable can only be used within a rule definition block.
+The `$Assert` variable can only be used within a rule definition block or script pre-conditions.
 
 ### Using assertion methods
 
@@ -126,6 +127,7 @@ When the field value is:
 
 - An integer, a numerical comparison is used.
 - An array, the number of elements is compared.
+- A string, the length of the string is compared.
 
 The following parameters are accepted:
 
@@ -157,6 +159,7 @@ When the field value is:
 
 - An integer, a numerical comparison is used.
 - An array, the number of elements is compared.
+- A string, the length of the string is compared.
 
 The following parameters are accepted:
 
@@ -304,6 +307,7 @@ When the field value is:
 
 - An integer, a numerical comparison is used.
 - An array, the number of elements is compared.
+- A string, the length of the string is compared.
 
 The following parameters are accepted:
 
@@ -335,6 +339,7 @@ When the field value is:
 
 - An integer, a numerical comparison is used.
 - An array, the number of elements is compared.
+- A string, the length of the string is compared.
 
 The following parameters are accepted:
 
@@ -487,10 +492,12 @@ The following methods are available:
 - `Complete()` - Returns `$True` (Pass) or `$False` (Fail) to the rule record. If the assertion failed, any reasons are automatically added to the rule record. To read the result without adding reason to the rule record use the `Result` property.
 - `Ignore()` - Ignores the result. Nothing future is returned and any reasons are cleared. Use this method when implementing custom handling.
 
-Use of `Complete()` is optional, uncompleted results are automatically completed after the rule has executed.
+Use of `Complete` is optional, uncompleted results are automatically completed after the rule has executed.
 Uncompleted results may return reasons out of sequence.
 
-In this example, `Complete()` is used to find the first field with an empty value.
+Using these advanced methods is not supported in rule script pre-conditions.
+
+In this example, `Complete` is used to find the first field with an empty value.
 
 ```powershell
 Rule 'Assert.HasFieldValue' {

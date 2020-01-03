@@ -3,7 +3,7 @@
 
 using PSRule.Pipeline;
 using PSRule.Resources;
-using PSRule.Rules;
+using PSRule.Runtime;
 using System.Management.Automation;
 
 namespace PSRule.Commands
