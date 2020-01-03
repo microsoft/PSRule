@@ -98,7 +98,7 @@ Results can be filtered by using `-Name`, `-Path` or `-Module`.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases:
+Aliases: m
 
 Required: False
 Position: Named

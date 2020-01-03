@@ -36,6 +36,7 @@ function Invoke-PSRule {
         [String[]]$InputPath,
 
         [Parameter(Mandatory = $False)]
+        [Alias('m')]
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
@@ -54,6 +55,7 @@ function Invoke-PSRule {
 
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv', 'Wide')]
+        [Alias('o')]
         [PSRule.Configuration.OutputFormat]$OutputFormat = [PSRule.Configuration.OutputFormat]::None,
 
         [Parameter(Mandatory = $False)]
@@ -212,6 +214,7 @@ function Test-PSRuleTarget {
         [String[]]$InputPath,
 
         [Parameter(Mandatory = $False)]
+        [Alias('m')]
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
@@ -364,6 +367,7 @@ function Assert-PSRule {
         [String[]]$InputPath,
 
         [Parameter(Mandatory = $False)]
+        [Alias('m')]
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
@@ -395,6 +399,7 @@ function Assert-PSRule {
 
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv')]
+        [Alias('o')]
         [PSRule.Configuration.OutputFormat]$OutputFormat,
 
         [Parameter(Mandatory = $False)]
@@ -529,6 +534,7 @@ function Get-PSRule {
     [OutputType([PSRule.Rules.Rule])]
     param (
         [Parameter(Mandatory = $False)]
+        [Alias('m')]
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
@@ -536,6 +542,7 @@ function Get-PSRule {
 
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Wide')]
+        [Alias('o')]
         [PSRule.Configuration.OutputFormat]$OutputFormat,
 
         [Parameter(Mandatory = $False)]
@@ -563,7 +570,6 @@ function Get-PSRule {
         [Parameter(Mandatory = $False)]
         [Switch]$IncludeDependencies
     )
-
     begin {
         Write-Verbose -Message "[Get-PSRule]::BEGIN";
 
@@ -657,6 +663,7 @@ function Get-PSRuleBaseline {
     [OutputType([PSRule.Rules.Baseline])]
     param (
         [Parameter(Mandatory = $False)]
+        [Alias('m')]
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
@@ -677,7 +684,6 @@ function Get-PSRuleBaseline {
         [Parameter(Mandatory = $False)]
         [String]$Culture
     )
-
     begin {
         Write-Verbose -Message "[Get-PSRuleBaseline] BEGIN::";
 
@@ -754,6 +760,7 @@ function Get-PSRuleHelp {
     [OutputType([PSRule.Rules.RuleHelpInfo])]
     param (
         [Parameter(Mandatory = $False)]
+        [Alias('m')]
         [String]$Module,
 
         [Parameter(Mandatory = $False)]

@@ -44,7 +44,7 @@ When both `-Path` and `-Module` are specified, baseline definitions from both ar
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases:
+Aliases: m
 
 Required: False
 Position: Named
