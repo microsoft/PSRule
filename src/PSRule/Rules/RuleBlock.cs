@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Host;
+using PSRule.Runtime;
 using System;
 using System.Collections;
 using System.Diagnostics;
@@ -10,9 +11,9 @@ using System.Management.Automation;
 
 namespace PSRule.Rules
 {
-    public delegate bool RulePrecondition();
+    internal delegate bool RulePrecondition();
 
-    public delegate RuleConditionResult RuleCondition();
+    internal delegate RuleConditionResult RuleCondition();
 
     /// <summary>
     /// Define an instance of a rule block. Each rule block has a unique id.

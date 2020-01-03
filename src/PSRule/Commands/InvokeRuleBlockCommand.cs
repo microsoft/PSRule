@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Pipeline;
-using PSRule.Rules;
+using PSRule.Runtime;
 using System;
 using System.Linq;
 using System.Management.Automation;
@@ -45,10 +45,8 @@ namespace PSRule.Commands
                 if (If != null)
                 {
                     PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Precondition;
-
-                    var ifResult = If.InvokeReturnAsIs() as PSObject;
-
-                    if (ifResult == null || !(ifResult.BaseObject is bool) || !(bool)ifResult.BaseObject)
+                    var ifResult = RuleConditionResult.Create(If.Invoke());
+                    if (!ifResult.AllOf())
                     {
                         PipelineContext.CurrentThread.Logger.DebugMessage("Target failed If precondition");
                         return;

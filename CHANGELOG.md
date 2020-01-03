@@ -7,6 +7,9 @@
 - Added rule documentation links and notes to help. [#382](https://github.com/Microsoft/PSRule/issues/382)
   - Added `-Full` switch to `Get-PSRuleHelp` to display links and notes sections.
 - Added aliases for `-OutputFormat` (`-o`) and `-Module` (`-m`) parameters. [#384](https://github.com/Microsoft/PSRule/issues/384)
+- Improved numeric comparison assertion helpers to support strings. [#387](https://github.com/Microsoft/PSRule/issues/387)
+  - Methods `Greater`, `GreaterOrEqual`, `Less` and `LessOrEqual` now also check string length.
+- Added support for assertion methods to be used within script pre-conditions. [#386](https://github.com/Microsoft/PSRule/issues/386)
 
 ## v0.13.0-B1912043 (pre-release)
 

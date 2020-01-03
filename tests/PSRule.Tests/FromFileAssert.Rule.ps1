@@ -16,6 +16,11 @@ Rule 'Assert.AddMember' {
     $Assert._ExtensionIsValue(2, 'MethodValue2')
 }
 
+# Synopsis: Test for $Assert in script pre-conditions
+Rule 'Assert.Precondition' -If { $Assert.StartsWith($TargetObject, 'Name', 'TestObject1') } {
+    $True;
+}
+
 # Synopsis: Test for $Assert.Complete
 Rule 'Assert.Complete' {
     $Assert.HasField($TargetObject, 'Name').Complete() -and
@@ -37,12 +42,14 @@ Rule 'Assert.EndsWith' {
 Rule 'Assert.Greater' {
     $Assert.Greater($TargetObject, 'CompareNumeric', 2)
     $Assert.Greater($TargetObject, 'CompareArray', 2)
+    $Assert.Greater($TargetObject, 'CompareString', 2)
 }
 
 # Synopsis: Test for $Assert.GreaterOrEqual
 Rule 'Assert.GreaterOrEqual' {
     $Assert.GreaterOrEqual($TargetObject, 'CompareNumeric', 3)
     $Assert.GreaterOrEqual($TargetObject, 'CompareArray', 3)
+    $Assert.GreaterOrEqual($TargetObject, 'CompareString', 3)
 }
 
 # Synopsis: Test for $Assert.HasField
@@ -81,12 +88,14 @@ Rule 'Assert.JsonSchema' {
 Rule 'Assert.Less' {
     $Assert.Less($TargetObject, 'CompareNumeric', 2)
     $Assert.Less($TargetObject, 'CompareArray', 2)
+    $Assert.Less($TargetObject, 'CompareString', 2)
 }
 
 # Synopsis: Test for $Assert.LessOrEqual
 Rule 'Assert.LessOrEqual' {
     $Assert.LessOrEqual($TargetObject, 'CompareNumeric', 0)
     $Assert.LessOrEqual($TargetObject, 'CompareArray', 0)
+    $Assert.LessOrEqual($TargetObject, 'CompareString', 0)
 }
 
 # Synopsis: Test for $Assert.HasEmptyField
