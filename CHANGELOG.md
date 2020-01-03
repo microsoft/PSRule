@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.13.0-B2001013 (pre-release)
+
 - Fixed JSON de-serialization fails with single object. [#379](https://github.com/Microsoft/PSRule/issues/379)
 - Fixed stack overflow when parsing malformed JSON. [#380](https://github.com/Microsoft/PSRule/issues/380)
 - Added rule documentation links and notes to help. [#382](https://github.com/Microsoft/PSRule/issues/382)
