@@ -35,11 +35,12 @@ PSRule    | An extension for IT Pros using the PSRule PowerShell module. | [late
 
 ## Additional modules
 
-You can optionally download and install rules modules from the PowerShell Gallery.
+You can optionally download and install the following modules from the PowerShell Gallery.
 
-Module             | Description | Version / downloads
-------             | ----------- | -------------------
-PSRule.Rules.Azure | A suite of rules to validate Azure resources using PSRule. | [![rules-azure-version-badge]][rules-azure-version-module] [![rules-azure-downloads-badge]][rules-azure-version-module]
+Module                  | Description | Version / downloads
+------                  | ----------- | -------------------
+PSRule.Rules.Azure      | A suite of rules to validate Azure resources using PSRule. | [![rules-azure-version-badge]][rules-azure-version-module] [![rules-azure-downloads-badge]][rules-azure-version-module]
+PSRule.Rules.Kubernetes | A suite of rules to validate Kubernetes resources using PSRule. | [![rules-kubernetes-version-badge]][rules-kubernetes-version-module] [![rules-kubernetes-downloads-badge]][rules-kubernetes-version-module]
 
 ## Support
 
@@ -60,3 +61,6 @@ If you do not see your problem captured, please file a new issue and follow the 
 [rules-azure-version-badge]: https://img.shields.io/powershellgallery/v/PSRule.Rules.Azure.svg?label=PowerShell%20Gallery&color=brightgreen
 [rules-azure-downloads-badge]: https://img.shields.io/powershellgallery/dt/PSRule.Rules.Azure.svg?color=brightgreen
 [rules-azure-version-module]: https://www.powershellgallery.com/packages/PSRule.Rules.Azure
+[rules-kubernetes-version-badge]: https://img.shields.io/powershellgallery/v/PSRule.Rules.Kubernetes.svg?label=PowerShell%20Gallery&color=brightgreen
+[rules-kubernetes-downloads-badge]: https://img.shields.io/powershellgallery/dt/PSRule.Rules.Kubernetes.svg?color=brightgreen
+[rules-kubernetes-version-module]: https://www.powershellgallery.com/packages/PSRule.Rules.Kubernetes
