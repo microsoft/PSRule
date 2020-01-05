@@ -60,12 +60,12 @@ PSRule is a framework for preforming validation against objects using PowerShell
 
 Pester is a framework for running unit tests to execute and validate PowerShell commands.
 
-While this may be a subtle different, for PSRule this means:
+While this may be a subtle difference, for PSRule this means:
 
 - Rules understand which objects they apply to.
-- PSRule can be reused between projects and optionally packaged into a module.
+- Rules can be reused between projects and optionally packaged into a module.
 - PowerShell objects can be validated on the pipeline.
-- Objects that originate from outside PowerShell can easily be imported.
+- Objects that originate from outside PowerShell can be imported.
 - Optimized keywords and variables make authoring rules faster.
 - Built-in assertions, automatically traverse object properties.
 
