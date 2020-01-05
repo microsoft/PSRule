@@ -2,6 +2,44 @@
 
 ## Unreleased
 
+## v0.13.0
+
+What's changed since v0.12.0:
+
+- Engine features:
+  - Improvements to rule help and documentation. [#382](https://github.com/Microsoft/PSRule/issues/382) [#316](https://github.com/Microsoft/PSRule/issues/316)
+    - Added links and notes sections to help.
+    - Added `-Full` switch to `Get-PSRuleHelp` to display links and notes sections.
+    - Added support for using a parent culture in rule help.
+    - Rule help will use parent culture when a more specific culture is not available.
+  - Added input format for reading PowerShell data `.psd1` files. [#368](https://github.com/Microsoft/PSRule/issues/368)
+    - `PowerShellData` has been added to `Input.Format`.
+    - See `about_PSRule_Options` for details.
+  - Added custom rule data to results. [#322](https://github.com/Microsoft/PSRule/issues/322)
+    - `$PSRule.Data` can be used to set custom data during rule execution that is included in output.
+    - See `about_PSRule_Variables` for usage details.
+  - Improvements to assertion methods. [#386](https://github.com/Microsoft/PSRule/issues/386) [#374](https://github.com/Microsoft/PSRule/issues/374) [#387](https://github.com/Microsoft/PSRule/issues/387) [#344](https://github.com/Microsoft/PSRule/issues/344) [#353](https://github.com/Microsoft/PSRule/issues/353) [#357](https://github.com/Microsoft/PSRule/issues/357)
+    - Added support for assertion methods to be used within script pre-conditions.
+    - Added numeric comparison assertion helpers `Greater`, `GreaterOrEqual`, `Less` and `LessOrEqual`.
+    - Added semantic version assertion helper `Version`.
+    - Added string affix assertion helpers `StartsWith`, `EndsWith` and `Contains`.
+    - See `about_PSRule_Assert` for usage details.
+  - Improvements to output logging and formatting for `Assert-PSRule`.
+    - Formatting now includes errors and warnings using style.
+    - Added PSRule banner with module information.
+    - Added rule success summary.
+- Quality of life improvements:
+  - Added aliases for `-OutputFormat` (`-o`) and `-Module` (`-m`) parameters. [#384](https://github.com/Microsoft/PSRule/issues/384)
+  - Added `WithReason` to append/ replace reasons from assertion result. [#354](https://github.com/Microsoft/PSRule/issues/354)
+  - Added configuration helper for strings arrays. [#363](https://github.com/Microsoft/PSRule/issues/363)
+- Bug fixes:
+  - Fixed JSON de-serialization fails with single object. [#379](https://github.com/Microsoft/PSRule/issues/379)
+  - Fixed stack overflow when parsing malformed JSON. [#380](https://github.com/Microsoft/PSRule/issues/380)
+
+What's changed since pre-release v0.13.0-B2001013:
+
+- No additional changes
+
 ## v0.13.0-B2001013 (pre-release)
 
 - Fixed JSON de-serialization fails with single object. [#379](https://github.com/Microsoft/PSRule/issues/379)
