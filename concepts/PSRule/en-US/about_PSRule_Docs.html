@@ -86,7 +86,8 @@
 <li>Synopsis - A brief description on the intended purpose of the rule.</li>
 <li>Description - A detailed description on the intended purpose of the rule.</li>
 <li>Recommendation - A detailed explanation of the requirements to pass the rule.</li>
-<li>Note - Any additional information or background.</li>
+<li>Notes - Any additional information or configuration options.</li>
+<li>Links - Any links to external references.</li>
 </ul>
 <p>See cmdlet help for detailed information on the <code>Get-PSRuleHelp</code> cmdlet.</p>
 <h3 id="online-help">Online help</h3>
@@ -98,7 +99,8 @@ When included, the <code>-Online</code> parameter can be used to open the online
 <h3 id="creating-documentation">Creating documentation</h3>
 <p>Rule documentation is composed of markdown files, one per rule. When creating rules for more then one culture, a separate markdown file is created per rule per culture.</p>
 <p>The markdown files for each rule is automatically discovered based on naming convention.</p>
-<p>Markdown is saved in a file with the same filename as the rule name with the <code>.md</code> extension. The file name should match the same case exactly, with a lower case extension.</p>
+<p>Markdown is saved in a file with the same filename as the rule name with the <code>.md</code> extension.
+The file name should match the same case exactly, with a lower case extension.</p>
 <p>As an example, the <code>storageAccounts.UseHttps.md</code> markdown file would be created.</p>
 <pre><code class="lang-powershell"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
 Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAccounts' } {
@@ -112,7 +114,8 @@ Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAcc
 <li>If the rules are loose (not part of a module), PSRule will search for documentation in the <code>.\&lt;culture&gt;\</code> subdirectory relative to where the rule script <em>.ps1</em> file is located.</li>
 <li>When the rules are shipped as part of a module, PSRule will search for documentation in the <code>.\&lt;culture&gt;\</code> subdirectory relative to where the module manifest <em>.psd1</em> file is located.</li>
 </ul>
-<p>The <code>&lt;culture&gt;</code> subdirectory will be the current culture that PowerShell is executed under (the same as <code>(Get-Culture).Name</code>). Alternatively, the culture can set by using the <code>-Culture</code> parameter of PSRule cmdlets.</p>
+<p>The <code>&lt;culture&gt;</code> subdirectory will be the current culture that PowerShell is executed under (the same as <code>(Get-Culture).Name</code>).
+Alternatively, the culture can set by using the <code>-Culture</code> parameter of PSRule cmdlets.</p>
 <p>The markdown of each file uses following structure.</p>
 <pre><code class="lang-text">---
 {{ Annotations }}
@@ -134,10 +137,15 @@ Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAcc
 
 ## NOTES
 
-{{ Additional information or background }}
+{{ Additional information or configuration options }}
+
+## LINKS
+
+{{ Links to external references }}
 
 </code></pre>
-<p>Optionally, one or more annotations formatted as YAML key value pairs can be included. i.e. <code>severity: Critical</code></p>
+<p>Optionally, one or more annotations formatted as YAML key value pairs can be included.
+i.e. <code>severity: Critical</code></p>
 <h2 id="note">NOTE</h2>
 <p>An online version of this document is available at <a href="https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Docs.md">https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Docs.md</a>.</p>
 <h2 id="see-also">SEE ALSO</h2>

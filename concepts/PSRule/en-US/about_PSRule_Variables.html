@@ -91,10 +91,15 @@ Overwriting these variables or variable properties is not supported.</p>
 <p>Each <code>$Assert</code> method returns an <code>AssertResult</code> object that contains the result of the condition.</p>
 <p>The following built-in assertion methods are provided:</p>
 <ul>
+<li><code>Contains</code> - The field value must contain at least one of the strings.</li>
+<li><code>EndsWith</code> - The field value must match at least one suffix.</li>
+<li><code>HasDefaultValue</code> - The object should not have the field or the field value is set to the default value.</li>
 <li><code>HasField</code> - Asserts that the object must have the specified field.</li>
 <li><code>HasFieldValue</code> - Asserts that the object must have the specified field and that field is not empty.</li>
 <li><code>JsonSchema</code> - Asserts that the object must validate successfully against a JSON schema.</li>
 <li><code>NullOrEmpty</code> - Asserts that the object must not have the specified field or it must be empty.</li>
+<li><code>StartsWith</code> - The field value must match at least one prefix.</li>
+<li><code>Version</code> - The field value must be a semantic version string.</li>
 </ul>
 <p>The <code>$Assert</code> variable can only be used within a rule definition block.</p>
 <p>For detailed information on the assertion helper see <a href="about_PSRule_Assert.html">about_PSRule_Assert</a>.</p>
@@ -113,9 +118,16 @@ Rule 'UseJsonSchema' {
 <ul>
 <li>Configuration keys are case sensitive.</li>
 <li>Configuration values are read only.</li>
+<li>Configuration values can be accessed through helper methods.</li>
+</ul>
+<p>The following helper methods are available:</p>
+<ul>
+<li><code>GetStringValues(string configurationKey)</code> - Returns an array of strings, based on <code>configurationKey</code>.</li>
 </ul>
 <p>Syntax:</p>
 <pre><code class="lang-powershell">$Configuration.&lt;configurationKey&gt;
+</code></pre>
+<pre><code class="lang-powershell">$Configuration.GetStringValues(&lt;configurationKey&gt;)
 </code></pre>
 <p>Examples:</p>
 <pre><code class="lang-powershell"># Synopsis: This rule uses a threshold stored as $Configuration.appServiceMinInstanceCount
@@ -155,25 +167,47 @@ Rule 'WithLocalizedData' {
 </code></pre>
 <h3 id="psrule">PSRule</h3>
 <p>An object representing the current context during execution.</p>
-<p>The following section properties are available for public read access:</p>
+<p>The following properties are available for read access:</p>
 <ul>
 <li><code>Field</code> - A hashtable of custom bound fields. See option <code>Binding.Field</code> for more information.</li>
 <li><code>TargetObject</code> - The object currently being processed on the pipeline.</li>
 <li><code>TargetName</code> - The name of the object currently being processed on the pipeline. This property will automatically default to <code>TargetName</code> or <code>Name</code> properties of the object if they exist.</li>
 <li><code>TargetType</code> - The type of the object currently being processed on the pipeline. This property will automatically bind to <code>PSObject.TypeNames[0]</code> by default.</li>
 </ul>
+<p>The following properties are available for read/ write access:</p>
+<ul>
+<li><code>Data</code> - A hashtable of custom data. This property can be populated during rule execution. Custom data is not used by PSRule directly, and is intended to be used by downstream processes that need to interpret PSRule results.</li>
+</ul>
+<p>To bind fields that already exist on the target object use custom binding and <code>Binding.Field</code>.
+Use custom data to store data that must be calculated during rule execution.</p>
 <p>Syntax:</p>
 <pre><code class="lang-powershell">$PSRule
 </code></pre>
 <p>Examples:</p>
 <pre><code class="lang-powershell"># Synopsis: This rule determines if the target object matches the naming convention
-Rule 'resource.NamingConvention' {
+Rule 'NamingConvention' {
     $PSRule.TargetName.ToLower() -ceq $PSRule.TargetName
+}
+</code></pre>
+<pre><code class="lang-powershell"># Synopsis: Use allowed environment tags
+Rule 'CustomData' {
+    Recommend 'Environment must be set to an allowed value'
+    Within 'Tags.environment' 'production', 'test', 'development'
+
+    if ($TargetObject.Tags.environment -in 'prod') {
+        $PSRule.Data['targetEnvironment'] = 'production'
+    }
+    elseif ($TargetObject.Tags.environment -in 'dev', 'develop') {
+        $PSRule.Data['targetEnvironment'] = 'development'
+    }
+    elseif ($TargetObject.Tags.environment -in 'tst', 'testing') {
+        $PSRule.Data['targetEnvironment'] = 'test'
+    }
 }
 </code></pre>
 <h3 id="rule">Rule</h3>
 <p>An object representing the current rule during execution.</p>
-<p>The following section properties are available for public read access:</p>
+<p>The following properties are available for read access:</p>
 <ul>
 <li><code>RuleName</code> - The name of the rule.</li>
 <li><code>RuleId</code> - A unique identifier for the rule.</li>

@@ -1,0 +1,412 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Writing rule help </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Writing rule help ">
+    <meta name="generator" content="docfx 2.43.2.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../../toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="writing-rule-help">Writing rule help</h1>
+
+<p>PSRule has built-in support for help.
+Documentation can optionally be added for each rule to provide detailed information or remediation steps.</p>
+<p>This scenario covers the following:</p>
+<ul>
+<li>Using inline help</li>
+<li>Writing markdown documentation</li>
+<li>Localizing documentation files</li>
+</ul>
+<h2 id="using-inline-help">Using inline help</h2>
+<p>When authoring rules in PowerShell, PSRule provides the following syntax features:</p>
+<ul>
+<li>Comment metadata.</li>
+<li><code>Recommend</code> keyword.</li>
+<li><code>Reason</code> keyword.</li>
+</ul>
+<p>These features are each describe in detail in the following sections.</p>
+<h3 id="comment-metadata">Comment metadata</h3>
+<p>Comment metadata can be included directly above a rule block by using the syntax <code># Synopsis: &lt;text&gt;</code>.
+This is only supported for populating a rule synopsis.</p>
+<p>For example:</p>
+<pre><code class="lang-powershell"># Synopsis: Must have the app.kubernetes.io/name label
+Rule 'metadata.Name' -Type 'Deployment', 'Service' {
+    Exists &quot;metadata.labels.'app.kubernetes.io/name'&quot;
+}
+</code></pre>
+<p>This example above would set the synopsis to <code>Must have the app.kubernetes.io/name label</code>.</p>
+<p>Including comment metadata improves authoring by indicating the rules purpose.
+Only a single line is supported.
+A rule synopsis is displayed when using <code>Get-PSRule</code> and <code>Get-PSRuleHelp</code>.
+The synopsis can not break over multiple lines.</p>
+<p>The key limitation of <em>only</em> using comment metadata is that it can not be localized for multiple languages.
+Consider using comment metadata and also using markdown documentation for a multi-language experience.</p>
+<h3 id="recommend-keyword">Recommend keyword</h3>
+<p>The <code>Recommend</code> keyword sets the recommendation for a rule.
+Use the keyword with a text recommendation at the top of your rule body.</p>
+<p>Using the <code>Recommend</code> keyword is recommended for rules that are not packaged in a module.
+When packaging rules in a module consider using markdown help instead.</p>
+<p>For example:</p>
+<pre><code class="lang-powershell"># Synopsis: Must have the app.kubernetes.io/name label
+Rule 'metadata.Name' -Type 'Deployment', 'Service' {
+    Recommend 'Consider setting the recommended label ''app.kubernetes.io/name'' on deployment and service resources.'
+    Exists &quot;metadata.labels.'app.kubernetes.io/name'&quot;
+}
+</code></pre>
+<p>A rule recommendation is displayed when using <code>Invoke-PSRule</code> or <code>Get-PSRuleHelp</code>.</p>
+<p>Only use the <code>Recommend</code> keyword once to set the recommendation text and avoid formatting with variables.
+Recommendations are cached the first time they are used.
+Supplying a unique recommendation within a rule based on conditions/ logic is not supported.
+To return a custom unique reason for why the rule failed, use the <code>Reason</code> keyword.</p>
+<p>Localized recommendations can set by using the <code>$LocalizedData</code>.</p>
+<p>For example:</p>
+<pre><code class="lang-powershell"># Synopsis: Must have the app.kubernetes.io/name label
+Rule 'metadata.Name' -Type 'Deployment', 'Service' {
+    Recommend $LocalizedData.RecommendNameLabel
+    Exists &quot;metadata.labels.'app.kubernetes.io/name'&quot;
+}
+</code></pre>
+<h3 id="reason-keyword">Reason keyword</h3>
+<p>The <code>Reason</code> keyword sets the reason the rule failed when using <code>Invoke-PSRule</code> and <code>Assert-PSRule</code>.
+The reason is only included in detailed output if the rule did not pass.
+If the rule passed, then reason is empty it returned output.</p>
+<p>Reasons are not included in the default view when using <code>Invoke-PSRule</code>.
+Use <code>-OutputFormat Wide</code> to display reason messages.</p>
+<p>To set a reason use the <code>Reason</code> keyword followed by the reason. For example:</p>
+<pre><code class="lang-powershell"># Synopsis: Must have the app.kubernetes.io/name label
+Rule 'metadata.Name' -Type 'Deployment', 'Service' {
+    Recommend $LocalizedData.RecommendNameLabel
+    Exists &quot;metadata.labels.'app.kubernetes.io/name'&quot;
+
+    Reason 'The standard name label is not set.'
+}
+</code></pre>
+<p>The <code>Reason</code> keyword can be used multiple times within conditional logic to return a list of reasons the rule failed.
+Additionally the reason messages can be localized by using the <code>$LocalizedData</code> variable.</p>
+<p>For example:</p>
+<pre><code class="lang-powershell"># Synopsis: Must have the app.kubernetes.io/name label
+Rule 'metadata.Name' -Type 'Deployment', 'Service' {
+    Recommend $LocalizedData.RecommendNameLabel
+    Exists &quot;metadata.labels.'app.kubernetes.io/name'&quot;
+
+    # $LocalizedData.ReasonLabelMissing is set to 'The standard {0} label is not set.'.
+    Reason ($LocalizedData.ReasonLabelMissing -f 'name')
+}
+</code></pre>
+<h2 id="writing-markdown-documentation">Writing markdown documentation</h2>
+<p>In addition to inline help, documentation can be written in markdown to provide online and offline help.
+Extended documentation is generally easier to author using markdown.
+Additionally markdown documentation is easily localized.</p>
+<p>Markdown documentation is authored by creating one or more <code>.md</code> files, one for each rule.
+PSRule uses a naming convention with a file name the same as the rule to match rule to markdown.</p>
+<p>For example, <code>metadata.Name.md</code> would be used for a rule named <code>metadata.Name</code>.</p>
+<p>We recommend matching the rule name case exactly when naming markdown files.
+This is because some file systems are case-sensitive.
+For example on Linux <code>Metadata.Name.md</code> would not match.</p>
+<p>Within each markdown file a number of predefined sections are automatically interpreted by PSRule.
+While it is possible to have additional sections, they will be ignored by the help system.</p>
+<p>The basic structure of markdown help is as follows:</p>
+<pre><code class="lang-text">---
+{{ Annotations }}
+---
+
+# {{ Name of rule }}
+
+## SYNOPSIS
+
+{{ A brief summary of the rule }}
+
+## DESCRIPTION
+
+{{ A detailed description of the rule }}
+
+## RECOMMENDATION
+
+{{ A detailed explanation of the steps required to pass the rule }}
+
+## NOTES
+
+{{ Additional information or configuration options }}
+
+## LINKS
+
+{{ Links to external references }}
+
+</code></pre>
+<p>The PSRule <a href="https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview">Visual Studio Code extension</a> includes snippets for writing markdown documentation.</p>
+<h3 id="annotations">Annotations</h3>
+<p>The annotation front matter at the top of the markdown document, is a set of key value pairs.
+Front matter follows YAML conventions and must start on the first line of the markdown document.</p>
+<p>A <code>---</code> on a separate line indicates the start and end of the front matter block.
+Within the front matter block, all key value pairs are treated as annotations by PSRule.</p>
+<p>Annotations are optional metadata that are associated with the rule.
+Any annotations associated with a rule are included in output.
+Some examples of annotations include; <code>severity</code>, <code>category</code>, <code>author</code>.</p>
+<p>Annotations differ from tags in two key ways:</p>
+<ul>
+<li>Annotations are localized, and can have a different value for different languages; tags are not.</li>
+<li>Tags are indexed and can be used to filter rules; annotations have no affect on rule filtering.</li>
+</ul>
+<p>The following reserved annotation exists:</p>
+<ul>
+<li><code>online version</code> - A URL to the online version of the document, used by <code>Get-PSRuleHelp -Online</code>.</li>
+</ul>
+<pre><code class="lang-text">---
+online version: https://github.com/microsoft/PSRule/blob/master/docs/scenarios/rule-docs/rule-docs.md
+---
+</code></pre>
+<p>The front matter start and end <code>---</code> are not required and can be removed if no annotations are defined.</p>
+<h3 id="display-name">Display name</h3>
+<p>The document title, indicated by a level one heading <code>#</code> is the display name of the rule.
+The rule display name is shown when using <code>Get-PSRuleHelp</code> and is included in output.</p>
+<p>Specify the display name on a single line.
+Wrapping the display name across multiple lines is not supported.</p>
+<p>For example:</p>
+<pre><code class="lang-text"># Use recommended name label
+</code></pre>
+<h3 id="synopsis-section">Synopsis section</h3>
+<p>The synopsis section is indicated by the heading <code>## SYNOPSIS</code>.
+Any text following the heading is interpreted by PSRule and included in output.
+The synopsis is displayed when using <code>Get-PSRule</code> and <code>Get-PSRuleHelp</code> cmdlets.</p>
+<p>The <em>synopsis</em> is intended to be a brief description of the rule, over a single line.
+A good synopsis should convey the purpose of the rule.
+A more verbose description can be included in the <em>description</em> section.</p>
+<p>For example:</p>
+<pre><code class="lang-text">## SYNOPSIS
+
+Deployments and services must use the app.kubernetes.io/name label.
+</code></pre>
+<h3 id="description-section">Description section</h3>
+<p>The description section is indicated by the heading <code>## DESCRIPTION</code>.
+Any text following the heading is interpreted by PSRule and included in output.
+The description is displayed when using the <code>Get-PSRuleHelp</code> cmdlet.</p>
+<p>The <em>description</em> is intended to be a verbose description of the rule.
+If your rule documentation needs to include background information include it here.</p>
+<p>PSRule supports semantic line breaks, and will automatically run together lines into a single paragraph.
+Use a blank line to separate paragraphs.</p>
+<p>For example:</p>
+<pre><code class="lang-text">## DESCRIPTION
+
+Kubernetes defines a common set of labels that are recommended for tool interoperability.
+These labels should be used to consistently apply standard metadata.
+
+The `app.kubernetes.io/name` label should be used to specify the name of the application.
+</code></pre>
+<h3 id="recommendation-section">Recommendation section</h3>
+<p>The recommendation section is indicated by the heading <code>## RECOMMENDATION</code>.
+Any text following the heading is interpreted by PSRule and included in output.
+The recommendation is displayed when using the <code>Invoke-PSRule</code> and <code>Get-PSRuleHelp</code> cmdlets.</p>
+<p>The <em>recommendation</em> is intended to identify corrective actions that can be taken to address any failures.
+Avoid using URLs within the recommendations.
+Use the <em>links</em> section to include references to external sources.</p>
+<p>PSRule supports semantic line breaks, and will automatically run together lines into a single paragraph.
+Use a blank line to separate paragraphs.</p>
+<p>For example:</p>
+<pre><code class="lang-text">## RECOMMENDATION
+
+Consider setting the recommended label `app.kubernetes.io/name` on deployment and service resources.
+</code></pre>
+<h3 id="notes-section">Notes section</h3>
+<p>The notes section is indicated by the heading <code>## NOTES</code>.
+Any text following the heading is interpreted by PSRule and included in pipeline output.
+Notes are excluded when formating output as YAML and JSON.</p>
+<p>To view any included notes use the <code>Get-PSRuleHelp</code> cmdlet with the <code>-Full</code> switch.</p>
+<p>Use notes to include additional information such configuration options.</p>
+<p>PSRule supports semantic line breaks, and will automatically run together lines into a single paragraph.
+Use a blank line to separate paragraphs.</p>
+<p>For example:</p>
+<pre><code class="lang-text">## NOTES
+
+The Kubernetes recommended labels include:
+
+- `app.kubernetes.io/name`
+- `app.kubernetes.io/instance`
+- `app.kubernetes.io/version`
+- `app.kubernetes.io/component`
+- `app.kubernetes.io/part-of`
+- `app.kubernetes.io/managed-by`
+</code></pre>
+<h3 id="links-section">Links section</h3>
+<p>The links section is indicated by the heading <code>## LINKS</code>.
+Any markdown links following the heading are interpreted by PSRule and included in pipeline output.
+Links are excluded when formating output as YAML and JSON.</p>
+<p>To view any included links use the <code>Get-PSRuleHelp</code> cmdlet with the <code>-Full</code> switch.</p>
+<p>Use links to reference external sources with a URL.</p>
+<p>To specify links, use the markdown syntax <code>[display name](url)</code>.
+Include each link on a separate line.
+To improve display in web rendered markdown, use a list of links by prefixing the line with <code>-</code>.</p>
+<p>Additional text such as <code>See additional information:</code> is useful for web rendered views, but ignored by PSRule.</p>
+<p>For example:</p>
+<pre><code class="lang-text">## LINKS
+
+- [Recommended Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/)
+</code></pre>
+<h2 id="localizing-documentation-files">Localizing documentation files</h2>
+<p>When distributing rules, you may need to provide rule help in different languages.
+PSRule builds on the culture system in PowerShell.</p>
+<h3 id="using-cultures">Using cultures</h3>
+<p>A directory structure is used to identify the markdown documentation that should be used for each culture.</p>
+<p>To get a list of cultures in PowerShell the use cmdlet <code>Get-Culture -ListAvailable</code>.</p>
+<p>For example, store documentation targeted to the culture <code>en-US</code> in a directory named <code>en-US</code>.
+Similarly, documentation for cultures such as <code>en-AU</code>, <code>en-GB</code> and <code>fr-FR</code> would be in separate directories.</p>
+<p>If a directory for the exact culture <code>en-US</code> doesn't exist, PSRule will attempt to find the parent culture.
+For example, documentation would be read from a directory named <code>en</code>.</p>
+<p>When naming directories for their culture, use exact case.
+This is because some file systems are case-sensitive.
+For example on Linux <code>en-us</code> would not match.</p>
+<h3 id="culture-directory-search-path">Culture directory search path</h3>
+<p>The path that PSRule looks for a culture directory in varies depending on how the rule is redistributed.
+Rules can be redistributed individually (loose) or included in a module.</p>
+<p>The following logic is used to locate the culture directory.</p>
+<ul>
+<li>If the rules are loose, PSRule will search for the culture directory in the same subdirectory as the <code>.Rule.ps1</code> file.</li>
+<li>When rules are included in a module, PSRule will search for the culture directory in the same subdirectory as the module manifest <em>.psd1</em> file.</li>
+</ul>
+<p>For example, loose file structure:</p>
+<ul>
+<li>.ps-rule/
+<ul>
+<li>en/
+<ul>
+<li>metadata.Name.md</li>
+</ul>
+</li>
+<li>en-US/
+<ul>
+<li>metadata.Name.md</li>
+</ul>
+</li>
+<li>fr-FR/
+<ul>
+<li>metadata.Name.md</li>
+</ul>
+</li>
+<li>kubernetes.Rule.ps1</li>
+</ul>
+</li>
+</ul>
+<p>Module file structure:</p>
+<ul>
+<li>Kubernetes.Rules/
+<ul>
+<li>en/
+<ul>
+<li>metadata.Name.md</li>
+</ul>
+</li>
+<li>en-US/
+<ul>
+<li>metadata.Name.md</li>
+</ul>
+</li>
+<li>fr-FR/
+<ul>
+<li>metadata.Name.md</li>
+</ul>
+</li>
+<li>rules/
+<ul>
+<li>kubernetes.Rule.ps1</li>
+</ul>
+</li>
+<li>Kubernetes.Rules.psd1</li>
+</ul>
+</li>
+</ul>
+<h2 id="more-information">More information</h2>
+<ul>
+<li><a href="kubernetes.Rule.ps1">kubernetes.Rule.ps1</a> - An example rule for validating name label.</li>
+<li><a href="en-US/metadata.Name.html">metadata.Name</a> - An example markdown documentation file.</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Microsoft/PSRule/blob/master/docs/scenarios/rule-docs/rule-docs.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

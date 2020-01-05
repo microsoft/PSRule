@@ -70,13 +70,16 @@
 <h1 id="get-psrulehelp">Get-PSRuleHelp</h1>
 
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>Get documentation for a rule.</p>
+<p>Displays information about a rule.</p>
 <h2 id="syntax">SYNTAX</h2>
-<pre><code class="lang-text">Get-PSRuleHelp [-Module &lt;String&gt;] [-Online] [[-Name] &lt;String&gt;] [-Path &lt;String&gt;] [-Option &lt;PSRuleOption&gt;]
- [-Culture &lt;String&gt;] [&lt;CommonParameters&gt;]
+<pre><code class="lang-text">Get-PSRuleHelp [-Module &lt;String&gt;] [-Online] [-Full] [[-Name] &lt;String&gt;] [-Path &lt;String&gt;]
+ [-Option &lt;PSRuleOption&gt;] [-Culture &lt;String&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
-<p>Get documentation for a rule.</p>
+<p>The <code>Get-PSRuleHelp</code> cmdlet display information about a rule.</p>
+<p>By default, this cmdlet will look for rules in the current path and loaded modules.
+To get help for a specific rule or module use the <code>-Name</code> or <code>-Module</code> parameters.</p>
+<p>If the rule has an online version of the documentation, use the <code>-Online</code> parameter to view it in your default web browser.</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">Example 1</h3>
 <pre><code class="lang-powershell">Get-PSRuleHelp;
@@ -123,7 +126,7 @@ By default, help from the current working path and loaded modules is listed.
 Results can be filtered by using <code>-Name</code>, <code>-Path</code> or <code>-Module</code>.</p>
 <pre><code class="lang-yaml">Type: String
 Parameter Sets: (All)
-Aliases:
+Aliases: m
 
 Required: False
 Position: Named
@@ -154,6 +157,18 @@ Aliases:
 Required: False
 Position: Named
 Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-full">-Full</h3>
+<p>Display additional information such as notes and links.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>

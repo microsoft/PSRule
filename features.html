@@ -70,9 +70,12 @@
 <li><a href="#recommendations">Recommendations</a></li>
 </ul>
 <h2 id="extensible">Extensible</h2>
-<p>Authors define rules using PowerShell, a flexible scripting language. If you or your team already can write a basic PowerShell script, you can already define a rule. What's more, you can tap into a large world-wide community of PowerShell users with scripts and cmdlets to help you build out rules quickly.</p>
+<p>Authors define rules using PowerShell, a flexible scripting language.
+If you or your team already can write a basic PowerShell script, you can already define a rule.
+What's more, you can tap into a large world-wide community of PowerShell users with scripts and cmdlets to help you build out rules quickly.</p>
 <h2 id="cross-platform">Cross-platform</h2>
-<p>PSRule uses modern PowerShell libraries at its core, allowing it to go anywhere Windows PowerShell 5.1 or PowerShell Core 6.2 can go. PSRule runs on MacOS, Linux and Windows.</p>
+<p>PSRule uses modern PowerShell libraries at its core, allowing it to go anywhere Windows PowerShell 5.1 or PowerShell Core 6.2 can go.
+PSRule runs on MacOS, Linux and Windows.</p>
 <p>To install PSRule use the <code>Install-Module</code> cmdlet within Windows PowerShell or PowerShell Core.</p>
 <pre><code class="lang-powershell">Install-Module -Name PSRule -Scope CurrentUser;
 </code></pre>
@@ -87,10 +90,36 @@ The extension is available for installation on MacOS, Linux and Windows.</p>
 Rules can be packaged up into a module then distributed.</p>
 <p>PSRule uses PowerShell modules as the standard way to distribute rules.
 Modules containing rules can be published on the PowerShell Gallery or network share using the same process as regular PowerShell modules.</p>
+<p>For a walk through see <a href="scenarios/rule-module/rule-module.html">Packaging rules in a module</a>.</p>
 <h2 id="recommendations">Recommendations</h2>
 <p>PSRule allows rule authors to define recommendations in markdown.
 This allows not only the cause of the issue to be identified but detailed instructions to be included to remediate issues.</p>
-<p>For more information see <a href="concepts/PSRule/en-US/about_PSRule_Docs.html">about_PSRule_docs</a>.</p>
+<p>For more information see <a href="concepts/PSRule/en-US/about_PSRule_Docs.html">about_PSRule_Docs</a>.</p>
+<h2 id="frequently-asked-questions-faq">Frequently Asked Questions (FAQ)</h2>
+<h3 id="how-is-psrule-different-to-pester">How is PSRule different to Pester?</h3>
+<p>PSRule is a framework for preforming validation against objects using PowerShell.</p>
+<p>Pester is a framework for running unit tests to execute and validate PowerShell commands.</p>
+<p>While this may be a subtle different, for PSRule this means:</p>
+<ul>
+<li>Rules understand which objects they apply to.</li>
+<li>PSRule can be reused between projects and optionally packaged into a module.</li>
+<li>PowerShell objects can be validated on the pipeline.</li>
+<li>Objects that originate from outside PowerShell can easily be imported.</li>
+<li>Optimized keywords and variables make authoring rules faster.</li>
+<li>Built-in assertions, automatically traverse object properties.</li>
+</ul>
+<p>These features make PSRule ideal for validating:</p>
+<ul>
+<li>Infrastructure code templates and manifests, such as Kubernetes manifests.</li>
+<li>Deployments or configurations against a baseline.</li>
+</ul>
+<p>If you want to test PowerShell code, use Pester.</p>
+<h3 id="why-should-i-use-psrule-keywords-and-assertions">Why should I use PSRule keywords and assertions?</h3>
+<p>With the exception of the <code>Rule</code> keyword, using the built-in language features are optional.</p>
+<p>The built-in keywords and assertions accelerate rule creation.
+They do this by providing a condition and a set of reasons in a single command.</p>
+<p>Reasons are also optional, however they provide additional context as to why the rule failed.
+Alternatively, you can provide your own reasons to complement standard PowerShell with the <code>Reason</code> keyword.</p>
 </article>
           </div>
           

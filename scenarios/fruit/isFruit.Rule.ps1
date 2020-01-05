@@ -1,5 +1,5 @@
-#  Copyright (c) Microsoft Corporation.
-#  Licensed under the MIT License.
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
 
 # Synopsis: An example rule
 Rule 'isFruit' {

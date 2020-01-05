@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Validation pipeline example </title>
+    <title>Using within continuous integration </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Validation pipeline example ">
+    <meta name="title" content="Using within continuous integration ">
     <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
@@ -60,107 +60,125 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="validation-pipeline-example">Validation pipeline example</h1>
+<h1 id="using-within-continuous-integration">Using within continuous integration</h1>
 
-<p>This example covers how PSRule can be used within a DevOps pipeline to validate files, templates and objects.</p>
+<p>PSRule supports several features that make it easy to a continuous integration (CI) pipeline.
+When added to a pipeline, PSRule can validate files, template and objects dynamically.</p>
 <p>This scenario covers the following:</p>
 <ul>
-<li>Installing PSRule within a continuous integration (CI) pipeline</li>
-<li>Failing the pipeline based on validation results</li>
+<li>Installing within a CI pipeline</li>
+<li>Validating objects</li>
+<li>Formatting output</li>
+<li>Failing the pipeline</li>
 <li>Generating NUnit output</li>
+<li>Additional options</li>
 </ul>
-<h2 id="installing-psrule-within-a-ci-pipeline">Installing PSRule within a CI pipeline</h2>
-<p>Typically PSRule is not pre-installed on CI worker nodes, so within a CI pipeline the PSRule PowerShell module needs to be installed prior to calling PSRule cmdlets such as <code>Invoke-PSRule</code>.</p>
-<p>If your CI pipeline runs on a persistent virtual machine that you control consider pre-installing PSRule.
+<h2 id="installing-within-a-ci-pipeline">Installing within a CI pipeline</h2>
+<p>Typically, PSRule is not pre-installed on CI worker nodes and must be installed.
+If your CI pipeline runs on a persistent virtual machine that you control, consider pre-installing PSRule.
 The following examples focus on installing PSRule dynamically during execution of the pipeline.
-Which is suitable for cloud based CI worker nodes.</p>
+Which is suitable for cloud-based CI worker nodes.</p>
 <p>To install PSRule within a CI pipeline execute the <code>Install-Module</code> PowerShell cmdlet.</p>
 <p>In the example below:</p>
 <ul>
-<li>When installing modules on Windows, by default modules will be installed into <em>Program Files</em>, which requires administrator permissions. Depending on your environment, the CI worker process may not have administrative permissions. Instead we can install PSRule for the current context running the CI pipeline by using the <code>-Scope CurrentUser</code> parameter.</li>
-<li>By default this cmdlet will install the module from the PowerShell Gallery which is not trusted by default. Since a CI pipeline is not interactive the <code>-Force</code> switch is used to suppress a prompt to install modules from PowerShell Gallery.</li>
+<li>When installing modules on Windows, modules will be installed into <em>Program Files</em> by default, which requires administrator permissions.
+Depending on your environment, the CI worker process may not have administrative permissions.
+Instead we can install PSRule for the current context running the CI pipeline by using the <code>-Scope CurrentUser</code> parameter.</li>
+<li>By default, this cmdlet will install the module from the PowerShell Gallery which is not trusted by default.
+Since a CI pipeline is not interactive, use the <code>-Force</code> switch to suppress the confirmation prompt.</li>
 </ul>
-<pre><code class="lang-powershell">$Null = Install-Module -Name PSRule -Scope CurrentUser -Force;
+<pre><code class="lang-powershell">Install-Module -Name PSRule -Scope CurrentUser -Force;
 </code></pre>
-<p>In some cases installing NuGet may be required before the module can be installed.
+<p>In some cases, installing NuGet and PowerShellGet may be required to connect to the PowerShell Gallery.
 The NuGet package provider can be installed using the <code>Install-PackageProvider</code> PowerShell cmdlet.</p>
-<pre><code class="lang-powershell">$Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
+<pre><code class="lang-powershell">Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
+Install-Module PowerShellGet -MinimumVersion '2.2.1' -Scope CurrentUser -Force -AllowClobber;
 </code></pre>
 <p>The example below includes both steps together with checks:</p>
-<pre><code class="lang-powershell">if ($Null -eq (Get-PackageProvider -Name NuGet -ErrorAction Ignore)) {
-    $Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
+<pre><code class="lang-powershell">if ($Null -eq (Get-PackageProvider -Name NuGet -ErrorAction SilentlyContinue)) {
+    Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
 }
 
-if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.9.0' -ErrorAction Ignore)) {
-    $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.9.0' -Force;
+if ($Null -eq (Get-InstalledModule -Name PowerShellGet -MinimumVersion '2.2.1' -ErrorAction Ignore)) {
+    Install-Module PowerShellGet -MinimumVersion '2.2.1' -Scope CurrentUser -Force -AllowClobber;
+}
+</code></pre>
+<pre><code class="lang-powershell">if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.12.0' -ErrorAction SilentlyContinue)) {
+    Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.12.0' -Force;
 }
 </code></pre>
 <p>See the <a href="https://github.com/Microsoft/PSRule/blob/master/CHANGELOG.md">change log</a> for the latest version.</p>
-<h3 id="using-invoke-build">Using Invoke-Build</h3>
-<p><code>Invoke-Build</code> is a build automation cmdlet that can be installed from the PowerShell Gallery by installing the <em>InvokeBuild</em> module.
-Within Invoke-Build, each build process is broken into tasks.</p>
-<p>The following example shows an example of installing <em>PSRule</em> using <em>InvokeBuild</em> tasks.</p>
-<pre><code class="lang-powershell"># Synopsis: Install NuGet
-task InstallNuGet {
-    if ($Null -eq (Get-PackageProvider -Name NuGet -ErrorAction Ignore)) {
-        $Null = Install-PackageProvider -Name NuGet -Scope CurrentUser -Force;
-    }
-}
+<h2 id="validating-objects">Validating objects</h2>
+<p>To validate objects use <code>Invoke-PSRule</code>, <code>Assert-PSRule</code> or <code>Test-PSRuleTarget</code>.
+In a CI pipeline, <code>Assert-PSRule</code> is recommended.
+<code>Assert-PSRule</code> outputs preformatted results ideal for use within a CI pipeline.</p>
+<p>For rules within the same source control repository, put rules in the <code>.ps-rule</code> directory.
+A directory <code>.ps-rule</code> in the repository root, is used by convention.</p>
+<p>In the following example, objects are validated against rules from the <code>./.ps-rule/</code> directory:</p>
+<pre><code class="lang-powershell">$items | Assert-PSRule -Path './.ps-rule/'
+</code></pre>
+<p>Example output:</p>
+<pre><code class="lang-text"> -&gt; ObjectFromFile.psd1 : System.IO.FileInfo
 
-# Synopsis: Install PSRule
-task InstallPSRule InstallNuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.9.0' -ErrorAction Ignore)) {
-        $Null = Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.9.0' -Force;
-    }
-}
+    [PASS] File.Header
+    [PASS] File.Encoding
+    [WARN] Target object 'ObjectFromFile.yaml' has not been processed because no matching rules were found.
+    [WARN] Target object 'ObjectFromNestedFile.yaml' has not been processed because no matching rules were found.
+    [WARN] Target object 'Baseline.Rule.yaml' has not been processed because no matching rules were found.
+
+ -&gt; FromFile.Rule.ps1 : System.IO.FileInfo
+
+    [FAIL] File.Header
+    [PASS] File.Encoding
 </code></pre>
-<h2 id="fail-the-pipeline">Fail the pipeline</h2>
-<p>When using PSRule within a continuous integration pipeline, typically we need to catch errors and failures and stop the pipeline if any occur.</p>
-<p>When using <code>Invoke-PSRule</code> an easy way to catch an failure or error conditions is to use the <code>-Outcome Fail,Error</code> parameter.
-By using this parameter only errors or failures are returned to the pipeline.
-A simple <code>$Null</code> test can then throw a terminating error to stop the pipeline.</p>
-<pre><code class="lang-powershell">$result = Invoke-PSRule -Outcome Fail,Error;
-if ($Null -ne $result) {
-    throw 'PSRule validation failed.'
-}
+<p>In the next example, objects from file are validated against pre-defined rules from a module:</p>
+<pre><code class="lang-powershell">Assert-PSRule -InputPath .\resources-*.json -Module PSRule.Rules.Azure;
 </code></pre>
-<p>Extending on this further, PSRule has additional options that we can use to log passing/ failing validation rules to informational streams.</p>
-<p>By using the <code>Logging.RuleFail</code> option shown in the next example an error will be created for each failure so that meaningful information is logged to the CI pipeline.</p>
-<pre><code class="lang-powershell">$option = New-PSRuleOption -LoggingRuleFail Error;
-$result = $inputObjects | Invoke-PSRule -Option $option -Outcome Fail,Error;
-if ($Null -ne $result) {
-    throw 'PSRule validation failed.'
-}
+<h2 id="formatting-output">Formatting output</h2>
+<p>When executing a CI pipeline, feedback on any validation failures is important.
+The <code>Assert-PSRule</code> cmdlet provides easy to read formatted output instead of PowerShell objects.</p>
+<p>Additionally, <code>Assert-PSRule</code> supports styling formatted output for Azure Pipelines and GitHub Actions.
+Use the <code>-Style AzurePipelines</code> or <code>-Style GitHubActions</code> parameter to style output.</p>
+<p>For example:</p>
+<pre><code class="lang-powershell">$items | Assert-PSRule -Path './.ps-rule/' -Style AzurePipelines;
 </code></pre>
-<h3 id="calling-from-pester">Calling from Pester</h3>
-<p>If you are looking at integrating PSRule into a CI pipeline, there is a good chance that you are already using Pester.
-Pester is a unit test framework for PowerShell that can be installed from the PowerShell Gallery.</p>
-<p>PSRule can complement Pester unit tests with dynamic validation rules.
-By using <code>-If</code> or <code>-Type</code> pre-conditions rules can dynamically provide validation for a range of use cases.</p>
-<p>In our example we are going to validate the script files themselves:</p>
-<ul>
-<li>Have a copyright file header</li>
-<li>Are encoded as UTF-8</li>
-</ul>
-<p>Within a Pester test script include the following example:</p>
-<pre><code class="lang-powershell">Describe 'Project files' {
-    Context 'Script files' {
-        It 'Use content rules' {
-            $option = New-PSRuleOption -LoggingRuleFail Error;
-            $inputObjects = Get-ChildItem -Path *.ps1 -Recurse;
-            $inputObjects | Invoke-PSRule -Option $option -Outcome Fail,Error | Should -BeNullOrEmpty;
-        }
-    }
+<h2 id="failing-the-pipeline">Failing the pipeline</h2>
+<p>When using PSRule within a CI pipeline, a failed rule should stop the pipeline.
+When using <code>Assert-PSRule</code> if any rules fail, an error will be generated.</p>
+<pre><code class="lang-text">Assert-PSRule : One or more rules reported failure.
+At line:1 char:10
++ $items | Assert-PSRule -Path ./.ps-rule/
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ CategoryInfo          : InvalidData: (:) [Assert-PSRule], FailPipelineException
++ FullyQualifiedErrorId : PSRule.Fail,Assert-PSRule
+</code></pre>
+<p>A single PowerShell error is typically enough to stop a CI pipeline.
+If you are using a different configuration additionally <code>-ErrorAction Stop</code> can be used.</p>
+<p>For example:</p>
+<pre><code class="lang-powershell">$items | Assert-PSRule -Path './.ps-rule/' -ErrorAction Stop;
+</code></pre>
+<p>Using <code>-ErrorAction Stop</code> will stop the current script and return an exit code of 1.</p>
+<p>To continue running the current script but return an exit code, use:</p>
+<pre><code class="lang-powershell">try {
+    $items | Assert-PSRule -Path './.ps-rule/' -ErrorAction Stop;
+}
+catch {
+    $Host.SetShouldExit(1);
 }
 </code></pre>
 <h2 id="generating-nunit-output">Generating NUnit output</h2>
-<p>NUnit is a popular unit test framework for .NET. NUnit generates a test report format that is widely interpreted by CI systems.
-While PSRule does not use NUnit, it can output the same test report format allowing integration with any system that supports the NUnit3 for publishing test results.</p>
-<p>To generate an NUnit report use the <code>-OutputFormat NUnit3</code> parameter.</p>
-<pre><code class="lang-powershell">$option = New-PSRuleOption -LoggingRuleFail Error;
-$inputObjects = Get-ChildItem -Path *.ps1 -Recurse;
-$inputObjects | Invoke-PSRule -Option $option -OutputFormat NUnit3 | Set-Content -Path reports/rule.report.xml;
+<p>NUnit is a popular unit test framework for .NET.
+NUnit generates a test report format that is widely interpreted by CI systems.
+While PSRule does not use NUnit directly, it support outputting validation results in the NUnit3 format.
+Using a common format allows integration with any system that supports the NUnit3 for publishing test results.</p>
+<p>To generate an NUnit report:</p>
+<ul>
+<li>Use the <code>-OutputFormat NUnit3</code> parameter.</li>
+<li>Use the <code>-OutputPath</code> parameter to specify the path of the report file to write.</li>
+</ul>
+<pre><code class="lang-powershell">$items | Assert-PSRule -Path './.ps-rule/' -OutputFormat NUnit3 -OutputPath reports/rule-report.xml;
 </code></pre>
+<p>The output path will be created if it does not exist.</p>
 <h3 id="publishing-nunit-report-with-azure-devops">Publishing NUnit report with Azure DevOps</h3>
 <p>With Azure DevOps, an NUnit report can be published using <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results">Publish Test Results task</a>.</p>
 <p>An example YAML snippet is included below:</p>
@@ -170,20 +188,119 @@ $inputObjects | Invoke-PSRule -Option $option -OutputFormat NUnit3 | Set-Content
   inputs:
     testRunTitle: 'PSRule'
     testRunner: NUnit
-    testResultsFiles: 'reports/rule.report.xml'
+    testResultsFiles: 'reports/rule-report.xml'
     mergeTestResults: true
     publishRunAttachments: true
   condition: succeededOrFailed()
 </code></pre>
-<h2 id="examples">Examples</h2>
-<p>For our example we ran:</p>
-<pre><code class="lang-powershell">$option = New-PSRuleOption -LoggingRuleFail Error;
-$inputObjects = Get-ChildItem -Path src/PSRule -Include *.ps1,*.psm1,*.psd1 -Recurse;
-$inputObjects | Invoke-PSRule -Path docs/scenarios/validation-pipeline -Option $option -OutputFormat NUnit3 | Set-Content -Path reports/rule.report.xml;
+<h2 id="complete-example">Complete example</h2>
+<p>Putting each of these steps together.</p>
+<h3 id="install-dependencies">Install dependencies</h3>
+<pre><code class="lang-powershell"># Install dependencies for connecting to PowerShell Gallery
+if ($Null -eq (Get-PackageProvider -Name NuGet -ErrorAction SilentlyContinue)) {
+    Install-PackageProvider -Name NuGet -Force -Scope CurrentUser;
+}
+
+if ($Null -eq (Get-InstalledModule -Name PowerShellGet -MinimumVersion '2.2.1' -ErrorAction SilentlyContinue)) {
+    Install-Module PowerShellGet -MinimumVersion '2.2.1' -Scope CurrentUser -Force -AllowClobber;
+}
+</code></pre>
+<h3 id="validate-files">Validate files</h3>
+<pre><code class="lang-powershell"># Install PSRule module
+if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.12.0' -ErrorAction SilentlyContinue)) {
+    Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.12.0' -Force;
+}
+
+# Validate files
+$assertParams = @{
+    Path = './.ps-rule/'
+    Style = 'AzurePipelines'
+    OutputFormat = 'NUnit3'
+    OutputPath = 'reports/rule-report.xml'
+}
+$items = Get-ChildItem -Recurse -Path .\src\,.\tests\ -Include *.ps1,*.psd1,*.psm1,*.yaml;
+$items | Assert-PSRule $assertParams -ErrorAction Stop;
+</code></pre>
+<h3 id="azure-devops-pipeline">Azure DevOps Pipeline</h3>
+<pre><code class="lang-yaml">steps:
+
+# Install dependencies
+- powershell: ./pipeline-deps.ps1
+  displayName: 'Install dependencies'
+
+# Validate templates
+- powershell: ./validate-files.ps1
+  displayName: 'Validate files'
+
+# Publish pipeline results
+- task: PublishTestResults@2
+  displayName: 'Publish PSRule results'
+  inputs:
+    testRunTitle: 'PSRule'
+    testRunner: NUnit
+    testResultsFiles: 'reports/rule-report.xml'
+    mergeTestResults: true
+    publishRunAttachments: true
+  condition: succeededOrFailed()
+</code></pre>
+<h2 id="additional-options">Additional options</h2>
+<h3 id="using-invoke-build">Using Invoke-Build</h3>
+<p>Invoke-Build is a build automation cmdlet that can be installed from the PowerShell Gallery by installing the <em>InvokeBuild</em> module.
+Within Invoke-Build, each build process is broken into tasks.</p>
+<p>The following example shows an example of using PSRule with Invoke-Build tasks.</p>
+<pre><code class="lang-powershell"># Synopsis: Install PSRule
+task PSRule {
+    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.12.0' -ErrorAction SilentlyContinue)) {
+        Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.12.0' -Force;
+    }
+}
+
+# Synopsis: Validate files
+task ValidateFiles PSRule, {
+    $assertParams = @{
+        Path = './.ps-rule/'
+        Style = 'AzurePipelines'
+        OutputFormat = 'NUnit3'
+        OutputPath = 'reports/rule-report.xml'
+    }
+    $items = Get-ChildItem -Recurse -Path .\src\,.\tests\ -Include *.ps1,*.psd1,*.psm1,*.yaml;
+    $items | Assert-PSRule @assertParams -ErrorAction Stop;
+}
+
+# Synopsis: Run all build tasks
+task Build ValidateFiles
+</code></pre>
+<pre><code class="lang-powershell">Invoke-Build Build;
+</code></pre>
+<h3 id="calling-from-pester">Calling from Pester</h3>
+<p>Pester is a unit test framework for PowerShell that can be installed from the PowerShell Gallery.</p>
+<p>Typically, Pester unit tests are built for a particular pipeline.
+PSRule can complement Pester unit tests by providing dynamic and sharable rules that are easy to reuse.
+By using <code>-If</code> or <code>-Type</code> pre-conditions, rules can dynamically provide validation for a range of use cases.</p>
+<p>When calling PSRule from Pester use <code>Invoke-PSRule</code> instead of <code>Assert-PSRule</code>.
+<code>Invoke-PSRule</code> returns validation result objects that can be tested by Pester <code>Should</code> conditions.</p>
+<p>Additionally, the <code>Logging.RuleFail</code> option can be included to generate an error message for each failing rule.</p>
+<p>For example:</p>
+<pre><code class="lang-powershell">Describe 'Azure' {
+    Context 'Resource templates' {
+        It 'Use content rules' {
+            $invokeParams = @{
+                Path = './.ps-rule/'
+                OutputFormat = 'NUnit3'
+                OutputPath = 'reports/rule-report.xml'
+            }
+            $items = Get-ChildItem -Recurse -Path .\src\,.\tests\ -Include *.ps1,*.psd1,*.psm1,*.yaml;
+            Invoke-PSRule @invokeParams -Outcome Fail,Error | Should -BeNullOrEmpty;
+        }
+    }
+}
 </code></pre>
 <h2 id="more-information">More information</h2>
 <ul>
+<li><a href="pipeline-deps.ps1">pipeline-deps.ps1</a> - Example script installing pipeline dependencies.</li>
 <li><a href="file.Rule.ps1">file.Rule.ps1</a> - Example rules for validating script files.</li>
+<li><a href="validate-files.ps1">validate-files.ps1</a> - Example script for running files validation.</li>
+<li><a href="azure-pipelines.yaml">azure-pipelines.yaml</a> - An example Azure DevOps Pipeline.</li>
 </ul>
 </article>
           </div>

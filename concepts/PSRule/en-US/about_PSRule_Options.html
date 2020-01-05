@@ -421,9 +421,7 @@ execution:
 <p>Configures the input format for when a string is passed in as a target object.</p>
 <p>Use this option with <code>Assert-PSRule</code>, <code>Invoke-PSRule</code> or <code>Test-PSRuleTarget</code>.</p>
 <p>When the <code>-InputObject</code> parameter or pipeline input is used, strings are treated as plain text by default.
-Set this option to either <code>Yaml</code>, <code>Json</code> or <code>Markdown</code> to have PSRule deserialize the object.</p>
-<p>When the <code>-InputPath</code> parameter is used with a file path or URL.
-If the <code>Detect</code> format is used, the file extension (either <code>.yaml</code>, <code>.yml</code>, <code>.json</code> or <code>.md</code>) will be used to automatically detect the format as YAML, JSON or Markdown.</p>
+Set this option to either <code>Yaml</code>, <code>Json</code>, <code>Markdown</code>, <code>PowerShellData</code> to have PSRule deserialize the object.</p>
 <p>The <code>-Format</code> parameter will override any value set in configuration.</p>
 <p>The following formats are available:</p>
 <ul>
@@ -431,10 +429,19 @@ If the <code>Detect</code> format is used, the file extension (either <code>.yam
 <li>Yaml - Treat strings as one or more YAML objects.</li>
 <li>Json - Treat strings as one or more JSON objects.</li>
 <li>Markdown - Treat strings as a markdown object.</li>
-<li>Detect - Detect format based on file extension.</li>
+<li>PowerShellData - Treat strings as a PowerShell data object.</li>
+<li>Detect - Detect format based on file extension. This is the default.</li>
 </ul>
-<p>Detection only applies when used with the <code>-InputPath</code> parameter.
-In all other cases, <code>Detect</code> is the same as <code>None</code>. This is the default configuration.</p>
+<p>When the <code>-InputPath</code> parameter is used with a file path or URL.
+If the <code>Detect</code> format is used, the file extension will be used to automatically detect the format.
+When <code>-InputPath</code> is not used, <code>Detect</code> is the same as <code>None</code>.</p>
+<p>Detect uses matches the following file extensions:</p>
+<ul>
+<li>Yaml - <code>.yaml</code> or <code>.yml</code></li>
+<li>Json - <code>.json</code></li>
+<li>Markdown - <code>.md</code></li>
+<li>PowerShellData - <code>.psd1</code></li>
+</ul>
 <p>The <code>Markdown</code> format does not parse the whole markdown document.
 Specifically this format deserializes YAML front matter from the top of the document if any exists.</p>
 <p>This option can be specified using:</p>

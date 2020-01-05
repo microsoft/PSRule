@@ -1,0 +1,240 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Packaging rules in a module </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Packaging rules in a module ">
+    <meta name="generator" content="docfx 2.43.2.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../../toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="packaging-rules-in-a-module">Packaging rules in a module</h1>
+
+<p>PSRule supports distribution of rules within modules.
+Using a module, rules can be published and installed using standard PowerShell cmdlets.</p>
+<p>You should consider packaging rules into a module to:</p>
+<ul>
+<li>Version rules. PowerShell modules support semantic versioning (semver).</li>
+<li>Reuse rules across projects, pipelines or teams.</li>
+<li>Publish rules to external consumers via the PowerShell Gallery.</li>
+</ul>
+<p>This scenario covers the following:</p>
+<ul>
+<li>Creating a module manifest</li>
+<li>Including rules and baselines</li>
+<li>Including documentation</li>
+</ul>
+<h2 id="creating-a-module-manifest">Creating a module manifest</h2>
+<p>When creating a PowerShell module, a module manifest is an optional file that stores module metadata.
+Module manifests use the <code>.psd1</code> file extension.
+When packaging rules in a module, a module manifest is required for PSRule discover the module.</p>
+<h3 id="creating-the-manifest-file">Creating the manifest file</h3>
+<p>A module manifest can be created from PowerShell using the <code>New-ModuleManifest</code> cmdlet.
+Additionally, Visual Studio Code and many other tools also include snippets for creating a module manifest.</p>
+<p>For example:</p>
+<pre><code class="lang-powershell"># Create a directory for the module
+md ./Enterprise.Rules;
+
+# Create the manifest
+New-ModuleManifest -Path ./Enterprise.Rules/Enterprise.Rules.psd1 -Tags 'PSRule-rules';
+</code></pre>
+<p>The example above creates a module manifest for a module named <em>Enterprise.Rules</em> tagged with <code>PSRule-rules</code>.
+The use of the <code>PSRule-rules</code> tag is explained in the following section.</p>
+<h3 id="setting-module-tags">Setting module tags</h3>
+<p>When PSRule cmdlets are used with the <code>-Module</code> parameter, PSRule discovers rule modules.
+If the module is already imported, that module is used.
+If the module is not imported, PSRule will import the highest version of the module automatically.</p>
+<p>For a module to be discovered by PSRule, tag the module with <code>PSRule-rules</code>.
+To tag modules, find the <code>Tags</code> section the <code>PSData</code> hashtable in the module manifest and add <code>PSRule-rules</code>.</p>
+<p>An updated module manifest may look like this:</p>
+<pre><code class="lang-powershell"># Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
+PrivateData = @{
+    PSData = @{
+        # Tags applied to this module. These help with module discovery in online galleries.
+        Tags = @('PSRule-rules')
+    }
+}
+</code></pre>
+<h3 id="setting-a-default-baseline">Setting a default baseline</h3>
+<p>Optionally, baselines can be included in rule modules.
+If a baseline contains configuration or binding options then setting a default baseline is often desirable.
+When a default baseline is set, PSRule will use the named baseline automatically when processing rules from that module.
+This feature removes the need for users to specify it manually.</p>
+<p>To set a default baseline, add a new property after the <code>PSData</code> hashtable ends called <code>PSRule</code>.
+The <code>PSRule</code> property is a hashtable of configuration for PSRule.
+Within the hashtable specify the <code>Baseline</code> property with the name of the baseline.</p>
+<p>For example:</p>
+<pre><code class="lang-powershell"># Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
+PrivateData = @{
+    PSData = @{
+        # Tags applied to this module. These help with module discovery in online galleries.
+        Tags = @('PSRule-rules')
+    }
+    PSRule = @{
+        Baseline = 'Enterprise.Default'
+    }
+}
+</code></pre>
+<p>This examples set the default baseline to <code>Enterprise.Default</code>.
+The default baseline must be included in file ending with <code>.Rule.yaml</code> within the module directory structure.</p>
+<h2 id="including-rules-and-baselines">Including rules and baselines</h2>
+<p>Rules and baselines can be included anywhere within the module directory structure.
+Such as in the root directory of the module or in a nested sub-directory.</p>
+<p>By convention, consider including rules and baselines within a <code>rules</code> sub-directory within the module.</p>
+<p>For example:</p>
+<ul>
+<li>Enterprise.Rules/
+<ul>
+<li>rules/
+<ul>
+<li>NamingStandards.Rule.ps1</li>
+<li>ComplianceStandards.Rule.ps1</li>
+<li>Baseline.Rule.yaml</li>
+</ul>
+</li>
+<li>Enterprise.Rules.psd1</li>
+</ul>
+</li>
+</ul>
+<h3 id="file-names">File names</h3>
+<p>For PSRule to find rules included in a module, rule file names must end with the <code>.Rule.ps1</code> suffix.
+We recommend using the exact case <code>.Rule.ps1</code>.
+This is because some file systems are case-sensitive.
+For example, on Linux <code>NamingStandards.rule.ps1</code> would be ignored by PSRule.</p>
+<p>Similarly, when including baselines within a module use the <code>.Rule.yaml</code> suffix.</p>
+<h2 id="including-documentation">Including documentation</h2>
+<p>PSRule supports write and packaging rule modules with markdown documentation.
+Markdown documentation is automatically interpreted by PSRule and included in output.</p>
+<p>When including markdown, files are copied into a directory structure based on the target culture.</p>
+<p>For example, store documentation targeted to the culture <code>en-US</code> in a directory named <code>en-US</code>.
+Similarly, documentation for cultures such as <code>en-AU</code>, <code>en-GB</code> and <code>fr-FR</code> would be in separate directories.</p>
+<p>If a directory for the exact culture <code>en-US</code> doesn't exist, PSRule will attempt to find the parent culture.
+For example, documentation would be read from a directory named <code>en</code>.</p>
+<p>When naming directories for their culture, use exact case.
+This is because some file systems are case-sensitive.
+For example on Linux <code>en-us</code> would not match.</p>
+<p>For example:</p>
+<ul>
+<li>Enterprise.Rules/
+<ul>
+<li>en/
+<ul>
+<li>Metadata.Name.md</li>
+</ul>
+</li>
+<li>en-US/
+<ul>
+<li>Metadata.Name.md</li>
+</ul>
+</li>
+<li>fr-FR/
+<ul>
+<li>Metadata.Name.md</li>
+</ul>
+</li>
+<li>rules/
+<ul>
+<li>NamingStandards.Rule.ps1</li>
+<li>ComplianceStandards.Rule.ps1</li>
+<li>Baseline.Rule.yaml</li>
+</ul>
+</li>
+<li>Enterprise.Rules.psd1</li>
+</ul>
+</li>
+</ul>
+<h2 id="more-information">More information</h2>
+<ul>
+<li><a href="Enterprise.Rules/Enterprise.Rules.psd1">Enterprise.Rules.psd1</a> - An example module manifest.</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Microsoft/PSRule/blob/master/docs/scenarios/rule-module/rule-module.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

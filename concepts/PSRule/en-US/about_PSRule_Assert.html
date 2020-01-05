@@ -73,17 +73,26 @@
 <h2 id="short-description">SHORT DESCRIPTION</h2>
 <p>Describes the assertion helper that can be used within PSRule rule definitions.</p>
 <h2 id="long-description">LONG DESCRIPTION</h2>
-<p>PSRule includes an assertion helper exposed as a built-in variable <code>$Assert</code>. The <code>$Assert</code> object provides a consistent set of methods to evaluate objects.</p>
+<p>PSRule includes an assertion helper exposed as a built-in variable <code>$Assert</code>.
+The <code>$Assert</code> object provides a consistent set of methods to evaluate objects.</p>
 <p>Each <code>$Assert</code> method returns an <code>AssertResult</code> object that contains the result of the assertion.</p>
 <p>The following built-in assertion methods are provided:</p>
 <ul>
+<li><a href="#contains">Contains</a> - The field value must contain at least one of the strings.</li>
+<li><a href="#endswith">EndsWith</a> - The field value must match at least one suffix.</li>
+<li><a href="#greater">Greater</a> - The field value must be greater.</li>
+<li><a href="#greaterorequal">GreaterOrEqual</a> - The field value must be greater or equal to.</li>
 <li><a href="#hasdefaultvalue">HasDefaultValue</a> - The object should not have the field or the field value is set to the default value.</li>
 <li><a href="#hasfield">HasField</a> - The object must have the specified field.</li>
 <li><a href="#hasfieldvalue">HasFieldValue</a> - The object must have the specified field and that field is not empty.</li>
 <li><a href="#jsonschema">JsonSchema</a> - The object must validate successfully against a JSON schema.</li>
+<li><a href="#less">Less</a> - The field value must be less.</li>
+<li><a href="#lessorequal">LessOrEqual</a> - The field value must be less or equal to.</li>
 <li><a href="#nullorempty">NullOrEmpty</a> - The object must not have the specified field or it must be empty.</li>
+<li><a href="#startswith">StartsWith</a> - The field value must match at least one prefix.</li>
+<li><a href="#version">Version</a> - The field value must be a semantic version string.</li>
 </ul>
-<p>The <code>$Assert</code> variable can only be used within a rule definition block.</p>
+<p>The <code>$Assert</code> variable can only be used within a rule definition block or script pre-conditions.</p>
 <h3 id="using-assertion-methods">Using assertion methods</h3>
 <p>An assertion method can be used like other methods in PowerShell. i.e. <code>$Assert.methodName(parameters)</code>.</p>
 <p>Assertion methods use the following standard pattern:</p>
@@ -110,6 +119,116 @@ Use assertion methods for advanced cases or increased flexibility.</p>
     $Assert.HasFieldValue($TargetObject, 'Value')
 }
 </code></pre>
+<h3 id="contains">Contains</h3>
+<p>The <code>Contains</code> assertion method checks the field value contains with the specified string.
+Optionally a case-sensitive compare can be used, however case is ignored by default.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>text</code> - One or more strings to compare the field value with. Only one string must match.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is not a string.</em></li>
+<li><em>The field '{0}' does not contain '{1}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'Contains' {
+    $Assert.Contains($TargetObject, 'ResourceGroupName', 'prod')
+    $Assert.Contains($TargetObject, 'Name', @('prod', 'test'), $True)
+}
+</code></pre>
+<h3 id="endswith">EndsWith</h3>
+<p>The <code>EndsWith</code> assertion method checks the field value ends with the specified suffix.
+Optionally a case-sensitive compare can be used, however case is ignored by default.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><p><code>inputObject</code> - The object being checked for the specified field.</p>
+</li>
+<li><p><code>field</code> - The name of the field to check. This is a case insensitive compare.</p>
+</li>
+<li><p><code>suffix</code> - One or more suffixes to compare the field value with. Only one suffix must match.</p>
+</li>
+<li><p><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</p>
+</li>
+<li><p><em>The parameter 'inputObject' is null.</em></p>
+</li>
+<li><p><em>The parameter 'field' is null or empty.</em></p>
+</li>
+<li><p><em>The field '{0}' does not exist.</em></p>
+</li>
+<li><p><em>The field value '{0}' is not a string.</em></p>
+</li>
+<li><p><em>The field '{0}' does not end with '{1}'.</em></p>
+</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'EndsWith' {
+    $Assert.EndsWith($TargetObject, 'ResourceGroupName', 'eus')
+    $Assert.EndsWith($TargetObject, 'Name', @('db', 'web'), $True)
+}
+</code></pre>
+<h3 id="greater">Greater</h3>
+<p>The <code>Greater</code> assertion method checks the field value is greater than the specified value.
+The field value can either be an integer or an array.
+When the field value is:</p>
+<ul>
+<li>An integer, a numerical comparison is used.</li>
+<li>An array, the number of elements is compared.</li>
+<li>A string, the length of the string is compared.</li>
+</ul>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>value</code> - A integer to compare the field value against.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The value '{0}' was not &gt; '{1}'.</em></li>
+<li><em>The field value '{0}' can not be compared with '{1}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'Greater' {
+    $Assert.Greater($TargetObject, 'value', 3)
+}
+</code></pre>
+<h3 id="greaterorequal">GreaterOrEqual</h3>
+<p>The <code>GreaterOrEqual</code> assertion method checks the field value is greater or equal to the specified value.
+The field value can either be an integer or an array.
+When the field value is:</p>
+<ul>
+<li>An integer, a numerical comparison is used.</li>
+<li>An array, the number of elements is compared.</li>
+<li>A string, the length of the string is compared.</li>
+</ul>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>value</code> - A integer to compare the field value against.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The value '{0}' was not &gt;= '{1}'.</em></li>
+<li><em>The field value '{0}' can not be compared with '{1}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'GreaterOrEqual' {
+    $Assert.GreaterOrEqual($TargetObject, 'value', 3)
+}
+</code></pre>
 <h3 id="hasdefaultvalue">HasDefaultValue</h3>
 <p>The <code>HasDefaultValue</code> assertion method check that the field does not exist or the field value is set to the default value.</p>
 <p>The following parameters are accepted:</p>
@@ -127,6 +246,12 @@ Use assertion methods for advanced cases or increased flexibility.</p>
 <ul>
 <li>The field value is set to a value different from <code>defaultValue</code>.</li>
 </ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' is set to '{1}'.</em></li>
+</ul>
 <p>Examples:</p>
 <pre><code class="lang-powershell">Rule 'HasDefaultValue' {
     $Assert.HasDefaultValue($TargetObject, 'Properties.osProfile.linuxConfiguration.provisionVMAgent', $True)
@@ -139,6 +264,12 @@ Use assertion methods for advanced cases or increased flexibility.</p>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
 <li><code>field</code> - The name of the field to check. By default, a case insensitive compare is used.</li>
 <li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field name.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
 </ul>
 <p>Examples:</p>
 <pre><code class="lang-powershell">Rule 'HasField' {
@@ -161,6 +292,14 @@ Use assertion methods for advanced cases or increased flexibility.</p>
 <li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
 <li><code>expectedValue</code> (optional) - Check that the field value is set to a specific value. To check <code>$Null</code> use <code>NullOrEmpty</code> instead. If <code>expectedValue</code> is <code>$Null</code> the field value will not be compared.</li>
 </ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The value of '{0}' is null or empty.</em></li>
+<li><em>The field '{0}' is set to '{1}'.</em></li>
+</ul>
 <p>Examples:</p>
 <pre><code class="lang-powershell">Rule 'HasFieldValue' {
     $Assert.HasFieldValue($TargetObject, 'Name')
@@ -174,9 +313,72 @@ Use assertion methods for advanced cases or increased flexibility.</p>
 <li><code>inputObject</code> - The object being compared against the JSON schema.</li>
 <li><code>uri</code> - A URL or file path to a JSON schema file formatted as UTF-8. Either a file path or URL can be used to specify the location of the schema file.</li>
 </ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'uri' is null or empty.</em></li>
+<li><em>The JSON schema '{0}' could not be found.</em></li>
+<li><em>Failed schema validation on {0}. {1}</em></li>
+</ul>
 <p>Examples:</p>
 <pre><code class="lang-powershell">Rule 'JsonSchema' {
     $Assert.JsonSchema($TargetObject, 'tests/PSRule.Tests/FromFile.Json.schema.json')
+}
+</code></pre>
+<h3 id="less">Less</h3>
+<p>The <code>Less</code> assertion method checks the field value is less than the specified value.
+The field value can either be an integer or an array.
+When the field value is:</p>
+<ul>
+<li>An integer, a numerical comparison is used.</li>
+<li>An array, the number of elements is compared.</li>
+<li>A string, the length of the string is compared.</li>
+</ul>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>value</code> - A integer to compare the field value against.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The value '{0}' was not &lt; '{1}'.</em></li>
+<li><em>The field value '{0}' can not be compared with '{1}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'Less' {
+    $Assert.Less($TargetObject, 'value', 3)
+}
+</code></pre>
+<h3 id="lessorequal">LessOrEqual</h3>
+<p>The <code>LessOrEqual</code> assertion method checks the field value is less or equal to the specified value.
+The field value can either be an integer or an array.
+When the field value is:</p>
+<ul>
+<li>An integer, a numerical comparison is used.</li>
+<li>An array, the number of elements is compared.</li>
+<li>A string, the length of the string is compared.</li>
+</ul>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>value</code> - A integer to compare the field value against.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The value '{0}' was not &lt;= '{1}'.</em></li>
+<li><em>The field value '{0}' can not be compared with '{1}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'LessOrEqual' {
+    $Assert.LessOrEqual($TargetObject, 'value', 3)
 }
 </code></pre>
 <h3 id="nullorempty">NullOrEmpty</h3>
@@ -193,10 +395,105 @@ Use assertion methods for advanced cases or increased flexibility.</p>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
 <li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
 </ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' is not empty.</em></li>
+</ul>
 <p>Examples:</p>
 <pre><code class="lang-powershell">Rule 'NullOrEmpty' {
     $Assert.NullOrEmpty($TargetObject, 'Name')
     $Assert.NullOrEmpty($TargetObject, 'tag.Environment')
+}
+</code></pre>
+<h3 id="startswith">StartsWith</h3>
+<p>The <code>StartsWith</code> assertion method checks the field value starts with the specified prefix.
+Optionally a case-sensitive compare can be used, however case is ignored by default.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>prefix</code> - One or more prefixes to compare the field value with. Only one prefix must match.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is not a string.</em></li>
+<li><em>The field '{0}' does not start with '{1}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'StartsWith' {
+    $Assert.StartsWith($TargetObject, 'ResourceGroupName', 'rg-')
+    $Assert.StartsWith($TargetObject, 'Name', @('st', 'diag'), $True)
+}
+</code></pre>
+<h3 id="version">Version</h3>
+<p>The <code>Version</code> assertion method checks the field value is a valid semantic version.
+A constraint can optionally be provided to require the semantic version to be within a range.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>constraint</code> (optional) - A version constraint, see below for details of version constrain format.</li>
+</ul>
+<p>The following are supported constraints:</p>
+<ul>
+<li><code>version</code> - Must match version exactly. This also accepts the following prefixes; <code>=</code>, <code>v</code>, <code>V</code>.
+<ul>
+<li>e.g. <code>1.2.3</code>, <code>=1.2.3</code></li>
+</ul>
+</li>
+<li><code>&gt;version</code> - Must be greater than version.
+<ul>
+<li>e.g. <code>&gt;1.2.3</code></li>
+</ul>
+</li>
+<li><code>&gt;=version</code> - Must be greater than or equal to version.
+<ul>
+<li>e.g. <code>&gt;=1.2.3</code></li>
+</ul>
+</li>
+<li><code>&lt;version</code> - Must be less than version.
+<ul>
+<li>e.g. <code>&lt;1.2.3</code></li>
+</ul>
+</li>
+<li><code>&lt;=version</code> - Must be less than or equal to version.
+<ul>
+<li>e.g. <code>&lt;=1.2.3</code></li>
+</ul>
+</li>
+<li><code>^version</code> - Compatible with version.
+<ul>
+<li>e.g. <code>^1.2.3</code> - &gt;=1.2.3, &lt;2.0.0</li>
+</ul>
+</li>
+<li><code>~version</code> - Approximately equivalent to version
+<ul>
+<li>e.g. <code>~1.2.3</code> - &gt;=1.2.3, &lt;1.3.0</li>
+</ul>
+</li>
+</ul>
+<p>An empty, null or <code>*</code> version constraint matches all valid semantic versions.</p>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is not a version string.</em></li>
+<li><em>The version '{0}' does not match the constraint '{1}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'ValidVersion' {
+    $Assert.Version($TargetObject, 'version')
+}
+
+Rule 'MinimumVersion' {
+    $Assert.Version($TargetObject, 'version', '&gt;=1.2.3')
 }
 </code></pre>
 <h3 id="advanced-usage">Advanced usage</h3>
@@ -211,17 +508,27 @@ Use assertion methods for advanced cases or increased flexibility.</p>
 </ul>
 <p>The following methods are available:</p>
 <ul>
-<li><code>AddReason(&lt;string&gt; text)</code> - Can be used to add additional reasons to the result. A reason can only be set if the assertion failed. Reason text should be localized before calling this method. Localization can be done using the <code>$LocalizedData</code> automatic variable.</li>
+<li><code>AddReason(&lt;string&gt; text)</code> - Can be used to append additional reasons to the result. A reason can only be set if the assertion failed. Reason text should be localized before calling this method. Localization can be done using the <code>$LocalizedData</code> automatic variable.</li>
+<li><code>WithReason(&lt;string&gt; text, &lt;bool&gt; replace)</code> - Can be used to append or replace reasons on the result. In addition, <code>WithReason</code> can be chained.</li>
 <li><code>GetReason()</code> - Gets any reasons currently associated with the failed result.</li>
 <li><code>Complete()</code> - Returns <code>$True</code> (Pass) or <code>$False</code> (Fail) to the rule record. If the assertion failed, any reasons are automatically added to the rule record. To read the result without adding reason to the rule record use the <code>Result</code> property.</li>
 <li><code>Ignore()</code> - Ignores the result. Nothing future is returned and any reasons are cleared. Use this method when implementing custom handling.</li>
 </ul>
-<p>Use of <code>Complete()</code> is optional, uncompleted results are automatically completed after the rule has executed. Uncompleted results may return reasons out of sequence.</p>
-<p>In this example <code>Complete()</code> is used to find the first field with an empty value.</p>
+<p>Use of <code>Complete</code> is optional, uncompleted results are automatically completed after the rule has executed.
+Uncompleted results may return reasons out of sequence.</p>
+<p>Using these advanced methods is not supported in rule script pre-conditions.</p>
+<p>In this example, <code>Complete</code> is used to find the first field with an empty value.</p>
 <pre><code class="lang-powershell">Rule 'Assert.HasFieldValue' {
     $Assert.HasFieldValue($TargetObject, 'Name').Complete() -and
         $Assert.HasFieldValue($TargetObject, 'Type').Complete() -and
         $Assert.HasFieldValue($TargetObject, 'Value').Complete()
+}
+</code></pre>
+<p>The this example, the built-in reason is replaced with a custom reason, and immediately returned.</p>
+<pre><code class="lang-powershell">Rule 'Assert.HasCustomValue' {
+    $Assert.
+        HasDefaultValue($TargetObject, 'value', 'test').
+        WithReason('Value is set to custom value', $True)
 }
 </code></pre>
 <h3 id="authoring-assertion-methods">Authoring assertion methods</h3>
@@ -240,11 +547,19 @@ Use assertion methods for advanced cases or increased flexibility.</p>
 <h2 id="keywords">KEYWORDS</h2>
 <ul>
 <li>Assert</li>
+<li>Contains</li>
+<li>EndsWith</li>
+<li>Greater</li>
+<li>GreaterOrEqual</li>
 <li>HasDefaultValue</li>
 <li>HasField</li>
 <li>HasFieldValue</li>
 <li>JsonSchema</li>
+<li>Less</li>
+<li>LessOrEqual</li>
 <li>NullOrEmpty</li>
+<li>StartsWith</li>
+<li>Version</li>
 <li>Rule</li>
 </ul>
 </article>
