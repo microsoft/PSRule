@@ -105,6 +105,12 @@ namespace PSRule.Pipeline
             TargetName = _BindTargetName(binding.TargetName, !binding.IgnoreCase, targetObject);
             TargetType = _BindTargetType(binding.TargetType, !binding.IgnoreCase, targetObject);
             ShouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(TargetType));
+
+            // Use qualified name
+            if (binding.UseQualifiedName)
+                TargetName = string.Concat(TargetType, binding.NameSeparator, TargetName);
+
+            // Bind custom fields
             BindField(binding.Field, !binding.IgnoreCase, targetObject);
         }
 

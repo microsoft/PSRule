@@ -59,11 +59,14 @@ namespace PSRule.Configuration
         /// <param name="properties">One or more indexed properties.</param>
         internal static void Load(IBaselineSpec option, Dictionary<string, object> properties)
         {
-            if (properties.TryPopValue("binding.ignorecase", out object value))
+            if (properties.TryPopValue("binding.field", out object value) && value is Hashtable map)
+                option.Binding.Field = new FieldMap(map);
+
+            if (properties.TryPopValue("binding.ignorecase", out value))
                 option.Binding.IgnoreCase = bool.Parse(value.ToString());
 
-            if (properties.TryPopValue("binding.field", out value) && value is Hashtable map)
-                option.Binding.Field = new FieldMap(map);
+            if (properties.TryPopValue("binding.nameseparator", out value))
+                option.Binding.NameSeparator = value.ToString();
 
             if (properties.TryPopValue("binding.targetname", out value))
             {
@@ -79,6 +82,9 @@ namespace PSRule.Configuration
                 else
                     option.Binding.TargetType = new string[] { value.ToString() };
             }
+            if (properties.TryPopValue("binding.usequalifiedname", out value))
+                option.Binding.UseQualifiedName = bool.Parse(value.ToString());
+
             if (properties.TryPopValue("rule.include", out value))
             {
                 if (value.GetType().IsArray)

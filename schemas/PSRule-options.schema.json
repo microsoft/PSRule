@@ -18,12 +18,6 @@
             "title": "Object binding",
             "description": "Configure property/ object binding options.",
             "properties": {
-                "ignoreCase": {
-                    "type": "boolean",
-                    "title": "Ignore case",
-                    "description": "Determines if custom binding uses ignores case when matching properties. The default is true.",
-                    "default": true
-                },
                 "field": {
                     "type": "object",
                     "title": "Field",
@@ -36,6 +30,18 @@
                         },
                         "uniqueItems": true
                     }
+                },
+                "ignoreCase": {
+                    "type": "boolean",
+                    "title": "Ignore case",
+                    "description": "Determines if custom binding uses ignores case when matching properties. The default is true.",
+                    "default": true
+                },
+                "nameSeparator": {
+                    "type": "string",
+                    "title": "Name separator",
+                    "description": "Configures the separator to use for building a qualified name. The default is '/'.",
+                    "default": "/"
                 },
                 "targetName": {
                     "type": "array",
@@ -54,11 +60,17 @@
                         "type": "string"
                     },
                     "uniqueItems": true
+                },
+                "useQualifiedName": {
+                    "type": "boolean",
+                    "title": "Use qualified name",
+                    "description": "Determines if a qualified TargetName is used. The default is false.",
+                    "default": false
                 }
             },
             "additionalProperties": false
         },
-        "execution-v0.2.0": {
+        "execution-option": {
             "type": "object",
             "title": "Execution options",
             "description": "Options that affect rule execution.",
@@ -124,7 +136,7 @@
             },
             "additionalProperties": false
         },
-        "logging-v0.8.0": {
+        "logging-option": {
             "type": "object",
             "title": "Logging options",
             "description": "Options for configuring information logging.",
@@ -174,7 +186,7 @@
             },
             "additionalProperties": false
         },
-        "suppression-v0.2.0": {
+        "suppression-option": {
             "type": "object",
             "title": "Suppress rules",
             "description": "Specifies suppression rules.",
@@ -300,7 +312,7 @@
                     "type": "object",
                     "oneOf": [
                         {
-                            "$ref": "#/definitions/execution-v0.2.0"
+                            "$ref": "#/definitions/execution-option"
                         }
                     ]
                 },
@@ -316,7 +328,7 @@
                     "type": "object",
                     "oneOf": [
                         {
-                            "$ref": "#/definitions/logging-v0.8.0"
+                            "$ref": "#/definitions/logging-option"
                         }
                     ]
                 },
@@ -336,7 +348,7 @@
                     "type": "object",
                     "oneOf": [
                         {
-                            "$ref": "#/definitions/suppression-v0.2.0"
+                            "$ref": "#/definitions/suppression-option"
                         }
                     ]
                 }

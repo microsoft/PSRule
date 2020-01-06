@@ -908,6 +908,10 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Hashtable]$BindingField,
 
+        # Sets the Binding.NameSeparator option
+        [Parameter(Mandatory = $False)]
+        [String]$BindingNameSeparator = '/',
+
         # Sets the Binding.TargetName option
         [Parameter(Mandatory = $False)]
         [Alias('BindingTargetName')]
@@ -917,6 +921,10 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('BindingTargetType')]
         [String[]]$TargetType,
+
+        # Sets the Binding.UseQualifiedName option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$BindingUseQualifiedName = $False,
 
         # Sets the Execution.InconclusiveWarning option
         [Parameter(Mandatory = $False)]
@@ -1082,6 +1090,10 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Hashtable]$BindingField,
 
+        # Sets the Binding.NameSeparator option
+        [Parameter(Mandatory = $False)]
+        [String]$BindingNameSeparator = '/',
+
         # Sets the Binding.TargetName option
         [Parameter(Mandatory = $False)]
         [Alias('BindingTargetName')]
@@ -1091,6 +1103,10 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('BindingTargetType')]
         [String[]]$TargetType,
+
+        # Sets the Binding.UseQualifiedName option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$BindingUseQualifiedName = $False,
 
         # Sets the Execution.InconclusiveWarning option
         [Parameter(Mandatory = $False)]
@@ -1250,6 +1266,8 @@ function Set-PSRuleOption {
 #
 # Keywords
 #
+
+#region Keywords
 
 <#
 .LINK
@@ -1489,6 +1507,8 @@ function Recommend {
     }
 }
 
+#endregion Keywords
+
 #
 # Helper functions
 #
@@ -1654,6 +1674,10 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [Hashtable]$BindingField,
 
+        # Sets the Binding.NameSeparator option
+        [Parameter(Mandatory = $False)]
+        [String]$BindingNameSeparator = '/',
+
         # Sets the Binding.TargetName option
         [Parameter(Mandatory = $False)]
         [Alias('BindingTargetName')]
@@ -1663,6 +1687,10 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [Alias('BindingTargetType')]
         [String[]]$TargetType,
+
+        # Sets the Binding.UseQualifiedName option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$BindingUseQualifiedName = $False,
 
         # Sets the Execution.InconclusiveWarning option
         [Parameter(Mandatory = $False)]
@@ -1743,6 +1771,11 @@ function SetOptions {
             $Option.Binding.Field = $BindingField;
         }
 
+         # Sets option Binding.NameSeparator
+         if ($PSBoundParameters.ContainsKey('BindingNameSeparator')) {
+            $Option.Binding.NameSeparator = $BindingNameSeparator;
+        }
+
         # Sets option Binding.TargetName
         if ($PSBoundParameters.ContainsKey('TargetName')) {
             $Option.Binding.TargetName = $TargetName;
@@ -1751,6 +1784,11 @@ function SetOptions {
         # Sets option Binding.TargetType
         if ($PSBoundParameters.ContainsKey('TargetType')) {
             $Option.Binding.TargetType = $TargetType;
+        }
+
+         # Sets option Binding.UseQualifiedName
+         if ($PSBoundParameters.ContainsKey('BindingUseQualifiedName')) {
+            $Option.Binding.UseQualifiedName = $BindingUseQualifiedName;
         }
 
         # Sets option Execution.InconclusiveWarning

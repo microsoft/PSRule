@@ -12,26 +12,34 @@ namespace PSRule.Configuration
     public sealed class BindingOption : IEquatable<BindingOption>
     {
         private const bool DEFAULT_IGNORECASE = true;
+        private const string DEFAULT_NAMESEPARATOR = "/";
+        private const bool DEFAULT_USEQUALIFIEDNAME = false;
 
         internal static readonly BindingOption Default = new BindingOption
         {
-            IgnoreCase = DEFAULT_IGNORECASE
+            IgnoreCase = DEFAULT_IGNORECASE,
+            NameSeparator = DEFAULT_NAMESEPARATOR,
+            UseQualifiedName = DEFAULT_USEQUALIFIEDNAME
         };
 
         public BindingOption()
         {
-            IgnoreCase = null;
             Field = null;
+            IgnoreCase = null;
+            NameSeparator = null;
             TargetName = null;
             TargetType = null;
+            UseQualifiedName = null;
         }
 
         public BindingOption(BindingOption option)
         {
-            IgnoreCase = option.IgnoreCase;
             Field = option.Field;
+            IgnoreCase = option.IgnoreCase;
+            NameSeparator = option.NameSeparator;
             TargetName = option.TargetName;
             TargetType = option.TargetType;
+            UseQualifiedName = option.UseQualifiedName;
         }
 
         public override bool Equals(object obj)
@@ -42,10 +50,12 @@ namespace PSRule.Configuration
         public bool Equals(BindingOption other)
         {
             return other != null &&
-                IgnoreCase == other.IgnoreCase &&
                 Field == other.Field &&
+                IgnoreCase == other.IgnoreCase &&
+                NameSeparator == other.NameSeparator &&
                 TargetName == other.TargetName &&
-                TargetType == other.TargetType;
+                TargetType == other.TargetType &&
+                UseQualifiedName == other.UseQualifiedName;
         }
 
         public override int GetHashCode()
@@ -53,13 +63,21 @@ namespace PSRule.Configuration
             unchecked // Overflow is fine
             {
                 int hash = 17;
-                hash = hash * 23 + (IgnoreCase.HasValue ? IgnoreCase.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Field != null ? Field.GetHashCode() : 0);
+                hash = hash * 23 + (IgnoreCase.HasValue ? IgnoreCase.Value.GetHashCode() : 0);
+                hash = hash * 23 + (NameSeparator != null ? NameSeparator.GetHashCode() : 0);
                 hash = hash * 23 + (TargetName != null ? TargetName.GetHashCode() : 0);
                 hash = hash * 23 + (TargetType != null ? TargetType.GetHashCode() : 0);
+                hash = hash * 23 + (UseQualifiedName.HasValue ? UseQualifiedName.Value.GetHashCode() : 0);
                 return hash;
             }
         }
+
+        /// <summary>
+        /// One or more custom fields to bind.
+        /// </summary>
+        [DefaultValue(null)]
+        public FieldMap Field { get; set; }
 
         /// <summary>
         /// Determines if custom binding uses ignores case when matching properties.
@@ -68,10 +86,10 @@ namespace PSRule.Configuration
         public bool? IgnoreCase { get; set; }
 
         /// <summary>
-        /// One or more custom fields to bind.
+        /// Configures the separator to use for building a qualified name.
         /// </summary>
         [DefaultValue(null)]
-        public FieldMap Field { get; set; }
+        public string NameSeparator { get; set; }
 
         /// <summary>
         /// One or more property names to use to bind TargetName.
@@ -84,5 +102,11 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public string[] TargetType { get; set; }
+
+        /// <summary>
+        /// Determines if a qualified TargetName is used.
+        /// </summary>
+        [DefaultValue(null)]
+        public bool? UseQualifiedName { get; set; }
     }
 }

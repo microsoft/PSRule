@@ -17,14 +17,16 @@ configuration:
 
 # Configure binding
 binding:
-  ignoreCase: false
   field:
     id:
     - resourceId
+  ignoreCase: false
+  nameSeparator: '::'
   targetName:
   - ResourceName
   targetType:
   - ResourceType
+  useQualifiedName: true
 
 # Configure execution options
 execution:
