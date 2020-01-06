@@ -32,10 +32,12 @@ The following workspace options are available for use:
 
 Additionally the following baseline options can be included:
 
-- [Binding.IgnoreCase](#bindingignorecase)
 - [Binding.Field](#bindingfield)
+- [Binding.IgnoreCase](#bindingignorecase)
+- [Binding.NameSeparator](#bindingnameseparator)
 - [Binding.TargetName](#bindingtargetname)
 - [Binding.TargetType](#bindingtargettype)
+- [Binding.UseQualifiedName](#bindingusequalifiedname)
 - [Configuration](#configuration)
 - [Rule.Include](#ruleinclude)
 - [Rule.Exclude](#ruleexclude)
@@ -112,41 +114,6 @@ If more than one of these files exist, the following order will be used to find 
 We recommend only using lowercase characters as shown above.
 This is because not all operation systems treat case in the same way.
 
-### Binding.IgnoreCase
-
-When evaluating an object, PSRule extracts a few key properties from the object to help filter rules and display output results.
-The process of extract these key properties is called _binding_.
-The properties that PSRule uses for binding can be customized by providing a order list of alternative properties to use.
-See [`Binding.TargetName`](#bindingtargetname) and [`Binding.TargetType`](#bindingtargettype) for these options.
-
-- By default, custom property binding finds the first matching property by name regardless of case. i.e. `Binding.IgnoreCase` is `true`.
-- To make custom bindings case sensitive, set the `Binding.IgnoreCase` option to `false`.
-  - Changing this option will affect custom property bindings for both _TargetName_ and _TargetType_.
-  - Setting this option has no affect on binding defaults or custom scripts.
-
-This option can be specified using:
-
-```powershell
-# PowerShell: Using the BindingIgnoreCase parameter
-$option = New-PSRuleOption -BindingIgnoreCase $False;
-```
-
-```powershell
-# PowerShell: Using the Binding.IgnoreCase hashtable key
-$option = New-PSRuleOption -Option @{ 'Binding.IgnoreCase' = $False };
-```
-
-```powershell
-# PowerShell: Using the BindingIgnoreCase parameter to set YAML
-Set-PSRuleOption -BindingIgnoreCase $False;
-```
-
-```yaml
-# YAML: Using the binding/ignoreCase property
-binding:
-  ignoreCase: false
-```
-
 ### Binding.Field
 
 When an object is passed from the pipeline, PSRule automatically extracts fields from object properties.
@@ -187,6 +154,77 @@ binding:
     id:
     - ResourceId
     - AlternativeId
+```
+
+### Binding.IgnoreCase
+
+When evaluating an object, PSRule extracts a few key properties from the object to help filter rules and display output results.
+The process of extract these key properties is called _binding_.
+The properties that PSRule uses for binding can be customized by providing a order list of alternative properties to use.
+See [`Binding.TargetName`](#bindingtargetname) and [`Binding.TargetType`](#bindingtargettype) for these options.
+
+- By default, custom property binding finds the first matching property by name regardless of case. i.e. `Binding.IgnoreCase` is `true`.
+- To make custom bindings case sensitive, set the `Binding.IgnoreCase` option to `false`.
+  - Changing this option will affect custom property bindings for both _TargetName_ and _TargetType_.
+  - Setting this option has no affect on binding defaults or custom scripts.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the BindingIgnoreCase parameter
+$option = New-PSRuleOption -BindingIgnoreCase $False;
+```
+
+```powershell
+# PowerShell: Using the Binding.IgnoreCase hashtable key
+$option = New-PSRuleOption -Option @{ 'Binding.IgnoreCase' = $False };
+```
+
+```powershell
+# PowerShell: Using the BindingIgnoreCase parameter to set YAML
+Set-PSRuleOption -BindingIgnoreCase $False;
+```
+
+```yaml
+# YAML: Using the binding/ignoreCase property
+binding:
+  ignoreCase: false
+```
+
+### Binding.NameSeparator
+
+When an object is passed from the pipeline, PSRule assigns the object a _TargetName_.
+_TargetName_ is used in output results to identify one object from another.
+
+In cases where different types of objects share the same _TargetName_, this may become confusing.
+Using a qualified name, prefixes the _TargetName_ with _TargetType_.
+i.e. _TargetType/TargetName_
+
+To use a qualified name, see the `Binding.UseQualifiedName` option.
+
+By default, PSRule uses `/` to separate _TargetType_ from _TargetName_.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the BindingNameSeparator parameter
+$option = New-PSRuleOption -BindingNameSeparator '::';
+```
+
+```powershell
+# PowerShell: Using the Binding.NameSeparator hashtable key
+$option = New-PSRuleOption -Option @{ 'Binding.NameSeparator' = '::' };
+```
+
+```powershell
+# PowerShell: Using the BindingNameSeparator parameter to set YAML
+Set-PSRuleOption -BindingNameSeparator '::';
+```
+
+```yaml
+# YAML: Using the binding/nameSeparator property
+binding:
+  nameSeparator: '::'
 ```
 
 ### Binding.TargetName
@@ -316,6 +354,41 @@ $bindFn = {
 
 # Specify the binding function script block code to execute
 $option = New-PSRuleOption -BindTargetType $bindFn;
+```
+
+### Binding.UseQualifiedName
+
+When an object is passed from the pipeline, PSRule assigns the object a _TargetName_.
+_TargetName_ is used in output results to identify one object from another.
+
+In cases where different types of objects share the same _TargetName_, this may become confusing.
+Using a qualified name, prefixes the _TargetName_ with _TargetType_.
+i.e. _TargetType/TargetName_
+
+By default, PSRule uses `/` to separate _TargetType_ from _TargetName_.
+Set `Binding.NameSeparator` to change.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the BindingUseQualifiedName parameter
+$option = New-PSRuleOption -BindingUseQualifiedName $True;
+```
+
+```powershell
+# PowerShell: Using the Binding.UseQualifiedName hashtable key
+$option = New-PSRuleOption -Option @{ 'Binding.UseQualifiedName' = $True };
+```
+
+```powershell
+# PowerShell: Using the BindingUseQualifiedName parameter to set YAML
+Set-PSRuleOption -BindingUseQualifiedName $True;
+```
+
+```yaml
+# YAML: Using the binding/useQualifiedName property
+binding:
+  useQualifiedName: true
 ```
 
 ### Configuration
@@ -1097,17 +1170,19 @@ suppression:
 
 # Configure baseline options
 binding:
-  ignoreCase: false
   field:
     id:
     - ResourceId
     - AlternativeId
+  ignoreCase: false
+  nameSeparator: '::'
   targetName:
   - ResourceName
   - AlternateName
   targetType:
   - ResourceType
   - kind
+  useQualifiedName: true
 
 configuration:
   appServiceMinInstanceCount: 2
@@ -1164,13 +1239,15 @@ suppression: { }
 
 # Configure baseline options
 binding:
-  ignoreCase: true
   field: { }
+  ignoreCase: true
+  nameSeparator: '/'
   targetName:
   - TargetName
   - Name
   targetType:
   - PSObject.TypeNames[0]
+  useQualifiedName: false
 
 configuration: { }
 

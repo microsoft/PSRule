@@ -162,28 +162,6 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
-    Context 'Read Binding.IgnoreCase' {
-        It 'from default' {
-            $option = New-PSRuleOption;
-            $option.Binding.IgnoreCase | Should -Be $True;
-        }
-
-        It 'from Hashtable' {
-            $option = New-PSRuleOption -Option @{ 'Binding.IgnoreCase' = $False };
-            $option.Binding.IgnoreCase | Should -Be $False;
-        }
-
-        It 'from YAML' {
-            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Binding.IgnoreCase | Should -Be $False;
-        }
-
-        It 'from parameter' {
-            $option = New-PSRuleOption -BindingIgnoreCase $False -Path $emptyOptionsFilePath;
-            $option.Binding.IgnoreCase | Should -Be $False;
-        }
-    }
-
     Context 'Read Binding.Field' {
         It 'from default' {
             $option = New-PSRuleOption;
@@ -208,6 +186,50 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
             $option = New-PSRuleOption -BindingField @{ id = 'resourceId' } -Path $emptyOptionsFilePath;
             $option.Binding.Field | Should -Not -BeNullOrEmpty;
             $option.Binding.Field.id.Length | Should -Be 1;
+        }
+    }
+
+    Context 'Read Binding.IgnoreCase' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Binding.IgnoreCase | Should -Be $True;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Binding.IgnoreCase' = $False };
+            $option.Binding.IgnoreCase | Should -Be $False;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Binding.IgnoreCase | Should -Be $False;
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -BindingIgnoreCase $False -Path $emptyOptionsFilePath;
+            $option.Binding.IgnoreCase | Should -Be $False;
+        }
+    }
+
+    Context 'Read Binding.NameSeparator' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Binding.NameSeparator | Should -Be '/';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Binding.NameSeparator' = 'zz' };
+            $option.Binding.NameSeparator | Should -Be 'zz';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Binding.NameSeparator | Should -Be '::';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -BindingNameSeparator 'zz' -Path $emptyOptionsFilePath;
+            $option.Binding.NameSeparator | Should -Be 'zz';
         }
     }
 
@@ -282,6 +304,28 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         It 'from parameter' {
             $option = New-PSRuleOption -TargetType 'ResourceType', 'Kind' -Path $emptyOptionsFilePath;
             $option.Binding.TargetType | Should -BeIn 'ResourceType', 'Kind';
+        }
+    }
+
+    Context 'Read Binding.UseQualifiedName' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Binding.UseQualifiedName | Should -Be $False;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Binding.UseQualifiedName' = $True };
+            $option.Binding.UseQualifiedName | Should -Be $True;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Binding.UseQualifiedName | Should -Be $True;
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -BindingUseQualifiedName $True -Path $emptyOptionsFilePath;
+            $option.Binding.UseQualifiedName | Should -Be $True;
         }
     }
 

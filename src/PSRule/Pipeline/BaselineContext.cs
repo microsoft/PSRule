@@ -11,13 +11,17 @@ namespace PSRule.Pipeline
 {
     internal interface IBindingOption
     {
+        FieldMap[] Field { get; }
+
         bool IgnoreCase { get; }
 
-        FieldMap[] Field { get; }
+        string NameSeparator { get; }
 
         string[] TargetName { get; }
 
         string[] TargetType { get; }
+
+        bool UseQualifiedName { get; }
     }
 
     internal sealed class BaselineContext
@@ -59,19 +63,23 @@ namespace PSRule.Pipeline
             public Dictionary<string, object> Configuration;
 
             // Binding
-            public bool? IgnoreCase;
             public FieldMap Field;
+            public bool? IgnoreCase;
+            public string NameSeparator;
             public string[] TargetName;
             public string[] TargetType;
+            public bool? UseQualifiedName;
 
             public BaselineContextScope(ScopeType type, string moduleName, IBaselineSpec option)
             {
                 Type = type;
                 ModuleName = moduleName;
-                IgnoreCase = option.Binding?.IgnoreCase;
                 Field = option.Binding?.Field;
+                IgnoreCase = option.Binding?.IgnoreCase;
+                NameSeparator = option?.Binding?.NameSeparator;
                 TargetName = option.Binding?.TargetName;
                 TargetType = option.Binding?.TargetType;
+                UseQualifiedName = option.Binding?.UseQualifiedName;
                 Include = option.Rule?.Include;
                 Exclude = option.Rule?.Exclude;
                 Tag = option.Rule?.Tag;
@@ -90,21 +98,27 @@ namespace PSRule.Pipeline
 
         private sealed class BindingOption : IBindingOption, IEquatable<BindingOption>
         {
-            public BindingOption(bool ignoreCase, FieldMap[] field, string[] targetName, string[] targetType)
+            public BindingOption(FieldMap[] field, bool ignoreCase, string nameSeparator, string[] targetName, string[] targetType, bool useQualifiedName)
             {
-                IgnoreCase = ignoreCase;
                 Field = field;
+                IgnoreCase = ignoreCase;
+                NameSeparator = nameSeparator;
                 TargetName = targetName;
                 TargetType = targetType;
+                UseQualifiedName = useQualifiedName;
             }
+
+            public FieldMap[] Field { get; }
 
             public bool IgnoreCase { get; }
 
-            public FieldMap[] Field { get; }
+            public string NameSeparator { get; }
 
             public string[] TargetName { get; }
 
             public string[] TargetType { get; }
+
+            public bool UseQualifiedName { get; }
 
             public override bool Equals(object obj)
             {
@@ -114,10 +128,12 @@ namespace PSRule.Pipeline
             public bool Equals(BindingOption other)
             {
                 return other != null &&
-                    IgnoreCase == other.IgnoreCase &&
                     Field == other.Field &&
+                    IgnoreCase == other.IgnoreCase &&
+                    NameSeparator == other.NameSeparator &&
                     TargetName == other.TargetName &&
-                    TargetType == other.TargetType;
+                    TargetType == other.TargetType &&
+                    UseQualifiedName == other.UseQualifiedName;
             }
 
             public override int GetHashCode()
@@ -125,10 +141,12 @@ namespace PSRule.Pipeline
                 unchecked // Overflow is fine
                 {
                     int hash = 17;
-                    hash = hash * 23 + (IgnoreCase ? IgnoreCase.GetHashCode() : 0);
                     hash = hash * 23 + (Field != null ? Field.GetHashCode() : 0);
+                    hash = hash * 23 + (IgnoreCase ? IgnoreCase.GetHashCode() : 0);
+                    hash = hash * 23 + (NameSeparator != null ? NameSeparator.GetHashCode() : 0);
                     hash = hash * 23 + (TargetName != null ? TargetName.GetHashCode() : 0);
                     hash = hash * 23 + (TargetType != null ? TargetType.GetHashCode() : 0);
+                    hash = hash * 23 + (UseQualifiedName ? UseQualifiedName.GetHashCode() : 0);
                     return hash;
                 }
             }
@@ -158,11 +176,13 @@ namespace PSRule.Pipeline
             if (_Binding != null)
                 return _Binding;
 
-            bool ignoreCase = _Explicit?.IgnoreCase ?? _Workspace?.IgnoreCase ?? _Module?.IgnoreCase ?? PSRule.Configuration.BindingOption.Default.IgnoreCase.Value;
             FieldMap[] field = new FieldMap[] { _Explicit?.Field, _Workspace?.Field, _Module?.Field };
+            bool ignoreCase = _Explicit?.IgnoreCase ?? _Workspace?.IgnoreCase ?? _Module?.IgnoreCase ?? Configuration.BindingOption.Default.IgnoreCase.Value;
+            string nameSeparator = _Explicit?.NameSeparator ?? _Workspace?.NameSeparator ?? _Module?.NameSeparator ?? Configuration.BindingOption.Default.NameSeparator;
             string[] targetName = _Explicit?.TargetName ?? _Workspace?.TargetName ?? _Module?.TargetName;
             string[] targetType = _Explicit?.TargetType ?? _Workspace?.TargetType ?? _Module?.TargetType;
-            return _Binding = new BindingOption(ignoreCase, field, targetName, targetType);
+            bool useQualifiedName = _Explicit?.UseQualifiedName ?? _Workspace?.UseQualifiedName ?? _Module?.UseQualifiedName ?? Configuration.BindingOption.Default.UseQualifiedName.Value;
+            return _Binding = new BindingOption(field, ignoreCase, nameSeparator, targetName, targetType, useQualifiedName);
         }
 
         public Dictionary<string, object> GetConfiguration()

@@ -13,10 +13,12 @@ A baseline includes a set of rule and configuration options that are used for ev
 
 The following baseline options can be configured:
 
-- [Binding.IgnoreCase](about_PSRule_Options.md#bindingignorecase)
 - [Binding.Field](about_PSRule_Options.md#bindingfield)
+- [Binding.IgnoreCase](about_PSRule_Options.md#bindingignorecase)
+- [Binding.NameSeparator](about_PSRule_Options.md#bindingnameseparator)
 - [Binding.TargetName](about_PSRule_Options.md#bindingtargetname)
 - [Binding.TargetType](about_PSRule_Options.md#bindingtargettype)
+- [Binding.UseQualifiedName](about_PSRule_Options.md#bindingusequalifiedname)
 - [Configuration](about_PSRule_Options.md#configuration)
 - [Rule.Include](about_PSRule_Options.md#ruleinclude)
 - [Rule.Exclude](about_PSRule_Options.md#ruleexclude)

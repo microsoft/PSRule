@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added support for qualified target names. [#395](https://github.com/Microsoft/PSRule/issues/395)
+  - Added options `Binding.UseQualifiedName` and `Binding.NameSeparator`.
+  - See `about_PSRule_Options` for details.
+
 ## v0.13.0
 
 What's changed since v0.12.0:

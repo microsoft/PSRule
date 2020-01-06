@@ -1663,13 +1663,10 @@ Describe 'Binding' -Tag Common, Binding {
 
             $bindFn = {
                 param ($TargetObject)
-
                 $otherName = $TargetObject.PSObject.Properties['OtherName'];
-
                 if ($otherName -eq $Null) {
                     return $Null
                 }
-
                 return $otherName.Value;
             }
 
@@ -1689,6 +1686,28 @@ Describe 'Binding' -Tag Common, Binding {
             $result.Count | Should -Be 2;
             $result[0].TargetName | Should -Be 'AlternateName';
             $result[1].TargetName | Should -Be 'AlternateName';
+        }
+
+        It 'Binds with qualified name' {
+            $testObject = @(
+                [PSCustomObject]@{ PSTypeName = 'UnitTest'; Name = 'TestObject1' }
+            )
+            $options = @{
+                'Binding.UseQualifiedName' = $True
+            }
+
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $options);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'UnitTest/TestObject1';
+
+            $options['Binding.NameSeparator'] = '::';
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $options);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'UnitTest::TestObject1';
         }
     }
 
