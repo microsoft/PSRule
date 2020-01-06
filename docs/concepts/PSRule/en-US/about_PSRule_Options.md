@@ -203,6 +203,7 @@ i.e. _TargetType/TargetName_
 To use a qualified name, see the `Binding.UseQualifiedName` option.
 
 By default, PSRule uses `/` to separate _TargetType_ from _TargetName_.
+This option configures the separator that PSRule uses between the two components.
 
 This option can be specified using:
 
@@ -364,6 +365,8 @@ _TargetName_ is used in output results to identify one object from another.
 In cases where different types of objects share the same _TargetName_, this may become confusing.
 Using a qualified name, prefixes the _TargetName_ with _TargetType_.
 i.e. _TargetType/TargetName_
+
+This option determines if PSRule uses qualified or unqualified names (default).
 
 By default, PSRule uses `/` to separate _TargetType_ from _TargetName_.
 Set `Binding.NameSeparator` to change.

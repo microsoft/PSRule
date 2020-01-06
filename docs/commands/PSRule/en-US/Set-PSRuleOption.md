@@ -15,7 +15,8 @@ Sets options that configure PSRule execution.
 
 ```text
 Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force] [-AllowClobber]
- [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>] [-TargetName <String[]>] [-TargetType <String[]>]
+ [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>] [-BindingNameSeparator <String>]
+ [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-Format <InputFormat>]
  [-ObjectPath <String>] [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>]
  [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
@@ -176,6 +177,24 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -BindingNameSeparator
+
+Sets the option `Binding.NameSeparator`.
+This option specifies the separator to use for qualified names.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -TargetName
 
 Sets the option `Binding.TargetName`.
@@ -204,6 +223,24 @@ See about_PSRule_Options for more information.
 Type: String[]
 Parameter Sets: (All)
 Aliases: BindingTargetType
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -BindingUseQualifiedName
+
+Sets the option `Binding.UseQualifiedName`.
+This option specifies is qualified target names are used.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named
