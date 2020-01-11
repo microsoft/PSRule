@@ -22,6 +22,7 @@ The following built-in assertion methods are provided:
 - [HasDefaultValue](#hasdefaultvalue) - The object should not have the field or the field value is set to the default value.
 - [HasField](#hasfield) - The object must have the specified field.
 - [HasFieldValue](#hasfieldvalue) - The object must have the specified field and that field is not empty.
+- [HasJsonSchema](#hasjsonschema) - The object must reference a JSON schema with the `$schema` field.
 - [JsonSchema](#jsonschema) - The object must validate successfully against a JSON schema.
 - [Less](#less) - The field value must be less.
 - [LessOrEqual](#lessorequal) - The field value must be less or equal to.
@@ -42,7 +43,8 @@ Assertion methods use the following standard pattern:
   - Assertion methods must a `$Null` input object.
 - Assertion methods return the `AssertResult` object that is interpreted by the rule pipeline.
 
-Some assertion methods may overlap or provide similar functionality to built-in keywords. Where you have the choice, use built-in keywords.
+Some assertion methods may overlap or provide similar functionality to built-in keywords.
+Where you have the choice, use built-in keywords.
 Use assertion methods for advanced cases or increased flexibility.
 
 In the following example, `Assert.HasFieldValue` asserts that `$TargetObject` should have a field named `Type` with a non-empty value.
@@ -275,6 +277,32 @@ Rule 'HasFieldValue' {
 }
 ```
 
+### HasJsonSchema
+
+The `HasJsonSchema` assertion method determines if the input object has a `$schema` property defined.
+If the `$schema` property is defined, it must match one of the supplied schemas.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being compared.
+- `uri` - Optional. When specified, the object being compared must have a `$schema` property set to one of the specified schemas.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The field '$schema' does not exist._
+- _The field value '$schema' is not a string._
+- _None of the specified schemas match '{0}'._
+
+Examples:
+
+```powershell
+Rule 'HasFieldValue' {
+    $Assert.HasJsonSchema($TargetObject)
+    $Assert.HasJsonSchema($TargetObject, "http://json-schema.org/draft-07/schema`#")
+}
+```
+
 ### JsonSchema
 
 The `JsonSchema` assertion method compares the input object against a defined JSON schema.
@@ -282,7 +310,8 @@ The `JsonSchema` assertion method compares the input object against a defined JS
 The following parameters are accepted:
 
 - `inputObject` - The object being compared against the JSON schema.
-- `uri` - A URL or file path to a JSON schema file formatted as UTF-8. Either a file path or URL can be used to specify the location of the schema file.
+- `uri` - A URL or file path to a JSON schema file formatted as UTF-8.
+Either a file path or URL can be used to specify the location of the schema file.
 
 Reasons include:
 

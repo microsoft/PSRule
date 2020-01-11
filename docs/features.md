@@ -33,7 +33,7 @@ To install the extension:
 code --install-extension bewhite.psrule-vscode-preview
 ```
 
-For additional installation options see [install instructions](scenarios/install-instructions.md).
+For additional installation options, see [install instructions](scenarios/install-instructions.md).
 
 ## Reusable
 

@@ -146,15 +146,25 @@ The following properties are available for read access:
 
 - `Field` - A hashtable of custom bound fields. See option `Binding.Field` for more information.
 - `TargetObject` - The object currently being processed on the pipeline.
-- `TargetName` - The name of the object currently being processed on the pipeline. This property will automatically default to `TargetName` or `Name` properties of the object if they exist.
-- `TargetType` - The type of the object currently being processed on the pipeline. This property will automatically bind to `PSObject.TypeNames[0]` by default.
+- `TargetName` - The name of the object currently being processed on the pipeline.
+This property will automatically default to `TargetName` or `Name` properties of the object if they exist.
+- `TargetType` - The type of the object currently being processed on the pipeline.
+This property will automatically bind to `PSObject.TypeNames[0]` by default.
 
 The following properties are available for read/ write access:
 
-- `Data` - A hashtable of custom data. This property can be populated during rule execution. Custom data is not used by PSRule directly, and is intended to be used by downstream processes that need to interpret PSRule results.
+- `Data` - A hashtable of custom data. This property can be populated during rule execution.
+Custom data is not used by PSRule directly, and is intended to be used by downstream processes that need to interpret PSRule results.
 
 To bind fields that already exist on the target object use custom binding and `Binding.Field`.
 Use custom data to store data that must be calculated during rule execution.
+
+The following helper methods are available:
+
+- `GetContent(PSObject sourceObject)` - Returns the content of a file as one or more objects.
+The parameter `sourceObject` should be a `FileInfo` or a `Uri` object.
+The file format is detected based on the same file formats as the option `Input.Format`.
+i.e. Yaml, Json, Markdown and PowerShell Data.
 
 Syntax:
 

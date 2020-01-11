@@ -99,6 +99,27 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
+        /// The object should have the $schema property defined with the URI.
+        /// </summary>
+        public AssertResult HasJsonSchema(PSObject inputObject, string[] uri = null)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardField(inputObject, "$schema", false, out object fieldValue, out result) ||
+                GuardString(fieldValue, out string value, out result))
+                return result;
+
+            if (uri == null || uri.Length == 0)
+                return Pass();
+
+            for (var i = 0; i < uri.Length; i++)
+                if (StringComparer.OrdinalIgnoreCase.Equals(value, uri[i]))
+                    return Pass();
+
+            return Fail(ReasonStrings.HasJsonSchema, value);
+        }
+
+        /// <summary>
         /// The object should have a specific field.
         /// </summary>
         public AssertResult HasField(PSObject inputObject, string field, bool caseSensitive = false)

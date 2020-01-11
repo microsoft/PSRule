@@ -31,15 +31,15 @@ namespace PSRule.Runtime
             if (path == null)
                 return Empty;
 
-            if (PipelineContext.CurrentThread.DataCache.ContainsKey(path))
-                return PipelineContext.CurrentThread.DataCache[path];
+            if (PipelineContext.CurrentThread.LocalizedDataCache.ContainsKey(path))
+                return PipelineContext.CurrentThread.LocalizedDataCache[path];
 
             var ast = System.Management.Automation.Language.Parser.ParseFile(path, out Token[] tokens, out ParseError[] errors);
             var data = ast.Find(a => a is HashtableAst, false);
             if (data != null)
             {
                 var result = (Hashtable)data.SafeGetValue();
-                PipelineContext.CurrentThread.DataCache[path] = result;
+                PipelineContext.CurrentThread.LocalizedDataCache[path] = result;
                 return result;
             }
             return Empty;

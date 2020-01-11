@@ -79,6 +79,17 @@ Rule 'Assert.HasDefaultValue' {
     $Assert.HasDefaultValue($TargetObject, 'OtherInt', 1)
 }
 
+# Synopsis: Test for $Assert.HasJsonSchema
+Rule 'Assert.HasJsonSchema' {
+    $schemas = @(
+        "http://json-schema.org/draft-04/schema`#"
+        "http://json-schema.org/draft-07/schema`#"
+    )
+    $Assert.HasJsonSchema($TargetObject)
+    $Assert.HasJsonSchema($TargetObject, $schemas[1])
+    $Assert.HasJsonSchema($TargetObject, $schemas)
+}
+
 # Synopsis: Test for $Assert.JsonSchema
 Rule 'Assert.JsonSchema' {
     $Assert.JsonSchema($TargetObject, 'tests/PSRule.Tests/FromFile.Json.schema.json')

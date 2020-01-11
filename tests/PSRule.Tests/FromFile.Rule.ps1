@@ -137,6 +137,9 @@ Rule 'VariableContextVariable' {
     $PSRule.Data['property2'] = 'value2';
     $PSRule.Data.Add('property3', 'value3');
     $PSRule.Data.Count -eq 3;
+
+    # Get content
+    $PSRule.GetContent((Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath 'ObjectFromFile.json'))).Length -eq 2;
 }
 
 # Synopsis: Test $Rule automatic variables
