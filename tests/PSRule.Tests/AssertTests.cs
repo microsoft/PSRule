@@ -32,6 +32,21 @@ namespace PSRule
         }
 
         [Fact]
+        public void HasJsonSchema()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            var actual1 = GetObject((name: "$schema", value: "abc"));
+            var actual2 = GetObject((name: "schema", value: "abc"));
+
+            Assert.True(assert.HasJsonSchema(actual1, null).Result);
+            Assert.True(assert.HasJsonSchema(actual1, new string[] { "abc" }).Result);
+            Assert.False(assert.HasJsonSchema(actual2, new string[] { "abc" }).Result);
+            Assert.True(assert.HasJsonSchema(actual1, new string[] { "efg", "abc" }).Result);
+        }
+
+        [Fact]
         public void StartsWith()
         {
             SetContext();

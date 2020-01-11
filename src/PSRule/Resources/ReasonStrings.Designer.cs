@@ -151,6 +151,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to None of the specified schemas match &apos;{0}&apos;..
+        /// </summary>
+        internal static string HasJsonSchema {
+            get {
+                return ResourceManager.GetString("HasJsonSchema", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed schema validation on {0}. {1}.
         /// </summary>
         internal static string JsonSchemaInvalid {

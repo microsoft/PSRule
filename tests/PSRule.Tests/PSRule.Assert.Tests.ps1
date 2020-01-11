@@ -46,6 +46,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 CompareString = 'abc'
             }
             [PSCustomObject]@{
+                '$schema' = "http://json-schema.org/draft-07/schema`#"
                 Name = 'TestObject2'
                 NotType = 'TestType'
                 Value = $Null
@@ -204,6 +205,22 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 3;
             $result[1].Reason[0..2] | Should -BeLike "The field '*' is set to '*'.";
+        }
+
+        It 'HasJsonSchema' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.HasJsonSchema');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $False;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].Reason.Length | Should -Be 3;
+            $result[0].Reason | Should -BeIn 'The field ''$schema'' does not exist.';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[1].TargetName | Should -Be 'TestObject2';
         }
 
         It 'JsonSchema' {

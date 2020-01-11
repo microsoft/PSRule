@@ -68,8 +68,9 @@ namespace PSRule.Pipeline
 
         internal ExecutionScope ExecutionScope;
 
-        internal readonly Dictionary<string, Hashtable> DataCache;
+        internal readonly Dictionary<string, Hashtable> LocalizedDataCache;
         internal readonly Dictionary<string, object> ExpressionCache;
+        internal readonly Dictionary<string, PSObject[]> ContentCache;
         internal readonly string[] Culture;
         internal readonly BaselineContext Baseline;
         internal readonly HostContext HostContext;
@@ -108,8 +109,9 @@ namespace PSRule.Pipeline
             _PassStream = option.Logging.RulePass ?? LoggingOption.Default.RulePass.Value;
 
             _NameTokenCache = new Dictionary<string, NameToken>();
-            DataCache = new Dictionary<string, Hashtable>();
+            LocalizedDataCache = new Dictionary<string, Hashtable>();
             ExpressionCache = new Dictionary<string, object>();
+            ContentCache = new Dictionary<string, PSObject[]>();
 
             _Reason = new List<string>();
             _Binder = binder;
@@ -422,6 +424,8 @@ namespace PSRule.Pipeline
             _ObjectNumber++;
             TargetObject = targetObject;
             _Binder.Bind(Baseline, targetObject);
+            if (ContentCache.Count > 0)
+                ContentCache.Clear();
         }
 
         /// <summary>
@@ -530,7 +534,6 @@ namespace PSRule.Pipeline
                     {
                         _Hash.Dispose();
                     }
-
                     if (_Runspace != null)
                     {
                         _Runspace.Dispose();
@@ -538,10 +541,10 @@ namespace PSRule.Pipeline
 
                     _RuleTimer.Stop();
                     _NameTokenCache.Clear();
-                    DataCache.Clear();
+                    LocalizedDataCache.Clear();
                     ExpressionCache.Clear();
+                    ContentCache.Clear();
                 }
-
                 _Disposed = true;
             }
         }

@@ -5,6 +5,11 @@
 - Added support for qualified target names. [#395](https://github.com/Microsoft/PSRule/issues/395)
   - Added options `Binding.UseQualifiedName` and `Binding.NameSeparator`.
   - See `about_PSRule_Options` for details.
+- Added assertion method `HasJsonSchema` to check if a JSON schema is referenced. [#398](https://github.com/Microsoft/PSRule/issues/398)
+  - See `about_PSRule_Assert` for usage details.
+- Added file content helper for reading objects from files. [#399](https://github.com/Microsoft/PSRule/issues/399)
+  - The method `GetContent` of `$PSRule` can be used to read files as objects.
+  - See `about_PSRule_Variables` for usage details.
 
 ## v0.13.0
 

@@ -113,7 +113,8 @@ isFruit                             Pass       Fruit is only Apple, Orange and P
 
 ### Additional options
 
-To filter results to only non-fruit results, use `Invoke-PSRule -Outcome Fail`. Passed, failed and error results are shown by default.
+To filter results to only non-fruit results, use `Invoke-PSRule -Outcome Fail`.
+Passed, failed and error results are shown by default.
 
 ```powershell
 # Only show non-fruit results
@@ -235,6 +236,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [HasDefaultValue](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasdefaultvalue)
   - [HasField](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasfield)
   - [HasFieldValue](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasfieldvalue)
+  - [HasJsonSchema](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasjsonschema)
   - [JsonSchema](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#jsonschema)
   - [Less](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#less)
   - [LessOrEqual](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#lessorequal)

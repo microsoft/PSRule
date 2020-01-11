@@ -149,6 +149,9 @@
   <data name="HasFieldValue" xml:space="preserve">
     <value>The value of '{0}' is null or empty.</value>
   </data>
+  <data name="HasJsonSchema" xml:space="preserve">
+    <value>None of the specified schemas match '{0}'.</value>
+  </data>
   <data name="JsonSchemaInvalid" xml:space="preserve">
     <value>Failed schema validation on {0}. {1}</value>
   </data>

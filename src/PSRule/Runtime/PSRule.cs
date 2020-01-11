@@ -2,7 +2,11 @@
 // Licensed under the MIT License.
 
 using PSRule.Pipeline;
+using PSRule.Rules;
+using System;
 using System.Collections;
+using System.IO;
+using System.Linq;
 using System.Management.Automation;
 
 namespace PSRule.Runtime
@@ -12,6 +16,15 @@ namespace PSRule.Runtime
     /// </summary>
     public sealed class PSRule
     {
+        private readonly PipelineContext _Context;
+
+        public PSRule() { }
+
+        internal PSRule(PipelineContext context)
+        {
+            _Context = context;
+        }
+
         /// <summary>
         /// Custom data set by the rule for this target object.
         /// </summary>
@@ -19,7 +32,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                return PipelineContext.CurrentThread.RuleRecord.Data;
+                return _Context.RuleRecord.Data;
             }
         }
 
@@ -30,7 +43,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                return PipelineContext.CurrentThread.RuleRecord.Field;
+                return _Context.RuleRecord.Field;
             }
         }
 
@@ -41,7 +54,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                return PipelineContext.CurrentThread.RuleRecord.TargetObject;
+                return _Context.RuleRecord.TargetObject;
             }
         }
 
@@ -52,7 +65,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                return PipelineContext.CurrentThread.RuleRecord.TargetName;
+                return _Context.RuleRecord.TargetName;
             }
         }
 
@@ -63,8 +76,25 @@ namespace PSRule.Runtime
         {
             get
             {
-                return PipelineContext.CurrentThread.RuleRecord.TargetType;
+                return _Context.RuleRecord.TargetType;
             }
+        }
+
+        /// <summary>
+        /// Attempts to read content from disk.
+        /// </summary>
+        public PSObject[] GetContent(PSObject sourceObject)
+        {
+            if (sourceObject == null || !(sourceObject.BaseObject is FileInfo || sourceObject.BaseObject is Uri))
+                return new PSObject[] { sourceObject };
+
+            var cacheKey = sourceObject.BaseObject.ToString();
+            if (_Context.ContentCache.TryGetValue(cacheKey, out PSObject[] result))
+                return result;
+
+            result = PipelineReceiverActions.DetectInputFormat(sourceObject, PipelineReceiverActions.PassThru).ToArray();
+            _Context.ContentCache.Add(cacheKey, result);
+            return result;
         }
     }
 }
