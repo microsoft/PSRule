@@ -136,7 +136,7 @@ namespace PSRule.Runtime
 
         public static bool GetField(PSObject targetObject, string name, bool caseSensitive, out object value)
         {
-            if (targetObject.BaseObject != null && targetObject.BaseObject is IDictionary dictionary)
+            if (targetObject.BaseObject is IDictionary dictionary)
                 return TryDictionary(dictionary, name, caseSensitive, out value);
 
             return TryPropertyValue(targetObject, name, caseSensitive, out value);
