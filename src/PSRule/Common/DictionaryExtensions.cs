@@ -13,5 +13,13 @@ namespace PSRule
         {
             return dictionary.TryGetValue(key, out value) && dictionary.Remove(key);
         }
+
+        [DebuggerStepThrough]
+        public static void AddUnique(this IDictionary<string, object> dictionary, IEnumerable<KeyValuePair<string, object>> values)
+        {
+            foreach (var kv in values)
+                if (!dictionary.ContainsKey(kv.Key))
+                    dictionary.Add(kv.Key, kv.Value);
+        }
     }
 }

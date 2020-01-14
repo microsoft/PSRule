@@ -209,28 +209,14 @@ namespace PSRule.Pipeline
         {
             var result = new Dictionary<string, object>();
             if (_Explicit != null && _Explicit.Configuration.Count > 0)
-            {
-                foreach (var c in _Explicit.Configuration)
-                {
-                    result.Add(c.Key, c.Value);
-                }
-            }
+                result.AddUnique(_Explicit.Configuration);
+
             if (_Workspace != null && _Workspace.Configuration.Count > 0)
-            {
-                foreach (var c in _Workspace.Configuration)
-                {
-                    if (!result.ContainsKey(c.Key))
-                        result.Add(c.Key, c.Value);
-                }
-            }
+                result.AddUnique(_Workspace.Configuration);
+
             if (_Module != null && _Module.Configuration.Count > 0)
-            {
-                foreach (var c in _Module.Configuration)
-                {
-                    if (!result.ContainsKey(c.Key))
-                        result.Add(c.Key, c.Value);
-                }
-            }
+                result.AddUnique(_Module.Configuration);
+
             return result;
         }
     }

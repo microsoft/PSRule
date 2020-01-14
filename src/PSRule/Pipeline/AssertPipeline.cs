@@ -63,7 +63,7 @@ namespace PSRule.Pipeline
             /// <summary>
             /// A base class for a formatter.
             /// </summary>
-            private abstract class AssertFormatterBase : PipelineLoggerBase
+            private abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatter
             {
                 protected readonly ILogger Logger;
 
@@ -73,6 +73,22 @@ namespace PSRule.Pipeline
                     Banner();
                     Source(source);
                 }
+
+                public void Error(ErrorRecord errorRecord)
+                {
+                    Error(errorRecord.Exception.Message);
+                }
+
+                public void Warning(WarningRecord warningRecord)
+                {
+                    Warning(warningRecord.Message);
+                }
+
+                public abstract void Result(InvokeResult result);
+
+                protected abstract void Error(string message);
+
+                protected abstract void Warning(string message);
 
                 protected void Banner()
                 {
@@ -99,12 +115,12 @@ namespace PSRule.Pipeline
 
                 protected override void DoWriteError(ErrorRecord errorRecord)
                 {
-                    Logger.WriteError(errorRecord);
+                    Error(errorRecord);
                 }
 
                 protected override void DoWriteWarning(string message)
                 {
-                    Logger.WriteWarning(message);
+                    Warning(message);
                 }
 
                 protected override void DoWriteVerbose(string message)
@@ -147,7 +163,7 @@ namespace PSRule.Pipeline
                 internal ClientFormatter(Source[] source, ILogger logger)
                     : base(source, logger) { }
 
-                public void Result(InvokeResult result)
+                public override void Result(InvokeResult result)
                 {
                     var records = result.AsRecord();
                     for (var i = 0; i < records.Length; i++)
@@ -166,32 +182,12 @@ namespace PSRule.Pipeline
                     }
                 }
 
-                public void Error(ErrorRecord errorRecord)
-                {
-                    Error(errorRecord.Exception.Message);
-                }
-
-                public void Warning(WarningRecord warningRecord)
-                {
-                    Warning(warningRecord.Message);
-                }
-
-                protected override void DoWriteError(ErrorRecord errorRecord)
-                {
-                    Error(errorRecord);
-                }
-
-                protected override void DoWriteWarning(string message)
-                {
-                    Warning(message);
-                }
-
-                private void Error(string message)
+                protected override void Error(string message)
                 {
                     Red(string.Format(FormatterStrings.Client_Error, message));
                 }
 
-                private void Warning(string message)
+                protected override void Warning(string message)
                 {
                     Yellow(string.Format(FormatterStrings.Client_Warning, message));
                 }
@@ -225,7 +221,7 @@ namespace PSRule.Pipeline
                 internal PlainFormatter(Source[] source, ILogger logger)
                     : base(source, logger) { }
 
-                public void Result(InvokeResult result)
+                public override void Result(InvokeResult result)
                 {
                     var records = result.AsRecord();
                     for (var i = 0; i < records.Length; i++)
@@ -244,16 +240,6 @@ namespace PSRule.Pipeline
                     }
                 }
 
-                public void Error(ErrorRecord errorRecord)
-                {
-                    Error(errorRecord.Exception.Message);
-                }
-
-                public void Warning(WarningRecord warningRecord)
-                {
-                    Warning(warningRecord.Message);
-                }
-
                 protected override void DoWriteError(ErrorRecord errorRecord)
                 {
                     Error(errorRecord);
@@ -264,12 +250,12 @@ namespace PSRule.Pipeline
                     Warning(message);
                 }
 
-                private void Error(string message)
+                protected override void Error(string message)
                 {
                     Write(string.Format(FormatterStrings.Plain_Error, message));
                 }
 
-                private void Warning(string message)
+                protected override void Warning(string message)
                 {
                     Write(string.Format(FormatterStrings.Plain_Warning, message));
                 }
@@ -285,7 +271,7 @@ namespace PSRule.Pipeline
                 internal AzurePipelinesFormatter(Source[] source, ILogger logger)
                     : base(source, logger) { }
 
-                public void Result(InvokeResult result)
+                public override void Result(InvokeResult result)
                 {
                     var records = result.AsRecord();
                     for (var i = 0; i < records.Length; i++)
@@ -310,22 +296,12 @@ namespace PSRule.Pipeline
                     }
                 }
 
-                public void Error(ErrorRecord errorRecord)
-                {
-                    Error(errorRecord.ErrorDetails.Message);
-                }
-
-                public void Warning(WarningRecord warningRecord)
-                {
-                    Warning(warningRecord.Message);
-                }
-
                 private string GetReason(RuleRecord record)
                 {
                     return string.Join(" ", record.Reason);
                 }
 
-                private void Error(string message)
+                protected override void Error(string message)
                 {
                     if (!_WasInfo)
                         Write();
@@ -334,23 +310,13 @@ namespace PSRule.Pipeline
                     _WasInfo = true;
                 }
 
-                private void Warning(string message)
+                protected override void Warning(string message)
                 {
                     if (!_WasInfo)
                         Write();
 
                     Write(string.Concat("##vso[task.logissue type=warning]", message));
                     _WasInfo = true;
-                }
-
-                protected override void DoWriteError(ErrorRecord errorRecord)
-                {
-                    Error(errorRecord);
-                }
-
-                protected override void DoWriteWarning(string message)
-                {
-                    Warning(message);
                 }
             }
 
@@ -364,7 +330,7 @@ namespace PSRule.Pipeline
                 internal GitHubActionsFormatter(Source[] source, ILogger logger)
                     : base(source, logger) { }
 
-                public void Result(InvokeResult result)
+                public override void Result(InvokeResult result)
                 {
                     var records = result.AsRecord();
                     for (var i = 0; i < records.Length; i++)
@@ -389,22 +355,12 @@ namespace PSRule.Pipeline
                     }
                 }
 
-                public void Error(ErrorRecord errorRecord)
-                {
-                    Error(errorRecord.ErrorDetails.Message);
-                }
-
-                public void Warning(WarningRecord warningRecord)
-                {
-                    Warning(warningRecord.Message);
-                }
-
                 private string GetReason(RuleRecord record)
                 {
                     return string.Join(" ", record.Reason);
                 }
 
-                private void Error(string message)
+                protected override void Error(string message)
                 {
                     if (!_WasInfo)
                         Write();
@@ -413,23 +369,13 @@ namespace PSRule.Pipeline
                     _WasInfo = true;
                 }
 
-                private void Warning(string message)
+                protected override void Warning(string message)
                 {
                     if (!_WasInfo)
                         Write();
 
                     Write(string.Concat("::warning::", message));
                     _WasInfo = true;
-                }
-
-                protected override void DoWriteError(ErrorRecord errorRecord)
-                {
-                    Error(errorRecord);
-                }
-
-                protected override void DoWriteWarning(string message)
-                {
-                    Warning(message);
                 }
             }
 
