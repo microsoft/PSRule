@@ -1,86 +1,196 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Configuration;
 using PSRule.Rules;
+using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 
 namespace PSRule.Pipeline
 {
-    internal delegate void WriteOutput(object o, bool enumerate);
-
-    internal abstract class PipelineWriter
+    internal abstract class PipelineWriter : ILogger
     {
-        private readonly WriteOutput _Output;
+        private readonly PipelineWriter _Writer;
 
-        protected PipelineWriter(WriteOutput output)
+        protected readonly PSRuleOption Option;
+
+        protected PipelineWriter(PipelineWriter inner, PSRuleOption option)
         {
-            _Output = output;
+            _Writer = inner;
+            Option = option;
         }
 
-        public virtual void Write(object o, bool enumerate)
+        public virtual void Begin()
         {
-            _Output(o, enumerate);
+            if (_Writer == null)
+                return;
+            
+            _Writer.Begin();
+        }
+
+        public virtual void WriteObject(object o, bool enumerate)
+        {
+            if (_Writer == null || o == null)
+                return;
+
+            _Writer.WriteObject(o, enumerate);
         }
 
         public virtual void End()
         {
-            // Do nothing
+            if (_Writer == null)
+                return;
+
+            _Writer.End();
+        }
+
+        public virtual void WriteVerbose(string message)
+        {
+            if (_Writer == null || string.IsNullOrEmpty(message))
+                return;
+
+            _Writer.WriteVerbose(message);
+        }
+
+        public virtual bool ShouldWriteVerbose()
+        {
+            return _Writer != null ? _Writer.ShouldWriteVerbose() : true;
+        }
+
+        public virtual void WriteWarning(string message)
+        {
+            if (_Writer == null || string.IsNullOrEmpty(message))
+                return;
+
+            _Writer.WriteWarning(message);
+        }
+
+        public virtual bool ShouldWriteWarning()
+        {
+            return _Writer != null ? _Writer.ShouldWriteWarning() : true;
+        }
+
+        public virtual void WriteError(ErrorRecord errorRecord)
+        {
+            if (_Writer == null || errorRecord == null)
+                return;
+
+            _Writer.WriteError(errorRecord);
+        }
+
+        public virtual bool ShouldWriteError()
+        {
+            return _Writer != null ? _Writer.ShouldWriteError() : true;
+        }
+
+        public virtual void WriteInformation(InformationRecord informationRecord)
+        {
+            if (_Writer == null || informationRecord == null)
+                return;
+
+            _Writer.WriteInformation(informationRecord);
+        }
+
+        public virtual void WriteHost(HostInformationMessage info)
+        {
+            if (_Writer == null)
+                return;
+
+            _Writer.WriteHost(info);
+        }
+
+        public virtual bool ShouldWriteInformation()
+        {
+            return _Writer != null ? _Writer.ShouldWriteInformation() : true;
+        }
+
+        public virtual void WriteDebug(DebugRecord debugRecord)
+        {
+            if (_Writer == null || debugRecord == null)
+                return;
+
+            _Writer.WriteDebug(debugRecord);
+        }
+
+        public virtual bool ShouldWriteDebug()
+        {
+            return _Writer != null ? _Writer.ShouldWriteDebug() : true;
+        }
+
+        public virtual void EnterScope(string scopeName)
+        {
+            if (_Writer == null)
+                return;
+
+            _Writer.EnterScope(scopeName);
+        }
+
+        public virtual void ExitScope()
+        {
+            if (_Writer == null)
+                return;
+
+            _Writer.ExitScope();
+        }
+
+        protected void WriteErrorInfo(RuleRecord record)
+        {
+            if (record == null || record.Error == null)
+                return;
+
+            WriteError(new ErrorRecord(
+                record.Error.Exception,
+                record.Error.ErrorId,
+                record.Error.Category,
+                record.TargetName
+            ));
         }
     }
 
-    internal sealed class PassThruWriter : PipelineWriter
+    internal abstract class SerializationOutputWriter<T> : PipelineWriter
     {
-        private readonly bool _Wide;
+        private readonly List<T> _Result;
 
-        internal PassThruWriter(WriteOutput output, bool wide)
-            : base(output)
+        protected SerializationOutputWriter(PipelineWriter inner, PSRuleOption option)
+            : base(inner, option)
         {
-            _Wide = wide;
+            _Result = new List<T>();
         }
 
-        public override void Write(object o, bool enumerate)
+        public override void WriteObject(object o, bool enumerate)
         {
-            if (!(InvokeResult(o) || Rule(o)))
-                base.Write(o, enumerate);
-        }
-
-        private bool InvokeResult(object o)
-        {
-            if (!(o is InvokeResult result))
-                return false;
-
-            var records = result.AsRecord();
-            if (_Wide)
-                WriteWideObject(records);
-            else
-                base.Write(records, true);
-
-            return true;
-        }
-
-        private bool Rule(object o)
-        {
-            if (!(o is IEnumerable<Rule> rule))
-                return false;
-
-            if (_Wide)
-                WriteWideObject(rule);
-            else
-                base.Write(rule, true);
-
-            return true;
-        }
-
-        private void WriteWideObject<T>(IEnumerable<T> collection)
-        {
-            var typeName = string.Concat(typeof(T).FullName, "+Wide");
-
-            foreach (var item in collection)
+            if (o is InvokeResult result)
             {
-                var o = PSObject.AsPSObject(item);
-                o.TypeNames.Insert(0, typeName);
-                base.Write(o, false);
+                Add(result.AsRecord());
+                return;
+            }
+            Add(o);
+        }
+
+        protected void Add(object o)
+        {
+            if (o is T[] collection)
+                _Result.AddRange(collection);
+            else if (o is T item)
+                _Result.Add(item);
+        }
+
+        public sealed override void End()
+        {
+            var results = _Result.ToArray();
+            base.WriteObject(Serialize(results), false);
+            ProcessError(results);
+        }
+
+        protected abstract string Serialize(T[] o);
+
+        private void ProcessError(T[] results)
+        {
+            for (var i = 0; i < results.Length; i++)
+            {
+                if (results[i] is RuleRecord record)
+                    WriteErrorInfo(record);
             }
         }
     }

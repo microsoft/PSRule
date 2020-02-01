@@ -117,8 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AzurePipelines_Error" xml:space="preserve">
+    <value>{0} failed {1} with the error '{2}'.</value>
+  </data>
   <data name="AzurePipelines_Fail" xml:space="preserve">
-    <value>[FAIL] {0} failed {1}. {2}</value>
+    <value>{0} failed {1}. {2}</value>
   </data>
   <data name="Banner" xml:space="preserve">
     <value>    ____  _____ ____        __\n   / __ \/ ___// __ \__  __/ /__\n  / /_/ /\__ \/ /_/ / / / / / _ \\n / ____/___/ / _, _/ /_/ / /  __/\n/_/    /____/_/ |_|\__,_/_/\___/</value>

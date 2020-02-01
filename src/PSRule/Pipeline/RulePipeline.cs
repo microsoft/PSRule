@@ -9,7 +9,8 @@ namespace PSRule.Pipeline
 {
     internal abstract class RulePipeline : IDisposable, IPipeline
     {
-        protected readonly PipelineContext Context;
+        protected readonly PipelineContext Pipeline;
+        protected readonly RunspaceContext Context;
         protected readonly Source[] Source;
         protected readonly PipelineReader Reader;
         protected readonly PipelineWriter Writer;
@@ -19,7 +20,8 @@ namespace PSRule.Pipeline
 
         protected RulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer)
         {
-            Context = context;
+            Pipeline = context;
+            Context = new RunspaceContext(Pipeline, writer);
             Source = source;
             Reader = reader;
             Writer = writer;
@@ -30,6 +32,7 @@ namespace PSRule.Pipeline
         public virtual void Begin()
         {
             Reader.Open();
+            Writer.Begin();
         }
 
         public virtual void Process(PSObject sourceObject)
@@ -59,6 +62,7 @@ namespace PSRule.Pipeline
                 if (disposing)
                 {
                     Context.Dispose();
+                    Pipeline.Dispose();
                 }
                 _Disposed = true;
             }

@@ -26,11 +26,9 @@ namespace PSRule
             if (!(value is PSObject obj))
                 throw new ArgumentException(message: PSRuleResources.SerializeNullPSObject, paramName: nameof(value));
 
-            if (value is FileSystemInfo fileSystemInfo)
-            {
-                WriteFileSystemInfo(writer, fileSystemInfo, serializer);
+            if (WriteFileSystemInfo(writer, value, serializer) || WriteBaseObject(writer, obj, serializer))
                 return;
-            }
+
             writer.WriteStartObject();
             foreach (var property in obj.Properties)
             {
@@ -100,9 +98,28 @@ namespace PSRule
             }
         }
 
-        private void WriteFileSystemInfo(JsonWriter writer, FileSystemInfo value, JsonSerializer serializer)
+        /// <summary>
+        /// Serialize a file system info object.
+        /// </summary>
+        private bool WriteFileSystemInfo(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, value.FullName);
+            if (!(value is FileSystemInfo fileSystemInfo))
+                return false;
+
+            serializer.Serialize(writer, fileSystemInfo.FullName);
+            return true;
+        }
+
+        /// <summary>
+        /// Serialize the base object.
+        /// </summary>
+        private bool WriteBaseObject(JsonWriter writer, PSObject value, JsonSerializer serializer)
+        {
+            if (value.BaseObject == null || value.HasNoteProperty())
+                return false;
+
+            serializer.Serialize(writer, value.BaseObject);
+            return true;
         }
     }
 
@@ -209,6 +226,31 @@ namespace PSRule
                     throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
             }
             return result.ToArray();
+        }
+    }
+
+    /// <summary>
+    /// A custom serializer to convert ErrorCategory to a string.
+    /// </summary>
+    internal sealed class ErrorCategoryJsonConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(ErrorCategory);
+        }
+
+        public override bool CanWrite => true;
+
+        public override bool CanRead => false;
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            writer.WriteValue(Enum.GetName(typeof(ErrorCategory), value));
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
         }
     }
 }

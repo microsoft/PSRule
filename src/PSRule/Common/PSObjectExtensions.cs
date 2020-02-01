@@ -38,6 +38,19 @@ namespace PSRule
             return o.Properties[propertyName] != null;
         }
 
+        /// <summary>
+        /// Determines if the PSObject has any note properties.
+        /// </summary>
+        public static bool HasNoteProperty(this PSObject o)
+        {
+            foreach (var property in o.Properties)
+            {
+                if (property.MemberType == PSMemberTypes.NoteProperty)
+                    return true;
+            }
+            return false;
+        }
+
         public static string ToJson(this PSObject o)
         {
             var settings = new JsonSerializerSettings { Formatting = Formatting.None, TypeNameHandling = TypeNameHandling.None, MaxDepth = 1024, Culture = CultureInfo.InvariantCulture };

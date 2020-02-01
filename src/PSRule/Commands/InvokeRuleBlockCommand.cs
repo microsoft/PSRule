@@ -33,10 +33,10 @@ namespace PSRule.Commands
                 // Evalute type pre-condition
                 if (Type != null)
                 {
-                    var comparer = PipelineContext.CurrentThread.Baseline.GetTargetBinding().IgnoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
-                    if (!Type.Contains(value: PipelineContext.CurrentThread.RuleRecord.TargetType, comparer: comparer))
+                    var comparer = RunspaceContext.CurrentThread.Pipeline.Baseline.GetTargetBinding().IgnoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+                    if (!Type.Contains(value: RunspaceContext.CurrentThread.RuleRecord.TargetType, comparer: comparer))
                     {
-                        PipelineContext.CurrentThread.Logger.DebugMessage("Target failed Type precondition");
+                        RunspaceContext.CurrentThread.Writer.DebugMessage("Target failed Type precondition");
                         return;
                     }
                 }
@@ -48,7 +48,7 @@ namespace PSRule.Commands
                     var ifResult = RuleConditionResult.Create(If.Invoke());
                     if (!ifResult.AllOf())
                     {
-                        PipelineContext.CurrentThread.Logger.DebugMessage("Target failed If precondition");
+                        RunspaceContext.CurrentThread.Writer.DebugMessage("Target failed If precondition");
                         return;
                     }
                 }

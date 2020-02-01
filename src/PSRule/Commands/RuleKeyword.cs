@@ -16,12 +16,12 @@ namespace PSRule.Commands
     {
         protected RuleRecord GetResult()
         {
-            return PipelineContext.CurrentThread.RuleRecord;
+            return RunspaceContext.CurrentThread.RuleRecord;
         }
 
         protected PSObject GetTargetObject()
         {
-            return PipelineContext.CurrentThread.TargetObject;
+            return RunspaceContext.CurrentThread.TargetObject;
         }
 
         protected bool GetField(object targetObject, string name, bool caseSensitive, out object value)
@@ -102,7 +102,7 @@ namespace PSRule.Commands
 
         protected void WriteReason(string text)
         {
-            PipelineContext.CurrentThread.WriteReason(text);
+            RunspaceContext.CurrentThread.WriteReason(text);
         }
 
         protected bool TryReason(string text)

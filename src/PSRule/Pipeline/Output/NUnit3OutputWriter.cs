@@ -1,39 +1,32 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PSRule.Pipeline
+namespace PSRule.Pipeline.Output
 {
-    internal sealed class NUnit3OutputWriter : PipelineWriter
+    internal sealed class NUnit3OutputWriter : SerializationOutputWriter<InvokeResult>
     {
         private readonly StringBuilder _Builder;
-        private readonly List<InvokeResult> _Result;
 
-        internal NUnit3OutputWriter(WriteOutput output)
-            : base(output)
+        internal NUnit3OutputWriter(PipelineWriter inner, PSRuleOption option)
+            : base(inner, option)
         {
             _Builder = new StringBuilder();
-            _Result = new List<InvokeResult>();
         }
 
-        public override void Write(object o, bool enumerate)
+        public override void WriteObject(object o, bool enumerate)
         {
             if (!(o is InvokeResult result))
                 return;
 
-            _Result.Add(result);
+            Add(result);
         }
 
-        public override void End()
-        {
-            base.Write(Serialize(_Result.ToArray()), false);
-        }
-
-        private string Serialize(IEnumerable<InvokeResult> o)
+        protected override string Serialize(InvokeResult[] o)
         {
             _Builder.Append("<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>");
 
@@ -52,14 +45,29 @@ namespace PSRule.Pipeline
                     continue;
 
                 var records = result.AsRecord();
-                var testCases = records.Select(r => new TestCase(name: string.Concat(r.TargetName, " -- ", r.RuleName), description: r.Info.Synopsis, success: r.IsSuccess(), executed: r.IsProcessed(), time: r.Time))
+                var testCases = records
+                    .Select(r => new TestCase(
+                        name: string.Concat(r.TargetName, " -- ", r.RuleName),
+                        description: r.Info.Synopsis,
+                        success: r.IsSuccess(),
+                        executed: r.IsProcessed(),
+                        time: r.Time,
+                        failureMessage: FailureMessage(r),
+                        scriptStackTrace: r.Error?.ScriptStackTrace
+                    ))
                     .ToArray();
                 var failedCount = testCases.Count(r => !r.Success);
-                var fixture = new TestFixture(name: records[0].TargetName, description: "", success: result.IsSuccess(), executed: result.IsProcessed(), time: result.Time, asserts: failedCount, testCases: testCases);
-
+                var fixture = new TestFixture(
+                    name: records[0].TargetName,
+                    description: "",
+                    success: result.IsSuccess(),
+                    executed: result.IsProcessed(),
+                    time: result.Time,
+                    asserts: failedCount,
+                    testCases: testCases
+                );
                 VisitFixture(fixture: fixture);
             }
-
             _Builder.Append("</test-results>");
             return _Builder.ToString();
         }
@@ -67,18 +75,24 @@ namespace PSRule.Pipeline
         private void VisitFixture(TestFixture fixture)
         {
             _Builder.Append($"<test-suite type=\"TestFixture\" name=\"{fixture.Name}\" executed=\"{fixture.Executed}\" result=\"{(fixture.Success ? "Success" : "Failure")}\" success=\"{fixture.Success}\" time=\"{fixture.Time.ToString()}\" asserts=\"{fixture.Asserts}\" description=\"{fixture.Description}\"><results>");
-
             foreach (var testCase in fixture.Results)
-            {
                 VisitTestCase(testCase: testCase);
-            }
 
             _Builder.Append("</results></test-suite>");
         }
 
         private void VisitTestCase(TestCase testCase)
         {
-            _Builder.Append($"<test-case description=\"{testCase.Description}\" name=\"{testCase.Name}\" time=\"{testCase.Time.ToString()}\" asserts=\"0\" success=\"{testCase.Success}\" result=\"{(testCase.Success ? "Success" : "Failure")}\" executed=\"{testCase.Executed}\" />");
+            _Builder.Append($"<test-case description=\"{testCase.Description}\" name=\"{testCase.Name}\" time=\"{testCase.Time.ToString()}\" asserts=\"0\" success=\"{testCase.Success}\" result=\"{(testCase.Success ? "Success" : "Failure")}\" executed=\"{testCase.Executed}\">");
+            if (!string.IsNullOrEmpty(testCase.FailureMessage))
+                _Builder.Append($"<failure><message><![CDATA[{testCase.FailureMessage}]]></message><stack-trace><![CDATA[{testCase.ScriptStackTrace}]]></stack-trace></failure>");
+
+            _Builder.Append("</test-case>");
+        }
+
+        private static string FailureMessage(Rules.RuleRecord record)
+        {
+            return record.Reason == null || record.Reason.Length == 0 ? string.Empty : string.Join(" ", record.Reason);
         }
 
         private sealed class TestFixture
@@ -110,14 +124,18 @@ namespace PSRule.Pipeline
             public readonly bool Success;
             public readonly bool Executed;
             public readonly float Time;
+            public readonly string FailureMessage;
+            public readonly string ScriptStackTrace;
 
-            public TestCase(string name, string description, bool success, bool executed, long time)
+            public TestCase(string name, string description, bool success, bool executed, long time, string failureMessage, string scriptStackTrace)
             {
                 Name = name;
                 Description = description;
                 Success = success;
                 Executed = executed;
                 Time = time / 1000f;
+                FailureMessage = failureMessage;
+                ScriptStackTrace = scriptStackTrace;
             }
         }
     }

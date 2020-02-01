@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Fixed wide formatting of rules with `Get-PSRule`. [#407](https://github.com/Microsoft/PSRule/issues/407)
+- Fixed TargetName hash serialization for base types. [#406](https://github.com/Microsoft/PSRule/issues/406)
+- Fixed output not generated with Assert-PSRule and Stop. [#405](https://github.com/Microsoft/PSRule/issues/405)
+- Fixed NUnit results incorrectly reporting that the test had not executed. [#403](https://github.com/Microsoft/PSRule/issues/403)
+- Improved NUnit results to include a failure message based on reported reasons. [#404](https://github.com/Microsoft/PSRule/issues/404)
+- Improved reporting on runtime errors in rule blocks. [#239](https://github.com/Microsoft/PSRule/issues/239)
+
 ## v0.14.0-B2001020 (pre-release)
 
 - Added support for qualified target names. [#395](https://github.com/Microsoft/PSRule/issues/395)

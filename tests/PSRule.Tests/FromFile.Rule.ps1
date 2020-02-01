@@ -35,6 +35,28 @@ Rule 'FromFile5' {
     $Null;
 }
 
+# Synopsis: A rule throwing an exception for unit testing
+Rule 'WithException' {
+    throw 'A rule exception'
+}
+
+# Synopsis: A rule writing an error record for unit testing
+Rule 'WithError' {
+    Write-Error 'A rule error'
+}
+
+# Synopsis: A rule writing an error record for unit testing
+Rule 'WithFunctionError' {
+    FunctionError
+}
+
+function global:FunctionError {
+    param ()
+    process {
+        Write-Error "A rule function error"
+    }
+}
+
 # Synopsis: Test for tags
 Rule 'WithTag' -Tag @{ severity = 'critical'; feature = 'tag' } {
     $True;

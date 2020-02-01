@@ -41,7 +41,7 @@ namespace PSRule.Pipeline
         {
             var filter = new BaselineFilter(_Name);
             return new GetBaselinePipeline(
-                context: PrepareContext(null, null, null),
+                pipeline: PrepareContext(null, null, null),
                 source: Source,
                 reader: PrepareReader(),
                 writer: PrepareWriter(),
@@ -54,15 +54,15 @@ namespace PSRule.Pipeline
     {
         private readonly IResourceFilter _Filter;
 
-        internal GetBaselinePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer, IResourceFilter filter)
-            : base(context, source, reader, writer)
+        internal GetBaselinePipeline(PipelineContext pipeline, Source[] source, PipelineReader reader, PipelineWriter writer, IResourceFilter filter)
+            : base(pipeline, source, reader, writer)
         {
             _Filter = filter;
         }
 
         public override void End()
         {
-            Writer.Write(HostHelper.GetBaseline(Source, Context).Where(Match), true);
+            Writer.WriteObject(HostHelper.GetBaseline(Source, Context).Where(Match), true);
         }
 
         private bool Match(Baseline baseline)

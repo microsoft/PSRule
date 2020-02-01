@@ -20,15 +20,12 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             if (!IsConditionScope())
-            {
                 throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordConditionScope, LanguageKeywords.AllOf));
-            }
 
             var invokeResult = RuleConditionResult.Create(Body.Invoke());
             var result = invokeResult.AllOf();
 
-            PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.AllOf, pass: invokeResult.Pass, count: invokeResult.Count, outcome: result);
-
+            RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.AllOf, pass: invokeResult.Pass, count: invokeResult.Count, outcome: result);
             WriteObject(result);
         }
     }

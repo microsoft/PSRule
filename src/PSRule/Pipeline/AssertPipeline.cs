@@ -39,25 +39,23 @@ namespace PSRule.Pipeline
         private sealed class AssertWriter : PipelineWriter
         {
             internal readonly IAssertFormatter _Formatter;
-            private readonly ILogger _Logger;
             private readonly PipelineWriter _InnerWriter;
             private int _ErrorCount = 0;
             private int _FailCount = 0;
             private int _TotalCount = 0;
 
-            internal AssertWriter(Source[] source, WriteOutput output, ILogger logger, PipelineWriter innerWriter, OutputStyle style)
-                : base(output)
+            internal AssertWriter(PSRuleOption option, Source[] source, PipelineWriter inner, PipelineWriter next, OutputStyle style)
+                : base(inner, option)
             {
-                _Logger = logger;
-                _InnerWriter = innerWriter;
+                _InnerWriter = next;
                 if (style == OutputStyle.AzurePipelines)
-                    _Formatter = new AzurePipelinesFormatter(source, logger);
+                    _Formatter = new AzurePipelinesFormatter(source, inner);
                 else if (style == OutputStyle.GitHubActions)
-                    _Formatter = new GitHubActionsFormatter(source, logger);
+                    _Formatter = new GitHubActionsFormatter(source, inner);
                 else if (style == OutputStyle.Plain)
-                    _Formatter = new PlainFormatter(source, logger);
+                    _Formatter = new PlainFormatter(source, inner);
                 else if (style == OutputStyle.Client)
-                    _Formatter = new ClientFormatter(source, logger);
+                    _Formatter = new ClientFormatter(source, inner);
             }
 
             /// <summary>
@@ -94,6 +92,11 @@ namespace PSRule.Pipeline
                 {
                     Write(FormatterStrings.Banner.Replace("\\n", Environment.NewLine));
                     Write();
+                }
+
+                protected string StartObject(RuleRecord record)
+                {
+                    return string.Concat(" -> ", record.TargetName, " : ", record.TargetType);
                 }
 
                 private void Source(Source[] source)
@@ -171,12 +174,15 @@ namespace PSRule.Pipeline
                         if (i == 0)
                         {
                             Empty();
-                            Green(string.Concat(" -> ", records[i].TargetName, " : ", records[i].TargetType));
+                            Green(StartObject(records[i]));
                             Empty();
                         }
 
+                        // TODO: Need error option as well
                         if (records[i].IsSuccess())
                             Green(string.Format(FormatterStrings.Client_Pass, records[i].RuleName));
+                        else if (records[i].Outcome == RuleOutcome.Error)
+                            Red(string.Format(FormatterStrings.Client_Error, records[i].RuleName));
                         else
                             Red(string.Format(FormatterStrings.Client_Fail, records[i].RuleName));
                     }
@@ -229,7 +235,7 @@ namespace PSRule.Pipeline
                         if (i == 0)
                         {
                             Write();
-                            Write(string.Concat(" -> ", records[i].TargetName, " : ", records[i].TargetType));
+                            Write(StartObject(records[i]));
                             Write();
                         }
 
@@ -279,7 +285,7 @@ namespace PSRule.Pipeline
                         if (i == 0)
                         {
                             Write();
-                            Write(string.Concat(" -> ", records[i].TargetName, " : ", records[i].TargetType));
+                            Write(StartObject(records[i]));
                             _WasInfo = true;
                         }
                         if (_WasInfo)
@@ -288,6 +294,11 @@ namespace PSRule.Pipeline
 
                         if (records[i].IsSuccess())
                             Write(string.Concat("    [+] ", records[i].RuleName));
+                        else if (records[i].Outcome == RuleOutcome.Error)
+                        {
+                            Write(string.Concat("    [-] ", records[i].RuleName));
+                            GetError(records[i]);
+                        }
                         else
                         {
                             Write(string.Concat("    [-] ", records[i].RuleName));
@@ -299,6 +310,16 @@ namespace PSRule.Pipeline
                 private string GetReason(RuleRecord record)
                 {
                     return string.Join(" ", record.Reason);
+                }
+
+                private void GetError(RuleRecord record)
+                {
+                    if (record.Error == null)
+                        return;
+
+                    Error(string.Format(FormatterStrings.AzurePipelines_Error, record.TargetName, record.RuleName, record.Error.Message));
+                    Write();
+                    Write(record.Error.ScriptStackTrace);
                 }
 
                 protected override void Error(string message)
@@ -338,7 +359,7 @@ namespace PSRule.Pipeline
                         if (i == 0)
                         {
                             Write();
-                            Write(string.Concat(" -> ", records[i].TargetName, " : ", records[i].TargetType));
+                            Write(StartObject(records[i]));
                             _WasInfo = true;
                         }
                         if (_WasInfo)
@@ -379,7 +400,7 @@ namespace PSRule.Pipeline
                 }
             }
 
-            public override void Write(object o, bool enumerate)
+            public override void WriteObject(object o, bool enumerate)
             {
                 if (!(o is InvokeResult result))
                     return;
@@ -390,17 +411,25 @@ namespace PSRule.Pipeline
                 _TotalCount += result.Total;
 
                 if (_InnerWriter != null)
-                    _InnerWriter.Write(o, enumerate);
+                    _InnerWriter.WriteObject(o, enumerate);
             }
 
             public override void End()
             {
                 _Formatter.End(_TotalCount, _FailCount, _ErrorCount);
-                if (_FailCount > 0)
-                    _Logger.WriteError(new ErrorRecord(new FailPipelineException(PSRuleResources.FailPipelineException), "PSRule.Fail", ErrorCategory.InvalidData, null));
-
-                if (_InnerWriter != null)
-                    _InnerWriter.End();
+                base.End();
+                try
+                {
+                    if (_ErrorCount > 0)
+                        base.WriteError(new ErrorRecord(new FailPipelineException(PSRuleResources.ErrorPipelineException), "PSRule.Error", ErrorCategory.InvalidOperation, null));
+                    else if (_FailCount > 0)
+                        base.WriteError(new ErrorRecord(new FailPipelineException(PSRuleResources.FailPipelineException), "PSRule.Fail", ErrorCategory.InvalidData, null));
+                }
+                finally
+                {
+                    if (_InnerWriter != null)
+                        _InnerWriter.End();
+                }
             }
         }
 
@@ -409,17 +438,12 @@ namespace PSRule.Pipeline
             return GetWriter();
         }
 
-        protected override ILogger PrepareLogger()
-        {
-            return GetWriter()._Formatter;
-        }
-
         private AssertWriter GetWriter()
         {
             if (_Writer == null)
             {
-                var innerWriter = ShouldOutput() ? base.PrepareWriter() : null;
-                _Writer = new AssertWriter(Source, GetOutput(), Logger, innerWriter, Option.Output.Style ?? OutputOption.Default.Style.Value);
+                var next = ShouldOutput() ? base.PrepareWriter() : null;
+                _Writer = new AssertWriter(Option, Source, GetOutput(), next, Option.Output.Style ?? OutputOption.Default.Style.Value);
             }
             return _Writer;
         }

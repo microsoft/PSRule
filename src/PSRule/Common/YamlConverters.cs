@@ -279,8 +279,13 @@ namespace PSRule
         {
             return type
                 .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance)
-                .Where(p => p.CanRead && p.Name != "TargetObject")
+                .Where(p => p.CanRead && IsAllowedProperty(p.Name))
                 .Select(p => new Property(p, _TypeResolver, _NamingConvention));
+        }
+
+        private static bool IsAllowedProperty(string name)
+        {
+            return !(name == "TargetObject" || name == "Exception");
         }
 
         private sealed class Field : IPropertyDescriptor
@@ -387,7 +392,7 @@ namespace PSRule
         {
             if (typeof(ResourceObject).IsAssignableFrom(expectedType))
             {
-                var comment = HostHelper.GetCommentMeta(PipelineContext.CurrentThread.Source.File.Path, reader.Current.Start.Line - 2, reader.Current.Start.Column);
+                var comment = HostHelper.GetCommentMeta(RunspaceContext.CurrentThread.Source.File.Path, reader.Current.Start.Line - 2, reader.Current.Start.Column);
                 var resource = MapResource(reader, nestedObjectDeserializer, comment);
                 value = new ResourceObject(resource);
                 return true;
@@ -463,7 +468,7 @@ namespace PSRule
                 if (!_Next.Deserialize(reader, descriptor.SpecType, nestedObjectDeserializer, out object value))
                     return false;
 
-                spec = descriptor.CreateInstance(PipelineContext.CurrentThread.Source.File, metadata, comment, value);
+                spec = descriptor.CreateInstance(RunspaceContext.CurrentThread.Source.File, metadata, comment, value);
                 return true;
             }
             return false;

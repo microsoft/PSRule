@@ -61,7 +61,16 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [FAIL] {0} failed {1}. {2}.
+        ///   Looks up a localized string similar to {0} failed {1} with the error &apos;{2}&apos;..
+        /// </summary>
+        internal static string AzurePipelines_Error {
+            get {
+                return ResourceManager.GetString("AzurePipelines_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} failed {1}. {2}.
         /// </summary>
         internal static string AzurePipelines_Fail {
             get {

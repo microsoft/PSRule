@@ -50,9 +50,9 @@ namespace PSRule.Pipeline
         private OutputFormat SuppressFormat(OutputFormat? format)
         {
             return !format.HasValue ||
-                !(Option.Output.Format == OutputFormat.Wide ||
-                Option.Output.Format == OutputFormat.Json ||
-                Option.Output.Format == OutputFormat.Yaml) ? OutputFormat.None : format.Value;
+                !(format == OutputFormat.Wide ||
+                format == OutputFormat.Json ||
+                format == OutputFormat.Yaml) ? OutputFormat.None : format.Value;
         }
     }
 
@@ -60,16 +60,16 @@ namespace PSRule.Pipeline
     {
         private readonly bool _IncludeDependencies;
 
-        internal GetRulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer, bool includeDependencies)
-            : base(context, source, reader, writer)
+        internal GetRulePipeline(PipelineContext pipeline, Source[] source, PipelineReader reader, PipelineWriter writer, bool includeDependencies)
+            : base(pipeline, source, reader, writer)
         {
-            HostHelper.ImportResource(source: Source, context: context);
+            HostHelper.ImportResource(Source, Context);
             _IncludeDependencies = includeDependencies;
         }
 
         public override void End()
         {
-            Writer.Write(HostHelper.GetRule(Source, Context, _IncludeDependencies), true);
+            Writer.WriteObject(HostHelper.GetRule(Source, Context, _IncludeDependencies), true);
             Writer.End();
         }
     }

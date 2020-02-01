@@ -120,6 +120,10 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "time")]
         public long Time { get; internal set; }
 
+        [DefaultValue(null)]
+        [JsonProperty(PropertyName = "error")]
+        public ErrorInfo Error { get; internal set; }
+
         public bool IsSuccess()
         {
             return Outcome == RuleOutcome.Pass || Outcome == RuleOutcome.None;
@@ -127,7 +131,7 @@ namespace PSRule.Rules
 
         public bool IsProcessed()
         {
-            return Outcome == RuleOutcome.Processed;
+            return Outcome == (Outcome & RuleOutcome.Processed);
         }
 
         public string GetReasonViewString()

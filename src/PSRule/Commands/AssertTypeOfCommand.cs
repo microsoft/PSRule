@@ -39,7 +39,7 @@ namespace PSRule.Commands
                 result = (actualTypeNames.Intersect(TypeName).Any());
             }
 
-            PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.TypeOf, outcome: result);
+            RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.TypeOf, outcome: result);
             if (!(result || TryReason(Reason)))
             {
                 WriteReason(string.Format(ReasonStrings.TypeOf, string.Join(", ", TypeName)));

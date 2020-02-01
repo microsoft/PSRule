@@ -72,25 +72,24 @@ namespace PSRule.Commands
             if (!IsScriptScope())
                 throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordScriptScope, LanguageKeywords.Rule));
 
-            var context = PipelineContext.CurrentThread;
+            var context = RunspaceContext.CurrentThread;
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
             var source = context.Source.File;
+            var extent = new RuleExtent(
+                file: source.Path,
+                startLineNumber: Body.Ast.Extent.StartLineNumber
+            );
 
             context.VerboseFoundRule(ruleName: Name, scriptName: MyInvocation.ScriptName);
 
             CheckDependsOn();
-
-            var ps = PowerShell.Create();
-            ps.Runspace = context.GetRunspace();
-            ps.AddCommand(new CmdletInfo(InvokeBlockCmdletName, typeof(InvokeRuleBlockCommand)));
-            ps.AddParameter(InvokeBlockCmdlet_TypeParameter, Type);
-            ps.AddParameter(InvokeBlockCmdlet_IfParameter, If);
-            ps.AddParameter(InvokeBlockCmdlet_BodyParameter, Body);
-
-            PipelineContext.EnableLogging(ps);
-
-            var helpInfo = GetHelpInfo(context: context, name: Name) ?? new RuleHelpInfo(name: Name, displayName: Name, moduleName: source.ModuleName);
+            var ps = GetCondition(context);
+            var helpInfo = GetHelpInfo(context: context, name: Name) ?? new RuleHelpInfo(
+                name: Name,
+                displayName: Name,
+                moduleName: source.ModuleName
+            );
 
             if (helpInfo.Synopsis == null)
                 helpInfo.Synopsis = metadata.Synopsis;
@@ -102,9 +101,20 @@ namespace PSRule.Commands
                 condition: ps,
                 tag: tag,
                 dependsOn: RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName, source.ModuleName),
-                configuration: Configure
+                configuration: Configure,
+                extent: extent
             );
             WriteObject(block);
+        }
+
+        private PowerShell GetCondition(RunspaceContext context)
+        {
+            var result = context.GetPowerShell();
+            result.AddCommand(new CmdletInfo(InvokeBlockCmdletName, typeof(InvokeRuleBlockCommand)));
+            result.AddParameter(InvokeBlockCmdlet_TypeParameter, Type);
+            result.AddParameter(InvokeBlockCmdlet_IfParameter, If);
+            result.AddParameter(InvokeBlockCmdlet_BodyParameter, Body);
+            return result;
         }
 
         private void CheckDependsOn()
@@ -120,15 +130,16 @@ namespace PSRule.Commands
             }
         }
 
-        private static RuleHelpInfo GetHelpInfo(PipelineContext context, string name)
+        private static RuleHelpInfo GetHelpInfo(RunspaceContext context, string name)
         {
             if (string.IsNullOrEmpty(context.Source.File.HelpPath))
                 return null;
 
-            var culture = context.Culture;
+            var fileName = string.Concat(name, ".md");
+            var culture = context.Pipeline.Culture;
             for (var i = 0; i < culture.Length; i++)
             {
-                var path = Path.Combine(context.Source.File.HelpPath, string.Concat(culture[i], "/", name, ".md"));
+                var path = Path.Combine(context.Source.File.HelpPath, culture[i], fileName);
                 if (!File.Exists(path))
                     continue;
 

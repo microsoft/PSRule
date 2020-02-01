@@ -31,15 +31,15 @@ namespace PSRule.Runtime
             if (path == null)
                 return Empty;
 
-            if (PipelineContext.CurrentThread.LocalizedDataCache.ContainsKey(path))
-                return PipelineContext.CurrentThread.LocalizedDataCache[path];
+            if (RunspaceContext.CurrentThread.Pipeline.LocalizedDataCache.ContainsKey(path))
+                return RunspaceContext.CurrentThread.Pipeline.LocalizedDataCache[path];
 
             var ast = System.Management.Automation.Language.Parser.ParseFile(path, out Token[] tokens, out ParseError[] errors);
             var data = ast.Find(a => a is HashtableAst, false);
             if (data != null)
             {
                 var result = (Hashtable)data.SafeGetValue();
-                PipelineContext.CurrentThread.LocalizedDataCache[path] = result;
+                RunspaceContext.CurrentThread.Pipeline.LocalizedDataCache[path] = result;
                 return result;
             }
             return Empty;
@@ -47,8 +47,8 @@ namespace PSRule.Runtime
 
         private string GetFilePath()
         {
-            var helpPath = PipelineContext.CurrentThread.RuleBlock.Source.HelpPath;
-            var culture = PipelineContext.CurrentThread.Culture;
+            var helpPath = RunspaceContext.CurrentThread.RuleBlock.Source.HelpPath;
+            var culture = RunspaceContext.CurrentThread.Pipeline.Culture;
             for (var i = 0; i < culture.Length; i++)
             {
                 var path = Path.Combine(helpPath, string.Concat(culture[i], "/PSRule-rules.psd1"));

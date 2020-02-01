@@ -76,14 +76,14 @@ namespace PSRule.Commands
                     if (_Expressions[i].IsMatch(fieldValue.ToString()))
                     {
                         match = true;
-                        PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Match, message: PSRuleResources.MatchTrue, args: fieldValue);
+                        RunspaceContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Match, message: PSRuleResources.MatchTrue, args: fieldValue);
                         found = Expression[i];
                     }
                 }
             }
 
             var result = expected == match;
-            PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Match, outcome: result);
+            RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Match, outcome: result);
             if (!(result || TryReason(Reason)))
             {
                 WriteReason(Not ? string.Format(ReasonStrings.MatchNot, found) : string.Format(ReasonStrings.Match, string.Join(", ", Expression)));

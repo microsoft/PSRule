@@ -321,7 +321,7 @@ namespace PSRule
 
         private static void SetContext()
         {
-            var context = PipelineContext.New(null, new Configuration.PSRuleOption(), null, null, null, null);
+            var context = PipelineContext.New(new Configuration.PSRuleOption(), null, null, null, null);
             context.ExecutionScope = ExecutionScope.Condition;
         }
 

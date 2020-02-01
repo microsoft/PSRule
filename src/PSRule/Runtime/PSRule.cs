@@ -16,11 +16,11 @@ namespace PSRule.Runtime
     /// </summary>
     public sealed class PSRule
     {
-        private readonly PipelineContext _Context;
+        private readonly RunspaceContext _Context;
 
         public PSRule() { }
 
-        internal PSRule(PipelineContext context)
+        internal PSRule(RunspaceContext context)
         {
             _Context = context;
         }
@@ -89,11 +89,11 @@ namespace PSRule.Runtime
                 return new PSObject[] { sourceObject };
 
             var cacheKey = sourceObject.BaseObject.ToString();
-            if (_Context.ContentCache.TryGetValue(cacheKey, out PSObject[] result))
+            if (_Context.Pipeline.ContentCache.TryGetValue(cacheKey, out PSObject[] result))
                 return result;
 
             result = PipelineReceiverActions.DetectInputFormat(sourceObject, PipelineReceiverActions.PassThru).ToArray();
-            _Context.ContentCache.Add(cacheKey, result);
+            _Context.Pipeline.ContentCache.Add(cacheKey, result);
             return result;
         }
     }

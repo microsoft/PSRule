@@ -60,27 +60,25 @@ namespace PSRule.Pipeline
             private const string OUTPUT_TYPENAME_FULL = "PSRule.Rules.RuleHelpInfo+Full";
             private const string OUTPUT_TYPENAME_COLLECTION = "PSRule.Rules.RuleHelpInfo+Collection";
 
-            private readonly PipelineLogger _Logger;
             private readonly LanguageMode _LanguageMode;
             private readonly bool _InSession;
             private readonly bool _ShouldOutput;
             private readonly string _TypeName;
 
-            internal HelpWriter(WriteOutput output, LanguageMode languageMode, bool inSession, PipelineLogger logger, bool online, bool full)
-                : base(output)
+            internal HelpWriter(PipelineWriter inner, PSRuleOption option, LanguageMode languageMode, bool inSession, bool online, bool full)
+                : base(inner, option)
             {
-                _Logger = logger;
                 _LanguageMode = languageMode;
                 _InSession = inSession;
                 _ShouldOutput = !online;
                 _TypeName = full ? OUTPUT_TYPENAME_FULL : null;
             }
 
-            public override void Write(object o, bool enumerate)
+            public override void WriteObject(object o, bool enumerate)
             {
                 if (!(o is RuleHelpInfo[] result))
                 {
-                    base.Write(o, enumerate);
+                    base.WriteObject(o, enumerate);
                     return;
                 }
                 if (result.Length == 1)
@@ -102,7 +100,7 @@ namespace PSRule.Pipeline
 
             private bool TryConstrained(string uri)
             {
-                _Logger.WriteObject(string.Format(PSRuleResources.LaunchBrowser, uri), false);
+                base.WriteObject(string.Format(PSRuleResources.LaunchBrowser, uri), false);
                 return true;
             }
 
@@ -121,39 +119,39 @@ namespace PSRule.Pipeline
             {
                 if (typeName == null)
                 {
-                    base.Write(o, false);
+                    base.WriteObject(o, false);
                     return;
                 }
                 var pso = PSObject.AsPSObject(o);
                 pso.TypeNames.Insert(0, typeName);
-                base.Write(pso, false);
+                base.WriteObject(pso, false);
             }
         }
 
         protected override PipelineWriter PrepareWriter()
         {
             return new HelpWriter(
-                GetOutput(),
-                Option.Execution.LanguageMode.GetValueOrDefault(ExecutionOption.Default.LanguageMode.Value),
-                HostContext.InSession,
-                Logger,
-                _Online,
-                _Full
+                inner: GetOutput(),
+                option: Option,
+                languageMode: Option.Execution.LanguageMode.GetValueOrDefault(ExecutionOption.Default.LanguageMode.Value),
+                inSession: HostContext.InSession,
+                online: _Online,
+                full: _Full
             );
         }
     }
 
     internal sealed class GetRuleHelpPipeline : RulePipeline, IPipeline
     {
-        internal GetRuleHelpPipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer)
-            : base(context, source, reader, writer)
+        internal GetRuleHelpPipeline(PipelineContext pipeline, Source[] source, PipelineReader reader, PipelineWriter writer)
+            : base(pipeline, source, reader, writer)
         {
             // Do nothing
         }
 
         public override void End()
         {
-            Writer.Write(HostHelper.GetRuleHelp(source: Source, context: Context), true);
+            Writer.WriteObject(HostHelper.GetRuleHelp(Source, Context), true);
         }
     }
 }
