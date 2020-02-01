@@ -78,7 +78,7 @@ namespace PSRule.Commands
                         if (fieldValue == null && (Value == null || Value[i] == null))
                         {
                             match = true;
-                            PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: fieldValue);
+                            RunspaceContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: fieldValue);
                         }
                         else
                         {
@@ -91,7 +91,7 @@ namespace PSRule.Commands
                         if ((_LikePattern == null && _Comparer.Equals(Value[i].BaseObject, strValue)) || (_LikePattern != null && _LikePattern[i].IsMatch(strValue)))
                         {
                             match = true;
-                            PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: strValue);
+                            RunspaceContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: strValue);
                             found = Value[i].BaseObject.ToString();
                         }
                     }
@@ -99,14 +99,14 @@ namespace PSRule.Commands
                     else if (Value[i].Equals(fieldValue))
                     {
                         match = true;
-                        PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: fieldValue);
+                        RunspaceContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: fieldValue);
                         found = Value[i].ToString();
                     }
                 }
             }
 
             var result = expected == match;
-            PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Within, outcome: result);
+            RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Within, outcome: result);
             if (!(result || TryReason(Reason)))
             {
                 WriteReason(Not ? string.Format(ReasonStrings.WithinNot, found) : ReasonStrings.Within);

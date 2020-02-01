@@ -47,7 +47,7 @@ namespace PSRule.Runtime
                 }
                 else if (!(TryAssertResult(v, out bool result) || TryBoolean(v, out result)))
                 {
-                    PipelineContext.CurrentThread.ErrorInvaildRuleResult();
+                    RunspaceContext.CurrentThread.ErrorInvaildRuleResult();
                     hasError = true;
                     continue;
                 }

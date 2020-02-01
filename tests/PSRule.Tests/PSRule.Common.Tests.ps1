@@ -71,6 +71,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Outcome | Should -Be 'Error';
             $result.TargetName | Should -Be 'TestObject1';
+            $result.Error.ErrorId | Should -BeLike '*,WithError';
         }
 
         It 'Returns inconclusive' {
@@ -114,6 +115,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
             # Errors
             $outErrors | Should -Be 'Rule error message';
+            $outErrors.FullyQualifiedErrorId | Should -BeLike '*,WithError,Invoke-PSRule';
 
             # Information
             $informationMessages = $outInformation.ToArray();
@@ -980,33 +982,46 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
     }
 
     Context 'With -OutputPath' {
-        $testOutputPath = (Join-Path -Path $outputPath -ChildPath 'newPath/assert.results.json');
         $testObject = [PSCustomObject]@{
             Name = 'TestObject1'
         }
-        $assertParams = @{
-            Path = $ruleFilePath
-            Option = @{ 'Execution.InconclusiveWarning' = $False; 'Output.Style' = 'Plain'; 'Binding.Field' = @{ extra = 'Name'} }
-            Name = 'FromFile1', 'FromFile2', 'FromFile3'
-            ErrorVariable = 'errorOut'
-            OutputFormat = 'Json'
-            OutputPath = $testOutputPath
-        }
-        $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue 6>&1 | Out-String;
-        
+
         It 'Returns output' {
+            $testOutputPath = (Join-Path -Path $outputPath -ChildPath 'newPath/assert.results.json');
+            $assertParams = @{
+                Path = $ruleFilePath
+                Option = @{ 'Execution.InconclusiveWarning' = $False; 'Output.Style' = 'Plain'; 'Binding.Field' = @{ extra = 'Name'} }
+                Name = 'FromFile1', 'FromFile2', 'FromFile3'
+                ErrorVariable = 'errorOut'
+                OutputFormat = 'Json'
+                OutputPath = $testOutputPath
+            }
+            $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue 6>&1 | Out-String;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
             $result | Should -Match "\[PASS\] FromFile1";
             $result | Should -Match "\[FAIL\] FromFile2";
             $result | Should -Match "\[FAIL\] FromFile3";
             $errorOut | Should -Not -BeNullOrEmpty;
+            Test-Path -Path $testOutputPath | Should -Be $True;
         }
 
         It 'Writes output to file' {
+            $testOutputPath = (Join-Path -Path $outputPath -ChildPath 'newPath/assert.results2.json');
+            $assertParams = @{
+                Path = $ruleFilePath
+                Option = @{ 'Execution.InconclusiveWarning' = $False; 'Output.Style' = 'Plain'; 'Binding.Field' = @{ extra = 'Name'} }
+                Name = 'FromFile2', 'FromFile3', 'WithError', 'WithException'
+                ErrorVariable = 'errorOut'
+                OutputFormat = 'Json'
+                OutputPath = $testOutputPath
+            }
+            # With ErrorAction Stop
+            { $Null = $testObject | Assert-PSRule @assertParams -ErrorAction Stop 6>&1 } | Should -Throw;
+            Test-Path -Path $testOutputPath | Should -Be $True;
             $resultContent = @((Get-Content -Path $testOutputPath -Raw | ConvertFrom-Json));
-            $resultContent.Length | Should -Be 3;
-            $resultContent.RuleName | Should -BeIn 'FromFile1', 'FromFile2', 'FromFile3';
+            $resultContent.Length | Should -Be 4;
+            $resultContent.RuleName | Should -BeIn 'FromFile2', 'FromFile3', 'WithError', 'WithException';
             $resultContent.TargetName | Should -BeIn 'TestObject1';
             $resultContent.Field.extra | Should -BeIn 'TestObject1';
         }
@@ -1046,8 +1061,8 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
             $result | Should -Match '\[\+\] FromFile1';
-            $result | Should -Match "`#`#vso\[task\.logissue type=error\]\[FAIL\] TestObject1 failed FromFile2";
-            $result | Should -Match "`#`#vso\[task\.logissue type=error\]\[FAIL\] TestObject1 failed FromFile3";
+            $result | Should -Match "`#`#vso\[task\.logissue type=error\]TestObject1 failed FromFile2";
+            $result | Should -Match "`#`#vso\[task\.logissue type=error\]TestObject1 failed FromFile3";
             $errorOut | Should -Not -BeNullOrEmpty;
         }
     }
@@ -1092,23 +1107,25 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
     $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
 
     Context 'With defaults' {
-        It 'Returns rules in current path' {
-            # Get a list of rules
-            $searchPath = Join-Path -Path $here -ChildPath 'TestModule';
-            try {
-                Push-Location -Path $searchPath;
+        # Get a list of rules
+        $searchPath = Join-Path -Path $here -ChildPath 'TestModule';
+
+        try {
+            Push-Location -Path $searchPath;
+            It 'Returns rules in current path' {
                 $result = @(Get-PSRule)
                 $result | Should -Not -BeNullOrEmpty;
                 $result.Length | Should -Be 2;
                 $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2';
+                ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.Rule';
             }
-            finally {
-                Pop-Location;
-            }
+        }
+        finally {
+            Pop-Location;
         }
     }
 
-    Context 'Using -Path' {
+    Context 'With -Path' {
         It 'Returns rules' {
             # Get a list of rules
             $result = Get-PSRule -Path $ruleFilePath;
@@ -1183,7 +1200,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         }
     }
 
-    Context 'Using -Module' {
+    Context 'With -Module' {
         $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule';
 
         It 'Returns module rules' {
@@ -1349,7 +1366,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         }
     }
 
-    Context 'Using -IncludeDependencies' {
+    Context 'With -IncludeDependencies' {
         It 'Returns rules' {
             # Get a list of rules without dependencies
             $result = @(Get-PSRule -Path $ruleFilePath -Name 'FromFile4');
@@ -1367,21 +1384,27 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         }
     }
 
-    # Context 'Using -OutputFormat' {
-    #     It 'Yaml' {
-    #         $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Yaml;
-    #         $result | Should -Not -BeNullOrEmpty;
-    #         $result | Should -BeOfType System.String;
-    #         $result -cmatch 'ruleName: FromFile1' | Should -Be $True;
-    #     }
+    Context 'With -OutputFormat' {
+        It 'Wide' {
+            $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Wide;
+            $result | Should -Not -BeNullOrEmpty;
+            ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.Rule+Wide';
+        }
 
-    #     It 'Json' {
-    #         $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Json;
-    #         $result | Should -Not -BeNullOrEmpty;
-    #         $result | Should -BeOfType System.String;
-    #         $result -cmatch '"ruleName":"FromFile1"' | Should -Be $True;
-    #     }
-    # }
+        # It 'Yaml' {
+        #     $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Yaml;
+        #     $result | Should -Not -BeNullOrEmpty;
+        #     $result | Should -BeOfType System.String;
+        #     $result -cmatch 'ruleName: FromFile1' | Should -Be $True;
+        # }
+
+        # It 'Json' {
+        #     $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Json;
+        #     $result | Should -Not -BeNullOrEmpty;
+        #     $result | Should -BeOfType System.String;
+        #     $result -cmatch '"ruleName":"FromFile1"' | Should -Be $True;
+        # }
+    }
 
     # Context 'Get rule with invalid path' {
     #     # TODO: Test with invalid path
@@ -1415,8 +1438,11 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
     $Null = Import-Module (Join-Path $here -ChildPath 'TestModule') -Force;
 
     Context 'With defaults' {
+        # Get a list of rules
+        $searchPath = Join-Path -Path $here -ChildPath 'TestModule';
+
         try {
-            Push-Location (Join-Path $here -ChildPath 'TestModule');
+            Push-Location $searchPath;
             It 'Docs from imported module' {
                 $result = @(Get-PSRuleHelp);
                 $result.Length | Should -Be 4;
@@ -1424,6 +1450,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
                 $result[1].Name | Should -Be 'M1.Rule2';
                 $result[2].Name | Should -Be 'M1.Rule1';
                 $result[3].Name | Should -Be 'M1.Rule2';
+                ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.RuleHelpInfo+Collection';
             }
 
             It 'Using wildcard in name' {
@@ -1433,6 +1460,17 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
                 $result[1].Name | Should -Be 'M1.Rule2';
                 $result[2].Name | Should -Be 'M1.Rule1';
                 $result[3].Name | Should -Be 'M1.Rule2';
+                ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.RuleHelpInfo+Collection';
+            }
+
+            It 'With -Full' {
+                $getParams = @{
+                    Module = 'TestModule'
+                    Name = 'M1.Rule1'
+                }
+                $result = @(Get-PSRuleHelp @getParams -Full);
+                $result | Should -Not -BeNullOrEmpty;
+                ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.RuleHelpInfo+Full';
             }
         }
         finally {
@@ -1452,6 +1490,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
             $result[0].Recommendation | Should -Be 'This is a recommendation.';
             $result[0].Notes | Should -Be 'These are notes.';
             $result[0].Annotations.culture | Should -Be 'en-ZZ';
+            ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.RuleHelpInfo';
         }
     }
 
@@ -1622,16 +1661,25 @@ Describe 'Binding' -Tag Common, Binding {
         It 'Binds to object hash' {
             $testObject = @(
                 [PSCustomObject]@{ NotName = 'TestObject1' }
+                [PSCustomObject]@{ NotName = 'TestObject2' }
                 (1 | Select-Object -Property Name)
+                'a'
+                'b'
+                1
+                2
             )
 
             $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1');
             $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 2;
-            $result[0].IsSuccess() | Should -Be $True;
-            $result[1].IsSuccess() | Should -Be $True;
+            $result.Length | Should -Be 7;
+            $result[0..6].IsSuccess() | Should -BeIn $True;
             $result[0].TargetName | Should -BeIn 'f209c623345144be61087d91f30c17b01c6e86d2';
-            $result[1].TargetName | Should -BeIn '3b8eeb35831ea8f7b5de4e0cf04f32b9a1233a0d';
+            $result[1].TargetName | Should -BeIn '28e156a7121bc57b0461029208daf0b48d1c4fd0';
+            $result[2].TargetName | Should -BeIn '3b8eeb35831ea8f7b5de4e0cf04f32b9a1233a0d';
+            $result[3].TargetName | Should -BeIn '7b3ce68b6c2f7d67dae4210eeb83be69f978e2a8';
+            $result[4].TargetName | Should -BeIn '205c97d9248d2cd12db1c55ba421eb8df84b22a7';
+            $result[5].TargetName | Should -BeIn '356a192b7913b04c54574d18c28d46e6395428ab';
+            $result[6].TargetName | Should -BeIn 'da4b9237bacccdf19c0760cab7aec4a8359010b0';
         }
 
         It 'Binds to custom name' {

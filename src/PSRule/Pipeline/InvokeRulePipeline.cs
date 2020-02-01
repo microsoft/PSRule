@@ -5,6 +5,7 @@ using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Resources;
 using PSRule.Rules;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
@@ -213,8 +214,8 @@ namespace PSRule.Pipeline
         internal InvokeRulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer, RuleOutcome outcome)
             : base(context, source, reader, writer)
         {
-            HostHelper.ImportResource(source: Source, context: context);
-            _RuleGraph = HostHelper.GetRuleBlockGraph(source: Source, context: context);
+            HostHelper.ImportResource(Source, Context);
+            _RuleGraph = HostHelper.GetRuleBlockGraph(Source, Context);
             RuleCount = _RuleGraph.Count;
 
             if (RuleCount == 0)
@@ -230,18 +231,26 @@ namespace PSRule.Pipeline
 
         public override void Process(PSObject targetObject)
         {
-            Reader.Enqueue(targetObject);
-            while (Reader.TryDequeue(out PSObject next))
+            try
             {
-                var result = ProcessTargetObject(next);
-                Writer.Write(result, false);
+                Reader.Enqueue(targetObject);
+                while (Reader.TryDequeue(out PSObject next))
+                {
+                    var result = ProcessTargetObject(next);
+                    Writer.WriteObject(result, false);
+                }
+            }
+            catch (Exception ex)
+            {
+                End();
+                throw ex;
             }
         }
 
         public override void End()
         {
             if (_ResultFormat == ResultFormat.Summary)
-                Writer.Write(_Summary.Values.Where(r => _Outcome == RuleOutcome.All || (r.Outcome & _Outcome) > 0), true);
+                Writer.WriteObject(_Summary.Values.Where(r => _Outcome == RuleOutcome.All || (r.Outcome & _Outcome) > 0), true);
 
             Writer.End();
         }
@@ -261,7 +270,7 @@ namespace PSRule.Pipeline
 
                 try
                 {
-                    if (Context.ShouldFilter())
+                    if (Pipeline.ShouldFilter())
                         continue;
 
                     // Check if dependency failed

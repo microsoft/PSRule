@@ -16,7 +16,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                return PipelineContext.CurrentThread.RuleRecord.RuleName;
+                return RunspaceContext.CurrentThread.RuleRecord.RuleName;
             }
         }
 
@@ -24,7 +24,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                return PipelineContext.CurrentThread.RuleRecord.RuleId;
+                return RunspaceContext.CurrentThread.RuleRecord.RuleId;
             }
         }
 
@@ -33,7 +33,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                return PipelineContext.CurrentThread.RuleRecord.TargetObject;
+                return RunspaceContext.CurrentThread.RuleRecord.TargetObject;
             }
         }
 
@@ -42,7 +42,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                return PipelineContext.CurrentThread.RuleRecord.TargetName;
+                return RunspaceContext.CurrentThread.RuleRecord.TargetName;
             }
         }
 
@@ -51,7 +51,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                return PipelineContext.CurrentThread.RuleRecord.TargetType;
+                return RunspaceContext.CurrentThread.RuleRecord.TargetType;
             }
         }
     }

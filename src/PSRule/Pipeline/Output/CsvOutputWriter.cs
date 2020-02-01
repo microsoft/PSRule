@@ -1,51 +1,42 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Configuration;
 using PSRule.Resources;
 using PSRule.Rules;
 using System;
-using System.Collections.Generic;
 using System.Text;
 
-namespace PSRule.Pipeline
+namespace PSRule.Pipeline.Output
 {
-    internal sealed class CsvOutputWriter : PipelineWriter
+    internal sealed class CsvOutputWriter : SerializationOutputWriter<InvokeResult>
     {
         private const char COMMA = ',';
         private const char QUOTE = '"';
 
         private readonly StringBuilder _Builder;
-        private readonly List<InvokeResult> _Result;
 
-        internal CsvOutputWriter(WriteOutput output)
-            : base(output)
+        internal CsvOutputWriter(PipelineWriter inner, PSRuleOption option)
+            : base(inner, option)
         {
             _Builder = new StringBuilder();
-            _Result = new List<InvokeResult>();
         }
 
-        public override void Write(object o, bool enumerate)
+        public override void WriteObject(object o, bool enumerate)
         {
             if (!(o is InvokeResult result))
                 return;
 
-            _Result.Add(result);
+            Add(result);
         }
 
-        public override void End()
-        {
-            base.Write(Serialize(_Result.ToArray()), false);
-        }
-
-        private string Serialize(IEnumerable<InvokeResult> o)
+        protected override string Serialize(InvokeResult[] o)
         {
             WriteHeader();
             foreach (var result in o)
             {
                 foreach (var record in result.AsRecord())
-                {
                     VisitRecord(record: record);
-                }
             }
             return _Builder.ToString();
         }
@@ -71,9 +62,7 @@ namespace PSRule.Pipeline
         private void VisitRecord(RuleRecord record)
         {
             if (record == null)
-            {
                 return;
-            }
 
             WriteColumn(record.RuleName);
             _Builder.Append(COMMA);
@@ -94,9 +83,7 @@ namespace PSRule.Pipeline
         private void WriteColumn(string value)
         {
             if (string.IsNullOrEmpty(value))
-            {
                 return;
-            }
 
             _Builder.Append(QUOTE);
             _Builder.Append(value.Replace("\"", "\"\""));

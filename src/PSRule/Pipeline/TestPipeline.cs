@@ -14,18 +14,18 @@ namespace PSRule.Pipeline
         {
             private readonly RuleOutcome _Outcome;
 
-            internal BooleanWriter(WriteOutput output, RuleOutcome outcome)
-                : base(output)
+            internal BooleanWriter(PipelineWriter output, RuleOutcome outcome)
+                : base(output, null)
             {
                 _Outcome = outcome;
             }
 
-            public override void Write(object o, bool enumerate)
+            public override void WriteObject(object o, bool enumerate)
             {
                 if (!(o is InvokeResult result) || !ShouldOutput(result.Outcome))
                     return;
 
-                base.Write(result.IsSuccess(), false);
+                base.WriteObject(result.IsSuccess(), false);
             }
 
             private bool ShouldOutput(RuleOutcome outcome)

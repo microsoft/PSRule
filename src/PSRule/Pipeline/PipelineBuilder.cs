@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Pipeline.Output;
 using PSRule.Resources;
 using PSRule.Rules;
 using System;
@@ -87,7 +88,6 @@ namespace PSRule.Pipeline
 
     internal abstract class PipelineBuilderBase : IPipelineBuilder
     {
-        protected readonly PipelineLogger Logger;
         protected readonly PSRuleOption Option;
         protected readonly Source[] Source;
         protected readonly HostContext HostContext;
@@ -97,14 +97,13 @@ namespace PSRule.Pipeline
         private BaselineOption _Baseline;
 
         private ShouldProcess _ShouldProcess;
-        private WriteOutput _Output;
+        private readonly PSPipelineWriter _Output;
 
         protected PipelineBuilderBase(Source[] source)
         {
-            Logger = new PipelineLogger();
             Option = new PSRuleOption();
             Source = source;
-            _Output = (r, b) => { };
+            _Output = new PSPipelineWriter(Option);
             HostContext = new HostContext();
         }
 
@@ -126,15 +125,14 @@ namespace PSRule.Pipeline
 
         public virtual void UseCommandRuntime(ICommandRuntime2 commandRuntime)
         {
-            Logger.UseCommandRuntime(commandRuntime);
             _ShouldProcess = commandRuntime.ShouldProcess;
-            _Output = commandRuntime.WriteObject;
+            _Output.UseCommandRuntime(commandRuntime);
         }
 
         public void UseExecutionContext(EngineIntrinsics executionContext)
         {
             HostContext.InSession = executionContext.SessionState.PSVariable.GetValue("PSSenderInfo") != null;
-            Logger.UseExecutionContext(executionContext);
+            _Output.UseExecutionContext(executionContext);
         }
 
         public virtual IPipelineBuilder Configure(PSRuleOption option)
@@ -154,7 +152,7 @@ namespace PSRule.Pipeline
 
         protected void ConfigureLogger(PSRuleOption option)
         {
-            Logger.Configure(option);
+
         }
 
         /// <summary>
@@ -181,7 +179,6 @@ namespace PSRule.Pipeline
             }
 
             return PipelineContext.New(
-                logger: PrepareLogger(),
                 option: Option,
                 hostContext: HostContext,
                 binder: new TargetBinder(bindTargetName, bindTargetType, bindField, Option.Input.TargetType),
@@ -201,38 +198,34 @@ namespace PSRule.Pipeline
             switch (Option.Output.Format)
             {
                 case OutputFormat.Csv:
-                    return new CsvOutputWriter(output);
+                    return new CsvOutputWriter(output, Option);
 
                 case OutputFormat.Json:
-                    return new JsonOutputWriter(output);
+                    return new JsonOutputWriter(output, Option);
 
                 case OutputFormat.NUnit3:
-                    return new NUnit3OutputWriter(output);
+                    return new NUnit3OutputWriter(output, Option);
 
                 case OutputFormat.Yaml:
-                    return new YamlOutputWriter(output);
+                    return new YamlOutputWriter(output, Option);
 
-                default:
-                    return new PassThruWriter(output, Option.Output.Format == OutputFormat.Wide);
+                case OutputFormat.Wide:
+                    return new WideOutputWriter(output, Option);
             }
+            return output;
         }
 
-        protected virtual ILogger PrepareLogger()
-        {
-            return Logger; 
-        }
-
-        protected WriteOutput GetOutput()
+        protected PipelineWriter GetOutput()
         {
             // Redirect to file instead
             if (!string.IsNullOrEmpty(Option.Output.Path))
             {
-                var encoding = GetEncoding(Option.Output.Encoding);
-                return (object o, bool enumerate) => WriteToFile(
+                return new FileOutputWriter(
+                    inner: _Output,
+                    option: Option,
+                    encoding: GetEncoding(Option.Output.Encoding),
                     path: Option.Output.Path,
-                    shouldProcess: _ShouldProcess,
-                    encoding: encoding,
-                    o: o
+                    shouldProcess: _ShouldProcess
                 );
             }
             return _Output;

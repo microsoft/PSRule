@@ -72,7 +72,7 @@ namespace PSRule.Pipeline
 
         public bool IsProcessed()
         {
-            return _Outcome == RuleOutcome.Processed;
+            return Outcome == (Outcome & RuleOutcome.Processed);
         }
 
         /// <summary>
@@ -86,13 +86,11 @@ namespace PSRule.Pipeline
             _Total++;
 
             if (ruleRecord.Outcome == RuleOutcome.Error)
-            {
                 _Error++;
-            }
+
             if (ruleRecord.Outcome == RuleOutcome.Fail)
-            {
                 _Fail++;
-            }
+
             _Record.Add(ruleRecord);
         }
 

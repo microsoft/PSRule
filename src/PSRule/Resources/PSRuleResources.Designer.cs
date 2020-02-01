@@ -97,6 +97,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to One or more rules reported errors..
+        /// </summary>
+        internal static string ErrorPipelineException {
+            get {
+                return ResourceManager.GetString("ErrorPipelineException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exists: {0}.
         /// </summary>
         internal static string ExistsTrue {
@@ -273,6 +282,15 @@ namespace PSRule.Resources {
         internal static string RuleParameterNotFound {
             get {
                 return ResourceManager.GetString("RuleParameterNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to at Rule &apos;{0}&apos;, {1}: line {2}.
+        /// </summary>
+        internal static string RuleStackTrace {
+            get {
+                return ResourceManager.GetString("RuleStackTrace", resourceCulture);
             }
         }
         

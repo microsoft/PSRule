@@ -58,7 +58,7 @@ namespace PSRule.Commands
             {
                 if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field[i], caseSensitive: CaseSensitive, value: out object fieldValue))
                 {
-                    PipelineContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Exists, message: PSRuleResources.ExistsTrue, args: Field[i]);
+                    RunspaceContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Exists, message: PSRuleResources.ExistsTrue, args: Field[i]);
                     foundFields.Add(Field[i]);
                     found++;
                 }
@@ -67,7 +67,7 @@ namespace PSRule.Commands
             }
 
             var result = Not ? found < required : found == required;
-            PipelineContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Exists, outcome: result);
+            RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Exists, outcome: result);
             if (!(result || TryReason(Reason)))
             {
                 WriteReason(Not ? string.Format(ReasonStrings.ExistsNot, string.Join(", ", foundFields)) : string.Format(ReasonStrings.Exists, string.Join(", ", notFoundFields)));

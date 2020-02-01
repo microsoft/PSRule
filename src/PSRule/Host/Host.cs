@@ -21,7 +21,7 @@ namespace PSRule.Host
         public PSRuleVariable()
             : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
         {
-            _Value = new Runtime.PSRule(PipelineContext.CurrentThread);
+            _Value = new Runtime.PSRule(RunspaceContext.CurrentThread);
         }
 
         public override object Value
@@ -115,7 +115,7 @@ namespace PSRule.Host
         {
             get
             {
-                return PipelineContext.CurrentThread.TargetObject;
+                return RunspaceContext.CurrentThread.TargetObject;
             }
         }
     }
