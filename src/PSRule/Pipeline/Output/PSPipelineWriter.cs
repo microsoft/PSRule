@@ -141,15 +141,15 @@ namespace PSRule.Pipeline.Output
             OnWriteDebug(debugRecord.Message);
         }
 
-        public override void WriteObject(object o, bool enumerate)
+        public override void WriteObject(object sendToPipeline, bool enumerate)
         {
             if (OnWriteObject == null)
                 return;
 
-            if (o is InvokeResult result)
+            if (sendToPipeline is InvokeResult result)
                 ExpandRuleRecord(result.AsRecord());
             else
-                OnWriteObject(o, enumerate);
+                OnWriteObject(sendToPipeline, enumerate);
         }
 
         public override void WriteHost(HostInformationMessage info)
@@ -175,6 +175,16 @@ namespace PSRule.Pipeline.Output
         public override bool ShouldWriteDebug()
         {
             return _LogDebug && (_DebugFilter == null || _ScopeName == null || _DebugFilter.Contains(_ScopeName));
+        }
+
+        public override bool ShouldWriteError()
+        {
+            return true;
+        }
+
+        public override bool ShouldWriteWarning()
+        {
+            return true;
         }
 
         public override void EnterScope(string scopeName)

@@ -13,14 +13,14 @@ namespace PSRule.Pipeline.Output
         internal WideOutputWriter(PipelineWriter inner, PSRuleOption option)
             : base(inner, option) { }
 
-        public override void WriteObject(object o, bool enumerate)
+        public override void WriteObject(object sendToPipeline, bool enumerate)
         {
-            if (o is InvokeResult result)
+            if (sendToPipeline is InvokeResult result)
                 WriteWideObject(result.AsRecord());
-            else if (o is IEnumerable<Rule> rules)
+            else if (sendToPipeline is IEnumerable<Rule> rules)
                 WriteWideObject(rules);
             else
-                base.WriteObject(o, enumerate);
+                base.WriteObject(sendToPipeline, enumerate);
         }
 
         private void WriteWideObject<T>(IEnumerable<T> collection)

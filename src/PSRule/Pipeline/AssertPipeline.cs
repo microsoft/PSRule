@@ -178,7 +178,6 @@ namespace PSRule.Pipeline
                             Empty();
                         }
 
-                        // TODO: Need error option as well
                         if (records[i].IsSuccess())
                             Green(string.Format(FormatterStrings.Client_Pass, records[i].RuleName));
                         else if (records[i].Outcome == RuleOutcome.Error)
@@ -400,9 +399,9 @@ namespace PSRule.Pipeline
                 }
             }
 
-            public override void WriteObject(object o, bool enumerate)
+            public override void WriteObject(object sendToPipeline, bool enumerateCollection)
             {
-                if (!(o is InvokeResult result))
+                if (!(sendToPipeline is InvokeResult result))
                     return;
 
                 _Formatter.Result(result);
@@ -411,7 +410,7 @@ namespace PSRule.Pipeline
                 _TotalCount += result.Total;
 
                 if (_InnerWriter != null)
-                    _InnerWriter.WriteObject(o, enumerate);
+                    _InnerWriter.WriteObject(sendToPipeline, enumerateCollection);
             }
 
             public override void End()

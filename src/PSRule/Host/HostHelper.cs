@@ -178,7 +178,7 @@ namespace PSRule.Host
 
             try
             {
-                RunspaceContext.CurrentThread.Writer?.EnterScope("[Discovery.Resource]");
+                context.Writer?.EnterScope("[Discovery.Resource]");
                 PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Yaml;
                 foreach (var source in sources)
                 {
@@ -187,8 +187,8 @@ namespace PSRule.Host
                         if (file.Type != RuleSourceType.Yaml)
                             continue;
 
-                        RunspaceContext.CurrentThread.VerboseRuleDiscovery(path: file.Path);
-                        RunspaceContext.CurrentThread.EnterSourceScope(source: file);
+                        context.VerboseRuleDiscovery(path: file.Path);
+                        context.EnterSourceScope(source: file);
                         using (var reader = new StreamReader(file.Path))
                         {
                             var parser = new YamlDotNet.Core.Parser(reader);
@@ -212,9 +212,9 @@ namespace PSRule.Host
             }
             finally
             {
-                RunspaceContext.CurrentThread.Writer?.ExitScope();
-                PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.None;
-                RunspaceContext.CurrentThread.ExitSourceScope();
+                context.Writer?.ExitScope();
+                context.Pipeline.ExecutionScope = ExecutionScope.None;
+                context.ExitSourceScope();
             }
             return result;
         }
@@ -252,9 +252,9 @@ namespace PSRule.Host
                 }
                 context.VerboseConditionResult(pass: invokeResult.Pass, count: invokeResult.Count, outcome: ruleRecord.Outcome);
             }
-            catch (CmdletInvocationException runtimeException)
+            catch (CmdletInvocationException)
             {
-                throw runtimeException;
+                throw;
             }
             catch (Exception ex)
             {
