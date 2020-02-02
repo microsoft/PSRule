@@ -37,7 +37,6 @@ namespace PSRule.Pipeline
             if (option.Rule != null)
                 Option.Rule = new RuleOption(option.Rule);
 
-            ConfigureLogger(Option);
             return this;
         }
         public void Full()
@@ -74,11 +73,11 @@ namespace PSRule.Pipeline
                 _TypeName = full ? OUTPUT_TYPENAME_FULL : null;
             }
 
-            public override void WriteObject(object o, bool enumerate)
+            public override void WriteObject(object sendToPipeline, bool enumerateCollection)
             {
-                if (!(o is RuleHelpInfo[] result))
+                if (!(sendToPipeline is RuleHelpInfo[] result))
                 {
-                    base.WriteObject(o, enumerate);
+                    base.WriteObject(sendToPipeline, enumerateCollection);
                     return;
                 }
                 if (result.Length == 1)

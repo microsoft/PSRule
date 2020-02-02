@@ -29,12 +29,12 @@ namespace PSRule.Pipeline
             _Writer.Begin();
         }
 
-        public virtual void WriteObject(object o, bool enumerate)
+        public virtual void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
-            if (_Writer == null || o == null)
+            if (_Writer == null || sendToPipeline == null)
                 return;
 
-            _Writer.WriteObject(o, enumerate);
+            _Writer.WriteObject(sendToPipeline, enumerateCollection);
         }
 
         public virtual void End()
@@ -55,7 +55,7 @@ namespace PSRule.Pipeline
 
         public virtual bool ShouldWriteVerbose()
         {
-            return _Writer != null ? _Writer.ShouldWriteVerbose() : true;
+            return _Writer != null && _Writer.ShouldWriteVerbose();
         }
 
         public virtual void WriteWarning(string message)
@@ -68,7 +68,7 @@ namespace PSRule.Pipeline
 
         public virtual bool ShouldWriteWarning()
         {
-            return _Writer != null ? _Writer.ShouldWriteWarning() : true;
+            return _Writer != null && _Writer.ShouldWriteWarning();
         }
 
         public virtual void WriteError(ErrorRecord errorRecord)
@@ -81,7 +81,7 @@ namespace PSRule.Pipeline
 
         public virtual bool ShouldWriteError()
         {
-            return _Writer != null ? _Writer.ShouldWriteError() : true;
+            return _Writer != null && _Writer.ShouldWriteError();
         }
 
         public virtual void WriteInformation(InformationRecord informationRecord)
@@ -158,14 +158,14 @@ namespace PSRule.Pipeline
             _Result = new List<T>();
         }
 
-        public override void WriteObject(object o, bool enumerate)
+        public override void WriteObject(object sendToPipeline, bool enumerate)
         {
-            if (o is InvokeResult result)
+            if (sendToPipeline is InvokeResult result)
             {
                 Add(result.AsRecord());
                 return;
             }
-            Add(o);
+            Add(sendToPipeline);
         }
 
         protected void Add(object o)

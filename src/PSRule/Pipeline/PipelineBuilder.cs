@@ -150,11 +150,6 @@ namespace PSRule.Pipeline
 
         public abstract IPipeline Build();
 
-        protected void ConfigureLogger(PSRuleOption option)
-        {
-
-        }
-
         /// <summary>
         /// Use a baseline, either by name or by path.
         /// </summary>
@@ -292,26 +287,6 @@ namespace PSRule.Pipeline
 
                 default:
                     return new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
-            }
-        }
-
-        /// <summary>
-        /// Write output to file.
-        /// </summary>
-        /// <param name="path">The file path to write.</param>
-        /// <param name="encoding">The file encoding to use.</param>
-        /// <param name="o">The text to write.</param>
-        private static void WriteToFile(string path, ShouldProcess shouldProcess, Encoding encoding, object o)
-        {
-            var rootedPath = PSRuleOption.GetRootedPath(path: path);
-            var parentPath = Directory.GetParent(rootedPath);
-            if (!parentPath.Exists && shouldProcess(target: parentPath.FullName, action: PSRuleResources.ShouldCreatePath))
-            {
-                Directory.CreateDirectory(path: parentPath.FullName);
-            }
-            if (shouldProcess(target: rootedPath, action: PSRuleResources.ShouldWriteFile))
-            {
-                File.WriteAllText(path: rootedPath, contents: o.ToString(), encoding: encoding);
             }
         }
 

@@ -105,7 +105,6 @@ namespace PSRule.Pipeline
             if (option.Suppression.Count > 0)
                 Option.Suppression = new SuppressionOption(option.Suppression);
 
-            ConfigureLogger(Option);
             return this;
         }
 
@@ -240,10 +239,10 @@ namespace PSRule.Pipeline
                     Writer.WriteObject(result, false);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 End();
-                throw ex;
+                throw;
             }
         }
 

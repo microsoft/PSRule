@@ -190,8 +190,6 @@ namespace PSRule.Pipeline
                     {
                         _Runspace.Dispose();
                     }
-
-                    //_RuleTimer.Stop();
                     _NameTokenCache.Clear();
                     LocalizedDataCache.Clear();
                     ExpressionCache.Clear();

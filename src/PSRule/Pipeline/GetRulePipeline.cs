@@ -34,7 +34,6 @@ namespace PSRule.Pipeline
             if (option.Rule != null)
                 Option.Rule = new RuleOption(option.Rule);
 
-            ConfigureLogger(Option);
             return this;
         }
         public void IncludeDependencies()
