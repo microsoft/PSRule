@@ -2,6 +2,32 @@
 
 ## Unreleased
 
+## v0.14.0
+
+What's changed since v0.13.0:
+
+- Engine features:
+  - Added support for qualified target names. [#395](https://github.com/Microsoft/PSRule/issues/395)
+    - Added options `Binding.UseQualifiedName` and `Binding.NameSeparator`.
+    - See `about_PSRule_Options` for details.
+  - Added assertion method `HasJsonSchema` to check if a JSON schema is referenced. [#398](https://github.com/Microsoft/PSRule/issues/398)
+    - See `about_PSRule_Assert` for usage details.
+  - Added file content helper for reading objects from files. [#399](https://github.com/Microsoft/PSRule/issues/399)
+    - The method `GetContent` of `$PSRule` can be used to read files as objects.
+    - See `about_PSRule_Variables` for usage details.
+- Quality of life improvements:
+  - Improved reporting on runtime errors in rule blocks. [#239](https://github.com/Microsoft/PSRule/issues/239)
+  - Improved NUnit results to include a failure message based on reported reasons. [#404](https://github.com/Microsoft/PSRule/issues/404)
+- Bug fixes:
+  - Fixed wide formatting of rules with `Get-PSRule`. [#407](https://github.com/Microsoft/PSRule/issues/407)
+  - Fixed TargetName hash serialization for base types. [#406](https://github.com/Microsoft/PSRule/issues/406)
+  - Fixed output not generated with Assert-PSRule and Stop. [#405](https://github.com/Microsoft/PSRule/issues/405)
+  - Fixed NUnit results incorrectly reporting that the test had not executed. [#403](https://github.com/Microsoft/PSRule/issues/403)
+
+What's changed since pre-release v0.14.0-B2002003:
+
+- No additional changes
+
 ## v0.14.0-B2002003 (pre-release)
 
 - Fixed wide formatting of rules with `Get-PSRule`. [#407](https://github.com/Microsoft/PSRule/issues/407)
