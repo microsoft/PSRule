@@ -239,10 +239,13 @@ namespace PSRule.Pipeline
                     result.Add(c.Name);
                     set.Add(c.Name);
                 }
-                if (c.Parent != null && !set.Contains(c.Parent.Name))
+                for (var p = c.Parent; !string.IsNullOrEmpty(p.Name); p = p.Parent)
                 {
-                    parent.Add(c.Parent.Name);
-                    set.Add(c.Parent.Name);
+                    if (!set.Contains(p.Name))
+                    {
+                        parent.Add(p.Name);
+                        set.Add(p.Name);
+                    }
                 }
             }
             if (parent.Count > 0)
@@ -255,9 +258,11 @@ namespace PSRule.Pipeline
                 result.Add(current.Name);
                 set.Add(current.Name);
             }
-            if (current.Parent != null && !set.Contains(current.Parent.Name))
-                result.Add(current.Parent.Name);
-
+            for (var p = current.Parent; !string.IsNullOrEmpty(p.Name); p = p.Parent)
+            {
+                if (!result.Contains(p.Name))
+                    result.Add(p.Name);
+            }
             return result.ToArray();
         }
 
