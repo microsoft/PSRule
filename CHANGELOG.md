@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fix parent culture unwind with POSIX. [#414](https://github.com/Microsoft/PSRule/issues/414)
+
 ## v0.14.0
 
 What's changed since v0.13.0:

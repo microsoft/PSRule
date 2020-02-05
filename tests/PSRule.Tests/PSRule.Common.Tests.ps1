@@ -1191,6 +1191,20 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result.Synopsis | Should -BeNullOrEmpty;
         }
 
+        if ((Get-Variable -Name 'IsLinux' -ErrorAction SilentlyContinue -ValueOnly) -eq $True) {
+            It 'Handles en-US-POSIX' {
+                Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -Verifiable -MockWith {
+                    return @('en-US-POSIX');
+                }
+                # From markdown
+                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1';
+                $result | Should -Not -BeNullOrEmpty;
+                $result.RuleName | Should -Be 'FromFile1';
+                $result.Synopsis | Should -Be 'This is a synopsis.';
+                $result.Info.Annotations.culture | Should -Be 'en';
+            }
+        }
+
         It 'Handles empty path' {
             $emptyPath = Join-Path -Path $outputPath -ChildPath 'empty';
             if (!(Test-Path -Path $emptyPath)) {
