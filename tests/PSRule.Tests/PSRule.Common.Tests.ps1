@@ -1191,7 +1191,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result.Synopsis | Should -BeNullOrEmpty;
         }
 
-        if ($IsLinux -eq $True) {
+        if ((Get-Variable -Name 'IsLinux' -ErrorAction SilentlyContinue -ValueOnly) -eq $True) {
             It 'Handles en-US-POSIX' {
                 Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -Verifiable -MockWith {
                     return @('en-US-POSIX');
