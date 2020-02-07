@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fix output of warning with `Assert-PSRule`. [#417](https://github.com/Microsoft/PSRule/issues/417)
+
 ## v0.15.0-B2002005 (pre-release)
 
 - Fix parent culture unwind with POSIX. [#414](https://github.com/Microsoft/PSRule/issues/414)

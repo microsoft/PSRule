@@ -1036,7 +1036,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             $assertParams = @{
                 Path = $ruleFilePath
                 Option = @{ 'Output.Style' = 'GitHubActions' }
-                Name = 'FromFile1', 'FromFile2', 'FromFile3'
+                Name = 'FromFile1', 'FromFile2', 'FromFile3', 'WithWarning'
                 ErrorVariable = 'errorOut'
                 WarningAction = 'SilentlyContinue'
             }
@@ -1046,6 +1046,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             $result | Should -Match '\[\+\] FromFile1';
             $result | Should -Match '::error::\[FAIL\] TestObject1 failed FromFile2';
             $result | Should -Match '::error::\[FAIL\] TestObject1 failed FromFile3';
+            $result | Should -Match '::warning::This is a warning';
             $errorOut | Should -Not -BeNullOrEmpty;
         }
 
@@ -1053,7 +1054,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             $assertParams = @{
                 Path = $ruleFilePath
                 Option = @{ 'Output.Style' = 'AzurePipelines' }
-                Name = 'FromFile1', 'FromFile2', 'FromFile3'
+                Name = 'FromFile1', 'FromFile2', 'FromFile3', 'WithWarning'
                 ErrorVariable = 'errorOut'
                 WarningAction = 'SilentlyContinue'
             }
@@ -1063,6 +1064,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             $result | Should -Match '\[\+\] FromFile1';
             $result | Should -Match "`#`#vso\[task\.logissue type=error\]TestObject1 failed FromFile2";
             $result | Should -Match "`#`#vso\[task\.logissue type=error\]TestObject1 failed FromFile3";
+            $result | Should -Match "`#`#vso\[task\.logissue type=warning\]This is a warning";
             $errorOut | Should -Not -BeNullOrEmpty;
         }
     }

@@ -50,6 +50,12 @@ Rule 'WithFunctionError' {
     FunctionError
 }
 
+# Synopsis: A rule writing a warning
+Rule 'WithWarning' {
+    Write-Warning 'This is a warning';
+    $True;
+}
+
 function global:FunctionError {
     param ()
     process {
