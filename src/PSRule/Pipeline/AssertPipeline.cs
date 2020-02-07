@@ -413,6 +413,11 @@ namespace PSRule.Pipeline
                     _InnerWriter.WriteObject(sendToPipeline, enumerateCollection);
             }
 
+            public override void WriteWarning(string message)
+            {
+                _Formatter.Warning(new WarningRecord(message));
+            }
+
             public override void End()
             {
                 _Formatter.End(_TotalCount, _FailCount, _ErrorCount);
