@@ -131,7 +131,7 @@ namespace PSRule.Rules
 
         public bool IsProcessed()
         {
-            return Outcome == (Outcome & RuleOutcome.Processed);
+            return Outcome == RuleOutcome.Pass || Outcome == RuleOutcome.Fail || Outcome == RuleOutcome.Error;
         }
 
         public string GetReasonViewString()

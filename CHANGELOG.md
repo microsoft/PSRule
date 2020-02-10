@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- Fix output of warning with `Assert-PSRule`. [#417](https://github.com/Microsoft/PSRule/issues/417)
+- Fixed output of warning with `Assert-PSRule`. [#417](https://github.com/Microsoft/PSRule/issues/417)
+- Fixed NUnit report to include a failure element when reason is not specified. [#420](https://github.com/Microsoft/PSRule/issues/420)
+- Added recommendation to failure message of NUnit results. [#421](https://github.com/Microsoft/PSRule/issues/421)
 
 ## v0.15.0-B2002005 (pre-release)
 

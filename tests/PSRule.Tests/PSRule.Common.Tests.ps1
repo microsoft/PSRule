@@ -423,7 +423,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
 
-            $result = $testObject | Invoke-PSRule @invokeParams -Name 'FromFile1' | Out-String;
+            $result = $testObject | Invoke-PSRule @invokeParams -Name 'FromFile1','FromFile2','FromFile3' -WarningAction SilentlyContinue | Out-String;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
 
@@ -445,6 +445,29 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $resultXml = [XML]$result;
             $resultXml.Schemas = $schemas;
             { $resultXml.Validate($Null) } | Should -Not -Throw;
+
+            # Success
+            $filteredResult = $resultXml.SelectNodes('/test-results/test-suite/results/test-case') | Where-Object {
+                $_.name -like '* FromFile1'
+            }
+            $filteredResult.success | Should -Be 'True';
+            $filteredResult.executed | Should -Be 'True';
+
+            # Failure
+            $filteredResult = $resultXml.SelectNodes('/test-results/test-suite/results/test-case') | Where-Object {
+                $_.name -like '* FromFile2'
+            }
+            $filteredResult.success | Should -Be 'False';
+            $filteredResult.executed | Should -Be 'True';
+            $filteredResult.failure | Should -Not -BeNullOrEmpty;
+
+            # Inconclusive
+            $filteredResult = $resultXml.SelectNodes('/test-results/test-suite/results/test-case') | Where-Object {
+                $_.name -like '* FromFile3'
+            }
+            $filteredResult.success | Should -Be 'False';
+            $filteredResult.executed | Should -Be 'True';
+            $filteredResult.failure | Should -Not -BeNullOrEmpty;
         }
 
         It 'Csv' {
