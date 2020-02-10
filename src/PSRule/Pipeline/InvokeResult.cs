@@ -72,7 +72,7 @@ namespace PSRule.Pipeline
 
         public bool IsProcessed()
         {
-            return Outcome == (Outcome & RuleOutcome.Processed);
+            return _Outcome == RuleOutcome.Pass || _Outcome == RuleOutcome.Fail || _Outcome == RuleOutcome.Error;
         }
 
         /// <summary>

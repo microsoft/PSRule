@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Resources;
 using System;
 using System.Linq;
 using System.Text;
@@ -84,15 +85,55 @@ namespace PSRule.Pipeline.Output
         private void VisitTestCase(TestCase testCase)
         {
             _Builder.Append($"<test-case description=\"{testCase.Description}\" name=\"{testCase.Name}\" time=\"{testCase.Time.ToString()}\" asserts=\"0\" success=\"{testCase.Success}\" result=\"{(testCase.Success ? "Success" : "Failure")}\" executed=\"{testCase.Executed}\">");
-            if (!string.IsNullOrEmpty(testCase.FailureMessage))
-                _Builder.Append($"<failure><message><![CDATA[{testCase.FailureMessage}]]></message><stack-trace><![CDATA[{testCase.ScriptStackTrace}]]></stack-trace></failure>");
-
+            if (!testCase.Success)
+            {
+                _Builder.Append("<failure>");
+                _Builder.Append($"<message><![CDATA[{testCase.FailureMessage}]]></message>");
+                _Builder.Append($"<stack-trace><![CDATA[{testCase.ScriptStackTrace}]]></stack-trace>");
+                _Builder.Append("</failure>");
+            }
             _Builder.Append("</test-case>");
         }
 
-        private static string FailureMessage(Rules.RuleRecord record)
+        private string FailureMessage(Rules.RuleRecord record)
         {
-            return record.Reason == null || record.Reason.Length == 0 ? string.Empty : string.Join(" ", record.Reason);
+            var useMarkdown = Option.Output.Style == OutputStyle.AzurePipelines;
+            var sb = new StringBuilder();
+            if (useMarkdown)
+            {
+                sb.AppendLine(record.Recommendation);
+                var link = record.Info.GetOnlineHelpUri();
+                if (link != null)
+                    sb.AppendLine(string.Format(ReportStrings.NUnit_DetailsLink, link));
+
+                if (record.Reason != null && record.Reason.Length > 0)
+                {
+                    sb.AppendLine();
+                    sb.AppendLine(ReportStrings.NUnit_ReportedReasons);
+                    sb.AppendLine();
+                    for (var i = 0; i < record.Reason.Length; i++)
+                    {
+                        sb.Append("- ");
+                        sb.AppendLine(record.Reason[i]);
+                    }
+                }
+            }
+            else
+            {
+                sb.AppendLine(record.Recommendation);
+                if (record.Reason != null && record.Reason.Length > 0)
+                {
+                    sb.AppendLine();
+                    sb.AppendLine(ReportStrings.NUnit_ReportedReasons);
+                    sb.AppendLine();
+                    for (var i = 0; i < record.Reason.Length; i++)
+                    {
+                        sb.Append("- ");
+                        sb.AppendLine(record.Reason[i]);
+                    }
+                }
+            }
+            return sb.ToString();
         }
 
         private sealed class TestFixture
