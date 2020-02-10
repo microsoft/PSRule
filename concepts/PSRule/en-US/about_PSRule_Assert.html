@@ -85,6 +85,7 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 <li><a href="#hasdefaultvalue">HasDefaultValue</a> - The object should not have the field or the field value is set to the default value.</li>
 <li><a href="#hasfield">HasField</a> - The object must have the specified field.</li>
 <li><a href="#hasfieldvalue">HasFieldValue</a> - The object must have the specified field and that field is not empty.</li>
+<li><a href="#hasjsonschema">HasJsonSchema</a> - The object must reference a JSON schema with the <code>$schema</code> field.</li>
 <li><a href="#jsonschema">JsonSchema</a> - The object must validate successfully against a JSON schema.</li>
 <li><a href="#less">Less</a> - The field value must be less.</li>
 <li><a href="#lessorequal">LessOrEqual</a> - The field value must be less or equal to.</li>
@@ -105,7 +106,8 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 </li>
 <li>Assertion methods return the <code>AssertResult</code> object that is interpreted by the rule pipeline.</li>
 </ul>
-<p>Some assertion methods may overlap or provide similar functionality to built-in keywords. Where you have the choice, use built-in keywords.
+<p>Some assertion methods may overlap or provide similar functionality to built-in keywords.
+Where you have the choice, use built-in keywords.
 Use assertion methods for advanced cases or increased flexibility.</p>
 <p>In the following example, <code>Assert.HasFieldValue</code> asserts that <code>$TargetObject</code> should have a field named <code>Type</code> with a non-empty value.</p>
 <pre><code class="lang-powershell">Rule 'Assert.HasTypeField' {
@@ -306,12 +308,34 @@ When the field value is:</p>
     $Assert.HasFieldValue($TargetObject, 'tag.Environment', 'production')
 }
 </code></pre>
+<h3 id="hasjsonschema">HasJsonSchema</h3>
+<p>The <code>HasJsonSchema</code> assertion method determines if the input object has a <code>$schema</code> property defined.
+If the <code>$schema</code> property is defined, it must match one of the supplied schemas.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being compared.</li>
+<li><code>uri</code> - Optional. When specified, the object being compared must have a <code>$schema</code> property set to one of the specified schemas.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The field '$schema' does not exist.</em></li>
+<li><em>The field value '$schema' is not a string.</em></li>
+<li><em>None of the specified schemas match '{0}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'HasFieldValue' {
+    $Assert.HasJsonSchema($TargetObject)
+    $Assert.HasJsonSchema($TargetObject, &quot;http://json-schema.org/draft-07/schema`#&quot;)
+}
+</code></pre>
 <h3 id="jsonschema">JsonSchema</h3>
 <p>The <code>JsonSchema</code> assertion method compares the input object against a defined JSON schema.</p>
 <p>The following parameters are accepted:</p>
 <ul>
 <li><code>inputObject</code> - The object being compared against the JSON schema.</li>
-<li><code>uri</code> - A URL or file path to a JSON schema file formatted as UTF-8. Either a file path or URL can be used to specify the location of the schema file.</li>
+<li><code>uri</code> - A URL or file path to a JSON schema file formatted as UTF-8.
+Either a file path or URL can be used to specify the location of the schema file.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>

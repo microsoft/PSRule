@@ -69,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "BqmaAeaNrUXN2OK/p7sgPA=="
+          "hash": "3TZ01DhGS4Bah5vTagh5pA=="
         }
       },
       "is_incremental": false,
@@ -93,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Set-PSRuleOption.html",
-          "hash": "BrsiWyjYwEDh1Xhbw2SNeQ=="
+          "hash": "ejGtCnvA0yLRkTjM62Gk4A=="
         }
       },
       "is_incremental": false,
@@ -129,7 +129,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Assert.html",
-          "hash": "3IQT4jHxbSQv0d49YCvcxg=="
+          "hash": "vuxYP0yrGjE+Fq+i4yZFgQ=="
         }
       },
       "is_incremental": false,
@@ -141,7 +141,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Baseline.html",
-          "hash": "0YGkLlBVTJNz1HMpwWhIgA=="
+          "hash": "Fib8mbzONJ8OAj6qz2Njyg=="
         }
       },
       "is_incremental": false,
@@ -165,7 +165,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "5YXmBE6/wI7pCKwQLpQsWQ=="
+          "hash": "POiWK5aQb44Nb79vyBoX1g=="
         }
       },
       "is_incremental": false,
@@ -177,7 +177,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Variables.html",
-          "hash": "GLenTYj0JZ6JEqLEJIJSjw=="
+          "hash": "nRo9vPqG6GSZ/Yh8bGc8Ig=="
         }
       },
       "is_incremental": false,
@@ -189,7 +189,7 @@
       "output": {
         ".html": {
           "relative_path": "features.html",
-          "hash": "nsf0q+quSmo/CjsaR8dDng=="
+          "hash": "K7eRmgAoHR1s/wk9nLsdNw=="
         }
       },
       "is_incremental": false,
@@ -395,17 +395,6 @@
       "output": {
         "resource": {
           "relative_path": "scenarios/kubernetes-resources/kubernetes.Rule.ps1"
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "Resource",
-      "source_relative_path": "scenarios/kubernetes-resources/output.json",
-      "output": {
-        "resource": {
-          "relative_path": "scenarios/kubernetes-resources/output.json"
         }
       },
       "is_incremental": false,

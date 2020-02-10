@@ -73,7 +73,8 @@
 <p>Sets options that configure PSRule execution.</p>
 <h2 id="syntax">SYNTAX</h2>
 <pre><code class="lang-text">Set-PSRuleOption [[-Path] &lt;String&gt;] [-Option &lt;PSRuleOption&gt;] [-PassThru] [-Force] [-AllowClobber]
- [-BindingIgnoreCase &lt;Boolean&gt;] [-BindingField &lt;Hashtable&gt;] [-TargetName &lt;String[]&gt;] [-TargetType &lt;String[]&gt;]
+ [-BindingIgnoreCase &lt;Boolean&gt;] [-BindingField &lt;Hashtable&gt;] [-BindingNameSeparator &lt;String&gt;]
+ [-TargetName &lt;String[]&gt;] [-TargetType &lt;String[]&gt;] [-BindingUseQualifiedName &lt;Boolean&gt;]
  [-InconclusiveWarning &lt;Boolean&gt;] [-NotProcessedWarning &lt;Boolean&gt;] [-Format &lt;InputFormat&gt;]
  [-ObjectPath &lt;String&gt;] [-InputTargetType &lt;String[]&gt;] [-LoggingLimitDebug &lt;String[]&gt;]
  [-LoggingLimitVerbose &lt;String[]&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;] [-LoggingRulePass &lt;OutcomeLogStream&gt;]
@@ -190,6 +191,20 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
+<h3 id="-bindingnameseparator">-BindingNameSeparator</h3>
+<p>Sets the option <code>Binding.NameSeparator</code>.
+This option specifies the separator to use for qualified names.
+See about_PSRule_Options for more information.</p>
+<pre><code class="lang-yaml">Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
 <h3 id="-targetname">-TargetName</h3>
 <p>Sets the option <code>Binding.TargetName</code>.
 This option specifies one or more properties of <em>TargetObject</em> to use to bind <em>TargetName</em> to.
@@ -211,6 +226,20 @@ See about_PSRule_Options for more information.</p>
 <pre><code class="lang-yaml">Type: String[]
 Parameter Sets: (All)
 Aliases: BindingTargetType
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-bindingusequalifiedname">-BindingUseQualifiedName</h3>
+<p>Sets the option <code>Binding.UseQualifiedName</code>.
+This option specifies is qualified target names are used.
+See about_PSRule_Options for more information.</p>
+<pre><code class="lang-yaml">Type: Boolean
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

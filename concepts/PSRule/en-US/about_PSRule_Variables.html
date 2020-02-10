@@ -171,15 +171,25 @@ Rule 'WithLocalizedData' {
 <ul>
 <li><code>Field</code> - A hashtable of custom bound fields. See option <code>Binding.Field</code> for more information.</li>
 <li><code>TargetObject</code> - The object currently being processed on the pipeline.</li>
-<li><code>TargetName</code> - The name of the object currently being processed on the pipeline. This property will automatically default to <code>TargetName</code> or <code>Name</code> properties of the object if they exist.</li>
-<li><code>TargetType</code> - The type of the object currently being processed on the pipeline. This property will automatically bind to <code>PSObject.TypeNames[0]</code> by default.</li>
+<li><code>TargetName</code> - The name of the object currently being processed on the pipeline.
+This property will automatically default to <code>TargetName</code> or <code>Name</code> properties of the object if they exist.</li>
+<li><code>TargetType</code> - The type of the object currently being processed on the pipeline.
+This property will automatically bind to <code>PSObject.TypeNames[0]</code> by default.</li>
 </ul>
 <p>The following properties are available for read/ write access:</p>
 <ul>
-<li><code>Data</code> - A hashtable of custom data. This property can be populated during rule execution. Custom data is not used by PSRule directly, and is intended to be used by downstream processes that need to interpret PSRule results.</li>
+<li><code>Data</code> - A hashtable of custom data. This property can be populated during rule execution.
+Custom data is not used by PSRule directly, and is intended to be used by downstream processes that need to interpret PSRule results.</li>
 </ul>
 <p>To bind fields that already exist on the target object use custom binding and <code>Binding.Field</code>.
 Use custom data to store data that must be calculated during rule execution.</p>
+<p>The following helper methods are available:</p>
+<ul>
+<li><code>GetContent(PSObject sourceObject)</code> - Returns the content of a file as one or more objects.
+The parameter <code>sourceObject</code> should be a <code>FileInfo</code> or a <code>Uri</code> object.
+The file format is detected based on the same file formats as the option <code>Input.Format</code>.
+i.e. Yaml, Json, Markdown and PowerShell Data.</li>
+</ul>
 <p>Syntax:</p>
 <pre><code class="lang-powershell">$PSRule
 </code></pre>
