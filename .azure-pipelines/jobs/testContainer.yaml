@@ -1,0 +1,73 @@
+# Azure DevOps
+# CI job for running container pipelines
+
+parameters:
+  name: ''
+  displayName: ''
+  buildConfiguration: 'Release'
+  vmImage: 'ubuntu-16.04'
+  imageName: ''
+  imageTag: ''
+  coverage: 'false'
+
+jobs:
+- job: ${{ parameters.name }}
+  displayName: ${{ parameters.displayName }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  container:
+    image: '${{ parameters.imageName }}:${{ parameters.imageTag }}'
+    env:
+      COVERAGE: ${{ parameters.coverage }}
+  variables:
+    COVERAGE: ${{ parameters.coverage }}
+    skipComponentGovernanceDetection: true
+  steps:
+
+  # Install pipeline dependencies
+  - powershell: ./.azure-pipelines/pipeline-deps.ps1
+    displayName: 'Install dependencies'
+
+  # Download module
+  - task: DownloadPipelineArtifact@2
+    displayName: 'Download module'
+    inputs:
+      artifact: PSRule
+      path: $(Build.SourcesDirectory)/out/modules/PSRule
+
+  # Build module
+  - powershell: Invoke-Build TestModule -Configuration ${{ parameters.buildConfiguration }} -Build $(Build.BuildNumber)
+    displayName: 'Test module'
+
+  # Pester test results
+  - task: PublishTestResults@2
+    displayName: 'Publish Pester results'
+    inputs:
+      testRunTitle: 'Pester on ${{ parameters.imageTag }}'
+      testRunner: NUnit
+      testResultsFiles: 'reports/pester-unit.xml'
+      mergeTestResults: true
+      platform: ${{ parameters.imageTag }}
+      configuration: ${{ parameters.buildConfiguration }}
+      publishRunAttachments: true
+    condition: succeededOrFailed()
+
+  # Generate Code Coverage report
+  - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
+    displayName: 'Code coverage report generator'
+    inputs:
+      reports: 'reports/pester-coverage.xml'
+      targetdir: 'reports/coverage'
+      sourcedirs: 'src/PSRule'
+      reporttypes: 'HtmlInline_AzurePipelines;Cobertura;SonarQube;Badges'
+      tag: $(Build.BuildNumber)
+    condition: eq(variables['COVERAGE'], 'true')
+
+  # Publish Code Coverage report
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish Pester code coverage'
+    inputs:
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: 'reports/coverage/Cobertura.xml'
+      reportDirectory: 'reports/coverage'
+    condition: eq(variables['COVERAGE'], 'true')
