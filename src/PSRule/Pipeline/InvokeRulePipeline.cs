@@ -17,12 +17,15 @@ namespace PSRule.Pipeline
         void Limit(RuleOutcome outcome);
 
         void InputPath(string[] path);
+
+        void ResultVariable(string variableName);
     }
 
     internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvokePipelineBuilder
     {
         protected RuleOutcome Outcome;
         protected string[] _InputPath;
+        protected string _ResultVariableName;
         private VisitTargetObject _VisitTargetObject;
 
         protected BindTargetMethod _BindTargetNameHook;
@@ -48,6 +51,11 @@ namespace PSRule.Pipeline
         public void InputPath(string[] path)
         {
             _InputPath = path;
+        }
+
+        public void ResultVariable(string variableName)
+        {
+            _ResultVariableName = variableName;
         }
 
         public override IPipelineBuilder Configure(PSRuleOption option)
@@ -182,7 +190,6 @@ namespace PSRule.Pipeline
                     return PipelineReceiverActions.DetectInputFormat(sourceObject, next);
                 });
             }
-
             return new PipelineReader(_VisitTargetObject, _InputPath);
         }
     }
@@ -331,7 +338,6 @@ namespace PSRule.Pipeline
                     tag: ruleBlock.Tag,
                     info: ruleBlock.Info
                 );
-
                 _Summary.Add(ruleBlock.RuleId, s);
             }
 

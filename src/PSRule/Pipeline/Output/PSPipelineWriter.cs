@@ -53,7 +53,7 @@ namespace PSRule.Pipeline.Output
                 _DebugFilter = new HashSet<string>(Option.Logging.LimitDebug);
         }
 
-        internal void UseCommandRuntime(ICommandRuntime2 commandRuntime)
+        internal void UseCommandRuntime(PSCmdlet commandRuntime)
         {
             OnWriteVerbose = commandRuntime.WriteVerbose;
             OnWriteWarning = commandRuntime.WriteWarning;
@@ -141,15 +141,15 @@ namespace PSRule.Pipeline.Output
             OnWriteDebug(debugRecord.Message);
         }
 
-        public override void WriteObject(object sendToPipeline, bool enumerate)
+        public override void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
             if (OnWriteObject == null)
                 return;
 
             if (sendToPipeline is InvokeResult result)
-                ExpandRuleRecord(result.AsRecord());
+                ProcessRecord(result.AsRecord());
             else
-                OnWriteObject(sendToPipeline, enumerate);
+                OnWriteObject(sendToPipeline, enumerateCollection);
         }
 
         public override void WriteHost(HostInformationMessage info)
@@ -199,7 +199,7 @@ namespace PSRule.Pipeline.Output
 
         #endregion Internal logging methods
 
-        private void ExpandRuleRecord(RuleRecord[] records)
+        private void ProcessRecord(RuleRecord[] records)
         {
             if (records == null || records.Length == 0)
                 return;

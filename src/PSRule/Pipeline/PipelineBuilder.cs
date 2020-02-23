@@ -3,13 +3,11 @@
 
 using PSRule.Configuration;
 using PSRule.Pipeline.Output;
-using PSRule.Resources;
 using PSRule.Rules;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Management.Automation;
 using System.Text;
 using System.Threading;
@@ -68,7 +66,7 @@ namespace PSRule.Pipeline
 
     public interface IPipelineBuilder
     {
-        void UseCommandRuntime(ICommandRuntime2 commandRuntime);
+        void UseCommandRuntime(PSCmdlet commandRuntime);
 
         void UseExecutionContext(EngineIntrinsics executionContext);
 
@@ -91,6 +89,7 @@ namespace PSRule.Pipeline
         protected readonly PSRuleOption Option;
         protected readonly Source[] Source;
         protected readonly HostContext HostContext;
+        protected PSCmdlet CmdletContext;
 
         private string[] _Include;
         private Hashtable _Tag;
@@ -123,8 +122,9 @@ namespace PSRule.Pipeline
             _Tag = tag;
         }
 
-        public virtual void UseCommandRuntime(ICommandRuntime2 commandRuntime)
+        public virtual void UseCommandRuntime(PSCmdlet commandRuntime)
         {
+            CmdletContext = commandRuntime;
             _ShouldProcess = commandRuntime.ShouldProcess;
             _Output.UseCommandRuntime(commandRuntime);
         }

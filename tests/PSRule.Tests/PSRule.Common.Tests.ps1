@@ -1092,6 +1092,27 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
         }
     }
 
+    Context 'With -ResultVariable' {
+        $testObject = [PSCustomObject]@{
+            Name = 'TestObject1'
+        }
+        It 'Returns output' {
+            $assertParams = @{
+                Path = $ruleFilePath
+                Name = 'FromFile1', 'FromFile2', 'FromFile3'
+                ErrorAction = 'SilentlyContinue'
+                WarningAction = 'SilentlyContinue'
+            }
+            $Null = $testObject | Assert-PSRule @assertParams -ResultVariable 'recordsOut' 6>&1 | Out-String;
+            $recordsOut | Should -Not -BeNullOrEmpty;
+            $recordsOut | Should -BeOfType 'PSRule.Rules.RuleRecord';
+            $recordsOut.Length | Should -Be 3;
+            $recordsOut[0].IsSuccess() | Should -Be $True;
+            $recordsOut[1].IsSuccess() | Should -Be $False;
+            $recordsOut[2].IsSuccess() | Should -Be $False;
+        }
+    }
+
     Context 'With constrained language' {
         $testObject = [PSCustomObject]@{
             Name = 'TestObject1'

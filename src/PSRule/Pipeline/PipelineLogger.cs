@@ -143,7 +143,7 @@ namespace PSRule.Pipeline
         private bool _LogInformation;
         private bool _LogDebug;
 
-        internal void UseCommandRuntime(ICommandRuntime2 commandRuntime)
+        internal void UseCommandRuntime(PSCmdlet commandRuntime)
         {
             OnWriteVerbose = commandRuntime.WriteVerbose;
             OnWriteWarning = commandRuntime.WriteWarning;

@@ -20,9 +20,9 @@ namespace PSRule.Pipeline
                 _Outcome = outcome;
             }
 
-            public override void WriteObject(object o, bool enumerate)
+            public override void WriteObject(object sendToPipeline, bool enumerateCollection)
             {
-                if (!(o is InvokeResult result) || !ShouldOutput(result.Outcome))
+                if (!(sendToPipeline is InvokeResult result) || !ShouldOutput(result.Outcome))
                     return;
 
                 base.WriteObject(result.IsSuccess(), false);

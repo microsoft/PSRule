@@ -13,10 +13,6 @@ Set-StrictMode -Version latest;
 # Localization
 #
 
-# $LocalizedHelp = data {
-
-# }
-
 Import-LocalizedData -BindingVariable LocalizedHelp -FileName 'PSRule.Resources.psd1' -ErrorAction SilentlyContinue;
 
 #
@@ -167,7 +163,7 @@ function Invoke-PSRule {
             $builder.InputPath($inputPaths);
         }
 
-        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseCommandRuntime($PSCmdlet);
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
@@ -320,7 +316,7 @@ function Test-PSRuleTarget {
             $builder.InputPath($inputPaths);
         }
 
-        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseCommandRuntime($PSCmdlet);
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
@@ -357,6 +353,7 @@ function Test-PSRuleTarget {
     }
 }
 
+# .ExternalHelp PSRule-Help.xml
 function Assert-PSRule {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess', '', Justification = 'ShouldProcess is used within CSharp code.')]
     [CmdletBinding(DefaultParameterSetName = 'Input', SupportsShouldProcess = $True)]
@@ -416,7 +413,10 @@ function Assert-PSRule {
 
         [Parameter(Mandatory = $True, ValueFromPipeline = $True, ParameterSetName = 'Input')]
         [Alias('TargetObject')]
-        [PSObject]$InputObject
+        [PSObject]$InputObject,
+
+        [Parameter(Mandatory = $False)]
+        [String]$ResultVariable
     )
     begin {
         Write-Verbose -Message '[Assert-PSRule] BEGIN::';
@@ -487,13 +487,14 @@ function Assert-PSRule {
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.UseBaseline($Baseline);
+        $builder.ResultVariable($ResultVariable);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $inputPaths = GetFilePath -Path $InputPath -Verbose:$VerbosePreference;
             $builder.InputPath($inputPaths);
         }
 
-        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseCommandRuntime($PSCmdlet);
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
@@ -634,7 +635,7 @@ function Get-PSRule {
             $builder.IncludeDependencies();
         }
 
-        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseCommandRuntime($PSCmdlet);
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
@@ -730,7 +731,7 @@ function Get-PSRuleBaseline {
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::GetBaseline($sourceFiles, $Option);
         $builder.Name($Name);
-        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseCommandRuntime($PSCmdlet);
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
@@ -855,7 +856,7 @@ function Get-PSRuleHelp {
             $builder.Full();
         }
 
-        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseCommandRuntime($PSCmdlet);
         $builder.UseExecutionContext($ExecutionContext);
         $pipeline = $builder.Build();
     }
@@ -1541,7 +1542,7 @@ function GetSource {
     )
     process {
         $builder = [PSRule.Pipeline.PipelineBuilder]::RuleSource().Configure($Option);
-        $builder.UseCommandRuntime($PSCmdlet.CommandRuntime);
+        $builder.UseCommandRuntime($PSCmdlet);
         $builder.UseExecutionContext($ExecutionContext);
 
         if ($PSBoundParameters.ContainsKey('Path')) {

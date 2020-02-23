@@ -19,7 +19,8 @@ Evaluate objects against matching rules and assert any failures.
 Assert-PSRule [-Module <String[]>] [-Format <InputFormat>] [-Baseline <BaselineOption>] [-Style <OutputStyle>]
  [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-OutputPath <String>]
  [-OutputFormat <OutputFormat>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-TargetType <String[]>]
- [-Culture <String[]>] -InputObject <PSObject> [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-Culture <String[]>] -InputObject <PSObject> [-ResultVariable <String>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ### InputPath
@@ -28,7 +29,7 @@ Assert-PSRule [-Module <String[]>] [-Format <InputFormat>] [-Baseline <BaselineO
 Assert-PSRule -InputPath <String[]> [-Module <String[]>] [-Format <InputFormat>] [-Baseline <BaselineOption>]
  [-Style <OutputStyle>] [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-OutputPath <String>]
  [-OutputFormat <OutputFormat>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-TargetType <String[]>]
- [-Culture <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-Culture <String[]>] [-ResultVariable <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -66,11 +67,11 @@ $items | Assert-PSRule -Path .\docs\scenarios\fruit\
 ```text
 -> Fridge : System.Management.Automation.PSCustomObject
 
-    [FAIL] isFruit
+   [FAIL] isFruit
 
 -> Apple : System.Management.Automation.PSCustomObject
 
-    [PASS] isFruit
+   [PASS] isFruit
 
 Assert-PSRule : One or more rules reported failure.
 At line:1 char:10
@@ -81,6 +82,23 @@ At line:1 char:10
 ```
 
 Evaluate an array of objects on the pipeline against rules loaded a specified relative path.
+
+### Example 3
+
+```powershell
+$items | Assert-PSRule -Module PSRule.Rules.Azure -o NUnit3 -OutputPath .\reports\results.xml
+```
+
+Evaluate items from a pre-installed rules module PSRule.Rules.Azure.
+Additionally save the results as a NUnit report.
+
+### Example 4
+
+```powershell
+$items | Assert-PSRule -Path .\docs\scenarios\fruit\ -ResultVariable resultRecords;
+```
+
+Evaluate items and additionally save the results into a variable `resultRecords`.
 
 ## PARAMETERS
 
@@ -421,6 +439,22 @@ Prompts you for confirmation before running the cmdlet.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ResultVariable
+
+Stores output result objects in the specified variable.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

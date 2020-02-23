@@ -112,7 +112,7 @@ namespace PSRule.Rules
             return this;
         }
 
-        public void UseCommandRuntime(ICommandRuntime2 commandRuntime)
+        public void UseCommandRuntime(PSCmdlet commandRuntime)
         {
             _Logger.UseCommandRuntime(commandRuntime);
         }

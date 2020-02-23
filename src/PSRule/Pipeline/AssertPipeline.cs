@@ -40,14 +40,22 @@ namespace PSRule.Pipeline
         {
             internal readonly IAssertFormatter _Formatter;
             private readonly PipelineWriter _InnerWriter;
+            private readonly string _ResultVariableName;
+            private readonly PSCmdlet _CmdletContext;
+            private readonly List<RuleRecord> _Results;
             private int _ErrorCount = 0;
             private int _FailCount = 0;
             private int _TotalCount = 0;
 
-            internal AssertWriter(PSRuleOption option, Source[] source, PipelineWriter inner, PipelineWriter next, OutputStyle style)
+            internal AssertWriter(PSRuleOption option, Source[] source, PipelineWriter inner, PipelineWriter next, OutputStyle style, string resultVariableName, PSCmdlet cmdletContext)
                 : base(inner, option)
             {
                 _InnerWriter = next;
+                _ResultVariableName = resultVariableName;
+                _CmdletContext = cmdletContext;
+                if (!string.IsNullOrEmpty(resultVariableName))
+                    _Results = new List<RuleRecord>();
+
                 if (style == OutputStyle.AzurePipelines)
                     _Formatter = new AzurePipelinesFormatter(source, inner);
                 else if (style == OutputStyle.GitHubActions)
@@ -404,11 +412,7 @@ namespace PSRule.Pipeline
                 if (!(sendToPipeline is InvokeResult result))
                     return;
 
-                _Formatter.Result(result);
-                _FailCount += result.Fail;
-                _ErrorCount += result.Error;
-                _TotalCount += result.Total;
-
+                ProcessResult(result);
                 if (_InnerWriter != null)
                     _InnerWriter.WriteObject(sendToPipeline, enumerateCollection);
             }
@@ -428,12 +432,25 @@ namespace PSRule.Pipeline
                         base.WriteError(new ErrorRecord(new FailPipelineException(PSRuleResources.ErrorPipelineException), "PSRule.Error", ErrorCategory.InvalidOperation, null));
                     else if (_FailCount > 0)
                         base.WriteError(new ErrorRecord(new FailPipelineException(PSRuleResources.FailPipelineException), "PSRule.Fail", ErrorCategory.InvalidData, null));
+
+                    if (_Results != null && _CmdletContext != null)
+                        _CmdletContext.SessionState.PSVariable.Set(_ResultVariableName, _Results.ToArray());
                 }
                 finally
                 {
                     if (_InnerWriter != null)
                         _InnerWriter.End();
                 }
+            }
+
+            private void ProcessResult(InvokeResult result)
+            {
+                _Formatter.Result(result);
+                _FailCount += result.Fail;
+                _ErrorCount += result.Error;
+                _TotalCount += result.Total;
+                if (_Results != null)
+                    _Results.AddRange(result.AsRecord());
             }
         }
 
@@ -447,7 +464,15 @@ namespace PSRule.Pipeline
             if (_Writer == null)
             {
                 var next = ShouldOutput() ? base.PrepareWriter() : null;
-                _Writer = new AssertWriter(Option, Source, GetOutput(), next, Option.Output.Style ?? OutputOption.Default.Style.Value);
+                _Writer = new AssertWriter(
+                    Option,
+                    Source,
+                    GetOutput(),
+                    next,
+                    Option.Output.Style ?? OutputOption.Default.Style.Value,
+                    _ResultVariableName,
+                    CmdletContext
+                );
             }
             return _Writer;
         }
