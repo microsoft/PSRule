@@ -142,7 +142,7 @@ task TestDotNet {
     if ($CodeCoverage) {
         exec {
             # Test library
-            dotnet test --collect:"XPlat Code Coverage" --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Tests
+            dotnet test --collect:"Code Coverage" --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Tests
         }
     }
     else {
