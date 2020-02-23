@@ -4,6 +4,7 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
     <OutputType>Library</OutputType>
+    <ProjectGuid>{0130215d-58eb-4887-b6fa-31ed02500569}</ProjectGuid>
     <DebugType>portable</DebugType>
     <NeutralLanguage>en-US</NeutralLanguage>
     <DebugSymbols>true</DebugSymbols>
