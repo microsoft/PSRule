@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.15.0-B2002019 (pre-release)
+
 - Added `-ResultVariable` to store results from Assert-PSRule into a variable. [#412](https://github.com/Microsoft/PSRule/issues/412)
 
 ## v0.15.0-B2002012 (pre-release)
