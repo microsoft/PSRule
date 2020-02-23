@@ -26,6 +26,8 @@ Module | Description | Downloads / instructions
 ------ | ----------- | ------------------------
 PSRule | Validate objects using PowerShell rules | [latest][module-psrule] / [instructions][install]
 
+For rule and integration modules see [related projects](#related-projects).
+
 ## Getting the extension
 
 A companion extension for Visual Studio Code can be downloaded or installed from the [Visual Studio Marketplace][extension].
@@ -292,6 +294,17 @@ PSRule uses the following schemas:
 - [Options](schemas/PSRule-options.schema.json) - Schema for PSRule YAML options file.
 - [Resources](schemas/PSRule-language.schema.json) - Schema for PSRule YAML resources such as baselines.
 
+## Related projects
+
+The following projects use or integrate with PSRule.
+
+Name                      | Description
+----                      | -----------
+[PSRule.Rules.Azure]      | A suite of rules to validate Azure resources using PSRule.
+[PSRule.Rules.Kubernetes] | A suite of rules to validate Kubernetes resources using PSRule.
+[PSRule.Rules.CAF]        | A suite of rules to validate Azure resources against the Cloud Adoption Framework (CAF) using PSRule.
+[PSRule.Monitor]          | Send and query PSRule analysis results in Azure Monitor.
+
 ## Changes and versioning
 
 Modules in this repository will use the [semantic versioning](http://semver.org/) model to declare breaking changes from v1.0.0.
@@ -325,3 +338,7 @@ This project is [licensed under the MIT License](LICENSE.txt).
 [ci-badge]: https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=master
 [module-psrule]: https://www.powershellgallery.com/packages/PSRule
 [extension]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
+[PSRule.Rules.Azure]: https://github.com/microsoft/PSRule.Rules.Azure
+[PSRule.Rules.Kubernetes]: https://github.com/microsoft/PSRule.Rules.Kubernetes
+[PSRule.Rules.CAF]: https://github.com/microsoft/PSRule.Rules.CAF
+[PSRule.Monitor]: https://github.com/microsoft/PSRule.Monitor
