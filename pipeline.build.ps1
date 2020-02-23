@@ -56,7 +56,7 @@ if ($version -like '*-*') {
 Write-Host -Object "[Pipeline] -- Using version: $version" -ForegroundColor Green;
 Write-Host -Object "[Pipeline] -- Using versionSuffix: $versionSuffix" -ForegroundColor Green;
 
-if ($Env:coverage -eq 'true') {
+if ($Env:COVERAGE -eq 'true') {
     $CodeCoverage = $True;
 }
 
@@ -129,6 +129,9 @@ function GetPathInfo {
 }
 
 task BuildDotNet {
+    exec {
+        dotnet restore
+    }
     exec {
         # Build library
         dotnet publish src/PSRule -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule) -p:version=$Build
@@ -267,7 +270,8 @@ task platyPS {
     Import-Module -Name PlatyPS -Verbose:$False;
 }
 
-task TestModule TestDotNet, Pester, PSScriptAnalyzer, {
+# Synopsis: Test the module
+task TestModule Pester, PSScriptAnalyzer, {
     # Run Pester tests
     $pesterParams = @{ Path = $PWD; OutputFile = 'reports/pester-unit.xml'; OutputFormat = 'NUnitXml'; PesterOption = @{ IncludeVSCodeMarker = $True }; PassThru = $True; };
 
@@ -350,12 +354,12 @@ task PublishSite CleanSite, {
     git worktree prune
 }
 
-# Synopsis: Build and clean.
-task . Build, Test, Benchmark
+# Synopsis: Build and test.
+task . Build, Rules, TestDotNet, Benchmark
 
 # Synopsis: Build the project
 task Build Clean, BuildModule, BuildHelp, VersionModule, PackageModule
 
-task Test Build, Rules, TestModule
+task Test Build, Rules, TestDotNet, TestModule
 
 task Release ReleaseModule, TagBuild

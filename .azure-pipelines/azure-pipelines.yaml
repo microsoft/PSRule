@@ -5,8 +5,9 @@ variables:
   version: '0.15.0'
   buildConfiguration: 'Release'
   disable.coverage.autogenerate: 'true'
+  imageName: 'ubuntu-18.04'
 
-# Use build number format, i.e. 0.15.0-B2001001
+ # Use build number format, i.e. 0.15.0-B2001001
 name: $(version)-B$(date:yyMM)$(rev:rrr)
 
 trigger:
@@ -27,25 +28,12 @@ stages:
 # Build pipeline
 - stage: Build
   displayName: Build
+  dependsOn: []
   jobs:
   - job:
-    strategy:
-      matrix:
-        Linux:
-          displayName: 'Linux'
-          imageName: 'ubuntu-16.04'
-        MacOS:
-          displayName: 'MacOS'
-          imageName: 'macos-10.13'
-        Windows:
-          displayName: 'Windows'
-          imageName: 'vs2017-win2016'
-          publish: 'true'
-          analysis: 'true'
-          coverage: 'true'
     pool:
       vmImage: $(imageName)
-    displayName: 'PowerShell'
+    displayName: 'Module'
     steps:
 
     # Install pipeline dependencies
@@ -55,28 +43,6 @@ stages:
     # Build module
     - powershell: Invoke-Build -Configuration $(buildConfiguration) -Build $(Build.BuildNumber)
       displayName: 'Build module'
-
-    # Run module benchmark
-    - powershell: Invoke-Build Benchmark -Configuration $(buildConfiguration) -Build $(Build.BuildNumber)
-      displayName: 'Benchmark'
-      condition: eq(variables['benchmark'], 'true')
-
-    # Run SonarCloud analysis
-    - powershell: dotnet tool install --global dotnet-sonarscanner
-      displayName: 'Install Sonar scanner'
-      condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
-
-    - script: dotnet sonarscanner begin /k:"BernieWhite_PSRule" /o:"berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken) /v:"$(Build.BuildNumber)" /d:sonar.cs.vscoveragexml.reportsPaths="reports/" /d:sonar.cs.xunit.reportsPaths="reports/"
-      displayName: 'Prepare SonarCloud'
-      condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
-
-    - script: dotnet build
-      displayName: 'Build solution for analysis'
-      condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
-
-    - script: dotnet sonarscanner end /d:sonar.login=$(sonarQubeToken)
-      displayName: 'Complete SonarCloud'
-      condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['analysis'], 'true'))
 
     # DotNet test results
     - task: PublishTestResults@2
@@ -91,85 +57,128 @@ stages:
         publishRunAttachments: true
       condition: succeededOrFailed()
 
-    # Pester test results
-    - task: PublishTestResults@2
-      displayName: 'Publish Pester results'
-      inputs:
-        testRunTitle: 'Pester on $(imageName)'
-        testRunner: NUnit
-        testResultsFiles: 'reports/pester-unit.xml'
-        mergeTestResults: true
-        platform: $(imageName)
-        configuration: $(buildConfiguration)
-        publishRunAttachments: true
-      condition: succeededOrFailed()
-
     # PSRule results
     - task: PublishTestResults@2
       displayName: 'Publish PSRule results'
       inputs:
         testRunTitle: 'PSRule on $(imageName)'
         testRunner: NUnit
-        testResultsFiles: 'reports/rule.report.xml'
+        testResultsFiles: 'reports/ps-rule*.xml'
         mergeTestResults: true
         platform: $(imageName)
         configuration: $(buildConfiguration)
         publishRunAttachments: true
       condition: succeededOrFailed()
 
-    # Generate Code Coverage report
-    - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
-      displayName: 'Code coverage report generator'
-      inputs:
-        reports: 'reports\pester-coverage.xml'
-        targetdir: 'reports\coverage'
-        sourcedirs: 'src\PSRule'
-        reporttypes: 'HtmlInline_AzurePipelines;Cobertura;Badges'
-        tag: $(Build.BuildNumber)
-      condition: eq(variables['coverage'], 'true')
-
-    # Publish Code Coverage report
-    - task: PublishCodeCoverageResults@1
-      displayName: 'Publish Pester code coverage'
-      inputs:
-        codeCoverageTool: 'Cobertura'
-        summaryFileLocation: 'reports/coverage/Cobertura.xml'
-        reportDirectory: 'reports/coverage'
-      condition: eq(variables['coverage'], 'true')
-
     # Generate artifacts
     - publish: out/modules/PSRule
       displayName: 'Publish module'
       artifact: PSRule
-      condition: and(succeeded(), eq(variables['publish'], 'true'))
 
-    # - task: PublishPipelineArtifact@1
-    #   displayName: 'Publish module package'
-    #   inputs:
-    #     artifactName: PSRule.nupkg
-    #     targetPath: out/nuget/PSRule.$(Build.BuildNumber).nupkg
-    #   condition: and(succeeded(), eq(variables['publish'], 'true'))
+# Analysis pipeline
+- stage: Analysis
+  displayName: Analysis
+  dependsOn: []
+  jobs:
+  - job:
+    pool:
+      vmImage: $(imageName)
+    displayName: 'SonarCloud'
+    condition: not(eq(variables['Build.Reason'], 'PullRequest'))
+    steps:
+
+    # Run SonarCloud analysis
+    - script: dotnet tool install --global dotnet-sonarscanner
+      displayName: 'Install Sonar scanner'
+
+    - script: $HOME/.dotnet/tools/dotnet-sonarscanner begin /k:"BernieWhite_PSRule" /o:"berniewhite-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=$(sonarQubeToken) /v:"$(Build.BuildNumber)" /d:sonar.cs.vscoveragexml.reportsPaths="reports/" /d:sonar.cs.xunit.reportsPaths="reports/"
+      displayName: 'Prepare SonarCloud'
+
+    - script: dotnet build
+      displayName: 'Build solution for analysis'
+
+    - script: $HOME/.dotnet/tools/dotnet-sonarscanner end /d:sonar.login=$(sonarQubeToken)
+      displayName: 'Complete SonarCloud'
+
+  - job: Secret_Scan
+    pool: 'Hosted VS2017'
+    displayName: Secret scan
+
+    steps:
+    - task: securedevelopmentteam.vss-secure-development-tools.build-task-credscan.CredScan@2
+      displayName: 'Scan for secrets'
+      inputs:
+        debugMode: false
+        toolMajorVersion: V2
+
+    - task: securedevelopmentteam.vss-secure-development-tools.build-task-publishsecurityanalysislogs.PublishSecurityAnalysisLogs@2
+      displayName: 'Publish scan logs'
+      continueOnError: true
+
+    - task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@1
+      displayName: 'Check for failures'
+      inputs:
+        CredScan: true
+        ToolLogsNotFoundAction: Error
+
+# Test pipeline
+- stage: Test
+  dependsOn: Build
+  jobs:
+
+  - template: jobs/test.yaml
+    parameters:
+      name: ps_6_ubuntu_18_04
+      imageName: 'ubuntu-18.04'
+      displayName: 'PowerShell 6.2.4 - ubuntu-18.04'
+      coverage: 'true'
+
+  - template: jobs/test.yaml
+    parameters:
+      name: macOS_10_15
+      displayName: 'PowerShell 6.2.4 - macOS-10.15'
+      imageName: 'macOS-10.15'
+
+  - template: jobs/test.yaml
+    parameters:
+      name: windows
+      displayName: 'PowerShell 5.1 - win2016'
+      imageName: 'vs2017-win2016'
+
+  # - template: jobs/testContainer.yaml
+  #   parameters:
+  #     name: alpine_3_10
+  #     displayName: 'PowerShell 7.0 RC3 - alpine-3.10'
+  #     imageName: mcr.microsoft.com/powershell
+  #     imageTag: 7.0.0-rc.3-alpine-3.10
+
+  - template: jobs/testContainer.yaml
+    parameters:
+      name: ps_7_ubuntu_18_04
+      displayName: 'PowerShell 7.0 RC3 - ubuntu-18.04'
+      imageName: mcr.microsoft.com/powershell
+      imageTag: 7.0.0-rc.3-ubuntu-18.04
 
 # Release pipeline
 - stage: Release
   displayName: Release
-  dependsOn: Build
+  dependsOn: [ 'Test', 'Analysis' ]
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v0.'))
   jobs:
   - job:
     displayName: Live
     pool:
-      vmImage: 'ubuntu-16.04'
+      vmImage: $(imageName)
     variables:
       isPreRelease: $[contains(variables['Build.SourceBranchName'], '-B')]
     steps:
 
-    # Download module
-    - task: DownloadPipelineArtifact@1
+    # Download module from build
+    - task: DownloadPipelineArtifact@2
       displayName: 'Download module'
       inputs:
-        artifactName: PSRule
-        downloadPath: $(Build.SourcesDirectory)/out/modules/PSRule
+        artifact: PSRule
+        path: $(Build.SourcesDirectory)/out/modules/PSRule
 
     # Install pipeline dependencies
     - powershell: ./.azure-pipelines/pipeline-deps.ps1
