@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added `-ResultVariable` to store results from Assert-PSRule into a variable. [#412](https://github.com/Microsoft/PSRule/issues/412)
+
 ## v0.15.0-B2002012 (pre-release)
 
 - Fixed output of warning with `Assert-PSRule`. [#417](https://github.com/Microsoft/PSRule/issues/417)
@@ -10,7 +12,7 @@
 
 ## v0.15.0-B2002005 (pre-release)
 
-- Fix parent culture unwind with POSIX. [#414](https://github.com/Microsoft/PSRule/issues/414)
+- Fixed parent culture unwind with POSIX. [#414](https://github.com/Microsoft/PSRule/issues/414)
 
 ## v0.14.0
 

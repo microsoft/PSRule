@@ -25,9 +25,9 @@ namespace PSRule.Pipeline.Output
             _ShouldProcess = shouldProcess;
         }
 
-        public override void WriteObject(object o, bool enumerate)
+        public override void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
-            WriteToFile(o);
+            WriteToFile(sendToPipeline);
         }
 
         private void WriteToFile(object o)

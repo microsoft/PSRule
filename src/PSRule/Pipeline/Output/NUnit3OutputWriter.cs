@@ -19,9 +19,9 @@ namespace PSRule.Pipeline.Output
             _Builder = new StringBuilder();
         }
 
-        public override void WriteObject(object o, bool enumerate)
+        public override void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
-            if (!(o is InvokeResult result))
+            if (!(sendToPipeline is InvokeResult result))
                 return;
 
             Add(result);

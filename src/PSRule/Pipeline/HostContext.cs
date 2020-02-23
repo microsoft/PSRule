@@ -3,7 +3,7 @@
 
 namespace PSRule.Pipeline
 {
-    internal class HostContext
+    internal sealed class HostContext
     {
         /// <summary>
         /// Determine if running is remote session.
