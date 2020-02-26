@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed handling of `v` in field value with `$Assert.Version`. [#429](https://github.com/Microsoft/PSRule/issues/429)
+
 ## v0.15.0-B2002019 (pre-release)
 
 - Added `-ResultVariable` to store results from Assert-PSRule into a variable. [#412](https://github.com/Microsoft/PSRule/issues/412)

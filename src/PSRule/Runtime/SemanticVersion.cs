@@ -250,7 +250,6 @@ namespace PSRule.Runtime
 
             internal void GetConstraint(out CompareFlag flag)
             {
-                SkipLeading();
                 flag = CompareFlag.None;
                 while (!EOF && IsConstraint(_Current))
                 {
@@ -271,7 +270,7 @@ namespace PSRule.Runtime
 
             private void SkipLeading()
             {
-                if (!EOF && _Position == 0 && (_Current == EQUAL || _Current == VUPPER || _Current == VLOWER))
+                if (!EOF && (_Current == VUPPER || _Current == VLOWER))
                     Next();
             }
 
@@ -292,6 +291,7 @@ namespace PSRule.Runtime
             {
                 segments = new int[] { -1, -1, -1, -1 };
                 var segmentIndex = 0;
+                SkipLeading();
                 while (!EOF)
                 {
                     if (!IsAllowedChar(_Current))
@@ -437,7 +437,6 @@ namespace PSRule.Runtime
 
             stream.TryPrerelease(out string prerelease);
             stream.TryBuild(out string build);
-
             version = new Version(segments[0], segments[1], segments[2], prerelease, build);
             return true;
         }
