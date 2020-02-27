@@ -17,12 +17,6 @@ namespace PSRule.Pipeline.Output
         private const string Source = "PSRule";
         private const string HostTag = "PSHOST";
 
-        private const string ErrorPreference = "ErrorActionPreference";
-        private const string WarningPreference = "WarningPreference";
-        private const string VerbosePreference = "VerbosePreference";
-        private const string InformationPreference = "InformationPreference";
-        private const string DebugPreference = "DebugPreference";
-
         private Action<string> OnWriteWarning;
         private Action<string> OnWriteVerbose;
         private Action<ErrorRecord> OnWriteError;
@@ -74,11 +68,14 @@ namespace PSRule.Pipeline.Output
 
         private static bool GetPreferenceVariable(EngineIntrinsics executionContext, string variableName)
         {
-            var preference = (ActionPreference)executionContext.SessionState.PSVariable.GetValue(variableName);
+            var preference = GetPreferenceVariable(executionContext.SessionState, variableName);
             if (preference == ActionPreference.Ignore)
                 return false;
 
-            return !(preference == ActionPreference.SilentlyContinue && (variableName == VerbosePreference || variableName == DebugPreference));
+            return !(preference == ActionPreference.SilentlyContinue && (
+                variableName == VerbosePreference ||
+                variableName == DebugPreference)
+            );
         }
 
         #region Internal logging methods
@@ -169,7 +166,7 @@ namespace PSRule.Pipeline.Output
 
         public override bool ShouldWriteInformation()
         {
-            return true;
+            return _LogInformation;
         }
 
         public override bool ShouldWriteDebug()
@@ -179,12 +176,12 @@ namespace PSRule.Pipeline.Output
 
         public override bool ShouldWriteError()
         {
-            return true;
+            return _LogError;
         }
 
         public override bool ShouldWriteWarning()
         {
-            return true;
+            return _LogWarning;
         }
 
         public override void EnterScope(string scopeName)

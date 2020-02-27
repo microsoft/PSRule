@@ -42,17 +42,19 @@ namespace PSRule.Pipeline
             private readonly PipelineWriter _InnerWriter;
             private readonly string _ResultVariableName;
             private readonly PSCmdlet _CmdletContext;
+            private readonly EngineIntrinsics _ExecutionContext;
             private readonly List<RuleRecord> _Results;
             private int _ErrorCount = 0;
             private int _FailCount = 0;
             private int _TotalCount = 0;
 
-            internal AssertWriter(PSRuleOption option, Source[] source, PipelineWriter inner, PipelineWriter next, OutputStyle style, string resultVariableName, PSCmdlet cmdletContext)
+            internal AssertWriter(PSRuleOption option, Source[] source, PipelineWriter inner, PipelineWriter next, OutputStyle style, string resultVariableName, PSCmdlet cmdletContext, EngineIntrinsics executionContext)
                 : base(inner, option)
             {
                 _InnerWriter = next;
                 _ResultVariableName = resultVariableName;
                 _CmdletContext = cmdletContext;
+                _ExecutionContext = executionContext;
                 if (!string.IsNullOrEmpty(resultVariableName))
                     _Results = new List<RuleRecord>();
 
@@ -419,6 +421,10 @@ namespace PSRule.Pipeline
 
             public override void WriteWarning(string message)
             {
+                var warningPreference = GetPreferenceVariable(_ExecutionContext.SessionState, WarningPreference);
+                if (warningPreference == ActionPreference.Ignore || warningPreference == ActionPreference.SilentlyContinue)
+                    return;
+
                 _Formatter.Warning(new WarningRecord(message));
             }
 
@@ -471,7 +477,8 @@ namespace PSRule.Pipeline
                     next,
                     Option.Output.Style ?? OutputOption.Default.Style.Value,
                     _ResultVariableName,
-                    CmdletContext
+                    CmdletContext,
+                    ExecutionContext
                 );
             }
             return _Writer;

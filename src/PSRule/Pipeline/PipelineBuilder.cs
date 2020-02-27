@@ -90,6 +90,7 @@ namespace PSRule.Pipeline
         protected readonly Source[] Source;
         protected readonly HostContext HostContext;
         protected PSCmdlet CmdletContext;
+        protected EngineIntrinsics ExecutionContext;
 
         private string[] _Include;
         private Hashtable _Tag;
@@ -131,6 +132,7 @@ namespace PSRule.Pipeline
 
         public void UseExecutionContext(EngineIntrinsics executionContext)
         {
+            ExecutionContext = executionContext;
             HostContext.InSession = executionContext.SessionState.PSVariable.GetValue("PSSenderInfo") != null;
             _Output.UseExecutionContext(executionContext);
         }

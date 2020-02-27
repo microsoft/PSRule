@@ -11,6 +11,12 @@ namespace PSRule.Pipeline
 {
     internal abstract class PipelineWriter : ILogger
     {
+        protected const string ErrorPreference = "ErrorActionPreference";
+        protected const string WarningPreference = "WarningPreference";
+        protected const string VerbosePreference = "VerbosePreference";
+        protected const string InformationPreference = "InformationPreference";
+        protected const string DebugPreference = "DebugPreference";
+
         private readonly PipelineWriter _Writer;
 
         protected readonly PSRuleOption Option;
@@ -145,6 +151,11 @@ namespace PSRule.Pipeline
                 record.Error.Category,
                 record.TargetName
             ));
+        }
+
+        protected static ActionPreference GetPreferenceVariable(SessionState sessionState, string variableName)
+        {
+            return (ActionPreference)sessionState.PSVariable.GetValue(variableName);
         }
     }
 
