@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Fixed handling of `v` in field value with `$Assert.Version`. [#429](https://github.com/Microsoft/PSRule/issues/429)
+- Fixed handling of warning action preference with `Assert-PSRule`. [#428](https://github.com/Microsoft/PSRule/issues/428)
 
 ## v0.15.0-B2002019 (pre-release)
 

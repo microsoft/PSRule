@@ -1029,6 +1029,23 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             Test-Path -Path $testOutputPath | Should -Be $True;
         }
 
+        It 'With -WarningAction' {
+            $assertParams = @{
+                Path = $ruleFilePath
+                Option = @{ 'Execution.InconclusiveWarning' = $False; 'Output.Style' = 'Plain' }
+                Name = 'WithWarning'
+            }
+            $result = $testObject | Assert-PSRule @assertParams 6>&1 | Out-String;
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $result | Should -Match "\[WARN\] This is a warning";
+
+            $result = $testObject | Assert-PSRule @assertParams -WarningAction SilentlyContinue 6>&1 | Out-String;
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $result | Should -Not -Match "\[WARN\] This is a warning";
+        }
+
         It 'Writes output to file' {
             $testOutputPath = (Join-Path -Path $outputPath -ChildPath 'newPath/assert.results2.json');
             $assertParams = @{
@@ -1061,7 +1078,6 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
                 Option = @{ 'Output.Style' = 'GitHubActions' }
                 Name = 'FromFile1', 'FromFile2', 'FromFile3', 'WithWarning'
                 ErrorVariable = 'errorOut'
-                WarningAction = 'SilentlyContinue'
             }
             $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue 6>&1 | Out-String;
             $result | Should -Not -BeNullOrEmpty;
@@ -1079,7 +1095,6 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
                 Option = @{ 'Output.Style' = 'AzurePipelines' }
                 Name = 'FromFile1', 'FromFile2', 'FromFile3', 'WithWarning'
                 ErrorVariable = 'errorOut'
-                WarningAction = 'SilentlyContinue'
             }
             $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue 6>&1 | Out-String;
             $result | Should -Not -BeNullOrEmpty;
