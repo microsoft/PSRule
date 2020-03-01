@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+## v0.15.0
+
+What's changed since v0.14.0:
+
+- Engine features:
+  - Added `-ResultVariable` to store results from Assert-PSRule into a variable. [#412](https://github.com/Microsoft/PSRule/issues/412)
+- Quality of life improvements:
+  - Added recommendation to failure message of NUnit results. [#421](https://github.com/Microsoft/PSRule/issues/421)
+- Bug fixes:
+  - Fixed handling of `v` in field value with `$Assert.Version`. [#429](https://github.com/Microsoft/PSRule/issues/429)
+  - Fixed handling of warning action preference with `Assert-PSRule`. [#428](https://github.com/Microsoft/PSRule/issues/428)
+  - Fixed parent culture unwind with POSIX. [#414](https://github.com/Microsoft/PSRule/issues/414)
+  - Fixed output of warning with `Assert-PSRule`. [#417](https://github.com/Microsoft/PSRule/issues/417)
+  - Fixed NUnit report to include a failure element when reason is not specified. [#420](https://github.com/Microsoft/PSRule/issues/420)
+
+What's changed since pre-release v0.15.0-B2002031:
+
+- No additional changes.
+
 ## v0.15.0-B2002031 (pre-release)
 
 - Fixed handling of `v` in field value with `$Assert.Version`. [#429](https://github.com/Microsoft/PSRule/issues/429)
@@ -103,7 +122,7 @@ What's changed since v0.12.0:
 
 What's changed since pre-release v0.13.0-B2001013:
 
-- No additional changes
+- No additional changes.
 
 ## v0.13.0-B2001013 (pre-release)
 
@@ -214,7 +233,7 @@ What's changed since v0.10.0:
 
 What's changed since pre-release v0.11.0-B1911002:
 
-- No additional changes
+- No additional changes.
 
 ## v0.11.0-B1911002 (pre-release)
 
@@ -253,7 +272,7 @@ What's changed since v0.9.0:
 
 What's changed since pre-release v0.10.0-B1910036:
 
-- No additional changes
+- No additional changes.
 
 ## v0.10.0-B1910036 (pre-release)
 
@@ -443,7 +462,7 @@ What's changed since v0.6.0:
 
 What's changed since pre-release v0.7.0-B190664:
 
-- No additional changes
+- No additional changes.
 
 ## v0.7.0-B190664 (pre-release)
 
@@ -578,7 +597,7 @@ What's changed since v0.3.0:
 
 What's changed since pre-release v0.4.0-B190328:
 
-- No additional changes
+- No additional changes.
 
 ## v0.4.0-B190328 (pre-release)
 
@@ -673,7 +692,7 @@ What's changed since v0.1.0:
 
 What's changed since pre-release v0.2.0-B190121:
 
-- No additional changes
+- No additional changes.
 
 ## v0.2.0-B190121 (pre-release)
 
@@ -727,4 +746,4 @@ What's changed since pre-release v0.1.0-B181235:
 
 ## v0.1.0-B181212 (pre-release)
 
-- Initial pre-release
+- Initial pre-release.
