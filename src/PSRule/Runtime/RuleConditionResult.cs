@@ -42,14 +42,12 @@ namespace PSRule.Runtime
             {
                 count++;
                 if (v == null)
-                {
                     continue;
-                }
-                else if (!(TryAssertResult(v, out bool result) || TryBoolean(v, out result)))
+                
+                if (!(TryAssertResult(v, out bool result) || TryBoolean(v, out result)))
                 {
                     RunspaceContext.CurrentThread.ErrorInvaildRuleResult();
                     hasError = true;
-                    continue;
                 }
                 else if (result)
                 {

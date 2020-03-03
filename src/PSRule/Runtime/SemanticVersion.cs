@@ -88,28 +88,70 @@ namespace PSRule.Runtime
                 if (_Flag == CompareFlag.Equals)
                     return EQ(major, minor, patch, prerelease);
 
-                if ((_Flag == CompareFlag.MinorUplift || _Flag == CompareFlag.PatchUplift) && major != _Major)
+                // Fail when major is less
+                if (GuardMajor(major))
                     return false;
 
-                if (_Flag == CompareFlag.PatchUplift && (minor != _Minor || patch < _Patch))
+                // Fail when patch is less
+                if (GuardPatch(minor, patch))
                     return false;
 
-                if (_Flag == CompareFlag.MinorUplift && (minor < _Minor || (minor == _Minor && patch < _Patch)))
+                // Fail when minor is less
+                if (GuardMinor(minor, patch))
                     return false;
 
-                if (_Flag == CompareFlag.GreaterThan && !GT(major, minor, patch, prerelease))
+                // Fail when not greater
+                if (GuardGreater(major, minor, patch, prerelease))
                     return false;
 
-                if (_Flag == (CompareFlag.GreaterThan | CompareFlag.Equals) && !(GT(major, minor, patch, prerelease) || EQ(major, minor, patch, prerelease)))
+                // Fail when not greater or equal to
+                if (GuardGreaterOrEqual(major, minor, patch, prerelease))
                     return false;
 
-                if (_Flag == CompareFlag.LessThan && !LT(major, minor, patch, prerelease))
+                // Fail when not less
+                if (GaurdLess(major, minor, patch, prerelease))
                     return false;
 
-                if (_Flag == (CompareFlag.LessThan | CompareFlag.Equals) && !(LT(major, minor, patch, prerelease) || EQ(major, minor, patch, prerelease)))
+                // Fail with not less or equal to
+                if (GuardLessOrEqual(major, minor, patch, prerelease))
                     return false;
 
                 return true;
+            }
+
+            private bool GuardLessOrEqual(int major, int minor, int patch, string prerelease)
+            {
+                return _Flag == (CompareFlag.LessThan | CompareFlag.Equals) && !(LT(major, minor, patch, prerelease) || EQ(major, minor, patch, prerelease));
+            }
+
+            private bool GaurdLess(int major, int minor, int patch, string prerelease)
+            {
+                return _Flag == CompareFlag.LessThan && !LT(major, minor, patch, prerelease);
+            }
+
+            private bool GuardGreaterOrEqual(int major, int minor, int patch, string prerelease)
+            {
+                return _Flag == (CompareFlag.GreaterThan | CompareFlag.Equals) && !(GT(major, minor, patch, prerelease) || EQ(major, minor, patch, prerelease));
+            }
+
+            private bool GuardGreater(int major, int minor, int patch, string prerelease)
+            {
+                return _Flag == CompareFlag.GreaterThan && !GT(major, minor, patch, prerelease);
+            }
+
+            private bool GuardMinor(int minor, int patch)
+            {
+                return _Flag == CompareFlag.MinorUplift && (minor < _Minor || (minor == _Minor && patch < _Patch));
+            }
+
+            private bool GuardPatch(int minor, int patch)
+            {
+                return _Flag == CompareFlag.PatchUplift && (minor != _Minor || patch < _Patch);
+            }
+
+            private bool GuardMajor(int major)
+            {
+                return (_Flag == CompareFlag.MinorUplift || _Flag == CompareFlag.PatchUplift) && major != _Major;
             }
 
             private bool EQ(int major, int minor, int patch, string prerelease)
