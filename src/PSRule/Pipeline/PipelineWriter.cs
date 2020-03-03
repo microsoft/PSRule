@@ -108,7 +108,7 @@ namespace PSRule.Pipeline
 
         public virtual bool ShouldWriteInformation()
         {
-            return _Writer != null ? _Writer.ShouldWriteInformation() : true;
+            return _Writer != null && _Writer.ShouldWriteInformation();
         }
 
         public virtual void WriteDebug(DebugRecord debugRecord)
@@ -121,7 +121,7 @@ namespace PSRule.Pipeline
 
         public virtual bool ShouldWriteDebug()
         {
-            return _Writer != null ? _Writer.ShouldWriteDebug() : true;
+            return _Writer != null && _Writer.ShouldWriteDebug();
         }
 
         public virtual void EnterScope(string scopeName)
@@ -169,7 +169,7 @@ namespace PSRule.Pipeline
             _Result = new List<T>();
         }
 
-        public override void WriteObject(object sendToPipeline, bool enumerate)
+        public override void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
             if (sendToPipeline is InvokeResult result)
             {

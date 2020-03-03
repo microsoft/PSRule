@@ -81,7 +81,7 @@ namespace PSRule.Runtime
         public string[] GetReason()
         {
             if (!Result || _Reason == null || _Reason.Count == 0)
-                return null;
+                return new string[] { };
 
             return _Reason.ToArray();
         }

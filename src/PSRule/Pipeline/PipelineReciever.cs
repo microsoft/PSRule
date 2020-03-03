@@ -19,7 +19,7 @@ namespace PSRule.Pipeline
     public delegate IEnumerable<PSObject> VisitTargetObject(PSObject sourceObject);
     public delegate IEnumerable<PSObject> VisitTargetObjectAction(PSObject sourceObject, VisitTargetObject next);
 
-    public static class PipelineReceiverActions
+    internal static class PipelineReceiverActions
     {
         private const string PropertyName_PSPath = "PSPath";
         private const string PropertyName_PSParentPath = "PSParentPath";
@@ -124,7 +124,7 @@ namespace PSRule.Pipeline
             }
 
             if (result.Count == 0)
-                return null;
+                return EmptyArray;
 
             return result.ToArray();
         }
@@ -167,7 +167,7 @@ namespace PSRule.Pipeline
         public static IEnumerable<PSObject> ReadObjectPath(PSObject sourceObject, VisitTargetObject source, string objectPath, bool caseSensitive)
         {
             if (!ObjectHelper.GetField(bindingContext: null, targetObject: sourceObject, name: objectPath, caseSensitive: caseSensitive, value: out object nestedObject))
-                return null;
+                return EmptyArray;
 
             var nestedType = nestedObject.GetType();
             if (typeof(IEnumerable).IsAssignableFrom(nestedType))
