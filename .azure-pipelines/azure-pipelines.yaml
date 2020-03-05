@@ -148,16 +148,16 @@ stages:
   # - template: jobs/testContainer.yaml
   #   parameters:
   #     name: alpine_3_10
-  #     displayName: 'PowerShell 7.0 RC3 - alpine-3.10'
+  #     displayName: 'PowerShell 7.0 - alpine-3.10'
   #     imageName: mcr.microsoft.com/powershell
-  #     imageTag: 7.0.0-rc.3-alpine-3.10
+  #     imageTag: 7.0.0-alpine-3.10
 
   - template: jobs/testContainer.yaml
     parameters:
       name: ps_7_ubuntu_18_04
-      displayName: 'PowerShell 7.0 RC3 - ubuntu-18.04'
+      displayName: 'PowerShell 7.0 - ubuntu-18.04'
       imageName: mcr.microsoft.com/powershell
-      imageTag: 7.0.0-rc.3-ubuntu-18.04
+      imageTag: 7.0.0-ubuntu-18.04
 
 # Release pipeline
 - stage: Release
