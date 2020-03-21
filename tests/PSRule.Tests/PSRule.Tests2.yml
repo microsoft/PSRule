@@ -15,6 +15,12 @@ input:
   - virtualMachine
   - virtualNetwork
 
+# Configure output
+output:
+  culture:
+  - 'en-CC'
+  - 'en-DD'
+
 # Configure baseline
 rule:
   include:

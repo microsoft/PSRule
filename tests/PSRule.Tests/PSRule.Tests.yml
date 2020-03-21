@@ -53,6 +53,7 @@ logging:
 # Configure output options
 output:
   as: Summary
+  culture: [ 'en-CC' ]
   encoding: UTF7
   format: Json
   path: 'out/OutputPath.txt'

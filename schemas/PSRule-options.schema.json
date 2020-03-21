@@ -242,6 +242,17 @@
                     ],
                     "default": "Detail"
                 },
+                "culture": {
+                    "type": "array",
+                    "title": "Culture",
+                    "description": "One or more cultures to use for generating output. When multiple cultures are specified, the first matching culture will be used. By default, the current PowerShell culture is used.",
+                    "items": {
+                        "type": "string",
+                        "description": "A culture for generating output.",
+                        "minLength": 2
+                    },
+                    "uniqueItems": true
+                },
                 "encoding": {
                     "type": "string",
                     "title": "Encoding",

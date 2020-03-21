@@ -973,6 +973,10 @@ function New-PSRuleOption {
         [ValidateSet('Detail', 'Summary')]
         [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
 
+        # Sets the Output.Culture option
+        [Parameter(Mandatory = $False)]
+        [String[]]$OutputCulture,
+
         # Sets the Output.Encoding option
         [Parameter(Mandatory = $False)]
         [ValidateSet('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII')]
@@ -1154,6 +1158,10 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [ValidateSet('Detail', 'Summary')]
         [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
+
+        # Sets the Output.Culture option
+        [Parameter(Mandatory = $False)]
+        [String[]]$OutputCulture,
 
         # Sets the Output.Encoding option
         [Parameter(Mandatory = $False)]
@@ -1739,6 +1747,10 @@ function SetOptions {
         [ValidateSet('Detail', 'Summary')]
         [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
 
+        # Sets the Output.Culture option
+        [Parameter(Mandatory = $False)]
+        [String[]]$OutputCulture,
+
         # Sets the Output.Encoding option
         [Parameter(Mandatory = $False)]
         [ValidateSet('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII')]
@@ -1840,6 +1852,11 @@ function SetOptions {
         # Sets option Output.As
         if ($PSBoundParameters.ContainsKey('OutputAs')) {
             $Option.Output.As = $OutputAs;
+        }
+
+        # Sets option Output.Culture
+        if ($PSBoundParameters.ContainsKey('OutputCulture')) {
+            $Option.Output.Culture = $OutputCulture;
         }
 
         # Sets option Output.Encoding

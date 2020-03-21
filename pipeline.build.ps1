@@ -168,9 +168,29 @@ task BuildModule BuildDotNet, CopyModule
 
 # Synopsis: Build help
 task BuildHelp BuildModule, PlatyPS, {
+    if (!(Test-Path out/modules/PSRule/en-US/)) {
+        $Null = New-Item -Path out/modules/PSRule/en-US/ -ItemType Directory -Force;
+    }
+    if (!(Test-Path out/modules/PSRule/en-AU/)) {
+        $Null = New-Item -Path out/modules/PSRule/en-AU/ -ItemType Directory -Force;
+    }
+    if (!(Test-Path out/modules/PSRule/en-GB/)) {
+        $Null = New-Item -Path out/modules/PSRule/en-GB/ -ItemType Directory -Force;
+    }
 
-    # Generate MAML and about topics
-    $Null = New-ExternalHelp -OutputPath out/docs/PSRule -Path '.\docs\commands\PSRule\en-US','.\docs\keywords\PSRule\en-US', '.\docs\concepts\PSRule\en-US' -Force;
+    # Avoid YamlDotNet issue in same app domain
+    exec {
+        $pwshPath = (Get-Process -Id $PID).Path;
+        &$pwshPath -Command {
+            # Generate MAML and about topics
+            Import-Module -Name PlatyPS -Verbose:$False;
+            $Null = New-ExternalHelp -OutputPath 'out/docs/PSRule' -Path '.\docs\commands\PSRule\en-US','.\docs\keywords\PSRule\en-US', '.\docs\concepts\PSRule\en-US' -Force;
+        }
+    }
+
+    if (!(Test-Path -Path 'out/docs/PSRule/PSRule-help.xml')) {
+        throw 'Failed find generated cmdlet help.';
+    }
 
     # Copy generated help into module out path
     $Null = Copy-Item -Path out/docs/PSRule/* -Destination out/modules/PSRule/en-US;
@@ -267,7 +287,6 @@ task platyPS {
     if ($Null -eq (Get-InstalledModule -Name PlatyPS -MinimumVersion 0.14.0 -ErrorAction Ignore)) {
         Install-Module -Name PlatyPS -Scope CurrentUser -MinimumVersion 0.14.0 -Force;
     }
-    Import-Module -Name PlatyPS -Verbose:$False;
 }
 
 # Synopsis: Test the module
