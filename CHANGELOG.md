@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.16.0-B2003022 (pre-release)
+
 - General improvements:
   - Added configuration option `Output.Culture` for setting culture. [#442](https://github.com/Microsoft/PSRule/issues/442)
   - Improved handling of fields to allow the input object to be referenced with `.`. [#437](https://github.com/Microsoft/PSRule/issues/437)
