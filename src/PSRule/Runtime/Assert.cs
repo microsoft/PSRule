@@ -127,7 +127,7 @@ namespace PSRule.Runtime
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
-                GuardField(inputObject, field, caseSensitive, out object fieldValue, out result))
+                GuardField(inputObject, field, caseSensitive, out _, out result))
                 return result;
 
             // Assert

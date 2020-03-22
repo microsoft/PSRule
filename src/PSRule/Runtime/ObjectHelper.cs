@@ -41,7 +41,7 @@ namespace PSRule.Runtime
                 if (Position < Last)
                 {
                     Position++;
-                    if (Name[Position] == Separator)
+                    if (Name[Position] == Separator && Position > 0)
                     {
                         Position++;
                     }
@@ -50,7 +50,6 @@ namespace PSRule.Runtime
                         Position++;
                         inQuote = true;
                     }
-
                     Current = Name[Position];
                     return true;
                 }
@@ -63,7 +62,9 @@ namespace PSRule.Runtime
             /// <returns>The index of the sequence end.</returns>
             public int IndexOf(out NameTokenType tokenType)
             {
-                tokenType = NameTokenType.Field;
+                tokenType = Position == 0 && Current == Separator ? NameTokenType.Self : NameTokenType.Field;
+                if (tokenType == NameTokenType.Self)
+                    return Position;
 
                 while (Position < Last)
                 {
@@ -107,7 +108,6 @@ namespace PSRule.Runtime
             {
                 var token = new NameToken();
                 NameToken result = token;
-
                 while (Next())
                 {
                     var start = Position;
@@ -120,12 +120,11 @@ namespace PSRule.Runtime
                     // Jump to the next separator or end
                     var end = IndexOf(out NameTokenType tokenType);
                     token.Type = tokenType;
-
                     if (tokenType == NameTokenType.Field)
                     {
                         token.Name = Name.Substring(start, end - start + 1);
                     }
-                    else
+                    else if (tokenType == NameTokenType.Index)
                     {
                         token.Index = int.Parse(Name.Substring(start, end - start + 1));
                     }
@@ -165,8 +164,14 @@ namespace PSRule.Runtime
             object field = null;
             bool foundField = false;
 
+            // Handle this object
+            if (token.Type == NameTokenType.Self)
+            {
+                field = baseObject;
+                foundField = true;
+            }
             // Handle dictionaries and hashtables
-            if (token.Type == NameTokenType.Field && baseObject is IDictionary dictionary)
+            else if (token.Type == NameTokenType.Field && baseObject is IDictionary dictionary)
             {
                 if (TryDictionary(dictionary, token.Name, caseSensitive, out field))
                     foundField = true;

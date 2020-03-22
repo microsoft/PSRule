@@ -77,6 +77,20 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].TargetName | Should -Be 'TestObject2';
         }
 
+        It 'With self field' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.Self' -Outcome All -WarningAction SilentlyContinue -Verbose);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].Outcome | Should -Be 'Pass';
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].Outcome | Should -Be 'Fail';
+            $result[1].TargetName | Should -Be 'TestObject2';
+        }
+
         It 'Complete' {
             $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.Complete');
             $result | Should -Not -BeNullOrEmpty;

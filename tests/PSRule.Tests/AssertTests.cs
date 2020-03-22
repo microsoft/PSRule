@@ -224,6 +224,9 @@ namespace PSRule
             Assert.False(assert.Greater(value, "value", 4).Result);
             Assert.True(assert.Greater(value, "value", 0).Result);
             Assert.True(assert.Greater(value, "value", -1).Result);
+
+            // Self
+            Assert.True(assert.Greater(3, ".", 2).Result);
         }
 
         [Fact]
@@ -255,6 +258,9 @@ namespace PSRule
             Assert.False(assert.GreaterOrEqual(value, "value", 4).Result);
             Assert.True(assert.GreaterOrEqual(value, "value", 0).Result);
             Assert.True(assert.GreaterOrEqual(value, "value", -1).Result);
+
+            // Self
+            Assert.True(assert.GreaterOrEqual(2, ".", 2).Result);
         }
 
         [Fact]
@@ -286,6 +292,9 @@ namespace PSRule
             Assert.True(assert.Less(value, "value", 4).Result);
             Assert.False(assert.Less(value, "value", 0).Result);
             Assert.False(assert.Less(value, "value", -1).Result);
+
+            // Self
+            Assert.True(assert.Less(1, ".", 2).Result);
         }
 
         [Fact]
@@ -317,6 +326,9 @@ namespace PSRule
             Assert.True(assert.LessOrEqual(value, "value", 4).Result);
             Assert.False(assert.LessOrEqual(value, "value", 0).Result);
             Assert.False(assert.LessOrEqual(value, "value", -1).Result);
+
+            // Self
+            Assert.True(assert.LessOrEqual(1, ".", 1).Result);
         }
 
         private static void SetContext()
