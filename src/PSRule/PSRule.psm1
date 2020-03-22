@@ -14,7 +14,7 @@ Set-StrictMode -Version latest;
 #
 
 Import-LocalizedData -BindingVariable LocalizedHelp -FileName 'PSRule.Resources.psd1' -ErrorAction SilentlyContinue;
-if ($Null -ne (Get-Variable -Name LocalizedHelp -ErrorAction SilentlyContinue)) {
+if ($Null -eq (Get-Variable -Name LocalizedHelp -ErrorAction SilentlyContinue)) {
     Import-LocalizedData -BindingVariable LocalizedHelp -FileName 'PSRule.Resources.psd1' -UICulture 'en-US' -ErrorAction SilentlyContinue;
 }
 
