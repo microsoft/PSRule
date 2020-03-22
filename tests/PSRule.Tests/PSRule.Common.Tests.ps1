@@ -1590,6 +1590,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
                 Module = 'TestModule'
                 Name = 'M1.Rule1'
                 Option = @{ 'Execution.LanguageMode' = 'ConstrainedLanguage' }
+                Culture = 'en'
             }
             $result = @(Get-PSRuleHelp @getParams -Online);
             $result.Length | Should -Be 1;
