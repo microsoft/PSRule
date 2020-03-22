@@ -9,6 +9,7 @@ parameters:
   imageName: ''
   imageTag: ''
   coverage: 'false'
+  publishResults: 'true'
 
 jobs:
 - job: ${{ parameters.name }}
@@ -19,8 +20,10 @@ jobs:
     image: '${{ parameters.imageName }}:${{ parameters.imageTag }}'
     env:
       COVERAGE: ${{ parameters.coverage }}
+      PUBLISHRESULTS: ${{ parameters.publishResults }}
   variables:
     COVERAGE: ${{ parameters.coverage }}
+    PUBLISHRESULTS: ${{ parameters.publishResults }}
     skipComponentGovernanceDetection: true
   steps:
 
@@ -50,7 +53,7 @@ jobs:
       platform: ${{ parameters.imageTag }}
       configuration: ${{ parameters.buildConfiguration }}
       publishRunAttachments: true
-    condition: succeededOrFailed()
+    condition: and(succeededOrFailed(), eq(variables['PUBLISHRESULTS'], 'true'))
 
   # Generate Code Coverage report
   - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4

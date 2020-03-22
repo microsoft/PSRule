@@ -128,15 +128,16 @@ stages:
 
   - template: jobs/test.yaml
     parameters:
-      name: ps_6_ubuntu_18_04
+      name: ubuntu_18_04_coverage
       imageName: 'ubuntu-18.04'
-      displayName: 'PowerShell 6.2.4 - ubuntu-18.04'
+      displayName: 'PowerShell coverage'
       coverage: 'true'
+      publishResults: 'false'
 
   - template: jobs/test.yaml
     parameters:
       name: macOS_10_15
-      displayName: 'PowerShell 6.2.4 - macOS-10.15'
+      displayName: 'PowerShell 7.0 - macOS-10.15'
       imageName: 'macOS-10.15'
 
   - template: jobs/test.yaml
@@ -145,6 +146,7 @@ stages:
       displayName: 'PowerShell 5.1 - win2016'
       imageName: 'vs2017-win2016'
 
+  # Currently can't use alpine because addtional tools for Azure DevOps are required
   # - template: jobs/testContainer.yaml
   #   parameters:
   #     name: alpine_3_10
@@ -158,6 +160,13 @@ stages:
       displayName: 'PowerShell 7.0 - ubuntu-18.04'
       imageName: mcr.microsoft.com/powershell
       imageTag: 7.0.0-ubuntu-18.04
+
+  - template: jobs/testContainer.yaml
+    parameters:
+      name: ps_6_ubuntu_18_04
+      displayName: 'PowerShell 6.2.4 - ubuntu-18.04'
+      imageName: mcr.microsoft.com/powershell
+      imageTag: 6.2.4-ubuntu-18.04
 
 # Release pipeline
 - stage: Release
