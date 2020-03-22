@@ -279,8 +279,8 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (TryInt(fieldValue, out int actual) || TryStringLength(fieldValue, out actual) || TryArrayLength(fieldValue, out actual))
-                return actual > value ? Pass() : Fail(ReasonStrings.Greater, actual, value);
+            if (CompareNumeric(fieldValue, value, out int actual))
+                return actual > 0 ? Pass() : Fail(ReasonStrings.Greater, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
         }
@@ -293,8 +293,8 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (TryInt(fieldValue, out int actual) || TryStringLength(fieldValue, out actual) || TryArrayLength(fieldValue, out actual))
-                return actual >= value ? Pass() : Fail(ReasonStrings.GreaterOrEqual, actual, value);
+            if (CompareNumeric(fieldValue, value, out int actual))
+                return actual >= 0 ? Pass() : Fail(ReasonStrings.GreaterOrEqual, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
         }
@@ -307,8 +307,8 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (TryInt(fieldValue, out int actual) || TryStringLength(fieldValue, out actual) || TryArrayLength(fieldValue, out actual))
-                return actual < value ? Pass() : Fail(ReasonStrings.Less, actual, value);
+            if (CompareNumeric(fieldValue, value, out int actual))
+                return actual < 0 ? Pass() : Fail(ReasonStrings.Less, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
         }
@@ -321,8 +321,8 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (TryInt(fieldValue, out int actual) || TryStringLength(fieldValue, out actual) || TryArrayLength(fieldValue, out actual))
-                return actual <= value ? Pass() : Fail(ReasonStrings.LessOrEqual, actual, value);
+            if (CompareNumeric(fieldValue, value, out int actual))
+                return actual <= 0 ? Pass() : Fail(ReasonStrings.LessOrEqual, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
         }
@@ -371,6 +371,28 @@ namespace PSRule.Runtime
             return false;
         }
 
+        private static bool TryLong(object obj, out long value)
+        {
+            if (obj is long lvalue)
+            {
+                value = lvalue;
+                return true;
+            }
+            value = 0;
+            return false;
+        }
+
+        private static bool TryFloat(object obj, out float value)
+        {
+            if (obj is float fvalue)
+            {
+                value = fvalue;
+                return true;
+            }
+            value = 0;
+            return false;
+        }
+
         private static bool TryStringLength(object obj, out int value)
         {
             if (obj is string s)
@@ -390,6 +412,27 @@ namespace PSRule.Runtime
                 return true;
             }
             value = 0;
+            return false;
+        }
+
+        private static bool CompareNumeric(object obj, int value, out int actual)
+        {
+            if (TryInt(obj, out int ivalue) || TryStringLength(obj, out ivalue) || TryArrayLength(obj, out ivalue))
+            {
+                actual = ivalue.CompareTo(value);
+                return true;
+            }
+            if (TryLong(obj, out long lvalue))
+            {
+                actual = lvalue.CompareTo(value);
+                return true;
+            }
+            if (TryFloat(obj, out float fvalue))
+            {
+                actual = fvalue.CompareTo(value);
+                return true;
+            }
+            actual = 0;
             return false;
         }
 

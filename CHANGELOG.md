@@ -5,6 +5,8 @@
 - General improvements:
   - Added configuration option `Output.Culture` for setting culture. [#442](https://github.com/Microsoft/PSRule/issues/442)
   - Improved handling of fields to allow the input object to be referenced with `.`. [#437](https://github.com/Microsoft/PSRule/issues/437)
+- Bug fixes:
+  - Fixed numeric comparison assertion with non-int types. [#436](https://github.com/Microsoft/PSRule/issues/436)
 
 ## v0.15.0
 
