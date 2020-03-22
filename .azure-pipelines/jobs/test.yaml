@@ -7,6 +7,7 @@ parameters:
   buildConfiguration: 'Release'
   imageName: ''
   coverage: 'false'
+  publishResults: 'true'
 
 jobs:
 - job: ${{ parameters.name }}
@@ -15,6 +16,7 @@ jobs:
     vmImage: ${{ parameters.imageName }}
   variables:
     COVERAGE: ${{ parameters.coverage }}
+    PUBLISHRESULTS: ${{ parameters.publishResults }}
     skipComponentGovernanceDetection: true
   steps:
 
@@ -46,7 +48,7 @@ jobs:
       platform: ${{ parameters.name }}
       configuration: ${{ parameters.buildConfiguration }}
       publishRunAttachments: true
-    condition: succeededOrFailed()
+    condition: and(succeededOrFailed(), eq(variables['PUBLISHRESULTS'], 'true'))
 
   # Generate Code Coverage report
   - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
