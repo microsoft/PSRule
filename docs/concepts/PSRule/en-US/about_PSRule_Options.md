@@ -478,7 +478,6 @@ execution:
 ### Execution.NotProcessedWarning
 
 When evaluating rules, it is possible to incorrectly select a path with rules that use pre-conditions that do not accept the pipeline object.
-
 In this case the object has not been processed by any rule.
 
 Not processed objects will:
@@ -801,7 +800,8 @@ logging:
 
 Configures the type of results to produce.
 
-This option only applies to `Invoke-PSRule`. `Invoke-PSRule` also include a `-As` parameter to set this option at runtime.
+This option only applies to `Invoke-PSRule`.
+`Invoke-PSRule` also include a `-As` parameter to set this option at runtime.
 If specified, the `-As` parameter take precedence, over this option.
 
 The following options are available:
@@ -851,8 +851,8 @@ $option = New-PSRuleOption -OutputCulture 'en-AU';
 ```
 
 ```powershell
-# PowerShell: Using the Output.As hashtable key
-$option = New-PSRuleOption -Option @{ 'Output.As' = 'en-AU' };
+# PowerShell: Using the Output.Culture hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Culture' = 'en-AU' };
 ```
 
 ```powershell
