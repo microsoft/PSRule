@@ -40,7 +40,7 @@ Assertion methods use the following standard pattern:
 
 - The first parameter is _always_ the input object of type `PSObject`, additional parameters can be included based on the functionality required by the method.
   - In many cases the input object will be `$TargetObject`, however assertion methods must not assume that `$TargetObject` will be used.
-  - Assertion methods must a `$Null` input object.
+  - Assertion methods must accept a `$Null` input object.
 - Assertion methods return the `AssertResult` object that is interpreted by the rule pipeline.
 
 Some assertion methods may overlap or provide similar functionality to built-in keywords.
@@ -64,6 +64,25 @@ Rule 'Assert.HasRequiredFields' {
     $Assert.HasFieldValue($TargetObject, 'Value')
 }
 ```
+
+### Field names
+
+Many of the built-in assertion methods accept a field name.
+The field name is an expression that traverses object properties, keys or indexes of the _input object_.
+
+The field name can contain:
+
+- Property names for PSObjects or .NET objects.
+- Keys for hash table or dictionaries.
+- Indexes for arrays or collections.
+
+For example:
+
+- `.` refers to _input object_ itself.
+- `Name` or `.Name` refers to the name property/ key of the _input object_.
+- `Properties.enabled` refers to the enabled property under the Properties property.
+- `Tags.env` refers to the env key under a hash table property of the _input object_.
+- `Properties.securityRules[0].name` references to the name property of the first security rule.
 
 ### Contains
 

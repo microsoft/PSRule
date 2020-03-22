@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Diagnostics;
+
 namespace PSRule.Runtime
 {
     /// <summary>
@@ -16,12 +18,18 @@ namespace PSRule.Runtime
         /// <summary>
         /// The token is an index in an object.
         /// </summary>
-        Index = 1
+        Index = 1,
+
+        /// <summary>
+        /// The token is a reference to the parent object. Can only be the first token.
+        /// </summary>
+        Self = 2
     }
 
     /// <summary>
     /// A token for expressing a path through a tree of fields.
     /// </summary>
+    [DebuggerDisplay("{Type}, Name = {Name}, Index = {Index}")]
     internal sealed class NameToken
     {
         /// <summary>

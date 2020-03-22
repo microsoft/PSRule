@@ -21,6 +21,13 @@ Rule 'Assert.Precondition' -If { $Assert.StartsWith($TargetObject, 'Name', 'Test
     $True;
 }
 
+# Synopsis: Test for $Assert with self field
+Rule 'Assert.Self' {
+    $Assert.HasFieldValue($TargetObject.Name, '.', 'TestObject1')
+    $Assert.Greater(3, '.', 2)
+    $Assert.EndsWith('Name', '.', 'ame')
+}
+
 # Synopsis: Test for $Assert.Complete
 Rule 'Assert.Complete' {
     $Assert.HasField($TargetObject, 'Name').Complete() -and
