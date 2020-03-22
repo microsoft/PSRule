@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- General improvements:
+  - Added configuration option `Output.Culture` for setting culture. [#442](https://github.com/Microsoft/PSRule/issues/442)
+
 ## v0.15.0
 
 What's changed since v0.14.0:

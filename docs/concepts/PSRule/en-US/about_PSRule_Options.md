@@ -24,6 +24,7 @@ The following workspace options are available for use:
 - [Logging.RuleFail](#loggingrulefail)
 - [Logging.RulePass](#loggingrulepass)
 - [Output.As](#outputas)
+- [Output.Culture](#outputculture)
 - [Output.Encoding](#outputencoding)
 - [Output.Format](#outputformat)
 - [Output.Path](#outputpath)
@@ -800,7 +801,7 @@ logging:
 
 Configures the type of results to produce.
 
-This option only applies to `Invoke-PSRule`. `Invoke-PSRule` also includes a parameter `-As` to set this option at runtime.
+This option only applies to `Invoke-PSRule`. `Invoke-PSRule` also include a `-As` parameter to set this option at runtime.
 If specified, the `-As` parameter take precedence, over this option.
 
 The following options are available:
@@ -829,6 +830,40 @@ Set-PSRuleOption -OutputAs Yaml;
 # YAML: Using the output/as property
 output:
   as: Summary
+```
+
+### Output.Culture
+
+Specified the name of one or more cultures to use for generating output.
+When multiple cultures are specified, the first matching culture will be used.
+If a culture is not specified, PSRule will use the current PowerShell culture.
+
+PSRule cmdlets also include a `-Culture` parameter to set this option at runtime.
+If specified, the `-Culture` parameter take precedence, over this option.
+
+To get a list of cultures use the `Get-Culture -ListAvailable` cmdlet.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the OutputCulture parameter
+$option = New-PSRuleOption -OutputCulture 'en-AU';
+```
+
+```powershell
+# PowerShell: Using the Output.As hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.As' = 'en-AU' };
+```
+
+```powershell
+# PowerShell: Using the OutputCulture parameter to set YAML
+Set-PSRuleOption -OutputCulture 'en-AU', 'en-US';
+```
+
+```yaml
+# YAML: Using the output/culture property
+output:
+  culture: [ 'en-AU', 'en-US' ]
 ```
 
 ### Output.Encoding
@@ -1233,6 +1268,7 @@ logging:
 
 output:
   as: Detail
+  culture: [ ]
   encoding: Default
   format: None
   style: Client

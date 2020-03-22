@@ -21,8 +21,8 @@ New-PSRuleOption [[-Path] <String>] [[-Option] <PSRuleOption>] [-Configuration <
  [-BindingUseQualifiedName <Boolean>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
  [-Format <InputFormat>] [-ObjectPath <String>] [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>]
  [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
- [-OutputAs <ResultFormat>] [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
+ [-OutputAs <ResultFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFormat <OutputFormat>] [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -455,6 +455,24 @@ The `Output.As` option configures the type of results to produce, either detail 
 
 ```yaml
 Type: ResultFormat
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputCulture
+
+Sets the option `Output.Culture`.
+The `Output.Culture` option configures the culture used to generated output.
+When multiple cultures are specified, the first matching culture will be used.
+
+```yaml
+Type: String[]
 Parameter Sets: (All)
 Aliases:
 

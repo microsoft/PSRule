@@ -218,10 +218,8 @@ namespace PSRule.Configuration
             if (executionContext == null)
             {
                 _GetWorkingPath = () => Directory.GetCurrentDirectory();
-
                 return;
             }
-
             _GetWorkingPath = () => executionContext.SessionState.Path.CurrentFileSystemLocation.Path;
         }
 
@@ -286,6 +284,10 @@ namespace PSRule.Configuration
             if (index.TryPopValue("output.as", out value))
             {
                 option.Output.As = (ResultFormat)Enum.Parse(typeof(ResultFormat), (string)value);
+            }
+            if (index.TryPopValue("output.culture", out value))
+            {
+                option.Output.Culture = AsStringArray(value);
             }
             if (index.TryPopValue("output.encoding", out value))
             {

@@ -581,6 +581,49 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Output.Culture' {
+        It 'from default' {
+            $option = New-PSRuleOption;
+            $option.Output.Culture | Should -BeNullOrEmpty;
+        }
+
+        It 'from Hashtable' {
+            # Single
+            $option = New-PSRuleOption -Option @{ 'Output.Culture' = 'en-AA' };
+            $option.Output.Culture.Length | Should -Be 1;
+            $option.Output.Culture | Should -BeIn 'en-AA';
+
+            # Array
+            $option = New-PSRuleOption -Option @{ 'Output.Culture' = 'en-AA', 'en-BB' };
+            $option.Output.Culture.Length | Should -Be 2;
+            $option.Output.Culture | Should -BeIn 'en-AA', 'en-BB';
+        }
+
+        It 'from YAML' {
+            # Single
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Output.Culture.Length | Should -Be 1;
+            $option.Output.Culture | Should -BeIn 'en-CC';
+
+            # Array
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests2.yml');
+            $option.Output.Culture.Length | Should -Be 2;
+            $option.Output.Culture | Should -BeIn 'en-CC', 'en-DD';
+        }
+
+        It 'from parameter' {
+            # Single
+            $option = New-PSRuleOption -OutputCulture 'en-XX' -Path $emptyOptionsFilePath;
+            $option.Output.Culture.Length | Should -Be 1;
+            $option.Output.Culture | Should -BeIn 'en-XX';
+
+            # Array
+            $option = New-PSRuleOption -OutputCulture 'en-XX', 'en-YY' -Path $emptyOptionsFilePath;
+            $option.Output.Culture.Length | Should -Be 2;
+            $option.Output.Culture | Should -BeIn 'en-XX', 'en-YY';
+        }
+    }
+
     Context 'Read Output.Encoding' {
         It 'from default' {
             $option = New-PSRuleOption;
@@ -855,6 +898,20 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputAs 'Summary' @optionParams;
             $option.Output.As | Should -Be 'Summary';
+        }
+    }
+
+    Context 'Read Output.Culture' {
+        It 'from parameter' {
+            # Single
+            $option = Set-PSRuleOption -OutputCulture 'en-EE' @optionParams;
+            $option.Output.Culture.Length | Should -Be 1;
+            $option.Output.Culture | Should -BeIn 'en-EE';
+
+            # Array
+            $option = Set-PSRuleOption -OutputCulture 'en-EE', 'en-FF' @optionParams;
+            $option.Output.Culture.Length | Should -Be 2;
+            $option.Output.Culture | Should -BeIn 'en-EE', 'en-FF';
         }
     }
 
