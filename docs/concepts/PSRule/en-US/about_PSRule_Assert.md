@@ -143,10 +143,10 @@ Rule 'EndsWith' {
 ### Greater
 
 The `Greater` assertion method checks the field value is greater than the specified value.
-The field value can either be an integer or an array.
+The field value can either be an integer, float, array, or string.
 When the field value is:
 
-- An integer, a numerical comparison is used.
+- An integer or float, a numerical comparison is used.
 - An array, the number of elements is compared.
 - A string, the length of the string is compared.
 
@@ -175,10 +175,10 @@ Rule 'Greater' {
 ### GreaterOrEqual
 
 The `GreaterOrEqual` assertion method checks the field value is greater or equal to the specified value.
-The field value can either be an integer or an array.
+The field value can either be an integer, float, array, or string.
 When the field value is:
 
-- An integer, a numerical comparison is used.
+- An integer or float, a numerical comparison is used.
 - An array, the number of elements is compared.
 - A string, the length of the string is compared.
 
@@ -350,10 +350,10 @@ Rule 'JsonSchema' {
 ### Less
 
 The `Less` assertion method checks the field value is less than the specified value.
-The field value can either be an integer or an array.
+The field value can either be an integer, float, array, or string.
 When the field value is:
 
-- An integer, a numerical comparison is used.
+- An integer or float, a numerical comparison is used.
 - An array, the number of elements is compared.
 - A string, the length of the string is compared.
 
@@ -382,10 +382,10 @@ Rule 'Less' {
 ### LessOrEqual
 
 The `LessOrEqual` assertion method checks the field value is less or equal to the specified value.
-The field value can either be an integer or an array.
+The field value can either be an integer, float, array, or string.
 When the field value is:
 
-- An integer, a numerical comparison is used.
+- An integer or float, a numerical comparison is used.
 - An array, the number of elements is compared.
 - A string, the length of the string is compared.
 

@@ -98,9 +98,8 @@ namespace PSRule.Runtime
 
             // Continue
             for (var i = 0; _Reason != null && i < _Reason.Count; i++)
-            {
                 RunspaceContext.CurrentThread.WriteReason(_Reason[i]);
-            }
+
             return Result;
         }
 

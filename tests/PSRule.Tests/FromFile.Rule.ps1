@@ -355,6 +355,7 @@ Rule 'AllOfTest' {
     AllOf {
         $True
         $True
+        $Assert.Greater(3, '.', 2)
     }
 }
 
@@ -372,6 +373,7 @@ Rule 'AnyOfTest' {
         $True
         $False
         $False
+        $Assert.Greater(3, '.', 2)
     }
 }
 

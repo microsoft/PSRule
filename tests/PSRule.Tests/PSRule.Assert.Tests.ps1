@@ -78,7 +78,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
         }
 
         It 'With self field' {
-            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.Self' -Outcome All -WarningAction SilentlyContinue -Verbose);
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.Self' -Outcome All -WarningAction SilentlyContinue);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
 
