@@ -41,16 +41,19 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         $testObject.PSObject.TypeNames.Insert(0, 'TestType');
 
         It 'Returns passed' {
-            Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -Verifiable -MockWith {
-                return @('en-ZZ');
+            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-ZZ');
+            try {
+                $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1';
+                $result | Should -Not -BeNullOrEmpty;
+                $result.IsSuccess() | Should -Be $True;
+                $result.TargetName | Should -Be 'TestObject1';
+                $result.Info.Annotations.culture | Should -Be 'en-ZZ';
+                $result.Recommendation | Should -Be 'This is a recommendation.';
+                Assert-VerifiableMock;
             }
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.IsSuccess() | Should -Be $True;
-            $result.TargetName | Should -Be 'TestObject1';
-            $result.Info.Annotations.culture | Should -Be 'en-ZZ';
-            $result.Recommendation | Should -Be 'This is a recommendation.';
-            Assert-VerifiableMock;
+            finally {
+                [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
+            }
         }
 
         It 'Returns failure' {
@@ -274,25 +277,28 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         It 'Returns summary' {
-            Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -Verifiable -MockWith {
-                return @('en-ZZ');
+            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-ZZ');
+            try {
+                $option = @{ 'Execution.InconclusiveWarning' = $False };
+                $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Tag @{ category = 'group1' } -As Summary -Outcome All -Option $option;
+                $result | Should -Not -BeNullOrEmpty;
+                $result.Count | Should -Be 4;
+                $result | Should -BeOfType PSRule.Rules.RuleSummaryRecord;
+                $result.RuleName | Should -BeIn 'FromFile1', 'FromFile2', 'FromFile3', 'FromFile4'
+                $result.Tag.category | Should -BeIn 'group1';
+                ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Outcome | Should -Be 'Pass';
+                ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Pass | Should -Be 2;
+                ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Info.Annotations.culture | Should -Be 'en-ZZ';
+                ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Outcome | Should -Be 'Fail';
+                ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Fail | Should -Be 2;
+                ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Outcome | Should -Be 'None';
+                ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Pass | Should -Be 0;
+                ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Fail | Should -Be 0;
+                Assert-VerifiableMock;
             }
-            $option = @{ 'Execution.InconclusiveWarning' = $False };
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Tag @{ category = 'group1' } -As Summary -Outcome All -Option $option;
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Count | Should -Be 4;
-            $result | Should -BeOfType PSRule.Rules.RuleSummaryRecord;
-            $result.RuleName | Should -BeIn 'FromFile1', 'FromFile2', 'FromFile3', 'FromFile4'
-            $result.Tag.category | Should -BeIn 'group1';
-            ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Outcome | Should -Be 'Pass';
-            ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Pass | Should -Be 2;
-            ($result | Where-Object { $_.RuleName -eq 'FromFile1'}).Info.Annotations.culture | Should -Be 'en-ZZ';
-            ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Outcome | Should -Be 'Fail';
-            ($result | Where-Object { $_.RuleName -eq 'FromFile2'}).Fail | Should -Be 2;
-            ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Outcome | Should -Be 'None';
-            ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Pass | Should -Be 0;
-            ($result | Where-Object { $_.RuleName -eq 'FromFile4'}).Fail | Should -Be 0;
-            Assert-VerifiableMock;
+            finally {
+                [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
+            }
         }
 
         It 'Returns filtered summary' {
@@ -1228,41 +1234,47 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         }
 
         It 'Reads metadata' {
-            Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -Verifiable -MockWith {
-                return @('en-ZZ');
-            }
-            # From markdown
-            $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.RuleName | Should -Be 'FromFile1';
-            $result.Synopsis | Should -Be 'This is a synopsis.';
-            $result.Info.Annotations.culture | Should -Be 'en-ZZ';
-            Assert-VerifiableMock;
-
-            # From comments
-            $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile2';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.RuleName | Should -Be 'FromFile2';
-            $result.Synopsis | Should -Be 'Test rule 2';
-
-            # No comments
-            $result = Get-PSRule -Path $ruleFilePath -Name 'WithNoSynopsis';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.RuleName | Should -Be 'WithNoSynopsis';
-            $result.Synopsis | Should -BeNullOrEmpty;
-        }
-
-        if ((Get-Variable -Name 'IsLinux' -ErrorAction SilentlyContinue -ValueOnly) -eq $True) {
-            It 'Handles en-US-POSIX' {
-                Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -Verifiable -MockWith {
-                    return @('en-US-POSIX');
-                }
+            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-ZZ');
+            try {
                 # From markdown
                 $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1';
                 $result | Should -Not -BeNullOrEmpty;
                 $result.RuleName | Should -Be 'FromFile1';
                 $result.Synopsis | Should -Be 'This is a synopsis.';
-                $result.Info.Annotations.culture | Should -Be 'en';
+                $result.Info.Annotations.culture | Should -Be 'en-ZZ';
+                Assert-VerifiableMock;
+
+                # From comments
+                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile2';
+                $result | Should -Not -BeNullOrEmpty;
+                $result.RuleName | Should -Be 'FromFile2';
+                $result.Synopsis | Should -Be 'Test rule 2';
+
+                # No comments
+                $result = Get-PSRule -Path $ruleFilePath -Name 'WithNoSynopsis';
+                $result | Should -Not -BeNullOrEmpty;
+                $result.RuleName | Should -Be 'WithNoSynopsis';
+                $result.Synopsis | Should -BeNullOrEmpty;
+            }
+            finally {
+                [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
+            }
+        }
+
+        if ((Get-Variable -Name 'IsLinux' -ErrorAction SilentlyContinue -ValueOnly) -eq $True) {
+            It 'Handles en-US-POSIX' {
+                [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-US-POSIX');
+                try {
+                    # From markdown
+                    $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1';
+                    $result | Should -Not -BeNullOrEmpty;
+                    $result.RuleName | Should -Be 'FromFile1';
+                    $result.Synopsis | Should -Be 'This is a synopsis.';
+                    $result.Info.Annotations.culture | Should -Be 'en';
+                }
+                finally {
+                    [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
+                }
             }
         }
 
@@ -1378,62 +1390,68 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         }
 
         It 'Read from documentation' {
-            Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -MockWith {
-                return 'en-US';
+            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-US');
+            try {
+                # en-US default
+                $Null = Import-Module $testModuleSourcePath -Force;
+                $result = @(Get-PSRule -Module 'TestModule');
+                $result | Should -Not -BeNullOrEmpty;
+                $result.Length | Should -Be 2;
+                $result[0].RuleName | Should -Be 'M1.Rule1';
+                $result[0].Description | Should -Be 'Synopsis en-US.';
+                $result[0].Info.Annotations.culture | Should -Be 'en-US';
+
+                # en-AU
+                $Null = Import-Module $testModuleSourcePath -Force;
+                $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-AU');
+                $result | Should -Not -BeNullOrEmpty;
+                $result.Length | Should -Be 2;
+                $result[0].RuleName | Should -Be 'M1.Rule1';
+                $result[0].Description | Should -Be 'Synopsis en-AU.';
+                $result[0].Info.Annotations.culture | Should -Be 'en-AU';
+            }
+            finally {
+                [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
             }
 
-            # en-US default
-            $Null = Import-Module $testModuleSourcePath -Force;
-            $result = @(Get-PSRule -Module 'TestModule');
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 2;
-            $result[0].RuleName | Should -Be 'M1.Rule1';
-            $result[0].Description | Should -Be 'Synopsis en-US.';
-            $result[0].Info.Annotations.culture | Should -Be 'en-US';
+            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-AU');
+            try {
+                # en-AU default
+                $Null = Import-Module $testModuleSourcePath -Force;
+                $result = @(Get-PSRule -Module 'TestModule');
+                $result | Should -Not -BeNullOrEmpty;
+                $result.Length | Should -Be 2;
+                $result[0].RuleName | Should -Be 'M1.Rule1';
+                $result[0].Description | Should -Be 'Synopsis en-AU.';
+                $result[0].Info.Annotations.culture | Should -Be 'en-AU';
 
-            # en-AU
-            $Null = Import-Module $testModuleSourcePath -Force;
-            $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-AU');
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 2;
-            $result[0].RuleName | Should -Be 'M1.Rule1';
-            $result[0].Description | Should -Be 'Synopsis en-AU.';
-            $result[0].Info.Annotations.culture | Should -Be 'en-AU';
-
-            Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -MockWith {
-                return 'en-AU';
+                # en-ZZ using parent
+                $Null = Import-Module $testModuleSourcePath -Force;
+                $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-ZZ');
+                $result | Should -Not -BeNullOrEmpty;
+                $result.Length | Should -Be 2;
+                $result[0].RuleName | Should -Be 'M1.Rule1';
+                $result[0].Description | Should -Be 'Synopsis en.';
+                $result[0].Info.Annotations.culture | Should -Be 'en';
+            }
+            finally {
+                [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
             }
 
-            # en-AU default
-            $Null = Import-Module $testModuleSourcePath -Force;
-            $result = @(Get-PSRule -Module 'TestModule');
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 2;
-            $result[0].RuleName | Should -Be 'M1.Rule1';
-            $result[0].Description | Should -Be 'Synopsis en-AU.';
-            $result[0].Info.Annotations.culture | Should -Be 'en-AU';
-
-            # en-ZZ using parent
-            $Null = Import-Module $testModuleSourcePath -Force;
-            $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-ZZ');
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 2;
-            $result[0].RuleName | Should -Be 'M1.Rule1';
-            $result[0].Description | Should -Be 'Synopsis en.';
-            $result[0].Info.Annotations.culture | Should -Be 'en';
-
-            Mock -CommandName 'GetCulture' -ModuleName 'PSRule' -MockWith {
-                return 'en-ZZ';
+            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-ZZ');
+            try {
+                # en-ZZ default parent
+                $Null = Import-Module $testModuleSourcePath -Force;
+                $result = @(Get-PSRule -Module 'TestModule');
+                $result | Should -Not -BeNullOrEmpty;
+                $result.Length | Should -Be 2;
+                $result[0].RuleName | Should -Be 'M1.Rule1';
+                $result[0].Description | Should -Be 'Synopsis en.';
+                $result[0].Info.Annotations.culture | Should -Be 'en';
             }
-
-            # en-ZZ default parent
-            $Null = Import-Module $testModuleSourcePath -Force;
-            $result = @(Get-PSRule -Module 'TestModule');
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 2;
-            $result[0].RuleName | Should -Be 'M1.Rule1';
-            $result[0].Description | Should -Be 'Synopsis en.';
-            $result[0].Info.Annotations.culture | Should -Be 'en';
+            finally {
+                [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
+            }
         }
 
         if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
@@ -1479,6 +1497,25 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         #     $result | Should -BeOfType System.String;
         #     $result -cmatch '"ruleName":"FromFile1"' | Should -Be $True;
         # }
+    }
+
+    Context 'With -Culture' {
+        It 'Invariant culture' {
+            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('');
+            try {
+                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1';
+                $result.Synopsis | Should -Be 'Test rule 1';
+
+                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -Culture 'en-US';
+                $result.Synopsis | Should -Be 'This is a synopsis.';
+
+                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option @{ 'Output.Culture' = 'en-US' };
+                $result.Synopsis | Should -Be 'This is a synopsis.';
+            }
+            finally {
+                [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
+            }
+        }
     }
 
     # Context 'Get rule with invalid path' {

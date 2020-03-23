@@ -254,7 +254,7 @@ namespace PSRule.Pipeline
                 result.AddRange(parent);
 
             // Fallback to current culture
-            var current = Thread.CurrentThread.CurrentCulture;
+            var current = PSRuleOption.GetCurrentCulture();
             if (!set.Contains(current.Name))
             {
                 result.Add(current.Name);

@@ -8,6 +8,7 @@
 Set-StrictMode -Version latest;
 
 [PSRule.Configuration.PSRuleOption]::UseExecutionContext($ExecutionContext);
+[PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
 
 #
 # Localization
@@ -150,9 +151,6 @@ function Invoke-PSRule {
         }
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $Option.Output.Culture = $Culture;
-        }
-        else {
-            $Option.Output.Culture = GetCulture;
         }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke($sourceFiles, $Option);
@@ -304,9 +302,6 @@ function Test-PSRuleTarget {
         }
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $Option.Output.Culture = $Culture;
-        }
-        else {
-            $Option.Output.Culture = GetCulture;
         }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::Test($sourceFiles, $Option);
@@ -482,9 +477,6 @@ function Assert-PSRule {
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $Option.Output.Culture = $Culture;
         }
-        else {
-            $Option.Output.Culture = GetCulture;
-        }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::Assert($sourceFiles, $Option);
         $builder.Name($Name);
@@ -625,9 +617,6 @@ function Get-PSRule {
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $Option.Output.Culture = $Culture;
         }
-        else {
-            $Option.Output.Culture = GetCulture;
-        }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::Get($sourceFiles, $Option);
         $builder.Name($Name);
@@ -727,9 +716,6 @@ function Get-PSRuleBaseline {
 
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $Option.Output.Culture = $Culture;
-        }
-        else {
-            $Option.Output.Culture = GetCulture;
         }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::GetBaseline($sourceFiles, $Option);
@@ -845,9 +831,6 @@ function Get-PSRuleHelp {
         }
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $Option.Output.Culture = $Culture;
-        }
-        else {
-            $Option.Output.Culture = GetCulture;
         }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp($sourceFiles, $Option);
@@ -1916,15 +1899,6 @@ function IsDeviceGuardEnabled {
             return $False;
         }
         return [System.Management.Automation.Security.SystemPolicy]::GetSystemLockdownPolicy() -eq [System.Management.Automation.Security.SystemEnforcementMode]::Enforce;
-    }
-}
-
-function GetCulture {
-    [CmdletBinding()]
-    [OutputType([System.String[]])]
-    param ()
-    process {
-        return [String[]]@([System.Threading.Thread]::CurrentThread.CurrentCulture.ToString());
     }
 }
 

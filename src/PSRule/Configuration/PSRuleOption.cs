@@ -7,9 +7,11 @@ using PSRule.Rules;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using System.Threading;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -42,6 +44,11 @@ namespace PSRule.Configuration
         /// A callback that is overridden by PowerShell so that the current working path can be retrieved.
         /// </summary>
         private static PathDelegate _GetWorkingPath = () => Directory.GetCurrentDirectory();
+
+        /// <summary>
+        /// Sets the current culture to use when processing rules unless otherwise specified.
+        /// </summary>
+        private static CultureInfo _CurrentCulture = Thread.CurrentThread.CurrentCulture;
 
         public PSRuleOption()
         {
@@ -223,9 +230,29 @@ namespace PSRule.Configuration
             _GetWorkingPath = () => executionContext.SessionState.Path.CurrentFileSystemLocation.Path;
         }
 
+        public static void UseCurrentCulture()
+        {
+            UseCurrentCulture(Thread.CurrentThread.CurrentCulture);
+        }
+
+        public static void UseCurrentCulture(string culture)
+        {
+            UseCurrentCulture(CultureInfo.CreateSpecificCulture(culture));
+        }
+
+        public static void UseCurrentCulture(CultureInfo culture)
+        {
+            _CurrentCulture = culture;
+        }
+
         public static string GetWorkingPath()
         {
             return _GetWorkingPath();
+        }
+
+        public static CultureInfo GetCurrentCulture()
+        {
+            return _CurrentCulture;
         }
 
         /// <summary>

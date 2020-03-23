@@ -3,7 +3,6 @@
 
 using PSRule.Configuration;
 using PSRule.Rules;
-using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 
