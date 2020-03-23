@@ -358,6 +358,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Using invariant culture may cause rule infomation to be displayed incorrectly. Consider using -Culture or settings the Output.Culture option..
+        /// </summary>
+        internal static string UsingInvariantCulture {
+            get {
+                return ResourceManager.GetString("UsingInvariantCulture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The variable &apos;${0}&apos; can only be used within a Rule block..
         /// </summary>
         internal static string VariableConditionScope {

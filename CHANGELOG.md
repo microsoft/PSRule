@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Bug fixes:
+  - Fixed output culture option ignored. [#449](https://github.com/Microsoft/PSRule/issues/449)
+
 ## v0.16.0-B2003022 (pre-release)
 
 - General improvements:

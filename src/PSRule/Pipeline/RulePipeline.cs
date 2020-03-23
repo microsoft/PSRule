@@ -33,6 +33,8 @@ namespace PSRule.Pipeline
         {
             Reader.Open();
             Writer.Begin();
+            if (Pipeline.Culture == null || Pipeline.Culture.Length == 0)
+                Writer.WarnUsingInvariantCulture();
         }
 
         public virtual void Process(PSObject sourceObject)

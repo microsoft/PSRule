@@ -3,9 +3,11 @@
 
 using PSRule.Configuration;
 using PSRule.Pipeline;
+using PSRule.Resources;
 using PSRule.Rules;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Management.Automation;
 using Xunit;
@@ -58,11 +60,34 @@ namespace PSRule
             Assert.NotNull(pipeline);
         }
 
+        [Fact]
+        public void PipelineWithInvariantCulture()
+        {
+            PSRuleOption.UseCurrentCulture(CultureInfo.InvariantCulture);
+            var context = PipelineContext.New(GetOption(), null, null, new BaselineContext(), null);
+            var writer = new TestWriter(GetOption());
+            var pipeline = new GetRulePipeline(context, GetSource(), new PipelineReader(null, null), writer, false);
+            try
+            {
+                pipeline.Begin();
+                Assert.Contains(writer.Warnings, (string s) => { return s == PSRuleResources.UsingInvariantCulture; });
+            }
+            finally
+            {
+                PSRuleOption.UseCurrentCulture();
+            }
+        }
+
         private static Source[] GetSource()
         {
             var builder = new RuleSourceBuilder();
             builder.Directory(GetSourcePath("FromFile.Rule.ps1"));
             return builder.Build();
+        }
+
+        private PSRuleOption GetOption()
+        {
+            return new PSRuleOption();
         }
 
         private static string GetSourcePath(string fileName)
