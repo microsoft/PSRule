@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## v0.16.0
+
+What's changed since v0.15.0:
+
+- General improvements:
+  - Added configuration option `Output.Culture` for setting culture. [#442](https://github.com/Microsoft/PSRule/issues/442)
+  - Improved handling of fields to allow the input object to be referenced with `.`. [#437](https://github.com/Microsoft/PSRule/issues/437)
+- Bug fixes:
+  - Fixed numeric comparison assertion with non-int types. [#436](https://github.com/Microsoft/PSRule/issues/436)
+  - Fixed output culture option ignored. [#449](https://github.com/Microsoft/PSRule/issues/449)
+
+What's changed since pre-release v0.16.0-B2003027:
+
+- No additional changes.
+
 ## v0.16.0-B2003027 (pre-release)
 
 - Bug fixes:
@@ -21,7 +36,7 @@ What's changed since v0.14.0:
 
 - Engine features:
   - Added `-ResultVariable` to store results from Assert-PSRule into a variable. [#412](https://github.com/Microsoft/PSRule/issues/412)
-- Quality of life improvements:
+- General improvements:
   - Added recommendation to failure message of NUnit results. [#421](https://github.com/Microsoft/PSRule/issues/421)
 - Bug fixes:
   - Fixed handling of `v` in field value with `$Assert.Version`. [#429](https://github.com/Microsoft/PSRule/issues/429)
@@ -66,7 +81,7 @@ What's changed since v0.13.0:
   - Added file content helper for reading objects from files. [#399](https://github.com/Microsoft/PSRule/issues/399)
     - The method `GetContent` of `$PSRule` can be used to read files as objects.
     - See `about_PSRule_Variables` for usage details.
-- Quality of life improvements:
+- General improvements:
   - Improved reporting on runtime errors in rule blocks. [#239](https://github.com/Microsoft/PSRule/issues/239)
   - Improved NUnit results to include a failure message based on reported reasons. [#404](https://github.com/Microsoft/PSRule/issues/404)
 - Bug fixes:
@@ -125,7 +140,7 @@ What's changed since v0.12.0:
     - Formatting now includes errors and warnings using style.
     - Added PSRule banner with module information.
     - Added rule success summary.
-- Quality of life improvements:
+- General improvements:
   - Added aliases for `-OutputFormat` (`-o`) and `-Module` (`-m`) parameters. [#384](https://github.com/Microsoft/PSRule/issues/384)
   - Added `WithReason` to append/ replace reasons from assertion result. [#354](https://github.com/Microsoft/PSRule/issues/354)
   - Added configuration helper for strings arrays. [#363](https://github.com/Microsoft/PSRule/issues/363)
@@ -188,7 +203,7 @@ What's changed since v0.11.0:
   - Added `-All` option to `Exists` keyword. [#331](https://github.com/Microsoft/PSRule/issues/331)
   - Added custom field binding. [#321](https://github.com/Microsoft/PSRule/issues/321)
     - Added new option `Binding.Field` available in baselines to configure binding.
-- Quality of life improvements:
+- General improvements:
   - Added filtering for rules against a baseline with `Get-PSRule`. [#345](https://github.com/Microsoft/PSRule/issues/345)
   - Added parameter alias `-f` for `-InputPath`. [#340](https://github.com/Microsoft/PSRule/issues/340)
     - `-f` was added to `Invoke-PSRule`, `Assert-PSRule` and `Test-PSRuleTarget` cmdlets.
@@ -234,7 +249,7 @@ What's changed since pre-release v0.12.0-B1912007:
 
 What's changed since v0.10.0:
 
-- Quality of life improvements:
+- General improvements:
   - Added `-TargetType` parameter to filter input objects by target type. [#176](https://github.com/Microsoft/PSRule/issues/176)
     - This parameter applies to `Invoke-PSRule`, `Assert-PSRule` and `Test-PSRuleTarget`.
 - Bug fixes:
@@ -265,7 +280,7 @@ What's changed since pre-release v0.11.0-B1911002:
 
 What's changed since v0.9.0:
 
-- Quality of life improvements:
+- General improvements:
   - Added source note properties to input objects read from disk with `-InputPath`. [#302](https://github.com/Microsoft/PSRule/issues/302)
 - Engine features:
   - Added assertion helper for checking field default value. [#289](https://github.com/Microsoft/PSRule/issues/289)
@@ -314,7 +329,7 @@ What's changed since pre-release v0.10.0-B1910036:
 
 What's changed since v0.8.0:
 
-- Quality of life improvements:
+- General improvements:
   - Improve feedback of parsing errors. [#185](https://github.com/Microsoft/PSRule/issues/185)
   - Updated `Get-PSRuleHelp` to include help within the current path by default. [#197](https://github.com/Microsoft/PSRule/issues/197)
 - Engine features:
@@ -370,7 +385,7 @@ What's changed since pre-release v0.9.0-B190905:
 
 What's changed since v0.7.0:
 
-- Quality of life improvements:
+- General improvements:
   - PSRule options are now displayed as YAML instead of a complex object. [#233](https://github.com/Microsoft/PSRule/issues/233)
   - Add detection for improper keyword use. [#203](https://github.com/Microsoft/PSRule/issues/203)
   - Automatically load rule modules. [#218](https://github.com/Microsoft/PSRule/issues/218)
