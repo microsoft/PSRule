@@ -193,9 +193,7 @@ namespace PSRule.Host
         {
             // Only set execution policy on Windows
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
                 state.ExecutionPolicy = executionPolicy;
-            }
         }
     }
 }

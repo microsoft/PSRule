@@ -132,8 +132,6 @@ namespace PSRule.Pipeline
             return _Runspace;
         }
 
-        
-
         internal void Import(IResource resource)
         {
             if (resource.Kind == ResourceKind.Baseline && resource is Baseline baseline && _Unresolved.TryGetValue(resource.Id, out ResourceRef rr) && rr is BaselineRef baselineRef)
