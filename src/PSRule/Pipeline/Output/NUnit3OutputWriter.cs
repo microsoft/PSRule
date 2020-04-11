@@ -99,38 +99,20 @@ namespace PSRule.Pipeline.Output
         {
             var useMarkdown = Option.Output.Style == OutputStyle.AzurePipelines;
             var sb = new StringBuilder();
-            if (useMarkdown)
-            {
-                sb.AppendLine(record.Recommendation);
-                var link = record.Info.GetOnlineHelpUri();
-                if (link != null)
-                    sb.AppendLine(string.Format(ReportStrings.NUnit_DetailsLink, link));
+            sb.AppendLine(record.Recommendation);
+            var link = record.Info.GetOnlineHelpUri();
+            if (useMarkdown && link != null)
+                sb.AppendLine(string.Format(ReportStrings.NUnit_DetailsLink, link));
 
-                if (record.Reason != null && record.Reason.Length > 0)
-                {
-                    sb.AppendLine();
-                    sb.AppendLine(ReportStrings.NUnit_ReportedReasons);
-                    sb.AppendLine();
-                    for (var i = 0; i < record.Reason.Length; i++)
-                    {
-                        sb.Append("- ");
-                        sb.AppendLine(record.Reason[i]);
-                    }
-                }
-            }
-            else
+            if (record.Reason != null && record.Reason.Length > 0)
             {
-                sb.AppendLine(record.Recommendation);
-                if (record.Reason != null && record.Reason.Length > 0)
+                sb.AppendLine();
+                sb.AppendLine(ReportStrings.NUnit_ReportedReasons);
+                sb.AppendLine();
+                for (var i = 0; i < record.Reason.Length; i++)
                 {
-                    sb.AppendLine();
-                    sb.AppendLine(ReportStrings.NUnit_ReportedReasons);
-                    sb.AppendLine();
-                    for (var i = 0; i < record.Reason.Length; i++)
-                    {
-                        sb.Append("- ");
-                        sb.AppendLine(record.Reason[i]);
-                    }
+                    sb.Append("- ");
+                    sb.AppendLine(record.Reason[i]);
                 }
             }
             return sb.ToString();
