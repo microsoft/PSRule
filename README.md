@@ -28,13 +28,14 @@ PSRule | Validate objects using PowerShell rules | [latest][module-psrule] / [in
 
 For rule and integration modules see [related projects](#related-projects).
 
-## Getting the extension
+## Getting extensions
 
-A companion extension for Visual Studio Code can be downloaded or installed from the [Visual Studio Marketplace][extension].
+Companion extensions are available for the following platforms.
 
-Extension | Description | Downloads / instructions
---------- | ----------- | ------------------------
-PSRule    | An extension for IT Pros using the PSRule PowerShell module | [latest][extension] / [instructions][install]
+Extension | Platform           | Description | Downloads / instructions
+--------- | --------           | ----------- | ------------------------
+PSRule    | Visual Studio Code | An extension for IT Pros using the PSRule PowerShell module. | [latest][extension-vscode] / [instructions][install]
+PSRule    | Azure Pipelines    | An Azure DevOps extension for using PSRule within Azure Pipelines. | [latest][extension-pipelines] / [instructions][install]
 
 ## Getting started
 
@@ -305,6 +306,7 @@ Name                      | Description
 [PSRule.Rules.Kubernetes] | A suite of rules to validate Kubernetes resources using PSRule.
 [PSRule.Rules.CAF]        | A suite of rules to validate Azure resources against the Cloud Adoption Framework (CAF) using PSRule.
 [PSRule.Monitor]          | Send and query PSRule analysis results in Azure Monitor.
+[PSRule-pipelines]        | An Azure DevOps extension for using PSRule within Azure Pipelines.
 
 ## Changes and versioning
 
@@ -338,8 +340,10 @@ This project is [licensed under the MIT License](LICENSE.txt).
 [install]: docs/scenarios/install-instructions.md
 [ci-badge]: https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=master
 [module-psrule]: https://www.powershellgallery.com/packages/PSRule
-[extension]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
+[extension-vscode]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
+[extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
 [PSRule.Rules.Azure]: https://github.com/microsoft/PSRule.Rules.Azure
 [PSRule.Rules.Kubernetes]: https://github.com/microsoft/PSRule.Rules.Kubernetes
 [PSRule.Rules.CAF]: https://github.com/microsoft/PSRule.Rules.CAF
 [PSRule.Monitor]: https://github.com/microsoft/PSRule.Monitor
+[PSRule-pipelines]: https://github.com/microsoft/PSRule-pipelines

@@ -32,13 +32,15 @@ Save-Module -Name 'PSRule' -Repository PSGallery -Path '.\modules';
 
 > For pre-release versions the `-AllowPrerelease` switch must be added when calling `Install-Module` or `Save-Module`.
 >
-> To install pre-release module versions, upgrading to the latest version of _PowerShellGet_ may be required. To do this use:
+> To install pre-release module versions, upgrading to the latest version of _PowerShellGet_ may be required.
+To do this use:
 >
 > `Install-Module -Name PowerShellGet -Repository PSGallery -Scope CurrentUser -Force`
 
-## Getting the extension
+## Getting the extension for Visual Studio Code
 
-You can install the [latest release][ext-psrule] of the Visual Studio Code (VSCode) companion extension by searching for `PSRule` in the extensions pane within VSCode and installing it.
+Install the [latest release][extension-vscode] from the Visual Studio Marketplace.
+Within Visual Studio Code (VSCode) search for `PSRule` in the extensions pane.
 
 Install by the command line:
 
@@ -49,6 +51,13 @@ code --install-extension bewhite.psrule-vscode-preview
 > NOTE: If you are using VS Code Insiders, the command will be `code-insiders`.
 
 For detailed instructions, follow the steps in the [Visual Studio Code documentation][vscode-ext-gallery].
+
+## Getting the extension for Azure Pipelines
+
+Install the [latest release][extension-pipelines] from the Visual Studio Marketplace.
+For detailed instructions see [Install extensions][pipelines-install].
+
+If you don't have permissions to install extensions within your Azure DevOps organization, you can request it to be installed by an admin instead.
 
 ## Building from source
 
@@ -79,5 +88,7 @@ Additionally .NET Core SDK v2.1 is required. .NET Core will not be automatically
 To download and install .NET Core SDK see [Download .NET Core 2.1](https://dotnet.microsoft.com/download/dotnet-core/2.1).
 
 [module-psrule]: https://www.powershellgallery.com/packages/PSRule
-[ext-psrule]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
+[extension-vscode]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
+[extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
 [vscode-ext-gallery]: https://code.visualstudio.com/docs/editor/extension-gallery
+[pipelines-install]: https://docs.microsoft.com/en-us/azure/devops/marketplace/install-extension?view=azure-devops&tabs=browser
