@@ -5,6 +5,9 @@
     "oneOf": [
         {
             "$ref": "#/definitions/baseline"
+        },
+        {
+            "$ref": "#/definitions/moduleConfig"
         }
     ],
     "definitions": {
@@ -26,11 +29,13 @@
         },
         "baseline": {
             "type": "object",
+            "title": "Baseline",
+            "description": "A PSRule Baseline.",
             "properties": {
                 "kind": {
                     "type": "string",
                     "title": "Kind",
-                    "description": "The type of PSRule resource.",
+                    "description": "A PSRule Baseline resource.",
                     "enum": [
                         "Baseline"
                     ]
@@ -41,7 +46,7 @@
                 },
                 "spec": {
                     "type": "object",
-                    "$ref": "#/definitions/baseline-spec"
+                    "$ref": "#/definitions/baselineSpec"
                 }
             },
             "required": [
@@ -51,61 +56,16 @@
             ],
             "additionalProperties": false
         },
-        "baseline-spec": {
+        "baselineSpec": {
             "type": "object",
             "title": "Baseline",
             "description": "A specification for a baseline.",
             "properties": {
                 "binding": {
-                    "type": "object",
-                    "title": "Object binding",
-                    "description": "Configure property/ object binding options.",
-                    "properties": {
-                        "ignoreCase": {
-                            "type": "boolean",
-                            "title": "Ignore case",
-                            "description": "Determines if custom binding uses ignores case when matching properties. The default is true.",
-                            "default": true
-                        },
-                        "field": {
-                            "type": "object",
-                            "title": "Field",
-                            "description": "Custom fields to bind.",
-                            "additionalProperties": {
-                                "type": "array",
-                                "description": "A custom field to bind.",
-                                "items": {
-                                    "type": "string"
-                                },
-                                "uniqueItems": true
-                            }
-                        },
-                        "targetName": {
-                            "type": "array",
-                            "title": "Bind TargetName",
-                            "description": "Specifies one or more property names to bind TargetName to.",
-                            "items": {
-                                "type": "string"
-                            },
-                            "uniqueItems": true
-                        },
-                        "targetType": {
-                            "type": "array",
-                            "title": "Bind TargetType",
-                            "description": "Specifies one or more property names to bind TargetType to.",
-                            "items": {
-                                "type": "string"
-                            },
-                            "uniqueItems": true
-                        }
-                    },
-                    "additionalProperties": false
+                    "$ref": "#/definitions/bindingOption"
                 },
                 "configuration": {
-                    "type": "object",
-                    "title": "Configuration",
-                    "description": "Baseline specific configuration options.",
-                    "uniqueItems": true
+                    "$ref": "#/definitions/configuration"
                 },
                 "rule": {
                     "type": "object",
@@ -151,6 +111,68 @@
             },
             "additionalProperties": false
         },
+        "moduleConfig": {
+            "type": "object",
+            "title": "ModuleConfig",
+            "description": "A PSRule ModuleConfig.",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "title": "Kind",
+                    "description": "A PSRule ModuleConfig resource.",
+                    "enum": [
+                        "ModuleConfig"
+                    ]
+                },
+                "metadata": {
+                    "type": "object",
+                    "$ref": "#/definitions/resource-metadata"
+                },
+                "spec": {
+                    "type": "object",
+                    "$ref": "#/definitions/moduleConfigSpec"
+                }
+            },
+            "required": [
+                "kind",
+                "metadata",
+                "spec"
+            ],
+            "additionalProperties": false
+        },
+        "moduleConfigSpec": {
+            "type": "object",
+            "title": "ModuleConfig",
+            "description": "A specification for a ModuleConfig.",
+            "properties": {
+                "binding": {
+                    "$ref": "#/definitions/bindingOption"
+                },
+                "configuration": {
+                    "$ref": "#/definitions/configuration"
+                },
+                "output": {
+                    "type": "object",
+                    "title": "Output options",
+                    "description": "Options that affect how output is generated.",
+                    "properties": {
+                        "culture": {
+                            "type": "array",
+                            "title": "Culture",
+                            "description": "One or more cultures to use for generating output. When multiple cultures are specified, the first matching culture will be used. By default, the current PowerShell culture is used.",
+                            "items": {
+                                "type": "string",
+                                "description": "A culture for generating output.",
+                                "minLength": 2
+                            },
+                            "uniqueItems": true
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
         "rule-names": {
             "type": "array",
             "items": {
@@ -162,6 +184,68 @@
         "rule-name": {
             "type": "string",
             "minLength": 3
+        },
+        "bindingOption": {
+            "type": "object",
+            "title": "Object binding",
+            "description": "Configure property/ object binding options.",
+            "properties": {
+                "field": {
+                    "type": "object",
+                    "title": "Field",
+                    "description": "Custom fields to bind.",
+                    "additionalProperties": {
+                        "type": "array",
+                        "description": "A custom field to bind.",
+                        "items": {
+                            "type": "string"
+                        },
+                        "uniqueItems": true
+                    }
+                },
+                "ignoreCase": {
+                    "type": "boolean",
+                    "title": "Ignore case",
+                    "description": "Determines if custom binding uses ignores case when matching properties. The default is true.",
+                    "default": true
+                },
+                "nameSeparator": {
+                    "type": "string",
+                    "title": "Name separator",
+                    "description": "Configures the separator to use for building a qualified name. The default is '/'.",
+                    "default": "/"
+                },
+                "targetName": {
+                    "type": "array",
+                    "title": "Bind TargetName",
+                    "description": "Specifies one or more property names to bind TargetName to.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "targetType": {
+                    "type": "array",
+                    "title": "Bind TargetType",
+                    "description": "Specifies one or more property names to bind TargetType to.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "useQualifiedName": {
+                    "type": "boolean",
+                    "title": "Use qualified name",
+                    "description": "Determines if a qualified TargetName is used. The default is false.",
+                    "default": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "configuration": {
+            "type": "object",
+            "title": "Configuration values",
+            "description": "A set of key/ value configuration options for rules."
         }
     }
 }

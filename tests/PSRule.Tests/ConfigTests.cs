@@ -12,15 +12,15 @@ using Xunit;
 
 namespace PSRule
 {
-    public sealed class BaselineTests
+    public sealed class ConfigTests
     {
         [Fact]
-        public void ReadBaseline()
+        public void ReadModuleConfig()
         {
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new OptionContext(), null), null);
-            var baseline = HostHelper.GetBaseline(GetSource(), context).ToArray();
-            Assert.NotNull(baseline);
-            Assert.Equal("TestBaseline1", baseline[0].Name);
+            var configuration = HostHelper.GetConfig(GetSource(), context).ToArray();
+            Assert.NotNull(configuration);
+            Assert.Equal("Configuration1", configuration[0].Name);
         }
 
         private PSRuleOption GetOption()
@@ -31,7 +31,7 @@ namespace PSRule
         private Source[] GetSource()
         {
             var builder = new RuleSourceBuilder();
-            builder.Directory(GetSourcePath("Baseline.Rule.yaml"));
+            builder.Directory(GetSourcePath("ModuleConfig.Rule.yaml"));
             return builder.Build();
         }
 

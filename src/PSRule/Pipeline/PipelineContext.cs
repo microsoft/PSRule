@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Host;
 using PSRule.Rules;
 using PSRule.Runtime;
@@ -27,11 +28,8 @@ namespace PSRule.Pipeline
         // Configuration parameters
         internal readonly TargetBinder Binder;
         private readonly IDictionary<string, ResourceRef> _Unresolved;
-
         private readonly LanguageMode _LanguageMode;
-        
         private readonly Dictionary<string, NameToken> _NameTokenCache;
-        
 
         // Objects kept for caching and disposal
         private Runspace _Runspace;
@@ -47,8 +45,7 @@ namespace PSRule.Pipeline
         internal readonly Dictionary<string, Hashtable> LocalizedDataCache;
         internal readonly Dictionary<string, object> ExpressionCache;
         internal readonly Dictionary<string, PSObject[]> ContentCache;
-        internal readonly string[] Culture;
-        internal readonly BaselineContext Baseline;
+        internal readonly OptionContext Baseline;
         internal readonly HostContext HostContext;
 
         public HashAlgorithm ObjectHashAlgorithm
@@ -62,27 +59,22 @@ namespace PSRule.Pipeline
             }
         }
 
-        private PipelineContext(PSRuleOption option, HostContext hostContext, TargetBinder binder, BaselineContext baseline, IDictionary<string, ResourceRef> unresolved)
+        private PipelineContext(PSRuleOption option, HostContext hostContext, TargetBinder binder, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
         {
-            
             Option = option;
             HostContext = hostContext;
-
             _LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode.Value;
-
             _NameTokenCache = new Dictionary<string, NameToken>();
             LocalizedDataCache = new Dictionary<string, Hashtable>();
             ExpressionCache = new Dictionary<string, object>();
             ContentCache = new Dictionary<string, PSObject[]>();
-
-            
             Binder = binder;
             Baseline = baseline;
             _Unresolved = unresolved;
-            Culture = option.Output.Culture;
+            //Culture = option.Output.Culture;
         }
 
-        public static PipelineContext New(PSRuleOption option, HostContext hostContext, TargetBinder binder, BaselineContext baseline, IDictionary<string, ResourceRef> unresolved)
+        public static PipelineContext New(PSRuleOption option, HostContext hostContext, TargetBinder binder, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
         {
             var context = new PipelineContext(option, hostContext, binder, baseline, unresolved);
             CurrentThread = context;
@@ -137,7 +129,11 @@ namespace PSRule.Pipeline
             if (resource.Kind == ResourceKind.Baseline && resource is Baseline baseline && _Unresolved.TryGetValue(resource.Id, out ResourceRef rr) && rr is BaselineRef baselineRef)
             {
                 _Unresolved.Remove(resource.Id);
-                Baseline.Add(new BaselineContext.BaselineContextScope(baselineRef.Type, resource.Module, baseline.Spec));
+                Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, resource.Module, baseline.Spec));
+            }
+            else if (resource.Kind == ResourceKind.ModuleConfig && !string.IsNullOrEmpty(resource.Module) && resource is ModuleConfig moduleConfig)
+            {
+                Baseline.Add(new OptionContext.ConfigScope(OptionContext.ScopeType.Module, resource.Module, moduleConfig.Spec));
             }
         }
 
@@ -155,7 +151,6 @@ namespace PSRule.Pipeline
                 nameToken = null;
                 return false;
             }
-
             nameToken = _NameTokenCache[expression];
             return true;
         }
@@ -181,13 +176,11 @@ namespace PSRule.Pipeline
                 if (disposing)
                 {
                     if (_Hash != null)
-                    {
                         _Hash.Dispose();
-                    }
+
                     if (_Runspace != null)
-                    {
                         _Runspace.Dispose();
-                    }
+
                     _NameTokenCache.Clear();
                     LocalizedDataCache.Clear();
                     ExpressionCache.Clear();

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Annotations;
+using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Rules;
 using System;
@@ -43,6 +44,11 @@ namespace PSRule.Host
         public static IEnumerable<Baseline> GetBaseline(Source[] source, RunspaceContext context)
         {
             return ToBaseline(ReadYamlObjects(source, context), context);
+        }
+
+        public static IEnumerable<ModuleConfig> GetConfig(Source[] source, RunspaceContext context)
+        {
+            return ToModuleConfig(ReadYamlObjects(source, context), context);
         }
 
         public static void ImportResource(Source[] source, RunspaceContext context)
@@ -319,6 +325,9 @@ namespace PSRule.Host
 
         private static Baseline[] ToBaseline(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
         {
+            if (blocks == null)
+                return Array.Empty<Baseline>();
+
             // Index baselines by BaselineId
             var results = new Dictionary<string, Baseline>(StringComparer.OrdinalIgnoreCase);
             try
@@ -331,6 +340,32 @@ namespace PSRule.Host
 
                     if (!results.ContainsKey(block.BaselineId))
                         results[block.BaselineId] = block;
+                }
+            }
+            finally
+            {
+                context.ExitSourceScope();
+            }
+            return results.Values.ToArray();
+        }
+
+        private static ModuleConfig[] ToModuleConfig(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+        {
+            if (blocks == null)
+                return Array.Empty<ModuleConfig>();
+
+            // Index configurations by Name
+            var results = new Dictionary<string, ModuleConfig>(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+                foreach (var block in blocks.OfType<ModuleConfig>().ToArray())
+                {
+                    // Ignore baselines that don't match
+                    //if (!Match(context, block))
+                    //    continue;
+
+                    if (!results.ContainsKey(block.Name))
+                        results[block.Name] = block;
                 }
             }
             finally

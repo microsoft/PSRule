@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Pipeline.Output;
 using PSRule.Rules;
 using System;
@@ -166,19 +167,19 @@ namespace PSRule.Pipeline
         {
             var unresolved = new Dictionary<string, ResourceRef>(StringComparer.OrdinalIgnoreCase);
             if (_Baseline is BaselineOption.BaselineRef baselineRef)
-                unresolved.Add(baselineRef.Name, new BaselineRef(baselineRef.Name, BaselineContext.ScopeType.Explicit));
+                unresolved.Add(baselineRef.Name, new BaselineRef(baselineRef.Name, OptionContext.ScopeType.Explicit));
 
             for (var i = 0; i < Source.Length; i++)
             {
                 if (Source[i].Module != null && Source[i].Module.Baseline != null && !unresolved.ContainsKey(Source[i].Module.Baseline))
-                    unresolved.Add(Source[i].Module.Baseline, new BaselineRef(Source[i].Module.Baseline, BaselineContext.ScopeType.Module));
+                    unresolved.Add(Source[i].Module.Baseline, new BaselineRef(Source[i].Module.Baseline, OptionContext.ScopeType.Module));
             }
 
             return PipelineContext.New(
                 option: Option,
                 hostContext: HostContext,
                 binder: new TargetBinder(bindTargetName, bindTargetType, bindField, Option.Input.TargetType),
-                baseline: GetBaselineContext(),
+                baseline: GetOptionContext(),
                 unresolved: unresolved
             );
         }
@@ -252,18 +253,9 @@ namespace PSRule.Pipeline
             if (parent.Count > 0)
                 result.AddRange(parent);
 
-            // Fallback to current culture
-            var current = PSRuleOption.GetCurrentCulture();
-            if (!set.Contains(current.Name))
-            {
-                result.Add(current.Name);
-                set.Add(current.Name);
-            }
-            for (var p = current.Parent; !string.IsNullOrEmpty(p.Name); p = p.Parent)
-            {
-                if (!result.Contains(p.Name))
-                    result.Add(p.Name);
-            }
+            if (result.Count == 0)
+                return null;
+
             return result.ToArray();
         }
 
@@ -296,14 +288,21 @@ namespace PSRule.Pipeline
             }
         }
 
-        private BaselineContext GetBaselineContext()
+        private OptionContext GetOptionContext()
         {
-            var result = new BaselineContext();
-            var scope = new BaselineContext.BaselineContextScope(type: BaselineContext.ScopeType.Workspace, moduleName: null, option: Option);
-            result.Add(scope);
+            var result = new OptionContext();
 
-            scope = new BaselineContext.BaselineContextScope(type: BaselineContext.ScopeType.Parameter, include: _Include, tag: _Tag);
-            result.Add(scope);
+            // Baseline
+            var baselineScope = new OptionContext.BaselineScope(type: OptionContext.ScopeType.Workspace, moduleName: null, option: Option);
+            result.Add(baselineScope);
+            baselineScope = new OptionContext.BaselineScope(type: OptionContext.ScopeType.Parameter, include: _Include, tag: _Tag);
+            result.Add(baselineScope);
+
+            // Config
+            var configScope = new OptionContext.ConfigScope(type: OptionContext.ScopeType.Workspace, moduleName: null, option: Option);
+            result.Add(configScope);
+            //configScope = new OptionContext.ConfigScope(type: OptionContext.ScopeType.Parameter, culture: _Culture);
+            //result.Add(configScope);
 
             return result;
         }

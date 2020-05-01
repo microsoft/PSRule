@@ -11,9 +11,10 @@ You should consider packaging rules into a module to:
 
 This scenario covers the following:
 
-- Creating a module manifest
-- Including rules and baselines
-- Including documentation
+- [Creating a module manifest](#creating-a-module-manifest)
+- [Including rules and baselines](#including-rules-and-baselines)
+- [Defining a module configuration](#defining-a-module-configuration)
+- [Including documentation](#including-documentation)
 
 ## Creating a module manifest
 
@@ -114,6 +115,26 @@ For example, on Linux `NamingStandards.rule.ps1` would be ignored by PSRule.
 
 Similarly, when including baselines within a module use the `.Rule.yaml` suffix.
 
+## Defining a module configuration
+
+A module configuration that sets options defaults can be optionally packaged with a module.
+To set a module configuration, define a `ModuleConfig` resource within an included `.Rule.yaml` file.
+A module configuration `.Rule.yaml` file must be distributed within the module directory structure.
+
+PSRule only supports a single `ModuleConfig` resource.
+Additional `ModuleConfig` resources are ignored.
+
+The following options are allowed within a `ModuleConfig`:
+
+- `Binding.Field`
+- `Binding.IgnoreCase`
+- `Binding.NameSeparator`
+- `Binding.TargetName`
+- `Binding.TargetType`
+- `Binding.UseQualifiedName`
+- `Configuration`
+- `Output.Culture`
+
 ## Including documentation
 
 PSRule supports write and packaging rule modules with markdown documentation.
@@ -144,8 +165,11 @@ For example:
     - NamingStandards.Rule.ps1
     - ComplianceStandards.Rule.ps1
     - Baseline.Rule.yaml
+    - ModuleConfig.Rule.yaml
   - Enterprise.Rules.psd1
 
 ## More information
 
 - [Enterprise.Rules.psd1](Enterprise.Rules/Enterprise.Rules.psd1) - An example module manifest.
+- [Baseline.Rule.yaml](Enterprise.Rules/rules/Baseline.Rule.yaml) - An example module manifest.
+- [ModuleConfig.Rule.yaml](Enterprise.Rules/rules/ModuleConfig.Rule.yaml) - An example module manifest.

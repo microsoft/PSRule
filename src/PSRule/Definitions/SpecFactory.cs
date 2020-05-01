@@ -2,10 +2,11 @@
 // Licensed under the MIT License.
 
 using PSRule.Annotations;
+using PSRule.Rules;
 using System;
 using System.Collections.Generic;
 
-namespace PSRule.Rules
+namespace PSRule.Definitions
 {
     internal sealed class SpecFactory
     {
@@ -15,9 +16,7 @@ namespace PSRule.Rules
         {
             _Descriptors = new Dictionary<string, ISpecDescriptor>();
             foreach (var d in Specs.BuiltinTypes)
-            {
                 With(d);
-            }
         }
 
         public bool TryDescriptor(string name, out ISpecDescriptor descriptor)
@@ -25,9 +24,9 @@ namespace PSRule.Rules
             return _Descriptors.TryGetValue(name, out descriptor);
         }
 
-        public void With<T, TOption>(string name) where T : Resource<TOption>, IResource where TOption : Spec, new()
+        public void With<T, TSpec>(string name) where T : Resource<TSpec>, IResource where TSpec : Spec, new()
         {
-            var descriptor = new SpecDescriptor<T, TOption>(name);
+            var descriptor = new SpecDescriptor<T, TSpec>(name);
             _Descriptors.Add(descriptor.Name, descriptor);
         }
 
@@ -51,7 +50,7 @@ namespace PSRule.Rules
         public string PropertyName { get; set; }
     }
 
-    internal sealed class SpecDescriptor<T, TOption> : ISpecDescriptor where T : Resource<TOption>, IResource where TOption : Spec, new()
+    internal sealed class SpecDescriptor<T, TSpec> : ISpecDescriptor where T : Resource<TSpec>, IResource where TSpec : Spec, new()
     {
         private Action<Spec, string> _DefaultPropertySetter;
 
@@ -65,7 +64,7 @@ namespace PSRule.Rules
 
         public Type SpecType
         {
-            get { return typeof(TOption); }
+            get { return typeof(TSpec); }
         }
 
         public Type StepType
@@ -75,10 +74,10 @@ namespace PSRule.Rules
 
         public bool SupportsFlat { get; private set; }
 
-        public IResource CreateInstance(SourceFile source, ResourceMetadata metadata, CommentMetadata comment, object option)
+        public IResource CreateInstance(SourceFile source, ResourceMetadata metadata, CommentMetadata comment, object spec)
         {
             var info = new ResourceHelpInfo(comment.Synopsis);
-            return (IResource)Activator.CreateInstance(typeof(T), source, metadata, info, option);
+            return (IResource)Activator.CreateInstance(typeof(T), source, metadata, info, spec);
         }
 
         private void Bind()
@@ -90,12 +89,9 @@ namespace PSRule.Rules
                 if (!string.IsNullOrEmpty(attribute.PropertyName))
                 {
                     SupportsFlat = true;
-
                     var bindProperty = SpecType.GetProperty(attribute.PropertyName);
                     if (bindProperty == null)
-                    {
                         throw new Exception($"Option type does not have the specified property: {attribute.PropertyName}");
-                    }
 
                     // Create a lambda to convert and set the property
                     _DefaultPropertySetter = (Spec option, string value) =>
@@ -121,6 +117,6 @@ namespace PSRule.Rules
 
         Type SpecType { get; }
 
-        IResource CreateInstance(SourceFile source, ResourceMetadata metadata, CommentMetadata comment, object option);
+        IResource CreateInstance(SourceFile source, ResourceMetadata metadata, CommentMetadata comment, object spec);
     }
 }

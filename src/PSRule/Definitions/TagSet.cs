@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
 
-namespace PSRule.Rules
+namespace PSRule.Definitions
 {
     public sealed class TagSet : DynamicObject
     {

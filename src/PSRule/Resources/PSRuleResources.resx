@@ -225,7 +225,7 @@
     <comment>Occurs when the source file specified does not exist.</comment>
   </data>
   <data name="UsingInvariantCulture" xml:space="preserve">
-    <value>Using invariant culture may cause rule infomation to be displayed incorrectly. Consider using -Culture or settings the Output.Culture option.</value>
+    <value>Using invariant culture may cause rule infomation to be displayed incorrectly. Consider using -Culture or set the Output.Culture option.</value>
     <comment>Occurs when the pipeline uses an invariant culture.</comment>
   </data>
   <data name="VariableConditionScope" xml:space="preserve">

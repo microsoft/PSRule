@@ -653,7 +653,7 @@ function Get-PSRule {
 # .ExternalHelp PSRule-Help.xml
 function Get-PSRuleBaseline {
     [CmdletBinding()]
-    [OutputType([PSRule.Rules.Baseline])]
+    [OutputType([PSRule.Definitions.Baseline])]
     param (
         [Parameter(Mandatory = $False)]
         [Alias('m')]

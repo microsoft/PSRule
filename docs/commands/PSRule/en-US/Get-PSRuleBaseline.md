@@ -156,7 +156,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### PSRule.Rules.Baseline
+### PSRule.Definitions.Baseline
 
 ## NOTES
 

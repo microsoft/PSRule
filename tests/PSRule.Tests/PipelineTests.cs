@@ -42,7 +42,6 @@ namespace PSRule
             pipeline.Begin();
 
             var actual = new List<InvokeResult>();
-
             for (var i = 0; i < 100; i++)
             {
                 pipeline.Process(PSObject.AsPSObject(testObject1));
@@ -64,12 +63,14 @@ namespace PSRule
         public void PipelineWithInvariantCulture()
         {
             PSRuleOption.UseCurrentCulture(CultureInfo.InvariantCulture);
-            var context = PipelineContext.New(GetOption(), null, null, new BaselineContext(), null);
+            var context = PipelineContext.New(GetOption(), null, null, new OptionContext(), null);
             var writer = new TestWriter(GetOption());
             var pipeline = new GetRulePipeline(context, GetSource(), new PipelineReader(null, null), writer, false);
             try
             {
                 pipeline.Begin();
+                pipeline.Process(null);
+                pipeline.End();
                 Assert.Contains(writer.Warnings, (string s) => { return s == PSRuleResources.UsingInvariantCulture; });
             }
             finally

@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
+using PSRule.Definitions;
 using PSRule.Resources;
-using PSRule.Rules;
 using System;
 using System.Collections;
 using System.Collections.Generic;

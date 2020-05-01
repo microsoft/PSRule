@@ -3,13 +3,21 @@
 
 using PSRule.Host;
 
-namespace PSRule.Rules
+namespace PSRule.Definitions
 {
     public enum ResourceKind : byte
     {
         None = 0,
 
-        Baseline = 1
+        /// <summary>
+        /// A baseline resource.
+        /// </summary>
+        Baseline = 1,
+        
+        /// <summary>
+        /// A module configuration resource.
+        /// </summary>
+        ModuleConfig = 2
     }
 
     internal interface IResource : ILanguageBlock
@@ -68,6 +76,7 @@ namespace PSRule.Rules
         public readonly static ISpecDescriptor[] BuiltinTypes = new ISpecDescriptor[]
         {
             new SpecDescriptor<Baseline, BaselineSpec>("Baseline"),
+            new SpecDescriptor<ModuleConfig, ModuleConfigSpec>("ModuleConfig"),
         };
     }
 }

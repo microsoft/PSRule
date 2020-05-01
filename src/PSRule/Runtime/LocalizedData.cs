@@ -4,13 +4,14 @@
 using PSRule.Pipeline;
 using System.Collections;
 using System.Dynamic;
-using System.IO;
 using System.Management.Automation.Language;
 
 namespace PSRule.Runtime
 {
     public sealed class LocalizedData : DynamicObject
     {
+        private const string DATA_FILENAME = "PSRule-rules.psd1";
+
         private static readonly Hashtable Empty = new Hashtable();
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
@@ -47,17 +48,7 @@ namespace PSRule.Runtime
 
         private string GetFilePath()
         {
-            var helpPath = RunspaceContext.CurrentThread.RuleBlock.Source.HelpPath;
-            var culture = RunspaceContext.CurrentThread.Pipeline.Culture;
-            for (var i = 0; i < culture.Length; i++)
-            {
-                var path = Path.Combine(helpPath, string.Concat(culture[i], "/PSRule-rules.psd1"));
-                if (File.Exists(path))
-                {
-                    return path;
-                }
-            }
-            return null;
+            return RunspaceContext.CurrentThread.GetLocalizedPath(DATA_FILENAME);
         }
     }
 }

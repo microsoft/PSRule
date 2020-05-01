@@ -40,6 +40,10 @@ namespace PSRule.Pipeline
         private readonly OutcomeLogStream _FailStream;
         private readonly OutcomeLogStream _PassStream;
 
+        //private readonly string[] Culture;
+
+        private bool _RaisedUsingInvariantCulture = false;
+
         // Pipeline logging
         private string _LogPrefix;
         private int _ObjectNumber;
@@ -64,6 +68,8 @@ namespace PSRule.Pipeline
             _ObjectNumber = -1;
             _RuleTimer = new Stopwatch();
             _Reason = new List<string>();
+
+            //Culture = pipeline.Option.Output.Culture;
         }
 
         public void Pass()
@@ -430,6 +436,32 @@ namespace PSRule.Pipeline
                 return;
 
             _Reason.Add(text);
+        }
+
+        public void Begin()
+        {
+            // Do nothing
+        }
+
+        public string GetLocalizedPath(string file)
+        {
+            if (string.IsNullOrEmpty(Source.File.HelpPath))
+                return null;
+
+            var culture = Pipeline.Baseline.GetCulture();
+            if (!_RaisedUsingInvariantCulture && (culture == null || culture.Length == 0))
+            {
+                Writer.WarnUsingInvariantCulture();
+                _RaisedUsingInvariantCulture = true;
+            }
+            
+            for (var i = 0; i < culture.Length; i++)
+            {
+                var path = Path.Combine(Source.File.HelpPath, culture[i], file);
+                if (File.Exists(path))
+                    return path;
+            }
+            return null;
         }
 
         #region IDisposable

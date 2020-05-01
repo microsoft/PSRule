@@ -6,12 +6,13 @@ using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Resources;
+using PSRule.Rules;
 using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 using YamlDotNet.Serialization;
 
-namespace PSRule.Rules
+namespace PSRule.Definitions
 {
     internal interface IBaselineSpec
     {
@@ -90,13 +91,11 @@ namespace PSRule.Rules
         {
             _Include = include == null || include.Length == 0 ? null : new HashSet<string>(include, StringComparer.OrdinalIgnoreCase);
             _WildcardMatch = null;
-
             if (include != null && include.Length > 0 && WildcardPattern.ContainsWildcardCharacters(include[0]))
             {
                 if (include.Length > 1)
-                {
                     throw new NotSupportedException(PSRuleResources.MatchSingleName);
-                }
+
                 _WildcardMatch = new WildcardPattern(include[0]);
             }
         }
@@ -109,9 +108,7 @@ namespace PSRule.Rules
         private bool MatchWildcard(string ruleName)
         {
             if (_WildcardMatch == null)
-            {
                 return false;
-            }
 
             return _WildcardMatch.IsMatch(ruleName);
         }
@@ -119,9 +116,9 @@ namespace PSRule.Rules
 
     internal sealed class BaselineRef : ResourceRef
     {
-        public readonly BaselineContext.ScopeType Type;
+        public readonly OptionContext.ScopeType Type;
 
-        public BaselineRef(string id, BaselineContext.ScopeType scopeType)
+        public BaselineRef(string id, OptionContext.ScopeType scopeType)
             : base(id, ResourceKind.Baseline)
         {
             Type = scopeType;
