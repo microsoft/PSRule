@@ -31,7 +31,7 @@ namespace PSRule.Configuration
 
         private string SourcePath;
 
-        internal static readonly PSRuleOption Default = new PSRuleOption
+        public static readonly PSRuleOption Default = new PSRuleOption
         {
             Binding = BindingOption.Default,
             Execution = ExecutionOption.Default,
@@ -55,13 +55,13 @@ namespace PSRule.Configuration
             // Set defaults
             Binding = new BindingOption();
             Configuration = new ConfigurationOption();
+            Execution = new ExecutionOption();
             Input = new InputOption();
             Logging = new LoggingOption();
             Output = new OutputOption();
-            Suppression = new SuppressionOption();
-            Execution = new ExecutionOption();
             Pipeline = new PipelineHook();
             Rule = new RuleOption();
+            Suppression = new SuppressionOption();
         }
 
         private PSRuleOption(string sourcePath, PSRuleOption option)
@@ -194,9 +194,8 @@ namespace PSRule.Configuration
 
             // Fallback to defaults even if file does not exist when silentlyContinue is true
             if (!File.Exists(filePath))
-            {
                 return new PSRuleOption();
-            }
+
             return FromYaml(path: filePath, yaml: File.ReadAllText(filePath));
         }
 

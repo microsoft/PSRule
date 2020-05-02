@@ -13,11 +13,40 @@ Create options to configure PSRule execution.
 
 ## SYNTAX
 
+### FromPath (Default)
+
 ```text
-New-PSRuleOption [[-Path] <String>] [[-Option] <PSRuleOption>] [-Configuration <ConfigurationOption>]
+New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>]
  [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
  [-BindingNameSeparator <String>] [-TargetName <String[]>] [-TargetType <String[]>]
+ [-BindingUseQualifiedName <Boolean>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
+ [-Format <InputFormat>] [-ObjectPath <String>] [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>]
+ [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
+ [-OutputAs <ResultFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFormat <OutputFormat>] [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
+```
+
+### FromOption
+
+```text
+New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
+ [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>]
+ [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
+ [-BindingNameSeparator <String>] [-TargetName <String[]>] [-TargetType <String[]>]
+ [-BindingUseQualifiedName <Boolean>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
+ [-Format <InputFormat>] [-ObjectPath <String>] [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>]
+ [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
+ [-OutputAs <ResultFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFormat <OutputFormat>] [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
+```
+
+### FromDefault
+
+```text
+New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTargetName <SuppressionOption>]
+ [-BindTargetName <BindTargetName[]>] [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>]
+ [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-TargetName <String[]>] [-TargetType <String[]>]
  [-BindingUseQualifiedName <Boolean>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
  [-Format <InputFormat>] [-ObjectPath <String>] [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>]
  [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
@@ -82,16 +111,16 @@ Create an options object that sets the `appServiceMinInstanceCount` baseline con
 
 ### -Option
 
-Additional options that configure execution. Option also accepts a hashtable to configure options.
-
-For more information on PSRule options see about_PSRule_Options.
+Additional options that configure execution.
+Option also accepts a hashtable to configure options.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: PSRuleOption
-Parameter Sets: (All)
+Parameter Sets: FromOption
 Aliases:
 
-Required: False
+Required: True
 Position: 0
 Default value: None
 Accept pipeline input: False
@@ -100,15 +129,17 @@ Accept wildcard characters: False
 
 ### -Path
 
-The path to a YAML file containing options. By default the current working path (`$PWD`) is used.
+The path to a YAML file containing options.
+By default the current working path (`$PWD`) is used.
 
-Either a directory or file path can be specified. When a directory is used, `ps-rule.yaml` will be used as the file name.
+Either a directory or file path can be specified.
+When a directory is used, `ps-rule.yaml` will be used as the file name.
 
 If the `-Path` parameter is specified and the file does not exist, an exception will be generated.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: FromPath
 Aliases:
 
 Required: False
@@ -118,11 +149,27 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Default
+
+When specified, defaults are used for any options not overridden.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: FromDefault
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -SuppressTargetName
 
-Configures suppression for a list of objects by TargetName. SuppressTargetName also accepts a hashtable to configure rule suppression.
-
-For more information on PSRule options see about_PSRule_Options.
+Configures suppression for a list of objects by TargetName.
+SuppressTargetName also accepts a hashtable to configure rule suppression.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: SuppressionOption
@@ -139,8 +186,7 @@ Accept wildcard characters: False
 ### -BindTargetName
 
 Configures a custom function to use to bind TargetName of an object.
-
-For more information on PSRule options see about_PSRule_Options.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: BindTargetName[]
@@ -158,8 +204,7 @@ Accept wildcard characters: False
 
 Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values.
 Configuration also accepts a hashtable of configuration values as key/ value pairs.
-
-For more information on PSRule options see about_PSRule_Baseline.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: ConfigurationOption
@@ -176,8 +221,7 @@ Accept wildcard characters: False
 ### -BindTargetType
 
 Configures a custom function to use to bind TargetType of an object.
-
-For more information on PSRule options see about_PSRule_Baseline.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: BindTargetName[]
@@ -338,6 +382,7 @@ Accept wildcard characters: False
 ### -Format
 
 Sets the `Input.Format` option to configure the input format for when a string is passed in as a target object.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: InputFormat
@@ -355,6 +400,7 @@ Accept wildcard characters: False
 ### -ObjectPath
 
 Sets the `Input.ObjectPath` option to use an object path to use instead of the pipeline object.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: String
@@ -371,6 +417,7 @@ Accept wildcard characters: False
 ### -InputTargetType
 
 Sets the `Input.TargetType` option to only process objects with the specified TargetType.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: String[]
@@ -387,6 +434,7 @@ Accept wildcard characters: False
 ### -LoggingLimitDebug
 
 Sets the `Logging.LimitDebug` option to limit debug messages to a list of named debug scopes.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: String[]
@@ -403,6 +451,7 @@ Accept wildcard characters: False
 ### -LoggingLimitVerbose
 
 Sets the `Logging.LimitVerbose` option to limit verbose messages to a list of named verbose scopes.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: String[]
@@ -419,6 +468,7 @@ Accept wildcard characters: False
 ### -LoggingRuleFail
 
 Sets the `Logging.RuleFail` option to generate an informational message for each rule fail.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: OutcomeLogStream
@@ -435,6 +485,7 @@ Accept wildcard characters: False
 ### -LoggingRulePass
 
 Sets the `Logging.RulePass` option to generate an informational message for each rule pass.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: OutcomeLogStream
@@ -470,6 +521,7 @@ Accept wildcard characters: False
 Sets the option `Output.Culture`.
 The `Output.Culture` option configures the culture used to generated output.
 When multiple cultures are specified, the first matching culture will be used.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: String[]
@@ -505,6 +557,7 @@ Accept wildcard characters: False
 
 Sets the option `Output.Format`.
 The `Output.Format` option configures the format that results will be presented in.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: OutputFormat

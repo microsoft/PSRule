@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Engine features:
+  - Added support for configuration of default module options. [#459](https://github.com/Microsoft/PSRule/issues/459)
+    - `binding` and `configuration` options can be set to a default value.
+  - Added support for module fallback culture. [#441](https://github.com/Microsoft/PSRule/issues/441)
+- Bug fixes:
+  - Fixed resource schema to include `useQualifiedName` and `nameSeparator` option. [#458](https://github.com/Microsoft/PSRule/issues/458)
+
 ## v0.16.0
 
 What's changed since v0.15.0:

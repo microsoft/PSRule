@@ -32,6 +32,7 @@ $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 
 Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
     $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    $emptyOptionsFilePath = (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml');
 
     Context 'With defaults' {
         $testObject = [PSCustomObject]@{
@@ -43,7 +44,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         It 'Returns passed' {
             [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-ZZ');
             try {
-                $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1';
+                $result = $testObject | Invoke-PSRule -Option $emptyOptionsFilePath -Path $ruleFilePath -Name 'FromFile1';
                 $result | Should -Not -BeNullOrEmpty;
                 $result.IsSuccess() | Should -Be $True;
                 $result.TargetName | Should -Be 'TestObject1';
@@ -1172,6 +1173,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
 
 Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
     $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    $emptyOptionsFilePath = (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml');
 
     Context 'With defaults' {
         # Get a list of rules
@@ -1237,7 +1239,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-ZZ');
             try {
                 # From markdown
-                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1';
+                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $emptyOptionsFilePath;
                 $result | Should -Not -BeNullOrEmpty;
                 $result.RuleName | Should -Be 'FromFile1';
                 $result.Synopsis | Should -Be 'This is a synopsis.';
@@ -1418,7 +1420,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             try {
                 # en-AU default
                 $Null = Import-Module $testModuleSourcePath -Force;
-                $result = @(Get-PSRule -Module 'TestModule');
+                $result = @(Get-PSRule -Module 'TestModule' -Option $emptyOptionsFilePath);
                 $result | Should -Not -BeNullOrEmpty;
                 $result.Length | Should -Be 2;
                 $result[0].RuleName | Should -Be 'M1.Rule1';
@@ -1442,7 +1444,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             try {
                 # en-ZZ default parent
                 $Null = Import-Module $testModuleSourcePath -Force;
-                $result = @(Get-PSRule -Module 'TestModule');
+                $result = @(Get-PSRule -Module 'TestModule' -Option $emptyOptionsFilePath);
                 $result | Should -Not -BeNullOrEmpty;
                 $result.Length | Should -Be 2;
                 $result[0].RuleName | Should -Be 'M1.Rule1';
@@ -1503,7 +1505,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         It 'Invariant culture' {
             [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('');
             try {
-                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1';
+                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $emptyOptionsFilePath;
                 $result.Synopsis | Should -Be 'Test rule 1';
 
                 $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -Culture 'en-US';

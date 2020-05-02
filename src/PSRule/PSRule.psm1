@@ -862,15 +862,18 @@ function Get-PSRuleHelp {
 
 # .ExternalHelp PSRule-Help.xml
 function New-PSRuleOption {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'FromPath')]
     [OutputType([PSRule.Configuration.PSRuleOption])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in memory object only')]
     param (
-        [Parameter(Position = 0, Mandatory = $False)]
+        [Parameter(Position = 0, Mandatory = $False, ParameterSetName = 'FromPath')]
         [String]$Path = $PWD,
 
-        [Parameter(Mandatory = $False)]
+        [Parameter(Mandatory = $True, ParameterSetName = 'FromOption')]
         [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $True, ParameterSetName = 'FromDefault')]
+        [Switch]$Default,
 
         [Parameter(Mandatory = $False)]
         [Alias('BaselineConfiguration')]
@@ -997,6 +1000,9 @@ function New-PSRuleOption {
         if ($optionParams.ContainsKey('Option')) {
             $optionParams.Remove('Option');
         }
+        if ($optionParams.ContainsKey('Default')) {
+            $optionParams.Remove('Default');
+        }
         if ($optionParams.ContainsKey('Verbose')) {
             $optionParams.Remove('Verbose');
         }
@@ -1018,6 +1024,9 @@ function New-PSRuleOption {
         elseif ($PSBoundParameters.ContainsKey('Path')) {
             Write-Verbose -Message "Attempting to read: $Path";
             $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $False);
+        }
+        elseif ($PSBoundParameters.ContainsKey('Default')) {
+            $Option = [PSRule.Configuration.PSRuleOption]::Default;
         }
         else {
             Write-Verbose -Message "Attempting to read: $Path";
