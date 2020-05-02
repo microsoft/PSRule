@@ -27,8 +27,8 @@ namespace PSRule.Configuration
 
         public PipelineHook(PipelineHook option)
         {
-            BindTargetName = option.BindTargetName;
-            BindTargetType = option.BindTargetType;
+            BindTargetName = option?.BindTargetName ?? new List<BindTargetName>();
+            BindTargetType = option?.BindTargetType ?? new List<BindTargetName>();
         }
 
         /// <summary>

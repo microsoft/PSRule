@@ -31,7 +31,7 @@ namespace PSRule.Configuration
 
         private string SourcePath;
 
-        public static readonly PSRuleOption Default = new PSRuleOption
+        private static readonly PSRuleOption Default = new PSRuleOption
         {
             Binding = BindingOption.Default,
             Execution = ExecutionOption.Default,
@@ -69,15 +69,15 @@ namespace PSRule.Configuration
             SourcePath = sourcePath;
 
             // Set from existing option instance
-            Binding = new BindingOption(option.Binding);
-            Configuration = new ConfigurationOption(option.Configuration);
-            Input = new InputOption(option.Input);
-            Logging = new LoggingOption(option.Logging);
-            Output = new OutputOption(option.Output);
-            Suppression = new SuppressionOption(option.Suppression);
-            Execution = new ExecutionOption(option.Execution);
-            Pipeline = new PipelineHook(option.Pipeline);
-            Rule = new RuleOption(option.Rule);
+            Binding = new BindingOption(option?.Binding);
+            Configuration = new ConfigurationOption(option?.Configuration);
+            Input = new InputOption(option?.Input);
+            Logging = new LoggingOption(option?.Logging);
+            Output = new OutputOption(option?.Output);
+            Suppression = new SuppressionOption(option?.Suppression);
+            Execution = new ExecutionOption(option?.Execution);
+            Pipeline = new PipelineHook(option?.Pipeline);
+            Rule = new RuleOption(option?.Rule);
         }
 
         /// <summary>
@@ -144,6 +144,18 @@ namespace PSRule.Configuration
             return new PSRuleOption(sourcePath: SourcePath, option: this);
         }
 
+        private static PSRuleOption Combine(PSRuleOption o1, PSRuleOption o2)
+        {
+            var result = new PSRuleOption(o1?.SourcePath ?? o2?.SourcePath, o1);
+            result.Binding = BindingOption.Combine(result.Binding, o2?.Binding);
+            result.Configuration = ConfigurationOption.Combine(result.Configuration, o2?.Configuration);
+            result.Execution = ExecutionOption.Combine(result.Execution, o2?.Execution);
+            result.Input = InputOption.Combine(result.Input, o2?.Input);
+            result.Logging = LoggingOption.Combine(result.Logging, o2?.Logging);
+            result.Output = OutputOption.Combine(result.Output, o2?.Output);
+            return result;
+        }
+
         /// <summary>
         /// Save the PSRuleOption to disk as YAML.
         /// </summary>
@@ -155,29 +167,28 @@ namespace PSRule.Configuration
             File.WriteAllText(path: filePath, contents: GetYaml());
         }
 
+        public static PSRuleOption FromDefault()
+        {
+            return Default.Clone();
+        }
+
         /// <summary>
         /// Load a YAML formatted PSRuleOption object from disk.
         /// </summary>
-        /// <param name="path">The file or directory path to load options from.</param>
-        /// <param name="silentlyContinue">When false, if the file does not exist, and exception will be raised.</param>
-        /// <returns></returns>
-        public static PSRuleOption FromFile(string path, bool silentlyContinue = false)
+        /// <param name="path">A file or directory to read options from.</param>
+        /// <returns>An options object.</returns>
+        /// <remarks>
+        /// This method is called from PowerShell.
+        /// </remarks>
+        public static PSRuleOption FromFile(string path)
         {
             // Get a rooted file path instead of directory or relative path
-            var filePath = GetFilePath(path: path);
+            var filePath = GetFilePath(path);
 
             // Fallback to defaults even if file does not exist when silentlyContinue is true
             if (!File.Exists(filePath))
             {
-                if (!silentlyContinue)
-                {
-                    throw new FileNotFoundException(PSRuleResources.OptionsNotFound, filePath);
-                }
-                else
-                {
-                    // Use the default options
-                    return Default.Clone();
-                }
+                throw new FileNotFoundException(PSRuleResources.OptionsNotFound, filePath);
             }
             return FromYaml(path: filePath, yaml: File.ReadAllText(filePath));
         }
@@ -185,21 +196,41 @@ namespace PSRule.Configuration
         /// <summary>
         /// Load a YAML formatted PSRuleOption object from disk.
         /// </summary>
-        /// <param name="path">The file for directory path to load options from.</param>
-        /// <returns></returns>
-        public static PSRuleOption FromFileOrDefault(string path)
+        /// <param name="path">A file or directory to read options from.</param>
+        /// <returns>An options object.</returns>
+        /// <remarks>
+        /// This method is called from PowerShell.
+        /// </remarks>
+        public static PSRuleOption FromFileOrEmpty(string path)
         {
             // Get a rooted file path instead of directory or relative path
-            var filePath = GetFilePath(path: path);
+            var filePath = GetFilePath(path);
 
-            // Fallback to defaults even if file does not exist when silentlyContinue is true
+            // Return empty options if file does not exist
             if (!File.Exists(filePath))
                 return new PSRuleOption();
 
             return FromYaml(path: filePath, yaml: File.ReadAllText(filePath));
         }
 
-        public static PSRuleOption FromYaml(string path, string yaml)
+        /// <summary>
+        /// Load a YAML formatted PSRuleOption object from disk.
+        /// </summary>
+        /// <param name="option"></param>
+        /// <param name="path">A file or directory to read options from.</param>
+        /// <returns>An options object.</returns>
+        /// <remarks>
+        /// This method is called from PowerShell.
+        /// </remarks>
+        public static PSRuleOption FromFileOrEmpty(PSRuleOption option, string path)
+        {
+            if (option == null)
+                return FromFileOrEmpty(path);
+
+            return string.IsNullOrEmpty(option.SourcePath) ? Combine(option, FromFileOrEmpty(path)) : option;
+        }
+
+        private static PSRuleOption FromYaml(string path, string yaml)
         {
             var d = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
@@ -337,12 +368,12 @@ namespace PSRule.Configuration
         }
 
         /// <summary>
-        /// Convert from string to options by loading the yaml file from disk. This enables -Option '.\psrule.yml' from PowerShell.
+        /// Convert from string to options by loading the yaml file from disk. This enables -Option '.\ps-rule.yaml' from PowerShell.
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="path">A file or directory to read options from.</param>
         public static implicit operator PSRuleOption(string path)
         {
-            var option = FromFile(path: path, silentlyContinue: false);
+            var option = FromFile(path);
             return option;
         }
 
@@ -450,6 +481,9 @@ namespace PSRule.Configuration
 
         private static string[] AsStringArray(object value)
         {
+            if (value == null)
+                return null;
+
             return value.GetType().IsArray ? ((object[])value).OfType<string>().ToArray() : new string[] { value.ToString() };
         }
     }

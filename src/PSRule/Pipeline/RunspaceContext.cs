@@ -15,11 +15,13 @@ using static PSRule.Pipeline.PipelineContext;
 
 namespace PSRule.Pipeline
 {
+    /// <summary>
+    /// A context for a PSRule runspace.
+    /// </summary>
     internal sealed class RunspaceContext : IDisposable
     {
         private const string SOURCE_OUTCOME_FAIL = "Rule.Outcome.Fail";
         private const string SOURCE_OUTCOME_PASS = "Rule.Outcome.Pass";
-
         private const string ERRORID_INVALIDRULERESULT = "PSRule.Runtime.InvalidRuleResult";
 
         [ThreadStatic]
@@ -39,8 +41,6 @@ namespace PSRule.Pipeline
         private readonly bool _NotProcessedWarning;
         private readonly OutcomeLogStream _FailStream;
         private readonly OutcomeLogStream _PassStream;
-
-        //private readonly string[] Culture;
 
         private bool _RaisedUsingInvariantCulture = false;
 
@@ -453,6 +453,7 @@ namespace PSRule.Pipeline
             {
                 Writer.WarnUsingInvariantCulture();
                 _RaisedUsingInvariantCulture = true;
+                return null;
             }
             
             for (var i = 0; i < culture.Length; i++)

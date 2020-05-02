@@ -71,7 +71,6 @@ namespace PSRule.Pipeline
             Binder = binder;
             Baseline = baseline;
             _Unresolved = unresolved;
-            //Culture = option.Output.Culture;
         }
 
         public static PipelineContext New(PSRuleOption option, HostContext hostContext, TargetBinder binder, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
@@ -131,10 +130,21 @@ namespace PSRule.Pipeline
                 _Unresolved.Remove(resource.Id);
                 Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, resource.Module, baseline.Spec));
             }
-            else if (resource.Kind == ResourceKind.ModuleConfig && !string.IsNullOrEmpty(resource.Module) && resource is ModuleConfig moduleConfig)
+            else if (TryModuleConfig(resource, out ModuleConfig moduleConfig))
             {
                 Baseline.Add(new OptionContext.ConfigScope(OptionContext.ScopeType.Module, resource.Module, moduleConfig.Spec));
             }
+        }
+
+        private static bool TryModuleConfig(IResource resource, out ModuleConfig moduleConfig)
+        {
+            moduleConfig = null;
+            if (resource.Kind == ResourceKind.ModuleConfig && !string.IsNullOrEmpty(resource.Module) && resource.Module == resource.Name && resource is ModuleConfig result)
+            {
+                moduleConfig = result;
+                return true;
+            }
+            return false;
         }
 
         public bool ShouldFilter()

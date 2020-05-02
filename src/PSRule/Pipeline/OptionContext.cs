@@ -65,7 +65,7 @@ namespace PSRule.Pipeline
             public readonly ScopeType Type;
             public readonly string ModuleName;
 
-            public OptionScope(ScopeType type, string moduleName)
+            protected OptionScope(ScopeType type, string moduleName)
             {
                 Type = type;
                 ModuleName = moduleName;

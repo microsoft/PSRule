@@ -18,7 +18,9 @@ namespace PSRule.Configuration
 
         internal SuppressionOption(IDictionary<string, SuppressionRule> rules)
         {
-            _Rules = new Dictionary<string, SuppressionRule>(rules, StringComparer.OrdinalIgnoreCase);
+            _Rules = rules == null ?
+               new Dictionary<string, SuppressionRule>(StringComparer.OrdinalIgnoreCase) :
+               new Dictionary<string, SuppressionRule>(rules, StringComparer.OrdinalIgnoreCase);
         }
 
         public SuppressionRule this[string key]

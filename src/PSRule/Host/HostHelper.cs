@@ -360,10 +360,6 @@ namespace PSRule.Host
             {
                 foreach (var block in blocks.OfType<ModuleConfig>().ToArray())
                 {
-                    // Ignore baselines that don't match
-                    //if (!Match(context, block))
-                    //    continue;
-
                     if (!results.ContainsKey(block.Name))
                         results[block.Name] = block;
                 }

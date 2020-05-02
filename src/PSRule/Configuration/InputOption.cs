@@ -31,6 +31,9 @@ namespace PSRule.Configuration
 
         public InputOption(InputOption option)
         {
+            if (option == null)
+                return;
+
             Format = option.Format;
             ObjectPath = option.ObjectPath;
             TargetType = option.TargetType;
@@ -59,6 +62,15 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (TargetType != null ? TargetType.GetHashCode() : 0);
                 return hash;
             }
+        }
+
+        internal static InputOption Combine(InputOption o1, InputOption o2)
+        {
+            var result = new InputOption(o1);
+            result.Format = o1.Format ?? o2.Format;
+            result.ObjectPath = o1.ObjectPath ?? o2.ObjectPath;
+            result.TargetType = o1.TargetType ?? o2.TargetType;
+            return result;
         }
 
         /// <summary>

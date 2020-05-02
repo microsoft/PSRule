@@ -36,6 +36,9 @@ namespace PSRule.Configuration
 
         public OutputOption(OutputOption option)
         {
+            if (option == null)
+                return;
+
             As = option.As;
             Culture = option.Culture;
             Encoding = option.Encoding;
@@ -73,6 +76,18 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (Style.HasValue ? Style.Value.GetHashCode() : 0);
                 return hash;
             }
+        }
+
+        internal static OutputOption Combine(OutputOption o1, OutputOption o2)
+        {
+            var result = new OutputOption(o1);
+            result.As = o1.As ?? o2.As;
+            result.Culture = o1.Culture ?? o2.Culture;
+            result.Encoding = o1.Encoding ?? o2.Encoding;
+            result.Format = o1.Format ?? o2.Format;
+            result.Path = o1.Path ?? o2.Path;
+            result.Style = o1.Style ?? o2.Style;
+            return result;
         }
 
         /// <summary>

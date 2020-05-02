@@ -301,8 +301,6 @@ namespace PSRule.Pipeline
             // Config
             var configScope = new OptionContext.ConfigScope(type: OptionContext.ScopeType.Workspace, moduleName: null, option: Option);
             result.Add(configScope);
-            //configScope = new OptionContext.ConfigScope(type: OptionContext.ScopeType.Parameter, culture: _Culture);
-            //result.Add(configScope);
 
             return result;
         }

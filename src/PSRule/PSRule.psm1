@@ -1019,18 +1019,18 @@ function New-PSRuleOption {
             $optionParams.Remove('BindTargetType');
         }
         if ($PSBoundParameters.ContainsKey('Option')) {
-            $Option = $Option.Clone();
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFileOrEmpty($Option, $Path);
         }
         elseif ($PSBoundParameters.ContainsKey('Path')) {
             Write-Verbose -Message "Attempting to read: $Path";
-            $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $False);
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path);
         }
         elseif ($PSBoundParameters.ContainsKey('Default')) {
-            $Option = [PSRule.Configuration.PSRuleOption]::Default;
+            $Option = [PSRule.Configuration.PSRuleOption]::FromDefault();
         }
         else {
             Write-Verbose -Message "Attempting to read: $Path";
-            $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $True);
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFileOrEmpty($Option, $Path);
         }
     }
 
@@ -1224,7 +1224,7 @@ function Set-PSRuleOption {
         }
         else {
             Write-Verbose -Message "[Set-PSRuleOption] -- Attempting to read: $Path";
-            $Option = [PSRule.Configuration.PSRuleOption]::FromFileOrDefault($Path);
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFileOrEmpty($Path);
         }
 
         $filePath = [PSRule.Configuration.PSRuleOption]::GetFilePath($Path);
