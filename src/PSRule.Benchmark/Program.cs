@@ -1,11 +1,16 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+#if BENCHMARK
+
 using BenchmarkDotNet.Analysers;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Running;
+
+#endif
+
 using Microsoft.Extensions.CommandLineUtils;
 
 namespace PSRule.Benchmark
