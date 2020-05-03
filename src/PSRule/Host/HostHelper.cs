@@ -234,7 +234,7 @@ namespace PSRule.Host
 
             try
             {
-                var invokeResult = ps.Invoke<Runtime.RuleConditionResult>().FirstOrDefault();
+                var invokeResult = GetResult(ps.Invoke<Runtime.RuleConditionResult>());
                 if (invokeResult == null)
                 {
                     ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
@@ -266,6 +266,14 @@ namespace PSRule.Host
             {
                 context.Error(ex);
             }
+        }
+
+        private static Runtime.RuleConditionResult GetResult(Collection<Runtime.RuleConditionResult> value)
+        {
+            if (value == null || value.Count == 0)
+                return null;
+
+            return value[0];
         }
 
         /// <summary>

@@ -14,9 +14,11 @@ namespace PSRule.Benchmark
     {
         static void Main(string[] args)
         {
-            var app = new CommandLineApplication();
-            app.Name = "PSRule Benchmark";
-            app.Description = "A runner for testing PSRule performance";
+            var app = new CommandLineApplication
+            {
+                Name = "PSRule Benchmark",
+                Description = "A runner for testing PSRule performance"
+            };
 
 #if !BENCHMARK
             // Do profiling
@@ -28,6 +30,8 @@ namespace PSRule.Benchmark
             app.Execute(args);
 #endif
         }
+
+#if BENCHMARK
 
         private static void RunProfile(CommandLineApplication app)
         {
@@ -44,7 +48,6 @@ namespace PSRule.Benchmark
             app.Command("benchmark", cmd =>
             {
                 var output = cmd.Option("-o | --output", "The path to store report output.", CommandOptionType.SingleValue);
-
                 cmd.OnExecute(() =>
                 {
                     if (output.HasValue())
@@ -54,45 +57,43 @@ namespace PSRule.Benchmark
 
                     // Do benchmarks
                     BenchmarkRunner.Run<PSRule>(config);
-
                     return 0;
                 });
-
                 cmd.HelpOption("-? | -h | --help");
             });
-
             app.HelpOption("-? | -h | --help");
         }
+
+#endif
 
         private static void DebugProfile()
         {
             var profile = new PSRule();
             profile.Prepare();
 
-            for (var i = 0; i < 20; i++)
-            {
+            for (var i = 0; i < 100; i++)
                 profile.Invoke();
-            }
 
-            for (var i = 0; i < 20; i++)
-            {
+            for (var i = 0; i < 100; i++)
+                profile.InvokeIf();
+
+            for (var i = 0; i < 100; i++)
                 profile.InvokeType();
-            }
 
-            for (var i = 0; i < 20; i++)
-            {
+            for (var i = 0; i < 100; i++)
+                profile.InvokeSummary();
+
+            for (var i = 0; i < 100; i++)
+                profile.Get();
+
+            for (var i = 0; i < 100; i++)
                 profile.DefaultTargetNameBinding();
-            }
 
-            for (var i = 0; i < 20; i++)
-            {
+            for (var i = 0; i < 100; i++)
                 profile.CustomTargetNameBinding();
-            }
 
-            for (var i = 0; i < 20; i++)
-            {
+            for (var i = 0; i < 100; i++)
                 profile.NestedTargetNameBinding();
-            }
         }
     }
 }

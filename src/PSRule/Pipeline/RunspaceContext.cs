@@ -68,8 +68,6 @@ namespace PSRule.Pipeline
             _ObjectNumber = -1;
             _RuleTimer = new Stopwatch();
             _Reason = new List<string>();
-
-            //Culture = pipeline.Option.Output.Culture;
         }
 
         public void Pass()
