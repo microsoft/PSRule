@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- General improvements:
+  - Improved `Assert-PSRule` output formatting.
+    - Added recommendation and reasons for `Client` and `Plain` styles. [#456](https://github.com/Microsoft/PSRule/issues/456)
 - Engine features:
   - Added support for configuration of default module options. [#459](https://github.com/Microsoft/PSRule/issues/459)
     - `binding` and `configuration` options can be set to a default value.

@@ -187,6 +187,42 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to     | REASON:.
+        /// </summary>
+        internal static string Reason {
+            get {
+                return ResourceManager.GetString("Reason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     | - .
+        /// </summary>
+        internal static string ReasonPrefix {
+            get {
+                return ResourceManager.GetString("ReasonPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     | RECOMMEND:.
+        /// </summary>
+        internal static string Recommend {
+            get {
+                return ResourceManager.GetString("Recommend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     | .
+        /// </summary>
+        internal static string RecommendPrefix {
+            get {
+                return ResourceManager.GetString("RecommendPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rules processed: {0}, failed: {1}, errors: {2}.
         /// </summary>
         internal static string Summary {
