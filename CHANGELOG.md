@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.17.0-B2005010 (pre-release)
+
 - General improvements:
   - Improved `Assert-PSRule` output formatting.
     - Added recommendation and reasons for `Client` and `Plain` styles. [#456](https://github.com/Microsoft/PSRule/issues/456)
