@@ -75,6 +75,9 @@ namespace PSRule.Pipeline
             {
                 protected readonly ILogger Logger;
 
+                private bool _UnbrokenContent = false;
+                private bool _UnbrokenInfo = false;
+
                 protected AssertFormatterBase(Source[] source, ILogger logger)
                 {
                     Logger = logger;
@@ -92,7 +95,50 @@ namespace PSRule.Pipeline
                     Warning(warningRecord.Message);
                 }
 
-                public abstract void Result(InvokeResult result);
+                public virtual void Result(InvokeResult result)
+                {
+                    StartObject(result, out RuleRecord[] records);
+                    for (var i = 0; i < records.Length; i++)
+                    {
+                        if (records[i].IsSuccess())
+                            Pass(records[i]);
+                        else if (records[i].Outcome == RuleOutcome.Error)
+                            FailWithError(records[i]);
+                        else
+                            Fail(records[i]);
+                    }
+                }
+
+                protected abstract void Pass(RuleRecord record);
+
+                protected abstract void Fail(RuleRecord record);
+
+                protected abstract void FailWithError(RuleRecord record);
+
+                protected virtual void FailDetail(RuleRecord record)
+                {
+                    if (!string.IsNullOrEmpty(record.Recommendation))
+                    {
+                        LineBreak();
+                        WriteLine(FormatterStrings.Recommend);
+                        WriteLines(record.Recommendation, prefix: FormatterStrings.RecommendPrefix);
+                    }
+                    if (record.Reason != null && record.Reason.Length > 0)
+                    {
+                        LineBreak();
+                        WriteLine(FormatterStrings.Reason);
+                        for (var i = 0; i < record.Reason.Length; i++)
+                        {
+                            WriteLines(record.Reason[i], prefix: FormatterStrings.ReasonPrefix);
+                        }
+                    }
+                    LineBreak();
+                }
+
+                protected virtual void ErrorDetail(RuleRecord record)
+                {
+
+                }
 
                 protected abstract void Error(string message);
 
@@ -100,30 +146,37 @@ namespace PSRule.Pipeline
 
                 protected void Banner()
                 {
-                    Write(FormatterStrings.Banner.Replace("\\n", Environment.NewLine));
-                    Write();
+                    WriteLine(FormatterStrings.Banner.Replace("\\n", Environment.NewLine));
+                    LineBreak();
                 }
 
-                protected string StartObject(RuleRecord record)
+                protected void StartObject(InvokeResult result, out RuleRecord[] records, ConsoleColor? forgroundColor = null)
                 {
-                    return string.Concat(" -> ", record.TargetName, " : ", record.TargetType);
+                    records = result.AsRecord();
+                    if (records == null || records.Length == 0)
+                        return;
+
+                    BreakIfUnbrokenContent();
+                    BreakIfUnbrokenInfo();
+                    WriteLine(string.Concat(" -> ", records[0].TargetName, " : ", records[0].TargetType), forgroundColor: forgroundColor);
+                    LineBreak();
                 }
 
                 private void Source(Source[] source)
                 {
                     var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
-                    Write(string.Format(FormatterStrings.PSRuleVersion, version));
+                    WriteLine(string.Format(FormatterStrings.PSRuleVersion, version));
 
                     var list = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     for (var i = 0; source != null && i < source.Length; i++)
                     {
                         if (source[i].Module != null && !list.Contains(source[i].Module.Name))
                         {
-                            Write(string.Format(FormatterStrings.ModuleVersion, source[i].Module.Name, source[i].Module.Version));
+                            WriteLine(string.Format(FormatterStrings.ModuleVersion, source[i].Module.Name, source[i].Module.Version));
                             list.Add(source[i].Module.Name);
                         }
                     }
-                    Write();
+                    LineBreak();
                 }
 
                 protected override void DoWriteError(ErrorRecord errorRecord)
@@ -158,13 +211,57 @@ namespace PSRule.Pipeline
 
                 public void End(int total, int fail, int error)
                 {
-                    Write();
-                    Write(string.Format(FormatterStrings.Summary, total, fail, error));
+                    LineBreak();
+                    WriteLine(string.Format(FormatterStrings.Summary, total, fail, error));
                 }
 
-                protected void Write(string message = "")
+                protected void WriteLine(string message, string prefix = null, ConsoleColor? forgroundColor = null)
                 {
-                    Logger.WriteHost(new HostInformationMessage { Message = message });
+                    var output = string.IsNullOrEmpty(prefix) ? message : string.Concat(prefix, message);
+                    Logger.WriteHost(new HostInformationMessage { Message = output, ForegroundColor = forgroundColor });
+                }
+
+                protected void WriteLines(string message, string prefix = null, ConsoleColor? forgroundColor = null)
+                {
+                    if (string.IsNullOrEmpty(message))
+                        return;
+
+                    var lines = message.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                    for (var i = 0; i < lines.Length; i++)
+                        WriteLine(lines[i], prefix, forgroundColor);
+                }
+
+                protected void LineBreak()
+                {
+                    Logger.WriteHost(new HostInformationMessage() { Message = string.Empty });
+                    _UnbrokenContent = false;
+                    _UnbrokenInfo = false;
+                }
+
+                protected void BreakIfUnbrokenInfo()
+                {
+                    if (!_UnbrokenInfo)
+                        return;
+
+                    LineBreak();
+                }
+
+                protected void BreakIfUnbrokenContent()
+                {
+                    if (!_UnbrokenContent)
+                        return;
+
+                    LineBreak();
+                }
+
+                protected void UnbrokenInfo()
+                {
+                    _UnbrokenInfo = true;
+                }
+
+                protected void UnbrokenContent()
+                {
+                    _UnbrokenContent = true;
                 }
             }
 
@@ -178,53 +275,69 @@ namespace PSRule.Pipeline
 
                 public override void Result(InvokeResult result)
                 {
-                    var records = result.AsRecord();
+                    StartObject(result, out RuleRecord[] records, forgroundColor: ConsoleColor.Green);
                     for (var i = 0; i < records.Length; i++)
                     {
-                        if (i == 0)
-                        {
-                            Empty();
-                            Green(StartObject(records[i]));
-                            Empty();
-                        }
-
                         if (records[i].IsSuccess())
-                            Green(string.Format(FormatterStrings.Client_Pass, records[i].RuleName));
+                            Pass(records[i]);
                         else if (records[i].Outcome == RuleOutcome.Error)
-                            Red(string.Format(FormatterStrings.Client_Error, records[i].RuleName));
+                            FailWithError(records[i]);
                         else
-                            Red(string.Format(FormatterStrings.Client_Fail, records[i].RuleName));
+                            Fail(records[i]);
                     }
                 }
 
                 protected override void Error(string message)
                 {
-                    Red(string.Format(FormatterStrings.Client_Error, message));
+                    BreakIfUnbrokenContent();
+                    WriteLine(string.Format(FormatterStrings.Client_Error, message), forgroundColor: ConsoleColor.Red);
+                    UnbrokenInfo();
                 }
 
                 protected override void Warning(string message)
                 {
-                    Yellow(string.Format(FormatterStrings.Client_Warning, message));
+                    BreakIfUnbrokenContent();
+                    WriteLine(string.Format(FormatterStrings.Client_Warning, message), forgroundColor: ConsoleColor.Yellow);
+                    UnbrokenInfo();
                 }
 
-                private void Empty()
+                protected override void Pass(RuleRecord record)
                 {
-                    Logger.WriteHost(new HostInformationMessage() { Message = string.Empty });
+                    BreakIfUnbrokenInfo();
+                    WriteLine(string.Format(FormatterStrings.Client_Pass, record.RuleName), forgroundColor: ConsoleColor.Green);
+                    UnbrokenContent();
                 }
 
-                private void Green(string message)
+                protected override void Fail(RuleRecord record)
                 {
-                    Logger.WriteHost(new HostInformationMessage() { Message = message, ForegroundColor = ConsoleColor.Green });
+                    BreakIfUnbrokenInfo();
+                    WriteLine(string.Format(FormatterStrings.Client_Fail, record.RuleName), forgroundColor: ConsoleColor.Red);
+                    FailDetail(record);
                 }
 
-                private void Red(string message)
+                protected override void FailWithError(RuleRecord record)
                 {
-                    Logger.WriteHost(new HostInformationMessage() { Message = message, ForegroundColor = ConsoleColor.Red });
+                    BreakIfUnbrokenInfo();
+                    WriteLine(string.Format(FormatterStrings.Client_Error, record.RuleName), forgroundColor: ConsoleColor.Red);
+                    ErrorDetail(record);
+                    UnbrokenContent();
                 }
 
-                private void Yellow(string message)
+                protected override void FailDetail(RuleRecord record)
                 {
-                    Logger.WriteHost(new HostInformationMessage() { Message = message, ForegroundColor = ConsoleColor.Yellow });
+                    LineBreak();
+                    WriteLine(FormatterStrings.Recommend, forgroundColor: ConsoleColor.Cyan);
+                    WriteLines(record.Info.Recommendation, prefix: FormatterStrings.RecommendPrefix, forgroundColor: ConsoleColor.Cyan);
+                    if (record.Reason != null && record.Reason.Length > 0)
+                    {
+                        LineBreak();
+                        WriteLine(FormatterStrings.Reason, forgroundColor: ConsoleColor.Cyan);
+                        for (var i = 0; i < record.Reason.Length; i++)
+                        {
+                            WriteLines(record.Reason[i], prefix: FormatterStrings.ReasonPrefix, forgroundColor: ConsoleColor.Cyan);
+                        }
+                    }
+                    LineBreak();
                 }
             }
 
@@ -235,25 +348,6 @@ namespace PSRule.Pipeline
             {
                 internal PlainFormatter(Source[] source, ILogger logger)
                     : base(source, logger) { }
-
-                public override void Result(InvokeResult result)
-                {
-                    var records = result.AsRecord();
-                    for (var i = 0; i < records.Length; i++)
-                    {
-                        if (i == 0)
-                        {
-                            Write();
-                            Write(StartObject(records[i]));
-                            Write();
-                        }
-
-                        if (records[i].IsSuccess())
-                            Write(string.Format(FormatterStrings.Plain_Pass, records[i].RuleName));
-                        else
-                            Write(string.Format(FormatterStrings.Plain_Fail, records[i].RuleName));
-                    }
-                }
 
                 protected override void DoWriteError(ErrorRecord errorRecord)
                 {
@@ -267,12 +361,38 @@ namespace PSRule.Pipeline
 
                 protected override void Error(string message)
                 {
-                    Write(string.Format(FormatterStrings.Plain_Error, message));
+                    BreakIfUnbrokenContent();
+                    WriteLine(string.Format(FormatterStrings.Plain_Error, message));
+                    UnbrokenInfo();
                 }
 
                 protected override void Warning(string message)
                 {
-                    Write(string.Format(FormatterStrings.Plain_Warning, message));
+                    BreakIfUnbrokenContent();
+                    WriteLine(string.Format(FormatterStrings.Plain_Warning, message));
+                    UnbrokenInfo();
+                }
+
+                protected override void Pass(RuleRecord record)
+                {
+                    BreakIfUnbrokenInfo();
+                    WriteLine(string.Format(FormatterStrings.Plain_Pass, record.RuleName));
+                    UnbrokenContent();
+                }
+
+                protected override void Fail(RuleRecord record)
+                {
+                    BreakIfUnbrokenInfo();
+                    WriteLine(string.Format(FormatterStrings.Plain_Fail, record.RuleName));
+                    FailDetail(record);
+                }
+
+                protected override void FailWithError(RuleRecord record)
+                {
+                    BreakIfUnbrokenInfo();
+                    WriteLine(string.Format(FormatterStrings.Plain_Fail, record.RuleName));
+                    ErrorDetail(record);
+                    UnbrokenContent();
                 }
             }
 
@@ -281,72 +401,65 @@ namespace PSRule.Pipeline
             /// </summary>
             private sealed class AzurePipelinesFormatter : AssertFormatterBase, IAssertFormatter
             {
-                private bool _WasInfo = false;
-
                 internal AzurePipelinesFormatter(Source[] source, ILogger logger)
                     : base(source, logger) { }
-
-                public override void Result(InvokeResult result)
-                {
-                    var records = result.AsRecord();
-                    for (var i = 0; i < records.Length; i++)
-                    {
-                        if (i == 0)
-                        {
-                            Write();
-                            Write(StartObject(records[i]));
-                            _WasInfo = true;
-                        }
-                        if (_WasInfo)
-                            Write();
-                        _WasInfo = false;
-
-                        if (records[i].IsSuccess())
-                            Write(string.Concat("    [+] ", records[i].RuleName));
-                        else if (records[i].Outcome == RuleOutcome.Error)
-                        {
-                            Write(string.Concat("    [-] ", records[i].RuleName));
-                            GetError(records[i]);
-                        }
-                        else
-                        {
-                            Write(string.Concat("    [-] ", records[i].RuleName));
-                            Error(string.Format(FormatterStrings.AzurePipelines_Fail, records[i].TargetName, records[i].RuleName, GetReason(records[i])));
-                        }
-                    }
-                }
 
                 private string GetReason(RuleRecord record)
                 {
                     return string.Join(" ", record.Reason);
                 }
 
-                private void GetError(RuleRecord record)
+                protected override void Error(string message)
+                {
+                    BreakIfUnbrokenContent();
+                    WriteLine(string.Concat("##vso[task.logissue type=error]", message));
+                    UnbrokenInfo();
+                }
+
+                protected override void Warning(string message)
+                {
+                    BreakIfUnbrokenContent();
+                    WriteLine(string.Concat("##vso[task.logissue type=warning]", message));
+                    UnbrokenInfo();
+                }
+
+                protected override void Pass(RuleRecord record)
+                {
+                    BreakIfUnbrokenInfo();
+                    WriteLine(string.Concat("    [+] ", record.RuleName));
+                    UnbrokenContent();
+                }
+
+                protected override void Fail(RuleRecord record)
+                {
+                    BreakIfUnbrokenInfo();
+                    WriteLine(string.Concat("    [-] ", record.RuleName));
+                    FailDetail(record);
+                }
+
+                protected override void FailWithError(RuleRecord record)
+                {
+                    BreakIfUnbrokenInfo();
+                    WriteLine(string.Concat("    [-] ", record.RuleName));
+                    ErrorDetail(record);
+                    UnbrokenContent();
+                }
+
+                protected override void FailDetail(RuleRecord record)
+                {
+                    LineBreak();
+                    Error(string.Format(FormatterStrings.AzurePipelines_Fail, record.TargetName, record.RuleName, GetReason(record)));
+                    LineBreak();
+                }
+
+                protected override void ErrorDetail(RuleRecord record)
                 {
                     if (record.Error == null)
                         return;
 
                     Error(string.Format(FormatterStrings.AzurePipelines_Error, record.TargetName, record.RuleName, record.Error.Message));
-                    Write();
-                    Write(record.Error.ScriptStackTrace);
-                }
-
-                protected override void Error(string message)
-                {
-                    if (!_WasInfo)
-                        Write();
-
-                    Write(string.Concat("##vso[task.logissue type=error]", message));
-                    _WasInfo = true;
-                }
-
-                protected override void Warning(string message)
-                {
-                    if (!_WasInfo)
-                        Write();
-
-                    Write(string.Concat("##vso[task.logissue type=warning]", message));
-                    _WasInfo = true;
+                    LineBreak();
+                    WriteLine(record.Error.ScriptStackTrace);
                 }
             }
 
@@ -355,35 +468,8 @@ namespace PSRule.Pipeline
             /// </summary>
             private sealed class GitHubActionsFormatter : AssertFormatterBase, IAssertFormatter
             {
-                private bool _WasInfo = false;
-
                 internal GitHubActionsFormatter(Source[] source, ILogger logger)
                     : base(source, logger) { }
-
-                public override void Result(InvokeResult result)
-                {
-                    var records = result.AsRecord();
-                    for (var i = 0; i < records.Length; i++)
-                    {
-                        if (i == 0)
-                        {
-                            Write();
-                            Write(StartObject(records[i]));
-                            _WasInfo = true;
-                        }
-                        if (_WasInfo)
-                            Write();
-                        _WasInfo = false;
-
-                        if (records[i].IsSuccess())
-                            Write(string.Concat("    [+] ", records[i].RuleName));
-                        else
-                        {
-                            Write(string.Concat("    [-] ", records[i].RuleName));
-                            Error(string.Format(FormatterStrings.GitHubActions_Fail, records[i].TargetName, records[i].RuleName, GetReason(records[i])));
-                        }
-                    }
-                }
 
                 private string GetReason(RuleRecord record)
                 {
@@ -392,20 +478,45 @@ namespace PSRule.Pipeline
 
                 protected override void Error(string message)
                 {
-                    if (!_WasInfo)
-                        Write();
-
-                    Write(string.Concat("::error::", message));
-                    _WasInfo = true;
+                    BreakIfUnbrokenContent();
+                    WriteLine(string.Concat("::error::", message));
+                    UnbrokenInfo();
                 }
 
                 protected override void Warning(string message)
                 {
-                    if (!_WasInfo)
-                        Write();
+                    BreakIfUnbrokenContent();
+                    WriteLine(string.Concat("::warning::", message));
+                    UnbrokenInfo();
+                }
 
-                    Write(string.Concat("::warning::", message));
-                    _WasInfo = true;
+                protected override void Pass(RuleRecord record)
+                {
+                    BreakIfUnbrokenInfo();
+                    WriteLine(string.Concat("    [+] ", record.RuleName));
+                    UnbrokenContent();
+                }
+
+                protected override void Fail(RuleRecord record)
+                {
+                    BreakIfUnbrokenInfo();
+                    WriteLine(string.Concat("    [-] ", record.RuleName));
+                    FailDetail(record);
+                }
+
+                protected override void FailWithError(RuleRecord record)
+                {
+                    BreakIfUnbrokenInfo();
+                    WriteLine(string.Concat("    [-] ", record.RuleName));
+                    ErrorDetail(record);
+                    UnbrokenContent();
+                }
+
+                protected override void FailDetail(RuleRecord record)
+                {
+                    LineBreak();
+                    Error(string.Format(FormatterStrings.GitHubActions_Fail, record.TargetName, record.RuleName, GetReason(record)));
+                    LineBreak();
                 }
             }
 
