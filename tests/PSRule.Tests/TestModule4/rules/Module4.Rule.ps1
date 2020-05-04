@@ -20,3 +20,9 @@ Rule 'M4.Rule2' {
 Rule 'M4.Rule3' {
     $Configuration.ruleConfig2 -eq 'Test3'
 }
+
+# Synopsis: Test rule in TestModule4
+Rule 'M4.Rule4' {
+    $Configuration.ruleConfig3 -eq 'TestConfig3'
+    $Configuration.ruleConfig2 -eq 'Test3'
+}

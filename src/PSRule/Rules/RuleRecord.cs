@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
+using PSRule.Definitions;
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Host;
 using PSRule.Rules;
 using System.Linq;

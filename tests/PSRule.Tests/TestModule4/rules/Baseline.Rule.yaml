@@ -1,5 +1,19 @@
 
 ---
+kind: ModuleConfig
+metadata:
+  name: TestModule4
+spec:
+  configuration:
+    ruleConfig3: 'TestConfig3'
+  output:
+    culture:
+    - 'en-US'
+  binding:
+    field:
+      AlternativeType: [ 'Kind' ]
+
+---
 kind: Baseline
 metadata:
   name: Module4
@@ -31,6 +45,24 @@ spec:
       - AlternateName
     targetType:
       - Kind
+  rule:
+    include:
+    - 'M4.Rule1'
+  configuration:
+    ruleConfig2: 'Test3'
+
+---
+kind: Baseline
+metadata:
+  name: Baseline3
+spec:
+  binding:
+    targetName:
+      - AlternateName
+    targetType:
+      - Kind
+    field:
+      AlternativeType: [ 'AlternateName' ]
   rule:
     include:
     - 'M4.Rule1'

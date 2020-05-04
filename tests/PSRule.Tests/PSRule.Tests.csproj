@@ -30,6 +30,9 @@
     <None Update="FromFile.Rule.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="ModuleConfig.Rule.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="ObjectFromFile.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
+using PSRule.Definitions;
 using PSRule.Host;
 using System.ComponentModel;
 using YamlDotNet.Serialization;

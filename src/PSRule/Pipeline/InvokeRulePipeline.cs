@@ -93,9 +93,7 @@ namespace PSRule.Pipeline
                     throw new PipelineConfigurationException(optionName: "BindTargetName", message: PSRuleResources.ConstrainedTargetBinding);
 
                 foreach (var action in option.Pipeline.BindTargetName)
-                {
                     _BindTargetNameHook = AddBindTargetAction(action, _BindTargetNameHook);
-                }
             }
 
             if (option.Pipeline.BindTargetType != null && option.Pipeline.BindTargetType.Count > 0)
@@ -105,9 +103,7 @@ namespace PSRule.Pipeline
                     throw new PipelineConfigurationException(optionName: "BindTargetType", message: PSRuleResources.ConstrainedTargetBinding);
 
                 foreach (var action in option.Pipeline.BindTargetType)
-                {
                     _BindTargetTypeHook = AddBindTargetAction(action, _BindTargetTypeHook);
-                }
             }
 
             if (option.Suppression.Count > 0)

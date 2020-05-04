@@ -23,6 +23,8 @@ namespace PSRule.Commands
         private const string InvokeBlockCmdlet_IfParameter = "If";
         private const string InvokeBlockCmdlet_BodyParameter = "Body";
 
+        private const string Markdown_Extension = ".md";
+
         /// <summary>
         /// The name of the rule.
         /// </summary>
@@ -135,28 +137,20 @@ namespace PSRule.Commands
             if (string.IsNullOrEmpty(context.Source.File.HelpPath))
                 return null;
 
-            var fileName = string.Concat(name, ".md");
-            var culture = context.Pipeline.Culture;
-            for (var i = 0; i < culture.Length; i++)
-            {
-                var path = Path.Combine(context.Source.File.HelpPath, culture[i], fileName);
-                if (!File.Exists(path))
-                    continue;
+            var helpFileName = string.Concat(name, Markdown_Extension);
+            var path = context.GetLocalizedPath(helpFileName);
+            if (path == null || !TryDocument(path, out RuleDocument document))
+                return null;
 
-                if (TryDocument(path, out RuleDocument document))
-                {
-                    return new RuleHelpInfo(name: name, displayName: document.Name ?? name, moduleName: context.Source.File.ModuleName)
-                    {
-                        Synopsis = document.Synopsis?.Text,
-                        Description = document.Description?.Text,
-                        Recommendation = document.Recommendation?.Text ?? document.Synopsis?.Text,
-                        Notes = document.Notes?.Text,
-                        Links = GetLinks(document.Links),
-                        Annotations = document.Annotations?.ToHashtable()
-                    };
-                }
-            }
-            return null;
+            return new RuleHelpInfo(name: name, displayName: document.Name ?? name, moduleName: context.Source.File.ModuleName)
+            {
+                Synopsis = document.Synopsis?.Text,
+                Description = document.Description?.Text,
+                Recommendation = document.Recommendation?.Text ?? document.Synopsis?.Text,
+                Notes = document.Notes?.Text,
+                Links = GetLinks(document.Links),
+                Annotations = document.Annotations?.ToHashtable()
+            };
         }
 
         private static bool TryDocument(string path, out RuleDocument document)

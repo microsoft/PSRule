@@ -34,6 +34,9 @@ namespace PSRule.Configuration
 
         public BindingOption(BindingOption option)
         {
+            if (option == null)
+                return;
+
             Field = option.Field;
             IgnoreCase = option.IgnoreCase;
             NameSeparator = option.NameSeparator;
@@ -71,6 +74,18 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (UseQualifiedName.HasValue ? UseQualifiedName.Value.GetHashCode() : 0);
                 return hash;
             }
+        }
+
+        internal static BindingOption Combine(BindingOption o1, BindingOption o2)
+        {
+            var result = new BindingOption(o1);
+            result.Field = o1.Field ?? o2.Field;
+            result.IgnoreCase = o1.IgnoreCase ?? o2.IgnoreCase;
+            result.NameSeparator = o1.NameSeparator ?? o2.NameSeparator;
+            result.TargetName = o1.TargetName ?? o2.TargetName;
+            result.TargetType = o1.TargetType ?? o2.TargetType;
+            result.UseQualifiedName = o1.UseQualifiedName ?? o2.UseQualifiedName;
+            return result;
         }
 
         /// <summary>

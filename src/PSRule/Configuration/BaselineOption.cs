@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Rules;
+using PSRule.Definitions;
 using System;
 using System.Collections;
 using System.Collections.Generic;

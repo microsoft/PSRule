@@ -99,7 +99,7 @@ namespace PSRule.Pipeline
         /// <summary>
         /// Bind target object based on the supplied baseline.
         /// </summary>
-        public void Bind(BaselineContext baseline, PSObject targetObject)
+        public void Bind(OptionContext baseline, PSObject targetObject)
         {
             var binding = baseline.GetTargetBinding();
             TargetName = _BindTargetName(binding.TargetName, !binding.IgnoreCase, targetObject);

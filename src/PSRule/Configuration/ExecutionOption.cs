@@ -1,11 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.ComponentModel;
 
 namespace PSRule.Configuration
 {
-    public sealed class ExecutionOption
+    public sealed class ExecutionOption : IEquatable<ExecutionOption>
     {
         private const LanguageMode DEFAULT_LANGUAGEMODE = Configuration.LanguageMode.FullLanguage;
         private const bool DEFAULT_INCONCLUSIVEWARNING = true;
@@ -27,9 +28,46 @@ namespace PSRule.Configuration
 
         public ExecutionOption(ExecutionOption option)
         {
+            if (option == null)
+                return;
+
             LanguageMode = option.LanguageMode;
             InconclusiveWarning = option.InconclusiveWarning;
             NotProcessedWarning = option.NotProcessedWarning;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ExecutionOption option && Equals(option);
+        }
+
+        public bool Equals(ExecutionOption other)
+        {
+            return other != null &&
+                LanguageMode == other.LanguageMode &&
+                InconclusiveWarning == other.InconclusiveWarning &&
+                InconclusiveWarning == other.InconclusiveWarning;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine
+            {
+                int hash = 17;
+                hash = hash * 23 + (LanguageMode.HasValue ? LanguageMode.Value.GetHashCode() : 0);
+                hash = hash * 23 + (InconclusiveWarning.HasValue ? InconclusiveWarning.Value.GetHashCode() : 0);
+                hash = hash * 23 + (NotProcessedWarning.HasValue ? NotProcessedWarning.Value.GetHashCode() : 0);
+                return hash;
+            }
+        }
+
+        internal static ExecutionOption Combine(ExecutionOption o1, ExecutionOption o2)
+        {
+            var result = new ExecutionOption(o1);
+            result.LanguageMode = o1.LanguageMode ?? o2.LanguageMode;
+            result.InconclusiveWarning = o1.InconclusiveWarning ?? o2.InconclusiveWarning;
+            result.NotProcessedWarning = o1.NotProcessedWarning ?? o2.NotProcessedWarning;
+            return result;
         }
 
         [DefaultValue(null)]

@@ -104,10 +104,12 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result[0].TargetType | Should -Be 'TestObjectType';
             $result[0].Field.kind | Should -Be 'TestObjectType';
             $result[0].Field.uniqueIdentifer | Should -Be '1';
+            $result[0].Field.AlternativeType | Should -Be 'TestObjectType';
             $result[1].RuleName | Should -Be 'M4.Rule2';
             $result[1].Outcome | Should -Be 'Pass';
             $result[1].TargetName | Should -Be 'TestObject1';
             $result[1].TargetType | Should -Be 'TestObjectType';
+            $result[1].Field.AlternativeType | Should -Be 'TestObjectType';
 
             # Module + Workspace + Parameter
             $option = @{
@@ -132,8 +134,18 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result.Length | Should -Be 2;
             $result[0].RuleName | Should -Be 'M4.Rule2';
             $result[0].Outcome | Should -Be 'Pass';
+            $result[0].Field.AlternativeType | Should -Be 'TestObjectType';
             $result[1].RuleName | Should -Be 'M4.Rule3';
             $result[1].Outcome | Should -Be 'Pass';
+            $result[1].Field.AlternativeType | Should -Be 'TestObjectType';
+
+            # Module Config + Module + Workspace + Parameter + Explicit
+            $result = @($testObject | Invoke-PSRule -Module TestModule4 -Name 'M4.Rule4' -Baseline 'Baseline3');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result[0].RuleName | Should -Be 'M4.Rule4';
+            $result[0].Outcome | Should -Be 'Pass';
+            $result[0].Field.AlternativeType | Should -Be 'TestObject1';
         }
     }
 

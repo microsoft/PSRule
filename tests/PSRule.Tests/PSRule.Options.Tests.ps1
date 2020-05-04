@@ -59,7 +59,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Rule.Include' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Rule.Include | Should -Be $Null;
         }
 
@@ -90,7 +90,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Rule.Exclude' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Rule.Exclude | Should -Be $Null;
         }
 
@@ -121,7 +121,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Rule.Tag' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Rule.Tag | Should -BeNullOrEmpty;
         }
 
@@ -143,7 +143,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Baseline.Configuration' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Configuration.Count | Should -Be 0;
         }
 
@@ -164,7 +164,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Binding.Field' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Binding.Field | Should -BeNullOrEmpty;
         }
 
@@ -191,7 +191,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Binding.IgnoreCase' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Binding.IgnoreCase | Should -Be $True;
         }
 
@@ -213,7 +213,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Binding.NameSeparator' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Binding.NameSeparator | Should -Be '/';
         }
 
@@ -235,7 +235,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Binding.TargetName' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Binding.TargetName | Should -Be $Null;
         }
 
@@ -272,7 +272,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Binding.TargetType' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Binding.TargetType | Should -Be $Null;
         }
 
@@ -309,7 +309,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Binding.UseQualifiedName' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Binding.UseQualifiedName | Should -Be $False;
         }
 
@@ -331,7 +331,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Execution.LanguageMode' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Execution.LanguageMode | Should -Be 'FullLanguage';
         }
 
@@ -348,7 +348,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Execution.InconclusiveWarning' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Execution.InconclusiveWarning | Should -Be $True;
         }
 
@@ -370,7 +370,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Execution.NotProcessedWarning' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Execution.NotProcessedWarning | Should -Be $True;
         }
 
@@ -392,7 +392,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Input.Format' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Input.Format | Should -Be 'Detect';
         }
 
@@ -414,7 +414,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Input.ObjectPath' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Input.ObjectPath | Should -Be $Null;
         }
 
@@ -436,7 +436,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Input.TargetType' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Input.TargetType | Should -Be $Null;
         }
 
@@ -473,7 +473,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Logging.LimitDebug' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Logging.LimitDebug | Should -BeNullOrEmpty;
         }
 
@@ -495,7 +495,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Logging.LimitVerbose' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Logging.LimitVerbose | Should -BeNullOrEmpty;
         }
 
@@ -517,7 +517,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Logging.RuleFail' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Logging.RuleFail | Should -Be 'None';
         }
 
@@ -539,7 +539,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Logging.RulePass' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Logging.RulePass | Should -Be 'None';
         }
 
@@ -561,7 +561,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Output.As' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Output.As | Should -Be 'Detail';
         }
 
@@ -583,7 +583,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Output.Culture' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Output.Culture | Should -BeNullOrEmpty;
         }
 
@@ -626,7 +626,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Output.Encoding' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Output.Encoding | Should -Be 'Default';
         }
 
@@ -648,7 +648,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Output.Format' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Output.Format | Should -Be 'None';
         }
 
@@ -670,7 +670,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Output.Path' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Output.Path | Should -BeNullOrEmpty;
         }
 
@@ -692,7 +692,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Output.Style' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Output.Style | Should -Be 'Client';
         }
 
@@ -714,7 +714,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
     Context 'Read Suppression' {
         It 'from default' {
-            $option = New-PSRuleOption;
+            $option = New-PSRuleOption -Default;
             $option.Suppression.Count | Should -Be 0;
         }
 

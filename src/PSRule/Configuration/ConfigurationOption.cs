@@ -20,9 +20,11 @@ namespace PSRule.Configuration
             _Configuration = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
 
-        internal ConfigurationOption(IDictionary<string, object> rules)
+        internal ConfigurationOption(IDictionary<string, object> configuration)
         {
-            _Configuration = new Dictionary<string, object>(rules, StringComparer.OrdinalIgnoreCase);
+            _Configuration = configuration == null ?
+                new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase) :
+                new Dictionary<string, object>(configuration, StringComparer.OrdinalIgnoreCase);
         }
 
         public object this[string key]
@@ -97,11 +99,8 @@ namespace PSRule.Configuration
         public static implicit operator ConfigurationOption(Hashtable hashtable)
         {
             var option = new ConfigurationOption();
-
             foreach (DictionaryEntry entry in hashtable)
-            {
                 option._Configuration.Add(entry.Key.ToString(), entry.Value);
-            }
 
             return option;
         }
@@ -111,6 +110,13 @@ namespace PSRule.Configuration
             var found = _Configuration.TryGetValue(binder.Name, out object value);
             result = value;
             return found;
+        }
+
+        internal static ConfigurationOption Combine(ConfigurationOption o1, ConfigurationOption o2)
+        {
+            var result = new ConfigurationOption(o1);
+            result.AddUnique(o2);
+            return result;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace PSRule.Rules
+namespace PSRule.Definitions
 {
     internal interface IResourceFilter
     {

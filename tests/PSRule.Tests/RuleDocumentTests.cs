@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Definitions;
 using PSRule.Parser;
-using PSRule.Rules;
 using System;
 using System.Collections;
 using System.Collections.Generic;

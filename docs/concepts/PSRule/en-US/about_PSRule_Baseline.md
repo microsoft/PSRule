@@ -35,7 +35,7 @@ Baseline options can be:
 
 ### Baseline specs
 
-A baseline spec is defined and saved within a YAML file with a `.rule.yaml` extension, for example `Baseline.rule.yaml`.
+A baseline spec is defined and saved within a YAML file with a `.Rule.yaml` extension, for example `Baseline.Rule.yaml`.
 
 To define a baseline spec use the following structure:
 
@@ -109,7 +109,7 @@ When baseline options are set, PSRule uses the following order to determine prec
 1. Parameter - `-Name` and `-Tag`.
 2. Explicit - A named baseline specified with `-Baseline`.
 3. Workspace - Included in `ps-rule.yaml` or specified on the command line with `-Option`.
-4. Module - A baseline object included in a `.rule.yaml` file.
+4. Module - A baseline object included in a `.Rule.yaml` file.
 
 After precedence is determined, baselines are merged and null values are ignored, such that:
 
@@ -147,5 +147,4 @@ rule:
   exclude:
   - rule3
   - rule4
-
 ```

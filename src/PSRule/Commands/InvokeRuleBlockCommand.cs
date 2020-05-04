@@ -4,7 +4,6 @@
 using PSRule.Pipeline;
 using PSRule.Runtime;
 using System;
-using System.Linq;
 using System.Management.Automation;
 
 namespace PSRule.Commands
@@ -31,14 +30,10 @@ namespace PSRule.Commands
                     return;
 
                 // Evalute type pre-condition
-                if (Type != null)
+                if (!AcceptsType())
                 {
-                    var comparer = RunspaceContext.CurrentThread.Pipeline.Baseline.GetTargetBinding().IgnoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
-                    if (!Type.Contains(value: RunspaceContext.CurrentThread.RuleRecord.TargetType, comparer: comparer))
-                    {
-                        RunspaceContext.CurrentThread.Writer.DebugMessage("Target failed Type precondition");
-                        return;
-                    }
+                    RunspaceContext.CurrentThread.Writer.DebugMessage("Target failed Type precondition");
+                    return;
                 }
 
                 // Evaluate script pre-condition
@@ -56,13 +51,27 @@ namespace PSRule.Commands
                 // Evaluate script block
                 PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Condition;
                 var invokeResult = RuleConditionResult.Create(Body.Invoke());
-
                 WriteObject(invokeResult);
             }
             finally
             {
                 PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.None;
             }
+        }
+
+        private bool AcceptsType()
+        {
+            if (Type == null)
+                return true;
+
+            var comparer = RunspaceContext.CurrentThread.Pipeline.Baseline.GetTargetBinding().IgnoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+            var targetType = RunspaceContext.CurrentThread.RuleRecord.TargetType;
+            for (var i = 0; i < Type.Length; i++)
+            {
+                if (comparer.Equals(targetType, Type[i]))
+                    return true;
+            }
+            return false;
         }
     }
 }

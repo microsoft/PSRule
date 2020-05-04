@@ -1,0 +1,12 @@
+
+---
+# Synopsis: A test module configuration
+kind: ModuleConfig
+metadata:
+  name: Configuration1
+spec:
+  binding: { }
+  configuration: { }
+  output:
+    culture:
+    - en-US

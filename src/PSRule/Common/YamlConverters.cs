@@ -3,9 +3,9 @@
 
 using PSRule.Annotations;
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Host;
 using PSRule.Pipeline;
-using PSRule.Rules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -431,9 +431,8 @@ namespace PSRule
                     else if (propertyName == "spec" && kind != null)
                     {
                         if (!TryResource(kind, reader, nestedObjectDeserializer, metadata, comment, out IResource resource))
-                        {
                             reader.SkipThisAndNestedEvents();
-                        }
+
                         result = resource;
                     }
                     else

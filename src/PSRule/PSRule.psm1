@@ -653,7 +653,7 @@ function Get-PSRule {
 # .ExternalHelp PSRule-Help.xml
 function Get-PSRuleBaseline {
     [CmdletBinding()]
-    [OutputType([PSRule.Rules.Baseline])]
+    [OutputType([PSRule.Definitions.Baseline])]
     param (
         [Parameter(Mandatory = $False)]
         [Alias('m')]
@@ -862,15 +862,18 @@ function Get-PSRuleHelp {
 
 # .ExternalHelp PSRule-Help.xml
 function New-PSRuleOption {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'FromPath')]
     [OutputType([PSRule.Configuration.PSRuleOption])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in memory object only')]
     param (
-        [Parameter(Position = 0, Mandatory = $False)]
+        [Parameter(Position = 0, Mandatory = $False, ParameterSetName = 'FromPath')]
         [String]$Path = $PWD,
 
-        [Parameter(Mandatory = $False)]
+        [Parameter(Mandatory = $True, ParameterSetName = 'FromOption')]
         [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $True, ParameterSetName = 'FromDefault')]
+        [Switch]$Default,
 
         [Parameter(Mandatory = $False)]
         [Alias('BaselineConfiguration')]
@@ -997,6 +1000,9 @@ function New-PSRuleOption {
         if ($optionParams.ContainsKey('Option')) {
             $optionParams.Remove('Option');
         }
+        if ($optionParams.ContainsKey('Default')) {
+            $optionParams.Remove('Default');
+        }
         if ($optionParams.ContainsKey('Verbose')) {
             $optionParams.Remove('Verbose');
         }
@@ -1013,15 +1019,18 @@ function New-PSRuleOption {
             $optionParams.Remove('BindTargetType');
         }
         if ($PSBoundParameters.ContainsKey('Option')) {
-            $Option = $Option.Clone();
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFileOrEmpty($Option, $Path);
         }
         elseif ($PSBoundParameters.ContainsKey('Path')) {
             Write-Verbose -Message "Attempting to read: $Path";
-            $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $False);
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path);
+        }
+        elseif ($PSBoundParameters.ContainsKey('Default')) {
+            $Option = [PSRule.Configuration.PSRuleOption]::FromDefault();
         }
         else {
             Write-Verbose -Message "Attempting to read: $Path";
-            $Option = [PSRule.Configuration.PSRuleOption]::FromFile($Path, $True);
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFileOrEmpty($Option, $Path);
         }
     }
 
@@ -1215,7 +1224,7 @@ function Set-PSRuleOption {
         }
         else {
             Write-Verbose -Message "[Set-PSRuleOption] -- Attempting to read: $Path";
-            $Option = [PSRule.Configuration.PSRuleOption]::FromFileOrDefault($Path);
+            $Option = [PSRule.Configuration.PSRuleOption]::FromFileOrEmpty($Path);
         }
 
         $filePath = [PSRule.Configuration.PSRuleOption]::GetFilePath($Path);

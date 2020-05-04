@@ -358,7 +358,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using invariant culture may cause rule infomation to be displayed incorrectly. Consider using -Culture or settings the Output.Culture option..
+        ///   Looks up a localized string similar to Using invariant culture may cause rule infomation to be displayed incorrectly. Consider using -Culture or set the Output.Culture option..
         /// </summary>
         internal static string UsingInvariantCulture {
             get {
