@@ -2,12 +2,29 @@
 
 ## Unreleased
 
+## v0.17.0
+
+What's changed since v0.16.0:
+
+- General improvements:
+  - Improved `Assert-PSRule` output formatting.
+    - Added recommendation and reasons for `Client` and `Plain` styles. [#456](https://github.com/Microsoft/PSRule/issues/456)
+  - Added support for configuration of default module options. [#459](https://github.com/Microsoft/PSRule/issues/459)
+    - `binding` and `configuration` options can be set to a default value.
+    - Updated `New-PSRuleOption` parameter sets and help based on updates to module config.
+  - Added support for module fallback culture. [#441](https://github.com/Microsoft/PSRule/issues/441)
+- Bug fixes:
+  - Fixed resource schema to include `useQualifiedName` and `nameSeparator` option. [#458](https://github.com/Microsoft/PSRule/issues/458)
+
+What's changed since pre-release v0.17.0-B2005010:
+
+- No additional changes.
+
 ## v0.17.0-B2005010 (pre-release)
 
 - General improvements:
   - Improved `Assert-PSRule` output formatting.
     - Added recommendation and reasons for `Client` and `Plain` styles. [#456](https://github.com/Microsoft/PSRule/issues/456)
-- Engine features:
   - Added support for configuration of default module options. [#459](https://github.com/Microsoft/PSRule/issues/459)
     - `binding` and `configuration` options can be set to a default value.
     - Updated `New-PSRuleOption` parameter sets and help based on updates to module config.
