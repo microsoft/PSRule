@@ -66,13 +66,14 @@
 <p>PSRule provides an easy way to:</p>
 <ul>
 <li>Define reusable business rules like scripts.</li>
-<li>Validate PowerShell objects with rules by piping them to PSRule.</li>
+<li>Validate PowerShell objects and infrastructure code.</li>
 </ul>
-<p>Because PSRule is based on PowerShell:</p>
+<p>Features of PSRule include:</p>
 <ul>
-<li>It builds on existing PowerShell skills.</li>
-<li>Works with other PowerShell modules and .NET classes.</li>
-<li>Works great with source control and DevOps pipelines.</li>
+<li><a href="features.html#extensible">Extensible</a> - Use PowerShell, a flexible scripting language.</li>
+<li><a href="features.html#cross-platform">Cross-platform</a> - Run on MacOS, Linux and Windows.</li>
+<li><a href="features.html#reusable">Reusable</a> - Share rules across teams or organizations.</li>
+<li><a href="features.html#recommendations">Recommendations</a> - Include detailed instructions to remediate issues.</li>
 </ul>
 <h2 id="installing-the-module">Installing the module</h2>
 <p>You can download and install the PSRule module from the PowerShell Gallery.</p>
@@ -93,7 +94,7 @@
 </tbody>
 </table>
 <p><img src="https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=master" alt="module-ci-badge"> <img src="https://img.shields.io/powershellgallery/v/PSRule.svg?label=PowerShell%20Gallery&amp;color=brightgreen" alt="module-version-badge"> <img src="https://img.shields.io/powershellgallery/dt/PSRule.svg?color=brightgreen" alt="module-downloads-badge"></p>
-<h2 id="installing-the-extension">Installing the extension</h2>
+<h2 id="visual-studio-code-extension">Visual Studio Code extension</h2>
 <p>You can download and install the companion extension for Visual Studio Code from the Visual Studio Marketplace.</p>
 <table>
 <thead>
@@ -111,7 +112,26 @@
 </tr>
 </tbody>
 </table>
-<p><img src="https://dev.azure.com/bewhite/PSRule-vscode/_apis/build/status/PSRule-vscode-CI?branchName=master" alt="extension-ci-badge"> <img src="https://vsmarketplacebadge.apphb.com/version/bewhite.psrule-vscode-preview.svg" alt="extension-version-badge"> <img src="https://vsmarketplacebadge.apphb.com/installs-short/bewhite.psrule-vscode-preview.svg" alt="extension-installs-badge"></p>
+<p><img src="https://dev.azure.com/bewhite/PSRule-vscode/_apis/build/status/PSRule-vscode-CI?branchName=master" alt="extension-vscode-ci-badge"> <img src="https://vsmarketplacebadge.apphb.com/version/bewhite.psrule-vscode-preview.svg" alt="extension-vscode-version-badge"> <img src="https://vsmarketplacebadge.apphb.com/installs-short/bewhite.psrule-vscode-preview.svg" alt="extension-vscode-installs-badge"></p>
+<h2 id="azure-devops-extension">Azure DevOps extension</h2>
+<p>You can download and install the companion extension for Azure Pipelines from the Visual Studio Marketplace.</p>
+<table>
+<thead>
+<tr>
+<th>Extension</th>
+<th>Description</th>
+<th>Downloads / instructions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PSRule</td>
+<td>An Azure DevOps extension for using PSRule within Azure Pipelines.</td>
+<td><a href="https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule">latest</a> / <a href="scenarios/install-instructions.html">instructions</a></td>
+</tr>
+</tbody>
+</table>
+<p><img src="https://dev.azure.com/bewhite/PSRule-pipelines/_apis/build/status/PSRule-pipelines-CI?branchName=master" alt="extension-pipelines-ci-badge"> <img src="https://vsmarketplacebadge.apphb.com/version/bewhite.ps-rule.svg" alt="extension-pipelines-version-badge"></p>
 <h2 id="additional-modules">Additional modules</h2>
 <p>You can optionally download and install the following modules from the PowerShell Gallery.</p>
 <table>

@@ -72,9 +72,10 @@ Using a module, rules can be published and installed using standard PowerShell c
 </ul>
 <p>This scenario covers the following:</p>
 <ul>
-<li>Creating a module manifest</li>
-<li>Including rules and baselines</li>
-<li>Including documentation</li>
+<li><a href="#creating-a-module-manifest">Creating a module manifest</a></li>
+<li><a href="#including-rules-and-baselines">Including rules and baselines</a></li>
+<li><a href="#defining-a-module-configuration">Defining a module configuration</a></li>
+<li><a href="#including-documentation">Including documentation</a></li>
 </ul>
 <h2 id="creating-a-module-manifest">Creating a module manifest</h2>
 <p>When creating a PowerShell module, a module manifest is an optional file that stores module metadata.
@@ -154,6 +155,23 @@ We recommend using the exact case <code>.Rule.ps1</code>.
 This is because some file systems are case-sensitive.
 For example, on Linux <code>NamingStandards.rule.ps1</code> would be ignored by PSRule.</p>
 <p>Similarly, when including baselines within a module use the <code>.Rule.yaml</code> suffix.</p>
+<h2 id="defining-a-module-configuration">Defining a module configuration</h2>
+<p>A module configuration that sets options defaults can be optionally packaged with a module.
+To set a module configuration, define a <code>ModuleConfig</code> resource within an included <code>.Rule.yaml</code> file.
+A module configuration <code>.Rule.yaml</code> file must be distributed within the module directory structure.</p>
+<p>PSRule only supports a single <code>ModuleConfig</code> resource.
+Additional <code>ModuleConfig</code> resources are ignored.</p>
+<p>The following options are allowed within a <code>ModuleConfig</code>:</p>
+<ul>
+<li><code>Binding.Field</code></li>
+<li><code>Binding.IgnoreCase</code></li>
+<li><code>Binding.NameSeparator</code></li>
+<li><code>Binding.TargetName</code></li>
+<li><code>Binding.TargetType</code></li>
+<li><code>Binding.UseQualifiedName</code></li>
+<li><code>Configuration</code></li>
+<li><code>Output.Culture</code></li>
+</ul>
 <h2 id="including-documentation">Including documentation</h2>
 <p>PSRule supports write and packaging rule modules with markdown documentation.
 Markdown documentation is automatically interpreted by PSRule and included in output.</p>
@@ -189,6 +207,7 @@ For example on Linux <code>en-us</code> would not match.</p>
 <li>NamingStandards.Rule.ps1</li>
 <li>ComplianceStandards.Rule.ps1</li>
 <li>Baseline.Rule.yaml</li>
+<li>ModuleConfig.Rule.yaml</li>
 </ul>
 </li>
 <li>Enterprise.Rules.psd1</li>
@@ -198,6 +217,8 @@ For example on Linux <code>en-us</code> would not match.</p>
 <h2 id="more-information">More information</h2>
 <ul>
 <li><a href="Enterprise.Rules/Enterprise.Rules.psd1">Enterprise.Rules.psd1</a> - An example module manifest.</li>
+<li><a href="Enterprise.Rules/rules/Baseline.Rule.yaml">Baseline.Rule.yaml</a> - An example module manifest.</li>
+<li><a href="Enterprise.Rules/rules/ModuleConfig.Rule.yaml">ModuleConfig.Rule.yaml</a> - An example module manifest.</li>
 </ul>
 </article>
           </div>

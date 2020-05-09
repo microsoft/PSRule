@@ -101,7 +101,7 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 <li>The first parameter is <em>always</em> the input object of type <code>PSObject</code>, additional parameters can be included based on the functionality required by the method.
 <ul>
 <li>In many cases the input object will be <code>$TargetObject</code>, however assertion methods must not assume that <code>$TargetObject</code> will be used.</li>
-<li>Assertion methods must a <code>$Null</code> input object.</li>
+<li>Assertion methods must accept a <code>$Null</code> input object.</li>
 </ul>
 </li>
 <li>Assertion methods return the <code>AssertResult</code> object that is interpreted by the rule pipeline.</li>
@@ -121,6 +121,23 @@ Use assertion methods for advanced cases or increased flexibility.</p>
     $Assert.HasFieldValue($TargetObject, 'Value')
 }
 </code></pre>
+<h3 id="field-names">Field names</h3>
+<p>Many of the built-in assertion methods accept a field name.
+The field name is an expression that traverses object properties, keys or indexes of the <em>input object</em>.</p>
+<p>The field name can contain:</p>
+<ul>
+<li>Property names for PSObjects or .NET objects.</li>
+<li>Keys for hash table or dictionaries.</li>
+<li>Indexes for arrays or collections.</li>
+</ul>
+<p>For example:</p>
+<ul>
+<li><code>.</code> refers to <em>input object</em> itself.</li>
+<li><code>Name</code> or <code>.Name</code> refers to the name property/ key of the <em>input object</em>.</li>
+<li><code>Properties.enabled</code> refers to the enabled property under the Properties property.</li>
+<li><code>Tags.env</code> refers to the env key under a hash table property of the <em>input object</em>.</li>
+<li><code>Properties.securityRules[0].name</code> references to the name property of the first security rule.</li>
+</ul>
 <h3 id="contains">Contains</h3>
 <p>The <code>Contains</code> assertion method checks the field value contains with the specified string.
 Optionally a case-sensitive compare can be used, however case is ignored by default.</p>
@@ -177,10 +194,10 @@ Optionally a case-sensitive compare can be used, however case is ignored by defa
 </code></pre>
 <h3 id="greater">Greater</h3>
 <p>The <code>Greater</code> assertion method checks the field value is greater than the specified value.
-The field value can either be an integer or an array.
+The field value can either be an integer, float, array, or string.
 When the field value is:</p>
 <ul>
-<li>An integer, a numerical comparison is used.</li>
+<li>An integer or float, a numerical comparison is used.</li>
 <li>An array, the number of elements is compared.</li>
 <li>A string, the length of the string is compared.</li>
 </ul>
@@ -205,10 +222,10 @@ When the field value is:</p>
 </code></pre>
 <h3 id="greaterorequal">GreaterOrEqual</h3>
 <p>The <code>GreaterOrEqual</code> assertion method checks the field value is greater or equal to the specified value.
-The field value can either be an integer or an array.
+The field value can either be an integer, float, array, or string.
 When the field value is:</p>
 <ul>
-<li>An integer, a numerical comparison is used.</li>
+<li>An integer or float, a numerical comparison is used.</li>
 <li>An array, the number of elements is compared.</li>
 <li>A string, the length of the string is compared.</li>
 </ul>
@@ -351,10 +368,10 @@ Either a file path or URL can be used to specify the location of the schema file
 </code></pre>
 <h3 id="less">Less</h3>
 <p>The <code>Less</code> assertion method checks the field value is less than the specified value.
-The field value can either be an integer or an array.
+The field value can either be an integer, float, array, or string.
 When the field value is:</p>
 <ul>
-<li>An integer, a numerical comparison is used.</li>
+<li>An integer or float, a numerical comparison is used.</li>
 <li>An array, the number of elements is compared.</li>
 <li>A string, the length of the string is compared.</li>
 </ul>
@@ -379,10 +396,10 @@ When the field value is:</p>
 </code></pre>
 <h3 id="lessorequal">LessOrEqual</h3>
 <p>The <code>LessOrEqual</code> assertion method checks the field value is less or equal to the specified value.
-The field value can either be an integer or an array.
+The field value can either be an integer, float, array, or string.
 When the field value is:</p>
 <ul>
-<li>An integer, a numerical comparison is used.</li>
+<li>An integer or float, a numerical comparison is used.</li>
 <li>An array, the number of elements is compared.</li>
 <li>A string, the length of the string is compared.</li>
 </ul>

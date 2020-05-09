@@ -88,6 +88,7 @@ This topic describes what options are available, when to and how to use them.</p
 <li><a href="#loggingrulefail">Logging.RuleFail</a></li>
 <li><a href="#loggingrulepass">Logging.RulePass</a></li>
 <li><a href="#outputas">Output.As</a></li>
+<li><a href="#outputculture">Output.Culture</a></li>
 <li><a href="#outputencoding">Output.Encoding</a></li>
 <li><a href="#outputformat">Output.Format</a></li>
 <li><a href="#outputpath">Output.Path</a></li>
@@ -444,8 +445,8 @@ execution:
   inconclusiveWarning: false
 </code></pre>
 <h3 id="executionnotprocessedwarning">Execution.NotProcessedWarning</h3>
-<p>When evaluating rules, it is possible to incorrectly select a path with rules that use pre-conditions that do not accept the pipeline object.</p>
-<p>In this case the object has not been processed by any rule.</p>
+<p>When evaluating rules, it is possible to incorrectly select a path with rules that use pre-conditions that do not accept the pipeline object.
+In this case the object has not been processed by any rule.</p>
 <p>Not processed objects will:</p>
 <ul>
 <li>Generate a warning by default.</li>
@@ -658,7 +659,8 @@ logging:
 </code></pre>
 <h3 id="outputas">Output.As</h3>
 <p>Configures the type of results to produce.</p>
-<p>This option only applies to <code>Invoke-PSRule</code>. <code>Invoke-PSRule</code> also includes a parameter <code>-As</code> to set this option at runtime.
+<p>This option only applies to <code>Invoke-PSRule</code>.
+<code>Invoke-PSRule</code> also include a <code>-As</code> parameter to set this option at runtime.
 If specified, the <code>-As</code> parameter take precedence, over this option.</p>
 <p>The following options are available:</p>
 <ul>
@@ -678,6 +680,27 @@ Set-PSRuleOption -OutputAs Yaml;
 <pre><code class="lang-yaml"># YAML: Using the output/as property
 output:
   as: Summary
+</code></pre>
+<h3 id="outputculture">Output.Culture</h3>
+<p>Specified the name of one or more cultures to use for generating output.
+When multiple cultures are specified, the first matching culture will be used.
+If a culture is not specified, PSRule will use the current PowerShell culture.</p>
+<p>PSRule cmdlets also include a <code>-Culture</code> parameter to set this option at runtime.
+If specified, the <code>-Culture</code> parameter take precedence, over this option.</p>
+<p>To get a list of cultures use the <code>Get-Culture -ListAvailable</code> cmdlet.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputCulture parameter
+$option = New-PSRuleOption -OutputCulture 'en-AU';
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Output.Culture hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Culture' = 'en-AU' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputCulture parameter to set YAML
+Set-PSRuleOption -OutputCulture 'en-AU', 'en-US';
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the output/culture property
+output:
+  culture: [ 'en-AU', 'en-US' ]
 </code></pre>
 <h3 id="outputencoding">Output.Encoding</h3>
 <p>Configures the encoding used when output is written to file.
@@ -991,6 +1014,7 @@ logging:
 
 output:
   as: Detail
+  culture: [ ]
   encoding: Default
   format: None
   style: Client

@@ -104,7 +104,7 @@ A baseline includes a set of rule and configuration options that are used for ev
 </li>
 </ul>
 <h3 id="baseline-specs">Baseline specs</h3>
-<p>A baseline spec is defined and saved within a YAML file with a <code>.rule.yaml</code> extension, for example <code>Baseline.rule.yaml</code>.</p>
+<p>A baseline spec is defined and saved within a YAML file with a <code>.Rule.yaml</code> extension, for example <code>Baseline.Rule.yaml</code>.</p>
 <p>To define a baseline spec use the following structure:</p>
 <pre><code class="lang-yaml">---
 # Synopsis: &lt;synopsis&gt;
@@ -170,7 +170,7 @@ spec:
 <li>Parameter - <code>-Name</code> and <code>-Tag</code>.</li>
 <li>Explicit - A named baseline specified with <code>-Baseline</code>.</li>
 <li>Workspace - Included in <code>ps-rule.yaml</code> or specified on the command line with <code>-Option</code>.</li>
-<li>Module - A baseline object included in a <code>.rule.yaml</code> file.</li>
+<li>Module - A baseline object included in a <code>.Rule.yaml</code> file.</li>
 </ol>
 <p>After precedence is determined, baselines are merged and null values are ignored, such that:</p>
 <h2 id="examples">EXAMPLES</h2>
@@ -204,7 +204,6 @@ rule:
   exclude:
   - rule3
   - rule4
-
 </code></pre>
 </article>
           </div>

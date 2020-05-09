@@ -83,11 +83,13 @@ Save-Module -Name 'PSRule' -Repository PSGallery -Path '.\modules';
 </code></pre>
 <blockquote>
 <p>For pre-release versions the <code>-AllowPrerelease</code> switch must be added when calling <code>Install-Module</code> or <code>Save-Module</code>.</p>
-<p>To install pre-release module versions, upgrading to the latest version of <em>PowerShellGet</em> may be required. To do this use:</p>
+<p>To install pre-release module versions, upgrading to the latest version of <em>PowerShellGet</em> may be required.
+To do this use:</p>
 <p><code>Install-Module -Name PowerShellGet -Repository PSGallery -Scope CurrentUser -Force</code></p>
 </blockquote>
-<h2 id="getting-the-extension">Getting the extension</h2>
-<p>You can install the <a href="https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview">latest release</a> of the Visual Studio Code (VSCode) companion extension by searching for <code>PSRule</code> in the extensions pane within VSCode and installing it.</p>
+<h2 id="getting-the-extension-for-visual-studio-code">Getting the extension for Visual Studio Code</h2>
+<p>Install the <a href="https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview">latest release</a> from the Visual Studio Marketplace.
+Within Visual Studio Code (VSCode) search for <code>PSRule</code> in the extensions pane.</p>
 <p>Install by the command line:</p>
 <pre><code class="lang-text">code --install-extension bewhite.psrule-vscode-preview
 </code></pre>
@@ -95,6 +97,10 @@ Save-Module -Name 'PSRule' -Repository PSGallery -Path '.\modules';
 <p>NOTE: If you are using VS Code Insiders, the command will be <code>code-insiders</code>.</p>
 </blockquote>
 <p>For detailed instructions, follow the steps in the <a href="https://code.visualstudio.com/docs/editor/extension-gallery">Visual Studio Code documentation</a>.</p>
+<h2 id="getting-the-extension-for-azure-pipelines">Getting the extension for Azure Pipelines</h2>
+<p>Install the <a href="https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule">latest release</a> from the Visual Studio Marketplace.
+For detailed instructions see <a href="https://docs.microsoft.com/en-us/azure/devops/marketplace/install-extension?view=azure-devops&amp;tabs=browser">Install extensions</a>.</p>
+<p>If you don't have permissions to install extensions within your Azure DevOps organization, you can request it to be installed by an admin instead.</p>
 <h2 id="building-from-source">Building from source</h2>
 <p>To build this module from source run <code>./build.ps1</code>.
 This build script will compile the module and documentation then output the result into <code>out/modules/PSRule</code>.</p>

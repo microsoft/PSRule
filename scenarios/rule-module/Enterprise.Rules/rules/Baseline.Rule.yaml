@@ -1,0 +1,10 @@
+
+---
+# Synopsis: An example baseline for Enterprise.Rules module
+kind: Baseline
+metadata:
+  name: Enterprise.Default
+spec:
+  rule:
+    tag:
+      release: GA

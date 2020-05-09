@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRuleBaseline.html",
-          "hash": "DD1wQb9pihs1J31GrLLAfA=="
+          "hash": "0eYrDQjgIis2byn/ku1xeA=="
         }
       },
       "is_incremental": false,
@@ -69,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "3TZ01DhGS4Bah5vTagh5pA=="
+          "hash": "Lm1GTGJtwdhXWNL85rL2/g=="
         }
       },
       "is_incremental": false,
@@ -93,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Set-PSRuleOption.html",
-          "hash": "ejGtCnvA0yLRkTjM62Gk4A=="
+          "hash": "FEJxyJe8Wph9utvFTrhslw=="
         }
       },
       "is_incremental": false,
@@ -129,7 +129,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Assert.html",
-          "hash": "vuxYP0yrGjE+Fq+i4yZFgQ=="
+          "hash": "DQjAjCLe0l12VDvtyRO+tg=="
         }
       },
       "is_incremental": false,
@@ -141,7 +141,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Baseline.html",
-          "hash": "Fib8mbzONJ8OAj6qz2Njyg=="
+          "hash": "oZA+16DsvkWQe0x5/n+tKA=="
         }
       },
       "is_incremental": false,
@@ -165,7 +165,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "POiWK5aQb44Nb79vyBoX1g=="
+          "hash": "wDZfUcT/7uLd2U/eqihZPA=="
         }
       },
       "is_incremental": false,
@@ -201,7 +201,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "JJjcCccyhVJ2ORSygQqrZA=="
+          "hash": "tX6wLbWls1bvws3JxzCekA=="
         }
       },
       "is_incremental": false,
@@ -371,7 +371,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/install-instructions.html",
-          "hash": "iXr5MB6ATz9BeXZS79tLIA=="
+          "hash": "/7Z3wQVnC+2Q2OohzBFpww=="
         }
       },
       "is_incremental": false,
@@ -458,6 +458,28 @@
       "version": ""
     },
     {
+      "type": "Resource",
+      "source_relative_path": "scenarios/rule-module/Enterprise.Rules/rules/Baseline.Rule.yaml",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/rule-module/Enterprise.Rules/rules/Baseline.Rule.yaml"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "scenarios/rule-module/Enterprise.Rules/rules/ModuleConfig.Rule.yaml",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/rule-module/Enterprise.Rules/rules/ModuleConfig.Rule.yaml"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
       "log_codes": [
         "InvalidFileLink"
       ],
@@ -466,7 +488,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/rule-module/rule-module.html",
-          "hash": "eE7mj521R68yPQcYFodnxQ=="
+          "hash": "8N+OL4qPK2G+qCKLZA6T1A=="
         }
       },
       "is_incremental": false,
