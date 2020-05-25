@@ -101,9 +101,9 @@ For example:
 
 - Enterprise.Rules/
   - rules/
-    - NamingStandards.Rule.ps1
-    - ComplianceStandards.Rule.ps1
     - Baseline.Rule.yaml
+    - Config.Rule.yaml
+    - Standards.Rule.ps1
   - Enterprise.Rules.psd1
 
 ### File names
@@ -111,7 +111,7 @@ For example:
 For PSRule to find rules included in a module, rule file names must end with the `.Rule.ps1` suffix.
 We recommend using the exact case `.Rule.ps1`.
 This is because some file systems are case-sensitive.
-For example, on Linux `NamingStandards.rule.ps1` would be ignored by PSRule.
+For example, on Linux `Standards.rule.ps1` would be ignored by PSRule.
 
 Similarly, when including baselines within a module use the `.Rule.yaml` suffix.
 
@@ -122,7 +122,31 @@ To set a module configuration, define a `ModuleConfig` resource within an includ
 A module configuration `.Rule.yaml` file must be distributed within the module directory structure.
 
 PSRule only supports a single `ModuleConfig` resource.
-Additional `ModuleConfig` resources are ignored.
+The name of the `ModuleConfig` must match the name of the module.
+Additional `ModuleConfig` resources or with an alternative name are ignored.
+
+```yaml
+---
+# Synopsis: Example module configuration for Enterprise.Rules module
+kind: ModuleConfig
+metadata:
+  name: Enterprise.Rules
+spec:
+  binding:
+    targetName:
+    - ResourceName
+    - FullName
+    - name
+    targetType:
+    - ResourceType
+    - type
+    - Extension
+    field:
+      resourceId: [ 'ResourceId' ]
+      subscriptionId: [ 'SubscriptionId' ]
+      resourceGroupName: [ 'ResourceGroupName' ]
+
+```
 
 The following options are allowed within a `ModuleConfig`:
 
@@ -156,20 +180,20 @@ For example:
 
 - Enterprise.Rules/
   - en/
-    - Metadata.Name.md
+    - Org.Az.Storage.UseHttps.md
+    - Org.Az.Resource.Tagging.md
   - en-US/
-    - Metadata.Name.md
+    - Org.Az.Storage.UseHttps.md
   - fr-FR/
-    - Metadata.Name.md
+    - Org.Az.Storage.UseHttps.md
   - rules/
-    - NamingStandards.Rule.ps1
-    - ComplianceStandards.Rule.ps1
     - Baseline.Rule.yaml
-    - ModuleConfig.Rule.yaml
+    - Config.Rule.yaml
+    - Standards.Rule.ps1
   - Enterprise.Rules.psd1
 
 ## More information
 
 - [Enterprise.Rules.psd1](Enterprise.Rules/Enterprise.Rules.psd1) - An example module manifest.
-- [Baseline.Rule.yaml](Enterprise.Rules/rules/Baseline.Rule.yaml) - An example module manifest.
-- [ModuleConfig.Rule.yaml](Enterprise.Rules/rules/ModuleConfig.Rule.yaml) - An example module manifest.
+- [Baseline.Rule.yaml](Enterprise.Rules/rules/Baseline.Rule.yaml) - An example baseline.
+- [Config.Rule.yaml](Enterprise.Rules/rules/Config.Rule.yaml) - An example module configuration.

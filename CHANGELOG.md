@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Bug fixes:
+  - Fixed binding with ModuleConfig. [#468](https://github.com/Microsoft/PSRule/issues/468)
+
 ## v0.17.0
 
 What's changed since v0.16.0:

@@ -45,9 +45,11 @@ Describe 'PSRule' -Tag 'PowerShellGallery' {
             $filteredCommands | Should -Not -BeNullOrEmpty;
             $expected = @(
                 'Invoke-PSRule'
+                'Test-PSRuleTarget'
+                'Assert-PSRule'
                 'Get-PSRule'
                 'Get-PSRuleHelp'
-                'Test-PSRuleTarget'
+                'Get-PSRuleBaseline'
                 'New-PSRuleOption'
                 'Set-PSRuleOption'
                 'Rule'
