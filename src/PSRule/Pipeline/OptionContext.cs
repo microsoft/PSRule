@@ -269,7 +269,7 @@ namespace PSRule.Pipeline
 
         internal void Add(BaselineScope scope)
         {
-            if (scope.Type == ScopeType.Module)
+            if (scope.Type == ScopeType.Module && !string.IsNullOrEmpty(scope.ModuleName))
                 _ModuleBaselineScope.Add(scope.ModuleName, scope);
             else if (scope.Type == ScopeType.Explicit)
                 _Explicit = scope;
@@ -281,7 +281,7 @@ namespace PSRule.Pipeline
 
         internal void Add(ConfigScope scope)
         {
-            if (scope.Type == ScopeType.Module)
+            if (scope.Type == ScopeType.Module && !string.IsNullOrEmpty(scope.ModuleName))
                 _ModuleConfigScope.Add(scope.ModuleName, scope);
             else if (scope.Type == ScopeType.Workspace)
                 _WorkspaceConfig = scope;

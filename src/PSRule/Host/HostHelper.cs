@@ -41,12 +41,18 @@ namespace PSRule.Host
             return builder.Build();
         }
 
+        /// <summary>
+        /// Read YAML objects and return baselines.
+        /// </summary>
         public static IEnumerable<Baseline> GetBaseline(Source[] source, RunspaceContext context)
         {
             return ToBaseline(ReadYamlObjects(source, context), context);
         }
 
-        public static IEnumerable<ModuleConfig> GetConfig(Source[] source, RunspaceContext context)
+        /// <summary>
+        /// Read YAML objects and return module configurations.
+        /// </summary>
+        public static IEnumerable<ModuleConfig> GetModuleConfig(Source[] source, RunspaceContext context)
         {
             return ToModuleConfig(ReadYamlObjects(source, context), context);
         }
@@ -208,10 +214,6 @@ namespace PSRule.Host
 
                                 result.Add(item.Block);
                             }
-                            if (result.Count == 0)
-                                return null;
-
-                            return result.ToArray();
                         }
                     }
                 }
@@ -222,7 +224,7 @@ namespace PSRule.Host
                 context.Pipeline.ExecutionScope = ExecutionScope.None;
                 context.ExitSourceScope();
             }
-            return result;
+            return result.Count == 0 ? Array.Empty<ILanguageBlock>() : result.ToArray();
         }
 
         public static void InvokeRuleBlock(RunspaceContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)

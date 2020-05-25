@@ -1,0 +1,14 @@
+
+---
+kind: ModuleConfig
+metadata:
+  name: TestModule4
+spec:
+  configuration:
+    ruleConfig3: 'TestConfig3'
+  output:
+    culture:
+    - 'en-US'
+  binding:
+    field:
+      AlternativeType: [ 'Kind' ]

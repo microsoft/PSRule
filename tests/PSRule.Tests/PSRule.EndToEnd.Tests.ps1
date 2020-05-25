@@ -169,6 +169,28 @@ Describe 'Scenarios -- kubernetes-resources' -Tag 'EndToEnd','kubernetes-resourc
     }
 }
 
+Describe 'Scenarios -- rule-module' -Tag 'EndToEnd', 'rule-module' {
+    $scenarioPath = Join-Path -Path $rootPath -ChildPath docs/scenarios/rule-module;
+    $inputPath = Join-Path -Path $scenarioPath -ChildPath 'resources.json';
+
+    Context 'Invoke-PSRule' {
+        Import-Module (Join-Path -Path $scenarioPath -ChildPath 'Enterprise.Rules') -Force;
+        $result = @(Invoke-PSRule -InputPath $inputPath -Module 'Enterprise.Rules' -WarningAction SilentlyContinue);
+
+        It 'Binds fields' {
+            $result.TargetName | Should -BeIn 'storage', 'app-service-plan', 'web-app', 'web-app/staging';
+            $result.TargetType | Should -BeIn @(
+                'Microsoft.Storage/storageAccounts'
+                'Microsoft.Web/serverfarms'
+                'Microsoft.Web/sites'
+                'Microsoft.Web/sites/slots'
+            )
+            $result.Field.SubscriptionId | Should -Be '00000000-0000-0000-0000-000000000000';
+            $result.Field.ResourceGroupName | Should -Be 'test-rg';
+        }
+    }
+}
+
 Describe 'Scenarios -- validation-pipeline' -Tag 'EndToEnd', 'validation-pipeline' {
     $scenarioPath = Join-Path -Path $rootPath -ChildPath docs/scenarios/validation-pipeline;
     $sourcePath = Join-Path -Path $rootPath -ChildPath src/PSRule;
