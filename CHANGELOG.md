@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.18.0-B2005015 (pre-release)
+
 - General improvements:
   - Improved `Assert-PSRule` output formatting. [#472](https://github.com/Microsoft/PSRule/issues/472)
     - Added recommendation and reasons for `AzurePipelines` and `GitHubActions` styles.
