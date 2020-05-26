@@ -327,7 +327,7 @@ namespace PSRule.Pipeline
                 {
                     LineBreak();
                     WriteLine(FormatterStrings.Recommend, forgroundColor: ConsoleColor.Cyan);
-                    WriteLines(record.Info.Recommendation, prefix: FormatterStrings.RecommendPrefix, forgroundColor: ConsoleColor.Cyan);
+                    WriteLines(record.Recommendation, prefix: FormatterStrings.RecommendPrefix, forgroundColor: ConsoleColor.Cyan);
                     if (record.Reason != null && record.Reason.Length > 0)
                     {
                         LineBreak();
