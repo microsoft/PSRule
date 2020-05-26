@@ -447,8 +447,8 @@ namespace PSRule.Pipeline
 
                 protected override void FailDetail(RuleRecord record)
                 {
-                    LineBreak();
-                    Error(string.Format(FormatterStrings.AzurePipelines_Fail, record.TargetName, record.RuleName, GetReason(record)));
+                    base.FailDetail(record);
+                    Error(string.Format(FormatterStrings.AzurePipelines_Fail, record.TargetName, record.RuleName, record.Info.Synopsis));
                     LineBreak();
                 }
 
@@ -514,8 +514,8 @@ namespace PSRule.Pipeline
 
                 protected override void FailDetail(RuleRecord record)
                 {
-                    LineBreak();
-                    Error(string.Format(FormatterStrings.GitHubActions_Fail, record.TargetName, record.RuleName, GetReason(record)));
+                    base.FailDetail(record);
+                    Error(string.Format(FormatterStrings.GitHubActions_Fail, record.TargetName, record.RuleName, record.Info.Synopsis));
                     LineBreak();
                 }
             }

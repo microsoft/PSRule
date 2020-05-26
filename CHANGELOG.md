@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- General improvements:
+  - Improved `Assert-PSRule` output formatting. [#472](https://github.com/Microsoft/PSRule/issues/472)
+    - Added recommendation and reasons for `AzurePipelines` and `GitHubActions` styles.
+    - Summary line is has been updated to include synopsis instead of reasons.
 - Bug fixes:
   - Fixed binding with ModuleConfig. [#468](https://github.com/Microsoft/PSRule/issues/468)
   - Fixed recommendation output with client style. [#467](https://github.com/Microsoft/PSRule/issues/467)
