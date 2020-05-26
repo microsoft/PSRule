@@ -339,6 +339,13 @@ task TagBuild {
     }
 }
 
+# Synopsis: Attach a change log to the output
+task AttachChangeLog {
+    if ($AssertStyle -eq 'AzurePipelines') {
+        Write-Host "`#`#vso[task.addattachment type=Distributedtask.Core.Summary;name=Change Log;]$(Join-Path -Path $PWD -ChildPath 'CHANGELOG.md')";
+    }
+}
+
 # Synopsis: Run script analyzer
 task Analyze Build, PSScriptAnalyzer, {
     Invoke-ScriptAnalyzer -Path out/modules/PSRule;
@@ -374,7 +381,7 @@ task PublishSite CleanSite, {
 }
 
 # Synopsis: Build and test.
-task . Build, Rules, TestDotNet, Benchmark
+task . Build, Rules, TestDotNet, Benchmark, AttachChangeLog
 
 # Synopsis: Build the project
 task Build Clean, BuildModule, BuildHelp, VersionModule, PackageModule
