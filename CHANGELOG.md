@@ -4,6 +4,7 @@
 
 - Bug fixes:
   - Fixed binding with ModuleConfig. [#468](https://github.com/Microsoft/PSRule/issues/468)
+  - Fixed recommendation output with client style. [#467](https://github.com/Microsoft/PSRule/issues/467)
 
 ## v0.17.0
 
