@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+## v0.18.0
+
+What's changed since v0.17.0:
+
+- General improvements:
+  - Improved `Assert-PSRule` output formatting. [#472](https://github.com/Microsoft/PSRule/issues/472)
+    - Added recommendation and reasons for `AzurePipelines` and `GitHubActions` styles.
+    - Summary line is has been updated to include synopsis instead of reasons.
+- Bug fixes:
+  - Fixed binding with `ModuleConfig`. [#468](https://github.com/Microsoft/PSRule/issues/468)
+  - Fixed recommendation output with client style. [#467](https://github.com/Microsoft/PSRule/issues/467)
+
+What's changed since pre-release v0.18.0-B2005015:
+
+- No additional changes.
+
 ## v0.18.0-B2005015 (pre-release)
 
 - General improvements:
@@ -9,7 +25,7 @@
     - Added recommendation and reasons for `AzurePipelines` and `GitHubActions` styles.
     - Summary line is has been updated to include synopsis instead of reasons.
 - Bug fixes:
-  - Fixed binding with ModuleConfig. [#468](https://github.com/Microsoft/PSRule/issues/468)
+  - Fixed binding with `ModuleConfig`. [#468](https://github.com/Microsoft/PSRule/issues/468)
   - Fixed recommendation output with client style. [#467](https://github.com/Microsoft/PSRule/issues/467)
 
 ## v0.17.0
