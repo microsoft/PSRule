@@ -177,9 +177,9 @@ stages:
   - template: jobs/testContainer.yaml
     parameters:
       name: ps_6_ubuntu_18_04
-      displayName: 'PowerShell 6.2.5 - ubuntu-18.04'
+      displayName: 'PowerShell 6.2.4 - ubuntu-18.04'
       imageName: mcr.microsoft.com/powershell
-      imageTag: 6.2.5-ubuntu-18.04
+      imageTag: 6.2.4-ubuntu-18.04
 
 # Release pipeline
 - stage: Release
