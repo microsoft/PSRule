@@ -145,6 +145,7 @@ stages:
       name: windows_2016
       displayName: 'PowerShell 5.1 - Windows 2016'
       imageName: 'vs2017-win2016'
+      pwsh: 'false'
 
   - template: jobs/test.yaml
     parameters:
