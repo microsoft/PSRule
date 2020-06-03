@@ -8,6 +8,7 @@ parameters:
   imageName: ''
   coverage: 'false'
   publishResults: 'true'
+  pwsh: 'true'
 
 jobs:
 - job: ${{ parameters.name }}
@@ -32,7 +33,11 @@ jobs:
       path: $(Build.SourcesDirectory)/out/modules/PSRule
 
   # Build module
-  - powershell: Invoke-Build TestModule -Configuration ${{ parameters.buildConfiguration }} -Build $(Build.BuildNumber)
+  - task: PowerShell@2
+    inputs:
+      targetType: inline
+      script: Invoke-Build TestModule -Configuration ${{ parameters.buildConfiguration }} -Build $(Build.BuildNumber)
+      pwsh: ${{ eq(parameters.pwsh, 'true') }}
     env:
       COVERAGE: ${{ parameters.coverage }}
     displayName: 'Test module'
