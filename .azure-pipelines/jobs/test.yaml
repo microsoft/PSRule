@@ -40,7 +40,7 @@ jobs:
       pwsh: ${{ eq(parameters.pwsh, 'true') }}
     env:
       COVERAGE: ${{ parameters.coverage }}
-      displayName: 'Test module'
+    displayName: 'Test module'
 
   # Pester test results
   - task: PublishTestResults@2
