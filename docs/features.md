@@ -79,9 +79,11 @@ If you want to test PowerShell code, use Pester.
 ### How do I configure PSRule?
 
 PSRule can be configured at runtime by passing the `-Option` parameter to cmdlets.
-Additionally, PSRule uses the `ps-rule.yaml` option file to read configuration from disk.
-The `ps-rule.yaml` option file will be read by PSRule automatically from the current working path.
-When checking into source control, this is normally the root directory of the repository.
+Additionally, PSRule uses the `ps-rule.yaml` option file to load configuration from disk.
+The `ps-rule.yaml` option file is read automatically from the current working path by default.
+When checking into source control, store this file in the root directory of the repository.
+
+For a list of configuration options and usage see [about_PSRule_Options].
 
 ### How do I ignore a rule?
 
