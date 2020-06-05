@@ -1159,7 +1159,7 @@ Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
 
 ## EXAMPLES
 
-### Example PSRule.yml
+### Example ps-rule.yaml
 
 ```yaml
 #
@@ -1238,7 +1238,7 @@ rule:
     - Warning
 ```
 
-### Default PSRule.yml
+### Default ps-rule.yaml
 
 ```yaml
 #

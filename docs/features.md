@@ -15,7 +15,7 @@ What's more, you can tap into a large world-wide community of PowerShell users w
 
 ## Cross-platform
 
-PSRule uses modern PowerShell libraries at its core, allowing it to go anywhere Windows PowerShell 5.1 or PowerShell Core 6.2 can go.
+PSRule uses modern PowerShell libraries at its core, allowing it to go anywhere PowerShell can go.
 PSRule runs on MacOS, Linux and Windows.
 
 To install PSRule use the `Install-Module` cmdlet within Windows PowerShell or PowerShell Core.
@@ -50,7 +50,7 @@ For a walk through see [Packaging rules in a module](scenarios/rule-module/rule-
 PSRule allows rule authors to define recommendations in markdown.
 This allows not only the cause of the issue to be identified but detailed instructions to be included to remediate issues.
 
-For more information see [about_PSRule_Docs](concepts/PSRule/en-US/about_PSRule_Docs.md).
+For more information see [about_PSRule_Docs].
 
 ## Frequently Asked Questions (FAQ)
 
@@ -76,12 +76,59 @@ These features make PSRule ideal for validating:
 
 If you want to test PowerShell code, use Pester.
 
+### How do I configure PSRule?
+
+PSRule can be configured at runtime by passing the `-Option` parameter to cmdlets.
+Additionally, PSRule uses the `ps-rule.yaml` option file to load configuration from disk.
+The `ps-rule.yaml` option file is read automatically from the current working path by default.
+When checking into source control, store this file in the root directory of the repository.
+
+For a list of configuration options and usage see [about_PSRule_Options].
+
+### How do I ignore a rule?
+
+To prevent a rule executing you can either:
+
+- Exclude the rule - The rule is not executed for any object.
+- Suppress the rule - The rule is not executed for a specific object by name.
+
+To exclude a rule use the `Rule.Exclude` option.
+To do this in YAML, add the following to the `ps-rule.yaml` options file.
+
+```yaml
+# YAML: Using the rule/exclude property
+rule:
+  exclude:
+  - 'My.FirstRule'  # The name of the first rule to exclude.
+  - 'My.SecondRule' # The name of the second rule to exclude.
+```
+
+To suppress a rule use the `Suppression` option.
+To do this in YAML, add the following to the `ps-rule.yaml` options file.
+
+```yaml
+# YAML: Using the suppression property
+suppression:
+  My.FirstRule:    # The name of the rule being suppressed
+  - TestObject1    # The name of the first object to suppress
+  - TestObject3    # The name of the second object to suppress
+  My.SecondRule:   # An additional rule to suppress
+  - TestObject2
+```
+
+The name of the object is reported by PSRule in output results.
+
+See [about_PSRule_Options] for additional usage for both of these options.
+
 ### Why should I use PSRule keywords and assertions?
 
-With the exception of the `Rule` keyword, using the built-in language features are optional.
+Except for the `Rule` keyword, using the built-in language features are optional.
 
 The built-in keywords and assertions accelerate rule creation.
 They do this by providing a condition and a set of reasons in a single command.
 
-Reasons are also optional, however they provide additional context as to why the rule failed.
+Reasons are also optional; however, they provide additional context as to why the rule failed.
 Alternatively, you can provide your own reasons to complement standard PowerShell with the `Reason` keyword.
+
+[about_PSRule_Docs]: concepts/PSRule/en-US/about_PSRule_Docs.md
+[about_PSRule_Options]: concepts/PSRule/en-US/about_PSRule_Options.md

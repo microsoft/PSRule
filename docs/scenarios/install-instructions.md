@@ -3,9 +3,10 @@
 ## Prerequisites
 
 - Windows PowerShell 5.1 with .NET Framework 4.7.2+ or
-- PowerShell Core 6.2 or greater on Windows, MacOS and Linux
+- PowerShell Core 6.2 or greater on Windows, MacOS and Linux or
+- PowerShell 7.0 or greater on Windows, MacOS and Linux
 
-For a list of platforms that PowerShell Core is supported on [see](https://github.com/PowerShell/PowerShell#get-powershell).
+For a list of platforms that PowerShell 7.0 is supported on [see](https://github.com/PowerShell/PowerShell#get-powershell).
 
 ## Getting the module
 
@@ -48,7 +49,7 @@ Install by the command line:
 code --install-extension bewhite.psrule-vscode-preview
 ```
 
-> NOTE: If you are using VS Code Insiders, the command will be `code-insiders`.
+> NOTE: If you are using the Insiders build, the command will be `code-insiders`.
 
 For detailed instructions, follow the steps in the [Visual Studio Code documentation][vscode-ext-gallery].
 
