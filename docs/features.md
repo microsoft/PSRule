@@ -90,9 +90,9 @@ For a list of configuration options and usage see [about_PSRule_Options].
 To prevent a rule executing you can either:
 
 - Exclude the rule - The rule is not executed for any object.
-- Suppress the rule - The rule is not execute for a specific object by name.
+- Suppress the rule - The rule is not executed for a specific object by name.
 
-To exclude a rule the use `Rule.Exclude` option.
+To exclude a rule use the `Rule.Exclude` option.
 To do this in YAML, add the following to the `ps-rule.yaml` options file.
 
 ```yaml
@@ -103,7 +103,7 @@ rule:
   - 'My.SecondRule' # The name of the second rule to exclude.
 ```
 
-To suppress a rule the use `Suppression` option.
+To suppress a rule use the `Suppression` option.
 To do this in YAML, add the following to the `ps-rule.yaml` options file.
 
 ```yaml
