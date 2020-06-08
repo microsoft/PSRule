@@ -72,14 +72,17 @@ namespace PSRule.Runtime
                 return Fail(ReasonStrings.JsonSchemaNotFound, uri);
 
             var s = new JsonSerializer();
-            JsonSchemaOptions.OutputFormat = SchemaValidationOutputFormat.Basic;
             var schema = s.Deserialize<JsonSchema>(JsonValue.Parse(schemaContent));
 
             // Get the TargetObject
             var json = JsonValue.Parse(inputObject.ToJson());
 
             // Validate
-            var schemaResults = schema.Validate(json);
+            var schemaOptions = new JsonSchemaOptions
+            {
+                OutputFormat = SchemaValidationOutputFormat.Basic
+            };
+            var schemaResults = schema.Validate(json, schemaOptions);
 
             // Schema is valid
             if (schemaResults.IsValid)

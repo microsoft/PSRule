@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ProjectGuid>{3ec0912f-bfc7-4b53-a1a1-0ba993c6282e}</ProjectGuid>
   </PropertyGroup>
@@ -24,8 +24,8 @@
     <PackageReference Include="Microsoft.PowerShell.5.1.ReferenceAssemblies" Version="1.0.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="6.2.4" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.0.1" />
   </ItemGroup>
 
   <ItemGroup>
