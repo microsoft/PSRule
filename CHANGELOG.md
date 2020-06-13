@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.19.0-B2006018 (pre-release)
+
 - Bug fixes:
   - Fixed `Csv` output format with summary for `Invoke-PSRule`. [#486](https://github.com/Microsoft/PSRule/issues/486)
 
