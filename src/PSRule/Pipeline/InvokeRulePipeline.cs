@@ -252,7 +252,7 @@ namespace PSRule.Pipeline
         public override void End()
         {
             if (_ResultFormat == ResultFormat.Summary)
-                Writer.WriteObject(_Summary.Values.Where(r => _Outcome == RuleOutcome.All || (r.Outcome & _Outcome) > 0), true);
+                Writer.WriteObject(_Summary.Values.Where(r => _Outcome == RuleOutcome.All || (r.Outcome & _Outcome) > 0).ToArray(), true);
 
             Writer.End();
         }

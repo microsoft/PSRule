@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Bug fixes:
+  - Fixed `Csv` output format with summary for `Invoke-PSRule`. [#486](https://github.com/Microsoft/PSRule/issues/486)
+
 ## v0.18.0
 
 What's changed since v0.17.0:
