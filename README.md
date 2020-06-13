@@ -307,6 +307,7 @@ Name                      | Description
 [PSRule.Rules.CAF]        | A suite of rules to validate Azure resources against the Cloud Adoption Framework (CAF) using PSRule.
 [PSRule.Monitor]          | Send and query PSRule analysis results in Azure Monitor.
 [PSRule-pipelines]        | An Azure DevOps extension for using PSRule within Azure Pipelines.
+[ps-rule]                 | Validate infrastructure as code (IaC) and DevOps repositories using GitHub Actions.
 
 ## Changes and versioning
 
@@ -347,3 +348,4 @@ This project is [licensed under the MIT License](LICENSE.txt).
 [PSRule.Rules.CAF]: https://github.com/microsoft/PSRule.Rules.CAF
 [PSRule.Monitor]: https://github.com/microsoft/PSRule.Monitor
 [PSRule-pipelines]: https://github.com/microsoft/PSRule-pipelines
+[ps-rule]: https://github.com/microsoft/ps-rule
