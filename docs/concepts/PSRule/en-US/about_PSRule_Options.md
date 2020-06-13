@@ -916,14 +916,10 @@ The following format options are available:
 - Json - Output is serialized as JSON.
 - NUnit3 - Output is serialized as NUnit3 (XML).
 - Csv - Output is serialized as a comma separated values (CSV).
-  - The following columns are included:
-    - RuleName
-    - TargetName
-    - TargetType
-    - Outcome
-    - OutcomeReason
-    - Synopsis
-    - Recommendation
+  - The following columns are included for `Detail` output:
+RuleName, TargetName, TargetType, Outcome, OutcomeReason, Synopsis, Recommendation
+  - The following columns are included for `Summary` output:
+RuleName, Pass, Fail, Outcome, Synopsis, Recommendation
 - Wide -  Output is presented using the wide table format, which includes reason and wraps columns.
 
 The Wide format is ignored by `Assert-PSRule`. `Get-PSRule` only accepts `Wide` or `None`.

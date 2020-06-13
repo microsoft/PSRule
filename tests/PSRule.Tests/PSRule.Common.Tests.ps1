@@ -485,6 +485,8 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 WarningAction = 'SilentlyContinue'
                 Culture = 'en-ZZ'
             }
+
+            # Detail
             $result = $testObject | Invoke-PSRule @option | Out-String;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
@@ -494,6 +496,23 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $resultCsv[0].Outcome | Should -Be 'Pass';
             $resultCsv[1].Outcome | Should -Be 'Fail';
             $resultCsv[1].Synopsis | Should -Be 'Test rule 3';
+            $resultCsv[2].RuleName | Should -Be 'WithCsv';
+            $resultCsv[2].Synopsis | Should -Be 'This is "a" synopsis.';
+            ($resultCsv[2].Recommendation -replace "`r`n", "`n") | Should -Be "This is an extended recommendation.`n`n- That includes line breaks`n- And lists";
+
+            # Summary
+            $result = $testObject | Invoke-PSRule @option -As Summary | Out-String;
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $resultCsv = @($result | ConvertFrom-Csv);
+            $resultCsv.Length | Should -Be 3;
+            $resultCsv.RuleName | Should -BeIn 'FromFile1', 'FromFile3', 'WithCsv';
+            $resultCsv[0].Outcome | Should -Be 'Pass';
+            $resultCsv[0].Pass | Should -Be '1';
+            $resultCsv[0].Fail | Should -Be '0';
+            $resultCsv[1].Outcome | Should -Be 'Fail';
+            $resultCsv[1].Pass | Should -Be '0';
+            $resultCsv[1].Fail | Should -Be '1';
             $resultCsv[2].RuleName | Should -Be 'WithCsv';
             $resultCsv[2].Synopsis | Should -Be 'This is "a" synopsis.';
             ($resultCsv[2].Recommendation -replace "`r`n", "`n") | Should -Be "This is an extended recommendation.`n`n- That includes line breaks`n- And lists";
