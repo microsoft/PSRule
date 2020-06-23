@@ -34,7 +34,7 @@ namespace PSRule
             Assert.Equal("TestObject1", actual[0].PropertyValue<string>("targetName"));
             Assert.Equal("Test", actual[0].PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
             Assert.Equal(2, actual[1].PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value2"));
-            Assert.Equal(2, actual[1].PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
+            Assert.Equal(3, actual[1].PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
             Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, actual[0]));
 
             // Single item
