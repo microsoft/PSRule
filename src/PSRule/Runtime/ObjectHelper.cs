@@ -3,11 +3,15 @@
 
 using System;
 using System.Collections;
+using System.Dynamic;
 using System.Management.Automation;
 using System.Reflection;
 
 namespace PSRule.Runtime
 {
+    /// <summary>
+    /// A helper class to traverse object properties.
+    /// </summary>
     internal static class ObjectHelper
     {
         private sealed class NameTokenStream
@@ -133,6 +137,17 @@ namespace PSRule.Runtime
             }
         }
 
+        private sealed class DynamicPropertyBinder : GetMemberBinder
+        {
+            internal DynamicPropertyBinder(string name, bool ignoreCase)
+                : base(name, ignoreCase) { }
+
+            public override DynamicMetaObject FallbackGetMember(DynamicMetaObject target, DynamicMetaObject errorSuggestion)
+            {
+                return null;
+            }
+        }
+
         public static bool GetField(PSObject targetObject, string name, bool caseSensitive, out object value)
         {
             if (targetObject.BaseObject is IDictionary dictionary)
@@ -177,9 +192,15 @@ namespace PSRule.Runtime
                     foundField = true;
             }
             // Handle PSObjects
-            else if (token.Type == NameTokenType.Field && targetObject is PSObject pso)
+            else if (token.Type == NameTokenType.Field && targetObject is PSObject psObject)
             {
-                if (TryPropertyValue(pso, token.Name, caseSensitive, out field))
+                if (TryPropertyValue(psObject, token.Name, caseSensitive, out field))
+                    foundField = true;
+            }
+            // Handle DynamicObjects
+            else if (token.Type == NameTokenType.Field && targetObject is DynamicObject dynamicObject)
+            {
+                if (TryPropertyValue(dynamicObject, token.Name, caseSensitive, out field))
                     foundField = true;
             }
             // Handle all other CLR types
@@ -248,6 +269,14 @@ namespace PSRule.Runtime
                 return false;
 
             value = p.Value;
+            return true;
+        }
+
+        private static bool TryPropertyValue(DynamicObject targetObject, string propertyName, bool caseSensitive, out object value)
+        {
+            if (!targetObject.TryGetMember(new DynamicPropertyBinder(propertyName, !caseSensitive), out value))
+                return false;
+
             return true;
         }
 
