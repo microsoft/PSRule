@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Bug fixes:
+  - Fixed unable to read properties for .NET `DynamicObject`. [#491](https://github.com/Microsoft/PSRule/issues/491)
+
 ## v0.19.0-B2006018 (pre-release)
 
 - Bug fixes:

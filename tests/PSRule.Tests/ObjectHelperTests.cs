@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Definitions;
 using System.Collections;
 using Xunit;
 
@@ -9,7 +10,7 @@ namespace PSRule
     public sealed class ObjectHelperTests
     {
         [Fact]
-        public void GetFieldTestPOCO()
+        public void GetFieldPOCO()
         {
             var testObject = GetTestObject();
 
@@ -26,6 +27,21 @@ namespace PSRule
             Assert.Equal(expected: testObject.Value2[1], actual: actual4);
             Assert.Equal(expected: testObject, actual: actual5);
             Assert.Equal(expected: testObject.Value2[1], actual: actual6);
+        }
+
+        [Fact]
+        public void GetFieldDynamic()
+        {
+            var hashtable = new Hashtable();
+            hashtable.Add("Name", "TestObject1");
+            hashtable.Add("Value", "Value1");
+            var testObject = TagSet.FromHashtable(hashtable);
+
+            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: "Name", caseSensitive: true, value: out object actual1);
+            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: "Value", caseSensitive: true, value: out object actual2);
+
+            Assert.Equal(expected: testObject["Name"], actual: actual1);
+            Assert.Equal(expected: testObject["Value"], actual: actual2);
         }
 
         private static TestObject1 GetTestObject()
