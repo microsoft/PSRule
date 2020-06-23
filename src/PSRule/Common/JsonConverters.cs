@@ -218,6 +218,10 @@ namespace PSRule
                         result.Add(PSObject.AsPSObject(ReadArray(reader)));
                         break;
 
+                    case JsonToken.Null:
+                        result.Add(null);
+                        break;
+
                     default:
                         result.Add(PSObject.AsPSObject(reader.Value));
                         break;

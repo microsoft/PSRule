@@ -4,6 +4,7 @@
 
 - Bug fixes:
   - Fixed unable to read properties for .NET `DynamicObject`. [#491](https://github.com/Microsoft/PSRule/issues/491)
+  - Fixed read of JSON input format with null array item. [#490](https://github.com/Microsoft/PSRule/issues/490)
 
 ## v0.19.0-B2006018 (pre-release)
 
