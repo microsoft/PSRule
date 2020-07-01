@@ -18,7 +18,7 @@
     <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
     <Description>Validate objects using PowerShell rules.
 
-This project is to be considered a proof-of-concept and not a supported product.</Description>
+This project is open source and not a supported product.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
