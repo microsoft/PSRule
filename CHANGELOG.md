@@ -2,7 +2,7 @@
 
 **Important notes**:
 
-- Removal of deprecated `$Rule` properties is scheduled for PSRule v1.0.0. [#495](https://github.com/microsoft/PSRule/issues/495)
+- Removal of deprecated `$Rule` properties are scheduled for PSRule v1.0.0. [#495](https://github.com/microsoft/PSRule/issues/495)
 
 ## Unreleased
 
