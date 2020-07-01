@@ -1,6 +1,19 @@
 # Change log
 
+**Important notes**:
+
+- Removal of deprecated `$Rule` properties are scheduled for PSRule v1.0.0. [#495](https://github.com/microsoft/PSRule/issues/495)
+
 ## Unreleased
+
+## v0.18.1
+
+What's changed since v0.18.0:
+
+- Bug fixes:
+  - Fixed unable to read properties for .NET `DynamicObject`. [#491](https://github.com/Microsoft/PSRule/issues/491)
+  - Fixed read of JSON input format with null array item. [#490](https://github.com/Microsoft/PSRule/issues/490)
+  - Fixed `Csv` output format with summary for `Invoke-PSRule`. [#486](https://github.com/Microsoft/PSRule/issues/486)
 
 ## v0.19.0-B2006027 (pre-release)
 
