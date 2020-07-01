@@ -37,6 +37,11 @@ if ($Env:SYSTEM_DEBUG -eq 'true') {
     $VerbosePreference = 'Continue';
 }
 
+$forcePublish = $False;
+if ($Env:FORCE_PUBLISH -eq 'true') {
+    $forcePublish = $True;
+}
+
 if ($Env:BUILD_SOURCEBRANCH -like '*/tags/*' -and $Env:BUILD_SOURCEBRANCHNAME -like 'v0.*') {
     $Build = $Env:BUILD_SOURCEBRANCHNAME.Substring(1);
 }
@@ -255,7 +260,7 @@ task ReleaseModule VersionModule, {
         Write-Error -Message "[ReleaseModule] -- Module path does not exist";
     }
     elseif (![String]::IsNullOrEmpty($ApiKey)) {
-        Publish-Module -Path $modulePath -NuGetApiKey $ApiKey;
+        Publish-Module -Path $modulePath -NuGetApiKey $ApiKey -Force:$forcePublish;
     }
 }
 
