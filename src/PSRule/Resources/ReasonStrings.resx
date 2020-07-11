@@ -152,6 +152,10 @@
   <data name="HasJsonSchema" xml:space="preserve">
     <value>None of the specified schemas match '{0}'.</value>
   </data>
+  <data name="In" xml:space="preserve">
+    <value>The field value '{0}' was not included in the set.</value>
+    <comment>The field value '{0}' was not included in the set.</comment>
+  </data>
   <data name="JsonSchemaInvalid" xml:space="preserve">
     <value>Failed schema validation on {0}. {1}</value>
   </data>
@@ -171,6 +175,16 @@
   <data name="MatchNot" xml:space="preserve">
     <value>The regex '{0}' matched.</value>
     <comment>Included when any of the regular expressions match and the -Not switch is used.</comment>
+  </data>
+  <data name="MatchPattern" xml:space="preserve">
+    <value>The field value '{0}' does not match the pattern '{1}'.</value>
+  </data>
+  <data name="NotIn" xml:space="preserve">
+    <value>The field value '{0}' was in the set.</value>
+    <comment>The field value '{0}' was in the set.</comment>
+  </data>
+  <data name="NotMatchPattern" xml:space="preserve">
+    <value>The field value '{0}' matches the pattern '{1}'.</value>
   </data>
   <data name="NullOrEmpty" xml:space="preserve">
     <value>The field '{0}' is not empty.</value>

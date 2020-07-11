@@ -23,9 +23,13 @@ The following built-in assertion methods are provided:
 - [HasField](#hasfield) - The object must have the specified field.
 - [HasFieldValue](#hasfieldvalue) - The object must have the specified field and that field is not empty.
 - [HasJsonSchema](#hasjsonschema) - The object must reference a JSON schema with the `$schema` field.
+- [In](#in) - The field value must be included in the set.
 - [JsonSchema](#jsonschema) - The object must validate successfully against a JSON schema.
 - [Less](#less) - The field value must be less.
 - [LessOrEqual](#lessorequal) - The field value must be less or equal to.
+- [Match](#match) - The field value matches a regular expression pattern.
+- [NotIn](#notin) - The field value must not be included in the set.
+- [NotMatch](#notmatch) - The field value does not match a regular expression pattern.
 - [NullOrEmpty](#nullorempty) - The object must not have the specified field or it must be empty.
 - [StartsWith](#startswith) - The field value must match at least one prefix.
 - [Version](#version) - The field value must be a semantic version string.
@@ -347,6 +351,35 @@ Rule 'JsonSchema' {
 }
 ```
 
+### In
+
+The `In` assertion method checks the field value is included in a set of values.
+The field value can either be an integer, float, array, or string.
+When the field value is an array, only one item must be included in the set.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `values` - An array of one or more values that the field value is compared against.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' was not included in the set._
+
+Examples:
+
+```powershell
+Rule 'In' {
+    $Assert.In($TargetObject, 'Sku.tier', @('PremiumV2', 'Premium', 'Standard'))
+    $Assert.In($TargetObject, 'Sku.tier', @('PremiumV2', 'Premium', 'Standard'), $True)
+}
+```
+
 ### Less
 
 The `Less` assertion method checks the field value is less than the specified value.
@@ -408,6 +441,93 @@ Examples:
 ```powershell
 Rule 'LessOrEqual' {
     $Assert.LessOrEqual($TargetObject, 'value', 3)
+}
+```
+
+### Match
+
+The `Match` assertion method checks the field value matches a regular expression pattern.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `pattern` - A regular expression pattern to match.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is not a string._
+- _The field value '{0}' does not match the pattern '{1}'._
+
+Examples:
+
+```powershell
+Rule 'Match' {
+    $Assert.Match($TargetObject, 'value', '^[a-z]*$')
+    $Assert.Match($TargetObject, 'value', '^[a-z]*$', $True)
+}
+```
+
+### NotIn
+
+The `NotIn` assertion method checks the field value is not in a set of values.
+The field value can either be an integer, array, float, or string.
+When the field value is an array, none of the items must be included in the set.
+If the field does not exist at all, it is not in the set and passes.
+To check the field exists combine this assertion method with `HasFieldValue`.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `values` - An array of one or more values that the field value is compared against.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field value '{0}' was in the set._
+
+Examples:
+
+```powershell
+Rule 'In' {
+    $Assert.NotIn($TargetObject, 'Sku.tier', @('Free', 'Shared', 'Basic'))
+    $Assert.NotIn($TargetObject, 'Sku.tier', @('Free', 'Shared', 'Basic'), $True)
+}
+```
+
+### NotMatch
+
+The `NotMatch` assertion method checks the field value does not match a regular expression pattern.
+If the field does not exist at all, it does not match and passes.
+To check the field exists combine this assertion method with `HasFieldValue`.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `pattern` - A regular expression pattern to match.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field value '{0}' is not a string._
+- _The field value '{0}' matches the pattern '{1}'._
+
+Examples:
+
+```powershell
+Rule 'NotMatch' {
+    $Assert.NotMatch($TargetObject, 'value', '^[a-z]*$')
+    $Assert.NotMatch($TargetObject, 'value', '^[a-z]*$', $True)
 }
 ```
 
@@ -534,11 +654,21 @@ The following properties are available:
 
 The following methods are available:
 
-- `AddReason(<string> text)` - Can be used to append additional reasons to the result. A reason can only be set if the assertion failed. Reason text should be localized before calling this method. Localization can be done using the `$LocalizedData` automatic variable.
-- `WithReason(<string> text, <bool> replace)` - Can be used to append or replace reasons on the result. In addition, `WithReason` can be chained.
+- `AddReason(<string> text)` - Can be used to append additional reasons to the result.
+A reason can only be set if the assertion failed.
+Reason text should be localized before calling this method.
+Localization can be done using the `$LocalizedData` automatic variable.
+- `WithReason(<string> text, <bool> replace)` - Can be used to append or replace reasons on the result.
+In addition, `WithReason` can be chained.
+- `Reason(<string> text, params <object[]> args)` - Replaces the reason on the results with a formatted string.
+This method can be chained.
+For usage see examples below.
 - `GetReason()` - Gets any reasons currently associated with the failed result.
-- `Complete()` - Returns `$True` (Pass) or `$False` (Fail) to the rule record. If the assertion failed, any reasons are automatically added to the rule record. To read the result without adding reason to the rule record use the `Result` property.
-- `Ignore()` - Ignores the result. Nothing future is returned and any reasons are cleared. Use this method when implementing custom handling.
+- `Complete()` - Returns `$True` (Pass) or `$False` (Fail) to the rule record.
+If the assertion failed, any reasons are automatically added to the rule record.
+To read the result without adding reason to the rule record use the `Result` property.
+- `Ignore()` - Ignores the result. Nothing future is returned and any reasons are cleared.
+Use this method when implementing custom handling.
 
 Use of `Complete` is optional, uncompleted results are automatically completed after the rule has executed.
 Uncompleted results may return reasons out of sequence.
@@ -555,13 +685,19 @@ Rule 'Assert.HasFieldValue' {
 }
 ```
 
-The this example, the built-in reason is replaced with a custom reason, and immediately returned.
+In this example, the built-in reason is replaced with a custom reason, and immediately returned.
+The reason text is automatically formatted with any parameters provided.
 
 ```powershell
 Rule 'Assert.HasCustomValue' {
     $Assert.
         HasDefaultValue($TargetObject, 'value', 'test').
-        WithReason('Value is set to custom value', $True)
+        Reason('The field {0} is using a non-default value: {1}', 'value', $TargetObject.value)
+
+    # With localized string
+    $Assert.
+        HasDefaultValue($TargetObject, 'value', 'test').
+        Reason($LocalizedData.NonDefaultValue, 'value', $TargetObject.value)
 }
 ```
 
@@ -571,7 +707,9 @@ The following built-in helper methods are provided for working with `$Assert` wh
 
 - `Create(<bool> condition, <string> reason)` - Returns a result either pass or fail assertion result.
 - `Pass()` - Returns a pass assertion result.
-- `Fail(<string> reason)` - Results a fail assertion result.
+- `Fail()` - Results a fail assertion result.
+- `Fail(<string> reason, params <object[]> args)` - Results a fail assertion result with a custom reason.
+Additional arguments can be provided to format the custom reason string.
 
 ## NOTE
 

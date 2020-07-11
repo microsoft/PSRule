@@ -160,6 +160,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The field value &apos;{0}&apos; was not included in the set..
+        /// </summary>
+        internal static string In {
+            get {
+                return ResourceManager.GetString("In", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed schema validation on {0}. {1}.
         /// </summary>
         internal static string JsonSchemaInvalid {
@@ -210,6 +219,33 @@ namespace PSRule.Resources {
         internal static string MatchNot {
             get {
                 return ResourceManager.GetString("MatchNot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field value &apos;{0}&apos; does not match the pattern &apos;{1}&apos;..
+        /// </summary>
+        internal static string MatchPattern {
+            get {
+                return ResourceManager.GetString("MatchPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field value &apos;{0}&apos; was in the set..
+        /// </summary>
+        internal static string NotIn {
+            get {
+                return ResourceManager.GetString("NotIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field value &apos;{0}&apos; matches the pattern &apos;{1}&apos;..
+        /// </summary>
+        internal static string NotMatchPattern {
+            get {
+                return ResourceManager.GetString("NotMatchPattern", resourceCulture);
             }
         }
         

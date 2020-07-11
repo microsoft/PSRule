@@ -107,6 +107,14 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].Reason | Should -Be 'The field ''Type'' does not exist.';
         }
 
+        It 'Fail' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.Fail');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result[0].Reason.Length | Should -Be 3;
+            $result[0].Reason[2] | Should -Be 'Reason 5';
+        }
+
         It 'Contains' {
             $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.Contains');
             $result | Should -Not -BeNullOrEmpty;
@@ -253,6 +261,22 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].Reason | Should -BeLike "Failed schema validation on `#*. *";
         }
 
+        It 'In' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.In');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[0].IsSuccess() | Should -Be $False;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].Reason.Length | Should -Be 2;
+            $result[0].Reason[0] | Should -Be "The field value 'TestObject1' was not included in the set.";
+
+            # Positive case
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[1].TargetName | Should -Be 'TestObject2';
+        }
+
         It 'Less' {
             $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.Less');
             $result | Should -Not -BeNullOrEmpty;
@@ -274,15 +298,63 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
 
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[1].TargetName | Should -Be 'TestObject2';
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $False;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].Reason.Length | Should -Be 3;
+            $result[0].Reason | Should -BeLike "The value '*' was not <= '*'.";
+        }
+
+        It 'Match' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.Match');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[0].IsSuccess() | Should -Be $False;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].Reason.Length | Should -Be 2;
+            $result[0].Reason[0] | Should -BeLike "The field value 'TestObject1' does not match the pattern '*'.";
+
             # Positive case
             $result[1].IsSuccess() | Should -Be $True;
             $result[1].TargetName | Should -Be 'TestObject2';
+        }
+
+        It 'NotIn' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.NotIn');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
 
             # Negative case
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 3;
-            $result[0].Reason | Should -BeLike "The value '*' was not <= '*'.";
+            $result[0].Reason[0] | Should -Be "The field value 'TestObject1' was in the set.";
+
+            # Positive case
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[1].TargetName | Should -Be 'TestObject2';
+        }
+
+        It 'NotMatch' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.NotMatch');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[0].IsSuccess() | Should -Be $False;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].Reason.Length | Should -Be 2;
+            $result[0].Reason[0] | Should -BeLike "The field value 'TestObject1' matches the pattern '*'.";
+
+            # Positive case
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[1].TargetName | Should -Be 'TestObject2';
         }
 
         It 'NullOrEmpty' {

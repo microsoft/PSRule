@@ -12,6 +12,7 @@ using System.Collections;
 using System.IO;
 using System.Management.Automation;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace PSRule.Runtime
 {
@@ -21,13 +22,20 @@ namespace PSRule.Runtime
     public sealed class Assert
     {
         private const string COMMASEPARATOR = ", ";
+        private const string CACHE_MATCH = "MatchRegex";
+        private const string CACHE_MATCH_C = "MatchRegexCaseSensitive";
 
         public AssertResult Create(bool condition, string reason = null)
+        {
+            return Create(condition: condition, reason: reason, args: null);
+        }
+
+        internal AssertResult Create(bool condition, string reason, object[] args)
         {
             if (!(PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition || PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Precondition))
                 throw new RuleRuntimeException(string.Format(PSRuleResources.VariableConditionScope, "Assert"));
 
-            return new AssertResult(this, condition, reason);
+            return new AssertResult(this, condition, reason, args);
         }
 
         /// <summary>
@@ -41,10 +49,9 @@ namespace PSRule.Runtime
         /// <summary>
         /// Fail the assertion.
         /// </summary>
-        /// <param name="reason">An optional reason why the assertion failed.</param>
-        public AssertResult Fail(string reason = null)
+        public AssertResult Fail()
         {
-            return Create(condition: false, reason: reason);
+            return Create(condition: false, reason: null, args: null);
         }
 
         /// <summary>
@@ -52,9 +59,9 @@ namespace PSRule.Runtime
         /// </summary>
         /// <param name="reason">An unformatted reason why the assertion failed.</param>
         /// <param name="args">Additional parameters for the reason format.</param>
-        private AssertResult Fail(string reason, params object[] args)
+        public AssertResult Fail(string reason, params object[] args)
         {
-            return Create(condition: false, reason: string.Format(reason, args));
+            return Create(condition: false, reason: reason, args: args);
         }
 
         /// <summary>
@@ -152,7 +159,7 @@ namespace PSRule.Runtime
                 return Fail(ReasonStrings.HasField, field);
             else if (IsEmpty(fieldValue))
                 return Fail(ReasonStrings.HasFieldValue, field);
-            else if (expectedValue != null && !IsValue(fieldValue, expectedValue))
+            else if (expectedValue != null && !IsValue(fieldValue, expectedValue, caseSensitive: false))
                 return Fail(ReasonStrings.HasExpectedFieldValue, field, fieldValue);
 
             return Pass();
@@ -170,7 +177,7 @@ namespace PSRule.Runtime
 
             // Assert
             if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue)
-                || IsValue(fieldValue, defaultValue))
+                || IsValue(fieldValue, defaultValue, caseSensitive: false))
                 return Pass();
 
             return Fail(ReasonStrings.HasExpectedFieldValue, field, fieldValue);
@@ -330,6 +337,88 @@ namespace PSRule.Runtime
             return Fail(ReasonStrings.Compare, fieldValue, value);
         }
 
+        /// <summary>
+        /// The object field value must be included in the set.
+        /// </summary>
+        public AssertResult In(PSObject inputObject, string field, Array values, bool caseSensitive = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result))
+                return result;
+
+            for (var i = 0; i < values.Length; i++)
+            {
+                if (AnyValue(fieldValue, values.GetValue(i), caseSensitive, out object foundValue))
+                    return Pass();
+            }
+            return Fail(ReasonStrings.In, fieldValue);
+        }
+
+        /// <summary>
+        /// The object field value must not be included in the set.
+        /// </summary>
+        public AssertResult NotIn(PSObject inputObject, string field, Array values, bool caseSensitive = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result))
+                return result;
+
+            if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: caseSensitive, value: out object fieldValue))
+                return Pass();
+
+            for (var i = 0; i < values.Length; i++)
+            {
+                if (AnyValue(fieldValue, values.GetValue(i), caseSensitive, out object foundValue))
+                    return Fail(ReasonStrings.NotIn, foundValue);
+            }
+            return Pass();
+        }
+
+        /// <summary>
+        /// The object field value must match the regular expression.
+        /// </summary>
+        public AssertResult Match(PSObject inputObject, string field, string pattern, bool caseSensitive = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardString(fieldValue, out string value, out result))
+                return result;
+
+            var expression = GetRegularExpression(pattern, caseSensitive);
+            if (expression.IsMatch(value))
+                return Pass();
+
+            return Fail(ReasonStrings.MatchPattern, value, pattern);
+        }
+
+        /// <summary>
+        /// The object field value must not match the regular expression.
+        /// </summary>
+        public AssertResult NotMatch(PSObject inputObject, string field, string pattern, bool caseSensitive = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result))
+                return result;
+
+            if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: caseSensitive, value: out object fieldValue))
+                return Pass();
+
+            if (GuardString(fieldValue, out string value, out result))
+                return result;
+
+            var expression = GetRegularExpression(pattern, caseSensitive);
+            if (!expression.IsMatch(value))
+                return Pass();
+
+            return Fail(ReasonStrings.NotMatchPattern, value, pattern);
+        }
+
         #region Helper methods
 
         private static bool IsEmpty(object fieldValue)
@@ -339,17 +428,42 @@ namespace PSRule.Runtime
                 (fieldValue is string svalue && string.IsNullOrEmpty(svalue));
         }
 
-        private static bool IsValue(object fieldValue, object expectedValue)
+        /// <summary>
+        /// Get the base object.
+        /// </summary>
+        private static object GetBaseObject(object o)
         {
-            // Unwrap as required
-            var expectedBase = expectedValue;
-            if (expectedValue is PSObject pso)
-                expectedBase = pso.BaseObject;
+            return o is PSObject pso ? pso.BaseObject : o;
+        }
 
+        private static bool IsValue(object fieldValue, object expectedValue, bool caseSensitive)
+        {
+            var expectedBase = GetBaseObject(expectedValue);
             if (fieldValue is string && expectedBase is string)
-                return StringComparer.OrdinalIgnoreCase.Equals(fieldValue, expectedBase);
+                return caseSensitive ? StringComparer.Ordinal.Equals(fieldValue, expectedBase) : StringComparer.OrdinalIgnoreCase.Equals(fieldValue, expectedBase);
 
             return expectedBase.Equals(fieldValue);
+        }
+
+        private static bool AnyValue(object fieldValue, object expectedValue, bool caseSensitive, out object foundValue)
+        {
+            foundValue = fieldValue;
+            var expectedBase = GetBaseObject(expectedValue);
+            if (fieldValue is IEnumerable items)
+            {
+                foreach (var item in items)
+                {
+                    foundValue = item;
+                    if (IsValue(item, expectedBase, caseSensitive))
+                        return true;
+                }
+            }
+            if (IsValue(fieldValue, expectedBase, caseSensitive))
+            {
+                foundValue = fieldValue;
+                return true;
+            }
+            return false;
         }
 
         private static bool TryString(object obj, out string value)
@@ -442,6 +556,9 @@ namespace PSRule.Runtime
         /// <summary>
         /// Fails if the value is null.
         /// </summary>
+        /// <remarks>
+        /// Reason: The parameter '{0}' is null.
+        /// </remarks>
         private bool GuardNullParam(object value, string parameterName, out AssertResult result)
         {
             result = value == null ? Fail(ReasonStrings.NullParameter, parameterName) : null;
@@ -452,6 +569,9 @@ namespace PSRule.Runtime
         /// Fails of the value is null or empty.
         /// </summary>
         /// <returns>Returns true if the field does not exist.</returns>
+        /// <remarks>
+        /// Reason: The parameter '{0}' is null or empty.
+        /// </remarks>
         private bool GuardNullOrEmptyParam(string value, string parameterName, out AssertResult result)
         {
             result = string.IsNullOrEmpty(value) ? Fail(ReasonStrings.NullOrEmptyParameter, parameterName) : null;
@@ -462,6 +582,9 @@ namespace PSRule.Runtime
         /// Fails if the field does not exist.
         /// </summary>
         /// <returns>Returns true if the field does not exist.</returns>
+        /// <remarks>
+        /// Reason: The field '{0}' does not exist.
+        /// </remarks>
         private bool GuardField(PSObject inputObject, string field, bool caseSensitive, out object fieldValue, out AssertResult result)
         {
             result = null;
@@ -483,6 +606,13 @@ namespace PSRule.Runtime
             return true;
         }
 
+        /// <summary>
+        /// Fails if the field value is not a string.
+        /// </summary>
+        /// <returns>Return true if the field value is not a string.</returns>
+        /// <remarks>
+        /// Reason: The field value '{0}' is not a string.
+        /// </remarks>
         private bool GuardString(object fieldValue, out string value, out AssertResult result)
         {
             result = null;
@@ -528,6 +658,36 @@ namespace PSRule.Runtime
         private static string FormatArray(string[] values)
         {
             return string.Join(COMMASEPARATOR, values);
+        }
+
+        private static Regex GetRegularExpression(string pattern, bool caseSensitive)
+        {
+            if (!TryPipelineCache(caseSensitive ? CACHE_MATCH_C : CACHE_MATCH, pattern, out Regex expression))
+            {
+                var options = caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
+                expression = new Regex(pattern, options);
+                SetPipelineCache(CACHE_MATCH, pattern, expression);
+            }
+            return expression;
+        }
+
+        /// <summary>
+        /// Try to retrieve the cached key from the pipeline cache.
+        /// </summary>
+        private static bool TryPipelineCache<T>(string prefix, string key, out T value)
+        {
+            value = default(T);
+            if (PipelineContext.CurrentThread.ExpressionCache.TryGetValue(string.Concat(prefix, key), out object ovalue))
+            {
+                value = (T)ovalue;
+                return true;
+            }
+            return false;
+        }
+
+        private static void SetPipelineCache<T>(string prefix, string key, T value)
+        {
+            PipelineContext.CurrentThread.ExpressionCache[string.Concat(prefix, key)] = value;
         }
 
         #endregion Helper methods

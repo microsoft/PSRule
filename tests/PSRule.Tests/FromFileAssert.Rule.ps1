@@ -35,6 +35,13 @@ Rule 'Assert.Complete' {
         $Assert.HasField($TargetObject, 'OtherField').Complete()
 }
 
+# Synopsis: Test for $Assert.Fail
+Rule 'Assert.Fail' {
+    $Assert.Fail('Reason 1')
+    $Assert.Fail('Reason {0}', 2)
+    $Assert.Fail('Reason {0}', 3).Reason('Reason 4').Reason('Reason {0}', '5')
+}
+
 # Synopsis: Test for $Assert.Contains
 Rule 'Assert.Contains' {
     $Assert.Contains($TargetObject, 'OtherField', @('abc', 'th'))
@@ -102,6 +109,13 @@ Rule 'Assert.JsonSchema' {
     $Assert.JsonSchema($TargetObject, 'tests/PSRule.Tests/FromFile.Json.schema.json')
 }
 
+# Synopsis: Test for $Assert.In
+Rule 'Assert.In' {
+    $Assert.In($TargetObject, 'Name', @('TestObject2', 'TestObject3'))
+    $Assert.In($TargetObject, 'Int', @(2, 3))
+    # $Assert.In($TargetObject, 'Name', 'TestObject2')
+}
+
 # Synopsis: Test for $Assert.Less
 Rule 'Assert.Less' {
     $Assert.Less($TargetObject, 'CompareNumeric', 2)
@@ -114,6 +128,25 @@ Rule 'Assert.LessOrEqual' {
     $Assert.LessOrEqual($TargetObject, 'CompareNumeric', 0)
     $Assert.LessOrEqual($TargetObject, 'CompareArray', 0)
     $Assert.LessOrEqual($TargetObject, 'CompareString', 0)
+}
+
+# Synopsis: Test for $Assert.Match
+Rule 'Assert.Match' {
+    $Assert.Match($TargetObject, 'Name', '^Test\w*2$')
+    $Assert.Match($TargetObject, 'CompareString', '^(|ABC)$', $True)
+}
+
+# Synopsis: Test for $Assert.NotIn
+Rule 'Assert.NotIn' {
+    $Assert.NotIn($TargetObject, 'Name', @('TestObject1', 'TestObject3'))
+    $Assert.NotIn($TargetObject, 'Int', @(1, 3))
+    $Assert.NotIn($TargetObject, 'Type', @('TestType'))
+}
+
+# Synopsis: Test for $Assert.NotMatch
+Rule 'Assert.NotMatch' {
+    $Assert.NotMatch($TargetObject, 'Name', '^Test\w*1$')
+    $Assert.NotMatch($TargetObject, 'Type', '.*')
 }
 
 # Synopsis: Test for $Assert.HasEmptyField
