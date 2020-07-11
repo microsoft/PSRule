@@ -25,10 +25,21 @@ namespace PSRule
             Assert.Equal(string.Empty, actual2.ToString());
             Assert.True(actual2.Result);
 
+            // WithReason
             actual1.WithReason("Alternate reason");
             Assert.Equal("Test reason Alternate reason", actual1.ToString());
             actual1.WithReason("Alternate reason", true);
             Assert.Equal("Alternate reason", actual1.ToString());
+
+            // Reason
+            actual1.Reason("New {0}", "Reason");
+            actual1.Reason("New New Reason");
+            Assert.Equal("New New Reason", actual1.ToString());
+
+            var actual3 = assert.Fail("Fail reason");
+            Assert.Equal("Fail reason", actual3.ToString());
+            actual3 = assert.Fail("Fail {0}", "reason");
+            Assert.Equal("Fail reason", actual3.ToString());
         }
 
         [Fact]
@@ -345,6 +356,145 @@ namespace PSRule
             Assert.True(assert.LessOrEqual(1, ".", 1).Result);
         }
 
+        [Fact]
+        public void In()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            // Int
+            var value = GetObject((name: "value", value: 3), (name: "values", value: new int[] { 3, 5 }));
+            Assert.True(assert.In(value, "value", new int[] { 3 }).Result);
+            Assert.True(assert.In(value, "value", new int[] { 2, 3, 5 }).Result);
+            Assert.False(assert.In(value, "value", new int[] { 4 }).Result);
+            Assert.False(assert.In(value, "value", new int[] { 2, 4, 5 }).Result);
+
+            Assert.True(assert.In(value, "values", new int[] { 3 }).Result);
+            Assert.True(assert.In(value, "values", new int[] { 2, 3, 5 }).Result);
+            Assert.False(assert.In(value, "values", new int[] { 4 }).Result);
+            Assert.False(assert.In(value, "values", new int[] { 4, 2 }).Result);
+            Assert.True(assert.In(value, "values", new int[] { 2, 4, 5 }).Result);
+
+            // Float
+            value = GetObject((name: "value", value: 3.0f), (name: "values", value: new float[] { 3f, 5f }));
+            Assert.True(assert.In(value, "value", new float[] { 3.0f }).Result);
+            Assert.True(assert.In(value, "value", new float[] { 2f, 3.0f, 5f }).Result);
+            Assert.False(assert.In(value, "value", new float[] { 4f }).Result);
+            Assert.False(assert.In(value, "value", new float[] { 2f, 4f, 5f }).Result);
+
+            Assert.True(assert.In(value, "values", new float[] { 3.0f }).Result);
+            Assert.True(assert.In(value, "values", new float[] { 2f, 3.0f, 5f }).Result);
+            Assert.False(assert.In(value, "values", new float[] { 4f }).Result);
+            Assert.False(assert.In(value, "values", new float[] { 4f, 2f }).Result);
+            Assert.True(assert.In(value, "values", new float[] { 2f, 4f, 5f }).Result);
+
+            // String
+            value = GetObject((name: "value", value: "value2"), (name: "values", value: new string[] { "value2", "value5" }));
+            Assert.True(assert.In(value, "value", new string[] { "Value2" }).Result);
+            Assert.True(assert.In(value, "value", new string[] { "VALUE1", "VALUE2", "VALUE3" }).Result);
+            Assert.False(assert.In(value, "value", new string[] { "Value3" }).Result);
+            Assert.False(assert.In(value, "value", new string[] { "VALUE1", "VALUE3" }).Result);
+            Assert.False(assert.In(value, "value", new string[] { "Value2" }, true).Result);
+            Assert.False(assert.In(value, "value", new string[] { "VALUE1", "VALUE2", "VALUE3" }, true).Result);
+            Assert.True(assert.In(value, "value", new string[] { "value2" }, true).Result);
+            Assert.True(assert.In(value, "value", new string[] { "value1", "value2", "value3" }, true).Result);
+
+            Assert.True(assert.In(value, "values", new string[] { "Value2" }).Result);
+            Assert.True(assert.In(value, "values", new string[] { "VALUE1", "VALUE2", "VALUE3" }).Result);
+            Assert.True(assert.In(value, "values", new string[] { "Value3", "Value5" }).Result);
+            Assert.False(assert.In(value, "values", new string[] { "Value1", "Value3" }).Result);
+            Assert.False(assert.In(value, "values", new string[] { "VALUE1", "VALUE2", "VALUE3" }, true).Result);
+        }
+
+        [Fact]
+        public void NotIn()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            // Int
+            var value = GetObject((name: "value", value: 3), (name: "values", value: new int[] { 3, 5 }));
+            Assert.False(assert.NotIn(value, "value", new int[] { 3 }).Result);
+            Assert.False(assert.NotIn(value, "value", new int[] { 2, 3, 5 }).Result);
+            Assert.True(assert.NotIn(value, "value", new int[] { 4 }).Result);
+            Assert.True(assert.NotIn(value, "value", new int[] { 2, 4, 5 }).Result);
+
+            Assert.False(assert.NotIn(value, "values", new int[] { 3 }).Result);
+            Assert.False(assert.NotIn(value, "values", new int[] { 2, 3, 5 }).Result);
+            Assert.True(assert.NotIn(value, "values", new int[] { 4 }).Result);
+            Assert.True(assert.NotIn(value, "values", new int[] { 4, 2 }).Result);
+            Assert.False(assert.NotIn(value, "values", new int[] { 2, 4, 5 }).Result);
+
+            // Float
+            value = GetObject((name: "value", value: 3.0f), (name: "values", value: new float[] { 3f, 5f }));
+            Assert.False(assert.NotIn(value, "value", new float[] { 3.0f }).Result);
+            Assert.False(assert.NotIn(value, "value", new float[] { 2f, 3.0f, 5f }).Result);
+            Assert.True(assert.NotIn(value, "value", new float[] { 4f }).Result);
+            Assert.True(assert.NotIn(value, "value", new float[] { 2f, 4f, 5f }).Result);
+
+            Assert.False(assert.NotIn(value, "values", new float[] { 3.0f }).Result);
+            Assert.False(assert.NotIn(value, "values", new float[] { 2f, 3.0f, 5f }).Result);
+            Assert.True(assert.NotIn(value, "values", new float[] { 4f }).Result);
+            Assert.True(assert.NotIn(value, "values", new float[] { 4f, 2f }).Result);
+            Assert.False(assert.NotIn(value, "values", new float[] { 2f, 4f, 5f }).Result);
+
+            // String
+            value = GetObject((name: "value", value: "value2"), (name: "values", value: new string[] { "value2", "value5" }));
+            Assert.False(assert.NotIn(value, "value", new string[] { "Value2" }).Result);
+            Assert.False(assert.NotIn(value, "value", new string[] { "VALUE1", "VALUE2", "VALUE3" }).Result);
+            Assert.True(assert.NotIn(value, "value", new string[] { "Value3" }).Result);
+            Assert.True(assert.NotIn(value, "value", new string[] { "VALUE1", "VALUE3" }).Result);
+            Assert.True(assert.NotIn(value, "value", new string[] { "Value2" }, true).Result);
+            Assert.True(assert.NotIn(value, "value", new string[] { "VALUE1", "VALUE2", "VALUE3" }, true).Result);
+            Assert.False(assert.NotIn(value, "value", new string[] { "value2" }, true).Result);
+            Assert.False(assert.NotIn(value, "value", new string[] { "value1", "value2", "value3" }, true).Result);
+
+            Assert.False(assert.NotIn(value, "values", new string[] { "Value2" }).Result);
+            Assert.False(assert.NotIn(value, "values", new string[] { "VALUE1", "VALUE2", "VALUE3" }).Result);
+            Assert.False(assert.NotIn(value, "values", new string[] { "Value3", "Value5" }).Result);
+            Assert.True(assert.NotIn(value, "values", new string[] { "Value1", "Value3" }).Result);
+            Assert.True(assert.NotIn(value, "values", new string[] { "VALUE1", "VALUE2", "VALUE3" }, true).Result);
+
+            // Empty
+            value = GetObject((name: "null", value: null), (name: "empty", value: new string[] { }));
+            Assert.True(assert.NotIn(value, "null", new string[] { "Value1", "Value3" }).Result);
+            Assert.True(assert.NotIn(value, "empty", new string[] { "Value1", "Value3" }).Result);
+            Assert.True(assert.NotIn(value, "notValue", new string[] { "Value1", "Value3" }).Result);
+        }
+
+        [Fact]
+        public void Match()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            var value = GetObject((name: "value", value: "Value1"));
+            Assert.True(assert.Match(value, "value", "Value1").Result);
+            Assert.True(assert.Match(value, "value", "Value[0-9]").Result);
+            Assert.True(assert.Match(value, "value", "value1").Result);
+            Assert.False(assert.Match(value, "value", "value2").Result);
+            Assert.False(assert.Match(value, "value", "value1", true).Result);
+            Assert.True(assert.Match(value, "value", "\\w*1").Result);
+        }
+
+        [Fact]
+        public void NotMatch()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            var value = GetObject((name: "value", value: "Value2"));
+            Assert.True(assert.NotMatch(value, "value", "Value1").Result);
+            Assert.False(assert.NotMatch(value, "value", "Value[0-9]").Result);
+            Assert.True(assert.NotMatch(value, "value", "value1").Result);
+            Assert.False(assert.NotMatch(value, "value", "value2").Result);
+            Assert.True(assert.NotMatch(value, "value", "value2", true).Result);
+            Assert.False(assert.NotMatch(value, "value", "\\w*2").Result);
+            Assert.True(assert.NotMatch(value, "notValue", "\\w*2").Result);
+        }
+
+        #region Helper methods
+
         private static void SetContext()
         {
             var context = PipelineContext.New(new Configuration.PSRuleOption(), null, null, null, null);
@@ -365,5 +515,7 @@ namespace PSRule
         {
             return new Runtime.Assert();
         }
+
+        #endregion Helper methods
     }
 }

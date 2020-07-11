@@ -13,3 +13,4 @@ BenchmarkDotNet.Artifacts/
 .sonarqube/
 TestResults/
 *.diagsession
+*.Designer.cs

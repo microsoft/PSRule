@@ -6,6 +6,15 @@
 
 ## Unreleased
 
+- Engine features:
+  - Added `Reason` method to assertion results. [#500](https://github.com/microsoft/PSRule/issues/500)
+    - This new method, streamlines setting custom reasons particularly with formatted strings.
+    - The `Reason` method replaces any previously set reasons with a custom string.
+    - Optional arguments can be provided to be included in string formatting.
+  - Improvements to assertion methods.
+    - Added regular expression assertion helpers `Match`, and `NotMatch`. [#502](https://github.com/microsoft/PSRule/issues/502)
+    - Added collection assertion helpers `In`, and `NotIn`. [#501](https://github.com/microsoft/PSRule/issues/501)
+
 ## v0.18.1
 
 What's changed since v0.18.0:

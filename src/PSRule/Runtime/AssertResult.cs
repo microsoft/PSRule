@@ -5,6 +5,7 @@ using PSRule.Pipeline;
 using PSRule.Resources;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace PSRule.Runtime
 {
@@ -13,14 +14,14 @@ namespace PSRule.Runtime
         private readonly Assert _Assert;
         private readonly List<string> _Reason;
 
-        internal AssertResult(Assert assert, bool value, string reason)
+        internal AssertResult(Assert assert, bool value, string reason, object[] args)
         {
             _Assert = assert;
             Result = value;
             if (!Result)
             {
                 _Reason = new List<string>();
-                AddReason(reason);
+                AddReason(reason, args);
             }
         }
 
@@ -57,7 +58,10 @@ namespace PSRule.Runtime
             if (Result || string.IsNullOrEmpty(text))
                 return;
 
-            _Reason.Add(string.Format(text, args));
+            if (args == null || args.Length == 0)
+                _Reason.Add(text);
+            else
+                _Reason.Add(string.Format(Thread.CurrentThread.CurrentCulture, text, args));
         }
 
         /// <summary>
@@ -71,6 +75,20 @@ namespace PSRule.Runtime
                 _Reason.Clear();
 
             AddReason(text);
+            return this;
+        }
+
+        /// <summary>
+        /// Replace the existing reason with the supplied format string.
+        /// </summary>
+        /// <param name="text">The text of a reason to add. This text should already be localized for the currently culture.</param>
+        /// <param name="args">Replacement arguments for the format string.</param>
+        public AssertResult Reason(string text, params object[] args)
+        {
+            if (_Reason != null)
+                _Reason.Clear();
+
+            AddReason(text, args);
             return this;
         }
 
