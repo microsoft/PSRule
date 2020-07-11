@@ -32,6 +32,21 @@ This project is open source and not a supported product.</Description>
     <PackageReference Include="YamlDotNet" Version="6.1.2" />
   </ItemGroup>
 
+  <Target Name="GenerateDesignerFiles">
+    <GenerateResource
+      Sources="@(EmbeddedResource)"
+      StronglyTypedLanguage="C#"
+      StronglyTypedClassName="%(Filename)"
+      StronglyTypedNamespace="@(EmbeddedResource->'%(CustomToolNamespace)')"
+      StronglyTypedFileName="@(EmbeddedResource->'%(RootDir)%(Directory)%(Filename).Designer.cs')"
+      PublicClass="true"
+    />
+  </Target>
+
+  <Target Name="BeforeBuild">
+    <CallTarget Targets="GenerateDesignerFiles"/>
+  </Target>
+
   <ItemGroup>
     <Compile Update="Resources\DocumentStrings.Designer.cs">
       <DesignTime>True</DesignTime>
