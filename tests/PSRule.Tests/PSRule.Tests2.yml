@@ -21,6 +21,9 @@ output:
   - 'en-CC'
   - 'en-DD'
 
+# Configure required module versions
+requires: { }
+
 # Configure baseline
 rule:
   include:

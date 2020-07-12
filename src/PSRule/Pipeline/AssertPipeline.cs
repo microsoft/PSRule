@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Management.Automation;
 using System.Reflection;
+using System.Threading;
 
 namespace PSRule.Pipeline
 {
@@ -47,6 +48,7 @@ namespace PSRule.Pipeline
             private int _ErrorCount = 0;
             private int _FailCount = 0;
             private int _TotalCount = 0;
+            private bool _PSError = false;
 
             internal AssertWriter(PSRuleOption option, Source[] source, PipelineWriter inner, PipelineWriter next, OutputStyle style, string resultVariableName, PSCmdlet cmdletContext, EngineIntrinsics executionContext)
                 : base(inner, option)
@@ -165,14 +167,13 @@ namespace PSRule.Pipeline
                 private void Source(Source[] source)
                 {
                     var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
-                    WriteLine(string.Format(FormatterStrings.PSRuleVersion, version));
-
+                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.PSRuleVersion, version));
                     var list = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     for (var i = 0; source != null && i < source.Length; i++)
                     {
                         if (source[i].Module != null && !list.Contains(source[i].Module.Name))
                         {
-                            WriteLine(string.Format(FormatterStrings.ModuleVersion, source[i].Module.Name, source[i].Module.Version));
+                            WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.ModuleVersion, source[i].Module.Name, source[i].Module.Version));
                             list.Add(source[i].Module.Name);
                         }
                     }
@@ -290,35 +291,35 @@ namespace PSRule.Pipeline
                 protected override void Error(string message)
                 {
                     BreakIfUnbrokenContent();
-                    WriteLine(string.Format(FormatterStrings.Client_Error, message), forgroundColor: ConsoleColor.Red);
+                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Client_Error, message), forgroundColor: ConsoleColor.Red);
                     UnbrokenInfo();
                 }
 
                 protected override void Warning(string message)
                 {
                     BreakIfUnbrokenContent();
-                    WriteLine(string.Format(FormatterStrings.Client_Warning, message), forgroundColor: ConsoleColor.Yellow);
+                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Client_Warning, message), forgroundColor: ConsoleColor.Yellow);
                     UnbrokenInfo();
                 }
 
                 protected override void Pass(RuleRecord record)
                 {
                     BreakIfUnbrokenInfo();
-                    WriteLine(string.Format(FormatterStrings.Client_Pass, record.RuleName), forgroundColor: ConsoleColor.Green);
+                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Client_Pass, record.RuleName), forgroundColor: ConsoleColor.Green);
                     UnbrokenContent();
                 }
 
                 protected override void Fail(RuleRecord record)
                 {
                     BreakIfUnbrokenInfo();
-                    WriteLine(string.Format(FormatterStrings.Client_Fail, record.RuleName), forgroundColor: ConsoleColor.Red);
+                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Client_Fail, record.RuleName), forgroundColor: ConsoleColor.Red);
                     FailDetail(record);
                 }
 
                 protected override void FailWithError(RuleRecord record)
                 {
                     BreakIfUnbrokenInfo();
-                    WriteLine(string.Format(FormatterStrings.Client_Error, record.RuleName), forgroundColor: ConsoleColor.Red);
+                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Client_Error, record.RuleName), forgroundColor: ConsoleColor.Red);
                     ErrorDetail(record);
                     UnbrokenContent();
                 }
@@ -362,35 +363,35 @@ namespace PSRule.Pipeline
                 protected override void Error(string message)
                 {
                     BreakIfUnbrokenContent();
-                    WriteLine(string.Format(FormatterStrings.Plain_Error, message));
+                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Plain_Error, message));
                     UnbrokenInfo();
                 }
 
                 protected override void Warning(string message)
                 {
                     BreakIfUnbrokenContent();
-                    WriteLine(string.Format(FormatterStrings.Plain_Warning, message));
+                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Plain_Warning, message));
                     UnbrokenInfo();
                 }
 
                 protected override void Pass(RuleRecord record)
                 {
                     BreakIfUnbrokenInfo();
-                    WriteLine(string.Format(FormatterStrings.Plain_Pass, record.RuleName));
+                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Plain_Pass, record.RuleName));
                     UnbrokenContent();
                 }
 
                 protected override void Fail(RuleRecord record)
                 {
                     BreakIfUnbrokenInfo();
-                    WriteLine(string.Format(FormatterStrings.Plain_Fail, record.RuleName));
+                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Plain_Fail, record.RuleName));
                     FailDetail(record);
                 }
 
                 protected override void FailWithError(RuleRecord record)
                 {
                     BreakIfUnbrokenInfo();
-                    WriteLine(string.Format(FormatterStrings.Plain_Fail, record.RuleName));
+                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Plain_Fail, record.RuleName));
                     ErrorDetail(record);
                     UnbrokenContent();
                 }
@@ -539,6 +540,16 @@ namespace PSRule.Pipeline
                 _Formatter.Warning(new WarningRecord(message));
             }
 
+            public override void WriteError(ErrorRecord errorRecord)
+            {
+                var errorPreference = GetPreferenceVariable(_ExecutionContext.SessionState, ErrorPreference);
+                if (errorPreference == ActionPreference.Ignore || errorPreference == ActionPreference.SilentlyContinue)
+                    return;
+
+                _PSError = true;
+                _Formatter.Error(errorRecord);
+            }
+
             public override void End()
             {
                 _Formatter.End(_TotalCount, _FailCount, _ErrorCount);
@@ -546,9 +557,11 @@ namespace PSRule.Pipeline
                 try
                 {
                     if (_ErrorCount > 0)
-                        base.WriteError(new ErrorRecord(new FailPipelineException(PSRuleResources.ErrorPipelineException), "PSRule.Error", ErrorCategory.InvalidOperation, null));
+                        base.WriteError(new ErrorRecord(new FailPipelineException(PSRuleResources.RuleErrorPipelineException), "PSRule.Error", ErrorCategory.InvalidOperation, null));
                     else if (_FailCount > 0)
-                        base.WriteError(new ErrorRecord(new FailPipelineException(PSRuleResources.FailPipelineException), "PSRule.Fail", ErrorCategory.InvalidData, null));
+                        base.WriteError(new ErrorRecord(new FailPipelineException(PSRuleResources.RuleFailPipelineException), "PSRule.Fail", ErrorCategory.InvalidData, null));
+                    else if (_PSError)
+                        base.WriteError(new ErrorRecord(new FailPipelineException(PSRuleResources.ErrorPipelineException), "PSRule.Error", ErrorCategory.InvalidOperation, null));
 
                     if (_Results != null && _CmdletContext != null)
                         _CmdletContext.SessionState.PSVariable.Set(_ResultVariableName, _Results.ToArray());

@@ -5,6 +5,7 @@ using PSRule.Pipeline;
 using PSRule.Resources;
 using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace PSRule.Runtime
 {
@@ -186,6 +187,9 @@ namespace PSRule.Runtime
                     (major == _Major && minor == _Minor && patch == _Patch && PR(prerelease) < 0);
             }
 
+            /// <summary>
+            /// Compare pre-release.
+            /// </summary>
             private int PR(string prerelease)
             {
                 if (string.IsNullOrEmpty(prerelease))
@@ -194,7 +198,7 @@ namespace PSRule.Runtime
                     return -1;
 
                 if (prerelease.Length == _Prerelease.Length)
-                    return string.Compare(prerelease, _Prerelease);
+                    return string.Compare(prerelease, _Prerelease, StringComparison.Ordinal);
 
                 var compareLength = prerelease.Length > _Prerelease.Length ? _Prerelease.Length : prerelease.Length;
                 var left = prerelease.Substring(0, compareLength);
@@ -202,7 +206,7 @@ namespace PSRule.Runtime
                 if (left == right)
                     return prerelease.Length == compareLength ? -1 : 1;
 
-                return string.Compare(left, right);
+                return string.Compare(left, right, StringComparison.Ordinal);
             }
         }
 
@@ -325,7 +329,7 @@ namespace PSRule.Runtime
                     count++;
                     Next();
                 }
-                digit = count > 0 ? int.Parse(_Value.Substring(pos, count)) : 0;
+                digit = count > 0 ? int.Parse(_Value.Substring(pos, count), Thread.CurrentThread.CurrentCulture) : 0;
                 return count > 0;
             }
 
@@ -457,10 +461,10 @@ namespace PSRule.Runtime
             {
                 stream.GetConstraint(out CompareFlag flag);
                 if (!stream.TrySegments(out int[] segments))
-                    throw new RuleRuntimeException(string.Format(PSRuleResources.VersionConstraintInvalid, value));
+                    return false;
 
                 if (!stream.TryPrerelease(out string prerelease) || !stream.TryBuild(out _) || !stream.EOF)
-                    throw new RuleRuntimeException(string.Format(PSRuleResources.VersionConstraintInvalid, value));
+                    return false;
 
                 constraint = new Constraint(segments[0], segments[1], segments[2], prerelease, flag);
             }

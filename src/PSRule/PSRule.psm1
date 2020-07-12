@@ -119,12 +119,6 @@ function Invoke-PSRule {
         $sourceParams['Option'] = $Option;
         [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
-        # Check that some matching script files were found
-        if ($Null -eq $sourceFiles) {
-            Write-Warning -Message $LocalizedHelp.RulePathNotFound;
-            return; # continue causes issues with Pester
-        }
-
         $isDeviceGuard = IsDeviceGuardEnabled;
 
         # If DeviceGuard is enabled, force a contrained execution environment
@@ -153,6 +147,7 @@ function Invoke-PSRule {
             $Option.Output.Culture = $Culture;
         }
 
+        $pipelineReady = $False;
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
@@ -168,7 +163,10 @@ function Invoke-PSRule {
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
-            $pipeline.Begin();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $pipeline.RuleCount -gt 0;
+            }
         }
         catch {
             throw $_.Exception.GetBaseException();
@@ -176,7 +174,7 @@ function Invoke-PSRule {
     }
 
     process {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue) -and $pipeline.RuleCount -gt 0) {
+        if ($pipelineReady) {
             try {
                 # Process pipeline objects
                 $pipeline.Process($InputObject);
@@ -189,7 +187,7 @@ function Invoke-PSRule {
     }
 
     end {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.End();
             }
@@ -279,12 +277,6 @@ function Test-PSRuleTarget {
         $sourceParams['Option'] = $Option;
         [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
-        # Check that some matching script files were found
-        if ($Null -eq $sourceFiles) {
-            Write-Warning -Message $LocalizedHelp.RulePathNotFound;
-            return; # continue causes issues with Pester
-        }
-
         $isDeviceGuard = IsDeviceGuardEnabled;
 
         # If DeviceGuard is enabled, force a contrained execution environment
@@ -304,6 +296,7 @@ function Test-PSRuleTarget {
             $Option.Output.Culture = $Culture;
         }
 
+        $pipelineReady = $False;
         $builder = [PSRule.Pipeline.PipelineBuilder]::Test($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
@@ -318,7 +311,10 @@ function Test-PSRuleTarget {
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
-            $pipeline.Begin();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $pipeline.RuleCount -gt 0;
+            }
         }
         catch {
             throw $_.Exception.GetBaseException();
@@ -326,7 +322,7 @@ function Test-PSRuleTarget {
     }
 
     process {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue) -and $pipeline.RuleCount -gt 0) {
+        if ($pipelineReady) {
             try {
                 # Process pipeline objects
                 $pipeline.Process($InputObject);
@@ -339,7 +335,7 @@ function Test-PSRuleTarget {
     }
 
     end {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.End();
             }
@@ -444,12 +440,6 @@ function Assert-PSRule {
         $sourceParams['Option'] = $Option;
         [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
-        # Check that some matching script files were found
-        if ($Null -eq $sourceFiles) {
-            Write-Warning -Message $LocalizedHelp.RulePathNotFound;
-            return; # continue causes issues with Pester
-        }
-
         $isDeviceGuard = IsDeviceGuardEnabled;
 
         # If DeviceGuard is enabled, force a contrained execution environment
@@ -478,6 +468,7 @@ function Assert-PSRule {
             $Option.Output.Culture = $Culture;
         }
 
+        $pipelineReady = $False;
         $builder = [PSRule.Pipeline.PipelineBuilder]::Assert($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
@@ -493,14 +484,17 @@ function Assert-PSRule {
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
-            $pipeline.Begin();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $pipeline.RuleCount -gt 0;
+            }
         }
         catch {
             throw $_.Exception.GetBaseException();
         }
     }
     process {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue) -and $pipeline.RuleCount -gt 0) {
+        if ($pipelineReady) {
             try {
                 # Process pipeline objects
                 $pipeline.Process($InputObject);
@@ -512,7 +506,7 @@ function Assert-PSRule {
         }
     }
     end {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.End();
             }
@@ -618,6 +612,7 @@ function Get-PSRule {
             $Option.Output.Culture = $Culture;
         }
 
+        $pipelineReady = $False;
         $builder = [PSRule.Pipeline.PipelineBuilder]::Get($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
@@ -631,14 +626,17 @@ function Get-PSRule {
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $True;
+            }
         }
         catch {
             throw $_.Exception.GetBaseException();
         }
     }
-
     end {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.End();
             }
@@ -718,21 +716,24 @@ function Get-PSRuleBaseline {
             $Option.Output.Culture = $Culture;
         }
 
+        $pipelineReady = $False;
         $builder = [PSRule.Pipeline.PipelineBuilder]::GetBaseline($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.UseCommandRuntime($PSCmdlet);
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
-            $pipeline.Begin();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $True;
+            }
         }
         catch {
             throw $_.Exception.GetBaseException();
         }
     }
-
     end {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.End();
             }
@@ -833,6 +834,7 @@ function Get-PSRuleHelp {
             $Option.Output.Culture = $Culture;
         }
 
+        $pipelineReady = $False;
         $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp($sourceFiles, $Option);
 
         if ($Online) {
@@ -844,11 +846,20 @@ function Get-PSRuleHelp {
 
         $builder.UseCommandRuntime($PSCmdlet);
         $builder.UseExecutionContext($ExecutionContext);
-        $pipeline = $builder.Build();
+        try {
+            $pipeline = $builder.Build();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $True;
+            }
+        }
+        catch {
+            throw $_.Exception.GetBaseException();
+        }
     }
 
     end {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.End();
             }

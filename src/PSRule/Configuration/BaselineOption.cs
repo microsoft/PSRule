@@ -103,15 +103,7 @@ namespace PSRule.Configuration
                 option.Rule.Tag = tag;
 
             // Process configuration values
-            if (properties.Count > 0)
-            {
-                var keys = properties.Keys.ToArray();
-                for (var i = 0; i < keys.Length; i++)
-                {
-                    if (keys[i].Length > 14 && keys[i].StartsWith("Configuration.", StringComparison.OrdinalIgnoreCase))
-                        option.Configuration[keys[i].Substring(14)] = properties[keys[i]];
-                }
-            }
+            option.Configuration.Load(properties);
         }
     }
 }

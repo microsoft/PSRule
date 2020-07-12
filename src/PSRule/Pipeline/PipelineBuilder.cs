@@ -4,12 +4,16 @@
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Pipeline.Output;
+using PSRule.Resources;
 using PSRule.Rules;
+using PSRule.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Management.Automation;
+using System.Reflection;
 using System.Text;
 
 namespace PSRule.Pipeline
@@ -86,6 +90,8 @@ namespace PSRule.Pipeline
 
     internal abstract class PipelineBuilderBase : IPipelineBuilder
     {
+        private const string ENGINE_MODULE_NAME = "PSRule";
+
         protected readonly PSRuleOption Option;
         protected readonly Source[] Source;
         protected readonly HostContext HostContext;
@@ -163,13 +169,69 @@ namespace PSRule.Pipeline
             _Baseline = baseline;
         }
 
+        /// <summary>
+        /// Require correct module versions for pipeline execution.
+        /// </summary>
+        protected bool RequireModules()
+        {
+            var result = true;
+            if (Option.Requires.TryGetValue(ENGINE_MODULE_NAME, out string requiredVersion))
+            {
+                var engineVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+                if (GuardModuleVersion(ENGINE_MODULE_NAME, engineVersion, requiredVersion))
+                    result = false;
+            }
+            for (var i = 0; Source != null && i < Source.Length; i++)
+            {
+                if (Source[i].Module != null && Option.Requires.TryGetValue(Source[i].Module.Name, out requiredVersion))
+                {
+                    if (GuardModuleVersion(Source[i].Module.Name, Source[i].Module.Version, requiredVersion))
+                        result = false;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Require sources for pipeline execution.
+        /// </summary>
+        protected bool RequireSources()
+        {
+            if (Source == null || Source.Length == 0)
+            {
+                PrepareWriter().WarnRulePathNotFound();
+                return false;
+            }
+            return true;
+        }
+
+        private bool GuardModuleVersion(string moduleName, string moduleVersion, string requiredVersion)
+        {
+            if (!TryModuleVersion(moduleVersion, requiredVersion))
+            {
+                var writer = PrepareWriter();
+                writer.ErrorRequiredVersionMismatch(moduleName, moduleVersion, requiredVersion);
+                writer.End();
+                return true;
+            }
+            return false;
+        }
+
+        private static bool TryModuleVersion(string moduleVersion, string requiredVersion)
+        {
+            if (!(SemanticVersion.TryParseVersion(moduleVersion, out SemanticVersion.Version version) && SemanticVersion.TryParseConstraint(requiredVersion, out SemanticVersion.Constraint constraint)))
+                return false;
+
+            return constraint.Equals(version);
+        }
+
         protected PipelineContext PrepareContext(BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField)
         {
             var unresolved = new Dictionary<string, ResourceRef>(StringComparer.OrdinalIgnoreCase);
             if (_Baseline is BaselineOption.BaselineRef baselineRef)
                 unresolved.Add(baselineRef.Name, new BaselineRef(baselineRef.Name, OptionContext.ScopeType.Explicit));
 
-            for (var i = 0; i < Source.Length; i++)
+            for (var i = 0; Source != null && i < Source.Length; i++)
             {
                 if (Source[i].Module != null && Source[i].Module.Baseline != null && !unresolved.ContainsKey(Source[i].Module.Baseline))
                     unresolved.Add(Source[i].Module.Baseline, new BaselineRef(Source[i].Module.Baseline, OptionContext.ScopeType.Module));

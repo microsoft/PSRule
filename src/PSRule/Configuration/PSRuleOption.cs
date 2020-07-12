@@ -60,6 +60,7 @@ namespace PSRule.Configuration
             Logging = new LoggingOption();
             Output = new OutputOption();
             Pipeline = new PipelineHook();
+            Requires = new RequiresOption();
             Rule = new RuleOption();
             Suppression = new SuppressionOption();
         }
@@ -71,17 +72,18 @@ namespace PSRule.Configuration
             // Set from existing option instance
             Binding = new BindingOption(option?.Binding);
             Configuration = new ConfigurationOption(option?.Configuration);
+            Execution = new ExecutionOption(option?.Execution);
             Input = new InputOption(option?.Input);
             Logging = new LoggingOption(option?.Logging);
             Output = new OutputOption(option?.Output);
-            Suppression = new SuppressionOption(option?.Suppression);
-            Execution = new ExecutionOption(option?.Execution);
             Pipeline = new PipelineHook(option?.Pipeline);
+            Requires = new RequiresOption(option?.Requires);
             Rule = new RuleOption(option?.Rule);
+            Suppression = new SuppressionOption(option?.Suppression);
         }
 
         /// <summary>
-        /// Options tht affect property binding of TargetName.
+        /// Options that affect property binding of TargetName.
         /// </summary>
         public BindingOption Binding { get; set; }
 
@@ -107,16 +109,21 @@ namespace PSRule.Configuration
         /// </summary>
         public OutputOption Output { get; set; }
 
-        /// <summary>
-        /// A set of suppression rules.
-        /// </summary>
-        public SuppressionOption Suppression { get; set; }
-
         [YamlIgnore]
         [JsonIgnore]
         public PipelineHook Pipeline { get; set; }
 
+        /// <summary>
+        /// Specifies the required version of a module to use.
+        /// </summary>
+        public RequiresOption Requires { get; set; }
+
         public RuleOption Rule { get; set; }
+
+        /// <summary>
+        /// A set of suppression rules.
+        /// </summary>
+        public SuppressionOption Suppression { get; set; }
 
         /// <summary>
         /// Return options as YAML.
@@ -133,7 +140,7 @@ namespace PSRule.Configuration
             }
 
             return string.Concat(
-                string.Format(PSRuleResources.OptionsSourceComment, SourcePath),
+                string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.OptionsSourceComment, SourcePath),
                 Environment.NewLine,
                 yaml
             );
@@ -187,9 +194,8 @@ namespace PSRule.Configuration
 
             // Fallback to defaults even if file does not exist when silentlyContinue is true
             if (!File.Exists(filePath))
-            {
                 throw new FileNotFoundException(PSRuleResources.OptionsNotFound, filePath);
-            }
+
             return FromYaml(path: filePath, yaml: File.ReadAllText(filePath));
         }
 
@@ -362,7 +368,7 @@ namespace PSRule.Configuration
             {
                 option.Output.Style = (OutputStyle)Enum.Parse(typeof(OutputStyle), (string)value);
             }
-
+            option.Requires.Load(index);
             BaselineOption.Load(option, index);
             return option;
         }

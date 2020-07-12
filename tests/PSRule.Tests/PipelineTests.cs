@@ -24,39 +24,33 @@ namespace PSRule
         [Fact]
         public void BuildInvokePipeline()
         {
-            var option = new PSRuleOption();
+            var option = GetOption();
             var builder = PipelineBuilder.Invoke(GetSource(), option);
-            var pipeline = builder.Build();
-
-            Assert.NotNull(pipeline);
+            Assert.NotNull(builder.Build());
         }
 
         [Fact]
         public void InvokePipeline()
         {
             var testObject1 = new TestObject { Name = "TestObject1" };
-            var option = new PSRuleOption();
+            var option = GetOption();
             option.Rule.Include = new string[] { "FromFile1" };
             var builder = PipelineBuilder.Invoke(GetSource(), option);
             var pipeline = builder.Build();
             pipeline.Begin();
 
-            var actual = new List<InvokeResult>();
             for (var i = 0; i < 100; i++)
             {
                 pipeline.Process(PSObject.AsPSObject(testObject1));
             }
-
             pipeline.End();
         }
 
         [Fact]
         public void BuildGetPipeline()
         {
-            var builder = PipelineBuilder.Get(GetSource(), new PSRuleOption());
-            var pipeline = builder.Build();
-
-            Assert.NotNull(pipeline);
+            var builder = PipelineBuilder.Get(GetSource(), GetOption());
+            Assert.NotNull(builder.Build());
         }
 
         [Fact]
@@ -79,6 +73,14 @@ namespace PSRule
             }
         }
 
+        [Fact]
+        public void PipelineWithRequires()
+        {
+            var option = GetOption(GetSourcePath("PSRule.Tests6.yml"));
+            var builder = PipelineBuilder.Get(GetSource(), option);
+            Assert.Null(builder.Build());
+        }
+
         private static Source[] GetSource()
         {
             var builder = new RuleSourceBuilder();
@@ -86,9 +88,12 @@ namespace PSRule
             return builder.Build();
         }
 
-        private PSRuleOption GetOption()
+        private PSRuleOption GetOption(string path = null)
         {
-            return new PSRuleOption();
+            if (path == null)
+                return new PSRuleOption();
+
+            return PSRuleOption.FromFile(path);
         }
 
         private static string GetSourcePath(string fileName)

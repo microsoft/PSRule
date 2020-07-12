@@ -133,13 +133,10 @@
     <comment>Occurs when the same rule name is used.</comment>
   </data>
   <data name="ErrorPipelineException" xml:space="preserve">
-    <value>One or more rules reported errors.</value>
+    <value>One or more errors occured.</value>
   </data>
   <data name="ExistsTrue" xml:space="preserve">
     <value>Exists: {0}</value>
-  </data>
-  <data name="FailPipelineException" xml:space="preserve">
-    <value>One or more rules reported failure.</value>
   </data>
   <data name="FoundModules" xml:space="preserve">
     <value>[PSRule][D] -- Found {0} PSRule module(s)</value>
@@ -188,6 +185,15 @@
   <data name="ReadJsonFailed" xml:space="preserve">
     <value>Read JSON failed.</value>
   </data>
+  <data name="RequiredVersionMismatch" xml:space="preserve">
+    <value>The module version '{1}' for '{0}' does not match the required version '{2}'.</value>
+  </data>
+  <data name="RuleErrorPipelineException" xml:space="preserve">
+    <value>One or more rules reported errors.</value>
+  </data>
+  <data name="RuleFailPipelineException" xml:space="preserve">
+    <value>One or more rules reported failure.</value>
+  </data>
   <data name="RuleInconclusive" xml:space="preserve">
     <value>Inconclusive result reported for '{1}' @{0}.</value>
   </data>
@@ -197,6 +203,9 @@
   <data name="RuleParameterNotFound" xml:space="preserve">
     <value>Could not find required rule definition parameter '{0}' on rule at {1}.</value>
     <comment>Occurs when a rule definition is missing a mandatory parameter.</comment>
+  </data>
+  <data name="RulePathNotFound" xml:space="preserve">
+    <value>No matching .Rule.ps1 files were found. Rule definitions should be saved into script files with the .Rule.ps1 extension.</value>
   </data>
   <data name="RuleStackTrace" xml:space="preserve">
     <value>at Rule '{0}', {1}: line {2}</value>

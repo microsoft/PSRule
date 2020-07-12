@@ -14,6 +14,10 @@
   - Improvements to assertion methods.
     - Added regular expression assertion helpers `Match`, and `NotMatch`. [#502](https://github.com/microsoft/PSRule/issues/502)
     - Added collection assertion helpers `In`, and `NotIn`. [#501](https://github.com/microsoft/PSRule/issues/501)
+  - Added module version constraints. [#498](https://github.com/microsoft/PSRule/issues/498)
+    - The module versions that PSRule uses can be constrained.
+- Bug fixes:
+  - Fixed styling for no rule files warning with `Assert-PSRule`. [#484](https://github.com/microsoft/PSRule/issues/484)
 
 ## v0.18.1
 
