@@ -93,6 +93,7 @@ function Invoke-PSRule {
 
     begin {
         Write-Verbose -Message '[Invoke-PSRule] BEGIN::';
+        $pipelineReady = $False;
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -147,7 +148,6 @@ function Invoke-PSRule {
             $Option.Output.Culture = $Culture;
         }
 
-        $pipelineReady = $False;
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
@@ -172,7 +172,6 @@ function Invoke-PSRule {
             throw $_.Exception.GetBaseException();
         }
     }
-
     process {
         if ($pipelineReady) {
             try {
@@ -185,7 +184,6 @@ function Invoke-PSRule {
             }
         }
     }
-
     end {
         if ($pipelineReady) {
             try {
@@ -251,6 +249,7 @@ function Test-PSRuleTarget {
 
     begin {
         Write-Verbose -Message "[Test-PSRuleTarget] BEGIN::";
+        $pipelineReady = $False;
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -296,7 +295,6 @@ function Test-PSRuleTarget {
             $Option.Output.Culture = $Culture;
         }
 
-        $pipelineReady = $False;
         $builder = [PSRule.Pipeline.PipelineBuilder]::Test($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
@@ -320,7 +318,6 @@ function Test-PSRuleTarget {
             throw $_.Exception.GetBaseException();
         }
     }
-
     process {
         if ($pipelineReady) {
             try {
@@ -333,7 +330,6 @@ function Test-PSRuleTarget {
             }
         }
     }
-
     end {
         if ($pipelineReady) {
             try {
@@ -414,6 +410,7 @@ function Assert-PSRule {
     )
     begin {
         Write-Verbose -Message '[Assert-PSRule] BEGIN::';
+        $pipelineReady = $False;
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -468,7 +465,6 @@ function Assert-PSRule {
             $Option.Output.Culture = $Culture;
         }
 
-        $pipelineReady = $False;
         $builder = [PSRule.Pipeline.PipelineBuilder]::Assert($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
@@ -562,6 +558,7 @@ function Get-PSRule {
     )
     begin {
         Write-Verbose -Message "[Get-PSRule]::BEGIN";
+        $pipelineReady = $False;
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -612,7 +609,6 @@ function Get-PSRule {
             $Option.Output.Culture = $Culture;
         }
 
-        $pipelineReady = $False;
         $builder = [PSRule.Pipeline.PipelineBuilder]::Get($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.Tag($Tag);
@@ -677,6 +673,7 @@ function Get-PSRuleBaseline {
     )
     begin {
         Write-Verbose -Message "[Get-PSRuleBaseline] BEGIN::";
+        $pipelineReady = $False;
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -716,7 +713,6 @@ function Get-PSRuleBaseline {
             $Option.Output.Culture = $Culture;
         }
 
-        $pipelineReady = $False;
         $builder = [PSRule.Pipeline.PipelineBuilder]::GetBaseline($sourceFiles, $Option);
         $builder.Name($Name);
         $builder.UseCommandRuntime($PSCmdlet);
@@ -780,6 +776,7 @@ function Get-PSRuleHelp {
 
     begin {
         Write-Verbose -Message "[Get-PSRuleHelp]::BEGIN";
+        $pipelineReady = $False;
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -834,7 +831,6 @@ function Get-PSRuleHelp {
             $Option.Output.Culture = $Culture;
         }
 
-        $pipelineReady = $False;
         $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp($sourceFiles, $Option);
 
         if ($Online) {
