@@ -712,6 +712,23 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Requires' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Requires.ContainsKey('PSRule') | Should -Be $False;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Requires.PSRule' = '^0.1.0' };
+            $option.Requires.PSRule | Should -Be '^0.1.0';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests6.yml');
+            $option.Requires.PSRule | Should -Be '>=0.18.0';
+        }
+    }
+
     Context 'Read Suppression' {
         It 'from default' {
             $option = New-PSRuleOption -Default;

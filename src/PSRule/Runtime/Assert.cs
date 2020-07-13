@@ -272,7 +272,8 @@ namespace PSRule.Runtime
                 GuardSemanticVersion(fieldValue, out SemanticVersion.Version value, out result))
                 return result;
 
-            Runtime.SemanticVersion.TryParseConstraint(constraint, out SemanticVersion.Constraint c);
+            if (!Runtime.SemanticVersion.TryParseConstraint(constraint, out SemanticVersion.Constraint c))
+                throw new RuleRuntimeException(string.Format(PSRuleResources.VersionConstraintInvalid, value));
 
             // Assert
             if (c != null && !c.Equals(value))

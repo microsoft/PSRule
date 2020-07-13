@@ -20,6 +20,11 @@ namespace PSRule.Configuration
             _Map = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
         }
 
+        internal FieldMap(FieldMap map)
+        {
+            _Map = new Dictionary<string, string[]>(map._Map, StringComparer.OrdinalIgnoreCase);
+        }
+
         internal FieldMap(Dictionary<string, string[]> map)
         {
             _Map = new Dictionary<string, string[]>(map, StringComparer.OrdinalIgnoreCase);

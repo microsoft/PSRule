@@ -30,6 +30,7 @@ namespace PSRule.Pipeline
             Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
             Option.Output.Culture = GetCulture(option.Output.Culture);
             Option.Output.Format = SuppressFormat(option.Output.Format);
+            Option.Requires = new RequiresOption(option.Requires);
 
             if (option.Rule != null)
                 Option.Rule = new RuleOption(option.Rule);
@@ -43,6 +44,9 @@ namespace PSRule.Pipeline
 
         public override IPipeline Build()
         {
+            if (!RequireModules() || !RequireSources())
+                return null;
+
             return new GetRulePipeline(PrepareContext(null, null, null), Source, PrepareReader(), PrepareWriter(), _IncludeDependencies);
         }
 

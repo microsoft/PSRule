@@ -106,6 +106,7 @@ namespace PSRule.Pipeline
                     _BindTargetTypeHook = AddBindTargetAction(action, _BindTargetTypeHook);
             }
 
+            Option.Requires = new RequiresOption(option.Requires);
             if (option.Suppression.Count > 0)
                 Option.Suppression = new SuppressionOption(option.Suppression);
 
@@ -114,6 +115,9 @@ namespace PSRule.Pipeline
 
         public sealed override IPipeline Build()
         {
+            if (!RequireModules() || !RequireSources())
+                return null;
+
             return new InvokeRulePipeline(PrepareContext(_BindTargetNameHook, _BindTargetTypeHook, _BindFieldHook), Source, PrepareReader(), PrepareWriter(), Outcome);
         }
 

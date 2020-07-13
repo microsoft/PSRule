@@ -97,7 +97,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One or more rules reported errors..
+        ///   Looks up a localized string similar to One or more errors occured..
         /// </summary>
         internal static string ErrorPipelineException {
             get {
@@ -111,15 +111,6 @@ namespace PSRule.Resources {
         internal static string ExistsTrue {
             get {
                 return ResourceManager.GetString("ExistsTrue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to One or more rules reported failure..
-        /// </summary>
-        internal static string FailPipelineException {
-            get {
-                return ResourceManager.GetString("FailPipelineException", resourceCulture);
             }
         }
         
@@ -259,6 +250,33 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The module version &apos;{1}&apos; for &apos;{0}&apos; does not match the required version &apos;{2}&apos;..
+        /// </summary>
+        internal static string RequiredVersionMismatch {
+            get {
+                return ResourceManager.GetString("RequiredVersionMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One or more rules reported errors..
+        /// </summary>
+        internal static string RuleErrorPipelineException {
+            get {
+                return ResourceManager.GetString("RuleErrorPipelineException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One or more rules reported failure..
+        /// </summary>
+        internal static string RuleFailPipelineException {
+            get {
+                return ResourceManager.GetString("RuleFailPipelineException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inconclusive result reported for &apos;{1}&apos; @{0}..
         /// </summary>
         internal static string RuleInconclusive {
@@ -282,6 +300,15 @@ namespace PSRule.Resources {
         internal static string RuleParameterNotFound {
             get {
                 return ResourceManager.GetString("RuleParameterNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No matching .Rule.ps1 files were found. Rule definitions should be saved into script files with the .Rule.ps1 extension..
+        /// </summary>
+        internal static string RulePathNotFound {
+            get {
+                return ResourceManager.GetString("RulePathNotFound", resourceCulture);
             }
         }
         

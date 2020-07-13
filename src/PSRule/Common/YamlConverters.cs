@@ -109,7 +109,6 @@ namespace PSRule
                     {
                         parser.MoveNext();
                         var fields = new List<string>();
-
                         while (!parser.Accept<SequenceEnd>())
                             fields.Add(parser.Allow<Scalar>().Value);
 

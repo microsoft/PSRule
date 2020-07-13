@@ -223,7 +223,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rules processed: {0}, failed: {1}, errors: {2}.
+        ///   Looks up a localized string similar to Rules processed: {0}, failed: {1}, errored: {2}.
         /// </summary>
         internal static string Summary {
             get {

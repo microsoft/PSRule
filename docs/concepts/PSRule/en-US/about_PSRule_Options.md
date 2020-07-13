@@ -29,6 +29,7 @@ The following workspace options are available for use:
 - [Output.Format](#outputformat)
 - [Output.Path](#outputpath)
 - [Output.Style](#outputstyle)
+- [Requires](#requires)
 - [Suppression](#suppression)
 
 Additionally the following baseline options can be included:
@@ -1018,6 +1019,32 @@ output:
   style: AzurePipelines
 ```
 
+### Requires
+
+Specifies module version constraints for running PSRule.
+When set PSRule will error if a module version is used that does not satisfy the requirements.
+The format for version constraints are the same as the `Version` assertion method.
+See [about_PSRule_Assert] for more information.
+
+Module version constraints a not enforced prior to PSRule v0.19.0.
+
+The version constraint for a rule module is enforced when the module is included with `-Module`.
+A version constraint does not require a rule module to be included.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Requires.module hashtable key
+$option = New-PSRuleOption -Option @{ 'Requires.PSRule' = '>=0.18.0' };
+```
+
+```yaml
+# YAML: Using the requires property
+requires:
+  PSRule: '>=0.18.0'              # Require v0.18.0 or greater.
+  PSRule.Rules.Azure: '>=0.13.0'  # Require v0.13.0 or greater.
+```
+
 ### Rule.Include
 
 The name of specific rules to evaluate.
@@ -1162,6 +1189,10 @@ Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
 # PSRule example configuration
 #
 
+# Configure required module versions
+requires:
+  PSRule.Rules.Azure: '>=0.13.0'
+
 # Configure execution options
 execution:
   languageMode: ConstrainedLanguage
@@ -1243,6 +1274,9 @@ rule:
 
 # Note: Only properties that differ from the default values need to be specified.
 
+# Configure required module versions
+requires: { }
+
 # Configure execution options
 execution:
   languageMode: FullLanguage
@@ -1306,3 +1340,5 @@ An online version of this document is available at https://github.com/Microsoft/
 
 - Options
 - PSRule
+
+[about_PSRule_Assert]: about_PSRule_Assert.md

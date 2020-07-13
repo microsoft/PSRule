@@ -93,6 +93,7 @@ function Invoke-PSRule {
 
     begin {
         Write-Verbose -Message '[Invoke-PSRule] BEGIN::';
+        $pipelineReady = $False;
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -118,12 +119,6 @@ function Invoke-PSRule {
         }
         $sourceParams['Option'] = $Option;
         [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
-
-        # Check that some matching script files were found
-        if ($Null -eq $sourceFiles) {
-            Write-Warning -Message $LocalizedHelp.RulePathNotFound;
-            return; # continue causes issues with Pester
-        }
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
@@ -168,15 +163,17 @@ function Invoke-PSRule {
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
-            $pipeline.Begin();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $pipeline.RuleCount -gt 0;
+            }
         }
         catch {
             throw $_.Exception.GetBaseException();
         }
     }
-
     process {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue) -and $pipeline.RuleCount -gt 0) {
+        if ($pipelineReady) {
             try {
                 # Process pipeline objects
                 $pipeline.Process($InputObject);
@@ -187,9 +184,8 @@ function Invoke-PSRule {
             }
         }
     }
-
     end {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.End();
             }
@@ -253,6 +249,7 @@ function Test-PSRuleTarget {
 
     begin {
         Write-Verbose -Message "[Test-PSRuleTarget] BEGIN::";
+        $pipelineReady = $False;
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -278,12 +275,6 @@ function Test-PSRuleTarget {
         }
         $sourceParams['Option'] = $Option;
         [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
-
-        # Check that some matching script files were found
-        if ($Null -eq $sourceFiles) {
-            Write-Warning -Message $LocalizedHelp.RulePathNotFound;
-            return; # continue causes issues with Pester
-        }
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
@@ -318,15 +309,17 @@ function Test-PSRuleTarget {
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
-            $pipeline.Begin();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $pipeline.RuleCount -gt 0;
+            }
         }
         catch {
             throw $_.Exception.GetBaseException();
         }
     }
-
     process {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue) -and $pipeline.RuleCount -gt 0) {
+        if ($pipelineReady) {
             try {
                 # Process pipeline objects
                 $pipeline.Process($InputObject);
@@ -337,9 +330,8 @@ function Test-PSRuleTarget {
             }
         }
     }
-
     end {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.End();
             }
@@ -418,6 +410,7 @@ function Assert-PSRule {
     )
     begin {
         Write-Verbose -Message '[Assert-PSRule] BEGIN::';
+        $pipelineReady = $False;
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -443,12 +436,6 @@ function Assert-PSRule {
         }
         $sourceParams['Option'] = $Option;
         [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
-
-        # Check that some matching script files were found
-        if ($Null -eq $sourceFiles) {
-            Write-Warning -Message $LocalizedHelp.RulePathNotFound;
-            return; # continue causes issues with Pester
-        }
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
@@ -493,14 +480,17 @@ function Assert-PSRule {
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
-            $pipeline.Begin();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $pipeline.RuleCount -gt 0;
+            }
         }
         catch {
             throw $_.Exception.GetBaseException();
         }
     }
     process {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue) -and $pipeline.RuleCount -gt 0) {
+        if ($pipelineReady) {
             try {
                 # Process pipeline objects
                 $pipeline.Process($InputObject);
@@ -512,7 +502,7 @@ function Assert-PSRule {
         }
     }
     end {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.End();
             }
@@ -568,6 +558,7 @@ function Get-PSRule {
     )
     begin {
         Write-Verbose -Message "[Get-PSRule]::BEGIN";
+        $pipelineReady = $False;
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -631,14 +622,17 @@ function Get-PSRule {
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $True;
+            }
         }
         catch {
             throw $_.Exception.GetBaseException();
         }
     }
-
     end {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.End();
             }
@@ -679,6 +673,7 @@ function Get-PSRuleBaseline {
     )
     begin {
         Write-Verbose -Message "[Get-PSRuleBaseline] BEGIN::";
+        $pipelineReady = $False;
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -724,15 +719,17 @@ function Get-PSRuleBaseline {
         $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
-            $pipeline.Begin();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $True;
+            }
         }
         catch {
             throw $_.Exception.GetBaseException();
         }
     }
-
     end {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.End();
             }
@@ -779,6 +776,7 @@ function Get-PSRuleHelp {
 
     begin {
         Write-Verbose -Message "[Get-PSRuleHelp]::BEGIN";
+        $pipelineReady = $False;
 
         # Get parameter options, which will override options from other sources
         $optionParams = @{ };
@@ -844,11 +842,20 @@ function Get-PSRuleHelp {
 
         $builder.UseCommandRuntime($PSCmdlet);
         $builder.UseExecutionContext($ExecutionContext);
-        $pipeline = $builder.Build();
+        try {
+            $pipeline = $builder.Build();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $True;
+            }
+        }
+        catch {
+            throw $_.Exception.GetBaseException();
+        }
     }
 
     end {
-        if ($Null -ne (Get-Variable -Name pipeline -ErrorAction SilentlyContinue)) {
+        if ($pipelineReady) {
             try {
                 $pipeline.End();
             }

@@ -2,11 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "PSRule options",
     "description": "A schema for PSRule YAML options files.",
-    "oneOf": [
-        {
-            "$ref": "#/definitions/options"
-        }
-    ],
+    "$ref": "#/definitions/options",
     "definitions": {
         "configuration": {
             "type": "object",
@@ -347,6 +343,10 @@
                     "type": "object",
                     "$ref": "#/definitions/output"
                 },
+                "requires": {
+                    "type": "object",
+                    "$ref": "#/definitions/requires"
+                },
                 "rule": {
                     "type": "object",
                     "oneOf": [
@@ -365,6 +365,14 @@
                 }
             },
             "additionalProperties": false
+        },
+        "requires": {
+            "type": "object",
+            "title": "Required modules",
+            "description": "Specifies the required version of a module to use.",
+            "additionalProperties": {
+                "type": "string"
+            }
         },
         "rule-option": {
             "type": "object",

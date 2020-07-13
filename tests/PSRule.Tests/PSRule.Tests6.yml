@@ -1,0 +1,6 @@
+# These are options for unit tests
+
+# Configure required module versions
+requires:
+  PSRule: '>=0.18.0'
+  PSRule.Rules.Azure: '>=0.13.0'
