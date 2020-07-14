@@ -13,6 +13,7 @@ using System.IO;
 using System.Management.Automation;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace PSRule.Runtime
 {
@@ -273,7 +274,7 @@ namespace PSRule.Runtime
                 return result;
 
             if (!Runtime.SemanticVersion.TryParseConstraint(constraint, out SemanticVersion.Constraint c))
-                throw new RuleRuntimeException(string.Format(PSRuleResources.VersionConstraintInvalid, value));
+                throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VersionConstraintInvalid, value));
 
             // Assert
             if (c != null && !c.Equals(value))

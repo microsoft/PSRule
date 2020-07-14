@@ -4,7 +4,6 @@
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Pipeline.Output;
-using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime;
 using System;

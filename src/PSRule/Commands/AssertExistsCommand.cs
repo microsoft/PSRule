@@ -6,6 +6,7 @@ using PSRule.Resources;
 using PSRule.Runtime;
 using System.Collections.Generic;
 using System.Management.Automation;
+using System.Threading;
 
 namespace PSRule.Commands
 {
@@ -46,7 +47,7 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             if (!IsRuleScope())
-                throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordRuleScope, RuleLanguageNouns.Exists));
+                throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordRuleScope, RuleLanguageNouns.Exists));
             
             var targetObject = InputObject ?? GetTargetObject();
             var foundFields = new List<string>();
@@ -70,7 +71,7 @@ namespace PSRule.Commands
             RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Exists, outcome: result);
             if (!(result || TryReason(Reason)))
             {
-                WriteReason(Not ? string.Format(ReasonStrings.ExistsNot, string.Join(", ", foundFields)) : string.Format(ReasonStrings.Exists, string.Join(", ", notFoundFields)));
+                WriteReason(Not ? string.Format(Thread.CurrentThread.CurrentCulture, ReasonStrings.ExistsNot, string.Join(", ", foundFields)) : string.Format(Thread.CurrentThread.CurrentCulture, ReasonStrings.Exists, string.Join(", ", notFoundFields)));
             }
             WriteObject(result);
         }
