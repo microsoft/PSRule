@@ -408,7 +408,7 @@ Rule 'appServicePlan.MinInstanceCount' -If { $TargetObject.ResourceType -eq 'Mic
 
 ## NOTE
 
-An online version of this document is available at https://github.com/Microsoft/PSRule/blob/master/docs/keywords/PSRule/en-US/about_PSRule_Keywords.md.
+An online version of this document is available at https://github.com/Microsoft/PSRule/blob/main/docs/keywords/PSRule/en-US/about_PSRule_Keywords.md.
 
 ## SEE ALSO
 
@@ -426,4 +426,4 @@ An online version of this document is available at https://github.com/Microsoft/
 - Reason
 - Recommend
 
-[Invoke-PSRule]: https://github.com/Microsoft/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md
+[Invoke-PSRule]: https://github.com/Microsoft/PSRule/blob/main/docs/commands/PSRule/en-US/Invoke-PSRule.md

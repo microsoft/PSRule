@@ -1,7 +1,7 @@
 ---
 severity: Important
 category: Resource management
-online version: https://github.com/Microsoft/PSRule/blob/master/docs/scenarios/rule-docs/en-US/metadata.Name.md
+online version: https://github.com/Microsoft/PSRule/blob/main/docs/scenarios/rule-docs/en-US/metadata.Name.md
 ---
 
 # Use recommended name label

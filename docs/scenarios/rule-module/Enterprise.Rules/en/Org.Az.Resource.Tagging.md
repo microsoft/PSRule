@@ -1,6 +1,6 @@
 ---
 resource: All resources
-online version: https://github.com/Microsoft/PSRule/blob/master/docs/scenarios/rule-module/Enterprise.Rules/en/Org.Az.Resource.Tagging.md
+online version: https://github.com/Microsoft/PSRule/blob/main/docs/scenarios/rule-module/Enterprise.Rules/en/Org.Az.Resource.Tagging.md
 ---
 
 # Use mandatory tags

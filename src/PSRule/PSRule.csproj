@@ -13,7 +13,7 @@
     <Authors>Bernie White</Authors>
     <AssemblyTitle>PSRule</AssemblyTitle>
     <RepositoryUrl>https://github.com/Microsoft/PSRule</RepositoryUrl>
-    <PackageLicenseExpression>https://github.com/Microsoft/PSRule/blob/master/LICENSE.txt</PackageLicenseExpression>
+    <PackageLicenseExpression>https://github.com/Microsoft/PSRule/blob/main/LICENSE.txt</PackageLicenseExpression>
     <Version>0.0.1</Version>
     <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
     <Description>Validate objects using PowerShell rules.
