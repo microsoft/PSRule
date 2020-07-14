@@ -18,6 +18,7 @@
     - The module versions that PSRule uses can be constrained.
 - Bug fixes:
   - Fixed styling for no rule files warning with `Assert-PSRule`. [#484](https://github.com/microsoft/PSRule/issues/484)
+  - Fixed actual value in reason for numeric comparison assertion method. [#505](https://github.com/microsoft/PSRule/issues/505)
 
 ## v0.18.1
 
