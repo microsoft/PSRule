@@ -6,6 +6,7 @@ using System.Collections;
 using System.Dynamic;
 using System.Management.Automation;
 using System.Reflection;
+using System.Threading;
 
 namespace PSRule.Runtime
 {
@@ -130,7 +131,7 @@ namespace PSRule.Runtime
                     }
                     else if (tokenType == NameTokenType.Index)
                     {
-                        token.Index = int.Parse(Name.Substring(start, end - start + 1));
+                        token.Index = int.Parse(Name.Substring(start, end - start + 1), Thread.CurrentThread.CurrentCulture);
                     }
                 }
                 return result;

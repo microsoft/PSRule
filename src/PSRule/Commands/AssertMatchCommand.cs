@@ -6,6 +6,7 @@ using PSRule.Resources;
 using PSRule.Runtime;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace PSRule.Commands
 {
@@ -59,7 +60,7 @@ namespace PSRule.Commands
         {
             if (!IsRuleScope())
             {
-                throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordRuleScope, RuleLanguageNouns.Match));
+                throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordRuleScope, RuleLanguageNouns.Match));
             }
 
             var targetObject = InputObject ?? GetTargetObject();
@@ -86,7 +87,7 @@ namespace PSRule.Commands
             RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Match, outcome: result);
             if (!(result || TryReason(Reason)))
             {
-                WriteReason(Not ? string.Format(ReasonStrings.MatchNot, found) : string.Format(ReasonStrings.Match, string.Join(", ", Expression)));
+                WriteReason(Not ? string.Format(Thread.CurrentThread.CurrentCulture, ReasonStrings.MatchNot, found) : string.Format(Thread.CurrentThread.CurrentCulture, ReasonStrings.Match, string.Join(", ", Expression)));
             }
             WriteObject(result);
         }

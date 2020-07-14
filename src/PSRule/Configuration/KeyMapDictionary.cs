@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using System.Net;
 
 namespace PSRule.Configuration
 {
@@ -21,6 +20,9 @@ namespace PSRule.Configuration
 
         protected KeyMapDictionary(KeyMapDictionary<TValue> map)
         {
+            if (map == null)
+                throw new ArgumentNullException(nameof(map));
+
             _Map = new Dictionary<string, TValue>(map._Map, StringComparer.OrdinalIgnoreCase);
         }
 
@@ -147,6 +149,9 @@ namespace PSRule.Configuration
 
         public sealed override bool TryGetMember(GetMemberBinder binder, out object result)
         {
+            if (binder == null)
+                throw new ArgumentNullException(nameof(binder));
+
             var found = _Map.TryGetValue(binder.Name, out TValue value);
             result = value;
             return found;

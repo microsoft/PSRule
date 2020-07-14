@@ -5,6 +5,7 @@ using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
 using System.Management.Automation;
+using System.Threading;
 
 namespace PSRule.Commands
 {
@@ -20,7 +21,7 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             if (!IsConditionScope())
-                throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordConditionScope, LanguageKeywords.AnyOf));
+                throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordConditionScope, LanguageKeywords.AnyOf));
 
             var invokeResult = RuleConditionResult.Create(Body.Invoke());
             var result = invokeResult.AnyOf();

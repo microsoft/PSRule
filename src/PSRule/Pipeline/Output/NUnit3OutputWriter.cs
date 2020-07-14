@@ -6,6 +6,7 @@ using PSRule.Resources;
 using System;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace PSRule.Pipeline.Output
 {
@@ -75,7 +76,7 @@ namespace PSRule.Pipeline.Output
 
         private void VisitFixture(TestFixture fixture)
         {
-            _Builder.Append($"<test-suite type=\"TestFixture\" name=\"{fixture.Name}\" executed=\"{fixture.Executed}\" result=\"{(fixture.Success ? "Success" : "Failure")}\" success=\"{fixture.Success}\" time=\"{fixture.Time.ToString()}\" asserts=\"{fixture.Asserts}\" description=\"{fixture.Description}\"><results>");
+            _Builder.Append($"<test-suite type=\"TestFixture\" name=\"{fixture.Name}\" executed=\"{fixture.Executed}\" result=\"{(fixture.Success ? "Success" : "Failure")}\" success=\"{fixture.Success}\" time=\"{fixture.Time.ToString(Thread.CurrentThread.CurrentCulture)}\" asserts=\"{fixture.Asserts}\" description=\"{fixture.Description}\"><results>");
             foreach (var testCase in fixture.Results)
                 VisitTestCase(testCase: testCase);
 
@@ -84,7 +85,7 @@ namespace PSRule.Pipeline.Output
 
         private void VisitTestCase(TestCase testCase)
         {
-            _Builder.Append($"<test-case description=\"{testCase.Description}\" name=\"{testCase.Name}\" time=\"{testCase.Time.ToString()}\" asserts=\"0\" success=\"{testCase.Success}\" result=\"{(testCase.Success ? "Success" : "Failure")}\" executed=\"{testCase.Executed}\">");
+            _Builder.Append($"<test-case description=\"{testCase.Description}\" name=\"{testCase.Name}\" time=\"{testCase.Time.ToString(Thread.CurrentThread.CurrentCulture)}\" asserts=\"0\" success=\"{testCase.Success}\" result=\"{(testCase.Success ? "Success" : "Failure")}\" executed=\"{testCase.Executed}\">");
             if (!testCase.Success)
             {
                 _Builder.Append("<failure>");
@@ -102,7 +103,7 @@ namespace PSRule.Pipeline.Output
             sb.AppendLine(record.Recommendation);
             var link = record.Info.GetOnlineHelpUri();
             if (useMarkdown && link != null)
-                sb.AppendLine(string.Format(ReportStrings.NUnit_DetailsLink, link));
+                sb.AppendLine(string.Format(Thread.CurrentThread.CurrentCulture, ReportStrings.NUnit_DetailsLink, link));
 
             if (record.Reason != null && record.Reason.Length > 0)
             {

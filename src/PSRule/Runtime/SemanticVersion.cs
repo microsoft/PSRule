@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Pipeline;
-using PSRule.Resources;
 using System;
 using System.Diagnostics;
 using System.Threading;
