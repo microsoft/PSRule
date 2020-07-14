@@ -290,8 +290,8 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (CompareNumeric(fieldValue, value, out int actual))
-                return actual > 0 ? Pass() : Fail(ReasonStrings.Greater, actual, value);
+            if (CompareNumeric(fieldValue, value, out int compare, out object actual))
+                return compare > 0 ? Pass() : Fail(ReasonStrings.Greater, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
         }
@@ -304,8 +304,8 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (CompareNumeric(fieldValue, value, out int actual))
-                return actual >= 0 ? Pass() : Fail(ReasonStrings.GreaterOrEqual, actual, value);
+            if (CompareNumeric(fieldValue, value, out int compare, out object actual))
+                return compare >= 0 ? Pass() : Fail(ReasonStrings.GreaterOrEqual, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
         }
@@ -318,8 +318,8 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (CompareNumeric(fieldValue, value, out int actual))
-                return actual < 0 ? Pass() : Fail(ReasonStrings.Less, actual, value);
+            if (CompareNumeric(fieldValue, value, out int compare, out object actual))
+                return compare < 0 ? Pass() : Fail(ReasonStrings.Less, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
         }
@@ -332,8 +332,8 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (CompareNumeric(fieldValue, value, out int actual))
-                return actual <= 0 ? Pass() : Fail(ReasonStrings.LessOrEqual, actual, value);
+            if (CompareNumeric(fieldValue, value, out int compare, out object actual))
+                return compare <= 0 ? Pass() : Fail(ReasonStrings.LessOrEqual, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
         }
@@ -533,23 +533,27 @@ namespace PSRule.Runtime
             return false;
         }
 
-        private static bool CompareNumeric(object obj, int value, out int actual)
+        private static bool CompareNumeric(object obj, int value, out int compare, out object actual)
         {
-            if (TryInt(obj, out int ivalue) || TryStringLength(obj, out ivalue) || TryArrayLength(obj, out ivalue))
+            if (TryInt(obj, out int iactual) || TryStringLength(obj, out iactual) || TryArrayLength(obj, out iactual))
             {
-                actual = ivalue.CompareTo(value);
+                compare = iactual.CompareTo(value);
+                actual = iactual;
                 return true;
             }
-            if (TryLong(obj, out long lvalue))
+            if (TryLong(obj, out long lactual))
             {
-                actual = lvalue.CompareTo(value);
+                compare = lactual.CompareTo(value);
+                actual = lactual;
                 return true;
             }
-            if (TryFloat(obj, out float fvalue))
+            if (TryFloat(obj, out float factual))
             {
-                actual = fvalue.CompareTo(value);
+                compare = factual.CompareTo(value);
+                actual = factual;
                 return true;
             }
+            compare = 0;
             actual = 0;
             return false;
         }
