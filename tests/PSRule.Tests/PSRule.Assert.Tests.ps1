@@ -176,7 +176,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 3;
-            $result[1].Reason | Should -BeLike "The value '*' was not >= '*'.";
+            $result[1].Reason | Should -BeLike "The value '0' was not >= '*'.";
         }
 
         It 'HasField' {
