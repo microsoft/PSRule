@@ -191,7 +191,7 @@ The following reserved annotation exists:
 
 ```text
 ---
-online version: https://github.com/microsoft/PSRule/blob/master/docs/scenarios/rule-docs/rule-docs.md
+online version: https://github.com/microsoft/PSRule/blob/main/docs/scenarios/rule-docs/rule-docs.md
 ---
 ```
 

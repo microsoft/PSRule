@@ -1328,13 +1328,13 @@ rule:
 
 ## NOTE
 
-An online version of this document is available at https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md.
+An online version of this document is available at https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Options.md.
 
 ## SEE ALSO
 
-- [Invoke-PSRule](https://github.com/Microsoft/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md)
-- [New-PSRuleOption](https://github.com/Microsoft/PSRule/blob/master/docs/commands/PSRule/en-US/New-PSRuleOption.md)
-- [Set-PSRuleOption](https://github.com/Microsoft/PSRule/blob/master/docs/commands/PSRule/en-US/Set-PSRuleOption.md)
+- [Invoke-PSRule](https://github.com/Microsoft/PSRule/blob/main/docs/commands/PSRule/en-US/Invoke-PSRule.md)
+- [New-PSRuleOption](https://github.com/Microsoft/PSRule/blob/main/docs/commands/PSRule/en-US/New-PSRuleOption.md)
+- [Set-PSRuleOption](https://github.com/Microsoft/PSRule/blob/main/docs/commands/PSRule/en-US/Set-PSRuleOption.md)
 
 ## KEYWORDS
 

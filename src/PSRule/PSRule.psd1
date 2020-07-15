@@ -125,7 +125,7 @@ PrivateData = @{
         Tags = @('Rule', 'Test')
 
         # A URL to the license for this module.
-        LicenseUri = 'https://github.com/Microsoft/PSRule/blob/master/LICENSE.txt'
+        LicenseUri = 'https://github.com/Microsoft/PSRule/blob/main/LICENSE.txt'
 
         # A URL to the main website for this project.
         ProjectUri = 'https://github.com/Microsoft/PSRule'
@@ -134,7 +134,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'https://github.com/Microsoft/PSRule/blob/master/CHANGELOG.md'
+        ReleaseNotes = 'https://github.com/Microsoft/PSRule/blob/main/CHANGELOG.md'
 
     } # End of PSData hashtable
 

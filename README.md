@@ -344,7 +344,7 @@ This project is [licensed under the MIT License](LICENSE.txt).
 
 [issue]: https://github.com/Microsoft/PSRule/issues
 [install]: docs/scenarios/install-instructions.md
-[ci-badge]: https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=master
+[ci-badge]: https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=main
 [module-psrule]: https://www.powershellgallery.com/packages/PSRule
 [extension-vscode]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
 [extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule

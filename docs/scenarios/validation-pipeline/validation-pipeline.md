@@ -59,7 +59,7 @@ if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.12.0' -ErrorA
 }
 ```
 
-See the [change log](https://github.com/Microsoft/PSRule/blob/master/CHANGELOG.md) for the latest version.
+See the [change log](https://github.com/Microsoft/PSRule/blob/main/CHANGELOG.md) for the latest version.
 
 ## Validating objects
 

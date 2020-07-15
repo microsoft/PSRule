@@ -13,7 +13,7 @@ name: $(version)-B$(date:yyMM)$(rev:rrr)
 trigger:
   branches:
     include:
-    - 'master'
+    - 'main'
   tags:
     include:
     - 'v0.*'
@@ -21,7 +21,7 @@ trigger:
 pr:
   branches:
     include:
-    - 'master'
+    - 'main'
 
 stages:
 
@@ -220,7 +220,7 @@ stages:
         action: edit
         tag: '$(Build.SourceBranchName)'
         releaseNotesSource: inline
-        releaseNotesInline: 'See [change log](https://github.com/Microsoft/PSRule/blob/master/CHANGELOG.md)'
+        releaseNotesInline: 'See [change log](https://github.com/Microsoft/PSRule/blob/main/CHANGELOG.md)'
         assetUploadMode: replace
         addChangeLog: false
         isPreRelease: $(isPreRelease)

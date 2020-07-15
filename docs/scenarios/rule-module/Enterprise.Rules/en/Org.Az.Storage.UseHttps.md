@@ -1,6 +1,6 @@
 ---
 resource: Storage Account
-online version: https://github.com/Microsoft/PSRule/blob/master/docs/scenarios/rule-module/Enterprise.Rules/en/Org.Az.Storage.UseHttps.md
+online version: https://github.com/Microsoft/PSRule/blob/main/docs/scenarios/rule-module/Enterprise.Rules/en/Org.Az.Storage.UseHttps.md
 ---
 
 # Enforce encrypted Storage connections

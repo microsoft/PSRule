@@ -48,12 +48,12 @@ Check out the links below to get started.
 When you are ready to contribute a fix or feature:
 
 - Start by [forking the PSRule repo][github-fork].
-- Create a new branch from master in your fork.
+- Create a new branch from main in your fork.
 - Add commits in your branch.
   - If you have updated module code also update `CHANGELOG.md`.
   - You don't need to update the `CHANGELOG.md` for changes to unit tests or documentation.
   - Try building your changes locally. See [building from source][build] for instructions.
-- [Create a pull request][github-pr-create] to merge changes into the PSRule `master` branch.
+- [Create a pull request][github-pr-create] to merge changes into the PSRule `main` branch.
   - If you are _ready_ for your changes to be reviewed create a _pull request_.
   - If you are _not ready_ for your changes to be reviewed, create a _draft pull request_.
   - An continuous integration (CI) process will automatically build your changes.
