@@ -6,6 +6,8 @@
 
 ## Unreleased
 
+## v0.19.0-B2007023 (pre-release)
+
 - Engine features:
   - Added `Reason` method to assertion results. [#500](https://github.com/microsoft/PSRule/issues/500)
     - This new method, streamlines setting custom reasons particularly with formatted strings.
