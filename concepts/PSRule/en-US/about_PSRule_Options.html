@@ -8,7 +8,7 @@
     <title>PSRule_Options </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="PSRule_Options ">
-    <meta name="generator" content="docfx 2.43.2.0">
+    <meta name="generator" content="docfx 2.56.1.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -93,6 +93,7 @@ This topic describes what options are available, when to and how to use them.</p
 <li><a href="#outputformat">Output.Format</a></li>
 <li><a href="#outputpath">Output.Path</a></li>
 <li><a href="#outputstyle">Output.Style</a></li>
+<li><a href="#requires">Requires</a></li>
 <li><a href="#suppression">Suppression</a></li>
 </ul>
 <p>Additionally the following baseline options can be included:</p>
@@ -740,17 +741,10 @@ This options is ignored by other cmdlets.</p>
 <li>NUnit3 - Output is serialized as NUnit3 (XML).</li>
 <li>Csv - Output is serialized as a comma separated values (CSV).
 <ul>
-<li>The following columns are included:
-<ul>
-<li>RuleName</li>
-<li>TargetName</li>
-<li>TargetType</li>
-<li>Outcome</li>
-<li>OutcomeReason</li>
-<li>Synopsis</li>
-<li>Recommendation</li>
-</ul>
-</li>
+<li>The following columns are included for <code>Detail</code> output:
+RuleName, TargetName, TargetType, Outcome, OutcomeReason, Synopsis, Recommendation</li>
+<li>The following columns are included for <code>Summary</code> output:
+RuleName, Pass, Fail, Outcome, Synopsis, Recommendation</li>
 </ul>
 </li>
 <li>Wide -  Output is presented using the wide table format, which includes reason and wraps columns.</li>
@@ -816,6 +810,23 @@ Set-PSRuleOption -OutputFormat AzurePipelines;
 <pre><code class="lang-yaml"># YAML: Using the output/style property
 output:
   style: AzurePipelines
+</code></pre>
+<h3 id="requires">Requires</h3>
+<p>Specifies module version constraints for running PSRule.
+When set PSRule will error if a module version is used that does not satisfy the requirements.
+The format for version constraints are the same as the <code>Version</code> assertion method.
+See <a href="about_PSRule_Assert.html">about_PSRule_Assert</a> for more information.</p>
+<p>Module version constraints a not enforced prior to PSRule v0.19.0.</p>
+<p>The version constraint for a rule module is enforced when the module is included with <code>-Module</code>.
+A version constraint does not require a rule module to be included.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the Requires.module hashtable key
+$option = New-PSRuleOption -Option @{ 'Requires.PSRule' = '&gt;=0.18.0' };
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the requires property
+requires:
+  PSRule: '&gt;=0.18.0'              # Require v0.18.0 or greater.
+  PSRule.Rules.Azure: '&gt;=0.13.0'  # Require v0.13.0 or greater.
 </code></pre>
 <h3 id="ruleinclude">Rule.Include</h3>
 <p>The name of specific rules to evaluate.
@@ -910,10 +921,14 @@ Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
 }
 </code></pre>
 <h2 id="examples">EXAMPLES</h2>
-<h3 id="example-psruleyml">Example PSRule.yml</h3>
+<h3 id="example-ps-ruleyaml">Example ps-rule.yaml</h3>
 <pre><code class="lang-yaml">#
 # PSRule example configuration
 #
+
+# Configure required module versions
+requires:
+  PSRule.Rules.Azure: '&gt;=0.13.0'
 
 # Configure execution options
 execution:
@@ -986,12 +1001,15 @@ rule:
     - Critical
     - Warning
 </code></pre>
-<h3 id="default-psruleyml">Default PSRule.yml</h3>
+<h3 id="default-ps-ruleyaml">Default ps-rule.yaml</h3>
 <pre><code class="lang-yaml">#
 # PSRule defaults
 #
 
 # Note: Only properties that differ from the default values need to be specified.
+
+# Configure required module versions
+requires: { }
 
 # Configure execution options
 execution:
@@ -1042,12 +1060,12 @@ rule:
   tag: { }
 </code></pre>
 <h2 id="note">NOTE</h2>
-<p>An online version of this document is available at <a href="https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md">https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md</a>.</p>
+<p>An online version of this document is available at <a href="https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Options.md">https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Options.md</a>.</p>
 <h2 id="see-also">SEE ALSO</h2>
 <ul>
-<li><a href="https://github.com/Microsoft/PSRule/blob/master/docs/commands/PSRule/en-US/Invoke-PSRule.md">Invoke-PSRule</a></li>
-<li><a href="https://github.com/Microsoft/PSRule/blob/master/docs/commands/PSRule/en-US/New-PSRuleOption.md">New-PSRuleOption</a></li>
-<li><a href="https://github.com/Microsoft/PSRule/blob/master/docs/commands/PSRule/en-US/Set-PSRuleOption.md">Set-PSRuleOption</a></li>
+<li><a href="https://github.com/Microsoft/PSRule/blob/main/docs/commands/PSRule/en-US/Invoke-PSRule.md">Invoke-PSRule</a></li>
+<li><a href="https://github.com/Microsoft/PSRule/blob/main/docs/commands/PSRule/en-US/New-PSRuleOption.md">New-PSRuleOption</a></li>
+<li><a href="https://github.com/Microsoft/PSRule/blob/main/docs/commands/PSRule/en-US/Set-PSRuleOption.md">Set-PSRuleOption</a></li>
 </ul>
 <h2 id="keywords">KEYWORDS</h2>
 <ul>
@@ -1062,7 +1080,7 @@ rule:
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Options.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Options.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

@@ -8,7 +8,7 @@
     <title>Packaging rules in a module </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Packaging rules in a module ">
-    <meta name="generator" content="docfx 2.43.2.0">
+    <meta name="generator" content="docfx 2.56.1.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -140,9 +140,9 @@ Such as in the root directory of the module or in a nested sub-directory.</p>
 <ul>
 <li>rules/
 <ul>
-<li>NamingStandards.Rule.ps1</li>
-<li>ComplianceStandards.Rule.ps1</li>
 <li>Baseline.Rule.yaml</li>
+<li>Config.Rule.yaml</li>
+<li>Standards.Rule.ps1</li>
 </ul>
 </li>
 <li>Enterprise.Rules.psd1</li>
@@ -153,14 +153,36 @@ Such as in the root directory of the module or in a nested sub-directory.</p>
 <p>For PSRule to find rules included in a module, rule file names must end with the <code>.Rule.ps1</code> suffix.
 We recommend using the exact case <code>.Rule.ps1</code>.
 This is because some file systems are case-sensitive.
-For example, on Linux <code>NamingStandards.rule.ps1</code> would be ignored by PSRule.</p>
+For example, on Linux <code>Standards.rule.ps1</code> would be ignored by PSRule.</p>
 <p>Similarly, when including baselines within a module use the <code>.Rule.yaml</code> suffix.</p>
 <h2 id="defining-a-module-configuration">Defining a module configuration</h2>
 <p>A module configuration that sets options defaults can be optionally packaged with a module.
 To set a module configuration, define a <code>ModuleConfig</code> resource within an included <code>.Rule.yaml</code> file.
 A module configuration <code>.Rule.yaml</code> file must be distributed within the module directory structure.</p>
 <p>PSRule only supports a single <code>ModuleConfig</code> resource.
-Additional <code>ModuleConfig</code> resources are ignored.</p>
+The name of the <code>ModuleConfig</code> must match the name of the module.
+Additional <code>ModuleConfig</code> resources or with an alternative name are ignored.</p>
+<pre><code class="lang-yaml">---
+# Synopsis: Example module configuration for Enterprise.Rules module
+kind: ModuleConfig
+metadata:
+  name: Enterprise.Rules
+spec:
+  binding:
+    targetName:
+    - ResourceName
+    - FullName
+    - name
+    targetType:
+    - ResourceType
+    - type
+    - Extension
+    field:
+      resourceId: [ 'ResourceId' ]
+      subscriptionId: [ 'SubscriptionId' ]
+      resourceGroupName: [ 'ResourceGroupName' ]
+
+</code></pre>
 <p>The following options are allowed within a <code>ModuleConfig</code>:</p>
 <ul>
 <li><code>Binding.Field</code></li>
@@ -189,25 +211,25 @@ For example on Linux <code>en-us</code> would not match.</p>
 <ul>
 <li>en/
 <ul>
-<li>Metadata.Name.md</li>
+<li>Org.Az.Storage.UseHttps.md</li>
+<li>Org.Az.Resource.Tagging.md</li>
 </ul>
 </li>
 <li>en-US/
 <ul>
-<li>Metadata.Name.md</li>
+<li>Org.Az.Storage.UseHttps.md</li>
 </ul>
 </li>
 <li>fr-FR/
 <ul>
-<li>Metadata.Name.md</li>
+<li>Org.Az.Storage.UseHttps.md</li>
 </ul>
 </li>
 <li>rules/
 <ul>
-<li>NamingStandards.Rule.ps1</li>
-<li>ComplianceStandards.Rule.ps1</li>
 <li>Baseline.Rule.yaml</li>
-<li>ModuleConfig.Rule.yaml</li>
+<li>Config.Rule.yaml</li>
+<li>Standards.Rule.ps1</li>
 </ul>
 </li>
 <li>Enterprise.Rules.psd1</li>
@@ -217,8 +239,8 @@ For example on Linux <code>en-us</code> would not match.</p>
 <h2 id="more-information">More information</h2>
 <ul>
 <li><a href="Enterprise.Rules/Enterprise.Rules.psd1">Enterprise.Rules.psd1</a> - An example module manifest.</li>
-<li><a href="Enterprise.Rules/rules/Baseline.Rule.yaml">Baseline.Rule.yaml</a> - An example module manifest.</li>
-<li><a href="Enterprise.Rules/rules/ModuleConfig.Rule.yaml">ModuleConfig.Rule.yaml</a> - An example module manifest.</li>
+<li><a href="Enterprise.Rules/rules/Baseline.Rule.yaml">Baseline.Rule.yaml</a> - An example baseline.</li>
+<li><a href="Enterprise.Rules/rules/Config.Rule.yaml">Config.Rule.yaml</a> - An example module configuration.</li>
 </ul>
 </article>
           </div>
@@ -228,7 +250,7 @@ For example on Linux <code>en-us</code> would not match.</p>
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/Microsoft/PSRule/blob/master/docs/scenarios/rule-module/rule-module.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/main/docs/scenarios/rule-module/rule-module.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

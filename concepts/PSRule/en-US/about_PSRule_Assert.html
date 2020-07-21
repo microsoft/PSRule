@@ -8,7 +8,7 @@
     <title>PSRule_Assert </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="PSRule_Assert ">
-    <meta name="generator" content="docfx 2.43.2.0">
+    <meta name="generator" content="docfx 2.56.1.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -86,9 +86,13 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 <li><a href="#hasfield">HasField</a> - The object must have the specified field.</li>
 <li><a href="#hasfieldvalue">HasFieldValue</a> - The object must have the specified field and that field is not empty.</li>
 <li><a href="#hasjsonschema">HasJsonSchema</a> - The object must reference a JSON schema with the <code>$schema</code> field.</li>
+<li><a href="#in">In</a> - The field value must be included in the set.</li>
 <li><a href="#jsonschema">JsonSchema</a> - The object must validate successfully against a JSON schema.</li>
 <li><a href="#less">Less</a> - The field value must be less.</li>
 <li><a href="#lessorequal">LessOrEqual</a> - The field value must be less or equal to.</li>
+<li><a href="#match">Match</a> - The field value matches a regular expression pattern.</li>
+<li><a href="#notin">NotIn</a> - The field value must not be included in the set.</li>
+<li><a href="#notmatch">NotMatch</a> - The field value does not match a regular expression pattern.</li>
 <li><a href="#nullorempty">NullOrEmpty</a> - The object must not have the specified field or it must be empty.</li>
 <li><a href="#startswith">StartsWith</a> - The field value must match at least one prefix.</li>
 <li><a href="#version">Version</a> - The field value must be a semantic version string.</li>
@@ -366,6 +370,30 @@ Either a file path or URL can be used to specify the location of the schema file
     $Assert.JsonSchema($TargetObject, 'tests/PSRule.Tests/FromFile.Json.schema.json')
 }
 </code></pre>
+<h3 id="in">In</h3>
+<p>The <code>In</code> assertion method checks the field value is included in a set of values.
+The field value can either be an integer, float, array, or string.
+When the field value is an array, only one item must be included in the set.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>values</code> - An array of one or more values that the field value is compared against.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' was not included in the set.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'In' {
+    $Assert.In($TargetObject, 'Sku.tier', @('PremiumV2', 'Premium', 'Standard'))
+    $Assert.In($TargetObject, 'Sku.tier', @('PremiumV2', 'Premium', 'Standard'), $True)
+}
+</code></pre>
 <h3 id="less">Less</h3>
 <p>The <code>Less</code> assertion method checks the field value is less than the specified value.
 The field value can either be an integer, float, array, or string.
@@ -420,6 +448,78 @@ When the field value is:</p>
 <p>Examples:</p>
 <pre><code class="lang-powershell">Rule 'LessOrEqual' {
     $Assert.LessOrEqual($TargetObject, 'value', 3)
+}
+</code></pre>
+<h3 id="match">Match</h3>
+<p>The <code>Match</code> assertion method checks the field value matches a regular expression pattern.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>pattern</code> - A regular expression pattern to match.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is not a string.</em></li>
+<li><em>The field value '{0}' does not match the pattern '{1}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'Match' {
+    $Assert.Match($TargetObject, 'value', '^[a-z]*$')
+    $Assert.Match($TargetObject, 'value', '^[a-z]*$', $True)
+}
+</code></pre>
+<h3 id="notin">NotIn</h3>
+<p>The <code>NotIn</code> assertion method checks the field value is not in a set of values.
+The field value can either be an integer, array, float, or string.
+When the field value is an array, none of the items must be included in the set.
+If the field does not exist at all, it is not in the set and passes.
+To check the field exists combine this assertion method with <code>HasFieldValue</code>.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>values</code> - An array of one or more values that the field value is compared against.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field value '{0}' was in the set.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'In' {
+    $Assert.NotIn($TargetObject, 'Sku.tier', @('Free', 'Shared', 'Basic'))
+    $Assert.NotIn($TargetObject, 'Sku.tier', @('Free', 'Shared', 'Basic'), $True)
+}
+</code></pre>
+<h3 id="notmatch">NotMatch</h3>
+<p>The <code>NotMatch</code> assertion method checks the field value does not match a regular expression pattern.
+If the field does not exist at all, it does not match and passes.
+To check the field exists combine this assertion method with <code>HasFieldValue</code>.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>pattern</code> - A regular expression pattern to match.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field value '{0}' is not a string.</em></li>
+<li><em>The field value '{0}' matches the pattern '{1}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'NotMatch' {
+    $Assert.NotMatch($TargetObject, 'value', '^[a-z]*$')
+    $Assert.NotMatch($TargetObject, 'value', '^[a-z]*$', $True)
 }
 </code></pre>
 <h3 id="nullorempty">NullOrEmpty</h3>
@@ -549,11 +649,21 @@ Rule 'MinimumVersion' {
 </ul>
 <p>The following methods are available:</p>
 <ul>
-<li><code>AddReason(&lt;string&gt; text)</code> - Can be used to append additional reasons to the result. A reason can only be set if the assertion failed. Reason text should be localized before calling this method. Localization can be done using the <code>$LocalizedData</code> automatic variable.</li>
-<li><code>WithReason(&lt;string&gt; text, &lt;bool&gt; replace)</code> - Can be used to append or replace reasons on the result. In addition, <code>WithReason</code> can be chained.</li>
+<li><code>AddReason(&lt;string&gt; text)</code> - Can be used to append additional reasons to the result.
+A reason can only be set if the assertion failed.
+Reason text should be localized before calling this method.
+Localization can be done using the <code>$LocalizedData</code> automatic variable.</li>
+<li><code>WithReason(&lt;string&gt; text, &lt;bool&gt; replace)</code> - Can be used to append or replace reasons on the result.
+In addition, <code>WithReason</code> can be chained.</li>
+<li><code>Reason(&lt;string&gt; text, params &lt;object[]&gt; args)</code> - Replaces the reason on the results with a formatted string.
+This method can be chained.
+For usage see examples below.</li>
 <li><code>GetReason()</code> - Gets any reasons currently associated with the failed result.</li>
-<li><code>Complete()</code> - Returns <code>$True</code> (Pass) or <code>$False</code> (Fail) to the rule record. If the assertion failed, any reasons are automatically added to the rule record. To read the result without adding reason to the rule record use the <code>Result</code> property.</li>
-<li><code>Ignore()</code> - Ignores the result. Nothing future is returned and any reasons are cleared. Use this method when implementing custom handling.</li>
+<li><code>Complete()</code> - Returns <code>$True</code> (Pass) or <code>$False</code> (Fail) to the rule record.
+If the assertion failed, any reasons are automatically added to the rule record.
+To read the result without adding reason to the rule record use the <code>Result</code> property.</li>
+<li><code>Ignore()</code> - Ignores the result. Nothing future is returned and any reasons are cleared.
+Use this method when implementing custom handling.</li>
 </ul>
 <p>Use of <code>Complete</code> is optional, uncompleted results are automatically completed after the rule has executed.
 Uncompleted results may return reasons out of sequence.</p>
@@ -565,11 +675,17 @@ Uncompleted results may return reasons out of sequence.</p>
         $Assert.HasFieldValue($TargetObject, 'Value').Complete()
 }
 </code></pre>
-<p>The this example, the built-in reason is replaced with a custom reason, and immediately returned.</p>
+<p>In this example, the built-in reason is replaced with a custom reason, and immediately returned.
+The reason text is automatically formatted with any parameters provided.</p>
 <pre><code class="lang-powershell">Rule 'Assert.HasCustomValue' {
     $Assert.
         HasDefaultValue($TargetObject, 'value', 'test').
-        WithReason('Value is set to custom value', $True)
+        Reason('The field {0} is using a non-default value: {1}', 'value', $TargetObject.value)
+
+    # With localized string
+    $Assert.
+        HasDefaultValue($TargetObject, 'value', 'test').
+        Reason($LocalizedData.NonDefaultValue, 'value', $TargetObject.value)
 }
 </code></pre>
 <h3 id="authoring-assertion-methods">Authoring assertion methods</h3>
@@ -577,13 +693,15 @@ Uncompleted results may return reasons out of sequence.</p>
 <ul>
 <li><code>Create(&lt;bool&gt; condition, &lt;string&gt; reason)</code> - Returns a result either pass or fail assertion result.</li>
 <li><code>Pass()</code> - Returns a pass assertion result.</li>
-<li><code>Fail(&lt;string&gt; reason)</code> - Results a fail assertion result.</li>
+<li><code>Fail()</code> - Results a fail assertion result.</li>
+<li><code>Fail(&lt;string&gt; reason, params &lt;object[]&gt; args)</code> - Results a fail assertion result with a custom reason.
+Additional arguments can be provided to format the custom reason string.</li>
 </ul>
 <h2 id="note">NOTE</h2>
-<p>An online version of this document is available at <a href="https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Assert.md">https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Assert.md</a>.</p>
+<p>An online version of this document is available at <a href="https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Assert.md">https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Assert.md</a>.</p>
 <h2 id="see-also">SEE ALSO</h2>
 <ul>
-<li><a href="https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Variables.md">about_PSRule_Variables</a></li>
+<li><a href="https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Variables.md">about_PSRule_Variables</a></li>
 </ul>
 <h2 id="keywords">KEYWORDS</h2>
 <ul>
@@ -611,7 +729,7 @@ Uncompleted results may return reasons out of sequence.</p>
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/Microsoft/PSRule/blob/master/docs/concepts/PSRule/en-US/about_PSRule_Assert.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Assert.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

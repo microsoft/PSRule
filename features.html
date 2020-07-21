@@ -8,7 +8,7 @@
     <title>PSRule features </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="PSRule features ">
-    <meta name="generator" content="docfx 2.43.2.0">
+    <meta name="generator" content="docfx 2.56.1.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -74,7 +74,7 @@
 If you or your team already can write a basic PowerShell script, you can already define a rule.
 What's more, you can tap into a large world-wide community of PowerShell users with scripts and cmdlets to help you build out rules quickly.</p>
 <h2 id="cross-platform">Cross-platform</h2>
-<p>PSRule uses modern PowerShell libraries at its core, allowing it to go anywhere Windows PowerShell 5.1 or PowerShell Core 6.2 can go.
+<p>PSRule uses modern PowerShell libraries at its core, allowing it to go anywhere PowerShell can go.
 PSRule runs on MacOS, Linux and Windows.</p>
 <p>To install PSRule use the <code>Install-Module</code> cmdlet within Windows PowerShell or PowerShell Core.</p>
 <pre><code class="lang-powershell">Install-Module -Name PSRule -Scope CurrentUser;
@@ -114,11 +114,43 @@ This allows not only the cause of the issue to be identified but detailed instru
 <li>Deployments or configurations against a baseline.</li>
 </ul>
 <p>If you want to test PowerShell code, use Pester.</p>
+<h3 id="how-do-i-configure-psrule">How do I configure PSRule?</h3>
+<p>PSRule can be configured at runtime by passing the <code>-Option</code> parameter to cmdlets.
+Additionally, PSRule uses the <code>ps-rule.yaml</code> option file to load configuration from disk.
+The <code>ps-rule.yaml</code> option file is read automatically from the current working path by default.
+When checking into source control, store this file in the root directory of the repository.</p>
+<p>For a list of configuration options and usage see <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a>.</p>
+<h3 id="how-do-i-ignore-a-rule">How do I ignore a rule?</h3>
+<p>To prevent a rule executing you can either:</p>
+<ul>
+<li>Exclude the rule - The rule is not executed for any object.</li>
+<li>Suppress the rule - The rule is not executed for a specific object by name.</li>
+</ul>
+<p>To exclude a rule use the <code>Rule.Exclude</code> option.
+To do this in YAML, add the following to the <code>ps-rule.yaml</code> options file.</p>
+<pre><code class="lang-yaml"># YAML: Using the rule/exclude property
+rule:
+  exclude:
+  - 'My.FirstRule'  # The name of the first rule to exclude.
+  - 'My.SecondRule' # The name of the second rule to exclude.
+</code></pre>
+<p>To suppress a rule use the <code>Suppression</code> option.
+To do this in YAML, add the following to the <code>ps-rule.yaml</code> options file.</p>
+<pre><code class="lang-yaml"># YAML: Using the suppression property
+suppression:
+  My.FirstRule:    # The name of the rule being suppressed
+  - TestObject1    # The name of the first object to suppress
+  - TestObject3    # The name of the second object to suppress
+  My.SecondRule:   # An additional rule to suppress
+  - TestObject2
+</code></pre>
+<p>The name of the object is reported by PSRule in output results.</p>
+<p>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for additional usage for both of these options.</p>
 <h3 id="why-should-i-use-psrule-keywords-and-assertions">Why should I use PSRule keywords and assertions?</h3>
-<p>With the exception of the <code>Rule</code> keyword, using the built-in language features are optional.</p>
+<p>Except for the <code>Rule</code> keyword, using the built-in language features are optional.</p>
 <p>The built-in keywords and assertions accelerate rule creation.
 They do this by providing a condition and a set of reasons in a single command.</p>
-<p>Reasons are also optional, however they provide additional context as to why the rule failed.
+<p>Reasons are also optional; however, they provide additional context as to why the rule failed.
 Alternatively, you can provide your own reasons to complement standard PowerShell with the <code>Reason</code> keyword.</p>
 </article>
           </div>
@@ -128,7 +160,7 @@ Alternatively, you can provide your own reasons to complement standard PowerShel
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/Microsoft/PSRule/blob/master/docs/features.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/BernieWhite/PSRule/blob/main/docs/features.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>
