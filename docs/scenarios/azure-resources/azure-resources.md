@@ -1,6 +1,22 @@
-# Azure Resource Manager example
+# Validate Azure resource configuration
 
-This is an example of how PSRule can be used to validate Azure resources match internal standards or assess if resources meet a defined baseline.
+PSRule makes it easy to validate Infrastructure as Code (IaC) such as Azure resources.
+For example, Azure resources can be validated to match and internal standard or baseline.
+
+> [!NOTE]
+> A pre-built module to validate Azure resources already exists.
+> This scenario demonstrates the process and features of PSRule for illustration purposes.
+>
+> Consider using these pre-built rule modules instead:
+>
+> - [PSRule.Rules.Azure]
+
+This scenario covers the following:
+
+- Defining a basic rule.
+- Adding a recommendation.
+- Using script pre-conditions.
+- Using helper functions.
 
 In this scenario we will use a JSON file:
 
@@ -22,7 +38,8 @@ Get-AzResource -ExpandProperties | ConvertTo-Json -Depth 10 | Set-Content -path 
 
 ## Define rules
 
-To validate our Azure resources we need to define some rules. Rules are defined by using the `Rule` keyword in a file ending with the `.Rule.ps1` extension.
+To validate our Azure resources we need to define some rules.
+Rules are defined by using the `Rule` keyword in a file ending with the `.Rule.ps1` extension.
 
 So start we are going to define a `storageAccounts.UseHttps` rule, which will validate that Azure Storage resources have a [Secure Transfer Required][azure-docs-secure-transfer] enabled.
 
@@ -101,9 +118,12 @@ Rule 'storageAccounts.UseHttps' {
 
 ### Filter with preconditions
 
-So far our rule works for a Storage Account, but there are many type of resources that could be returned by calling `Get-AzResource`. Most of these resources won't have the `Properties.supportsHttpsTrafficOnly` property, and if it did, it may use different configuration options instead of just `true` and `false`. This is where preconditions help out.
+So far our rule works for a Storage Account, but there are many type of resources that could be returned by calling `Get-AzResource`.
+Most of these resources won't have the `Properties.supportsHttpsTrafficOnly` property, and if it did, it may use different configuration options instead of just `true` and `false`.
+This is where preconditions help out.
 
-Preconditions can be specified by using the `-If` parameter when defining a rule. When the rule is executed, if the precondition is `$True` then the rule is processed, otherwise it is skipped.
+Preconditions can be specified by using the `-If` parameter when defining a rule.
+When the rule is executed, if the precondition is `$True` then the rule is processed, otherwise it is skipped.
 
 In the example below:
 
@@ -118,7 +138,8 @@ Rule 'storageAccounts.UseHttps' -If { $TargetObject.ResourceType -eq 'Microsoft.
 }
 ```
 
-Skipped rules have the outcome `None` and are not included in output by default. To include skipped rules use the `-Outcome All` parameter.
+Skipped rules have the outcome `None` and are not included in output by default.
+To include skipped rules use the `-Outcome All` parameter.
 
 ## Execute rules
 
@@ -164,9 +185,11 @@ In our case `storageAccounts.UseHttps` returns a `Fail` outcome because our stor
 
 ## Define helper functions
 
-Using helper functions is completely optional and not required in many cases. However, you may prefer to use helper functions when rule conditions or preconditions are complex and hard to understand.
+Using helper functions is completely optional and not required in many cases.
+However, you may prefer to use helper functions when rule conditions or preconditions are complex and hard to understand.
 
-To use helper functions use a `function` block within a file with a `.Rule.ps1` extension. Any code within `.Rule.ps1` files called by `Invoke-PSRule` will be executed, however to make it available for use within a rule, a global scope modifier must be used.
+To use helper functions use a `function` block within a file with a `.Rule.ps1` extension.
+Any code within `.Rule.ps1` files called by `Invoke-PSRule` will be executed, however to make it available for use within a rule, a global scope modifier must be used.
 
 For functions this is done by prefixing the function name with `global:`.
 
@@ -212,3 +235,4 @@ Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAcc
 - [common.Rule.ps1](common.Rule.ps1) - ResourceType helper function.
 
 [azure-docs-secure-transfer]: https://docs.microsoft.com/en-us/azure/storage/common/storage-require-secure-transfer
+[PSRule.Rules.Azure]: https://github.com/Microsoft/PSRule.Rules.Azure

@@ -55,11 +55,12 @@ PSRule.Rules.Kubernetes | A suite of rules to validate Kubernetes resources usin
 
 ## Support
 
-This project is to be considered a **proof-of-concept** and **not a supported product**.
+This project is open source and **not a supported product**.
 
-If you have any problems please check our GitHub [issues](https://github.com/Microsoft/PSRule/issues) page.
-If you do not see your problem captured, please file a new issue and follow the provided template.
+If you are experiencing problems, have a feature request, or a question, please check for an [issue] on GitHub.
+If you do not see your problem captured, please file a new issue, and follow the provided template.
 
+[issue]: https://github.com/Microsoft/PSRule/issues
 [install]: scenarios/install-instructions.md
 [module]: https://www.powershellgallery.com/packages/PSRule
 [module-ci-badge]: https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=main

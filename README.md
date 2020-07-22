@@ -189,7 +189,7 @@ The final rule is saved to [`isFruit.Rule.ps1`](docs/scenarios/fruit/isFruit.Rul
 
 For walk through examples of PSRule usage see:
 
-- [Validate configuration of Azure resources](docs/scenarios/azure-resources/azure-resources.md)
+- [Validate Azure resource configuration](docs/scenarios/azure-resources/azure-resources.md)
 - [Validate Azure resources tags](docs/scenarios/azure-tags/azure-tags.md)
 - [Validate Kubernetes resources](docs/scenarios/kubernetes-resources/kubernetes-resources.md)
 - [Using within continuous integration](docs/scenarios/validation-pipeline/validation-pipeline.md)
