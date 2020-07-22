@@ -20,7 +20,8 @@
           "images/**",
           "scenarios/**/*.ps1",
           "scenarios/**/*.json",
-          "scenarios/**/*.yaml"
+          "scenarios/**/*.yaml",
+          "scenarios/**/*.psd1"
         ]
       }
     ],
@@ -30,6 +31,13 @@
     "template": [
       "default"
     ],
+    "globalMetadata": {
+      "_gitContribute": {
+        "repo": "https://github.com/Microsoft/PSRule",
+        "branch": "main"
+      },
+      "_gitUrlPattern": "github"
+    },
     "postProcessors": [],
     "markdownEngineName": "markdig",
     "noLangKeyword": false,

@@ -1,4 +1,7 @@
 
+- name: Getting started
+  href: scenarios/index.md
+  topicHref: scenarios/index.md
 - name: Reference
   href: commands/PSRule/en-US/PSRule.md
   topicHref: commands/PSRule/en-US/PSRule.md

@@ -368,7 +368,7 @@ task BuildSite CleanSite, {
 
 # Synopsis: Publish project site to gh-pages
 task PublishSite CleanSite, {
-    git worktree add -b gh-pages -f out/site origin/gh-pages;
+    git worktree add -b gh-pages -f out/site upstream/gh-pages;
     docfx build --force docs/docfx.json;
 
     try {

@@ -5,12 +5,12 @@ When added to a pipeline, PSRule can validate files, template and objects dynami
 
 This scenario covers the following:
 
-- Installing within a CI pipeline
-- Validating objects
-- Formatting output
-- Failing the pipeline
-- Generating NUnit output
-- Additional options
+- Installing within a CI pipeline.
+- Validating objects.
+- Formatting output.
+- Failing the pipeline.
+- Generating NUnit output.
+- Additional options.
 
 ## Installing within a CI pipeline
 
