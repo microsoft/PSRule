@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="../../styles/docfx.css">
     <link rel="stylesheet" href="../../styles/main.css">
     <meta property="docfx:navrel" content="../../toc.html">
-    <meta property="docfx:tocrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
     
     
     
@@ -57,7 +57,14 @@
         </div>
       </header>
       <div role="main" class="container body-content hide-when-search">
-        <div class="article row grid">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="using-within-continuous-integration">Using within continuous integration</h1>
@@ -66,12 +73,12 @@
 When added to a pipeline, PSRule can validate files, template and objects dynamically.</p>
 <p>This scenario covers the following:</p>
 <ul>
-<li>Installing within a CI pipeline</li>
-<li>Validating objects</li>
-<li>Formatting output</li>
-<li>Failing the pipeline</li>
-<li>Generating NUnit output</li>
-<li>Additional options</li>
+<li>Installing within a CI pipeline.</li>
+<li>Validating objects.</li>
+<li>Formatting output.</li>
+<li>Failing the pipeline.</li>
+<li>Generating NUnit output.</li>
+<li>Additional options.</li>
 </ul>
 <h2 id="installing-within-a-ci-pipeline">Installing within a CI pipeline</h2>
 <p>Typically, PSRule is not pre-installed on CI worker nodes and must be installed.
@@ -310,7 +317,7 @@ By using <code>-If</code> or <code>-Type</code> pre-conditions, rules can dynami
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/main/docs/scenarios/validation-pipeline/validation-pipeline.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/main/docs/scenarios/validation-pipeline/validation-pipeline.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

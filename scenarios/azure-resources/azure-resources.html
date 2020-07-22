@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Azure Resource Manager example </title>
+    <title>Validate Azure resource configuration </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Azure Resource Manager example ">
+    <meta name="title" content="Validate Azure resource configuration ">
     <meta name="generator" content="docfx 2.56.1.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="../../styles/docfx.css">
     <link rel="stylesheet" href="../../styles/main.css">
     <meta property="docfx:navrel" content="../../toc.html">
-    <meta property="docfx:tocrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
     
     
     
@@ -57,12 +57,36 @@
         </div>
       </header>
       <div role="main" class="container body-content hide-when-search">
-        <div class="article row grid">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="azure-resource-manager-example">Azure Resource Manager example</h1>
+<h1 id="validate-azure-resource-configuration">Validate Azure resource configuration</h1>
 
-<p>This is an example of how PSRule can be used to validate Azure resources match internal standards or assess if resources meet a defined baseline.</p>
+<p>PSRule makes it easy to validate Infrastructure as Code (IaC) such as Azure resources.
+For example, Azure resources can be validated to match and internal standard or baseline.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>A pre-built module to validate Azure resources already exists.
+This scenario demonstrates the process and features of PSRule for illustration purposes.</p>
+<p>Consider using these pre-built rule modules instead:</p>
+<ul>
+<li><a href="https://github.com/Microsoft/PSRule.Rules.Azure">PSRule.Rules.Azure</a></li>
+</ul>
+</div>
+<p>This scenario covers the following:</p>
+<ul>
+<li>Defining a basic rule.</li>
+<li>Adding a recommendation.</li>
+<li>Using script pre-conditions.</li>
+<li>Using helper functions.</li>
+</ul>
 <p>In this scenario we will use a JSON file:</p>
 <ul>
 <li><a href="resources.json"><code>resources.json</code></a> - An export for the Azure resource properties saved for offline use.</li>
@@ -76,7 +100,8 @@ Get-AzResource -ExpandProperties | ConvertTo-Json -Depth 10 | Set-Content -path 
 <pre><code class="lang-powershell">Get-AzResource -ExpandProperties | ConvertTo-Json -Depth 10 | Set-Content -path docs/scenarios/azure-resources/resources.json;
 </code></pre>
 <h2 id="define-rules">Define rules</h2>
-<p>To validate our Azure resources we need to define some rules. Rules are defined by using the <code>Rule</code> keyword in a file ending with the <code>.Rule.ps1</code> extension.</p>
+<p>To validate our Azure resources we need to define some rules.
+Rules are defined by using the <code>Rule</code> keyword in a file ending with the <code>.Rule.ps1</code> extension.</p>
 <p>So start we are going to define a <code>storageAccounts.UseHttps</code> rule, which will validate that Azure Storage resources have a <a href="https://docs.microsoft.com/en-us/azure/storage/common/storage-require-secure-transfer">Secure Transfer Required</a> enabled.</p>
 <p>In the example below:</p>
 <ul>
@@ -142,8 +167,11 @@ Rule 'storageAccounts.UseHttps' {
 }
 </code></pre>
 <h3 id="filter-with-preconditions">Filter with preconditions</h3>
-<p>So far our rule works for a Storage Account, but there are many type of resources that could be returned by calling <code>Get-AzResource</code>. Most of these resources won't have the <code>Properties.supportsHttpsTrafficOnly</code> property, and if it did, it may use different configuration options instead of just <code>true</code> and <code>false</code>. This is where preconditions help out.</p>
-<p>Preconditions can be specified by using the <code>-If</code> parameter when defining a rule. When the rule is executed, if the precondition is <code>$True</code> then the rule is processed, otherwise it is skipped.</p>
+<p>So far our rule works for a Storage Account, but there are many type of resources that could be returned by calling <code>Get-AzResource</code>.
+Most of these resources won't have the <code>Properties.supportsHttpsTrafficOnly</code> property, and if it did, it may use different configuration options instead of just <code>true</code> and <code>false</code>.
+This is where preconditions help out.</p>
+<p>Preconditions can be specified by using the <code>-If</code> parameter when defining a rule.
+When the rule is executed, if the precondition is <code>$True</code> then the rule is processed, otherwise it is skipped.</p>
 <p>In the example below:</p>
 <ul>
 <li>A check against <code>$TargetObject.ResourceType</code> ensured that our rule is only processed for Storage Accounts.</li>
@@ -155,7 +183,8 @@ Rule 'storageAccounts.UseHttps' -If { $TargetObject.ResourceType -eq 'Microsoft.
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }
 </code></pre>
-<p>Skipped rules have the outcome <code>None</code> and are not included in output by default. To include skipped rules use the <code>-Outcome All</code> parameter.</p>
+<p>Skipped rules have the outcome <code>None</code> and are not included in output by default.
+To include skipped rules use the <code>-Outcome All</code> parameter.</p>
 <h2 id="execute-rules">Execute rules</h2>
 <p>With a rule defined, the next step is to execute it. To execute rules, pipe the target object to <code>Invoke-PSRule</code>.</p>
 <p>For example:</p>
@@ -182,8 +211,10 @@ storageAccounts.UseHttps            Fail       Storage accounts should only allo
 </code></pre>
 <p>In our case <code>storageAccounts.UseHttps</code> returns a <code>Fail</code> outcome because our storage account has <code>supportsHttpsTrafficOnly</code> = <code>false</code>, which is exactly what should happen.</p>
 <h2 id="define-helper-functions">Define helper functions</h2>
-<p>Using helper functions is completely optional and not required in many cases. However, you may prefer to use helper functions when rule conditions or preconditions are complex and hard to understand.</p>
-<p>To use helper functions use a <code>function</code> block within a file with a <code>.Rule.ps1</code> extension. Any code within <code>.Rule.ps1</code> files called by <code>Invoke-PSRule</code> will be executed, however to make it available for use within a rule, a global scope modifier must be used.</p>
+<p>Using helper functions is completely optional and not required in many cases.
+However, you may prefer to use helper functions when rule conditions or preconditions are complex and hard to understand.</p>
+<p>To use helper functions use a <code>function</code> block within a file with a <code>.Rule.ps1</code> extension.
+Any code within <code>.Rule.ps1</code> files called by <code>Invoke-PSRule</code> will be executed, however to make it available for use within a rule, a global scope modifier must be used.</p>
 <p>For functions this is done by prefixing the function name with <code>global:</code>.</p>
 <p>For example:</p>
 <pre><code class="lang-powershell">function global:NameOfFunction {
@@ -225,7 +256,7 @@ Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAcc
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/BernieWhite/PSRule/blob/main/docs/scenarios/azure-resources/azure-resources.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/main/docs/scenarios/azure-resources/azure-resources.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

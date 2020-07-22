@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Assert-PSRule.html",
-          "hash": "jiOOz7Uk0zHdxqCTothoVA=="
+          "hash": "h453zaYHI8eHDeEH7aoC2Q=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRule.html",
-          "hash": "uS6QYmJODPZck3iOiFpVhQ=="
+          "hash": "8VinT94WyvU3GOmyeZklEA=="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRuleBaseline.html",
-          "hash": "NeK7jnm1IxZGEe4J7hOYXQ=="
+          "hash": "sGjeWS47q45PaEZWddER9g=="
         }
       },
       "is_incremental": false,
@@ -45,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRuleHelp.html",
-          "hash": "D17Ik5zhqInYmnp05CRWIw=="
+          "hash": "6jox69QNaqDbPH1JFfPyag=="
         }
       },
       "is_incremental": false,
@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Invoke-PSRule.html",
-          "hash": "IvueYcjR8lEEAZ3Y9nb4Cw=="
+          "hash": "c1kXRFAIqn/cAhQtUOqoAg=="
         }
       },
       "is_incremental": false,
@@ -69,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "EqAYnH6dXyV86ecB0PJQSQ=="
+          "hash": "pTvAI/cz7fjo01gCk89LvA=="
         }
       },
       "is_incremental": false,
@@ -81,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/PSRule.html",
-          "hash": "iPXfOEob+gxL65l41bbDVQ=="
+          "hash": "wFUU0kZ64iLFs0oGVB0Jsg=="
         }
       },
       "is_incremental": false,
@@ -93,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Set-PSRuleOption.html",
-          "hash": "OfxSokYQ5kASo4+VDsZjTA=="
+          "hash": "ibA8je2IpHVLu/bcmVCQ7w=="
         }
       },
       "is_incremental": false,
@@ -105,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Test-PSRuleTarget.html",
-          "hash": "mFLd3yeUWrFpsV7+WzKdtg=="
+          "hash": "8pF6oEWE5zgrb3PIIiRDAQ=="
         }
       },
       "is_incremental": false,
@@ -129,7 +129,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Assert.html",
-          "hash": "kLnxcXmYd2UHVFJl3WiyQg=="
+          "hash": "uSl+jGwuDE3foLVKvOrq0Q=="
         }
       },
       "is_incremental": false,
@@ -141,7 +141,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Baseline.html",
-          "hash": "rpCvuUe/Wp194YhaNkjPMw=="
+          "hash": "0BYKsJt/oz7Dx3ObQqHQkg=="
         }
       },
       "is_incremental": false,
@@ -153,7 +153,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Docs.html",
-          "hash": "mfVW4MB5+P5SojNQIPolEA=="
+          "hash": "D3kVdoTljCehAoAWluux2w=="
         }
       },
       "is_incremental": false,
@@ -165,7 +165,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "6F6i7s1L4QpYcGbliqkTDA=="
+          "hash": "lUm9fOwcE07Da8rcCdM9kA=="
         }
       },
       "is_incremental": false,
@@ -177,7 +177,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Variables.html",
-          "hash": "8nMnhvHK8kRH8yPiSlTFQg=="
+          "hash": "w/l7HGjJzkI7pQsCju739Q=="
         }
       },
       "is_incremental": false,
@@ -189,7 +189,7 @@
       "output": {
         ".html": {
           "relative_path": "features.html",
-          "hash": "0J8pF7fiALBdf5mrDN38AA=="
+          "hash": "G91lZ8by8RbLdhUUhL0pZA=="
         }
       },
       "is_incremental": false,
@@ -201,7 +201,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "hKB9Szveu+I5iXXSVkcmDA=="
+          "hash": "vqWkqjiEBX8BcKF84EdfBw=="
         }
       },
       "is_incremental": false,
@@ -213,7 +213,7 @@
       "output": {
         ".html": {
           "relative_path": "keywords/PSRule/en-US/about_PSRule_Keywords.html",
-          "hash": "k3D5KG/YY7dFOUuvKVvnuA=="
+          "hash": "efToFbGxJN/eTMlcNGvhqA=="
         }
       },
       "is_incremental": false,
@@ -236,7 +236,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/azure-resources/azure-resources.html",
-          "hash": "fQK+DGO8eIYiHfFpvoLAhw=="
+          "hash": "ASykrN70ij7bDITzJXU95A=="
         }
       },
       "is_incremental": false,
@@ -281,7 +281,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/azure-tags/azure-tags.html",
-          "hash": "aqn5CoqnSrbiSx2c5l4kBA=="
+          "hash": "SfZl5QELvhqVFlxrYIKeAw=="
         }
       },
       "is_incremental": false,
@@ -337,7 +337,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/benchmark/PSRule.Benchmark.PSRule-report-github.html",
-          "hash": "027q9PAfgTaPsC5crdsXVQ=="
+          "hash": "1wYBIW6+erRin8VH8tJINQ=="
         }
       },
       "is_incremental": false,
@@ -367,11 +367,23 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "scenarios/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "scenarios/index.html",
+          "hash": "DGqwQYKi14ELtx8rUSwrqw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "scenarios/install-instructions.md",
       "output": {
         ".html": {
           "relative_path": "scenarios/install-instructions.html",
-          "hash": "EAoDZRT8olWSat6AL/4Iog=="
+          "hash": "bh8okO/p+/YqIlHoLYq1Pg=="
         }
       },
       "is_incremental": false,
@@ -383,7 +395,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/kubernetes-resources/kubernetes-resources.html",
-          "hash": "ctAFcc9bGhFtKYcZ6ptNZw=="
+          "hash": "SX3f6WA7dU0eOKrFnOzFyQ=="
         }
       },
       "is_incremental": false,
@@ -428,7 +440,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/rule-docs/en-US/metadata.Name.html",
-          "hash": "kcTP0WsBqcPBAXW9GTkhig=="
+          "hash": "Ej4kKamBgJrZZrkdmVHVEg=="
         }
       },
       "is_incremental": false,
@@ -451,7 +463,18 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/rule-docs/rule-docs.html",
-          "hash": "IPxPAGavASfUXtyqv2IT9Q=="
+          "hash": "oZZ+TGkFAyJQCVJJRPVg0g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "scenarios/rule-module/Enterprise.Rules/Enterprise.Rules.psd1",
+      "output": {
+        "resource": {
+          "relative_path": "scenarios/rule-module/Enterprise.Rules/Enterprise.Rules.psd1"
         }
       },
       "is_incremental": false,
@@ -463,7 +486,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/rule-module/Enterprise.Rules/en/Org.Az.Resource.Tagging.html",
-          "hash": "YWedrLYaxxD0TFnw+E2Lzg=="
+          "hash": "/IKUnKVjordgrNCgvKUXjA=="
         }
       },
       "is_incremental": false,
@@ -475,7 +498,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/rule-module/Enterprise.Rules/en/Org.Az.Storage.UseHttps.html",
-          "hash": "/0CVW5nUzMrdOxrkkqWJKQ=="
+          "hash": "pgs+fFM7q5KH24r9XAHmvQ=="
         }
       },
       "is_incremental": false,
@@ -526,15 +549,24 @@
       "version": ""
     },
     {
-      "log_codes": [
-        "InvalidFileLink"
-      ],
       "type": "Conceptual",
       "source_relative_path": "scenarios/rule-module/rule-module.md",
       "output": {
         ".html": {
           "relative_path": "scenarios/rule-module/rule-module.html",
-          "hash": "V5+5UXJLmecnKfULRffjSQ=="
+          "hash": "T6teigGq8P9NE38TsVOlzQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "scenarios/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "scenarios/toc.html",
+          "hash": "TGAz1NQUGeSpBNLfImwjJQ=="
         }
       },
       "is_incremental": false,
@@ -590,7 +622,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/validation-pipeline/validation-pipeline.html",
-          "hash": "BDBAfqSiaNCVzwTwGrAmrw=="
+          "hash": "od97SMYN+h6QESaLqC/dRg=="
         }
       },
       "is_incremental": false,
@@ -602,7 +634,7 @@
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "DG4F9xF+TVcE1XE19wGE4A=="
+          "hash": "ECjtBp3ATxc77PHxjBzT/g=="
         }
       },
       "is_incremental": false,
@@ -623,7 +655,7 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 28,
+          "total_file_count": 29,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {
