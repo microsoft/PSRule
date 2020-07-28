@@ -44,6 +44,11 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 CompareNumeric = 3
                 CompareArray = 1, 2, 3
                 CompareString = 'abc'
+                InArray = @(
+                    'Item1'
+                    'Item3'
+                    'Item4'
+                )
             }
             [PSCustomObject]@{
                 '$schema' = "http://json-schema.org/draft-07/schema`#"
@@ -60,6 +65,16 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 CompareNumeric = 0
                 CompareArray = @()
                 CompareString = ''
+                InArray = @(
+                    'item1'
+                    'item2'
+                    'item3'
+                )
+                InArrayPSObject = [PSObject[]]@(
+                    'item1'
+                    'item2'
+                    'item3'
+                )
             }
         )
 
@@ -269,7 +284,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             # Negative case
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
-            $result[0].Reason.Length | Should -Be 2;
+            $result[0].Reason.Length | Should -Be 5;
             $result[0].Reason[0] | Should -Be "The field value 'TestObject1' was not included in the set.";
 
             # Positive case

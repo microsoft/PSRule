@@ -113,7 +113,9 @@ Rule 'Assert.JsonSchema' {
 Rule 'Assert.In' {
     $Assert.In($TargetObject, 'Name', @('TestObject2', 'TestObject3'))
     $Assert.In($TargetObject, 'Int', @(2, 3))
-    # $Assert.In($TargetObject, 'Name', 'TestObject2')
+    $Assert.In($TargetObject, 'InArray', @('Item2'))
+    $Assert.In($TargetObject, 'InArray', @('item1'), $True)
+    $Assert.In($TargetObject, 'InArrayPSObject', @('item2'), $True)
 }
 
 # Synopsis: Test for $Assert.Less

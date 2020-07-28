@@ -438,20 +438,21 @@ namespace PSRule.Runtime
             return o is PSObject pso ? pso.BaseObject : o;
         }
 
-        private static bool IsValue(object fieldValue, object expectedValue, bool caseSensitive)
+        private static bool IsValue(object actualValue, object expectedValue, bool caseSensitive)
         {
             var expectedBase = GetBaseObject(expectedValue);
-            if (fieldValue is string && expectedBase is string)
-                return caseSensitive ? StringComparer.Ordinal.Equals(fieldValue, expectedBase) : StringComparer.OrdinalIgnoreCase.Equals(fieldValue, expectedBase);
+            var actualBase = GetBaseObject(actualValue);
+            if (actualBase is string && expectedBase is string)
+                return caseSensitive ? StringComparer.Ordinal.Equals(actualBase, expectedBase) : StringComparer.OrdinalIgnoreCase.Equals(actualBase, expectedBase);
 
-            return expectedBase.Equals(fieldValue);
+            return expectedBase.Equals(actualBase) || expectedValue.Equals(actualValue);
         }
 
-        private static bool AnyValue(object fieldValue, object expectedValue, bool caseSensitive, out object foundValue)
+        private static bool AnyValue(object actualValue, object expectedValue, bool caseSensitive, out object foundValue)
         {
-            foundValue = fieldValue;
+            foundValue = actualValue;
             var expectedBase = GetBaseObject(expectedValue);
-            if (fieldValue is IEnumerable items)
+            if (actualValue is IEnumerable items)
             {
                 foreach (var item in items)
                 {
@@ -460,9 +461,9 @@ namespace PSRule.Runtime
                         return true;
                 }
             }
-            if (IsValue(fieldValue, expectedBase, caseSensitive))
+            if (IsValue(actualValue, expectedBase, caseSensitive))
             {
-                foundValue = fieldValue;
+                foundValue = actualValue;
                 return true;
             }
             return false;
