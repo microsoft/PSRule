@@ -6,6 +6,8 @@
 
 ## Unreleased
 
+## v0.19.0-B2007030 (pre-release)
+
 - Bug fixes:
   - Fixed `Assert.In` unable to compare PSObject wrapped array items. [#512](https://github.com/microsoft/PSRule/issues/512)
 
