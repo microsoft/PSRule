@@ -6,6 +6,28 @@
 
 ## Unreleased
 
+## v0.19.0
+
+What's changed since v0.18.1:
+
+- Engine features:
+  - Added `Reason` method to assertion results. [#500](https://github.com/microsoft/PSRule/issues/500)
+    - This new method, streamlines setting custom reasons particularly with formatted strings.
+    - The `Reason` method replaces any previously set reasons with a custom string.
+    - Optional arguments can be provided to be included in string formatting.
+  - Improvements to assertion methods.
+    - Added regular expression assertion helpers `Match`, and `NotMatch`. [#502](https://github.com/microsoft/PSRule/issues/502)
+    - Added collection assertion helpers `In`, and `NotIn`. [#501](https://github.com/microsoft/PSRule/issues/501)
+  - Added module version constraints. [#498](https://github.com/microsoft/PSRule/issues/498)
+    - The module versions that PSRule uses can be constrained.
+- Bug fixes:
+  - Fixed styling for no rule files warning with `Assert-PSRule`. [#484](https://github.com/microsoft/PSRule/issues/484)
+  - Fixed actual value in reason for numeric comparison assertion method. [#505](https://github.com/microsoft/PSRule/issues/505)
+
+What's changed since pre-release v0.19.0-B2007030:
+
+- No additional changes.
+
 ## v0.19.0-B2007030 (pre-release)
 
 - Bug fixes:
