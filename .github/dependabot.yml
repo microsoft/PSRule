@@ -1,0 +1,22 @@
+#
+# Dependabot configuration
+#
+
+# Please see the documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+
+# Maintain dependencies for NuGet
+- package-ecosystem: "nuget" # See documentation for possible values
+  directory: "/" # Location of package manifests
+  schedule:
+    interval: "daily"
+  labels:
+  - "dependencies"
+  reviewers:
+  - "berniewhite"
+  ignore:
+  # Ignore updates for YamlDotNet
+  - dependency-name: "YamlDotNet"
