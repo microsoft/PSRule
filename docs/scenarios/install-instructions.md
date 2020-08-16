@@ -6,18 +6,18 @@
 - PowerShell Core 6.2 or greater on Windows, MacOS and Linux or
 - PowerShell 7.0 or greater on Windows, MacOS and Linux
 
-For a list of platforms that PowerShell 7.0 is supported on [see](https://github.com/PowerShell/PowerShell#get-powershell).
+For a list of platforms that PowerShell 7.0 is supported on [see][get-powershell].
 
 ## Getting the module
 
-Install from [PowerShell Gallery][module-psrule] for all users (requires permissions):
+Install from [PowerShell Gallery][module] for all users (requires permissions):
 
 ```powershell
 # Install PSRule module
 Install-Module -Name 'PSRule' -Repository PSGallery;
 ```
 
-Install from [PowerShell Gallery][module-psrule] for current user only:
+Install from [PowerShell Gallery][module] for current user only:
 
 ```powershell
 # Install PSRule module
@@ -76,7 +76,8 @@ The following PowerShell modules will be automatically downloaded if the require
 
 These additional modules are only required for building PSRule and are not required for running PSRule.
 
-If you are on a network that does not permit Internet access to the PowerShell Gallery, download these modules on an alternative device that has access.
+If you are on a network that does not permit Internet access to the PowerShell Gallery,
+download these modules on an alternative device that has access.
 The following script can be used to download the required modules to an alternative device.
 After downloading the modules copy the module directories to devices with restricted Internet access.
 
@@ -85,10 +86,13 @@ After downloading the modules copy the module directories to devices with restri
 Save-Module -Name PlatyPS, Pester, PSScriptAnalyzer, PowerShellGet, PackageManagement, InvokeBuild -Repository PSGallery -Path '.\modules';
 ```
 
-Additionally .NET Core SDK v2.1 is required. .NET Core will not be automatically downloaded and installed.
-To download and install .NET Core SDK see [Download .NET Core 2.1](https://dotnet.microsoft.com/download/dotnet-core/2.1).
+Additionally .NET Core SDK v3.1 is required.
+.NET Core will not be automatically downloaded and installed.
+To download and install the latest SDK see [Download .NET Core 3.1][dotnet].
 
-[module-psrule]: https://www.powershellgallery.com/packages/PSRule
+[module]: https://www.powershellgallery.com/packages/PSRule
+[get-powershell]: https://github.com/PowerShell/PowerShell#get-powershell
+[dotnet]: https://dotnet.microsoft.com/download/dotnet-core/3.1
 [extension-vscode]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
 [extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
 [vscode-ext-gallery]: https://code.visualstudio.com/docs/editor/extension-gallery
