@@ -6,6 +6,10 @@
 
 ## Unreleased
 
+## v0.20.0-B2008002 (pre-release)
+
+What's changed since v0.19.0:
+
 - Engine features:
   - Added support for scanning repository files. [#524](https://github.com/microsoft/PSRule/issues/524)
     - Added `File` input type (`-InputType File`) to scan for files without deserializing them.
