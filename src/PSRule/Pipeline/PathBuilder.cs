@@ -88,8 +88,6 @@ namespace PSRule.Pipeline
 
             var pathLiteral = GetSearchParameters(path, out string searchPattern, out SearchOption searchOption, out PathFilter filter);
             var files = Directory.EnumerateFiles(pathLiteral, searchPattern, searchOption);
-            //var isLiteral = IsLiteralFile(path);
-
             foreach (var file in files)
                 if (ShouldInclude(file, filter))
                     AddFile(file);
@@ -111,7 +109,7 @@ namespace PSRule.Pipeline
                 return false;
 
             var rootedPath = GetRootedPath(path);
-            if (Directory.Exists(rootedPath))
+            if (Directory.Exists(rootedPath) || path == CurrentPath)
             {
                 if (IsBasePath(rootedPath))
                     normalPath = CurrentPath;
@@ -135,6 +133,9 @@ namespace PSRule.Pipeline
 
         private void ErrorNotFound(string path)
         {
+            if (_Logger == null)
+                return;
+
             _Logger.WriteError(new ErrorRecord(new FileNotFoundException(), "PSRule.PathBuilder.ErrorNotFound", ErrorCategory.ObjectNotFound, path));
         }
 
