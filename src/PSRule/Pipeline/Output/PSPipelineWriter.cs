@@ -35,8 +35,12 @@ namespace PSRule.Pipeline.Output
 
         private string _ScopeName;
 
-        internal PSPipelineWriter(PSRuleOption option)
-            : base(null, option) { }
+        internal PSPipelineWriter(HostContext hostContext, PSRuleOption option)
+            : base(null, option)
+        {
+            UseCommandRuntime(hostContext.CmdletContext);
+            UseExecutionContext(hostContext.ExecutionContext);
+        }
 
         public override void Begin()
         {
@@ -47,8 +51,11 @@ namespace PSRule.Pipeline.Output
                 _DebugFilter = new HashSet<string>(Option.Logging.LimitDebug);
         }
 
-        internal void UseCommandRuntime(PSCmdlet commandRuntime)
+        private void UseCommandRuntime(PSCmdlet commandRuntime)
         {
+            if (commandRuntime == null)
+                return;
+
             OnWriteVerbose = commandRuntime.WriteVerbose;
             OnWriteWarning = commandRuntime.WriteWarning;
             OnWriteError = commandRuntime.WriteError;
@@ -57,8 +64,11 @@ namespace PSRule.Pipeline.Output
             OnWriteObject = commandRuntime.WriteObject;
         }
 
-        internal void UseExecutionContext(EngineIntrinsics executionContext)
+        private void UseExecutionContext(EngineIntrinsics executionContext)
         {
+            if (executionContext == null)
+                return;
+
             _LogError = GetPreferenceVariable(executionContext, ErrorPreference);
             _LogWarning = GetPreferenceVariable(executionContext, WarningPreference);
             _LogVerbose = GetPreferenceVariable(executionContext, VerbosePreference);

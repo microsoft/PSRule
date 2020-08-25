@@ -111,6 +111,7 @@
                         "Json",
                         "Markdown",
                         "PowerShellData",
+                        "File",
                         "Detect"
                     ],
                     "default": "Detect"
@@ -119,6 +120,15 @@
                     "type": "string",
                     "title": "Object path",
                     "description": "The object path to a property to use instead of the pipeline object."
+                },
+                "pathIgnore": {
+                    "type": "array",
+                    "title": "Path ignore",
+                    "description": "Ignores input files that match the path spec.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
                 },
                 "targetType": {
                     "type": "array",

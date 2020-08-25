@@ -6,6 +6,14 @@
 
 ## Unreleased
 
+- Engine features:
+  - Added support for scanning repository files. [#524](https://github.com/microsoft/PSRule/issues/524)
+    - Added `File` input type (`-InputType File`) to scan for files without deserializing them.
+    - Added `Input.PathIgnore` option to ignore files.
+    - When using the `File` input type path specs in `.gitignore` are ignored.
+  - Added `Get-PSRuleTarget` cmdlet to read input files and return raw objects. [#525](https://github.com/microsoft/PSRule/issues/525)
+    - This cmdlet can be used to troubleshoot PSRule input issues.
+
 ## v0.19.0
 
 What's changed since v0.18.1:

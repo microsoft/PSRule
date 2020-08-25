@@ -99,10 +99,15 @@ namespace PSRule.Rules
         private readonly List<Source> _Source;
         private readonly PipelineLogger _Logger;
 
-        internal RuleSourceBuilder()
+        internal RuleSourceBuilder(HostContext hostContext)
         {
             _Source = new List<Source>();
             _Logger = new PipelineLogger();
+            if (hostContext != null)
+            {
+                _Logger.UseCommandRuntime(hostContext.CmdletContext);
+                _Logger.UseExecutionContext(hostContext.ExecutionContext);
+            }
         }
 
         public RuleSourceBuilder Configure(PSRuleOption option)
@@ -110,16 +115,6 @@ namespace PSRule.Rules
             _Logger.Configure(option);
             _Logger.EnterScope("[Discovery.Source]");
             return this;
-        }
-
-        public void UseCommandRuntime(PSCmdlet commandRuntime)
-        {
-            _Logger.UseCommandRuntime(commandRuntime);
-        }
-
-        public void UseExecutionContext(EngineIntrinsics executionContext)
-        {
-            _Logger.UseExecutionContext(executionContext);
         }
 
         public void VerboseScanSource(string path)

@@ -38,6 +38,8 @@ execution:
 input:
   format: Yaml
   objectPath: items
+  pathIgnore:
+  - '*.Designer.cs'
   targetType:
   - virtualMachine
 

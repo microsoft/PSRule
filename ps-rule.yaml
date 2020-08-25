@@ -2,3 +2,7 @@
 output:
   culture:
   - 'en-US'
+
+input:
+  pathIgnore:
+  - '*.Designer.cs'

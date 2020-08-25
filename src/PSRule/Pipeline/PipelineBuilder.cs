@@ -4,6 +4,7 @@
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Pipeline.Output;
+using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime;
 using System;
@@ -19,49 +20,66 @@ namespace PSRule.Pipeline
 {
     public static class PipelineBuilder
     {
-        public static IInvokePipelineBuilder Assert(Source[] source, PSRuleOption option)
+        public static IInvokePipelineBuilder Assert(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
         {
-            var pipeline = new AssertPipelineBuilder(source);
+            var hostContext = new HostContext(commandRuntime, executionContext);
+            var pipeline = new AssertPipelineBuilder(source, hostContext);
             pipeline.Configure(option);
             return pipeline;
         }
 
-        public static IInvokePipelineBuilder Invoke(Source[] source, PSRuleOption option)
+        public static IInvokePipelineBuilder Invoke(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
         {
-            var pipeline = new InvokeRulePipelineBuilder(source);
+            var hostContext = new HostContext(commandRuntime, executionContext);
+            var pipeline = new InvokeRulePipelineBuilder(source, hostContext);
             pipeline.Configure(option);
             return pipeline;
         }
 
-        public static IInvokePipelineBuilder Test(Source[] source, PSRuleOption option)
+        public static IInvokePipelineBuilder Test(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
         {
-            var pipeline = new TestPipelineBuilder(source);
+            var hostContext = new HostContext(commandRuntime, executionContext);
+            var pipeline = new TestPipelineBuilder(source, hostContext);
             pipeline.Configure(option);
             return pipeline;
         }
 
-        public static IGetPipelineBuilder Get(Source[] source, PSRuleOption option)
+        public static IGetPipelineBuilder Get(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
         {
-            var pipeline = new GetRulePipelineBuilder(source);
+            var hostContext = new HostContext(commandRuntime, executionContext);
+            var pipeline = new GetRulePipelineBuilder(source, hostContext);
             pipeline.Configure(option);
             return pipeline;
         }
 
-        public static IHelpPipelineBuilder GetHelp(Source[] source, PSRuleOption option)
+        public static IHelpPipelineBuilder GetHelp(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
         {
-            var pipeline = new GetRuleHelpPipelineBuilder(source);
+            var hostContext = new HostContext(commandRuntime, executionContext);
+            var pipeline = new GetRuleHelpPipelineBuilder(source, hostContext);
             pipeline.Configure(option);
             return pipeline;
         }
 
-        public static RuleSourceBuilder RuleSource()
+        public static RuleSourceBuilder RuleSource(PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
         {
-            return new RuleSourceBuilder();
+            var hostContext = new HostContext(commandRuntime, executionContext);
+            var pipeline = new RuleSourceBuilder(hostContext);
+            pipeline.Configure(option);
+            return pipeline;
         }
 
-        public static IPipelineBuilder GetBaseline(Source[] source, PSRuleOption option)
+        public static IPipelineBuilder GetBaseline(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
         {
-            var pipeline = new GetBaselinePipelineBuilder(source);
+            var hostContext = new HostContext(commandRuntime, executionContext);
+            var pipeline = new GetBaselinePipelineBuilder(source, hostContext);
+            pipeline.Configure(option);
+            return pipeline;
+        }
+
+        public static IGetTargetPipelineBuilder GetTarget(PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
+        {
+            var hostContext = new HostContext(commandRuntime, executionContext);
+            var pipeline = new GetTargetPipelineBuilder(null, hostContext);
             pipeline.Configure(option);
             return pipeline;
         }
@@ -69,10 +87,6 @@ namespace PSRule.Pipeline
 
     public interface IPipelineBuilder
     {
-        void UseCommandRuntime(PSCmdlet commandRuntime);
-
-        void UseExecutionContext(EngineIntrinsics executionContext);
-
         IPipelineBuilder Configure(PSRuleOption option);
 
         IPipeline Build();
@@ -84,6 +98,7 @@ namespace PSRule.Pipeline
 
         void Process(PSObject sourceObject);
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Matches PowerShell pipeline.")]
         void End();
     }
 
@@ -94,22 +109,27 @@ namespace PSRule.Pipeline
         protected readonly PSRuleOption Option;
         protected readonly Source[] Source;
         protected readonly HostContext HostContext;
-        protected PSCmdlet CmdletContext;
-        protected EngineIntrinsics ExecutionContext;
+        protected BindTargetMethod BindTargetNameHook;
+        protected BindTargetMethod BindTargetTypeHook;
+        protected BindTargetMethod BindFieldHook;
+        protected VisitTargetObject VisitTargetObject;
 
         private string[] _Include;
         private Hashtable _Tag;
         private BaselineOption _Baseline;
 
-        private ShouldProcess _ShouldProcess;
         private readonly PSPipelineWriter _Output;
 
-        protected PipelineBuilderBase(Source[] source)
+        protected PipelineBuilderBase(Source[] source, HostContext hostContext)
         {
             Option = new PSRuleOption();
             Source = source;
-            _Output = new PSPipelineWriter(Option);
-            HostContext = new HostContext();
+            _Output = new PSPipelineWriter(hostContext, Option);
+            HostContext = hostContext;
+            BindTargetNameHook = PipelineHookActions.BindTargetName;
+            BindTargetTypeHook = PipelineHookActions.BindTargetType;
+            BindFieldHook = PipelineHookActions.BindField;
+            VisitTargetObject = PipelineReceiverActions.PassThru;
         }
 
         public void Name(string[] name)
@@ -128,20 +148,6 @@ namespace PSRule.Pipeline
             _Tag = tag;
         }
 
-        public virtual void UseCommandRuntime(PSCmdlet commandRuntime)
-        {
-            CmdletContext = commandRuntime;
-            _ShouldProcess = commandRuntime.ShouldProcess;
-            _Output.UseCommandRuntime(commandRuntime);
-        }
-
-        public void UseExecutionContext(EngineIntrinsics executionContext)
-        {
-            ExecutionContext = executionContext;
-            HostContext.InSession = executionContext.SessionState.PSVariable.GetValue("PSSenderInfo") != null;
-            _Output.UseExecutionContext(executionContext);
-        }
-
         public virtual IPipelineBuilder Configure(PSRuleOption option)
         {
             if (option == null)
@@ -149,6 +155,7 @@ namespace PSRule.Pipeline
 
             Option.Binding = new BindingOption(option.Binding);
             Option.Execution = new ExecutionOption(option.Execution);
+            Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
             Option.Input = new InputOption(option.Input);
             Option.Input.Format = Option.Input.Format ?? InputOption.Default.Format;
             Option.Output = new OutputOption(option.Output);
@@ -283,7 +290,7 @@ namespace PSRule.Pipeline
                     option: Option,
                     encoding: GetEncoding(Option.Output.Encoding),
                     path: Option.Output.Path,
-                    shouldProcess: _ShouldProcess
+                    shouldProcess: HostContext.ShouldProcess
                 );
             }
             return _Output;
@@ -364,6 +371,53 @@ namespace PSRule.Pipeline
             result.Add(configScope);
 
             return result;
+        }
+
+        protected void ConfigureBinding(PSRuleOption option)
+        {
+            if (option.Pipeline.BindTargetName != null && option.Pipeline.BindTargetName.Count > 0)
+            {
+                // Do not allow custom binding functions to be used with constrained language mode
+                if (Option.Execution.LanguageMode == LanguageMode.ConstrainedLanguage)
+                    throw new PipelineConfigurationException(optionName: "BindTargetName", message: PSRuleResources.ConstrainedTargetBinding);
+
+                foreach (var action in option.Pipeline.BindTargetName)
+                    BindTargetNameHook = AddBindTargetAction(action, BindTargetNameHook);
+            }
+
+            if (option.Pipeline.BindTargetType != null && option.Pipeline.BindTargetType.Count > 0)
+            {
+                // Do not allow custom binding functions to be used with constrained language mode
+                if (Option.Execution.LanguageMode == LanguageMode.ConstrainedLanguage)
+                    throw new PipelineConfigurationException(optionName: "BindTargetType", message: PSRuleResources.ConstrainedTargetBinding);
+
+                foreach (var action in option.Pipeline.BindTargetType)
+                    BindTargetTypeHook = AddBindTargetAction(action, BindTargetTypeHook);
+            }
+        }
+
+        private static BindTargetMethod AddBindTargetAction(BindTargetFunc action, BindTargetMethod previous)
+        {
+            // Nest the previous write action in the new supplied action
+            // Execution chain will be: action -> previous -> previous..n
+            return (propertyNames, caseSensitive, targetObject) => action(propertyNames, caseSensitive, targetObject, previous);
+        }
+
+        private static BindTargetMethod AddBindTargetAction(BindTargetName action, BindTargetMethod previous)
+        {
+            return AddBindTargetAction((parameterNames, caseSensitive, targetObject, next) =>
+            {
+                var targetType = action(targetObject);
+                return string.IsNullOrEmpty(targetType) ? next(parameterNames, caseSensitive, targetObject) : targetType;
+            }, previous);
+        }
+
+        protected void AddVisitTargetObjectAction(VisitTargetObjectAction action)
+        {
+            // Nest the previous write action in the new supplied action
+            // Execution chain will be: action -> previous -> previous..n
+            var previous = VisitTargetObject;
+            VisitTargetObject = (targetObject) => action(targetObject, previous);
         }
     }
 }

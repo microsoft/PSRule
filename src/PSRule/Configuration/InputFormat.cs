@@ -22,6 +22,8 @@ namespace PSRule.Configuration
 
         PowerShellData = 4,
 
+        File = 5,
+
         Detect = 255
     }
 }

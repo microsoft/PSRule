@@ -47,7 +47,7 @@ function Invoke-PSRule {
         [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Detail,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'Detect')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'File', 'Detect')]
         [PSRule.Configuration.InputFormat]$Format = [PSRule.Configuration.InputFormat]::Detect,
 
         [Parameter(Mandatory = $False)]
@@ -148,19 +148,18 @@ function Invoke-PSRule {
             $Option.Output.Culture = $Culture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke($sourceFiles, $Option);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.Limit($Outcome);
         $builder.UseBaseline($Baseline);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
-            $inputPaths = GetFilePath -Path $InputPath -Verbose:$VerbosePreference;
-            $builder.InputPath($inputPaths);
+            $builder.InputPath($InputPath);
         }
 
-        $builder.UseCommandRuntime($PSCmdlet);
-        $builder.UseExecutionContext($ExecutionContext);
+        # $builder.UseCommandRuntime($PSCmdlet);
+        # $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
             if ($Null -ne $pipeline) {
@@ -214,7 +213,7 @@ function Test-PSRuleTarget {
         [PSRule.Rules.RuleOutcome]$Outcome = [PSRule.Rules.RuleOutcome]::Processed,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'Detect')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'File', 'Detect')]
         [PSRule.Configuration.InputFormat]$Format,
 
         # A list of paths to check for rule definitions
@@ -295,18 +294,17 @@ function Test-PSRuleTarget {
             $Option.Output.Culture = $Culture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Test($sourceFiles, $Option);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Test($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.Limit($Outcome);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
-            $inputPaths = GetFilePath -Path $InputPath -Verbose:$VerbosePreference;
-            $builder.InputPath($inputPaths);
+            $builder.InputPath($InputPath);
         }
 
-        $builder.UseCommandRuntime($PSCmdlet);
-        $builder.UseExecutionContext($ExecutionContext);
+        # $builder.UseCommandRuntime($PSCmdlet);
+        # $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
             if ($Null -ne $pipeline) {
@@ -344,6 +342,108 @@ function Test-PSRuleTarget {
 }
 
 # .ExternalHelp PSRule-Help.xml
+function Get-PSRuleTarget {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess', '', Justification = 'ShouldProcess is used within CSharp code.')]
+    [CmdletBinding(DefaultParameterSetName = 'Input', SupportsShouldProcess = $True)]
+    [OutputType([PSObject])]
+    param (
+        [Parameter(Mandatory = $True, ParameterSetName = 'InputPath')]
+        [Alias('f')]
+        [String[]]$InputPath,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'File', 'Detect')]
+        [PSRule.Configuration.InputFormat]$Format = [PSRule.Configuration.InputFormat]::Detect,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $False)]
+        [String]$ObjectPath,
+
+        [Parameter(Mandatory = $True, ValueFromPipeline = $True, ParameterSetName = 'Input')]
+        [Alias('TargetObject')]
+        [PSObject]$InputObject
+    )
+    begin {
+        Write-Verbose -Message '[Get-PSRuleTarget] BEGIN::';
+        $pipelineReady = $False;
+
+        # Get parameter options, which will override options from other sources
+        $optionParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Option')) {
+            $optionParams['Option'] = $Option;
+        }
+
+        # Get an options object
+        $Option = New-PSRuleOption @optionParams;
+
+        $isDeviceGuard = IsDeviceGuardEnabled;
+
+        # If DeviceGuard is enabled, force a contrained execution environment
+        if ($isDeviceGuard) {
+            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
+        }
+        if ($PSBoundParameters.ContainsKey('Format')) {
+            $Option.Input.Format = $Format;
+        }
+        if ($PSBoundParameters.ContainsKey('ObjectPath')) {
+            $Option.Input.ObjectPath = $ObjectPath;
+        }
+        if ($PSBoundParameters.ContainsKey('TargetType')) {
+            $Option.Input.TargetType = $TargetType;
+        }
+        if ($PSBoundParameters.ContainsKey('OutputFormat')) {
+            $Option.Output.Format = $OutputFormat;
+        }
+        if ($PSBoundParameters.ContainsKey('OutputPath')) {
+            $Option.Output.Path = $OutputPath;
+        }
+
+        $builder = [PSRule.Pipeline.PipelineBuilder]::GetTarget($Option, $PSCmdlet, $ExecutionContext);
+
+        if ($PSBoundParameters.ContainsKey('InputPath')) {
+            $builder.InputPath($InputPath);
+        }
+
+        try {
+            $pipeline = $builder.Build();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $True;
+            }
+        }
+        catch {
+            throw $_.Exception.GetBaseException();
+        }
+    }
+    process {
+        if ($pipelineReady) {
+            try {
+                # Process pipeline objects
+                $pipeline.Process($InputObject);
+            }
+            catch {
+                $pipeline.Dispose();
+                throw;
+            }
+        }
+    }
+    end {
+        if ($pipelineReady) {
+            try {
+                $pipeline.End();
+            }
+            finally {
+                $pipeline.Dispose();
+            }
+        }
+        Write-Verbose -Message '[Get-PSRuleTarget] END::';
+    }
+}
+
+# .ExternalHelp PSRule-Help.xml
 function Assert-PSRule {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess', '', Justification = 'ShouldProcess is used within CSharp code.')]
     [CmdletBinding(DefaultParameterSetName = 'Input', SupportsShouldProcess = $True)]
@@ -358,7 +458,7 @@ function Assert-PSRule {
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'Detect')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'File', 'Detect')]
         [PSRule.Configuration.InputFormat]$Format = [PSRule.Configuration.InputFormat]::Detect,
 
         [Parameter(Mandatory = $False)]
@@ -465,19 +565,18 @@ function Assert-PSRule {
             $Option.Output.Culture = $Culture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Assert($sourceFiles, $Option);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Assert($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);;
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.UseBaseline($Baseline);
         $builder.ResultVariable($ResultVariable);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
-            $inputPaths = GetFilePath -Path $InputPath -Verbose:$VerbosePreference;
-            $builder.InputPath($inputPaths);
+            $builder.InputPath($InputPath);
         }
 
-        $builder.UseCommandRuntime($PSCmdlet);
-        $builder.UseExecutionContext($ExecutionContext);
+        # $builder.UseCommandRuntime($PSCmdlet);
+        # $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
             if ($Null -ne $pipeline) {
@@ -609,7 +708,7 @@ function Get-PSRule {
             $Option.Output.Culture = $Culture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Get($sourceFiles, $Option);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Get($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.UseBaseline($Baseline);
@@ -618,8 +717,8 @@ function Get-PSRule {
             $builder.IncludeDependencies();
         }
 
-        $builder.UseCommandRuntime($PSCmdlet);
-        $builder.UseExecutionContext($ExecutionContext);
+        # $builder.UseCommandRuntime($PSCmdlet);
+        # $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
             if ($Null -ne $pipeline) {
@@ -713,10 +812,10 @@ function Get-PSRuleBaseline {
             $Option.Output.Culture = $Culture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::GetBaseline($sourceFiles, $Option);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::GetBaseline($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);;
         $builder.Name($Name);
-        $builder.UseCommandRuntime($PSCmdlet);
-        $builder.UseExecutionContext($ExecutionContext);
+        # $builder.UseCommandRuntime($PSCmdlet);
+        # $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
             if ($Null -ne $pipeline) {
@@ -831,7 +930,7 @@ function Get-PSRuleHelp {
             $Option.Output.Culture = $Culture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp($sourceFiles, $Option);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);;
 
         if ($Online) {
             $builder.Online();
@@ -840,8 +939,8 @@ function Get-PSRuleHelp {
             $builder.Full();
         }
 
-        $builder.UseCommandRuntime($PSCmdlet);
-        $builder.UseExecutionContext($ExecutionContext);
+        # $builder.UseCommandRuntime($PSCmdlet);
+        # $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
             if ($Null -ne $pipeline) {
@@ -947,6 +1046,10 @@ function New-PSRuleOption {
         # Sets the Input.TargetType option
         [Parameter(Mandatory = $False)]
         [String[]]$InputTargetType,
+
+        # Sets the Input.PathIgnore option
+        [Parameter(Mandatory = $False)]
+        [String[]]$InputPathIgnore = '',
 
         # Sets the Logging.LimitDebug option
         [Parameter(Mandatory = $False)]
@@ -1136,6 +1239,10 @@ function Set-PSRuleOption {
         [Alias('InputObjectPath')]
         [String]$ObjectPath = '',
 
+        # Sets the Input.PathIgnore option
+        [Parameter(Mandatory = $False)]
+        [String[]]$InputPathIgnore = '',
+
         # Sets the Input.TargetType option
         [Parameter(Mandatory = $False)]
         [String[]]$InputTargetType,
@@ -1184,7 +1291,6 @@ function Set-PSRuleOption {
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions')]
         [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Client
     )
-
     begin {
         Write-Verbose -Message "[Set-PSRuleOption] BEGIN::";
 
@@ -1237,7 +1343,6 @@ function Set-PSRuleOption {
         $filePath = [PSRule.Configuration.PSRuleOption]::GetFilePath($Path);
         $containsComments = YamlContainsComments -Path $filePath;
     }
-
     process {
         try {
             $result = $Option | SetOptions @optionParams -Verbose:$VerbosePreference;
@@ -1268,7 +1373,6 @@ function Set-PSRuleOption {
 
         }
     }
-
     end {
         Write-Verbose -Message "[Set-PSRuleOption] END::";
     }
@@ -1551,10 +1655,7 @@ function GetSource {
         [PSRule.Configuration.PSRuleOption]$Option
     )
     process {
-        $builder = [PSRule.Pipeline.PipelineBuilder]::RuleSource().Configure($Option);
-        $builder.UseCommandRuntime($PSCmdlet);
-        $builder.UseExecutionContext($ExecutionContext);
-
+        $builder = [PSRule.Pipeline.PipelineBuilder]::RuleSource($Option, $PSCmdlet, $ExecutionContext);
         if ($PSBoundParameters.ContainsKey('Path')) {
             try {
                 $builder.Directory($Path);
@@ -1640,10 +1741,13 @@ function GetFilePath {
     [OutputType([System.String])]
     param (
         [Parameter(Mandatory = $True)]
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $True)]
         [String[]]$Path
     )
     process {
-        $builder = New-Object -TypeName 'PSRule.Pipeline.InputPathBuilder';
+        $builder = [PSRule.Pipeline.InputPathBuilder]::new();
         Write-Verbose -Message "[PSRule][D] -- Scanning for input files: $Path";
 
         foreach ($p in $Path) {
@@ -1663,7 +1767,6 @@ function GetFilePath {
                 throw 'The path is not valid. Wildcards are not supported in URL input paths.';
             }
         }
-
         $builder.Build();
     }
 }
@@ -1724,6 +1827,10 @@ function SetOptions {
         [Alias('InputObjectPath')]
         [String]$ObjectPath = '',
 
+        # Sets the Input.PathIgnore option
+        [Parameter(Mandatory = $False)]
+        [String[]]$InputPathIgnore = '',
+
         # Sets the Input.TargetType option
         [Parameter(Mandatory = $False)]
         [String[]]$InputTargetType,
@@ -1772,7 +1879,6 @@ function SetOptions {
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions')]
         [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Client
     )
-
     process {
         # Options
 
@@ -1826,8 +1932,13 @@ function SetOptions {
             $Option.Input.ObjectPath = $ObjectPath;
         }
 
-         # Sets option Input.TargetType
-         if ($PSBoundParameters.ContainsKey('InputTargetType')) {
+        # Sets option Input.PathIgnore
+        if ($PSBoundParameters.ContainsKey('InputPathIgnore')) {
+            $Option.Input.PathIgnore = $InputPathIgnore;
+        }
+
+        # Sets option Input.TargetType
+        if ($PSBoundParameters.ContainsKey('InputTargetType')) {
             $Option.Input.TargetType = $InputTargetType;
         }
 
@@ -1993,6 +2104,7 @@ Export-ModuleMember -Function @(
     'Rule'
     'Invoke-PSRule'
     'Test-PSRuleTarget'
+    'Get-PSRuleTarget'
     'Assert-PSRule'
     'Get-PSRule'
     'Get-PSRuleHelp'

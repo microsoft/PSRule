@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Data;
 using System;
 using System.Collections.Concurrent;
-using System.IO;
 using System.Management.Automation;
 
 namespace PSRule.Pipeline
@@ -11,10 +11,10 @@ namespace PSRule.Pipeline
     internal sealed class PipelineReader
     {
         private readonly VisitTargetObject _Input;
-        private readonly string[] _InputPath;
+        private readonly InputFileInfo[] _InputPath;
         private readonly ConcurrentQueue<PSObject> _Queue;
 
-        public PipelineReader(VisitTargetObject input, string[] inputPath)
+        public PipelineReader(VisitTargetObject input, InputFileInfo[] inputPath)
         {
             _Input = input;
             _InputPath = inputPath;
@@ -44,14 +44,11 @@ namespace PSRule.Pipeline
 
             // Visit the object, which may change or expand the object
             var input = _Input(sourceObject);
-
             if (input == null)
                 return;
 
             foreach (var item in input)
-            {
                 _Queue.Enqueue(item);
-            }
         }
 
         public bool TryDequeue(out PSObject sourceObject)
@@ -61,20 +58,19 @@ namespace PSRule.Pipeline
 
         public void Open()
         {
-            if (_InputPath != null)
-            {
-                // Read each file
+            if (_InputPath == null || _InputPath.Length == 0)
+                return;
 
-                foreach (var p in _InputPath)
+            // Read each file
+            for (var i = 0; i < _InputPath.Length; i++)
+            {
+                if (_InputPath[i].IsUrl)
                 {
-                    if (p.IsUri())
-                    {
-                        Enqueue(PSObject.AsPSObject(new Uri(p)));
-                    }
-                    else
-                    {
-                        Enqueue(PSObject.AsPSObject(new FileInfo(p)));
-                    }
+                    Enqueue(PSObject.AsPSObject(new Uri(_InputPath[i].FullName)));
+                }
+                else
+                {
+                    Enqueue(PSObject.AsPSObject(_InputPath[i]));
                 }
             }
         }

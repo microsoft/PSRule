@@ -7,6 +7,7 @@ using PSRule.Resources;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -324,6 +325,10 @@ namespace PSRule.Configuration
             {
                 option.Input.ObjectPath = (string)value;
             }
+            if (index.TryPopValue("input.pathignore", out value))
+            {
+                option.Input.PathIgnore = AsStringArray(value);
+            }
             if (index.TryPopValue("input.targettype", out value))
             {
                 option.Input.TargetType = AsStringArray(value);
@@ -455,6 +460,18 @@ namespace PSRule.Configuration
             return Path.IsPathRooted(path) ? path : Path.GetFullPath(Path.Combine(GetWorkingPath(), path));
         }
 
+        /// <summary>
+        /// Get a full path instead of a relative path that may be passed from PowerShell.
+        /// </summary>
+        internal static string GetRootedBasePath(string path)
+        {
+            var rootedPath = GetRootedPath(path);
+            if (rootedPath.Length > 0 && IsSeparator(rootedPath[rootedPath.Length - 1]))
+                return rootedPath;
+
+            return string.Concat(rootedPath, Path.DirectorySeparatorChar);
+        }
+
         internal static Dictionary<string, object> BuildIndex(Hashtable hashtable)
         {
             var index = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
@@ -491,6 +508,12 @@ namespace PSRule.Configuration
                 return null;
 
             return value.GetType().IsArray ? ((object[])value).OfType<string>().ToArray() : new string[] { value.ToString() };
+        }
+
+        [DebuggerStepThrough]
+        private static bool IsSeparator(char c)
+        {
+            return c == Path.DirectorySeparatorChar || c == Path.AltDirectorySeparatorChar;
         }
     }
 }

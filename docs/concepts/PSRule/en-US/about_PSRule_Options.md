@@ -1,4 +1,4 @@
-﻿# PSRule_Options
+# PSRule_Options
 
 ## about_PSRule_Options
 
@@ -18,6 +18,7 @@ The following workspace options are available for use:
 - [Execution.NotProcessedWarning](#executionnotprocessedwarning)
 - [Input.Format](#inputformat)
 - [Input.ObjectPath](#inputobjectpath)
+- [Input.PathIgnore](#inputpathignore)
 - [Input.TargetType](#inputtargettype)
 - [Logging.LimitDebug](#logginglimitdebug)
 - [Logging.LimitVerbose](#logginglimitverbose)
@@ -512,26 +513,38 @@ execution:
 ### Input.Format
 
 Configures the input format for when a string is passed in as a target object.
+This option determines if the target object is deserialized into an alternative form.
 
 Use this option with `Assert-PSRule`, `Invoke-PSRule` or `Test-PSRuleTarget`.
+Set this option to either `Yaml`, `Json`, `Markdown`, `PowerShellData` to deserialize as a specific format.
+The `-Format` parameter will override any value set in configuration.
 
 When the `-InputObject` parameter or pipeline input is used, strings are treated as plain text by default.
-Set this option to either `Yaml`, `Json`, `Markdown`, `PowerShellData` to have PSRule deserialize the object.
+`FileInfo` objects for supported file formats will be deserialized based on file extension.
 
-The `-Format` parameter will override any value set in configuration.
+When the `-InputPath` parameter is used, supported file formats will be deserialized based on file extension.
+The `-InputPath` parameter can be used with a file path or URL.
 
 The following formats are available:
 
-- None - Treat strings as plain text.
-- Yaml - Treat strings as one or more YAML objects.
-- Json - Treat strings as one or more JSON objects.
-- Markdown - Treat strings as a markdown object.
-- PowerShellData - Treat strings as a PowerShell data object.
+- None - Treat strings as plain text and do not deserialize files.
+- Yaml - Deserialize as one or more YAML objects.
+- Json - Deserialize as one or more JSON objects.
+- Markdown - Deserialize as a markdown object.
+- PowerShellData - Deserialize as a PowerShell data object.
+- File - Files are not deserialized.
 - Detect - Detect format based on file extension. This is the default.
 
-When the `-InputPath` parameter is used with a file path or URL.
 If the `Detect` format is used, the file extension will be used to automatically detect the format.
-When `-InputPath` is not used, `Detect` is the same as `None`.
+When the file extension can not be determined `Detect` is the same as `None`.
+
+The `Markdown` format does not parse the whole markdown document.
+Specifically this format deserializes YAML front matter from the top of the document if any exists.
+
+The `File` format does not deserialize file contents.
+Files within `.git` sub-directories are ignored.
+Path specs specified in `.gitignore` directly in the current working path are ignored.
+A `RepositoryInfo` object is generated if the current working path if a `.git` sub-directory is present.
 
 Detect uses matches the following file extensions:
 
@@ -539,9 +552,6 @@ Detect uses matches the following file extensions:
 - Json - `.json`
 - Markdown - `.md`
 - PowerShellData - `.psd1`
-
-The `Markdown` format does not parse the whole markdown document.
-Specifically this format deserializes YAML front matter from the top of the document if any exists.
 
 This option can be specified using:
 
@@ -599,6 +609,36 @@ Set-PSRuleOption -ObjectPath 'items';
 # YAML: Using the input/objectPath property
 input:
   objectPath: items
+```
+
+### Input.PathIgnore
+
+Ignores input files that match the path spec when using `-InputPath`.
+If specified, files that match the path spec will not be processed.
+By default, all files are processed.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the InputPathIgnore parameter
+$option = New-PSRuleOption -InputPathIgnore '*.Designer.cs';
+```
+
+```powershell
+# PowerShell: Using the Input.PathIgnore hashtable key
+$option = New-PSRuleOption -Option @{ 'Input.PathIgnore' = '*.Designer.cs' };
+```
+
+```powershell
+# PowerShell: Using the InputPathIgnore parameter to set YAML
+Set-PSRuleOption -InputPathIgnore '*.Designer.cs';
+```
+
+```yaml
+# YAML: Using the input/pathIgnore property
+input:
+  pathIgnore:
+  - '*.Designer.cs'
 ```
 
 ### Input.TargetType
@@ -1203,6 +1243,8 @@ execution:
 input:
   format: Yaml
   objectPath: items
+  pathIgnore:
+  - '*.Designer.cs'
   targetType:
   - Microsoft.Compute/virtualMachines
   - Microsoft.Network/virtualNetworks
@@ -1287,6 +1329,7 @@ execution:
 input:
   format: Detect
   objectPath: null
+  pathIgnore: [ ]
   targetType: [ ]
 
 # Configures outcome logging options
