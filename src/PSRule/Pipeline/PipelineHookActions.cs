@@ -3,6 +3,7 @@
 
 using Newtonsoft.Json;
 using PSRule.Configuration;
+using PSRule.Data;
 using PSRule.Runtime;
 using System.Globalization;
 using System.Linq;
@@ -58,9 +59,11 @@ namespace PSRule.Pipeline
         /// <returns>The TargetName of the object.</returns>
         private static string DefaultTargetNameBinding(PSObject targetObject)
         {
-            if (TryGetTargetName(targetObject: targetObject, propertyName: Property_TargetName, targetName: out string targetName) ||
-                TryGetTargetName(targetObject: targetObject, propertyName: Property_Name, targetName: out targetName))
+            if (TryGetInfoTargetName(targetObject, out string targetName) ||
+                TryGetTargetName(targetObject, propertyName: Property_TargetName, targetName: out targetName) ||
+                TryGetTargetName(targetObject, propertyName: Property_Name, targetName: out targetName))
                 return targetName;
+
             return GetUnboundObjectTargetName(targetObject);
         }
 
@@ -135,12 +138,35 @@ namespace PSRule.Pipeline
         /// <returns>The TargetObject of the object.</returns>
         private static string DefaultTargetTypeBinding(PSObject targetObject)
         {
+            if (TryGetInfoTargetType(targetObject, out string targetType))
+                return targetType;
+
             return targetObject.TypeNames[0];
         }
 
         private static string DefaultFieldBinding(PSObject targetObject)
         {
             return null;
+        }
+
+        private static bool TryGetInfoTargetName(PSObject targetObject, out string targetName)
+        {
+            targetName = null;
+            if (!(targetObject.BaseObject is ITargetInfo info))
+                return false;
+
+            targetName = info.TargetName;
+            return true;
+        }
+
+        private static bool TryGetInfoTargetType(PSObject targetObject, out string targetType)
+        {
+            targetType = null;
+            if (!(targetObject.BaseObject is ITargetInfo info))
+                return false;
+
+            targetType = info.TargetType;
+            return true;
         }
     }
 }

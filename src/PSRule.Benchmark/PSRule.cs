@@ -66,7 +66,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "Benchmark" };
-            var builder = PipelineBuilder.Get(GetSource(), option);
+            var builder = PipelineBuilder.Get(GetSource(), option, null, null);
             _GetPipeline = builder.Build();
         }
 
@@ -75,7 +75,7 @@ namespace PSRule.Benchmark
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkHelp" };
             option.Output.Culture = new string[] { "en-ZZ" };
-            var builder = PipelineBuilder.GetHelp(GetSource(), option);
+            var builder = PipelineBuilder.GetHelp(GetSource(), option, null, null);
             _GetHelpPipeline = builder.Build();
         }
 
@@ -83,7 +83,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "Benchmark" };
-            var builder = PipelineBuilder.Invoke(GetSource(), option);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
             _InvokePipeline = builder.Build();
         }
 
@@ -91,7 +91,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkIf" };
-            var builder = PipelineBuilder.Invoke(GetSource(), option);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
             _InvokeIfPipeline = builder.Build();
         }
 
@@ -99,7 +99,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkType" };
-            var builder = PipelineBuilder.Invoke(GetSource(), option);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
             _InvokeTypePipeline = builder.Build();
         }
 
@@ -108,7 +108,7 @@ namespace PSRule.Benchmark
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "Benchmark" };
             option.Output.As = ResultFormat.Summary;
-            var builder = PipelineBuilder.Invoke(GetSource(), option);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
             _InvokeSummaryPipeline = builder.Build();
         }
 
@@ -116,7 +116,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkWithin" };
-            var builder = PipelineBuilder.Invoke(GetWithinSource(), option);
+            var builder = PipelineBuilder.Invoke(GetWithinSource(), option, null, null);
             _InvokeWithinPipeline = builder.Build();
         }
 
@@ -124,7 +124,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkWithinBulk" };
-            var builder = PipelineBuilder.Invoke(GetWithinSource(), option);
+            var builder = PipelineBuilder.Invoke(GetWithinSource(), option, null, null);
             _InvokeWithinBulkPipeline = builder.Build();
         }
 
@@ -132,20 +132,20 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkWithinLike" };
-            var builder = PipelineBuilder.Invoke(GetWithinSource(), option);
+            var builder = PipelineBuilder.Invoke(GetWithinSource(), option, null, null);
             _InvokeWithinLikePipeline = builder.Build();
         }
 
         private Source[] GetSource()
         {
-            var builder = new RuleSourceBuilder();
+            var builder = new RuleSourceBuilder(null);
             builder.Directory(GetSourcePath("Benchmark.Rule.ps1"));
             return builder.Build();
         }
 
         private Source[] GetWithinSource()
         {
-            var builder = new RuleSourceBuilder();
+            var builder = new RuleSourceBuilder(null);
             builder.Directory(GetSourcePath("Benchmark.Within.Rule.ps1"));
             return builder.Build();
         }

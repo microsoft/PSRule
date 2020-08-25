@@ -30,6 +30,10 @@ Get a list of matching baselines within the search path.
 
 Get documentation for a rule.
 
+### [Get-PSRuleTarget](Get-PSRuleTarget.md)
+
+Get a list of target object.
+
 ### [Invoke-PSRule](Invoke-PSRule.md)
 
 Evaluate objects against matching rules and output the results.

@@ -25,7 +25,7 @@ namespace PSRule
         public void BuildInvokePipeline()
         {
             var option = GetOption();
-            var builder = PipelineBuilder.Invoke(GetSource(), option);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
             Assert.NotNull(builder.Build());
         }
 
@@ -35,7 +35,7 @@ namespace PSRule
             var testObject1 = new TestObject { Name = "TestObject1" };
             var option = GetOption();
             option.Rule.Include = new string[] { "FromFile1" };
-            var builder = PipelineBuilder.Invoke(GetSource(), option);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
             var pipeline = builder.Build();
             pipeline.Begin();
 
@@ -49,7 +49,7 @@ namespace PSRule
         [Fact]
         public void BuildGetPipeline()
         {
-            var builder = PipelineBuilder.Get(GetSource(), GetOption());
+            var builder = PipelineBuilder.Get(GetSource(), GetOption(), null, null);
             Assert.NotNull(builder.Build());
         }
 
@@ -77,13 +77,13 @@ namespace PSRule
         public void PipelineWithRequires()
         {
             var option = GetOption(GetSourcePath("PSRule.Tests6.yml"));
-            var builder = PipelineBuilder.Get(GetSource(), option);
+            var builder = PipelineBuilder.Get(GetSource(), option, null, null);
             Assert.Null(builder.Build());
         }
 
         private static Source[] GetSource()
         {
-            var builder = new RuleSourceBuilder();
+            var builder = new RuleSourceBuilder(null);
             builder.Directory(GetSourcePath("FromFile.Rule.ps1"));
             return builder.Build();
         }

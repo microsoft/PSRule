@@ -154,6 +154,21 @@ Rule 'ConstrainedTest3' -If { $Null = [Console]::WriteLine('Should fail'); retur
     $True;
 }
 
+# Synopsis: Test for using -InputFormat
+Rule 'WithFormat' {
+    $TargetObject.spec.properties.kind -eq 'Test'
+    ($TargetObject.spec.properties.array.id | Measure-Object).Count -eq 2
+    ($TargetObject.spec.properties.array2 | Measure-Object).Count -eq 3
+}
+
+# Synopsis: Test for using -InputFormat File
+Rule 'WithFileFormat' {
+    $Assert.HasFieldValue($TargetObject, 'FullName');
+    $Assert.HasFieldValue($TargetObject, 'DisplayName');
+    $PSRule.Data['FullName'] = $TargetObject.FullName;
+    $PSRule.Data['DisplayName'] = $TargetObject.DisplayName;
+}
+
 # Synopsis: Test $PSRule automatic variables
 Rule 'VariableContextVariable' {
     $TargetObject.Name -eq $PSRule.TargetName;
@@ -182,12 +197,6 @@ Rule 'WithConfiguration' {
     $Configuration.Value1 -eq 1
     $Configuration.Value2 -eq 2
 } -Configure @{ Value1 = 2; Value2 = 2; }
-
-Rule 'WithFormat' {
-    $TargetObject.spec.properties.kind -eq 'Test'
-    ($TargetObject.spec.properties.array.id | Measure-Object).Count -eq 2
-    ($TargetObject.spec.properties.array2 | Measure-Object).Count -eq 3
-}
 
 # Synopsis: Test $LocalizedData automatic variable
 Rule 'WithLocalizedData' {

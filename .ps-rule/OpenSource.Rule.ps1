@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 # Synopsis: Check for recommended community files
-Rule 'OpenSource.Community' -Type 'System.IO.DirectoryInfo' {
+Rule 'OpenSource.Community' -Type 'System.IO.DirectoryInfo', 'PSRule.Data.RepositoryInfo' {
     $requiredFiles = @(
         'CHANGELOG.md'
         'LICENSE.txt'
@@ -21,7 +21,7 @@ Rule 'OpenSource.Community' -Type 'System.IO.DirectoryInfo' {
 }
 
 # Synopsis: Check for license in code files
-Rule 'OpenSource.License' -Type 'System.IO.FileInfo' -If { $TargetObject.Extension -in '.cs', '.ps1', '.psd1', '.psm1' } {
+Rule 'OpenSource.License' -Type 'System.IO.FileInfo', 'PSRule.Data.InputFileInfo', '.cs', '.ps1', '.psd1', '.psm1' -If { $TargetObject.Extension -in '.cs', '.ps1', '.psd1', '.psm1' } {
     $commentPrefix = "`# ";
     if ($TargetObject.Extension -eq '.cs') {
         $commentPrefix = '// '

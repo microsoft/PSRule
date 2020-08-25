@@ -434,6 +434,28 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Input.PathIgnore' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Input.PathIgnore | Should -Be $Null;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Input.PathIgnore' = 'ignore.cs' };
+            $option.Input.PathIgnore | Should -Be 'ignore.cs';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Input.PathIgnore | Should -Be '*.Designer.cs';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -InputPathIgnore 'ignore.cs' -Path $emptyOptionsFilePath;
+            $option.Input.PathIgnore | Should -Be 'ignore.cs';
+        }
+    }
+
     Context 'Read Input.TargetType' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -880,6 +902,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -ObjectPath 'items' @optionParams;
             $option.Input.ObjectPath | Should -Be 'items';
+        }
+    }
+
+    Context 'Read Input.PathIgnore' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -InputPathIgnore 'ignore.cs' @optionParams;
+            $option.Input.PathIgnore | Should -Be 'ignore.cs';
         }
     }
 

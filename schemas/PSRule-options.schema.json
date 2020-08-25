@@ -111,6 +111,7 @@
                         "Json",
                         "Markdown",
                         "PowerShellData",
+                        "File",
                         "Detect"
                     ],
                     "default": "Detect"

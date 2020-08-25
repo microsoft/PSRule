@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Data;
 using PSRule.Host;
-using PSRule.Resources;
 using PSRule.Rules;
 using System;
 using System.Collections.Generic;
@@ -24,23 +24,14 @@ namespace PSRule.Pipeline
     internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvokePipelineBuilder
     {
         protected RuleOutcome Outcome;
-        protected string[] _InputPath;
+        protected InputFileInfo[] _InputPath;
         protected string _ResultVariableName;
-        private VisitTargetObject _VisitTargetObject;
 
-        protected BindTargetMethod _BindTargetNameHook;
-        protected BindTargetMethod _BindTargetTypeHook;
-        protected BindTargetMethod _BindFieldHook;
-
-        protected InvokePipelineBuilderBase(Source[] source)
-            : base(source)
+        protected InvokePipelineBuilderBase(Source[] source, HostContext hostContext)
+            : base(source, hostContext)
         {
             Outcome = RuleOutcome.Processed;
             _InputPath = null;
-            _VisitTargetObject = PipelineReceiverActions.PassThru;
-            _BindTargetNameHook = PipelineHookActions.BindTargetName;
-            _BindTargetTypeHook = PipelineHookActions.BindTargetType;
-            _BindFieldHook = PipelineHookActions.BindField;
         }
 
         public void Limit(RuleOutcome outcome)
@@ -50,7 +41,17 @@ namespace PSRule.Pipeline
 
         public void InputPath(string[] path)
         {
-            _InputPath = path;
+            if (path == null || path.Length == 0)
+                return;
+
+            var basePath = PSRuleOption.GetWorkingPath();
+            var filter = PathFilterBuilder.Create(basePath, Option.Input.PathIgnore);
+            if (Option.Input.Format == InputFormat.File)
+                filter.UseGitIgnore();
+
+            var builder = new InputPathBuilder(GetOutput(), basePath, "*", filter.Build());
+            builder.Add(path);
+            _InputPath = builder.Build();
         }
 
         public void ResultVariable(string variableName)
@@ -65,7 +66,6 @@ namespace PSRule.Pipeline
 
             base.Configure(option);
 
-            Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
             Option.Execution.InconclusiveWarning = option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning;
             Option.Execution.NotProcessedWarning = option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning;
 
@@ -86,26 +86,7 @@ namespace PSRule.Pipeline
             if (option.Configuration != null)
                 Option.Configuration = new ConfigurationOption(option.Configuration);
 
-            if (option.Pipeline.BindTargetName != null && option.Pipeline.BindTargetName.Count > 0)
-            {
-                // Do not allow custom binding functions to be used with constrained language mode
-                if (Option.Execution.LanguageMode == LanguageMode.ConstrainedLanguage)
-                    throw new PipelineConfigurationException(optionName: "BindTargetName", message: PSRuleResources.ConstrainedTargetBinding);
-
-                foreach (var action in option.Pipeline.BindTargetName)
-                    _BindTargetNameHook = AddBindTargetAction(action, _BindTargetNameHook);
-            }
-
-            if (option.Pipeline.BindTargetType != null && option.Pipeline.BindTargetType.Count > 0)
-            {
-                // Do not allow custom binding functions to be used with constrained language mode
-                if (Option.Execution.LanguageMode == LanguageMode.ConstrainedLanguage)
-                    throw new PipelineConfigurationException(optionName: "BindTargetType", message: PSRuleResources.ConstrainedTargetBinding);
-
-                foreach (var action in option.Pipeline.BindTargetType)
-                    _BindTargetTypeHook = AddBindTargetAction(action, _BindTargetTypeHook);
-            }
-
+            ConfigureBinding(option);
             Option.Requires = new RequiresOption(option.Requires);
             if (option.Suppression.Count > 0)
                 Option.Suppression = new SuppressionOption(option.Suppression);
@@ -118,31 +99,7 @@ namespace PSRule.Pipeline
             if (!RequireModules() || !RequireSources())
                 return null;
 
-            return new InvokeRulePipeline(PrepareContext(_BindTargetNameHook, _BindTargetTypeHook, _BindFieldHook), Source, PrepareReader(), PrepareWriter(), Outcome);
-        }
-
-        private BindTargetMethod AddBindTargetAction(BindTargetFunc action, BindTargetMethod previous)
-        {
-            // Nest the previous write action in the new supplied action
-            // Execution chain will be: action -> previous -> previous..n
-            return (propertyNames, caseSensitive, targetObject) => action(propertyNames, caseSensitive, targetObject, previous);
-        }
-
-        private BindTargetMethod AddBindTargetAction(BindTargetName action, BindTargetMethod previous)
-        {
-            return AddBindTargetAction((parameterNames, caseSensitive, targetObject, next) =>
-            {
-                var targetType = action(targetObject);
-                return string.IsNullOrEmpty(targetType) ? next(parameterNames, caseSensitive, targetObject) : targetType;
-            }, previous);
-        }
-
-        private void AddVisitTargetObjectAction(VisitTargetObjectAction action)
-        {
-            // Nest the previous write action in the new supplied action
-            // Execution chain will be: action -> previous -> previous..n
-            var previous = _VisitTargetObject;
-            _VisitTargetObject = (targetObject) => action(targetObject, previous);
+            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, PrepareReader(), PrepareWriter(), Outcome);
         }
 
         protected override PipelineReader PrepareReader()
@@ -183,6 +140,13 @@ namespace PSRule.Pipeline
                     return PipelineReceiverActions.ConvertFromPowerShellData(sourceObject, next);
                 });
             }
+            else if (Option.Input.Format == InputFormat.File)
+            {
+                AddVisitTargetObjectAction((sourceObject, next) =>
+                {
+                    return PipelineReceiverActions.ConvertFromGitHead(sourceObject, next);
+                });
+            }
             else if (Option.Input.Format == InputFormat.Detect && _InputPath != null)
             {
                 AddVisitTargetObjectAction((sourceObject, next) =>
@@ -190,7 +154,7 @@ namespace PSRule.Pipeline
                     return PipelineReceiverActions.DetectInputFormat(sourceObject, next);
                 });
             }
-            return new PipelineReader(_VisitTargetObject, _InputPath);
+            return new PipelineReader(VisitTargetObject, _InputPath);
         }
     }
 
@@ -199,8 +163,8 @@ namespace PSRule.Pipeline
     /// </summary>
     internal sealed class InvokeRulePipelineBuilder : InvokePipelineBuilderBase
     {
-        internal InvokeRulePipelineBuilder(Source[] source)
-            : base(source) { }
+        internal InvokeRulePipelineBuilder(Source[] source, HostContext hostContext)
+            : base(source, hostContext) { }
     }
 
     internal sealed class InvokeRulePipeline : RulePipeline, IPipeline

@@ -388,7 +388,7 @@ See about_PSRule_Options for more information.
 Type: InputFormat
 Parameter Sets: (All)
 Aliases: InputFormat
-Accepted values: None, Yaml, Json, Markdown, PowerShellData, Detect
+Accepted values: None, Yaml, Json, Markdown, PowerShellData, File, Detect
 
 Required: False
 Position: Named

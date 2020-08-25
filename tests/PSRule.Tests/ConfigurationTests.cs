@@ -44,7 +44,7 @@ namespace PSRule
 
         private static void BuildPipeline(PSRuleOption option)
         {
-            var builder = PipelineBuilder.Invoke(GetSource(), option);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
             builder.Build();
         }
 
@@ -55,7 +55,7 @@ namespace PSRule
 
         private static Source[] GetSource()
         {
-            var builder = new RuleSourceBuilder();
+            var builder = new RuleSourceBuilder(null);
             builder.Directory(GetSourcePath("FromFile.Rule.ps1"));
             return builder.Build();
         }

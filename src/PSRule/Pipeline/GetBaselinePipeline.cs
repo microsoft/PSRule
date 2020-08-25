@@ -13,8 +13,8 @@ namespace PSRule.Pipeline
     {
         private string[] _Name;
 
-        internal GetBaselinePipelineBuilder(Source[] source)
-            : base(source) { }
+        internal GetBaselinePipelineBuilder(Source[] source, HostContext hostContext)
+            : base(source, hostContext) { }
 
         /// <summary>
         /// Filter returned baselines by name.

@@ -576,13 +576,31 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
             $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
 
-             # Multiple file
-             $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles);
-             $result | Should -Not -BeNullOrEmpty;
-             $result.IsSuccess() | Should -BeIn $True;
-             $result.Length | Should -Be 4;
-             $result | Should -BeOfType PSRule.Rules.RuleRecord;
-             $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2','TestObject3', 'TestObject4';
+            # Multiple file
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.IsSuccess() | Should -BeIn $True;
+            $result.Length | Should -Be 4;
+            $result | Should -BeOfType PSRule.Rules.RuleRecord;
+            $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2','TestObject3', 'TestObject4';
+        }
+
+        It 'File' {
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFileFormat' -InputPath $rootPath -Format File);
+            $result.Length | Should -BeGreaterThan 100;
+            $result.Length | Should -BeLessOrEqual 1000;
+
+            # No ignored path
+            $filteredResult = @($result | Where-Object { $_.Data.FullName.Replace('\', '/') -like '*/out/*' });
+            $filteredResult.Length | Should -Be 0;
+
+            # Contains nested
+            $filteredResult = @($result | Where-Object { $_.Data.FullName.Replace('\', '/') -like '*/Assert.cs' });
+            $filteredResult.Length | Should -Be 1;
+
+            # Success only
+            $filteredResult = @($result | Where-Object { $_.Outcome -ne 'Pass' });
+            $filteredResult | Should -BeNullOrEmpty;
         }
 
         It 'Globbing processes paths' {
@@ -995,6 +1013,37 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
 }
 
 #endregion Test-PSRuleTarget
+
+#region Get-PSRuleTarget
+
+Describe 'Get-PSRuleTarget' -Tag 'Get-PSRuleTarget','Common' {
+
+    Context 'With defaults' {
+        It 'Returns single object' {
+            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $rootPath -ChildPath 'ps-project.yaml'));
+            $result.Length | Should -Be 1;
+            $result[0].info.name | Should -Be 'PSRule';
+        }
+    }
+
+    Context 'With -Format' {
+        It 'File' {
+            $result = @(Get-PSRuleTarget -InputPath $rootPath -Format File);
+            $result.Length | Should -BeGreaterThan 100;
+            $result.Length | Should -BeLessOrEqual 1000;
+
+            # No ignored path
+            $filteredResult = @($result | Where-Object { $_.FullName.Replace('\', '/') -like '*/out/*' });
+            $filteredResult.Length | Should -Be 0;
+
+            # Contains nested
+            $filteredResult = @($result | Where-Object { $_.FullName.Replace('\', '/') -like '*/Assert.cs' });
+            $filteredResult.Length | Should -Be 1;
+        }
+    }
+}
+
+#endregion Get-PSRuleTarget
 
 #region Assert-PSRule
 

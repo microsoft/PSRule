@@ -30,7 +30,7 @@ namespace PSRule
 
         private Source[] GetSource()
         {
-            var builder = new RuleSourceBuilder();
+            var builder = new RuleSourceBuilder(null);
             builder.Directory(GetSourcePath("Baseline.Rule.yaml"));
             return builder.Build();
         }

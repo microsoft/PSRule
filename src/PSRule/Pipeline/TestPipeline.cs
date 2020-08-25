@@ -7,8 +7,8 @@ namespace PSRule.Pipeline
 {
     internal sealed class TestPipelineBuilder : InvokePipelineBuilderBase
     {
-        internal TestPipelineBuilder(Source[] source)
-            : base(source) { }
+        internal TestPipelineBuilder(Source[] source, HostContext hostContext)
+            : base(source, hostContext) { }
 
         private sealed class BooleanWriter : PipelineWriter
         {

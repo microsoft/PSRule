@@ -31,8 +31,8 @@ namespace PSRule.Pipeline
     {
         private AssertWriter _Writer;
 
-        internal AssertPipelineBuilder(Source[] source)
-            : base(source) { }
+        internal AssertPipelineBuilder(Source[] source, HostContext hostContext)
+            : base(source, hostContext) { }
 
         /// <summary>
         /// A writer for outputting assertions.
@@ -601,8 +601,8 @@ namespace PSRule.Pipeline
                     next,
                     Option.Output.Style ?? OutputOption.Default.Style.Value,
                     _ResultVariableName,
-                    CmdletContext,
-                    ExecutionContext
+                    HostContext.CmdletContext,
+                    HostContext.ExecutionContext
                 );
             }
             return _Writer;

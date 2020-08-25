@@ -19,8 +19,8 @@ namespace PSRule.Pipeline
     {
         private bool _IncludeDependencies;
 
-        internal GetRulePipelineBuilder(Source[] source)
-            : base(source) { }
+        internal GetRulePipelineBuilder(Source[] source, HostContext hostContext)
+            : base(source, hostContext) { }
 
         public override IPipelineBuilder Configure(PSRuleOption option)
         {
@@ -50,7 +50,7 @@ namespace PSRule.Pipeline
             return new GetRulePipeline(PrepareContext(null, null, null), Source, PrepareReader(), PrepareWriter(), _IncludeDependencies);
         }
 
-        private OutputFormat SuppressFormat(OutputFormat? format)
+        private static OutputFormat SuppressFormat(OutputFormat? format)
         {
             return !format.HasValue ||
                 !(format == OutputFormat.Wide ||

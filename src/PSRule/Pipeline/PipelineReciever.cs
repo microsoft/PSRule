@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
+using PSRule.Data;
 using PSRule.Parser;
 using PSRule.Runtime;
 using System;
@@ -24,14 +25,22 @@ namespace PSRule.Pipeline
         private const string PropertyName_PSPath = "PSPath";
         private const string PropertyName_PSParentPath = "PSParentPath";
         private const string PropertyName_PSChildName = "PSChildName";
+        private const string InputFileInfo_GitHead = ".git/HEAD";
 
-        private static readonly PSObject[] EmptyArray = new PSObject[] { };
+        private static readonly PSObject[] EmptyArray = Array.Empty<PSObject>();
 
         private sealed class PSSourceInfo
         {
             public readonly string PSPath;
             public readonly string PSChildName;
             public readonly string PSParentPath;
+
+            public PSSourceInfo(InputFileInfo info)
+            {
+                PSPath = info.FullName;
+                PSChildName = info.Name;
+                PSParentPath = info.DirectoryName;
+            }
 
             public PSSourceInfo(FileInfo info)
             {
@@ -81,7 +90,7 @@ namespace PSRule.Pipeline
         public static IEnumerable<PSObject> ConvertFromJson(PSObject sourceObject, VisitTargetObject next)
         {
             // Only attempt to deserialize if the input is a string, file or URI
-            if (!IsAcceptedType(sourceObject: sourceObject))
+            if (!IsAcceptedType(sourceObject))
                 return new PSObject[] { sourceObject };
 
             var json = ReadAsString(sourceObject, out PSSourceInfo source);
@@ -93,7 +102,7 @@ namespace PSRule.Pipeline
         public static IEnumerable<PSObject> ConvertFromYaml(PSObject sourceObject, VisitTargetObject next)
         {
             // Only attempt to deserialize if the input is a string, file or URI
-            if (!IsAcceptedType(sourceObject: sourceObject))
+            if (!IsAcceptedType(sourceObject))
                 return new PSObject[] { sourceObject };
 
             var d = new DeserializerBuilder()
@@ -132,7 +141,7 @@ namespace PSRule.Pipeline
         public static IEnumerable<PSObject> ConvertFromMarkdown(PSObject sourceObject, VisitTargetObject next)
         {
             // Only attempt to deserialize if the input is a string or a file
-            if (!IsAcceptedType(sourceObject: sourceObject))
+            if (!IsAcceptedType(sourceObject))
                 return new PSObject[] { sourceObject };
 
             var markdown = ReadAsString(sourceObject, out PSSourceInfo source);
@@ -144,7 +153,7 @@ namespace PSRule.Pipeline
         public static IEnumerable<PSObject> ConvertFromPowerShellData(PSObject sourceObject, VisitTargetObject next)
         {
             // Only attempt to deserialize if the input is a string or a file
-            if (!IsAcceptedType(sourceObject: sourceObject))
+            if (!IsAcceptedType(sourceObject))
                 return new PSObject[] { sourceObject };
 
             var data = ReadAsString(sourceObject, out PSSourceInfo source);
@@ -162,6 +171,16 @@ namespace PSRule.Pipeline
             var value = result.ToArray();
             NoteSource(value, source);
             return VisitItems(value, next);
+        }
+
+        public static IEnumerable<PSObject> ConvertFromGitHead(PSObject sourceObject, VisitTargetObject next)
+        {
+            // Only attempt to convert if Git HEAD file
+            if (!IsGitHead(sourceObject))
+                return new PSObject[] { sourceObject };
+
+            var value = PSObject.AsPSObject(GetRepositoryInfo(sourceObject));
+            return VisitItems(new PSObject[] { value }, next);
         }
 
         public static IEnumerable<PSObject> ReadObjectPath(PSObject sourceObject, VisitTargetObject source, string objectPath, bool caseSensitive)
@@ -186,6 +205,9 @@ namespace PSRule.Pipeline
 
         private static string GetPathExtension(PSObject sourceObject)
         {
+            if (sourceObject.BaseObject is InputFileInfo inputFileInfo)
+                return inputFileInfo.Extension;
+
             if (sourceObject.BaseObject is FileInfo fileInfo)
                 return fileInfo.Extension;
 
@@ -197,7 +219,21 @@ namespace PSRule.Pipeline
 
         private static bool IsAcceptedType(PSObject sourceObject)
         {
-            return sourceObject.BaseObject is string || sourceObject.BaseObject is FileInfo || sourceObject.BaseObject is Uri;
+            return sourceObject.BaseObject is string || sourceObject.BaseObject is InputFileInfo || sourceObject.BaseObject is FileInfo || sourceObject.BaseObject is Uri;
+        }
+
+        private static bool IsGitHead(PSObject sourceObject)
+        {
+            return sourceObject.BaseObject is InputFileInfo info && info.DisplayName == InputFileInfo_GitHead;
+        }
+
+        private static RepositoryInfo GetRepositoryInfo(PSObject sourceObject)
+        {
+            if (!(sourceObject.BaseObject is InputFileInfo inputFileInfo))
+                return null;
+
+            var headRef = GitHelper.GetHeadRef(inputFileInfo.DirectoryName);
+            return new RepositoryInfo(inputFileInfo.BasePath, headRef);
         }
 
         private static string ReadAsString(PSObject sourceObject, out PSSourceInfo sourceInfo)
@@ -206,6 +242,14 @@ namespace PSRule.Pipeline
             if (sourceObject.BaseObject is string)
             {
                 return sourceObject.BaseObject.ToString();
+            }
+            else if (sourceObject.BaseObject is InputFileInfo inputFileInfo)
+            {
+                sourceInfo = new PSSourceInfo(inputFileInfo);
+                using (var reader = new StreamReader(inputFileInfo.FullName))
+                {
+                    return reader.ReadToEnd();
+                }
             }
             else if (sourceObject.BaseObject is FileInfo fileInfo)
             {
@@ -232,6 +276,11 @@ namespace PSRule.Pipeline
             if (sourceObject.BaseObject is string)
             {
                 return new StringReader(sourceObject.BaseObject.ToString());
+            }
+            else if (sourceObject.BaseObject is InputFileInfo inputFileInfo)
+            {
+                sourceInfo = new PSSourceInfo(inputFileInfo);
+                return new StreamReader(inputFileInfo.FullName);
             }
             else if (sourceObject.BaseObject is FileInfo fileInfo)
             {
