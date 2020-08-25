@@ -61,7 +61,7 @@ namespace PSRule
 
         private static string GetWorkingPath()
         {
-            return Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\..\\.."));
+            return Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../../.."));
         }
     }
 }
