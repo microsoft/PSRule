@@ -45,6 +45,7 @@ To define a baseline spec use the following structure:
 kind: Baseline
 metadata:
   name: <name>
+  annotations: { }
 spec:
   # One or more baseline options
   binding: { }
@@ -112,6 +113,29 @@ When baseline options are set, PSRule uses the following order to determine prec
 4. Module - A baseline object included in a `.Rule.yaml` file.
 
 After precedence is determined, baselines are merged and null values are ignored, such that:
+
+### Annotations
+
+Additional baseline annotations can be provided as key/ value pairs.
+Annotations can be used to provide additional information that is available in `Get-PSRuleBaseline` output.
+
+The following reserved annotation exists:
+
+- `obsolete` - Marks the baseline as obsolete when set to `true`.
+PSRule will generate a warning when an obsolete baseline is used.
+
+For example:
+
+```yaml
+---
+# Synopsis: This is an example baseline that is obsolete
+kind: Baseline
+metadata:
+  name: ObsoleteBaseline
+  annotations:
+    obsolete: true
+spec: { }
+```
 
 ## EXAMPLES
 

@@ -14,6 +14,20 @@ namespace PSRule
             return dictionary.TryGetValue(key, out value) && dictionary.Remove(key);
         }
 
+        public static bool TryGetBool(this IDictionary<string, object> dictionary, string key, out bool? value)
+        {
+            value = null;
+            if (!dictionary.TryGetValue(key, out object o))
+                return false;
+
+            if (o is bool bvalue || (o is string svalue && bool.TryParse(svalue, out bvalue)))
+            {
+                value = bvalue;
+                return true;
+            }
+            return false;
+        }
+
         [DebuggerStepThrough]
         public static void AddUnique(this IDictionary<string, object> dictionary, IEnumerable<KeyValuePair<string, object>> values)
         {

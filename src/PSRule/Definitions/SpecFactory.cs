@@ -67,11 +67,6 @@ namespace PSRule.Definitions
             get { return typeof(TSpec); }
         }
 
-        public Type StepType
-        {
-            get { return typeof(T); }
-        }
-
         public bool SupportsFlat { get; private set; }
 
         public IResource CreateInstance(SourceFile source, ResourceMetadata metadata, CommentMetadata comment, object spec)
@@ -100,7 +95,7 @@ namespace PSRule.Definitions
             }
         }
 
-        private void SetDefaultProperty(Action<object, object> set, Type propertyType, Spec option, string value)
+        private static void SetDefaultProperty(Action<object, object> set, Type propertyType, Spec option, string value)
         {
             object v = value;
             if (!propertyType.IsAssignableFrom(typeof(string)))

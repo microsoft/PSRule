@@ -15,6 +15,7 @@ namespace PSRule.Definitions
     internal sealed class ModuleConfig : Resource<ModuleConfigSpec>, IResource
     {
         public ModuleConfig(SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ModuleConfigSpec spec)
+            : base(metadata)
         {
             Info = info;
             Source = source;

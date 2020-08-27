@@ -128,7 +128,7 @@ namespace PSRule.Pipeline
             if (resource.Kind == ResourceKind.Baseline && resource is Baseline baseline && _Unresolved.TryGetValue(resource.Id, out ResourceRef rr) && rr is BaselineRef baselineRef)
             {
                 _Unresolved.Remove(resource.Id);
-                Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, resource.Module, baseline.Spec));
+                Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, baseline.BaselineId, resource.Module, baseline.Spec, baseline.Obsolete));
             }
             else if (TryModuleConfig(resource, out ModuleConfig moduleConfig))
             {
