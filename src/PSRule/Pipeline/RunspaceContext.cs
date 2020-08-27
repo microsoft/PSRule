@@ -11,6 +11,7 @@ using System.IO;
 using System.Management.Automation;
 using System.Management.Automation.Language;
 using System.Text;
+using System.Threading;
 using static PSRule.Pipeline.PipelineContext;
 
 namespace PSRule.Pipeline
@@ -124,13 +125,21 @@ namespace PSRule.Pipeline
             Writer.WriteWarning(PSRuleResources.RuleNotFound);
         }
 
+        public void WarnBaselineObsolete(string baselineId)
+        {
+            if (Writer == null || !Writer.ShouldWriteWarning())
+                return;
+
+            Writer.WriteWarning(PSRuleResources.BaselineObsolete, baselineId);
+        }
+
         public void ErrorInvaildRuleResult()
         {
             if (Writer == null || !Writer.ShouldWriteError())
                 return;
 
             Writer.WriteError(new ErrorRecord(
-                exception: new RuleRuntimeException(message: string.Format(PSRuleResources.InvalidRuleResult, RuleBlock.RuleId)),
+                exception: new RuleRuntimeException(message: string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.InvalidRuleResult, RuleBlock.RuleId)),
                 errorId: ERRORID_INVALIDRULERESULT,
                 errorCategory: ErrorCategory.InvalidResult,
                 targetObject: null
@@ -166,7 +175,7 @@ namespace PSRule.Pipeline
             if (Writer == null || !Writer.ShouldWriteVerbose())
                 return;
 
-            Writer.WriteVerbose(string.Concat(GetLogPrefix(), "[", condition, "] -- ", string.Format(message, args)));
+            Writer.WriteVerbose(string.Concat(GetLogPrefix(), "[", condition, "] -- ", string.Format(Thread.CurrentThread.CurrentCulture, message, args)));
         }
 
         public void VerboseConditionResult(string condition, int pass, int count, bool outcome)
@@ -438,7 +447,7 @@ namespace PSRule.Pipeline
 
         public void Begin()
         {
-            // Do nothing
+            Pipeline.Baseline.Init(this);
         }
 
         public string GetLocalizedPath(string file)

@@ -21,6 +21,10 @@
                     "title": "Name",
                     "description": "The name of the resource. This must be unique.",
                     "minLength": 3
+                },
+                "annotations": {
+                    "type": "object",
+                    "title": "Annotations"
                 }
             },
             "required": [

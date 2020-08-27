@@ -74,6 +74,9 @@ namespace PSRule.Pipeline
 
         internal sealed class BaselineScope : OptionScope
         {
+            public string Id;
+            public bool Obsolete;
+
             // Rule
             public string[] Include;
             public string[] Exclude;
@@ -90,9 +93,11 @@ namespace PSRule.Pipeline
             public string[] TargetType;
             public bool? UseQualifiedName;
 
-            public BaselineScope(ScopeType type, string moduleName, IBaselineSpec option)
+            public BaselineScope(ScopeType type, string baselineId, string moduleName, IBaselineSpec option, bool obsolete)
                 : base(type, moduleName)
             {
+                Id = baselineId;
+                Obsolete = obsolete;
                 Field = option.Binding?.Field;
                 IgnoreCase = option.Binding?.IgnoreCase;
                 NameSeparator = option?.Binding?.NameSeparator;
@@ -265,6 +270,17 @@ namespace PSRule.Pipeline
                 return _Culture;
 
             return _Culture = _WorkspaceConfig?.Culture ?? _ModuleConfig?.Culture ?? _DefaultCulture;
+        }
+
+        internal void Init(RunspaceContext context)
+        {
+            foreach (var baseline in _ModuleBaselineScope.Values)
+            {
+                if (baseline.Obsolete)
+                    context.WarnBaselineObsolete(baseline.Id);
+            }
+            if (_Explicit != null && _Explicit.Obsolete)
+                context.WarnBaselineObsolete(_Explicit.Id);
         }
 
         internal void Add(BaselineScope scope)

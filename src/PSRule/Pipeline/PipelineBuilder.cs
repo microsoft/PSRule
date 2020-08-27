@@ -361,7 +361,7 @@ namespace PSRule.Pipeline
             var result = new OptionContext();
 
             // Baseline
-            var baselineScope = new OptionContext.BaselineScope(type: OptionContext.ScopeType.Workspace, moduleName: null, option: Option);
+            var baselineScope = new OptionContext.BaselineScope(type: OptionContext.ScopeType.Workspace, baselineId: null, moduleName: null, option: Option, obsolete: false);
             result.Add(baselineScope);
             baselineScope = new OptionContext.BaselineScope(type: OptionContext.ScopeType.Parameter, include: _Include, tag: _Tag);
             result.Add(baselineScope);

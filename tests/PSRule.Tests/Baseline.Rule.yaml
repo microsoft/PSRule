@@ -4,6 +4,8 @@
 kind: Baseline
 metadata:
   name: TestBaseline1
+  annotations:
+    key: value
 spec:
   binding:
     field:
@@ -70,6 +72,15 @@ spec:
       severity:
       - 'high'
       - 'low'
+
+---
+# Synopsis: This is an example obsolete baseline
+kind: Baseline
+metadata:
+  name: TestBaseline5
+  annotations:
+    obsolete: true
+spec: { }
 
 ---
 kind: ObjectSelector

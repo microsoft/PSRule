@@ -5,6 +5,7 @@ using PSRule.Configuration;
 using PSRule.Rules;
 using System.Collections.Generic;
 using System.Management.Automation;
+using System.Threading;
 
 namespace PSRule.Pipeline
 {
@@ -69,6 +70,17 @@ namespace PSRule.Pipeline
                 return;
 
             _Writer.WriteWarning(message);
+        }
+
+        public void WriteWarning(string message, params object[] args)
+        {
+            if (!ShouldWriteWarning() || string.IsNullOrEmpty(message))
+                return;
+
+            if (args == null || args.Length == 0)
+                WriteWarning(message);
+            else
+                WriteWarning(string.Format(Thread.CurrentThread.CurrentCulture, message, args));
         }
 
         public virtual bool ShouldWriteWarning()

@@ -45,6 +45,7 @@ To define a baseline spec use the following structure:
 kind: Baseline
 metadata:
   name: <name>
+  annotations: { }
 spec:
   # One or more baseline options
   binding: { }
@@ -113,38 +114,65 @@ When baseline options are set, PSRule uses the following order to determine prec
 
 After precedence is determined, baselines are merged and null values are ignored, such that:
 
-## EXAMPLES
+### Annotations
 
-### Example ps-rule.yaml
+Additional baseline annotations can be provided as key/ value pairs.
+Annotations can be used to provide additional information that is available in `Get-PSRuleBaseline` output.
+
+The following reserved annotation exists:
+
+- `obsolete` - Marks the baseline as obsolete when set to `true`.
+PSRule will generate a warning when an obsolete baseline is used.
+
+For example:
 
 ```yaml
-#
-# PSRule example configuration
-#
+---
+# Synopsis: This is an example baseline that is obsolete
+kind: Baseline
+metadata:
+  name: ObsoleteBaseline
+  annotations:
+    obsolete: true
+spec: { }
+```
 
-# Configures binding
-binding:
-  ignoreCase: false
-  field:
-    id:
-    - ResourceId
-  targetName:
-  - ResourceName
-  - AlternateName
-  targetType:
-  - ResourceType
-  - kind
+## EXAMPLES
 
-# Adds rule configuration
-configuration:
-  appServiceMinInstanceCount: 2
+### Example Baseline.Rule.yaml
 
-# Configure rule filtering
-rule:
-  include:
-  - rule1
-  - rule2
-  exclude:
-  - rule3
-  - rule4
+```yaml
+---
+# Synopsis: This is an example baseline
+kind: Baseline
+metadata:
+  name: TestBaseline1
+spec:
+  binding:
+    targetName:
+    - AlternateName
+    targetType:
+    - kind
+  rule:
+    include:
+    - 'WithBaseline'
+  configuration:
+    key1: value1
+
+---
+# Synopsis: This is an example baseline
+kind: Baseline
+metadata:
+  name: TestBaseline2
+spec:
+  binding:
+    targetName:
+    - AlternateName
+    targetType:
+    - kind
+  rule:
+    include:
+    - 'WithBaseline'
+  configuration:
+    key1: value1
 ```

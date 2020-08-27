@@ -26,11 +26,13 @@ namespace PSRule.Definitions
     public sealed class Baseline : Resource<BaselineSpec>, IResource
     {
         public Baseline(SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, BaselineSpec spec)
+            : base(metadata)
         {
             Info = info;
             Source = source;
             Spec = spec;
             Name = BaselineId = metadata.Name;
+            Obsolete = ResourceHelper.IsObsolete(metadata);
         }
 
         [YamlIgnore()]
@@ -38,6 +40,9 @@ namespace PSRule.Definitions
 
         [YamlIgnore()]
         public readonly string Name;
+
+        [YamlIgnore()]
+        internal readonly bool Obsolete;
 
         /// <summary>
         /// The script file path where the baseline is defined.

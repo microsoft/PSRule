@@ -6,6 +6,10 @@
 
 ## Unreleased
 
+- Engine features:
+  - Baselines can now be flagged as obsolete. [#499](https://github.com/microsoft/PSRule/issues/499)
+    - Set the `metadata.annotations.obsolete` property to `true` to flag a baseline as obsolete.
+    - When an obsolete baseline is used, a warning will be generated.
 - Engineering:
   - Bump YamlDotNet dependency to v8.1.2. [#439](https://github.com/microsoft/PSRule/issues/439)
 

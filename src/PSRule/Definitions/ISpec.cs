@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Host;
+using System.Collections.Generic;
 
 namespace PSRule.Definitions
 {
@@ -39,9 +40,21 @@ namespace PSRule.Definitions
         internal IResource Block { get; }
     }
 
+    public sealed class ResourceAnnotations : Dictionary<string, object>
+    {
+
+    }
+
     public sealed class ResourceMetadata
     {
+        public ResourceMetadata()
+        {
+            Annotations = new ResourceAnnotations();
+        }
+
         public string Name { get; set; }
+
+        public ResourceAnnotations Annotations { get; set; }
     }
 
     public sealed class ResourceExtent
@@ -63,7 +76,27 @@ namespace PSRule.Definitions
 
     public abstract class Resource<TSpec> where TSpec : Spec, new()
     {
+        protected Resource(ResourceMetadata metadata)
+        {
+            Metadata = metadata;
+        }
+
+        public ResourceMetadata Metadata { get; }
+
         public abstract TSpec Spec { get; }
+    }
+
+    internal static class ResourceHelper
+    {
+        private const string ANNOTATION_OBSOLETE = "obsolete";
+
+        internal static bool IsObsolete(ResourceMetadata metadata)
+        {
+            if (metadata == null || metadata.Annotations == null || !metadata.Annotations.TryGetBool(ANNOTATION_OBSOLETE, out bool? obsolete))
+                return false;
+
+            return obsolete.GetValueOrDefault(false);
+        }
     }
 
     public abstract class Spec

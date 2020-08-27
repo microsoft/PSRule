@@ -61,6 +61,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The baseline &apos;{0}&apos; is obsolete. Consider switching to an alternative baseline..
+        /// </summary>
+        internal static string BaselineObsolete {
+            get {
+                return ResourceManager.GetString("BaselineObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Binding functions are not supported in this language mode..
         /// </summary>
         internal static string ConstrainedTargetBinding {
