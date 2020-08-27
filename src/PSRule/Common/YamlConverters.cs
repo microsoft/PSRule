@@ -33,50 +33,32 @@ namespace PSRule
         public object ReadYaml(IParser parser, Type type)
         {
             var result = new SuppressionRule();
-
-            if (parser.Accept<SequenceStart>())
+            if (parser.TryConsume<SequenceStart>(out _))
             {
-                parser.MoveNext();
-
                 var targetNames = new List<string>();
-
-                while (!parser.Accept<SequenceEnd>())
-                {
-                    targetNames.Add(parser.Allow<Scalar>().Value);
-                }
+                while (parser.TryConsume(out Scalar scalar))
+                    targetNames.Add(scalar.Value);
 
                 result.TargetName = targetNames.ToArray();
-
                 parser.MoveNext();
             }
-            else if (parser.Accept<MappingStart>())
+            else if (parser.TryConsume<MappingStart>(out _))
             {
-                parser.MoveNext();
-
-                while (!parser.Accept<MappingEnd>())
+                while (parser.TryConsume(out Scalar scalar))
                 {
-                    var name = parser.Allow<Scalar>().Value;
-
-                    if (name == "targetName" && parser.Accept<SequenceStart>())
+                    var name = scalar.Value;
+                    if (name == "targetName" && parser.TryConsume<SequenceStart>(out _))
                     {
-                        parser.MoveNext();
-
                         var targetNames = new List<string>();
-
-                        while (!parser.Accept<SequenceEnd>())
-                        {
-                            targetNames.Add(parser.Allow<Scalar>().Value);
-                        }
+                        while (parser.TryConsume(out Scalar item))
+                            targetNames.Add(item.Value);
 
                         result.TargetName = targetNames.ToArray();
-
                         parser.MoveNext();
                     }
                 }
-
                 parser.MoveNext();
             }
-
             return result;
         }
 
@@ -99,23 +81,25 @@ namespace PSRule
         public object ReadYaml(IParser parser, Type type)
         {
             var result = new FieldMap();
-            if (parser.Accept<MappingStart>())
+            if (parser.TryConsume<MappingStart>(out _))
             {
-                parser.MoveNext();
-                while (!parser.Accept<MappingEnd>())
+                while (parser.TryConsume(out Scalar scalar))
                 {
-                    var fieldName = parser.Allow<Scalar>().Value;
-                    if (parser.Accept<SequenceStart>())
+                    var fieldName = scalar.Value;
+                    if (parser.TryConsume<SequenceStart>(out _))
                     {
-                        parser.MoveNext();
                         var fields = new List<string>();
-                        while (!parser.Accept<SequenceEnd>())
-                            fields.Add(parser.Allow<Scalar>().Value);
-
+                        while (!parser.Accept<SequenceEnd>(out _))
+                        {
+                            if (parser.TryConsume<Scalar>(out scalar))
+                                fields.Add(scalar.Value);
+                        }
                         result.Set(fieldName, fields.ToArray());
+                        parser.Require<SequenceEnd>();
                         parser.MoveNext();
                     }
                 }
+                parser.Require<MappingEnd>();
                 parser.MoveNext();
             }
             return result;
@@ -123,6 +107,11 @@ namespace PSRule
 
         public void WriteYaml(IEmitter emitter, object value, Type type)
         {
+            if (type == typeof(FieldMap) && value == null)
+            {
+                emitter.Emit(new MappingStart());
+                emitter.Emit(new MappingEnd());
+            }
             if (!(value is FieldMap map))
                 return;
 
@@ -154,24 +143,25 @@ namespace PSRule
         public object ReadYaml(IParser parser, Type type)
         {
             // Handle empty objects
-            if (parser.Accept<Scalar>())
+            if (parser.TryConsume<Scalar>(out _))
             {
-                parser.Allow<Scalar>();
+                parser.TryConsume<Scalar>(out _);
                 return null;
             }
 
             var result = new PSObject();
-            if (parser.Accept<MappingStart>())
+            if (parser.TryConsume<MappingStart>(out _))
             {
-                parser.MoveNext();
-                while (!parser.Accept<MappingEnd>())
+                while (parser.TryConsume(out Scalar scalar))
                 {
-                    var property = ReadNoteProperty(parser);
+                    var name = scalar.Value;
+                    var property = ReadNoteProperty(parser, name);
                     if (property == null)
                         throw new NotImplementedException();
 
                     result.Properties.Add(property);
                 }
+                parser.Require<MappingEnd>();
                 parser.MoveNext();
             }
             return result;
@@ -182,37 +172,33 @@ namespace PSRule
             throw new NotImplementedException();
         }
 
-        private PSNoteProperty ReadNoteProperty(IParser parser)
+        private PSNoteProperty ReadNoteProperty(IParser parser, string name)
         {
-            var name = parser.Allow<Scalar>().Value;
-
-            if (parser.Accept<SequenceStart>())
+            if (parser.TryConsume<SequenceStart>(out _))
             {
-                parser.MoveNext();
-
                 var values = new List<PSObject>();
-
-                while (!parser.Accept<SequenceEnd>())
+                while (!(parser.Current is SequenceEnd))
                 {
-                    if (parser.Accept<MappingStart>())
+                    if (parser.Current is MappingStart)
                     {
                         values.Add(PSObject.AsPSObject(ReadYaml(parser, typeof(PSObject))));
                     }
-                    else if (parser.Accept<Scalar>())
+                    else if (parser.TryConsume(out Scalar scalar))
                     {
-                        values.Add(PSObject.AsPSObject(parser.Allow<Scalar>().Value));
+                        values.Add(PSObject.AsPSObject(scalar.Value));
                     }
                 }
+                parser.Require<SequenceEnd>();
                 parser.MoveNext();
                 return new PSNoteProperty(name, values.ToArray());
             }
-            else if (parser.Accept<MappingStart>())
+            else if (parser.Current is MappingStart)
             {
                 return new PSNoteProperty(name, ReadYaml(parser, typeof(PSObject)));
             }
-            else if (parser.Accept<Scalar>())
+            else if (parser.TryConsume(out Scalar scalar))
             {
-                return new PSNoteProperty(name, parser.Allow<Scalar>().Value);
+                return new PSNoteProperty(name, scalar.Value);
             }
             return null;
         }
@@ -245,7 +231,7 @@ namespace PSRule
         public FieldYamlTypeInspector()
         {
             _TypeResolver = new StaticTypeResolver();
-            _NamingConvention = new CamelCaseNamingConvention();
+            _NamingConvention = CamelCaseNamingConvention.Instance;
         }
 
         public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
@@ -407,25 +393,20 @@ namespace PSRule
             IResource result = null;
             string kind = null;
             ResourceMetadata metadata = null;
-
-            if (reader.Accept<MappingStart>())
+            if (reader.TryConsume<MappingStart>(out _))
             {
-                reader.MoveNext();
-                while (!reader.Accept<MappingEnd>())
+                while (reader.TryConsume(out Scalar scalar))
                 {
                     // Read kind
-                    var propertyName = reader.Allow<Scalar>().Value;
-
+                    var propertyName = scalar.Value;
                     if (propertyName == "kind")
                     {
-                        kind = reader.Allow<Scalar>().Value;
+                        kind = reader.Consume<Scalar>().Value;
                     }
                     else if (propertyName == "metadata")
                     {
                         if (!TryMetadata(reader, nestedObjectDeserializer, out metadata))
-                        {
                             reader.SkipThisAndNestedEvents();
-                        }
                     }
                     else if (propertyName == "spec" && kind != null)
                     {
@@ -439,6 +420,7 @@ namespace PSRule
                         reader.SkipThisAndNestedEvents();
                     }
                 }
+                reader.Require<MappingEnd>();
                 reader.MoveNext();
             }
             return result;
@@ -447,7 +429,7 @@ namespace PSRule
         private bool TryMetadata(IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, out ResourceMetadata metadata)
         {
             metadata = null;
-            if (reader.Accept<MappingStart>())
+            if (reader.Current is MappingStart)
             {
                 if (!_Next.Deserialize(reader, typeof(ResourceMetadata), nestedObjectDeserializer, out object value))
                     return false;
@@ -461,7 +443,7 @@ namespace PSRule
         private bool TryResource(string name, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
         {
             spec = null;
-            if (_Factory.TryDescriptor(name, out ISpecDescriptor descriptor) && reader.Accept<MappingStart>())
+            if (_Factory.TryDescriptor(name, out ISpecDescriptor descriptor) && reader.Current is MappingStart)
             {
                 if (!_Next.Deserialize(reader, descriptor.SpecType, nestedObjectDeserializer, out object value))
                     return false;

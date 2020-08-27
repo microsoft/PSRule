@@ -16,7 +16,7 @@ namespace PSRule.Pipeline.Output
         {
             var s = new SerializerBuilder()
                 .WithTypeInspector(f => new FieldYamlTypeInspector())
-                .WithNamingConvention(new CamelCaseNamingConvention())
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
 
             return s.Serialize(o);
