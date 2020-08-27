@@ -113,13 +113,11 @@ namespace PSRule.Pipeline
 
             var reader = ReadAsReader(sourceObject, out PSSourceInfo source);
             var parser = new YamlDotNet.Core.Parser(reader);
-            parser.Expect<StreamStart>();
-
             var result = new List<PSObject>();
-            while (parser.Accept<DocumentStart>())
+            parser.TryConsume<StreamStart>(out _);
+            while (parser.Current is DocumentStart)
             {
                 var item = d.Deserialize<PSObject>(parser: parser);
-
                 if (item == null)
                     continue;
 

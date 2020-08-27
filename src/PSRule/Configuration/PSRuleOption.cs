@@ -241,7 +241,7 @@ namespace PSRule.Configuration
         {
             var d = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
-                .WithNamingConvention(new CamelCaseNamingConvention())
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .WithTypeConverter(new SuppressionRuleYamlTypeConverter())
                 .Build();
@@ -496,7 +496,7 @@ namespace PSRule.Configuration
         private string GetYaml()
         {
             var s = new SerializerBuilder()
-                .WithNamingConvention(new CamelCaseNamingConvention())
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .Build();
             return s.Serialize(this);

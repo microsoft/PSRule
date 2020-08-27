@@ -6,6 +6,9 @@
 
 ## Unreleased
 
+- Engineering:
+  - Bump YamlDotNet dependency to v8.1.2. [#439](https://github.com/microsoft/PSRule/issues/439)
+
 ## v0.20.0-B2008002 (pre-release)
 
 What's changed since v0.19.0:
