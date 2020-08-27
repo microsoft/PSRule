@@ -139,36 +139,40 @@ spec: { }
 
 ## EXAMPLES
 
-### Example ps-rule.yaml
+### Example Baseline.Rule.yaml
 
 ```yaml
-#
-# PSRule example configuration
-#
+---
+# Synopsis: This is an example baseline
+kind: Baseline
+metadata:
+  name: TestBaseline1
+spec:
+  binding:
+    targetName:
+    - AlternateName
+    targetType:
+    - kind
+  rule:
+    include:
+    - 'WithBaseline'
+  configuration:
+    key1: value1
 
-# Configures binding
-binding:
-  ignoreCase: false
-  field:
-    id:
-    - ResourceId
-  targetName:
-  - ResourceName
-  - AlternateName
-  targetType:
-  - ResourceType
-  - kind
-
-# Adds rule configuration
-configuration:
-  appServiceMinInstanceCount: 2
-
-# Configure rule filtering
-rule:
-  include:
-  - rule1
-  - rule2
-  exclude:
-  - rule3
-  - rule4
+---
+# Synopsis: This is an example baseline
+kind: Baseline
+metadata:
+  name: TestBaseline2
+spec:
+  binding:
+    targetName:
+    - AlternateName
+    targetType:
+    - kind
+  rule:
+    include:
+    - 'WithBaseline'
+  configuration:
+    key1: value1
 ```
