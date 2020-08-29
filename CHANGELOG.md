@@ -6,6 +6,10 @@
 
 ## Unreleased
 
+## v0.20.0-B2008010 (pre-release)
+
+What's changed since pre-release v0.20.0-B2008002:
+
 - Engine features:
   - Baselines can now be flagged as obsolete. [#499](https://github.com/microsoft/PSRule/issues/499)
     - Set the `metadata.annotations.obsolete` property to `true` to flag a baseline as obsolete.
