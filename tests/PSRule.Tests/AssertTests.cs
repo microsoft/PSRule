@@ -47,11 +47,11 @@ namespace PSRule
         {
             SetContext();
             var assert = GetAssertionHelper();
-            var actual1 = PSRule.Runtime.RuleConditionResult.Create(new object[] { PSObject.AsPSObject(assert.Create(true, "Test reason")), PSObject.AsPSObject(assert.Create(false, "Test reason")) });
+            var actual1 = PSRule.Runtime.RuleConditionHelper.Create(new object[] { PSObject.AsPSObject(assert.Create(true, "Test reason")), PSObject.AsPSObject(assert.Create(false, "Test reason")) });
             Assert.True(actual1.AnyOf());
             Assert.False(actual1.AllOf());
 
-            var actual2 = PSRule.Runtime.RuleConditionResult.Create(new object[] { assert.Create(true, "Test reason"), assert.Create(false, "Test reason") });
+            var actual2 = PSRule.Runtime.RuleConditionHelper.Create(new object[] { assert.Create(true, "Test reason"), assert.Create(false, "Test reason") });
             Assert.True(actual2.AnyOf());
             Assert.False(actual2.AllOf());
         }

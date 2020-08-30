@@ -32,7 +32,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                return _Context.RuleRecord.Data;
+                return _Context.RuleRecord.GetData();
             }
         }
 

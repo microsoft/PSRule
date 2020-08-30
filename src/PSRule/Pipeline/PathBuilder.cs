@@ -41,7 +41,7 @@ namespace PSRule.Pipeline
         private readonly string _DefaultSearchPattern;
         private readonly PathFilter _GlobalFilter;
 
-        internal PathBuilder(ILogger logger, string basePath, string searchPattern, PathFilter filter)
+        protected PathBuilder(ILogger logger, string basePath, string searchPattern, PathFilter filter)
         {
             _Logger = logger;
             _Files = new List<InputFileInfo>();
@@ -170,11 +170,6 @@ namespace PSRule.Pipeline
 
             if (string.IsNullOrEmpty(searchPattern))
                 searchPattern = _DefaultSearchPattern;
-
-            // If a path separator is within the pattern use a resursive search
-            //if (relativeAnchor || !string.IsNullOrEmpty(pathLiteral))
-            //if (relativeAnchor && string.IsNullOrEmpty(searchPattern))
-            //    searchOption = SearchOption.TopDirectoryOnly;
 
             return GetRootedPath(pathLiteral);
         }

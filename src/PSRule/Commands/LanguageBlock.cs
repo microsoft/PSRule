@@ -15,17 +15,17 @@ namespace PSRule.Commands
     /// </summary>
     internal abstract class LanguageBlock : PSCmdlet
     {
-        protected CommentMetadata GetMetadata(string path, int lineNumber, int offset)
+        protected static CommentMetadata GetMetadata(string path, int lineNumber, int offset)
         {
             return HostHelper.GetCommentMeta(path, lineNumber - 2, offset);
         }
 
-        protected TagSet GetTag(Hashtable hashtable)
+        protected static TagSet GetTag(Hashtable hashtable)
         {
             return TagSet.FromHashtable(hashtable);
         }
 
-        protected bool IsScriptScope()
+        protected static bool IsScriptScope()
         {
             return PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Script;
         }

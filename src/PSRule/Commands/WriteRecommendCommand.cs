@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Pipeline;
-using PSRule.Resources;
 using System.Management.Automation;
 
 namespace PSRule.Commands
@@ -20,9 +18,7 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             if (!IsConditionScope())
-            {
-                throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordConditionScope, LanguageKeywords.Recommend));
-            }
+                throw ConditionScopeException(LanguageKeywords.Recommend);
 
             var result = GetResult();
 

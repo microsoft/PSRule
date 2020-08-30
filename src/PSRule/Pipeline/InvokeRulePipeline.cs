@@ -179,7 +179,7 @@ namespace PSRule.Pipeline
         private readonly RuleSuppressionFilter _SuppressionFilter;
 
         // Track whether Dispose has been called.
-        private bool _Disposed = false;
+        private bool _Disposed;
 
         internal InvokeRulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer, RuleOutcome outcome)
             : base(context, source, reader, writer)
@@ -199,11 +199,11 @@ namespace PSRule.Pipeline
 
         public int RuleCount { get; private set; }
 
-        public override void Process(PSObject targetObject)
+        public override void Process(PSObject sourceObject)
         {
             try
             {
-                Reader.Enqueue(targetObject);
+                Reader.Enqueue(sourceObject);
                 while (Reader.TryDequeue(out PSObject next))
                 {
                     var result = ProcessTargetObject(next);

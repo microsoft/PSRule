@@ -88,10 +88,10 @@ namespace PSRule.Host
             {
                 foreach (var comment in comments)
                 {
-                    if (comment.StartsWith("# Description: "))
+                    if (comment.StartsWith("# Description: ", StringComparison.OrdinalIgnoreCase))
                         metadata.Synopsis = comment.Substring(15);
 
-                    if (comment.StartsWith("# Synopsis: "))
+                    if (comment.StartsWith("# Synopsis: ", StringComparison.OrdinalIgnoreCase))
                         metadata.Synopsis = comment.Substring(12);
                 }
             }
@@ -156,11 +156,8 @@ namespace PSRule.Host
 
                         foreach (var ir in invokeResults)
                         {
-                            if (ir.BaseObject is RuleBlock)
-                            {
-                                var block = ir.BaseObject as RuleBlock;
+                            if (ir.BaseObject is RuleBlock block)
                                 results.Add(block);
-                            }
                         }
                     }
                 }
@@ -250,7 +247,7 @@ namespace PSRule.Host
                 {
                     ruleRecord.OutcomeReason = RuleOutcomeReason.Inconclusive;
                     ruleRecord.Outcome = RuleOutcome.Fail;
-                    context.WarnRuleInconclusive(ruleId: ruleRecord.RuleId);
+                    context.WarnRuleInconclusive(ruleRecord.RuleId);
                 }
                 else
                 {

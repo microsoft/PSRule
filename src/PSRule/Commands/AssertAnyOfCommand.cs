@@ -2,10 +2,8 @@
 // Licensed under the MIT License.
 
 using PSRule.Pipeline;
-using PSRule.Resources;
 using PSRule.Runtime;
 using System.Management.Automation;
-using System.Threading;
 
 namespace PSRule.Commands
 {
@@ -21,9 +19,9 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             if (!IsConditionScope())
-                throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordConditionScope, LanguageKeywords.AnyOf));
+                throw ConditionScopeException(LanguageKeywords.AnyOf);
 
-            var invokeResult = RuleConditionResult.Create(Body.Invoke());
+            var invokeResult = RuleConditionHelper.Create(Body.Invoke());
             var result = invokeResult.AnyOf();
 
             RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.AnyOf, pass: invokeResult.Pass, count: invokeResult.Count, outcome: result);

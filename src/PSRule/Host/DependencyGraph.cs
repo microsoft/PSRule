@@ -12,7 +12,7 @@ namespace PSRule.Host
         private readonly DependencyTarget[] _Targets;
 
         // Track whether Dispose has been called.
-        private bool _Disposed = false;
+        private bool _Disposed;
 
         public DependencyGraph(T[] targets)
         {
@@ -40,12 +40,12 @@ namespace PSRule.Host
             DependencyFail = 3
         }
 
-        public sealed class DependencyTarget
+        internal sealed class DependencyTarget
         {
             public readonly DependencyGraph<T> Graph;
             public readonly T Value;
 
-            internal DependencyTargetState State;
+            private DependencyTargetState State;
 
             public DependencyTarget(DependencyGraph<T> graph, T value)
             {
@@ -58,6 +58,16 @@ namespace PSRule.Host
                 get { return State == DependencyTargetState.DependencyFail; }
             }
 
+            public bool Failed
+            {
+                get { return State == DependencyTargetState.Fail || State == DependencyTargetState.DependencyFail; }
+            }
+
+            public bool Passed
+            {
+                get { return State == DependencyTargetState.Pass; }
+            }
+
             public void Pass()
             {
                 State = DependencyTargetState.Pass;
@@ -67,34 +77,38 @@ namespace PSRule.Host
             {
                 State = DependencyTargetState.Fail;
             }
+
+            public void DependencyFail()
+            {
+                State = DependencyTargetState.DependencyFail;
+            }
         }
 
         public IEnumerable<DependencyTarget> GetSingleTarget()
         {
-            foreach (var target in _Targets)
+            for (var t = 0; t < _Targets.Length; t++)
             {
+                var target = _Targets[t];
                 if (target.Value.DependsOn != null && target.Value.DependsOn.Length > 0)
                 {
                     // Process each dependency
-                    foreach (var d in target.Value.DependsOn)
+                    for (var d = 0; d < target.Value.DependsOn.Length; d++)
                     {
-                        var dTarget = _Index[d];
+                        var dTarget = _Index[target.Value.DependsOn[d]];
 
                         // Check if dependency was already completed
-                        if (dTarget.State == DependencyTargetState.Pass)
+                        if (dTarget.Passed)
                         {
                             continue;
                         }
-                        else if (dTarget.State == DependencyTargetState.Fail || dTarget.State == DependencyTargetState.DependencyFail)
+                        else if (dTarget.Failed)
                         {
-                            target.State = DependencyTargetState.DependencyFail;
+                            target.DependencyFail();
                             break;
                         }
-
                         yield return dTarget;
                     }
                 }
-
                 yield return target;
             }
         }

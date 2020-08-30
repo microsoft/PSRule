@@ -127,15 +127,13 @@ namespace PSRule.Pipeline
         internal GetTargetPipeline(PipelineContext context, PipelineReader reader, PipelineWriter writer)
             : base(context, null, reader, writer) { }
 
-        public override void Process(PSObject targetObject)
+        public override void Process(PSObject sourceObject)
         {
             try
             {
-                Reader.Enqueue(targetObject);
+                Reader.Enqueue(sourceObject);
                 while (Reader.TryDequeue(out PSObject next))
-                {
                     Writer.WriteObject(next, false);
-                }
             }
             catch (Exception)
             {

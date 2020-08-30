@@ -16,7 +16,7 @@ namespace PSRule.Pipeline
         protected readonly PipelineWriter Writer;
 
         // Track whether Dispose has been called.
-        private bool _Disposed = false;
+        private bool _Disposed;
 
         protected RulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer)
         {

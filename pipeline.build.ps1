@@ -294,7 +294,7 @@ task Rules {
 
 task Benchmark {
     if ($Benchmark -or $BuildTask -eq 'Benchmark') {
-        dotnet run -p src/PSRule.Benchmark -f netcoreapp2.1 -c Release -- benchmark --output $PWD;
+        dotnet run -p src/PSRule.Benchmark -f netcoreapp3.1 -c Release -- benchmark --output $PWD;
     }
 }
 

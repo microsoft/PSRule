@@ -34,7 +34,8 @@ namespace PSRule.Rules
             if (field != null && field.Count > 0)
                 Field = field;
 
-            Data = new Hashtable();
+            // Limit allocations for most scenarios. Runtime calls GetData().
+            Data = null;
         }
 
         /// <summary>
@@ -142,6 +143,17 @@ namespace PSRule.Rules
                 sb.AppendLine(item);
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Safe call to Data.
+        /// </summary>
+        internal Hashtable GetData()
+        {
+            if (Data == null)
+                Data = new Hashtable();
+
+            return Data;
         }
     }
 }

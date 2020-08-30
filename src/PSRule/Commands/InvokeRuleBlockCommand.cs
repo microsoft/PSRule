@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Pipeline;
+using PSRule.Resources;
 using PSRule.Runtime;
 using System;
 using System.Management.Automation;
@@ -32,7 +33,7 @@ namespace PSRule.Commands
                 // Evalute type pre-condition
                 if (!AcceptsType())
                 {
-                    RunspaceContext.CurrentThread.Writer.DebugMessage("Target failed Type precondition");
+                    RunspaceContext.CurrentThread.Writer.DebugMessage(PSRuleResources.DebugTargetTypeMismatch);
                     return;
                 }
 
@@ -40,17 +41,17 @@ namespace PSRule.Commands
                 if (If != null)
                 {
                     PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Precondition;
-                    var ifResult = RuleConditionResult.Create(If.Invoke());
+                    var ifResult = RuleConditionHelper.Create(If.Invoke());
                     if (!ifResult.AllOf())
                     {
-                        RunspaceContext.CurrentThread.Writer.DebugMessage("Target failed If precondition");
+                        RunspaceContext.CurrentThread.Writer.DebugMessage(PSRuleResources.DebugTargetIfMismatch);
                         return;
                     }
                 }
 
                 // Evaluate script block
                 PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Condition;
-                var invokeResult = RuleConditionResult.Create(Body.Invoke());
+                var invokeResult = RuleConditionHelper.Create(Body.Invoke());
                 WriteObject(invokeResult);
             }
             finally
