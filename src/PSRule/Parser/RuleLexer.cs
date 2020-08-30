@@ -6,6 +6,7 @@ using PSRule.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace PSRule.Parser
 {
@@ -26,11 +27,9 @@ namespace PSRule.Parser
 
         public RuleDocument Process(TokenStream stream)
         {
-            stream.MoveTo(0);
-
             // Look for yaml header
+            stream.MoveTo(0);
             var metadata = YamlHeader(stream);
-
             RuleDocument doc = null;
 
             // Process sections
@@ -151,7 +150,7 @@ namespace PSRule.Parser
             return true;
         }
 
-        private TextBlock TextBlock(TokenStream stream)
+        private static TextBlock TextBlock(TokenStream stream)
         {
             var useBreak = stream.Current.IsDoubleLineEnding();
             stream.Next();
@@ -177,7 +176,7 @@ namespace PSRule.Parser
                     AppendEnding(sb, stream.Peak(-1));
                     sb.Append(stream.Current.Meta);
                     if (!string.IsNullOrEmpty(stream.Current.Text))
-                        sb.AppendFormat(" ({0})", stream.Current.Text);
+                        sb.AppendFormat(Thread.CurrentThread.CurrentCulture, " ({0})", stream.Current.Text);
                 }
                 else if (stream.IsTokenType(MarkdownTokenType.LinkReference))
                 {

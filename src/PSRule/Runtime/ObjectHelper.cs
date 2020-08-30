@@ -286,7 +286,6 @@ namespace PSRule.Runtime
             value = null;
             var bindingFlags = caseSensitive ? BindingFlags.Default : BindingFlags.IgnoreCase;
             var fieldInfo = baseType.GetField(fieldName, bindingAttr: bindingFlags | BindingFlags.Instance | BindingFlags.Public);
-
             if (fieldInfo == null)
                 return false;
 

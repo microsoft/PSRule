@@ -5,6 +5,7 @@ using PSRule.Pipeline;
 using PSRule.Resources;
 using System.Linq;
 using System.Management.Automation;
+using System.Threading;
 
 namespace PSRule.Commands
 {
@@ -26,9 +27,7 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             if (!IsRuleScope())
-            {
-                throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordRuleScope, RuleLanguageNouns.TypeOf));
-            }
+                throw RuleScopeException(LanguageKeywords.TypeOf);
 
             var inputObject = InputObject ?? GetTargetObject();
             var result = false;
@@ -42,7 +41,7 @@ namespace PSRule.Commands
             RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.TypeOf, outcome: result);
             if (!(result || TryReason(Reason)))
             {
-                WriteReason(string.Format(ReasonStrings.TypeOf, string.Join(", ", TypeName)));
+                WriteReason(string.Format(Thread.CurrentThread.CurrentCulture, ReasonStrings.TypeOf, string.Join(", ", TypeName)));
             }
             WriteObject(result);
         }

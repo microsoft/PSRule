@@ -2,10 +2,12 @@
 // Licensed under the MIT License.
 
 using PSRule.Pipeline;
+using PSRule.Resources;
 using PSRule.Rules;
 using System;
 using System.Collections;
 using System.Management.Automation;
+using System.Threading;
 
 namespace PSRule.Commands
 {
@@ -14,12 +16,12 @@ namespace PSRule.Commands
     /// </summary>
     internal abstract class RuleKeyword : PSCmdlet
     {
-        protected RuleRecord GetResult()
+        protected static RuleRecord GetResult()
         {
             return RunspaceContext.CurrentThread.RuleRecord;
         }
 
-        protected PSObject GetTargetObject()
+        protected static PSObject GetTargetObject()
         {
             return RunspaceContext.CurrentThread.TargetObject;
         }
@@ -80,50 +82,52 @@ namespace PSRule.Commands
             return false;
         }
 
-        protected object GetBaseObject(object value)
+        protected static object GetBaseObject(object value)
         {
             if (value == null)
-            {
                 return null;
-            }
 
             if (value is PSObject pso)
             {
                 var baseObject = pso.BaseObject;
-
                 if (baseObject != null)
-                {
                     return baseObject;
-                }
             }
-
             return value;
         }
 
-        protected void WriteReason(string text)
+        protected static void WriteReason(string text)
         {
             RunspaceContext.CurrentThread.WriteReason(text);
         }
 
-        protected bool TryReason(string text)
+        protected static bool TryReason(string text)
         {
             if (string.IsNullOrEmpty(text))
-            {
                 return false;
-            }
 
             WriteReason(text);
             return true;
         }
 
-        protected bool IsRuleScope()
+        protected static bool IsRuleScope()
         {
             return PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition || PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Precondition;
         }
 
-        protected bool IsConditionScope()
+        protected static bool IsConditionScope()
         {
             return PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition;
+        }
+
+        protected static RuleRuntimeException RuleScopeException(string keyword)
+        {
+            return new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordRuleScope, keyword));
+        }
+
+        protected static RuleRuntimeException ConditionScopeException(string keyword)
+        {
+            return new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordConditionScope, keyword));
         }
     }
 }

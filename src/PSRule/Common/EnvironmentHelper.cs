@@ -6,7 +6,7 @@ using System.Security;
 
 namespace PSRule
 {
-    internal sealed class EnvironmentHelper
+    internal static class EnvironmentHelper
     {
         private const char UNDERSCORE = '_';
 

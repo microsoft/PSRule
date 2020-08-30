@@ -79,6 +79,24 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Target failed If precondition.
+        /// </summary>
+        internal static string DebugTargetIfMismatch {
+            get {
+                return ResourceManager.GetString("DebugTargetIfMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target failed Type precondition.
+        /// </summary>
+        internal static string DebugTargetTypeMismatch {
+            get {
+                return ResourceManager.GetString("DebugTargetTypeMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A circular rule dependency was detected. The rule &apos;{0}&apos; depends on &apos;{1}&apos; which also depend on &apos;{0}&apos;..
         /// </summary>
         internal static string DependencyCircularReference {

@@ -9,10 +9,8 @@ namespace PSRule.Parser
     {
         public Dictionary<string, string> Process(TokenStream stream)
         {
-            stream.MoveTo(0);
-
             // Look for yaml header
-
+            stream.MoveTo(0);
             return YamlHeader(stream);
         }
     }

@@ -47,8 +47,8 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             if (!IsRuleScope())
-                throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordRuleScope, RuleLanguageNouns.Exists));
-            
+                throw RuleScopeException(LanguageKeywords.Exists);
+
             var targetObject = InputObject ?? GetTargetObject();
             var foundFields = new List<string>();
             var notFoundFields = new List<string>();
@@ -57,7 +57,7 @@ namespace PSRule.Commands
 
             for (var i = 0; i < Field.Length && found < required; i++)
             {
-                if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field[i], caseSensitive: CaseSensitive, value: out object fieldValue))
+                if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field[i], caseSensitive: CaseSensitive, value: out _))
                 {
                     RunspaceContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Exists, message: PSRuleResources.ExistsTrue, args: Field[i]);
                     foundFields.Add(Field[i]);

@@ -61,13 +61,10 @@ namespace PSRule.Pipeline
         private const char Question = '?'; // Match any character except '/'
         private const char Hash = '#'; // Comment
         private const char Exclamation = '!'; // Include a previously excluded path
-        
-        private const string GitIgnoreFileName = ".gitignore";
 
         private readonly string _BasePath;
         private readonly PathFilterExpression[] _Expression;
-
-        private bool _MatchResult;
+        private readonly bool _MatchResult;
 
         private PathFilter(string basePath, PathFilterExpression[] expression, bool matchResult)
         {

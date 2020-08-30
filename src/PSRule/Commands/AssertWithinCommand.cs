@@ -6,6 +6,7 @@ using PSRule.Resources;
 using PSRule.Runtime;
 using System;
 using System.Management.Automation;
+using System.Threading;
 
 namespace PSRule.Commands
 {
@@ -59,7 +60,7 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             if (!IsRuleScope())
-                throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordRuleScope, LanguageKeywords.Within));
+                throw RuleScopeException(LanguageKeywords.Within);
 
             var targetObject = InputObject ?? GetTargetObject();
             bool expected = !Not;
@@ -109,7 +110,7 @@ namespace PSRule.Commands
             RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Within, outcome: result);
             if (!(result || TryReason(Reason)))
             {
-                WriteReason(Not ? string.Format(ReasonStrings.WithinNot, found) : ReasonStrings.Within);
+                WriteReason(Not ? string.Format(Thread.CurrentThread.CurrentCulture, ReasonStrings.WithinNot, found) : ReasonStrings.Within);
             }
             WriteObject(result);
         }

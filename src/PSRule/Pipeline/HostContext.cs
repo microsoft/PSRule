@@ -25,9 +25,7 @@ namespace PSRule.Pipeline
             if (commandRuntime != null)
                 ShouldProcess = commandRuntime.ShouldProcess;
 
-            InSession = executionContext == null ? false : executionContext.SessionState.PSVariable.GetValue("PSSenderInfo") != null;
+            InSession = executionContext != null && executionContext.SessionState.PSVariable.GetValue("PSSenderInfo") != null;
         }
-
-        
     }
 }

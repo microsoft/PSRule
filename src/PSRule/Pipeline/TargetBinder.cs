@@ -119,10 +119,10 @@ namespace PSRule.Pipeline
         /// </summary>
         private void BindField(FieldMap[] map, bool caseSensitive, PSObject targetObject)
         {
-            var hashtable = new ImmutableHashtable();
             if (map == null || map.Length == 0)
                 return;
 
+            var hashtable = new ImmutableHashtable();
             for (var i = 0; i < map.Length; i++)
             {
                 if (map[i] == null || map[i].Count == 0)

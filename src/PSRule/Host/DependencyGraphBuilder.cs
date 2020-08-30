@@ -6,6 +6,7 @@ using PSRule.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace PSRule.Host
 {
@@ -32,7 +33,7 @@ namespace PSRule.Host
             foreach (var item in items)
             {
                 if (index.ContainsKey(item.RuleId))
-                    throw new RuleRuntimeException(message: string.Format(PSRuleResources.DuplicateRuleId, item.RuleId));
+                    throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.DuplicateRuleId, item.RuleId));
 
                 index.Add(item.RuleId, item);
             }
@@ -63,7 +64,7 @@ namespace PSRule.Host
 
             // Check for circular dependencies
             if (_Stack.Contains(value: ruleId, comparer: _Comparer))
-                throw new RuleRuntimeException(message: string.Format(PSRuleResources.DependencyCircularReference, parentId, ruleId));
+                throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.DependencyCircularReference, parentId, ruleId));
 
             try
             {
@@ -76,7 +77,7 @@ namespace PSRule.Host
                     foreach (var d in item.DependsOn)
                     {
                         if (!index.ContainsKey(d))
-                            throw new RuleRuntimeException(message: string.Format(PSRuleResources.DependencyNotFound, d, ruleId));
+                            throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.DependencyNotFound, d, ruleId));
 
                         // Handle dependencies
                         if (!_Targets.ContainsKey(d))

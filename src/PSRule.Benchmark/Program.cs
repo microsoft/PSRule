@@ -12,6 +12,8 @@ using BenchmarkDotNet.Running;
 #endif
 
 using Microsoft.Extensions.CommandLineUtils;
+using System;
+using System.Diagnostics;
 
 namespace PSRule.Benchmark
 {
@@ -27,7 +29,8 @@ namespace PSRule.Benchmark
 
 #if !BENCHMARK
             // Do profiling
-            DebugProfile();
+            DebugProfile(app);
+            app.Execute(args);
 #endif
 
 #if BENCHMARK
@@ -71,34 +74,64 @@ namespace PSRule.Benchmark
 
 #endif
 
-        private static void DebugProfile()
+        private const int DebugIterations = 100;
+
+        private static void DebugProfile(CommandLineApplication app)
+        {
+            app.Command("benchmark", cmd =>
+            {
+                cmd.OnExecute(() =>
+                {
+                    Console.WriteLine("Press ENTER to start.");
+                    Console.ReadLine();
+                    RunDebug();
+                    return 0;
+                });
+            });
+        }
+
+        private static void RunDebug()
         {
             var profile = new PSRule();
             profile.Prepare();
 
-            for (var i = 0; i < 100; i++)
+            ProfileBlock();
+            for (var i = 0; i < DebugIterations; i++)
                 profile.Invoke();
 
-            for (var i = 0; i < 100; i++)
+            ProfileBlock();
+            for (var i = 0; i < DebugIterations; i++)
                 profile.InvokeIf();
 
-            for (var i = 0; i < 100; i++)
+            ProfileBlock();
+            for (var i = 0; i < DebugIterations; i++)
                 profile.InvokeType();
 
-            for (var i = 0; i < 100; i++)
+            ProfileBlock();
+            for (var i = 0; i < DebugIterations; i++)
                 profile.InvokeSummary();
 
-            for (var i = 0; i < 100; i++)
+            ProfileBlock();
+            for (var i = 0; i < DebugIterations; i++)
                 profile.Get();
 
-            for (var i = 0; i < 100; i++)
+            ProfileBlock();
+            for (var i = 0; i < DebugIterations; i++)
                 profile.DefaultTargetNameBinding();
 
-            for (var i = 0; i < 100; i++)
+            ProfileBlock();
+            for (var i = 0; i < DebugIterations; i++)
                 profile.CustomTargetNameBinding();
 
-            for (var i = 0; i < 100; i++)
+            ProfileBlock();
+            for (var i = 0; i < DebugIterations; i++)
                 profile.NestedTargetNameBinding();
+        }
+
+        [DebuggerStepThrough]
+        private static void ProfileBlock()
+        {
+            // Do nothing
         }
     }
 }
