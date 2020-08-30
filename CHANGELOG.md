@@ -6,6 +6,9 @@
 
 ## Unreleased
 
+- Bug fixes:
+  - Fixed out of bounds exception when empty markdown documentation is used. [#516](https://github.com/microsoft/PSRule/issues/516)
+
 ## v0.20.0-B2008010 (pre-release)
 
 What's changed since pre-release v0.20.0-B2008002:

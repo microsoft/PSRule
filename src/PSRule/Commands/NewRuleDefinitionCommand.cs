@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Management.Automation;
+using System.Threading;
 
 namespace PSRule.Commands
 {
@@ -72,7 +73,7 @@ namespace PSRule.Commands
         protected override void ProcessRecord()
         {
             if (!IsScriptScope())
-                throw new RuleRuntimeException(string.Format(PSRuleResources.KeywordScriptScope, LanguageKeywords.Rule));
+                throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordScriptScope, LanguageKeywords.Rule));
 
             var context = RunspaceContext.CurrentThread;
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
@@ -96,6 +97,7 @@ namespace PSRule.Commands
             if (helpInfo.Synopsis == null)
                 helpInfo.Synopsis = metadata.Synopsis;
 
+#pragma warning disable CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
             var block = new RuleBlock(
                 source: source,
                 ruleName: Name,
@@ -106,6 +108,7 @@ namespace PSRule.Commands
                 configuration: Configure,
                 extent: extent
             );
+#pragma warning restore CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
             WriteObject(block);
         }
 
@@ -155,8 +158,13 @@ namespace PSRule.Commands
 
         private static bool TryDocument(string path, out RuleDocument document)
         {
+            document = null;
+            var markdown = File.ReadAllText(path);
+            if (string.IsNullOrEmpty(markdown))
+                return false;
+
             var reader = new MarkdownReader(yamlHeaderOnly: false);
-            var stream = reader.Read(File.ReadAllText(path), path);
+            var stream = reader.Read(markdown, path);
             var lexer = new RuleLexer();
             document = lexer.Process(stream);
             return document != null;
