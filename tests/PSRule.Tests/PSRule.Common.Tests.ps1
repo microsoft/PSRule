@@ -1325,6 +1325,12 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
                 $result | Should -Not -BeNullOrEmpty;
                 $result.RuleName | Should -Be 'WithNoSynopsis';
                 $result.Synopsis | Should -BeNullOrEmpty;
+
+                # Empty markdown
+                $result = Get-PSRule -Path $ruleFilePath -Name 'WithNoSynopsis' -Culture 'en-YY';
+                $result | Should -Not -BeNullOrEmpty;
+                $result.RuleName | Should -Be 'WithNoSynopsis';
+                $result.Synopsis | Should -BeNullOrEmpty;
             }
             finally {
                 [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();

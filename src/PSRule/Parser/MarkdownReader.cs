@@ -59,6 +59,9 @@ namespace PSRule.Parser
 
         public TokenStream Read(string markdown, string path)
         {
+            if (string.IsNullOrEmpty(markdown))
+                return _Output;
+
             _Context = MarkdownReaderMode.None;
             _Stream = new MarkdownStream(markdown);
 
@@ -246,7 +249,7 @@ namespace PSRule.Parser
                 _Context = MarkdownReaderMode.None;
         }
 
-        private string UnwrapStyleMarkers(MarkdownStream stream, out MarkdownTokens flag)
+        private static string UnwrapStyleMarkers(MarkdownStream stream, out MarkdownTokens flag)
         {
             flag = MarkdownTokens.None;
 
@@ -308,12 +311,12 @@ namespace PSRule.Parser
             return text;
         }
 
-        private string Pad(string text, char c, int left = 0, int right = 0)
+        private static string Pad(string text, char c, int left = 0, int right = 0)
         {
             return text.PadLeft(text.Length + left, c).PadRight(text.Length + left + right, c);
         }
 
-        private bool IsList(string text)
+        private static bool IsList(string text)
         {
             var clean = text.Trim();
 
@@ -328,7 +331,7 @@ namespace PSRule.Parser
             return false;
         }
 
-        private MarkdownTokens GetEnding(int lineEndings)
+        private static MarkdownTokens GetEnding(int lineEndings)
         {
             if (lineEndings == 0)
                 return MarkdownTokens.None;
