@@ -188,8 +188,8 @@ Rule 'VariableContextVariable' {
 # Synopsis: Test $Rule automatic variables
 Rule 'WithRuleVariable' {
     $TargetObject.RuleTest -eq $Rule.RuleName;
-    $TargetObject.Name -eq $Rule.TargetName;
-    $TargetObject.Type -eq $Rule.TargetType;
+    $TargetObject.Name -eq $PSRule.TargetName;
+    $TargetObject.Type -eq $PSRule.TargetType;
 }
 
 # Synopsis: Test $Configuration automatic variables

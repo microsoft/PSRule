@@ -268,6 +268,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The property &apos;${0}.{1}&apos; is obsolete and will be removed in the next major version..
+        /// </summary>
+        internal static string PropertyObsolete {
+            get {
+                return ResourceManager.GetString("PropertyObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Read JSON failed..
         /// </summary>
         internal static string ReadJsonFailed {

@@ -7,8 +7,8 @@
 
 # Synopsis: Test for baseline
 Rule 'WithBaseline' -Tag @{ category = 'group2'; severity = 'high' } {
-    $Rule.TargetName -eq 'TestObject1'
-    $Rule.TargetType -eq 'TestObjectType'
+    $PSRule.TargetName -eq 'TestObject1'
+    $PSRule.TargetType -eq 'TestObjectType'
     $PSRule.Field.kind -eq 'TestObjectType'
 }
 

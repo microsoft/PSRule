@@ -133,6 +133,14 @@ namespace PSRule.Pipeline
             Writer.WriteWarning(PSRuleResources.BaselineObsolete, baselineId);
         }
 
+        public void WarnPropertyObsolete(string variableName, string propertyName)
+        {
+            if (Writer == null || !Writer.ShouldWriteWarning())
+                return;
+
+            Writer.WriteWarning(PSRuleResources.PropertyObsolete, variableName, propertyName);
+        }
+
         public void ErrorInvaildRuleResult()
         {
             if (Writer == null || !Writer.ShouldWriteError())

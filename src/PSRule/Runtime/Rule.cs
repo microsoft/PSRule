@@ -14,6 +14,7 @@ namespace PSRule.Runtime
     /// </summary>
     public sealed class Rule
     {
+        private const string VariableName = "Rule";
 
         public string RuleName
         {
@@ -36,6 +37,7 @@ namespace PSRule.Runtime
         {
             get
             {
+                RunspaceContext.CurrentThread.WarnPropertyObsolete(VariableName, nameof(TargetObject));
                 return RunspaceContext.CurrentThread.RuleRecord.TargetObject;
             }
         }
@@ -45,6 +47,7 @@ namespace PSRule.Runtime
         {
             get
             {
+                RunspaceContext.CurrentThread.WarnPropertyObsolete(VariableName, nameof(TargetName));
                 return RunspaceContext.CurrentThread.RuleRecord.TargetName;
             }
         }
@@ -54,6 +57,7 @@ namespace PSRule.Runtime
         {
             get
             {
+                RunspaceContext.CurrentThread.WarnPropertyObsolete(VariableName, nameof(TargetType));
                 return RunspaceContext.CurrentThread.RuleRecord.TargetType;
             }
         }
