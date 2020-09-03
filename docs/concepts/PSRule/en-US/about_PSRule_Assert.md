@@ -17,6 +17,8 @@ The following built-in assertion methods are provided:
 
 - [Contains](#contains) - The field value must contain at least one of the strings.
 - [EndsWith](#endswith) - The field value must match at least one suffix.
+- [FileHeader](#fileheader) - The file must contain a comment header.
+- [FilePath](#filepath) - The file path must exist.
 - [Greater](#greater) - The field value must be greater.
 - [GreaterOrEqual](#greaterorequal) - The field value must be greater or equal to.
 - [HasDefaultValue](#hasdefaultvalue) - The object should not have the field or the field value is set to the default value.
@@ -129,6 +131,8 @@ The following parameters are accepted:
 - `suffix` - One or more suffixes to compare the field value with. Only one suffix must match.
 - `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
 
+Reasons include:
+
 - _The parameter 'inputObject' is null._
 - _The parameter 'field' is null or empty._
 - _The field '{0}' does not exist._
@@ -141,6 +145,83 @@ Examples:
 Rule 'EndsWith' {
     $Assert.EndsWith($TargetObject, 'ResourceGroupName', 'eus')
     $Assert.EndsWith($TargetObject, 'Name', @('db', 'web'), $True)
+}
+```
+
+### FileHeader
+
+The `FileHeader` assertion method checks a file for a comment header.
+When comparing the file header, the format of line comments are automatically detected by file extension.
+Single line comments are supported. Multi-line comments are not supported.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field containing a valid file path.
+- `header` - One or more lines of a header to compare with file contents.
+- `prefix` (optional) - An optional comment prefix for each line.
+By default a comment prefix will automatically detected based on file extension.
+When set, detection by file extension is skipped.
+
+Prefix detection for line comments is supported with the following file extensions:
+
+- `.cs`, `.ts`, `.js`, `.fs`, `.go`, `.php`, `.cpp`, `.h` - Use a prefix of (`// `).
+- `.ps1`, `.psd1`, `.psm1`, `.yaml`, `.yml`, `.r`, `.py`, `.sh`, `.tf`, `.tfvars`, `.gitignore`, `.pl` - Use a prefix of (`# `).
+- `.sql`, `.lau` - Use a prefix of (`-- `).
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is not a string._
+- _The file '{0}' does not exist._
+- _The header was not set._
+
+Examples:
+
+```powershell
+Rule 'FileHeader' {
+    $Assert.FileHeader($TargetObject, 'FullName', @(
+        'Copyright (c) Microsoft Corporation.'
+        'Licensed under the MIT License.'
+    ));
+}
+```
+
+### FilePath
+
+The `FilePath` assertion method checks the file exists.
+Checks use OS case-sensitivity rules.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field containing a file path.
+- `suffix` (optional) - Additional file path suffixes to append.
+When specified each suffix is combined with the file path.
+Only one full file path must be a valid file for the assertion method to pass.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is not a string._
+- _The file '{0}' does not exist._
+
+Examples:
+
+```powershell
+Rule 'FilePath' {
+    $Assert.FilePath($TargetObject, 'FullName', @('CHANGELOG.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('LICENSE', 'LICENSE.txt'));
+    $Assert.FilePath($TargetObject, 'FullName', @('CODE_OF_CONDUCT.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('CONTRIBUTING.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('SECURITY.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('README.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('.github/CODEOWNERS'));
+    $Assert.FilePath($TargetObject, 'FullName', @('.github/PULL_REQUEST_TEMPLATE.md'));
 }
 ```
 

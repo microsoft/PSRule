@@ -49,6 +49,8 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                     'Item3'
                     'Item4'
                 )
+                Path = $PSCommandPath
+                ParentPath = $here
             }
             [PSCustomObject]@{
                 '$schema' = "http://json-schema.org/draft-07/schema`#"
@@ -75,6 +77,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                     'item2'
                     'item3'
                 )
+                ParentPath = (Join-Path -Path $here -ChildPath 'notapath')
             }
         )
 
@@ -160,6 +163,39 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
             $result[1].Reason | Should -BeLike "The field '*' does not end with '*'.";
+        }
+
+        It 'FileHeader' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.FileHeader');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 1;
+            $result[1].Reason | Should -Be "The field 'Path' does not exist.";
+        }
+
+        It 'FilePath' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.FilePath');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 2;
+            $result[1].Reason[0] | Should -Be "The field 'Path' does not exist.";
+            $result[1].Reason[1] | Should -BeLike "The file '*' does not exist.";
         }
 
         It 'Greater' {

@@ -6,6 +6,10 @@
 
 ## Unreleased
 
+- Engine features:
+  - Added file assertion helpers `FileHeader`, and `FilePath`. [#534](https://github.com/microsoft/PSRule/issues/534)
+    - `FileHeader` checks for a comment header in the file.
+    - `FilePath` checks that a file path, optionally with suffixes exist.
 - Bug fixes:
   - Fixed out of bounds exception when empty markdown documentation is used. [#516](https://github.com/microsoft/PSRule/issues/516)
 

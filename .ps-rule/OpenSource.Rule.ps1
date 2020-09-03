@@ -3,52 +3,20 @@
 
 # Synopsis: Check for recommended community files
 Rule 'OpenSource.Community' -Type 'System.IO.DirectoryInfo', 'PSRule.Data.RepositoryInfo' {
-    $requiredFiles = @(
-        'CHANGELOG.md'
-        'LICENSE.txt'
-        'CODE_OF_CONDUCT.md'
-        'CONTRIBUTING.md'
-        'SECURITY.md'
-        'README.md'
-        '.github/CODEOWNERS'
-        '.github/PULL_REQUEST_TEMPLATE.md'
-    )
-    Test-Path -Path $TargetObject.FullName;
-    for ($i = 0; $i -lt $requiredFiles.Length; $i++) {
-        $filePath = Join-Path -Path $TargetObject.FullName -ChildPath $requiredFiles[$i];
-        $Assert.Create((Test-Path -Path $filePath -PathType Leaf), "$($requiredFiles[$i]) does not exist");
-    }
+    $Assert.FilePath($TargetObject, 'FullName', @('CHANGELOG.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('LICENSE', 'LICENSE.txt'));
+    $Assert.FilePath($TargetObject, 'FullName', @('CODE_OF_CONDUCT.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('CONTRIBUTING.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('SECURITY.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('README.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('.github/CODEOWNERS'));
+    $Assert.FilePath($TargetObject, 'FullName', @('.github/PULL_REQUEST_TEMPLATE.md'));
 }
 
 # Synopsis: Check for license in code files
-Rule 'OpenSource.License' -Type 'System.IO.FileInfo', 'PSRule.Data.InputFileInfo', '.cs', '.ps1', '.psd1', '.psm1' -If { $TargetObject.Extension -in '.cs', '.ps1', '.psd1', '.psm1' } {
-    $commentPrefix = "`# ";
-    if ($TargetObject.Extension -eq '.cs') {
-        $commentPrefix = '// '
-    }
-    $header = GetLicenseHeader -CommentPrefix $commentPrefix;
-    $content = Get-Content -Path $TargetObject.FullName -Raw;
-    $content.StartsWith($header);
-}
-
-function global:GetLicenseHeader {
-    [CmdletBinding()]
-    [OutputType([String])]
-    param (
-        [Parameter(Mandatory = $True)]
-        [String]$CommentPrefix
-    )
-    process {
-        $text = @(
-            'Copyright (c) Microsoft Corporation.'
-            'Licensed under the MIT License.'
-        )
-        $builder = [System.Text.StringBuilder]::new();
-        foreach ($line in $text) {
-            $Null = $builder.Append($CommentPrefix);
-            $Null = $builder.Append($line);
-            $Null = $builder.Append([System.Environment]::NewLine);
-        }
-        return $builder.ToString();
-    }
+Rule 'OpenSource.License' -Type '.cs', '.ps1', '.psd1', '.psm1' {
+    $Assert.FileHeader($TargetObject, 'FullName', @(
+        'Copyright (c) Microsoft Corporation.'
+        'Licensed under the MIT License.'
+    ));
 }
