@@ -6,6 +6,10 @@
 
 ## Unreleased
 
+## v0.20.0-B2009007 (pre-release)
+
+What's changed since pre-release v0.20.0-B2008010:
+
 - Engine features:
   - Added file assertion helpers `FileHeader`, and `FilePath`. [#534](https://github.com/microsoft/PSRule/issues/534)
     - `FileHeader` checks for a comment header in the file.
