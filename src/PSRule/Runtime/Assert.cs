@@ -421,6 +421,73 @@ namespace PSRule.Runtime
             return Fail(ReasonStrings.NotMatchPattern, value, pattern);
         }
 
+        public AssertResult FilePath(PSObject inputObject, string field, string[] suffix = null)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardString(fieldValue, out string value, out result))
+                return result;
+
+            if (suffix == null || suffix.Length == 0)
+            {
+                if (!TryFilePath(value, out _))
+                    return Fail(ReasonStrings.FilePath, value);
+
+                return Pass();
+            }
+
+            var reason = Fail();
+            for (var i = 0; i < suffix.Length; i++)
+            {
+                if (!TryFilePath(Path.Combine(value, suffix[i]), out _))
+                    reason.AddReason(ReasonStrings.FilePath, suffix[i]);
+                else
+                    return Pass();
+            }
+            return reason;
+        }
+
+        public AssertResult FileHeader(PSObject inputObject, string field, string[] header, string prefix = null)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardString(fieldValue, out string value, out result))
+                return result;
+
+            // File does not exist
+            if (!TryFilePath(value, out _))
+                return Fail(ReasonStrings.FilePath, value);
+
+            // No header
+            if (header == null || header.Length == 0)
+                return Pass();
+
+            if (string.IsNullOrEmpty(prefix))
+                prefix = DetectLinePrefix(Path.GetExtension(value));
+
+            var lineNo = 0;
+            foreach (var content in File.ReadLines(value))
+            {
+                if (lineNo >= header.Length)
+                    break;
+
+                if (content != string.Concat(prefix, header[lineNo]))
+                    return Fail(ReasonStrings.FileHeader);
+
+                lineNo++;
+            }
+
+            // Catch file has less lines than header
+            if (lineNo < header.Length)
+                return Fail(ReasonStrings.FileHeader);
+
+            return Pass();
+        }
+
         #region Helper methods
 
         private static bool IsEmpty(object fieldValue)
@@ -472,7 +539,7 @@ namespace PSRule.Runtime
         private static bool TryString(object obj, out string value)
         {
             value = null;
-            if (obj is string svalue)
+            if (GetBaseObject(obj) is string svalue)
             {
                 value = svalue;
                 return true;
@@ -656,10 +723,10 @@ namespace PSRule.Runtime
             return false;
         }
 
-        private static bool TryFilePath(string uri, out string path)
+        private static bool TryFilePath(string path, out string rootedPath)
         {
-            path = PSRuleOption.GetRootedPath(uri);
-            return File.Exists(path);
+            rootedPath = PSRuleOption.GetRootedPath(path);
+            return File.Exists(rootedPath);
         }
 
         private static string FormatArray(string[] values)
@@ -695,6 +762,46 @@ namespace PSRule.Runtime
         private static void SetPipelineCache<T>(string prefix, string key, T value)
         {
             PipelineContext.CurrentThread.ExpressionCache[string.Concat(prefix, key)] = value;
+        }
+
+        /// <summary>
+        /// Determine line comment prefix by file extension
+        /// </summary>
+        private static string DetectLinePrefix(string extension)
+        {
+            switch (extension)
+            {
+                case ".cs":
+                case ".ts":
+                case ".js":
+                case ".fs":
+                case ".go":
+                case ".php":
+                case ".cpp":
+                case ".h":
+                    return "// ";
+
+                case ".ps1":
+                case ".psd1":
+                case ".psm1":
+                case ".yaml":
+                case ".yml":
+                case ".r":
+                case ".py":
+                case ".sh":
+                case ".tf":
+                case ".tfvars":
+                case ".gitignore":
+                case ".pl":
+                    return "# ";
+
+                case ".sql":
+                case ".lua":
+                    return "-- ";
+
+                default:
+                    return string.Empty;
+            }
         }
 
         #endregion Helper methods

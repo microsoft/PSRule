@@ -2,6 +2,8 @@
 // Licensed under the MIT License.
 
 using PSRule.Pipeline;
+using System;
+using System.IO;
 using System.Management.Automation;
 using Xunit;
 
@@ -493,6 +495,30 @@ namespace PSRule
             Assert.True(assert.NotMatch(value, "notValue", "\\w*2").Result);
         }
 
+        [Fact]
+        public void FileHeader()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            var value = GetObject((name: "FullName", value: GetSourcePath("build.ps1")));
+            Assert.True(assert.FileHeader(value, "FullName", new string[] { "Copyright (c) Microsoft Corporation.", "Licensed under the MIT License." }).Result);
+            value = GetObject((name: "FullName", value: GetSourcePath("ps-rule.yaml")));
+            Assert.False(assert.FileHeader(value, "FullName", new string[] { "Copyright (c) Microsoft Corporation.", "Licensed under the MIT License." }).Result);
+        }
+
+        [Fact]
+        public void FilePath()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            var value = GetObject((name: "FullName", value: GetSourcePath("README.md")));
+            Assert.True(assert.FilePath(value, "FullName").Result);
+            value = GetObject((name: "FullName", value: GetSourcePath("README.zz")));
+            Assert.False(assert.FilePath(value, "FullName").Result);
+        }
+
         #region Helper methods
 
         private static void SetContext()
@@ -514,6 +540,11 @@ namespace PSRule
         private static Runtime.Assert GetAssertionHelper()
         {
             return new Runtime.Assert();
+        }
+
+        private string GetSourcePath(string fileName)
+        {
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\..\\..\\", fileName);
         }
 
         #endregion Helper methods

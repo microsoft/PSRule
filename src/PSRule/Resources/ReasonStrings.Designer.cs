@@ -106,6 +106,24 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The header was not set..
+        /// </summary>
+        internal static string FileHeader {
+            get {
+                return ResourceManager.GetString("FileHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file &apos;{0}&apos; does not exist..
+        /// </summary>
+        internal static string FilePath {
+            get {
+                return ResourceManager.GetString("FilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The value &apos;{0}&apos; was not &gt; &apos;{1}&apos;..
         /// </summary>
         internal static string Greater {

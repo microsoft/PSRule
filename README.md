@@ -235,6 +235,8 @@ The following conceptual topics exist in the `PSRule` module:
 - [Assert](docs/concepts/PSRule/en-US/about_PSRule_Assert.md)
   - [Contains](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#contains)
   - [EndsWith](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#endswith)
+  - [FileHeader](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#fileheader)
+  - [FilePath](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#filepath)
   - [Greater](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#greater)
   - [GreaterOrEqual](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#greaterorequal)
   - [HasDefaultValue](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasdefaultvalue)

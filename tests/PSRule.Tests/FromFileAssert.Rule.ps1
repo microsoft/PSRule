@@ -52,6 +52,20 @@ Rule 'Assert.EndsWith' {
     $Assert.EndsWith($TargetObject, 'Name', '1')
 }
 
+# Synopsis: Test for $Assert.FileHeader
+Rule 'Assert.FileHeader' {
+    $Assert.FileHeader($TargetObject, 'Path', @(
+        'Copyright (c) Microsoft Corporation.'
+        'Licensed under the MIT License.'
+    ))
+}
+
+# Synopsis: Test for $Assert.FilePath
+Rule 'Assert.FilePath' {
+    $Assert.FilePath($TargetObject, 'Path')
+    $Assert.FilePath($TargetObject, 'ParentPath', @('PSRule.Assert.Tests.ps1'))
+}
+
 # Synopsis: Test for $Assert.Greater
 Rule 'Assert.Greater' {
     $Assert.Greater($TargetObject, 'CompareNumeric', 2)
