@@ -224,7 +224,7 @@ Examples:
 ```powershell
 # Synopsis: This rule determines if the target object matches the naming convention
 Rule 'resource.NamingConvention' {
-    $Rule.TargetName.ToLower() -ceq $Rule.TargetName
+    $PSRule.TargetName.ToLower() -ceq $PSRule.TargetName
 }
 ```
 

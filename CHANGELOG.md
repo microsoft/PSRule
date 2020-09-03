@@ -10,6 +10,8 @@
   - Added file assertion helpers `FileHeader`, and `FilePath`. [#534](https://github.com/microsoft/PSRule/issues/534)
     - `FileHeader` checks for a comment header in the file.
     - `FilePath` checks that a file path, optionally with suffixes exist.
+- Engineering:
+  - Warn when deprecated `$Rule` properties are used. [#536](https://github.com/microsoft/PSRule/issues/536)
 - Bug fixes:
   - Fixed out of bounds exception when empty markdown documentation is used. [#516](https://github.com/microsoft/PSRule/issues/516)
 
