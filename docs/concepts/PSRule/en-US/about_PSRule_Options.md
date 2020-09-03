@@ -546,7 +546,7 @@ Files within `.git` sub-directories are ignored.
 Path specs specified in `.gitignore` directly in the current working path are ignored.
 A `RepositoryInfo` object is generated if the current working path if a `.git` sub-directory is present.
 
-Detect uses matches the following file extensions:
+Detect uses the following file extensions:
 
 - Yaml - `.yaml` or `.yml`
 - Json - `.json`

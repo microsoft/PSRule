@@ -35,9 +35,14 @@ namespace PSRule
             if (!File.Exists(headFilePath))
                 return false;
 
-            value = File.ReadAllText(headFilePath);
-            if (value.StartsWith("ref: ", System.StringComparison.OrdinalIgnoreCase))
-                value = value.Substring(5);
+            var lines = File.ReadAllLines(headFilePath);
+            if (lines == null || lines.Length == 0)
+                return false;
+
+            if (lines[0].StartsWith("ref: ", System.StringComparison.OrdinalIgnoreCase))
+                value = lines[0].Substring(5);
+            else
+                value = lines[0];
 
             return true;
         }

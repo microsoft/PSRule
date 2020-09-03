@@ -14,6 +14,7 @@
   - Warn when deprecated `$Rule` properties are used. [#536](https://github.com/microsoft/PSRule/issues/536)
 - Bug fixes:
   - Fixed out of bounds exception when empty markdown documentation is used. [#516](https://github.com/microsoft/PSRule/issues/516)
+  - Fixed lines breaks in `RepositoryInfo` target name with git ref. [#538](https://github.com/microsoft/PSRule/issues/538)
 
 ## v0.20.0-B2008010 (pre-release)
 
