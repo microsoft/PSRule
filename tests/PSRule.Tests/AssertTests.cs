@@ -501,9 +501,9 @@ namespace PSRule
             SetContext();
             var assert = GetAssertionHelper();
 
-            var value = GetObject((name: "FullName", value: GetSourcePath("build.ps1")));
+            var value = GetObject((name: "FullName", value: GetSourcePath("FromFile.Rule.ps1")));
             Assert.True(assert.FileHeader(value, "FullName", new string[] { "Copyright (c) Microsoft Corporation.", "Licensed under the MIT License." }).Result);
-            value = GetObject((name: "FullName", value: GetSourcePath("ps-rule.yaml")));
+            value = GetObject((name: "FullName", value: GetSourcePath("Baseline.Rule.yaml")));
             Assert.False(assert.FileHeader(value, "FullName", new string[] { "Copyright (c) Microsoft Corporation.", "Licensed under the MIT License." }).Result);
         }
 
@@ -513,7 +513,7 @@ namespace PSRule
             SetContext();
             var assert = GetAssertionHelper();
 
-            var value = GetObject((name: "FullName", value: GetSourcePath("README.md")));
+            var value = GetObject((name: "FullName", value: GetSourcePath("Baseline.Rule.yaml")));
             Assert.True(assert.FilePath(value, "FullName").Result);
             value = GetObject((name: "FullName", value: GetSourcePath("README.zz")));
             Assert.False(assert.FilePath(value, "FullName").Result);
@@ -544,7 +544,7 @@ namespace PSRule
 
         private string GetSourcePath(string fileName)
         {
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\..\\..\\", fileName);
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
         }
 
         #endregion Helper methods
