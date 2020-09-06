@@ -8,7 +8,7 @@
 
 - General improvements:
   - Added automatic binding for Rule object. [#542](https://github.com/microsoft/PSRule/issues/542)
-- Big fixes:
+- Bug fixes:
   - Fixed `InputFileInfo` `Type` property causes downstream binding issues. [#541](https://github.com/microsoft/PSRule/issues/541)
 
 ## v0.20.0-B2009007 (pre-release)
