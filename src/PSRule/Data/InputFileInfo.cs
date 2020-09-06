@@ -25,7 +25,6 @@ namespace PSRule.Data
             Extension = Path.GetExtension(path);
             DirectoryName = Path.GetDirectoryName(path);
             DisplayName = FullName.Substring(basePath.Length).Replace(Backslash, Slash);
-            Type = typeof(InputFileInfo).FullName;
         }
 
         public string FullName { get; }
@@ -39,8 +38,6 @@ namespace PSRule.Data
         public string DirectoryName { get; }
 
         public string DisplayName { get; }
-
-        public string Type { get; }
 
         string ITargetInfo.TargetName => DisplayName;
 
