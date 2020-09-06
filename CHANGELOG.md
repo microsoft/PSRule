@@ -6,6 +6,10 @@
 
 ## Unreleased
 
+## v0.20.0-B2009013 (pre-release)
+
+What's changed since pre-release v0.20.0-B2009007:
+
 - General improvements:
   - Added automatic binding for Rule object. [#542](https://github.com/microsoft/PSRule/issues/542)
 - Bug fixes:
