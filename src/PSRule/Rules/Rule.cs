@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
+using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Host;
 using System.ComponentModel;
@@ -13,7 +14,7 @@ namespace PSRule.Rules
     /// Define a single rule.
     /// </summary>
     [JsonObject]
-    public sealed class Rule : IDependencyTarget
+    public sealed class Rule : IDependencyTarget, ITargetInfo
     {
         /// <summary>
         /// A unique identifier for the rule.
@@ -73,5 +74,9 @@ namespace PSRule.Rules
         /// </summary>
         [JsonProperty(PropertyName = "dependsOn")]
         public string[] DependsOn { get; set; }
+
+        string ITargetInfo.TargetName => RuleName;
+
+        string ITargetInfo.TargetType => typeof(Rule).FullName;
     }
 }

@@ -10,7 +10,6 @@ namespace PSRule.Data
             FullName = basePath;
             BasePath = basePath;
             DisplayName = headRef;
-            Type = typeof(RepositoryInfo).FullName;
         }
 
         public string FullName { get; }
@@ -19,10 +18,8 @@ namespace PSRule.Data
 
         public string DisplayName { get; }
 
-        public string Type { get; }
-
         string ITargetInfo.TargetName => DisplayName;
 
-        string ITargetInfo.TargetType => Type;
+        string ITargetInfo.TargetType => typeof(RepositoryInfo).FullName;
     }
 }
