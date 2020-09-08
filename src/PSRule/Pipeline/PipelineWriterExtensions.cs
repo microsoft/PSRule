@@ -25,6 +25,14 @@ namespace PSRule.Pipeline
             writer.WriteWarning(PSRuleResources.RulePathNotFound);
         }
 
+        internal static void WriteWarning(this PipelineWriter writer, string message, params object[] args)
+        {
+            if (!writer.ShouldWriteWarning() || string.IsNullOrEmpty(message))
+                return;
+
+            writer.WriteWarning(Format(message, args));
+        }
+
         internal static void ErrorRequiredVersionMismatch(this PipelineWriter writer, string moduleName, string moduleVersion, string requiredVersion)
         {
             if (!writer.ShouldWriteError())
@@ -40,6 +48,22 @@ namespace PSRule.Pipeline
         internal static void WriteError(this PipelineWriter writer, PipelineException exception, string errorId, ErrorCategory errorCategory)
         {
             writer.WriteError(new ErrorRecord(exception, errorId, errorCategory, null));
+        }
+
+        internal static void WriteDebug(this PipelineWriter writer, string message, params object[] args)
+        {
+            if (!writer.ShouldWriteDebug() || string.IsNullOrEmpty(message))
+                return;
+
+            writer.WriteDebug(new DebugRecord
+            (
+                message: Format(message, args)
+            ));
+        }
+
+        private static string Format(string message, params object[] args)
+        {
+            return args == null || args.Length == 0 ? message : string.Format(Thread.CurrentThread.CurrentCulture, message, args);
         }
     }
 }

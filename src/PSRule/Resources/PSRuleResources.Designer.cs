@@ -79,6 +79,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}: The property &apos;${1}.{2}&apos; is obsolete and will be removed in the next major version..
+        /// </summary>
+        internal static string DebugPropertyObsolete {
+            get {
+                return ResourceManager.GetString("DebugPropertyObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Target failed If precondition.
         /// </summary>
         internal static string DebugTargetIfMismatch {
