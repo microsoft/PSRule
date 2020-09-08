@@ -24,6 +24,8 @@ namespace PSRule.Pipeline
         private const string SOURCE_OUTCOME_FAIL = "Rule.Outcome.Fail";
         private const string SOURCE_OUTCOME_PASS = "Rule.Outcome.Pass";
         private const string ERRORID_INVALIDRULERESULT = "PSRule.Runtime.InvalidRuleResult";
+        private const string WARN_KEY_PROPERTY = "Property";
+        private const string WARN_KEY_SEPARATOR = "_";
 
         [ThreadStatic]
         internal static RunspaceContext CurrentThread;
@@ -42,6 +44,11 @@ namespace PSRule.Pipeline
         private readonly bool _NotProcessedWarning;
         private readonly OutcomeLogStream _FailStream;
         private readonly OutcomeLogStream _PassStream;
+
+        /// <summary>
+        /// Track common warnings, to only raise once.
+        /// </summary>
+        private readonly HashSet<string> _WarnOnce;
 
         private bool _RaisedUsingInvariantCulture;
 
@@ -65,6 +72,7 @@ namespace PSRule.Pipeline
             _NotProcessedWarning = Pipeline.Option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning.Value;
             _FailStream = Pipeline.Option.Logging.RuleFail ?? LoggingOption.Default.RuleFail.Value;
             _PassStream = Pipeline.Option.Logging.RulePass ?? LoggingOption.Default.RulePass.Value;
+            _WarnOnce = new HashSet<string>();
 
             _ObjectNumber = -1;
             _RuleTimer = new Stopwatch();
@@ -135,10 +143,19 @@ namespace PSRule.Pipeline
 
         public void WarnPropertyObsolete(string variableName, string propertyName)
         {
-            if (Writer == null || !Writer.ShouldWriteWarning())
+            DebugPropertyObsolete(variableName, propertyName);
+            if (Writer == null || !Writer.ShouldWriteWarning() || !ShouldWarnOnce(WARN_KEY_PROPERTY, variableName, propertyName))
                 return;
 
             Writer.WriteWarning(PSRuleResources.PropertyObsolete, variableName, propertyName);
+        }
+
+        private void DebugPropertyObsolete(string variableName, string propertyName)
+        {
+            if (Writer == null || !Writer.ShouldWriteDebug())
+                return;
+
+            Writer.WriteDebug(PSRuleResources.DebugPropertyObsolete, RuleBlock.RuleName, variableName, propertyName);
         }
 
         public void ErrorInvaildRuleResult()
@@ -477,6 +494,16 @@ namespace PSRule.Pipeline
                     return path;
             }
             return null;
+        }
+
+        private bool ShouldWarnOnce(params string[] key)
+        {
+            var combinedKey = string.Join(WARN_KEY_SEPARATOR, key);
+            if (_WarnOnce.Contains(combinedKey))
+                return false;
+
+            _WarnOnce.Add(combinedKey);
+            return true;
         }
 
         #region IDisposable

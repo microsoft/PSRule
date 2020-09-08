@@ -6,6 +6,9 @@
 
 ## Unreleased
 
+- Bug fixes:
+  - Fixed excessive obsolete property warnings. [#545](https://github.com/microsoft/PSRule/issues/545)
+
 ## v0.20.0-B2009013 (pre-release)
 
 What's changed since pre-release v0.20.0-B2009007:

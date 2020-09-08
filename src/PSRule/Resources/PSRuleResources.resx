@@ -124,6 +124,9 @@
   <data name="ConstrainedTargetBinding" xml:space="preserve">
     <value>Binding functions are not supported in this language mode.</value>
   </data>
+  <data name="DebugPropertyObsolete" xml:space="preserve">
+    <value>{0}: The property '${1}.{2}' is obsolete and will be removed in the next major version.</value>
+  </data>
   <data name="DebugTargetIfMismatch" xml:space="preserve">
     <value>Target failed If precondition</value>
   </data>
