@@ -6,6 +6,35 @@
 
 ## Unreleased
 
+## v0.20.0
+
+What's changed since v0.19.0:
+
+- Engine features:
+  - Added support for scanning repository files. [#524](https://github.com/microsoft/PSRule/issues/524)
+    - Added `File` input type (`-InputType File`) to scan for files without deserializing them.
+    - Added `Input.PathIgnore` option to ignore files.
+    - When using the `File` input type path specs in `.gitignore` are ignored.
+  - Added `Get-PSRuleTarget` cmdlet to read input files and return raw objects. [#525](https://github.com/microsoft/PSRule/issues/525)
+    - This cmdlet can be used to troubleshoot PSRule input issues.
+  - Baselines can now be flagged as obsolete. [#499](https://github.com/microsoft/PSRule/issues/499)
+    - Set the `metadata.annotations.obsolete` property to `true` to flag a baseline as obsolete.
+    - When an obsolete baseline is used, a warning will be generated.
+  - Added file assertion helpers `FileHeader`, and `FilePath`. [#534](https://github.com/microsoft/PSRule/issues/534)
+    - `FileHeader` checks for a comment header in the file.
+    - `FilePath` checks that a file path (optionally with suffixes) exist.
+- General improvements:
+  - Added automatic binding for Rule object. [#542](https://github.com/microsoft/PSRule/issues/542)
+- Engineering:
+  - Warn when deprecated `$Rule` properties are used. [#536](https://github.com/microsoft/PSRule/issues/536) [#545](https://github.com/microsoft/PSRule/issues/545)
+    - First usage of deprecated property generates a warning.
+    - Rule using deprecated property is flagged in debug output.
+  - Bump YamlDotNet dependency to v8.1.2. [#439](https://github.com/microsoft/PSRule/issues/439)
+- Bug fixes:
+  - Fixed out of bounds exception when empty markdown documentation is used. [#516](https://github.com/microsoft/PSRule/issues/516)
+
+What's changed since pre-release v0.20.0-B2009013:
+
 - Bug fixes:
   - Fixed excessive obsolete property warnings. [#545](https://github.com/microsoft/PSRule/issues/545)
 
@@ -25,7 +54,7 @@ What's changed since pre-release v0.20.0-B2008010:
 - Engine features:
   - Added file assertion helpers `FileHeader`, and `FilePath`. [#534](https://github.com/microsoft/PSRule/issues/534)
     - `FileHeader` checks for a comment header in the file.
-    - `FilePath` checks that a file path, optionally with suffixes exist.
+    - `FilePath` checks that a file path (optionally with suffixes) exist.
 - Engineering:
   - Warn when deprecated `$Rule` properties are used. [#536](https://github.com/microsoft/PSRule/issues/536)
 - Bug fixes:
