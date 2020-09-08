@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title> </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content=" ">
+    <meta name="generator" content="docfx 2.56.1.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+
+<pre><code class="lang-ini">
+BenchmarkDotNet=v0.12.1, OS=Windows 10.0.19041.450 (2004/?/20H1)
+Intel Core i7-1065G7 CPU 1.30GHz, 1 CPU, 8 logical and 4 physical cores
+.NET Core SDK=3.1.401
+  [Host]     : .NET Core 3.1.7 (CoreCLR 4.700.20.36602, CoreFX 4.700.20.37001), X64 RyuJIT
+  DefaultJob : .NET Core 3.1.7 (CoreCLR 4.700.20.36602, CoreFX 4.700.20.37001), X64 RyuJIT
+
+
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th style="text-align: right;">Mean</th>
+<th style="text-align: right;">Error</th>
+<th style="text-align: right;">StdDev</th>
+<th style="text-align: right;">Gen 0</th>
+<th style="text-align: right;">Gen 1</th>
+<th style="text-align: right;">Gen 2</th>
+<th style="text-align: right;">Allocated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Invoke</td>
+<td style="text-align: right;">42,162.8 μs</td>
+<td style="text-align: right;">827.36 μs</td>
+<td style="text-align: right;">1,263.47 μs</td>
+<td style="text-align: right;">3833.3333</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">15952 KB</td>
+</tr>
+<tr>
+<td>InvokeIf</td>
+<td style="text-align: right;">45,646.4 μs</td>
+<td style="text-align: right;">912.31 μs</td>
+<td style="text-align: right;">1,924.38 μs</td>
+<td style="text-align: right;">4416.6667</td>
+<td style="text-align: right;">416.6667</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">18202.98 KB</td>
+</tr>
+<tr>
+<td>InvokeType</td>
+<td style="text-align: right;">41,825.5 μs</td>
+<td style="text-align: right;">810.73 μs</td>
+<td style="text-align: right;">901.12 μs</td>
+<td style="text-align: right;">3833.3333</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">15952 KB</td>
+</tr>
+<tr>
+<td>InvokeSummary</td>
+<td style="text-align: right;">41,133.3 μs</td>
+<td style="text-align: right;">777.97 μs</td>
+<td style="text-align: right;">895.91 μs</td>
+<td style="text-align: right;">3833.3333</td>
+<td style="text-align: right;">500.0000</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">15897.56 KB</td>
+</tr>
+<tr>
+<td>Get</td>
+<td style="text-align: right;">10,054.3 μs</td>
+<td style="text-align: right;">396.83 μs</td>
+<td style="text-align: right;">1,170.07 μs</td>
+<td style="text-align: right;">46.8750</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">252.11 KB</td>
+</tr>
+<tr>
+<td>GetHelp</td>
+<td style="text-align: right;">10,581.4 μs</td>
+<td style="text-align: right;">448.15 μs</td>
+<td style="text-align: right;">1,321.38 μs</td>
+<td style="text-align: right;">46.8750</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">250.51 KB</td>
+</tr>
+<tr>
+<td>Within</td>
+<td style="text-align: right;">81,215.1 μs</td>
+<td style="text-align: right;">1,532.85 μs</td>
+<td style="text-align: right;">1,433.83 μs</td>
+<td style="text-align: right;">7750.0000</td>
+<td style="text-align: right;">250.0000</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">32290.62 KB</td>
+</tr>
+<tr>
+<td>WithinBulk</td>
+<td style="text-align: right;">123,301.6 μs</td>
+<td style="text-align: right;">2,451.51 μs</td>
+<td style="text-align: right;">3,958.73 μs</td>
+<td style="text-align: right;">14000.0000</td>
+<td style="text-align: right;">1000.0000</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">59317.29 KB</td>
+</tr>
+<tr>
+<td>WithinLike</td>
+<td style="text-align: right;">109,738.9 μs</td>
+<td style="text-align: right;">1,933.95 μs</td>
+<td style="text-align: right;">1,809.02 μs</td>
+<td style="text-align: right;">11333.3333</td>
+<td style="text-align: right;">1000.0000</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">46811.07 KB</td>
+</tr>
+<tr>
+<td>DefaultTargetNameBinding</td>
+<td style="text-align: right;">696.0 μs</td>
+<td style="text-align: right;">12.06 μs</td>
+<td style="text-align: right;">10.69 μs</td>
+<td style="text-align: right;">38.0859</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">156.25 KB</td>
+</tr>
+<tr>
+<td>CustomTargetNameBinding</td>
+<td style="text-align: right;">845.6 μs</td>
+<td style="text-align: right;">11.75 μs</td>
+<td style="text-align: right;">10.42 μs</td>
+<td style="text-align: right;">85.9375</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">351.56 KB</td>
+</tr>
+<tr>
+<td>NestedTargetNameBinding</td>
+<td style="text-align: right;">856.0 μs</td>
+<td style="text-align: right;">12.29 μs</td>
+<td style="text-align: right;">10.90 μs</td>
+<td style="text-align: right;">85.9375</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">351.56 KB</td>
+</tr>
+</tbody>
+</table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Microsoft/PSRule/blob/main/docs/scenarios/benchmark/results-v0.20.0.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -80,6 +80,8 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 <ul>
 <li><a href="#contains">Contains</a> - The field value must contain at least one of the strings.</li>
 <li><a href="#endswith">EndsWith</a> - The field value must match at least one suffix.</li>
+<li><a href="#fileheader">FileHeader</a> - The file must contain a comment header.</li>
+<li><a href="#filepath">FilePath</a> - The file path must exist.</li>
 <li><a href="#greater">Greater</a> - The field value must be greater.</li>
 <li><a href="#greaterorequal">GreaterOrEqual</a> - The field value must be greater or equal to.</li>
 <li><a href="#hasdefaultvalue">HasDefaultValue</a> - The object should not have the field or the field value is set to the default value.</li>
@@ -171,29 +173,90 @@ Optionally a case-sensitive compare can be used, however case is ignored by defa
 Optionally a case-sensitive compare can be used, however case is ignored by default.</p>
 <p>The following parameters are accepted:</p>
 <ul>
-<li><p><code>inputObject</code> - The object being checked for the specified field.</p>
-</li>
-<li><p><code>field</code> - The name of the field to check. This is a case insensitive compare.</p>
-</li>
-<li><p><code>suffix</code> - One or more suffixes to compare the field value with. Only one suffix must match.</p>
-</li>
-<li><p><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</p>
-</li>
-<li><p><em>The parameter 'inputObject' is null.</em></p>
-</li>
-<li><p><em>The parameter 'field' is null or empty.</em></p>
-</li>
-<li><p><em>The field '{0}' does not exist.</em></p>
-</li>
-<li><p><em>The field value '{0}' is not a string.</em></p>
-</li>
-<li><p><em>The field '{0}' does not end with '{1}'.</em></p>
-</li>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>suffix</code> - One or more suffixes to compare the field value with. Only one suffix must match.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is not a string.</em></li>
+<li><em>The field '{0}' does not end with '{1}'.</em></li>
 </ul>
 <p>Examples:</p>
 <pre><code class="lang-powershell">Rule 'EndsWith' {
     $Assert.EndsWith($TargetObject, 'ResourceGroupName', 'eus')
     $Assert.EndsWith($TargetObject, 'Name', @('db', 'web'), $True)
+}
+</code></pre>
+<h3 id="fileheader">FileHeader</h3>
+<p>The <code>FileHeader</code> assertion method checks a file for a comment header.
+When comparing the file header, the format of line comments are automatically detected by file extension.
+Single line comments are supported. Multi-line comments are not supported.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field containing a valid file path.</li>
+<li><code>header</code> - One or more lines of a header to compare with file contents.</li>
+<li><code>prefix</code> (optional) - An optional comment prefix for each line.
+By default a comment prefix will automatically detected based on file extension.
+When set, detection by file extension is skipped.</li>
+</ul>
+<p>Prefix detection for line comments is supported with the following file extensions:</p>
+<ul>
+<li><code>.cs</code>, <code>.ts</code>, <code>.js</code>, <code>.fs</code>, <code>.go</code>, <code>.php</code>, <code>.cpp</code>, <code>.h</code> - Use a prefix of (<code>// </code>).</li>
+<li><code>.ps1</code>, <code>.psd1</code>, <code>.psm1</code>, <code>.yaml</code>, <code>.yml</code>, <code>.r</code>, <code>.py</code>, <code>.sh</code>, <code>.tf</code>, <code>.tfvars</code>, <code>.gitignore</code>, <code>.pl</code> - Use a prefix of (<code># </code>).</li>
+<li><code>.sql</code>, <code>.lau</code> - Use a prefix of (<code>-- </code>).</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is not a string.</em></li>
+<li><em>The file '{0}' does not exist.</em></li>
+<li><em>The header was not set.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'FileHeader' {
+    $Assert.FileHeader($TargetObject, 'FullName', @(
+        'Copyright (c) Microsoft Corporation.'
+        'Licensed under the MIT License.'
+    ));
+}
+</code></pre>
+<h3 id="filepath">FilePath</h3>
+<p>The <code>FilePath</code> assertion method checks the file exists.
+Checks use OS case-sensitivity rules.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field containing a file path.</li>
+<li><code>suffix</code> (optional) - Additional file path suffixes to append.
+When specified each suffix is combined with the file path.
+Only one full file path must be a valid file for the assertion method to pass.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is not a string.</em></li>
+<li><em>The file '{0}' does not exist.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'FilePath' {
+    $Assert.FilePath($TargetObject, 'FullName', @('CHANGELOG.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('LICENSE', 'LICENSE.txt'));
+    $Assert.FilePath($TargetObject, 'FullName', @('CODE_OF_CONDUCT.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('CONTRIBUTING.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('SECURITY.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('README.md'));
+    $Assert.FilePath($TargetObject, 'FullName', @('.github/CODEOWNERS'));
+    $Assert.FilePath($TargetObject, 'FullName', @('.github/PULL_REQUEST_TEMPLATE.md'));
 }
 </code></pre>
 <h3 id="greater">Greater</h3>
