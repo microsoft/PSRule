@@ -6,6 +6,10 @@
 
 ## Unreleased
 
+## v0.21.0-B2009006 (pre-release)
+
+What's changed since v0.20.0:
+
 - Engine features:
   - Added support for formatting results as markdown. [#474](https://github.com/microsoft/PSRule/issues/474)
     - Use `-OutputFormat Markdown` or configure `Output.Format` to output markdown.
