@@ -159,6 +159,7 @@ namespace PSRule.Pipeline
             Option.Input = new InputOption(option.Input);
             Option.Input.Format = Option.Input.Format ?? InputOption.Default.Format;
             Option.Output = new OutputOption(option.Output);
+            Option.Output.Outcome = Option.Output.Outcome ?? OutputOption.Default.Outcome;
             return this;
         }
 
@@ -273,6 +274,9 @@ namespace PSRule.Pipeline
 
                 case OutputFormat.Yaml:
                     return new YamlOutputWriter(output, Option);
+
+                case OutputFormat.Markdown:
+                    return new MarkdownOutputWriter(output, Option);
 
                 case OutputFormat.Wide:
                     return new WideOutputWriter(output, Option);

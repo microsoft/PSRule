@@ -38,7 +38,7 @@ namespace PSRule.Pipeline
 
         protected override PipelineWriter PrepareWriter()
         {
-            return new BooleanWriter(GetOutput(), Outcome);
+            return new BooleanWriter(GetOutput(), Option.Output.Outcome.Value);
         }
     }
 }

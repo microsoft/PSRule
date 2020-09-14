@@ -61,6 +61,69 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Related resources.
+        /// </summary>
+        internal static string Markdown_Links {
+            get {
+                return ResourceManager.GetString("Markdown_Links", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outcome.
+        /// </summary>
+        internal static string Markdown_Outcome {
+            get {
+                return ResourceManager.GetString("Markdown_Outcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recommendation.
+        /// </summary>
+        internal static string Markdown_Recommendation {
+            get {
+                return ResourceManager.GetString("Markdown_Recommendation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Result summary.
+        /// </summary>
+        internal static string Markdown_Results {
+            get {
+                return ResourceManager.GetString("Markdown_Results", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following results were reported..
+        /// </summary>
+        internal static string Markdown_ResultText {
+            get {
+                return ResourceManager.GetString("Markdown_ResultText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string Markdown_TargetName {
+            get {
+                return ResourceManager.GetString("Markdown_TargetName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        internal static string Markdown_TargetType {
+            get {
+                return ResourceManager.GetString("Markdown_TargetType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to See details [online]({0})..
         /// </summary>
         internal static string NUnit_DetailsLink {

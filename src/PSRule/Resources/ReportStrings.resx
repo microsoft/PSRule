@@ -117,6 +117,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Markdown_Links" xml:space="preserve">
+    <value>Related resources</value>
+  </data>
+  <data name="Markdown_Outcome" xml:space="preserve">
+    <value>Outcome</value>
+  </data>
+  <data name="Markdown_Recommendation" xml:space="preserve">
+    <value>Recommendation</value>
+  </data>
+  <data name="Markdown_Results" xml:space="preserve">
+    <value>Result summary</value>
+  </data>
+  <data name="Markdown_ResultText" xml:space="preserve">
+    <value>The following results were reported.</value>
+  </data>
+  <data name="Markdown_TargetName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Markdown_TargetType" xml:space="preserve">
+    <value>Type</value>
+  </data>
   <data name="NUnit_DetailsLink" xml:space="preserve">
     <value>See details [online]({0}).</value>
   </data>

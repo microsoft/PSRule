@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Rules;
 using System;
 using System.ComponentModel;
 
@@ -14,6 +15,7 @@ namespace PSRule.Configuration
         private const ResultFormat DEFAULT_AS = ResultFormat.Detail;
         private const OutputEncoding DEFAULT_ENCODING = OutputEncoding.Default;
         private const OutputFormat DEFAULT_FORMAT = OutputFormat.None;
+        private const RuleOutcome DEFAULT_OUTCOME = RuleOutcome.Processed;
         private const OutputStyle DEFAULT_STYLE = OutputStyle.Client;
 
         internal static readonly OutputOption Default = new OutputOption
@@ -21,7 +23,8 @@ namespace PSRule.Configuration
             As = DEFAULT_AS,
             Encoding = DEFAULT_ENCODING,
             Format = DEFAULT_FORMAT,
-            Style = DEFAULT_STYLE
+            Outcome = DEFAULT_OUTCOME,
+            Style = DEFAULT_STYLE,
         };
 
         public OutputOption()
@@ -43,6 +46,7 @@ namespace PSRule.Configuration
             Culture = option.Culture;
             Encoding = option.Encoding;
             Format = option.Format;
+            Outcome = option.Outcome;
             Path = option.Path;
             Style = option.Style;
         }
@@ -59,6 +63,7 @@ namespace PSRule.Configuration
                 Culture == other.Culture &&
                 Encoding == other.Encoding &&
                 Format == other.Format &&
+                Outcome == other.Outcome &&
                 Path == other.Path &&
                 Style == other.Style;
         }
@@ -72,6 +77,7 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (Culture != null ? Culture.GetHashCode() : 0);
                 hash = hash * 23 + (Encoding.HasValue ? Encoding.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Format.HasValue ? Format.Value.GetHashCode() : 0);
+                hash = hash * 23 + (Outcome.HasValue ? Outcome.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Path != null ? Path.GetHashCode() : 0);
                 hash = hash * 23 + (Style.HasValue ? Style.Value.GetHashCode() : 0);
                 return hash;
@@ -85,6 +91,7 @@ namespace PSRule.Configuration
             result.Culture = o1.Culture ?? o2.Culture;
             result.Encoding = o1.Encoding ?? o2.Encoding;
             result.Format = o1.Format ?? o2.Format;
+            result.Outcome = o1.Outcome ?? o2.Outcome;
             result.Path = o1.Path ?? o2.Path;
             result.Style = o1.Style ?? o2.Style;
             return result;
@@ -110,6 +117,9 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public OutputFormat? Format { get; set; }
+
+        [DefaultValue(null)]
+        public RuleOutcome? Outcome { get; set; }
 
         /// <summary>
         /// The file path location to save results.

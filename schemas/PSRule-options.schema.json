@@ -233,7 +233,7 @@
                 ]
             }
         },
-        "output": {
+        "output-option": {
             "type": "object",
             "title": "Output options",
             "description": "Options that affect how output is generated.",
@@ -281,11 +281,26 @@
                         "None",
                         "Yaml",
                         "Json",
+                        "Markdown",
                         "NUnit3",
                         "Csv",
                         "Wide"
                     ],
                     "default": "None"
+                },
+                "outcome": {
+                    "type": "string",
+                    "title": "Output outcome",
+                    "description": "The outcome of rule results to return. The default is Processed.",
+                    "enum": [
+                        "None",
+                        "Fail",
+                        "Pass",
+                        "Error",
+                        "Processed",
+                        "All"
+                    ],
+                    "default": "Processed"
                 },
                 "path": {
                     "type": "string",
@@ -351,7 +366,7 @@
                 },
                 "output": {
                     "type": "object",
-                    "$ref": "#/definitions/output"
+                    "$ref": "#/definitions/output-option"
                 },
                 "requires": {
                     "type": "object",

@@ -584,6 +584,14 @@ namespace PSRule.Pipeline
             }
         }
 
+        public override IPipelineBuilder Configure(PSRuleOption option)
+        {
+            base.Configure(option);
+            Option.Output.As = ResultFormat.Detail;
+            Option.Output.Outcome = RuleOutcome.Processed;
+            return this;
+        }
+
         protected override PipelineWriter PrepareWriter()
         {
             return GetWriter();

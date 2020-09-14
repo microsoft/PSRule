@@ -4,6 +4,7 @@
 using Newtonsoft.Json;
 using PSRule.Definitions;
 using PSRule.Resources;
+using PSRule.Rules;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -364,6 +365,10 @@ namespace PSRule.Configuration
             if (index.TryPopValue("output.format", out value))
             {
                 option.Output.Format = (OutputFormat)Enum.Parse(typeof(OutputFormat), (string)value);
+            }
+            if (index.TryPopValue("output.outcome", out value))
+            {
+                option.Output.Outcome = (RuleOutcome)Enum.Parse(typeof(RuleOutcome), (string)value);
             }
             if (index.TryPopValue("output.path", out value))
             {

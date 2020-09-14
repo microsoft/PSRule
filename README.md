@@ -283,6 +283,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Output.Culture](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputculture)
   - [Output.Encoding](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputencoding)
   - [Output.Format](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputformat)
+  - [Output.Outcome](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputoutcome)
   - [Output.Path](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputpath)
   - [Output.Style](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputstyle)
   - [Rule.Include](docs/concepts/PSRule/en-US/about_PSRule_Options.md#ruleinclude)

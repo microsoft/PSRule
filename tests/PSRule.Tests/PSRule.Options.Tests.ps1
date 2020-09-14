@@ -690,6 +690,28 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Output.Outcome' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Output.Outcome | Should -Be 'Processed';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Output.Outcome' = 'Fail' };
+            $option.Output.Outcome | Should -Be 'Fail';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Output.Outcome | Should -Be 'Pass';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -OutputOutcome 'Fail' -Path $emptyOptionsFilePath;
+            $option.Output.Outcome | Should -Be 'Fail';
+        }
+    }
+
     Context 'Read Output.Path' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -972,6 +994,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputFormat 'Yaml' @optionParams;
             $option.Output.Format | Should -Be 'Yaml';
+        }
+    }
+
+    Context 'Read Output.Outcome' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -OutputOutcome Fail @optionParams;
+            $option.Output.Outcome | Should -Be 'Fail';
         }
     }
 
