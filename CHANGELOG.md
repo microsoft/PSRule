@@ -6,8 +6,13 @@
 
 ## Unreleased
 
+- Engine features:
+  - Added support for formatting results as markdown. [#474](https://github.com/microsoft/PSRule/issues/474)
+    - Use `-OutputFormat Markdown` or configure `Output.Format` to output markdown.
+    - To format as either detail or summary, use the `-As` parameter or configure `Output.As`.
 - General improvements:
   - Numerical strings can be converted with numeric assertion helpers. [#550](https://github.com/microsoft/PSRule/issues/550)
+  - Added outcome `Output.Outcome` as a configurable option. [#552](https://github.com/microsoft/PSRule/issues/552)
 
 ## v0.20.0
 

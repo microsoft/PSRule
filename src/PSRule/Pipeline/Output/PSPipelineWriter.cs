@@ -150,7 +150,7 @@ namespace PSRule.Pipeline.Output
 
         public override void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
-            if (OnWriteObject == null)
+            if (OnWriteObject == null || (sendToPipeline is InvokeResult && Option.Output.As == ResultFormat.Summary))
                 return;
 
             if (sendToPipeline is InvokeResult result)

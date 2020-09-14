@@ -28,6 +28,7 @@ The following workspace options are available for use:
 - [Output.Culture](#outputculture)
 - [Output.Encoding](#outputencoding)
 - [Output.Format](#outputformat)
+- [Output.Outcome](#outputoutcome)
 - [Output.Path](#outputpath)
 - [Output.Style](#outputstyle)
 - [Requires](#requires)
@@ -854,7 +855,7 @@ This option can be specified using:
 
 ```powershell
 # PowerShell: Using the OutputAs parameter
-$option = New-PSRuleOption -OutputAs Yaml;
+$option = New-PSRuleOption -OutputAs Summary;
 ```
 
 ```powershell
@@ -864,7 +865,7 @@ $option = New-PSRuleOption -Option @{ 'Output.As' = 'Summary' };
 
 ```powershell
 # PowerShell: Using the OutputAs parameter to set YAML
-Set-PSRuleOption -OutputAs Yaml;
+Set-PSRuleOption -OutputAs Summary;
 ```
 
 ```yaml
@@ -947,7 +948,7 @@ output:
 ### Output.Format
 
 Configures the format that results will be presented in.
-This option applies to `Invoke-PSRule`, `Assert-PSRule` and `Get-PSRule`.
+This option applies to `Invoke-PSRule`, `Assert-PSRule`, and `Get-PSRule`.
 This options is ignored by other cmdlets.
 
 The following format options are available:
@@ -955,6 +956,7 @@ The following format options are available:
 - None - Output is presented as an object using PowerShell defaults. This is the default.
 - Yaml - Output is serialized as YAML.
 - Json - Output is serialized as JSON.
+- Markdown - Output is serialized as Markdown.
 - NUnit3 - Output is serialized as NUnit3 (XML).
 - Csv - Output is serialized as a comma separated values (CSV).
   - The following columns are included for `Detail` output:
@@ -987,6 +989,47 @@ Set-PSRuleOption -OutputFormat Yaml;
 # YAML: Using the output/format property
 output:
   format: Yaml
+```
+
+### Output.Outcome
+
+Filters output to include results with the specified outcome.
+This option applies to `Invoke-PSRule`, and `Test-PSRule`.
+
+The following outcome options are available:
+
+- `None` - Results for rules that did not get processed are returned.
+- `Pass` - Results for rules that passed are returned.
+- `Fail` - Results for rules that failed are returned.
+- `Error` - Results for rules that raised an error are returned.
+- `Processed` - Results for rules that either passed, failed, or raised an error are returned.
+This is the default option.
+- `All` - All results for rules are returned.
+
+This option is ignored by `Assert-PSRule`.
+`Assert-PSRule` will always use `Processed`.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the OutputOutcome parameter
+$option = New-PSRuleOption -OutputOutcome Fail;
+```
+
+```powershell
+# PowerShell: Using the Output.Outcome hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Outcome' = 'Fail' };
+```
+
+```powershell
+# PowerShell: Using the OutputOutcome parameter to set YAML
+Set-PSRuleOption -OutputOutcome Fail;
+```
+
+```yaml
+# YAML: Using the output/outcome property
+output:
+  outcome: 'Fail'
 ```
 
 ### Output.Path
@@ -1266,6 +1309,7 @@ output:
   - en-US
   encoding: UTF8
   format: Json
+  outcome: Fail
   style: GitHubActions
 
 # Configure rule suppression
@@ -1344,6 +1388,7 @@ output:
   culture: [ ]
   encoding: Default
   format: None
+  outcome: Processed
   style: Client
 
 # Configure rule suppression

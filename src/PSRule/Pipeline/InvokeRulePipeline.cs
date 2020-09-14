@@ -14,8 +14,6 @@ namespace PSRule.Pipeline
 {
     public interface IInvokePipelineBuilder : IPipelineBuilder
     {
-        void Limit(RuleOutcome outcome);
-
         void InputPath(string[] path);
 
         void ResultVariable(string variableName);
@@ -23,20 +21,13 @@ namespace PSRule.Pipeline
 
     internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvokePipelineBuilder
     {
-        protected RuleOutcome Outcome;
         protected InputFileInfo[] _InputPath;
         protected string _ResultVariableName;
 
         protected InvokePipelineBuilderBase(Source[] source, HostContext hostContext)
             : base(source, hostContext)
         {
-            Outcome = RuleOutcome.Processed;
             _InputPath = null;
-        }
-
-        public void Limit(RuleOutcome outcome)
-        {
-            Outcome = outcome;
         }
 
         public void InputPath(string[] path)
@@ -99,7 +90,7 @@ namespace PSRule.Pipeline
             if (!RequireModules() || !RequireSources())
                 return null;
 
-            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, PrepareReader(), PrepareWriter(), Outcome);
+            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, PrepareReader(), PrepareWriter());
         }
 
         protected override PipelineReader PrepareReader()
@@ -181,7 +172,7 @@ namespace PSRule.Pipeline
         // Track whether Dispose has been called.
         private bool _Disposed;
 
-        internal InvokeRulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer, RuleOutcome outcome)
+        internal InvokeRulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer)
             : base(context, source, reader, writer)
         {
             HostHelper.ImportResource(Source, Context);
@@ -191,7 +182,7 @@ namespace PSRule.Pipeline
             if (RuleCount == 0)
                 Context.WarnRuleNotFound();
 
-            _Outcome = outcome;
+            _Outcome = context.Option.Output.Outcome.Value;
             _Summary = new Dictionary<string, RuleSummaryRecord>();
             _ResultFormat = context.Option.Output.As.Value;
             _SuppressionFilter = new RuleSuppressionFilter(context.Option.Suppression);
@@ -285,8 +276,7 @@ namespace PSRule.Pipeline
 
         private bool ShouldOutput(RuleOutcome outcome)
         {
-            return _ResultFormat == ResultFormat.Detail &&
-                (_Outcome == RuleOutcome.All || (outcome & _Outcome) > 0);
+            return _Outcome == RuleOutcome.All || (outcome & _Outcome) > 0;
         }
 
         /// <summary>

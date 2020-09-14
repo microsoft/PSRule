@@ -22,6 +22,8 @@ namespace PSRule.Configuration
 
         Csv = 4,
 
-        Wide = 5
+        Wide = 5,
+
+        Markdown = 6
     }
 }

@@ -5,7 +5,6 @@ using PSRule.Configuration;
 using PSRule.Rules;
 using System.Collections.Generic;
 using System.Management.Automation;
-using System.Threading;
 
 namespace PSRule.Pipeline
 {
@@ -171,6 +170,9 @@ namespace PSRule.Pipeline
 
         public override void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
+            if (sendToPipeline is InvokeResult && Option.Output.As == ResultFormat.Summary)
+                return;
+
             if (sendToPipeline is InvokeResult result)
             {
                 Add(result.AsRecord());

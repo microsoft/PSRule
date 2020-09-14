@@ -58,6 +58,7 @@ output:
   culture: [ 'en-CC' ]
   encoding: UTF7
   format: Json
+  outcome: Pass
   path: 'out/OutputPath.txt'
   style: GitHubActions
 

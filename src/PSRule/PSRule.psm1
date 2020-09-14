@@ -54,7 +54,7 @@ function Invoke-PSRule {
         [String]$OutputPath,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv', 'Wide')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide')]
         [Alias('o')]
         [PSRule.Configuration.OutputFormat]$OutputFormat = [PSRule.Configuration.OutputFormat]::None,
 
@@ -141,6 +141,9 @@ function Invoke-PSRule {
         if ($PSBoundParameters.ContainsKey('OutputFormat')) {
             $Option.Output.Format = $OutputFormat;
         }
+        if ($PSBoundParameters.ContainsKey('Outcome')) {
+            $Option.Output.Outcome = $Outcome;
+        }
         if ($PSBoundParameters.ContainsKey('OutputPath')) {
             $Option.Output.Path = $OutputPath;
         }
@@ -151,15 +154,12 @@ function Invoke-PSRule {
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);
         $builder.Name($Name);
         $builder.Tag($Tag);
-        $builder.Limit($Outcome);
         $builder.UseBaseline($Baseline);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $builder.InputPath($InputPath);
         }
 
-        # $builder.UseCommandRuntime($PSCmdlet);
-        # $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
             if ($Null -ne $pipeline) {
@@ -290,6 +290,9 @@ function Test-PSRuleTarget {
         if ($PSBoundParameters.ContainsKey('TargetType')) {
             $Option.Input.TargetType = $TargetType;
         }
+        if ($PSBoundParameters.ContainsKey('Outcome')) {
+            $Option.Output.Outcome = $Outcome;
+        }
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $Option.Output.Culture = $Culture;
         }
@@ -297,14 +300,11 @@ function Test-PSRuleTarget {
         $builder = [PSRule.Pipeline.PipelineBuilder]::Test($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);
         $builder.Name($Name);
         $builder.Tag($Tag);
-        $builder.Limit($Outcome);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $builder.InputPath($InputPath);
         }
 
-        # $builder.UseCommandRuntime($PSCmdlet);
-        # $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
             if ($Null -ne $pipeline) {
@@ -485,7 +485,7 @@ function Assert-PSRule {
         [String]$OutputPath,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv')]
         [Alias('o')]
         [PSRule.Configuration.OutputFormat]$OutputFormat,
 
@@ -575,8 +575,6 @@ function Assert-PSRule {
             $builder.InputPath($InputPath);
         }
 
-        # $builder.UseCommandRuntime($PSCmdlet);
-        # $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
             if ($Null -ne $pipeline) {
@@ -1086,6 +1084,12 @@ function New-PSRuleOption {
         [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv')]
         [PSRule.Configuration.OutputFormat]$OutputFormat = 'None',
 
+        # Sets the Output.Outcome option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Processed', 'All')]
+        [Alias('Outcome')]
+        [PSRule.Rules.RuleOutcome]$OutputOutcome = 'Processed',
+
         # Sets the Output.Path option
         [Parameter(Mandatory = $False)]
         [String]$OutputPath = '',
@@ -1281,6 +1285,12 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'NUnit3', 'Csv')]
         [PSRule.Configuration.OutputFormat]$OutputFormat = 'None',
+
+        # Sets the Output.Outcome option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Processed', 'All')]
+        [Alias('Outcome')]
+        [PSRule.Rules.RuleOutcome]$OutputOutcome = 'Processed',
 
         # Sets the Output.Path option
         [Parameter(Mandatory = $False)]
@@ -1870,6 +1880,12 @@ function SetOptions {
         [ValidateSet('None', 'Yaml', 'Json', 'NUnit3')]
         [PSRule.Configuration.OutputFormat]$OutputFormat = 'None',
 
+        # Sets the Output.Outcome option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Processed', 'All')]
+        [Alias('Outcome')]
+        [PSRule.Rules.RuleOutcome]$OutputOutcome = 'Processed',
+
         # Sets the Output.Path option
         [Parameter(Mandatory = $False)]
         [String]$OutputPath = '',
@@ -1980,6 +1996,11 @@ function SetOptions {
         # Sets option Output.Format
         if ($PSBoundParameters.ContainsKey('OutputFormat')) {
             $Option.Output.Format = $OutputFormat;
+        }
+
+        # Sets option Output.Outcome
+        if ($PSBoundParameters.ContainsKey('OutputOutcome')) {
+            $Option.Output.Outcome = $OutputOutcome;
         }
 
         # Sets option Output.Path
