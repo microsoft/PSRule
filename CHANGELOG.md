@@ -6,6 +6,9 @@
 
 ## Unreleased
 
+- General improvements:
+  - Numerical strings can be converted with numeric assertion helpers. [#550](https://github.com/microsoft/PSRule/issues/550)
+
 ## v0.20.0
 
 What's changed since v0.19.0:

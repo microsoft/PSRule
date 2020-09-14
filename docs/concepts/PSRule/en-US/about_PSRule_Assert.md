@@ -240,6 +240,8 @@ The following parameters are accepted:
 - `inputObject` - The object being checked for the specified field.
 - `field` - The name of the field to check. This is a case insensitive compare.
 - `value` - A integer to compare the field value against.
+- `convert` (optional) - Convert numerical strings and use a numerical comparison instead of using string length.
+By default the string length is compared.
 
 Reasons include:
 
@@ -272,6 +274,8 @@ The following parameters are accepted:
 - `inputObject` - The object being checked for the specified field.
 - `field` - The name of the field to check. This is a case insensitive compare.
 - `value` - A integer to compare the field value against.
+- `convert` (optional) - Convert numerical strings and use a numerical comparison instead of using string length.
+By default the string length is compared.
 
 Reasons include:
 
@@ -476,6 +480,8 @@ The following parameters are accepted:
 - `inputObject` - The object being checked for the specified field.
 - `field` - The name of the field to check. This is a case insensitive compare.
 - `value` - A integer to compare the field value against.
+- `convert` (optional) - Convert numerical strings and use a numerical comparison instead of using string length.
+By default the string length is compared.
 
 Reasons include:
 
@@ -502,6 +508,8 @@ When the field value is:
 - An integer or float, a numerical comparison is used.
 - An array, the number of elements is compared.
 - A string, the length of the string is compared.
+- `convert` (optional) - Convert numerical strings and use a numerical comparison instead of using string length.
+By default the string length is compared.
 
 The following parameters are accepted:
 

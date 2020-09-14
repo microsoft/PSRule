@@ -283,7 +283,7 @@ namespace PSRule.Runtime
             return Pass();
         }
 
-        public AssertResult Greater(PSObject inputObject, string field, int value)
+        public AssertResult Greater(PSObject inputObject, string field, int value, bool convert = false)
         {
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
@@ -291,13 +291,13 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (CompareNumeric(fieldValue, value, out int compare, out object actual))
+            if (CompareNumeric(fieldValue, value, convert, out int compare, out object actual))
                 return compare > 0 ? Pass() : Fail(ReasonStrings.Greater, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
         }
 
-        public AssertResult GreaterOrEqual(PSObject inputObject, string field, int value)
+        public AssertResult GreaterOrEqual(PSObject inputObject, string field, int value, bool convert = false)
         {
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
@@ -305,13 +305,13 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (CompareNumeric(fieldValue, value, out int compare, out object actual))
+            if (CompareNumeric(fieldValue, value, convert, out int compare, out object actual))
                 return compare >= 0 ? Pass() : Fail(ReasonStrings.GreaterOrEqual, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
         }
 
-        public AssertResult Less(PSObject inputObject, string field, int value)
+        public AssertResult Less(PSObject inputObject, string field, int value, bool convert = false)
         {
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
@@ -319,13 +319,13 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (CompareNumeric(fieldValue, value, out int compare, out object actual))
+            if (CompareNumeric(fieldValue, value, convert, out int compare, out object actual))
                 return compare < 0 ? Pass() : Fail(ReasonStrings.Less, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
         }
 
-        public AssertResult LessOrEqual(PSObject inputObject, string field, int value)
+        public AssertResult LessOrEqual(PSObject inputObject, string field, int value, bool convert = false)
         {
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
@@ -333,7 +333,7 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (CompareNumeric(fieldValue, value, out int compare, out object actual))
+            if (CompareNumeric(fieldValue, value, convert, out int compare, out object actual))
                 return compare <= 0 ? Pass() : Fail(ReasonStrings.LessOrEqual, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
@@ -547,9 +547,9 @@ namespace PSRule.Runtime
             return false;
         }
 
-        private static bool TryInt(object obj, out int value)
+        private static bool TryInt(object obj, bool convert, out int value)
         {
-            if (obj is int ivalue)
+            if (obj is int ivalue || (convert && obj is string s && int.TryParse(s, out ivalue)))
             {
                 value = ivalue;
                 return true;
@@ -558,9 +558,9 @@ namespace PSRule.Runtime
             return false;
         }
 
-        private static bool TryLong(object obj, out long value)
+        private static bool TryLong(object obj, bool convert, out long value)
         {
-            if (obj is long lvalue)
+            if (obj is long lvalue || (convert && obj is string s && long.TryParse(s, out lvalue)))
             {
                 value = lvalue;
                 return true;
@@ -569,9 +569,9 @@ namespace PSRule.Runtime
             return false;
         }
 
-        private static bool TryFloat(object obj, out float value)
+        private static bool TryFloat(object obj, bool convert, out float value)
         {
-            if (obj is float fvalue)
+            if (obj is float fvalue || (convert && obj is string s && float.TryParse(s, out fvalue)))
             {
                 value = fvalue;
                 return true;
@@ -602,24 +602,30 @@ namespace PSRule.Runtime
             return false;
         }
 
-        private static bool CompareNumeric(object obj, int value, out int compare, out object actual)
+        private static bool CompareNumeric(object obj, int value, bool convert, out int compare, out object actual)
         {
-            if (TryInt(obj, out int iactual) || TryStringLength(obj, out iactual) || TryArrayLength(obj, out iactual))
+            if (TryInt(obj, convert, out int iactual))
             {
                 compare = iactual.CompareTo(value);
                 actual = iactual;
                 return true;
             }
-            if (TryLong(obj, out long lactual))
+            if (TryLong(obj, convert, out long lactual))
             {
                 compare = lactual.CompareTo(value);
                 actual = lactual;
                 return true;
             }
-            if (TryFloat(obj, out float factual))
+            if (TryFloat(obj, convert, out float factual))
             {
                 compare = factual.CompareTo(value);
                 actual = factual;
+                return true;
+            }
+            if (TryStringLength(obj, out iactual) || TryArrayLength(obj, out iactual))
+            {
+                compare = iactual.CompareTo(value);
+                actual = iactual;
                 return true;
             }
             compare = 0;
