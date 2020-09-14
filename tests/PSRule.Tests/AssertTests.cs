@@ -254,6 +254,14 @@ namespace PSRule
 
             // Self
             Assert.True(assert.Greater(3, ".", 2).Result);
+
+            // Convert from string
+            value = GetObject((name: "value", value: "3"));
+            Assert.True(assert.Greater(value, "value", 2, convert: true).Result);
+            Assert.False(assert.Greater(value, "value", 2, convert: false).Result);
+            value = GetObject((name: "value", value: "4.5"));
+            Assert.True(assert.Greater(value, "value", 2, convert: true).Result);
+            Assert.False(assert.Greater(value, "value", 4, convert: false).Result);
         }
 
         [Fact]
@@ -288,6 +296,14 @@ namespace PSRule
 
             // Self
             Assert.True(assert.GreaterOrEqual(2, ".", 2).Result);
+
+            // Convert from string
+            value = GetObject((name: "value", value: "3"));
+            Assert.True(assert.GreaterOrEqual(value, "value", 2, convert: true).Result);
+            Assert.False(assert.GreaterOrEqual(value, "value", 2, convert: false).Result);
+            value = GetObject((name: "value", value: "4.5"));
+            Assert.True(assert.GreaterOrEqual(value, "value", 2, convert: true).Result);
+            Assert.False(assert.GreaterOrEqual(value, "value", 4, convert: false).Result);
         }
 
         [Fact]
@@ -322,6 +338,14 @@ namespace PSRule
 
             // Self
             Assert.True(assert.Less(1, ".", 2).Result);
+
+            // Convert from string
+            value = GetObject((name: "value", value: "3"));
+            Assert.False(assert.Less(value, "value", 2, convert: true).Result);
+            Assert.True(assert.Less(value, "value", 2, convert: false).Result);
+            value = GetObject((name: "value", value: "4.5"));
+            Assert.False(assert.Less(value, "value", 4, convert: true).Result);
+            Assert.True(assert.Less(value, "value", 4, convert: false).Result);
         }
 
         [Fact]
@@ -356,6 +380,14 @@ namespace PSRule
 
             // Self
             Assert.True(assert.LessOrEqual(1, ".", 1).Result);
+
+            // Convert from string
+            value = GetObject((name: "value", value: "3"));
+            Assert.False(assert.LessOrEqual(value, "value", 2, convert: true).Result);
+            Assert.True(assert.LessOrEqual(value, "value", 2, convert: false).Result);
+            value = GetObject((name: "value", value: "4.5"));
+            Assert.False(assert.LessOrEqual(value, "value", 4, convert: true).Result);
+            Assert.True(assert.LessOrEqual(value, "value", 4, convert: false).Result);
         }
 
         [Fact]
