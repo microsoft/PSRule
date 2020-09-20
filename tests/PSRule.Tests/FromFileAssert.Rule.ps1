@@ -132,6 +132,18 @@ Rule 'Assert.In' {
     $Assert.In($TargetObject, 'InArrayPSObject', @('item2'), $True)
 }
 
+# Synopsis: Test for $Assert.IsLower
+Rule 'Assert.IsLower' {
+    $Assert.IsLower($TargetObject, 'Lower')
+    $Assert.IsLower($TargetObject, 'LetterLower', $True)
+}
+
+# Synopsis: Test for $Assert.IsUpper
+Rule 'Assert.IsUpper' {
+    $Assert.IsUpper($TargetObject, 'Upper')
+    $Assert.IsUpper($TargetObject, 'LetterUpper', $True)
+}
+
 # Synopsis: Test for $Assert.Less
 Rule 'Assert.Less' {
     $Assert.Less($TargetObject, 'CompareNumeric', 2)

@@ -125,6 +125,44 @@ namespace PSRule
         }
 
         [Fact]
+        public void IsLower()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject(
+                (name: "name1", value: "abc"),
+                (name: "name2", value: "aBc"),
+                (name: "name3", value: "123"),
+                (name: "name4", value: 123)
+            );
+
+            Assert.True(assert.IsLower(value, "name1").Result);
+            Assert.False(assert.IsLower(value, "name2").Result);
+            Assert.True(assert.IsLower(value, "name3").Result);
+            Assert.False(assert.IsLower(value, "name3", requireLetters: true).Result);
+            Assert.False(assert.IsLower(value, "name4").Result);
+        }
+
+        [Fact]
+        public void IsUpper()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject(
+                (name: "name1", value: "ABC"),
+                (name: "name2", value: "AbC"),
+                (name: "name3", value: "123"),
+                (name: "name4", value: 123)
+            );
+
+            Assert.True(assert.IsUpper(value, "name1").Result);
+            Assert.False(assert.IsUpper(value, "name2").Result);
+            Assert.True(assert.IsUpper(value, "name3").Result);
+            Assert.False(assert.IsUpper(value, "name3", requireLetters: true).Result);
+            Assert.False(assert.IsUpper(value, "name4").Result);
+        }
+
+        [Fact]
         public void Version()
         {
             SetContext();

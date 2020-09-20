@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using Manatee.Json;
@@ -214,10 +214,11 @@ namespace PSRule.Runtime
                 return result;
 
             // Assert
-            for (var i = 0; i < prefix.Length; i++)
+            for (var i = 0; prefix != null && i < prefix.Length; i++)
+            {
                 if (value.StartsWith(prefix[i], caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
                     return Pass();
-            
+            }
             return Fail(ReasonStrings.StartsWith, field, FormatArray(prefix));
         }
 
@@ -234,10 +235,11 @@ namespace PSRule.Runtime
                 return result;
 
             // Assert
-            for (var i = 0; i < suffix.Length; i++)
+            for (var i = 0; suffix != null && i < suffix.Length; i++)
+            {
                 if (value.EndsWith(suffix[i], caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
                     return Pass();
-
+            }
             return Fail(ReasonStrings.EndsWith, field, FormatArray(suffix));
         }
 
@@ -254,11 +256,58 @@ namespace PSRule.Runtime
                 return result;
 
             // Assert
-            for (var i = 0; i < text.Length; i++)
+            for (var i = 0; text != null && i < text.Length; i++)
+            {
                 if (value.IndexOf(text[i], caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) >= 0)
                     return Pass();
-
+            }
             return Fail(ReasonStrings.Contains, field, FormatArray(text));
+        }
+
+        /// <summary>
+        /// The object field value should only contain lowercase characters.
+        /// </summary>
+        public AssertResult IsLower(PSObject inputObject, string field, bool requireLetters = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardString(fieldValue, out string value, out result))
+                return result;
+
+            for (var i = 0; i < value.Length; i++)
+            {
+                if (!char.IsLetter(value, i) && requireLetters)
+                    return Fail(ReasonStrings.IsLetter, value);
+
+                if (char.IsLetter(value, i) && !char.IsLower(value, i))
+                    return Fail(ReasonStrings.IsLower, value);
+            }
+            return Pass();
+        }
+
+        /// <summary>
+        /// The object field value should only contain uppercase characters.
+        /// </summary>
+        public AssertResult IsUpper(PSObject inputObject, string field, bool requireLetters = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardString(fieldValue, out string value, out result))
+                return result;
+
+            for (var i = 0; i < value.Length; i++)
+            {
+                if (!char.IsLetter(value, i) && requireLetters)
+                    return Fail(ReasonStrings.IsLetter, value);
+
+                if (char.IsLetter(value, i) && !char.IsUpper(value, i))
+                    return Fail(ReasonStrings.IsUpper, value);
+            }
+            return Pass();
         }
 
         /// <summary>
@@ -648,13 +697,26 @@ namespace PSRule.Runtime
         /// <summary>
         /// Fails of the value is null or empty.
         /// </summary>
-        /// <returns>Returns true if the field does not exist.</returns>
+        /// <returns>Returns true if the value is null or an empty string.</returns>
         /// <remarks>
         /// Reason: The parameter '{0}' is null or empty.
         /// </remarks>
         private bool GuardNullOrEmptyParam(string value, string parameterName, out AssertResult result)
         {
             result = string.IsNullOrEmpty(value) ? Fail(ReasonStrings.NullOrEmptyParameter, parameterName) : null;
+            return result != null;
+        }
+
+        /// <summary>
+        /// Fails of the value is null or empty.
+        /// </summary>
+        /// <returns>Returns true if the value is null or is empty.</returns>
+        /// <remarks>
+        /// Reason: The parameter '{0}' is null or empty.
+        /// </remarks>
+        private bool GuardNullOrEmptyParam(Array value, string parameterName, out AssertResult result)
+        {
+            result = value == null || value.Length == 0 ? Fail(ReasonStrings.NullOrEmptyParameter, parameterName) : null;
             return result != null;
         }
 

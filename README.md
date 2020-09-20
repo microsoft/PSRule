@@ -244,6 +244,8 @@ The following conceptual topics exist in the `PSRule` module:
   - [HasFieldValue](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasfieldvalue)
   - [HasJsonSchema](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasjsonschema)
   - [In](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#in)
+  - [IsLower](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#islower)
+  - [IsUpper](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#isupper)
   - [JsonSchema](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#jsonschema)
   - [Less](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#less)
   - [Match](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#match)
