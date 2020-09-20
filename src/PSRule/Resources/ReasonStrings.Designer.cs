@@ -187,6 +187,33 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not contain only letters..
+        /// </summary>
+        internal static string IsLetter {
+            get {
+                return ResourceManager.GetString("IsLetter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not contain only lowercase characters..
+        /// </summary>
+        internal static string IsLower {
+            get {
+                return ResourceManager.GetString("IsLower", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not contain only uppercase characters..
+        /// </summary>
+        internal static string IsUpper {
+            get {
+                return ResourceManager.GetString("IsUpper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed schema validation on {0}. {1}.
         /// </summary>
         internal static string JsonSchemaInvalid {

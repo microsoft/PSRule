@@ -162,6 +162,15 @@
     <value>The field value '{0}' was not included in the set.</value>
     <comment>The field value '{0}' was not included in the set.</comment>
   </data>
+  <data name="IsLetter" xml:space="preserve">
+    <value>The value '{0}' does not contain only letters.</value>
+  </data>
+  <data name="IsLower" xml:space="preserve">
+    <value>The value '{0}' does not contain only lowercase characters.</value>
+  </data>
+  <data name="IsUpper" xml:space="preserve">
+    <value>The value '{0}' does not contain only uppercase characters.</value>
+  </data>
   <data name="JsonSchemaInvalid" xml:space="preserve">
     <value>Failed schema validation on {0}. {1}</value>
   </data>

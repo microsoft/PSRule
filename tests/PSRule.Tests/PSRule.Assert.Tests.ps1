@@ -51,6 +51,10 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 )
                 Path = $PSCommandPath
                 ParentPath = $here
+                Lower = 'test123'
+                Upper = 'TEST123'
+                LetterLower = 'test'
+                LetterUpper = 'TEST'
             }
             [PSCustomObject]@{
                 '$schema' = "http://json-schema.org/draft-07/schema`#"
@@ -78,6 +82,10 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                     'item3'
                 )
                 ParentPath = (Join-Path -Path $here -ChildPath 'notapath')
+                Lower = 'Test123'
+                Upper = 'Test123'
+                LetterLower = 'test123'
+                LetterUpper = 'TEST123'
             }
         )
 
@@ -326,6 +334,40 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             # Positive case
             $result[1].IsSuccess() | Should -Be $True;
             $result[1].TargetName | Should -Be 'TestObject2';
+        }
+
+        It 'IsLower' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.IsLower');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 2;
+            $result[1].Reason[0] | Should -BeLike "The value '*' does not contain only lowercase characters.";
+            $result[1].Reason[1] | Should -BeLike "The value '*' does not contain only letters.";
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+        }
+
+        It 'IsUpper' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.IsUpper');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 2;
+            $result[1].Reason[0] | Should -BeLike "The value '*' does not contain only uppercase characters.";
+            $result[1].Reason[1] | Should -BeLike "The value '*' does not contain only letters.";
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
         }
 
         It 'Less' {
