@@ -123,6 +123,9 @@ task TestDotNet {
 task CopyModule {
     CopyModuleFiles -Path src/PSRule -DestinationPath out/modules/PSRule;
 
+    # Copy LICENSE
+    Copy-Item -Path LICENSE -Destination out/modules/PSRule;
+
     # Copy third party notices
     Copy-Item -Path ThirdPartyNotices.txt -Destination out/modules/PSRule;
 
