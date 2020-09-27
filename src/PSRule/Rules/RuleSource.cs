@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Management.Automation;
+using System.Threading;
 
 namespace PSRule.Rules
 {
@@ -96,6 +97,9 @@ namespace PSRule.Rules
     /// </summary>
     public sealed class RuleSourceBuilder
     {
+        private const string SourceFileExtension_YAML = ".yaml";
+        private const string SourceFileExtension_YML = ".yaml";
+        private const string SourceFileExtension_PS1 = ".ps1";
         private readonly List<Source> _Source;
         private readonly PipelineLogger _Logger;
 
@@ -123,7 +127,7 @@ namespace PSRule.Rules
             {
                 return;
             }
-            _Logger.WriteVerbose(string.Format(PSRuleResources.ScanSource, path));
+            _Logger.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ScanSource, path));
         }
 
         public void VerboseFoundModules(int count)
@@ -132,7 +136,7 @@ namespace PSRule.Rules
             {
                 return;
             }
-            _Logger.WriteVerbose(string.Format(PSRuleResources.FoundModules, count));
+            _Logger.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.FoundModules, count));
         }
 
         public void VerboseScanModule(string moduleName)
@@ -141,7 +145,7 @@ namespace PSRule.Rules
             {
                 return;
             }
-            _Logger.WriteVerbose(string.Format(PSRuleResources.ScanModule, moduleName));
+            _Logger.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ScanModule, moduleName));
         }
 
         /// <summary>
@@ -204,7 +208,7 @@ namespace PSRule.Rules
             _Source.Add(source);
         }
 
-        private SourceFile[] GetFiles(string path, string helpPath, string moduleName = null)
+        private static SourceFile[] GetFiles(string path, string helpPath, string moduleName = null)
         {
             var rootedPath = PSRuleOption.GetRootedPath(path);
             var extension = Path.GetExtension(rootedPath);
@@ -219,13 +223,13 @@ namespace PSRule.Rules
             return null;
         }
 
-        private bool ShouldInclude(string path)
+        private static bool ShouldInclude(string path)
         {
             return path.EndsWith(".rule.ps1", System.StringComparison.OrdinalIgnoreCase) ||
                 path.EndsWith(".rule.yaml", System.StringComparison.OrdinalIgnoreCase);
         }
 
-        private SourceFile[] IncludeFile(string path, string helpPath)
+        private static SourceFile[] IncludeFile(string path, string helpPath)
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException(PSRuleResources.SourceNotFound, path);
@@ -236,7 +240,7 @@ namespace PSRule.Rules
             return new SourceFile[] { new SourceFile(path, null, GetSourceType(path), helpPath) };
         }
 
-        private SourceFile[] IncludePath(string path, string helpPath, string moduleName)
+        private static SourceFile[] IncludePath(string path, string helpPath, string moduleName)
         {
             var result = new List<SourceFile>();
             var files = System.IO.Directory.EnumerateFiles(path, "*.Rule.*", SearchOption.AllDirectories);
@@ -253,20 +257,20 @@ namespace PSRule.Rules
             return result.ToArray();
         }
 
-        private RuleSourceType GetSourceType(string path)
+        private static RuleSourceType GetSourceType(string path)
         {
             var extension = Path.GetExtension(path);
             return IsYamlFile(extension) ? RuleSourceType.Yaml : RuleSourceType.Script;
         }
 
-        private bool IsSourceFile(string extension)
+        private static bool IsSourceFile(string extension)
         {
-            return extension == ".ps1" || extension == ".yaml" || extension == ".yml";
+            return extension == SourceFileExtension_PS1 || extension == SourceFileExtension_YAML || extension == SourceFileExtension_YML;
         }
 
-        private bool IsYamlFile(string extension)
+        private static bool IsYamlFile(string extension)
         {
-            return extension == ".yaml" || extension == ".yml";
+            return extension == SourceFileExtension_YAML || extension == SourceFileExtension_YML;
         }
     }
 }

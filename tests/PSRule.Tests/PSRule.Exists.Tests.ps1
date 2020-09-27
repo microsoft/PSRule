@@ -22,6 +22,9 @@ $here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
     $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    $invokeParams = @{
+        Path = $ruleFilePath
+    }
 
     Context 'Exists' {
         It 'With defaults' {
@@ -33,7 +36,7 @@ Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
                 Value2 = '2'
                 Properties = $Null
             }
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Tag @{ keyword = 'Exists' };
+            $result = $testObject | Invoke-PSRule @invokeParams -Tag @{ keyword = 'Exists' };
 
             # Test positive cases
             $filteredResult = $result | Where-Object { $_.RuleName -eq 'ExistsTest' };
@@ -61,7 +64,7 @@ Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
                 }
             )
             $option = New-PSRuleOption -NotProcessedWarning $False
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'ExistsCondition' -Outcome All -Option $option;
+            $result = $testObject | Invoke-PSRule @invokeParams -Name 'ExistsCondition' -Outcome All -Option $option;
 
             # Test positive cases
             $filteredResult = $result | Where-Object { $_.TargetName -eq 'TestObject1' };

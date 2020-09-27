@@ -26,10 +26,9 @@ namespace PSRule.Commands
             return RunspaceContext.CurrentThread.TargetObject;
         }
 
-        protected bool GetField(object targetObject, string name, bool caseSensitive, out object value)
+        protected static bool GetField(object targetObject, string name, bool caseSensitive, out object value)
         {
             value = null;
-
             if (targetObject == null)
             {
                 value = null;
@@ -44,7 +43,6 @@ namespace PSRule.Commands
             if (typeof(IDictionary).IsAssignableFrom(baseType))
             {
                 var dictionary = (IDictionary)baseObject;
-
                 foreach (var key in dictionary.Keys)
                 {
                     if (comparer.Equals(name, key))
@@ -78,7 +76,6 @@ namespace PSRule.Commands
                     }
                 }
             }
-
             return false;
         }
 

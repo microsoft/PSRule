@@ -45,10 +45,10 @@ namespace PSRule.Pipeline
             private readonly PSCmdlet _CmdletContext;
             private readonly EngineIntrinsics _ExecutionContext;
             private readonly List<RuleRecord> _Results;
-            private int _ErrorCount = 0;
-            private int _FailCount = 0;
-            private int _TotalCount = 0;
-            private bool _PSError = false;
+            private int _ErrorCount;
+            private int _FailCount;
+            private int _TotalCount;
+            private bool _PSError;
 
             internal AssertWriter(PSRuleOption option, Source[] source, PipelineWriter inner, PipelineWriter next, OutputStyle style, string resultVariableName, PSCmdlet cmdletContext, EngineIntrinsics executionContext)
                 : base(inner, option)
@@ -77,8 +77,8 @@ namespace PSRule.Pipeline
             {
                 protected readonly ILogger Logger;
 
-                private bool _UnbrokenContent = false;
-                private bool _UnbrokenInfo = false;
+                private bool _UnbrokenContent;
+                private bool _UnbrokenInfo;
 
                 protected AssertFormatterBase(Source[] source, ILogger logger)
                 {
@@ -213,7 +213,7 @@ namespace PSRule.Pipeline
                 public void End(int total, int fail, int error)
                 {
                     LineBreak();
-                    WriteLine(string.Format(FormatterStrings.Summary, total, fail, error));
+                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Summary, total, fail, error));
                 }
 
                 protected void WriteLine(string message, string prefix = null, ConsoleColor? forgroundColor = null)
@@ -449,7 +449,7 @@ namespace PSRule.Pipeline
                 protected override void FailDetail(RuleRecord record)
                 {
                     base.FailDetail(record);
-                    Error(string.Format(FormatterStrings.AzurePipelines_Fail, record.TargetName, record.RuleName, record.Info.Synopsis));
+                    Error(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.AzurePipelines_Fail, record.TargetName, record.RuleName, record.Info.Synopsis));
                     LineBreak();
                 }
 
@@ -458,7 +458,7 @@ namespace PSRule.Pipeline
                     if (record.Error == null)
                         return;
 
-                    Error(string.Format(FormatterStrings.AzurePipelines_Error, record.TargetName, record.RuleName, record.Error.Message));
+                    Error(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.AzurePipelines_Error, record.TargetName, record.RuleName, record.Error.Message));
                     LineBreak();
                     WriteLine(record.Error.ScriptStackTrace);
                 }
@@ -516,7 +516,7 @@ namespace PSRule.Pipeline
                 protected override void FailDetail(RuleRecord record)
                 {
                     base.FailDetail(record);
-                    Error(string.Format(FormatterStrings.GitHubActions_Fail, record.TargetName, record.RuleName, record.Info.Synopsis));
+                    Error(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.GitHubActions_Fail, record.TargetName, record.RuleName, record.Info.Synopsis));
                     LineBreak();
                 }
             }

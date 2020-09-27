@@ -38,9 +38,9 @@ namespace PSRule.Pipeline.Output
             var error = o.Sum(r => r.Error);
             var fail = o.Sum(r => r.Fail);
 
-            _Builder.Append($"<test-results xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"nunit_schema_2.5.xsd\" name=\"PSRule\" total=\"{total}\" errors=\"{error}\" failures=\"{fail}\" not-run=\"0\" inconclusive=\"0\" ignored=\"0\" skipped=\"0\" invalid=\"0\" date=\"{DateTime.UtcNow.ToString("yyyy-MM-dd", Thread.CurrentThread.CurrentCulture)}\" time=\"{TimeSpan.FromMilliseconds(time).ToString()}\">");
-            _Builder.Append($"<environment user=\"{Environment.UserName}\" machine-name=\"{Environment.MachineName}\" cwd=\"{Configuration.PSRuleOption.GetWorkingPath()}\" user-domain=\"{Environment.UserDomainName}\" platform=\"{Environment.OSVersion.Platform}\" nunit-version=\"2.5.8.0\" os-version=\"{Environment.OSVersion.Version}\" clr-version=\"{Environment.Version.ToString()}\" />");
-            _Builder.Append($"<culture-info current-culture=\"{Thread.CurrentThread.CurrentCulture.ToString()}\" current-uiculture=\"{System.Threading.Thread.CurrentThread.CurrentUICulture.ToString()}\" />");
+            _Builder.Append($"<test-results xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"nunit_schema_2.5.xsd\" name=\"PSRule\" total=\"{total}\" errors=\"{error}\" failures=\"{fail}\" not-run=\"0\" inconclusive=\"0\" ignored=\"0\" skipped=\"0\" invalid=\"0\" date=\"{DateTime.UtcNow.ToString("yyyy-MM-dd", Thread.CurrentThread.CurrentCulture)}\" time=\"{TimeSpan.FromMilliseconds(time)}\">");
+            _Builder.Append($"<environment user=\"{Environment.UserName}\" machine-name=\"{Environment.MachineName}\" cwd=\"{Configuration.PSRuleOption.GetWorkingPath()}\" user-domain=\"{Environment.UserDomainName}\" platform=\"{Environment.OSVersion.Platform}\" nunit-version=\"2.5.8.0\" os-version=\"{Environment.OSVersion.Version}\" clr-version=\"{Environment.Version}\" />");
+            _Builder.Append($"<culture-info current-culture=\"{Thread.CurrentThread.CurrentCulture}\" current-uiculture=\"{Thread.CurrentThread.CurrentUICulture}\" />");
             foreach (var result in o)
             {
                 if (result.Total == 0)

@@ -171,7 +171,7 @@ namespace PSRule.Pipeline
                 _DebugFilter = new HashSet<string>(option.Logging.LimitDebug);
         }
 
-        private bool GetPreferenceVariable(EngineIntrinsics executionContext, string variableName)
+        private static bool GetPreferenceVariable(EngineIntrinsics executionContext, string variableName)
         {
             var preference = (ActionPreference)executionContext.SessionState.PSVariable.GetValue(variableName);
             if (preference == ActionPreference.Ignore)

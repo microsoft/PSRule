@@ -27,7 +27,7 @@ namespace PSRule.Runtime
 
         public static explicit operator bool(AssertResult result)
         {
-            return result.Result;
+            return result != null && result.Result;
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace PSRule.Runtime
         public string[] GetReason()
         {
             if (!Result || _Reason == null || _Reason.Count == 0)
-                return new string[] { };
+                return Array.Empty<string>();
 
             return _Reason.ToArray();
         }
@@ -112,7 +112,7 @@ namespace PSRule.Runtime
         {
             // Check that the scope is still valid
             if (PipelineContext.CurrentThread.ExecutionScope != ExecutionScope.Condition)
-                throw new RuleRuntimeException(string.Format(PSRuleResources.VariableConditionScope, "Assert"));
+                throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VariableConditionScope, "Assert"));
 
             // Continue
             for (var i = 0; _Reason != null && i < _Reason.Count; i++)
@@ -137,6 +137,11 @@ namespace PSRule.Runtime
                 return string.Empty;
 
             return string.Join(" ", _Reason.ToArray());
+        }
+
+        public bool ToBoolean()
+        {
+            return Result;
         }
     }
 }
