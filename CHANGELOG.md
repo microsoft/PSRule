@@ -6,6 +6,10 @@
 
 ## Unreleased
 
+## v0.21.0-B2009016 (pre-release)
+
+What's changed since pre-release v0.21.0-B2009006:
+
 - Engine features:
   - Added character case assertion helpers `IsLower`, and `IsUpper`. [#555](https://github.com/microsoft/PSRule/issues/555)
     - `IsLower` checks that all letters in a field value are lowercase.
