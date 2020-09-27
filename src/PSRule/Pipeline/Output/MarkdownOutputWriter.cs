@@ -56,7 +56,7 @@ namespace PSRule.Pipeline.Output
             var ruleGroup = o.SelectMany(result => result.AsRecord()).GroupBy(record => record.RuleId).ToArray();
             for (var i = 0; i < ruleGroup.Length; i++)
             {
-                RuleSummary(ruleGroup[i].Key, ruleGroup[i].ToArray());
+                RuleSummary(ruleGroup[i].ToArray());
             }
         }
 
@@ -87,7 +87,7 @@ namespace PSRule.Pipeline.Output
                 AppendLine("- [ ] ", text);
         }
 
-        private void RuleSummary(string name, Rules.RuleRecord[] records)
+        private void RuleSummary(RuleRecord[] records)
         {
             if (records.Length == 0)
                 return;

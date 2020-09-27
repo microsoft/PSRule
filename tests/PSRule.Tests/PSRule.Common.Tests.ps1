@@ -430,9 +430,10 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
 
-            $result = $testObject | Invoke-PSRule @invokeParams -Name 'FromFile1','FromFile2','FromFile3' -WarningAction SilentlyContinue | Out-String;
+            $result = $testObject | Invoke-PSRule @invokeParams -Name 'FromFile1','FromFile2','FromFile3' -Option @{ 'Output.Style' = 'AzurePipelines' } -WarningAction SilentlyContinue | Out-String;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
+            $result | Should -Match 'Returned a \\`false\\`\.'
 
             # Check XML schema
 

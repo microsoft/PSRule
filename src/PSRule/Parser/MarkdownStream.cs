@@ -57,9 +57,9 @@ namespace PSRule.Parser
     {
         private sealed class StreamCursor
         {
-            public int Position = 0;
-            public int Line = 0;
-            public int Column = 0;
+            public int Position;
+            public int Line;
+            public int Column;
         }
 
         private readonly string _Source;
@@ -369,11 +369,9 @@ namespace PSRule.Parser
         public bool Next(bool ignoreEscaping = false)
         {
             _Position += _EscapeLength > 0 ? _EscapeLength + 1 : 1;
-
             if (_Position >= _Length)
             {
                 _Current = char.MinValue;
-
                 return false;
             }
 
@@ -387,9 +385,7 @@ namespace PSRule.Parser
             {
                 _Column += _EscapeLength + 1;
             }
-
             UpdateCurrent(ignoreEscaping);
-
             return true;
         }
 

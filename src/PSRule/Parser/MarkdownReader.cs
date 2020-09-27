@@ -66,7 +66,6 @@ namespace PSRule.Parser
             _Stream = new MarkdownStream(markdown);
 
             YamlHeader();
-
             if (_YamlHeaderOnly)
                 return _Output;
 
@@ -81,7 +80,6 @@ namespace PSRule.Parser
                 if (!processed)
                     Text();
             }
-
             return _Output;
         }
 
