@@ -16,6 +16,11 @@ namespace PSRule.Runtime
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             var context = RunspaceContext.CurrentThread;
+            if (binder == null || string.IsNullOrEmpty(binder.Name))
+            {
+                result = null;
+                return false;
+            }
 
             // Get from baseline configuration
             if (context.Source.Configuration.TryGetValue(binder.Name, out object value))
@@ -39,7 +44,7 @@ namespace PSRule.Runtime
         public string[] GetStringValues(string configurationKey)
         {
             if (!RunspaceContext.CurrentThread.Source.Configuration.TryGetValue(configurationKey, out object value) || value == null)
-                return new string[] { };
+                return System.Array.Empty<string>();
 
             if (value is string valueT)
                 return new string[] { valueT };

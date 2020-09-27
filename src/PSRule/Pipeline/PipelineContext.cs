@@ -36,7 +36,7 @@ namespace PSRule.Pipeline
         private SHA1Managed _Hash;
 
         // Track whether Dispose has been called.
-        private bool _Disposed = false;
+        private bool _Disposed;
 
         internal PSRuleOption Option;
 

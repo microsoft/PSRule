@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 using System.Management.Automation.Language;
+using System.Threading;
 
 namespace PSRule.Host
 {
@@ -86,11 +87,10 @@ namespace PSRule.Host
         /// </summary>
         private bool HasBodyParameter(CommandAst commandAst, ParameterBindResult bindResult)
         {
-            if (bindResult.Has<ScriptBlockExpressionAst>(PARAMETER_BODY, 1, out ScriptBlockExpressionAst value))
-            {
+            if (bindResult.Has<ScriptBlockExpressionAst>(PARAMETER_BODY, 1, out ScriptBlockExpressionAst _))
                 return true;
-            }
-            ReportError(message: string.Format(PSRuleResources.RuleParameterNotFound, PARAMETER_BODY, ReportExtent(commandAst.Extent)), errorId: ERRORID_PARAMETERNOTFOUND);
+
+            ReportError(message: string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.RuleParameterNotFound, PARAMETER_BODY, ReportExtent(commandAst.Extent)), errorId: ERRORID_PARAMETERNOTFOUND);
             return false;
         }
 
@@ -100,10 +100,9 @@ namespace PSRule.Host
         private bool HasNameParameter(CommandAst commandAst, ParameterBindResult bindResult)
         {
             if (bindResult.Has<StringConstantExpressionAst>(PARAMETER_NAME, 0, out StringConstantExpressionAst value) && !string.IsNullOrEmpty(value.Value))
-            {
                 return true;
-            }
-            ReportError(message: string.Format(PSRuleResources.RuleParameterNotFound, PARAMETER_NAME, ReportExtent(commandAst.Extent)), errorId: ERRORID_PARAMETERNOTFOUND);
+
+            ReportError(message: string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.RuleParameterNotFound, PARAMETER_NAME, ReportExtent(commandAst.Extent)), errorId: ERRORID_PARAMETERNOTFOUND);
             return false;
         }
 
@@ -116,7 +115,7 @@ namespace PSRule.Host
             {
                 return true;
             }
-            ReportError(message: string.Format(PSRuleResources.InvalidRuleNesting, ""), errorId: ERRORID_INVALIDRULENESTING);
+            ReportError(message: string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.InvalidRuleNesting, ""), errorId: ERRORID_INVALIDRULENESTING);
             return false;
         }
 
@@ -128,10 +127,9 @@ namespace PSRule.Host
             return _Comparer.Equals(commandAst.GetCommandName(), RULE_KEYWORD);
         }
 
-        private ParameterBindResult BindParameters(CommandAst commandAst)
+        private static ParameterBindResult BindParameters(CommandAst commandAst)
         {
             var result = new ParameterBindResult();
-
             int i = 1;
             int next = 2;
             for (; i < commandAst.CommandElements.Count; i++, next++)
@@ -171,18 +169,17 @@ namespace PSRule.Host
             ));
         }
 
-        private string ReportExtent(IScriptExtent extent)
+        private static string ReportExtent(IScriptExtent extent)
         {
             return string.Concat(extent.File, " line ", extent.StartLineNumber);
         }
 
-        private ScriptBlockAst GetParentBlock(Ast ast)
+        private static ScriptBlockAst GetParentBlock(Ast ast)
         {
             var block = ast;
             while (block != null && !(block is ScriptBlockAst))
-            {
                 block = block.Parent;
-            }
+
             return (ScriptBlockAst)block;
         }
     }

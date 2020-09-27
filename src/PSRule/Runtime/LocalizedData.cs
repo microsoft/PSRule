@@ -17,7 +17,7 @@ namespace PSRule.Runtime
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             var hashtable = TryGetLocalized();
-            if (hashtable.ContainsKey(binder.Name))
+            if (hashtable.Count > 0 && binder != null && !string.IsNullOrEmpty(binder.Name) && hashtable.ContainsKey(binder.Name))
             {
                 result = hashtable[binder.Name];
                 return true;
@@ -26,7 +26,7 @@ namespace PSRule.Runtime
             return false;
         }
 
-        private Hashtable TryGetLocalized()
+        private static Hashtable TryGetLocalized()
         {
             var path = GetFilePath();
             if (path == null)
@@ -46,7 +46,7 @@ namespace PSRule.Runtime
             return Empty;
         }
 
-        private string GetFilePath()
+        private static string GetFilePath()
         {
             return RunspaceContext.CurrentThread.GetLocalizedPath(DATA_FILENAME);
         }

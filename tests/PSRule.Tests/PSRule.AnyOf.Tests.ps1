@@ -25,12 +25,16 @@ Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 $here = (Resolve-Path $PSScriptRoot).Path;
 
 Describe 'PSRule -- AnyOf keyword' -Tag 'AnyOf' {
+    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    $invokeParams = @{
+        Path = $ruleFilePath
+    }
+
     Context 'AnyOf' {
         $testObject = @{
             Key = 'Value'
         }
-
-        $result = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Name 'AnyOfTest', 'AnyOfTestNegative';
+        $result = $testObject | Invoke-PSRule @invokeParams -Name 'AnyOfTest', 'AnyOfTestNegative';
 
         It 'Should succeed on any positive conditions' {
             $filteredResult = $result | Where-Object { $_.RuleName -eq 'AnyOfTest' };

@@ -6,3 +6,4 @@ output:
 input:
   pathIgnore:
   - '*.Designer.cs'
+  - '*.md'
