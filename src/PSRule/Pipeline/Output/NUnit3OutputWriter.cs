@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Common;
 using PSRule.Configuration;
 using PSRule.Resources;
 using System;
@@ -37,10 +38,9 @@ namespace PSRule.Pipeline.Output
             var error = o.Sum(r => r.Error);
             var fail = o.Sum(r => r.Fail);
 
-            _Builder.Append($"<test-results xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"nunit_schema_2.5.xsd\" name=\"PSRule\" total=\"{total}\" errors=\"{error}\" failures=\"{fail}\" not-run=\"0\" inconclusive=\"0\" ignored=\"0\" skipped=\"0\" invalid=\"0\" date=\"{DateTime.UtcNow.ToString("yyyy-MM-dd")}\" time=\"{TimeSpan.FromMilliseconds(time).ToString()}\">");
+            _Builder.Append($"<test-results xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"nunit_schema_2.5.xsd\" name=\"PSRule\" total=\"{total}\" errors=\"{error}\" failures=\"{fail}\" not-run=\"0\" inconclusive=\"0\" ignored=\"0\" skipped=\"0\" invalid=\"0\" date=\"{DateTime.UtcNow.ToString("yyyy-MM-dd", Thread.CurrentThread.CurrentCulture)}\" time=\"{TimeSpan.FromMilliseconds(time).ToString()}\">");
             _Builder.Append($"<environment user=\"{Environment.UserName}\" machine-name=\"{Environment.MachineName}\" cwd=\"{Configuration.PSRuleOption.GetWorkingPath()}\" user-domain=\"{Environment.UserDomainName}\" platform=\"{Environment.OSVersion.Platform}\" nunit-version=\"2.5.8.0\" os-version=\"{Environment.OSVersion.Version}\" clr-version=\"{Environment.Version.ToString()}\" />");
-            _Builder.Append($"<culture-info current-culture=\"{System.Threading.Thread.CurrentThread.CurrentCulture.ToString()}\" current-uiculture=\"{System.Threading.Thread.CurrentThread.CurrentUICulture.ToString()}\" />");
-
+            _Builder.Append($"<culture-info current-culture=\"{Thread.CurrentThread.CurrentCulture.ToString()}\" current-uiculture=\"{System.Threading.Thread.CurrentThread.CurrentUICulture.ToString()}\" />");
             foreach (var result in o)
             {
                 if (result.Total == 0)
@@ -113,7 +113,13 @@ namespace PSRule.Pipeline.Output
                 for (var i = 0; i < record.Reason.Length; i++)
                 {
                     sb.Append("- ");
-                    sb.AppendLine(record.Reason[i]);
+                    if (useMarkdown)
+                    {
+                        sb.AppendMarkdownText(record.Reason[i]);
+                        sb.AppendLine();
+                    }
+                    else
+                        sb.AppendLine(record.Reason[i]);
                 }
             }
             return sb.ToString();

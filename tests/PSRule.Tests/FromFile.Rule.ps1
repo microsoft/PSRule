@@ -15,6 +15,7 @@ Rule 'FromFile1' -Tag @{ category = "group1"; test = "Test1" } {
 # Synopsis: Test rule 2
 Rule 'FromFile2' -Tag @{ category = "group1"; test = "Test2" } {
     # Fail
+    Reason 'Returned a `false`.'
     $False;
     $True;
     $True;

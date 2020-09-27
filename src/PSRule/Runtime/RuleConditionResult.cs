@@ -47,7 +47,7 @@ namespace PSRule.Runtime
         private static bool TryBoolean(object o, out bool result)
         {
             result = false;
-            if (o == null || !(o is bool bresult))
+            if (!(o is bool bresult))
                 return false;
 
             result = bresult;
@@ -57,7 +57,7 @@ namespace PSRule.Runtime
         private static bool TryAssertResult(object o, out bool result)
         {
             result = false;
-            if (o == null || !(o is AssertResult assert))
+            if (!(o is AssertResult assert))
                 return false;
 
             result = assert.Result;
