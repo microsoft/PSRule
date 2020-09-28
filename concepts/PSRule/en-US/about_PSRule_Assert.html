@@ -8,7 +8,7 @@
     <title>PSRule_Assert </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="PSRule_Assert ">
-    <meta name="generator" content="docfx 2.56.1.0">
+    <meta name="generator" content="docfx 2.56.2.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -89,6 +89,8 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 <li><a href="#hasfieldvalue">HasFieldValue</a> - The object must have the specified field and that field is not empty.</li>
 <li><a href="#hasjsonschema">HasJsonSchema</a> - The object must reference a JSON schema with the <code>$schema</code> field.</li>
 <li><a href="#in">In</a> - The field value must be included in the set.</li>
+<li><a href="#islower">IsLower</a> - The field value must include only lowercase characters.</li>
+<li><a href="#isupper">IsUpper</a> - The field value must include only uppercase characters.</li>
 <li><a href="#jsonschema">JsonSchema</a> - The object must validate successfully against a JSON schema.</li>
 <li><a href="#less">Less</a> - The field value must be less.</li>
 <li><a href="#lessorequal">LessOrEqual</a> - The field value must be less or equal to.</li>
@@ -273,6 +275,8 @@ When the field value is:</p>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
 <li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
 <li><code>value</code> - A integer to compare the field value against.</li>
+<li><code>convert</code> (optional) - Convert numerical strings and use a numerical comparison instead of using string length.
+By default the string length is compared.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
@@ -301,6 +305,8 @@ When the field value is:</p>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
 <li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
 <li><code>value</code> - A integer to compare the field value against.</li>
+<li><code>convert</code> (optional) - Convert numerical strings and use a numerical comparison instead of using string length.
+By default the string length is compared.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
@@ -376,7 +382,9 @@ When the field value is:</p>
 <ul>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
 <li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
-<li><code>expectedValue</code> (optional) - Check that the field value is set to a specific value. To check <code>$Null</code> use <code>NullOrEmpty</code> instead. If <code>expectedValue</code> is <code>$Null</code> the field value will not be compared.</li>
+<li><code>expectedValue</code> (optional) - Check that the field value is set to a specific value.
+To check <code>$Null</code> use <code>NullOrEmpty</code> instead.
+If <code>expectedValue</code> is <code>$Null</code> the field value will not be compared.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
@@ -398,7 +406,8 @@ If the <code>$schema</code> property is defined, it must match one of the suppli
 <p>The following parameters are accepted:</p>
 <ul>
 <li><code>inputObject</code> - The object being compared.</li>
-<li><code>uri</code> - Optional. When specified, the object being compared must have a <code>$schema</code> property set to one of the specified schemas.</li>
+<li><code>uri</code> - Optional.
+When specified, the object being compared must have a <code>$schema</code> property set to one of the specified schemas.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
@@ -457,6 +466,62 @@ When the field value is an array, only one item must be included in the set.</p>
     $Assert.In($TargetObject, 'Sku.tier', @('PremiumV2', 'Premium', 'Standard'), $True)
 }
 </code></pre>
+<h3 id="islower">IsLower</h3>
+<p>The <code>IsLower</code> assertion method checks the field value uses only lowercase characters.
+Non-letter characters are ignored by default and will pass.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>requireLetters</code> (optional) - Require each character to be lowercase letters only.
+Non-letter characters are ignored by default.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is not a string.</em></li>
+<li><em>The value '{0}' does not contain only lowercase characters.</em></li>
+<li><em>The value '{0}' does not contain only letters.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'IsLower' {
+    # Require Name to be lowercase
+    $Assert.IsLower($TargetObject, 'Name')
+
+    # Require Name to only contain lowercase letters
+    $Assert.IsLower($TargetObject, 'Name', $True)
+}
+</code></pre>
+<h3 id="isupper">IsUpper</h3>
+<p>The <code>IsUpper</code> assertion method checks the field value uses only uppercase characters.
+Non-letter characters are ignored by default and will pass.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>requireLetters</code> (optional) - Require each character to be uppercase letters only.
+Non-letter characters are ignored by default.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is not a string.</em></li>
+<li><em>The value '{0}' does not contain only uppercase characters.</em></li>
+<li><em>The value '{0}' does not contain only letters.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'IsUpper' {
+    # Require Name to be uppercase
+    $Assert.IsUpper($TargetObject, 'Name')
+
+    # Require Name to only contain uppercase letters
+    $Assert.IsUpper($TargetObject, 'Name', $True)
+}
+</code></pre>
 <h3 id="less">Less</h3>
 <p>The <code>Less</code> assertion method checks the field value is less than the specified value.
 The field value can either be an integer, float, array, or string.
@@ -471,6 +536,8 @@ When the field value is:</p>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
 <li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
 <li><code>value</code> - A integer to compare the field value against.</li>
+<li><code>convert</code> (optional) - Convert numerical strings and use a numerical comparison instead of using string length.
+By default the string length is compared.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
@@ -493,6 +560,8 @@ When the field value is:</p>
 <li>An integer or float, a numerical comparison is used.</li>
 <li>An array, the number of elements is compared.</li>
 <li>A string, the length of the string is compared.</li>
+<li><code>convert</code> (optional) - Convert numerical strings and use a numerical comparison instead of using string length.
+By default the string length is compared.</li>
 </ul>
 <p>The following parameters are accepted:</p>
 <ul>
@@ -520,7 +589,8 @@ When the field value is:</p>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
 <li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
 <li><code>pattern</code> - A regular expression pattern to match.</li>
-<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
@@ -547,7 +617,8 @@ To check the field exists combine this assertion method with <code>HasFieldValue
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
 <li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
 <li><code>values</code> - An array of one or more values that the field value is compared against.</li>
-<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
@@ -570,7 +641,8 @@ To check the field exists combine this assertion method with <code>HasFieldValue
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
 <li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
 <li><code>pattern</code> - A regular expression pattern to match.</li>
-<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
@@ -597,7 +669,8 @@ To check the field exists combine this assertion method with <code>HasFieldValue
 <p>The following parameters are accepted:</p>
 <ul>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
-<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
@@ -619,7 +692,8 @@ Optionally a case-sensitive compare can be used, however case is ignored by defa
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
 <li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
 <li><code>prefix</code> - One or more prefixes to compare the field value with. Only one prefix must match.</li>
-<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>

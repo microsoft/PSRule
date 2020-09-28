@@ -8,7 +8,7 @@
     <title>PSRule_Options </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="PSRule_Options ">
-    <meta name="generator" content="docfx 2.56.1.0">
+    <meta name="generator" content="docfx 2.56.2.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
     <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
@@ -92,6 +92,7 @@ This topic describes what options are available, when to and how to use them.</p
 <li><a href="#outputculture">Output.Culture</a></li>
 <li><a href="#outputencoding">Output.Encoding</a></li>
 <li><a href="#outputformat">Output.Format</a></li>
+<li><a href="#outputoutcome">Output.Outcome</a></li>
 <li><a href="#outputpath">Output.Path</a></li>
 <li><a href="#outputstyle">Output.Style</a></li>
 <li><a href="#requires">Requires</a></li>
@@ -698,13 +699,13 @@ If specified, the <code>-As</code> parameter take precedence, over this option.<
 </ul>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the OutputAs parameter
-$option = New-PSRuleOption -OutputAs Yaml;
+$option = New-PSRuleOption -OutputAs Summary;
 </code></pre>
 <pre><code class="lang-powershell"># PowerShell: Using the Output.As hashtable key
 $option = New-PSRuleOption -Option @{ 'Output.As' = 'Summary' };
 </code></pre>
 <pre><code class="lang-powershell"># PowerShell: Using the OutputAs parameter to set YAML
-Set-PSRuleOption -OutputAs Yaml;
+Set-PSRuleOption -OutputAs Summary;
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the output/as property
 output:
@@ -759,13 +760,14 @@ output:
 </code></pre>
 <h3 id="outputformat">Output.Format</h3>
 <p>Configures the format that results will be presented in.
-This option applies to <code>Invoke-PSRule</code>, <code>Assert-PSRule</code> and <code>Get-PSRule</code>.
+This option applies to <code>Invoke-PSRule</code>, <code>Assert-PSRule</code>, and <code>Get-PSRule</code>.
 This options is ignored by other cmdlets.</p>
 <p>The following format options are available:</p>
 <ul>
 <li>None - Output is presented as an object using PowerShell defaults. This is the default.</li>
 <li>Yaml - Output is serialized as YAML.</li>
 <li>Json - Output is serialized as JSON.</li>
+<li>Markdown - Output is serialized as Markdown.</li>
 <li>NUnit3 - Output is serialized as NUnit3 (XML).</li>
 <li>Csv - Output is serialized as a comma separated values (CSV).
 <ul>
@@ -792,6 +794,35 @@ Set-PSRuleOption -OutputFormat Yaml;
 <pre><code class="lang-yaml"># YAML: Using the output/format property
 output:
   format: Yaml
+</code></pre>
+<h3 id="outputoutcome">Output.Outcome</h3>
+<p>Filters output to include results with the specified outcome.
+This option applies to <code>Invoke-PSRule</code>, and <code>Test-PSRule</code>.</p>
+<p>The following outcome options are available:</p>
+<ul>
+<li><code>None</code> - Results for rules that did not get processed are returned.</li>
+<li><code>Pass</code> - Results for rules that passed are returned.</li>
+<li><code>Fail</code> - Results for rules that failed are returned.</li>
+<li><code>Error</code> - Results for rules that raised an error are returned.</li>
+<li><code>Processed</code> - Results for rules that either passed, failed, or raised an error are returned.
+This is the default option.</li>
+<li><code>All</code> - All results for rules are returned.</li>
+</ul>
+<p>This option is ignored by <code>Assert-PSRule</code>.
+<code>Assert-PSRule</code> will always use <code>Processed</code>.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputOutcome parameter
+$option = New-PSRuleOption -OutputOutcome Fail;
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Output.Outcome hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Outcome' = 'Fail' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputOutcome parameter to set YAML
+Set-PSRuleOption -OutputOutcome Fail;
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the output/outcome property
+output:
+  outcome: 'Fail'
 </code></pre>
 <h3 id="outputpath">Output.Path</h3>
 <p>Specifies the output file path to write results.
@@ -991,6 +1022,7 @@ output:
   - en-US
   encoding: UTF8
   format: Json
+  outcome: Fail
   style: GitHubActions
 
 # Configure rule suppression
@@ -1066,6 +1098,7 @@ output:
   culture: [ ]
   encoding: Default
   format: None
+  outcome: Processed
   style: Client
 
 # Configure rule suppression
