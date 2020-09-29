@@ -6,6 +6,9 @@
 
 ## Unreleased
 
+- General improvements:
+  - Added help links and default snippets to schemas. [#561](https://github.com/microsoft/PSRule/issues/561)
+
 ## v0.21.0-B2009016 (pre-release)
 
 What's changed since pre-release v0.21.0-B2009006:

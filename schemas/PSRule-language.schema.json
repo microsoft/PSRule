@@ -35,11 +35,13 @@
             "type": "object",
             "title": "Baseline",
             "description": "A PSRule Baseline.",
+            "markdownDescription": "A PSRule Baseline. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Baseline.html)",
             "properties": {
                 "kind": {
                     "type": "string",
                     "title": "Kind",
                     "description": "A PSRule Baseline resource.",
+                    "markdownDescription": "A PSRule Baseline resource. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Baseline.html)",
                     "enum": [
                         "Baseline"
                     ]
@@ -64,9 +66,10 @@
             "type": "object",
             "title": "Baseline",
             "description": "A specification for a baseline.",
+            "markdownDescription": "A specification for a baseline. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Baseline.html)",
             "properties": {
                 "binding": {
-                    "$ref": "#/definitions/bindingOption"
+                    "$ref": "#/definitions/binding-option"
                 },
                 "configuration": {
                     "$ref": "#/definitions/configuration"
@@ -80,18 +83,21 @@
                             "type": "array",
                             "title": "Include rules",
                             "description": "Rules to include by name in the baseline.",
+                            "markdownDescription": "Rules to include by name in the baseline. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#ruleinclude)",
                             "$ref": "#/definitions/rule-names"
                         },
                         "exclude": {
                             "type": "array",
                             "title": "Exclude rules",
                             "description": "Rules to exclude by name from the baseline.",
+                            "markdownDescription": "Rules to exclude by name from the baseline. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#ruleexclude)",
                             "$ref": "#/definitions/rule-names"
                         },
                         "tag": {
                             "type": "object",
                             "title": "Tags",
                             "description": "Require rules to have the following tags.",
+                            "markdownDescription": "Require rules to have the following tags. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#ruletag)",
                             "additionalProperties": {
                                 "oneOf": [
                                     {
@@ -150,7 +156,7 @@
             "description": "A specification for a ModuleConfig.",
             "properties": {
                 "binding": {
-                    "$ref": "#/definitions/bindingOption"
+                    "$ref": "#/definitions/binding-option"
                 },
                 "configuration": {
                     "$ref": "#/definitions/configuration"
@@ -164,12 +170,33 @@
                             "type": "array",
                             "title": "Culture",
                             "description": "One or more cultures to use for generating output. When multiple cultures are specified, the first matching culture will be used. By default, the current PowerShell culture is used.",
+                            "markdownDescription": "One or more cultures to use for generating output. When multiple cultures are specified, the first matching culture will be used. By default, the current PowerShell culture is used. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#outputculture)",
                             "items": {
                                 "type": "string",
                                 "description": "A culture for generating output.",
                                 "minLength": 2
                             },
-                            "uniqueItems": true
+                            "uniqueItems": true,
+                            "defaultSnippets": [
+                                {
+                                    "label": "en-AU",
+                                    "bodyText": [
+                                        "en-AU"
+                                    ]
+                                },
+                                {
+                                    "label": "en-US",
+                                    "bodyText": [
+                                        "en-US"
+                                    ]
+                                },
+                                {
+                                    "label": "en-GB",
+                                    "bodyText": [
+                                        "en-GB"
+                                    ]
+                                }
+                            ]
                         }
                     },
                     "additionalProperties": false
@@ -189,7 +216,7 @@
             "type": "string",
             "minLength": 3
         },
-        "bindingOption": {
+        "binding-option": {
             "type": "object",
             "title": "Object binding",
             "description": "Configure property/ object binding options.",
@@ -198,9 +225,11 @@
                     "type": "object",
                     "title": "Field",
                     "description": "Custom fields to bind.",
+                    "markdownDescription": "Custom fields to bind. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#bindingfield)",
                     "additionalProperties": {
                         "type": "array",
                         "description": "A custom field to bind.",
+                        "markdownDescription": "Custom field to bind. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#bindingfield)",
                         "items": {
                             "type": "string"
                         },
@@ -211,18 +240,21 @@
                     "type": "boolean",
                     "title": "Ignore case",
                     "description": "Determines if custom binding uses ignores case when matching properties. The default is true.",
+                    "markdownDescription": "Determines if custom binding uses ignores case when matching properties. The default is `true`. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#bindingignorecase)",
                     "default": true
                 },
                 "nameSeparator": {
                     "type": "string",
                     "title": "Name separator",
                     "description": "Configures the separator to use for building a qualified name. The default is '/'.",
+                    "markdownDescription": "Configures the separator to use for building a qualified name. The default is `/`. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#bindingnameseparator)",
                     "default": "/"
                 },
                 "targetName": {
                     "type": "array",
                     "title": "Bind TargetName",
                     "description": "Specifies one or more property names to bind TargetName to.",
+                    "markdownDescription": "Specifies one or more property names to bind TargetName to. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#bindingtargetname)",
                     "items": {
                         "type": "string"
                     },
@@ -232,6 +264,7 @@
                     "type": "array",
                     "title": "Bind TargetType",
                     "description": "Specifies one or more property names to bind TargetType to.",
+                    "markdownDescription": "Specifies one or more property names to bind TargetType to. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#bindingtargettype)",
                     "items": {
                         "type": "string"
                     },
@@ -241,6 +274,7 @@
                     "type": "boolean",
                     "title": "Use qualified name",
                     "description": "Determines if a qualified TargetName is used. The default is false.",
+                    "markdownDescription": "Determines if a qualified TargetName is used. The default is `false`. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#bindingusequalifiedname)",
                     "default": false
                 }
             },
@@ -249,7 +283,16 @@
         "configuration": {
             "type": "object",
             "title": "Configuration values",
-            "description": "A set of key/ value configuration options for rules."
+            "description": "A set of key/ value configuration options for rules.",
+            "markdownDescription": "A set of key/ value configuration options for rules. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#configuration)",
+            "defaultSnippets": [
+                {
+                    "label": "Configuration value",
+                    "body": {
+                        "${1:Key}": "${2:Value}"
+                    }
+                }
+            ]
         }
     }
 }
