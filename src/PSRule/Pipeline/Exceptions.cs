@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Management.Automation;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
@@ -207,6 +208,97 @@ namespace PSRule.Pipeline
         private RuleRuntimeException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
+
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+                throw new ArgumentNullException(nameof(info));
+
+            base.GetObjectData(info, context);
+        }
+    }
+
+    public abstract class RuleException : PipelineException
+    {
+        /// <summary>
+        /// Creates a rule runtime exception.
+        /// </summary>
+        public RuleException()
+        {
+        }
+
+        /// <summary>
+        /// Creates a rule runtime exception.
+        /// </summary>
+        /// <param name="message">The detail of the exception.</param>
+        public RuleException(string message) : base(message)
+        {
+        }
+
+        /// <summary>
+        /// Creates a rule runtime exception.
+        /// </summary>
+        /// <param name="message">The detail of the exception.</param>
+        /// <param name="innerException">A nested exception that caused the issue.</param>
+        public RuleException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected RuleException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+
+        internal RuleException(Exception innerException, InvocationInfo invocationInfo, string ruleId)
+            : base(innerException?.Message, innerException)
+        {
+            CommandInvocation = invocationInfo;
+            RuleId = ruleId;
+        }
+
+        public InvocationInfo CommandInvocation { get; }
+
+        public string RuleId { get; }
+    }
+
+    [Serializable]
+    public sealed class RuleExecutionException : RuleException, IContainsErrorRecord
+    {
+        /// <summary>
+        /// Creates a rule runtime exception.
+        /// </summary>
+        public RuleExecutionException()
+        {
+        }
+
+        /// <summary>
+        /// Creates a rule runtime exception.
+        /// </summary>
+        /// <param name="message">The detail of the exception.</param>
+        public RuleExecutionException(string message) : base(message)
+        {
+        }
+
+        /// <summary>
+        /// Creates a rule runtime exception.
+        /// </summary>
+        /// <param name="message">The detail of the exception.</param>
+        /// <param name="innerException">A nested exception that caused the issue.</param>
+        public RuleExecutionException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        internal RuleExecutionException(Exception innerException, InvocationInfo invocationInfo, string ruleId, ErrorRecord errorRecord)
+            : base(innerException, invocationInfo, ruleId)
+        {
+            ErrorRecord = errorRecord;
+        }
+
+        private RuleExecutionException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+
+        public ErrorRecord ErrorRecord { get; }
 
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)

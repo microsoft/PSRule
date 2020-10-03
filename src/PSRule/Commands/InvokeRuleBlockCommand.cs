@@ -25,6 +25,7 @@ namespace PSRule.Commands
 
         protected override void ProcessRecord()
         {
+            var context = RunspaceContext.CurrentThread;
             try
             {
                 if (Body == null)
@@ -33,7 +34,7 @@ namespace PSRule.Commands
                 // Evalute type pre-condition
                 if (!AcceptsType())
                 {
-                    RunspaceContext.CurrentThread.Writer.DebugMessage(PSRuleResources.DebugTargetTypeMismatch);
+                    context.Writer.DebugMessage(PSRuleResources.DebugTargetTypeMismatch);
                     return;
                 }
 
@@ -44,7 +45,7 @@ namespace PSRule.Commands
                     var ifResult = RuleConditionHelper.Create(If.Invoke());
                     if (!ifResult.AllOf())
                     {
-                        RunspaceContext.CurrentThread.Writer.DebugMessage(PSRuleResources.DebugTargetIfMismatch);
+                        context.Writer.DebugMessage(PSRuleResources.DebugTargetIfMismatch);
                         return;
                     }
                 }
@@ -53,6 +54,17 @@ namespace PSRule.Commands
                 PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Condition;
                 var invokeResult = RuleConditionHelper.Create(Body.Invoke());
                 WriteObject(invokeResult);
+            }
+            catch (ActionPreferenceStopException ex)
+            {
+                context.Error(ex);
+            }
+            catch (RuntimeException ex)
+            {
+                if (ex.ErrorRecord.FullyQualifiedErrorId == "MethodInvocationNotSupportedInConstrainedLanguage")
+                    throw;
+
+                context.Error(ex);
             }
             finally
             {

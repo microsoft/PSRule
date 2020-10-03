@@ -55,6 +55,7 @@ namespace PSRule.Pipeline
         // Pipeline logging
         private string _LogPrefix;
         private int _ObjectNumber;
+        private int _RuleErrors;
 
         private readonly Stopwatch _RuleTimer;
         private readonly List<string> _Reason;
@@ -77,6 +78,11 @@ namespace PSRule.Pipeline
             _ObjectNumber = -1;
             _RuleTimer = new Stopwatch();
             _Reason = new List<string>();
+        }
+
+        public bool HadErrors
+        {
+            get { return _RuleErrors > 0; }
         }
 
         public void Pass()
@@ -310,6 +316,7 @@ namespace PSRule.Pipeline
 
         private static void Error_DataAdded(object sender, DataAddedEventArgs e)
         {
+            CurrentThread._RuleErrors++;
             if (CurrentThread.Writer == null)
                 return;
 
@@ -318,8 +325,19 @@ namespace PSRule.Pipeline
             CurrentThread.Error(record);
         }
 
+        public void Error(ActionPreferenceStopException ex)
+        {
+            if (ex == null)
+                return;
+
+            Error(ex.ErrorRecord);
+        }
+
         public void Error(Exception ex)
         {
+            if (ex == null)
+                return;
+
             var errorRecord = ex is IContainsErrorRecord error ? error.ErrorRecord : null;
             var scriptStackTrace = errorRecord != null ? GetStackTrace(errorRecord) : null;
             var category = errorRecord != null ? errorRecord.CategoryInfo.Category : ErrorCategory.NotSpecified;
@@ -420,6 +438,7 @@ namespace PSRule.Pipeline
         /// </summary>
         public RuleRecord EnterRuleBlock(RuleBlock ruleBlock)
         {
+            _RuleErrors = 0;
             RuleBlock = ruleBlock;
             RuleRecord = new RuleRecord(
                 ruleId: ruleBlock.RuleId,
@@ -458,6 +477,7 @@ namespace PSRule.Pipeline
             _LogPrefix = null;
             RuleRecord = null;
             RuleBlock = null;
+            _RuleErrors = 0;
             _Reason.Clear();
         }
 

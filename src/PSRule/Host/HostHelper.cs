@@ -232,13 +232,14 @@ namespace PSRule.Host
 
             try
             {
+                ps.Runspace.SessionStateProxy.SetVariable("ErrorActionPreference", ruleBlock.ErrorPreference);
                 var invokeResult = GetResult(ps.Invoke<Runtime.RuleConditionResult>());
                 if (invokeResult == null)
                 {
                     ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
                     return;
                 }
-                else if (invokeResult.HadErrors || ps.HadErrors)
+                else if (invokeResult.HadErrors || context.HadErrors)
                 {
                     ruleRecord.OutcomeReason = RuleOutcomeReason.None;
                     ruleRecord.Outcome = RuleOutcome.Error;

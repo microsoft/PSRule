@@ -43,17 +43,25 @@ Conditions determine if the input object either _Pass_ or _Fail_ the rule.
 Syntax:
 
 ```text
-Rule [-Name] <string> [-Tag <hashtable>] [-Type <string[]>] [-If <scriptBlock>] [-DependsOn <string[]>] [-Configure <hashtable>] [-Body] {
+Rule [-Name] <string> [-Tag <hashtable>] [-Type <string[]>] [-If <scriptBlock>] [-DependsOn <string[]>] [-Configure <hashtable>] [-ErrorAction <ActionPreference>] [-Body] {
     ...
 }
 ```
 
-- `Name` - The name of the rule definition. Each rule name must be unique. When packaging rules within a module, rule names must only be unique within the module.
+- `Name` - The name of the rule definition. Each rule name must be unique.
+When packaging rules within a module, rule names must only be unique within the module.
 - `Tag` - A hashtable of key/ value metadata that can be used to filter and identify rules and rule results.
 - `Type` - A type precondition that must match the _TargetType_ of the pipeline object before the rule is executed.
 - `If` - A script precondition that must evaluate to `$True` before the rule is executed.
-- `DependsOn` - A list of rules this rule depends on. Rule dependencies must execute successfully before this rule is executed.
-- `Configure` - A set of default configuration values. These values are only used when the baseline configuration does not contain the key.
+- `DependsOn` - A list of rules this rule depends on.
+Rule dependencies must execute successfully before this rule is executed.
+- `Configure` - A set of default configuration values.
+These values are only used when the baseline configuration does not contain the key.
+- `ErrorAction` - The action to take when an error occur.
+Only a subset of preferences are supported, either `Stop` or `Ignore`.
+When `-ErrorAction` is not specified the default preference is `Stop`.
+When errors are ignored a rule will pass or fail based on the rule condition.
+Uncaught exceptions will still cause rule return an error outcome.
 - `Body` - A script block that specifies one or more conditions that are required for the rule to _Pass_.
 
 A condition is any valid PowerShell that return either `$True` or `$False`.
@@ -91,6 +99,14 @@ Rule 'TitleIsValid' -DependsOn 'NameMustExist' {
 Rule 'HasMinInstances' {
     $TargetObject.Sku.capacity -ge $Configuration.minInstanceCount
 } -Configure @{ minInstanceCount = 2 }
+```
+
+```powershell
+# Synopsis: This rule still passes because errors are ignored
+Rule 'WithRuleErrorActionIgnore' -ErrorAction Ignore {
+    Write-Error 'Some error';
+    $True;
+}
 ```
 
 ### Exists

@@ -22,7 +22,7 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId} @{SourcePath}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     {
-        internal RuleBlock(SourceFile source, string ruleName, RuleHelpInfo info, PowerShell condition, TagSet tag, string[] dependsOn, Hashtable configuration, RuleExtent extent)
+        internal RuleBlock(SourceFile source, string ruleName, RuleHelpInfo info, PowerShell condition, TagSet tag, string[] dependsOn, Hashtable configuration, RuleExtent extent, ActionPreference errorPreference)
         {
             Source = source;
             RuleName = ruleName;
@@ -38,6 +38,7 @@ namespace PSRule.Rules
             DependsOn = dependsOn;
             Configuration = configuration;
             Extent = extent;
+            ErrorPreference = errorPreference;
         }
 
         /// <summary>
@@ -78,6 +79,8 @@ namespace PSRule.Rules
         public readonly SourceFile Source;
 
         internal readonly RuleExtent Extent;
+
+        internal readonly ActionPreference ErrorPreference;
 
         string ILanguageBlock.SourcePath => Source.Path;
 

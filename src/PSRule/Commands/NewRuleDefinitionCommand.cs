@@ -26,6 +26,8 @@ namespace PSRule.Commands
 
         private const string Markdown_Extension = ".md";
 
+        private const string ErrorActionParameter = "ErrorAction";
+
         /// <summary>
         /// The name of the rule.
         /// </summary>
@@ -76,6 +78,7 @@ namespace PSRule.Commands
                 throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordScriptScope, LanguageKeywords.Rule));
 
             var context = RunspaceContext.CurrentThread;
+            var errorPreference = GetErrorActionPreference();
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
             var source = context.Source.File;
@@ -106,10 +109,26 @@ namespace PSRule.Commands
                 tag: tag,
                 dependsOn: RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName, source.ModuleName),
                 configuration: Configure,
-                extent: extent
+                extent: extent,
+                errorPreference: errorPreference
             );
 #pragma warning restore CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
             WriteObject(block);
+        }
+
+        private ActionPreference GetErrorActionPreference()
+        {
+            var preference = GetBoundPreference(ErrorActionParameter) ?? ActionPreference.Stop;
+            // Ignore not supported on older PowerShell versions
+            return preference == ActionPreference.Ignore ? ActionPreference.SilentlyContinue : preference;
+        }
+
+        private ActionPreference? GetBoundPreference(string name)
+        {
+            if (MyInvocation.BoundParameters.ContainsKey(name) && Enum.TryParse(MyInvocation.BoundParameters[name].ToString(), out ActionPreference value))
+                return value;
+
+            return null;
         }
 
         private PowerShell GetCondition(RunspaceContext context)

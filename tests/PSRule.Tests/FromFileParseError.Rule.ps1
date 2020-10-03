@@ -29,3 +29,8 @@ Rule -Name 'WithoutBody'
 Rule 'WithNameBody' {
     $True;
 }
+
+# Synopsis: Rule with invalid ErrorAction.
+Rule 'WithRuleErrorActionContinue' -ErrorAction Continue {
+    $True
+}

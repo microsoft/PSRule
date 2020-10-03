@@ -15,9 +15,11 @@ namespace PSRule.Host
     {
         private const string PARAMETER_NAME = "Name";
         private const string PARAMETER_BODY = "Body";
+        private const string PARAMETER_ERRORACTION = "ErrorAction";
         private const string RULE_KEYWORD = "Rule";
         private const string ERRORID_PARAMETERNOTFOUND = "PSRule.Parse.RuleParameterNotFound";
         private const string ERRORID_INVALIDRULENESTING = "PSRule.Parse.InvalidRuleNesting";
+        private const string ERRORID_INVALIDERRORACTION = "PSRule.Parse.InvalidErrorAction";
 
         private readonly StringComparer _Comparer;
 
@@ -69,6 +71,7 @@ namespace PSRule.Host
             if (IsRule(commandAst))
             {
                 var valid = NotNested(commandAst) &&
+                    HasValidErrorAction(commandAst) &&
                     HasRequiredParameters(commandAst);
 
                 return valid ? base.VisitCommand(commandAst) : AstVisitAction.SkipChildren;
@@ -76,21 +79,15 @@ namespace PSRule.Host
             return base.VisitCommand(commandAst);
         }
 
-        private bool HasRequiredParameters(CommandAst commandAst)
-        {
-            var bindResult = BindParameters(commandAst);
-            return HasNameParameter(commandAst, bindResult) && HasBodyParameter(commandAst, bindResult);
-        }
-
         /// <summary>
         /// Determines if the rule has a Body parameter.
         /// </summary>
         private bool HasBodyParameter(CommandAst commandAst, ParameterBindResult bindResult)
         {
-            if (bindResult.Has<ScriptBlockExpressionAst>(PARAMETER_BODY, 1, out ScriptBlockExpressionAst _))
+            if (bindResult.Has(PARAMETER_BODY, 1, out ScriptBlockExpressionAst _))
                 return true;
 
-            ReportError(message: string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.RuleParameterNotFound, PARAMETER_BODY, ReportExtent(commandAst.Extent)), errorId: ERRORID_PARAMETERNOTFOUND);
+            ReportError(ERRORID_PARAMETERNOTFOUND, PSRuleResources.RuleParameterNotFound, PARAMETER_BODY, ReportExtent(commandAst.Extent));
             return false;
         }
 
@@ -99,10 +96,10 @@ namespace PSRule.Host
         /// </summary>
         private bool HasNameParameter(CommandAst commandAst, ParameterBindResult bindResult)
         {
-            if (bindResult.Has<StringConstantExpressionAst>(PARAMETER_NAME, 0, out StringConstantExpressionAst value) && !string.IsNullOrEmpty(value.Value))
+            if (bindResult.Has(PARAMETER_NAME, 0, out StringConstantExpressionAst value) && !string.IsNullOrEmpty(value.Value))
                 return true;
 
-            ReportError(message: string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.RuleParameterNotFound, PARAMETER_NAME, ReportExtent(commandAst.Extent)), errorId: ERRORID_PARAMETERNOTFOUND);
+            ReportError(ERRORID_PARAMETERNOTFOUND, PSRuleResources.RuleParameterNotFound, PARAMETER_NAME, ReportExtent(commandAst.Extent));
             return false;
         }
 
@@ -112,10 +109,34 @@ namespace PSRule.Host
         private bool NotNested(CommandAst commandAst)
         {
             if (GetParentBlock(commandAst)?.Parent == null)
-            {
                 return true;
-            }
-            ReportError(message: string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.InvalidRuleNesting, ""), errorId: ERRORID_INVALIDRULENESTING);
+
+            ReportError(ERRORID_INVALIDRULENESTING, PSRuleResources.InvalidRuleNesting, ReportExtent(commandAst.Extent));
+            return false;
+        }
+
+        /// <summary>
+        /// Determines if the rule has required parameters.
+        /// </summary>
+        private bool HasRequiredParameters(CommandAst commandAst)
+        {
+            var bindResult = BindParameters(commandAst);
+            return HasNameParameter(commandAst, bindResult) && HasBodyParameter(commandAst, bindResult);
+        }
+
+        /// <summary>
+        /// Determine if the rule has allowed ErrorAction options.
+        /// </summary>
+        private bool HasValidErrorAction(CommandAst commandAst)
+        {
+            var bindResult = BindParameters(commandAst);
+            if (!bindResult.Has(PARAMETER_ERRORACTION, 0, out StringConstantExpressionAst value))
+                return true;
+
+            if (!Enum.TryParse(value.Value, out ActionPreference result) || (result == ActionPreference.Ignore || result == ActionPreference.Stop))
+                return true;
+
+            ReportError(ERRORID_INVALIDERRORACTION, PSRuleResources.InvalidErrorAction, value.Value, ReportExtent(commandAst.Extent));
             return false;
         }
 
@@ -149,9 +170,12 @@ namespace PSRule.Host
             return result;
         }
 
-        private void ReportError(string message, string errorId)
+        private void ReportError(string errorId, string message, params object[] args)
         {
-            ReportError(new RuleParseException(message: message, errorId: errorId));
+            ReportError(new RuleParseException(
+                message: string.Format(Thread.CurrentThread.CurrentCulture, message, args),
+                errorId: errorId
+            ));
         }
 
         private void ReportError(RuleParseException exception)
