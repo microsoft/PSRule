@@ -154,8 +154,11 @@
   <data name="FoundModules" xml:space="preserve">
     <value>[PSRule][D] -- Found {0} PSRule module(s)</value>
   </data>
+  <data name="InvalidErrorAction" xml:space="preserve">
+    <value>An invalid ErrorAction ({0}) was specified for rule at {1}. Ignore | Stop are supported.</value>
+  </data>
   <data name="InvalidRuleNesting" xml:space="preserve">
-    <value>Rule nesting was detected in rule '{0}'. Rules must not be nested.</value>
+    <value>Rule nesting was detected for rule at {0}. Rules must not be nested.</value>
     <comment>Occurs when a rule is nested in another rule.</comment>
   </data>
   <data name="InvalidRuleResult" xml:space="preserve">

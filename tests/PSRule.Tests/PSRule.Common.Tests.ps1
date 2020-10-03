@@ -1750,7 +1750,7 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
     }
 
     Context 'Parsing' {
-        $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileParseError.Rule.ps1');
+        $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileParseError.Rule.ps1';
         $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithNestedRule;
         $messages = @($outError);
 
@@ -1758,7 +1758,7 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
             $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidRuleNesting' });
             $filteredResult.Length | Should -Be 1;
             $filteredResult[0].Exception | Should -BeOfType PSRule.Pipeline.RuleParseException;
-            $filteredResult[0].Exception.Message | Should -BeLike 'Rule nesting was detected in rule *';
+            $filteredResult[0].Exception.Message | Should -BeLike 'Rule nesting was detected for rule at *';
         }
 
         It 'Error on missing parameter' {
@@ -1769,11 +1769,18 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
             $filteredResult[1].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Name'' on rule at * line *';
             $filteredResult[2].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Body'' on rule at * line *';
         }
+
+        It 'Error on invalid ErrorAction' {
+            $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidErrorAction' });
+            $filteredResult.Length | Should -Be 1;
+            $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.RuleParseException;
+            $filteredResult[0].Exception.Message | Should -BeLike 'An invalid ErrorAction (*) was specified for rule at *';
+        }
     }
 
     Context 'Conditions' {
         It 'Error on non-boolean results' {
-            $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1');
+            $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1';
             $result = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithNonBoolean;
             $messages = @($outError);
             $result | Should -Not -BeNullOrEmpty;
@@ -1783,11 +1790,52 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
             $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
             $messages.Exception.Message | Should -BeLike 'An invalid rule result was returned for *';
         }
+
+        It 'Error with default ErrorAction' {
+            $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1';
+            $result = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithRuleErrorActionDefault;
+            $errorsOut = @($outError);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Outcome | Should -Be 'Error';
+
+            # Errors
+            $errorsOut.Length | Should -Be 1;
+            $errorsOut[0] | Should -Be 'Some error 1';
+            $errorsOut[0].FullyQualifiedErrorId | Should -BeLike '*,WithRuleErrorActionDefault,Invoke-PSRule';
+        }
+
+        It 'Ignore handled exception' {
+            $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1';
+            $result = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithTryCatch;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Outcome | Should -Be 'Fail';
+        }
+
+        It 'Ignore cmdlet suppressed error' {
+            $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1';
+            $result = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithCmdletErrorActionIgnore;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Outcome | Should -Be 'Fail';
+        }
+
+        It 'Ignore rule suppressed error' {
+            $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1';
+            $result = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithRuleErrorActionIgnore;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Outcome | Should -Be 'Pass';
+        }
+
+        It 'Rules are processed on error' {
+            $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1';
+            $result = @($testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name  WithParameterNotFound,WithRuleErrorActionDefault,WithRuleErrorActionIgnore,WithCmdletErrorActionIgnore,WithThrow);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 5;
+        }
     }
 
     Context 'Dependencies' {
         It 'Error on circular dependency' {
-            $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1');
+            $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1';
             $messages = @({ $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithDependency1; $outError; } | Should -Throw -PassThru);
             $messages.Length | Should -BeGreaterThan 0;
             $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
@@ -1795,7 +1843,7 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
         }
 
         It 'Error on $null DependsOn' {
-            $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileInvalid.Rule.ps1');
+            $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileInvalid.Rule.ps1';
             $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name InvalidRule1, InvalidRule2;
             $messages = @($outError);
             $messages.Length | Should -Be 2;
@@ -1804,7 +1852,7 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
         }
 
         It 'Error on missing dependency' {
-            $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1');
+            $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1';
             $messages = @({ $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithDependency4; $outError; } | Should -Throw -PassThru);
             $messages.Length | Should -BeGreaterThan 0;
             $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;

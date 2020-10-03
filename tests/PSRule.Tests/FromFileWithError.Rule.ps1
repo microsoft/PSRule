@@ -26,3 +26,44 @@ Rule 'WithDependency3' -DependsOn 'WithDependency1' {
 Rule 'WithDependency4' -DependsOn 'WithDependency5' {
     $True;
 }
+
+# Synopsis: Should pass because exception is caught.
+Rule 'WithTryCatch' {
+    try {
+        $Null = Get-Command PSRule_NotCommand -ErrorAction Stop;
+        $True;
+    }
+    catch {
+        $False;
+    }
+}
+
+# Synopsis: With parsing error.
+Rule 'WithParameterNotFound' {
+    $item = Get-Item -MisspelledParameter MyItem;
+    $True;
+}
+
+# Synopsis: With throw.
+Rule 'WithThrow' {
+    throw 'Some error'
+}
+
+# Synopsis: Should pass because error is suppressed.
+Rule 'WithCmdletErrorActionIgnore' {
+    $result = Get-Command PSRule_NotCommand -ErrorAction Ignore;
+    $Null -ne $result;
+}
+
+# Synopsis: Rule using the default stop action.
+Rule 'WithRuleErrorActionDefault' {
+    Write-Error 'Some error 1';
+    Write-Error 'Some error 2';
+    $True;
+}
+
+# Synopsis: Rule ignoring errors.
+Rule 'WithRuleErrorActionIgnore' -ErrorAction Ignore {
+    Write-Error 'Some error';
+    $True;
+}

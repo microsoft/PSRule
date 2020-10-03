@@ -1399,7 +1399,6 @@ function Set-PSRuleOption {
 https://microsoft.github.io/PSRule/keywords/PSRule/en-US/about_PSRule_Keywords.html#rule
 #>
 function Rule {
-    [CmdletBinding()]
     [OutputType([void])]
     param (
         # The name of the rule
@@ -1426,7 +1425,6 @@ function Rule {
         [Parameter(Mandatory = $False)]
         [Hashtable]$Configure
     )
-
     begin {
         # This is just a stub to improve rule authoring and discovery
         Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
@@ -1444,7 +1442,6 @@ function AllOf {
         [Parameter(Mandatory = $True, Position = 0)]
         [ScriptBlock]$Body
     )
-
     begin {
         # This is just a stub to improve rule authoring and discovery
         Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
@@ -1462,7 +1459,6 @@ function AnyOf {
         [Parameter(Mandatory = $True, Position = 0)]
         [ScriptBlock]$Body
     )
-
     begin {
         # This is just a stub to improve rule authoring and discovery
         Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
@@ -1495,7 +1491,6 @@ function Exists {
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
     )
-
     begin {
         # This is just a stub to improve rule authoring and discovery
         Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
@@ -1528,7 +1523,6 @@ function Match {
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
     )
-
     begin {
         # This is just a stub to improve rule authoring and discovery
         Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
@@ -1565,7 +1559,6 @@ function Within {
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
     )
-
     begin {
         # This is just a stub to improve rule authoring and discovery
         Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
@@ -1589,7 +1582,6 @@ function TypeOf {
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSObject]$InputObject
     )
-
     begin {
         # This is just a stub to improve rule authoring and discovery
         Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
@@ -1607,7 +1599,6 @@ function Reason {
         [Parameter(Mandatory = $False, Position = 0)]
         [String]$Text
     )
-
     begin {
         # This is just a stub to improve rule authoring and discovery
         Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
@@ -1625,7 +1616,6 @@ function Recommend {
         [Parameter(Mandatory = $False, Position = 0)]
         [String]$Text
     )
-
     begin {
         # This is just a stub to improve rule authoring and discovery
         Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;

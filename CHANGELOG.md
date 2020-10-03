@@ -8,6 +8,9 @@
 
 - General improvements:
   - Added help links and default snippets to schemas. [#561](https://github.com/microsoft/PSRule/issues/561)
+- Bug fixes:
+  - Fixed reporting of error when rule error is handled. [#564](https://github.com/microsoft/PSRule/issues/564)
+  - Fixed first exception stops other rules from being processed. [#566](https://github.com/microsoft/PSRule/issues/566)
 
 ## v0.21.0-B2009016 (pre-release)
 

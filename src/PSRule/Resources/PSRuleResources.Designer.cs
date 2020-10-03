@@ -160,7 +160,16 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rule nesting was detected in rule &apos;{0}&apos;. Rules must not be nested..
+        ///   Looks up a localized string similar to An invalid ErrorAction ({0}) was specified for rule at {1}. Ignore | Stop are supported..
+        /// </summary>
+        internal static string InvalidErrorAction {
+            get {
+                return ResourceManager.GetString("InvalidErrorAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rule nesting was detected for rule at {0}. Rules must not be nested..
         /// </summary>
         internal static string InvalidRuleNesting {
             get {
