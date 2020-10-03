@@ -78,7 +78,7 @@ namespace PSRule.Commands
                 throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordScriptScope, LanguageKeywords.Rule));
 
             var context = RunspaceContext.CurrentThread;
-            var errorPreference = GetBoundPreference(ErrorActionParameter) ?? ActionPreference.Stop;
+            var errorPreference = GetErrorActionPreference();
             var metadata = GetMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var tag = GetTag(Tag);
             var source = context.Source.File;
@@ -114,6 +114,13 @@ namespace PSRule.Commands
             );
 #pragma warning restore CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
             WriteObject(block);
+        }
+
+        private ActionPreference GetErrorActionPreference()
+        {
+            var preference = GetBoundPreference(ErrorActionParameter) ?? ActionPreference.Stop;
+            // Ignore not supported on older PowerShell versions
+            return preference == ActionPreference.Ignore ? ActionPreference.SilentlyContinue : preference;
         }
 
         private ActionPreference? GetBoundPreference(string name)
