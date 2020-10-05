@@ -16,6 +16,7 @@ What's changed since pre-release v0.21.0-B2009016:
   - Bump Manatee.Json from 13.0.2 to 13.0.3. [#563](https://github.com/microsoft/PSRule/pull/563)
 - Bug fixes:
   - Fixed reporting of error when rule error is handled. [#564](https://github.com/microsoft/PSRule/issues/564)
+    - Additionally rules can use `-ErrorAction Ignore` to ignore non-exception errors.
   - Fixed first exception stops other rules from being processed. [#566](https://github.com/microsoft/PSRule/issues/566)
 
 ## v0.21.0-B2009016 (pre-release)
