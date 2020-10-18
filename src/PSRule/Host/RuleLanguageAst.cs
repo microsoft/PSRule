@@ -172,13 +172,13 @@ namespace PSRule.Host
 
         private void ReportError(string errorId, string message, params object[] args)
         {
-            ReportError(new RuleParseException(
+            ReportError(new Pipeline.ParseException(
                 message: string.Format(Thread.CurrentThread.CurrentCulture, message, args),
                 errorId: errorId
             ));
         }
 
-        private void ReportError(RuleParseException exception)
+        private void ReportError(Pipeline.ParseException exception)
         {
             if (Errors == null)
             {

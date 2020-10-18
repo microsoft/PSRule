@@ -59,7 +59,7 @@ namespace PSRule.Commands
             {
                 context.Error(ex);
             }
-            catch (RuntimeException ex)
+            catch (System.Management.Automation.RuntimeException ex)
             {
                 if (ex.ErrorRecord.FullyQualifiedErrorId == "MethodInvocationNotSupportedInConstrainedLanguage")
                     throw;

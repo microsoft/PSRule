@@ -128,7 +128,7 @@ namespace PSRule.Commands
             {
                 if (!TryStringValue(Value[i], out string value))
                 {
-                    throw new RuleRuntimeException(PSRuleResources.WithinLikeNotString);
+                    throw new RuleException(PSRuleResources.WithinLikeNotString);
                 }
                 _LikePattern[i] = WildcardPattern.Get(value, CaseSensitive ? WildcardOptions.None : WildcardOptions.IgnoreCase);
             }

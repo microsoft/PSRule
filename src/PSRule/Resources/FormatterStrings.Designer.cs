@@ -61,24 +61,6 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} failed {1} with the error &apos;{2}&apos;..
-        /// </summary>
-        internal static string AzurePipelines_Error {
-            get {
-                return ResourceManager.GetString("AzurePipelines_Error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} failed {1}. {2}.
-        /// </summary>
-        internal static string AzurePipelines_Fail {
-            get {
-                return ResourceManager.GetString("AzurePipelines_Fail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to     ____  _____ ____        __\n   / __ \/ ___// __ \__  __/ /__\n  / /_/ /\__ \/ /_/ / / / / / _ \\n / ____/___/ / _, _/ /_/ / /  __/\n/_/    /____/_/ |_|\__,_/_/\___/.
         /// </summary>
         internal static string Banner {
@@ -88,47 +70,20 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to     [ERROR] {0}.
+        ///   Looks up a localized string similar to     | MESSAGE:.
         /// </summary>
-        internal static string Client_Error {
+        internal static string Message {
             get {
-                return ResourceManager.GetString("Client_Error", resourceCulture);
+                return ResourceManager.GetString("Message", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to     [FAIL] {0}.
+        ///   Looks up a localized string similar to     | .
         /// </summary>
-        internal static string Client_Fail {
+        internal static string MessagePrefix {
             get {
-                return ResourceManager.GetString("Client_Fail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to     [PASS] {0}.
-        /// </summary>
-        internal static string Client_Pass {
-            get {
-                return ResourceManager.GetString("Client_Pass", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to     [WARN] {0}.
-        /// </summary>
-        internal static string Client_Warning {
-            get {
-                return ResourceManager.GetString("Client_Warning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [FAIL] {0} failed {1}. {2}.
-        /// </summary>
-        internal static string GitHubActions_Fail {
-            get {
-                return ResourceManager.GetString("GitHubActions_Fail", resourceCulture);
+                return ResourceManager.GetString("MessagePrefix", resourceCulture);
             }
         }
         
@@ -142,38 +97,11 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to     [ERROR] {0}.
+        ///   Looks up a localized string similar to     | POSITION:.
         /// </summary>
-        internal static string Plain_Error {
+        internal static string Position {
             get {
-                return ResourceManager.GetString("Plain_Error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to     [FAIL] {0}.
-        /// </summary>
-        internal static string Plain_Fail {
-            get {
-                return ResourceManager.GetString("Plain_Fail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to     [PASS] {0}.
-        /// </summary>
-        internal static string Plain_Pass {
-            get {
-                return ResourceManager.GetString("Plain_Pass", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to     [WARN] {0}.
-        /// </summary>
-        internal static string Plain_Warning {
-            get {
-                return ResourceManager.GetString("Plain_Warning", resourceCulture);
+                return ResourceManager.GetString("Position", resourceCulture);
             }
         }
         
@@ -219,6 +147,69 @@ namespace PSRule.Resources {
         internal static string RecommendPrefix {
             get {
                 return ResourceManager.GetString("RecommendPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     [ERROR] {0}.
+        /// </summary>
+        internal static string Result_Error {
+            get {
+                return ResourceManager.GetString("Result_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} failed {1} with the error &apos;{2}&apos;..
+        /// </summary>
+        internal static string Result_ErrorDetail {
+            get {
+                return ResourceManager.GetString("Result_ErrorDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     [FAIL] {0}.
+        /// </summary>
+        internal static string Result_Fail {
+            get {
+                return ResourceManager.GetString("Result_Fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} failed {1}. {2}.
+        /// </summary>
+        internal static string Result_FailDetail {
+            get {
+                return ResourceManager.GetString("Result_FailDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     [PASS] {0}.
+        /// </summary>
+        internal static string Result_Pass {
+            get {
+                return ResourceManager.GetString("Result_Pass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     [WARN] {0}.
+        /// </summary>
+        internal static string Result_Warning {
+            get {
+                return ResourceManager.GetString("Result_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     | STACK TRACE:.
+        /// </summary>
+        internal static string StackTrace {
+            get {
+                return ResourceManager.GetString("StackTrace", resourceCulture);
             }
         }
         

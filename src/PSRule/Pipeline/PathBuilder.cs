@@ -34,14 +34,14 @@ namespace PSRule.Pipeline
         private static readonly char[] PathLiteralStopCharacters = new char[] { '*', '[', '?' };
         private static readonly char[] PathSeparatorCharacters = new char[] { '\\', '/' };
 
-        private readonly ILogger _Logger;
+        private readonly IPipelineWriter _Logger;
         private readonly List<InputFileInfo> _Files;
         private readonly HashSet<string> _Paths;
         private readonly string _BasePath;
         private readonly string _DefaultSearchPattern;
         private readonly PathFilter _GlobalFilter;
 
-        protected PathBuilder(ILogger logger, string basePath, string searchPattern, PathFilter filter)
+        protected PathBuilder(IPipelineWriter logger, string basePath, string searchPattern, PathFilter filter)
         {
             _Logger = logger;
             _Files = new List<InputFileInfo>();

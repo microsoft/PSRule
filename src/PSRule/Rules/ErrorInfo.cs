@@ -4,6 +4,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Management.Automation;
+using System.Management.Automation.Language;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Rules
@@ -13,7 +14,7 @@ namespace PSRule.Rules
     /// </summary>
     public sealed class ErrorInfo
     {
-        internal ErrorInfo(string message, string scriptStackTrace, string errorId, Exception exception, ErrorCategory category)
+        internal ErrorInfo(string message, string scriptStackTrace, string errorId, Exception exception, ErrorCategory category, string positionMessage, IScriptExtent scriptExtent)
         {
             Message = message;
             ScriptStackTrace = scriptStackTrace;
@@ -21,6 +22,8 @@ namespace PSRule.Rules
             Exception = exception;
             Category = category;
             ExceptionType = Exception?.GetType()?.FullName;
+            PositionMessage = positionMessage;
+            ScriptExtent = scriptExtent;
         }
 
         /// <summary>
@@ -59,5 +62,17 @@ namespace PSRule.Rules
         /// </summary>
         [JsonProperty(PropertyName = "category")]
         public ErrorCategory Category { get; }
+
+        /// <summary>
+        /// A positional message for the error.
+        /// </summary>
+        [JsonIgnore]
+        public string PositionMessage { get; }
+
+        /// <summary>
+        /// The extent for the error.
+        /// </summary>
+        [JsonIgnore]
+        public IScriptExtent ScriptExtent { get; }
     }
 }

@@ -5,6 +5,16 @@
 # Pester unit test rules for error handling
 #
 
+# Synopsis: Should pass
+Rule 'WithPass' {
+    $Assert.Pass();
+}
+
+# Synopsis: Should fail
+Rule 'WithFail' {
+    $Assert.Fail('This is a fail');
+}
+
 # Synopsis: Should fail
 Rule 'WithNonBoolean' {
     $True
@@ -65,5 +75,11 @@ Rule 'WithRuleErrorActionDefault' {
 # Synopsis: Rule ignoring errors.
 Rule 'WithRuleErrorActionIgnore' -ErrorAction Ignore {
     Write-Error 'Some error';
+    $True;
+}
+
+# Synopsis: Rule to generate a PowerShell parsing exception
+Rule 'WithParseError' {
+    $Null = Get-Item -MisspelledParameter MyItem
     $True;
 }

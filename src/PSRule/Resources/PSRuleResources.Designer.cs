@@ -133,6 +133,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} : Reported &apos;{1}&apos;. At {2}:{3} char:{4}.
+        /// </summary>
+        internal static string ErrorDetailMessage {
+            get {
+                return ResourceManager.GetString("ErrorDetailMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One or more errors occured..
         /// </summary>
         internal static string ErrorPipelineException {

@@ -112,7 +112,7 @@ namespace PSRule.Runtime
         {
             // Check that the scope is still valid
             if (PipelineContext.CurrentThread.ExecutionScope != ExecutionScope.Condition)
-                throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VariableConditionScope, "Assert"));
+                throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VariableConditionScope, "Assert"));
 
             // Continue
             for (var i = 0; _Reason != null && i < _Reason.Count; i++)

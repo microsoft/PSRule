@@ -118,7 +118,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $warningMessages[1] | Should -Be 'Rule warning message';
 
             # Errors
-            $outErrors | Should -Be 'Rule error message';
+            $outErrors | Should -BeLike '*Rule error message*';
             $outErrors.FullyQualifiedErrorId | Should -BeLike '*,WithError,Invoke-PSRule';
 
             # Information
@@ -1158,9 +1158,9 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue 6>&1 | Out-String;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
-            $result | Should -Match '\[\+\] FromFile1';
-            $result | Should -Match '::error::\[FAIL\] TestObject1 failed FromFile2';
-            $result | Should -Match '::error::\[FAIL\] TestObject1 failed FromFile3';
+            $result | Should -Match '\[PASS\] FromFile1';
+            $result | Should -Match '::error::TestObject1 failed FromFile2';
+            $result | Should -Match '::error::TestObject1 failed FromFile3';
             $result | Should -Match '::warning::This is a warning';
             $errorOut | Should -Not -BeNullOrEmpty;
         }
@@ -1175,7 +1175,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             $result = $testObject | Assert-PSRule @assertParams -ErrorAction SilentlyContinue 6>&1 | Out-String;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
-            $result | Should -Match '\[\+\] FromFile1';
+            $result | Should -Match '\[PASS\] FromFile1';
             $result | Should -Match "`#`#vso\[task\.logissue type=error\]TestObject1 failed FromFile2";
             $result | Should -Match "`#`#vso\[task\.logissue type=error\]TestObject1 failed FromFile3";
             $result | Should -Match "`#`#vso\[task\.logissue type=warning\]This is a warning";
@@ -1757,14 +1757,14 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
         It 'Error on nested rules' {
             $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidRuleNesting' });
             $filteredResult.Length | Should -Be 1;
-            $filteredResult[0].Exception | Should -BeOfType PSRule.Pipeline.RuleParseException;
+            $filteredResult[0].Exception | Should -BeOfType PSRule.Pipeline.ParseException;
             $filteredResult[0].Exception.Message | Should -BeLike 'Rule nesting was detected for rule at *';
         }
 
         It 'Error on missing parameter' {
             $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.RuleParameterNotFound' });
             $filteredResult.Length | Should -Be 3;
-            $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.RuleParseException;
+            $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.ParseException;
             $filteredResult[0].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Name'' on rule at * line *';
             $filteredResult[1].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Name'' on rule at * line *';
             $filteredResult[2].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Body'' on rule at * line *';
@@ -1773,7 +1773,7 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
         It 'Error on invalid ErrorAction' {
             $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidErrorAction' });
             $filteredResult.Length | Should -Be 1;
-            $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.RuleParseException;
+            $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.ParseException;
             $filteredResult[0].Exception.Message | Should -BeLike 'An invalid ErrorAction (*) was specified for rule at *';
         }
     }
@@ -1787,7 +1787,7 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
             $result.IsSuccess() | Should -Be $False;
             $result.Outcome | Should -Be 'Error';
             $messages.Length | Should -BeGreaterThan 0;
-            $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
+            $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleException;
             $messages.Exception.Message | Should -BeLike 'An invalid rule result was returned for *';
         }
 
@@ -1800,7 +1800,7 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
 
             # Errors
             $errorsOut.Length | Should -Be 1;
-            $errorsOut[0] | Should -Be 'Some error 1';
+            $errorsOut[0] | Should -BeLike '*Some error 1*';
             $errorsOut[0].FullyQualifiedErrorId | Should -BeLike '*,WithRuleErrorActionDefault,Invoke-PSRule';
         }
 
@@ -1838,7 +1838,7 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
             $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1';
             $messages = @({ $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithDependency1; $outError; } | Should -Throw -PassThru);
             $messages.Length | Should -BeGreaterThan 0;
-            $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
+            $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleException;
             $messages.Exception.Message | Should -BeLike 'A circular rule dependency was detected.*';
         }
 
@@ -1855,7 +1855,7 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
             $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileWithError.Rule.ps1';
             $messages = @({ $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithDependency4; $outError; } | Should -Throw -PassThru);
             $messages.Length | Should -BeGreaterThan 0;
-            $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleRuntimeException;
+            $messages.Exception | Should -BeOfType PSRule.Pipeline.RuleException;
             $messages.Exception.Message | Should -BeLike 'The dependency * for * could not be found.*';
         }
     }

@@ -32,5 +32,5 @@ Rule 'WithNameBody' {
 
 # Synopsis: Rule with invalid ErrorAction.
 Rule 'WithRuleErrorActionContinue' -ErrorAction Continue {
-    $True
+    $True;
 }

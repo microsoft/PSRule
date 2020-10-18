@@ -117,14 +117,14 @@ namespace PSRule.Commands
             return PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition;
         }
 
-        protected static RuleRuntimeException RuleScopeException(string keyword)
+        protected static RuleException RuleScopeException(string keyword)
         {
-            return new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordRuleScope, keyword));
+            return new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordRuleScope, keyword));
         }
 
-        protected static RuleRuntimeException ConditionScopeException(string keyword)
+        protected static RuleException ConditionScopeException(string keyword)
         {
-            return new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordConditionScope, keyword));
+            return new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordConditionScope, keyword));
         }
     }
 }

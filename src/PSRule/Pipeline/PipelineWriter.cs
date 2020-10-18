@@ -2,14 +2,50 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Resources;
 using PSRule.Rules;
 using System.Collections.Generic;
 using System.Management.Automation;
-using System.Text;
+using System.Threading;
 
 namespace PSRule.Pipeline
 {
-    internal abstract class PipelineWriter : ILogger
+    public delegate void MessageHook(string message);
+
+    public delegate void ErrorRecordHook(ErrorRecord errorRecord);
+
+    public interface IPipelineWriter
+    {
+        void WriteVerbose(string message);
+
+        bool ShouldWriteVerbose();
+
+        void WriteWarning(string message);
+
+        bool ShouldWriteWarning();
+
+        void WriteError(ErrorRecord errorRecord);
+
+        bool ShouldWriteError();
+
+        void WriteInformation(InformationRecord informationRecord);
+
+        void WriteHost(HostInformationMessage info);
+
+        bool ShouldWriteInformation();
+
+        void WriteDebug(DebugRecord debugRecord);
+
+        bool ShouldWriteDebug();
+
+        void WriteObject(object sendToPipeline, bool enumerateCollection);
+
+        void EnterScope(string scopeName);
+
+        void ExitScope();
+    }
+
+    internal abstract class PipelineWriter : IPipelineWriter
     {
         protected const string ErrorPreference = "ErrorActionPreference";
         protected const string WarningPreference = "WarningPreference";
@@ -145,12 +181,23 @@ namespace PSRule.Pipeline
             if (record == null || record.Error == null)
                 return;
 
-            WriteError(new ErrorRecord(
+            var errorRecord = new ErrorRecord(
                 record.Error.Exception,
                 record.Error.ErrorId,
                 record.Error.Category,
                 record.TargetName
+            );
+            errorRecord.CategoryInfo.TargetType = record.TargetType;
+            errorRecord.ErrorDetails = new ErrorDetails(string.Format(
+                Thread.CurrentThread.CurrentCulture,
+                PSRuleResources.ErrorDetailMessage,
+                record.RuleId,
+                record.Error.Message,
+                record.Error.ScriptExtent.File,
+                record.Error.ScriptExtent.StartLineNumber,
+                record.Error.ScriptExtent.StartColumnNumber
             ));
+            WriteError(errorRecord);
         }
 
         protected static ActionPreference GetPreferenceVariable(SessionState sessionState, string variableName)

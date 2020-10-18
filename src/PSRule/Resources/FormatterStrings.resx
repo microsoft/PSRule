@@ -117,44 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AzurePipelines_Error" xml:space="preserve">
-    <value>{0} failed {1} with the error '{2}'.</value>
-  </data>
-  <data name="AzurePipelines_Fail" xml:space="preserve">
-    <value>{0} failed {1}. {2}</value>
-  </data>
   <data name="Banner" xml:space="preserve">
     <value>    ____  _____ ____        __\n   / __ \/ ___// __ \__  __/ /__\n  / /_/ /\__ \/ /_/ / / / / / _ \\n / ____/___/ / _, _/ /_/ / /  __/\n/_/    /____/_/ |_|\__,_/_/\___/</value>
   </data>
-  <data name="Client_Error" xml:space="preserve">
-    <value>    [ERROR] {0}</value>
+  <data name="Message" xml:space="preserve">
+    <value>    | MESSAGE:</value>
   </data>
-  <data name="Client_Fail" xml:space="preserve">
-    <value>    [FAIL] {0}</value>
-  </data>
-  <data name="Client_Pass" xml:space="preserve">
-    <value>    [PASS] {0}</value>
-  </data>
-  <data name="Client_Warning" xml:space="preserve">
-    <value>    [WARN] {0}</value>
-  </data>
-  <data name="GitHubActions_Fail" xml:space="preserve">
-    <value>[FAIL] {0} failed {1}. {2}</value>
+  <data name="MessagePrefix" xml:space="preserve">
+    <value>    | </value>
   </data>
   <data name="ModuleVersion" xml:space="preserve">
     <value>Using {0} v{1}</value>
   </data>
-  <data name="Plain_Error" xml:space="preserve">
-    <value>    [ERROR] {0}</value>
-  </data>
-  <data name="Plain_Fail" xml:space="preserve">
-    <value>    [FAIL] {0}</value>
-  </data>
-  <data name="Plain_Pass" xml:space="preserve">
-    <value>    [PASS] {0}</value>
-  </data>
-  <data name="Plain_Warning" xml:space="preserve">
-    <value>    [WARN] {0}</value>
+  <data name="Position" xml:space="preserve">
+    <value>    | POSITION:</value>
   </data>
   <data name="PSRuleVersion" xml:space="preserve">
     <value>Using PSRule v{0}</value>
@@ -172,6 +148,27 @@
   </data>
   <data name="RecommendPrefix" xml:space="preserve">
     <value>    | </value>
+  </data>
+  <data name="Result_Error" xml:space="preserve">
+    <value>    [ERROR] {0}</value>
+  </data>
+  <data name="Result_ErrorDetail" xml:space="preserve">
+    <value>{0} failed {1} with the error '{2}'.</value>
+  </data>
+  <data name="Result_Fail" xml:space="preserve">
+    <value>    [FAIL] {0}</value>
+  </data>
+  <data name="Result_FailDetail" xml:space="preserve">
+    <value>{0} failed {1}. {2}</value>
+  </data>
+  <data name="Result_Pass" xml:space="preserve">
+    <value>    [PASS] {0}</value>
+  </data>
+  <data name="Result_Warning" xml:space="preserve">
+    <value>    [WARN] {0}</value>
+  </data>
+  <data name="StackTrace" xml:space="preserve">
+    <value>    | STACK TRACE:</value>
   </data>
   <data name="Summary" xml:space="preserve">
     <value>Rules processed: {0}, failed: {1}, errored: {2}</value>

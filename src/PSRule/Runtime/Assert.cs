@@ -34,7 +34,7 @@ namespace PSRule.Runtime
         internal AssertResult Create(bool condition, string reason, object[] args)
         {
             if (!(PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition || PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Precondition))
-                throw new RuleRuntimeException(string.Format(PSRuleResources.VariableConditionScope, "Assert"));
+                throw new RuleException(string.Format(PSRuleResources.VariableConditionScope, "Assert"));
 
             return new AssertResult(this, condition, reason, args);
         }
@@ -323,7 +323,7 @@ namespace PSRule.Runtime
                 return result;
 
             if (!Runtime.SemanticVersion.TryParseConstraint(constraint, out SemanticVersion.Constraint c))
-                throw new RuleRuntimeException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VersionConstraintInvalid, value));
+                throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VersionConstraintInvalid, value));
 
             // Assert
             if (c != null && !c.Equals(value))
