@@ -8,7 +8,7 @@ using System.Management.Automation;
 
 namespace PSRule.Pipeline
 {
-    internal abstract class PipelineLoggerBase : ILogger
+    internal abstract class PipelineLoggerBase : IPipelineWriter
     {
         private const string Source = "PSRule";
         private const string HostTag = "PSHOST";

@@ -7,6 +7,19 @@ using System.Threading;
 
 namespace PSRule.Pipeline
 {
+    internal static class IPipelineWriterExtensions
+    {
+        public static void DebugMessage(this IPipelineWriter logger, string message)
+        {
+            if (!logger.ShouldWriteDebug())
+            {
+                return;
+            }
+
+            logger.WriteDebug(new DebugRecord(message));
+        }
+    }
+
     internal static class PipelineWriterExtensions
     {
         internal static void WarnUsingInvariantCulture(this PipelineWriter writer)

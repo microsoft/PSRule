@@ -6,6 +6,9 @@
 
 ## Unreleased
 
+- General improvements:
+  - Improved rule error reporting by including rule and source location. [#565](https://github.com/microsoft/PSRule/issues/565)
+
 ## v0.21.0-B2010003 (pre-release)
 
 What's changed since pre-release v0.21.0-B2009016:

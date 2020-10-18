@@ -145,6 +145,9 @@
     <value>A rule with the same name '{0}' already exists.</value>
     <comment>Occurs when the same rule name is used.</comment>
   </data>
+  <data name="ErrorDetailMessage" xml:space="preserve">
+    <value>{0} : Reported '{1}'. At {2}:{3} char:{4}</value>
+  </data>
   <data name="ErrorPipelineException" xml:space="preserve">
     <value>One or more errors occured.</value>
   </data>

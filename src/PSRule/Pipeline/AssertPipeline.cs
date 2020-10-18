@@ -13,7 +13,7 @@ using System.Threading;
 
 namespace PSRule.Pipeline
 {
-    internal interface IAssertFormatter : ILogger
+    internal interface IAssertFormatter : IPipelineWriter
     {
         void Result(InvokeResult result);
 
@@ -75,14 +75,17 @@ namespace PSRule.Pipeline
             /// </summary>
             private abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatter
             {
-                protected readonly ILogger Logger;
+                private readonly bool _VTSupport;
+
+                protected readonly IPipelineWriter Writer;
 
                 private bool _UnbrokenContent;
                 private bool _UnbrokenInfo;
 
-                protected AssertFormatterBase(Source[] source, ILogger logger)
+                protected AssertFormatterBase(Source[] source, IPipelineWriter writer, bool vtSupport)
                 {
-                    Logger = logger;
+                    _VTSupport = vtSupport;
+                    Writer = writer;
                     Banner();
                     Source(source);
                 }
@@ -111,11 +114,20 @@ namespace PSRule.Pipeline
                     }
                 }
 
-                protected abstract void Pass(RuleRecord record);
+                protected virtual void Pass(RuleRecord record)
+                {
+                    WritePass(FormatterStrings.Result_Pass, record);
+                }
 
-                protected abstract void Fail(RuleRecord record);
+                protected virtual void Fail(RuleRecord record)
+                {
+                    WriteFail(FormatterStrings.Result_Fail, record);
+                }
 
-                protected abstract void FailWithError(RuleRecord record);
+                protected virtual void FailWithError(RuleRecord record)
+                {
+                    WriteFailWithError(FormatterStrings.Result_Error, record);
+                }
 
                 protected virtual void FailDetail(RuleRecord record)
                 {
@@ -139,12 +151,18 @@ namespace PSRule.Pipeline
 
                 protected virtual void ErrorDetail(RuleRecord record)
                 {
-
+                    
                 }
 
-                protected abstract void Error(string message);
+                protected virtual void Error(string message)
+                {
+                    WriteErrorMessage(null, FormatterStrings.Result_Error, message);
+                }
 
-                protected abstract void Warning(string message);
+                protected virtual void Warning(string message)
+                {
+                    WriteWarningMessage(null, FormatterStrings.Result_Warning, message);
+                }
 
                 protected void Banner()
                 {
@@ -192,22 +210,22 @@ namespace PSRule.Pipeline
 
                 protected override void DoWriteVerbose(string message)
                 {
-                    Logger.WriteVerbose(message);
+                    Writer.WriteVerbose(message);
                 }
 
                 protected override void DoWriteInformation(InformationRecord informationRecord)
                 {
-                    Logger.WriteInformation(informationRecord);
+                    Writer.WriteInformation(informationRecord);
                 }
 
                 protected override void DoWriteDebug(DebugRecord debugRecord)
                 {
-                    Logger.WriteDebug(debugRecord);
+                    Writer.WriteDebug(debugRecord);
                 }
 
                 protected override void DoWriteObject(object sendToPipeline, bool enumerateCollection)
                 {
-                    Logger.WriteObject(sendToPipeline, enumerateCollection);
+                    Writer.WriteObject(sendToPipeline, enumerateCollection);
                 }
 
                 public void End(int total, int fail, int error)
@@ -216,10 +234,16 @@ namespace PSRule.Pipeline
                     WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Summary, total, fail, error));
                 }
 
+                protected void WriteLine(string prefix, ConsoleColor? forgroundColor, string message, params object[] args)
+                {
+                    var output = args == null || args.Length == 0 ? message : string.Format(Thread.CurrentThread.CurrentCulture, message, args);
+                    Writer.WriteHost(new HostInformationMessage { Message = string.Concat(prefix, output), ForegroundColor = forgroundColor });
+                }
+
                 protected void WriteLine(string message, string prefix = null, ConsoleColor? forgroundColor = null)
                 {
                     var output = string.IsNullOrEmpty(prefix) ? message : string.Concat(prefix, message);
-                    Logger.WriteHost(new HostInformationMessage { Message = output, ForegroundColor = forgroundColor });
+                    Writer.WriteHost(new HostInformationMessage { Message = output, ForegroundColor = forgroundColor });
                 }
 
                 protected void WriteLines(string message, string prefix = null, ConsoleColor? forgroundColor = null)
@@ -234,7 +258,7 @@ namespace PSRule.Pipeline
 
                 protected void LineBreak()
                 {
-                    Logger.WriteHost(new HostInformationMessage() { Message = string.Empty });
+                    Writer.WriteHost(new HostInformationMessage() { Message = string.Empty });
                     _UnbrokenContent = false;
                     _UnbrokenInfo = false;
                 }
@@ -264,6 +288,74 @@ namespace PSRule.Pipeline
                 {
                     _UnbrokenContent = true;
                 }
+
+                protected ConsoleColor? GetErrorForeground()
+                {
+                    if (!_VTSupport)
+                        return null;
+
+                    return ConsoleColor.Red;
+                }
+
+                protected ConsoleColor? GetWarningForeground()
+                {
+                    if (!_VTSupport)
+                        return null;
+
+                    return ConsoleColor.Yellow;
+                }
+
+                protected ConsoleColor? GetPassForeground()
+                {
+                    if (!_VTSupport)
+                        return null;
+
+                    return ConsoleColor.Green;
+                }
+
+                protected ConsoleColor? GetFailForeground()
+                {
+                    if (!_VTSupport)
+                        return null;
+
+                    return ConsoleColor.Red;
+                }
+
+                protected void WriteErrorMessage(string prefix, string message, params object[] args)
+                {
+                    BreakIfUnbrokenContent();
+                    WriteLine(prefix, GetErrorForeground(), message, args);
+                    UnbrokenInfo();
+                }
+
+                protected void WriteWarningMessage(string prefix, string message, params object[] args)
+                {
+                    BreakIfUnbrokenContent();
+                    WriteLine(prefix, GetWarningForeground(), message, args);
+                    UnbrokenInfo();
+                }
+
+                protected void WritePass(string message, RuleRecord record)
+                {
+                    BreakIfUnbrokenInfo();
+                    WriteLine(null, GetPassForeground(), message, record.RuleName);
+                    UnbrokenContent();
+                }
+
+                protected void WriteFail(string message, RuleRecord record)
+                {
+                    BreakIfUnbrokenInfo();
+                    WriteLine(null, GetFailForeground(), message, record.RuleName);
+                    FailDetail(record);
+                }
+
+                protected void WriteFailWithError(string message, RuleRecord record)
+                {
+                    BreakIfUnbrokenInfo();
+                    WriteLine(null, GetFailForeground(), message, record.RuleName);
+                    ErrorDetail(record);
+                    UnbrokenContent();
+                }
             }
 
             /// <summary>
@@ -271,8 +363,8 @@ namespace PSRule.Pipeline
             /// </summary>
             private sealed class ClientFormatter : AssertFormatterBase, IAssertFormatter
             {
-                internal ClientFormatter(Source[] source, ILogger logger)
-                    : base(source, logger) { }
+                internal ClientFormatter(Source[] source, IPipelineWriter logger)
+                    : base(source, logger, true) { }
 
                 public override void Result(InvokeResult result)
                 {
@@ -288,40 +380,20 @@ namespace PSRule.Pipeline
                     }
                 }
 
-                protected override void Error(string message)
+                protected override void ErrorDetail(RuleRecord record)
                 {
-                    BreakIfUnbrokenContent();
-                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Client_Error, message), forgroundColor: ConsoleColor.Red);
-                    UnbrokenInfo();
-                }
+                    if (record.Error == null)
+                        return;
 
-                protected override void Warning(string message)
-                {
-                    BreakIfUnbrokenContent();
-                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Client_Warning, message), forgroundColor: ConsoleColor.Yellow);
-                    UnbrokenInfo();
-                }
-
-                protected override void Pass(RuleRecord record)
-                {
-                    BreakIfUnbrokenInfo();
-                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Client_Pass, record.RuleName), forgroundColor: ConsoleColor.Green);
-                    UnbrokenContent();
-                }
-
-                protected override void Fail(RuleRecord record)
-                {
-                    BreakIfUnbrokenInfo();
-                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Client_Fail, record.RuleName), forgroundColor: ConsoleColor.Red);
-                    FailDetail(record);
-                }
-
-                protected override void FailWithError(RuleRecord record)
-                {
-                    BreakIfUnbrokenInfo();
-                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Client_Error, record.RuleName), forgroundColor: ConsoleColor.Red);
-                    ErrorDetail(record);
-                    UnbrokenContent();
+                    LineBreak();
+                    WriteLine(FormatterStrings.Message, forgroundColor: ConsoleColor.Red);
+                    WriteLines(record.Error.Message, prefix: FormatterStrings.MessagePrefix, forgroundColor: ConsoleColor.Red);
+                    LineBreak();
+                    WriteLine(FormatterStrings.Position, forgroundColor: ConsoleColor.Cyan);
+                    WriteLines(record.Error.PositionMessage, prefix: FormatterStrings.MessagePrefix, forgroundColor: ConsoleColor.Cyan);
+                    LineBreak();
+                    WriteLine(FormatterStrings.StackTrace, forgroundColor: ConsoleColor.Cyan);
+                    WriteLines(record.Error.ScriptStackTrace, prefix: FormatterStrings.MessagePrefix, forgroundColor: ConsoleColor.Cyan);
                 }
 
                 protected override void FailDetail(RuleRecord record)
@@ -347,8 +419,8 @@ namespace PSRule.Pipeline
             /// </summary>
             private sealed class PlainFormatter : AssertFormatterBase, IAssertFormatter
             {
-                internal PlainFormatter(Source[] source, ILogger logger)
-                    : base(source, logger) { }
+                internal PlainFormatter(Source[] source, IPipelineWriter logger)
+                    : base(source, logger, false) { }
 
                 protected override void DoWriteError(ErrorRecord errorRecord)
                 {
@@ -360,40 +432,20 @@ namespace PSRule.Pipeline
                     Warning(message);
                 }
 
-                protected override void Error(string message)
+                protected override void ErrorDetail(RuleRecord record)
                 {
-                    BreakIfUnbrokenContent();
-                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Plain_Error, message));
-                    UnbrokenInfo();
-                }
+                    if (record.Error == null)
+                        return;
 
-                protected override void Warning(string message)
-                {
-                    BreakIfUnbrokenContent();
-                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Plain_Warning, message));
-                    UnbrokenInfo();
-                }
-
-                protected override void Pass(RuleRecord record)
-                {
-                    BreakIfUnbrokenInfo();
-                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Plain_Pass, record.RuleName));
-                    UnbrokenContent();
-                }
-
-                protected override void Fail(RuleRecord record)
-                {
-                    BreakIfUnbrokenInfo();
-                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Plain_Fail, record.RuleName));
-                    FailDetail(record);
-                }
-
-                protected override void FailWithError(RuleRecord record)
-                {
-                    BreakIfUnbrokenInfo();
-                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Plain_Fail, record.RuleName));
-                    ErrorDetail(record);
-                    UnbrokenContent();
+                    LineBreak();
+                    WriteLine(FormatterStrings.Message);
+                    WriteLines(record.Error.Message, prefix: FormatterStrings.MessagePrefix);
+                    LineBreak();
+                    WriteLine(FormatterStrings.Position);
+                    WriteLines(record.Error.PositionMessage, prefix: FormatterStrings.MessagePrefix);
+                    LineBreak();
+                    WriteLine(FormatterStrings.StackTrace);
+                    WriteLines(record.Error.ScriptStackTrace, prefix: FormatterStrings.MessagePrefix);
                 }
             }
 
@@ -402,55 +454,20 @@ namespace PSRule.Pipeline
             /// </summary>
             private sealed class AzurePipelinesFormatter : AssertFormatterBase, IAssertFormatter
             {
-                internal AzurePipelinesFormatter(Source[] source, ILogger logger)
-                    : base(source, logger) { }
+                private const string MESSAGE_PREFIX_ERROR = "##vso[task.logissue type=error]";
+                private const string MESSAGE_PREFIX_WARNING = "##vso[task.logissue type=warning]";
 
-                private string GetReason(RuleRecord record)
-                {
-                    return string.Join(" ", record.Reason);
-                }
+                internal AzurePipelinesFormatter(Source[] source, IPipelineWriter logger)
+                    : base(source, logger, false) { }
 
                 protected override void Error(string message)
                 {
-                    BreakIfUnbrokenContent();
-                    WriteLine(string.Concat("##vso[task.logissue type=error]", message));
-                    UnbrokenInfo();
+                    WriteErrorMessage(MESSAGE_PREFIX_ERROR, message);
                 }
 
                 protected override void Warning(string message)
                 {
-                    BreakIfUnbrokenContent();
-                    WriteLine(string.Concat("##vso[task.logissue type=warning]", message));
-                    UnbrokenInfo();
-                }
-
-                protected override void Pass(RuleRecord record)
-                {
-                    BreakIfUnbrokenInfo();
-                    WriteLine(string.Concat("    [+] ", record.RuleName));
-                    UnbrokenContent();
-                }
-
-                protected override void Fail(RuleRecord record)
-                {
-                    BreakIfUnbrokenInfo();
-                    WriteLine(string.Concat("    [-] ", record.RuleName));
-                    FailDetail(record);
-                }
-
-                protected override void FailWithError(RuleRecord record)
-                {
-                    BreakIfUnbrokenInfo();
-                    WriteLine(string.Concat("    [-] ", record.RuleName));
-                    ErrorDetail(record);
-                    UnbrokenContent();
-                }
-
-                protected override void FailDetail(RuleRecord record)
-                {
-                    base.FailDetail(record);
-                    Error(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.AzurePipelines_Fail, record.TargetName, record.RuleName, record.Info.Synopsis));
-                    LineBreak();
+                    WriteWarningMessage(MESSAGE_PREFIX_WARNING, message);
                 }
 
                 protected override void ErrorDetail(RuleRecord record)
@@ -458,9 +475,19 @@ namespace PSRule.Pipeline
                     if (record.Error == null)
                         return;
 
-                    Error(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.AzurePipelines_Error, record.TargetName, record.RuleName, record.Error.Message));
+                    LineBreak();
+                    Error(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Result_ErrorDetail, record.TargetName, record.RuleName, record.Error.Message));
+                    LineBreak();
+                    WriteLine(record.Error.PositionMessage);
                     LineBreak();
                     WriteLine(record.Error.ScriptStackTrace);
+                }
+
+                protected override void FailDetail(RuleRecord record)
+                {
+                    base.FailDetail(record);
+                    Error(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Result_FailDetail, record.TargetName, record.RuleName, record.Info.Synopsis));
+                    LineBreak();
                 }
             }
 
@@ -469,54 +496,39 @@ namespace PSRule.Pipeline
             /// </summary>
             private sealed class GitHubActionsFormatter : AssertFormatterBase, IAssertFormatter
             {
-                internal GitHubActionsFormatter(Source[] source, ILogger logger)
-                    : base(source, logger) { }
+                private const string MESSAGE_PREFIX_ERROR = "::error::";
+                private const string MESSAGE_PREFIX_WARNING = "::warning::";
 
-                private string GetReason(RuleRecord record)
-                {
-                    return string.Join(" ", record.Reason);
-                }
+                internal GitHubActionsFormatter(Source[] source, IPipelineWriter logger)
+                    : base(source, logger, false) { }
 
                 protected override void Error(string message)
                 {
-                    BreakIfUnbrokenContent();
-                    WriteLine(string.Concat("::error::", message));
-                    UnbrokenInfo();
+                    WriteErrorMessage(MESSAGE_PREFIX_ERROR, message);
                 }
 
                 protected override void Warning(string message)
                 {
-                    BreakIfUnbrokenContent();
-                    WriteLine(string.Concat("::warning::", message));
-                    UnbrokenInfo();
+                    WriteWarningMessage(MESSAGE_PREFIX_WARNING, message);
                 }
 
-                protected override void Pass(RuleRecord record)
+                protected override void ErrorDetail(RuleRecord record)
                 {
-                    BreakIfUnbrokenInfo();
-                    WriteLine(string.Concat("    [+] ", record.RuleName));
-                    UnbrokenContent();
-                }
+                    if (record.Error == null)
+                        return;
 
-                protected override void Fail(RuleRecord record)
-                {
-                    BreakIfUnbrokenInfo();
-                    WriteLine(string.Concat("    [-] ", record.RuleName));
-                    FailDetail(record);
-                }
-
-                protected override void FailWithError(RuleRecord record)
-                {
-                    BreakIfUnbrokenInfo();
-                    WriteLine(string.Concat("    [-] ", record.RuleName));
-                    ErrorDetail(record);
-                    UnbrokenContent();
+                    LineBreak();
+                    Error(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Result_ErrorDetail, record.TargetName, record.RuleName, record.Error.Message));
+                    LineBreak();
+                    WriteLine(record.Error.PositionMessage);
+                    LineBreak();
+                    WriteLine(record.Error.ScriptStackTrace);
                 }
 
                 protected override void FailDetail(RuleRecord record)
                 {
                     base.FailDetail(record);
-                    Error(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.GitHubActions_Fail, record.TargetName, record.RuleName, record.Info.Synopsis));
+                    Error(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Result_FailDetail, record.TargetName, record.RuleName, record.Info.Synopsis));
                     LineBreak();
                 }
             }

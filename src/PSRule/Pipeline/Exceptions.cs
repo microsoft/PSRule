@@ -13,34 +13,46 @@ namespace PSRule.Pipeline
     /// </summary>
     public abstract class PipelineException : Exception
     {
-        /// <summary>
-        /// Creates a pipeline exception.
-        /// </summary>
         protected PipelineException()
-        {
-        }
+            : base() { }
 
-        /// <summary>
-        /// Creates a pipeline exception.
-        /// </summary>
-        /// <param name="message">The detail of the exception.</param>
-        protected PipelineException(string message) : base(message)
-        {
-        }
+        protected PipelineException(string message)
+            : base(message) { }
 
-        /// <summary>
-        /// Creates a pipeline exception.
-        /// </summary>
-        /// <param name="message">The detail of the exception.</param>
-        /// <param name="innerException">A nested exception that caused the issue.</param>
-        protected PipelineException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        protected PipelineException(string message, Exception innerException)
+            : base(message, innerException) { }
 
         protected PipelineException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
+            : base(info, context) { }
+    }
+
+    /// <summary>
+    /// A base class for runtime exceptions.
+    /// </summary>
+    public abstract class RuntimeException : PipelineException
+    {
+        protected RuntimeException()
+            : base() { }
+
+        protected RuntimeException(string message)
+            : base(message) { }
+
+        protected RuntimeException(string message, Exception innerException)
+            : base(message, innerException) { }
+
+        protected RuntimeException(Exception innerException, InvocationInfo invocationInfo, string ruleId)
+            : base(innerException?.Message, innerException)
         {
+            CommandInvocation = invocationInfo;
+            RuleId = ruleId;
         }
+
+        protected RuntimeException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
+
+        public InvocationInfo CommandInvocation { get; }
+
+        public string RuleId { get; }
     }
 
     /// <summary>
@@ -129,22 +141,26 @@ namespace PSRule.Pipeline
     /// A parser exception.
     /// </summary>
     [Serializable]
-    public sealed class RuleParseException : PipelineException
+    public sealed class ParseException : PipelineException
     {
-        public readonly string ErrorId;
-
         /// <summary>
         /// Creates a rule exception.
         /// </summary>
-        public RuleParseException()
+        public ParseException()
         {
         }
+
+        public ParseException(string message)
+            : base(message) { }
+
+        public ParseException(string message, Exception innerException)
+            : base(message, innerException) { }
 
         /// <summary>
         /// Creates a rule exception.
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
-        public RuleParseException(string message, string errorId) : base(message)
+        internal ParseException(string message, string errorId) : base(message)
         {
             ErrorId = errorId;
         }
@@ -154,15 +170,17 @@ namespace PSRule.Pipeline
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
         /// <param name="innerException">A nested exception that caused the issue.</param>
-        public RuleParseException(string message, string errorId, Exception innerException) : base(message, innerException)
+        internal ParseException(string message, string errorId, Exception innerException) : base(message, innerException)
         {
             ErrorId = errorId;
         }
 
-        private RuleParseException(SerializationInfo info, StreamingContext context) : base(info, context)
+        private ParseException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             ErrorId = info.GetString("ErrorId");
         }
+
+        public string ErrorId { get; }
 
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -173,53 +191,15 @@ namespace PSRule.Pipeline
             info.AddValue("ErrorId", ErrorId);
             base.GetObjectData(info, context);
         }
+
+        
     }
 
     /// <summary>
     /// A rule runtime exception.
     /// </summary>
     [Serializable]
-    public sealed class RuleRuntimeException : PipelineException
-    {
-        /// <summary>
-        /// Creates a rule runtime exception.
-        /// </summary>
-        public RuleRuntimeException()
-        {
-        }
-
-        /// <summary>
-        /// Creates a rule runtime exception.
-        /// </summary>
-        /// <param name="message">The detail of the exception.</param>
-        public RuleRuntimeException(string message) : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Creates a rule runtime exception.
-        /// </summary>
-        /// <param name="message">The detail of the exception.</param>
-        /// <param name="innerException">A nested exception that caused the issue.</param>
-        public RuleRuntimeException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        private RuleRuntimeException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
-
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            if (info == null)
-                throw new ArgumentNullException(nameof(info));
-
-            base.GetObjectData(info, context);
-        }
-    }
-
-    public abstract class RuleException : PipelineException
+    public sealed class RuleException : RuntimeException
     {
         /// <summary>
         /// Creates a rule runtime exception.
@@ -232,71 +212,25 @@ namespace PSRule.Pipeline
         /// Creates a rule runtime exception.
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
-        public RuleException(string message) : base(message)
-        {
-        }
+        public RuleException(string message)
+            : base(message) { }
 
         /// <summary>
         /// Creates a rule runtime exception.
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
         /// <param name="innerException">A nested exception that caused the issue.</param>
-        public RuleException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        public RuleException(string message, Exception innerException)
+            : base(message, innerException) { }
 
-        protected RuleException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
-
-        internal RuleException(Exception innerException, InvocationInfo invocationInfo, string ruleId)
-            : base(innerException?.Message, innerException)
-        {
-            CommandInvocation = invocationInfo;
-            RuleId = ruleId;
-        }
-
-        public InvocationInfo CommandInvocation { get; }
-
-        public string RuleId { get; }
-    }
-
-    [Serializable]
-    public sealed class RuleExecutionException : RuleException, IContainsErrorRecord
-    {
-        /// <summary>
-        /// Creates a rule runtime exception.
-        /// </summary>
-        public RuleExecutionException()
-        {
-        }
-
-        /// <summary>
-        /// Creates a rule runtime exception.
-        /// </summary>
-        /// <param name="message">The detail of the exception.</param>
-        public RuleExecutionException(string message) : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Creates a rule runtime exception.
-        /// </summary>
-        /// <param name="message">The detail of the exception.</param>
-        /// <param name="innerException">A nested exception that caused the issue.</param>
-        public RuleExecutionException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        internal RuleExecutionException(Exception innerException, InvocationInfo invocationInfo, string ruleId, ErrorRecord errorRecord)
+        internal RuleException(Exception innerException, InvocationInfo invocationInfo, string ruleId, ErrorRecord errorRecord)
             : base(innerException, invocationInfo, ruleId)
         {
             ErrorRecord = errorRecord;
         }
 
-        private RuleExecutionException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        private RuleException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
 
         public ErrorRecord ErrorRecord { get; }
 

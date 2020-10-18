@@ -256,8 +256,8 @@ namespace PSRule
             Assert.False(assert.Version(value, "version3", ">1.2.3-alpha.3").Result);
 
             Assert.False(assert.Version(value, "notversion", null).Result);
-            Assert.Throws<RuleRuntimeException>(() => assert.Version(value, "version", "2.0.0<").Result);
-            Assert.Throws<RuleRuntimeException>(() => assert.Version(value, "version", "z2.0.0").Result);
+            Assert.Throws<RuleException>(() => assert.Version(value, "version", "2.0.0<").Result);
+            Assert.Throws<RuleException>(() => assert.Version(value, "version", "z2.0.0").Result);
         }
 
         [Fact]
