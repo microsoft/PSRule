@@ -6,6 +6,34 @@
 
 ## Unreleased
 
+## v0.21.0
+
+What's changed since v0.20.0:
+
+- Engine features:
+  - Added support for formatting results as markdown. [#474](https://github.com/microsoft/PSRule/issues/474)
+    - Use `-OutputFormat Markdown` or configure `Output.Format` to output markdown.
+    - To format as either detail or summary, use the `-As` parameter or configure `Output.As`.
+  - Added character case assertion helpers `IsLower`, and `IsUpper`. [#555](https://github.com/microsoft/PSRule/issues/555)
+    - `IsLower` checks that all letters in a field value are lowercase.
+    - `IsUpper` checks that all letters in a field value are uppercase.
+- General improvements:
+  - Numerical strings can be converted with numeric assertion helpers. [#550](https://github.com/microsoft/PSRule/issues/550)
+  - Added outcome `Output.Outcome` as a configurable option. [#552](https://github.com/microsoft/PSRule/issues/552)
+  - Added help links and default snippets to schemas. [#561](https://github.com/microsoft/PSRule/issues/561)
+  - Improved rule error reporting by including rule and source location. [#565](https://github.com/microsoft/PSRule/issues/565)
+- Engineering:
+  - Bump Manatee.Json from 13.0.2 to 13.0.3. [#563](https://github.com/microsoft/PSRule/pull/563)
+- Bug fixes:
+  - Fixed NUnit report reasons should be escaped in markdown. [#471](https://github.com/microsoft/PSRule/issues/471)
+  - Fixed reporting of error when rule error is handled. [#564](https://github.com/microsoft/PSRule/issues/564)
+    - Additionally rules can use `-ErrorAction Ignore` to ignore non-exception errors.
+  - Fixed first exception stops other rules from being processed. [#566](https://github.com/microsoft/PSRule/issues/566)
+
+What's changed since pre-release v0.21.0-B2010010:
+
+- No additional changes.
+
 ## v0.21.0-B2010010 (pre-release)
 
 What's changed since pre-release v0.21.0-B2010003:
