@@ -102,17 +102,25 @@ Input objects can be passed on the PowerShell pipeline or supplied from file.</p
 Within the <code>{ }</code> one or more conditions can be used.</p>
 <p>Conditions determine if the input object either <em>Pass</em> or <em>Fail</em> the rule.</p>
 <p>Syntax:</p>
-<pre><code class="lang-text">Rule [-Name] &lt;string&gt; [-Tag &lt;hashtable&gt;] [-Type &lt;string[]&gt;] [-If &lt;scriptBlock&gt;] [-DependsOn &lt;string[]&gt;] [-Configure &lt;hashtable&gt;] [-Body] {
+<pre><code class="lang-text">Rule [-Name] &lt;string&gt; [-Tag &lt;hashtable&gt;] [-Type &lt;string[]&gt;] [-If &lt;scriptBlock&gt;] [-DependsOn &lt;string[]&gt;] [-Configure &lt;hashtable&gt;] [-ErrorAction &lt;ActionPreference&gt;] [-Body] {
     ...
 }
 </code></pre>
 <ul>
-<li><code>Name</code> - The name of the rule definition. Each rule name must be unique. When packaging rules within a module, rule names must only be unique within the module.</li>
+<li><code>Name</code> - The name of the rule definition. Each rule name must be unique.
+When packaging rules within a module, rule names must only be unique within the module.</li>
 <li><code>Tag</code> - A hashtable of key/ value metadata that can be used to filter and identify rules and rule results.</li>
 <li><code>Type</code> - A type precondition that must match the <em>TargetType</em> of the pipeline object before the rule is executed.</li>
 <li><code>If</code> - A script precondition that must evaluate to <code>$True</code> before the rule is executed.</li>
-<li><code>DependsOn</code> - A list of rules this rule depends on. Rule dependencies must execute successfully before this rule is executed.</li>
-<li><code>Configure</code> - A set of default configuration values. These values are only used when the baseline configuration does not contain the key.</li>
+<li><code>DependsOn</code> - A list of rules this rule depends on.
+Rule dependencies must execute successfully before this rule is executed.</li>
+<li><code>Configure</code> - A set of default configuration values.
+These values are only used when the baseline configuration does not contain the key.</li>
+<li><code>ErrorAction</code> - The action to take when an error occur.
+Only a subset of preferences are supported, either <code>Stop</code> or <code>Ignore</code>.
+When <code>-ErrorAction</code> is not specified the default preference is <code>Stop</code>.
+When errors are ignored a rule will pass or fail based on the rule condition.
+Uncaught exceptions will still cause rule return an error outcome.</li>
 <li><code>Body</code> - A script block that specifies one or more conditions that are required for the rule to <em>Pass</em>.</li>
 </ul>
 <p>A condition is any valid PowerShell that return either <code>$True</code> or <code>$False</code>.
@@ -143,6 +151,12 @@ Rule 'TitleIsValid' -DependsOn 'NameMustExist' {
 Rule 'HasMinInstances' {
     $TargetObject.Sku.capacity -ge $Configuration.minInstanceCount
 } -Configure @{ minInstanceCount = 2 }
+</code></pre>
+<pre><code class="lang-powershell"># Synopsis: This rule still passes because errors are ignored
+Rule 'WithRuleErrorActionIgnore' -ErrorAction Ignore {
+    Write-Error 'Some error';
+    $True;
+}
 </code></pre>
 <h3 id="exists">Exists</h3>
 <p>The <code>Exists</code> assertion is used within a <code>Rule</code> definition to assert that a <em>field</em> or property must exist on the pipeline object.</p>
