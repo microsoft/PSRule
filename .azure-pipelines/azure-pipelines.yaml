@@ -154,19 +154,19 @@ stages:
       imageName: 'windows-2019'
 
   # Currently can't use alpine because addtional tools for Azure DevOps are required
-  # - template: jobs/testContainer.yaml
-  #   parameters:
-  #     name: alpine_3_10
-  #     displayName: 'PowerShell 7.0 - alpine-3.10'
-  #     imageName: mcr.microsoft.com/powershell
-  #     imageTag: 7.0.0-alpine-3.10
+  - template: jobs/testContainer.yaml
+    parameters:
+      name: alpine_3_10
+      displayName: 'PowerShell 7.0 - alpine-3.10'
+      imageName: mcr.microsoft.com/powershell/test-deps
+      imageTag: alpine-3.10
 
   - template: jobs/testContainer.yaml
     parameters:
       name: ps_7_0_ubuntu_18_04
       displayName: 'PowerShell 7.0 - ubuntu-18.04'
       imageName: mcr.microsoft.com/powershell
-      imageTag: 7.0.1-ubuntu-18.04
+      imageTag: 7.0.3-ubuntu-18.04
 
   - template: jobs/testContainer.yaml
     parameters:
