@@ -20,10 +20,7 @@ namespace PSRule.Parser
 
         private const string Space = " ";
 
-        public RuleLexer()
-        {
-            // Do nothing
-        }
+        public RuleLexer() { }
 
         public RuleDocument Process(TokenStream stream)
         {

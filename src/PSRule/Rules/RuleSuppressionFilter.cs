@@ -5,6 +5,7 @@ using PSRule.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 
 namespace PSRule.Rules
 {
@@ -37,9 +38,7 @@ namespace PSRule.Rules
             public SuppressionKey(string ruleName, string targetName)
             {
                 if (string.IsNullOrEmpty(ruleName) || string.IsNullOrEmpty(targetName))
-                {
                     throw new ArgumentNullException();
-                }
 
                 RuleName = ruleName;
                 TargetName = targetName;
@@ -57,7 +56,6 @@ namespace PSRule.Rules
                     return false;
 
                 var k2 = obj as SuppressionKey;
-
                 return HashCode == k2.HashCode &&
                     StringComparer.OrdinalIgnoreCase.Equals(TargetName, k2.TargetName) &&
                     StringComparer.OrdinalIgnoreCase.Equals(RuleName, k2.RuleName);
@@ -65,9 +63,8 @@ namespace PSRule.Rules
 
             private int CombineHashCode()
             {
-                var h1 = RuleName.ToUpper().GetHashCode();
-                var h2 = TargetName.ToUpper().GetHashCode();
-
+                var h1 = RuleName.ToUpper(Thread.CurrentThread.CurrentCulture).GetHashCode();
+                var h2 = TargetName.ToUpper(Thread.CurrentThread.CurrentCulture).GetHashCode();
                 unchecked
                 {
                     // Get combined hash code for key
@@ -80,9 +77,7 @@ namespace PSRule.Rules
         public bool Match(string ruleName, string targetName)
         {
             if (_IsEmpty || string.IsNullOrEmpty(ruleName) || string.IsNullOrEmpty(targetName))
-            {
                 return false;
-            }
 
             return _Index.Contains(new SuppressionKey(ruleName, targetName));
         }
@@ -95,11 +90,8 @@ namespace PSRule.Rules
                 foreach (var targetName in rule.Value.TargetName)
                 {
                     var key = new SuppressionKey(rule.Key, targetName);
-
                     if (!_Index.Contains(key))
-                    {
                         _Index.Add(key);
-                    }
                 }
             }
         }

@@ -34,7 +34,7 @@ namespace PSRule.Runtime
         internal AssertResult Create(bool condition, string reason, object[] args)
         {
             if (!(PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition || PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Precondition))
-                throw new RuleException(string.Format(PSRuleResources.VariableConditionScope, "Assert"));
+                throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VariableConditionScope, "Assert"));
 
             return new AssertResult(this, condition, reason, args);
         }
@@ -401,7 +401,7 @@ namespace PSRule.Runtime
 
             for (var i = 0; i < values.Length; i++)
             {
-                if (AnyValue(fieldValue, values.GetValue(i), caseSensitive, out object foundValue))
+                if (AnyValue(fieldValue, values.GetValue(i), caseSensitive, out object _))
                     return Pass();
             }
             return Fail(ReasonStrings.In, fieldValue);
@@ -818,7 +818,7 @@ namespace PSRule.Runtime
         /// </summary>
         private static bool TryPipelineCache<T>(string prefix, string key, out T value)
         {
-            value = default(T);
+            value = default;
             if (PipelineContext.CurrentThread.ExpressionCache.TryGetValue(string.Concat(prefix, key), out object ovalue))
             {
                 value = (T)ovalue;

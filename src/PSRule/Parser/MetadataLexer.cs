@@ -7,6 +7,8 @@ namespace PSRule.Parser
 {
     internal sealed class MetadataLexer : MarkdownLexer
     {
+        public MetadataLexer() { }
+
         public Dictionary<string, string> Process(TokenStream stream)
         {
             // Look for yaml header

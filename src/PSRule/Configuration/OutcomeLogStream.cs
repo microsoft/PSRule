@@ -10,7 +10,7 @@ namespace PSRule.Configuration
     /// The PowerShell informational stream to log specific outcomes to.
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum OutcomeLogStream : byte
+    public enum OutcomeLogStream
     {
         /// <summary>
         /// Outcomes will not be logged to an informational stream.

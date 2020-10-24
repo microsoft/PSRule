@@ -8,6 +8,8 @@ namespace PSRule.Parser
 {
     internal abstract class MarkdownLexer
     {
+        protected MarkdownLexer() { }
+
         protected static bool IsHeading(MarkdownToken token, int level)
         {
             return token.Type == MarkdownTokenType.Header &&

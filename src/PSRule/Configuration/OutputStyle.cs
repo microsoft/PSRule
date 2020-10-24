@@ -10,7 +10,7 @@ namespace PSRule.Configuration
     /// The style to present assert output in.
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum OutputStyle : byte
+    public enum OutputStyle
     {
         /// <summary>
         /// Formatted text written to host.

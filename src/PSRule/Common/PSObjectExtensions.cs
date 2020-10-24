@@ -61,7 +61,7 @@ namespace PSRule
         private static T ConvertValue<T>(object value)
         {
             if (value == null)
-                return default(T);
+                return default;
 
             return typeof(T).IsValueType ? (T)Convert.ChangeType(value, typeof(T)) : (T)value;
         }

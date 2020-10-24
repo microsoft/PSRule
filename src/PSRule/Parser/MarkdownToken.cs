@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace PSRule.Parser
 {
-    public enum MarkdownTokenType : byte
+    public enum MarkdownTokenType
     {
         None = 0,
 

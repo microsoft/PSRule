@@ -8,6 +8,7 @@ using PSRule.Rules;
 using System;
 using System.Diagnostics;
 using System.Management.Automation;
+using System.Threading;
 
 namespace PSRule.Pipeline
 {
@@ -99,7 +100,7 @@ namespace PSRule.Pipeline
 
             private bool TryConstrained(string uri)
             {
-                base.WriteObject(string.Format(PSRuleResources.LaunchBrowser, uri), false);
+                base.WriteObject(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.LaunchBrowser, uri), false);
                 return true;
             }
 
@@ -109,9 +110,16 @@ namespace PSRule.Pipeline
                     return false;
 
                 var browser = new Process();
-                browser.StartInfo.FileName = uri;
-                browser.StartInfo.UseShellExecute = true;
-                return browser.Start();
+                try
+                {
+                    browser.StartInfo.FileName = uri;
+                    browser.StartInfo.UseShellExecute = true;
+                    return browser.Start();
+                }
+                finally
+                {
+                    browser.Dispose();
+                }
             }
 
             private void WriteHelpInfo(object o, string typeName)

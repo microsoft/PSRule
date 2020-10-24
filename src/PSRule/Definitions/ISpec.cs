@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace PSRule.Definitions
 {
-    public enum ResourceKind : byte
+    public enum ResourceKind
     {
         None = 0,
 

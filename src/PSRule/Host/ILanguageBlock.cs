@@ -3,7 +3,7 @@
 
 namespace PSRule.Host
 {
-    public enum LanguageBlockKind : byte
+    public enum LanguageBlockKind
     {
         Unknown = 0,
 

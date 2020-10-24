@@ -10,7 +10,7 @@ namespace PSRule.Configuration
     /// The formats to convert input from.
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum InputFormat : byte
+    public enum InputFormat
     {
         None = 0,
 

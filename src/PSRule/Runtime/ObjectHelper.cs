@@ -25,8 +25,8 @@ namespace PSRule.Runtime
             private readonly string Name;
             private readonly int Last;
 
-            private bool inQuote = false;
-            private bool inIndex = false;
+            private bool inQuote;
+            private bool inIndex;
 
             public int Position = -1;
             public char Current;

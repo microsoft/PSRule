@@ -29,7 +29,7 @@ namespace PSRule.Host
             }
         }
 
-        public enum DependencyTargetState : byte
+        public enum DependencyTargetState
         {
             None = 0,
 

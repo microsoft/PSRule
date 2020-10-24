@@ -3,7 +3,7 @@
 
 namespace PSRule.Pipeline
 {
-    internal enum ExecutionScope : byte
+    internal enum ExecutionScope
     {
         None = 0,
 
