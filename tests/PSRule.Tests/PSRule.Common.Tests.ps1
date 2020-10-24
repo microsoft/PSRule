@@ -1018,12 +1018,25 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
 #region Get-PSRuleTarget
 
 Describe 'Get-PSRuleTarget' -Tag 'Get-PSRuleTarget','Common' {
-
     Context 'With defaults' {
-        It 'Returns single object' {
+        It 'Yaml' {
             $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $rootPath -ChildPath 'ps-project.yaml'));
             $result.Length | Should -Be 1;
             $result[0].info.name | Should -Be 'PSRule';
+
+            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml'));
+            $result.Length | Should -Be 1;
+            $result[0].input.format | Should -Be 'Yaml';
+        }
+
+        It 'Json' {
+            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFileSingle.json'));
+            $result.Length | Should -Be 1;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFileSingle.jsonc'));
+            $result.Length | Should -Be 1;
+            $result[0].TargetName | Should -Be 'TestObject1';
         }
     }
 

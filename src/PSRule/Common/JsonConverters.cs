@@ -90,6 +90,9 @@ namespace PSRule
                         value.Properties.Add(new PSNoteProperty(name: name, value: items.ToArray()));
                         break;
 
+                    case JsonToken.Comment:
+                        break;
+
                     default:
                         value.Properties.Add(new PSNoteProperty(name: name, value: reader.Value));
                         break;
@@ -101,7 +104,7 @@ namespace PSRule
         /// <summary>
         /// Serialize a file system info object.
         /// </summary>
-        private bool WriteFileSystemInfo(JsonWriter writer, object value, JsonSerializer serializer)
+        private static bool WriteFileSystemInfo(JsonWriter writer, object value, JsonSerializer serializer)
         {
             if (!(value is FileSystemInfo fileSystemInfo))
                 return false;
@@ -113,7 +116,7 @@ namespace PSRule
         /// <summary>
         /// Serialize the base object.
         /// </summary>
-        private bool WriteBaseObject(JsonWriter writer, PSObject value, JsonSerializer serializer)
+        private static bool WriteBaseObject(JsonWriter writer, PSObject value, JsonSerializer serializer)
         {
             if (value.BaseObject == null || value.HasNoteProperty())
                 return false;
@@ -188,6 +191,10 @@ namespace PSRule
                         var items = ReadArray(reader: reader);
                         result.Properties.Add(new PSNoteProperty(name: name, value: items));
                         break;
+
+                    case JsonToken.Comment:
+                        break;
+
                     default:
                         result.Properties.Add(new PSNoteProperty(name: name, value: reader.Value));
                         break;
@@ -220,6 +227,9 @@ namespace PSRule
 
                     case JsonToken.Null:
                         result.Add(null);
+                        break;
+
+                    case JsonToken.Comment:
                         break;
 
                     default:

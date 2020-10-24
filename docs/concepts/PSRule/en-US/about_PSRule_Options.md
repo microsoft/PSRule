@@ -550,8 +550,8 @@ A `RepositoryInfo` object is generated if the current working path if a `.git` s
 Detect uses the following file extensions:
 
 - Yaml - `.yaml` or `.yml`
-- Json - `.json`
-- Markdown - `.md`
+- Json - `.json` or `.jsonc`
+- Markdown - `.md` or `.markdown`
 - PowerShellData - `.psd1`
 
 This option can be specified using:
