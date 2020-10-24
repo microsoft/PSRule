@@ -7,12 +7,12 @@
 
 # Description: A rule for testing PSRule performance
 Rule 'BenchmarkWithin' {
-	Within 'Value' 'Microsoft.Compute/virtualMachines', 'Microsoft.Sql/servers/databases'
+    Within 'Value' 'Microsoft.Compute/virtualMachines', 'Microsoft.Sql/servers/databases'
 }
 
 Rule 'BenchmarkWithinBulk' {
-	Within 'Value' @(
-		# Compute: Virtual machines
+    Within 'Value' @(
+        # Compute: Virtual machines
         'Microsoft.Compute/virtualMachines'
         'Microsoft.Compute/virtualMachineScaleSets'
         'Microsoft.Compute/virtualMachineScaleSets/virtualmachines'
@@ -105,12 +105,12 @@ Rule 'BenchmarkWithinBulk' {
         'Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies'
         'Microsoft.Sql/servers/databases/connectionPolicies'
         'Microsoft.Sql/servers/databases/dataMaskingPolicies'
-	)
+    )
 }
 
 Rule 'BenchmarkWithinLike' {
-	Within 'Value' -Like @(
-		# Compute: Virtual machines
+    Within 'Value' -Like @(
+        # Compute: Virtual machines
         'Microsoft.Compute/virtualMachines'
         'Microsoft.Compute/virtualMachineScaleSets'
         'Microsoft.Compute/virtualMachineScaleSets/virtualmachines'
@@ -162,5 +162,5 @@ Rule 'BenchmarkWithinLike' {
         # Databases: SQL Database
         'Microsoft.Sql/servers'
         'Microsoft.Sql/servers/*'
-	)
+    )
 }

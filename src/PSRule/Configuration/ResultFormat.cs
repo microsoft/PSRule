@@ -10,7 +10,7 @@ namespace PSRule.Configuration
     /// The format to return to the pipeline after executing rules.
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum ResultFormat : byte
+    public enum ResultFormat
     {
         Detail = 1,
 

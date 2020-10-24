@@ -10,7 +10,7 @@ namespace PSRule.Rules
     /// The reason for the outcome of a rule.
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum RuleOutcomeReason : byte
+    public enum RuleOutcomeReason
     {
         /// <summary>
         /// A reason was not specified.

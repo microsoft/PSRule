@@ -13,7 +13,7 @@ using System.Threading;
 
 namespace PSRule.Rules
 {
-    public enum RuleSourceType : byte
+    public enum RuleSourceType
     {
         Script = 1,
 
@@ -26,6 +26,8 @@ namespace PSRule.Rules
     [DebuggerDisplay("{Type}: {Path}")]
     public sealed class SourceFile
     {
+        private bool? _Exists;
+
         public readonly string Path;
         public readonly string ModuleName;
         public readonly RuleSourceType Type;
@@ -37,6 +39,14 @@ namespace PSRule.Rules
             ModuleName = moduleName;
             Type = type;
             HelpPath = helpPath;
+        }
+
+        internal bool Exists()
+        {
+            if (!_Exists.HasValue)
+                _Exists = File.Exists(Path);
+
+            return _Exists.Value;
         }
     }
 

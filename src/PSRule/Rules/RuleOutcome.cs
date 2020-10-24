@@ -10,7 +10,7 @@ namespace PSRule.Rules
     /// The outcome of a rule.
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum RuleOutcome : byte
+    public enum RuleOutcome
     {
         /// <summary>
         /// The rule was not evaluated.

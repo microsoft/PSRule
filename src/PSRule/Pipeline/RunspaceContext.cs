@@ -351,7 +351,7 @@ namespace PSRule.Pipeline
                 category: category,
                 positionMessage: GetPositionMessage(errorRecord),
                 scriptExtent: GetErrorScriptExtent(errorRecord)
-            ); ;
+            );
         }
 
         public void Error(ErrorRecord error)
@@ -370,7 +370,7 @@ namespace PSRule.Pipeline
                 category: error.CategoryInfo.Category,
                 positionMessage: GetPositionMessage(error),
                 scriptExtent: GetErrorScriptExtent(error)
-            ); ;
+            );
         }
 
         private string GetStackTrace(ErrorRecord record)
@@ -444,7 +444,7 @@ namespace PSRule.Pipeline
 
         internal SourceScope EnterSourceScope(SourceFile source)
         {
-            if (!File.Exists(source.Path))
+            if (!source.Exists())
                 throw new FileNotFoundException(PSRuleResources.ScriptNotFound, source.Path);
 
             if (Source != null && Source.File == source)

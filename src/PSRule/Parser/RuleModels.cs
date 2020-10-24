@@ -10,7 +10,7 @@ namespace PSRule.Parser
     /// Define options that determine how markdown will be rendered.
     /// </summary>
     [Flags()]
-    internal enum FormatOptions : byte
+    internal enum FormatOptions
     {
         None = 0,
 

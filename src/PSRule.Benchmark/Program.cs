@@ -113,6 +113,10 @@ namespace PSRule.Benchmark
 
             ProfileBlock();
             for (var i = 0; i < DebugIterations; i++)
+                profile.Assert();
+
+            ProfileBlock();
+            for (var i = 0; i < DebugIterations; i++)
                 profile.Get();
 
             ProfileBlock();
@@ -126,6 +130,10 @@ namespace PSRule.Benchmark
             ProfileBlock();
             for (var i = 0; i < DebugIterations; i++)
                 profile.NestedTargetNameBinding();
+
+            ProfileBlock();
+            for (var i = 0; i < DebugIterations; i++)
+                profile.AssertHasFieldValue();
         }
 
         [DebuggerStepThrough]

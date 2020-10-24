@@ -52,7 +52,7 @@ namespace PSRule.Pipeline
             _DefaultCulture = GetDefaultCulture();
         }
 
-        internal enum ScopeType : byte
+        internal enum ScopeType
         {
             Parameter = 0,
             Explicit = 1,

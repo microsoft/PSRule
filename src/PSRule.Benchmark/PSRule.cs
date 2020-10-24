@@ -37,6 +37,8 @@ namespace PSRule.Benchmark
     public class PSRule
     {
         private PSObject[] _TargetObject;
+        private IPipeline _AssertPipeline;
+        private IPipeline _AssertHasFieldValuePipeline;
         private IPipeline _GetPipeline;
         private IPipeline _GetHelpPipeline;
         private IPipeline _InvokePipeline;
@@ -56,10 +58,12 @@ namespace PSRule.Benchmark
             PrepareInvokeIfPipeline();
             PrepareInvokeTypePipeline();
             PrepareInvokeSummaryPipeline();
+            PrepareAssertPipeline();
             PrepareInvokeWithinPipeline();
             PrepareInvokeWithinBulkPipeline();
             PrepareInvokeWithinLikePipeline();
             PrepareTargetObjects();
+            PrepareAssertHasFieldValuePipeline();
         }
 
         private void PrepareGetPipeline()
@@ -112,6 +116,14 @@ namespace PSRule.Benchmark
             _InvokeSummaryPipeline = builder.Build();
         }
 
+        private void PrepareAssertPipeline()
+        {
+            var option = new PSRuleOption();
+            option.Rule.Include = new string[] { "Benchmark" };
+            var builder = PipelineBuilder.Assert(GetSource(), option, null, null);
+            _AssertPipeline = builder.Build();
+        }
+
         private void PrepareInvokeWithinPipeline()
         {
             var option = new PSRuleOption();
@@ -134,6 +146,14 @@ namespace PSRule.Benchmark
             option.Rule.Include = new string[] { "BenchmarkWithinLike" };
             var builder = PipelineBuilder.Invoke(GetWithinSource(), option, null, null);
             _InvokeWithinLikePipeline = builder.Build();
+        }
+
+        private void PrepareAssertHasFieldValuePipeline()
+        {
+            var option = new PSRuleOption();
+            option.Rule.Include = new string[] { "Assert.HasFieldValue" };
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            _AssertHasFieldValuePipeline = builder.Build();
         }
 
         private Source[] GetSource()
@@ -167,7 +187,6 @@ namespace PSRule.Benchmark
                 var o = new TargetObject(name: targetObjects.Count.ToString(), message: Convert.ToBase64String(randomBuffer), value: value);
                 targetObjects.Add(PSObject.AsPSObject(o));
             }
-
             _TargetObject = targetObjects.ToArray();
         }
 
@@ -182,6 +201,9 @@ namespace PSRule.Benchmark
 
         [Benchmark]
         public void InvokeSummary() => RunPipelineTargets(_InvokeSummaryPipeline);
+
+        [Benchmark]
+        public void Assert() => RunPipelineTargets(_AssertPipeline);
 
         [Benchmark]
         public void Get() => RunPipelineNull(_GetPipeline);
@@ -232,6 +254,9 @@ namespace PSRule.Benchmark
                 );
             }
         }
+
+        [Benchmark]
+        public void AssertHasFieldValue() => RunPipelineTargets(_AssertHasFieldValuePipeline);
 
         private void RunPipelineNull(IPipeline pipeline)
         {

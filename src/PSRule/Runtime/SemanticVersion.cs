@@ -25,7 +25,7 @@ namespace PSRule.Runtime
         private const char ZERO = '0';
 
         [Flags]
-        internal enum CompareFlag : byte
+        internal enum CompareFlag
         {
             None = 0,
 

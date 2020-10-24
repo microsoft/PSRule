@@ -7,7 +7,7 @@ using Newtonsoft.Json.Converters;
 namespace PSRule.Configuration
 {
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum OutputEncoding : byte
+    public enum OutputEncoding
     {
         Default = 0,
 

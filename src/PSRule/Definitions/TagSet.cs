@@ -84,10 +84,10 @@ namespace PSRule.Definitions
                 if (i > 0)
                     sb.Append(Environment.NewLine);
 
-                sb.Append(kv.Key.ToString());
+                sb.Append(kv.Key);
                 sb.Append('=');
                 sb.Append('\'');
-                sb.Append(kv.Value.ToString());
+                sb.Append(kv.Value);
                 sb.Append('\'');
                 i++;
             }
