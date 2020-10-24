@@ -65,7 +65,7 @@ namespace PSRule.Pipeline
             var pathExtension = GetPathExtension(sourceObject);
 
             // Handle JSON
-            if (pathExtension == ".json")
+            if (pathExtension == ".json" || pathExtension == ".jsonc")
             {
                 return ConvertFromJson(sourceObject, next);
             }
@@ -75,7 +75,7 @@ namespace PSRule.Pipeline
                 return ConvertFromYaml(sourceObject, next);
             }
             // Handle Markdown
-            else if (pathExtension == ".md")
+            else if (pathExtension == ".md" || pathExtension == ".markdown")
             {
                 return ConvertFromMarkdown(sourceObject, next);
             }

@@ -6,6 +6,9 @@
 
 ## Unreleased
 
+- General improvements:
+  - Input format detection now includes `.jsonc` and `.markdown` file extensions. [#575](https://github.com/microsoft/PSRule/issues/575)
+
 ## v0.21.0
 
 What's changed since v0.20.0:

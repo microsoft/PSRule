@@ -1,0 +1,33 @@
+{
+    // There is comments in this file
+    "TargetName": "TestObject1",
+    "Spec": {
+        "Properties": {
+            "Value1": 1,
+            "Kind": "Test",
+            "array": [
+                {
+                    "id": "1"
+                },
+                {
+                    "id": "2"
+                }
+            ],
+            "array2": [
+                "1",
+                "2",
+                "3"
+            ],
+            "array3": [
+                [
+                    "nested"
+                ],
+                [
+                    1,
+                    2,
+                    3
+                ]
+            ]
+        }
+    }
+}
