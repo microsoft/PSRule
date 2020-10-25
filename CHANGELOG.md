@@ -6,8 +6,15 @@
 
 ## Unreleased
 
+What's changed since v0.21.0:
+
+- Engine features:
+  - Added `HasFields` assertion helper to check all fields exist. [#578](https://github.com/microsoft/PSRule/issues/578)
+  - Updated `HasField` to check if any of the specified fields exist. [#578](https://github.com/microsoft/PSRule/issues/578)
 - General improvements:
   - Input format detection now includes `.jsonc` and `.markdown` file extensions. [#575](https://github.com/microsoft/PSRule/issues/575)
+- Bug fixes:
+  - Fixed handling for null or empty arrays with `StartsWith`, `Contains`, `EndsWith`, `In`, and `NotIn`. [#579](https://github.com/microsoft/PSRule/issues/579)
 
 ## v0.21.0
 
