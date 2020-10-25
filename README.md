@@ -1,13 +1,14 @@
 # PSRule
 
-A cross-platform PowerShell module (Windows, Linux, and MacOS) with commands to validate objects on the pipeline using PowerShell syntax.
+A cross-platform module to validate infrastructure as code (IaC) and objects using PowerShell rules.
+PSRule works great and integrates with popular continuous integration (CI) systems.
 
 ![ci-badge]
 
 Features of PSRule include:
 
 - [Extensible](docs/features.md#extensible) - Use PowerShell, a flexible scripting language.
-- [Cross-platform](docs/features.md#cross-platform) - Run on MacOS, Linux and Windows.
+- [Cross-platform](docs/features.md#cross-platform) - Run on MacOS, Linux, and Windows.
 - [Reusable](docs/features.md#reusable) - Share rules across teams or organizations.
 - [Recommendations](docs/features.md#recommendations) - Include detailed instructions to remediate issues.
 
@@ -44,7 +45,7 @@ PSRule    | Azure Pipelines    | An Azure DevOps extension for using PSRule with
 
 ## Getting started
 
-The following example shows basic PSRule usage.
+The following example shows basic PSRule usage for validating PowerShell objects.
 For specific use cases see [scenarios](#scenarios).
 
 For frequently asked questions, see the [FAQ](docs/features.md#frequently-asked-questions-faq).
@@ -246,6 +247,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [GreaterOrEqual](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#greaterorequal)
   - [HasDefaultValue](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasdefaultvalue)
   - [HasField](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasfield)
+  - [HasFields](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasfields)
   - [HasFieldValue](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasfieldvalue)
   - [HasJsonSchema](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#hasjsonschema)
   - [In](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#in)
@@ -355,7 +357,7 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 This project is [licensed under the MIT License](LICENSE).
 
 [issue]: https://github.com/Microsoft/PSRule/issues
-[install]: docs/scenarios/install-instructions.md
+[install]: docs/install-instructions.md
 [ci-badge]: https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=main
 [module-psrule]: https://www.powershellgallery.com/packages/PSRule
 [extension-vscode]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview

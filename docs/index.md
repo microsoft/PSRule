@@ -10,7 +10,7 @@ PSRule provides an easy way to:
 Features of PSRule include:
 
 - [Extensible](features.md#extensible) - Use PowerShell, a flexible scripting language.
-- [Cross-platform](features.md#cross-platform) - Run on MacOS, Linux and Windows.
+- [Cross-platform](features.md#cross-platform) - Run on MacOS, Linux, and Windows.
 - [Reusable](features.md#reusable) - Share rules across teams or organizations.
 - [Recommendations](features.md#recommendations) - Include detailed instructions to remediate issues.
 
@@ -44,6 +44,16 @@ PSRule    | An Azure DevOps extension for using PSRule within Azure Pipelines. |
 
 ![extension-pipelines-ci-badge] ![extension-pipelines-version-badge]
 
+## GitHub action
+
+You can use PSRule with in a workflow with GitHub Actions.
+
+Action | Description | Downloads / instructions
+------ | ----------- | ------------------------
+PSRule | Validate infrastructure as code (IaC) and DevOps repositories using GitHub Actions. | [latest][extension-github] / [instructions][install]
+
+![extension-github-ci-badge] ![extension-github-version-badge]
+
 ## Additional modules
 
 You can optionally download and install the following modules from the PowerShell Gallery.
@@ -61,18 +71,21 @@ If you are experiencing problems, have a feature request, or a question, please 
 If you do not see your problem captured, please file a new issue, and follow the provided template.
 
 [issue]: https://github.com/Microsoft/PSRule/issues
-[install]: scenarios/install-instructions.md
+[install]: install-instructions.md
 [module]: https://www.powershellgallery.com/packages/PSRule
 [module-ci-badge]: https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=main
 [module-version-badge]: https://img.shields.io/powershellgallery/v/PSRule.svg?label=PowerShell%20Gallery&color=brightgreen
 [module-downloads-badge]: https://img.shields.io/powershellgallery/dt/PSRule.svg?color=brightgreen
 [extension-vscode]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
-[extension-vscode-ci-badge]: https://dev.azure.com/bewhite/PSRule-vscode/_apis/build/status/PSRule-vscode-CI?branchName=master
+[extension-vscode-ci-badge]: https://dev.azure.com/bewhite/PSRule-vscode/_apis/build/status/PSRule-vscode-CI?branchName=main
 [extension-vscode-version-badge]: https://vsmarketplacebadge.apphb.com/version/bewhite.psrule-vscode-preview.svg
 [extension-vscode-installs-badge]: https://vsmarketplacebadge.apphb.com/installs-short/bewhite.psrule-vscode-preview.svg
 [extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
 [extension-pipelines-ci-badge]: https://dev.azure.com/bewhite/PSRule-pipelines/_apis/build/status/PSRule-pipelines-CI?branchName=main
 [extension-pipelines-version-badge]: https://vsmarketplacebadge.apphb.com/version/bewhite.ps-rule.svg
+[extension-github]: https://github.com/marketplace/actions/psrule
+[extension-github-ci-badge]: https://img.shields.io/github/workflow/status/microsoft/ps-rule/Build?label=GitHub%20Actions&color=brightgreen
+[extension-github-version-badge]: https://img.shields.io/github/v/release/microsoft/ps-rule?sort=semver&label=release&color=brightgreen
 [rules-azure-version-badge]: https://img.shields.io/powershellgallery/v/PSRule.Rules.Azure.svg?label=PowerShell%20Gallery&color=brightgreen
 [rules-azure-downloads-badge]: https://img.shields.io/powershellgallery/dt/PSRule.Rules.Azure.svg?color=brightgreen
 [rules-azure-version-module]: https://www.powershellgallery.com/packages/PSRule.Rules.Azure

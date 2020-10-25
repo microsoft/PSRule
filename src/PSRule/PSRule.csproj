@@ -16,7 +16,7 @@
     <PackageLicenseExpression>https://github.com/Microsoft/PSRule/blob/main/LICENSE</PackageLicenseExpression>
     <Version>0.0.1</Version>
     <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
-    <Description>Validate objects using PowerShell rules.
+    <Description>Validate infrastructure as code (IaC) and objects using PowerShell rules.
 
 This project uses GitHub Issues to track bugs and feature requests. See GitHub project for more information.</Description>
   </PropertyGroup>
