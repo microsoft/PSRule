@@ -2,16 +2,18 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
-using PSRule.Pipeline;
+using PSRule.Pipeline.Output;
 using PSRule.Resources;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using System.Threading;
 
-namespace PSRule.Rules
+namespace PSRule.Pipeline
 {
     public enum RuleSourceType
     {
@@ -27,6 +29,8 @@ namespace PSRule.Rules
     public sealed class SourceFile
     {
         private bool? _Exists;
+
+        internal Source Source;
 
         public readonly string Path;
         public readonly string ModuleName;
@@ -48,12 +52,20 @@ namespace PSRule.Rules
 
             return _Exists.Value;
         }
+
+        internal bool IsDependency()
+        {
+            return Source.Dependency;
+        }
     }
 
     public sealed class Source
     {
         public readonly string Path;
         public readonly SourceFile[] File;
+
+        internal bool Dependency;
+
         internal readonly ModuleInfo Module;
 
         internal Source(string path, SourceFile[] file)
@@ -61,13 +73,23 @@ namespace PSRule.Rules
             Path = path;
             Module = null;
             File = file;
+            Dependency = false;
+            SetSource();
         }
 
-        internal Source(ModuleInfo module, SourceFile[] file)
+        internal Source(ModuleInfo module, SourceFile[] file, bool dependency)
         {
             Path = module.Path;
             Module = module;
             File = file;
+            Dependency = dependency;
+            SetSource();
+        }
+
+        private void SetSource()
+        {
+            for (var i = 0; File != null && i < File.Length; i++)
+                File[i].Source = this;
         }
 
         internal sealed class ModuleInfo
@@ -105,57 +127,56 @@ namespace PSRule.Rules
     /// <summary>
     /// A helper to build a list of rule sources for discovery.
     /// </summary>
-    public sealed class RuleSourceBuilder
+    public sealed class SourcePipelineBuilder
     {
         private const string SourceFileExtension_YAML = ".yaml";
         private const string SourceFileExtension_YML = ".yaml";
         private const string SourceFileExtension_PS1 = ".ps1";
+        private const string RuleModuleTag = "PSRule-rules";
         private readonly List<Source> _Source;
-        private readonly PipelineLogger _Logger;
+        private readonly HostContext _HostContext;
+        private readonly HostPipelineWriter _Writer;
 
-        internal RuleSourceBuilder(HostContext hostContext)
+        internal SourcePipelineBuilder(HostContext hostContext, PSRuleOption option)
         {
             _Source = new List<Source>();
-            _Logger = new PipelineLogger();
-            if (hostContext != null)
-            {
-                _Logger.UseCommandRuntime(hostContext.CmdletContext);
-                _Logger.UseExecutionContext(hostContext.ExecutionContext);
-            }
+            _HostContext = hostContext;
+            _Writer = new HostPipelineWriter(hostContext, option);
         }
 
-        public RuleSourceBuilder Configure(PSRuleOption option)
+        public SourcePipelineBuilder Configure(PSRuleOption option)
         {
-            _Logger.Configure(option);
-            _Logger.EnterScope("[Discovery.Source]");
+            _Writer.EnterScope("[Discovery.Source]");
             return this;
+        }
+
+        public bool ShouldLoadModule
+        {
+            get { return _HostContext.GetAutoLoadingPreference() == PSModuleAutoLoadingPreference.All; }
         }
 
         public void VerboseScanSource(string path)
         {
-            if (!_Logger.ShouldWriteVerbose())
-            {
+            if (!_Writer.ShouldWriteVerbose())
                 return;
-            }
-            _Logger.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ScanSource, path));
+
+            _Writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ScanSource, path));
         }
 
         public void VerboseFoundModules(int count)
         {
-            if (!_Logger.ShouldWriteVerbose())
-            {
+            if (!_Writer.ShouldWriteVerbose())
                 return;
-            }
-            _Logger.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.FoundModules, count));
+
+            _Writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.FoundModules, count));
         }
 
         public void VerboseScanModule(string moduleName)
         {
-            if (!_Logger.ShouldWriteVerbose())
-            {
+            if (!_Writer.ShouldWriteVerbose())
                 return;
-            }
-            _Logger.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ScanModule, moduleName));
+
+            _Writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ScanModule, moduleName));
         }
 
         /// <summary>
@@ -168,9 +189,7 @@ namespace PSRule.Rules
                 return;
 
             for (var i = 0; i < path.Length; i++)
-            {
                 Directory(path[i]);
-            }
         }
 
         public void Directory(string path)
@@ -180,7 +199,6 @@ namespace PSRule.Rules
 
             VerboseScanSource(path);
             var files = GetFiles(path, null);
-
             if (files == null || files.Length == 0)
                 return;
 
@@ -190,22 +208,48 @@ namespace PSRule.Rules
         /// <summary>
         /// Add a module source.
         /// </summary>
-        /// <param name="module"></param>
+        /// <param name="module">The module info.</param>
         public void Module(PSModuleInfo[] module)
         {
-            if (module == null)
+            if (module == null || module.Length == 0)
                 return;
 
             for (var i = 0; i < module.Length; i++)
-            {
-                VerboseScanModule(module[i].Name);
-                var files = GetFiles(module[i].ModuleBase, module[i].ModuleBase, module[i].Name);
+                Module(module[i], dependency: false);
+        }
 
-                if (files == null || files.Length == 0)
-                    continue;
+        /// <summary>
+        /// Add a module source
+        /// </summary>
+        /// <param name="module">The module info.</param>
+        /// <param name="dependency">Flags the source as only a dependency.</param>
+        private void Module(PSModuleInfo module, bool dependency)
+        {
+            if (module == null || !IsRuleModule(module))
+                return;
 
-                Source(new Source(new Source.ModuleInfo(module[i]), file: files));
-            }
+            VerboseScanModule(module.Name);
+            var files = GetFiles(module.ModuleBase, module.ModuleBase, module.Name);
+            if (files == null || files.Length == 0)
+                return;
+
+            Source(new Source(new Source.ModuleInfo(module), files, dependency));
+
+            // Import dependencies
+            for (var i = 0; module.RequiredModules != null && i < module.RequiredModules.Count; i++)
+                Module(module.RequiredModules[i], dependency: true);
+        }
+
+        private static bool IsRuleModule(PSModuleInfo module)
+        {
+            if (module.Tags == null)
+                return false;
+
+            foreach (var tag in module.Tags)
+                if (StringComparer.OrdinalIgnoreCase.Equals(RuleModuleTag, tag))
+                    return true;
+
+            return false;
         }
 
         public Source[] Build()

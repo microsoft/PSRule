@@ -3,6 +3,7 @@
 
 using PSRule.Definitions;
 using PSRule.Host;
+using PSRule.Pipeline;
 using PSRule.Runtime;
 using System;
 using System.Collections;
@@ -89,6 +90,8 @@ namespace PSRule.Rules
         string IDependencyTarget.RuleId => RuleId;
 
         string[] IDependencyTarget.DependsOn => DependsOn;
+
+        bool IDependencyTarget.Dependency => Source.IsDependency();
 
         #region IDisposable
 

@@ -158,14 +158,14 @@ namespace PSRule.Benchmark
 
         private Source[] GetSource()
         {
-            var builder = new RuleSourceBuilder(null);
+            var builder = new SourcePipelineBuilder(null, null);
             builder.Directory(GetSourcePath("Benchmark.Rule.ps1"));
             return builder.Build();
         }
 
         private Source[] GetWithinSource()
         {
-            var builder = new RuleSourceBuilder(null);
+            var builder = new SourcePipelineBuilder(null, null);
             builder.Directory(GetSourcePath("Benchmark.Within.Rule.ps1"));
             return builder.Build();
         }

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Host;
+using PSRule.Pipeline;
 using System.ComponentModel;
 using YamlDotNet.Serialization;
 
@@ -78,5 +79,7 @@ namespace PSRule.Rules
         string ITargetInfo.TargetName => RuleName;
 
         string ITargetInfo.TargetType => typeof(Rule).FullName;
+
+        bool IDependencyTarget.Dependency => Source.IsDependency();
     }
 }

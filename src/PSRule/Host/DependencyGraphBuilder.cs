@@ -41,6 +41,9 @@ namespace PSRule.Host
             // Include any matching items
             foreach (var item in index.Values)
             {
+                if (item.Dependency)
+                    continue;
+
                 if (filter == null || filter(item))
                     Include(ruleId: item.RuleId, parentId: null, index: index);
             }

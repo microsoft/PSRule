@@ -118,7 +118,7 @@ function Invoke-PSRule {
             $sourceParams['Path'] = $Path;
         }
         $sourceParams['Option'] = $Option;
-        [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
@@ -273,7 +273,7 @@ function Test-PSRuleTarget {
             $sourceParams['Path'] = $Path;
         }
         $sourceParams['Option'] = $Option;
-        [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
@@ -535,7 +535,7 @@ function Assert-PSRule {
             $sourceParams['Path'] = $Path;
         }
         $sourceParams['Option'] = $Option;
-        [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
@@ -683,7 +683,7 @@ function Get-PSRule {
             $sourceParams['Path'] = $Path;
         }
         $sourceParams['Option'] = $Option;
-        [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -798,7 +798,7 @@ function Get-PSRuleBaseline {
             $sourceParams['Path'] = $Path;
         }
         $sourceParams['Option'] = $Option;
-        [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -905,7 +905,7 @@ function Get-PSRuleHelp {
             $sourceParams['Path'] = $Path;
         }
         $sourceParams['Option'] = $Option;
-        [PSRule.Rules.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
+        [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
@@ -1631,7 +1631,7 @@ function Recommend {
 # Get a list of rule script files in the matching paths
 function GetSource {
     [CmdletBinding()]
-    [OutputType([PSRule.Rules.Source])]
+    [OutputType([PSRule.Pipeline.Source])]
     param (
         [Parameter(Mandatory = $False)]
         [String[]]$Path,

@@ -12,7 +12,7 @@ namespace PSRule.Pipeline.Output
     /// <summary>
     /// An output writer that returns output to the host PowerShell runspace.
     /// </summary>
-    internal sealed class PSPipelineWriter : PipelineWriter
+    internal sealed class HostPipelineWriter : PipelineWriter
     {
         private const string Source = "PSRule";
         private const string HostTag = "PSHOST";
@@ -35,11 +35,14 @@ namespace PSRule.Pipeline.Output
 
         private string _ScopeName;
 
-        internal PSPipelineWriter(HostContext hostContext, PSRuleOption option)
+        internal HostPipelineWriter(HostContext hostContext, PSRuleOption option)
             : base(null, option)
         {
-            UseCommandRuntime(hostContext.CmdletContext);
-            UseExecutionContext(hostContext.ExecutionContext);
+            if (hostContext != null)
+            {
+                UseCommandRuntime(hostContext.CmdletContext);
+                UseExecutionContext(hostContext.ExecutionContext);
+            }
         }
 
         public override void Begin()

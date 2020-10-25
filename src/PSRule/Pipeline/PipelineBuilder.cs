@@ -5,7 +5,6 @@ using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Pipeline.Output;
 using PSRule.Resources;
-using PSRule.Rules;
 using PSRule.Runtime;
 using System;
 using System.Collections;
@@ -60,10 +59,10 @@ namespace PSRule.Pipeline
             return pipeline;
         }
 
-        public static RuleSourceBuilder RuleSource(PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
+        public static SourcePipelineBuilder RuleSource(PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
         {
             var hostContext = new HostContext(commandRuntime, executionContext);
-            var pipeline = new RuleSourceBuilder(hostContext);
+            var pipeline = new SourcePipelineBuilder(hostContext, option);
             pipeline.Configure(option);
             return pipeline;
         }
@@ -118,13 +117,13 @@ namespace PSRule.Pipeline
         private Hashtable _Tag;
         private BaselineOption _Baseline;
 
-        private readonly PSPipelineWriter _Output;
+        private readonly HostPipelineWriter _Output;
 
         protected PipelineBuilderBase(Source[] source, HostContext hostContext)
         {
             Option = new PSRuleOption();
             Source = source;
-            _Output = new PSPipelineWriter(hostContext, Option);
+            _Output = new HostPipelineWriter(hostContext, Option);
             HostContext = hostContext;
             BindTargetNameHook = PipelineHookActions.BindTargetName;
             BindTargetTypeHook = PipelineHookActions.BindTargetType;

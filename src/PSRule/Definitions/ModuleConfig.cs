@@ -4,7 +4,7 @@
 using Newtonsoft.Json;
 using PSRule.Configuration;
 using PSRule.Host;
-using PSRule.Rules;
+using PSRule.Pipeline;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Definitions

@@ -132,17 +132,15 @@ namespace PSRule.Host
                         if (visitor.Errors != null && visitor.Errors.Count > 0)
                         {
                             foreach (var record in visitor.Errors)
-                            {
                                 context.WriteError(record);
-                            }
+
                             continue;
                         }
                         if (errors != null && errors.Length > 0)
                         {
                             foreach (var error in errors)
-                            {
                                 context.WriteError(error);
-                            }
+
                             continue;
                         }
 

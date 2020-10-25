@@ -8,5 +8,7 @@ namespace PSRule.Host
         string RuleId { get; }
 
         string[] DependsOn { get; }
+
+        bool Dependency { get; }
     }
 }
