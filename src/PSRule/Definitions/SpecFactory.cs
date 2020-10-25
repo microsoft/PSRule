@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Annotations;
-using PSRule.Rules;
+using PSRule.Pipeline;
 using System;
 using System.Collections.Generic;
 

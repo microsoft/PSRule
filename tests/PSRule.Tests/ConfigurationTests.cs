@@ -55,7 +55,7 @@ namespace PSRule
 
         private static Source[] GetSource()
         {
-            var builder = new RuleSourceBuilder(null);
+            var builder = new SourcePipelineBuilder(null, null);
             builder.Directory(GetSourcePath("FromFile.Rule.ps1"));
             return builder.Build();
         }

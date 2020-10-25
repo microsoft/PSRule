@@ -185,12 +185,13 @@ namespace PSRule.Pipeline
             Writer.WriteVerbose($"[PSRule][D] -- Discovering rules in: {path}");
         }
 
-        public void VerboseFoundRule(string ruleName, string scriptName)
+        public void VerboseFoundRule(string ruleName, string moduleName, string scriptName)
         {
             if (Writer == null || !Writer.ShouldWriteVerbose())
                 return;
 
-            Writer.WriteVerbose($"[PSRule][D] -- Found {ruleName} in {scriptName}");
+            var m = string.IsNullOrEmpty(moduleName) ? "." : moduleName;
+            Writer.WriteVerbose($"[PSRule][D] -- Found {m}\\{ruleName} in {scriptName}");
         }
 
         public void VerboseObjectStart()

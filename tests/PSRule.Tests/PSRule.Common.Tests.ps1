@@ -200,12 +200,17 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             # Cross module
             $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule3';
             $Null = Import-Module $testModuleSourcePath;
-            $result = $testObject | Invoke-PSRule -Module 'TestModule3','TestModule2' -Name 'M3.Rule1' -Outcome Pass;
+            $result = $testObject | Invoke-PSRule -Module 'TestModule3' -Name 'M3.Rule1' -Outcome Pass;
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 3;
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'M2.Rule1' }).Outcome | Should -Be 'Pass';
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'M3.Rule1' }).Outcome | Should -Be 'Pass';
             ($result | Where-Object -FilterScript { $_.RuleId -eq 'TestModule3\OtherRule' }).Outcome | Should -Be 'Pass';
+
+            # Cross module - only required rules
+            $result = $testObject | Invoke-PSRule -Module 'TestModule3' -Outcome Pass;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 3;
         }
 
         It 'Suppresses rules' {
