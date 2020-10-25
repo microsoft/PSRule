@@ -29,7 +29,7 @@ CompanyName = 'Microsoft Corporation'
 Copyright = '(c) Microsoft Corporation. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Validate objects using PowerShell rules.
+Description = 'Validate infrastructure as code (IaC) and objects using PowerShell rules.
 
 This project uses GitHub Issues to track bugs and feature requests. See GitHub project for more information.'
 

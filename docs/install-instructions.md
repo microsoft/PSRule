@@ -60,6 +60,17 @@ For detailed instructions see [Install extensions][pipelines-install].
 
 If you don't have permissions to install extensions within your Azure DevOps organization, you can request it to be installed by an admin instead.
 
+## Getting the GitHub action
+
+Add the [latest version][extension-github] from the GitHub Marketplace to a workflow.
+
+```yaml
+- name: Run PSRule analysis
+  uses: Microsoft/ps-rule@v0.4.0
+```
+
+For detailed instructions and change log see the [action details][extension-github].
+
 ## Building from source
 
 To build this module from source run `./build.ps1`.
@@ -95,5 +106,6 @@ To download and install the latest SDK see [Download .NET Core 3.1][dotnet].
 [dotnet]: https://dotnet.microsoft.com/download/dotnet-core/3.1
 [extension-vscode]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
 [extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
+[extension-github]: https://github.com/marketplace/actions/psrule
 [vscode-ext-gallery]: https://code.visualstudio.com/docs/editor/extension-gallery
 [pipelines-install]: https://docs.microsoft.com/en-us/azure/devops/marketplace/install-extension?view=azure-devops&tabs=browser

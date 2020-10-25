@@ -16,24 +16,17 @@ What's more, you can tap into a large world-wide community of PowerShell users w
 ## Cross-platform
 
 PSRule uses modern PowerShell libraries at its core, allowing it to go anywhere PowerShell can go.
-PSRule runs on MacOS, Linux and Windows.
+The companion extension for Visual Studio Code provides snippets for authoring rules and documentation.
+PSRule runs on MacOS, Linux, and Windows.
 
-To install PSRule use the `Install-Module` cmdlet within Windows PowerShell or PowerShell Core.
+PowerShell makes it easy to integrate PSRule into popular continuous integration (CI) systems.
+Additionally, PSRule has extensions for:
 
-```powershell
-Install-Module -Name PSRule -Scope CurrentUser;
-```
+- [Azure Pipeline (Azure DevOps)][extension-pipelines]
+- [GitHub Actions (GitHub)][extension-github]
 
-PSRule also has editor support for Visual Studio Code with the companion extension.
-The extension is available for installation on MacOS, Linux and Windows.
-
-To install the extension:
-
-```text
-code --install-extension bewhite.psrule-vscode-preview
-```
-
-For additional installation options, see [install instructions](scenarios/install-instructions.md).
+To install, use the `Install-Module` cmdlet within PowerShell.
+For installation options see [install instructions](install-instructions.md).
 
 ## Reusable
 
@@ -132,3 +125,5 @@ Alternatively, you can provide your own reasons to complement standard PowerShel
 
 [about_PSRule_Docs]: concepts/PSRule/en-US/about_PSRule_Docs.md
 [about_PSRule_Options]: concepts/PSRule/en-US/about_PSRule_Options.md
+[extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
+[extension-github]: https://github.com/marketplace/actions/psrule
