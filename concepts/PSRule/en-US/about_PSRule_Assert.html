@@ -85,7 +85,8 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 <li><a href="#greater">Greater</a> - The field value must be greater.</li>
 <li><a href="#greaterorequal">GreaterOrEqual</a> - The field value must be greater or equal to.</li>
 <li><a href="#hasdefaultvalue">HasDefaultValue</a> - The object should not have the field or the field value is set to the default value.</li>
-<li><a href="#hasfield">HasField</a> - The object must have the specified field.</li>
+<li><a href="#hasfield">HasField</a> - The object must have any of the specified fields.</li>
+<li><a href="#hasfields">HasFields</a> - The object must have all of the specified fields.</li>
 <li><a href="#hasfieldvalue">HasFieldValue</a> - The object must have the specified field and that field is not empty.</li>
 <li><a href="#hasjsonschema">HasJsonSchema</a> - The object must reference a JSON schema with the <code>$schema</code> field.</li>
 <li><a href="#in">In</a> - The field value must be included in the set.</li>
@@ -152,14 +153,19 @@ Optionally a case-sensitive compare can be used, however case is ignored by defa
 <p>The following parameters are accepted:</p>
 <ul>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
-<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
-<li><code>text</code> - One or more strings to compare the field value with. Only one string must match.</li>
-<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+<li><code>text</code> - A string or an array of strings to compare the field value with.
+Only one string must match.
+When an empty array of strings is specified or text is an empty string, <code>Contains</code> always passes.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
 <li><em>The parameter 'inputObject' is null.</em></li>
 <li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The parameter 'text' is null.</em></li>
 <li><em>The field '{0}' does not exist.</em></li>
 <li><em>The field value '{0}' is not a string.</em></li>
 <li><em>The field '{0}' does not contain '{1}'.</em></li>
@@ -176,14 +182,19 @@ Optionally a case-sensitive compare can be used, however case is ignored by defa
 <p>The following parameters are accepted:</p>
 <ul>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
-<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
-<li><code>suffix</code> - One or more suffixes to compare the field value with. Only one suffix must match.</li>
-<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+<li><code>suffix</code> - A suffix or an array of suffixes to compare the field value with.
+Only one suffix must match.
+When an empty array of suffixes is specified or suffix is an empty string, <code>EndsWith</code> always passes.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
 <li><em>The parameter 'inputObject' is null.</em></li>
 <li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The parameter 'suffix' is null.</em></li>
 <li><em>The field '{0}' does not exist.</em></li>
 <li><em>The field value '{0}' is not a string.</em></li>
 <li><em>The field '{0}' does not end with '{1}'.</em></li>
@@ -326,7 +337,8 @@ By default the string length is compared.</li>
 <p>The following parameters are accepted:</p>
 <ul>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
-<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
 <li><code>defaultValue</code> - The expected value if the field exists.</li>
 </ul>
 <p>This assertion will pass if:</p>
@@ -350,11 +362,13 @@ By default the string length is compared.</li>
 }
 </code></pre>
 <h3 id="hasfield">HasField</h3>
-<p>The <code>HasField</code> assertion method checks the object has the specified field.</p>
+<p>The <code>HasField</code> assertion method checks the object has any of the specified fields.</p>
 <p>The following parameters are accepted:</p>
 <ul>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
-<li><code>field</code> - The name of the field to check. By default, a case insensitive compare is used.</li>
+<li><code>field</code> - The name of one or more fields to check.
+By default, a case insensitive compare is used.
+If more than one field is specified, only one must exist.</li>
 <li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field name.</li>
 </ul>
 <p>Reasons include:</p>
@@ -367,6 +381,30 @@ By default the string length is compared.</li>
 <pre><code class="lang-powershell">Rule 'HasField' {
     $Assert.HasField($TargetObject, 'Name')
     $Assert.HasField($TargetObject, 'tag.Environment', $True)
+    $Assert.HasField($TargetObject, @('tag.Environment', 'tag.Env'), $True)
+}
+</code></pre>
+<h3 id="hasfields">HasFields</h3>
+<p>The <code>HasFields</code> assertion method checks the object has all of the specified fields.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified fields.</li>
+<li><code>field</code> - The name of one or more fields to check.
+By default, a case insensitive compare is used.
+If more than one field is specified, all fields must exist.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field name.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'HasFields' {
+    $Assert.HasFields($TargetObject, 'Name')
+    $Assert.HasFields($TargetObject, 'tag.Environment', $True)
+    $Assert.HasFields($TargetObject, @('tag.Environment', 'tag.Env'), $True)
 }
 </code></pre>
 <h3 id="hasfieldvalue">HasFieldValue</h3>
@@ -450,13 +488,15 @@ When the field value is an array, only one item must be included in the set.</p>
 <ul>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
 <li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
-<li><code>values</code> - An array of one or more values that the field value is compared against.</li>
+<li><code>values</code> - An array of values that the field value is compared against.
+When an empty array is specified, <code>In</code> will always fail.</li>
 <li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
 <li><em>The parameter 'inputObject' is null.</em></li>
 <li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The parameter 'values' is null.</em></li>
 <li><em>The field '{0}' does not exist.</em></li>
 <li><em>The field value '{0}' was not included in the set.</em></li>
 </ul>
@@ -616,7 +656,8 @@ To check the field exists combine this assertion method with <code>HasFieldValue
 <ul>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
 <li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
-<li><code>values</code> - An array of one or more values that the field value is compared against.</li>
+<li><code>values</code> - An array values that the field value is compared against.
+When an empty array is specified, <code>NotIn</code> will always pass.</li>
 <li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value.
 Case is ignored by default.</li>
 </ul>
@@ -624,6 +665,7 @@ Case is ignored by default.</li>
 <ul>
 <li><em>The parameter 'inputObject' is null.</em></li>
 <li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The parameter 'values' is null.</em></li>
 <li><em>The field value '{0}' was in the set.</em></li>
 </ul>
 <p>Examples:</p>
@@ -690,8 +732,11 @@ Optionally a case-sensitive compare can be used, however case is ignored by defa
 <p>The following parameters are accepted:</p>
 <ul>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
-<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
-<li><code>prefix</code> - One or more prefixes to compare the field value with. Only one prefix must match.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+<li><code>prefix</code> - A prefix or an array of prefixes to compare the field value with.
+Only one prefix must match.
+When an empty array of prefixes is specified or prefix is an empty string, <code>StartsWith</code> always passes.</li>
 <li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value.
 Case is ignored by default.</li>
 </ul>
@@ -699,6 +744,7 @@ Case is ignored by default.</li>
 <ul>
 <li><em>The parameter 'inputObject' is null.</em></li>
 <li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The parameter 'prefix' is null.</em></li>
 <li><em>The field '{0}' does not exist.</em></li>
 <li><em>The field value '{0}' is not a string.</em></li>
 <li><em>The field '{0}' does not start with '{1}'.</em></li>

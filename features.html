@@ -82,16 +82,16 @@ If you or your team already can write a basic PowerShell script, you can already
 What's more, you can tap into a large world-wide community of PowerShell users with scripts and cmdlets to help you build out rules quickly.</p>
 <h2 id="cross-platform">Cross-platform</h2>
 <p>PSRule uses modern PowerShell libraries at its core, allowing it to go anywhere PowerShell can go.
-PSRule runs on MacOS, Linux and Windows.</p>
-<p>To install PSRule use the <code>Install-Module</code> cmdlet within Windows PowerShell or PowerShell Core.</p>
-<pre><code class="lang-powershell">Install-Module -Name PSRule -Scope CurrentUser;
-</code></pre>
-<p>PSRule also has editor support for Visual Studio Code with the companion extension.
-The extension is available for installation on MacOS, Linux and Windows.</p>
-<p>To install the extension:</p>
-<pre><code class="lang-text">code --install-extension bewhite.psrule-vscode-preview
-</code></pre>
-<p>For additional installation options, see <a href="scenarios/install-instructions.html">install instructions</a>.</p>
+The companion extension for Visual Studio Code provides snippets for authoring rules and documentation.
+PSRule runs on MacOS, Linux, and Windows.</p>
+<p>PowerShell makes it easy to integrate PSRule into popular continuous integration (CI) systems.
+Additionally, PSRule has extensions for:</p>
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule">Azure Pipeline (Azure DevOps)</a></li>
+<li><a href="https://github.com/marketplace/actions/psrule">GitHub Actions (GitHub)</a></li>
+</ul>
+<p>To install, use the <code>Install-Module</code> cmdlet within PowerShell.
+For installation options see <a href="install-instructions.html">install instructions</a>.</p>
 <h2 id="reusable">Reusable</h2>
 <p>Define rules once then reuse and share rules across teams or organizations.
 Rules can be packaged up into a module then distributed.</p>

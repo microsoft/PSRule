@@ -141,7 +141,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Assert.html",
-          "hash": "5dMnpMeCTBAFP6pGBK9LxQ=="
+          "hash": "/iGpUHsvnCv8aCCLZcw0Ig=="
         }
       },
       "is_incremental": false,
@@ -177,7 +177,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "pWFVSG8WeB1T4pYDwZV4ew=="
+          "hash": "dRLXxyoLC4PH1gezHMGt/g=="
         }
       },
       "is_incremental": false,
@@ -201,7 +201,7 @@
       "output": {
         ".html": {
           "relative_path": "features.html",
-          "hash": "GsoRg5v5KC6w77HBoTY3zA=="
+          "hash": "4oYhUbLBbTiHGZxirysZXA=="
         }
       },
       "is_incremental": false,
@@ -213,7 +213,19 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "QAohzNVaVBixQ/RKYjcqMg=="
+          "hash": "8w5IOIgmUxLceCtaBz5sbw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "install-instructions.md",
+      "output": {
+        ".html": {
+          "relative_path": "install-instructions.html",
+          "hash": "NoHTOY/rI5uFLTZa5Aifsw=="
         }
       },
       "is_incremental": false,
@@ -381,6 +393,30 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "scenarios/benchmark/results-v0.21.0.md",
+      "output": {
+        ".html": {
+          "relative_path": "scenarios/benchmark/results-v0.21.0.html",
+          "hash": "bQuedvsR9UfM4sjeBUo5qg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "scenarios/benchmark/results-v0.22.0-working.md",
+      "output": {
+        ".html": {
+          "relative_path": "scenarios/benchmark/results-v0.22.0-working.html",
+          "hash": "JDiaiih6w29e79PcNGmnxQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "scenarios/benchmark/results-v0.3.0.md",
       "output": {
         ".html": {
@@ -420,18 +456,6 @@
         ".html": {
           "relative_path": "scenarios/index.html",
           "hash": "RfOQma+qvrmiT5DjLDONoA=="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "scenarios/install-instructions.md",
-      "output": {
-        ".html": {
-          "relative_path": "scenarios/install-instructions.html",
-          "hash": "qpeiqDfHT0RLRE1m08dXug=="
         }
       },
       "is_incremental": false,
@@ -703,7 +727,7 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 33,
+          "total_file_count": 35,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {
