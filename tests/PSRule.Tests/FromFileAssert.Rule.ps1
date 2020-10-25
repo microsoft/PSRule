@@ -45,11 +45,15 @@ Rule 'Assert.Fail' {
 # Synopsis: Test for $Assert.Contains
 Rule 'Assert.Contains' {
     $Assert.Contains($TargetObject, 'OtherField', @('abc', 'th'))
+    $Assert.Contains($TargetObject, 'Name', @())
+    $Assert.Contains($TargetObject, 'Name', '')
 }
 
 # Synopsis: Test for $Assert.EndsWith
 Rule 'Assert.EndsWith' {
     $Assert.EndsWith($TargetObject, 'Name', '1')
+    $Assert.EndsWith($TargetObject, 'Name', @())
+    $Assert.EndsWith($TargetObject, 'Name', '')
 }
 
 # Synopsis: Test for $Assert.FileHeader
@@ -83,6 +87,13 @@ Rule 'Assert.GreaterOrEqual' {
 # Synopsis: Test for $Assert.HasField
 Rule 'Assert.HasField' {
     $Assert.HasField($TargetObject, 'Type')
+    $Assert.HasField($TargetObject, @('Not','Type'))
+}
+
+# Synopsis: Test for $Assert.HasFields
+Rule 'Assert.HasFields' {
+    $Assert.HasFields($TargetObject, 'Type')
+    $Assert.HasFields($TargetObject, @('String','Type'))
 }
 
 # Synopsis: Test for $Assert.HasFieldValue
@@ -188,6 +199,8 @@ Rule 'Assert.NullOrEmpty' {
 # Synopsis: Test for $Assert.StartsWith
 Rule 'Assert.StartsWith' {
     $Assert.StartsWith($TargetObject, 'Version', '2.0')
+    $Assert.StartsWith($TargetObject, 'Name', @())
+    $Assert.StartsWith($TargetObject, 'Name', '')
 }
 
 # Synopsis: Test for $Assert.Version

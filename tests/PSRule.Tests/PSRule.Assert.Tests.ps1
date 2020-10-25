@@ -253,7 +253,23 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             # Negative case
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
-            $result[1].Reason.Length | Should -Be 1;
+            $result[1].Reason.Length | Should -Be 3;
+            $result[1].Reason | Should -BeLike "The field '*' does not exist.";
+        }
+
+        It 'HasFields' {
+            $result = @($testObject | Invoke-PSRule @invokeParams -Name 'Assert.HasFields');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 2;
             $result[1].Reason | Should -BeLike "The field '*' does not exist.";
         }
 

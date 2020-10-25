@@ -22,7 +22,8 @@ The following built-in assertion methods are provided:
 - [Greater](#greater) - The field value must be greater.
 - [GreaterOrEqual](#greaterorequal) - The field value must be greater or equal to.
 - [HasDefaultValue](#hasdefaultvalue) - The object should not have the field or the field value is set to the default value.
-- [HasField](#hasfield) - The object must have the specified field.
+- [HasField](#hasfield) - The object must have any of the specified fields.
+- [HasFields](#hasfields) - The object must have all of the specified fields.
 - [HasFieldValue](#hasfieldvalue) - The object must have the specified field and that field is not empty.
 - [HasJsonSchema](#hasjsonschema) - The object must reference a JSON schema with the `$schema` field.
 - [In](#in) - The field value must be included in the set.
@@ -100,14 +101,19 @@ Optionally a case-sensitive compare can be used, however case is ignored by defa
 The following parameters are accepted:
 
 - `inputObject` - The object being checked for the specified field.
-- `field` - The name of the field to check. This is a case insensitive compare.
-- `text` - One or more strings to compare the field value with. Only one string must match.
-- `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `text` - A string or an array of strings to compare the field value with.
+Only one string must match.
+When an empty array of strings is specified or text is an empty string, `Contains` always passes.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.
 
 Reasons include:
 
 - _The parameter 'inputObject' is null._
 - _The parameter 'field' is null or empty._
+- _The parameter 'text' is null._
 - _The field '{0}' does not exist._
 - _The field value '{0}' is not a string._
 - _The field '{0}' does not contain '{1}'._
@@ -129,14 +135,19 @@ Optionally a case-sensitive compare can be used, however case is ignored by defa
 The following parameters are accepted:
 
 - `inputObject` - The object being checked for the specified field.
-- `field` - The name of the field to check. This is a case insensitive compare.
-- `suffix` - One or more suffixes to compare the field value with. Only one suffix must match.
-- `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `suffix` - A suffix or an array of suffixes to compare the field value with.
+Only one suffix must match.
+When an empty array of suffixes is specified or suffix is an empty string, `EndsWith` always passes.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.
 
 Reasons include:
 
 - _The parameter 'inputObject' is null._
 - _The parameter 'field' is null or empty._
+- _The parameter 'suffix' is null._
 - _The field '{0}' does not exist._
 - _The field value '{0}' is not a string._
 - _The field '{0}' does not end with '{1}'._
@@ -302,7 +313,8 @@ The `HasDefaultValue` assertion method check that the field does not exist or th
 The following parameters are accepted:
 
 - `inputObject` - The object being checked for the specified field.
-- `field` - The name of the field to check. This is a case insensitive compare.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
 - `defaultValue` - The expected value if the field exists.
 
 This assertion will pass if:
@@ -330,12 +342,14 @@ Rule 'HasDefaultValue' {
 
 ### HasField
 
-The `HasField` assertion method checks the object has the specified field.
+The `HasField` assertion method checks the object has any of the specified fields.
 
 The following parameters are accepted:
 
 - `inputObject` - The object being checked for the specified field.
-- `field` - The name of the field to check. By default, a case insensitive compare is used.
+- `field` - The name of one or more fields to check.
+By default, a case insensitive compare is used.
+If more than one field is specified, only one must exist.
 - `caseSensitive` (optional) - Use a case sensitive compare of the field name.
 
 Reasons include:
@@ -350,6 +364,35 @@ Examples:
 Rule 'HasField' {
     $Assert.HasField($TargetObject, 'Name')
     $Assert.HasField($TargetObject, 'tag.Environment', $True)
+    $Assert.HasField($TargetObject, @('tag.Environment', 'tag.Env'), $True)
+}
+```
+
+### HasFields
+
+The `HasFields` assertion method checks the object has all of the specified fields.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified fields.
+- `field` - The name of one or more fields to check.
+By default, a case insensitive compare is used.
+If more than one field is specified, all fields must exist.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field name.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+
+Examples:
+
+```powershell
+Rule 'HasFields' {
+    $Assert.HasFields($TargetObject, 'Name')
+    $Assert.HasFields($TargetObject, 'tag.Environment', $True)
+    $Assert.HasFields($TargetObject, @('tag.Environment', 'tag.Env'), $True)
 }
 ```
 
@@ -451,13 +494,15 @@ The following parameters are accepted:
 
 - `inputObject` - The object being checked for the specified field.
 - `field` - The name of the field to check. This is a case insensitive compare.
-- `values` - An array of one or more values that the field value is compared against.
+- `values` - An array of values that the field value is compared against.
+When an empty array is specified, `In` will always fail.
 - `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
 
 Reasons include:
 
 - _The parameter 'inputObject' is null._
 - _The parameter 'field' is null or empty._
+- _The parameter 'values' is null._
 - _The field '{0}' does not exist._
 - _The field value '{0}' was not included in the set._
 
@@ -645,7 +690,8 @@ The following parameters are accepted:
 
 - `inputObject` - The object being checked for the specified field.
 - `field` - The name of the field to check. This is a case insensitive compare.
-- `values` - An array of one or more values that the field value is compared against.
+- `values` - An array values that the field value is compared against.
+When an empty array is specified, `NotIn` will always pass.
 - `caseSensitive` (optional) - Use a case sensitive compare of the field value.
 Case is ignored by default.
 
@@ -653,6 +699,7 @@ Reasons include:
 
 - _The parameter 'inputObject' is null._
 - _The parameter 'field' is null or empty._
+- _The parameter 'values' is null._
 - _The field value '{0}' was in the set._
 
 Examples:
@@ -734,8 +781,11 @@ Optionally a case-sensitive compare can be used, however case is ignored by defa
 The following parameters are accepted:
 
 - `inputObject` - The object being checked for the specified field.
-- `field` - The name of the field to check. This is a case insensitive compare.
-- `prefix` - One or more prefixes to compare the field value with. Only one prefix must match.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `prefix` - A prefix or an array of prefixes to compare the field value with.
+Only one prefix must match.
+When an empty array of prefixes is specified or prefix is an empty string, `StartsWith` always passes.
 - `caseSensitive` (optional) - Use a case sensitive compare of the field value.
 Case is ignored by default.
 
@@ -743,6 +793,7 @@ Reasons include:
 
 - _The parameter 'inputObject' is null._
 - _The parameter 'field' is null or empty._
+- _The parameter 'prefix' is null._
 - _The field '{0}' does not exist._
 - _The field value '{0}' is not a string._
 - _The field '{0}' does not start with '{1}'._

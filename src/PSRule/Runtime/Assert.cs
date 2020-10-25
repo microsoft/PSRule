@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using Manatee.Json;
@@ -25,6 +25,8 @@ namespace PSRule.Runtime
         private const string COMMASEPARATOR = ", ";
         private const string CACHE_MATCH = "MatchRegex";
         private const string CACHE_MATCH_C = "MatchRegexCaseSensitive";
+        private const string PROPERTY_SCHEMA = "$schema";
+        private const string VARIABLE_NAME = "Assert";
 
         public AssertResult Create(bool condition, string reason = null)
         {
@@ -34,7 +36,7 @@ namespace PSRule.Runtime
         internal AssertResult Create(bool condition, string reason, object[] args)
         {
             if (!(PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition || PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Precondition))
-                throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VariableConditionScope, "Assert"));
+                throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VariableConditionScope, VARIABLE_NAME));
 
             return new AssertResult(this, condition, reason, args);
         }
@@ -116,7 +118,7 @@ namespace PSRule.Runtime
         {
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
-                GuardField(inputObject, "$schema", false, out object fieldValue, out result) ||
+                GuardField(inputObject, PROPERTY_SCHEMA, false, out object fieldValue, out result) ||
                 GuardString(fieldValue, out string value, out result))
                 return result;
 
@@ -131,17 +133,41 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
-        /// The object should have a specific field.
+        /// The object must have any of the specified fields.
         /// </summary>
-        public AssertResult HasField(PSObject inputObject, string field, bool caseSensitive = false)
+        public AssertResult HasField(PSObject inputObject, string[] field, bool caseSensitive = false)
         {
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
-                GuardNullOrEmptyParam(field, nameof(field), out result) ||
-                GuardField(inputObject, field, caseSensitive, out _, out result))
+                GuardNullOrEmptyParam(field, nameof(field), out result))
                 return result;
 
-            // Assert
+            result = Fail();
+            for (var i = 0; field != null && i < field.Length; i++)
+            {
+                if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field[i], caseSensitive: caseSensitive, value: out _))
+                    return Pass();
+
+                result.AddReason(ReasonStrings.HasField, field);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// The object must have all of the specified fields.
+        /// </summary>
+        public AssertResult HasFields(PSObject inputObject, string[] field, bool caseSensitive = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result))
+                return result;
+
+            for (var i = 0; field != null && i < field.Length; i++)
+            {
+                if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field[i], caseSensitive: caseSensitive, value: out _))
+                    return Fail(ReasonStrings.HasField, field);
+            }
             return Pass();
         }
 
@@ -209,12 +235,16 @@ namespace PSRule.Runtime
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullParam(prefix, nameof(prefix), out result) ||
                 GuardField(inputObject, field, false, out object fieldValue, out result) ||
                 GuardString(fieldValue, out string value, out result))
                 return result;
 
+            if (prefix == null || prefix.Length == 0)
+                return Pass();
+
             // Assert
-            for (var i = 0; prefix != null && i < prefix.Length; i++)
+            for (var i = 0; i < prefix.Length; i++)
             {
                 if (value.StartsWith(prefix[i], caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
                     return Pass();
@@ -230,12 +260,16 @@ namespace PSRule.Runtime
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullParam(suffix, nameof(suffix), out result) ||
                 GuardField(inputObject, field, false, out object fieldValue, out result) ||
                 GuardString(fieldValue, out string value, out result))
                 return result;
 
+            if (suffix == null || suffix.Length == 0)
+                return Pass();
+
             // Assert
-            for (var i = 0; suffix != null && i < suffix.Length; i++)
+            for (var i = 0; i < suffix.Length; i++)
             {
                 if (value.EndsWith(suffix[i], caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
                     return Pass();
@@ -251,12 +285,16 @@ namespace PSRule.Runtime
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullParam(text, nameof(text), out result) ||
                 GuardField(inputObject, field, false, out object fieldValue, out result) ||
                 GuardString(fieldValue, out string value, out result))
                 return result;
 
+            if (text == null || text.Length == 0)
+                return Pass();
+
             // Assert
-            for (var i = 0; text != null && i < text.Length; i++)
+            for (var i = 0; i < text.Length; i++)
             {
                 if (value.IndexOf(text[i], caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) >= 0)
                     return Pass();
@@ -396,10 +434,11 @@ namespace PSRule.Runtime
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullParam(values, nameof(values), out result) ||
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            for (var i = 0; i < values.Length; i++)
+            for (var i = 0; values != null && i < values.Length; i++)
             {
                 if (AnyValue(fieldValue, values.GetValue(i), caseSensitive, out object _))
                     return Pass();
@@ -414,13 +453,14 @@ namespace PSRule.Runtime
         {
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
-                GuardNullOrEmptyParam(field, nameof(field), out result))
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullParam(values, nameof(values), out result))
                 return result;
 
             if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: caseSensitive, value: out object fieldValue))
                 return Pass();
 
-            for (var i = 0; i < values.Length; i++)
+            for (var i = 0; values != null && i < values.Length; i++)
             {
                 if (AnyValue(fieldValue, values.GetValue(i), caseSensitive, out object foundValue))
                     return Fail(ReasonStrings.NotIn, foundValue);
