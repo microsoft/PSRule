@@ -2,12 +2,12 @@
 # CI pipeline for PSRule
 
 variables:
-  version: '0.22.0'
+  version: '1.0.0'
   buildConfiguration: 'Release'
   disable.coverage.autogenerate: 'true'
   imageName: 'ubuntu-18.04'
 
- # Use build number format, i.e. 0.22.0-B2010001
+ # Use build number format, i.e. 1.0.0-B2010001
 name: $(version)-B$(date:yyMM)$(rev:rrr)
 
 trigger:
