@@ -17,3 +17,7 @@ updates:
   - 'dependencies'
   reviewers:
   - 'microsoft/psrule'
+  ignore:
+  # Ignore upgrades to PS 7.1 for tool chain components at this time
+  # Testing against PS 7.1 is already completed
+  - dependency-name: 'Microsoft.PowerShell.SDK'

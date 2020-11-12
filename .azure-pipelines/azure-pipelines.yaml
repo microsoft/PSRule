@@ -17,6 +17,7 @@ trigger:
   tags:
     include:
     - 'v0.*'
+    - 'v1.*'
 
 pr:
   branches:
@@ -171,9 +172,9 @@ stages:
   - template: jobs/testContainer.yaml
     parameters:
       name: ps_7_1_ubuntu_18_04
-      displayName: 'PowerShell 7.1 (preview) - ubuntu-18.04'
+      displayName: 'PowerShell 7.1 - ubuntu-18.04'
       imageName: mcr.microsoft.com/powershell
-      imageTag: preview-ubuntu-18.04
+      imageTag: 7.1.0-ubuntu-18.04
 
   - template: jobs/testContainer.yaml
     parameters:
