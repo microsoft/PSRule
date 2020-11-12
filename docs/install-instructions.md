@@ -3,8 +3,8 @@
 ## Prerequisites
 
 - Windows PowerShell 5.1 with .NET Framework 4.7.2+ or
-- PowerShell Core 6.2 or greater on Windows, MacOS and Linux or
-- PowerShell 7.0 or greater on Windows, MacOS and Linux
+- PowerShell Core 6.2 or greater on Windows, MacOS, and Linux or
+- PowerShell 7.0 or greater on Windows, MacOS, and Linux
 
 For a list of platforms that PowerShell 7.0 is supported on [see][get-powershell].
 
@@ -66,7 +66,7 @@ Add the [latest version][extension-github] from the GitHub Marketplace to a work
 
 ```yaml
 - name: Run PSRule analysis
-  uses: Microsoft/ps-rule@v0.4.0
+  uses: Microsoft/ps-rule@v0.5.0
 ```
 
 For detailed instructions and change log see the [action details][extension-github].
