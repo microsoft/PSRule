@@ -154,7 +154,6 @@ stages:
       displayName: 'PowerShell 7.0 - Windows 2019'
       imageName: 'windows-2019'
 
-  # Currently can't use alpine because addtional tools for Azure DevOps are required
   - template: jobs/testContainer.yaml
     parameters:
       name: alpine_3_10

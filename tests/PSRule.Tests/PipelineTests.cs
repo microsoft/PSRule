@@ -74,6 +74,14 @@ namespace PSRule
         }
 
         [Fact]
+        public void PipelineWithOptions()
+        {
+            var option = GetOption(GetSourcePath("PSRule.Tests.yml"));
+            var builder = PipelineBuilder.Get(GetSource(), option, null, null);
+            Assert.NotNull(builder.Build());
+        }
+
+        [Fact]
         public void PipelineWithRequires()
         {
             var option = GetOption(GetSourcePath("PSRule.Tests6.yml"));
