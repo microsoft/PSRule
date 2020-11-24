@@ -6,6 +6,11 @@
 
 ## Unreleased
 
+What's changed since v0.22.0:
+
+- Engineering:
+  - Bump Manatee.Json from 13.0.3 to 13.0.4. [#591](https://github.com/microsoft/PSRule/pull/591)
+
 ## v0.22.0
 
 What's changed since v0.21.0:
