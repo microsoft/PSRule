@@ -138,7 +138,7 @@ stages:
   - template: jobs/test.yaml
     parameters:
       name: macOS_10_15
-      displayName: 'PowerShell 7.0 - macOS-10.15'
+      displayName: 'PowerShell 7.1 - macOS-10.15'
       imageName: 'macOS-10.15'
 
   - template: jobs/test.yaml
@@ -151,13 +151,13 @@ stages:
   - template: jobs/test.yaml
     parameters:
       name: windows_2019
-      displayName: 'PowerShell 7.0 - Windows 2019'
+      displayName: 'PowerShell 7.1 - Windows 2019'
       imageName: 'windows-2019'
 
   - template: jobs/testContainer.yaml
     parameters:
       name: alpine_3_10
-      displayName: 'PowerShell 7.0 - alpine-3.10'
+      displayName: 'PowerShell 7.1 - alpine-3.10'
       imageName: mcr.microsoft.com/powershell/test-deps
       imageTag: alpine-3.10
 
@@ -174,6 +174,13 @@ stages:
       displayName: 'PowerShell 7.1 - ubuntu-18.04'
       imageName: mcr.microsoft.com/powershell
       imageTag: 7.1.0-ubuntu-18.04
+
+  - template: jobs/testContainer.yaml
+    parameters:
+      name: ps_7_1_ubuntu_20_04
+      displayName: 'PowerShell 7.1 - ubuntu-20.04'
+      imageName: mcr.microsoft.com/powershell
+      imageTag: 7.1.0-ubuntu-20.04
 
   - template: jobs/testContainer.yaml
     parameters:
