@@ -6,6 +6,8 @@
 
 ## Unreleased
 
+## v1.0.0-B2011028 (pre-release)
+
 What's changed since v0.22.0:
 
 - General improvements:
