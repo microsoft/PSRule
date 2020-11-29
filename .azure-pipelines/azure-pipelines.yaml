@@ -16,7 +16,6 @@ trigger:
     - 'main'
   tags:
     include:
-    - 'v0.*'
     - 'v1.*'
 
 pr:
@@ -193,7 +192,7 @@ stages:
 - stage: Release
   displayName: Release
   dependsOn: [ 'Test', 'Analysis' ]
-  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v0.'))
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v1.'))
   jobs:
   - job:
     displayName: Live
