@@ -17,7 +17,7 @@ Features of PSRule include:
 This project uses GitHub Issues to track bugs and feature requests.
 Please search the existing issues before filing new issues to avoid duplicates.
 
-- For new issues, file your bug or feature request as a new [Issue].
+- For new issues, file your bug or feature request as a new [Issue][issue].
 - For help and questions about using this project, we have a Gitter room which you can join below.
 
 [![Join the chat][chat-badge]][chat]
@@ -368,5 +368,5 @@ This project is [licensed under the MIT License](LICENSE).
 [PSRule.Monitor]: https://github.com/microsoft/PSRule.Monitor
 [PSRule-pipelines]: https://github.com/microsoft/PSRule-pipelines
 [ps-rule]: https://github.com/microsoft/ps-rule
-[chat]: https://gitter.im/PSRule/PSRule.Rules.Azure?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[chat]: https://gitter.im/PSRule/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 [chat-badge]: https://img.shields.io/static/v1.svg?label=chat&message=on%20gitter&color=informational&logo=gitter
