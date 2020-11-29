@@ -364,6 +364,10 @@ namespace PSRule
 
     internal sealed class LanguageBlockDeserializer : INodeDeserializer
     {
+        private const string FIELD_KIND = "kind";
+        private const string FIELD_METADATA = "metadata";
+        private const string FIELD_SPEC = "spec";
+
         private readonly INodeDeserializer _Next;
         private readonly SpecFactory _Factory;
 
@@ -398,21 +402,16 @@ namespace PSRule
                 while (reader.TryConsume(out Scalar scalar))
                 {
                     // Read kind
-                    var propertyName = scalar.Value;
-                    if (propertyName == "kind")
+                    if (TryKind(reader, scalar, out string kindValue))
                     {
-                        kind = reader.Consume<Scalar>().Value;
+                        kind = kindValue;
                     }
-                    else if (propertyName == "metadata")
+                    else if (TryMetadata(reader, scalar, nestedObjectDeserializer, out ResourceMetadata metadataValue))
                     {
-                        if (!TryMetadata(reader, nestedObjectDeserializer, out metadata))
-                            reader.SkipThisAndNestedEvents();
+                        metadata = metadataValue;
                     }
-                    else if (propertyName == "spec" && kind != null)
+                    else if (kind != null && TrySpec(reader, scalar, kind, nestedObjectDeserializer, metadata, comment, out IResource resource))
                     {
-                        if (!TryResource(kind, reader, nestedObjectDeserializer, metadata, comment, out IResource resource))
-                            reader.SkipThisAndNestedEvents();
-
                         result = resource;
                     }
                     else
@@ -426,9 +425,23 @@ namespace PSRule
             return result;
         }
 
-        private bool TryMetadata(IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, out ResourceMetadata metadata)
+        private static bool TryKind(IParser reader, Scalar scalar, out string kind)
+        {
+            kind = null;
+            if (scalar.Value == FIELD_KIND)
+            {
+                kind = reader.Consume<Scalar>().Value;
+                return true;
+            }
+            return false;
+        }
+
+        private bool TryMetadata(IParser reader, Scalar scalar, Func<IParser, Type, object> nestedObjectDeserializer, out ResourceMetadata metadata)
         {
             metadata = null;
+            if (scalar.Value != FIELD_METADATA)
+                return false;
+
             if (reader.Current is MappingStart)
             {
                 if (!_Next.Deserialize(reader, typeof(ResourceMetadata), nestedObjectDeserializer, out object value))
@@ -440,10 +453,19 @@ namespace PSRule
             return false;
         }
 
-        private bool TryResource(string name, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
+        private bool TrySpec(IParser reader, Scalar scalar, string kind, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
         {
             spec = null;
-            if (_Factory.TryDescriptor(name, out ISpecDescriptor descriptor) && reader.Current is MappingStart)
+            if (scalar.Value != FIELD_SPEC)
+                return false;
+
+            return TryResource(reader, kind, nestedObjectDeserializer, metadata, comment, out spec);
+        }
+
+        private bool TryResource(IParser reader, string kind, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
+        {
+            spec = null;
+            if (_Factory.TryDescriptor(kind, out ISpecDescriptor descriptor) && reader.Current is MappingStart)
             {
                 if (!_Next.Deserialize(reader, descriptor.SpecType, nestedObjectDeserializer, out object value))
                     return false;

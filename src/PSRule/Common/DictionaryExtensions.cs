@@ -14,6 +14,25 @@ namespace PSRule
             return dictionary.TryGetValue(key, out value) && dictionary.Remove(key);
         }
 
+        [DebuggerStepThrough]
+        public static bool TryPopValue<T>(this IDictionary<string, object> dictionary, string key, out T value)
+        {
+            value = default;
+            if (dictionary.TryGetValue(key, out object v) && dictionary.Remove(key) && v is T result)
+            {
+                value = result;
+                return true;
+            }
+            return false;
+        }
+
+        [DebuggerStepThrough]
+        public static bool TryPopBool(this IDictionary<string, object> dictionary, string key, out bool value)
+        {
+            value = default;
+            return dictionary.TryGetValue(key, out object v) && dictionary.Remove(key) && bool.TryParse(v.ToString(), out value);
+        }
+
         public static bool TryGetBool(this IDictionary<string, object> dictionary, string key, out bool? value)
         {
             value = null;

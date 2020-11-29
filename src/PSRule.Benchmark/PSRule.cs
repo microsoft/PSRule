@@ -4,7 +4,6 @@
 using BenchmarkDotNet.Attributes;
 using PSRule.Configuration;
 using PSRule.Pipeline;
-using PSRule.Rules;
 using System;
 using System.Collections.Generic;
 using System.IO;
