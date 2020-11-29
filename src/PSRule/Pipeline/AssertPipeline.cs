@@ -149,7 +149,7 @@ namespace PSRule.Pipeline
                             WriteLines(record.Reason[i], prefix: FormatterStrings.ReasonPrefix);
                         }
                     }
-                    var link = record.Info?.GetOnlineHelpUri().ToString();
+                    var link = record.Info?.GetOnlineHelpUri()?.ToString();
                     if (!string.IsNullOrEmpty(link))
                     {
                         LineBreak();
@@ -444,7 +444,7 @@ namespace PSRule.Pipeline
                             WriteLines(record.Reason[i], prefix: FormatterStrings.ReasonPrefix, forgroundColor: ConsoleColor.Cyan);
                         }
                     }
-                    var link = record.Info?.GetOnlineHelpUri().ToString();
+                    var link = record.Info?.GetOnlineHelpUri()?.ToString();
                     if (!string.IsNullOrEmpty(link))
                     {
                         LineBreak();
