@@ -34,6 +34,7 @@
         "**/.azure-pipelines/jobs/*.yaml": "azure-pipelines"
     },
     "cSpell.words": [
+        "Gitter",
         "Kubernetes",
         "cmdlet",
         "cmdlets",

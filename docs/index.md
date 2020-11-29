@@ -14,6 +14,18 @@ Features of PSRule include:
 - [Reusable](features.md#reusable) - Share rules across teams or organizations.
 - [Recommendations](features.md#recommendations) - Include detailed instructions to remediate issues.
 
+## Support
+
+This project uses GitHub Issues to track bugs and feature requests.
+Please search the existing issues before filing new issues to avoid duplicates.
+
+- For new issues, file your bug or feature request as a new [Issue][issue].
+- For help and questions about using this project, we have a Gitter room which you can join below.
+
+[![Join the chat][chat-badge]][chat]
+
+Support for this project/ product is limited to the resources listed above.
+
 ## Installing the module
 
 You can download and install the PSRule module from the PowerShell Gallery.
@@ -63,13 +75,6 @@ Module                  | Description | Version / downloads
 PSRule.Rules.Azure      | A suite of rules to validate Azure resources using PSRule. | [![rules-azure-version-badge]][rules-azure-version-module] [![rules-azure-downloads-badge]][rules-azure-version-module]
 PSRule.Rules.Kubernetes | A suite of rules to validate Kubernetes resources using PSRule. | [![rules-kubernetes-version-badge]][rules-kubernetes-version-module] [![rules-kubernetes-downloads-badge]][rules-kubernetes-version-module]
 
-## Support
-
-This project is open source and **not a supported product**.
-
-If you are experiencing problems, have a feature request, or a question, please check for an [issue] on GitHub.
-If you do not see your problem captured, please file a new issue, and follow the provided template.
-
 [issue]: https://github.com/Microsoft/PSRule/issues
 [install]: install-instructions.md
 [module]: https://www.powershellgallery.com/packages/PSRule
@@ -92,3 +97,5 @@ If you do not see your problem captured, please file a new issue, and follow the
 [rules-kubernetes-version-badge]: https://img.shields.io/powershellgallery/v/PSRule.Rules.Kubernetes.svg?label=PowerShell%20Gallery&color=brightgreen
 [rules-kubernetes-downloads-badge]: https://img.shields.io/powershellgallery/dt/PSRule.Rules.Kubernetes.svg?color=brightgreen
 [rules-kubernetes-version-module]: https://www.powershellgallery.com/packages/PSRule.Rules.Kubernetes
+[chat]: https://gitter.im/PSRule/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[chat-badge]: https://img.shields.io/static/v1.svg?label=chat&message=on%20gitter&color=informational&logo=gitter
