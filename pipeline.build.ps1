@@ -42,7 +42,7 @@ if ($Env:FORCE_PUBLISH -eq 'true') {
     $forcePublish = $True;
 }
 
-if ($Env:BUILD_SOURCEBRANCH -like '*/tags/*' -and $Env:BUILD_SOURCEBRANCHNAME -like 'v0.*') {
+if ($Env:BUILD_SOURCEBRANCH -like '*/tags/*' -and $Env:BUILD_SOURCEBRANCHNAME -like 'v*.*') {
     $Build = $Env:BUILD_SOURCEBRANCHNAME.Substring(1);
 }
 
