@@ -120,6 +120,24 @@
   <data name="Banner" xml:space="preserve">
     <value>    ____  _____ ____        __\n   / __ \/ ___// __ \__  __/ /__\n  / /_/ /\__ \/ /_/ / / / / / _ \\n / ____/___/ / _, _/ /_/ / /  __/\n/_/    /____/_/ |_|\__,_/_/\___/</value>
   </data>
+  <data name="Help" xml:space="preserve">
+    <value>    | HELP:</value>
+  </data>
+  <data name="HelpContribute" xml:space="preserve">
+    <value>Contribute and find source: https://github.com/microsoft/PSRule</value>
+  </data>
+  <data name="HelpDocs" xml:space="preserve">
+    <value>Explore documentation: https://microsoft.github.io/PSRule/</value>
+  </data>
+  <data name="HelpIssues" xml:space="preserve">
+    <value>Report issues: https://github.com/microsoft/PSRule/issues</value>
+  </data>
+  <data name="HelpLinkPrefix" xml:space="preserve">
+    <value>    | - </value>
+  </data>
+  <data name="HelpModule" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
   <data name="Message" xml:space="preserve">
     <value>    | MESSAGE:</value>
   </data>

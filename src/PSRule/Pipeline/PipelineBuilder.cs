@@ -63,7 +63,6 @@ namespace PSRule.Pipeline
         {
             var hostContext = new HostContext(commandRuntime, executionContext);
             var pipeline = new SourcePipelineBuilder(hostContext, option);
-            pipeline.Configure(option);
             return pipeline;
         }
 

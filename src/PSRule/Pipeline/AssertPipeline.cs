@@ -75,6 +75,8 @@ namespace PSRule.Pipeline
             /// </summary>
             private abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatter
             {
+                const string OUTPUT_SEPARATOR_BAR = "----------------------------";
+
                 private readonly bool _VTSupport;
 
                 protected readonly IPipelineWriter Writer;
@@ -88,6 +90,7 @@ namespace PSRule.Pipeline
                     Writer = writer;
                     Banner();
                     Source(source);
+                    Help(source);
                 }
 
                 public void Error(ErrorRecord errorRecord)
@@ -146,6 +149,13 @@ namespace PSRule.Pipeline
                             WriteLines(record.Reason[i], prefix: FormatterStrings.ReasonPrefix);
                         }
                     }
+                    var link = record.Info?.GetOnlineHelpUri()?.ToString();
+                    if (!string.IsNullOrEmpty(link))
+                    {
+                        LineBreak();
+                        WriteLine(FormatterStrings.Help);
+                        WriteLines(link, prefix: FormatterStrings.HelpLinkPrefix);
+                    }
                     LineBreak();
                 }
 
@@ -185,16 +195,35 @@ namespace PSRule.Pipeline
                 private void Source(Source[] source)
                 {
                     var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
-                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.PSRuleVersion, version));
+                    WriteLineFormat(FormatterStrings.PSRuleVersion, version);
                     var list = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     for (var i = 0; source != null && i < source.Length; i++)
                     {
                         if (source[i].Module != null && !list.Contains(source[i].Module.Name))
                         {
-                            WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.ModuleVersion, source[i].Module.Name, source[i].Module.Version));
+                            WriteLineFormat(FormatterStrings.ModuleVersion, source[i].Module.Name, source[i].Module.Version);
                             list.Add(source[i].Module.Name);
                         }
                     }
+                    LineBreak();
+                }
+
+                private void Help(Source[] source)
+                {
+                    WriteLine(OUTPUT_SEPARATOR_BAR);
+                    WriteLine(FormatterStrings.HelpDocs);
+                    WriteLine(FormatterStrings.HelpContribute);
+                    WriteLine(FormatterStrings.HelpIssues);
+                    var list = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    for (var i = 0; source != null && i < source.Length; i++)
+                    {
+                        if (source[i].Module != null && !list.Contains(source[i].Module.Name) && !string.IsNullOrEmpty(source[i].Module.ProjectUri))
+                        {
+                            WriteLineFormat(FormatterStrings.HelpModule, source[i].Module.Name, source[i].Module.ProjectUri);
+                            list.Add(source[i].Module.Name);
+                        }
+                    }
+                    WriteLine(OUTPUT_SEPARATOR_BAR);
                     LineBreak();
                 }
 
@@ -231,7 +260,7 @@ namespace PSRule.Pipeline
                 public void End(int total, int fail, int error)
                 {
                     LineBreak();
-                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Summary, total, fail, error));
+                    WriteLineFormat(FormatterStrings.Summary, total, fail, error);
                 }
 
                 protected void WriteLine(string prefix, ConsoleColor? forgroundColor, string message, params object[] args)
@@ -244,6 +273,11 @@ namespace PSRule.Pipeline
                 {
                     var output = string.IsNullOrEmpty(prefix) ? message : string.Concat(prefix, message);
                     Writer.WriteHost(new HostInformationMessage { Message = output, ForegroundColor = forgroundColor });
+                }
+
+                protected void WriteLineFormat(string message, params object[] args)
+                {
+                    WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, message, args));
                 }
 
                 protected void WriteLines(string message, string prefix = null, ConsoleColor? forgroundColor = null)
@@ -409,6 +443,13 @@ namespace PSRule.Pipeline
                         {
                             WriteLines(record.Reason[i], prefix: FormatterStrings.ReasonPrefix, forgroundColor: ConsoleColor.Cyan);
                         }
+                    }
+                    var link = record.Info?.GetOnlineHelpUri()?.ToString();
+                    if (!string.IsNullOrEmpty(link))
+                    {
+                        LineBreak();
+                        WriteLine(FormatterStrings.Help, forgroundColor: ConsoleColor.Cyan);
+                        WriteLines(link, prefix: FormatterStrings.HelpLinkPrefix, forgroundColor: ConsoleColor.Cyan);
                     }
                     LineBreak();
                 }

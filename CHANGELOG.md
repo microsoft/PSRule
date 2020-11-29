@@ -8,6 +8,8 @@
 
 What's changed since v0.22.0:
 
+- General improvements:
+  - Added rule help link in failed `Assert-PSRule` output. [#595](https://github.com/microsoft/PSRule/issues/595)
 - Engineering:
   - Bump Manatee.Json from 13.0.3 to 13.0.4. [#591](https://github.com/microsoft/PSRule/pull/591)
 

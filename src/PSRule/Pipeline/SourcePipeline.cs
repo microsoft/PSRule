@@ -9,7 +9,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Management.Automation;
 using System.Threading;
 
@@ -32,10 +31,10 @@ namespace PSRule.Pipeline
 
         internal Source Source;
 
-        public readonly string Path;
-        public readonly string ModuleName;
-        public readonly RuleSourceType Type;
-        public readonly string HelpPath;
+        public string Path { get; }
+        public string ModuleName { get; }
+        public RuleSourceType Type { get; }
+        public string HelpPath { get; }
 
         public SourceFile(string path, string moduleName, RuleSourceType type, string helpPath)
         {
@@ -61,8 +60,9 @@ namespace PSRule.Pipeline
 
     public sealed class Source
     {
-        public readonly string Path;
-        public readonly SourceFile[] File;
+        public string Path { get; }
+
+        public SourceFile[] File { get; }
 
         internal bool Dependency;
 
@@ -98,12 +98,14 @@ namespace PSRule.Pipeline
             public readonly string Name;
             public readonly string Baseline;
             public readonly string Version;
+            public readonly string ProjectUri;
 
             public ModuleInfo(PSModuleInfo info)
             {
                 Path = info.ModuleBase;
                 Name = info.Name;
-                Version = info.Version.ToString();
+                Version = info.Version?.ToString();
+                ProjectUri = info.ProjectUri?.ToString();
                 if (TryPrivateData(info, "PSRule", out Hashtable moduleData))
                     Baseline = moduleData.ContainsKey("Baseline") ? moduleData["Baseline"] as string : null;
 
@@ -142,12 +144,7 @@ namespace PSRule.Pipeline
             _Source = new List<Source>();
             _HostContext = hostContext;
             _Writer = new HostPipelineWriter(hostContext, option);
-        }
-
-        public SourcePipelineBuilder Configure(PSRuleOption option)
-        {
             _Writer.EnterScope("[Discovery.Source]");
-            return this;
         }
 
         public bool ShouldLoadModule

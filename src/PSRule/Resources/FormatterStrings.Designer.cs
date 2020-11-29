@@ -70,6 +70,60 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to     | HELP:.
+        /// </summary>
+        internal static string Help {
+            get {
+                return ResourceManager.GetString("Help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contribute and find source: https://github.com/microsoft/PSRule.
+        /// </summary>
+        internal static string HelpContribute {
+            get {
+                return ResourceManager.GetString("HelpContribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Explore documentation: https://microsoft.github.io/PSRule/.
+        /// </summary>
+        internal static string HelpDocs {
+            get {
+                return ResourceManager.GetString("HelpDocs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report issues: https://github.com/microsoft/PSRule/issues.
+        /// </summary>
+        internal static string HelpIssues {
+            get {
+                return ResourceManager.GetString("HelpIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     | - .
+        /// </summary>
+        internal static string HelpLinkPrefix {
+            get {
+                return ResourceManager.GetString("HelpLinkPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: {1}.
+        /// </summary>
+        internal static string HelpModule {
+            get {
+                return ResourceManager.GetString("HelpModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to     | MESSAGE:.
         /// </summary>
         internal static string Message {
