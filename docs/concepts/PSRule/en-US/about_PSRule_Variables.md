@@ -8,7 +8,8 @@ Describes the automatic variables that can be used within PSRule rule definition
 
 ## LONG DESCRIPTION
 
-PSRule lets you define rules using PowerShell blocks. A rule is defined within script files by using the `rule` keyword.
+PSRule lets you define rules using PowerShell blocks.
+A rule is defined within script files by using the `rule` keyword.
 
 Within a rule definition, PSRule exposes a number of automatic variables that can be read to assist with rule execution.
 Overwriting these variables or variable properties is not supported.
@@ -26,7 +27,8 @@ The following variables are available for use:
 
 ### Assert
 
-An assertion helper with methods to evaluate objects. The `$Assert` object provides a set of built-in methods and provides a consistent variable for extension.
+An assertion helper with methods to evaluate objects.
+The `$Assert` object provides a set of built-in methods and provides a consistent variable for extension.
 
 Each `$Assert` method returns an `AssertResult` object that contains the result of the condition.
 
@@ -207,11 +209,6 @@ The following properties are available for read access:
 
 - `RuleName` - The name of the rule.
 - `RuleId` - A unique identifier for the rule.
-- `TargetObject` - (deprecated) The object currently being processed on the pipeline.
-- `TargetName` - (deprecated) The name of the object currently being processed on the pipeline. This property will automatically default to `TargetName` or `Name` properties of the object if they exist.
-- `TargetType` - (deprecated) The type of the object currently being processed on the pipeline. This property will automatically bind to `PSObject.TypeNames[0]` by default.
-
-**Note:** Use `TargetName`, `TargetType` and `TargetObject` on `$PSRule` instead.
 
 Syntax:
 
@@ -230,7 +227,8 @@ Rule 'resource.NamingConvention' {
 
 ### TargetObject
 
-The value of the pipeline object currently being processed. `$TargetObject` is set by using the `-InputObject` parameter of `Invoke-PSRule`.
+The value of the pipeline object currently being processed.
+`$TargetObject` is set by using the `-InputObject` parameter of `Invoke-PSRule`.
 
 When more than one input object is set, each object will be processed sequentially.
 
