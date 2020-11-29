@@ -104,8 +104,8 @@ namespace PSRule.Pipeline
             {
                 Path = info.ModuleBase;
                 Name = info.Name;
-                Version = info.Version.ToString();
-                ProjectUri = info.ProjectUri.ToString();
+                Version = info.Version?.ToString();
+                ProjectUri = info.ProjectUri?.ToString();
                 if (TryPrivateData(info, "PSRule", out Hashtable moduleData))
                     Baseline = moduleData.ContainsKey("Baseline") ? moduleData["Baseline"] as string : null;
 
