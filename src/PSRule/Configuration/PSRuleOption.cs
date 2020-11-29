@@ -310,13 +310,13 @@ namespace PSRule.Configuration
             {
                 option.Execution.LanguageMode = (LanguageMode)Enum.Parse(typeof(LanguageMode), (string)value);
             }
-            if (index.TryPopValue("execution.inconclusivewarning", out value))
+            if (index.TryPopBool("execution.inconclusivewarning", out bool bvalue))
             {
-                option.Execution.InconclusiveWarning = bool.Parse(value.ToString());
+                option.Execution.InconclusiveWarning = bvalue;
             }
-            if (index.TryPopValue("execution.notprocessedwarning", out value))
+            if (index.TryPopBool("execution.notprocessedwarning", out bvalue))
             {
-                option.Execution.NotProcessedWarning = bool.Parse(value.ToString());
+                option.Execution.NotProcessedWarning = bvalue;
             }
             if (index.TryPopValue("input.format", out value))
             {

@@ -39,15 +39,27 @@ namespace PSRule.Configuration
 
         public static implicit operator BaselineOption(Hashtable hashtable)
         {
-            var option = new BaselineInline();
-
-            // Build index to allow mapping
-            var index = PSRuleOption.BuildIndex(hashtable);
-            Load(option, index);
-            return option;
+            return FromHashtable(hashtable);
         }
 
         public static implicit operator BaselineOption(string value)
+        {
+            return FromString(value);
+        }
+
+        public static BaselineOption FromHashtable(Hashtable hashtable)
+        {
+            var option = new BaselineInline();
+            if (hashtable != null)
+            {
+                // Build index to allow mapping
+                var index = PSRuleOption.BuildIndex(hashtable);
+                Load(option, index);
+            }
+            return option;
+        }
+
+        public static BaselineOption FromString(string value)
         {
             return new BaselineRef(value);
         }
@@ -59,13 +71,13 @@ namespace PSRule.Configuration
         /// <param name="properties">One or more indexed properties.</param>
         internal static void Load(IBaselineSpec option, Dictionary<string, object> properties)
         {
-            if (properties.TryPopValue("binding.field", out object value) && value is Hashtable map)
+            if (properties.TryPopValue("binding.field", out Hashtable map))
                 option.Binding.Field = new FieldMap(map);
 
-            if (properties.TryPopValue("binding.ignorecase", out value))
-                option.Binding.IgnoreCase = bool.Parse(value.ToString());
+            if (properties.TryPopBool("binding.ignorecase", out bool bvalue))
+                option.Binding.IgnoreCase = bvalue;
 
-            if (properties.TryPopValue("binding.nameseparator", out value))
+            if (properties.TryPopValue("binding.nameseparator", out object value))
                 option.Binding.NameSeparator = value.ToString();
 
             if (properties.TryPopValue("binding.targetname", out value))
@@ -82,8 +94,8 @@ namespace PSRule.Configuration
                 else
                     option.Binding.TargetType = new string[] { value.ToString() };
             }
-            if (properties.TryPopValue("binding.usequalifiedname", out value))
-                option.Binding.UseQualifiedName = bool.Parse(value.ToString());
+            if (properties.TryPopValue("binding.usequalifiedname", out bvalue))
+                option.Binding.UseQualifiedName = bvalue;
 
             if (properties.TryPopValue("rule.include", out value))
             {
@@ -99,7 +111,7 @@ namespace PSRule.Configuration
                 else
                     option.Rule.Exclude = new string[] { value.ToString() };
             }
-            if (properties.TryPopValue("rule.tag" , out value) && value is Hashtable tag)
+            if (properties.TryPopValue("rule.tag" , out Hashtable tag))
                 option.Rule.Tag = tag;
 
             // Process configuration values

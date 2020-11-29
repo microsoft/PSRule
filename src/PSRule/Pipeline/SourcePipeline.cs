@@ -94,6 +94,12 @@ namespace PSRule.Pipeline
 
         internal sealed class ModuleInfo
         {
+            private const string FIELD_BASELINE = "Baseline";
+            private const string FIELD_PRERELEASE = "Prerelease";
+            private const string FIELD_PSRULE = "PSRule";
+            private const string FIELD_PSDATA = "PSData";
+            private const string PRERELEASE_SEPARATOR = "-";
+
             public readonly string Path;
             public readonly string Name;
             public readonly string Baseline;
@@ -106,11 +112,11 @@ namespace PSRule.Pipeline
                 Name = info.Name;
                 Version = info.Version?.ToString();
                 ProjectUri = info.ProjectUri?.ToString();
-                if (TryPrivateData(info, "PSRule", out Hashtable moduleData))
-                    Baseline = moduleData.ContainsKey("Baseline") ? moduleData["Baseline"] as string : null;
+                if (TryPrivateData(info, FIELD_PSRULE, out Hashtable moduleData))
+                    Baseline = moduleData.ContainsKey(FIELD_BASELINE) ? moduleData[FIELD_BASELINE] as string : null;
 
-                if (TryPrivateData(info, "PSData", out Hashtable psData) && psData.ContainsKey("Prerelease"))
-                    Version = string.Concat(Version, "-", psData["Prerelease"].ToString());
+                if (TryPrivateData(info, FIELD_PSDATA, out Hashtable psData) && psData.ContainsKey(FIELD_PRERELEASE))
+                    Version = string.Concat(Version, PRERELEASE_SEPARATOR, psData[FIELD_PRERELEASE].ToString());
             }
 
             private static bool TryPrivateData(PSModuleInfo info, string propertyName, out Hashtable value)

@@ -6,7 +6,6 @@ using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Resources;
-using PSRule.Rules;
 using System;
 using System.Collections.Generic;
 using System.Management.Automation;
