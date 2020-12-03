@@ -3,10 +3,9 @@
 ## Prerequisites
 
 - Windows PowerShell 5.1 with .NET Framework 4.7.2+ or
-- PowerShell Core 6.2 or greater on Windows, MacOS, and Linux or
-- PowerShell 7.0 or greater on Windows, MacOS, and Linux
+- PowerShell 7.1 or greater on Windows, MacOS, and Linux
 
-For a list of platforms that PowerShell 7.0 is supported on [see][get-powershell].
+For a list of platforms that PowerShell 7.1 is supported on [see][get-powershell].
 
 ## Getting the module
 

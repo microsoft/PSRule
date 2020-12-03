@@ -307,9 +307,11 @@ This parameter has no affect when `-OutputPath` is not specified.
 
 The following format options are available:
 
-- None - Output is presented as an object using PowerShell defaults. This is the default.
+- None - Output is presented as an object using PowerShell defaults.
+This is the default.
 - Yaml - Output is serialized as YAML.
 - Json - Output is serialized as JSON.
+- Markdown - Output is serialized as Markdown.
 - NUnit3 - Output is serialized as NUnit3 (XML).
 - Csv - Output is serialized as a comma separated values (CSV).
 
@@ -319,7 +321,7 @@ The `Wide` format is not applicable to `Assert-PSRule`.
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases: o
-Accepted values: None, Yaml, Json, NUnit3, Csv
+Accepted values: None, Yaml, Json, Markdown, NUnit3, Csv
 
 Required: False
 Position: Named

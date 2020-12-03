@@ -464,7 +464,7 @@ The `Output.Format` option configures the format that results will be presented 
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json, NUnit3, Csv, Wide
+Accepted values: None, Yaml, Json, Markdown, NUnit3, Csv, Wide
 
 Required: False
 Position: Named

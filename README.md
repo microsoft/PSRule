@@ -320,22 +320,21 @@ The following projects use or integrate with PSRule.
 
 Name                      | Description
 ----                      | -----------
-[PSRule.Rules.Azure]      | A suite of rules to validate Azure resources using PSRule.
+[PSRule.Rules.Azure]      | A suite of rules to validate Azure resources and infrastructure as code (IaC) using PSRule.
 [PSRule.Rules.Kubernetes] | A suite of rules to validate Kubernetes resources using PSRule.
 [PSRule.Rules.CAF]        | A suite of rules to validate Azure resources against the Cloud Adoption Framework (CAF) using PSRule.
 [PSRule.Monitor]          | Send and query PSRule analysis results in Azure Monitor.
-[PSRule-pipelines]        | An Azure DevOps extension for using PSRule within Azure Pipelines.
+[PSRule-pipelines]        | Validate infrastructure as code (IaC) and DevOps repositories using Azure Pipelines.
 [ps-rule]                 | Validate infrastructure as code (IaC) and DevOps repositories using GitHub Actions.
 
 ## Changes and versioning
 
-Modules in this repository will use the [semantic versioning](http://semver.org/) model to declare breaking changes from v1.0.0.
-Prior to v1.0.0, breaking changes may be introduced in minor (0.x.0) version increments.
+Modules in this repository use [semantic versioning](http://semver.org/) to declare breaking changes.
 For a list of module changes please see the [change log](CHANGELOG.md).
 
 > Pre-release module versions are created on major commits and can be installed from the PowerShell Gallery.
 > Pre-release versions should be considered experimental.
-> Modules and change log details for pre-releases will be removed as standard releases are made available.
+> Modules and change log details for pre-releases will be removed as stable releases are made available.
 
 ## Contributing
 

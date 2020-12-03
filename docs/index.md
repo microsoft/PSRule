@@ -52,7 +52,7 @@ You can download and install the companion extension for Azure Pipelines from th
 
 Extension | Description | Downloads / instructions
 --------- | ----------- | ------------------------
-PSRule    | An Azure DevOps extension for using PSRule within Azure Pipelines. | [latest][extension-pipelines] / [instructions][install]
+PSRule    | Validate infrastructure as code (IaC) and DevOps repositories using Azure Pipelines. | [latest][extension-pipelines] / [instructions][install]
 
 ![extension-pipelines-ci-badge] ![extension-pipelines-version-badge]
 
@@ -72,7 +72,7 @@ You can optionally download and install the following modules from the PowerShel
 
 Module                  | Description | Version / downloads
 ------                  | ----------- | -------------------
-PSRule.Rules.Azure      | A suite of rules to validate Azure resources using PSRule. | [![rules-azure-version-badge]][rules-azure-version-module] [![rules-azure-downloads-badge]][rules-azure-version-module]
+PSRule.Rules.Azure      | A suite of rules to validate Azure resources and infrastructure as code (IaC) using PSRule. | [![rules-azure-version-badge]][rules-azure-version-module] [![rules-azure-downloads-badge]][rules-azure-version-module]
 PSRule.Rules.Kubernetes | A suite of rules to validate Kubernetes resources using PSRule. | [![rules-kubernetes-version-badge]][rules-kubernetes-version-module] [![rules-kubernetes-downloads-badge]][rules-kubernetes-version-module]
 
 [issue]: https://github.com/Microsoft/PSRule/issues
