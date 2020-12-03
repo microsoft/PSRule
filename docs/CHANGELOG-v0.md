@@ -1,5 +1,9 @@
 # Change log
 
+See [upgrade notes][upgrade-notes] for helpful information when upgrading from previous versions.
+
+[upgrade-notes]: upgrade-notes.md
+
 ## v0.22.0
 
 What's changed since v0.21.0:

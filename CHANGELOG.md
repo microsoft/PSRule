@@ -1,8 +1,8 @@
 # Change log
 
-**Important notes**:
+See [upgrade notes][upgrade-notes] for helpful information when upgrading from previous versions.
 
-- Removal of deprecated `$Rule` properties are scheduled for PSRule v1.0.0. [#495](https://github.com/microsoft/PSRule/issues/495)
+[upgrade-notes]: docs/upgrade-notes.md
 
 ## Current release
 
