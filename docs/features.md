@@ -13,6 +13,10 @@ Authors define rules using PowerShell, a flexible scripting language.
 If you or your team already can write a basic PowerShell script, you can already define a rule.
 What's more, you can tap into a large world-wide community of PowerShell users with scripts and cmdlets to help you build out rules quickly.
 
+In addition to PowerShell, PSRule adds domain specific language (DSL) keywords, cmdlets, and variables.
+These features can optionally be used to reduce the code you have to write for common scenarios.
+For example: checking that a property exists, or providing a reason why the validation failed.
+
 ## Cross-platform
 
 PSRule uses modern PowerShell libraries at its core, allowing it to go anywhere PowerShell can go.
