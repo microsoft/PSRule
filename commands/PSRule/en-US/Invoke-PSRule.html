@@ -349,9 +349,11 @@ Accept wildcard characters: False
 <p>Configures the format that output is presented in.</p>
 <p>The following format options are available:</p>
 <ul>
-<li>None - Output is presented as an object using PowerShell defaults. This is the default.</li>
+<li>None - Output is presented as an object using PowerShell defaults.
+This is the default.</li>
 <li>Yaml - Output is serialized as YAML.</li>
 <li>Json - Output is serialized as JSON.</li>
+<li>Markdown - Output is serialized as Markdown.</li>
 <li>NUnit3 - Output is serialized as NUnit3 (XML).</li>
 <li>Csv - Output is serialized as a comma separated values (CSV).</li>
 <li>Wide - Output is presented using the wide table format, which includes reason and wraps columns.</li>
@@ -359,7 +361,7 @@ Accept wildcard characters: False
 <pre><code class="lang-yaml">Type: OutputFormat
 Parameter Sets: (All)
 Aliases: o
-Accepted values: None, Yaml, Json, NUnit3, Csv, Wide
+Accepted values: None, Yaml, Json, Markdown, NUnit3, Csv, Wide
 
 Required: False
 Position: Named

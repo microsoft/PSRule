@@ -284,9 +284,11 @@ Accept wildcard characters: False
 This parameter has no affect when <code>-OutputPath</code> is not specified.</p>
 <p>The following format options are available:</p>
 <ul>
-<li>None - Output is presented as an object using PowerShell defaults. This is the default.</li>
+<li>None - Output is presented as an object using PowerShell defaults.
+This is the default.</li>
 <li>Yaml - Output is serialized as YAML.</li>
 <li>Json - Output is serialized as JSON.</li>
+<li>Markdown - Output is serialized as Markdown.</li>
 <li>NUnit3 - Output is serialized as NUnit3 (XML).</li>
 <li>Csv - Output is serialized as a comma separated values (CSV).</li>
 </ul>
@@ -294,7 +296,7 @@ This parameter has no affect when <code>-OutputPath</code> is not specified.</p>
 <pre><code class="lang-yaml">Type: OutputFormat
 Parameter Sets: (All)
 Aliases: o
-Accepted values: None, Yaml, Json, NUnit3, Csv
+Accepted values: None, Yaml, Json, Markdown, NUnit3, Csv
 
 Required: False
 Position: Named

@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Change log </title>
+    <title>Upgrade notes </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Change log ">
+    <meta name="title" content="Upgrade notes ">
     <meta name="generator" content="docfx 2.56.2.0">
     
     <link rel="shortcut icon" href="favicon.ico">
@@ -60,43 +60,35 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="change-log">Change log</h1>
+<h1 id="upgrade-notes">Upgrade notes</h1>
 
-<p>See <a href="upgrade-notes.html">upgrade notes</a> for helpful information when upgrading from previous versions.</p>
-<h2 id="v100">v1.0.0</h2>
-<p>What's changed since v0.22.0:</p>
+<p>This document contains notes to help upgrade from previous versions of PSRule.</p>
+<h2 id="upgrade-to-v0220-from-v100">Upgrade to v0.22.0 from v1.0.0</h2>
+<p>Follow these notes to upgrade from PSRule version <em>v0.22.0</em> to <em>v1.0.0</em>.</p>
+<h3 id="replaced-rule-target-properties">Replaced $Rule target properties</h3>
+<p>Previously in PSRule <em>v0.22.0</em> and prior the <code>$Rule</code> automatic variable had the following properties:</p>
 <ul>
-<li>General improvements:
-<ul>
-<li>Added rule help link in failed <code>Assert-PSRule</code> output. <a href="https://github.com/microsoft/PSRule/issues/595">#595</a></li>
+<li><code>TargetName</code></li>
+<li><code>TargetType</code></li>
+<li><code>TargetObject</code></li>
 </ul>
-</li>
-<li>Engineering:
-<ul>
-<li><strong>Breaking change</strong>: Removed deprecated <code>$Rule</code> properties. <a href="https://github.com/microsoft/PSRule/pull/495">#495</a></li>
-<li>Bump Manatee.Json from 13.0.3 to 13.0.4. <a href="https://github.com/microsoft/PSRule/pull/591">#591</a></li>
-</ul>
-</li>
-</ul>
-<p>What's changed since pre-release v1.0.0-B2011028:</p>
-<ul>
-<li>No additional changes.</li>
-</ul>
-<h2 id="v100-b2011028-pre-release">v1.0.0-B2011028 (pre-release)</h2>
-<p>What's changed since v0.22.0:</p>
-<ul>
-<li>General improvements:
-<ul>
-<li>Added rule help link in failed <code>Assert-PSRule</code> output. <a href="https://github.com/microsoft/PSRule/issues/595">#595</a></li>
-</ul>
-</li>
-<li>Engineering:
-<ul>
-<li><strong>Breaking change</strong>: Removed deprecated <code>$Rule</code> properties. <a href="https://github.com/microsoft/PSRule/pull/495">#495</a></li>
-<li>Bump Manatee.Json from 13.0.3 to 13.0.4. <a href="https://github.com/microsoft/PSRule/pull/591">#591</a></li>
-</ul>
-</li>
-</ul>
+<p>For example:</p>
+<pre><code class="lang-powershell">Rule 'Rule1' {
+    $Rule.TargetName -eq 'Name1';
+    $Rule.TargetType -eq '.json';
+    $Rule.TargetObject.someProperty -eq 1;
+}
+</code></pre>
+<p>In <em>v1.0.0</em> these properties have been removed after being deprecated in <em>v0.12.0</em>.
+These properties are instead available on the <code>$PSRule</code> variable.
+Rules referencing the deprecated properties of <code>$Rule</code> must be updated.</p>
+<p>For example:</p>
+<pre><code class="lang-powershell">Rule 'Rule1' {
+    $PSRule.TargetName -eq 'Name1';
+    $PSRule.TargetType -eq '.json';
+    $PSRule.TargetObject.someProperty -eq 1;
+}
+</code></pre>
 </article>
           </div>
           
@@ -105,7 +97,7 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/Microsoft/PSRule/blob/main/docs/CHANGELOG-v1.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/main/docs/upgrade-notes.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

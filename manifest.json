@@ -12,7 +12,7 @@
       "output": {
         ".html": {
           "relative_path": "CHANGELOG-v0.html",
-          "hash": "/aDUiCQoQJbFhlOd0rNwqw=="
+          "hash": "iM7HvjIAIl/YM/XdTcH3rQ=="
         }
       },
       "is_incremental": false,
@@ -24,7 +24,7 @@
       "output": {
         ".html": {
           "relative_path": "CHANGELOG-v1.html",
-          "hash": "pEd3pt14+N7t6cywpX66Sg=="
+          "hash": "yN/qjHmWgLfE5vuP3ARyCQ=="
         }
       },
       "is_incremental": false,
@@ -36,7 +36,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Assert-PSRule.html",
-          "hash": "YCZ9MGBEmL7wi393N5yjng=="
+          "hash": "u60cbTx5/JepuQOBbPzm5A=="
         }
       },
       "is_incremental": false,
@@ -96,7 +96,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Invoke-PSRule.html",
-          "hash": "tjTyTGw7SiZsfHtQPsXziA=="
+          "hash": "+8mQ6omwBgZCR1uVa6eITA=="
         }
       },
       "is_incremental": false,
@@ -108,7 +108,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "ZZwr8j6a6HSh7OEsd/EldQ=="
+          "hash": "J+KTM2XPla5fpMaQZUHeZg=="
         }
       },
       "is_incremental": false,
@@ -132,7 +132,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Set-PSRuleOption.html",
-          "hash": "Gk5F7RNLnLSxie4SVCtCAw=="
+          "hash": "ygz+smwV4g7GWVlk2nmWkw=="
         }
       },
       "is_incremental": false,
@@ -228,7 +228,7 @@
       "output": {
         ".html": {
           "relative_path": "features.html",
-          "hash": "4oYhUbLBbTiHGZxirysZXA=="
+          "hash": "ZFWuf9Kyivb03wY55InXRw=="
         }
       },
       "is_incremental": false,
@@ -240,7 +240,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "zVtTy3dht3x1zeYqBQQ3pQ=="
+          "hash": "hCa4EIP/7VziAQ/+5hfhmQ=="
         }
       },
       "is_incremental": false,
@@ -252,7 +252,7 @@
       "output": {
         ".html": {
           "relative_path": "install-instructions.html",
-          "hash": "s5q7lDqYwPNalkBQd0R1AA=="
+          "hash": "+J1z7vKraNqhFXH0DyWqTQ=="
         }
       },
       "is_incremental": false,
@@ -738,6 +738,18 @@
       },
       "is_incremental": false,
       "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "upgrade-notes.md",
+      "output": {
+        ".html": {
+          "relative_path": "upgrade-notes.html",
+          "hash": "Eidtpkpoo8hkSltZz8xipA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
     }
   ],
   "incremental_info": [
@@ -754,7 +766,7 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 37,
+          "total_file_count": 38,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {
