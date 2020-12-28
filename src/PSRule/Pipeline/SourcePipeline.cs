@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using System.Threading;
 
@@ -141,13 +142,14 @@ namespace PSRule.Pipeline
         private const string SourceFileExtension_YML = ".yaml";
         private const string SourceFileExtension_PS1 = ".ps1";
         private const string RuleModuleTag = "PSRule-rules";
-        private readonly List<Source> _Source;
+
+        private readonly Dictionary<string, Source> _Source;
         private readonly HostContext _HostContext;
         private readonly HostPipelineWriter _Writer;
 
         internal SourcePipelineBuilder(HostContext hostContext, PSRuleOption option)
         {
-            _Source = new List<Source>();
+            _Source = new Dictionary<string, Source>(StringComparer.OrdinalIgnoreCase);
             _HostContext = hostContext;
             _Writer = new HostPipelineWriter(hostContext, option);
             _Writer.EnterScope("[Discovery.Source]");
@@ -257,12 +259,15 @@ namespace PSRule.Pipeline
 
         public Source[] Build()
         {
-            return _Source.ToArray();
+            return _Source.Values.ToArray();
         }
 
         private void Source(Source source)
         {
-            _Source.Add(source);
+            if (_Source.ContainsKey(source.Path) && source.Dependency)
+                return;
+
+            _Source[source.Path] = source;
         }
 
         private static SourceFile[] GetFiles(string path, string helpPath, string moduleName = null)
