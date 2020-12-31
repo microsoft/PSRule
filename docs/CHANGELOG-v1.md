@@ -4,6 +4,13 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 [upgrade-notes]: upgrade-notes.md
 
+## Unreleased
+
+What's changed since v1.0.0:
+
+- Bug fixes:
+  - Fixed module source key has already been added. [#608](https://github.com/microsoft/PSRule/issues/608)
+
 ## v1.0.0
 
 What's changed since v0.22.0:
