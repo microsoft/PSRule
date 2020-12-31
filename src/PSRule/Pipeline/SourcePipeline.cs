@@ -264,10 +264,12 @@ namespace PSRule.Pipeline
 
         private void Source(Source source)
         {
-            if (_Source.ContainsKey(source.Path) && source.Dependency)
+            // Prefer non-dependencies
+            var key = string.Concat(source?.Module?.Name, ": ", source.Path);
+            if (_Source.ContainsKey(key) && source.Dependency)
                 return;
 
-            _Source[source.Path] = source;
+            _Source[key] = source;
         }
 
         private static SourceFile[] GetFiles(string path, string helpPath, string moduleName = null)
