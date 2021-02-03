@@ -87,6 +87,11 @@ stages:
     condition: not(eq(variables['Build.Reason'], 'PullRequest'))
     steps:
 
+    - script: |
+        echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_11_X64)"
+        echo "##vso[task.setvariable variable=PATH]$(JAVA_HOME_11_X64)\bin;$(PATH)"
+      displayName: 'Set Java version'
+
     # Run SonarCloud analysis
     - script: dotnet tool install --global dotnet-sonarscanner
       displayName: 'Install Sonar scanner'
