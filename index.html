@@ -79,12 +79,11 @@
 <p>This project uses GitHub Issues to track bugs and feature requests.
 Please search the existing issues before filing new issues to avoid duplicates.</p>
 <ul>
-<li>For new issues, file your bug or feature request as a new <a href="https://github.com/Microsoft/PSRule/issues">Issue</a>.</li>
-<li>For help and questions about using this project, we have a Gitter room which you can join below.</li>
+<li>For new issues, file your bug or feature request as a new <a href="https://github.com/Microsoft/PSRule/issues">issue</a>.</li>
+<li>For help, discussion, and support questions about using this project, join or start a <a href="https://github.com/microsoft/PSRule/discussions">discussion</a>.</li>
 </ul>
-<p><a href="https://gitter.im/PSRule/community?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://img.shields.io/static/v1.svg?label=chat&amp;message=on%20gitter&amp;color=informational&amp;logo=gitter" alt="Join the chat"></a></p>
 <p>Support for this project/ product is limited to the resources listed above.</p>
-<h2 id="installing-the-module">Installing the module</h2>
+<h2 id="using-locally">Using locally</h2>
 <p>You can download and install the PSRule module from the PowerShell Gallery.</p>
 <table>
 <thead>
@@ -97,7 +96,7 @@ Please search the existing issues before filing new issues to avoid duplicates.<
 <tbody>
 <tr>
 <td>PSRule</td>
-<td>Validate objects using PowerShell rules.</td>
+<td>Validate infrastructure as code (IaC) and objects using PowerShell rules.</td>
 <td><a href="https://www.powershellgallery.com/packages/PSRule">latest</a> / <a href="install-instructions.html">instructions</a></td>
 </tr>
 </tbody>
@@ -123,7 +122,8 @@ Please search the existing issues before filing new issues to avoid duplicates.<
 </table>
 <p><img src="https://dev.azure.com/bewhite/PSRule-vscode/_apis/build/status/PSRule-vscode-CI?branchName=main" alt="extension-vscode-ci-badge"> <img src="https://vsmarketplacebadge.apphb.com/version/bewhite.psrule-vscode-preview.svg" alt="extension-vscode-version-badge"> <img src="https://vsmarketplacebadge.apphb.com/installs-short/bewhite.psrule-vscode-preview.svg" alt="extension-vscode-installs-badge"></p>
 <h2 id="azure-devops-extension">Azure DevOps extension</h2>
-<p>You can download and install the companion extension for Azure Pipelines from the Visual Studio Marketplace.</p>
+<p>You can install the extension for Azure Pipelines from the Visual Studio Marketplace.
+This extension allows you to run PSRule analysis without having to use PowerShell directly.</p>
 <table>
 <thead>
 <tr>
@@ -142,7 +142,8 @@ Please search the existing issues before filing new issues to avoid duplicates.<
 </table>
 <p><img src="https://dev.azure.com/bewhite/PSRule-pipelines/_apis/build/status/PSRule-pipelines-CI?branchName=main" alt="extension-pipelines-ci-badge"> <img src="https://vsmarketplacebadge.apphb.com/version/bewhite.ps-rule.svg" alt="extension-pipelines-version-badge"></p>
 <h2 id="github-action">GitHub action</h2>
-<p>You can use PSRule with in a workflow with GitHub Actions.</p>
+<p>You can use PSRule with in a workflow with GitHub Actions.
+This action allows you to run PSRule analysis without having to use PowerShell directly.</p>
 <table>
 <thead>
 <tr>
@@ -172,14 +173,29 @@ Please search the existing issues before filing new issues to avoid duplicates.<
 </thead>
 <tbody>
 <tr>
-<td>PSRule.Rules.Azure</td>
+<td><a href="https://github.com/microsoft/PSRule.Rules.Azure">PSRule.Rules.Azure</a></td>
 <td>A suite of rules to validate Azure resources and infrastructure as code (IaC) using PSRule.</td>
 <td><a href="https://www.powershellgallery.com/packages/PSRule.Rules.Azure"><img src="https://img.shields.io/powershellgallery/v/PSRule.Rules.Azure.svg?label=PowerShell%20Gallery&amp;color=brightgreen" alt="rules-azure-version-badge"></a> <a href="https://www.powershellgallery.com/packages/PSRule.Rules.Azure"><img src="https://img.shields.io/powershellgallery/dt/PSRule.Rules.Azure.svg?color=brightgreen" alt="rules-azure-downloads-badge"></a></td>
 </tr>
 <tr>
-<td>PSRule.Rules.Kubernetes</td>
+<td><a href="https://github.com/microsoft/PSRule.Rules.Kubernetes">PSRule.Rules.Kubernetes</a></td>
 <td>A suite of rules to validate Kubernetes resources using PSRule.</td>
 <td><a href="https://www.powershellgallery.com/packages/PSRule.Rules.Kubernetes"><img src="https://img.shields.io/powershellgallery/v/PSRule.Rules.Kubernetes.svg?label=PowerShell%20Gallery&amp;color=brightgreen" alt="rules-kubernetes-version-badge"></a> <a href="https://www.powershellgallery.com/packages/PSRule.Rules.Kubernetes"><img src="https://img.shields.io/powershellgallery/dt/PSRule.Rules.Kubernetes.svg?color=brightgreen" alt="rules-kubernetes-downloads-badge"></a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/microsoft/PSRule.Rules.CAF">PSRule.Rules.CAF</a></td>
+<td>A suite of rules to validate Azure resources against the Cloud Adoption Framework (CAF) using PSRule.</td>
+<td><a href="https://www.powershellgallery.com/packages/PSRule.Rules.CAF"><img src="https://img.shields.io/powershellgallery/v/PSRule.Rules.CAF.svg?label=PowerShell%20Gallery&amp;color=brightgreen" alt="rules-caf-version-badge"></a> <a href="https://www.powershellgallery.com/packages/PSRule.Rules.CAF"><img src="https://img.shields.io/powershellgallery/dt/PSRule.Rules.CAF.svg?color=brightgreen" alt="rules-caf-downloads-badge"></a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/microsoft/PSRule.Rules.GitHub">PSRule.Rules.GitHub</a></td>
+<td>A suite of rules to validate GitHub repositories using PSRule.</td>
+<td><a href="https://www.powershellgallery.com/packages/PSRule.Rules.GitHub"><img src="https://img.shields.io/powershellgallery/v/PSRule.Rules.GitHub.svg?label=PowerShell%20Gallery&amp;color=brightgreen" alt="rules-github-version-badge"></a> <a href="https://www.powershellgallery.com/packages/PSRule.Rules.GitHub"><img src="https://img.shields.io/powershellgallery/dt/PSRule.Rules.GitHub.svg?color=brightgreen" alt="rules-github-downloads-badge"></a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/microsoft/PSRule.Rules.MSFT.OSS">PSRule.Rules.MSFT.OSS</a></td>
+<td>A suite of rules to validate repositories against Microsoft Open Source Software (OSS) requirements.</td>
+<td><a href="https://www.powershellgallery.com/packages/PSRule.Rules.MSFT.OSS"><img src="https://img.shields.io/powershellgallery/v/PSRule.Rules.MSFT.OSS.svg?label=PowerShell%20Gallery&amp;color=brightgreen" alt="rules-msft-oss-version-badge"></a> <a href="https://www.powershellgallery.com/packages/PSRule.Rules.MSFT.OSS"><img src="https://img.shields.io/powershellgallery/dt/PSRule.Rules.MSFT.OSS.svg?color=brightgreen" alt="rules-msft-oss-downloads-badge"></a></td>
 </tr>
 </tbody>
 </table>
