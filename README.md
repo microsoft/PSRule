@@ -17,10 +17,8 @@ Features of PSRule include:
 This project uses GitHub Issues to track bugs and feature requests.
 Please search the existing issues before filing new issues to avoid duplicates.
 
-- For new issues, file your bug or feature request as a new [Issue][issue].
-- For help and questions about using this project, we have a Gitter room which you can join below.
-
-[![Join the chat][chat-badge]][chat]
+- For new issues, file your bug or feature request as a new [issue].
+- For help, discussion, and support questions about using this project, join or start a [discussion].
 
 Support for this project/ product is limited to the resources listed above.
 
@@ -30,7 +28,7 @@ You can download and install the PSRule module from the PowerShell Gallery.
 
 Module | Description | Downloads / instructions
 ------ | ----------- | ------------------------
-PSRule | Validate objects using PowerShell rules | [latest][module-psrule] / [instructions][install]
+PSRule | Validate infrastructure as code (IaC) and objects using PowerShell rules. | [latest][module-psrule] / [instructions][install]
 
 For rule and integration modules see [related projects](#related-projects).
 
@@ -38,10 +36,11 @@ For rule and integration modules see [related projects](#related-projects).
 
 Companion extensions are available for the following platforms.
 
-Extension | Platform           | Description | Downloads / instructions
---------- | --------           | ----------- | ------------------------
-PSRule    | Visual Studio Code | An extension for IT Pros using the PSRule PowerShell module. | [latest][extension-vscode] / [instructions][install]
-PSRule    | Azure Pipelines    | An Azure DevOps extension for using PSRule within Azure Pipelines. | [latest][extension-pipelines] / [instructions][install]
+Platform           | Description | Downloads / instructions
+--------           | ----------- | ------------------------
+Azure Pipelines    | An Azure DevOps extension for using PSRule within Azure Pipelines. | [latest][extension-pipelines] / [instructions][install]
+GitHub Actions     | An Azure DevOps extension for using PSRule within Azure Pipelines. | [latest][extension-actions] / [instructions][install]
+Visual Studio Code | An extension for IT Pros using the PSRule PowerShell module. | [latest][extension-vscode] / [instructions][install]
 
 ## Getting started
 
@@ -323,6 +322,8 @@ Name                      | Description
 [PSRule.Rules.Azure]      | A suite of rules to validate Azure resources and infrastructure as code (IaC) using PSRule.
 [PSRule.Rules.Kubernetes] | A suite of rules to validate Kubernetes resources using PSRule.
 [PSRule.Rules.CAF]        | A suite of rules to validate Azure resources against the Cloud Adoption Framework (CAF) using PSRule.
+[PSRule.Rules.GitHub]     | A suite of rules to validate GitHub repositories using PSRule.
+[PSRule.Rules.MSFT.OSS]   | A suite of rules to validate repositories against Microsoft Open Source Software (OSS) requirements.
 [PSRule.Monitor]          | Send and query PSRule analysis results in Azure Monitor.
 [PSRule-pipelines]        | Validate infrastructure as code (IaC) and DevOps repositories using Azure Pipelines.
 [ps-rule]                 | Validate infrastructure as code (IaC) and DevOps repositories using GitHub Actions.
@@ -356,16 +357,18 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 This project is [licensed under the MIT License](LICENSE).
 
 [issue]: https://github.com/Microsoft/PSRule/issues
+[discussion]: https://github.com/microsoft/PSRule/discussions
 [install]: docs/install-instructions.md
 [ci-badge]: https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=main
 [module-psrule]: https://www.powershellgallery.com/packages/PSRule
 [extension-vscode]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
 [extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
+[extension-actions]: https://github.com/marketplace/actions/psrule
 [PSRule.Rules.Azure]: https://github.com/microsoft/PSRule.Rules.Azure
 [PSRule.Rules.Kubernetes]: https://github.com/microsoft/PSRule.Rules.Kubernetes
 [PSRule.Rules.CAF]: https://github.com/microsoft/PSRule.Rules.CAF
+[PSRule.Rules.GitHub]: https://github.com/microsoft/PSRule.Rules.GitHub
+[PSRule.Rules.MSFT.OSS]: https://github.com/microsoft/PSRule.Rules.MSFT.OSS
 [PSRule.Monitor]: https://github.com/microsoft/PSRule.Monitor
 [PSRule-pipelines]: https://github.com/microsoft/PSRule-pipelines
 [ps-rule]: https://github.com/microsoft/ps-rule
-[chat]: https://gitter.im/PSRule/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-[chat-badge]: https://img.shields.io/static/v1.svg?label=chat&message=on%20gitter&color=informational&logo=gitter
