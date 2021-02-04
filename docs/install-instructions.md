@@ -65,7 +65,7 @@ Add the [latest version][extension-github] from the GitHub Marketplace to a work
 
 ```yaml
 - name: Run PSRule analysis
-  uses: Microsoft/ps-rule@v0.5.0
+  uses: Microsoft/ps-rule@v1.1.0
 ```
 
 For detailed instructions and change log see the [action details][extension-github].
