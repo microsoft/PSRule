@@ -138,9 +138,12 @@ namespace PSRule.Rules
 
         public string GetReasonViewString()
         {
+            if (Reason != null || Reason.Length == 0)
+                return string.Empty;
+
             var sb = new StringBuilder();
-            foreach (var item in Reason)
-                sb.AppendLine(item);
+            for (var i = 0; i < Reason.Length; i++)
+                sb.AppendLine(Reason[i]);
 
             return sb.ToString();
         }

@@ -164,7 +164,7 @@ Use custom data to store data that must be calculated during rule execution.
 The following helper methods are available:
 
 - `GetContent(PSObject sourceObject)` - Returns the content of a file as one or more objects.
-The parameter `sourceObject` should be a `FileInfo` or a `Uri` object.
+The parameter `sourceObject` should be a `InputFileInfo`,`FileInfo`, or `Uri` object.
 The file format is detected based on the same file formats as the option `Input.Format`.
 i.e. Yaml, Json, Markdown and PowerShell Data.
 

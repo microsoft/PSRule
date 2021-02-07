@@ -1,8 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Data;
 using PSRule.Pipeline;
-using PSRule.Rules;
 using System;
 using System.Collections;
 using System.IO;
@@ -85,7 +85,10 @@ namespace PSRule.Runtime
         /// </summary>
         public PSObject[] GetContent(PSObject sourceObject)
         {
-            if (sourceObject == null || !(sourceObject.BaseObject is FileInfo || sourceObject.BaseObject is Uri))
+            if (sourceObject == null)
+                return Array.Empty<PSObject>();
+
+            if (!(sourceObject.BaseObject is InputFileInfo || sourceObject.BaseObject is FileInfo || sourceObject.BaseObject is Uri))
                 return new PSObject[] { sourceObject };
 
             var cacheKey = sourceObject.BaseObject.ToString();

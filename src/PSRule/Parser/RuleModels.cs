@@ -21,7 +21,7 @@ namespace PSRule.Parser
     }
 
     /// <summary>
-    /// YAML text content.
+    /// Markdown text content.
     /// </summary>
     internal sealed class TextBlock
     {

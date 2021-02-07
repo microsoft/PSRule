@@ -42,5 +42,21 @@ namespace PSRule.Data
         string ITargetInfo.TargetName => DisplayName;
 
         string ITargetInfo.TargetType => Extension;
+
+        /// <summary>
+        /// Convert to string.
+        /// </summary>
+        public override string ToString()
+        {
+            return FullName;
+        }
+
+        /// <summary>
+        /// Convert to FileInfo.
+        /// </summary>
+        public FileInfo AsFileInfo()
+        {
+            return new FileInfo(FullName);
+        }
     }
 }

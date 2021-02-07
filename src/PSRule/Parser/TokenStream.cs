@@ -172,9 +172,7 @@ namespace PSRule.Parser
         public static IEnumerable<MarkdownToken> GetSection(this TokenStream stream, string header)
         {
             if (stream.Count == 0)
-            {
                 return Enumerable.Empty<MarkdownToken>();
-            }
 
             return stream
                 // Skip until we reach the header
@@ -188,9 +186,7 @@ namespace PSRule.Parser
         public static IEnumerable<MarkdownToken> GetSections(this TokenStream stream)
         {
             if (stream.Count == 0)
-            {
                 return Enumerable.Empty<MarkdownToken>();
-            }
 
             return stream
                 // Skip until we reach the header
@@ -220,9 +216,7 @@ namespace PSRule.Parser
             : this()
         {
             foreach (var token in tokens)
-            {
                 Add(token);
-            }
         }
 
         #region Properties
@@ -255,14 +249,10 @@ namespace PSRule.Parser
         public bool IsTokenType(params MarkdownTokenType[] tokenType)
         {
             if (Current == null || tokenType == null)
-            {
                 return false;
-            }
 
             if (tokenType.Length == 1)
-            {
                 return tokenType[0] == Current.Type;
-            }
 
             return tokenType.Contains(Current.Type);
         }
@@ -270,21 +260,13 @@ namespace PSRule.Parser
         public MarkdownTokenType PeakTokenType(int offset = 1)
         {
             var p = _Position + offset;
-            if (p < 0 || p >= _Token.Count)
-            {
-                return MarkdownTokenType.None;
-            }
-            return _Token[p].Type;
+            return p < 0 || p >= _Token.Count ? MarkdownTokenType.None : _Token[p].Type;
         }
 
         public MarkdownToken Peak(int offset = 1)
         {
             var p = _Position + offset;
-            if (p < 0 || p >= _Token.Count)
-            {
-                return null;
-            }
-            return _Token[p];
+            return p < 0 || p >= _Token.Count ? null : _Token[p];
         }
 
         public void SkipUntilHeader()
@@ -295,9 +277,7 @@ namespace PSRule.Parser
         public void SkipUntil(MarkdownTokenType tokenType)
         {
             while (!EOF && Current.Type != tokenType)
-            {
                 Next();
-            }
         }
 
         public IEnumerable<MarkdownToken> CaptureUntil(MarkdownTokenType tokenType)
@@ -307,7 +287,6 @@ namespace PSRule.Parser
             while (!EOF && Current.Type != tokenType)
             {
                 count++;
-
                 Next();
             }
             return _Token.GetRange(start, count);

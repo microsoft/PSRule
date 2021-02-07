@@ -78,7 +78,7 @@ namespace PSRule.Parser
             if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Description))
                 return false;
 
-            doc.Description = TextBlock(stream);
+            doc.Description = TextBlock(stream, includeNonYamlFencedBlocks: true);
             stream.SkipUntilHeader();
             return true;
         }
@@ -104,7 +104,7 @@ namespace PSRule.Parser
             if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Notes))
                 return false;
 
-            doc.Notes = TextBlock(stream);
+            doc.Notes = TextBlock(stream, includeNonYamlFencedBlocks: true);
             stream.SkipUntilHeader();
             return true;
         }
@@ -147,18 +147,18 @@ namespace PSRule.Parser
             return true;
         }
 
-        private static TextBlock TextBlock(TokenStream stream)
+        private static TextBlock TextBlock(TokenStream stream, bool includeNonYamlFencedBlocks = false)
         {
             var useBreak = stream.Current.IsDoubleLineEnding();
             stream.Next();
-            var text = ReadText(stream);
+            var text = ReadText(stream, includeNonYamlFencedBlocks);
             return new TextBlock(text: text, formatOption: useBreak ? FormatOptions.LineBreak : FormatOptions.None);
         }
 
         /// <summary>
         /// Read tokens from the stream as text.
         /// </summary>
-        private static string ReadText(TokenStream stream, bool includeNonYamlFencedBlocks = false)
+        private static string ReadText(TokenStream stream, bool includeNonYamlFencedBlocks)
         {
             var sb = new StringBuilder();
             while (stream.IsTokenType(MarkdownTokenType.Text, MarkdownTokenType.Link, MarkdownTokenType.FencedBlock, MarkdownTokenType.LineBreak))
