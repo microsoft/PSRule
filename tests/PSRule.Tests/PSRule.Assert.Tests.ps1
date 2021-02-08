@@ -254,7 +254,9 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 3;
-            $result[1].Reason | Should -BeLike "The field '*' does not exist.";
+            $result[1].Reason[0] | Should -Be "The field 'Type' does not exist.";
+            $result[1].Reason[1] | Should -Be "The field 'Not' does not exist.";
+            $result[1].Reason[2] | Should -Be "The field 'Type' does not exist.";
         }
 
         It 'HasFields' {
@@ -270,7 +272,8 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 2;
-            $result[1].Reason | Should -BeLike "The field '*' does not exist.";
+            $result[1].Reason[0] | Should -Be "The field 'Type' does not exist.";
+            $result[1].Reason[1] | Should -Be "The field 'Type' does not exist.";
         }
 
         It 'HasFieldValue' {

@@ -148,7 +148,7 @@ namespace PSRule.Runtime
                 if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field[i], caseSensitive: caseSensitive, value: out _))
                     return Pass();
 
-                result.AddReason(ReasonStrings.HasField, field);
+                result.AddReason(ReasonStrings.HasField, field[i]);
             }
             return result;
         }
@@ -163,12 +163,17 @@ namespace PSRule.Runtime
                 GuardNullOrEmptyParam(field, nameof(field), out result))
                 return result;
 
+            result = Fail();
+            var missing = 0;
             for (var i = 0; field != null && i < field.Length; i++)
             {
                 if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field[i], caseSensitive: caseSensitive, value: out _))
-                    return Fail(ReasonStrings.HasField, field);
+                {
+                    result.AddReason(ReasonStrings.HasField, field[i]);
+                    missing++;
+                }
             }
-            return Pass();
+            return missing == 0 ? Pass() : result;
         }
 
         /// <summary>

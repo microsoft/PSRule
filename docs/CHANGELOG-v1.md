@@ -6,6 +6,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since v1.0.2:
+
+- Bug fixes:
+  - Fixed reason reported fields for `HasField` and `HasFields` assertion helpers. [#632](https://github.com/microsoft/PSRule/issues/632)
+
 ## v1.0.2
 
 What's changed since v1.0.1:
