@@ -41,6 +41,7 @@ namespace PSRule
             Assert.Equal(expected.Name, document.Name);
             Assert.Equal(expected.Synopsis.Text, document.Synopsis.Text);
             Assert.Equal(expected.Recommendation.Text, document.Recommendation.Text);
+            Assert.Equal(expected.Notes.Text, document.Notes.Text);
             Assert.Equal(expected.Annotations["severity"], document.Annotations["severity"]);
             Assert.Equal(expected.Annotations["category"], document.Annotations["category"]);
             Assert.Equal(expected.Links.Length, document.Links.Length);
@@ -84,7 +85,7 @@ The latest tag automatically uses imagePullPolicy: Always instead of the default
         private RuleDocument GetDocument(TokenStream stream)
         {
             var lexer = new RuleLexer();
-            return lexer.Process(stream: stream);
+            return lexer.Process(stream);
         }
 
         private TokenStream GetToken(bool nx)
@@ -95,9 +96,9 @@ The latest tag automatically uses imagePullPolicy: Always instead of the default
             {
                 content = content.Replace("\r\n", "\n");
             }
-            else if (!content.Contains("\r\n"))
+            else
             {
-                content = content.Replace("\n", "\r\n");
+                content = content.Replace("\r\n", "\n").Replace("\n", "\r\n");
             }
             return reader.Read(content, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RuleDocument.md"));
         }
