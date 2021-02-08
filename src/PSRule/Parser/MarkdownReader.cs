@@ -257,7 +257,11 @@ namespace PSRule.Parser
             var styleCount = styleChar == Asterix || styleChar == Underscore ? stream.Skip(styleChar, max: 0) : 0;
             var codeCount = styleChar == Backtick ? stream.Skip(Backtick, max: 0) : 0;
 
-            var text = stream.CaptureUntil(IsTextStop, ignoreEscaping: false);
+            CharacterMatchDelegate stop = IsTextStop;
+            if (codeCount > 0)
+                stop = IsCodeStop;
+
+            var text = stream.CaptureUntil(stop, ignoreEscaping: false);
 
             // Check for italic and bold endings
             if (styleCount > 0)
@@ -428,6 +432,11 @@ namespace PSRule.Parser
         private static bool IsTextStop(char c)
         {
             return c == '\r' || c == '\n' || c == '[' || c == '*' || c == '`' || c == '_';
+        }
+
+        private static bool IsCodeStop(char c)
+        {
+            return c == '\r' || c == '\n' || c == '`';
         }
     }
 }

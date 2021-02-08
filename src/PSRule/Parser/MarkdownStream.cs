@@ -494,20 +494,30 @@ namespace PSRule.Parser
 
         private string Substring(int start, int length, bool ignoreEscaping = false)
         {
-            if (ignoreEscaping)
-                return _Source.Substring(start, length);
+            var newLine = Environment.NewLine.ToCharArray();
 
             var position = start;
             var i = 0;
-            var buffer = new char[length];
+            var buffer = new char[length * 2];
             while (i < length)
             {
-                var offset = GetEscapeCount(position);
+                var ending = GetLineEndingCount(_Source, position);
+                if (ending > 0)
+                {
+                    newLine.CopyTo(buffer, i);
+                    i += newLine.Length;
+                    position += ending;
+
+                    // Adjust based on difference in line endings
+                    length += newLine.Length - ending;
+                    continue;
+                }
+                var offset = ignoreEscaping ? 0 : GetEscapeCount(position);
                 buffer[i] = _Source[position + offset];
                 position += offset + 1;
                 i++;
             }
-            return new string(buffer);
+            return new string(buffer, 0, i);
         }
 
         /// <summary>
@@ -540,9 +550,18 @@ namespace PSRule.Parser
             return Remaining >= length;
         }
 
-        private bool IsLineEnding(char c)
+        private static bool IsLineEnding(char c)
         {
             return c == CarrageReturn || c == NewLine;
+        }
+
+        private static int GetLineEndingCount(string s, int pos)
+        {
+            var c = s[pos];
+            if (!IsLineEnding(c))
+                return 0;
+
+            return c == CarrageReturn && pos < s.Length - 1 && s[pos + 1] == NewLine ? 2 : 1;
         }
     }
 }

@@ -6,6 +6,16 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since v1.0.1:
+
+- Engineering:
+  - Bump Manatee.Json from 13.0.4 to 13.0.5. [#619](https://github.com/microsoft/PSRule/pull/619)
+- Bug fixes:
+  - Fixed `GetContent` processing of `InputFileInfo`. [#625](https://github.com/microsoft/PSRule/issues/625)
+  - Fixed null reference of rule reason with wide output. [#626](https://github.com/microsoft/PSRule/issues/626)
+  - Fixed markdown help handling of include code blocks with `[`. [#627](https://github.com/microsoft/PSRule/issues/627)
+  - Fixed markdown help inclusion of fenced code blocks in notes and description. [#628](https://github.com/microsoft/PSRule/issues/628)
+
 ## v1.0.1
 
 What's changed since v1.0.0:
