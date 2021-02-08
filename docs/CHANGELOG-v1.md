@@ -6,6 +6,24 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since v1.0.3:
+
+- Engine features:
+  - Added type assertion helpers. [#635](https://github.com/microsoft/PSRule/issues/635)
+    - Added `IsNumeric` to check field value is a numeric types.
+    - Added `IsInteger` to check field value is an integer types.
+    - Added `IsBoolean` to check field value is a boolean.
+    - Added `IsArray` to check field value is an array.
+    - Added `IsString` to check field value is a string.
+    - Added `TypeOf` to check field value is a specified type.
+  - Added content helpers. [#637](https://github.com/microsoft/PSRule/issues/637)
+    - Added `$PSRule.GetContentFirstOrDefault` to get content and return the first object.
+    - Added `$PSRule.GetContentField` to get the field from content objects.
+- General improvements:
+  - Updated `HasJsonSchema` assertion helper. [#636](https://github.com/microsoft/PSRule/issues/636)
+    - The URI scheme can optionally be ignored for `http://` or `https://` URIs.
+    - The fragment `#` is ignored.
+
 ## v1.0.3
 
 What's changed since v1.0.2:

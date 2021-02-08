@@ -27,13 +27,17 @@ namespace PSRule.Runtime
         private const string CACHE_MATCH_C = "MatchRegexCaseSensitive";
         private const string PROPERTY_SCHEMA = "$schema";
         private const string VARIABLE_NAME = "Assert";
+        private const string TYPENAME_STRING = "[string]";
+        private const string TYPENAME_BOOL = "[bool]";
+        private const string TYPENAME_ARRAY = "[array]";
+        private const string TYPENAME_NULL = "null";
 
         public AssertResult Create(bool condition, string reason = null)
         {
             return Create(condition: condition, reason: reason, args: null);
         }
 
-        internal AssertResult Create(bool condition, string reason, object[] args)
+        public AssertResult Create(bool condition, string reason, params object[] args)
         {
             if (!(PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition || PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Precondition))
                 throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VariableConditionScope, VARIABLE_NAME));
@@ -114,7 +118,7 @@ namespace PSRule.Runtime
         /// <summary>
         /// The object should have the $schema property defined with the URI.
         /// </summary>
-        public AssertResult HasJsonSchema(PSObject inputObject, string[] uri = null)
+        public AssertResult HasJsonSchema(PSObject inputObject, string[] uri = null, bool ignoreScheme = false)
         {
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
@@ -125,8 +129,9 @@ namespace PSRule.Runtime
             if (uri == null || uri.Length == 0)
                 return Pass();
 
+            var normalUri = NormalizeUri(value, ignoreScheme);
             for (var i = 0; i < uri.Length; i++)
-                if (StringComparer.OrdinalIgnoreCase.Equals(value, uri[i]))
+                if (StringComparer.OrdinalIgnoreCase.Equals(normalUri, NormalizeUri(uri[i], ignoreScheme)))
                     return Pass();
 
             return Fail(ReasonStrings.HasJsonSchema, value);
@@ -189,7 +194,7 @@ namespace PSRule.Runtime
             // Assert
             if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue))
                 return Fail(ReasonStrings.HasField, field);
-            else if (IsEmpty(fieldValue))
+            else if (IsNullOrEmpty(fieldValue))
                 return Fail(ReasonStrings.HasFieldValue, field);
             else if (expectedValue != null && !IsValue(fieldValue, expectedValue, caseSensitive: false))
                 return Fail(ReasonStrings.HasExpectedFieldValue, field, fieldValue);
@@ -226,7 +231,7 @@ namespace PSRule.Runtime
                 return result;
 
             // Assert
-            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue) && !IsEmpty(fieldValue))
+            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue) && !IsNullOrEmpty(fieldValue))
                 return Fail(ReasonStrings.NullOrEmpty, field);
 
             return Pass();
@@ -351,6 +356,148 @@ namespace PSRule.Runtime
                     return Fail(ReasonStrings.IsUpper, value);
             }
             return Pass();
+        }
+
+        /// <summary>
+        /// The object field value should be a numeric type.
+        /// </summary>
+        public AssertResult IsNumeric(PSObject inputObject, string field, bool convert = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardNullFieldValue(field, fieldValue, out result))
+                return result;
+
+            if (TryInt(fieldValue, convert, out _) || TryLong(fieldValue, convert, out _) || TryFloat(fieldValue, convert, out _) ||
+                TryByte(fieldValue, convert, out _) || TryDouble(fieldValue, convert, out _))
+                return Pass();
+
+            return Fail(ReasonStrings.TypeNumeric, GetTypeName(fieldValue), fieldValue);
+        }
+
+        /// <summary>
+        /// The object field value should be an integer type.
+        /// </summary>
+        public AssertResult IsInteger(PSObject inputObject, string field, bool convert = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardNullFieldValue(field, fieldValue, out result))
+                return result;
+
+            if (TryInt(fieldValue, convert, out _) || TryLong(fieldValue, convert, out _) || TryByte(fieldValue, convert, out _))
+                return Pass();
+
+            return Fail(ReasonStrings.TypeInteger, GetTypeName(fieldValue), fieldValue);
+        }
+
+        /// <summary>
+        /// The object field value should be a boolean.
+        /// </summary>
+        public AssertResult IsBoolean(PSObject inputObject, string field, bool convert = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardNullFieldValue(field, fieldValue, out result))
+                return result;
+
+            if (TryBool(fieldValue, convert, out _))
+                return Pass();
+
+            return Fail(ReasonStrings.Type, TYPENAME_BOOL, GetTypeName(fieldValue), fieldValue);
+        }
+
+        /// <summary>
+        /// The object field value should be an array.
+        /// </summary>
+        public AssertResult IsArray(PSObject inputObject, string field)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardNullFieldValue(field, fieldValue, out result))
+                return result;
+
+            var o = GetBaseObject(fieldValue);
+            if (o is Array)
+                return Pass();
+
+            return Fail(ReasonStrings.Type, TYPENAME_ARRAY, GetTypeName(fieldValue), fieldValue);
+        }
+
+        /// <summary>
+        /// The object field value should be a string.
+        /// </summary>
+        public AssertResult IsString(PSObject inputObject, string field)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardNullFieldValue(field, fieldValue, out result))
+                return result;
+
+            if (TryString(fieldValue, out _))
+                return Pass();
+
+            return Fail(ReasonStrings.Type, TYPENAME_STRING, GetTypeName(fieldValue), fieldValue);
+        }
+
+        /// <summary>
+        /// The object field value should be one of the specified types.
+        /// </summary>
+        public AssertResult TypeOf(PSObject inputObject, string field, Type[] type)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullOrEmptyParam(type, nameof(type), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardNullFieldValue(field, fieldValue, out result))
+                return result;
+
+            result = Fail();
+            for (var i = 0; type != null && i < type.Length; i++)
+            {
+                var o = GetBaseObject(fieldValue);
+                if (type[i].IsAssignableFrom(fieldValue.GetType()) || type[i].IsAssignableFrom(o.GetType()) || TryTypeName(fieldValue, type[i].FullName))
+                    return Pass();
+
+                result.AddReason(ReasonStrings.Type, type[i].Name, GetTypeName(fieldValue), fieldValue);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// The object field value should be one of the specified types.
+        /// </summary>
+        public AssertResult TypeOf(PSObject inputObject, string field, string[] type)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullOrEmptyParam(type, nameof(type), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardNullFieldValue(field, fieldValue, out result))
+                return result;
+
+            result = Fail();
+            for (var i = 0; type != null && i < type.Length; i++)
+            {
+                var o = GetBaseObject(fieldValue);
+                if (StringComparer.OrdinalIgnoreCase.Equals(fieldValue.GetType().FullName, type[i]) || StringComparer.OrdinalIgnoreCase.Equals(o.GetType().FullName, type[i]) || TryTypeName(fieldValue, type[i]))
+                    return Pass();
+
+                result.AddReason(ReasonStrings.Type, type[i], GetTypeName(fieldValue), fieldValue);
+            }
+            return result;
         }
 
         /// <summary>
@@ -584,7 +731,7 @@ namespace PSRule.Runtime
 
         #region Helper methods
 
-        private static bool IsEmpty(object fieldValue)
+        private static bool IsNullOrEmpty(object fieldValue)
         {
             return fieldValue == null ||
                 (fieldValue is ICollection cvalue && cvalue.Count == 0) ||
@@ -596,7 +743,7 @@ namespace PSRule.Runtime
         /// </summary>
         private static object GetBaseObject(object o)
         {
-            return o is PSObject pso ? pso.BaseObject : o;
+            return o is PSObject pso && pso.BaseObject != null ? pso.BaseObject : o;
         }
 
         private static bool IsValue(object actualValue, object expectedValue, bool caseSensitive)
@@ -641,36 +788,75 @@ namespace PSRule.Runtime
             return false;
         }
 
+        private static bool TryBool(object obj, bool convert, out bool value)
+        {
+            var o = GetBaseObject(obj);
+            if (o is bool bvalue || (convert && o is string s && bool.TryParse(s, out bvalue)))
+            {
+                value = bvalue;
+                return true;
+            }
+            value = default(bool);
+            return false;
+        }
+
+        private static bool TryByte(object obj, bool convert, out byte value)
+        {
+            var o = GetBaseObject(obj);
+            if (o is byte bvalue || (convert && o is string s && byte.TryParse(s, out bvalue)))
+            {
+                value = bvalue;
+                return true;
+            }
+            value = default(byte);
+            return false;
+        }
+
         private static bool TryInt(object obj, bool convert, out int value)
         {
-            if (obj is int ivalue || (convert && obj is string s && int.TryParse(s, out ivalue)))
+            var o = GetBaseObject(obj);
+            if (o is int ivalue || (convert && o is string s && int.TryParse(s, out ivalue)))
             {
                 value = ivalue;
                 return true;
             }
-            value = 0;
+            value = default(int);
             return false;
         }
 
         private static bool TryLong(object obj, bool convert, out long value)
         {
-            if (obj is long lvalue || (convert && obj is string s && long.TryParse(s, out lvalue)))
+            var o = GetBaseObject(obj);
+            if (o is long lvalue || (convert && o is string s && long.TryParse(s, out lvalue)))
             {
                 value = lvalue;
                 return true;
             }
-            value = 0;
+            value = default(long);
             return false;
         }
 
         private static bool TryFloat(object obj, bool convert, out float value)
         {
-            if (obj is float fvalue || (convert && obj is string s && float.TryParse(s, out fvalue)))
+            var o = GetBaseObject(obj);
+            if (o is float fvalue || (convert && o is string s && float.TryParse(s, out fvalue)))
             {
                 value = fvalue;
                 return true;
             }
-            value = 0;
+            value = default(float);
+            return false;
+        }
+
+        private static bool TryDouble(object obj, bool convert, out double value)
+        {
+            var o = GetBaseObject(obj);
+            if (o is double dvalue || (convert && o is string s && double.TryParse(s, out dvalue)))
+            {
+                value = dvalue;
+                return true;
+            }
+            value = default(double);
             return false;
         }
 
@@ -796,7 +982,7 @@ namespace PSRule.Runtime
         /// <summary>
         /// Fails if the field value is not a string.
         /// </summary>
-        /// <returns>Return true if the field value is not a string.</returns>
+        /// <returns>Returns true if the field value is not a string.</returns>
         /// <remarks>
         /// Reason: The field value '{0}' is not a string.
         /// </remarks>
@@ -806,7 +992,24 @@ namespace PSRule.Runtime
             if (TryString(fieldValue, out value))
                 return false;
 
-            result = Fail(ReasonStrings.String, fieldValue);
+            result = Fail(ReasonStrings.Type, TYPENAME_STRING, GetTypeName(fieldValue), fieldValue);
+            return true;
+        }
+
+        /// <summary>
+        /// Fields if the field value is null.
+        /// </summary>
+        /// <returns>Returns true if the field value is null.</returns>
+        /// <remarks>
+        /// Reason: The field value '{0}' is null.
+        /// </remarks>
+        private bool GuardNullFieldValue(string field, object fieldValue, out AssertResult result)
+        {
+            result = null;
+            if (fieldValue != null)
+                return false;
+
+            result = Fail(ReasonStrings.NullFieldValue, field);
             return true;
         }
 
@@ -845,6 +1048,20 @@ namespace PSRule.Runtime
         private static string FormatArray(string[] values)
         {
             return string.Join(COMMASEPARATOR, values);
+        }
+
+        private static string NormalizeUri(string value, bool ignoreScheme)
+        {
+            if (!Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out Uri uri))
+                return value;
+
+            var result = uri.IsAbsoluteUri ? uri.AbsoluteUri : uri.ToString();
+            if (ignoreScheme && result.StartsWith(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+                result = result.Remove(0, 8);
+            else if (ignoreScheme && result.StartsWith(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
+                result = result.Remove(0, 7);
+
+            return uri.IsAbsoluteUri && uri.Fragment == "#" ? result.TrimEnd('#') : result;
         }
 
         private static Regex GetRegularExpression(string pattern, bool caseSensitive)
@@ -915,6 +1132,24 @@ namespace PSRule.Runtime
                 default:
                     return string.Empty;
             }
+        }
+
+        private static string GetTypeName(object value)
+        {
+            return value == null ? TYPENAME_NULL : value.GetType().Name;
+        }
+
+        private static bool TryTypeName(object fieldValue, string typeName)
+        {
+            if (!(fieldValue is PSObject pso))
+                return false;
+
+            for (var i = 0; i < pso.TypeNames.Count; i++)
+            {
+                if (StringComparer.OrdinalIgnoreCase.Equals(pso.TypeNames[i], typeName))
+                    return true;
+            }
+            return false;
         }
 
         #endregion Helper methods

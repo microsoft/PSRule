@@ -36,11 +36,31 @@ The following built-in assertion methods are provided:
 
 - `Contains` - The field value must contain at least one of the strings.
 - `EndsWith` - The field value must match at least one suffix.
+- `FileHeader` - The file must contain a comment header.
+- `FilePath` - The file path must exist.
+- `Greater` - The field value must be greater.
+- `GreaterOrEqual` - The field value must be greater or equal to.
 - `HasDefaultValue` - The object should not have the field or the field value is set to the default value.
-- `HasField` - Asserts that the object must have the specified field.
-- `HasFieldValue` - Asserts that the object must have the specified field and that field is not empty.
-- `JsonSchema` - Asserts that the object must validate successfully against a JSON schema.
-- `NullOrEmpty` - Asserts that the object must not have the specified field or it must be empty.
+- `HasField` - The object must have any of the specified fields.
+- `HasFields` - The object must have all of the specified fields.
+- `HasFieldValue` - The object must have the specified field and that field is not empty.
+- `HasJsonSchema` - The object must reference a JSON schema with the `$schema` field.
+- `In` - The field value must be included in the set.
+- `IsArray` - The field value must be an array.
+- `IsBoolean` - The field value must be a boolean.
+- `IsInteger` - The field value must be an integer.
+- `IsLower` - The field value must include only lowercase characters.
+- `IsNumeric` - The field value must be a numeric type.
+- `IsString` - The field value must be a string.
+- `IsUpper` - The field value must include only uppercase characters.
+- `JsonSchema` - The object must validate successfully against a JSON schema.
+- `Less` - The field value must be less.
+- `LessOrEqual` - The field value must be less or equal to.
+- `Match` - The field value matches a regular expression pattern.
+- `NotIn` - The field value must not be included in the set.
+- `NotMatch` - The field value does not match a regular expression pattern.
+- `NullOrEmpty` - The object must not have the specified field or it must be empty.
+- `TypeOf` - The field value must be of the specified type.
 - `StartsWith` - The field value must match at least one prefix.
 - `Version` - The field value must be a semantic version string.
 
@@ -165,8 +185,17 @@ The following helper methods are available:
 
 - `GetContent(PSObject sourceObject)` - Returns the content of a file as one or more objects.
 The parameter `sourceObject` should be a `InputFileInfo`,`FileInfo`, or `Uri` object.
+- `GetContentField(PSObject sourceObject, string field)` - Returns the content of a file as one or more objects.
+The parameter `sourceObject` should be a `InputFileInfo`,`FileInfo`, or `Uri` object.
+The parameter `field` is an field within each object to return.
+If the field does not exist on the object, an object is not returned.
+- `GetContentFirstOrDefault(PSObject sourceObject)` - Returns the content of a file as on object.
+The parameter `sourceObject` should be a `InputFileInfo`,`FileInfo`, or `Uri` object.
+If more than one object is contained in the file, only the first object is returned.
+When the source file contains no objects null is returned.
+
 The file format is detected based on the same file formats as the option `Input.Format`.
-i.e. Yaml, Json, Markdown and PowerShell Data.
+i.e. Yaml, Json, Markdown, and PowerShell Data.
 
 Syntax:
 

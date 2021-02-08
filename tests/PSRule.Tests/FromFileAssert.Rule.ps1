@@ -28,6 +28,12 @@ Rule 'Assert.Self' {
     $Assert.EndsWith('Name', '.', 'ame')
 }
 
+# Synopsis: Test for $Assert.Create
+Rule 'Assert.Create' {
+    $Assert.Create($TargetObject.Bool, "Reason 1")
+    $Assert.Create($TargetObject.Bool, "Reason {0}", 2)
+}
+
 # Synopsis: Test for $Assert.Complete
 Rule 'Assert.Complete' {
     $Assert.HasField($TargetObject, 'Name').Complete() -and
@@ -153,6 +159,41 @@ Rule 'Assert.IsLower' {
 Rule 'Assert.IsUpper' {
     $Assert.IsUpper($TargetObject, 'Upper')
     $Assert.IsUpper($TargetObject, 'LetterUpper', $True)
+}
+
+# Synopsis: Test for $Assert.IsNumeric
+Rule 'Assert.IsNumeric' {
+    $Assert.IsNumeric($TargetObject, 'IsInteger')
+    $Assert.IsNumeric($TargetObject, 'IsInteger', $True)
+}
+
+# Synopsis: Test for $Assert.IsInteger
+Rule 'Assert.IsInteger' {
+    $Assert.IsInteger($TargetObject, 'IsInteger')
+    $Assert.IsInteger($TargetObject, 'IsInteger', $True)
+}
+
+# Synopsis: Test for $Assert.IsBoolean
+Rule 'Assert.IsBoolean' {
+    $Assert.IsBoolean($TargetObject, 'IsBoolean')
+    $Assert.IsBoolean($TargetObject, 'IsBoolean', $True)
+}
+
+# Synopsis: Test for $Assert.IsArray
+Rule 'Assert.IsArray' {
+    $Assert.IsArray($TargetObject, 'IsArray')
+}
+
+# Synopsis: Test for $Assert.IsString
+Rule 'Assert.IsString' {
+    $Assert.IsString($TargetObject, 'IsInteger')
+}
+
+# Synopsis: Test for $Assert.TypeOf
+Rule 'Assert.TypeOf' {
+    $Assert.TypeOf($TargetObject, 'IsInteger', @([long], [int]))
+    $Assert.TypeOf($TargetObject, 'IsArray', [array])
+    $Assert.TypeOf($TargetObject, 'IsBoolean', 'System.Boolean')
 }
 
 # Synopsis: Test for $Assert.Less

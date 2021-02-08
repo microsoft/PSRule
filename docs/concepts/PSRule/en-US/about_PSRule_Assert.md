@@ -27,7 +27,12 @@ The following built-in assertion methods are provided:
 - [HasFieldValue](#hasfieldvalue) - The object must have the specified field and that field is not empty.
 - [HasJsonSchema](#hasjsonschema) - The object must reference a JSON schema with the `$schema` field.
 - [In](#in) - The field value must be included in the set.
+- [IsArray](#isarray) - The field value must be an array.
+- [IsBoolean](#isboolean) - The field value must be a boolean.
+- [IsInteger](#isinteger) - The field value must be an integer.
 - [IsLower](#islower) - The field value must include only lowercase characters.
+- [IsNumeric](#isnumeric) - The field value must be a numeric type.
+- [IsString](#isstring) - The field value must be a string.
 - [IsUpper](#isupper) - The field value must include only uppercase characters.
 - [JsonSchema](#jsonschema) - The object must validate successfully against a JSON schema.
 - [Less](#less) - The field value must be less.
@@ -36,6 +41,7 @@ The following built-in assertion methods are provided:
 - [NotIn](#notin) - The field value must not be included in the set.
 - [NotMatch](#notmatch) - The field value does not match a regular expression pattern.
 - [NullOrEmpty](#nullorempty) - The object must not have the specified field or it must be empty.
+- [TypeOf](#typeof) - The field value must be of the specified type.
 - [StartsWith](#startswith) - The field value must match at least one prefix.
 - [Version](#version) - The field value must be a semantic version string.
 
@@ -436,12 +442,16 @@ Rule 'HasFieldValue' {
 
 The `HasJsonSchema` assertion method determines if the input object has a `$schema` property defined.
 If the `$schema` property is defined, it must match one of the supplied schemas.
+If a trailing `#` is specified it is ignored from the `$schema` property and `uri` parameter below.
 
 The following parameters are accepted:
 
 - `inputObject` - The object being compared.
 - `uri` - Optional.
 When specified, the object being compared must have a `$schema` property set to one of the specified schemas.
+- `ignoreScheme` - Optional.
+By default, `ignoreScheme` is `$False`.
+When `$True`, the schema will match if `http` or `https` is specified.
 
 Reasons include:
 
@@ -456,6 +466,7 @@ Examples:
 Rule 'HasFieldValue' {
     $Assert.HasJsonSchema($TargetObject)
     $Assert.HasJsonSchema($TargetObject, "http://json-schema.org/draft-07/schema`#")
+    $Assert.HasJsonSchema($TargetObject, "https://json-schema.org/draft-07/schema", $True)
 }
 ```
 
@@ -515,6 +526,98 @@ Rule 'In' {
 }
 ```
 
+### IsArray
+
+The `IsArray` assertion method checks the field value is an array type.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is null._
+- _The field value '{1}' of type {0} is not \[array\]._
+
+Examples:
+
+```powershell
+Rule 'IsArray' {
+    # Require Value1 to be an array
+    $Assert.IsArray($TargetObject, 'Value1')
+}
+```
+
+### IsBoolean
+
+The `IsBoolean` assertion method checks the field value is a boolean type.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `convert` (optional) - Try to convert strings.
+By default strings are not converted.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is null._
+- _The field value '{1}' of type {0} is not \[bool\]._
+
+Examples:
+
+```powershell
+Rule 'IsBoolean' {
+    # Require Value1 to be a boolean
+    $Assert.IsBoolean($TargetObject, 'Value1')
+
+    # Require Value1 to be a boolean or a boolean string
+    $Assert.IsBoolean($TargetObject, 'Value1', $True)
+}
+```
+
+### IsInteger
+
+The `IsInteger` assertion method checks the field value is a integer type.
+The following types are considered integer types `int`, `long`, `byte`.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `convert` (optional) - Try to convert strings.
+By default strings are not converted.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is null._
+- _The field value '{1}' of type {0} is not an integer._
+
+Examples:
+
+```powershell
+Rule 'IsInteger' {
+    # Require Value1 to be an integer
+    $Assert.IsInteger($TargetObject, 'Value1')
+
+    # Require Value1 to be an integer or a integer string
+    $Assert.IsInteger($TargetObject, 'Value1', $True)
+}
+```
+
 ### IsLower
 
 The `IsLower` assertion method checks the field value uses only lowercase characters.
@@ -545,6 +648,66 @@ Rule 'IsLower' {
 
     # Require Name to only contain lowercase letters
     $Assert.IsLower($TargetObject, 'Name', $True)
+}
+```
+
+### IsNumeric
+
+The `IsNumeric` assertion method checks the field value is a numeric type.
+The following types are considered numeric types `int`, `long`, `float`, `byte`, `double`.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `convert` (optional) - Try to convert numerical strings.
+By default strings are not converted.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is null._
+- _The field value '{1}' of type {0} is not numeric._
+
+Examples:
+
+```powershell
+Rule 'IsNumeric' {
+    # Require Value1 to be numeric
+    $Assert.IsNumeric($TargetObject, 'Value1')
+
+    # Require Value1 to be numeric or a numerical string
+    $Assert.IsNumeric($TargetObject, 'Value1', $True)
+}
+```
+
+### IsString
+
+The `IsString` assertion method checks the field value is a string type.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is null._
+- _The field value '{1}' of type {0} is not \[string\]._
+
+Examples:
+
+```powershell
+Rule 'IsString' {
+    # Require Value1 to be a string
+    $Assert.IsString($TargetObject, 'Value1')
 }
 ```
 
@@ -773,6 +936,39 @@ Rule 'NullOrEmpty' {
 }
 ```
 
+### TypeOf
+
+The `TypeOf` assertion method checks the field value is a specified type.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `type` - One or more specified types to check.
+The field value only has to match a single type of more than one type is specified.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The parameter 'type' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is null._
+- _The field value '{2}' of type {1} is not {0}._
+
+Examples:
+
+```powershell
+Rule 'TypeOf' {
+    # Require Value1 to be [int]
+    $Assert.TypeOf($TargetObject, 'Value1', [int])
+
+    # Require Value1 to be [int] or [long]
+    $Assert.TypeOf($TargetObject, 'Value1', @([int], [long]))
+}
+```
+
 ### StartsWith
 
 The `StartsWith` assertion method checks the field value starts with the specified prefix.
@@ -921,7 +1117,8 @@ Rule 'Assert.HasCustomValue' {
 
 The following built-in helper methods are provided for working with `$Assert` when authoring new assertion methods:
 
-- `Create(<bool> condition, <string> reason)` - Returns a result either pass or fail assertion result.
+- `Create(<bool> condition, <string> reason, params <object[]> args)` - Returns a result either pass or fail assertion result.
+Additional arguments can be provided to format the custom reason string.
 - `Pass()` - Returns a pass assertion result.
 - `Fail()` - Results a fail assertion result.
 - `Fail(<string> reason, params <object[]> args)` - Results a fail assertion result with a custom reason.

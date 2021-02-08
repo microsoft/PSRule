@@ -295,6 +295,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The field value &apos;{0}&apos; is null..
+        /// </summary>
+        internal static string NullFieldValue {
+            get {
+                return ResourceManager.GetString("NullFieldValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The field &apos;{0}&apos; is not empty..
         /// </summary>
         internal static string NullOrEmpty {
@@ -336,6 +345,33 @@ namespace PSRule.Resources {
         internal static string String {
             get {
                 return ResourceManager.GetString("String", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field value &apos;{2}&apos; of type {1} is not {0}..
+        /// </summary>
+        internal static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field value &apos;{1}&apos; of type {0} is not an integer..
+        /// </summary>
+        internal static string TypeInteger {
+            get {
+                return ResourceManager.GetString("TypeInteger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field value &apos;{1}&apos; of type {0} is not numeric..
+        /// </summary>
+        internal static string TypeNumeric {
+            get {
+                return ResourceManager.GetString("TypeNumeric", resourceCulture);
             }
         }
         

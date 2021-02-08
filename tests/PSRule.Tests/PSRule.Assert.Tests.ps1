@@ -58,6 +58,9 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 Upper = 'TEST123'
                 LetterLower = 'test'
                 LetterUpper = 'TEST'
+                IsInteger = 1
+                IsBoolean = $True
+                IsArray = 1, 2, 3
             }
             [PSCustomObject]@{
                 '$schema' = "http://json-schema.org/draft-07/schema`#"
@@ -89,6 +92,9 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 Upper = 'Test123'
                 LetterLower = 'test123'
                 LetterUpper = 'TEST123'
+                IsInteger = '1'
+                IsBoolean = 'true'
+                IsArray = '123'
             }
         )
 
@@ -118,6 +124,23 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             # Negative case
             $result[1].Outcome | Should -Be 'Fail';
             $result[1].TargetName | Should -Be 'TestObject2';
+        }
+
+        It 'Create' {
+            $result = @($testObject | Invoke-PSRule @invokeParams -Name 'Assert.Create');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 2;
+            $result[1].Reason[0] | Should -Be 'Reason 1';
+            $result[1].Reason[1] | Should -Be 'Reason 2';
         }
 
         It 'Complete' {
@@ -386,6 +409,102 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].Reason.Length | Should -Be 2;
             $result[1].Reason[0] | Should -BeLike "The value '*' does not contain only uppercase characters.";
             $result[1].Reason[1] | Should -BeLike "The value '*' does not contain only letters.";
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+        }
+
+        It 'IsNumeric' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.IsNumeric');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 1;
+            $result[1].Reason[0] | Should -BeLike "The field value '*' of type String is not numeric.";
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+        }
+
+        It 'IsInteger' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.IsInteger');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 1;
+            $result[1].Reason[0] | Should -Be "The field value '1' of type String is not an integer.";
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+        }
+
+        It 'IsBoolean' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.IsBoolean');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 1;
+            $result[1].Reason[0] | Should -Be "The field value 'true' of type String is not [bool].";
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+        }
+
+        It 'IsArray' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.IsArray');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 1;
+            $result[1].Reason[0] | Should -Be "The field value '123' of type String is not [array].";
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+        }
+
+        It 'IsString' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.IsString');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[0].IsSuccess() | Should -Be $False;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].Reason.Length | Should -Be 1;
+            $result[0].Reason[0] | Should -Be "The field value '1' of type Int32 is not [string].";
+
+            # Positive case
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[1].TargetName | Should -Be 'TestObject2';
+        }
+
+        It 'TypeOf' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.TypeOf');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 4;
+            $result[1].Reason | Should -BeLike "The field value '*' of type * is not *.";
 
             # Positive case
             $result[0].IsSuccess() | Should -Be $True;
