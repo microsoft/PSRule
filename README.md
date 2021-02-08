@@ -38,9 +38,9 @@ Companion extensions are available for the following platforms.
 
 Platform           | Description | Downloads / instructions
 --------           | ----------- | ------------------------
-Azure Pipelines    | An Azure DevOps extension for using PSRule within Azure Pipelines. | [latest][extension-pipelines] / [instructions][install]
-GitHub Actions     | An Azure DevOps extension for using PSRule within Azure Pipelines. | [latest][extension-actions] / [instructions][install]
-Visual Studio Code | An extension for IT Pros using the PSRule PowerShell module. | [latest][extension-vscode] / [instructions][install]
+Azure Pipelines    | Validate infrastructure as code (IaC) and DevOps repositories using Azure Pipelines. | [latest][extension-pipelines] / [instructions][install]
+GitHub Actions     | Validate infrastructure as code (IaC) and DevOps repositories using GitHub Actions. | [latest][extension-actions] / [instructions][install]
+Visual Studio Code | Visual Studio Code extension for PSRule. | [latest][extension-vscode] / [instructions][install]
 
 ## Getting started
 
@@ -327,6 +327,7 @@ Name                      | Description
 [PSRule.Monitor]          | Send and query PSRule analysis results in Azure Monitor.
 [PSRule-pipelines]        | Validate infrastructure as code (IaC) and DevOps repositories using Azure Pipelines.
 [ps-rule]                 | Validate infrastructure as code (IaC) and DevOps repositories using GitHub Actions.
+[PSRule-vscode]           | Visual Studio Code extension for PSRule.
 
 ## Changes and versioning
 
@@ -372,3 +373,4 @@ This project is [licensed under the MIT License](LICENSE).
 [PSRule.Monitor]: https://github.com/microsoft/PSRule.Monitor
 [PSRule-pipelines]: https://github.com/microsoft/PSRule-pipelines
 [ps-rule]: https://github.com/microsoft/ps-rule
+[PSRule-vscode]: https://github.com/microsoft/PSRule-vscode
