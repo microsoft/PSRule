@@ -6,6 +6,8 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.1.0-B2102019 (pre-release)
+
 What's changed since v1.0.3:
 
 - Engine features:
