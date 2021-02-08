@@ -201,6 +201,9 @@
   <data name="NotMatchPattern" xml:space="preserve">
     <value>The field value '{0}' matches the pattern '{1}'.</value>
   </data>
+  <data name="NullFieldValue" xml:space="preserve">
+    <value>The field value '{0}' is null.</value>
+  </data>
   <data name="NullOrEmpty" xml:space="preserve">
     <value>The field '{0}' is not empty.</value>
   </data>
@@ -215,6 +218,15 @@
   </data>
   <data name="String" xml:space="preserve">
     <value>The field value '{0}' is not a string.</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>The field value '{2}' of type {1} is not {0}.</value>
+  </data>
+  <data name="TypeInteger" xml:space="preserve">
+    <value>The field value '{1}' of type {0} is not an integer.</value>
+  </data>
+  <data name="TypeNumeric" xml:space="preserve">
+    <value>The field value '{1}' of type {0} is not numeric.</value>
   </data>
   <data name="TypeOf" xml:space="preserve">
     <value>None of the type name(s) match: {0}</value>

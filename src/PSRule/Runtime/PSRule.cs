@@ -1,10 +1,11 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using PSRule.Data;
 using PSRule.Pipeline;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -98,6 +99,45 @@ namespace PSRule.Runtime
             result = PipelineReceiverActions.DetectInputFormat(sourceObject, PipelineReceiverActions.PassThru).ToArray();
             _Context.Pipeline.ContentCache.Add(cacheKey, result);
             return result;
+        }
+
+        /// <summary>
+        /// Attempts to read content from disk and extract a field from each object.
+        /// </summary>
+        public PSObject[] GetContentField(PSObject sourceObject, string field)
+        {
+            var content = GetContent(sourceObject);
+            if (content == null || content.Length == 0 || string.IsNullOrEmpty(field))
+                return Array.Empty<PSObject>();
+
+            var result = new List<PSObject>();
+            for (var i = 0; i < content.Length; i++)
+            {
+                if (ObjectHelper.GetField(content[i], field, false, out object value) && value != null)
+                {
+                    if (typeof(IEnumerable).IsAssignableFrom(value.GetType()))
+                    {
+                        foreach (var item in (value as IEnumerable))
+                            result.Add(PSObject.AsPSObject(item));
+                    }
+                    else
+                        result.Add(PSObject.AsPSObject(value));
+                }
+                    
+            }
+            return result.ToArray();
+        }
+
+        /// <summary>
+        /// Attempts to read content from disk and return the first object or null.
+        /// </summary>
+        public PSObject GetContentFirstOrDefault(PSObject sourceObject)
+        {
+            var content = GetContent(sourceObject);
+            if (content == null || content.Length == 0)
+                return null;
+
+            return content[0];
         }
     }
 }

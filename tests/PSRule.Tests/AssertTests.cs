@@ -66,11 +66,17 @@ namespace PSRule
 
             var actual1 = GetObject((name: "$schema", value: "abc"));
             var actual2 = GetObject((name: "schema", value: "abc"));
+            var actual3 = GetObject((name: "$schema", value: "http://json-schema.org/draft-07/schema#"));
+            var actual4 = GetObject((name: "$schema", value: "http://json-schema.org/draft-07/schema#definition"));
 
             Assert.True(assert.HasJsonSchema(actual1, null).Result);
             Assert.True(assert.HasJsonSchema(actual1, new string[] { "abc" }).Result);
             Assert.False(assert.HasJsonSchema(actual2, new string[] { "abc" }).Result);
             Assert.True(assert.HasJsonSchema(actual1, new string[] { "efg", "abc" }).Result);
+            Assert.False(assert.HasJsonSchema(actual3, new string[] { "https://json-schema.org/draft-07/schema" }).Result);
+            Assert.True(assert.HasJsonSchema(actual3, new string[] { "https://json-schema.org/draft-07/schema#" }, true).Result);
+            Assert.True(assert.HasJsonSchema(actual3, new string[] { "https://json-schema.org/draft-07/schema#", "http://json-schema.org/draft-07/schema#" }).Result);
+            Assert.False(assert.HasJsonSchema(actual4, new string[] { "https://json-schema.org/draft-07/schema#" }, true).Result);
         }
 
         [Fact]
@@ -160,6 +166,150 @@ namespace PSRule
             Assert.True(assert.IsUpper(value, "name3").Result);
             Assert.False(assert.IsUpper(value, "name3", requireLetters: true).Result);
             Assert.False(assert.IsUpper(value, "name4").Result);
+        }
+
+        [Fact]
+        public void IsNumeric()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject(
+                (name: "value1", value: 123),
+                (name: "value2", value: 1.0f),
+                (name: "value3", value: long.MaxValue),
+                (name: "value4", value: "123"),
+                (name: "value5", value: null),
+                (name: "value6", value: PSObject.AsPSObject(123)),
+                (name: "value7", value: byte.MaxValue),
+                (name: "value8", value: double.MaxValue)
+            );
+
+            Assert.True(assert.IsNumeric(value, "value1").Result);
+            Assert.True(assert.IsNumeric(value, "value2").Result);
+            Assert.True(assert.IsNumeric(value, "value3").Result);
+            Assert.False(assert.IsNumeric(value, "value4").Result);
+            Assert.True(assert.IsNumeric(value, "value4", convert: true).Result);
+            Assert.False(assert.IsNumeric(value, "value5").Result);
+            Assert.True(assert.IsNumeric(value, "value6").Result);
+            Assert.True(assert.IsNumeric(value, "value7").Result);
+            Assert.True(assert.IsNumeric(value, "value8").Result);
+        }
+
+        [Fact]
+        public void IsInteger()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject(
+                (name: "value1", value: 123),
+                (name: "value2", value: 1.0f),
+                (name: "value3", value: long.MaxValue),
+                (name: "value4", value: "123"),
+                (name: "value5", value: null),
+                (name: "value6", value: PSObject.AsPSObject(123)),
+                (name: "value7", value: byte.MaxValue)
+            );
+
+            Assert.True(assert.IsInteger(value, "value1").Result);
+            Assert.False(assert.IsInteger(value, "value2").Result);
+            Assert.True(assert.IsInteger(value, "value3").Result);
+            Assert.False(assert.IsInteger(value, "value4").Result);
+            Assert.True(assert.IsInteger(value, "value4", convert: true).Result);
+            Assert.False(assert.IsInteger(value, "value5").Result);
+            Assert.True(assert.IsInteger(value, "value6").Result);
+            Assert.True(assert.IsInteger(value, "value7").Result);
+        }
+
+        [Fact]
+        public void IsBool()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject(
+                (name: "value1", value: true),
+                (name: "value2", value: 1),
+                (name: "value3", value: long.MaxValue),
+                (name: "value4", value: "true"),
+                (name: "value5", value: null),
+                (name: "value6", value: PSObject.AsPSObject(true))
+            );
+
+            Assert.True(assert.IsBoolean(value, "value1").Result);
+            Assert.False(assert.IsBoolean(value, "value2").Result);
+            Assert.False(assert.IsBoolean(value, "value3").Result);
+            Assert.False(assert.IsBoolean(value, "value4").Result);
+            Assert.True(assert.IsBoolean(value, "value4", convert: true).Result);
+            Assert.False(assert.IsBoolean(value, "value5").Result);
+            Assert.True(assert.IsBoolean(value, "value6").Result);
+        }
+
+        [Fact]
+        public void IsArray()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject(
+                (name: "value1", value: new string[] { "a" }),
+                (name: "value2", value: new int[] { 1 }),
+                (name: "value3", value: PSObject.AsPSObject(new int[] { 1 })),
+                (name: "value4", value: "true"),
+                (name: "value5", value: null)
+            );
+
+            Assert.True(assert.IsArray(value, "value1").Result);
+            Assert.True(assert.IsArray(value, "value2").Result);
+            Assert.True(assert.IsArray(value, "value3").Result);
+            Assert.False(assert.IsArray(value, "value4").Result);
+            Assert.False(assert.IsArray(value, "value5").Result);
+        }
+
+        [Fact]
+        public void IsString()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject(
+                (name: "value1", value: "true"),
+                (name: "value2", value: PSObject.AsPSObject("true")),
+                (name: "value3", value: 1),
+                (name: "value4", value: null)
+            );
+
+            Assert.True(assert.IsString(value, "value1").Result);
+            Assert.True(assert.IsString(value, "value2").Result);
+            Assert.False(assert.IsString(value, "value3").Result);
+            Assert.False(assert.IsString(value, "value4").Result);
+        }
+
+        [Fact]
+        public void TypeOf()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var customObect = new PSObject();
+            customObect.TypeNames.Insert(0, "CustomTypeObject");
+            var value = GetObject(
+                (name: "value1", value: "true"),
+                (name: "value2", value: PSObject.AsPSObject("true")),
+                (name: "value3", value: 1),
+                (name: "value4", value: null),
+                (name: "value5", value: customObect)
+            );
+
+            // By type
+            Assert.True(assert.TypeOf(value, "value1", new Type[] { typeof(string) }).Result);
+            Assert.True(assert.TypeOf(value, "value2", new Type[] { typeof(string) }).Result);
+            Assert.True(assert.TypeOf(value, "value3", new Type[] { typeof(int) }).Result);
+            Assert.False(assert.TypeOf(value, "value3", new Type[] { typeof(bool) }).Result);
+            Assert.True(assert.TypeOf(value, "value3", new Type[] { typeof(bool), typeof(int) }).Result);
+            Assert.False(assert.TypeOf(value, "value3", new Type[] { typeof(string) }).Result);
+            Assert.False(assert.TypeOf(value, "value4", new Type[] { typeof(string) }).Result);
+
+            // By type name
+            Assert.True(assert.TypeOf(value, "value1", new string[] { "System.String" }).Result);
+            Assert.True(assert.TypeOf(value, "value2", new string[] { "System.String" }).Result);
+            Assert.True(assert.TypeOf(value, "value3", new string[] { "System.Int32" }).Result);
+            Assert.True(assert.TypeOf(value, "value5", new string[] { "CustomTypeObject" }).Result);
         }
 
         [Fact]

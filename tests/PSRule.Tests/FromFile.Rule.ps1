@@ -184,6 +184,15 @@ Rule 'VariableContextVariable' {
 
     # Get content
     $PSRule.GetContent((Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath 'ObjectFromFile.json'))).Length -eq 2;
+
+    # Get content field
+    $spec = $PSRule.GetContentField((Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath 'ObjectFromFile.json')), 'Spec');
+    $spec.Length -eq 2
+    $Assert.HasField($spec[0], 'Properties');
+
+    # Get first content object
+    $first = $PSRule.GetContentFirstOrDefault((Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath 'ObjectFromFile.json')));
+    $Assert.HasField($first, 'Spec.Properties');
 }
 
 # Synopsis: Test $Rule automatic variables
