@@ -216,6 +216,12 @@ Rule 'Assert.Match' {
     $Assert.Match($TargetObject, 'CompareString', '^(|ABC)$', $True)
 }
 
+# Synopsis: Test for $Assert.NotHasField
+Rule 'Assert.NotHasField' {
+    $Assert.NotHasField($TargetObject, 'Not')
+    $Assert.NotHasField($TargetObject, @('Not','OtherField'))
+}
+
 # Synopsis: Test for $Assert.NotIn
 Rule 'Assert.NotIn' {
     $Assert.NotIn($TargetObject, 'Name', @('TestObject1', 'TestObject3'))
@@ -227,6 +233,18 @@ Rule 'Assert.NotIn' {
 Rule 'Assert.NotMatch' {
     $Assert.NotMatch($TargetObject, 'Name', '^Test\w*1$')
     $Assert.NotMatch($TargetObject, 'Type', '.*')
+}
+
+# Synopsis: Test for $Assert.NotNull
+Rule 'Assert.NotNull' {
+    $Assert.NotNull($TargetObject, 'Type')
+    $Assert.NotNull($TargetObject, 'Value')
+}
+
+# Synopsis: Test for $Assert.Null
+Rule 'Assert.Null' {
+    $Assert.Null($TargetObject, 'Type')
+    $Assert.Null($TargetObject, 'Value')
 }
 
 # Synopsis: Test for $Assert.HasEmptyField

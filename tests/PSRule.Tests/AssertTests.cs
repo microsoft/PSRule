@@ -59,6 +59,58 @@ namespace PSRule
         }
 
         [Fact]
+        public void HasField()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            var value = GetObject(
+                (name: "value", value: "Value1"),
+                (name: "value2", value: null),
+                (name: "value3", value: ""),
+                (name: "Value4", value: 0),
+                (name: "value5", value: GetObject((name: "value", value: 0)))
+            );
+
+            Assert.False(assert.HasField(null, null).Result);
+            Assert.False(assert.HasField(null, new string[] { }).Result);
+            Assert.True(assert.HasField(value, new string[] { "value" }).Result);
+            Assert.True(assert.HasField(value, new string[] { "notValue", "Value" }).Result);
+            Assert.True(assert.HasField(value, new string[] { "value2" }).Result);
+            Assert.True(assert.HasField(value, new string[] { "value3" }).Result);
+            Assert.False(assert.HasField(value, new string[] { "Value3" }, true).Result);
+            Assert.True(assert.HasField(value, new string[] { "Value3", "Value4" }, true).Result);
+            Assert.True(assert.HasField(value, new string[] { "value5" }).Result);
+            Assert.True(assert.HasField(value, new string[] { "value5.value" }).Result);
+            Assert.False(assert.HasField(value, new string[] { "Value5.value" }, true).Result);
+            Assert.False(assert.HasField(value, new string[] { "value5.Value" }, true).Result);
+        }
+
+        [Fact]
+        public void NotHasField()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            var value = GetObject(
+                (name: "value", value: "Value1"),
+                (name: "value2", value: null),
+                (name: "value3", value: ""),
+                (name: "Value4", value: 0)
+            );
+
+            Assert.False(assert.NotHasField(null, null).Result);
+            Assert.False(assert.NotHasField(null, new string[] { }).Result);
+            Assert.False(assert.NotHasField(value, new string[] { "value" }).Result);
+            Assert.False(assert.NotHasField(value, new string[] { "notValue", "Value" }).Result);
+            Assert.True(assert.NotHasField(value, new string[] { "notValue", "Value" }, true).Result);
+            Assert.False(assert.NotHasField(value, new string[] { "value2" }).Result);
+            Assert.False(assert.NotHasField(value, new string[] { "value3" }).Result);
+            Assert.True(assert.NotHasField(value, new string[] { "Value3" }, true).Result);
+            Assert.False(assert.NotHasField(value, new string[] { "Value3", "Value4" }, true).Result);
+        }
+
+        [Fact]
         public void HasJsonSchema()
         {
             SetContext();
@@ -713,6 +765,65 @@ namespace PSRule
             Assert.True(assert.NotMatch(value, "value", "value2", true).Result);
             Assert.False(assert.NotMatch(value, "value", "\\w*2").Result);
             Assert.True(assert.NotMatch(value, "notValue", "\\w*2").Result);
+        }
+
+        [Fact]
+        public void Null()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            var value = GetObject(
+                (name: "value", value: "Value1"),
+                (name: "value2", value: null),
+                (name: "value3", value: ""),
+                (name: "value4", value: 0)
+            );
+            Assert.False(assert.Null(value, "value").Result);
+            Assert.True(assert.Null(value, "notValue").Result);
+            Assert.True(assert.Null(value, "value2").Result);
+            Assert.False(assert.Null(value, "value3").Result);
+            Assert.False(assert.Null(value, "value4").Result);
+        }
+
+        [Fact]
+        public void NotNull()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            var value = GetObject(
+                (name: "value", value: "Value1"),
+                (name: "value2", value: null),
+                (name: "value3", value: ""),
+                (name: "value4", value: 0)
+            );
+            Assert.True(assert.NotNull(value, "value").Result);
+            Assert.False(assert.NotNull(value, "value2").Result);
+            Assert.True(assert.NotNull(value, "value3").Result);
+            Assert.True(assert.NotNull(value, "value4").Result);
+            Assert.False(assert.NotNull(value, "notValue").Result);
+        }
+
+        [Fact]
+        public void NullOrEmpty()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            var value = GetObject(
+                (name: "value", value: "Value1"),
+                (name: "value2", value: null),
+                (name: "value3", value: ""),
+                (name: "value4", value: 0),
+                (name: "value5", value: new string[] { })
+            );
+            Assert.False(assert.NullOrEmpty(value, "value").Result);
+            Assert.True(assert.NullOrEmpty(value, "value2").Result);
+            Assert.True(assert.NullOrEmpty(value, "value3").Result);
+            Assert.False(assert.NullOrEmpty(value, "value4").Result);
+            Assert.True(assert.NullOrEmpty(value, "value5").Result);
+            Assert.True(assert.NullOrEmpty(value, "notValue").Result);
         }
 
         [Fact]

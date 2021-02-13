@@ -151,20 +151,11 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The field &apos;{0}&apos; does not exist..
+        ///   Looks up a localized string similar to The field &apos;{0}&apos; exists..
         /// </summary>
         internal static string HasField {
             get {
                 return ResourceManager.GetString("HasField", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The value of &apos;{0}&apos; is null or empty..
-        /// </summary>
-        internal static string HasFieldValue {
-            get {
-                return ResourceManager.GetString("HasFieldValue", resourceCulture);
             }
         }
         
@@ -277,6 +268,24 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The field &apos;{0}&apos; does not exist..
+        /// </summary>
+        internal static string NotHasField {
+            get {
+                return ResourceManager.GetString("NotHasField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value of &apos;{0}&apos; is null or empty..
+        /// </summary>
+        internal static string NotHasFieldValue {
+            get {
+                return ResourceManager.GetString("NotHasFieldValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The field value &apos;{0}&apos; was in the set..
         /// </summary>
         internal static string NotIn {
@@ -295,11 +304,20 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The field value &apos;{0}&apos; is not null..
+        /// </summary>
+        internal static string NotNull {
+            get {
+                return ResourceManager.GetString("NotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The field value &apos;{0}&apos; is null..
         /// </summary>
-        internal static string NullFieldValue {
+        internal static string Null {
             get {
-                return ResourceManager.GetString("NullFieldValue", resourceCulture);
+                return ResourceManager.GetString("Null", resourceCulture);
             }
         }
         

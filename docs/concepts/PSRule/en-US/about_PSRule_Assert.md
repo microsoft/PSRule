@@ -38,8 +38,11 @@ The following built-in assertion methods are provided:
 - [Less](#less) - The field value must be less.
 - [LessOrEqual](#lessorequal) - The field value must be less or equal to.
 - [Match](#match) - The field value matches a regular expression pattern.
+- [NotHasField](#nothasfield) - The object must not have any of the specified fields.
 - [NotIn](#notin) - The field value must not be included in the set.
 - [NotMatch](#notmatch) - The field value does not match a regular expression pattern.
+- [NotNull](#notnull) - The field value must not be null.
+- [Null](#null) - The field value must not exist or be null.
 - [NullOrEmpty](#nullorempty) - The object must not have the specified field or it must be empty.
 - [TypeOf](#typeof) - The field value must be of the specified type.
 - [StartsWith](#startswith) - The field value must match at least one prefix.
@@ -841,6 +844,34 @@ Rule 'Match' {
 }
 ```
 
+### NotHasField
+
+The `NotHasField` assertion method checks the object does not have any of the specified fields.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of one or more fields to check.
+By default, a case insensitive compare is used.
+If more than one field is specified, all must not exist.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field name.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' exists._
+
+Examples:
+
+```powershell
+Rule 'NotHasField' {
+    $Assert.NotHasField($TargetObject, 'Name')
+    $Assert.NotHasField($TargetObject, 'tag.Environment', $True)
+    $Assert.NotHasField($TargetObject, @('tag.Environment', 'tag.Env'), $True)
+}
+```
+
 ### NotIn
 
 The `NotIn` assertion method checks the field value is not in a set of values.
@@ -901,6 +932,62 @@ Examples:
 Rule 'NotMatch' {
     $Assert.NotMatch($TargetObject, 'value', '^[a-z]*$')
     $Assert.NotMatch($TargetObject, 'value', '^[a-z]*$', $True)
+}
+```
+
+### NotNull
+
+The `NotNull` assertion method checks the field value of the object is not null.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is null._
+
+Examples:
+
+```powershell
+Rule 'NotNull' {
+    $Assert.NotNull($TargetObject, 'Name')
+    $Assert.NotNull($TargetObject, 'tag.Environment')
+}
+```
+
+### Null
+
+The `Null` assertion method checks the field value of the object is null.
+
+A field value is null if any of the following are true:
+
+- The field does not exist.
+- The field value is `$Null`.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field value '{0}' is not null._
+
+Examples:
+
+```powershell
+Rule 'Null' {
+    $Assert.Null($TargetObject, 'NotField')
+    $Assert.Null($TargetObject, 'tag.NullField')
 }
 ```
 
