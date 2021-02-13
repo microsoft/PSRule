@@ -6,6 +6,14 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.1.0-B2102019:
+
+- Engine features:
+  - Added assertion helpers. [#640](https://github.com/microsoft/PSRule/issues/640)
+    - Added `NotHasField` to check object does not have any of the specified fields.
+    - Added `Null` to check field value is null.
+    - Added `NotNull` to check field value is not null.
+
 ## v1.1.0-B2102019 (pre-release)
 
 What's changed since v1.0.3:

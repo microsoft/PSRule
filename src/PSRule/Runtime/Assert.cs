@@ -153,7 +153,31 @@ namespace PSRule.Runtime
                 if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field[i], caseSensitive: caseSensitive, value: out _))
                     return Pass();
 
-                result.AddReason(ReasonStrings.HasField, field[i]);
+                result.AddReason(ReasonStrings.NotHasField, field[i]);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// The object must not have any of the specified fields.
+        /// </summary>
+        public AssertResult NotHasField(PSObject inputObject, string[] field, bool caseSensitive = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result))
+                return result;
+
+            result = Pass();
+            for (var i = 0; field != null && i < field.Length; i++)
+            {
+                if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field[i], caseSensitive: caseSensitive, value: out _))
+                {
+                    if (result.Result)
+                        result = Fail();
+
+                    result.AddReason(ReasonStrings.HasField, field[i]);
+                }
             }
             return result;
         }
@@ -174,7 +198,7 @@ namespace PSRule.Runtime
             {
                 if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field[i], caseSensitive: caseSensitive, value: out _))
                 {
-                    result.AddReason(ReasonStrings.HasField, field[i]);
+                    result.AddReason(ReasonStrings.NotHasField, field[i]);
                     missing++;
                 }
             }
@@ -193,9 +217,9 @@ namespace PSRule.Runtime
 
             // Assert
             if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue))
-                return Fail(ReasonStrings.HasField, field);
+                return Fail(ReasonStrings.NotHasField, field);
             else if (IsNullOrEmpty(fieldValue))
-                return Fail(ReasonStrings.HasFieldValue, field);
+                return Fail(ReasonStrings.NotHasFieldValue, field);
             else if (expectedValue != null && !IsValue(fieldValue, expectedValue, caseSensitive: false))
                 return Fail(ReasonStrings.HasExpectedFieldValue, field, fieldValue);
 
@@ -218,6 +242,34 @@ namespace PSRule.Runtime
                 return Pass();
 
             return Fail(ReasonStrings.HasExpectedFieldValue, field, fieldValue);
+        }
+
+        /// <summary>
+        /// The object field value must be null.
+        /// </summary>
+        public AssertResult Null(PSObject inputObject, string field)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result))
+                return result;
+
+            ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue);
+            return fieldValue == null ? Pass() : Fail(ReasonStrings.NotNull, field);
+        }
+
+        /// <summary>
+        /// The object field value must not be null.
+        /// </summary>
+        public AssertResult NotNull(PSObject inputObject, string field)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result))
+                return result;
+
+            return fieldValue == null ? Fail(ReasonStrings.Null, field) : Pass();
         }
 
         /// <summary>
@@ -964,7 +1016,7 @@ namespace PSRule.Runtime
             if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: caseSensitive, value: out fieldValue))
                 return false;
 
-            result = Fail(ReasonStrings.HasField, field);
+            result = Fail(ReasonStrings.NotHasField, field);
             return true;
         }
 
@@ -1009,7 +1061,7 @@ namespace PSRule.Runtime
             if (fieldValue != null)
                 return false;
 
-            result = Fail(ReasonStrings.NullFieldValue, field);
+            result = Fail(ReasonStrings.Null, field);
             return true;
         }
 

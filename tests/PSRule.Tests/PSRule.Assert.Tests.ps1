@@ -559,6 +559,22 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].TargetName | Should -Be 'TestObject2';
         }
 
+        It 'NotHasField' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.NotHasField');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[0].IsSuccess() | Should -Be $False;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].Reason.Length | Should -Be 1;
+            $result[0].Reason[0] | Should -BeLike "The field 'OtherField' exists.";
+
+            # Positive case
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[1].TargetName | Should -Be 'TestObject2';
+        }
+
         It 'NotIn' {
             $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.NotIn');
             $result | Should -Not -BeNullOrEmpty;
@@ -589,6 +605,40 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             # Positive case
             $result[1].IsSuccess() | Should -Be $True;
             $result[1].TargetName | Should -Be 'TestObject2';
+        }
+
+        It 'NotNull' {
+            $result = @($testObject | Invoke-PSRule @invokeParams -Name 'Assert.NotNull');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 2;
+            $result[1].Reason[0] | Should -BeLike "The field 'Type' does not exist.";
+            $result[1].Reason[1] | Should -BeLike "The field value 'Value' is null.";
+        }
+
+        It 'Null' {
+            $result = @($testObject | Invoke-PSRule @invokeParams -Name 'Assert.Null');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[1].TargetName | Should -Be 'TestObject2';
+
+            # Negative case
+            $result[0].IsSuccess() | Should -Be $False;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].Reason.Length | Should -Be 2;
+            $result[0].Reason[0] | Should -BeLike "The field value 'Type' is not null.";
+            $result[0].Reason[1] | Should -BeLike "The field value 'Value' is not null.";
         }
 
         It 'NullOrEmpty' {
