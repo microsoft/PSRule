@@ -6,6 +6,8 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.1.0-B2102029 (pre-release)
+
 What's changed since pre-release v1.1.0-B2102024:
 
 - General improvements:
