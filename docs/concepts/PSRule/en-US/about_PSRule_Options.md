@@ -842,14 +842,14 @@ logging:
 
 Configures the type of results to produce.
 
-This option only applies to `Invoke-PSRule`.
-`Invoke-PSRule` also include a `-As` parameter to set this option at runtime.
+This option only applies to `Invoke-PSRule` and `Assert-PSRule`.
+`Invoke-PSRule` and `Assert-PSRule` also include a `-As` parameter to set this option at runtime.
 If specified, the `-As` parameter take precedence, over this option.
 
 The following options are available:
 
 - Detail - Return a record per rule per object.
-- Summary - Return summary information for per rule.
+- Summary - Return summary results.
 
 This option can be specified using:
 
@@ -994,8 +994,6 @@ output:
 ### Output.Outcome
 
 Filters output to include results with the specified outcome.
-This option applies to `Invoke-PSRule`, and `Test-PSRule`.
-
 The following outcome options are available:
 
 - `None` - Results for rules that did not get processed are returned.

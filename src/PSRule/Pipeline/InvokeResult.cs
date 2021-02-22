@@ -27,6 +27,9 @@ namespace PSRule.Pipeline
             _Fail = 0;
         }
 
+        /// <summary>
+        /// The execution time of all rules in milliseconds.
+        /// </summary>
         internal long Time
         {
             get { return _Time; }
@@ -45,6 +48,11 @@ namespace PSRule.Pipeline
         internal int Fail
         {
             get { return _Fail; }
+        }
+
+        internal int Pass
+        {
+            get { return _Total - _Error - _Fail; }
         }
 
         internal RuleOutcome Outcome

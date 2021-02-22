@@ -468,6 +468,13 @@ function Assert-PSRule {
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions')]
         [PSRule.Configuration.OutputStyle]$Style = [PSRule.Configuration.OutputStyle]::Client,
 
+        [Parameter(Mandatory = $False)]
+        [PSRule.Rules.RuleOutcome]$Outcome = [PSRule.Rules.RuleOutcome]::Processed,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Detail', 'Summary')]
+        [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Detail,
+
         # A list of paths to check for rule definitions
         [Parameter(Mandatory = $False, Position = 0)]
         [Alias('p')]
@@ -551,6 +558,12 @@ function Assert-PSRule {
         }
         if ($PSBoundParameters.ContainsKey('TargetType')) {
             $Option.Input.TargetType = $TargetType;
+        }
+        if ($PSBoundParameters.ContainsKey('As')) {
+            $Option.Output.As = $As;
+        }
+        if ($PSBoundParameters.ContainsKey('Outcome')) {
+            $Option.Output.Outcome = $Outcome;
         }
         if ($PSBoundParameters.ContainsKey('Style')) {
             $Option.Output.Style = $Style;

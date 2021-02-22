@@ -290,6 +290,7 @@ task Rules {
         Path = './.ps-rule/'
         Style = $AssertStyle
         OutputFormat = 'NUnit3'
+        As = 'Summary'
     }
     Import-Module (Join-Path -Path $PWD -ChildPath out/modules/PSRule) -Force;
     Assert-PSRule @assertParams -OutputPath reports/ps-rule-file.xml -InputPath $PWD -Format File -ErrorAction Stop;
@@ -358,3 +359,5 @@ task Build Clean, BuildModule, BuildHelp, VersionModule, PackageModule
 task Test Build, Rules, TestDotNet, TestModule
 
 task Release ReleaseModule, TagBuild
+
+task AnalyzeRepository Build, Rules

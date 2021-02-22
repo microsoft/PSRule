@@ -6,6 +6,13 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.1.0-B2102024:
+
+- General improvements:
+  - Added support for `-Outcome` and `-As` to produce filtered output from `Assert-PSRule`. [#643](https://github.com/microsoft/PSRule/issues/643)
+    - Configure `Output.As` with `Summary` to produce summarized results per object.
+    - Configure `Output.Outcome` to limit output to `Fail` or `Error`.
+
 ## v1.1.0-B2102024 (pre-release)
 
 What's changed since pre-release v1.1.0-B2102019:

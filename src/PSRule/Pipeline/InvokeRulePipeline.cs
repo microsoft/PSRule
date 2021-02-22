@@ -85,12 +85,12 @@ namespace PSRule.Pipeline
             return this;
         }
 
-        public sealed override IPipeline Build()
+        public override IPipeline Build()
         {
             if (!RequireModules() || !RequireSources())
                 return null;
 
-            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, PrepareReader(), PrepareWriter());
+            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, PrepareReader(), PrepareWriter(), Option.Output.Outcome.Value);
         }
 
         protected override PipelineReader PrepareReader()
@@ -172,7 +172,7 @@ namespace PSRule.Pipeline
         // Track whether Dispose has been called.
         private bool _Disposed;
 
-        internal InvokeRulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer)
+        internal InvokeRulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer, RuleOutcome outcome)
             : base(context, source, reader, writer)
         {
             HostHelper.ImportResource(Source, Context);
@@ -182,7 +182,7 @@ namespace PSRule.Pipeline
             if (RuleCount == 0)
                 Context.WarnRuleNotFound();
 
-            _Outcome = context.Option.Output.Outcome.Value;
+            _Outcome = outcome;
             _Summary = new Dictionary<string, RuleSummaryRecord>();
             _ResultFormat = context.Option.Output.As.Value;
             _SuppressionFilter = new RuleSuppressionFilter(context.Option.Suppression);
