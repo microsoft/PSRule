@@ -4,7 +4,8 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "test",
+            "label": "Test",
+            "detail": "Build and run unit tests.",
             "type": "shell",
             "command": "Invoke-Build Test -AssertStyle Client",
             "group": {
@@ -18,6 +19,28 @@
             }
         },
         {
+            "label": "Analyze repository",
+            "detail": "Run repository analysis.",
+            "type": "shell",
+            "command": "Invoke-Build AnalyzeRepository -AssertStyle Client",
+            "problemMatcher": [ ],
+            "presentation": {
+                "clear": true,
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Build",
+            "detail": "Build module.",
+            "type": "shell",
+            "command": "Invoke-Build Build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "coverage",
             "type": "shell",
             "command": "Invoke-Build Test -CodeCoverage",
@@ -26,16 +49,6 @@
                 "clear": true,
                 "panel": "dedicated"
             }
-        },
-        {
-            "label": "build",
-            "type": "shell",
-            "command": "Invoke-Build Build",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": []
         },
         {
             "label": "build-docs",
@@ -51,6 +64,7 @@
         },
         {
             "label": "clean",
+            "detail": "Clean up temporary working paths.",
             "type": "shell",
             "command": "Invoke-Build Clean",
             "problemMatcher": []

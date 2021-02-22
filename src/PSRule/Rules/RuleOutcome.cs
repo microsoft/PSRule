@@ -3,6 +3,7 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
 
 namespace PSRule.Rules
 {
@@ -10,6 +11,7 @@ namespace PSRule.Rules
     /// The outcome of a rule.
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
+    [Flags]
     public enum RuleOutcome
     {
         /// <summary>

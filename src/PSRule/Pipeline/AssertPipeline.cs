@@ -61,13 +61,13 @@ namespace PSRule.Pipeline
                     _Results = new List<RuleRecord>();
 
                 if (style == OutputStyle.AzurePipelines)
-                    _Formatter = new AzurePipelinesFormatter(source, inner);
+                    _Formatter = new AzurePipelinesFormatter(source, inner, option);
                 else if (style == OutputStyle.GitHubActions)
-                    _Formatter = new GitHubActionsFormatter(source, inner);
+                    _Formatter = new GitHubActionsFormatter(source, inner, option);
                 else if (style == OutputStyle.Plain)
-                    _Formatter = new PlainFormatter(source, inner);
+                    _Formatter = new PlainFormatter(source, inner, option);
                 else if (style == OutputStyle.Client)
-                    _Formatter = new ClientFormatter(source, inner);
+                    _Formatter = new ClientFormatter(source, inner, option);
             }
 
             /// <summary>
@@ -80,14 +80,17 @@ namespace PSRule.Pipeline
                 private readonly bool _VTSupport;
 
                 protected readonly IPipelineWriter Writer;
+                protected readonly PSRuleOption Option;
 
                 private bool _UnbrokenContent;
                 private bool _UnbrokenInfo;
+                private bool _UnbrokenObject;
 
-                protected AssertFormatterBase(Source[] source, IPipelineWriter writer, bool vtSupport)
+                protected AssertFormatterBase(Source[] source, IPipelineWriter writer, PSRuleOption option, bool vtSupport)
                 {
                     _VTSupport = vtSupport;
                     Writer = writer;
+                    Option = option;
                     Banner();
                     Source(source);
                     Help(source);
@@ -105,6 +108,9 @@ namespace PSRule.Pipeline
 
                 public virtual void Result(InvokeResult result)
                 {
+                    if ((Option.Output.Outcome.Value & result.Outcome) != result.Outcome)
+                        return;
+
                     StartObject(result, out RuleRecord[] records);
                     for (var i = 0; i < records.Length; i++)
                     {
@@ -119,17 +125,20 @@ namespace PSRule.Pipeline
 
                 protected virtual void Pass(RuleRecord record)
                 {
-                    WritePass(FormatterStrings.Result_Pass, record);
+                    if (Option.Output.As == ResultFormat.Detail && (Option.Output.Outcome.Value & RuleOutcome.Pass) == RuleOutcome.Pass)
+                        WritePass(FormatterStrings.Result_Pass, record);
                 }
 
                 protected virtual void Fail(RuleRecord record)
                 {
-                    WriteFail(FormatterStrings.Result_Fail, record);
+                    if ((Option.Output.Outcome.Value & RuleOutcome.Fail) == RuleOutcome.Fail)
+                        WriteFail(FormatterStrings.Result_Fail, record);
                 }
 
                 protected virtual void FailWithError(RuleRecord record)
                 {
-                    WriteFailWithError(FormatterStrings.Result_Error, record);
+                    if ((Option.Output.Outcome.Value & RuleOutcome.Error) == RuleOutcome.Error)
+                        WriteFailWithError(FormatterStrings.Result_Error, record);
                 }
 
                 protected virtual void FailDetail(RuleRecord record)
@@ -188,8 +197,8 @@ namespace PSRule.Pipeline
 
                     BreakIfUnbrokenContent();
                     BreakIfUnbrokenInfo();
-                    WriteLine(string.Concat(" -> ", records[0].TargetName, " : ", records[0].TargetType), forgroundColor: forgroundColor);
-                    LineBreak();
+                    WriteLine(string.Concat(" -> ", records[0].TargetName, " : ", records[0].TargetType, " [", result.Pass, "/", result.Total, "]"), forgroundColor: forgroundColor);
+                    UnbrokenObject();
                 }
 
                 private void Source(Source[] source)
@@ -293,8 +302,7 @@ namespace PSRule.Pipeline
                 protected void LineBreak()
                 {
                     Writer.WriteHost(new HostInformationMessage() { Message = string.Empty });
-                    _UnbrokenContent = false;
-                    _UnbrokenInfo = false;
+                    _UnbrokenContent = _UnbrokenInfo = _UnbrokenObject = false;
                 }
 
                 protected void BreakIfUnbrokenInfo()
@@ -313,6 +321,14 @@ namespace PSRule.Pipeline
                     LineBreak();
                 }
 
+                protected void BreakIfUnbrokenObject()
+                {
+                    if (!_UnbrokenObject)
+                        return;
+
+                    LineBreak();
+                }
+
                 protected void UnbrokenInfo()
                 {
                     _UnbrokenInfo = true;
@@ -321,6 +337,11 @@ namespace PSRule.Pipeline
                 protected void UnbrokenContent()
                 {
                     _UnbrokenContent = true;
+                }
+
+                protected void UnbrokenObject()
+                {
+                    _UnbrokenObject = true;
                 }
 
                 protected ConsoleColor? GetErrorForeground()
@@ -357,6 +378,7 @@ namespace PSRule.Pipeline
 
                 protected void WriteErrorMessage(string prefix, string message, params object[] args)
                 {
+                    BreakIfUnbrokenObject();
                     BreakIfUnbrokenContent();
                     WriteLine(prefix, GetErrorForeground(), message, args);
                     UnbrokenInfo();
@@ -364,6 +386,7 @@ namespace PSRule.Pipeline
 
                 protected void WriteWarningMessage(string prefix, string message, params object[] args)
                 {
+                    BreakIfUnbrokenObject();
                     BreakIfUnbrokenContent();
                     WriteLine(prefix, GetWarningForeground(), message, args);
                     UnbrokenInfo();
@@ -371,6 +394,7 @@ namespace PSRule.Pipeline
 
                 protected void WritePass(string message, RuleRecord record)
                 {
+                    BreakIfUnbrokenObject();
                     BreakIfUnbrokenInfo();
                     WriteLine(null, GetPassForeground(), message, record.RuleName);
                     UnbrokenContent();
@@ -378,6 +402,7 @@ namespace PSRule.Pipeline
 
                 protected void WriteFail(string message, RuleRecord record)
                 {
+                    BreakIfUnbrokenObject();
                     BreakIfUnbrokenInfo();
                     WriteLine(null, GetFailForeground(), message, record.RuleName);
                     FailDetail(record);
@@ -385,6 +410,7 @@ namespace PSRule.Pipeline
 
                 protected void WriteFailWithError(string message, RuleRecord record)
                 {
+                    BreakIfUnbrokenObject();
                     BreakIfUnbrokenInfo();
                     WriteLine(null, GetFailForeground(), message, record.RuleName);
                     ErrorDetail(record);
@@ -397,11 +423,14 @@ namespace PSRule.Pipeline
             /// </summary>
             private sealed class ClientFormatter : AssertFormatterBase, IAssertFormatter
             {
-                internal ClientFormatter(Source[] source, IPipelineWriter logger)
-                    : base(source, logger, true) { }
+                internal ClientFormatter(Source[] source, IPipelineWriter logger, PSRuleOption option)
+                    : base(source, logger, option, true) { }
 
                 public override void Result(InvokeResult result)
                 {
+                    if ((Option.Output.Outcome.Value & result.Outcome) != result.Outcome)
+                        return;
+
                     StartObject(result, out RuleRecord[] records, forgroundColor: ConsoleColor.Green);
                     for (var i = 0; i < records.Length; i++)
                     {
@@ -460,8 +489,8 @@ namespace PSRule.Pipeline
             /// </summary>
             private sealed class PlainFormatter : AssertFormatterBase, IAssertFormatter
             {
-                internal PlainFormatter(Source[] source, IPipelineWriter logger)
-                    : base(source, logger, false) { }
+                internal PlainFormatter(Source[] source, IPipelineWriter logger, PSRuleOption option)
+                    : base(source, logger, option, false) { }
 
                 protected override void DoWriteError(ErrorRecord errorRecord)
                 {
@@ -498,8 +527,8 @@ namespace PSRule.Pipeline
                 private const string MESSAGE_PREFIX_ERROR = "##vso[task.logissue type=error]";
                 private const string MESSAGE_PREFIX_WARNING = "##vso[task.logissue type=warning]";
 
-                internal AzurePipelinesFormatter(Source[] source, IPipelineWriter logger)
-                    : base(source, logger, false) { }
+                internal AzurePipelinesFormatter(Source[] source, IPipelineWriter logger, PSRuleOption option)
+                    : base(source, logger, option, false) { }
 
                 protected override void Error(string message)
                 {
@@ -540,8 +569,8 @@ namespace PSRule.Pipeline
                 private const string MESSAGE_PREFIX_ERROR = "::error::";
                 private const string MESSAGE_PREFIX_WARNING = "::warning::";
 
-                internal GitHubActionsFormatter(Source[] source, IPipelineWriter logger)
-                    : base(source, logger, false) { }
+                internal GitHubActionsFormatter(Source[] source, IPipelineWriter logger, PSRuleOption option)
+                    : base(source, logger, option, false) { }
 
                 protected override void Error(string message)
                 {
@@ -637,14 +666,6 @@ namespace PSRule.Pipeline
             }
         }
 
-        public override IPipelineBuilder Configure(PSRuleOption option)
-        {
-            base.Configure(option);
-            Option.Output.As = ResultFormat.Detail;
-            Option.Output.Outcome = RuleOutcome.Processed;
-            return this;
-        }
-
         protected override PipelineWriter PrepareWriter()
         {
             return GetWriter();
@@ -674,6 +695,14 @@ namespace PSRule.Pipeline
             return !(string.IsNullOrEmpty(Option.Output.Path) ||
                 Option.Output.Format == OutputFormat.Wide ||
                 Option.Output.Format == OutputFormat.None);
+        }
+
+        public sealed override IPipeline Build()
+        {
+            if (!RequireModules() || !RequireSources())
+                return null;
+
+            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, PrepareReader(), PrepareWriter(), RuleOutcome.Processed);
         }
     }
 }
