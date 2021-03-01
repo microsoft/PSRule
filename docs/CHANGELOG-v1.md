@@ -6,6 +6,37 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.1.0
+
+What's changed since v1.0.3:
+
+- Engine features:
+  - Added assertion helpers. [#640](https://github.com/microsoft/PSRule/issues/640)
+    - Added `NotHasField` to check object does not have any of the specified fields.
+    - Added `Null` to check field value is null.
+    - Added `NotNull` to check field value is not null.
+  - Added type assertion helpers. [#635](https://github.com/microsoft/PSRule/issues/635)
+    - Added `IsNumeric` to check field value is a numeric types.
+    - Added `IsInteger` to check field value is an integer types.
+    - Added `IsBoolean` to check field value is a boolean.
+    - Added `IsArray` to check field value is an array.
+    - Added `IsString` to check field value is a string.
+    - Added `TypeOf` to check field value is a specified type.
+  - Added content helpers. [#637](https://github.com/microsoft/PSRule/issues/637)
+    - Added `$PSRule.GetContentFirstOrDefault` to get content and return the first object.
+    - Added `$PSRule.GetContentField` to get the field from content objects.
+- General improvements:
+  - Updated `HasJsonSchema` assertion helper. [#636](https://github.com/microsoft/PSRule/issues/636)
+    - The URI scheme can optionally be ignored for `http://` or `https://` URIs.
+    - The fragment `#` is ignored.
+  - Added support for `-Outcome` and `-As` to produce filtered output from `Assert-PSRule`. [#643](https://github.com/microsoft/PSRule/issues/643)
+    - Configure `Output.As` with `Summary` to produce summarized results per object.
+    - Configure `Output.Outcome` to limit output to `Fail` or `Error`.
+
+What's changed since pre-release v1.1.0-B2102029:
+
+- No additional changes.
+
 ## v1.1.0-B2102029 (pre-release)
 
 What's changed since pre-release v1.1.0-B2102024:
