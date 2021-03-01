@@ -2,12 +2,12 @@
 # CI pipeline for PSRule
 
 variables:
-  version: '1.1.0'
+  version: '1.2.0'
   buildConfiguration: 'Release'
   disable.coverage.autogenerate: 'true'
   imageName: 'ubuntu-18.04'
 
- # Use build number format, i.e. 1.0.0-B2010001
+ # Use build number format, i.e. 1.2.0-B2010001
 name: $(version)-B$(date:yyMM)$(rev:rrr)
 
 trigger:
@@ -177,14 +177,14 @@ stages:
       name: ps_7_1_ubuntu_18_04
       displayName: 'PowerShell 7.1 - ubuntu-18.04'
       imageName: mcr.microsoft.com/powershell
-      imageTag: 7.1.0-ubuntu-18.04
+      imageTag: 7.1.2-ubuntu-18.04
 
   - template: jobs/testContainer.yaml
     parameters:
       name: ps_7_1_ubuntu_20_04
       displayName: 'PowerShell 7.1 - ubuntu-20.04'
       imageName: mcr.microsoft.com/powershell
-      imageTag: 7.1.0-ubuntu-20.04
+      imageTag: 7.1.2-ubuntu-20.04
 
   - template: jobs/testContainer.yaml
     parameters:
