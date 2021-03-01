@@ -95,11 +95,31 @@ The <code>$Assert</code> object provides a set of built-in methods and provides 
 <ul>
 <li><code>Contains</code> - The field value must contain at least one of the strings.</li>
 <li><code>EndsWith</code> - The field value must match at least one suffix.</li>
+<li><code>FileHeader</code> - The file must contain a comment header.</li>
+<li><code>FilePath</code> - The file path must exist.</li>
+<li><code>Greater</code> - The field value must be greater.</li>
+<li><code>GreaterOrEqual</code> - The field value must be greater or equal to.</li>
 <li><code>HasDefaultValue</code> - The object should not have the field or the field value is set to the default value.</li>
-<li><code>HasField</code> - Asserts that the object must have the specified field.</li>
-<li><code>HasFieldValue</code> - Asserts that the object must have the specified field and that field is not empty.</li>
-<li><code>JsonSchema</code> - Asserts that the object must validate successfully against a JSON schema.</li>
-<li><code>NullOrEmpty</code> - Asserts that the object must not have the specified field or it must be empty.</li>
+<li><code>HasField</code> - The object must have any of the specified fields.</li>
+<li><code>HasFields</code> - The object must have all of the specified fields.</li>
+<li><code>HasFieldValue</code> - The object must have the specified field and that field is not empty.</li>
+<li><code>HasJsonSchema</code> - The object must reference a JSON schema with the <code>$schema</code> field.</li>
+<li><code>In</code> - The field value must be included in the set.</li>
+<li><code>IsArray</code> - The field value must be an array.</li>
+<li><code>IsBoolean</code> - The field value must be a boolean.</li>
+<li><code>IsInteger</code> - The field value must be an integer.</li>
+<li><code>IsLower</code> - The field value must include only lowercase characters.</li>
+<li><code>IsNumeric</code> - The field value must be a numeric type.</li>
+<li><code>IsString</code> - The field value must be a string.</li>
+<li><code>IsUpper</code> - The field value must include only uppercase characters.</li>
+<li><code>JsonSchema</code> - The object must validate successfully against a JSON schema.</li>
+<li><code>Less</code> - The field value must be less.</li>
+<li><code>LessOrEqual</code> - The field value must be less or equal to.</li>
+<li><code>Match</code> - The field value matches a regular expression pattern.</li>
+<li><code>NotIn</code> - The field value must not be included in the set.</li>
+<li><code>NotMatch</code> - The field value does not match a regular expression pattern.</li>
+<li><code>NullOrEmpty</code> - The object must not have the specified field or it must be empty.</li>
+<li><code>TypeOf</code> - The field value must be of the specified type.</li>
 <li><code>StartsWith</code> - The field value must match at least one prefix.</li>
 <li><code>Version</code> - The field value must be a semantic version string.</li>
 </ul>
@@ -188,10 +208,18 @@ Use custom data to store data that must be calculated during rule execution.</p>
 <p>The following helper methods are available:</p>
 <ul>
 <li><code>GetContent(PSObject sourceObject)</code> - Returns the content of a file as one or more objects.
-The parameter <code>sourceObject</code> should be a <code>FileInfo</code> or a <code>Uri</code> object.
-The file format is detected based on the same file formats as the option <code>Input.Format</code>.
-i.e. Yaml, Json, Markdown and PowerShell Data.</li>
+The parameter <code>sourceObject</code> should be a <code>InputFileInfo</code>,<code>FileInfo</code>, or <code>Uri</code> object.</li>
+<li><code>GetContentField(PSObject sourceObject, string field)</code> - Returns the content of a file as one or more objects.
+The parameter <code>sourceObject</code> should be a <code>InputFileInfo</code>,<code>FileInfo</code>, or <code>Uri</code> object.
+The parameter <code>field</code> is an field within each object to return.
+If the field does not exist on the object, an object is not returned.</li>
+<li><code>GetContentFirstOrDefault(PSObject sourceObject)</code> - Returns the content of a file as on object.
+The parameter <code>sourceObject</code> should be a <code>InputFileInfo</code>,<code>FileInfo</code>, or <code>Uri</code> object.
+If more than one object is contained in the file, only the first object is returned.
+When the source file contains no objects null is returned.</li>
 </ul>
+<p>The file format is detected based on the same file formats as the option <code>Input.Format</code>.
+i.e. Yaml, Json, Markdown, and PowerShell Data.</p>
 <p>Syntax:</p>
 <pre><code class="lang-powershell">$PSRule
 </code></pre>

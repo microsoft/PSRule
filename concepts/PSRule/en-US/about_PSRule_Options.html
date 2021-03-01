@@ -689,13 +689,13 @@ logging:
 </code></pre>
 <h3 id="outputas">Output.As</h3>
 <p>Configures the type of results to produce.</p>
-<p>This option only applies to <code>Invoke-PSRule</code>.
-<code>Invoke-PSRule</code> also include a <code>-As</code> parameter to set this option at runtime.
+<p>This option only applies to <code>Invoke-PSRule</code> and <code>Assert-PSRule</code>.
+<code>Invoke-PSRule</code> and <code>Assert-PSRule</code> also include a <code>-As</code> parameter to set this option at runtime.
 If specified, the <code>-As</code> parameter take precedence, over this option.</p>
 <p>The following options are available:</p>
 <ul>
 <li>Detail - Return a record per rule per object.</li>
-<li>Summary - Return summary information for per rule.</li>
+<li>Summary - Return summary results.</li>
 </ul>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the OutputAs parameter
@@ -797,8 +797,7 @@ output:
 </code></pre>
 <h3 id="outputoutcome">Output.Outcome</h3>
 <p>Filters output to include results with the specified outcome.
-This option applies to <code>Invoke-PSRule</code>, and <code>Test-PSRule</code>.</p>
-<p>The following outcome options are available:</p>
+The following outcome options are available:</p>
 <ul>
 <li><code>None</code> - Results for rules that did not get processed are returned.</li>
 <li><code>Pass</code> - Results for rules that passed are returned.</li>

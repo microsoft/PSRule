@@ -90,15 +90,24 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 <li><a href="#hasfieldvalue">HasFieldValue</a> - The object must have the specified field and that field is not empty.</li>
 <li><a href="#hasjsonschema">HasJsonSchema</a> - The object must reference a JSON schema with the <code>$schema</code> field.</li>
 <li><a href="#in">In</a> - The field value must be included in the set.</li>
+<li><a href="#isarray">IsArray</a> - The field value must be an array.</li>
+<li><a href="#isboolean">IsBoolean</a> - The field value must be a boolean.</li>
+<li><a href="#isinteger">IsInteger</a> - The field value must be an integer.</li>
 <li><a href="#islower">IsLower</a> - The field value must include only lowercase characters.</li>
+<li><a href="#isnumeric">IsNumeric</a> - The field value must be a numeric type.</li>
+<li><a href="#isstring">IsString</a> - The field value must be a string.</li>
 <li><a href="#isupper">IsUpper</a> - The field value must include only uppercase characters.</li>
 <li><a href="#jsonschema">JsonSchema</a> - The object must validate successfully against a JSON schema.</li>
 <li><a href="#less">Less</a> - The field value must be less.</li>
 <li><a href="#lessorequal">LessOrEqual</a> - The field value must be less or equal to.</li>
 <li><a href="#match">Match</a> - The field value matches a regular expression pattern.</li>
+<li><a href="#nothasfield">NotHasField</a> - The object must not have any of the specified fields.</li>
 <li><a href="#notin">NotIn</a> - The field value must not be included in the set.</li>
 <li><a href="#notmatch">NotMatch</a> - The field value does not match a regular expression pattern.</li>
+<li><a href="#notnull">NotNull</a> - The field value must not be null.</li>
+<li><a href="#null">Null</a> - The field value must not exist or be null.</li>
 <li><a href="#nullorempty">NullOrEmpty</a> - The object must not have the specified field or it must be empty.</li>
+<li><a href="#typeof">TypeOf</a> - The field value must be of the specified type.</li>
 <li><a href="#startswith">StartsWith</a> - The field value must match at least one prefix.</li>
 <li><a href="#version">Version</a> - The field value must be a semantic version string.</li>
 </ul>
@@ -440,12 +449,16 @@ If <code>expectedValue</code> is <code>$Null</code> the field value will not be 
 </code></pre>
 <h3 id="hasjsonschema">HasJsonSchema</h3>
 <p>The <code>HasJsonSchema</code> assertion method determines if the input object has a <code>$schema</code> property defined.
-If the <code>$schema</code> property is defined, it must match one of the supplied schemas.</p>
+If the <code>$schema</code> property is defined, it must match one of the supplied schemas.
+If a trailing <code>#</code> is specified it is ignored from the <code>$schema</code> property and <code>uri</code> parameter below.</p>
 <p>The following parameters are accepted:</p>
 <ul>
 <li><code>inputObject</code> - The object being compared.</li>
 <li><code>uri</code> - Optional.
 When specified, the object being compared must have a <code>$schema</code> property set to one of the specified schemas.</li>
+<li><code>ignoreScheme</code> - Optional.
+By default, <code>ignoreScheme</code> is <code>$False</code>.
+When <code>$True</code>, the schema will match if <code>http</code> or <code>https</code> is specified.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
@@ -458,6 +471,7 @@ When specified, the object being compared must have a <code>$schema</code> prope
 <pre><code class="lang-powershell">Rule 'HasFieldValue' {
     $Assert.HasJsonSchema($TargetObject)
     $Assert.HasJsonSchema($TargetObject, &quot;http://json-schema.org/draft-07/schema`#&quot;)
+    $Assert.HasJsonSchema($TargetObject, &quot;https://json-schema.org/draft-07/schema&quot;, $True)
 }
 </code></pre>
 <h3 id="jsonschema">JsonSchema</h3>
@@ -506,6 +520,83 @@ When an empty array is specified, <code>In</code> will always fail.</li>
     $Assert.In($TargetObject, 'Sku.tier', @('PremiumV2', 'Premium', 'Standard'), $True)
 }
 </code></pre>
+<h3 id="isarray">IsArray</h3>
+<p>The <code>IsArray</code> assertion method checks the field value is an array type.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is null.</em></li>
+<li><em>The field value '{1}' of type {0} is not [array].</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'IsArray' {
+    # Require Value1 to be an array
+    $Assert.IsArray($TargetObject, 'Value1')
+}
+</code></pre>
+<h3 id="isboolean">IsBoolean</h3>
+<p>The <code>IsBoolean</code> assertion method checks the field value is a boolean type.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+<li><code>convert</code> (optional) - Try to convert strings.
+By default strings are not converted.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is null.</em></li>
+<li><em>The field value '{1}' of type {0} is not [bool].</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'IsBoolean' {
+    # Require Value1 to be a boolean
+    $Assert.IsBoolean($TargetObject, 'Value1')
+
+    # Require Value1 to be a boolean or a boolean string
+    $Assert.IsBoolean($TargetObject, 'Value1', $True)
+}
+</code></pre>
+<h3 id="isinteger">IsInteger</h3>
+<p>The <code>IsInteger</code> assertion method checks the field value is a integer type.
+The following types are considered integer types <code>int</code>, <code>long</code>, <code>byte</code>.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+<li><code>convert</code> (optional) - Try to convert strings.
+By default strings are not converted.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is null.</em></li>
+<li><em>The field value '{1}' of type {0} is not an integer.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'IsInteger' {
+    # Require Value1 to be an integer
+    $Assert.IsInteger($TargetObject, 'Value1')
+
+    # Require Value1 to be an integer or a integer string
+    $Assert.IsInteger($TargetObject, 'Value1', $True)
+}
+</code></pre>
 <h3 id="islower">IsLower</h3>
 <p>The <code>IsLower</code> assertion method checks the field value uses only lowercase characters.
 Non-letter characters are ignored by default and will pass.</p>
@@ -532,6 +623,56 @@ Non-letter characters are ignored by default.</li>
 
     # Require Name to only contain lowercase letters
     $Assert.IsLower($TargetObject, 'Name', $True)
+}
+</code></pre>
+<h3 id="isnumeric">IsNumeric</h3>
+<p>The <code>IsNumeric</code> assertion method checks the field value is a numeric type.
+The following types are considered numeric types <code>int</code>, <code>long</code>, <code>float</code>, <code>byte</code>, <code>double</code>.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+<li><code>convert</code> (optional) - Try to convert numerical strings.
+By default strings are not converted.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is null.</em></li>
+<li><em>The field value '{1}' of type {0} is not numeric.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'IsNumeric' {
+    # Require Value1 to be numeric
+    $Assert.IsNumeric($TargetObject, 'Value1')
+
+    # Require Value1 to be numeric or a numerical string
+    $Assert.IsNumeric($TargetObject, 'Value1', $True)
+}
+</code></pre>
+<h3 id="isstring">IsString</h3>
+<p>The <code>IsString</code> assertion method checks the field value is a string type.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is null.</em></li>
+<li><em>The field value '{1}' of type {0} is not [string].</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'IsString' {
+    # Require Value1 to be a string
+    $Assert.IsString($TargetObject, 'Value1')
 }
 </code></pre>
 <h3 id="isupper">IsUpper</h3>
@@ -646,6 +787,29 @@ Case is ignored by default.</li>
     $Assert.Match($TargetObject, 'value', '^[a-z]*$', $True)
 }
 </code></pre>
+<h3 id="nothasfield">NotHasField</h3>
+<p>The <code>NotHasField</code> assertion method checks the object does not have any of the specified fields.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of one or more fields to check.
+By default, a case insensitive compare is used.
+If more than one field is specified, all must not exist.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field name.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' exists.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'NotHasField' {
+    $Assert.NotHasField($TargetObject, 'Name')
+    $Assert.NotHasField($TargetObject, 'tag.Environment', $True)
+    $Assert.NotHasField($TargetObject, @('tag.Environment', 'tag.Env'), $True)
+}
+</code></pre>
 <h3 id="notin">NotIn</h3>
 <p>The <code>NotIn</code> assertion method checks the field value is not in a set of values.
 The field value can either be an integer, array, float, or string.
@@ -699,6 +863,52 @@ Case is ignored by default.</li>
     $Assert.NotMatch($TargetObject, 'value', '^[a-z]*$', $True)
 }
 </code></pre>
+<h3 id="notnull">NotNull</h3>
+<p>The <code>NotNull</code> assertion method checks the field value of the object is not null.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is null.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'NotNull' {
+    $Assert.NotNull($TargetObject, 'Name')
+    $Assert.NotNull($TargetObject, 'tag.Environment')
+}
+</code></pre>
+<h3 id="null">Null</h3>
+<p>The <code>Null</code> assertion method checks the field value of the object is null.</p>
+<p>A field value is null if any of the following are true:</p>
+<ul>
+<li>The field does not exist.</li>
+<li>The field value is <code>$Null</code>.</li>
+</ul>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field value '{0}' is not null.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'Null' {
+    $Assert.Null($TargetObject, 'NotField')
+    $Assert.Null($TargetObject, 'tag.NullField')
+}
+</code></pre>
 <h3 id="nullorempty">NullOrEmpty</h3>
 <p>The <code>NullOrEmpty</code> assertion method checks the field value of the object is null or empty.</p>
 <p>A field value is null or empty if any of the following are true:</p>
@@ -724,6 +934,34 @@ This is a case insensitive compare.</li>
 <pre><code class="lang-powershell">Rule 'NullOrEmpty' {
     $Assert.NullOrEmpty($TargetObject, 'Name')
     $Assert.NullOrEmpty($TargetObject, 'tag.Environment')
+}
+</code></pre>
+<h3 id="typeof">TypeOf</h3>
+<p>The <code>TypeOf</code> assertion method checks the field value is a specified type.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+<li><code>type</code> - One or more specified types to check.
+The field value only has to match a single type of more than one type is specified.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The parameter 'type' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is null.</em></li>
+<li><em>The field value '{2}' of type {1} is not {0}.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'TypeOf' {
+    # Require Value1 to be [int]
+    $Assert.TypeOf($TargetObject, 'Value1', [int])
+
+    # Require Value1 to be [int] or [long]
+    $Assert.TypeOf($TargetObject, 'Value1', @([int], [long]))
 }
 </code></pre>
 <h3 id="startswith">StartsWith</h3>
@@ -874,7 +1112,8 @@ The reason text is automatically formatted with any parameters provided.</p>
 <h3 id="authoring-assertion-methods">Authoring assertion methods</h3>
 <p>The following built-in helper methods are provided for working with <code>$Assert</code> when authoring new assertion methods:</p>
 <ul>
-<li><code>Create(&lt;bool&gt; condition, &lt;string&gt; reason)</code> - Returns a result either pass or fail assertion result.</li>
+<li><code>Create(&lt;bool&gt; condition, &lt;string&gt; reason, params &lt;object[]&gt; args)</code> - Returns a result either pass or fail assertion result.
+Additional arguments can be provided to format the custom reason string.</li>
 <li><code>Pass()</code> - Returns a pass assertion result.</li>
 <li><code>Fail()</code> - Results a fail assertion result.</li>
 <li><code>Fail(&lt;string&gt; reason, params &lt;object[]&gt; args)</code> - Results a fail assertion result with a custom reason.

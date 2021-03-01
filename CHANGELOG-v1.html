@@ -64,6 +64,146 @@
 
 <p>See <a href="upgrade-notes.html">upgrade notes</a> for helpful information when upgrading from previous versions.</p>
 <h2 id="unreleased">Unreleased</h2>
+<h2 id="v110">v1.1.0</h2>
+<p>What's changed since v1.0.3:</p>
+<ul>
+<li>Engine features:
+<ul>
+<li>Added assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/640">#640</a>
+<ul>
+<li>Added <code>NotHasField</code> to check object does not have any of the specified fields.</li>
+<li>Added <code>Null</code> to check field value is null.</li>
+<li>Added <code>NotNull</code> to check field value is not null.</li>
+</ul>
+</li>
+<li>Added type assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/635">#635</a>
+<ul>
+<li>Added <code>IsNumeric</code> to check field value is a numeric types.</li>
+<li>Added <code>IsInteger</code> to check field value is an integer types.</li>
+<li>Added <code>IsBoolean</code> to check field value is a boolean.</li>
+<li>Added <code>IsArray</code> to check field value is an array.</li>
+<li>Added <code>IsString</code> to check field value is a string.</li>
+<li>Added <code>TypeOf</code> to check field value is a specified type.</li>
+</ul>
+</li>
+<li>Added content helpers. <a href="https://github.com/microsoft/PSRule/issues/637">#637</a>
+<ul>
+<li>Added <code>$PSRule.GetContentFirstOrDefault</code> to get content and return the first object.</li>
+<li>Added <code>$PSRule.GetContentField</code> to get the field from content objects.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>General improvements:
+<ul>
+<li>Updated <code>HasJsonSchema</code> assertion helper. <a href="https://github.com/microsoft/PSRule/issues/636">#636</a>
+<ul>
+<li>The URI scheme can optionally be ignored for <code>http://</code> or <code>https://</code> URIs.</li>
+<li>The fragment <code>#</code> is ignored.</li>
+</ul>
+</li>
+<li>Added support for <code>-Outcome</code> and <code>-As</code> to produce filtered output from <code>Assert-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/643">#643</a>
+<ul>
+<li>Configure <code>Output.As</code> with <code>Summary</code> to produce summarized results per object.</li>
+<li>Configure <code>Output.Outcome</code> to limit output to <code>Fail</code> or <code>Error</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>What's changed since pre-release v1.1.0-B2102029:</p>
+<ul>
+<li>No additional changes.</li>
+</ul>
+<h2 id="v110-b2102029-pre-release">v1.1.0-B2102029 (pre-release)</h2>
+<p>What's changed since pre-release v1.1.0-B2102024:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added support for <code>-Outcome</code> and <code>-As</code> to produce filtered output from <code>Assert-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/643">#643</a>
+<ul>
+<li>Configure <code>Output.As</code> with <code>Summary</code> to produce summarized results per object.</li>
+<li>Configure <code>Output.Outcome</code> to limit output to <code>Fail</code> or <code>Error</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v110-b2102024-pre-release">v1.1.0-B2102024 (pre-release)</h2>
+<p>What's changed since pre-release v1.1.0-B2102019:</p>
+<ul>
+<li>Engine features:
+<ul>
+<li>Added assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/640">#640</a>
+<ul>
+<li>Added <code>NotHasField</code> to check object does not have any of the specified fields.</li>
+<li>Added <code>Null</code> to check field value is null.</li>
+<li>Added <code>NotNull</code> to check field value is not null.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v110-b2102019-pre-release">v1.1.0-B2102019 (pre-release)</h2>
+<p>What's changed since v1.0.3:</p>
+<ul>
+<li>Engine features:
+<ul>
+<li>Added type assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/635">#635</a>
+<ul>
+<li>Added <code>IsNumeric</code> to check field value is a numeric types.</li>
+<li>Added <code>IsInteger</code> to check field value is an integer types.</li>
+<li>Added <code>IsBoolean</code> to check field value is a boolean.</li>
+<li>Added <code>IsArray</code> to check field value is an array.</li>
+<li>Added <code>IsString</code> to check field value is a string.</li>
+<li>Added <code>TypeOf</code> to check field value is a specified type.</li>
+</ul>
+</li>
+<li>Added content helpers. <a href="https://github.com/microsoft/PSRule/issues/637">#637</a>
+<ul>
+<li>Added <code>$PSRule.GetContentFirstOrDefault</code> to get content and return the first object.</li>
+<li>Added <code>$PSRule.GetContentField</code> to get the field from content objects.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>General improvements:
+<ul>
+<li>Updated <code>HasJsonSchema</code> assertion helper. <a href="https://github.com/microsoft/PSRule/issues/636">#636</a>
+<ul>
+<li>The URI scheme can optionally be ignored for <code>http://</code> or <code>https://</code> URIs.</li>
+<li>The fragment <code>#</code> is ignored.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v103">v1.0.3</h2>
+<p>What's changed since v1.0.2:</p>
+<ul>
+<li>Bug fixes:
+<ul>
+<li>Fixed reason reported fields for <code>HasField</code> and <code>HasFields</code> assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/632">#632</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v102">v1.0.2</h2>
+<p>What's changed since v1.0.1:</p>
+<ul>
+<li>Engineering:
+<ul>
+<li>Bump Manatee.Json from 13.0.4 to 13.0.5. <a href="https://github.com/microsoft/PSRule/pull/619">#619</a></li>
+</ul>
+</li>
+<li>Bug fixes:
+<ul>
+<li>Fixed <code>GetContent</code> processing of <code>InputFileInfo</code>. <a href="https://github.com/microsoft/PSRule/issues/625">#625</a></li>
+<li>Fixed null reference of rule reason with wide output. <a href="https://github.com/microsoft/PSRule/issues/626">#626</a></li>
+<li>Fixed markdown help handling of inline code blocks with <code>[</code>. <a href="https://github.com/microsoft/PSRule/issues/627">#627</a></li>
+<li>Fixed markdown help inclusion of fenced code blocks in notes and description. <a href="https://github.com/microsoft/PSRule/issues/628">#628</a></li>
+</ul>
+</li>
+</ul>
 <h2 id="v101">v1.0.1</h2>
 <p>What's changed since v1.0.0:</p>
 <ul>
