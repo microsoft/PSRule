@@ -61,6 +61,9 @@ function Invoke-PSRule {
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.BaselineOption]$Baseline,
 
+        [Parameter(Mandatory = $False)]
+        [String[]]$Convention,
+
         # A list of paths to check for rule definitions
         [Parameter(Mandatory = $False, Position = 0)]
         [Alias('p')]
@@ -154,6 +157,7 @@ function Invoke-PSRule {
         $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);
         $builder.Name($Name);
         $builder.Tag($Tag);
+        $builder.Convention($Convention);
         $builder.UseBaseline($Baseline);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
@@ -215,6 +219,9 @@ function Test-PSRuleTarget {
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'File', 'Detect')]
         [PSRule.Configuration.InputFormat]$Format,
+
+        [Parameter(Mandatory = $False)]
+        [String[]]$Convention,
 
         # A list of paths to check for rule definitions
         [Parameter(Mandatory = $False, Position = 0)]
@@ -300,6 +307,7 @@ function Test-PSRuleTarget {
         $builder = [PSRule.Pipeline.PipelineBuilder]::Test($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);
         $builder.Name($Name);
         $builder.Tag($Tag);
+        $builder.Convention($Convention);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $builder.InputPath($InputPath);
@@ -465,6 +473,9 @@ function Assert-PSRule {
         [PSRule.Configuration.BaselineOption]$Baseline,
 
         [Parameter(Mandatory = $False)]
+        [String[]]$Convention,
+
+        [Parameter(Mandatory = $False)]
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions')]
         [PSRule.Configuration.OutputStyle]$Style = [PSRule.Configuration.OutputStyle]::Client,
 
@@ -581,6 +592,7 @@ function Assert-PSRule {
         $builder = [PSRule.Pipeline.PipelineBuilder]::Assert($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);;
         $builder.Name($Name);
         $builder.Tag($Tag);
+        $builder.Convention($Convention);
         $builder.UseBaseline($Baseline);
         $builder.ResultVariable($ResultVariable);
 
@@ -1033,6 +1045,11 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [System.Boolean]$BindingUseQualifiedName = $False,
 
+        # Sets the Convention.Include option
+        [Parameter(Mandatory = $False)]
+        [Alias('ConventionInclude')]
+        [String[]]$Convention,
+
         # Sets the Execution.InconclusiveWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInconclusiveWarning')]
@@ -1234,6 +1251,11 @@ function Set-PSRuleOption {
         # Sets the Binding.UseQualifiedName option
         [Parameter(Mandatory = $False)]
         [System.Boolean]$BindingUseQualifiedName = $False,
+
+        # Sets the Convention.Include option
+        [Parameter(Mandatory = $False)]
+        [Alias('ConventionInclude')]
+        [String[]]$Convention,
 
         # Sets the Execution.InconclusiveWarning option
         [Parameter(Mandatory = $False)]
@@ -1635,6 +1657,31 @@ function Recommend {
     }
 }
 
+function Export-PSRuleConvention {
+    [CmdletBinding()]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory = $True, Position = 0)]
+        [String]$Name,
+
+        [Parameter(Mandatory = $False)]
+        [ScriptBlock]$Begin,
+
+        [Parameter(Mandatory = $False, Position = 1)]
+        [ScriptBlock]$Process,
+
+        [Parameter(Mandatory = $False)]
+        [ScriptBlock]$End,
+
+        [Parameter(Mandatory = $False)]
+        [ScriptBlock]$If
+    )
+    begin {
+        # This is just a stub to improve rule authoring and discovery
+        Write-Error -Message $LocalizedHelp.KeywordOutsideEngine -Category InvalidOperation;
+    }
+}
+
 #endregion Keywords
 
 #
@@ -1819,6 +1866,11 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [System.Boolean]$BindingUseQualifiedName = $False,
 
+        # Sets the Convention.Include option
+        [Parameter(Mandatory = $False)]
+        [Alias('ConventionInclude')]
+        [String[]]$Convention,
+
         # Sets the Execution.InconclusiveWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInconclusiveWarning')]
@@ -1926,9 +1978,14 @@ function SetOptions {
             $Option.Binding.TargetType = $TargetType;
         }
 
-         # Sets option Binding.UseQualifiedName
-         if ($PSBoundParameters.ContainsKey('BindingUseQualifiedName')) {
+        # Sets option Binding.UseQualifiedName
+        if ($PSBoundParameters.ContainsKey('BindingUseQualifiedName')) {
             $Option.Binding.UseQualifiedName = $BindingUseQualifiedName;
+        }
+
+        # Sets option Convention.Include
+        if ($PSBoundParameters.ContainsKey('Convention')) {
+            $Option.Convention.Include = $Convention;
         }
 
         # Sets option Execution.InconclusiveWarning
@@ -2070,6 +2127,7 @@ function InitEditorServices {
                 'Within'
                 'Reason'
                 'Recommend'
+                'Export-PSRuleConvention'
             );
 
             # Export variables

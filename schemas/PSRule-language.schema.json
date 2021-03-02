@@ -161,6 +161,9 @@
                 "configuration": {
                     "$ref": "#/definitions/configuration"
                 },
+                "convention": {
+                    "$ref": "#/definitions/convention-option"
+                },
                 "output": {
                     "type": "object",
                     "title": "Output options",
@@ -293,6 +296,23 @@
                     }
                 }
             ]
+        },
+        "convention-option": {
+            "type": "object",
+            "title": "Convention options",
+            "description": "Options that configure conventions.",
+            "properties": {
+                "include": {
+                    "type": "array",
+                    "title": "Include conventions",
+                    "description": "An ordered list of conventions to include.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                }
+            },
+            "additionalProperties": false
         }
     }
 }

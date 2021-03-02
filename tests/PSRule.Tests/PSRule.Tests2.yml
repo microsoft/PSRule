@@ -9,6 +9,12 @@ binding:
   - ResourceType
   - kind
 
+# Configure conventions
+convention:
+  include:
+  - 'Convention1'
+  - 'Convention2'
+
 # Configure input
 input:
   targetType:

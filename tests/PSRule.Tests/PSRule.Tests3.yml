@@ -5,6 +5,10 @@ binding:
   targetName: [ 'ResourceName' ]
   targetType: [ 'ResourceType' ]
 
+# Configure conventions
+convention:
+  include: [ 'Convention3' ]
+
 # Configure input
 input:
   targetType: [ 'virtualMachine' ]

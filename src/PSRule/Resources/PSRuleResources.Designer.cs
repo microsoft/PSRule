@@ -216,9 +216,9 @@ namespace PSRule.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The keyword &apos;{0}&apos; can not be nested in a Rule block..
         /// </summary>
-        internal static string KeywordScriptScope {
+        internal static string KeywordSourceScope {
             get {
-                return ResourceManager.GetString("KeywordScriptScope", resourceCulture);
+                return ResourceManager.GetString("KeywordSourceScope", resourceCulture);
             }
         }
         

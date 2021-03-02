@@ -36,6 +36,7 @@ namespace PSRule.Configuration
         private static readonly PSRuleOption Default = new PSRuleOption
         {
             Binding = BindingOption.Default,
+            Convention = ConventionOption.Default,
             Execution = ExecutionOption.Default,
             Input = InputOption.Default,
             Logging = LoggingOption.Default,
@@ -57,6 +58,7 @@ namespace PSRule.Configuration
             // Set defaults
             Binding = new BindingOption();
             Configuration = new ConfigurationOption();
+            Convention = new ConventionOption();
             Execution = new ExecutionOption();
             Input = new InputOption();
             Logging = new LoggingOption();
@@ -74,6 +76,7 @@ namespace PSRule.Configuration
             // Set from existing option instance
             Binding = new BindingOption(option?.Binding);
             Configuration = new ConfigurationOption(option?.Configuration);
+            Convention = new ConventionOption(option?.Convention);
             Execution = new ExecutionOption(option?.Execution);
             Input = new InputOption(option?.Input);
             Logging = new LoggingOption(option?.Logging);
@@ -90,6 +93,11 @@ namespace PSRule.Configuration
         public BindingOption Binding { get; set; }
 
         public ConfigurationOption Configuration { get; set; }
+
+        /// <summary>
+        /// Options that configure conventions.
+        /// </summary>
+        public ConventionOption Convention { get; set; }
 
         /// <summary>
         /// Options that affect script execution.
@@ -158,6 +166,7 @@ namespace PSRule.Configuration
             var result = new PSRuleOption(o1?.SourcePath ?? o2?.SourcePath, o1);
             result.Binding = BindingOption.Combine(result.Binding, o2?.Binding);
             result.Configuration = ConfigurationOption.Combine(result.Configuration, o2?.Configuration);
+            result.Convention = ConventionOption.Combine(result.Convention, o2?.Convention);
             result.Execution = ExecutionOption.Combine(result.Execution, o2?.Execution);
             result.Input = InputOption.Combine(result.Input, o2?.Input);
             result.Logging = LoggingOption.Combine(result.Logging, o2?.Logging);
@@ -300,13 +309,19 @@ namespace PSRule.Configuration
         public static implicit operator PSRuleOption(Hashtable hashtable)
         {
             var option = new PSRuleOption();
+            if (hashtable == null)
+                return option;
 
             // Build index to allow mapping
             var index = BuildIndex(hashtable);
 
             // Start loading matching values
 
-            if (index.TryPopValue("execution.languagemode", out object value))
+            if (index.TryPopValue("Convention.Include", out object value))
+            {
+                option.Convention.Include = AsStringArray(value);
+            }
+            if (index.TryPopValue("execution.languagemode", out value))
             {
                 option.Execution.LanguageMode = (LanguageMode)Enum.Parse(typeof(LanguageMode), (string)value);
             }
@@ -403,6 +418,7 @@ namespace PSRule.Configuration
             return other != null &&
                 Binding == other.Binding &&
                 Configuration == other.Configuration &&
+                Convention == other.Convention &&
                 Execution == other.Execution &&
                 Input == other.Input &&
                 Logging == other.Logging &&
@@ -419,6 +435,7 @@ namespace PSRule.Configuration
                 int hash = 17;
                 hash = hash * 23 + (Binding != null ? Binding.GetHashCode() : 0);
                 hash = hash * 23 + (Configuration != null ? Configuration.GetHashCode() : 0);
+                hash = hash * 23 + (Convention != null ? Convention.GetHashCode() : 0);
                 hash = hash * 23 + (Execution != null ? Execution.GetHashCode() : 0);
                 hash = hash * 23 + (Input != null ? Input.GetHashCode() : 0);
                 hash = hash * 23 + (Logging != null ? Logging.GetHashCode() : 0);

@@ -15,6 +15,11 @@ configuration:
   option2: 2
   option3: [ 'option3a', 'option3b' ]
 
+# Configure conventions
+convention:
+  include:
+  - 'Convention1'
+
 # Configure binding
 binding:
   field:

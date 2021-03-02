@@ -18,6 +18,23 @@
                 }
             ]
         },
+        "convention-option": {
+            "type": "object",
+            "title": "Convention options",
+            "description": "Options that configure conventions.",
+            "properties": {
+                "include": {
+                    "type": "array",
+                    "title": "Include conventions",
+                    "description": "An ordered list of conventions to include.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                }
+            },
+            "additionalProperties": false
+        },
         "binding-option": {
             "type": "object",
             "title": "Object binding",
@@ -398,6 +415,10 @@
                             "$ref": "#/definitions/configuration"
                         }
                     ]
+                },
+                "convention": {
+                    "type": "object",
+                    "$ref": "#/definitions/convention-option"
                 },
                 "execution": {
                     "type": "object",

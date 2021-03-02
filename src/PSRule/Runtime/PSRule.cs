@@ -15,16 +15,12 @@ namespace PSRule.Runtime
     /// <summary>
     /// A set of context properties that are exposed at runtime through the $PSRule variable.
     /// </summary>
-    public sealed class PSRule
+    public sealed class PSRule : ScopedItem
     {
-        private readonly RunspaceContext _Context;
-
         public PSRule() { }
 
         internal PSRule(RunspaceContext context)
-        {
-            _Context = context;
-        }
+            : base(context) { }
 
         /// <summary>
         /// Custom data set by the rule for this target object.
@@ -33,7 +29,8 @@ namespace PSRule.Runtime
         {
             get
             {
-                return _Context.RuleRecord.GetData();
+                RequireScope(RunspaceScope.Rule | RunspaceScope.Precondition | RunspaceScope.ConventionBegin | RunspaceScope.ConventionProcess);
+                return GetContext().Data;
             }
         }
 
@@ -44,7 +41,17 @@ namespace PSRule.Runtime
         {
             get
             {
-                return _Context.RuleRecord.Field;
+                RequireScope(RunspaceScope.Rule | RunspaceScope.Precondition);
+                return GetContext().RuleRecord.Field;
+            }
+        }
+
+        public IEnumerable<InvokeResult> Output
+        {
+            get
+            {
+                RequireScope(RunspaceScope.ConventionEnd);
+                return GetContext().Output;
             }
         }
 
@@ -55,7 +62,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                return _Context.RuleRecord.TargetObject;
+                return GetContext().RuleRecord.TargetObject;
             }
         }
 
@@ -66,7 +73,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                return _Context.RuleRecord.TargetName;
+                return GetContext().RuleRecord.TargetName;
             }
         }
 
@@ -77,7 +84,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                return _Context.RuleRecord.TargetType;
+                return GetContext().RuleRecord.TargetType;
             }
         }
 
@@ -93,11 +100,11 @@ namespace PSRule.Runtime
                 return new PSObject[] { sourceObject };
 
             var cacheKey = sourceObject.BaseObject.ToString();
-            if (_Context.Pipeline.ContentCache.TryGetValue(cacheKey, out PSObject[] result))
+            if (GetContext().Pipeline.ContentCache.TryGetValue(cacheKey, out PSObject[] result))
                 return result;
 
             result = PipelineReceiverActions.DetectInputFormat(sourceObject, PipelineReceiverActions.PassThru).ToArray();
-            _Context.Pipeline.ContentCache.Add(cacheKey, result);
+            GetContext().Pipeline.ContentCache.Add(cacheKey, result);
             return result;
         }
 

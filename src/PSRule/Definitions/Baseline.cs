@@ -19,6 +19,8 @@ namespace PSRule.Definitions
 
         ConfigurationOption Configuration { get; set; }
 
+        ConventionOption Convention { get; set; }
+
         RuleOption Rule { get; set; }
     }
 
@@ -82,6 +84,8 @@ namespace PSRule.Definitions
         public BindingOption Binding { get; set; }
 
         public ConfigurationOption Configuration { get; set; }
+
+        public ConventionOption Convention { get; set; }
 
         public RuleOption Rule { get; set; }
     }

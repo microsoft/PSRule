@@ -5,7 +5,7 @@ using PSRule.Annotations;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Host;
-using PSRule.Pipeline;
+using PSRule.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;

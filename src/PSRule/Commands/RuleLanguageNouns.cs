@@ -14,5 +14,6 @@ namespace PSRule.Commands
         public const string RuleDefinition = "RuleDefinition";
         public const string Recommendation = "Recommendation";
         public const string Reason = "Reason";
+        public const string Convention = "PSRuleConvention";
     }
 }

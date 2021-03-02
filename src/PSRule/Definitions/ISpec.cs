@@ -90,6 +90,14 @@ namespace PSRule.Definitions
     {
         private const string ANNOTATION_OBSOLETE = "obsolete";
 
+        private const string LooseModuleName = ".";
+        private const char ModuleSeparator = '\\';
+
+        internal static string GetId(string moduleName, string name)
+        {
+            return string.Concat(string.IsNullOrEmpty(moduleName) ? LooseModuleName : moduleName, ModuleSeparator, name);
+        }
+
         internal static bool IsObsolete(ResourceMetadata metadata)
         {
             if (metadata == null || metadata.Annotations == null || !metadata.Annotations.TryGetBool(ANNOTATION_OBSOLETE, out bool? obsolete))

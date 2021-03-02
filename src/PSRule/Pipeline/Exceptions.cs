@@ -268,6 +268,14 @@ namespace PSRule.Pipeline
         {
         }
 
+        public PipelineConfigurationException(string message) : base(message)
+        {
+        }
+
+        public PipelineConfigurationException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
         /// <summary>
         /// Creates a pipeline configuration exception.
         /// </summary>
@@ -310,7 +318,47 @@ namespace PSRule.Pipeline
         {
         }
 
+        public FailPipelineException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
         private FailPipelineException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+                throw new ArgumentNullException(nameof(info));
+
+            base.GetObjectData(info, context);
+        }
+    }
+
+    [Serializable]
+    public sealed class RuntimeScopeException : PipelineException
+    {
+        /// <summary>
+        /// Creates a rule runtime exception.
+        /// </summary>
+        public RuntimeScopeException()
+        {
+        }
+
+        /// <summary>
+        /// Creates a rule runtime exception.
+        /// </summary>
+        /// <param name="message">The detail of the exception.</param>
+        public RuntimeScopeException(string message) : base(message)
+        {
+        }
+
+        public RuntimeScopeException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        private RuntimeScopeException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 

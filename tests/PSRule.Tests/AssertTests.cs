@@ -2,10 +2,12 @@
 // Licensed under the MIT License.
 
 using PSRule.Pipeline;
+using PSRule.Runtime;
 using System;
 using System.IO;
 using System.Management.Automation;
 using Xunit;
+using Assert = Xunit.Assert;
 
 namespace PSRule
 {
@@ -855,8 +857,8 @@ namespace PSRule
         private static void SetContext()
         {
             var context = PipelineContext.New(new Configuration.PSRuleOption(), null, null, null, null);
-            context.ExecutionScope = ExecutionScope.Condition;
-            new RunspaceContext(context, null);
+            var runspace = new RunspaceContext(context, null);
+            runspace.PushScope(RunspaceScope.Rule);
         }
 
         private static PSObject GetObject(params (string name, object value)[] properties)
