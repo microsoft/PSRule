@@ -6,6 +6,10 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.2.0-B2103008 (pre-release)
+
+What's changed since v1.1.0:
+
 - Engine features:
   - Added support for extensibility with conventions. [#650](https://github.com/microsoft/PSRule/issues/650)
     - Conventions provide an extensibility point within PSRule to execution actions within the pipeline.
