@@ -13,6 +13,7 @@ This topic describes what options are available, when to and how to use them.
 
 The following workspace options are available for use:
 
+- [Convention.Include](#conventioninclude)
 - [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InconclusiveWarning](#executioninconclusivewarning)
 - [Execution.NotProcessedWarning](#executionnotprocessedwarning)
@@ -413,6 +414,36 @@ $option = New-PSRuleOption -BaselineConfiguration @{ appServiceMinInstanceCount 
 # YAML: Using the configuration property
 configuration:
   appServiceMinInstanceCount: 2
+```
+
+### Convention.Include
+
+Specifies conventions to execute when the pipeline run.
+Conventions are included by name and must be defined within files included in `-Path` or `-Module`.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Convention parameter
+$option = New-PSRuleOption -Convention 'Convention1', 'Convention2';
+```
+
+```powershell
+# PowerShell: Using the Convention.Include hashtable key
+$option = New-PSRuleOption -Option @{ 'Convention.Include' = $True };
+```
+
+```powershell
+# PowerShell: Using the Convention parameter to set YAML
+Set-PSRuleOption -Convention 'Convention1', 'Convention2';
+```
+
+```yaml
+# YAML: Using the convention/include property
+convention:
+  include:
+  - 'Convention1'
+  - 'Convention2'
 ```
 
 ### Execution.LanguageMode
@@ -1272,7 +1303,12 @@ Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
 
 # Configure required module versions
 requires:
-  PSRule.Rules.Azure: '>=0.13.0'
+  PSRule.Rules.Azure: '>=1.1.0'
+
+# Configure convention options
+convention:
+  include:
+  - 'Convention1'
 
 # Configure execution options
 execution:
@@ -1360,6 +1396,10 @@ rule:
 
 # Configure required module versions
 requires: { }
+
+# Configure convention options
+convention:
+  include: [ ]
 
 # Configure execution options
 execution:
