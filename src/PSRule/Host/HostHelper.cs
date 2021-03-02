@@ -2,9 +2,12 @@
 // Licensed under the MIT License.
 
 using PSRule.Annotations;
+using PSRule.Common;
 using PSRule.Definitions;
+using PSRule.Definitions.Conventions;
 using PSRule.Pipeline;
 using PSRule.Rules;
+using PSRule.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,6 +20,7 @@ using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization.NodeDeserializers;
+using Rule = PSRule.Rules.Rule;
 
 namespace PSRule.Host
 {
@@ -24,8 +28,9 @@ namespace PSRule.Host
     {
         public static Rule[] GetRule(Source[] source, RunspaceContext context, bool includeDependencies)
         {
-            var builder = new DependencyGraphBuilder<Rule>(includeDependencies: includeDependencies);
-            builder.Include(items: ToRule(GetLanguageBlock(context, source), context), filter: (b) => Match(context, b));
+            var blocks = GetLanguageBlock(context, source);
+            var builder = new DependencyGraphBuilder<Rule>(includeDependencies);
+            builder.Include(items: ToRule(blocks, context), filter: (b) => Match(context, b));
             return builder.GetItems();
         }
 
@@ -36,8 +41,10 @@ namespace PSRule.Host
 
         public static DependencyGraph<RuleBlock> GetRuleBlockGraph(Source[] source, RunspaceContext context)
         {
+            var blocks = GetLanguageBlock(context, source);
+            Import(GetConventions(blocks, context), context);
             var builder = new DependencyGraphBuilder<RuleBlock>(includeDependencies: true);
-            builder.Include(items: GetLanguageBlock(context, source).OfType<RuleBlock>(), filter: (b) => Match(context, b));
+            builder.Include(items: blocks.OfType<RuleBlock>(), filter: (b) => Match(context, b));
             return builder.Build();
         }
 
@@ -71,7 +78,7 @@ namespace PSRule.Host
         public static CommentMetadata GetCommentMeta(string path, int lineNumber, int offset)
         {
             var context = RunspaceContext.CurrentThread;
-            if (lineNumber < 0 || context.Pipeline.ExecutionScope == ExecutionScope.None || context.Source.SourceContentCache == null)
+            if (lineNumber < 0 || RunspaceContext.CurrentThread.IsScope(RunspaceScope.None)|| context.Source.SourceContentCache == null)
                 return new CommentMetadata();
 
             var lines = context.Source.SourceContentCache;
@@ -103,7 +110,7 @@ namespace PSRule.Host
         /// </summary>
         /// <param name="sources"></param>
         /// <returns></returns>
-        private static IEnumerable<ILanguageBlock> GetLanguageBlock(RunspaceContext context, Source[] sources)
+        private static ILanguageBlock[] GetLanguageBlock(RunspaceContext context, Source[] sources)
         {
             var results = new Collection<ILanguageBlock>();
             var ps = context.GetPowerShell();
@@ -111,7 +118,7 @@ namespace PSRule.Host
             try
             {
                 context.Writer.EnterScope("[Discovery.Rule]");
-                PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Script;
+                context.PushScope(RunspaceScope.Source);
 
                 // Process scripts
                 foreach (var source in sources)
@@ -154,7 +161,7 @@ namespace PSRule.Host
 
                         foreach (var ir in invokeResults)
                         {
-                            if (ir.BaseObject is RuleBlock block)
+                            if (ir.BaseObject is ILanguageBlock block)
                                 results.Add(block);
                         }
                     }
@@ -163,15 +170,15 @@ namespace PSRule.Host
             finally
             {
                 context.Writer.ExitScope();
-                PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.None;
+                context.PopScope(RunspaceScope.Source);
                 context.ExitSourceScope();
                 ps.Runspace = null;
                 ps.Dispose();
             }
-            return results;
+            return results.ToArray();
         }
 
-        private static IEnumerable<ILanguageBlock> ReadYamlObjects(Source[] sources, RunspaceContext context)
+        private static ILanguageBlock[] ReadYamlObjects(Source[] sources, RunspaceContext context)
         {
             var result = new Collection<ILanguageBlock>();
             var d = new DeserializerBuilder()
@@ -186,7 +193,7 @@ namespace PSRule.Host
             try
             {
                 context.Writer?.EnterScope("[Discovery.Resource]");
-                PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Yaml;
+                context.PushScope(RunspaceScope.Resource);
                 foreach (var source in sources)
                 {
                     foreach (var file in source.File)
@@ -215,7 +222,7 @@ namespace PSRule.Host
             finally
             {
                 context.Writer?.ExitScope();
-                context.Pipeline.ExecutionScope = ExecutionScope.None;
+                context.PopScope(RunspaceScope.Resource);
                 context.ExitSourceScope();
             }
             return result.Count == 0 ? Array.Empty<ILanguageBlock>() : result.ToArray();
@@ -376,28 +383,69 @@ namespace PSRule.Host
             return results.Values.ToArray();
         }
 
-        private static void Import(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+        /// <summary>
+        /// Get conventions.
+        /// </summary>
+        private static IConvention[] GetConventions(ILanguageBlock[] blocks, RunspaceContext context)
+        {
+            // Index by Id
+            var index = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var results = new List<IConvention>(blocks.Length);
+            try
+            {
+                foreach (var block in blocks.OfType<ScriptBlockConvention>())
+                {
+                    // Ignore blocks that don't match
+                    if (!Match(context, block, out int order))
+                        continue;
+
+                    if (!index.Contains(block.Id))
+                        results.AddOrInsert(order, block);
+                }
+            }
+            finally
+            {
+                context.ExitSourceScope();
+            }
+            return results.ToArray();
+        }
+
+        private static void Import(ILanguageBlock[] blocks, RunspaceContext context)
         {
             foreach (var resource in blocks.OfType<IResource>().ToArray())
                 context.Pipeline.Import(resource);
         }
 
+        private static void Import(IConvention[] blocks, RunspaceContext context)
+        {
+            foreach (var resource in blocks)
+                context.Import(resource);
+        }
+
         private static bool Match(RunspaceContext context, RuleBlock resource)
         {
-            var scope = context.EnterSourceScope(source: resource.Source);
+            var scope = context.EnterSourceScope(resource.Source);
             return scope.Filter.Match(resource.RuleName, resource.Tag);
         }
 
         private static bool Match(RunspaceContext context, Rule resource)
         {
-            var scope = context.EnterSourceScope(source: resource.Source);
+            var scope = context.EnterSourceScope(resource.Source);
             return scope.Filter.Match(resource.RuleName, resource.Tag);
         }
 
         private static bool Match(RunspaceContext context, Baseline resource)
         {
-            var scope = context.EnterSourceScope(source: resource.Source);
+            var scope = context.EnterSourceScope(resource.Source);
             return scope.Filter.Match(resource.Name, null);
+        }
+
+        private static bool Match(RunspaceContext context, ScriptBlockConvention block, out int order)
+        {
+            context.EnterSourceScope(block.Source);
+            order = int.MaxValue;
+            var filter = context.Pipeline.Baseline.GetConventionFilter();
+            return filter.Match(block.Name, null) || filter.Match(block.Id, null);
         }
     }
 }

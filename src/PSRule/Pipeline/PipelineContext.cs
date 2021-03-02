@@ -4,7 +4,6 @@
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Host;
-using PSRule.Rules;
 using PSRule.Runtime;
 using System;
 using System.Collections;
@@ -40,7 +39,7 @@ namespace PSRule.Pipeline
 
         internal PSRuleOption Option;
 
-        internal ExecutionScope ExecutionScope;
+        //internal ExecutionScope ExecutionScope;
 
         internal readonly Dictionary<string, Hashtable> LocalizedDataCache;
         internal readonly Dictionary<string, object> ExpressionCache;

@@ -6,6 +6,12 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+- Engine features:
+  - Added support for extensibility with conventions. [#650](https://github.com/microsoft/PSRule/issues/650)
+    - Conventions provide an extensibility point within PSRule to execution actions within the pipeline.
+    - A convention can expose `Begin`, `Process`, and `End` blocks.
+    - In additional to within rules `$PSRule.Data` can be accessed from `Begin` and `Process` blocks.
+
 ## v1.1.0
 
 What's changed since v1.0.3:

@@ -1,0 +1,87 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+#
+# Unit tests for conventions
+#
+
+[CmdletBinding()]
+param ()
+
+# Setup error handling
+$ErrorActionPreference = 'Stop';
+Set-StrictMode -Version latest;
+
+if ($Env:SYSTEM_DEBUG -eq 'true') {
+    $VerbosePreference = 'Continue';
+}
+
+# Setup tests paths
+$rootPath = $PWD;
+
+Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
+
+$here = (Resolve-Path $PSScriptRoot).Path;
+$outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Conventions;
+Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
+$Null = New-Item -Path $outputPath -ItemType Directory -Force;
+
+Describe 'PSRule -- Conventions' -Tag 'Conventions' {
+    $rulePath = Join-Path -Path $here -ChildPath 'FromFileConventions.Rule.ps1';
+
+    Context 'With -Convention' {
+        $invokeParams = @{
+            Path = $rulePath
+            InputObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+                IfTest = 0
+            }
+        }
+        It 'Uses convention' {
+            # Single convention
+            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Convention 'Convention1');
+            $result | Should -Not -BeNullOrEmpty;
+            $result[0].Outcome | Should -Be 'Pass';
+            $result[0].Data.count | Should -Be 2;
+
+            # Multiple conventions
+            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Convention 'Convention1','Convention2','Convention3');
+            $result | Should -Not -BeNullOrEmpty;
+            $result[0].Outcome | Should -Be 'Fail';
+            $result[0].Data.count | Should -Be 110;
+
+            # With -If condition
+            $invokeParams.InputObject.IfTest = 1;
+            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Convention 'Convention1','Convention2','Convention3');
+            $result | Should -Not -BeNullOrEmpty;
+            $result[0].Outcome | Should -Be 'Fail';
+            $result[0].Data.count | Should -Be 1110;
+        }
+
+        It 'From module' {
+            $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule4';
+            $Null = Import-Module $testModuleSourcePath;
+
+            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Module 'TestModule4' -Convention 'M4.Convention1');
+            $result | Should -Not -BeNullOrEmpty;
+            $result[0].Data.M4 | Should -Be 1;
+            $result[0].Data.M4C2 | Should -Be 1;
+
+            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Module 'TestModule4' -Convention 'TestModule4\M4.Convention1' -Verbose -Debug);
+            $result | Should -Not -BeNullOrEmpty;
+            $result[0].Data.M4 | Should -Be 1;
+            $result[0].Data.M4C2 | Should -Be 1;
+        }
+
+        It 'Processes conventions in order' {
+            $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule4';
+            $Null = Import-Module $testModuleSourcePath;
+
+            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Module 'TestModule4' -Convention 'Convention1' -Option @{
+                'Convention.Include' = 'TestModule4\M4.Convention1'
+            });
+            $result | Should -Not -BeNullOrEmpty;
+            $result[0].Data.Order | Should -Be 'Convention1|M4.Convention1|M4.Convention2|';
+        }
+    }
+}

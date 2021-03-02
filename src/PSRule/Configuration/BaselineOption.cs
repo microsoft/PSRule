@@ -34,6 +34,8 @@ namespace PSRule.Configuration
 
             public ConfigurationOption Configuration { get; set; }
 
+            public ConventionOption Convention { get; set; }
+
             public RuleOption Rule { get; set; }
         }
 

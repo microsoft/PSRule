@@ -4,6 +4,7 @@
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
+using PSRule.Runtime;
 using System;
 using System.Collections;
 using System.Management.Automation;
@@ -109,12 +110,13 @@ namespace PSRule.Commands
 
         protected static bool IsRuleScope()
         {
-            return PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition || PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Precondition;
+            return RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule) ||
+                RunspaceContext.CurrentThread.IsScope(RunspaceScope.Precondition);
         }
 
         protected static bool IsConditionScope()
         {
-            return PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition;
+            return RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule);
         }
 
         protected static RuleException RuleScopeException(string keyword)

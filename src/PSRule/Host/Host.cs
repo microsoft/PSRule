@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Commands;
-using PSRule.Pipeline;
+using PSRule.Runtime;
 using System;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
@@ -142,6 +142,7 @@ namespace PSRule.Host
         private readonly static SessionStateCmdletEntry[] BuiltInCmdlets = new SessionStateCmdletEntry[]
         {
             new SessionStateCmdletEntry("New-RuleDefinition", typeof(NewRuleDefinitionCommand), null),
+            new SessionStateCmdletEntry("Export-PSRuleConvention", typeof(ExportConventionCommand), null),
             new SessionStateCmdletEntry("Write-Recommendation", typeof(WriteRecommendationCommand), null),
             new SessionStateCmdletEntry("Write-Reason", typeof(WriteReasonCommand), null),
             new SessionStateCmdletEntry("Assert-Exists", typeof(AssertExistsCommand), null),

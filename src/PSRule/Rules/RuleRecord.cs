@@ -19,7 +19,7 @@ namespace PSRule.Rules
     [JsonObject]
     public sealed class RuleRecord
     {
-        internal RuleRecord(string ruleId, string ruleName, PSObject targetObject, string targetName, string targetType, TagSet tag, RuleHelpInfo info, Hashtable field, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
+        internal RuleRecord(string ruleId, string ruleName, PSObject targetObject, string targetName, string targetType, TagSet tag, RuleHelpInfo info, Hashtable field, Hashtable data, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
             RuleId = ruleId;
             RuleName = ruleName;
@@ -35,7 +35,7 @@ namespace PSRule.Rules
                 Field = field;
 
             // Limit allocations for most scenarios. Runtime calls GetData().
-            Data = null;
+            Data = data;
         }
 
         /// <summary>
@@ -146,17 +146,6 @@ namespace PSRule.Rules
                 sb.AppendLine(Reason[i]);
 
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// Safe call to Data.
-        /// </summary>
-        internal Hashtable GetData()
-        {
-            if (Data == null)
-                Data = new Hashtable();
-
-            return Data;
         }
     }
 }

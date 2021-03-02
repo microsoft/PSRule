@@ -329,6 +329,43 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Convention.Include' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Convention.Include | Should -Be $Null;
+        }
+
+        It 'from Hashtable' {
+            # With single item
+            $option = New-PSRuleOption -Option @{ 'Convention.Include' = 'Convention1' };
+            $option.Convention.Include | Should -BeIn 'Convention1';
+
+            # With array
+            $option = New-PSRuleOption -Option @{ 'Convention.Include' = 'Convention1', 'Convention2' };
+            $option.Convention.Include.Length | Should -Be 2;
+            $option.Convention.Include | Should -BeIn 'Convention1', 'Convention2';
+        }
+
+        It 'from YAML' {
+            # With single item
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Convention.Include | Should -BeIn 'Convention1';
+
+            # With array
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests2.yml');
+            $option.Convention.Include | Should -BeIn 'Convention1', 'Convention2';
+
+            # With flat single item
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests3.yml');
+            $option.Convention.Include | Should -BeIn 'Convention3';
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -Convention 'Convention1', 'Convention2' -Path $emptyOptionsFilePath;
+            $option.Convention.Include | Should -BeIn 'Convention1', 'Convention2';
+        }
+    }
+
     Context 'Read Execution.LanguageMode' {
         It 'from default' {
             $option = New-PSRuleOption -Default;

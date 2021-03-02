@@ -173,7 +173,7 @@
   <data name="KeywordRuleScope" xml:space="preserve">
     <value>The keyword '{0}' can only be used within a Rule block or script precondition.</value>
   </data>
-  <data name="KeywordScriptScope" xml:space="preserve">
+  <data name="KeywordSourceScope" xml:space="preserve">
     <value>The keyword '{0}' can not be nested in a Rule block.</value>
   </data>
   <data name="LaunchBrowser" xml:space="preserve">

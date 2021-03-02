@@ -115,6 +115,7 @@ namespace PSRule.Pipeline
         private string[] _Include;
         private Hashtable _Tag;
         private BaselineOption _Baseline;
+        private string[] _Convention;
 
         private readonly HostPipelineWriter _Output;
 
@@ -146,12 +147,21 @@ namespace PSRule.Pipeline
             _Tag = tag;
         }
 
+        public void Convention(string[] convention)
+        {
+            if (convention == null || convention.Length == 0)
+                return;
+
+            _Convention = convention;
+        }
+
         public virtual IPipelineBuilder Configure(PSRuleOption option)
         {
             if (option == null)
                 return this;
 
             Option.Binding = new BindingOption(option.Binding);
+            Option.Convention = new ConventionOption(option.Convention);
             Option.Execution = new ExecutionOption(option.Execution);
             Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
             Option.Input = new InputOption(option.Input);
@@ -365,7 +375,7 @@ namespace PSRule.Pipeline
             // Baseline
             var baselineScope = new OptionContext.BaselineScope(type: OptionContext.ScopeType.Workspace, baselineId: null, moduleName: null, option: Option, obsolete: false);
             result.Add(baselineScope);
-            baselineScope = new OptionContext.BaselineScope(type: OptionContext.ScopeType.Parameter, include: _Include, tag: _Tag);
+            baselineScope = new OptionContext.BaselineScope(type: OptionContext.ScopeType.Parameter, include: _Include, tag: _Tag, convention: _Convention);
             result.Add(baselineScope);
 
             // Config

@@ -6,6 +6,10 @@ metadata:
 spec:
   configuration:
     ruleConfig3: 'TestConfig3'
+  convention:
+    include:
+    - 'M4.Convention2'
+    - 'M4.Convention3'
   output:
     culture:
     - 'en-US'

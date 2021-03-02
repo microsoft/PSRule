@@ -23,8 +23,8 @@ namespace PSRule.Pipeline
         Precondition = 3,
 
         /// <summary>
-        /// Execuition is currently parsing YAML objects.
+        /// Execution is currently parsing YAML objects.
         /// </summary>
-        Yaml = 4
+        Resource = 4
     }
 }

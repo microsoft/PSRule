@@ -3,7 +3,9 @@
 
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.Conventions;
 using PSRule.Rules;
+using PSRule.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +46,7 @@ namespace PSRule.Pipeline
         private RuleFilter _Filter;
         private Dictionary<string, object> _Configuration;
         private string[] _Culture;
+        private ConventionFilter _ConventionFilter;
 
         internal OptionContext()
         {
@@ -85,6 +88,8 @@ namespace PSRule.Pipeline
             // Configuration
             public Dictionary<string, object> Configuration;
 
+            public ConventionOption Convention;
+
             // Binding
             public FieldMap Field;
             public bool? IgnoreCase;
@@ -109,14 +114,19 @@ namespace PSRule.Pipeline
                 Tag = option.Rule?.Tag;
                 Configuration = option.Configuration != null ?
                     new Dictionary<string, object>(option.Configuration, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                Convention = new ConventionOption(option.Convention);
             }
 
-            public BaselineScope(ScopeType type, string[] include, Hashtable tag)
+            public BaselineScope(ScopeType type, string[] include, Hashtable tag, string[] convention)
                 : base(type, null)
             {
                 Include = include;
                 Tag = tag;
                 Configuration = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                Convention = convention == null || convention.Length == 0 ? new ConventionOption() : new ConventionOption
+                {
+                    Include = convention
+                };
             }
         }
 
@@ -124,6 +134,8 @@ namespace PSRule.Pipeline
         {
             // Configuration
             public Dictionary<string, object> Configuration;
+
+            public ConventionOption Convention;
 
             // Binding
             public FieldMap Field;
@@ -148,6 +160,7 @@ namespace PSRule.Pipeline
                 Culture = option.Output?.Culture;
                 Configuration = option.Configuration != null ?
                     new Dictionary<string, object>(option.Configuration, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                Convention = new ConventionOption(option.Convention);
             }
 
             public ConfigScope(ScopeType type, string moduleName, ModuleConfigSpec spec)
@@ -162,6 +175,7 @@ namespace PSRule.Pipeline
                 Culture = spec.Output?.Culture;
                 Configuration = spec.Configuration != null ?
                     new Dictionary<string, object>(spec.Configuration, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                Convention = new ConventionOption(spec.Convention);
             }
         }
 
@@ -229,6 +243,7 @@ namespace PSRule.Pipeline
             _Configuration = null;
             _Filter = null;
             _Culture = null;
+            _ConventionFilter = null;
         }
 
         public IResourceFilter RuleFilter()
@@ -240,6 +255,24 @@ namespace PSRule.Pipeline
             string[] exclude = _Explicit?.Exclude ?? _WorkspaceBaseline?.Exclude ?? _ModuleBaseline?.Exclude;
             Hashtable tag = _Parameter?.Tag ?? _Explicit?.Tag ?? _WorkspaceBaseline?.Tag ?? _ModuleBaseline?.Tag;
             return _Filter = new RuleFilter(include, tag, exclude);
+        }
+
+        public IResourceFilter GetConventionFilter()
+        {
+            if (_ConventionFilter != null)
+                return _ConventionFilter;
+
+            var include = new List<string>();
+            for (var i = 0; _Parameter?.Convention?.Include != null && i < _Parameter.Convention.Include.Length; i++)
+                include.Add(_Parameter.Convention.Include[i]);
+
+            for (var i = 0; _WorkspaceConfig?.Convention?.Include != null && i < _WorkspaceConfig.Convention.Include.Length; i++)
+                include.Add(_WorkspaceConfig.Convention.Include[i]);
+
+            for (var i = 0; _ModuleConfig?.Convention?.Include != null && i < _ModuleConfig.Convention.Include.Length; i++)
+                include.Add(ResourceHelper.GetId(_ModuleConfig.ModuleName, _ModuleConfig.Convention.Include[i]));
+
+            return _ConventionFilter = new ConventionFilter(include.ToArray());
         }
 
         public IBindingOption GetTargetBinding()

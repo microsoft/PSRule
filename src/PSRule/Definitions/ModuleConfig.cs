@@ -63,6 +63,8 @@ namespace PSRule.Definitions
 
         public ConfigurationOption Configuration { get; set; }
 
+        public ConventionOption Convention { get; set; }
+
         public OutputOption Output { get; set; }
     }
 }

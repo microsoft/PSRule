@@ -63,7 +63,7 @@ namespace PSRule.Runtime
             result = assert.Result;
 
             // Complete results
-            if (PipelineContext.CurrentThread.ExecutionScope == ExecutionScope.Condition)
+            if (RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule))
                 assert.Complete();
 
             return true;
