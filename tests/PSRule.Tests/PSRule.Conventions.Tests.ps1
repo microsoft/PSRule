@@ -67,7 +67,7 @@ Describe 'PSRule -- Conventions' -Tag 'Conventions' {
             $result[0].Data.M4 | Should -Be 1;
             $result[0].Data.M4C2 | Should -Be 1;
 
-            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Module 'TestModule4' -Convention 'TestModule4\M4.Convention1' -Verbose -Debug);
+            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Module 'TestModule4' -Convention 'TestModule4\M4.Convention1');
             $result | Should -Not -BeNullOrEmpty;
             $result[0].Data.M4 | Should -Be 1;
             $result[0].Data.M4C2 | Should -Be 1;

@@ -86,7 +86,7 @@ namespace PSRule.Commands
                 startLineNumber: Body.Ast.Extent.StartLineNumber
             );
 
-            context.VerboseFoundRule(ruleName: Name, moduleName: source.ModuleName, scriptName: MyInvocation.ScriptName);
+            context.VerboseFoundResource(name: Name, moduleName: source.ModuleName, scriptName: MyInvocation.ScriptName);
 
             CheckDependsOn();
             var ps = GetCondition(context);

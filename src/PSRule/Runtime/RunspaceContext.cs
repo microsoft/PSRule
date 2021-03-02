@@ -253,13 +253,13 @@ namespace PSRule.Runtime
             Writer.WriteVerbose($"[PSRule][D] -- Discovering rules in: {path}");
         }
 
-        public void VerboseFoundRule(string ruleName, string moduleName, string scriptName)
+        public void VerboseFoundResource(string name, string moduleName, string scriptName)
         {
             if (Writer == null || !Writer.ShouldWriteVerbose())
                 return;
 
             var m = string.IsNullOrEmpty(moduleName) ? "." : moduleName;
-            Writer.WriteVerbose($"[PSRule][D] -- Found {m}\\{ruleName} in {scriptName}");
+            Writer.WriteVerbose($"[PSRule][D] -- Found {m}\\{name} in {scriptName}");
         }
 
         public void VerboseObjectStart()
