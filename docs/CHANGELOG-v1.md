@@ -6,6 +6,10 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.2.0-B2103023 (pre-release)
+
+What's changed since pre-release v1.2.0-B2103016:
+
 - Engine features:
   - Added support for object expansion with conventions. [#661](https://github.com/microsoft/PSRule/issues/661)
     - Use the `$PSRule.Import` method to import child source objects into the pipeline.
@@ -23,7 +27,7 @@ What's changed since v1.1.0:
 
 - Engine features:
   - Added support for extensibility with conventions. [#650](https://github.com/microsoft/PSRule/issues/650)
-    - Conventions provide an extensibility point within PSRule to execution actions within the pipeline.
+    - Conventions provide an extensibility point within PSRule to execute actions within the pipeline.
     - A convention can expose `Begin`, `Process`, and `End` blocks.
     - In additional to within rules `$PSRule.Data` can be accessed from `Begin` and `Process` blocks.
 
