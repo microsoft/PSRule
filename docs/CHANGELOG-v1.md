@@ -6,6 +6,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.2.0-B2103008:
+
+- Bug fixes:
+  - Fixed dependent rule execution is skipped for consequent input objects. [#657](https://github.com/microsoft/PSRule/issues/657)
+
 ## v1.2.0-B2103008 (pre-release)
 
 What's changed since v1.1.0:
