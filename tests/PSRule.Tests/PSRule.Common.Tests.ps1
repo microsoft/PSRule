@@ -187,6 +187,31 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency2' }).Outcome | Should -Be 'None';
             ($result | Where-Object -FilterScript { $_.RuleName -eq 'WithDependency1' }).Outcome | Should -Be 'None';
 
+            # Multiple objects
+            $dependsRuleFilePath = Join-Path -Path $here -ChildPath 'FromFileDependency.Rule.ps1';
+            $result = @($True, $False, $True | Invoke-PSRule -Path $dependsRuleFilePath -Outcome All);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 15;
+            # True
+            $result[0..2].Outcome | Should -BeIn Pass;
+            $result[0..2].OutcomeReason | Should -BeIn Processed;
+            $result[3].Outcome | Should -BeIn Fail;
+            $result[3].OutcomeReason | Should -BeIn Processed;
+            $result[4].Outcome | Should -BeIn None;
+            $result[4].OutcomeReason | Should -BeIn DependencyFail;
+            # False
+            $result[5].Outcome | Should -BeIn Fail;
+            $result[5].OutcomeReason | Should -BeIn Processed;
+            $result[6..9].Outcome | Should -BeIn None;
+            $result[6..9].OutcomeReason | Should -BeIn DependencyFail;
+            # True
+            $result[10..12].Outcome | Should -BeIn Pass;
+            $result[10..12].OutcomeReason | Should -BeIn Processed;
+            $result[13].Outcome | Should -BeIn Fail;
+            $result[13].OutcomeReason | Should -BeIn Processed;
+            $result[14].Outcome | Should -BeIn None;
+            $result[14].OutcomeReason | Should -BeIn DependencyFail;
+
             # Same module, cross file
             $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule2';
             $Null = Import-Module $testModuleSourcePath;
@@ -247,7 +272,8 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         It 'Returns error with bad path' {
-            { $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'NotAFile.ps1') } | Should -Throw -ExceptionType System.IO.FileNotFoundException;
+            $notFilePath = Join-Path -Path $here -ChildPath 'NotAFile.ps1';
+            { $testObject | Invoke-PSRule -Path $notFilePath } | Should -Throw -ExceptionType System.IO.FileNotFoundException;
         }
 
         It 'Returns warning with empty path' {

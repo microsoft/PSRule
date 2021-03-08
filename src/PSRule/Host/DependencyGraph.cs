@@ -10,6 +10,7 @@ namespace PSRule.Host
     {
         private readonly Dictionary<string, DependencyTarget> _Index;
         private readonly DependencyTarget[] _Targets;
+        private readonly Dictionary<DependencyTarget, DependencyTargetState> _State;
 
         // Track whether Dispose has been called.
         private bool _Disposed;
@@ -18,6 +19,7 @@ namespace PSRule.Host
         {
             _Targets = new DependencyTarget[targets.Length];
             _Index = new Dictionary<string, DependencyTarget>(targets.Length);
+            _State = new Dictionary<DependencyTarget, DependencyTargetState>(targets.Length);
             Prepare(targets);
         }
 
@@ -45,12 +47,16 @@ namespace PSRule.Host
             public readonly DependencyGraph<T> Graph;
             public readonly T Value;
 
-            private DependencyTargetState State;
-
             public DependencyTarget(DependencyGraph<T> graph, T value)
             {
                 Graph = graph;
                 Value = value;
+            }
+
+            private DependencyTargetState State
+            {
+                get { return Graph._State.TryGetValue(this, out DependencyTargetState state) ? state : DependencyTargetState.None; }
+                set { Graph._State[this] = value; }
             }
 
             public bool Skipped
@@ -86,6 +92,7 @@ namespace PSRule.Host
 
         public IEnumerable<DependencyTarget> GetSingleTarget()
         {
+            _State.Clear();
             for (var t = 0; t < _Targets.Length; t++)
             {
                 var target = _Targets[t];

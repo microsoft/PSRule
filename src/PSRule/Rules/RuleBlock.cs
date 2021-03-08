@@ -20,7 +20,7 @@ namespace PSRule.Rules
     /// <summary>
     /// Define an instance of a rule block. Each rule block has a unique id.
     /// </summary>
-    [DebuggerDisplay("{RuleId} @{SourcePath}")]
+    [DebuggerDisplay("{RuleId} @{Source.Path}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     {
         internal RuleBlock(SourceFile source, string ruleName, RuleHelpInfo info, PowerShell condition, TagSet tag, string[] dependsOn, Hashtable configuration, RuleExtent extent, ActionPreference errorPreference)
