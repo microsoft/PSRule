@@ -37,10 +37,7 @@ namespace PSRule.Configuration
             Load(this, index);
         }
 
-        public int Count
-        {
-            get { return _Map.Count; }
-        }
+        public int Count => _Map.Count;
 
         public static implicit operator FieldMap(Hashtable hashtable)
         {

@@ -190,34 +190,64 @@ namespace PSRule.Benchmark
         }
 
         [Benchmark]
-        public void Invoke() => RunPipelineTargets(_InvokePipeline);
+        public void Invoke()
+        {
+            RunPipelineTargets(_InvokePipeline);
+        }
 
         [Benchmark]
-        public void InvokeIf() => RunPipelineTargets(_InvokeIfPipeline);
+        public void InvokeIf()
+        {
+            RunPipelineTargets(_InvokeIfPipeline);
+        }
 
         [Benchmark]
-        public void InvokeType() => RunPipelineTargets(_InvokeTypePipeline);
+        public void InvokeType()
+        {
+            RunPipelineTargets(_InvokeTypePipeline);
+        }
 
         [Benchmark]
-        public void InvokeSummary() => RunPipelineTargets(_InvokeSummaryPipeline);
+        public void InvokeSummary()
+        {
+            RunPipelineTargets(_InvokeSummaryPipeline);
+        }
 
         [Benchmark]
-        public void Assert() => RunPipelineTargets(_AssertPipeline);
+        public void Assert()
+        {
+            RunPipelineTargets(_AssertPipeline);
+        }
 
         [Benchmark]
-        public void Get() => RunPipelineNull(_GetPipeline);
+        public void Get()
+        {
+            RunPipelineNull(_GetPipeline);
+        }
 
         [Benchmark]
-        public void GetHelp() => RunPipelineNull(_GetHelpPipeline);
+        public void GetHelp()
+        {
+            RunPipelineNull(_GetHelpPipeline);
+        }
 
         [Benchmark]
-        public void Within() => RunPipelineTargets(_InvokeWithinPipeline);
+        public void Within()
+        {
+            RunPipelineTargets(_InvokeWithinPipeline);
+        }
 
         [Benchmark]
-        public void WithinBulk() => RunPipelineTargets(_InvokeWithinBulkPipeline);
+        public void WithinBulk()
+        {
+            RunPipelineTargets(_InvokeWithinBulkPipeline);
+        }
 
         [Benchmark]
-        public void WithinLike() => RunPipelineTargets(_InvokeWithinLikePipeline);
+        public void WithinLike()
+        {
+            RunPipelineTargets(_InvokeWithinLikePipeline);
+        }
 
         [Benchmark]
         public void DefaultTargetNameBinding()
@@ -255,7 +285,10 @@ namespace PSRule.Benchmark
         }
 
         [Benchmark]
-        public void AssertHasFieldValue() => RunPipelineTargets(_AssertHasFieldValuePipeline);
+        public void AssertHasFieldValue()
+        {
+            RunPipelineTargets(_AssertHasFieldValuePipeline);
+        }
 
         private void RunPipelineNull(IPipeline pipeline)
         {

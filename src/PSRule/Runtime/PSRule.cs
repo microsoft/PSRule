@@ -58,35 +58,17 @@ namespace PSRule.Runtime
         /// <summary>
         /// The current target object.
         /// </summary>
-        public PSObject TargetObject
-        {
-            get
-            {
-                return GetContext().RuleRecord.TargetObject;
-            }
-        }
+        public PSObject TargetObject => GetContext().RuleRecord.TargetObject;
 
         /// <summary>
         /// The bound name of the target object.
         /// </summary>
-        public string TargetName
-        {
-            get
-            {
-                return GetContext().RuleRecord.TargetName;
-            }
-        }
+        public string TargetName => GetContext().RuleRecord.TargetName;
 
         /// <summary>
         /// The bound type of the target object.
         /// </summary>
-        public string TargetType
-        {
-            get
-            {
-                return GetContext().RuleRecord.TargetType;
-            }
-        }
+        public string TargetType => GetContext().RuleRecord.TargetType;
 
         /// <summary>
         /// Attempts to read content from disk.
@@ -122,15 +104,15 @@ namespace PSRule.Runtime
             {
                 if (ObjectHelper.GetField(content[i], field, false, out object value) && value != null)
                 {
-                    if (typeof(IEnumerable).IsAssignableFrom(value.GetType()))
+                    if (value is IEnumerable evalue)
                     {
-                        foreach (var item in (value as IEnumerable))
+                        foreach (var item in evalue)
                             result.Add(PSObject.AsPSObject(item));
                     }
                     else
                         result.Add(PSObject.AsPSObject(value));
                 }
-                    
+
             }
             return result.ToArray();
         }

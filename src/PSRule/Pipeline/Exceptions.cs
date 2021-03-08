@@ -193,8 +193,6 @@ namespace PSRule.Pipeline
             info.AddValue("ErrorId", ErrorId);
             base.GetObjectData(info, context);
         }
-
-        
     }
 
     /// <summary>

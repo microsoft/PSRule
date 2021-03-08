@@ -72,11 +72,13 @@ namespace PSRule.Configuration
 
         internal static InputOption Combine(InputOption o1, InputOption o2)
         {
-            var result = new InputOption(o1);
-            result.Format = o1.Format ?? o2.Format;
-            result.ObjectPath = o1.ObjectPath ?? o2.ObjectPath;
-            result.PathIgnore = o1.PathIgnore ?? o2.PathIgnore;
-            result.TargetType = o1.TargetType ?? o2.TargetType;
+            var result = new InputOption(o1)
+            {
+                Format = o1.Format ?? o2.Format,
+                ObjectPath = o1.ObjectPath ?? o2.ObjectPath,
+                PathIgnore = o1.PathIgnore ?? o2.PathIgnore,
+                TargetType = o1.TargetType ?? o2.TargetType
+            };
             return result;
         }
 

@@ -71,7 +71,7 @@ namespace PSRule.Runtime
         internal RuleRecord RuleRecord;
         internal PSObject TargetObject;
         internal RuleBlock RuleBlock;
-        
+
         internal SourceScope Source;
 
         private readonly bool _InconclusiveWarning;
@@ -116,12 +116,9 @@ namespace PSRule.Runtime
             _Reason = new List<string>();
             _Conventions = new List<IConvention>();
             _Scope = new Stack<RunspaceScope>();
-    }
-
-        public bool HadErrors
-        {
-            get { return _RuleErrors > 0; }
         }
+
+        public bool HadErrors => _RuleErrors > 0;
 
         public Hashtable Data { get; private set; }
 
@@ -666,7 +663,7 @@ namespace PSRule.Runtime
                 _RaisedUsingInvariantCulture = true;
                 return null;
             }
-            
+
             for (var i = 0; i < culture.Length; i++)
             {
                 var path = Path.Combine(Source.File.HelpPath, culture[i], file);

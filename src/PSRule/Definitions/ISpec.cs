@@ -14,7 +14,7 @@ namespace PSRule.Definitions
         /// A baseline resource.
         /// </summary>
         Baseline = 1,
-        
+
         /// <summary>
         /// A module configuration resource.
         /// </summary>

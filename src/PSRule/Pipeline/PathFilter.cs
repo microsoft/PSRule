@@ -55,7 +55,7 @@ namespace PSRule.Pipeline
         // Path separators
         private const char Slash = '/';
         private const char BackSlash = '\\';
-        
+
         // Operators
         private const char Asterix = '*'; // Match multiple characters except '/'
         private const char Question = '?'; // Match any character except '/'
@@ -157,7 +157,6 @@ namespace PSRule.Pipeline
                 if (!IsWildcardAA())
                     return false;
 
-                
                 Skip(2); // Skip **
                 SkipSeparator(); // Skip **/
                 SkipMatchAA(); // Skip **/**/

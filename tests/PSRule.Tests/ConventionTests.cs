@@ -8,7 +8,6 @@ using System.IO;
 using System.Management.Automation;
 using Xunit;
 using static PSRule.PipelineTests;
-using Assert = Xunit.Assert;
 
 namespace PSRule
 {

@@ -78,7 +78,7 @@ namespace PSRule.Host
         public static CommentMetadata GetCommentMeta(string path, int lineNumber, int offset)
         {
             var context = RunspaceContext.CurrentThread;
-            if (lineNumber < 0 || RunspaceContext.CurrentThread.IsScope(RunspaceScope.None)|| context.Source.SourceContentCache == null)
+            if (lineNumber < 0 || RunspaceContext.CurrentThread.IsScope(RunspaceScope.None) || context.Source.SourceContentCache == null)
                 return new CommentMetadata();
 
             var lines = context.Source.SourceContentCache;

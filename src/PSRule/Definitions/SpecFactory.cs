@@ -62,10 +62,7 @@ namespace PSRule.Definitions
 
         public string Name { get; set; }
 
-        public Type SpecType
-        {
-            get { return typeof(TSpec); }
-        }
+        public Type SpecType => typeof(TSpec);
 
         public bool SupportsFlat { get; private set; }
 

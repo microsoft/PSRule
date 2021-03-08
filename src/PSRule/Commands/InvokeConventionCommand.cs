@@ -10,9 +10,6 @@ namespace PSRule.Commands
 {
     internal sealed class InvokeConventionCommand : Cmdlet
     {
-        //[Parameter()]
-        //public string[] Type;
-
         [Parameter()]
         public ScriptBlock If;
 

@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using PSRule.Definitions;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,7 +112,7 @@ namespace PSRule.Configuration
                 else
                     option.Rule.Exclude = new string[] { value.ToString() };
             }
-            if (properties.TryPopValue("rule.tag" , out Hashtable tag))
+            if (properties.TryPopValue("rule.tag", out Hashtable tag))
                 option.Rule.Tag = tag;
 
             // Process configuration values

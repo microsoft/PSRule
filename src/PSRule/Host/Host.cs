@@ -24,13 +24,7 @@ namespace PSRule.Host
             _Value = new Runtime.PSRule(RunspaceContext.CurrentThread);
         }
 
-        public override object Value
-        {
-            get
-            {
-                return _Value;
-            }
-        }
+        public override object Value => _Value;
     }
 
     /// <summary>
@@ -48,13 +42,7 @@ namespace PSRule.Host
             _Value = new Runtime.Rule();
         }
 
-        public override object Value
-        {
-            get
-            {
-                return _Value;
-            }
-        }
+        public override object Value => _Value;
     }
 
     /// <summary>
@@ -72,13 +60,7 @@ namespace PSRule.Host
             _Value = new Runtime.LocalizedData();
         }
 
-        public override object Value
-        {
-            get
-            {
-                return _Value;
-            }
-        }
+        public override object Value => _Value;
     }
 
     /// <summary>
@@ -111,13 +93,7 @@ namespace PSRule.Host
 
         }
 
-        public override object Value
-        {
-            get
-            {
-                return RunspaceContext.CurrentThread.TargetObject;
-            }
-        }
+        public override object Value => RunspaceContext.CurrentThread.TargetObject;
     }
 
     internal sealed class ConfigurationVariable : PSVariable

@@ -49,7 +49,7 @@ namespace PSRule.Pipeline
         {
             _Online = true;
         }
-        
+
         public override IPipeline Build()
         {
             return new GetRuleHelpPipeline(PrepareContext(null, null, null), Source, PrepareReader(), PrepareWriter());

@@ -63,10 +63,12 @@ namespace PSRule.Configuration
 
         internal static ExecutionOption Combine(ExecutionOption o1, ExecutionOption o2)
         {
-            var result = new ExecutionOption(o1);
-            result.LanguageMode = o1.LanguageMode ?? o2.LanguageMode;
-            result.InconclusiveWarning = o1.InconclusiveWarning ?? o2.InconclusiveWarning;
-            result.NotProcessedWarning = o1.NotProcessedWarning ?? o2.NotProcessedWarning;
+            var result = new ExecutionOption(o1)
+            {
+                LanguageMode = o1.LanguageMode ?? o2.LanguageMode,
+                InconclusiveWarning = o1.InconclusiveWarning ?? o2.InconclusiveWarning,
+                NotProcessedWarning = o1.NotProcessedWarning ?? o2.NotProcessedWarning
+            };
             return result;
         }
 

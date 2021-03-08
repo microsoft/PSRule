@@ -31,12 +31,16 @@ namespace PSRule
         [Fact]
         public void MatchTag()
         {
-            var tag = new Hashtable();
-            tag["category"] = new string[] { "group1", "group2" };
+            var tag = new Hashtable
+            {
+                ["category"] = new string[] { "group1", "group2" }
+            };
             var filter = new RuleFilter(null, tag, null);
 
-            var ruleTags = new Hashtable();
-            ruleTags["category"] = "group2";
+            var ruleTags = new Hashtable
+            {
+                ["category"] = "group2"
+            };
             Assert.True(filter.Match("rule1", TagSet.FromHashtable(ruleTags)));
             ruleTags["category"] = "group1";
             Assert.True(filter.Match("rule2", TagSet.FromHashtable(ruleTags)));

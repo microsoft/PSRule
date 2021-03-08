@@ -279,10 +279,7 @@ namespace PSRule.Runtime
                 _Current = _Value.Length > 0 ? _Value[0] : char.MinValue;
             }
 
-            internal bool EOF
-            {
-                get { return _Position >= _Value.Length; }
-            }
+            internal bool EOF => _Position >= _Value.Length;
 
             internal void Next()
             {

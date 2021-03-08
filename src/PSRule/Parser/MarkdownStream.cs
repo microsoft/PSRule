@@ -114,65 +114,35 @@ namespace PSRule.Parser
 
         #region Properties
 
-        public bool EOF
-        {
-            get { return _Position >= _Length; }
-        }
+        public bool EOF => _Position >= _Length;
 
-        public bool IsStartOfLine
-        {
-            get { return _Column == 0; }
-        }
+        public bool IsStartOfLine => _Column == 0;
 
         /// <summary>
         /// The character at the current position in the stream.
         /// </summary>
-        public char Current
-        {
-            get { return _Current; }
-        }
+        public char Current => _Current;
 
-        public char Previous
-        {
-            get { return _Previous; }
-        }
+        public char Previous => _Previous;
 
-        public int Line
-        {
-            get { return _Line; }
-        }
+        public int Line => _Line;
 
-        public int Column
-        {
-            get { return _Column; }
-        }
+        public int Column => _Column;
 
 #if DEBUG
 
         /// <summary>
         /// Used for interactive debugging of current position and next characters in the stream.
         /// </summary>
-        public string Preview
-        {
-            get { return _Source.Substring(_Position); }
-        }
+        public string Preview => _Source.Substring(_Position);
 
 #endif
 
-        public int Position
-        {
-            get { return _Position; }
-        }
+        public int Position => _Position;
 
-        private int Remaining
-        {
-            get { return _Length - Position; }
-        }
+        private int Remaining => _Length - Position;
 
-        public bool IsEscaped
-        {
-            get { return _EscapeLength > 0; }
-        }
+        public bool IsEscaped => _EscapeLength > 0;
 
         #endregion Properties
 

@@ -221,28 +221,13 @@ namespace PSRule.Parser
 
         #region Properties
 
-        public bool EOF
-        {
-            get { return _Position >= _Token.Count; }
-        }
+        public bool EOF => _Position >= _Token.Count;
 
-        public MarkdownToken Current
-        {
-            get
-            {
-                return (_Token.Count <= _Position) ? null : _Token[_Position];
-            }
-        }
+        public MarkdownToken Current => (_Token.Count <= _Position) ? null : _Token[_Position];
 
-        public int Position
-        {
-            get { return _Position; }
-        }
+        public int Position => _Position;
 
-        public int Count
-        {
-            get { return _Token.Count; }
-        }
+        public int Count => _Token.Count;
 
         #endregion Properties
 

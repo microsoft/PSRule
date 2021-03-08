@@ -75,7 +75,7 @@ namespace PSRule.Pipeline
             /// </summary>
             private abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatter
             {
-                const string OUTPUT_SEPARATOR_BAR = "----------------------------";
+                private const string OUTPUT_SEPARATOR_BAR = "----------------------------";
 
                 private readonly bool _VTSupport;
 
@@ -170,7 +170,7 @@ namespace PSRule.Pipeline
 
                 protected virtual void ErrorDetail(RuleRecord record)
                 {
-                    
+
                 }
 
                 protected virtual void Error(string message)
