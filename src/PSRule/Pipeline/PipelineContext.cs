@@ -39,13 +39,12 @@ namespace PSRule.Pipeline
 
         internal PSRuleOption Option;
 
-        //internal ExecutionScope ExecutionScope;
-
         internal readonly Dictionary<string, Hashtable> LocalizedDataCache;
         internal readonly Dictionary<string, object> ExpressionCache;
         internal readonly Dictionary<string, PSObject[]> ContentCache;
         internal readonly OptionContext Baseline;
         internal readonly HostContext HostContext;
+        internal readonly PipelineReader Reader;
 
         public HashAlgorithm ObjectHashAlgorithm
         {
@@ -58,10 +57,11 @@ namespace PSRule.Pipeline
             }
         }
 
-        private PipelineContext(PSRuleOption option, HostContext hostContext, TargetBinder binder, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
+        private PipelineContext(PSRuleOption option, HostContext hostContext, PipelineReader reader, TargetBinder binder, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
         {
             Option = option;
             HostContext = hostContext;
+            Reader = reader;
             _LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode.Value;
             _NameTokenCache = new Dictionary<string, NameToken>();
             LocalizedDataCache = new Dictionary<string, Hashtable>();
@@ -72,9 +72,9 @@ namespace PSRule.Pipeline
             _Unresolved = unresolved;
         }
 
-        public static PipelineContext New(PSRuleOption option, HostContext hostContext, TargetBinder binder, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
+        public static PipelineContext New(PSRuleOption option, HostContext hostContext, PipelineReader reader, TargetBinder binder, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
         {
-            var context = new PipelineContext(option, hostContext, binder, baseline, unresolved);
+            var context = new PipelineContext(option, hostContext, reader, binder, baseline, unresolved);
             CurrentThread = context;
             return context;
         }

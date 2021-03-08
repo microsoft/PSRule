@@ -6,6 +6,10 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+- Engine features:
+  - Added support for object expansion with conventions. [#661](https://github.com/microsoft/PSRule/issues/661)
+    - Use the `$PSRule.Import` method to import child source objects into the pipeline.
+
 ## v1.2.0-B2103016 (pre-release)
 
 What's changed since pre-release v1.2.0-B2103008:

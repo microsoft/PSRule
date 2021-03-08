@@ -702,7 +702,7 @@ namespace PSRule.Pipeline
             if (!RequireModules() || !RequireSources())
                 return null;
 
-            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, PrepareReader(), PrepareWriter(), RuleOutcome.Processed);
+            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, PrepareWriter(), RuleOutcome.Processed);
         }
     }
 }

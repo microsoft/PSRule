@@ -90,7 +90,7 @@ namespace PSRule.Pipeline
             if (!RequireModules() || !RequireSources())
                 return null;
 
-            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, PrepareReader(), PrepareWriter(), Option.Output.Outcome.Value);
+            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, PrepareWriter(), Option.Output.Outcome.Value);
         }
 
         protected override PipelineReader PrepareReader()
@@ -173,8 +173,8 @@ namespace PSRule.Pipeline
         // Track whether Dispose has been called.
         private bool _Disposed;
 
-        internal InvokeRulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer, RuleOutcome outcome)
-            : base(context, source, reader, writer)
+        internal InvokeRulePipeline(PipelineContext context, Source[] source, PipelineWriter writer, RuleOutcome outcome)
+            : base(context, source, context.Reader, writer)
         {
             HostHelper.ImportResource(Source, Context);
             _RuleGraph = HostHelper.GetRuleBlockGraph(Source, Context);

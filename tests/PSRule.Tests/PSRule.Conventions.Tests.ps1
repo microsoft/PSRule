@@ -83,5 +83,13 @@ Describe 'PSRule -- Conventions' -Tag 'Conventions' {
             $result | Should -Not -BeNullOrEmpty;
             $result[0].Data.Order | Should -Be 'Convention1|M4.Convention1|M4.Convention2|';
         }
+
+        It 'Expands input object' {
+            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Convention 'Convention.Expansion');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 4;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[1].TargetName | Should -Be 'TestObject2';
+        }
     }
 }

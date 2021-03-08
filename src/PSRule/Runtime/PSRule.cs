@@ -128,5 +128,23 @@ namespace PSRule.Runtime
 
             return content[0];
         }
+
+        /// <summary>
+        /// Imports source objects into the pipeline for processing.
+        /// </summary>
+        public void Import(PSObject[] sourceObject)
+        {
+            if (sourceObject == null || sourceObject.Length == 0)
+                return;
+
+            RequireScope(RunspaceScope.ConventionBegin);
+            for (var i = 0; i < sourceObject.Length; i++)
+            {
+                if (sourceObject[i] == null)
+                    continue;
+
+                GetContext().Pipeline.Reader.Enqueue(sourceObject[i], skipExpansion: true);
+            }
+        }
     }
 }
