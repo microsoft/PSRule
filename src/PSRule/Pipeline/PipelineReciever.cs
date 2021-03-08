@@ -332,13 +332,18 @@ namespace PSRule.Pipeline
                 return;
 
             if (!value.HasProperty(PropertyName_PSPath))
-                value.Properties.Add(new PSNoteProperty(PropertyName_PSPath, source.PSPath));
+               value.Properties.Add(new PSNoteProperty(PropertyName_PSPath, source.PSPath));
 
             if (!value.HasProperty(PropertyName_PSParentPath))
-                value.Properties.Add(new PSNoteProperty(PropertyName_PSParentPath, source.PSParentPath));
+               value.Properties.Add(new PSNoteProperty(PropertyName_PSParentPath, source.PSParentPath));
 
             if (!value.HasProperty(PropertyName_PSChildName))
-                value.Properties.Add(new PSNoteProperty(PropertyName_PSChildName, source.PSChildName));
+               value.Properties.Add(new PSNoteProperty(PropertyName_PSChildName, source.PSChildName));
+
+            value.UseTargetInfo(out PSRuleTargetInfo targetInfo);
+            targetInfo.PSPath = source.PSPath;
+            targetInfo.PSParentPath = source.PSParentPath;
+            targetInfo.PSChildName = source.PSChildName;
         }
     }
 }

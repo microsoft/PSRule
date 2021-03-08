@@ -34,6 +34,15 @@ Export-PSRuleConvention 'Convention3' -If { $Assert.HasFieldValue($TargetObject,
     $PSRule.Data.count += 1000;
 }
 
+# Synopsis: A convention for unit testing
+Export-PSRuleConvention 'Convention.Expansion' -If { $TargetObject.Name -eq 'TestObject1' } -Begin {
+    $newObject = [PSCustomObject]@{
+        Name = 'TestObject2'
+    };
+    $PSRule.Import($newObject);
+    $PSRule.Import(@($newObject, $newObject));
+}
+
 # Synopsis: A rule for testing conventions
 Rule 'ConventionTest' {
     $Assert.HasFieldValue($PSRule.Data, 'count', 1);
