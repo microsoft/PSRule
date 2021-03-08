@@ -19,7 +19,7 @@ namespace PSRule.Benchmark
 {
     internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var app = new CommandLineApplication
             {

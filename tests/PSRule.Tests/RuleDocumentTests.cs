@@ -53,13 +53,17 @@ namespace PSRule
 
         private RuleDocument GetExpected()
         {
-            var annotations = new Hashtable();
-            annotations["severity"] = "Critical";
-            annotations["category"] = "Security";
+            var annotations = new Hashtable
+            {
+                ["severity"] = "Critical",
+                ["category"] = "Security"
+            };
 
-            var links = new List<Link>();
-            links.Add(new Link { Name = "PSRule", Uri = "https://github.com/Microsoft/PSRule" });
-            links.Add(new Link { Name = "Stable tags", Uri = "https://docs.microsoft.com/en-us/azure/container-registry/container-registry-image-tag-version#stable-tags" });
+            var links = new List<Link>
+            {
+                new Link { Name = "PSRule", Uri = "https://github.com/Microsoft/PSRule" },
+                new Link { Name = "Stable tags", Uri = "https://docs.microsoft.com/en-us/azure/container-registry/container-registry-image-tag-version#stable-tags" }
+            };
 
             var result = new RuleDocument(name: "Use specific tags")
             {

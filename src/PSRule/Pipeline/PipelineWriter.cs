@@ -67,7 +67,7 @@ namespace PSRule.Pipeline
         {
             if (_Writer == null)
                 return;
-            
+
             _Writer.Begin();
         }
 

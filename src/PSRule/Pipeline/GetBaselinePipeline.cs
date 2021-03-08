@@ -4,7 +4,6 @@
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Host;
-using PSRule.Rules;
 using System.Linq;
 
 namespace PSRule.Pipeline

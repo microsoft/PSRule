@@ -155,10 +155,7 @@ namespace PSRule.Pipeline
             _Writer.EnterScope("[Discovery.Source]");
         }
 
-        public bool ShouldLoadModule
-        {
-            get { return _HostContext.GetAutoLoadingPreference() == PSModuleAutoLoadingPreference.All; }
-        }
+        public bool ShouldLoadModule => _HostContext.GetAutoLoadingPreference() == PSModuleAutoLoadingPreference.All;
 
         public void VerboseScanSource(string path)
         {
@@ -265,7 +262,7 @@ namespace PSRule.Pipeline
         private void Source(Source source)
         {
             // Prefer non-dependencies
-            var key = string.Concat(source?.Module?.Name, ": ", source.Path);
+            var key = string.Concat(source?.Module?.Name, ": ", source?.Path);
             if (_Source.ContainsKey(key) && source.Dependency)
                 return;
 

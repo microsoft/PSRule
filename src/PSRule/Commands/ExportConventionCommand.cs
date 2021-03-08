@@ -38,12 +38,6 @@ namespace PSRule.Commands
         [Parameter(Mandatory = false)]
         public ScriptBlock If { get; set; }
 
-        ///// <summary>
-        ///// An optional preconditions before the hook is evaluated.
-        ///// </summary>
-        //[Parameter(Mandatory = false)]
-        //public string[] Type { get; set; }
-
         protected override void ProcessRecord()
         {
             //if (!IsScriptScope())
@@ -53,11 +47,6 @@ namespace PSRule.Commands
             var errorPreference = GetErrorActionPreference();
             var commentMetadata = GetCommentMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
             var source = context.Source.File;
-            //var extent = new RuleExtent(
-            //    file: source.Path,
-            //    startLineNumber: Process.Ast.Extent.StartLineNumber
-            //);
-
             var metadata = new ResourceMetadata
             {
                 Name = Name

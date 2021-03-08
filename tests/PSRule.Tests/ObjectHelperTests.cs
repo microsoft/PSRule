@@ -32,9 +32,11 @@ namespace PSRule
         [Fact]
         public void GetFieldDynamic()
         {
-            var hashtable = new Hashtable();
-            hashtable.Add("Name", "TestObject1");
-            hashtable.Add("Value", "Value1");
+            var hashtable = new Hashtable
+            {
+                { "Name", "TestObject1" },
+                { "Value", "Value1" }
+            };
             var testObject = TagSet.FromHashtable(hashtable);
 
             Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: "Name", caseSensitive: true, value: out object actual1);

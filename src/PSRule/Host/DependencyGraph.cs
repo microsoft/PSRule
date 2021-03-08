@@ -23,13 +23,7 @@ namespace PSRule.Host
             Prepare(targets);
         }
 
-        public int Count
-        {
-            get
-            {
-                return _Targets.Length;
-            }
-        }
+        public int Count => _Targets.Length;
 
         public enum DependencyTargetState
         {
@@ -55,24 +49,15 @@ namespace PSRule.Host
 
             private DependencyTargetState State
             {
-                get { return Graph._State.TryGetValue(this, out DependencyTargetState state) ? state : DependencyTargetState.None; }
-                set { Graph._State[this] = value; }
+                get => Graph._State.TryGetValue(this, out DependencyTargetState state) ? state : DependencyTargetState.None;
+                set => Graph._State[this] = value;
             }
 
-            public bool Skipped
-            {
-                get { return State == DependencyTargetState.DependencyFail; }
-            }
+            public bool Skipped => State == DependencyTargetState.DependencyFail;
 
-            public bool Failed
-            {
-                get { return State == DependencyTargetState.Fail || State == DependencyTargetState.DependencyFail; }
-            }
+            public bool Failed => State == DependencyTargetState.Fail || State == DependencyTargetState.DependencyFail;
 
-            public bool Passed
-            {
-                get { return State == DependencyTargetState.Pass; }
-            }
+            public bool Passed => State == DependencyTargetState.Pass;
 
             public void Pass()
             {
@@ -131,7 +116,7 @@ namespace PSRule.Host
 
         #region IDisposable
 
-        void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!_Disposed)
             {

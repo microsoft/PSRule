@@ -13,7 +13,7 @@ namespace PSRule.Configuration
     {
         internal static readonly ConventionOption Default = new ConventionOption
         {
-            
+
         };
 
         public ConventionOption()
@@ -52,8 +52,10 @@ namespace PSRule.Configuration
 
         internal static ConventionOption Combine(ConventionOption o1, ConventionOption o2)
         {
-            var result = new ConventionOption(o1);
-            result.Include = o1.Include ?? o2.Include;
+            var result = new ConventionOption(o1)
+            {
+                Include = o1.Include ?? o2.Include
+            };
             return result;
         }
 

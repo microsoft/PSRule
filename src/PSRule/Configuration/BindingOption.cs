@@ -78,13 +78,15 @@ namespace PSRule.Configuration
 
         internal static BindingOption Combine(BindingOption o1, BindingOption o2)
         {
-            var result = new BindingOption(o1);
-            result.Field = o1.Field ?? o2.Field;
-            result.IgnoreCase = o1.IgnoreCase ?? o2.IgnoreCase;
-            result.NameSeparator = o1.NameSeparator ?? o2.NameSeparator;
-            result.TargetName = o1.TargetName ?? o2.TargetName;
-            result.TargetType = o1.TargetType ?? o2.TargetType;
-            result.UseQualifiedName = o1.UseQualifiedName ?? o2.UseQualifiedName;
+            var result = new BindingOption(o1)
+            {
+                Field = o1.Field ?? o2.Field,
+                IgnoreCase = o1.IgnoreCase ?? o2.IgnoreCase,
+                NameSeparator = o1.NameSeparator ?? o2.NameSeparator,
+                TargetName = o1.TargetName ?? o2.TargetName,
+                TargetType = o1.TargetType ?? o2.TargetType,
+                UseQualifiedName = o1.UseQualifiedName ?? o2.UseQualifiedName
+            };
             return result;
         }
 

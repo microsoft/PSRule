@@ -64,7 +64,7 @@ namespace PSRule.Pipeline.Output
                 _Builder.Append(COMMA);
                 _Builder.Append(ViewStrings.TargetType);
             }
-            
+
             _Builder.Append(COMMA);
             _Builder.Append(ViewStrings.Outcome);
 

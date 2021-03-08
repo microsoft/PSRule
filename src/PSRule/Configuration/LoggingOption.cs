@@ -70,11 +70,13 @@ namespace PSRule.Configuration
 
         internal static LoggingOption Combine(LoggingOption o1, LoggingOption o2)
         {
-            var result = new LoggingOption(o1);
-            result.LimitDebug = o1.LimitDebug ?? o2.LimitDebug;
-            result.LimitVerbose = o1.LimitVerbose ?? o2.LimitVerbose;
-            result.RuleFail = o1.RuleFail ?? o2.RuleFail;
-            result.RulePass = o1.RulePass ?? o2.RulePass;
+            var result = new LoggingOption(o1)
+            {
+                LimitDebug = o1.LimitDebug ?? o2.LimitDebug,
+                LimitVerbose = o1.LimitVerbose ?? o2.LimitVerbose,
+                RuleFail = o1.RuleFail ?? o2.RuleFail,
+                RulePass = o1.RulePass ?? o2.RulePass
+            };
             return result;
         }
 

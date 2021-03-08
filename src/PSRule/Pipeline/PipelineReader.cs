@@ -21,15 +21,9 @@ namespace PSRule.Pipeline
             _Queue = new ConcurrentQueue<PSObject>();
         }
 
-        public int Count
-        {
-            get { return _Queue.Count; }
-        }
+        public int Count => _Queue.Count;
 
-        public bool IsEmpty
-        {
-            get { return _Queue.IsEmpty; }
-        }
+        public bool IsEmpty => _Queue.IsEmpty;
 
         public void Enqueue(PSObject sourceObject)
         {

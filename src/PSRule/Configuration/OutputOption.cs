@@ -86,14 +86,16 @@ namespace PSRule.Configuration
 
         internal static OutputOption Combine(OutputOption o1, OutputOption o2)
         {
-            var result = new OutputOption(o1);
-            result.As = o1.As ?? o2.As;
-            result.Culture = o1.Culture ?? o2.Culture;
-            result.Encoding = o1.Encoding ?? o2.Encoding;
-            result.Format = o1.Format ?? o2.Format;
-            result.Outcome = o1.Outcome ?? o2.Outcome;
-            result.Path = o1.Path ?? o2.Path;
-            result.Style = o1.Style ?? o2.Style;
+            var result = new OutputOption(o1)
+            {
+                As = o1.As ?? o2.As,
+                Culture = o1.Culture ?? o2.Culture,
+                Encoding = o1.Encoding ?? o2.Encoding,
+                Format = o1.Format ?? o2.Format,
+                Outcome = o1.Outcome ?? o2.Outcome,
+                Path = o1.Path ?? o2.Path,
+                Style = o1.Style ?? o2.Style
+            };
             return result;
         }
 
