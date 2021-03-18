@@ -187,9 +187,14 @@ When set, detection by file extension is skipped.
 
 Prefix detection for line comments is supported with the following file extensions:
 
-- `.cs`, `.ts`, `.js`, `.fs`, `.go`, `.php`, `.cpp`, `.h` - Use a prefix of (`// `).
-- `.ps1`, `.psd1`, `.psm1`, `.yaml`, `.yml`, `.r`, `.py`, `.sh`, `.tf`, `.tfvars`, `.gitignore`, `.pl` - Use a prefix of (`# `).
+- `.bicep`, `.cs`, `.csx` `.ts`, `.js`, `.jsx`,
+`.fs`, `.go`, `.groovy`, `.php`, `.cpp`, `.h`,
+`.java`, `.json`, `.jsonc`, `.scala`, `Jenkinsfile` - Use a prefix of (`// `).
+- `.ps1`, `.psd1`, `.psm1`, `.yaml`, `.yml`,
+`.r`, `.py`, `.sh`, `.tf`, `.tfvars`, `.gitignore`,
+`.pl`, `.rb`, `Dockerfile` - Use a prefix of (`# `).
 - `.sql`, `.lau` - Use a prefix of (`-- `).
+- `.bat`, `.cmd` - Use a prefix of (`:: `).
 
 Reasons include:
 

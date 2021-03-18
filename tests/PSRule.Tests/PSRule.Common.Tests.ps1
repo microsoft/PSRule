@@ -633,6 +633,10 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             # Success only
             $filteredResult = @($result | Where-Object { $_.Outcome -ne 'Pass' });
             $filteredResult | Should -BeNullOrEmpty;
+
+            # Dockerfile
+            $filteredResult = @($result | Where-Object { $_.Data.FullName.Replace('\', '/') -like '*/Dockerfile' });
+            $filteredResult[0].Data.TargetType | Should -Be 'Dockerfile';
         }
 
         It 'Globbing processes paths' {

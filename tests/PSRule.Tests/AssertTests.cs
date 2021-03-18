@@ -833,11 +833,19 @@ namespace PSRule
         {
             SetContext();
             var assert = GetAssertionHelper();
+            var header = new string[] { "Copyright (c) Microsoft Corporation.", "Licensed under the MIT License." };
 
+            // .ps1
             var value = GetObject((name: "FullName", value: GetSourcePath("FromFile.Rule.ps1")));
-            Assert.True(assert.FileHeader(value, "FullName", new string[] { "Copyright (c) Microsoft Corporation.", "Licensed under the MIT License." }).Result);
+            Assert.True(assert.FileHeader(value, "FullName", header).Result);
+
+            // .yaml
             value = GetObject((name: "FullName", value: GetSourcePath("Baseline.Rule.yaml")));
-            Assert.False(assert.FileHeader(value, "FullName", new string[] { "Copyright (c) Microsoft Corporation.", "Licensed under the MIT License." }).Result);
+            Assert.False(assert.FileHeader(value, "FullName", header).Result);
+
+            // Dockerfile
+            value = GetObject((name: "FullName", value: GetSourcePath("Dockerfile")));
+            Assert.True(assert.FileHeader(value, "FullName", header).Result);
         }
 
         [Fact]
