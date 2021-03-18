@@ -42,6 +42,9 @@
         "deserialized",
         "deserializes",
         "hashtable",
+        "proxied",
+        "runspace",
+        "runspaces",
         "unencrypted"
     ]
 }

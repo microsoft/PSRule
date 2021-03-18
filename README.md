@@ -12,6 +12,27 @@ Features of PSRule include:
 - [Reusable](docs/features.md#reusable) - Share rules across teams or organizations.
 - [Recommendations](docs/features.md#recommendations) - Include detailed instructions to remediate issues.
 
+## Project objectives
+
+1. **Extensible**:
+   - Provide an execution environment (tools and language) to validate infrastructure code.
+   - Handling of common concerns such as input/ output/ reporting should be handled by the engine.
+   - Language must be flexible enough to support a wide range of use cases.
+2. **DevOps**:
+   - Validation should support and enhance DevOps workflows by providing fast feedback in pull requests.
+   - Allow quality gates to be implemented between environments such development, test, and production.
+3. **Cross-platform**:
+   - A wide range of platforms can be used to author and deploy infrastructure code.
+PSRule must support rule validation and authoring on Linux, MacOS, and Windows.
+   - Runs in a Linux container.
+For continuous integration (CI) systems that do not support PowerShell, run in a container.
+4. **Reusable**:
+   - Validation should plug and play, reusable across teams and organizations.
+   - Any reusable validation will have exceptions.
+Rules must be able to be disabled where they are not applicable.
+
+Continue reading the [PSRule design specification][spec].
+
 ## Support
 
 This project uses GitHub Issues to track bugs and feature requests.
@@ -391,3 +412,4 @@ This project is [licensed under the MIT License](LICENSE).
 [PSRule-pipelines]: https://github.com/microsoft/PSRule-pipelines
 [ps-rule]: https://github.com/microsoft/ps-rule
 [PSRule-vscode]: https://github.com/microsoft/PSRule-vscode
+[spec]: docs/specs/design-spec.md
