@@ -181,6 +181,11 @@ When the `-InputPath` parameter is used with a file path or URL.
 If the `Detect` format is used, the file extension will be used to automatically detect the format.
 When `-InputPath` is not used, `Detect` is the same as `None`.
 
+When this option is set to `File` PSRule scans the path and subdirectories specified by `-InputPath`.
+Files are treated as objects instead of being deserialized.
+Additional, PSRule uses the file extension as the object type.
+When files have no extension the whole file name is used.
+
 See `about_PSRule_Options` for details.
 
 This parameter takes precedence over the `Input.Format` option if set.

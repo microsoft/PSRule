@@ -574,9 +574,12 @@ The `Markdown` format does not parse the whole markdown document.
 Specifically this format deserializes YAML front matter from the top of the document if any exists.
 
 The `File` format does not deserialize file contents.
+Each file is returned as an object.
 Files within `.git` sub-directories are ignored.
 Path specs specified in `.gitignore` directly in the current working path are ignored.
 A `RepositoryInfo` object is generated if the current working path if a `.git` sub-directory is present.
+Additionally, PSRule performs automatic type binding for file objects, using the extension as the type.
+When files have no extension the whole file name is used.
 
 Detect uses the following file extensions:
 

@@ -10,6 +10,8 @@ namespace PSRule.Data
         private const char Backslash = '\\';
         private const char Slash = '/';
 
+        private readonly string _TargetType;
+
         internal readonly bool IsUrl;
 
         internal InputFileInfo(string basePath, string path)
@@ -25,6 +27,7 @@ namespace PSRule.Data
             Extension = Path.GetExtension(path);
             DirectoryName = Path.GetDirectoryName(path);
             DisplayName = FullName.Substring(basePath.Length).Replace(Backslash, Slash);
+            _TargetType = string.IsNullOrEmpty(Extension) ? Path.GetFileNameWithoutExtension(path) : Extension;
         }
 
         public string FullName { get; }
@@ -41,7 +44,7 @@ namespace PSRule.Data
 
         string ITargetInfo.TargetName => DisplayName;
 
-        string ITargetInfo.TargetType => Extension;
+        string ITargetInfo.TargetType => _TargetType;
 
         /// <summary>
         /// Convert to string.

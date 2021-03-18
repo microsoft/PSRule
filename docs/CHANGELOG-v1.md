@@ -6,6 +6,15 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.2.0-B2103023:
+
+- General improvements:
+  - Added support for detecting files headers from additional file extensions. [#664](https://github.com/microsoft/PSRule/issues/664)
+    - Added `.bicep`, `.csx`, `.jsx`, `.groovy`, `.java`, `.json`, `.jsonc`,
+    `.scala`, `.rb`, `.bat`, `.cmd`.
+    - Added support for `Jenkinsfile` and `Dockerfile` without an extension.
+  - Added support for automatic type binding with files that do not have a file extension. [#665](https://github.com/microsoft/PSRule/issues/665)
+
 ## v1.2.0-B2103023 (pre-release)
 
 What's changed since pre-release v1.2.0-B2103016:

@@ -168,6 +168,7 @@ Rule 'WithFileFormat' {
     $Assert.HasFieldValue($TargetObject, 'DisplayName');
     $PSRule.Data['FullName'] = $TargetObject.FullName;
     $PSRule.Data['DisplayName'] = $TargetObject.DisplayName;
+    $PSRule.Data['TargetType'] = $PSRule.TargetType;
 }
 
 # Synopsis: Test $PSRule automatic variables

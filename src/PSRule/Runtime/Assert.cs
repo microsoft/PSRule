@@ -760,7 +760,7 @@ namespace PSRule.Runtime
                 return Pass();
 
             if (string.IsNullOrEmpty(prefix))
-                prefix = DetectLinePrefix(Path.GetExtension(value));
+                prefix = DetectLinePrefix(GetFileType(value));
 
             var lineNo = 0;
             foreach (var content in File.ReadLines(value))
@@ -1147,20 +1147,38 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
+        /// Get the file extension of the name of the file if an extension is not set.
+        /// </summary>
+        private static string GetFileType(string value)
+        {
+            var ext = Path.GetExtension(value);
+            return string.IsNullOrEmpty(ext) ? Path.GetFileNameWithoutExtension(value) : ext;
+        }
+
+        /// <summary>
         /// Determine line comment prefix by file extension
         /// </summary>
         private static string DetectLinePrefix(string extension)
         {
             switch (extension)
             {
+                case ".bicep":
                 case ".cs":
+                case ".csx":
                 case ".ts":
                 case ".js":
+                case ".jsx":
                 case ".fs":
                 case ".go":
+                case ".groovy":
                 case ".php":
                 case ".cpp":
                 case ".h":
+                case ".java":
+                case ".json":
+                case ".jsonc":
+                case ".scala":
+                case "Jenkinsfile":
                     return "// ";
 
                 case ".ps1":
@@ -1175,11 +1193,17 @@ namespace PSRule.Runtime
                 case ".tfvars":
                 case ".gitignore":
                 case ".pl":
+                case ".rb":
+                case "Dockerfile":
                     return "# ";
 
                 case ".sql":
                 case ".lua":
                     return "-- ";
+
+                case ".bat":
+                case ".cmd":
+                    return ":: ";
 
                 default:
                     return string.Empty;
