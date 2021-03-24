@@ -40,6 +40,7 @@ Additionally the following baseline options can be included:
 - [Binding.Field](#bindingfield)
 - [Binding.IgnoreCase](#bindingignorecase)
 - [Binding.NameSeparator](#bindingnameseparator)
+- [Binding.PreferTargetInfo](#bindingprefertargetinfo)
 - [Binding.TargetName](#bindingtargetname)
 - [Binding.TargetType](#bindingtargettype)
 - [Binding.UseQualifiedName](#bindingusequalifiedname)
@@ -231,6 +232,39 @@ Set-PSRuleOption -BindingNameSeparator '::';
 # YAML: Using the binding/nameSeparator property
 binding:
   nameSeparator: '::'
+```
+
+### Binding.PreferTargetInfo
+
+Some built-in objects within PSRule perform automatic binding of TargetName and TargetType.
+These built-in objects provide their own target info.
+
+When binding has been configured these values override automatic binding by default.
+This can occur when the built-in object uses one of the fields specified by the custom configuration.
+The common occurrences of this are on fields such as `Name` and `FullName` which are widely used.
+To prefer automatic binding when specified set this option to `$True`.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the BindingPreferTargetInfo parameter
+$option = New-PSRuleOption -BindingPreferTargetInfo $True;
+```
+
+```powershell
+# PowerShell: Using the Binding.PreferTargetInfo hashtable key
+$option = New-PSRuleOption -Option @{ 'Binding.PreferTargetInfo' = $True };
+```
+
+```powershell
+# PowerShell: Using the BindingPreferTargetInfo parameter to set YAML
+Set-PSRuleOption -BindingPreferTargetInfo $True;
+```
+
+```yaml
+# YAML: Using the binding/preferTargetInfo property
+binding:
+  preferTargetInfo: true
 ```
 
 ### Binding.TargetName
@@ -1038,9 +1072,6 @@ The following outcome options are available:
 This is the default option.
 - `All` - All results for rules are returned.
 
-This option is ignored by `Assert-PSRule`.
-`Assert-PSRule` will always use `Processed`.
-
 This option can be specified using:
 
 ```powershell
@@ -1364,6 +1395,7 @@ binding:
     - AlternativeId
   ignoreCase: false
   nameSeparator: '::'
+  preferTargetInfo: true
   targetName:
   - ResourceName
   - AlternateName
@@ -1440,6 +1472,7 @@ binding:
   field: { }
   ignoreCase: true
   nameSeparator: '/'
+  preferTargetInfo: false
   targetName:
   - TargetName
   - Name
@@ -1469,5 +1502,7 @@ An online version of this document is available at https://github.com/Microsoft/
 
 - Options
 - PSRule
+- TargetInfo
+- Binding
 
 [about_PSRule_Assert]: about_PSRule_Assert.md

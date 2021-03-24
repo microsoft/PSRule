@@ -16,6 +16,7 @@ The following baseline options can be configured:
 - [Binding.Field](about_PSRule_Options.md#bindingfield)
 - [Binding.IgnoreCase](about_PSRule_Options.md#bindingignorecase)
 - [Binding.NameSeparator](about_PSRule_Options.md#bindingnameseparator)
+- [Binding.PreferTargetInfo](about_PSRule_Options.md#bindingprefertargetinfo)
 - [Binding.TargetName](about_PSRule_Options.md#bindingtargetname)
 - [Binding.TargetType](about_PSRule_Options.md#bindingtargettype)
 - [Binding.UseQualifiedName](about_PSRule_Options.md#bindingusequalifiedname)

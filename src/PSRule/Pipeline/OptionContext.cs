@@ -20,6 +20,8 @@ namespace PSRule.Pipeline
 
         string NameSeparator { get; }
 
+        bool PreferTargetInfo { get; }
+
         string[] TargetName { get; }
 
         string[] TargetType { get; }
@@ -94,6 +96,7 @@ namespace PSRule.Pipeline
             public FieldMap Field;
             public bool? IgnoreCase;
             public string NameSeparator;
+            public bool? PreferTargetInfo;
             public string[] TargetName;
             public string[] TargetType;
             public bool? UseQualifiedName;
@@ -106,6 +109,7 @@ namespace PSRule.Pipeline
                 Field = option.Binding?.Field;
                 IgnoreCase = option.Binding?.IgnoreCase;
                 NameSeparator = option?.Binding?.NameSeparator;
+                PreferTargetInfo = option.Binding?.PreferTargetInfo;
                 TargetName = option.Binding?.TargetName;
                 TargetType = option.Binding?.TargetType;
                 UseQualifiedName = option.Binding?.UseQualifiedName;
@@ -141,6 +145,7 @@ namespace PSRule.Pipeline
             public FieldMap Field;
             public bool? IgnoreCase;
             public string NameSeparator;
+            public bool? PreferTargetInfo;
             public string[] TargetName;
             public string[] TargetType;
             public bool? UseQualifiedName;
@@ -154,6 +159,7 @@ namespace PSRule.Pipeline
                 Field = option.Binding?.Field;
                 IgnoreCase = option.Binding?.IgnoreCase;
                 NameSeparator = option?.Binding?.NameSeparator;
+                PreferTargetInfo = option.Binding?.PreferTargetInfo;
                 TargetName = option.Binding?.TargetName;
                 TargetType = option.Binding?.TargetType;
                 UseQualifiedName = option.Binding?.UseQualifiedName;
@@ -169,6 +175,7 @@ namespace PSRule.Pipeline
                 Field = spec.Binding?.Field;
                 IgnoreCase = spec.Binding?.IgnoreCase;
                 NameSeparator = spec?.Binding?.NameSeparator;
+                PreferTargetInfo = spec.Binding?.PreferTargetInfo;
                 TargetName = spec.Binding?.TargetName;
                 TargetType = spec.Binding?.TargetType;
                 UseQualifiedName = spec.Binding?.UseQualifiedName;
@@ -181,10 +188,11 @@ namespace PSRule.Pipeline
 
         private sealed class BindingOption : IBindingOption, IEquatable<BindingOption>
         {
-            public BindingOption(FieldMap[] field, bool ignoreCase, string nameSeparator, string[] targetName, string[] targetType, bool useQualifiedName)
+            public BindingOption(FieldMap[] field, bool ignoreCase, bool ignoreTargetInfo, string nameSeparator, string[] targetName, string[] targetType, bool useQualifiedName)
             {
                 Field = field;
                 IgnoreCase = ignoreCase;
+                PreferTargetInfo = ignoreTargetInfo;
                 NameSeparator = nameSeparator;
                 TargetName = targetName;
                 TargetType = targetType;
@@ -196,6 +204,8 @@ namespace PSRule.Pipeline
             public bool IgnoreCase { get; }
 
             public string NameSeparator { get; }
+
+            public bool PreferTargetInfo { get; }
 
             public string[] TargetName { get; }
 
@@ -214,6 +224,7 @@ namespace PSRule.Pipeline
                     Field == other.Field &&
                     IgnoreCase == other.IgnoreCase &&
                     NameSeparator == other.NameSeparator &&
+                    PreferTargetInfo == other.PreferTargetInfo &&
                     TargetName == other.TargetName &&
                     TargetType == other.TargetType &&
                     UseQualifiedName == other.UseQualifiedName;
@@ -227,6 +238,7 @@ namespace PSRule.Pipeline
                     hash = hash * 23 + (Field != null ? Field.GetHashCode() : 0);
                     hash = hash * 23 + (IgnoreCase ? IgnoreCase.GetHashCode() : 0);
                     hash = hash * 23 + (NameSeparator != null ? NameSeparator.GetHashCode() : 0);
+                    hash = hash * 23 + (PreferTargetInfo ? PreferTargetInfo.GetHashCode() : 0);
                     hash = hash * 23 + (TargetName != null ? TargetName.GetHashCode() : 0);
                     hash = hash * 23 + (TargetType != null ? TargetType.GetHashCode() : 0);
                     hash = hash * 23 + (UseQualifiedName ? UseQualifiedName.GetHashCode() : 0);
@@ -283,10 +295,11 @@ namespace PSRule.Pipeline
             FieldMap[] field = new FieldMap[] { _Explicit?.Field, _WorkspaceBaseline?.Field, _ModuleBaseline?.Field, _ModuleConfig?.Field };
             bool ignoreCase = _Explicit?.IgnoreCase ?? _WorkspaceBaseline?.IgnoreCase ?? _ModuleBaseline?.IgnoreCase ?? _ModuleConfig?.IgnoreCase ?? Configuration.BindingOption.Default.IgnoreCase.Value;
             string nameSeparator = _Explicit?.NameSeparator ?? _WorkspaceBaseline?.NameSeparator ?? _ModuleBaseline?.NameSeparator ?? _ModuleConfig?.NameSeparator ?? Configuration.BindingOption.Default.NameSeparator;
+            bool preferTargetInfo = _Explicit?.PreferTargetInfo ?? _WorkspaceBaseline?.PreferTargetInfo ?? _ModuleBaseline?.PreferTargetInfo ?? _ModuleConfig?.PreferTargetInfo ?? Configuration.BindingOption.Default.PreferTargetInfo.Value;
             string[] targetName = _Explicit?.TargetName ?? _WorkspaceBaseline?.TargetName ?? _ModuleBaseline?.TargetName ?? _ModuleConfig?.TargetName;
             string[] targetType = _Explicit?.TargetType ?? _WorkspaceBaseline?.TargetType ?? _ModuleBaseline?.TargetType ?? _ModuleConfig?.TargetType;
             bool useQualifiedName = _Explicit?.UseQualifiedName ?? _WorkspaceBaseline?.UseQualifiedName ?? _ModuleBaseline?.UseQualifiedName ?? _ModuleConfig?.UseQualifiedName ?? Configuration.BindingOption.Default.UseQualifiedName.Value;
-            return _Binding = new BindingOption(field, ignoreCase, nameSeparator, targetName, targetType, useQualifiedName);
+            return _Binding = new BindingOption(field, ignoreCase, preferTargetInfo, nameSeparator, targetName, targetType, useQualifiedName);
         }
 
         public Dictionary<string, object> GetConfiguration()

@@ -12,6 +12,7 @@ namespace PSRule.Configuration
     public sealed class BindingOption : IEquatable<BindingOption>
     {
         private const bool DEFAULT_IGNORECASE = true;
+        private const bool DEFAULT_PREFERTARGETINFO = false;
         private const string DEFAULT_NAMESEPARATOR = "/";
         private const bool DEFAULT_USEQUALIFIEDNAME = false;
 
@@ -19,6 +20,7 @@ namespace PSRule.Configuration
         {
             IgnoreCase = DEFAULT_IGNORECASE,
             NameSeparator = DEFAULT_NAMESEPARATOR,
+            PreferTargetInfo = DEFAULT_PREFERTARGETINFO,
             UseQualifiedName = DEFAULT_USEQUALIFIEDNAME
         };
 
@@ -27,6 +29,7 @@ namespace PSRule.Configuration
             Field = null;
             IgnoreCase = null;
             NameSeparator = null;
+            PreferTargetInfo = null;
             TargetName = null;
             TargetType = null;
             UseQualifiedName = null;
@@ -40,6 +43,7 @@ namespace PSRule.Configuration
             Field = option.Field;
             IgnoreCase = option.IgnoreCase;
             NameSeparator = option.NameSeparator;
+            PreferTargetInfo = option.PreferTargetInfo;
             TargetName = option.TargetName;
             TargetType = option.TargetType;
             UseQualifiedName = option.UseQualifiedName;
@@ -56,6 +60,7 @@ namespace PSRule.Configuration
                 Field == other.Field &&
                 IgnoreCase == other.IgnoreCase &&
                 NameSeparator == other.NameSeparator &&
+                PreferTargetInfo == other.PreferTargetInfo &&
                 TargetName == other.TargetName &&
                 TargetType == other.TargetType &&
                 UseQualifiedName == other.UseQualifiedName;
@@ -69,6 +74,7 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (Field != null ? Field.GetHashCode() : 0);
                 hash = hash * 23 + (IgnoreCase.HasValue ? IgnoreCase.Value.GetHashCode() : 0);
                 hash = hash * 23 + (NameSeparator != null ? NameSeparator.GetHashCode() : 0);
+                hash = hash * 23 + (PreferTargetInfo.HasValue ? PreferTargetInfo.Value.GetHashCode() : 0);
                 hash = hash * 23 + (TargetName != null ? TargetName.GetHashCode() : 0);
                 hash = hash * 23 + (TargetType != null ? TargetType.GetHashCode() : 0);
                 hash = hash * 23 + (UseQualifiedName.HasValue ? UseQualifiedName.Value.GetHashCode() : 0);
@@ -83,6 +89,7 @@ namespace PSRule.Configuration
                 Field = o1.Field ?? o2.Field,
                 IgnoreCase = o1.IgnoreCase ?? o2.IgnoreCase,
                 NameSeparator = o1.NameSeparator ?? o2.NameSeparator,
+                PreferTargetInfo = o1.PreferTargetInfo ?? o2.PreferTargetInfo,
                 TargetName = o1.TargetName ?? o2.TargetName,
                 TargetType = o1.TargetType ?? o2.TargetType,
                 UseQualifiedName = o1.UseQualifiedName ?? o2.UseQualifiedName
@@ -107,6 +114,12 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public string NameSeparator { get; set; }
+
+        /// <summary>
+        /// Determines if binding prefers target info provided by the object over custom configuration.
+        /// </summary>
+        [DefaultValue(null)]
+        public bool? PreferTargetInfo { get; set; }
 
         /// <summary>
         /// One or more property names to use to bind TargetName.

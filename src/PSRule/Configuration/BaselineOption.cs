@@ -72,47 +72,50 @@ namespace PSRule.Configuration
         /// <param name="properties">One or more indexed properties.</param>
         internal static void Load(IBaselineSpec option, Dictionary<string, object> properties)
         {
-            if (properties.TryPopValue("binding.field", out Hashtable map))
+            if (properties.TryPopValue("Binding.Field", out Hashtable map))
                 option.Binding.Field = new FieldMap(map);
 
-            if (properties.TryPopBool("binding.ignorecase", out bool bvalue))
+            if (properties.TryPopBool("Binding.IgnoreCase", out bool bvalue))
                 option.Binding.IgnoreCase = bvalue;
 
-            if (properties.TryPopValue("binding.nameseparator", out object value))
+            if (properties.TryPopBool("Binding.PreferTargetInfo", out bvalue))
+                option.Binding.PreferTargetInfo = bvalue;
+
+            if (properties.TryPopValue("Binding.NameSeparator", out object value))
                 option.Binding.NameSeparator = value.ToString();
 
-            if (properties.TryPopValue("binding.targetname", out value))
+            if (properties.TryPopValue("Binding.TargetName", out value))
             {
                 if (value.GetType().IsArray)
                     option.Binding.TargetName = ((object[])value).OfType<string>().ToArray();
                 else
                     option.Binding.TargetName = new string[] { value.ToString() };
             }
-            if (properties.TryPopValue("binding.targettype", out value))
+            if (properties.TryPopValue("Binding.targettype", out value))
             {
                 if (value.GetType().IsArray)
                     option.Binding.TargetType = ((object[])value).OfType<string>().ToArray();
                 else
                     option.Binding.TargetType = new string[] { value.ToString() };
             }
-            if (properties.TryPopValue("binding.usequalifiedname", out bvalue))
+            if (properties.TryPopValue("Binding.UseQualifiedName", out bvalue))
                 option.Binding.UseQualifiedName = bvalue;
 
-            if (properties.TryPopValue("rule.include", out value))
+            if (properties.TryPopValue("Rule.Include", out value))
             {
                 if (value.GetType().IsArray)
                     option.Rule.Include = ((object[])value).OfType<string>().ToArray();
                 else
                     option.Rule.Include = new string[] { value.ToString() };
             }
-            if (properties.TryPopValue("rule.exclude", out value))
+            if (properties.TryPopValue("Rule.Exclude", out value))
             {
                 if (value.GetType().IsArray)
                     option.Rule.Exclude = ((object[])value).OfType<string>().ToArray();
                 else
                     option.Rule.Exclude = new string[] { value.ToString() };
             }
-            if (properties.TryPopValue("rule.tag", out Hashtable tag))
+            if (properties.TryPopValue("Rule.Tag", out Hashtable tag))
                 option.Rule.Tag = tag;
 
             // Process configuration values

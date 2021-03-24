@@ -16,17 +16,18 @@ Pass or fail objects against matching rules.
 ### Input (Default)
 
 ```text
-Test-PSRuleTarget [-Module <String[]>] [-Outcome <RuleOutcome>] [-Format <InputFormat>] [[-Path] <String[]>]
- [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject> [-Option <PSRuleOption>] [-ObjectPath <String>]
- [-TargetType <String[]>] [-Culture <String>] [<CommonParameters>]
+Test-PSRuleTarget [-Module <String[]>] [-Outcome <RuleOutcome>] [-Format <InputFormat>]
+ [-Convention <String[]>] [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] -InputObject <PSObject>
+ [-Option <PSRuleOption>] [-ObjectPath <String>] [-TargetType <String[]>] [-Culture <String>]
+ [<CommonParameters>]
 ```
 
 ### InputPath
 
 ```text
 Test-PSRuleTarget -InputPath <String[]> [-Module <String[]>] [-Outcome <RuleOutcome>] [-Format <InputFormat>]
- [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-ObjectPath <String>]
- [-TargetType <String[]>] [-Culture <String>] [<CommonParameters>]
+ [-Convention <String[]>] [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>]
+ [-ObjectPath <String>] [-TargetType <String[]>] [-Culture <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -203,6 +204,43 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Convention
+
+Specifies conventions by name to execute in the pipeline when processing objects.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Culture
+
+Specifies the culture to use for rule documentation and messages.
+By default, the culture of PowerShell is used.
+
+This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.
+
+The PowerShell cmdlet `Get-Culture` shows the current culture of PowerShell.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ObjectPath
 
 The name of a property to use instead of the pipeline object.
@@ -276,26 +314,6 @@ Parameter Sets: InputPath
 Aliases: f
 
 Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Culture
-
-Specifies the culture to use for rule documentation and messages. By default, the culture of PowerShell is used.
-
-This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.
-
-The PowerShell cmdlet `Get-Culture` shows the current culture of PowerShell.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False

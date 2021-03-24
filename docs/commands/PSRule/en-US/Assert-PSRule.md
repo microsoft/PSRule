@@ -16,21 +16,22 @@ Evaluate objects against matching rules and assert any failures.
 ### Input (Default)
 
 ```text
-Assert-PSRule [-Module <String[]>] [-Format <InputFormat>] [-Baseline <BaselineOption>] [-Style <OutputStyle>]
- [-Outcome <RuleOutcome>] [-As <ResultFormat>] [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>]
- [-OutputPath <String>] [-OutputFormat <OutputFormat>] [-Option <PSRuleOption>] [-ObjectPath <String>]
- [-TargetType <String[]>] [-Culture <String[]>] -InputObject <PSObject> [-ResultVariable <String>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+Assert-PSRule [-Module <String[]>] [-Format <InputFormat>] [-Baseline <BaselineOption>]
+ [-Convention <String[]>] [-Style <OutputStyle>] [-Outcome <RuleOutcome>] [-As <ResultFormat>]
+ [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-OutputPath <String>]
+ [-OutputFormat <OutputFormat>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-TargetType <String[]>]
+ [-Culture <String[]>] -InputObject <PSObject> [-ResultVariable <String>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ### InputPath
 
 ```text
 Assert-PSRule -InputPath <String[]> [-Module <String[]>] [-Format <InputFormat>] [-Baseline <BaselineOption>]
- [-Style <OutputStyle>] [-Outcome <RuleOutcome>] [-As <ResultFormat>] [[-Path] <String[]>] [-Name <String[]>]
- [-Tag <Hashtable>] [-OutputPath <String>] [-OutputFormat <OutputFormat>] [-Option <PSRuleOption>]
- [-ObjectPath <String>] [-TargetType <String[]>] [-Culture <String[]>] [-ResultVariable <String>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+ [-Convention <String[]>] [-Style <OutputStyle>] [-Outcome <RuleOutcome>] [-As <ResultFormat>]
+ [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-OutputPath <String>]
+ [-OutputFormat <OutputFormat>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-TargetType <String[]>]
+ [-Culture <String[]>] [-ResultVariable <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -169,9 +170,26 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Convention
+
+Specifies conventions by name to execute in the pipeline when processing objects.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Culture
 
-Specifies the culture to use for rule documentation and messages. By default, the culture of PowerShell is used.
+Specifies the culture to use for rule documentation and messages.
+By default, the culture of PowerShell is used.
 
 This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.
 
@@ -462,6 +480,22 @@ Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
+### -ResultVariable
+
+Stores output result objects in the specified variable.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -WhatIf
 
 Shows what would happen if the cmdlet runs.
@@ -487,22 +521,6 @@ Prompts you for confirmation before running the cmdlet.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: cf
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ResultVariable
-
-Stores output result objects in the specified variable.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
 
 Required: False
 Position: Named

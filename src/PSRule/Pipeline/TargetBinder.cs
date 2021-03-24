@@ -102,8 +102,8 @@ namespace PSRule.Pipeline
         public void Bind(OptionContext baseline, PSObject targetObject)
         {
             var binding = baseline.GetTargetBinding();
-            TargetName = _BindTargetName(binding.TargetName, !binding.IgnoreCase, targetObject);
-            TargetType = _BindTargetType(binding.TargetType, !binding.IgnoreCase, targetObject);
+            TargetName = _BindTargetName(binding.TargetName, !binding.IgnoreCase, binding.PreferTargetInfo, targetObject);
+            TargetType = _BindTargetType(binding.TargetType, !binding.IgnoreCase, binding.PreferTargetInfo, targetObject);
             ShouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(TargetType));
 
             // Use qualified name
@@ -133,7 +133,7 @@ namespace PSRule.Pipeline
                     if (hashtable.ContainsKey(field.Key))
                         continue;
 
-                    hashtable.Add(field.Key, _BindField(field.Value, caseSensitive, targetObject));
+                    hashtable.Add(field.Key, _BindField(field.Value, caseSensitive, false, targetObject));
                 }
             }
             hashtable.Protect();

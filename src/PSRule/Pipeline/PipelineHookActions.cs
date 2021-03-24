@@ -19,8 +19,11 @@ namespace PSRule.Pipeline
         private const string Property_TargetName = "TargetName";
         private const string Property_Name = "Name";
 
-        public static string BindTargetName(string[] propertyNames, bool caseSensitive, PSObject targetObject)
+        public static string BindTargetName(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject)
         {
+            if (preferTargetInfo && TryGetInfoTargetName(targetObject, out string targetName))
+                return targetName;
+
             if (propertyNames != null)
                 if (propertyNames.Any(n => n.Contains('.')))
                     return NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding);
@@ -30,8 +33,11 @@ namespace PSRule.Pipeline
             return DefaultTargetNameBinding(targetObject);
         }
 
-        public static string BindTargetType(string[] propertyNames, bool caseSensitive, PSObject targetObject)
+        public static string BindTargetType(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject)
         {
+            if (preferTargetInfo && TryGetInfoTargetType(targetObject, out string targetType))
+                return targetType;
+
             if (propertyNames != null)
                 if (propertyNames.Any(n => n.Contains('.')))
                     return NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetTypeBinding);
@@ -41,7 +47,7 @@ namespace PSRule.Pipeline
             return DefaultTargetTypeBinding(targetObject);
         }
 
-        public static string BindField(string[] propertyNames, bool caseSensitive, PSObject targetObject)
+        public static string BindField(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject)
         {
             if (propertyNames != null)
                 if (propertyNames.Any(n => n.Contains('.')))

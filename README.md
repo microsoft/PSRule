@@ -309,6 +309,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Binding.Field](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingfield)
   - [Binding.IgnoreCase](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingignorecase)
   - [Binding.NameSeparator](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingnameseparator)
+  - [Binding.PreferTargetInfo](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingprefertargetinfo)
   - [Binding.TargetName](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingtargetname)
   - [Binding.TargetType](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingtargettype)
   - [Binding.UseQualifiedName](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingusequalifiedname)
