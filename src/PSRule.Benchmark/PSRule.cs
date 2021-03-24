@@ -254,7 +254,7 @@ namespace PSRule.Benchmark
         {
             foreach (var targetObject in _TargetObject)
             {
-                PipelineHookActions.BindTargetName(null, false, targetObject);
+                PipelineHookActions.BindTargetName(null, false, false, targetObject);
             }
         }
 
@@ -266,6 +266,7 @@ namespace PSRule.Benchmark
                 PipelineHookActions.BindTargetName(
                     propertyNames: new string[] { "TargetName", "Name" },
                     caseSensitive: true,
+                    preferTargetInfo: false,
                     targetObject: targetObject
                 );
             }
@@ -279,6 +280,7 @@ namespace PSRule.Benchmark
                 PipelineHookActions.BindTargetName(
                     propertyNames: new string[] { "TargetName", "Name" },
                     caseSensitive: true,
+                    preferTargetInfo: false,
                     targetObject: targetObject
                 );
             }

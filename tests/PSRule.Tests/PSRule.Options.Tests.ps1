@@ -233,6 +233,28 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Binding.PreferTargetInfo' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Binding.PreferTargetInfo | Should -Be $False;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Binding.PreferTargetInfo' = $True };
+            $option.Binding.PreferTargetInfo | Should -Be $True;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Binding.PreferTargetInfo | Should -Be $True;
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -BindingPreferTargetInfo $True -Path $emptyOptionsFilePath;
+            $option.Binding.PreferTargetInfo | Should -Be $True;
+        }
+    }
+
     Context 'Read Binding.TargetName' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -907,6 +929,14 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         }
     }
 
+    Context 'Read Binding.Field' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -BindingField @{ id = 'resourceId' } @optionParams;
+            $option.Binding.Field | Should -Not -BeNullOrEmpty;
+            $option.Binding.Field.id[0] | Should -Be 'resourceId';
+        }
+    }
+
     Context 'Read Binding.IgnoreCase' {
         It 'from parameter' {
             $option = Set-PSRuleOption -BindingIgnoreCase $False @optionParams;
@@ -914,11 +944,17 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         }
     }
 
-    Context 'Read Binding.Field' {
+    Context 'Read Binding.NameSeparator' {
         It 'from parameter' {
-            $option = Set-PSRuleOption -BindingField @{ id = 'resourceId' } @optionParams;
-            $option.Binding.Field | Should -Not -BeNullOrEmpty;
-            $option.Binding.Field.id[0] | Should -Be 'resourceId';
+            $option = Set-PSRuleOption -BindingNameSeparator '::' @optionParams;
+            $option.Binding.NameSeparator | Should -Be $True;
+        }
+    }
+
+    Context 'Read Binding.PreferTargetInfo' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -BindingPreferTargetInfo $True @optionParams;
+            $option.Binding.PreferTargetInfo | Should -Be $True;
         }
     }
 

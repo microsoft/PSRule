@@ -17,9 +17,10 @@ Evaluate objects against matching rules and output the results.
 
 ```text
 Invoke-PSRule [-Module <String[]>] [-Outcome <RuleOutcome>] [-As <ResultFormat>] [-Format <InputFormat>]
- [-OutputPath <String>] [-OutputFormat <OutputFormat>] [-Baseline <BaselineOption>] [[-Path] <String[]>]
- [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-ObjectPath <String>] [-TargetType <String[]>]
- [-Culture <String[]>] -InputObject <PSObject> [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-OutputPath <String>] [-OutputFormat <OutputFormat>] [-Baseline <BaselineOption>] [-Convention <String[]>]
+ [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-ObjectPath <String>]
+ [-TargetType <String[]>] [-Culture <String[]>] -InputObject <PSObject> [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ### InputPath
@@ -27,8 +28,9 @@ Invoke-PSRule [-Module <String[]>] [-Outcome <RuleOutcome>] [-As <ResultFormat>]
 ```text
 Invoke-PSRule -InputPath <String[]> [-Module <String[]>] [-Outcome <RuleOutcome>] [-As <ResultFormat>]
  [-Format <InputFormat>] [-OutputPath <String>] [-OutputFormat <OutputFormat>] [-Baseline <BaselineOption>]
- [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>] [-ObjectPath <String>]
- [-TargetType <String[]>] [-Culture <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-Convention <String[]>] [[-Path] <String[]>] [-Name <String[]>] [-Tag <Hashtable>] [-Option <PSRuleOption>]
+ [-ObjectPath <String>] [-TargetType <String[]>] [-Culture <String[]>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -294,6 +296,60 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Baseline
+
+Specifies an explicit baseline by name to use for evaluating rules.
+Baselines can contain filters and custom configuration that overrides the defaults.
+
+```yaml
+Type: BaselineOption
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Convention
+
+Specifies conventions by name to execute in the pipeline when processing objects.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Culture
+
+Specifies the culture to use for rule documentation and messages.
+By default, the culture of PowerShell is used.
+
+This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.
+
+The PowerShell cmdlet `Get-Culture` shows the current culture of PowerShell.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ObjectPath
 
 The name of a property to use instead of the pipeline object.
@@ -418,26 +474,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Culture
-
-Specifies the culture to use for rule documentation and messages. By default, the culture of PowerShell is used.
-
-This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.
-
-The PowerShell cmdlet `Get-Culture` shows the current culture of PowerShell.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Confirm
 
 Prompts you for confirmation before running the cmdlet.
@@ -462,23 +498,6 @@ Shows what would happen if the cmdlet runs. The cmdlet is not run.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: wi
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Baseline
-
-Specifies an explicit baseline by name to use for evaluating rules.
-Baselines can contain filters and custom configuration that overrides the defaults.
-
-```yaml
-Type: BaselineOption
-Parameter Sets: (All)
-Aliases:
 
 Required: False
 Position: Named

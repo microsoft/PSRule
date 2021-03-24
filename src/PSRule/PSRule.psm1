@@ -1031,6 +1031,10 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [String]$BindingNameSeparator = '/',
 
+        # Sets the Binding.PreferTargetInfo option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$BindingPreferTargetInfo = $False,
+
         # Sets the Binding.TargetName option
         [Parameter(Mandatory = $False)]
         [Alias('BindingTargetName')]
@@ -1237,6 +1241,10 @@ function Set-PSRuleOption {
         # Sets the Binding.NameSeparator option
         [Parameter(Mandatory = $False)]
         [String]$BindingNameSeparator = '/',
+
+        # Sets the Binding.PreferTargetInfo option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$BindingPreferTargetInfo = $False,
 
         # Sets the Binding.TargetName option
         [Parameter(Mandatory = $False)]
@@ -1852,6 +1860,10 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [String]$BindingNameSeparator = '/',
 
+        # Sets the Binding.PreferTargetInfo option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$BindingPreferTargetInfo = $False,
+
         # Sets the Binding.TargetName option
         [Parameter(Mandatory = $False)]
         [Alias('BindingTargetName')]
@@ -1956,6 +1968,11 @@ function SetOptions {
         # Sets option Binding.IgnoreCase
         if ($PSBoundParameters.ContainsKey('BindingIgnoreCase')) {
             $Option.Binding.IgnoreCase = $BindingIgnoreCase;
+        }
+
+        # Sets option Binding.PreferTargetInfo
+        if ($PSBoundParameters.ContainsKey('BindingPreferTargetInfo')) {
+            $Option.Binding.PreferTargetInfo = $BindingPreferTargetInfo;
         }
 
         # Sets option Binding.Field

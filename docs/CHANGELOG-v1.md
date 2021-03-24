@@ -6,6 +6,12 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.2.0-B2103031:
+
+- General improvements:
+  - Added support for preferring automatic binding over custom binding configurations. [#670](https://github.com/microsoft/PSRule/issues/670)
+    - Added the `Binding.PreferTargetInfo` option to prefer target info specified by the object.
+
 ## 1.2.0-B2103031 (pre-release)
 
 What's changed since pre-release v1.2.0-B2103023:

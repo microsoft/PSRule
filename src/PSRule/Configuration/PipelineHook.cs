@@ -11,8 +11,8 @@ namespace PSRule.Configuration
     /// </summary>
     public delegate string BindTargetName(PSObject targetObject);
 
-    internal delegate string BindTargetMethod(string[] propertyNames, bool caseSensitive, PSObject targetObject);
-    internal delegate string BindTargetFunc(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetMethod next);
+    internal delegate string BindTargetMethod(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject);
+    internal delegate string BindTargetFunc(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, BindTargetMethod next);
 
     /// <summary>
     /// Hooks that provide customize pipeline execution.

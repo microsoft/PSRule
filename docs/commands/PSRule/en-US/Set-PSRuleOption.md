@@ -16,12 +16,13 @@ Sets options that configure PSRule execution.
 ```text
 Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force] [-AllowClobber]
  [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>] [-BindingNameSeparator <String>]
- [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
- [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-Format <InputFormat>]
- [-ObjectPath <String>] [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>]
- [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
- [-OutputAs <ResultFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
- [-OutputFormat <OutputFormat>] [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-WhatIf] [-Confirm]
+ [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
+ [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>] [-InconclusiveWarning <Boolean>]
+ [-NotProcessedWarning <Boolean>] [-Format <InputFormat>] [-ObjectPath <String>] [-InputPathIgnore <String[]>]
+ [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>]
+ [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
@@ -155,7 +156,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: False
+Default value: True
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -188,6 +189,42 @@ See about_PSRule_Options for more information.
 Type: String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -BindingPreferTargetInfo
+
+Sets the option `Binding.PreferTargetInfo`.
+This option specifies if automatic binding is preferred over configured binding options.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Convention
+
+Sets the `Option.ConventionInclude` option.
+This option specifies the name of conventions to execute in the pipeline when processing objects.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases: ConventionInclude
 
 Required: False
 Position: Named
@@ -311,6 +348,24 @@ Sets the `Input.ObjectPath` option to use an object path to use instead of the p
 Type: String
 Parameter Sets: (All)
 Aliases: InputObjectPath
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InputPathIgnore
+
+Sets the `Input.PathIgnore` option.
+If specified, files that match the path spec will not be processed.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named
@@ -469,6 +524,24 @@ Accepted values: None, Yaml, Json, Markdown, NUnit3, Csv, Wide
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputOutcome
+
+Sets the `Output.Outcome` option.
+This option can be set to include or exclude output results.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: RuleOutcome
+Parameter Sets: (All)
+Aliases: Outcome
+
+Required: False
+Position: Named
+Default value: Processed
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
