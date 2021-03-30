@@ -39,6 +39,10 @@
   href: ../../../concepts/PSRule/en-US/about_PSRule_Baseline.md
   topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Baseline.md
 
+- name: Conventions
+  href: ../../../concepts/PSRule/en-US/about_PSRule_Conventions.md
+  topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Conventions.md
+
 - name: Documentation
   href: ../../../concepts/PSRule/en-US/about_PSRule_Docs.md
   topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Docs.md
@@ -50,6 +54,10 @@
 - name: Options
   href: ../../../concepts/PSRule/en-US/about_PSRule_Options.md
   topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Options.md
+
+- name: Selectors
+  href: ../../../concepts/PSRule/en-US/about_PSRule_Selectors.md
+  topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Selectors.md
 
 - name: Variables
   href: ../../../concepts/PSRule/en-US/about_PSRule_Variables.md

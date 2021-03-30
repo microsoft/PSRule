@@ -14,3 +14,8 @@ Rule 'M3.Rule1' -DependsOn 'TestModule2\M2.Rule1', 'OtherRule' {
 Rule 'OtherRule' -Tag @{ module = "TestModule3"} {
     $True
 }
+
+# Synopsis: Test selector from TestModule2
+Rule 'RemoteSelector' -With 'TestModule2\M2.CustomValueSelector' {
+    $True
+}

@@ -185,6 +185,9 @@
   <data name="MatchTrue" xml:space="preserve">
     <value>Matches: {0}</value>
   </data>
+  <data name="MissingApiVersion" xml:space="preserve">
+    <value>The {0} resource {1} does not have an apiVersion set. An apiVersion will be required in the next major version.</value>
+  </data>
   <data name="ObjectNotProcessed" xml:space="preserve">
     <value>Target object '{0}' has not been processed because no matching rules were found.</value>
   </data>
@@ -241,6 +244,15 @@
   <data name="ScriptNotFound" xml:space="preserve">
     <value>The script was not found.</value>
     <comment>Occurs when the script rule file specified does not exist.</comment>
+  </data>
+  <data name="SelectorExpressionTrace" xml:space="preserve">
+    <value>[PSRule][S][Trace] -- {0}: {1} {0} {2}</value>
+  </data>
+  <data name="SelectorMatchTrace" xml:space="preserve">
+    <value>[PSRule][S][Trace] -- {0}</value>
+  </data>
+  <data name="SelectorTrace" xml:space="preserve">
+    <value>[PSRule][S][Trace] -- {0}: {1}</value>
   </data>
   <data name="SerializeNullPSObject" xml:space="preserve">
     <value>Can not serialize a null PSObject.</value>

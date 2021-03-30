@@ -19,93 +19,74 @@ namespace PSRule.Definitions
                 With(d);
         }
 
-        public bool TryDescriptor(string name, out ISpecDescriptor descriptor)
+        public bool TryDescriptor(string apiVersion, string name, out ISpecDescriptor descriptor)
         {
-            return _Descriptors.TryGetValue(name, out descriptor);
+            var fullName = Spec.GetFullName(apiVersion, name);
+            return _Descriptors.TryGetValue(fullName, out descriptor);
         }
 
-        public void With<T, TSpec>(string name) where T : Resource<TSpec>, IResource where TSpec : Spec, new()
+        public void With<T, TSpec>(string name, string apiVersion) where T : Resource<TSpec>, IResource where TSpec : Spec, new()
         {
-            var descriptor = new SpecDescriptor<T, TSpec>(name);
-            _Descriptors.Add(descriptor.Name, descriptor);
+            var descriptor = new SpecDescriptor<T, TSpec>(name, apiVersion);
+            _Descriptors.Add(descriptor.FullName, descriptor);
         }
 
         private void With(ISpecDescriptor descriptor)
         {
-            _Descriptors.Add(descriptor.Name, descriptor);
+            _Descriptors.Add(descriptor.FullName, descriptor);
         }
     }
 
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-    internal sealed class SpecOptionAnnotationAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    internal sealed class SpecAttribute : Attribute
     {
-        public SpecOptionAnnotationAttribute()
+        public SpecAttribute()
         {
-            // Do nothing yet
+
         }
 
-        /// <summary>
-        /// The property to configure when using the flat style. If a property is not configured then the flat style is not supported.
-        /// </summary>
-        public string PropertyName { get; set; }
+        public SpecAttribute(string apiVersion, string kind)
+        {
+            ApiVersion = apiVersion;
+            Kind = kind;
+        }
+
+        public string ApiVersion { get; }
+
+        public string Kind { get; }
     }
 
     internal sealed class SpecDescriptor<T, TSpec> : ISpecDescriptor where T : Resource<TSpec>, IResource where TSpec : Spec, new()
     {
-        private Action<Spec, string> _DefaultPropertySetter;
-
-        public SpecDescriptor(string name)
+        public SpecDescriptor(string apiVersion, string name)
         {
+            ApiVersion = apiVersion;
             Name = name;
-            Bind();
+            FullName = Spec.GetFullName(apiVersion, name);
         }
 
-        public string Name { get; set; }
+        public string Name { get; }
+
+        public string ApiVersion { get; }
+
+        public string FullName { get; }
 
         public Type SpecType => typeof(TSpec);
-
-        public bool SupportsFlat { get; private set; }
 
         public IResource CreateInstance(SourceFile source, ResourceMetadata metadata, CommentMetadata comment, object spec)
         {
             var info = new ResourceHelpInfo(comment.Synopsis);
-            return (IResource)Activator.CreateInstance(typeof(T), source, metadata, info, spec);
-        }
-
-        private void Bind()
-        {
-            var annotation = SpecType.GetCustomAttributes(typeof(SpecOptionAnnotationAttribute), false);
-            if (annotation != null && annotation.Length > 0)
-            {
-                var attribute = (SpecOptionAnnotationAttribute)annotation[0];
-                if (!string.IsNullOrEmpty(attribute.PropertyName))
-                {
-                    SupportsFlat = true;
-                    var bindProperty = SpecType.GetProperty(attribute.PropertyName);
-                    if (bindProperty == null)
-                        throw new Exception($"Option type does not have the specified property: {attribute.PropertyName}");
-
-                    // Create a lambda to convert and set the property
-                    _DefaultPropertySetter = (Spec option, string value) =>
-                        SetDefaultProperty(bindProperty.SetValue, bindProperty.PropertyType, option, value);
-                }
-            }
-        }
-
-        private static void SetDefaultProperty(Action<object, object> set, Type propertyType, Spec option, string value)
-        {
-            object v = value;
-            if (!propertyType.IsAssignableFrom(typeof(string)))
-            {
-                v = Convert.ChangeType(v, propertyType);
-            }
-            set.Invoke(option, v);
+            return (IResource)Activator.CreateInstance(typeof(T), ApiVersion, source, metadata, info, spec);
         }
     }
 
     internal interface ISpecDescriptor
     {
         string Name { get; }
+
+        string ApiVersion { get; }
+
+        string FullName { get; }
 
         Type SpecType { get; }
 

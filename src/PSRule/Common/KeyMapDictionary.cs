@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 
-namespace PSRule.Configuration
+namespace PSRule
 {
     public abstract class KeyMapDictionary<TValue> : DynamicObject, IDictionary<string, TValue>
     {

@@ -3,6 +3,7 @@
 
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.Selectors;
 using PSRule.Host;
 using PSRule.Runtime;
 using System;
@@ -29,6 +30,7 @@ namespace PSRule.Pipeline
         private readonly IDictionary<string, ResourceRef> _Unresolved;
         private readonly LanguageMode _LanguageMode;
         private readonly Dictionary<string, NameToken> _NameTokenCache;
+        private readonly List<ResourceIssue> _TrackedIssues;
 
         // Objects kept for caching and disposal
         private Runspace _Runspace;
@@ -42,6 +44,7 @@ namespace PSRule.Pipeline
         internal readonly Dictionary<string, Hashtable> LocalizedDataCache;
         internal readonly Dictionary<string, object> ExpressionCache;
         internal readonly Dictionary<string, PSObject[]> ContentCache;
+        internal readonly Dictionary<string, SelectorVisitor> Selector;
         internal readonly OptionContext Baseline;
         internal readonly HostContext HostContext;
         internal readonly PipelineReader Reader;
@@ -67,9 +70,11 @@ namespace PSRule.Pipeline
             LocalizedDataCache = new Dictionary<string, Hashtable>();
             ExpressionCache = new Dictionary<string, object>();
             ContentCache = new Dictionary<string, PSObject[]>();
+            Selector = new Dictionary<string, SelectorVisitor>();
             Binder = binder;
             Baseline = baseline;
             _Unresolved = unresolved;
+            _TrackedIssues = new List<ResourceIssue>();
         }
 
         public static PipelineContext New(PSRuleOption option, HostContext hostContext, PipelineReader reader, TargetBinder binder, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
@@ -93,6 +98,28 @@ namespace PSRule.Pipeline
                 Filter = filter;
                 Configuration = configuration;
             }
+        }
+
+        internal enum ResourceIssueType
+        {
+            Unknown,
+            MissingApiVersion
+        }
+
+        internal sealed class ResourceIssue
+        {
+            public ResourceIssue(ResourceKind kind, string id, ResourceIssueType issue)
+            {
+                Kind = kind;
+                Id = id;
+                Issue = issue;
+            }
+
+            public ResourceKind Kind { get; }
+
+            public string Id { get; }
+
+            public ResourceIssueType Issue { get; }
         }
 
         internal Runspace GetRunspace()
@@ -124,11 +151,16 @@ namespace PSRule.Pipeline
 
         internal void Import(IResource resource)
         {
+            if (resource.GetApiVersionIssue())
+                _TrackedIssues.Add(new ResourceIssue(resource.Kind, resource.Id, ResourceIssueType.MissingApiVersion));
+
             if (resource.Kind == ResourceKind.Baseline && resource is Baseline baseline && _Unresolved.TryGetValue(resource.Id, out ResourceRef rr) && rr is BaselineRef baselineRef)
             {
                 _Unresolved.Remove(resource.Id);
                 Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, baseline.BaselineId, resource.Module, baseline.Spec, baseline.Obsolete));
             }
+            else if (resource.Kind == ResourceKind.Selector && resource is SelectorV1 selector)
+                Selector[selector.Id] = new SelectorVisitor(selector.Id, selector.Spec.If);
             else if (TryModuleConfig(resource, out ModuleConfig moduleConfig))
             {
                 Baseline.Add(new OptionContext.ConfigScope(OptionContext.ScopeType.Module, resource.Module, moduleConfig.Spec));
@@ -149,6 +181,16 @@ namespace PSRule.Pipeline
         public bool ShouldFilter()
         {
             return Binder.ShouldFilter;
+        }
+
+        internal void Init(RunspaceContext runspaceContext)
+        {
+            for (var i = 0; _TrackedIssues != null && i < _TrackedIssues.Count; i++)
+            {
+                if (_TrackedIssues[i].Issue == ResourceIssueType.MissingApiVersion)
+                    runspaceContext.WarnMissingApiVersion(_TrackedIssues[i].Kind, _TrackedIssues[i].Id);
+            }
+            Baseline.Init(runspaceContext);
         }
 
         #region IBindingContext

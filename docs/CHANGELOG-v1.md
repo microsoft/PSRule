@@ -4,13 +4,24 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 [upgrade-notes]: upgrade-notes.md
 
+**Important notes**:
+
+- YAML resources will require an `apiVersion` from PSRule v2. [#648](https://github.com/microsoft/PSRule/issues/648)
+
 ## Unreleased
 
 What's changed since pre-release v1.2.0-B2103031:
 
+- Engine features:
+  - Added support for complex pre-conditions with selectors. [#649](https://github.com/microsoft/PSRule/issues/649)
 - General improvements:
   - Added support for preferring automatic binding over custom binding configurations. [#670](https://github.com/microsoft/PSRule/issues/670)
     - Added the `Binding.PreferTargetInfo` option to prefer target info specified by the object.
+  - Added strong apiVersion to resource types. [#647](https://github.com/microsoft/PSRule/issues/647)
+    - Resource schemas now support an `apiVersion` field.
+    - The `apiVersion` field is optional but recommended.
+    - Resources without a `apiVersion` field will not be supported from PSRule v2.
+    - Added warning to flag baseline without `apiVersion` set.
 
 ## 1.2.0-B2103031 (pre-release)
 

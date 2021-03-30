@@ -18,6 +18,9 @@ namespace PSRule.Commands
         public string[] Type;
 
         [Parameter()]
+        public string[] With;
+
+        [Parameter()]
         public ScriptBlock If;
 
         [Parameter()]
@@ -30,6 +33,13 @@ namespace PSRule.Commands
             {
                 if (Body == null)
                     return;
+
+                // Evalute selector pre-condition
+                if (!AcceptsWith())
+                {
+                    context.Writer.DebugMessage(PSRuleResources.DebugTargetTypeMismatch);
+                    return;
+                }
 
                 // Evalute type pre-condition
                 if (!AcceptsType())
@@ -92,6 +102,19 @@ namespace PSRule.Commands
             for (var i = 0; i < Type.Length; i++)
             {
                 if (comparer.Equals(targetType, Type[i]))
+                    return true;
+            }
+            return false;
+        }
+
+        private bool AcceptsWith()
+        {
+            if (With == null || With.Length == 0)
+                return true;
+
+            for (var i = 0; i < With.Length; i++)
+            {
+                if (RunspaceContext.CurrentThread.TrySelector(With[i]))
                     return true;
             }
             return false;

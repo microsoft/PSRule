@@ -5,6 +5,7 @@ using PSRule.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Management.Automation;
+using System.Threading;
 
 namespace PSRule.Pipeline
 {
@@ -39,6 +40,15 @@ namespace PSRule.Pipeline
                 return;
 
             DoWriteDebug(debugRecord);
+        }
+
+        public void WriteDebug(string text, params object[] args)
+        {
+            if (string.IsNullOrEmpty(text) || !ShouldWriteDebug())
+                return;
+
+            text = args == null || args.Length == 0 ? text : string.Format(Thread.CurrentThread.CurrentCulture, text, args);
+            DoWriteDebug(new DebugRecord(text));
         }
 
         public void WriteInformation(InformationRecord informationRecord)

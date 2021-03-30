@@ -23,6 +23,7 @@ namespace PSRule.Commands
         private const string CmdletName = "Invoke-RuleBlock";
         private const string Cmdlet_TypeParameter = "Type";
         private const string Cmdlet_IfParameter = "If";
+        private const string Cmdlet_WithParameter = "With";
         private const string Cmdlet_BodyParameter = "Body";
 
         private const string Markdown_Extension = ".md";
@@ -47,16 +48,22 @@ namespace PSRule.Commands
         public Hashtable Tag { get; set; }
 
         /// <summary>
-        /// An optional precondition before the rule is evaluated.
+        /// An optional script precondition before the rule is evaluated.
         /// </summary>
         [Parameter(Mandatory = false)]
         public ScriptBlock If { get; set; }
 
         /// <summary>
-        /// An optional preconditions before the rule is evaluated.
+        /// An optional type precondition before the rule is evaluated.
         /// </summary>
         [Parameter(Mandatory = false)]
         public string[] Type { get; set; }
+
+        /// <summary>
+        /// An optional selector precondition before the rule is evaluated.
+        /// </summary>
+        [Parameter(Mandatory = false)]
+        public string[] With { get; set; }
 
         /// <summary>
         /// Deployments that this deployment depends on.
@@ -120,6 +127,7 @@ namespace PSRule.Commands
             var result = context.GetPowerShell();
             result.AddCommand(new CmdletInfo(CmdletName, typeof(InvokeRuleBlockCommand)));
             result.AddParameter(Cmdlet_TypeParameter, Type);
+            result.AddParameter(Cmdlet_WithParameter, With);
             result.AddParameter(Cmdlet_IfParameter, If);
             result.AddParameter(Cmdlet_BodyParameter, Body);
             return result;

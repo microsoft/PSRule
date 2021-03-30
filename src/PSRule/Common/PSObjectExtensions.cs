@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Globalization;
 using System.Management.Automation;
+using System.Threading;
 
 namespace PSRule
 {
@@ -77,13 +78,13 @@ namespace PSRule
             if (value == null)
                 return default;
 
-            return typeof(T).IsValueType ? (T)Convert.ChangeType(value, typeof(T)) : (T)value;
+            return typeof(T).IsValueType ? (T)Convert.ChangeType(value, typeof(T), Thread.CurrentThread.CurrentCulture) : (T)value;
         }
 
         private static bool TryProperty<T>(PSObject o, string name, out T value)
         {
             value = default;
-            if (o.Properties[name] != null && o.Properties[name] is T tValue)
+            if (o.Properties[name] is T tValue)
             {
                 value = tValue;
                 return true;

@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -33,6 +35,7 @@ namespace PSRule
             return dictionary.TryGetValue(key, out object v) && dictionary.Remove(key) && bool.TryParse(v.ToString(), out value);
         }
 
+        [DebuggerStepThrough]
         public static bool TryGetBool(this IDictionary<string, object> dictionary, string key, out bool? value)
         {
             value = null;
@@ -42,6 +45,36 @@ namespace PSRule
             if (o is bool bvalue || (o is string svalue && bool.TryParse(svalue, out bvalue)))
             {
                 value = bvalue;
+                return true;
+            }
+            return false;
+        }
+
+        [DebuggerStepThrough]
+        public static bool TryGetLong(this IDictionary<string, object> dictionary, string key, out long? value)
+        {
+            value = null;
+            if (!dictionary.TryGetValue(key, out object o))
+                return false;
+
+            if (o is long lvalue || (o is string svalue && long.TryParse(svalue, out lvalue)))
+            {
+                value = lvalue;
+                return true;
+            }
+            return false;
+        }
+
+        [DebuggerStepThrough]
+        public static bool TryGetString(this IDictionary<string, object> dictionary, string key, out string value)
+        {
+            value = null;
+            if (!dictionary.TryGetValue(key, out object o))
+                return false;
+
+            if (o is string svalue)
+            {
+                value = svalue;
                 return true;
             }
             return false;

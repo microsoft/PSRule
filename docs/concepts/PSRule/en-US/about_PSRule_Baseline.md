@@ -43,6 +43,7 @@ To define a baseline spec use the following structure:
 ```yaml
 ---
 # Synopsis: <synopsis>
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: <name>
@@ -59,6 +60,7 @@ For example:
 ```yaml
 ---
 # Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: Baseline1
@@ -84,6 +86,7 @@ spec:
 
 ---
 # Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: Baseline2
@@ -130,6 +133,7 @@ For example:
 ```yaml
 ---
 # Synopsis: This is an example baseline that is obsolete
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: ObsoleteBaseline
@@ -145,6 +149,7 @@ spec: { }
 ```yaml
 ---
 # Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: TestBaseline1
@@ -162,6 +167,7 @@ spec:
 
 ---
 # Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: TestBaseline2

@@ -15,7 +15,7 @@ using System.Threading;
 
 namespace PSRule.Pipeline
 {
-    public enum RuleSourceType
+    public enum SourceType
     {
         Script = 1,
 
@@ -34,10 +34,10 @@ namespace PSRule.Pipeline
 
         public string Path { get; }
         public string ModuleName { get; }
-        public RuleSourceType Type { get; }
+        public SourceType Type { get; }
         public string HelpPath { get; }
 
-        public SourceFile(string path, string moduleName, RuleSourceType type, string helpPath)
+        public SourceFile(string path, string moduleName, SourceType type, string helpPath)
         {
             Path = path;
             ModuleName = moduleName;
@@ -261,8 +261,11 @@ namespace PSRule.Pipeline
 
         private void Source(Source source)
         {
+            if (source == null)
+                return;
+
             // Prefer non-dependencies
-            var key = string.Concat(source?.Module?.Name, ": ", source?.Path);
+            var key = string.Concat(source.Module?.Name, ": ", source.Path);
             if (_Source.ContainsKey(key) && source.Dependency)
                 return;
 
@@ -318,10 +321,10 @@ namespace PSRule.Pipeline
             return result.ToArray();
         }
 
-        private static RuleSourceType GetSourceType(string path)
+        private static SourceType GetSourceType(string path)
         {
             var extension = Path.GetExtension(path);
-            return IsYamlFile(extension) ? RuleSourceType.Yaml : RuleSourceType.Script;
+            return IsYamlFile(extension) ? SourceType.Yaml : SourceType.Script;
         }
 
         private static bool IsSourceFile(string extension)

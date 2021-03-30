@@ -5,6 +5,7 @@ using PSRule.Annotations;
 using PSRule.Common;
 using PSRule.Definitions;
 using PSRule.Definitions.Conventions;
+using PSRule.Definitions.Selectors;
 using PSRule.Pipeline;
 using PSRule.Rules;
 using PSRule.Runtime;
@@ -53,7 +54,7 @@ namespace PSRule.Host
         /// </summary>
         public static IEnumerable<Baseline> GetBaseline(Source[] source, RunspaceContext context)
         {
-            return ToBaseline(ReadYamlObjects(source, context), context);
+            return ToBaselineV1(ReadYamlObjects(source, context), context);
         }
 
         /// <summary>
@@ -61,7 +62,15 @@ namespace PSRule.Host
         /// </summary>
         public static IEnumerable<ModuleConfig> GetModuleConfig(Source[] source, RunspaceContext context)
         {
-            return ToModuleConfig(ReadYamlObjects(source, context), context);
+            return ToModuleConfigV1(ReadYamlObjects(source, context), context);
+        }
+
+        /// <summary>
+        /// Read YAML objects and return selectors.
+        /// </summary>
+        public static IEnumerable<SelectorV1> GetSelector(Source[] source, RunspaceContext context)
+        {
+            return ToSelectorV1(ReadYamlObjects(source, context), context);
         }
 
         public static void ImportResource(Source[] source, RunspaceContext context)
@@ -125,7 +134,7 @@ namespace PSRule.Host
                 {
                     foreach (var file in source.File)
                     {
-                        if (file.Type != RuleSourceType.Script)
+                        if (file.Type != SourceType.Script)
                             continue;
 
                         ps.Commands.Clear();
@@ -178,6 +187,35 @@ namespace PSRule.Host
             return results.ToArray();
         }
 
+        //private static IEnumerable<ILanguageBlock> ReadYamlObjects(Source[] sources, RunspaceContext context)
+        //{
+        //    var builder = new ResourceBuilder();
+        //    try
+        //    {
+        //        //context.Writer?.EnterScope("[Discovery.Resource]");
+        //        //PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Yaml;
+        //        foreach (var source in sources)
+        //        {
+        //            foreach (var file in source.File)
+        //            {
+        //                if (file.Type != SourceType.Yaml)
+        //                    continue;
+
+        //                //context.VerboseRuleDiscovery(path: file.Path);
+        //                context.EnterSourceFile(file);
+        //                builder.FromFile(file);
+        //            }
+        //        }
+        //    }
+        //    finally
+        //    {
+        //        //context.Writer?.ExitScope();
+        //        //context.Pipeline.ExecutionScope = ExecutionScope.None;
+        //        context.ExitSourceFile();
+        //    }
+        //    return builder.Build();
+        //}
+
         private static ILanguageBlock[] ReadYamlObjects(Source[] sources, RunspaceContext context)
         {
             var result = new Collection<ILanguageBlock>();
@@ -186,7 +224,7 @@ namespace PSRule.Host
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .WithNodeDeserializer(
-                    inner => new LanguageBlockDeserializer(inner),
+                    inner => new LanguageBlockDeserializer(new SelectorExpressionDeserializer(inner)),
                     s => s.InsteadOf<ObjectNodeDeserializer>())
                 .Build();
 
@@ -198,7 +236,7 @@ namespace PSRule.Host
                 {
                     foreach (var file in source.File)
                     {
-                        if (file.Type != RuleSourceType.Yaml)
+                        if (file.Type != SourceType.Yaml)
                             continue;
 
                         context.VerboseRuleDiscovery(path: file.Path);
@@ -335,7 +373,7 @@ namespace PSRule.Host
             return results.Values.ToArray();
         }
 
-        private static Baseline[] ToBaseline(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+        private static Baseline[] ToBaselineV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
         {
             if (blocks == null)
                 return Array.Empty<Baseline>();
@@ -361,7 +399,7 @@ namespace PSRule.Host
             return results.Values.ToArray();
         }
 
-        private static ModuleConfig[] ToModuleConfig(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+        private static ModuleConfig[] ToModuleConfigV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
         {
             if (blocks == null)
                 return Array.Empty<ModuleConfig>();
@@ -410,6 +448,32 @@ namespace PSRule.Host
             return results.ToArray();
         }
 
+        private static SelectorV1[] ToSelectorV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+        {
+            if (blocks == null)
+                return Array.Empty<SelectorV1>();
+
+            // Index selectors by Id
+            var results = new Dictionary<string, SelectorV1>(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+                foreach (var block in blocks.OfType<SelectorV1>().ToArray())
+                {
+                    // Ignore selectors that don't match
+                    if (!Match(context, block))
+                        continue;
+
+                    if (!results.ContainsKey(block.Id))
+                        results[block.Id] = block;
+                }
+            }
+            finally
+            {
+                context.ExitSourceScope();
+            }
+            return results.Values.ToArray();
+        }
+
         private static void Import(ILanguageBlock[] blocks, RunspaceContext context)
         {
             foreach (var resource in blocks.OfType<IResource>().ToArray())
@@ -446,6 +510,12 @@ namespace PSRule.Host
             order = int.MaxValue;
             var filter = context.Pipeline.Baseline.GetConventionFilter();
             return filter.Match(block.Name, null) || filter.Match(block.Id, null);
+        }
+
+        private static bool Match(RunspaceContext context, SelectorV1 resource)
+        {
+            var scope = context.EnterSourceScope(source: resource.Source);
+            return scope.Filter.Match(resource.Name, null);
         }
     }
 }

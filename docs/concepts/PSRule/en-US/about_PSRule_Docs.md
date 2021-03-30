@@ -46,7 +46,8 @@ Get-PSRuleHelp <rule-name> -Online
 
 ### Creating documentation
 
-Rule documentation is composed of markdown files, one per rule. When creating rules for more then one culture, a separate markdown file is created per rule per culture.
+Rule documentation is composed of markdown files, one per rule.
+When creating rules for more then one culture, a separate markdown file is created per rule per culture.
 
 The markdown files for each rule is automatically discovered based on naming convention.
 

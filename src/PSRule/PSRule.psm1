@@ -1461,6 +1461,9 @@ function Rule {
         [Parameter(Mandatory = $False)]
         [String[]]$Type,
 
+        [Parameter(Mandatory = $False)]
+        [String[]]$With,
+
         # Any dependencies for this rule
         [Parameter(Mandatory = $False)]
         [String[]]$DependsOn,

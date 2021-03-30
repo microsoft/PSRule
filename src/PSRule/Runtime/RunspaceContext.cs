@@ -3,6 +3,7 @@
 
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.Selectors;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
@@ -227,6 +228,14 @@ namespace PSRule.Runtime
                 return;
 
             Writer.WriteDebug(PSRuleResources.DebugPropertyObsolete, RuleBlock.RuleName, variableName, propertyName);
+        }
+
+        public void WarnMissingApiVersion(ResourceKind kind, string resourceId)
+        {
+            if (Writer == null || !Writer.ShouldWriteWarning())
+                return;
+
+            Writer.WriteWarning(PSRuleResources.MissingApiVersion, kind.ToString(), resourceId);
         }
 
         public void ErrorInvaildRuleResult()
@@ -551,6 +560,23 @@ namespace PSRule.Runtime
             Data = null;
         }
 
+        public bool TrySelector(string name)
+        {
+            name = ResourceHelper.GetId(Source.File.ModuleName, name);
+            if (TargetObject == null || Pipeline == null || !Pipeline.Selector.TryGetValue(name, out SelectorVisitor selector))
+                return false;
+
+            //var annotation = TargetObject.GetAnnotation<SelectorTargetAnnotation>();
+            //if (annotation.TryGetSelectorResult(selector, out bool result))
+            //    return result;
+
+            //result = selector.Match(TargetObject.Value);
+            //annotation.SetSelectorResult(selector, result);
+            //return result;
+
+            return selector.Match(TargetObject);
+        }
+
         /// <summary>
         /// Enter the rule block scope.
         /// </summary>
@@ -642,7 +668,7 @@ namespace PSRule.Runtime
 
         public void Begin()
         {
-            Pipeline.Baseline.Init(this);
+            Pipeline.Init(this);
         }
 
         public void End(IEnumerable<InvokeResult> output)

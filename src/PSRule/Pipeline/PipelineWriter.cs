@@ -36,6 +36,8 @@ namespace PSRule.Pipeline
 
         void WriteDebug(DebugRecord debugRecord);
 
+        void WriteDebug(string text, params object[] args);
+
         bool ShouldWriteDebug();
 
         void WriteObject(object sendToPipeline, bool enumerateCollection);
@@ -153,6 +155,15 @@ namespace PSRule.Pipeline
                 return;
 
             _Writer.WriteDebug(debugRecord);
+        }
+
+        public void WriteDebug(string text, params object[] args)
+        {
+            if (_Writer == null || string.IsNullOrEmpty(text) || !ShouldWriteDebug())
+                return;
+
+            text = args == null || args.Length == 0 ? text : string.Format(Thread.CurrentThread.CurrentCulture, text, args);
+            _Writer.WriteDebug(new DebugRecord(text));
         }
 
         public virtual bool ShouldWriteDebug()

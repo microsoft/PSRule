@@ -29,6 +29,17 @@
     "[markdown]": {
         "editor.tabSize": 2
     },
+    "[json]": {
+        "editor.tabSize": 4,
+        "editor.tabCompletion": "on",
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.suggest.insertMode": "replace",
+        "gitlens.codeLens.scopes": [
+            "document"
+        ]
+    },
     "files.associations": {
         "**/.azure-pipelines/*.yaml": "azure-pipelines",
         "**/.azure-pipelines/jobs/*.yaml": "azure-pipelines"
