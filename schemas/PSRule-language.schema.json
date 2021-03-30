@@ -332,6 +332,7 @@
                     "type": "array",
                     "title": "Include conventions",
                     "description": "An ordered list of conventions to include.",
+                    "markdownDescription": "An ordered list of conventions to include. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#conventioninclude)",
                     "items": {
                         "type": "string"
                     },
@@ -344,6 +345,7 @@
             "type": "object",
             "title": "Selector",
             "description": "A PSRule Selector.",
+            "markdownDescription": "A PSRule Selector. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html)",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -465,23 +467,12 @@
                         "field": {
                             "type": "string",
                             "title": "Field",
-                            "description": "The path of the field."
+                            "description": "The path of the field.",
+                            "markdownDescription": "The path of the field. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#field)"
                         }
                     },
                     "required": [
                         "field"
-                    ]
-                },
-                {
-                    "properties": {
-                        "value": {
-                            "type": "string",
-                            "title": "Value",
-                            "description": "A constructed value."
-                        }
-                    },
-                    "required": [
-                        "value"
                     ]
                 }
             ]
@@ -493,6 +484,7 @@
                     "type": "array",
                     "title": "AllOf",
                     "description": "All of the expressions must be true.",
+                    "markdownDescription": "All of the expressions must be true. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#allof)",
                     "items": {
                         "$ref": "#/definitions/selectorExpression"
                     }
@@ -510,6 +502,7 @@
                     "type": "array",
                     "title": "AnyOf",
                     "description": "One of the expressions must be true.",
+                    "markdownDescription": "All of the expressions must be true. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#anyof)",
                     "items": {
                         "$ref": "#/definitions/selectorExpression"
                     }
@@ -526,6 +519,8 @@
                 "not": {
                     "type": "object",
                     "title": "Not",
+                    "description": "The nested expression must not be true.",
+                    "markdownDescription": "The nested expression must not be true. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#not)",
                     "$ref": "#/definitions/selectorExpression"
                 }
             },
@@ -539,12 +534,14 @@
                 "exists": {
                     "type": "boolean",
                     "title": "Exists",
-                    "description": "Must have the named field."
+                    "description": "Must have the named field.",
+                    "markdownDescription": "Must have the named field. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#exists)"
                 },
                 "field": {
                     "type": "string",
                     "title": "Field",
-                    "description": "The path of the field."
+                    "description": "The path of the field.",
+                    "markdownDescription": "The path of the field. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#field)"
                 }
             },
             "required": [
@@ -560,17 +557,20 @@
                         {
                             "type": "string",
                             "title": "Equals",
-                            "description": "Must have the specified value."
+                            "description": "Must have the specified value.",
+                            "markdownDescription": "Must have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#equals)"
                         },
                         {
                             "type": "integer",
                             "title": "Equals",
-                            "description": "Must have the specified value."
+                            "description": "Must have the specified value.",
+                            "markdownDescription": "Must have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#equals)"
                         },
                         {
                             "type": "boolean",
                             "title": "Equals",
-                            "description": "Must have the specified value."
+                            "description": "Must have the specified value.",
+                            "markdownDescription": "Must have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#equals)"
                         }
                     ]
                 }
@@ -592,17 +592,20 @@
                         {
                             "type": "string",
                             "title": "Not Equals",
-                            "description": "Must not have the specified value."
+                            "description": "Must not have the specified value.",
+                            "markdownDescription": "Must not have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#notequals)"
                         },
                         {
                             "type": "integer",
                             "title": "Not Equals",
-                            "description": "Must not have the specified value."
+                            "description": "Must not have the specified value.",
+                            "markdownDescription": "Must not have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#notequals)"
                         },
                         {
                             "type": "boolean",
                             "title": "Not Equals",
-                            "description": "Must not have the specified value."
+                            "description": "Must not have the specified value.",
+                            "markdownDescription": "Must not have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#notequals)"
                         }
                     ]
                 }
@@ -621,7 +624,9 @@
             "properties": {
                 "hasValue": {
                     "type": "boolean",
-                    "title": "Has Value"
+                    "title": "Has Value",
+                    "description": "Must have a non-empty value.",
+                    "markdownDescription": "Must have a non-empty value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#hasvalue)"
                 }
             },
             "required": [
@@ -639,10 +644,8 @@
                 "match": {
                     "type": "string",
                     "title": "Match",
-                    "description": "Must match the regular expression."
-                },
-                "field": {
-                    "type": "string"
+                    "description": "Must match the regular expression.",
+                    "markdownDescription": "Must match the regular expression. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#match)"
                 }
             },
             "required": [
@@ -660,7 +663,8 @@
                 "notMatch": {
                     "type": "string",
                     "title": "Not Match",
-                    "description": "Must not match the regular expression."
+                    "description": "Must not match the regular expression.",
+                    "markdownDescription": "Must not match the regular expression. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#notmatch)"
                 }
             },
             "required": [
@@ -678,7 +682,8 @@
                 "in": {
                     "type": "array",
                     "title": "In",
-                    "description": "Must equal one the values."
+                    "description": "Must equal one the values.",
+                    "markdownDescription": "Must equal one the values. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#in)"
                 }
             },
             "required": [
@@ -696,7 +701,8 @@
                 "notIn": {
                     "type": "array",
                     "title": "Not In",
-                    "description": "Must not equal any of the values."
+                    "description": "Must not equal any of the values.",
+                    "markdownDescription": "Must not equal one the values. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#notin)"
                 }
             },
             "required": [
@@ -714,7 +720,8 @@
                 "less": {
                     "type": "integer",
                     "title": "Less",
-                    "description": "Must be less then the specified value."
+                    "description": "Must be less then the specified value.",
+                    "markdownDescription": "Must be less then the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#less)"
                 }
             },
             "required": [
@@ -732,7 +739,8 @@
                 "lessOrEquals": {
                     "type": "integer",
                     "title": "Less or Equal to",
-                    "description": "Must be less or equal to the specified value."
+                    "description": "Must be less or equal to the specified value.",
+                    "markdownDescription": "Must be less or equal to the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#lessorequals)"
                 }
             },
             "required": [
@@ -750,7 +758,8 @@
                 "greater": {
                     "type": "integer",
                     "title": "Greater",
-                    "description": "Must be greater then the specified value."
+                    "description": "Must be greater then the specified value.",
+                    "markdownDescription": "Must be greater then the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#greater)"
                 }
             },
             "required": [
@@ -768,7 +777,8 @@
                 "greaterOrEquals": {
                     "type": "integer",
                     "title": "Greater or Equal to",
-                    "description": "Must be greater or equal to the specified value."
+                    "description": "Must be greater or equal to the specified value.",
+                    "markdownDescription": "Must be greater or equal to the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#greaterorequals)"
                 }
             },
             "required": [
