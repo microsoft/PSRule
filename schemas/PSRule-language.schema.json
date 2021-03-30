@@ -1,13 +1,14 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "PSRule language",
-    "description": "A schema for PSRule YAML language files.",
     "oneOf": [
         {
-            "$ref": "#/definitions/baseline"
+            "$ref": "#/definitions/baseline-v1"
         },
         {
-            "$ref": "#/definitions/moduleConfig"
+            "$ref": "#/definitions/moduleConfig-v1"
+        },
+        {
+            "$ref": "#/definitions/selector-v1"
         }
     ],
     "definitions": {
@@ -31,12 +32,20 @@
                 "name"
             ]
         },
-        "baseline": {
+        "baseline-v1": {
             "type": "object",
             "title": "Baseline",
             "description": "A PSRule Baseline.",
             "markdownDescription": "A PSRule Baseline. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Baseline.html)",
             "properties": {
+                "apiVersion": {
+                    "type": "string",
+                    "title": "API Version",
+                    "description": "The API Version for the PSRule resources.",
+                    "enum": [
+                        "github.com/microsoft/PSRule/v1"
+                    ]
+                },
                 "kind": {
                     "type": "string",
                     "title": "Kind",
@@ -56,6 +65,7 @@
                 }
             },
             "required": [
+                "apiVersion",
                 "kind",
                 "metadata",
                 "spec"
@@ -64,7 +74,7 @@
         },
         "baselineSpec": {
             "type": "object",
-            "title": "Baseline",
+            "title": "Spec",
             "description": "A specification for a baseline.",
             "markdownDescription": "A specification for a baseline. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Baseline.html)",
             "properties": {
@@ -121,11 +131,19 @@
             },
             "additionalProperties": false
         },
-        "moduleConfig": {
+        "moduleConfig-v1": {
             "type": "object",
             "title": "ModuleConfig",
             "description": "A PSRule ModuleConfig.",
             "properties": {
+                "apiVersion": {
+                    "type": "string",
+                    "title": "API Version",
+                    "description": "The API Version for the PSRule resources.",
+                    "enum": [
+                        "github.com/microsoft/PSRule/v1"
+                    ]
+                },
                 "kind": {
                     "type": "string",
                     "title": "Kind",
@@ -144,6 +162,7 @@
                 }
             },
             "required": [
+                "apiVersion",
                 "kind",
                 "metadata",
                 "spec"
@@ -152,7 +171,7 @@
         },
         "moduleConfigSpec": {
             "type": "object",
-            "title": "ModuleConfig",
+            "title": "Spec",
             "description": "A specification for a ModuleConfig.",
             "properties": {
                 "binding": {
@@ -320,6 +339,446 @@
                 }
             },
             "additionalProperties": false
+        },
+        "selector-v1": {
+            "type": "object",
+            "title": "Selector",
+            "description": "A PSRule Selector.",
+            "properties": {
+                "apiVersion": {
+                    "type": "string",
+                    "title": "API Version",
+                    "description": "The API Version for the PSRule resources.",
+                    "enum": [
+                        "github.com/microsoft/PSRule/v1"
+                    ]
+                },
+                "kind": {
+                    "type": "string",
+                    "title": "Kind",
+                    "description": "A PSRule Selector resource.",
+                    "enum": [
+                        "Selector"
+                    ]
+                },
+                "metadata": {
+                    "type": "object",
+                    "$ref": "#/definitions/resource-metadata"
+                },
+                "spec": {
+                    "type": "object",
+                    "$ref": "#/definitions/selectorSpec"
+                }
+            },
+            "required": [
+                "apiVersion",
+                "kind",
+                "metadata",
+                "spec"
+            ]
+        },
+        "selectorSpec": {
+            "type": "object",
+            "title": "Spec",
+            "description": "PSRule selector specification.",
+            "properties": {
+                "if": {
+                    "type": "object",
+                    "$ref": "#/definitions/selectorExpression"
+                }
+            },
+            "required": [
+                "if"
+            ],
+            "additionalProperties": false
+        },
+        "selectorExpression": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorOperator"
+                },
+                {
+                    "$ref": "#/definitions/selectorCondition"
+                }
+            ]
+        },
+        "selectorOperator": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorOperatorAllOf"
+                },
+                {
+                    "$ref": "#/definitions/selectorOperatorAnyOf"
+                },
+                {
+                    "$ref": "#/definitions/selectorOperatorNot"
+                }
+            ]
+        },
+        "selectorCondition": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorConditionExists"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionEquals"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionNotEquals"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionHasValue"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionMatch"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionNotMatch"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionIn"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionNotIn"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionLess"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionLessOrEquals"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionGreater"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionGreaterOrEquals"
+                }
+            ]
+        },
+        "selectorProperties": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "field": {
+                            "type": "string",
+                            "title": "Field",
+                            "description": "The path of the field."
+                        }
+                    },
+                    "required": [
+                        "field"
+                    ]
+                },
+                {
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "title": "Value",
+                            "description": "A constructed value."
+                        }
+                    },
+                    "required": [
+                        "value"
+                    ]
+                }
+            ]
+        },
+        "selectorOperatorAllOf": {
+            "type": "object",
+            "properties": {
+                "allOf": {
+                    "type": "array",
+                    "title": "AllOf",
+                    "description": "All of the expressions must be true.",
+                    "items": {
+                        "$ref": "#/definitions/selectorExpression"
+                    }
+                }
+            },
+            "required": [
+                "allOf"
+            ],
+            "additionalProperties": false
+        },
+        "selectorOperatorAnyOf": {
+            "type": "object",
+            "properties": {
+                "anyOf": {
+                    "type": "array",
+                    "title": "AnyOf",
+                    "description": "One of the expressions must be true.",
+                    "items": {
+                        "$ref": "#/definitions/selectorExpression"
+                    }
+                }
+            },
+            "required": [
+                "anyOf"
+            ],
+            "additionalProperties": false
+        },
+        "selectorOperatorNot": {
+            "type": "object",
+            "properties": {
+                "not": {
+                    "type": "object",
+                    "title": "Not",
+                    "$ref": "#/definitions/selectorExpression"
+                }
+            },
+            "required": [
+                "not"
+            ]
+        },
+        "selectorConditionExists": {
+            "type": "object",
+            "properties": {
+                "exists": {
+                    "type": "boolean",
+                    "title": "Exists",
+                    "description": "Must have the named field."
+                },
+                "field": {
+                    "type": "string",
+                    "title": "Field",
+                    "description": "The path of the field."
+                }
+            },
+            "required": [
+                "exists",
+                "field"
+            ]
+        },
+        "selectorConditionEquals": {
+            "type": "object",
+            "properties": {
+                "equals": {
+                    "oneOf": [
+                        {
+                            "type": "string",
+                            "title": "Equals",
+                            "description": "Must have the specified value."
+                        },
+                        {
+                            "type": "integer",
+                            "title": "Equals",
+                            "description": "Must have the specified value."
+                        },
+                        {
+                            "type": "boolean",
+                            "title": "Equals",
+                            "description": "Must have the specified value."
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "equals"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionNotEquals": {
+            "type": "object",
+            "properties": {
+                "notEquals": {
+                    "oneOf": [
+                        {
+                            "type": "string",
+                            "title": "Not Equals",
+                            "description": "Must not have the specified value."
+                        },
+                        {
+                            "type": "integer",
+                            "title": "Not Equals",
+                            "description": "Must not have the specified value."
+                        },
+                        {
+                            "type": "boolean",
+                            "title": "Not Equals",
+                            "description": "Must not have the specified value."
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "notEquals"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionHasValue": {
+            "type": "object",
+            "properties": {
+                "hasValue": {
+                    "type": "boolean",
+                    "title": "Has Value"
+                }
+            },
+            "required": [
+                "hasValue"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionMatch": {
+            "type": "object",
+            "properties": {
+                "match": {
+                    "type": "string",
+                    "title": "Match",
+                    "description": "Must match the regular expression."
+                },
+                "field": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "match"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionNotMatch": {
+            "type": "object",
+            "properties": {
+                "notMatch": {
+                    "type": "string",
+                    "title": "Not Match",
+                    "description": "Must not match the regular expression."
+                }
+            },
+            "required": [
+                "notMatch"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionIn": {
+            "type": "object",
+            "properties": {
+                "in": {
+                    "type": "array",
+                    "title": "In",
+                    "description": "Must equal one the values."
+                }
+            },
+            "required": [
+                "in"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionNotIn": {
+            "type": "object",
+            "properties": {
+                "notIn": {
+                    "type": "array",
+                    "title": "Not In",
+                    "description": "Must not equal any of the values."
+                }
+            },
+            "required": [
+                "notIn"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionLess": {
+            "type": "object",
+            "properties": {
+                "less": {
+                    "type": "integer",
+                    "title": "Less",
+                    "description": "Must be less then the specified value."
+                }
+            },
+            "required": [
+                "less"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionLessOrEquals": {
+            "type": "object",
+            "properties": {
+                "lessOrEquals": {
+                    "type": "integer",
+                    "title": "Less or Equal to",
+                    "description": "Must be less or equal to the specified value."
+                }
+            },
+            "required": [
+                "lessOrEquals"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionGreater": {
+            "type": "object",
+            "properties": {
+                "greater": {
+                    "type": "integer",
+                    "title": "Greater",
+                    "description": "Must be greater then the specified value."
+                }
+            },
+            "required": [
+                "greater"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionGreaterOrEquals": {
+            "type": "object",
+            "properties": {
+                "greaterOrEquals": {
+                    "type": "integer",
+                    "title": "Greater or Equal to",
+                    "description": "Must be greater or equal to the specified value."
+                }
+            },
+            "required": [
+                "greaterOrEquals"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
         }
     }
 }

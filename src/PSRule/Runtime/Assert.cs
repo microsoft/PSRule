@@ -12,7 +12,6 @@ using System.Collections;
 using System.IO;
 using System.Management.Automation;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace PSRule.Runtime
@@ -23,8 +22,6 @@ namespace PSRule.Runtime
     public sealed class Assert
     {
         private const string COMMASEPARATOR = ", ";
-        private const string CACHE_MATCH = "MatchRegex";
-        private const string CACHE_MATCH_C = "MatchRegexCaseSensitive";
         private const string PROPERTY_SCHEMA = "$schema";
         private const string VARIABLE_NAME = "Assert";
         private const string TYPENAME_STRING = "[string]";
@@ -150,7 +147,7 @@ namespace PSRule.Runtime
             result = Fail();
             for (var i = 0; field != null && i < field.Length; i++)
             {
-                if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field[i], caseSensitive: caseSensitive, value: out _))
+                if (ExpressionHelpers.Exists(PipelineContext.CurrentThread, inputObject, field[i], caseSensitive))
                     return Pass();
 
                 result.AddReason(ReasonStrings.NotHasField, field[i]);
@@ -218,9 +215,9 @@ namespace PSRule.Runtime
             // Assert
             if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue))
                 return Fail(ReasonStrings.NotHasField, field);
-            else if (IsNullOrEmpty(fieldValue))
+            else if (ExpressionHelpers.NullOrEmpty(fieldValue))
                 return Fail(ReasonStrings.NotHasFieldValue, field);
-            else if (expectedValue != null && !IsValue(fieldValue, expectedValue, caseSensitive: false))
+            else if (expectedValue != null && !ExpressionHelpers.Equal(expectedValue, fieldValue, caseSensitive: false))
                 return Fail(ReasonStrings.HasExpectedFieldValue, field, fieldValue);
 
             return Pass();
@@ -238,7 +235,7 @@ namespace PSRule.Runtime
 
             // Assert
             if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue)
-                || IsValue(fieldValue, defaultValue, caseSensitive: false))
+                || ExpressionHelpers.Equal(defaultValue, fieldValue, caseSensitive: false))
                 return Pass();
 
             return Fail(ReasonStrings.HasExpectedFieldValue, field, fieldValue);
@@ -283,7 +280,7 @@ namespace PSRule.Runtime
                 return result;
 
             // Assert
-            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue) && !IsNullOrEmpty(fieldValue))
+            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue) && !ExpressionHelpers.NullOrEmpty(fieldValue))
                 return Fail(ReasonStrings.NullOrEmpty, field);
 
             return Pass();
@@ -422,8 +419,8 @@ namespace PSRule.Runtime
                 GuardNullFieldValue(field, fieldValue, out result))
                 return result;
 
-            if (TryInt(fieldValue, convert, out _) || TryLong(fieldValue, convert, out _) || TryFloat(fieldValue, convert, out _) ||
-                TryByte(fieldValue, convert, out _) || TryDouble(fieldValue, convert, out _))
+            if (ExpressionHelpers.TryInt(fieldValue, convert, out _) || ExpressionHelpers.TryLong(fieldValue, convert, out _) || ExpressionHelpers.TryFloat(fieldValue, convert, out _) ||
+                ExpressionHelpers.TryByte(fieldValue, convert, out _) || ExpressionHelpers.TryDouble(fieldValue, convert, out _))
                 return Pass();
 
             return Fail(ReasonStrings.TypeNumeric, GetTypeName(fieldValue), fieldValue);
@@ -441,7 +438,7 @@ namespace PSRule.Runtime
                 GuardNullFieldValue(field, fieldValue, out result))
                 return result;
 
-            if (TryInt(fieldValue, convert, out _) || TryLong(fieldValue, convert, out _) || TryByte(fieldValue, convert, out _))
+            if (ExpressionHelpers.TryInt(fieldValue, convert, out _) || ExpressionHelpers.TryLong(fieldValue, convert, out _) || ExpressionHelpers.TryByte(fieldValue, convert, out _))
                 return Pass();
 
             return Fail(ReasonStrings.TypeInteger, GetTypeName(fieldValue), fieldValue);
@@ -459,7 +456,7 @@ namespace PSRule.Runtime
                 GuardNullFieldValue(field, fieldValue, out result))
                 return result;
 
-            if (TryBool(fieldValue, convert, out _))
+            if (ExpressionHelpers.TryBool(fieldValue, convert, out _))
                 return Pass();
 
             return Fail(ReasonStrings.Type, TYPENAME_BOOL, GetTypeName(fieldValue), fieldValue);
@@ -496,7 +493,7 @@ namespace PSRule.Runtime
                 GuardNullFieldValue(field, fieldValue, out result))
                 return result;
 
-            if (TryString(fieldValue, out _))
+            if (ExpressionHelpers.TryString(fieldValue, out _))
                 return Pass();
 
             return Fail(ReasonStrings.Type, TYPENAME_STRING, GetTypeName(fieldValue), fieldValue);
@@ -582,7 +579,7 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (CompareNumeric(fieldValue, value, convert, out int compare, out object actual))
+            if (ExpressionHelpers.CompareNumeric(fieldValue, value, convert, out int compare, out object actual))
                 return compare > 0 ? Pass() : Fail(ReasonStrings.Greater, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
@@ -596,7 +593,7 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (CompareNumeric(fieldValue, value, convert, out int compare, out object actual))
+            if (ExpressionHelpers.CompareNumeric(fieldValue, value, convert, out int compare, out object actual))
                 return compare >= 0 ? Pass() : Fail(ReasonStrings.GreaterOrEqual, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
@@ -610,7 +607,7 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (CompareNumeric(fieldValue, value, convert, out int compare, out object actual))
+            if (ExpressionHelpers.CompareNumeric(fieldValue, value, convert, out int compare, out object actual))
                 return compare < 0 ? Pass() : Fail(ReasonStrings.Less, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
@@ -624,7 +621,7 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out object fieldValue, out result))
                 return result;
 
-            if (CompareNumeric(fieldValue, value, convert, out int compare, out object actual))
+            if (ExpressionHelpers.CompareNumeric(fieldValue, value, convert, out int compare, out object actual))
                 return compare <= 0 ? Pass() : Fail(ReasonStrings.LessOrEqual, actual, value);
 
             return Fail(ReasonStrings.Compare, fieldValue, value);
@@ -644,7 +641,7 @@ namespace PSRule.Runtime
 
             for (var i = 0; values != null && i < values.Length; i++)
             {
-                if (AnyValue(fieldValue, values.GetValue(i), caseSensitive, out object _))
+                if (ExpressionHelpers.AnyValue(fieldValue, values.GetValue(i), caseSensitive, out object _))
                     return Pass();
             }
             return Fail(ReasonStrings.In, fieldValue);
@@ -666,7 +663,7 @@ namespace PSRule.Runtime
 
             for (var i = 0; values != null && i < values.Length; i++)
             {
-                if (AnyValue(fieldValue, values.GetValue(i), caseSensitive, out object foundValue))
+                if (ExpressionHelpers.AnyValue(fieldValue, values.GetValue(i), caseSensitive, out object foundValue))
                     return Fail(ReasonStrings.NotIn, foundValue);
             }
             return Pass();
@@ -684,8 +681,7 @@ namespace PSRule.Runtime
                 GuardString(fieldValue, out string value, out result))
                 return result;
 
-            var expression = GetRegularExpression(pattern, caseSensitive);
-            if (expression.IsMatch(value))
+            if (ExpressionHelpers.Match(pattern, value, caseSensitive))
                 return Pass();
 
             return Fail(ReasonStrings.MatchPattern, value, pattern);
@@ -707,8 +703,7 @@ namespace PSRule.Runtime
             if (GuardString(fieldValue, out string value, out result))
                 return result;
 
-            var expression = GetRegularExpression(pattern, caseSensitive);
-            if (!expression.IsMatch(value))
+            if (!ExpressionHelpers.Match(pattern, value, caseSensitive))
                 return Pass();
 
             return Fail(ReasonStrings.NotMatchPattern, value, pattern);
@@ -783,186 +778,12 @@ namespace PSRule.Runtime
 
         #region Helper methods
 
-        private static bool IsNullOrEmpty(object fieldValue)
-        {
-            return fieldValue == null ||
-                (fieldValue is ICollection cvalue && cvalue.Count == 0) ||
-                (fieldValue is string svalue && string.IsNullOrEmpty(svalue));
-        }
-
         /// <summary>
         /// Get the base object.
         /// </summary>
         private static object GetBaseObject(object o)
         {
             return o is PSObject pso && pso.BaseObject != null ? pso.BaseObject : o;
-        }
-
-        private static bool IsValue(object actualValue, object expectedValue, bool caseSensitive)
-        {
-            var expectedBase = GetBaseObject(expectedValue);
-            var actualBase = GetBaseObject(actualValue);
-            if (actualBase is string && expectedBase is string)
-                return caseSensitive ? StringComparer.Ordinal.Equals(actualBase, expectedBase) : StringComparer.OrdinalIgnoreCase.Equals(actualBase, expectedBase);
-
-            return expectedBase.Equals(actualBase) || expectedValue.Equals(actualValue);
-        }
-
-        private static bool AnyValue(object actualValue, object expectedValue, bool caseSensitive, out object foundValue)
-        {
-            foundValue = actualValue;
-            var expectedBase = GetBaseObject(expectedValue);
-            if (actualValue is IEnumerable items)
-            {
-                foreach (var item in items)
-                {
-                    foundValue = item;
-                    if (IsValue(item, expectedBase, caseSensitive))
-                        return true;
-                }
-            }
-            if (IsValue(actualValue, expectedBase, caseSensitive))
-            {
-                foundValue = actualValue;
-                return true;
-            }
-            return false;
-        }
-
-        private static bool TryString(object obj, out string value)
-        {
-            value = null;
-            if (GetBaseObject(obj) is string svalue)
-            {
-                value = svalue;
-                return true;
-            }
-            return false;
-        }
-
-        private static bool TryBool(object obj, bool convert, out bool value)
-        {
-            var o = GetBaseObject(obj);
-            if (o is bool bvalue || (convert && o is string s && bool.TryParse(s, out bvalue)))
-            {
-                value = bvalue;
-                return true;
-            }
-            value = default(bool);
-            return false;
-        }
-
-        private static bool TryByte(object obj, bool convert, out byte value)
-        {
-            var o = GetBaseObject(obj);
-            if (o is byte bvalue || (convert && o is string s && byte.TryParse(s, out bvalue)))
-            {
-                value = bvalue;
-                return true;
-            }
-            value = default(byte);
-            return false;
-        }
-
-        private static bool TryInt(object obj, bool convert, out int value)
-        {
-            var o = GetBaseObject(obj);
-            if (o is int ivalue || (convert && o is string s && int.TryParse(s, out ivalue)))
-            {
-                value = ivalue;
-                return true;
-            }
-            value = default(int);
-            return false;
-        }
-
-        private static bool TryLong(object obj, bool convert, out long value)
-        {
-            var o = GetBaseObject(obj);
-            if (o is long lvalue || (convert && o is string s && long.TryParse(s, out lvalue)))
-            {
-                value = lvalue;
-                return true;
-            }
-            value = default(long);
-            return false;
-        }
-
-        private static bool TryFloat(object obj, bool convert, out float value)
-        {
-            var o = GetBaseObject(obj);
-            if (o is float fvalue || (convert && o is string s && float.TryParse(s, out fvalue)))
-            {
-                value = fvalue;
-                return true;
-            }
-            value = default(float);
-            return false;
-        }
-
-        private static bool TryDouble(object obj, bool convert, out double value)
-        {
-            var o = GetBaseObject(obj);
-            if (o is double dvalue || (convert && o is string s && double.TryParse(s, out dvalue)))
-            {
-                value = dvalue;
-                return true;
-            }
-            value = default(double);
-            return false;
-        }
-
-        private static bool TryStringLength(object obj, out int value)
-        {
-            if (obj is string s)
-            {
-                value = s.Length;
-                return true;
-            }
-            value = 0;
-            return false;
-        }
-
-        private static bool TryArrayLength(object obj, out int value)
-        {
-            if (obj is Array array)
-            {
-                value = array.Length;
-                return true;
-            }
-            value = 0;
-            return false;
-        }
-
-        private static bool CompareNumeric(object obj, int value, bool convert, out int compare, out object actual)
-        {
-            if (TryInt(obj, convert, out int iactual))
-            {
-                compare = iactual.CompareTo(value);
-                actual = iactual;
-                return true;
-            }
-            if (TryLong(obj, convert, out long lactual))
-            {
-                compare = lactual.CompareTo(value);
-                actual = lactual;
-                return true;
-            }
-            if (TryFloat(obj, convert, out float factual))
-            {
-                compare = factual.CompareTo(value);
-                actual = factual;
-                return true;
-            }
-            if (TryStringLength(obj, out iactual) || TryArrayLength(obj, out iactual))
-            {
-                compare = iactual.CompareTo(value);
-                actual = iactual;
-                return true;
-            }
-            compare = 0;
-            actual = 0;
-            return false;
         }
 
         /// <summary>
@@ -1024,7 +845,7 @@ namespace PSRule.Runtime
         {
             result = null;
             value = null;
-            if (TryString(fieldValue, out string sversion) && Runtime.SemanticVersion.TryParseVersion(sversion, out value))
+            if (ExpressionHelpers.TryString(fieldValue, out string sversion) && Runtime.SemanticVersion.TryParseVersion(sversion, out value))
                 return false;
 
             result = Fail(ReasonStrings.Version, fieldValue);
@@ -1041,7 +862,7 @@ namespace PSRule.Runtime
         private bool GuardString(object fieldValue, out string value, out AssertResult result)
         {
             result = null;
-            if (TryString(fieldValue, out value))
+            if (ExpressionHelpers.TryString(fieldValue, out value))
                 return false;
 
             result = Fail(ReasonStrings.Type, TYPENAME_STRING, GetTypeName(fieldValue), fieldValue);
@@ -1114,36 +935,6 @@ namespace PSRule.Runtime
                 result = result.Remove(0, 7);
 
             return uri.IsAbsoluteUri && uri.Fragment == "#" ? result.TrimEnd('#') : result;
-        }
-
-        private static Regex GetRegularExpression(string pattern, bool caseSensitive)
-        {
-            if (!TryPipelineCache(caseSensitive ? CACHE_MATCH_C : CACHE_MATCH, pattern, out Regex expression))
-            {
-                var options = caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
-                expression = new Regex(pattern, options);
-                SetPipelineCache(CACHE_MATCH, pattern, expression);
-            }
-            return expression;
-        }
-
-        /// <summary>
-        /// Try to retrieve the cached key from the pipeline cache.
-        /// </summary>
-        private static bool TryPipelineCache<T>(string prefix, string key, out T value)
-        {
-            value = default;
-            if (PipelineContext.CurrentThread.ExpressionCache.TryGetValue(string.Concat(prefix, key), out object ovalue))
-            {
-                value = (T)ovalue;
-                return true;
-            }
-            return false;
-        }
-
-        private static void SetPipelineCache<T>(string prefix, string key, T value)
-        {
-            PipelineContext.CurrentThread.ExpressionCache[string.Concat(prefix, key)] = value;
         }
 
         /// <summary>

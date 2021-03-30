@@ -25,12 +25,16 @@ namespace PSRule
 
             // TestBaseline1
             Assert.Equal("TestBaseline1", baseline[0].Name);
+            Assert.Equal("github.com/microsoft/PSRule/v1", baseline[0].ApiVersion);
             Assert.Equal("value", baseline[0].Metadata.Annotations["key"]);
             Assert.False(baseline[0].Obsolete);
+            Assert.False(baseline[0].GetApiVersionIssue());
 
             // TestBaseline5
             Assert.Equal("TestBaseline5", baseline[4].Name);
+            Assert.Equal("github.com/microsoft/PSRule/v1", baseline[4].ApiVersion);
             Assert.True(baseline[4].Obsolete);
+            Assert.True(baseline[4].GetApiVersionIssue());
         }
 
         private PSRuleOption GetOption()

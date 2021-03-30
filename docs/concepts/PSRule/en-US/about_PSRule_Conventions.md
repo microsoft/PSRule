@@ -119,6 +119,7 @@ For example:
 ```yaml
 # Example Config.Rule.yaml
 ---
+apiVersion: github.com/microsoft/PSRule/v1
 kind: ModuleConfig
 metadata:
   name: ExampleModule

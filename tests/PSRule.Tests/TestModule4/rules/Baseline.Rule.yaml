@@ -1,5 +1,8 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
 
 ---
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: Module4
@@ -22,6 +25,7 @@ spec:
     ruleConfig1: 'Test'
 
 ---
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: Baseline2
@@ -38,6 +42,7 @@ spec:
     ruleConfig2: 'Test3'
 
 ---
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: Baseline3

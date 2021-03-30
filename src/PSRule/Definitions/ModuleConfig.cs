@@ -3,7 +3,6 @@
 
 using Newtonsoft.Json;
 using PSRule.Configuration;
-using PSRule.Host;
 using PSRule.Pipeline;
 using YamlDotNet.Serialization;
 
@@ -12,27 +11,11 @@ namespace PSRule.Definitions
     /// <summary>
     /// A module configuration resource.
     /// </summary>
-    internal sealed class ModuleConfig : Resource<ModuleConfigSpec>, IResource
+    [Spec(Specs.V1, Specs.ModuleConfig)]
+    internal sealed class ModuleConfig : InternalResource<ModuleConfigSpec>
     {
-        public ModuleConfig(SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ModuleConfigSpec spec)
-            : base(metadata)
-        {
-            Info = info;
-            Source = source;
-            Spec = spec;
-            Name = metadata.Name;
-        }
-
-        [YamlIgnore()]
-        public readonly string Name;
-
-        /// <summary>
-        /// The path where the module configuration is defined.
-        /// </summary>
-        [YamlIgnore()]
-        public readonly SourceFile Source;
-
-        public readonly ResourceHelpInfo Info;
+        public ModuleConfig(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ModuleConfigSpec spec)
+            : base(ResourceKind.ModuleConfig, apiVersion, source, metadata, info, spec) { }
 
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the module config.
@@ -40,18 +23,6 @@ namespace PSRule.Definitions
         [JsonIgnore]
         [YamlIgnore]
         public string Synopsis => Info.Synopsis;
-
-        string ILanguageBlock.SourcePath => Source.Path;
-
-        string ILanguageBlock.Module => Source.ModuleName;
-
-        ResourceKind IResource.Kind => ResourceKind.ModuleConfig;
-
-        string IResource.Id => Name;
-
-        string IResource.Name => Name;
-
-        public override ModuleConfigSpec Spec { get; }
     }
 
     /// <summary>

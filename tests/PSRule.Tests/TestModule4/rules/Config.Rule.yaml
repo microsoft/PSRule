@@ -1,5 +1,8 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
 
 ---
+apiVersion: github.com/microsoft/PSRule/v1
 kind: ModuleConfig
 metadata:
   name: TestModule4

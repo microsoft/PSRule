@@ -128,6 +128,7 @@ Additional `ModuleConfig` resources or with an alternative name are ignored.
 ```yaml
 ---
 # Synopsis: Example module configuration for Enterprise.Rules module
+apiVersion: github.com/microsoft/PSRule/v1
 kind: ModuleConfig
 metadata:
   name: Enterprise.Rules

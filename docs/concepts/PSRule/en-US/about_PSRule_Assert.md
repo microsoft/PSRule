@@ -104,7 +104,7 @@ For example:
 
 ### Contains
 
-The `Contains` assertion method checks the field value contains with the specified string.
+The `Contains` assertion method checks the field value contains the specified string.
 Optionally a case-sensitive compare can be used, however case is ignored by default.
 
 The following parameters are accepted:

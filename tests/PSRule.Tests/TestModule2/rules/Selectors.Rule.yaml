@@ -1,0 +1,13 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+# Synopsis: A selector to match objects with CustomValue
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: M2.CustomValueSelector
+spec:
+  if:
+    field: CustomValue
+    exists: true

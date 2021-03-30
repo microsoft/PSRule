@@ -4,6 +4,7 @@
 using PSRule.Annotations;
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.Selectors;
 using PSRule.Host;
 using PSRule.Runtime;
 using System;
@@ -364,6 +365,7 @@ namespace PSRule
 
     internal sealed class LanguageBlockDeserializer : INodeDeserializer
     {
+        private const string FIELD_APIVERSION = "apiVersion";
         private const string FIELD_KIND = "kind";
         private const string FIELD_METADATA = "metadata";
         private const string FIELD_SPEC = "spec";
@@ -395,22 +397,30 @@ namespace PSRule
         private IResource MapResource(IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, CommentMetadata comment)
         {
             IResource result = null;
+            string apiVersion = null;
             string kind = null;
             ResourceMetadata metadata = null;
             if (reader.TryConsume<MappingStart>(out _))
             {
                 while (reader.TryConsume(out Scalar scalar))
                 {
+                    // Read apiVersion
+                    if (TryApiVersion(reader, scalar, out string apiVersionValue))
+                    {
+                        apiVersion = apiVersionValue;
+                    }
                     // Read kind
-                    if (TryKind(reader, scalar, out string kindValue))
+                    else if (TryKind(reader, scalar, out string kindValue))
                     {
                         kind = kindValue;
                     }
+                    // Read metadata
                     else if (TryMetadata(reader, scalar, nestedObjectDeserializer, out ResourceMetadata metadataValue))
                     {
                         metadata = metadataValue;
                     }
-                    else if (kind != null && TrySpec(reader, scalar, kind, nestedObjectDeserializer, metadata, comment, out IResource resource))
+                    // Read spec
+                    else if (kind != null && TrySpec(reader, scalar, apiVersion, kind, nestedObjectDeserializer, metadata, comment, out IResource resource))
                     {
                         result = resource;
                     }
@@ -423,6 +433,17 @@ namespace PSRule
                 reader.MoveNext();
             }
             return result;
+        }
+
+        private static bool TryApiVersion(IParser reader, Scalar scalar, out string kind)
+        {
+            kind = null;
+            if (scalar.Value == FIELD_APIVERSION)
+            {
+                kind = reader.Consume<Scalar>().Value;
+                return true;
+            }
+            return false;
         }
 
         private static bool TryKind(IParser reader, Scalar scalar, out string kind)
@@ -453,25 +474,165 @@ namespace PSRule
             return false;
         }
 
-        private bool TrySpec(IParser reader, Scalar scalar, string kind, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
+        private bool TrySpec(IParser reader, Scalar scalar, string apiVersion, string kind, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
         {
             spec = null;
             if (scalar.Value != FIELD_SPEC)
                 return false;
 
-            return TryResource(reader, kind, nestedObjectDeserializer, metadata, comment, out spec);
+            return TryResource(reader, apiVersion, kind, nestedObjectDeserializer, metadata, comment, out spec);
         }
 
-        private bool TryResource(IParser reader, string kind, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
+        private bool TryResource(IParser reader, string apiVersion, string kind, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
         {
             spec = null;
-            if (_Factory.TryDescriptor(kind, out ISpecDescriptor descriptor) && reader.Current is MappingStart)
+            if (_Factory.TryDescriptor(apiVersion, kind, out ISpecDescriptor descriptor) && reader.Current is MappingStart)
             {
                 if (!_Next.Deserialize(reader, descriptor.SpecType, nestedObjectDeserializer, out object value))
                     return false;
 
                 spec = descriptor.CreateInstance(RunspaceContext.CurrentThread.Source.File, metadata, comment, value);
+                if (string.IsNullOrEmpty(apiVersion))
+                    spec.SetApiVersionIssue();
+
                 return true;
+            }
+            return false;
+        }
+    }
+
+    internal sealed class SelectorExpressionDeserializer : INodeDeserializer
+    {
+        private const string OPERATOR_IF = "if";
+
+        private readonly INodeDeserializer _Next;
+        private readonly SelectorExpressionFactory _Factory;
+
+        public SelectorExpressionDeserializer(INodeDeserializer next)
+        {
+            _Next = next;
+            _Factory = new SelectorExpressionFactory();
+        }
+
+        bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
+        {
+            if (typeof(SelectorExpression).IsAssignableFrom(expectedType))
+            {
+                var resource = MapOperator(OPERATOR_IF, reader, nestedObjectDeserializer);
+                value = new SelectorIf(resource);
+                return true;
+            }
+            else
+            {
+                return _Next.Deserialize(reader, expectedType, nestedObjectDeserializer, out value);
+            }
+        }
+
+        private SelectorExpression MapOperator(string type, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
+        {
+            if (TryExpression(reader, type, nestedObjectDeserializer, out SelectorOperator result))
+            {
+                // If and Not
+                if (reader.TryConsume<MappingStart>(out _))
+                {
+                    result.Add(MapExpression(reader, nestedObjectDeserializer));
+                    reader.Require<MappingEnd>();
+                    reader.MoveNext();
+                }
+                // AllOf and AnyOf
+                else if (reader.TryConsume<SequenceStart>(out _))
+                {
+                    while (reader.TryConsume<MappingStart>(out _))
+                    {
+                        result.Add(MapExpression(reader, nestedObjectDeserializer));
+                        reader.Require<MappingEnd>();
+                        reader.MoveNext();
+                    }
+                    reader.Require<SequenceEnd>();
+                    reader.MoveNext();
+                }
+            }
+            return result;
+        }
+
+        private SelectorExpression MapCondition(string type, SelectorExpression.PropertyBag properties, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
+        {
+            if (TryExpression(reader, type, nestedObjectDeserializer, out SelectorCondition result))
+            {
+                while (!reader.Accept(out MappingEnd end))
+                {
+                    MapProperty(properties, reader, nestedObjectDeserializer, out _);
+                }
+                result.Add(properties);
+            }
+            return result;
+        }
+
+        private SelectorExpression MapExpression(IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
+        {
+            SelectorExpression result = null;
+            var properties = new SelectorExpression.PropertyBag();
+            MapProperty(properties, reader, nestedObjectDeserializer, out string key);
+            if (key != null && TryCondition(key))
+            {
+                result = MapCondition(key, properties, reader, nestedObjectDeserializer);
+            }
+            else if (TryOperator(key) && reader.Accept(out MappingStart mapping))
+            {
+                result = MapOperator(key, reader, nestedObjectDeserializer);
+            }
+            else if (TryOperator(key) && reader.Accept(out SequenceStart sequence))
+            {
+                result = MapOperator(key, reader, nestedObjectDeserializer);
+            }
+            return result;
+        }
+
+        private void MapProperty(SelectorExpression.PropertyBag properties, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, out string name)
+        {
+            name = null;
+            while (reader.TryConsume(out Scalar scalar))
+            {
+                string key = scalar.Value;
+                if (TryCondition(key) || TryOperator(key))
+                    name = key;
+
+                if (reader.TryConsume(out scalar))
+                {
+                    properties[key] = scalar.Value;
+                }
+                else if (TryCondition(key) && reader.TryConsume<SequenceStart>(out _))
+                {
+                    var objects = new List<string>();
+                    while (!reader.TryConsume<SequenceEnd>(out _))
+                    {
+                        if (reader.TryConsume(out scalar))
+                        {
+                            objects.Add(scalar.Value);
+                        }
+                    }
+                    properties[key] = objects.ToArray();
+                }
+            }
+        }
+
+        private bool TryOperator(string key)
+        {
+            return _Factory.IsOperator(key);
+        }
+
+        private bool TryCondition(string key)
+        {
+            return _Factory.IsCondition(key);
+        }
+
+        private bool TryExpression<T>(IParser reader, string type, Func<IParser, Type, object> nestedObjectDeserializer, out T expression) where T : SelectorExpression
+        {
+            expression = null;
+            if (_Factory.TryDescriptor(type, out ISelectorExpresssionDescriptor descriptor))
+            {
+                expression = (T)descriptor.CreateInstance(RunspaceContext.CurrentThread.Source.File, null);
+                return expression != null;
             }
             return false;
         }

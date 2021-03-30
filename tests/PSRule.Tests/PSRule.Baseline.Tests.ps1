@@ -83,11 +83,14 @@ Describe 'Baseline' -Tag 'Baseline' {
             # Not obsolete
             $Null = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline1' -WarningVariable outWarn -WarningAction SilentlyContinue);
             $warnings = @($outWarn);
-            $warnings.Length | Should -Be 0;
+            $warnings.Length | Should -Be 1;
+            $warnings | Should -BeLike "The * resource * does not have an apiVersion set.*";
 
             # Obsolete
             $Null = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline5' -WarningVariable outWarn -WarningAction SilentlyContinue);
-            $warnings = @($outWarn);
+            $warnings = @($outWarn | Where-Object {
+                $_ -notlike "The * resource * does not have an apiVersion set.*"
+            });
             $warnings.Length | Should -Be 1;
             $warnings[0] | Should -BeLike "*'TestBaseline5'*";
         }

@@ -43,7 +43,7 @@ Conditions determine if the input object either _Pass_ or _Fail_ the rule.
 Syntax:
 
 ```text
-Rule [-Name] <string> [-Tag <hashtable>] [-Type <string[]>] [-If <scriptBlock>] [-DependsOn <string[]>] [-Configure <hashtable>] [-ErrorAction <ActionPreference>] [-Body] {
+Rule [-Name] <string> [-Tag <hashtable>] [-When <string[]>] [-Type <string[]>] [-If <scriptBlock>] [-DependsOn <string[]>] [-Configure <hashtable>] [-ErrorAction <ActionPreference>] [-Body] {
     ...
 }
 ```
@@ -51,6 +51,7 @@ Rule [-Name] <string> [-Tag <hashtable>] [-Type <string[]>] [-If <scriptBlock>] 
 - `Name` - The name of the rule definition. Each rule name must be unique.
 When packaging rules within a module, rule names must only be unique within the module.
 - `Tag` - A hashtable of key/ value metadata that can be used to filter and identify rules and rule results.
+- `When` - A selector precondition that must evaluate true before the rule is executed.
 - `Type` - A type precondition that must match the _TargetType_ of the pipeline object before the rule is executed.
 - `If` - A script precondition that must evaluate to `$True` before the rule is executed.
 - `DependsOn` - A list of rules this rule depends on.
@@ -182,7 +183,8 @@ If `-Not` is used with `-All`, if **all** of the fields exist `Exists` will retu
 
 ### Match
 
-The `Match` assertion is used within a `Rule` definition to assert that the value of a _field_ or property from pipeline data must match one or more regular expressions. To optionally perform a case sensitive match use the `-CaseSensitive` switch, otherwise a case insensitive match will be used.
+The `Match` assertion is used within a `Rule` definition to assert that the value of a _field_ or property from pipeline data must match one or more regular expressions.
+To optionally perform a case sensitive match use the `-CaseSensitive` switch, otherwise a case insensitive match will be used.
 
 Syntax:
 
@@ -214,7 +216,8 @@ When `-Not` is used, if any of the regular expressions match the field value wit
 
 ### Within
 
-The `Within` assertion is used within a `Rule` definition to assert that the value of a field or property from pipeline data must equal an item from a supplied list of allowed values. To optionally perform a case sensitive match use the `-CaseSensitive` switch, otherwise a case insensitive match will be used.
+The `Within` assertion is used within a `Rule` definition to assert that the value of a field or property from pipeline data must equal an item from a supplied list of allowed values.
+To optionally perform a case sensitive match use the `-CaseSensitive` switch, otherwise a case insensitive match will be used.
 
 Syntax:
 
@@ -226,7 +229,8 @@ Within [-Field] <string> [-Not] [-Like] [-Value] <PSObject[]> [-CaseSensitive] [
 - `Value` - A list of values that the field value must match.
 - `CaseSensitive` - The field _value_ must match exact case. Only applies when the field value and allowed values are strings.
 - `Not` - Instead of checking the field value matches, the field value must not match any of the supplied values.
-- `Like` - Instead of using an exact match, a wildcard match is used. This switch can only be used when `Value` a string type.
+- `Like` - Instead of using an exact match, a wildcard match is used.
+This switch can only be used when `Value` a string type.
 - `Reason` - A custom reason provided if the condition fails.
 - `InputObject` - Supports objects being piped directly.
 
@@ -263,7 +267,8 @@ When `-Like` is used, the field value is matched against one or more wildcard ex
 
 ### AllOf
 
-The `AllOf` assertion is used within a `Rule` definition to aggregate the result of assertions within a pair of squiggly brackets `{ }`. `AllOf` is functionally equivalent to a binary **and**, where when all of the contained assertions return `$True`, `AllOf` will return `$True`.
+The `AllOf` assertion is used within a `Rule` definition to aggregate the result of assertions within a pair of squiggly brackets `{ }`.
+`AllOf` is functionally equivalent to a binary **and**, where when all of the contained assertions return `$True`, `AllOf` will return `$True`.
 
 Syntax:
 
@@ -295,7 +300,8 @@ If **all** of the assertions return `$True` AllOf will return `$True`, otherwise
 
 ### AnyOf
 
-The `AnyOf` assertion is used within a `Rule` definition to aggregate the result of assertions within a pair of squiggly brackets `{ }`. `AnyOf` is functionally equivalent to a binary **or**, where if any of the contained assertions returns `$True`, `AnyOf` will return `$True`.
+The `AnyOf` assertion is used within a `Rule` definition to aggregate the result of assertions within a pair of squiggly brackets `{ }`.
+`AnyOf` is functionally equivalent to a binary **or**, where if any of the contained assertions returns `$True`, `AnyOf` will return `$True`.
 
 Syntax:
 
@@ -335,7 +341,8 @@ Syntax:
 TypeOf [-TypeName] <string[]> [-Reason <string>] [-InputObject <PSObject>]
 ```
 
-- `TypeName` - One or more type names which will be evaluated against the pipeline object. `TypeName` is case sensitive.
+- `TypeName` - One or more type names which will be evaluated against the pipeline object.
+`TypeName` is case sensitive.
 - `Reason` - A custom reason provided if the condition fails.
 - `InputObject` - Supports objects being piped directly.
 
@@ -354,11 +361,14 @@ If **any** the specified type names match the pipeline object then TypeOf will r
 
 ### Reason
 
-The `Reason` keyword is used within a `Rule` definition to provide a message that indicates the reason the rule failed. The reason is included in detailed results.
+The `Reason` keyword is used within a `Rule` definition to provide a message that indicates the reason the rule failed.
+The reason is included in detailed results.
 
-A reason is only included when the rule fails or errors. The outcomes `Pass` and `None` do not include reason.
+A reason is only included when the rule fails or errors.
+The outcomes `Pass` and `None` do not include reason.
 
-Use this keyword when you want to implement custom logic. Built-in keywords including `Exists`, `Match`, `Within` and `TypeOf` automatically include a reason when they fail.
+Use this keyword when you want to implement custom logic.
+Built-in keywords including `Exists`, `Match`, `Within` and `TypeOf` automatically include a reason when they fail.
 
 Syntax:
 
@@ -387,7 +397,8 @@ None.
 The `Recommend` keyword is used within a `Rule` definition to provide a recommendation to resolve the issue and pass the rule.
 This may include manual steps to change that state of the object or the desired state accessed by the rule.
 
-The recommendation can only be set once per rule. Each object will use the same recommendation.
+The recommendation can only be set once per rule.
+Each object will use the same recommendation.
 
 Syntax:
 

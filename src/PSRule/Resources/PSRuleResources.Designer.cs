@@ -250,6 +250,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The {0} resource {1} does not have an apiVersion set. An apiVersion will be required in the next major version..
+        /// </summary>
+        internal static string MissingApiVersion {
+            get {
+                return ResourceManager.GetString("MissingApiVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Target object &apos;{0}&apos; has not been processed because no matching rules were found..
         /// </summary>
         internal static string ObjectNotProcessed {
@@ -408,6 +417,33 @@ namespace PSRule.Resources {
         internal static string ScriptNotFound {
             get {
                 return ResourceManager.GetString("ScriptNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [PSRule][S][Trace] -- {0}: {1} {0} {2}.
+        /// </summary>
+        internal static string SelectorExpressionTrace {
+            get {
+                return ResourceManager.GetString("SelectorExpressionTrace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [PSRule][S][Trace] -- {0}.
+        /// </summary>
+        internal static string SelectorMatchTrace {
+            get {
+                return ResourceManager.GetString("SelectorMatchTrace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [PSRule][S][Trace] -- {0}: {1}.
+        /// </summary>
+        internal static string SelectorTrace {
+            get {
+                return ResourceManager.GetString("SelectorTrace", resourceCulture);
             }
         }
         

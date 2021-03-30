@@ -1,6 +1,7 @@
 
 ---
 # Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: TestBaseline1
@@ -31,6 +32,7 @@ spec:
 
 ---
 # Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: TestBaseline2
@@ -53,6 +55,7 @@ spec:
 
 ---
 # Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: TestBaseline3
@@ -63,6 +66,7 @@ spec:
 
 ---
 # Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: TestBaseline4
@@ -81,15 +85,3 @@ metadata:
   annotations:
     obsolete: true
 spec: { }
-
----
-kind: ObjectSelector
-metadata:
-  name: TestSelector1
-spec:
-  selector:
-    allOf:
-      - not:
-          equals:
-            field: ResourceType
-            value: virtualNetwork

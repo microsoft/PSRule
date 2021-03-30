@@ -1,0 +1,264 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+# Selectors for unit testing
+
+---
+# Synopsis: A selector to match basic objects
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: BasicSelector
+spec:
+  if:
+    allOf:
+    - field: Name
+      equals: TargetObject1
+    - field: Value
+      equals: value1
+
+---
+# Synopsis: A selector to match objects using a specific JSON schema
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: SelectJsonSchema
+spec:
+  if:
+    field: '$schema'
+    match: '^(https{0,1}://schema\.management\.azure\.com/schemas/.*/deploymentTemplate\.json)$'
+
+---
+# Synopsis: A selector to match object with a field
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: HasCustomValueField
+spec:
+  if:
+    field: 'CustomValue'
+    exists: true
+
+---
+# Synopsis: Test AnyOf
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlAnyOf
+spec:
+  if:
+    anyOf:
+    - field: 'AlternateName'
+      exists: true
+    - field: 'Name'
+      exists: true
+
+---
+# Synopsis: Test AllOf
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlAllOf
+spec:
+  if:
+    allOf:
+    - field: 'AlternateName'
+      exists: true
+    - field: 'Name'
+      exists: true
+
+---
+# Synopsis: Test Not
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNot
+spec:
+  if:
+    not:
+      anyOf:
+      - field: 'AlternateName'
+        exists: true
+      - field: 'Name'
+        exists: true
+
+---
+# Synopsis: Test custom value is in
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlCustomValueIn
+spec:
+  if:
+    field: 'CustomValue'
+    in:
+    - 'Value1'
+    - 'Value2'
+
+---
+# Synopsis: Test exists true
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlExistsTrue
+spec:
+  if:
+    field: 'Value'
+    exists: true
+
+---
+# Synopsis: Test exists false
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlExistsFalse
+spec:
+  if:
+    field: 'Value'
+    exists: false
+
+---
+# Synopsis: Test equals
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlEquals
+spec:
+  if:
+    allOf:
+    - field: 'ValueString'
+      equals: 'abc'
+    - field: 'ValueInt'
+      equals: 123
+    - field: 'ValueBool'
+      equals: true
+
+---
+# Synopsis: Test notEquals
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNotEquals
+spec:
+  if:
+    allOf:
+    - field: 'ValueString'
+      notEquals: 'abc'
+    - field: 'ValueInt'
+      notEquals: 123
+    - field: 'ValueBool'
+      notEquals: true
+
+---
+# Synopsis: Test hasValue true
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlHasValueTrue
+spec:
+  if:
+    field: 'Value'
+    hasValue: true
+
+---
+# Synopsis: Test hasValue false
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlHasValueFalse
+spec:
+  if:
+    field: 'Value'
+    hasValue: false
+
+---
+# Synopsis: Test match
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlMatch
+spec:
+  if:
+    field: 'Value'
+    match: '^(abc|efg)$'
+
+---
+# Synopsis: Test notMatch
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNotMatch
+spec:
+  if:
+    field: 'Value'
+    notMatch: '^(abc|efg)$'
+
+---
+# Synopsis: Test in
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIn
+spec:
+  if:
+    field: 'Value'
+    in:
+    - 'Value1'
+    - 'Value2'
+
+---
+# Synopsis: Test notIn
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNotIn
+spec:
+  if:
+    field: 'Value'
+    notIn:
+    - 'Value1'
+    - 'Value2'
+
+---
+# Synopsis: Test less
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlLess
+spec:
+  if:
+    field: 'Value'
+    less: 3
+
+---
+# Synopsis: Test lessOrEquals
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlLessOrEquals
+spec:
+  if:
+    field: 'Value'
+    lessOrEquals: 3
+
+---
+# Synopsis: Test greater
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlGreater
+spec:
+  if:
+    field: 'Value'
+    greater: 3
+
+---
+# Synopsis: Test greaterOrEquals
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlGreaterOrEquals
+spec:
+  if:
+    field: 'Value'
+    greaterOrEquals: 3

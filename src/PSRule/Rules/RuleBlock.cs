@@ -83,6 +83,8 @@ namespace PSRule.Rules
 
         internal readonly ActionPreference ErrorPreference;
 
+        string ILanguageBlock.Id => RuleId;
+
         string ILanguageBlock.SourcePath => Source.Path;
 
         string ILanguageBlock.Module => Source.ModuleName;

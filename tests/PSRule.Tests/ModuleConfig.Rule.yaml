@@ -1,6 +1,7 @@
 
 ---
 # Synopsis: A test module configuration
+apiVersion: github.com/microsoft/PSRule/v1
 kind: ModuleConfig
 metadata:
   name: Configuration1
