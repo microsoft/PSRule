@@ -1,0 +1,21 @@
+#
+# Repository validation
+#
+name: Analyze
+on:
+- pull_request
+
+jobs:
+  analyze:
+    name: Analyze repository
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Run PSRule analysis
+      uses: Microsoft/ps-rule@main
+      with:
+        modules: PSRule.Rules.MSFT.OSS
+        prerelease: true
