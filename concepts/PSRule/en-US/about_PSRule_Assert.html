@@ -157,7 +157,7 @@ The field name is an expression that traverses object properties, keys or indexe
 <li><code>Properties.securityRules[0].name</code> references to the name property of the first security rule.</li>
 </ul>
 <h3 id="contains">Contains</h3>
-<p>The <code>Contains</code> assertion method checks the field value contains with the specified string.
+<p>The <code>Contains</code> assertion method checks the field value contains the specified string.
 Optionally a case-sensitive compare can be used, however case is ignored by default.</p>
 <p>The following parameters are accepted:</p>
 <ul>
@@ -229,9 +229,14 @@ When set, detection by file extension is skipped.</li>
 </ul>
 <p>Prefix detection for line comments is supported with the following file extensions:</p>
 <ul>
-<li><code>.cs</code>, <code>.ts</code>, <code>.js</code>, <code>.fs</code>, <code>.go</code>, <code>.php</code>, <code>.cpp</code>, <code>.h</code> - Use a prefix of (<code>// </code>).</li>
-<li><code>.ps1</code>, <code>.psd1</code>, <code>.psm1</code>, <code>.yaml</code>, <code>.yml</code>, <code>.r</code>, <code>.py</code>, <code>.sh</code>, <code>.tf</code>, <code>.tfvars</code>, <code>.gitignore</code>, <code>.pl</code> - Use a prefix of (<code># </code>).</li>
+<li><code>.bicep</code>, <code>.cs</code>, <code>.csx</code> <code>.ts</code>, <code>.js</code>, <code>.jsx</code>,
+<code>.fs</code>, <code>.go</code>, <code>.groovy</code>, <code>.php</code>, <code>.cpp</code>, <code>.h</code>,
+<code>.java</code>, <code>.json</code>, <code>.jsonc</code>, <code>.scala</code>, <code>Jenkinsfile</code> - Use a prefix of (<code>// </code>).</li>
+<li><code>.ps1</code>, <code>.psd1</code>, <code>.psm1</code>, <code>.yaml</code>, <code>.yml</code>,
+<code>.r</code>, <code>.py</code>, <code>.sh</code>, <code>.tf</code>, <code>.tfvars</code>, <code>.gitignore</code>,
+<code>.pl</code>, <code>.rb</code>, <code>Dockerfile</code> - Use a prefix of (<code># </code>).</li>
 <li><code>.sql</code>, <code>.lau</code> - Use a prefix of (<code>-- </code>).</li>
+<li><code>.bat</code>, <code>.cmd</code> - Use a prefix of (<code>:: </code>).</li>
 </ul>
 <p>Reasons include:</p>
 <ul>

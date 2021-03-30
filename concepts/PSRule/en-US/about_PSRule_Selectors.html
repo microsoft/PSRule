@@ -1,0 +1,505 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>PSRule_Selectors </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="PSRule_Selectors ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../favicon.ico">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="../../../commands/PSRule/en-US/toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="psrule_selectors">PSRule_Selectors</h1>
+
+<h2 id="about_psrule_selectors">about_PSRule_Selectors</h2>
+<h2 id="short-description">SHORT DESCRIPTION</h2>
+<p>Describes PSRule Selectors including how to use and author them.</p>
+<h2 id="long-description">LONG DESCRIPTION</h2>
+<p>PSRule executes rules to validate an object from input.
+When evaluating an object from input, PSRule can use selectors to perform complex matches of an object.</p>
+<ul>
+<li>A selector is a YAML-based expression that evaluates an object.</li>
+<li>Each selector is comprised of nested conditions, operators, and comparison properties.</li>
+<li>Selectors must use one or more available conditions with a comparison property to evaluate the object.</li>
+<li>Optionally a condition can be nested in an operator.</li>
+<li>Operators can be nested within other operators.</li>
+</ul>
+<p>The following conditions are available:</p>
+<ul>
+<li><a href="#exists">Exists</a></li>
+<li><a href="#equals">Equals</a></li>
+<li><a href="#greater">Greater</a></li>
+<li><a href="#greaterorequals">GreaterOrEquals</a></li>
+<li><a href="#hasvalue">HasValue</a></li>
+<li><a href="#in">In</a></li>
+<li><a href="#less">Less</a></li>
+<li><a href="#lessorequals">LessOrEquals</a></li>
+<li><a href="#match">Match</a></li>
+<li><a href="#notequals">NotEquals</a></li>
+<li><a href="#notin">NotIn</a></li>
+<li><a href="#notmatch">NotMatch</a></li>
+</ul>
+<p>The following operators are available:</p>
+<ul>
+<li><a href="#allof">AllOf</a></li>
+<li><a href="#anyof">AnyOf</a></li>
+<li><a href="#not">Not</a></li>
+</ul>
+<p>The following comparison properties are available:</p>
+<ul>
+<li><a href="#field">Field</a></li>
+</ul>
+<p>Currently the following limitations apply:</p>
+<ul>
+<li>Selectors can only evaluate a field of the target object.
+The following examples can not be evaluated by selectors:
+<ul>
+<li>Bound properties such as <code>TargetName</code>, <code>TargetType</code>, and <code>Field</code>.</li>
+<li>State variables such as <code>$PSRule</code>.</li>
+</ul>
+</li>
+</ul>
+<h3 id="using-selectors-as-pre-conditions">Using selectors as pre-conditions</h3>
+<p>Selectors can be referenced by name as a rule pre-condition by using the <code>-With</code> parameter.
+For example:</p>
+<pre><code class="lang-powershell">Rule 'RuleWithSelector' -With 'BasicSelector' {
+    # Rule condition
+}
+</code></pre>
+<p>Selector pre-conditions can be used together with type and script block pre-conditions.
+If one or more selector pre-conditions are used, they are evaluated before type or script block pre-conditions.</p>
+<h3 id="defining-selectors">Defining selectors</h3>
+<p>Selectors are defined in YAML and can be included within a module or standalone <code>.Rule.yaml</code> file.
+In either case, define a selector within a file ending with the <code>.Rule.yaml</code> extension.
+A selector can be defined side-by-side with other resources such as baselines or module configurations.</p>
+<p>Use the following template to define a selector:</p>
+<pre><code class="lang-yaml">---
+# Synopsis: {{ Synopsis }}
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: '{{ Name }}'
+spec:
+  if: { }
+</code></pre>
+<p>Within the <code>if</code> object, one or more conditions or logical operators can be used.</p>
+<h3 id="allof">AllOf</h3>
+<p>The <code>allOf</code> operator is used to require all nested expressions to match.
+When any nested expression does not match, <code>allOf</code> does not match.
+This is similar to a logical <em>and</em> operation.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">allOf: &lt;expression[]&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleAllOf'
+spec:
+  if:
+    allOf:
+    # Both Name and Description must exist.
+    - field: 'Name'
+      exists: true
+    - field: 'Description'
+      exists: true
+</code></pre>
+<h3 id="anyof">AnyOf</h3>
+<p>The <code>anyOf</code> operator is used to require one or more nested expressions to match.
+When any nested expression matches, <code>allOf</code> matches.
+This is similar to a logical <em>or</em> operation.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">anyOf: &lt;expression[]&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleAnyOf'
+spec:
+  if:
+    anyOf:
+    # Name and/ or AlternativeName must exist.
+    - field: 'Name'
+      exists: true
+    - field: 'AlternativeName'
+      exists: true
+</code></pre>
+<h3 id="exists">Exists</h3>
+<p>The <code>exists</code> condition determines if the specified field exists.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">exists: &lt;bool&gt;
+</code></pre>
+<ul>
+<li>When <code>exists: true</code>, exists will return <code>true</code> if the field exists.</li>
+<li>When <code>exists: false</code>, exists will return <code>true</code> if the field does not exist.</li>
+</ul>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleExists'
+spec:
+  if:
+    field: 'Name'
+    exists: true
+</code></pre>
+<h3 id="equals">Equals</h3>
+<p>The <code>equals</code> condition can be used to compare if a field is equal to a supplied value.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">equals: &lt;string | int | bool&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleEquals'
+spec:
+  if:
+    field: 'Name'
+    equals: 'TargetObject1'
+</code></pre>
+<h3 id="field">Field</h3>
+<p>The comparison property <code>field</code> is used with a condition to determine field of the object to evaluate.
+A field can be:</p>
+<ul>
+<li>A property name.</li>
+<li>A key within a hashtable or dictionary.</li>
+<li>An index in an array or collection.</li>
+<li>A nested path through an object.</li>
+</ul>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">field: &lt;string&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleField'
+spec:
+  if:
+    field: 'Properties.securityRules[0].name'
+    exists: true
+</code></pre>
+<h3 id="greater">Greater</h3>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">greater: &lt;int&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleGreater'
+spec:
+  if:
+    field: 'Name'
+    greater: 3
+</code></pre>
+<h3 id="greaterorequals">GreaterOrEquals</h3>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">greaterOrEquals: &lt;int&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleGreaterOrEquals'
+spec:
+  if:
+    field: 'Name'
+    greaterOrEquals: 3
+</code></pre>
+<h3 id="hasvalue">HasValue</h3>
+<p>The <code>hasValue</code> condition determines if the field exists and has a non-empty value.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">hasValue: &lt;bool&gt;
+</code></pre>
+<ul>
+<li>When <code>hasValue: true</code>, hasValue will return <code>true</code> if the field is not empty.</li>
+<li>When <code>hasValue: false</code>, hasValue will return <code>true</code> if the field is empty.</li>
+</ul>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleHasValue'
+spec:
+  if:
+    field: 'Name'
+    hasValue: true
+</code></pre>
+<h3 id="in">In</h3>
+<p>The <code>in</code> condition can be used to compare if a field contains one of the specified values.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">in: &lt;array&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleIn'
+spec:
+  if:
+    field: 'Name'
+    in:
+    - 'Value1'
+    - 'Value2'
+</code></pre>
+<h3 id="less">Less</h3>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">less: &lt;int&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleLess'
+spec:
+  if:
+    field: 'Name'
+    less: 3
+</code></pre>
+<h3 id="lessorequals">LessOrEquals</h3>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">lessOrEquals: &lt;int&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleLessOrEquals'
+spec:
+  if:
+    field: 'Name'
+    lessOrEquals: 3
+</code></pre>
+<h3 id="match">Match</h3>
+<p>The <code>match</code> condition can be used to compare if a field matches a supplied regular expression.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">match: &lt;string&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleMatch'
+spec:
+  if:
+    field: 'Name'
+    match: '$(abc|efg)$'
+</code></pre>
+<h3 id="not">Not</h3>
+<p>The <code>any</code> operator is used to invert the result of the nested expression.
+When a nested expression matches, <code>not</code> does not match.
+When a nested expression does not match, <code>not</code> matches.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">not: &lt;expression&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleNot'
+spec:
+  if:
+    not:
+      # The AlternativeName field must not exist.
+      field: 'AlternativeName'
+      exists: true
+</code></pre>
+<h3 id="notequals">NotEquals</h3>
+<p>The <code>notEquals</code> condition can be used to compare if a field is equal to a supplied value.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">notEquals: &lt;string | int | bool&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleNotEquals'
+spec:
+  if:
+    field: 'Name'
+    notEquals: 'TargetObject1'
+</code></pre>
+<h3 id="notin">NotIn</h3>
+<p>The <code>notIn</code> condition can be used to compare if a field does not contains one of the specified values.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">notIn: &lt;array&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleNotIn'
+spec:
+  if:
+    field: 'Name'
+    notIn:
+    - 'Value1'
+    - 'Value2'
+</code></pre>
+<h3 id="notmatch">NotMatch</h3>
+<p>The <code>notMatch</code> condition can be used to compare if a field does not matches a supplied regular expression.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">notMatch: &lt;string&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleNotMatch'
+spec:
+  if:
+    field: 'Name'
+    notMatch: '$(abc|efg)$'
+</code></pre>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="example-selectorsruleyaml">Example Selectors.Rule.yaml</h3>
+<pre><code class="lang-yaml"># Example Selectors.Rule.yaml
+---
+# Synopsis: Require the CustomValue field.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: RequireCustomValue
+spec:
+  if:
+    field: 'CustomValue'
+    exists: true
+
+---
+# Synopsis: Require a Name or AlternativeName.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: RequireName
+spec:
+  if:
+    anyOf:
+    - field: 'AlternateName'
+      exists: true
+    - field: 'Name'
+      exists: true
+
+---
+# Synopsis: Require a specific CustomValue
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: RequireSpecificCustomValue
+spec:
+  if:
+    field: 'CustomValue'
+    in:
+    - 'Value1'
+    - 'Value2'
+</code></pre>
+<h2 id="note">NOTE</h2>
+<p>An online version of this document is available at <a href="https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.md">https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.md</a>.</p>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a href="https://microsoft.github.io/PSRule/commands/PSRule/en-US/Invoke-PSRule.html">Invoke-PSRule</a></li>
+</ul>
+<h2 id="keywords">KEYWORDS</h2>
+<ul>
+<li>Selectors</li>
+<li>PSRule</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Selectors.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

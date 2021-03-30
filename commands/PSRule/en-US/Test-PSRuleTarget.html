@@ -73,14 +73,15 @@
 <p>Pass or fail objects against matching rules.</p>
 <h2 id="syntax">SYNTAX</h2>
 <h3 id="input-default">Input (Default)</h3>
-<pre><code class="lang-text">Test-PSRuleTarget [-Module &lt;String[]&gt;] [-Outcome &lt;RuleOutcome&gt;] [-Format &lt;InputFormat&gt;] [[-Path] &lt;String[]&gt;]
- [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] -InputObject &lt;PSObject&gt; [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;]
- [-TargetType &lt;String[]&gt;] [-Culture &lt;String&gt;] [&lt;CommonParameters&gt;]
+<pre><code class="lang-text">Test-PSRuleTarget [-Module &lt;String[]&gt;] [-Outcome &lt;RuleOutcome&gt;] [-Format &lt;InputFormat&gt;]
+ [-Convention &lt;String[]&gt;] [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] -InputObject &lt;PSObject&gt;
+ [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;] [-TargetType &lt;String[]&gt;] [-Culture &lt;String&gt;]
+ [&lt;CommonParameters&gt;]
 </code></pre>
 <h3 id="inputpath">InputPath</h3>
 <pre><code class="lang-text">Test-PSRuleTarget -InputPath &lt;String[]&gt; [-Module &lt;String[]&gt;] [-Outcome &lt;RuleOutcome&gt;] [-Format &lt;InputFormat&gt;]
- [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;] [-ObjectPath &lt;String&gt;]
- [-TargetType &lt;String[]&gt;] [-Culture &lt;String&gt;] [&lt;CommonParameters&gt;]
+ [-Convention &lt;String[]&gt;] [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;] [-Tag &lt;Hashtable&gt;] [-Option &lt;PSRuleOption&gt;]
+ [-ObjectPath &lt;String&gt;] [-TargetType &lt;String[]&gt;] [-Culture &lt;String&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Evaluate objects against matching rules and return an overall pass or fail for the object as <code>$True</code> (pass) or <code>$False</code> (fail).</p>
@@ -198,6 +199,10 @@ Set this option to either <code>Yaml</code>, <code>Json</code>, <code>Markdown</
 <p>When the <code>-InputPath</code> parameter is used with a file path or URL.
 If the <code>Detect</code> format is used, the file extension will be used to automatically detect the format.
 When <code>-InputPath</code> is not used, <code>Detect</code> is the same as <code>None</code>.</p>
+<p>When this option is set to <code>File</code> PSRule scans the path and subdirectories specified by <code>-InputPath</code>.
+Files are treated as objects instead of being deserialized.
+Additional, PSRule uses the file extension as the object type.
+When files have no extension the whole file name is used.</p>
 <p>See <code>about_PSRule_Options</code> for details.</p>
 <p>This parameter takes precedence over the <code>Input.Format</code> option if set.</p>
 <pre><code class="lang-yaml">Type: InputFormat
@@ -208,6 +213,33 @@ Accepted values: None, Yaml, Json, Markdown, PowerShellData, Repository, Detect
 Required: False
 Position: Named
 Default value: Detect
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-convention">-Convention</h3>
+<p>Specifies conventions by name to execute in the pipeline when processing objects.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-culture">-Culture</h3>
+<p>Specifies the culture to use for rule documentation and messages.
+By default, the culture of PowerShell is used.</p>
+<p>This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.</p>
+<p>The PowerShell cmdlet <code>Get-Culture</code> shows the current culture of PowerShell.</p>
+<pre><code class="lang-yaml">Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
@@ -264,20 +296,6 @@ Parameter Sets: InputPath
 Aliases: f
 
 Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-</code></pre>
-<h3 id="-culture">-Culture</h3>
-<p>Specifies the culture to use for rule documentation and messages. By default, the culture of PowerShell is used.</p>
-<p>This option does not affect the culture used for the PSRule engine, which always uses the culture of PowerShell.</p>
-<p>The PowerShell cmdlet <code>Get-Culture</code> shows the current culture of PowerShell.</p>
-<pre><code class="lang-yaml">Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False

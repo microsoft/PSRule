@@ -77,6 +77,7 @@
 This topic describes what options are available, when to and how to use them.</p>
 <p>The following workspace options are available for use:</p>
 <ul>
+<li><a href="#conventioninclude">Convention.Include</a></li>
 <li><a href="#executionlanguagemode">Execution.LanguageMode</a></li>
 <li><a href="#executioninconclusivewarning">Execution.InconclusiveWarning</a></li>
 <li><a href="#executionnotprocessedwarning">Execution.NotProcessedWarning</a></li>
@@ -103,6 +104,7 @@ This topic describes what options are available, when to and how to use them.</p
 <li><a href="#bindingfield">Binding.Field</a></li>
 <li><a href="#bindingignorecase">Binding.IgnoreCase</a></li>
 <li><a href="#bindingnameseparator">Binding.NameSeparator</a></li>
+<li><a href="#bindingprefertargetinfo">Binding.PreferTargetInfo</a></li>
 <li><a href="#bindingtargetname">Binding.TargetName</a></li>
 <li><a href="#bindingtargettype">Binding.TargetType</a></li>
 <li><a href="#bindingusequalifiedname">Binding.UseQualifiedName</a></li>
@@ -247,6 +249,27 @@ Set-PSRuleOption -BindingNameSeparator '::';
 <pre><code class="lang-yaml"># YAML: Using the binding/nameSeparator property
 binding:
   nameSeparator: '::'
+</code></pre>
+<h3 id="bindingprefertargetinfo">Binding.PreferTargetInfo</h3>
+<p>Some built-in objects within PSRule perform automatic binding of TargetName and TargetType.
+These built-in objects provide their own target info.</p>
+<p>When binding has been configured these values override automatic binding by default.
+This can occur when the built-in object uses one of the fields specified by the custom configuration.
+The common occurrences of this are on fields such as <code>Name</code> and <code>FullName</code> which are widely used.
+To prefer automatic binding when specified set this option to <code>$True</code>.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the BindingPreferTargetInfo parameter
+$option = New-PSRuleOption -BindingPreferTargetInfo $True;
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Binding.PreferTargetInfo hashtable key
+$option = New-PSRuleOption -Option @{ 'Binding.PreferTargetInfo' = $True };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the BindingPreferTargetInfo parameter to set YAML
+Set-PSRuleOption -BindingPreferTargetInfo $True;
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the binding/preferTargetInfo property
+binding:
+  preferTargetInfo: true
 </code></pre>
 <h3 id="bindingtargetname">Binding.TargetName</h3>
 <p>When an object is passed from the pipeline, PSRule assigns the object a <em>TargetName</em>.
@@ -406,6 +429,25 @@ $option = New-PSRuleOption -BaselineConfiguration @{ appServiceMinInstanceCount 
 configuration:
   appServiceMinInstanceCount: 2
 </code></pre>
+<h3 id="conventioninclude">Convention.Include</h3>
+<p>Specifies conventions to execute when the pipeline run.
+Conventions are included by name and must be defined within files included in <code>-Path</code> or <code>-Module</code>.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the Convention parameter
+$option = New-PSRuleOption -Convention 'Convention1', 'Convention2';
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Convention.Include hashtable key
+$option = New-PSRuleOption -Option @{ 'Convention.Include' = $True };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Convention parameter to set YAML
+Set-PSRuleOption -Convention 'Convention1', 'Convention2';
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the convention/include property
+convention:
+  include:
+  - 'Convention1'
+  - 'Convention2'
+</code></pre>
 <h3 id="executionlanguagemode">Execution.LanguageMode</h3>
 <p>Unless PowerShell has been constrained, full language features of PowerShell are available to use within rule definitions.
 In locked down environments, a reduced set of language features may be desired.</p>
@@ -494,9 +536,12 @@ When the file extension can not be determined <code>Detect</code> is the same as
 <p>The <code>Markdown</code> format does not parse the whole markdown document.
 Specifically this format deserializes YAML front matter from the top of the document if any exists.</p>
 <p>The <code>File</code> format does not deserialize file contents.
+Each file is returned as an object.
 Files within <code>.git</code> sub-directories are ignored.
 Path specs specified in <code>.gitignore</code> directly in the current working path are ignored.
-A <code>RepositoryInfo</code> object is generated if the current working path if a <code>.git</code> sub-directory is present.</p>
+A <code>RepositoryInfo</code> object is generated if the current working path if a <code>.git</code> sub-directory is present.
+Additionally, PSRule performs automatic type binding for file objects, using the extension as the type.
+When files have no extension the whole file name is used.</p>
 <p>Detect uses the following file extensions:</p>
 <ul>
 <li>Yaml - <code>.yaml</code> or <code>.yml</code></li>
@@ -807,8 +852,6 @@ The following outcome options are available:</p>
 This is the default option.</li>
 <li><code>All</code> - All results for rules are returned.</li>
 </ul>
-<p>This option is ignored by <code>Assert-PSRule</code>.
-<code>Assert-PSRule</code> will always use <code>Processed</code>.</p>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the OutputOutcome parameter
 $option = New-PSRuleOption -OutputOutcome Fail;
@@ -986,7 +1029,12 @@ Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
 
 # Configure required module versions
 requires:
-  PSRule.Rules.Azure: '&gt;=0.13.0'
+  PSRule.Rules.Azure: '&gt;=1.1.0'
+
+# Configure convention options
+convention:
+  include:
+  - 'Convention1'
 
 # Configure execution options
 execution:
@@ -1039,6 +1087,7 @@ binding:
     - AlternativeId
   ignoreCase: false
   nameSeparator: '::'
+  preferTargetInfo: true
   targetName:
   - ResourceName
   - AlternateName
@@ -1071,6 +1120,10 @@ rule:
 
 # Configure required module versions
 requires: { }
+
+# Configure convention options
+convention:
+  include: [ ]
 
 # Configure execution options
 execution:
@@ -1108,6 +1161,7 @@ binding:
   field: { }
   ignoreCase: true
   nameSeparator: '/'
+  preferTargetInfo: false
   targetName:
   - TargetName
   - Name
@@ -1134,6 +1188,8 @@ rule:
 <ul>
 <li>Options</li>
 <li>PSRule</li>
+<li>TargetInfo</li>
+<li>Binding</li>
 </ul>
 </article>
           </div>

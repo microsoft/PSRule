@@ -63,7 +63,89 @@
 <h1 id="change-log">Change log</h1>
 
 <p>See <a href="upgrade-notes.html">upgrade notes</a> for helpful information when upgrading from previous versions.</p>
+<p><strong>Important notes</strong>:</p>
+<ul>
+<li>YAML resources will require an <code>apiVersion</code> from PSRule v2. <a href="https://github.com/microsoft/PSRule/issues/648">#648</a></li>
+</ul>
 <h2 id="unreleased">Unreleased</h2>
+<p>What's changed since pre-release v1.2.0-B2103031:</p>
+<ul>
+<li>Engine features:
+<ul>
+<li>Added support for complex pre-conditions with selectors. <a href="https://github.com/microsoft/PSRule/issues/649">#649</a></li>
+</ul>
+</li>
+<li>General improvements:
+<ul>
+<li>Added support for preferring automatic binding over custom binding configurations. <a href="https://github.com/microsoft/PSRule/issues/670">#670</a>
+<ul>
+<li>Added the <code>Binding.PreferTargetInfo</code> option to prefer target info specified by the object.</li>
+</ul>
+</li>
+<li>Added strong apiVersion to resource types. <a href="https://github.com/microsoft/PSRule/issues/647">#647</a>
+<ul>
+<li>Resource schemas now support an <code>apiVersion</code> field.</li>
+<li>The <code>apiVersion</code> field is optional but recommended.</li>
+<li>Resources without a <code>apiVersion</code> field will not be supported from PSRule v2.</li>
+<li>Added warning to flag baseline without <code>apiVersion</code> set.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="120-b2103031-pre-release">1.2.0-B2103031 (pre-release)</h2>
+<p>What's changed since pre-release v1.2.0-B2103023:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added support for detecting files headers from additional file extensions. <a href="https://github.com/microsoft/PSRule/issues/664">#664</a>
+<ul>
+<li>Added <code>.bicep</code>, <code>.csx</code>, <code>.jsx</code>, <code>.groovy</code>, <code>.java</code>, <code>.json</code>, <code>.jsonc</code>,
+<code>.scala</code>, <code>.rb</code>, <code>.bat</code>, <code>.cmd</code>.</li>
+<li>Added support for <code>Jenkinsfile</code> and <code>Dockerfile</code> without an extension.</li>
+</ul>
+</li>
+<li>Added support for automatic type binding with files that do not have a file extension. <a href="https://github.com/microsoft/PSRule/issues/665">#665</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v120-b2103023-pre-release">v1.2.0-B2103023 (pre-release)</h2>
+<p>What's changed since pre-release v1.2.0-B2103016:</p>
+<ul>
+<li>Engine features:
+<ul>
+<li>Added support for object expansion with conventions. <a href="https://github.com/microsoft/PSRule/issues/661">#661</a>
+<ul>
+<li>Use the <code>$PSRule.Import</code> method to import child source objects into the pipeline.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v120-b2103016-pre-release">v1.2.0-B2103016 (pre-release)</h2>
+<p>What's changed since pre-release v1.2.0-B2103008:</p>
+<ul>
+<li>Bug fixes:
+<ul>
+<li>Fixed dependent rule execution is skipped for consequent input objects. <a href="https://github.com/microsoft/PSRule/issues/657">#657</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v120-b2103008-pre-release">v1.2.0-B2103008 (pre-release)</h2>
+<p>What's changed since v1.1.0:</p>
+<ul>
+<li>Engine features:
+<ul>
+<li>Added support for extensibility with conventions. <a href="https://github.com/microsoft/PSRule/issues/650">#650</a>
+<ul>
+<li>Conventions provide an extensibility point within PSRule to execute actions within the pipeline.</li>
+<li>A convention can expose <code>Begin</code>, <code>Process</code>, and <code>End</code> blocks.</li>
+<li>In additional to within rules <code>$PSRule.Data</code> can be accessed from <code>Begin</code> and <code>Process</code> blocks.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <h2 id="v110">v1.1.0</h2>
 <p>What's changed since v1.0.3:</p>
 <ul>

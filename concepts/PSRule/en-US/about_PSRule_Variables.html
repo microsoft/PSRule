@@ -191,7 +191,8 @@ Rule 'WithLocalizedData' {
 <p>An object representing the current context during execution.</p>
 <p>The following properties are available for read access:</p>
 <ul>
-<li><code>Field</code> - A hashtable of custom bound fields. See option <code>Binding.Field</code> for more information.</li>
+<li><code>Field</code> - A hashtable of custom bound fields.
+See option <code>Binding.Field</code> for more information.</li>
 <li><code>TargetObject</code> - The object currently being processed on the pipeline.</li>
 <li><code>TargetName</code> - The name of the object currently being processed on the pipeline.
 This property will automatically default to <code>TargetName</code> or <code>Name</code> properties of the object if they exist.</li>
@@ -200,7 +201,8 @@ This property will automatically bind to <code>PSObject.TypeNames[0]</code> by d
 </ul>
 <p>The following properties are available for read/ write access:</p>
 <ul>
-<li><code>Data</code> - A hashtable of custom data. This property can be populated during rule execution.
+<li><code>Data</code> - A hashtable of custom data.
+This property can be populated during rule or begin/ process convention execution.
 Custom data is not used by PSRule directly, and is intended to be used by downstream processes that need to interpret PSRule results.</li>
 </ul>
 <p>To bind fields that already exist on the target object use custom binding and <code>Binding.Field</code>.
@@ -217,6 +219,9 @@ If the field does not exist on the object, an object is not returned.</li>
 The parameter <code>sourceObject</code> should be a <code>InputFileInfo</code>,<code>FileInfo</code>, or <code>Uri</code> object.
 If more than one object is contained in the file, only the first object is returned.
 When the source file contains no objects null is returned.</li>
+<li><code>Import(PSObject[] sourceObject)</code> - Imports one or more source objects into the pipeline.
+Use this method to expand an object into child objects that will be processed independently.
+Objects imported using this method will be excluded from the <code>Input.ObjectPath</code> option if set.</li>
 </ul>
 <p>The file format is detected based on the same file formats as the option <code>Input.Format</code>.
 i.e. Yaml, Json, Markdown, and PowerShell Data.</p>

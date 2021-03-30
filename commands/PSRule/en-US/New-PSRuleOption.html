@@ -76,33 +76,39 @@
 <pre><code class="lang-text">New-PSRuleOption [[-Path] &lt;String&gt;] [-Configuration &lt;ConfigurationOption&gt;]
  [-SuppressTargetName &lt;SuppressionOption&gt;] [-BindTargetName &lt;BindTargetName[]&gt;]
  [-BindTargetType &lt;BindTargetName[]&gt;] [-BindingIgnoreCase &lt;Boolean&gt;] [-BindingField &lt;Hashtable&gt;]
- [-BindingNameSeparator &lt;String&gt;] [-TargetName &lt;String[]&gt;] [-TargetType &lt;String[]&gt;]
- [-BindingUseQualifiedName &lt;Boolean&gt;] [-InconclusiveWarning &lt;Boolean&gt;] [-NotProcessedWarning &lt;Boolean&gt;]
- [-Format &lt;InputFormat&gt;] [-ObjectPath &lt;String&gt;] [-InputTargetType &lt;String[]&gt;] [-LoggingLimitDebug &lt;String[]&gt;]
- [-LoggingLimitVerbose &lt;String[]&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;] [-LoggingRulePass &lt;OutcomeLogStream&gt;]
- [-OutputAs &lt;ResultFormat&gt;] [-OutputCulture &lt;String[]&gt;] [-OutputEncoding &lt;OutputEncoding&gt;]
- [-OutputFormat &lt;OutputFormat&gt;] [-OutputPath &lt;String&gt;] [-OutputStyle &lt;OutputStyle&gt;] [&lt;CommonParameters&gt;]
+ [-BindingNameSeparator &lt;String&gt;] [-BindingPreferTargetInfo &lt;Boolean&gt;] [-TargetName &lt;String[]&gt;]
+ [-TargetType &lt;String[]&gt;] [-BindingUseQualifiedName &lt;Boolean&gt;] [-Convention &lt;String[]&gt;]
+ [-InconclusiveWarning &lt;Boolean&gt;] [-NotProcessedWarning &lt;Boolean&gt;] [-Format &lt;InputFormat&gt;]
+ [-ObjectPath &lt;String&gt;] [-InputTargetType &lt;String[]&gt;] [-InputPathIgnore &lt;String[]&gt;]
+ [-LoggingLimitDebug &lt;String[]&gt;] [-LoggingLimitVerbose &lt;String[]&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;]
+ [-LoggingRulePass &lt;OutcomeLogStream&gt;] [-OutputAs &lt;ResultFormat&gt;] [-OutputCulture &lt;String[]&gt;]
+ [-OutputEncoding &lt;OutputEncoding&gt;] [-OutputFormat &lt;OutputFormat&gt;] [-OutputOutcome &lt;RuleOutcome&gt;]
+ [-OutputPath &lt;String&gt;] [-OutputStyle &lt;OutputStyle&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h3 id="fromoption">FromOption</h3>
 <pre><code class="lang-text">New-PSRuleOption [-Option] &lt;PSRuleOption&gt; [-Configuration &lt;ConfigurationOption&gt;]
  [-SuppressTargetName &lt;SuppressionOption&gt;] [-BindTargetName &lt;BindTargetName[]&gt;]
  [-BindTargetType &lt;BindTargetName[]&gt;] [-BindingIgnoreCase &lt;Boolean&gt;] [-BindingField &lt;Hashtable&gt;]
- [-BindingNameSeparator &lt;String&gt;] [-TargetName &lt;String[]&gt;] [-TargetType &lt;String[]&gt;]
- [-BindingUseQualifiedName &lt;Boolean&gt;] [-InconclusiveWarning &lt;Boolean&gt;] [-NotProcessedWarning &lt;Boolean&gt;]
- [-Format &lt;InputFormat&gt;] [-ObjectPath &lt;String&gt;] [-InputTargetType &lt;String[]&gt;] [-LoggingLimitDebug &lt;String[]&gt;]
- [-LoggingLimitVerbose &lt;String[]&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;] [-LoggingRulePass &lt;OutcomeLogStream&gt;]
- [-OutputAs &lt;ResultFormat&gt;] [-OutputCulture &lt;String[]&gt;] [-OutputEncoding &lt;OutputEncoding&gt;]
- [-OutputFormat &lt;OutputFormat&gt;] [-OutputPath &lt;String&gt;] [-OutputStyle &lt;OutputStyle&gt;] [&lt;CommonParameters&gt;]
+ [-BindingNameSeparator &lt;String&gt;] [-BindingPreferTargetInfo &lt;Boolean&gt;] [-TargetName &lt;String[]&gt;]
+ [-TargetType &lt;String[]&gt;] [-BindingUseQualifiedName &lt;Boolean&gt;] [-Convention &lt;String[]&gt;]
+ [-InconclusiveWarning &lt;Boolean&gt;] [-NotProcessedWarning &lt;Boolean&gt;] [-Format &lt;InputFormat&gt;]
+ [-ObjectPath &lt;String&gt;] [-InputTargetType &lt;String[]&gt;] [-InputPathIgnore &lt;String[]&gt;]
+ [-LoggingLimitDebug &lt;String[]&gt;] [-LoggingLimitVerbose &lt;String[]&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;]
+ [-LoggingRulePass &lt;OutcomeLogStream&gt;] [-OutputAs &lt;ResultFormat&gt;] [-OutputCulture &lt;String[]&gt;]
+ [-OutputEncoding &lt;OutputEncoding&gt;] [-OutputFormat &lt;OutputFormat&gt;] [-OutputOutcome &lt;RuleOutcome&gt;]
+ [-OutputPath &lt;String&gt;] [-OutputStyle &lt;OutputStyle&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h3 id="fromdefault">FromDefault</h3>
 <pre><code class="lang-text">New-PSRuleOption [-Default] [-Configuration &lt;ConfigurationOption&gt;] [-SuppressTargetName &lt;SuppressionOption&gt;]
  [-BindTargetName &lt;BindTargetName[]&gt;] [-BindTargetType &lt;BindTargetName[]&gt;] [-BindingIgnoreCase &lt;Boolean&gt;]
- [-BindingField &lt;Hashtable&gt;] [-BindingNameSeparator &lt;String&gt;] [-TargetName &lt;String[]&gt;] [-TargetType &lt;String[]&gt;]
- [-BindingUseQualifiedName &lt;Boolean&gt;] [-InconclusiveWarning &lt;Boolean&gt;] [-NotProcessedWarning &lt;Boolean&gt;]
- [-Format &lt;InputFormat&gt;] [-ObjectPath &lt;String&gt;] [-InputTargetType &lt;String[]&gt;] [-LoggingLimitDebug &lt;String[]&gt;]
- [-LoggingLimitVerbose &lt;String[]&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;] [-LoggingRulePass &lt;OutcomeLogStream&gt;]
- [-OutputAs &lt;ResultFormat&gt;] [-OutputCulture &lt;String[]&gt;] [-OutputEncoding &lt;OutputEncoding&gt;]
- [-OutputFormat &lt;OutputFormat&gt;] [-OutputPath &lt;String&gt;] [-OutputStyle &lt;OutputStyle&gt;] [&lt;CommonParameters&gt;]
+ [-BindingField &lt;Hashtable&gt;] [-BindingNameSeparator &lt;String&gt;] [-BindingPreferTargetInfo &lt;Boolean&gt;]
+ [-TargetName &lt;String[]&gt;] [-TargetType &lt;String[]&gt;] [-BindingUseQualifiedName &lt;Boolean&gt;]
+ [-Convention &lt;String[]&gt;] [-InconclusiveWarning &lt;Boolean&gt;] [-NotProcessedWarning &lt;Boolean&gt;]
+ [-Format &lt;InputFormat&gt;] [-ObjectPath &lt;String&gt;] [-InputTargetType &lt;String[]&gt;] [-InputPathIgnore &lt;String[]&gt;]
+ [-LoggingLimitDebug &lt;String[]&gt;] [-LoggingLimitVerbose &lt;String[]&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;]
+ [-LoggingRulePass &lt;OutcomeLogStream&gt;] [-OutputAs &lt;ResultFormat&gt;] [-OutputCulture &lt;String[]&gt;]
+ [-OutputEncoding &lt;OutputEncoding&gt;] [-OutputFormat &lt;OutputFormat&gt;] [-OutputOutcome &lt;RuleOutcome&gt;]
+ [-OutputPath &lt;String&gt;] [-OutputStyle &lt;OutputStyle&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>The <strong>New-PSRuleOption</strong> cmdlet creates an options object that can be passed to PSRule cmdlets to configure execution.</p>
@@ -245,7 +251,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: True
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
@@ -270,6 +276,34 @@ See about_PSRule_Options for more information.</p>
 <pre><code class="lang-yaml">Type: String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-bindingprefertargetinfo">-BindingPreferTargetInfo</h3>
+<p>Sets the option <code>Binding.PreferTargetInfo</code>.
+This option specifies if automatic binding is preferred over configured binding options.
+See about_PSRule_Options for more information.</p>
+<pre><code class="lang-yaml">Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-convention">-Convention</h3>
+<p>Sets the <code>Option.ConventionInclude</code> option.
+This option specifies the name of conventions to execute in the pipeline when processing objects.
+See about_PSRule_Options for more information.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases: ConventionInclude
 
 Required: False
 Position: Named
@@ -367,6 +401,20 @@ See about_PSRule_Options for more information.</p>
 <pre><code class="lang-yaml">Type: String
 Parameter Sets: (All)
 Aliases: InputObjectPath
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-inputpathignore">-InputPathIgnore</h3>
+<p>Sets the <code>Input.PathIgnore</code> option.
+If specified, files that match the path spec will not be processed.
+See about_PSRule_Options for more information.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named
@@ -493,6 +541,20 @@ Accepted values: None, Yaml, Json, Markdown, NUnit3, Csv, Wide
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-outputoutcome">-OutputOutcome</h3>
+<p>Sets the <code>Output.Outcome</code> option.
+This option can be set to include or exclude output results.
+See about_PSRule_Options for more information.</p>
+<pre><code class="lang-yaml">Type: RuleOutcome
+Parameter Sets: (All)
+Aliases: Outcome
+
+Required: False
+Position: Named
+Default value: Processed
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>

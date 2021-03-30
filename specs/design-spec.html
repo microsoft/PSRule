@@ -1,0 +1,253 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>PSRule design specification (draft) </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="PSRule design specification (draft) ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="psrule-design-specification-draft">PSRule design specification (draft)</h1>
+
+<p>This document is intended as a working technical specification for PSRule.</p>
+<h2 id="what-is-psrule">What is PSRule?</h2>
+<p>PSRule is an engine, shipped as a PowerShell module designed to validate infrastructure as code (IaC).
+Additionally, PSRule can validate any PowerShell object, allowing almost any custom scenario to be supported.</p>
+<p>PSRule natively supports common infrastructure code artifacts with the following file formats:</p>
+<ul>
+<li>YAML (<code>.yaml</code> or <code>.yml</code>).</li>
+<li>JSON (<code>.json</code>).</li>
+<li>PowerShell Data Files (<code>.psd1</code>).</li>
+<li>Markdown front matter (<code>.md</code> or <code>.markdown</code>).</li>
+</ul>
+<p>While some infrastructure as code languages implement their own custom language,
+many support output into a standard artifact format.
+i.e. <code>terraform show -json</code></p>
+<h2 id="project-objectives">Project objectives</h2>
+<ol>
+<li><strong>Extensible</strong>:
+<ul>
+<li>Provide an execution environment (tools and language) to validate infrastructure code.</li>
+<li>Handling of common concerns such as input/ output/ reporting should be handled by the engine.</li>
+<li>Language must be flexible enough to support a wide range of use cases.</li>
+</ul>
+</li>
+<li><strong>DevOps</strong>:
+<ul>
+<li>Validation should support and enhance DevOps workflows by providing fast feedback in pull requests.</li>
+<li>Allow quality gates to be implemented between environments such development, test, and production.</li>
+</ul>
+</li>
+<li><strong>Cross-platform</strong>:
+<ul>
+<li>A wide range of platforms can be used to author and deploy infrastructure code.
+PSRule must support rule validation and authoring on Linux, MacOS, and Windows.</li>
+<li>Runs in a Linux container.
+For continuous integration (CI) systems that do not support PowerShell, run in a container.</li>
+</ul>
+</li>
+<li><strong>Reusable</strong>:
+<ul>
+<li>Validation should plug and play, reusable across teams and organizations.</li>
+<li>Any reusable validation will have exceptions.
+Rules must be able to be disabled where they are not applicable.</li>
+</ul>
+</li>
+</ol>
+<h2 id="language-specification">Language specification</h2>
+<p>PSRule is rooted in PowerShell.
+This provides significant benefits and flexibility including:</p>
+<ul>
+<li>Reuses existing skills within Microsoft and customers who already know how to author PowerShell scripts.</li>
+<li>Builds on existing PowerShell community; allowing existing integrations and cmdlets to be used.</li>
+<li>PowerShell already has an established model for distributing packages (modules).
+This includes options for trust and hosting (publicly or privately).</li>
+</ul>
+<p>To ensure these benefits remain, the following must be true:</p>
+<ul>
+<li>Rules can be written using standard PowerShell operators and conventions.
+Minimal knowledge of PSRule should be required to author rules.</li>
+<li>Rules validate an object graph.
+Whether an object originates from a YAML or JSON file should be abstract.</li>
+</ul>
+<h3 id="future-cases">Future cases</h3>
+<p>PowerShell offers complete flexibility to build simple to complex rules.
+However, rule authors may be unfamiliar with PowerShell.
+Authoring rules in YAML or JSON with a defined schema will allow additional options for basic rules.</p>
+<h2 id="concepts">Concepts</h2>
+<h3 id="rule-definitions">Rule definitions</h3>
+<p>Rule definitions or <em>rules</em> are defined using PowerShell.
+Rules can be created in a PowerShell script file with the <code>.Rule.ps1</code> extension.
+Rule files can be created and used individually or bundled as a module.</p>
+<p>Each rule:</p>
+<ul>
+<li>Implements a test for one or more conditions against an object.
+When all conditions return true the rule passes, if not the rule fails.</li>
+<li>Is evaluated by executing the rule within a sandbox that provides context to each rule.
+Such as the deserialized object being processed and configuration.</li>
+<li>Can specify preconditions which determine if a rule should be evaluated based on the object being processed.
+Rules only run against the objects they are designed to test.</li>
+</ul>
+<p>For example:</p>
+<pre><code class="lang-powershell">Rule 'NameOfRule' {
+    # &lt;Rule conditions&gt;
+}
+</code></pre>
+<pre><code class="lang-powershell"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB
+Rule 'StorageAccounts.UseHttps' -Type 'Microsoft.Storage/storageAccounts' {
+    $TargetObject.Properties.supportsHttpsTrafficOnly -eq $True
+}
+</code></pre>
+<h3 id="psrule-engine">PSRule engine</h3>
+<p>Distributed as a PowerShell module, all source code is included within this repository.
+This included cmdlets and an execution sandbox where rules are evaluated.
+PSRule is designed to be self contained, requiring only PowerShell to run.</p>
+<p>By itself PSRule doesn't implement any specific rules.
+Custom rules can be defined and evaluated from PowerShell script files.
+Reusable rules can be distributed using PowerShell modules.
+Use <em>PowerShellGet</em> to install modules from public and private sources.</p>
+<p>PSRule extends PowerShell with domain specific language (DSL) keywords, cmdlets, and automatic variables.
+These language features are only available within the sandbox.
+Stubs are exported from PSRule module to provide command completion during authoring.</p>
+<h3 id="keywords-and-variables">Keywords and variables</h3>
+<p>TBA</p>
+<h3 id="baselines">Baselines</h3>
+<p>A baseline is a artifact defined in YAML that determines which rules to run for a given scenario.
+One or more baselines can be included in a <code>.Rule.yaml</code> file.
+Baselines can be created individually or bundled in a module.</p>
+<p>Common use cases where baselines are helpful include:</p>
+<ul>
+<li>Separation of rules or features in development.
+For infrastructure code or rules early in their lifecycle, a recommend practice may not be fully ratify.
+Baselines allow rules to be distributed but not executed by default.</li>
+<li>Progressive adoption.
+If validation has been added for a new use case, it may not be possible to adopt all rules at once.
+Baselines act a checkpoints to allow validation of a subset of rules.</li>
+</ul>
+<h2 id="execution">Execution</h2>
+<p>Execution within PSRule occurs within a pipeline.
+The PSRule pipeline is similar to PowerShell and contains a <code>begin</code>, <code>process</code>, and <code>end</code> stage.</p>
+<ul>
+<li><strong>Begin</strong>: TBA</li>
+<li><strong>Process</strong>: TBA</li>
+<li><strong>End</strong>: TBA</li>
+</ul>
+<p>Three execution pipelines exist, <code>Invoke</code>, <code>Assert</code>, or <code>Test</code>.
+Differences between each of these pipeline is minimal and mostly deals with how output is presented.</p>
+<ul>
+<li><strong>Invoke</strong>: Returns output as pipeline objects so they can be natively processed by PowerShell code.</li>
+<li><strong>Assert</strong>: Returns output as styled text to provide readable results within a CI pipeline.</li>
+<li><strong>Test</strong>: Returns true or false based on pass or fail of each object.
+Use this option to use filter objects from a PowerShell pipeline.</li>
+</ul>
+<h3 id="execution-sandbox">Execution sandbox</h3>
+<p>The execution sandbox is implemented using PowerShell runspaces.
+Runspaces are a PowerShell feature which enable partial isolation within a PowerShell process.</p>
+<p>PSRule uses two discrete runspaces:</p>
+<ul>
+<li>In the <em>parent</em> runspace where PSRule is called using <code>Invoke-PSRule</code>, <code>Assert-PSRule</code>, or <code>Test-PSRule</code>.
+The <em>parent</em> runspace is responsible for all input and output.</li>
+<li>The <em>sandbox</em> runspace is where rules execute.
+PSRule keywords and automatic variables are implemented in the sandbox.
+Flow control within the PSRule pipeline maintains context for each object as it is processed by rules.</li>
+</ul>
+<p>Input and output are proxied between the two discrete runspaces to maintain runspace separation.
+This separation allows rules to be executed without polluting the state of the <em>parent</em> runspace.</p>
+<h3 id="rule-evaluation">Rule evaluation</h3>
+<p>TBA</p>
+<h2 id="configuration">Configuration</h2>
+<p>TBA</p>
+<h2 id="integration">Integration</h2>
+<p>TBA</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Microsoft/PSRule/blob/main/docs/specs/design-spec.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

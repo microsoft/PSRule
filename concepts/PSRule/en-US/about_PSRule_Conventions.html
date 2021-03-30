@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>PSRule_Conventions </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="PSRule_Conventions ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../favicon.ico">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="../../../commands/PSRule/en-US/toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="psrule_conventions">PSRule_Conventions</h1>
+
+<h2 id="about_psrule_conventions">about_PSRule_Conventions</h2>
+<h2 id="short-description">SHORT DESCRIPTION</h2>
+<p>Describes PSRule Conventions including how to use and author them.</p>
+<h2 id="long-description">LONG DESCRIPTION</h2>
+<p>PSRule executes rules to validate an object from input.
+When processing input it may be necessary to perform custom actions before or after rules execute.
+Conventions provide an extensibility point that can be shipped with or external to standard rules.
+Each convention, hooks into one or more places within the pipeline.</p>
+<h3 id="using-conventions">Using conventions</h3>
+<p>A convention can be included by using the <code>-Convention</code> parameter when executing a PSRule cmdlet.
+Alternatively, conventions can be included with options.
+To use a convention specify the name of the convention by name.
+For example:</p>
+<pre><code class="lang-powershell">Invoke-PSRule -Convention 'ExampleConvention';
+</code></pre>
+<p>If multiple conventions are specified in an array, all are executed in they are specified.
+As a result, the convention specified last may override state set by earlier conventions.</p>
+<pre><code class="lang-powershell">Assert-PSRule -Convention 'ExampleConvention1', 'ExampleConvention2';
+</code></pre>
+<h3 id="defining-conventions">Defining conventions</h3>
+<p>To define a convention, add a <code>Export-PSRuleConvention</code> block within a <code>.Rule.ps1</code> file.
+The <code>.Rule.ps1</code> must be in an included path or module with <code>-Path</code> or <code>-Module</code>.</p>
+<p>The <code>Export-PSRuleConvention</code> block works similar to the <code>Rule</code> block.
+Each convention must have a unique name.
+For example:</p>
+<pre><code class="lang-powershell"># Synopsis: An example convention.
+Export-PSRuleConvention 'ExampleConvention' {
+    # Add code here
+}
+</code></pre>
+<h3 id="begin-process-end-blocks">Begin Process End blocks</h3>
+<p>Conventions define three executable blocks <code>Begin</code>, <code>Process</code>, <code>End</code> similar to a PowerShell function.
+Each block is injected in a different part of the pipeline as follows:</p>
+<ul>
+<li><code>Begin</code> occurs once per object before the any rules are executed.
+Use <code>Begin</code> blocks to perform expansion, set data, or alter the object before rules are processed.</li>
+<li><code>Process</code> occurs once per object after all rules are executed.
+Use <code>Process</code> blocks to perform per object tasks such as generate badges.</li>
+<li><code>End</code> occurs only once after all objects have been processed.
+Use <code>End</code> blocks to upload results to an external service.</li>
+</ul>
+<p>Convention block limitations:</p>
+<ul>
+<li><code>Begin</code> and <code>Process</code> can not use rule specific variables such as <code>$Rule</code>.
+These blocks are executed outside of the context of a single rule.</li>
+<li><code>End</code> can not use automatic variables except <code>$PSRule.Output</code>.</li>
+</ul>
+<p>By default, the <code>Process</code> block used.
+For example:</p>
+<pre><code class="lang-powershell"># Synopsis: The default { } executes the process block
+Export-PSRuleConvention 'ExampleConvention' {
+    # Process block
+}
+
+# Synopsis: With optional -Process parameter name
+Export-PSRuleConvention 'ExampleConvention' -Process {
+    # Process block
+}
+</code></pre>
+<p>To use <code>Begin</code> or <code>End</code> explicitly add these blocks.
+For example:</p>
+<pre><code class="lang-powershell">Export-PSRuleConvention 'ExampleConvention' -Process {
+    # Process block
+} -Begin {
+    # Begin block
+} -End {
+    # End block
+}
+</code></pre>
+<h3 id="including-with-options">Including with options</h3>
+<p>Conventions can be included by name within options in addition to using the <code>-Convention</code> parameter.
+To specify a convention within YAML options use the following:</p>
+<pre><code class="lang-yaml"># Example ps-docs.yaml
+convention:
+  include:
+  - 'ExampleConvention1'
+  - 'ExampleConvention2'
+</code></pre>
+<h3 id="using-within-modules">Using within modules</h3>
+<p>Conventions can be shipped within a module using the same packaging and distribution process as rules.
+Additionally, conventions shipped within a module can be automatically included.
+By default, PSRule does not include conventions shipped within a module.
+To use a convention included in a module use the <code>-Convention</code> parameter or options configuration.</p>
+<p>A module can automatically include a convention by specifying the convention by name in module configuration.
+For example:</p>
+<pre><code class="lang-yaml"># Example Config.Rule.yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: ModuleConfig
+metadata:
+  name: ExampleModule
+spec:
+  convention:
+    include:
+    - 'ExampleConvention1'
+    - 'ExampleConvention2'
+</code></pre>
+<h3 id="execution-order">Execution order</h3>
+<p>Conventions are executed in the order they are specified.
+This is true for <code>Begin</code>, <code>Process</code>, and <code>End</code> blocks.
+i.e. In the following example <code>ExampleConvention1</code> is execute before <code>ExampleConvention2</code>.</p>
+<pre><code class="lang-powershell">Assert-PSRule -Convention 'ExampleConvention1', 'ExampleConvention2';
+</code></pre>
+<p>When conventions are specified from multiple locations PSRule orders conventions as follows:</p>
+<ol>
+<li>Using <code>-Convention</code> parameter.</li>
+<li>PSRule options.</li>
+<li>Module configuration.</li>
+</ol>
+<h2 id="note">NOTE</h2>
+<p>An online version of this document is available at <a href="https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Conventions.md">https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Conventions.md</a>.</p>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a href="https://microsoft.github.io/PSRule/commands/PSRule/en-US/Invoke-PSRule.html">Invoke-PSRule</a></li>
+</ul>
+<h2 id="keywords">KEYWORDS</h2>
+<ul>
+<li>Conventions</li>
+<li>PSRule</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Conventions.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

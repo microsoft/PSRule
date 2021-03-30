@@ -80,6 +80,7 @@ A baseline includes a set of rule and configuration options that are used for ev
 <li><a href="about_PSRule_Options.html#bindingfield">Binding.Field</a></li>
 <li><a href="about_PSRule_Options.html#bindingignorecase">Binding.IgnoreCase</a></li>
 <li><a href="about_PSRule_Options.html#bindingnameseparator">Binding.NameSeparator</a></li>
+<li><a href="about_PSRule_Options.html#bindingprefertargetinfo">Binding.PreferTargetInfo</a></li>
 <li><a href="about_PSRule_Options.html#bindingtargetname">Binding.TargetName</a></li>
 <li><a href="about_PSRule_Options.html#bindingtargettype">Binding.TargetType</a></li>
 <li><a href="about_PSRule_Options.html#bindingusequalifiedname">Binding.UseQualifiedName</a></li>
@@ -108,6 +109,7 @@ A baseline includes a set of rule and configuration options that are used for ev
 <p>To define a baseline spec use the following structure:</p>
 <pre><code class="lang-yaml">---
 # Synopsis: &lt;synopsis&gt;
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: &lt;name&gt;
@@ -121,6 +123,7 @@ spec:
 <p>For example:</p>
 <pre><code class="lang-yaml">---
 # Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: Baseline1
@@ -146,6 +149,7 @@ spec:
 
 ---
 # Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: Baseline2
@@ -185,6 +189,7 @@ PSRule will generate a warning when an obsolete baseline is used.</li>
 <p>For example:</p>
 <pre><code class="lang-yaml">---
 # Synopsis: This is an example baseline that is obsolete
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: ObsoleteBaseline
@@ -196,6 +201,7 @@ spec: { }
 <h3 id="example-baselineruleyaml">Example Baseline.Rule.yaml</h3>
 <pre><code class="lang-yaml">---
 # Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: TestBaseline1
@@ -213,6 +219,7 @@ spec:
 
 ---
 # Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: TestBaseline2
