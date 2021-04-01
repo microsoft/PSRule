@@ -10,6 +10,38 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.2.0
+
+What's changed since v1.1.0:
+
+- Engine features:
+  - Added support for extensibility with conventions. [#650](https://github.com/microsoft/PSRule/issues/650)
+    - Conventions provide an extensibility point within PSRule to execute actions within the pipeline.
+    - A convention can expose `Begin`, `Process`, and `End` blocks.
+    - In additional to within rules `$PSRule.Data` can be accessed from `Begin` and `Process` blocks.
+  - Added support for object expansion with conventions. [#661](https://github.com/microsoft/PSRule/issues/661)
+    - Use the `$PSRule.Import` method to import child source objects into the pipeline.
+  - Added support for complex pre-conditions with selectors. [#649](https://github.com/microsoft/PSRule/issues/649)
+- General improvements:
+  - Added support for preferring automatic binding over custom binding configurations. [#670](https://github.com/microsoft/PSRule/issues/670)
+    - Added the `Binding.PreferTargetInfo` option to prefer target info specified by the object.
+  - Added strong apiVersion to resource types. [#647](https://github.com/microsoft/PSRule/issues/647)
+    - Resource schemas now support an `apiVersion` field.
+    - The `apiVersion` field is optional but recommended.
+    - Resources without a `apiVersion` field will not be supported from PSRule v2.
+    - Added warning to flag baseline without `apiVersion` set.
+  - Added support for detecting files headers from additional file extensions. [#664](https://github.com/microsoft/PSRule/issues/664)
+    - Added `.bicep`, `.csx`, `.jsx`, `.groovy`, `.java`, `.json`, `.jsonc`,
+    `.scala`, `.rb`, `.bat`, `.cmd`.
+    - Added support for `Jenkinsfile` and `Dockerfile` without an extension.
+  - Added support for automatic type binding with files that do not have a file extension. [#665](https://github.com/microsoft/PSRule/issues/665)
+- Bug fixes:
+  - Fixed dependent rule execution is skipped for consequent input objects. [#657](https://github.com/microsoft/PSRule/issues/657)
+
+What's changed since pre-release v1.2.0-B2103043:
+
+- No additional changes.
+
 ## v1.2.0-B2103043 (pre-release)
 
 What's changed since pre-release v1.2.0-B2103031:
