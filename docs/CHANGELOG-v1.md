@@ -19,9 +19,11 @@ What's changed since v1.1.0:
     - Conventions provide an extensibility point within PSRule to execute actions within the pipeline.
     - A convention can expose `Begin`, `Process`, and `End` blocks.
     - In additional to within rules `$PSRule.Data` can be accessed from `Begin` and `Process` blocks.
+    - See [about_PSRule_Conventions] for details.
   - Added support for object expansion with conventions. [#661](https://github.com/microsoft/PSRule/issues/661)
     - Use the `$PSRule.Import` method to import child source objects into the pipeline.
   - Added support for complex pre-conditions with selectors. [#649](https://github.com/microsoft/PSRule/issues/649)
+    - See [about_PSRule_Selectors] for details.
 - General improvements:
   - Added support for preferring automatic binding over custom binding configurations. [#670](https://github.com/microsoft/PSRule/issues/670)
     - Added the `Binding.PreferTargetInfo` option to prefer target info specified by the object.
@@ -30,10 +32,11 @@ What's changed since v1.1.0:
     - The `apiVersion` field is optional but recommended.
     - Resources without a `apiVersion` field will not be supported from PSRule v2.
     - Added warning to flag baseline without `apiVersion` set.
-  - Added support for detecting files headers from additional file extensions. [#664](https://github.com/microsoft/PSRule/issues/664)
+  - Added support for detecting files headers from additional file extensions using `FileHeader`. [#664](https://github.com/microsoft/PSRule/issues/664)
     - Added `.bicep`, `.csx`, `.jsx`, `.groovy`, `.java`, `.json`, `.jsonc`,
     `.scala`, `.rb`, `.bat`, `.cmd`.
     - Added support for `Jenkinsfile` and `Dockerfile` without an extension.
+    - See [about_PSRule_Assert] for details.
   - Added support for automatic type binding with files that do not have a file extension. [#665](https://github.com/microsoft/PSRule/issues/665)
 - Bug fixes:
   - Fixed dependent rule execution is skipped for consequent input objects. [#657](https://github.com/microsoft/PSRule/issues/657)
@@ -212,3 +215,7 @@ What's changed since v0.22.0:
 - Engineering:
   - **Breaking change**: Removed deprecated `$Rule` properties. [#495](https://github.com/microsoft/PSRule/pull/495)
   - Bump Manatee.Json from 13.0.3 to 13.0.4. [#591](https://github.com/microsoft/PSRule/pull/591)
+
+[about_PSRule_Assert]: concepts/PSRule/en-US/about_PSRule_Assert.md
+[about_PSRule_Conventions]: concepts/PSRule/en-US/about_PSRule_Conventions.md
+[about_PSRule_Selectors]: concepts/PSRule/en-US/about_PSRule_Selectors.md
