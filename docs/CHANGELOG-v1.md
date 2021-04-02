@@ -22,11 +22,13 @@ What's changed since v1.1.0:
     - See [about_PSRule_Conventions] for details.
   - Added support for object expansion with conventions. [#661](https://github.com/microsoft/PSRule/issues/661)
     - Use the `$PSRule.Import` method to import child source objects into the pipeline.
+    - See [about_PSRule_Variables] for details.
   - Added support for complex pre-conditions with selectors. [#649](https://github.com/microsoft/PSRule/issues/649)
     - See [about_PSRule_Selectors] for details.
 - General improvements:
   - Added support for preferring automatic binding over custom binding configurations. [#670](https://github.com/microsoft/PSRule/issues/670)
     - Added the `Binding.PreferTargetInfo` option to prefer target info specified by the object.
+    - See [about_PSRule_Options] for details.
   - Added strong apiVersion to resource types. [#647](https://github.com/microsoft/PSRule/issues/647)
     - Resource schemas now support an `apiVersion` field.
     - The `apiVersion` field is optional but recommended.
@@ -54,6 +56,7 @@ What's changed since pre-release v1.2.0-B2103031:
 - General improvements:
   - Added support for preferring automatic binding over custom binding configurations. [#670](https://github.com/microsoft/PSRule/issues/670)
     - Added the `Binding.PreferTargetInfo` option to prefer target info specified by the object.
+    - See [about_PSRule_Options] for details.
   - Added strong apiVersion to resource types. [#647](https://github.com/microsoft/PSRule/issues/647)
     - Resource schemas now support an `apiVersion` field.
     - The `apiVersion` field is optional but recommended.
@@ -69,6 +72,7 @@ What's changed since pre-release v1.2.0-B2103023:
     - Added `.bicep`, `.csx`, `.jsx`, `.groovy`, `.java`, `.json`, `.jsonc`,
     `.scala`, `.rb`, `.bat`, `.cmd`.
     - Added support for `Jenkinsfile` and `Dockerfile` without an extension.
+    - See [about_PSRule_Assert] for details.
   - Added support for automatic type binding with files that do not have a file extension. [#665](https://github.com/microsoft/PSRule/issues/665)
 
 ## v1.2.0-B2103023 (pre-release)
@@ -78,6 +82,7 @@ What's changed since pre-release v1.2.0-B2103016:
 - Engine features:
   - Added support for object expansion with conventions. [#661](https://github.com/microsoft/PSRule/issues/661)
     - Use the `$PSRule.Import` method to import child source objects into the pipeline.
+    - See [about_PSRule_Variables] for details.
 
 ## v1.2.0-B2103016 (pre-release)
 
@@ -95,6 +100,7 @@ What's changed since v1.1.0:
     - Conventions provide an extensibility point within PSRule to execute actions within the pipeline.
     - A convention can expose `Begin`, `Process`, and `End` blocks.
     - In additional to within rules `$PSRule.Data` can be accessed from `Begin` and `Process` blocks.
+    - See [about_PSRule_Conventions] for details.
 
 ## v1.1.0
 
@@ -105,6 +111,7 @@ What's changed since v1.0.3:
     - Added `NotHasField` to check object does not have any of the specified fields.
     - Added `Null` to check field value is null.
     - Added `NotNull` to check field value is not null.
+    - See [about_PSRule_Assert] for details.
   - Added type assertion helpers. [#635](https://github.com/microsoft/PSRule/issues/635)
     - Added `IsNumeric` to check field value is a numeric types.
     - Added `IsInteger` to check field value is an integer types.
@@ -112,16 +119,20 @@ What's changed since v1.0.3:
     - Added `IsArray` to check field value is an array.
     - Added `IsString` to check field value is a string.
     - Added `TypeOf` to check field value is a specified type.
+    - See [about_PSRule_Assert] for details.
   - Added content helpers. [#637](https://github.com/microsoft/PSRule/issues/637)
     - Added `$PSRule.GetContentFirstOrDefault` to get content and return the first object.
     - Added `$PSRule.GetContentField` to get the field from content objects.
+    - See [about_PSRule_Variables] for details.
 - General improvements:
   - Updated `HasJsonSchema` assertion helper. [#636](https://github.com/microsoft/PSRule/issues/636)
     - The URI scheme can optionally be ignored for `http://` or `https://` URIs.
     - The fragment `#` is ignored.
+    - See [about_PSRule_Assert] for details.
   - Added support for `-Outcome` and `-As` to produce filtered output from `Assert-PSRule`. [#643](https://github.com/microsoft/PSRule/issues/643)
     - Configure `Output.As` with `Summary` to produce summarized results per object.
     - Configure `Output.Outcome` to limit output to `Fail` or `Error`.
+    - See [Assert-PSRule] for details.
 
 What's changed since pre-release v1.1.0-B2102029:
 
@@ -135,6 +146,7 @@ What's changed since pre-release v1.1.0-B2102024:
   - Added support for `-Outcome` and `-As` to produce filtered output from `Assert-PSRule`. [#643](https://github.com/microsoft/PSRule/issues/643)
     - Configure `Output.As` with `Summary` to produce summarized results per object.
     - Configure `Output.Outcome` to limit output to `Fail` or `Error`.
+    - See [Assert-PSRule] for details.
 
 ## v1.1.0-B2102024 (pre-release)
 
@@ -145,6 +157,7 @@ What's changed since pre-release v1.1.0-B2102019:
     - Added `NotHasField` to check object does not have any of the specified fields.
     - Added `Null` to check field value is null.
     - Added `NotNull` to check field value is not null.
+    - See [about_PSRule_Assert] for details.
 
 ## v1.1.0-B2102019 (pre-release)
 
@@ -158,13 +171,16 @@ What's changed since v1.0.3:
     - Added `IsArray` to check field value is an array.
     - Added `IsString` to check field value is a string.
     - Added `TypeOf` to check field value is a specified type.
+    - See [about_PSRule_Assert] for details.
   - Added content helpers. [#637](https://github.com/microsoft/PSRule/issues/637)
     - Added `$PSRule.GetContentFirstOrDefault` to get content and return the first object.
     - Added `$PSRule.GetContentField` to get the field from content objects.
+    - See [about_PSRule_Variables] for details.
 - General improvements:
   - Updated `HasJsonSchema` assertion helper. [#636](https://github.com/microsoft/PSRule/issues/636)
     - The URI scheme can optionally be ignored for `http://` or `https://` URIs.
     - The fragment `#` is ignored.
+    - See [about_PSRule_Assert] for details.
 
 ## v1.0.3
 
@@ -216,6 +232,9 @@ What's changed since v0.22.0:
   - **Breaking change**: Removed deprecated `$Rule` properties. [#495](https://github.com/microsoft/PSRule/pull/495)
   - Bump Manatee.Json from 13.0.3 to 13.0.4. [#591](https://github.com/microsoft/PSRule/pull/591)
 
+[Assert-PSRule]: commands/PSRule/en-US/Assert-PSRule.md
 [about_PSRule_Assert]: concepts/PSRule/en-US/about_PSRule_Assert.md
+[about_PSRule_Options]: concepts/PSRule/en-US/about_PSRule_Options.md
+[about_PSRule_Variables]: concepts/PSRule/en-US/about_PSRule_Variables.md
 [about_PSRule_Conventions]: concepts/PSRule/en-US/about_PSRule_Conventions.md
 [about_PSRule_Selectors]: concepts/PSRule/en-US/about_PSRule_Selectors.md
