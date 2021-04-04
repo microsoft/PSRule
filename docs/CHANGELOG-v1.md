@@ -10,6 +10,10 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.3.0-B2104021 (pre-release)
+
+What's changed since v1.2.0:
+
 - General improvements:
   - Added file path assertion helpers. [#679](https://github.com/microsoft/PSRule/issues/679)
     - Added `WithinPath` to check the file path field is within a specified path.
