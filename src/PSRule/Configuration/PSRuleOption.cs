@@ -551,7 +551,7 @@ namespace PSRule.Configuration
         [DebuggerStepThrough]
         private static bool IsSeparator(char c)
         {
-            return c == Path.DirectorySeparatorChar || c == Path.AltDirectorySeparatorChar;
+            return c == Path.DirectorySeparatorChar || c == Path.AltDirectorySeparatorChar || c == '/' || c == '\\';
         }
     }
 }
