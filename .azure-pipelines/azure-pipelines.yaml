@@ -70,6 +70,11 @@ stages:
         publishRunAttachments: true
       condition: succeededOrFailed()
 
+    - publish: reports/
+      displayName: 'Test output'
+      artifact: Tests
+      condition: succeededOrFailed()
+
     # Generate artifacts
     - publish: out/modules/PSRule
       displayName: 'Publish module'
