@@ -941,9 +941,9 @@ namespace PSRule
 
             // String
             var value = GetObject((name: "FullName", value: GetSourcePath("deployments/path/template.json")));
-            Assert.True(AssertionResult(assert.WithinPath(value, "FullName", new string[] { "deployments/path/" })));
-            Assert.True(AssertionResult(assert.WithinPath(value, "FullName", new string[] { "deployments\\path\\" })));
-            Assert.False(AssertionResult(assert.WithinPath(value, "FullName", new string[] { "deployments/other/" })));
+            Assert.True(AssertionResult(assert.WithinPath(value, "FullName", new string[] { "deployments/path/" }, caseSensitive: false)));
+            Assert.True(AssertionResult(assert.WithinPath(value, "FullName", new string[] { "deployments\\path\\" }, caseSensitive: false)));
+            Assert.False(AssertionResult(assert.WithinPath(value, "FullName", new string[] { "deployments/other/" }, caseSensitive: false)));
             Assert.False(AssertionResult(assert.WithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true)));
 
             // InputFileInfo
@@ -969,9 +969,9 @@ namespace PSRule
 
             // String
             var value = GetObject((name: "FullName", value: GetSourcePath("deployments/path/template.json")));
-            Assert.False(AssertionResult(assert.NotWithinPath(value, "FullName", new string[] { "deployments/path/" })));
-            Assert.False(AssertionResult(assert.NotWithinPath(value, "FullName", new string[] { "deployments\\path\\" })));
-            Assert.True(AssertionResult(assert.NotWithinPath(value, "FullName", new string[] { "deployments/other/" })));
+            Assert.False(AssertionResult(assert.NotWithinPath(value, "FullName", new string[] { "deployments/path/" }, caseSensitive: false)));
+            Assert.False(AssertionResult(assert.NotWithinPath(value, "FullName", new string[] { "deployments\\path\\" }, caseSensitive: false)));
+            Assert.True(AssertionResult(assert.NotWithinPath(value, "FullName", new string[] { "deployments/other/" }, caseSensitive: false)));
             Assert.True(AssertionResult(assert.NotWithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true)));
 
             // InputFileInfo
