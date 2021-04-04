@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using System.Management.Automation;
 using Xunit;
+using Xunit.Abstractions;
 using Assert = Xunit.Assert;
 
 namespace PSRule
@@ -18,6 +19,13 @@ namespace PSRule
     {
         private const string LANGUAGE = "Language";
         private const string LANGUAGEELEMENT = "Variable";
+
+        private readonly ITestOutputHelper Output;
+
+        public AssertTests(ITestOutputHelper output)
+        {
+            Output = output;
+        }
 
         [Fact]
         public void Assertion()
@@ -926,17 +934,17 @@ namespace PSRule
         }
 
         [Fact]
-        public void InPath()
+        public void WithinPath()
         {
             SetContext();
             var assert = GetAssertionHelper();
 
             // String
             var value = GetObject((name: "FullName", value: GetSourcePath("deployments/path/template.json")));
-            Assert.True(assert.WithinPath(value, "FullName", new string[] { "deployments/path/" }).Result);
-            Assert.True(assert.WithinPath(value, "FullName", new string[] { "deployments\\path\\" }).Result);
-            Assert.False(assert.WithinPath(value, "FullName", new string[] { "deployments/other/" }).Result);
-            Assert.False(assert.WithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true).Result);
+            Assert.True(AssertionResult(assert.WithinPath(value, "FullName", new string[] { "deployments/path/" })));
+            Assert.True(AssertionResult(assert.WithinPath(value, "FullName", new string[] { "deployments\\path\\" })));
+            Assert.False(AssertionResult(assert.WithinPath(value, "FullName", new string[] { "deployments/other/" })));
+            Assert.False(AssertionResult(assert.WithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true)));
 
             // InputFileInfo
             value = GetObject((name: "FullName", value: new InputFileInfo(AppDomain.CurrentDomain.BaseDirectory, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "deployments/path/template.json"))));
@@ -954,17 +962,17 @@ namespace PSRule
         }
 
         [Fact]
-        public void NotInPath()
+        public void NotWithinPath()
         {
             SetContext();
             var assert = GetAssertionHelper();
 
             // String
             var value = GetObject((name: "FullName", value: GetSourcePath("deployments/path/template.json")));
-            Assert.False(assert.NotWithinPath(value, "FullName", new string[] { "deployments/path/" }).Result);
-            Assert.False(assert.NotWithinPath(value, "FullName", new string[] { "deployments\\path\\" }).Result);
-            Assert.True(assert.NotWithinPath(value, "FullName", new string[] { "deployments/other/" }).Result);
-            Assert.True(assert.NotWithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true).Result);
+            Assert.False(AssertionResult(assert.NotWithinPath(value, "FullName", new string[] { "deployments/path/" })));
+            Assert.False(AssertionResult(assert.NotWithinPath(value, "FullName", new string[] { "deployments\\path\\" })));
+            Assert.True(AssertionResult(assert.NotWithinPath(value, "FullName", new string[] { "deployments/other/" })));
+            Assert.True(AssertionResult(assert.NotWithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true)));
 
             // InputFileInfo
             value = GetObject((name: "FullName", value: new InputFileInfo(AppDomain.CurrentDomain.BaseDirectory, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "deployments/path/template.json"))));
@@ -1007,6 +1015,17 @@ namespace PSRule
         private string GetSourcePath(string fileName)
         {
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+        }
+
+        private bool AssertionResult(AssertResult result)
+        {
+            if (!result.Result)
+            {
+                var reasons = result.GetReason();
+                for (var i = 0; reasons != null && i < reasons.Length; i++)
+                    Output.WriteLine(reasons[i]);
+            }
+            return result.Result;
         }
 
         #endregion Helper methods
