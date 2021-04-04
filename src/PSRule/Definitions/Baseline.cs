@@ -40,12 +40,6 @@ namespace PSRule.Definitions
         internal readonly bool Obsolete;
 
         /// <summary>
-        /// The name of the module where the baseline is defined, or null if the baseline is not defined in a module.
-        /// </summary>
-        //[YamlIgnore()]
-        //public readonly string ModuleName;
-
-        /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
         /// </summary>
         [JsonIgnore]

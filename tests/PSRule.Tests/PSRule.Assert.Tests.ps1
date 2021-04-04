@@ -6,9 +6,7 @@
 #
 
 [CmdletBinding()]
-param (
-
-)
+param ()
 
 # Setup error handling
 $ErrorActionPreference = 'Stop';
@@ -47,6 +45,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 CompareNumeric = 3
                 CompareArray = 1, 2, 3
                 CompareString = 'abc'
+                CompareDate = [DateTime]::Now.AddDays(3)
                 InArray = @(
                     'Item1'
                     'Item3'
@@ -61,6 +60,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 IsInteger = 1
                 IsBoolean = $True
                 IsArray = 1, 2, 3
+                IsDateTime = [DateTime]::Now.AddDays(4)
             }
             [PSCustomObject]@{
                 '$schema' = "http://json-schema.org/draft-07/schema`#"
@@ -77,6 +77,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 CompareNumeric = 0
                 CompareArray = @()
                 CompareString = ''
+                CompareDate = [DateTime]::Now
                 InArray = @(
                     'item1'
                     'item2'
@@ -87,7 +88,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                     'item2'
                     'item3'
                 )
-                ParentPath = (Join-Path -Path $here -ChildPath 'notapath')
+                ParentPath = (Join-Path -Path $here -ChildPath 'notapath/template.json')
                 Lower = 'Test123'
                 Upper = 'Test123'
                 LetterLower = 'test123'
@@ -95,6 +96,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
                 IsInteger = '1'
                 IsBoolean = 'true'
                 IsArray = '123'
+                IsDateTime = ([DateTime]::Now.AddDays(4).ToString('o'))
             }
         )
 
@@ -244,7 +246,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             # Negative case
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
-            $result[1].Reason.Length | Should -Be 3;
+            $result[1].Reason.Length | Should -Be 4;
             $result[1].Reason | Should -BeLike "The value '*' was not > '*'.";
         }
 
@@ -260,8 +262,8 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             # Negative case
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
-            $result[1].Reason.Length | Should -Be 3;
-            $result[1].Reason | Should -BeLike "The value '0' was not >= '*'.";
+            $result[1].Reason.Length | Should -Be 4;
+            $result[1].Reason | Should -BeLike "The value '*' was not >= '*'.";
         }
 
         It 'HasField' {
@@ -495,6 +497,22 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].TargetName | Should -Be 'TestObject2';
         }
 
+        It 'IsDateTime' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.IsDateTime');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 1;
+            $result[1].Reason[0] | Should -Be "The field value '$($testObject[1].IsDateTime)' of type String is not [DateTime].";
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+        }
+
         It 'TypeOf' {
             $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.TypeOf');
             $result | Should -Not -BeNullOrEmpty;
@@ -523,7 +541,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             # Negative case
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
-            $result[0].Reason.Length | Should -Be 3;
+            $result[0].Reason.Length | Should -Be 4;
             $result[0].Reason | Should -BeLike "The value '*' was not < '*'.";
         }
 
@@ -532,14 +550,14 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
 
-            # Negative case
+            # Positive case
             $result[1].IsSuccess() | Should -Be $True;
             $result[1].TargetName | Should -Be 'TestObject2';
 
-            # Positive case
+            # Negative case
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
-            $result[0].Reason.Length | Should -Be 3;
+            $result[0].Reason.Length | Should -Be 4;
             $result[0].Reason | Should -BeLike "The value '*' was not <= '*'.";
         }
 
@@ -624,6 +642,22 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].Reason[1] | Should -BeLike "The field value 'Value' is null.";
         }
 
+        It 'NotWithinPath' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.NotWithinPath');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 1;
+            $result[1].Reason[0] | Should -BeLike "The file '*' is within the path 'tests/PSRule.Tests/notapath/'.";
+        }
+
         It 'Null' {
             $result = @($testObject | Invoke-PSRule @invokeParams -Name 'Assert.Null');
             $result | Should -Not -BeNullOrEmpty;
@@ -687,6 +721,22 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
             $result[1].Reason | Should -BeLike "The version '*' does not match the constraint '*'.";
+        }
+
+        It 'WithinPath' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.WithinPath');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[0].IsSuccess() | Should -Be $False;
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].Reason.Length | Should -Be 1;
+            $result[0].Reason[0] | Should -BeLike "The file '*' is not within the path 'tests/PSRule.Tests/notapath/'.";
+
+            # Positive case
+            $result[1].IsSuccess() | Should -Be $True;
+            $result[1].TargetName | Should -Be 'TestObject2';
         }
     }
 

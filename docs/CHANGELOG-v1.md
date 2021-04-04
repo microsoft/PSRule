@@ -10,6 +10,18 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+- General improvements:
+  - Added file path assertion helpers. [#679](https://github.com/microsoft/PSRule/issues/679)
+    - Added `WithinPath` to check the file path field is within a specified path.
+    - Added `NotWithinPath` to check the file path field is not within a specified path
+    - See [about_PSRule_Assert] for details.
+  - Added DateTime type assertion helper. [#680](https://github.com/microsoft/PSRule/issues/680)
+    - Added `IsDateTime` to check of object field is `[DateTime]`.
+    - See [about_PSRule_Assert] for details.
+  - Improved numeric comparison assertion helpers to compare `[DateTime]` fields. [#685](https://github.com/microsoft/PSRule/issues/685)
+    - `Less`, `LessOrEqual`, `Greater`, and `GreaterOrEqual` compare the number of days from the current time.
+    - See [about_PSRule_Assert] for details.
+
 ## v1.2.0
 
 What's changed since v1.1.0:

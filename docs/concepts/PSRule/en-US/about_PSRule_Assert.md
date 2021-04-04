@@ -29,6 +29,7 @@ The following built-in assertion methods are provided:
 - [In](#in) - The field value must be included in the set.
 - [IsArray](#isarray) - The field value must be an array.
 - [IsBoolean](#isboolean) - The field value must be a boolean.
+- [IsDateTime](#isdatetime) - The field value must be a DateTime.
 - [IsInteger](#isinteger) - The field value must be an integer.
 - [IsLower](#islower) - The field value must include only lowercase characters.
 - [IsNumeric](#isnumeric) - The field value must be a numeric type.
@@ -42,11 +43,13 @@ The following built-in assertion methods are provided:
 - [NotIn](#notin) - The field value must not be included in the set.
 - [NotMatch](#notmatch) - The field value does not match a regular expression pattern.
 - [NotNull](#notnull) - The field value must not be null.
+- [NotWithinPath](#notwithinpath) - The field must not be within the specified path.
 - [Null](#null) - The field value must not exist or be null.
 - [NullOrEmpty](#nullorempty) - The object must not have the specified field or it must be empty.
 - [TypeOf](#typeof) - The field value must be of the specified type.
 - [StartsWith](#startswith) - The field value must match at least one prefix.
 - [Version](#version) - The field value must be a semantic version string.
+- [WithinPath](#withinpath) - The field value must be within the specified path.
 
 The `$Assert` variable can only be used within a rule definition block or script pre-conditions.
 
@@ -219,7 +222,7 @@ Rule 'FileHeader' {
 ### FilePath
 
 The `FilePath` assertion method checks the file exists.
-Checks use OS case-sensitivity rules.
+Checks use file system case-sensitivity rules.
 
 The following parameters are accepted:
 
@@ -261,6 +264,7 @@ When the field value is:
 - An integer or float, a numerical comparison is used.
 - An array, the number of elements is compared.
 - A string, the length of the string is compared.
+- A DateTime, the number of days from the current time is compared.
 
 The following parameters are accepted:
 
@@ -295,6 +299,7 @@ When the field value is:
 - An integer or float, a numerical comparison is used.
 - An array, the number of elements is compared.
 - A string, the length of the string is compared.
+- A DateTime, the number of days from the current time is compared.
 
 The following parameters are accepted:
 
@@ -593,6 +598,38 @@ Rule 'IsBoolean' {
 }
 ```
 
+### IsDateTime
+
+The `IsBoolean` assertion method checks the field value is a DateTime type.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `convert` (optional) - Try to convert strings.
+By default strings are not converted.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is null._
+- _The field value '{1}' of type {0} is not \[DateTime\]._
+
+Examples:
+
+```powershell
+Rule 'IsBoolean' {
+    # Require Value1 to be a DateTime
+    $Assert.IsDateTime($TargetObject, 'Value1')
+
+    # Require Value1 to be a DateTime or a DateTime string
+    $Assert.IsDateTime($TargetObject, 'Value1', $True)
+}
+```
+
 ### IsInteger
 
 The `IsInteger` assertion method checks the field value is a integer type.
@@ -761,6 +798,7 @@ When the field value is:
 - An integer or float, a numerical comparison is used.
 - An array, the number of elements is compared.
 - A string, the length of the string is compared.
+- A DateTime, the number of days from the current time is compared.
 
 The following parameters are accepted:
 
@@ -795,14 +833,15 @@ When the field value is:
 - An integer or float, a numerical comparison is used.
 - An array, the number of elements is compared.
 - A string, the length of the string is compared.
-- `convert` (optional) - Convert numerical strings and use a numerical comparison instead of using string length.
-By default the string length is compared.
+- A DateTime, the number of days from the current time is compared.
 
 The following parameters are accepted:
 
 - `inputObject` - The object being checked for the specified field.
 - `field` - The name of the field to check. This is a case insensitive compare.
 - `value` - A integer to compare the field value against.
+- `convert` (optional) - Convert numerical strings and use a numerical comparison instead of using string length.
+By default the string length is compared.
 
 Reasons include:
 
@@ -963,6 +1002,39 @@ Examples:
 Rule 'NotNull' {
     $Assert.NotNull($TargetObject, 'Name')
     $Assert.NotNull($TargetObject, 'tag.Environment')
+}
+```
+
+### NotWithinPath
+
+The `NotWithinPath` assertion method checks the file is not within a specified path.
+Checks use file system case-sensitivity rules by default.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field containing a file path.
+When the field is `InputFileInfo` or `FileInfo`, PSRule will automatically resolve the file path.
+- `path` - An array of one or more directory paths to check.
+Only one path must match.
+- `caseSensitive` (optional) - Determines if case-sensitive path matching is used.
+This can be set to `$True` or `$False`.
+When not set or `$Null`, the case-sensitivity rules of the working path file system will be used.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The parameter 'path' is null or empty._
+- _The field '{0}' does not exist._
+- _The file '{0}' is within the path '{1}'._
+
+Examples:
+
+```powershell
+Rule 'NotWithinPath' {
+    # The file must not be within either policy/ or security/ sub-directories.
+    $Assert.NotWithinPath($TargetObject, 'FullName', @('policy/', 'security/'));
 }
 ```
 
@@ -1142,6 +1214,39 @@ Rule 'ValidVersion' {
 
 Rule 'MinimumVersion' {
     $Assert.Version($TargetObject, 'version', '>=1.2.3')
+}
+```
+
+### WithinPath
+
+The `WithinPath` assertion method checks if the file path is within a required path.
+Checks use file system case-sensitivity rules by default.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field containing a file path.
+When the field is `InputFileInfo` or `FileInfo`, PSRule will automatically resolve the file path.
+- `path` - An array of one or more directory paths to check.
+Only one path must match.
+- `caseSensitive` (optional) - Determines if case-sensitive path matching is used.
+This can be set to `$True` or `$False`.
+When not set or `$Null`, the case-sensitivity rules of the working path file system will be used.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The parameter 'path' is null or empty._
+- _The field '{0}' does not exist._
+- _The file '{0}' is not within the path '{1}'._
+
+Examples:
+
+```powershell
+Rule 'WithinPath' {
+    # Require the file to be within either policy/ or security/ sub-directories.
+    $Assert.WithinPath($TargetObject, 'FullName', @('policy/', 'security/'));
 }
 ```
 

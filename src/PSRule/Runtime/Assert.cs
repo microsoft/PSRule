@@ -28,6 +28,7 @@ namespace PSRule.Runtime
         private const string TYPENAME_BOOL = "[bool]";
         private const string TYPENAME_ARRAY = "[array]";
         private const string TYPENAME_NULL = "null";
+        private const string TYPENAME_DATETIME = "[DateTime]";
 
         public AssertResult Create(bool condition, string reason = null)
         {
@@ -500,6 +501,24 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
+        /// The object field value should be a DateTime.
+        /// </summary>
+        public AssertResult IsDateTime(PSObject inputObject, string field, bool convert = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardNullFieldValue(field, fieldValue, out result))
+                return result;
+
+            if (ExpressionHelpers.TryDateTime(fieldValue, convert, out _))
+                return Pass();
+
+            return Fail(ReasonStrings.Type, TYPENAME_DATETIME, GetTypeName(fieldValue), fieldValue);
+        }
+
+        /// <summary>
         /// The object field value should be one of the specified types.
         /// </summary>
         public AssertResult TypeOf(PSObject inputObject, string field, Type[] type)
@@ -773,6 +792,57 @@ namespace PSRule.Runtime
             if (lineNo < header.Length)
                 return Fail(ReasonStrings.FileHeader);
 
+            return Pass();
+        }
+
+        /// <summary>
+        /// The field value must be within the specified path.
+        /// </summary>
+        public AssertResult WithinPath(PSObject inputObject, string field, string[] path, bool? caseSensitive = null)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullOrEmptyParam(path, nameof(path), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result))
+                return result;
+
+            var fieldValuePath = ExpressionHelpers.GetObjectOriginPath(fieldValue);
+            result = Fail();
+            for (var i = 0; path != null && i < path.Length; i++)
+            {
+                if (ExpressionHelpers.WithinPath(fieldValuePath, path[i], caseSensitive.GetValueOrDefault(PSRuleOption.IsCaseSentitive())))
+                    return Pass();
+
+                result.AddReason(ReasonStrings.WithinPath,
+                    ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), fieldValuePath),
+                    ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), path[i])
+                );
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// The field must not be within the specified path.
+        /// </summary>
+        public AssertResult NotWithinPath(PSObject inputObject, string field, string[] path, bool? caseSensitive = null)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullOrEmptyParam(path, nameof(path), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result))
+                return result;
+
+            var fieldValuePath = ExpressionHelpers.GetObjectOriginPath(fieldValue);
+            for (var i = 0; path != null && i < path.Length; i++)
+            {
+                if (ExpressionHelpers.WithinPath(fieldValuePath, path[i], caseSensitive.GetValueOrDefault(PSRuleOption.IsCaseSentitive())))
+                    return Fail(ReasonStrings.NotWithinPath,
+                        ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), fieldValuePath),
+                        ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), path[i])
+                    );
+            }
             return Pass();
         }
 

@@ -2,11 +2,14 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json.Linq;
+using PSRule.Configuration;
+using PSRule.Data;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -17,6 +20,9 @@ namespace PSRule
     {
         private const string CACHE_MATCH = "MatchRegex";
         private const string CACHE_MATCH_C = "MatchRegexCaseSensitive";
+
+        private const char Backslash = '\\';
+        private const char Slash = '/';
 
         internal static bool NullOrEmpty(object o)
         {
@@ -70,6 +76,12 @@ namespace PSRule
             {
                 compare = Comparer<float>.Default.Compare(actualFloat, expectedFloat);
                 value = actualFloat;
+                return true;
+            }
+            else if (TryDateTime(actual, convert, out DateTime actualDateTime) && TryDateTime(expected, convert: true, value: out DateTime expectedDateTime))
+            {
+                compare = Comparer<DateTime>.Default.Compare(actualDateTime, expectedDateTime);
+                value = actualDateTime;
                 return true;
             }
             else if ((TryStringLength(actual, out actualInt) || TryArrayLength(actual, out actualInt)) && TryInt(expected, convert: true, value: out expectedInt))
@@ -288,6 +300,33 @@ namespace PSRule
             return false;
         }
 
+        internal static bool TryDateTime(object o, bool convert, out DateTime value)
+        {
+            o = GetBaseObject(o);
+            if (o is DateTime dvalue)
+            {
+                value = dvalue;
+                return true;
+            }
+            else if (o is JToken token && token.Type == JTokenType.Date)
+            {
+                value = token.Value<DateTime>();
+                return true;
+            }
+            else if (convert && TryString(o, out string s) && DateTime.TryParse(s, out dvalue))
+            {
+                value = dvalue;
+                return true;
+            }
+            else if (convert && TryInt(o, convert: false, out int daysOffset))
+            {
+                value = DateTime.Now.AddDays(daysOffset);
+                return true;
+            }
+            value = default(DateTime);
+            return false;
+        }
+
         internal static bool Match(string pattern, string value, bool caseSensitive)
         {
             var expression = GetRegularExpression(pattern, caseSensitive);
@@ -318,6 +357,43 @@ namespace PSRule
                 return true;
             }
             return false;
+        }
+
+        internal static bool WithinPath(string actualPath, string expectedPath, bool caseSensitive)
+        {
+            var expected = PSRuleOption.GetRootedBasePath(expectedPath).Replace(Backslash, Slash);
+            var actual = PSRuleOption.GetRootedPath(actualPath).Replace(Backslash, Slash);
+            return actual.StartsWith(expected, ignoreCase: !caseSensitive, Thread.CurrentThread.CurrentCulture);
+        }
+
+        internal static string NormalizePath(string basePath, string path)
+        {
+            path = Path.IsPathRooted(path) ? Path.GetFullPath(path) : Path.GetFullPath(Path.Combine(basePath, path));
+            basePath = PSRuleOption.GetRootedBasePath(basePath);
+            return path.Substring(basePath.Length).Replace(Backslash, Slash);
+        }
+
+        internal static string GetObjectOriginPath(object o)
+        {
+            var baseObject = GetBaseObject(o);
+            var targetInfo = GetTargetInfo(o);
+            if (baseObject is InputFileInfo inputFileInfo)
+            {
+                return PSRuleOption.GetRootedPath(inputFileInfo.FullName);
+            }
+            else if (baseObject is FileInfo fileInfo)
+            {
+                return PSRuleOption.GetRootedPath(fileInfo.FullName);
+            }
+            else if (targetInfo != null)
+            {
+                return PSRuleOption.GetRootedPath(targetInfo.PSPath);
+            }
+            else if (baseObject is string s)
+            {
+                return PSRuleOption.GetRootedPath(s);
+            }
+            return null;
         }
 
         private static Regex GetRegularExpression(string pattern, bool caseSensitive)
@@ -353,6 +429,11 @@ namespace PSRule
         private static object GetBaseObject(object o)
         {
             return o is PSObject pso && pso.BaseObject != null ? pso.BaseObject : o;
+        }
+
+        private static PSRuleTargetInfo GetTargetInfo(object o)
+        {
+            return o is PSObject pso && pso.TryTargetInfo(out PSRuleTargetInfo targetInfo) ? targetInfo : null;
         }
 
         private static bool StringEqual(string expectedValue, string actualValue, bool caseSensitive)

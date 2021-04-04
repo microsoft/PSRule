@@ -81,6 +81,7 @@ Rule 'Assert.Greater' {
     $Assert.Greater($TargetObject, 'CompareNumeric', 2)
     $Assert.Greater($TargetObject, 'CompareArray', 2)
     $Assert.Greater($TargetObject, 'CompareString', 2)
+    $Assert.Greater($TargetObject, 'CompareDate', 2)
 }
 
 # Synopsis: Test for $Assert.GreaterOrEqual
@@ -88,6 +89,7 @@ Rule 'Assert.GreaterOrEqual' {
     $Assert.GreaterOrEqual($TargetObject, 'CompareNumeric', 3)
     $Assert.GreaterOrEqual($TargetObject, 'CompareArray', 3)
     $Assert.GreaterOrEqual($TargetObject, 'CompareString', 3)
+    $Assert.GreaterOrEqual($TargetObject, 'CompareDate', 2)
 }
 
 # Synopsis: Test for $Assert.HasField
@@ -189,6 +191,12 @@ Rule 'Assert.IsString' {
     $Assert.IsString($TargetObject, 'IsInteger')
 }
 
+# Synopsis: Test for $Assert.IsDateTime
+Rule 'Assert.IsDateTime' {
+    $Assert.IsDateTime($TargetObject, 'IsDateTime')
+    $Assert.IsDateTime($TargetObject, 'IsDateTime', $True)
+}
+
 # Synopsis: Test for $Assert.TypeOf
 Rule 'Assert.TypeOf' {
     $Assert.TypeOf($TargetObject, 'IsInteger', @([long], [int]))
@@ -201,6 +209,7 @@ Rule 'Assert.Less' {
     $Assert.Less($TargetObject, 'CompareNumeric', 2)
     $Assert.Less($TargetObject, 'CompareArray', 2)
     $Assert.Less($TargetObject, 'CompareString', 2)
+    $Assert.Less($TargetObject, 'CompareDate', 2)
 }
 
 # Synopsis: Test for $Assert.LessOrEqual
@@ -208,6 +217,7 @@ Rule 'Assert.LessOrEqual' {
     $Assert.LessOrEqual($TargetObject, 'CompareNumeric', 0)
     $Assert.LessOrEqual($TargetObject, 'CompareArray', 0)
     $Assert.LessOrEqual($TargetObject, 'CompareString', 0)
+    $Assert.LessOrEqual($TargetObject, 'CompareDate', 1)
 }
 
 # Synopsis: Test for $Assert.Match
@@ -241,6 +251,11 @@ Rule 'Assert.NotNull' {
     $Assert.NotNull($TargetObject, 'Value')
 }
 
+# Synopsis: Test for $Assert.NotWithinPath
+Rule 'Assert.NotWithinPath' {
+    $Assert.NotWithinPath($TargetObject, 'ParentPath', @('tests/PSRule.Tests/notapath/'))
+}
+
 # Synopsis: Test for $Assert.Null
 Rule 'Assert.Null' {
     $Assert.Null($TargetObject, 'Type')
@@ -265,4 +280,9 @@ Rule 'Assert.StartsWith' {
 # Synopsis: Test for $Assert.Version
 Rule 'Assert.Version' {
     $Assert.Version($TargetObject, 'Version', '>1.0.0')
+}
+
+# Synopsis: Test for $Assert.WithinPath
+Rule 'Assert.WithinPath' {
+    $Assert.WithinPath($TargetObject, 'ParentPath', @('tests/PSRule.Tests/notapath/'))
 }
