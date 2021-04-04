@@ -115,7 +115,8 @@ task TestDotNet {
     else {
         exec {
             # Test library
-            dotnet test --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Tests
+            dotnet test --logger "console;verbosity=detailed" tests/PSRule.Tests
+            # dotnet test  --logger trx -r (Join-Path $PWD -ChildPath reports/) tests/PSRule.Tests
         }
     }
 }
