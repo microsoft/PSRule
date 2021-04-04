@@ -207,6 +207,9 @@
   <data name="NotNull" xml:space="preserve">
     <value>The field value '{0}' is not null.</value>
   </data>
+  <data name="NotWithinPath" xml:space="preserve">
+    <value>The file '{0}' is within the path '{1}'.</value>
+  </data>
   <data name="Null" xml:space="preserve">
     <value>The field value '{0}' is null.</value>
   </data>
@@ -251,5 +254,8 @@
   <data name="WithinNot" xml:space="preserve">
     <value>The value '{0}' was within the set.</value>
     <comment>Included when any of the set match.</comment>
+  </data>
+  <data name="WithinPath" xml:space="preserve">
+    <value>The file '{0}' is not within the path '{1}'.</value>
   </data>
 </root>

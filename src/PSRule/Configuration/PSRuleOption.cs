@@ -479,7 +479,7 @@ namespace PSRule.Configuration
         /// <returns></returns>
         internal static string GetRootedPath(string path)
         {
-            return Path.IsPathRooted(path) ? path : Path.GetFullPath(Path.Combine(GetWorkingPath(), path));
+            return Path.IsPathRooted(path) ? Path.GetFullPath(path) : Path.GetFullPath(Path.Combine(GetWorkingPath(), path));
         }
 
         /// <summary>
@@ -494,6 +494,7 @@ namespace PSRule.Configuration
             return string.Concat(rootedPath, Path.DirectorySeparatorChar);
         }
 
+        [DebuggerStepThrough]
         internal static Dictionary<string, object> BuildIndex(Hashtable hashtable)
         {
             var index = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
@@ -501,6 +502,20 @@ namespace PSRule.Configuration
                 index.Add(entry.Key.ToString(), entry.Value);
 
             return index;
+        }
+
+        /// <summary>
+        /// Determines if the working path file system is case sensitive.
+        /// </summary>
+        [DebuggerStepThrough]
+        internal static bool IsCaseSentitive()
+        {
+            var lower = GetWorkingPath().ToLower(Thread.CurrentThread.CurrentCulture);
+            if (!Directory.Exists(lower))
+                return true;
+
+            var upper = GetWorkingPath().ToUpper(Thread.CurrentThread.CurrentCulture);
+            return !Directory.Exists(upper);
         }
 
         /// <summary>
@@ -524,6 +539,7 @@ namespace PSRule.Configuration
             return s.Serialize(this);
         }
 
+        [DebuggerStepThrough]
         private static string[] AsStringArray(object value)
         {
             if (value == null)

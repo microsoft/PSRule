@@ -187,35 +187,6 @@ namespace PSRule.Host
             return results.ToArray();
         }
 
-        //private static IEnumerable<ILanguageBlock> ReadYamlObjects(Source[] sources, RunspaceContext context)
-        //{
-        //    var builder = new ResourceBuilder();
-        //    try
-        //    {
-        //        //context.Writer?.EnterScope("[Discovery.Resource]");
-        //        //PipelineContext.CurrentThread.ExecutionScope = ExecutionScope.Yaml;
-        //        foreach (var source in sources)
-        //        {
-        //            foreach (var file in source.File)
-        //            {
-        //                if (file.Type != SourceType.Yaml)
-        //                    continue;
-
-        //                //context.VerboseRuleDiscovery(path: file.Path);
-        //                context.EnterSourceFile(file);
-        //                builder.FromFile(file);
-        //            }
-        //        }
-        //    }
-        //    finally
-        //    {
-        //        //context.Writer?.ExitScope();
-        //        //context.Pipeline.ExecutionScope = ExecutionScope.None;
-        //        context.ExitSourceFile();
-        //    }
-        //    return builder.Build();
-        //}
-
         private static ILanguageBlock[] ReadYamlObjects(Source[] sources, RunspaceContext context)
         {
             var result = new Collection<ILanguageBlock>();

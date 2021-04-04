@@ -9,6 +9,8 @@ namespace PSRule.Definitions
     {
         private const string FullNameSeparator = "/";
 
+        protected Spec() { }
+
         public static string GetFullName(string apiVersion, string name)
         {
             if (string.IsNullOrEmpty(apiVersion))

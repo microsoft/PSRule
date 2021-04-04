@@ -40,8 +40,6 @@ namespace PSRule.Definitions
 
         string ApiVersion { get; }
 
-        //string Id { get; }
-
         string Name { get; }
     }
 

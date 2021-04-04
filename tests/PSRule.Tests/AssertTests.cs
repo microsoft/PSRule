@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using Newtonsoft.Json.Linq;
+using PSRule.Data;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 using System;
@@ -336,6 +338,33 @@ namespace PSRule
         }
 
         [Fact]
+        public void IsDateTime()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject(
+                (name: "value1", value: DateTime.Now),
+                (name: "value2", value: 1),
+                (name: "value3", value: long.MaxValue),
+                (name: "value4", value: "2021-04-03T15:00:00.00+10:00"),
+                (name: "value5", value: null),
+                (name: "value6", value: PSObject.AsPSObject(DateTime.Now)),
+                (name: "value7", value: new JValue(DateTime.Now)),
+                (name: "value8", value: new JValue("2021-04-03T15:00:00.00+10:00"))
+            );
+
+            Assert.True(assert.IsDateTime(value, "value1").Result);
+            Assert.False(assert.IsDateTime(value, "value2").Result);
+            Assert.False(assert.IsDateTime(value, "value3").Result);
+            Assert.False(assert.IsDateTime(value, "value4").Result);
+            Assert.True(assert.IsDateTime(value, "value4", convert: true).Result);
+            Assert.False(assert.IsDateTime(value, "value5").Result);
+            Assert.True(assert.IsDateTime(value, "value6").Result);
+            Assert.True(assert.IsDateTime(value, "value7").Result);
+            Assert.True(assert.IsDateTime(value, "value8", convert: true).Result);
+        }
+
+        [Fact]
         public void TypeOf()
         {
             SetContext();
@@ -469,7 +498,7 @@ namespace PSRule
         {
             SetContext();
             var assert = GetAssertionHelper();
-            var value = GetObject((name: "value", value: 3));
+            var value = GetObject((name: "value", value: 3), (name: "jvalue", value: new JValue(3)));
 
             // Int
             Assert.True(assert.Greater(value, "value", 2).Result);
@@ -477,6 +506,7 @@ namespace PSRule
             Assert.False(assert.Greater(value, "value", 4).Result);
             Assert.True(assert.Greater(value, "value", 0).Result);
             Assert.True(assert.Greater(value, "value", -1).Result);
+            Assert.False(assert.Greater(value, "jvalue", 4).Result);
 
             // String
             value = GetObject((name: "value", value: "abc"));
@@ -491,6 +521,14 @@ namespace PSRule
             Assert.True(assert.Greater(value, "value", 2).Result);
             Assert.False(assert.Greater(value, "value", 3).Result);
             Assert.False(assert.Greater(value, "value", 4).Result);
+            Assert.True(assert.Greater(value, "value", 0).Result);
+            Assert.True(assert.Greater(value, "value", -1).Result);
+
+            // DateTime
+            value = GetObject((name: "value", value: DateTime.Now.AddDays(4)));
+            Assert.True(assert.Greater(value, "value", 2).Result);
+            Assert.True(assert.Greater(value, "value", 3).Result);
+            Assert.False(assert.Greater(value, "value", 5).Result);
             Assert.True(assert.Greater(value, "value", 0).Result);
             Assert.True(assert.Greater(value, "value", -1).Result);
 
@@ -511,7 +549,7 @@ namespace PSRule
         {
             SetContext();
             var assert = GetAssertionHelper();
-            var value = GetObject((name: "value", value: 3));
+            var value = GetObject((name: "value", value: 3), (name: "jvalue", value: new JValue(3)));
 
             // Int
             Assert.True(assert.GreaterOrEqual(value, "value", 2).Result);
@@ -519,6 +557,7 @@ namespace PSRule
             Assert.False(assert.GreaterOrEqual(value, "value", 4).Result);
             Assert.True(assert.GreaterOrEqual(value, "value", 0).Result);
             Assert.True(assert.GreaterOrEqual(value, "value", -1).Result);
+            Assert.False(assert.GreaterOrEqual(value, "jvalue", 4).Result);
 
             // String
             value = GetObject((name: "value", value: "abc"));
@@ -533,6 +572,14 @@ namespace PSRule
             Assert.True(assert.GreaterOrEqual(value, "value", 2).Result);
             Assert.True(assert.GreaterOrEqual(value, "value", 3).Result);
             Assert.False(assert.GreaterOrEqual(value, "value", 4).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", 0).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", -1).Result);
+
+            // DateTime
+            value = GetObject((name: "value", value: DateTime.Now.AddDays(4)));
+            Assert.True(assert.GreaterOrEqual(value, "value", 2).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", 3).Result);
+            Assert.False(assert.GreaterOrEqual(value, "value", 5).Result);
             Assert.True(assert.GreaterOrEqual(value, "value", 0).Result);
             Assert.True(assert.GreaterOrEqual(value, "value", -1).Result);
 
@@ -553,7 +600,7 @@ namespace PSRule
         {
             SetContext();
             var assert = GetAssertionHelper();
-            var value = GetObject((name: "value", value: 3));
+            var value = GetObject((name: "value", value: 3), (name: "jvalue", value: new JValue(3)));
 
             // Int
             Assert.False(assert.Less(value, "value", 2).Result);
@@ -561,6 +608,7 @@ namespace PSRule
             Assert.True(assert.Less(value, "value", 4).Result);
             Assert.False(assert.Less(value, "value", 0).Result);
             Assert.False(assert.Less(value, "value", -1).Result);
+            Assert.True(assert.Less(value, "jvalue", 4).Result);
 
             // String
             value = GetObject((name: "value", value: "abc"));
@@ -575,6 +623,14 @@ namespace PSRule
             Assert.False(assert.Less(value, "value", 2).Result);
             Assert.False(assert.Less(value, "value", 3).Result);
             Assert.True(assert.Less(value, "value", 4).Result);
+            Assert.False(assert.Less(value, "value", 0).Result);
+            Assert.False(assert.Less(value, "value", -1).Result);
+
+            // DateTime
+            value = GetObject((name: "value", value: DateTime.Now.AddDays(4)));
+            Assert.False(assert.Less(value, "value", 2).Result);
+            Assert.False(assert.Less(value, "value", 3).Result);
+            Assert.True(assert.Less(value, "value", 5).Result);
             Assert.False(assert.Less(value, "value", 0).Result);
             Assert.False(assert.Less(value, "value", -1).Result);
 
@@ -595,7 +651,7 @@ namespace PSRule
         {
             SetContext();
             var assert = GetAssertionHelper();
-            var value = GetObject((name: "value", value: 3));
+            var value = GetObject((name: "value", value: 3), (name: "jvalue", value: new JValue(3)));
 
             // Int
             Assert.False(assert.LessOrEqual(value, "value", 2).Result);
@@ -603,6 +659,7 @@ namespace PSRule
             Assert.True(assert.LessOrEqual(value, "value", 4).Result);
             Assert.False(assert.LessOrEqual(value, "value", 0).Result);
             Assert.False(assert.LessOrEqual(value, "value", -1).Result);
+            Assert.True(assert.LessOrEqual(value, "jvalue", 4).Result);
 
             // String
             value = GetObject((name: "value", value: "abc"));
@@ -617,6 +674,14 @@ namespace PSRule
             Assert.False(assert.LessOrEqual(value, "value", 2).Result);
             Assert.True(assert.LessOrEqual(value, "value", 3).Result);
             Assert.True(assert.LessOrEqual(value, "value", 4).Result);
+            Assert.False(assert.LessOrEqual(value, "value", 0).Result);
+            Assert.False(assert.LessOrEqual(value, "value", -1).Result);
+
+            // DateTime
+            value = GetObject((name: "value", value: DateTime.Now.AddDays(4)));
+            Assert.False(assert.LessOrEqual(value, "value", 2).Result);
+            Assert.False(assert.LessOrEqual(value, "value", 3).Result);
+            Assert.True(assert.LessOrEqual(value, "value", 5).Result);
             Assert.False(assert.LessOrEqual(value, "value", 0).Result);
             Assert.False(assert.LessOrEqual(value, "value", -1).Result);
 
@@ -858,6 +923,62 @@ namespace PSRule
             Assert.True(assert.FilePath(value, "FullName").Result);
             value = GetObject((name: "FullName", value: GetSourcePath("README.zz")));
             Assert.False(assert.FilePath(value, "FullName").Result);
+        }
+
+        [Fact]
+        public void InPath()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            // String
+            var value = GetObject((name: "FullName", value: GetSourcePath("deployments/path/template.json")));
+            Assert.True(assert.WithinPath(value, "FullName", new string[] { "deployments/path/" }).Result);
+            Assert.True(assert.WithinPath(value, "FullName", new string[] { "deployments\\path\\" }).Result);
+            Assert.False(assert.WithinPath(value, "FullName", new string[] { "deployments/other/" }).Result);
+            Assert.False(assert.WithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true).Result);
+
+            // InputFileInfo
+            value = GetObject((name: "FullName", value: new InputFileInfo(AppDomain.CurrentDomain.BaseDirectory, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "deployments/path/template.json"))));
+            Assert.True(assert.WithinPath(value, "FullName", new string[] { "deployments/path/" }).Result);
+            Assert.True(assert.WithinPath(value, "FullName", new string[] { "deployments\\path\\" }).Result);
+            Assert.False(assert.WithinPath(value, "FullName", new string[] { "deployments/other/" }).Result);
+            Assert.False(assert.WithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true).Result);
+
+            // FileInfo
+            value = GetObject((name: "FullName", value: new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "deployments/path/template.json"))));
+            Assert.True(assert.WithinPath(value, "FullName", new string[] { "deployments/path/" }).Result);
+            Assert.True(assert.WithinPath(value, "FullName", new string[] { "deployments\\path\\" }).Result);
+            Assert.False(assert.WithinPath(value, "FullName", new string[] { "deployments/other/" }).Result);
+            Assert.False(assert.WithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true).Result);
+        }
+
+        [Fact]
+        public void NotInPath()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            // String
+            var value = GetObject((name: "FullName", value: GetSourcePath("deployments/path/template.json")));
+            Assert.False(assert.NotWithinPath(value, "FullName", new string[] { "deployments/path/" }).Result);
+            Assert.False(assert.NotWithinPath(value, "FullName", new string[] { "deployments\\path\\" }).Result);
+            Assert.True(assert.NotWithinPath(value, "FullName", new string[] { "deployments/other/" }).Result);
+            Assert.True(assert.NotWithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true).Result);
+
+            // InputFileInfo
+            value = GetObject((name: "FullName", value: new InputFileInfo(AppDomain.CurrentDomain.BaseDirectory, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "deployments/path/template.json"))));
+            Assert.False(assert.NotWithinPath(value, "FullName", new string[] { "deployments/path/" }).Result);
+            Assert.False(assert.NotWithinPath(value, "FullName", new string[] { "deployments\\path\\" }).Result);
+            Assert.True(assert.NotWithinPath(value, "FullName", new string[] { "deployments/other/" }).Result);
+            Assert.True(assert.NotWithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true).Result);
+
+            // InputFileInfo
+            value = GetObject((name: "FullName", value: new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "deployments/path/template.json"))));
+            Assert.False(assert.NotWithinPath(value, "FullName", new string[] { "deployments/path/" }).Result);
+            Assert.False(assert.NotWithinPath(value, "FullName", new string[] { "deployments\\path\\" }).Result);
+            Assert.True(assert.NotWithinPath(value, "FullName", new string[] { "deployments/other/" }).Result);
+            Assert.True(assert.NotWithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true).Result);
         }
 
         #region Helper methods

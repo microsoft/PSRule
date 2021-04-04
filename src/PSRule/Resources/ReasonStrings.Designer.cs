@@ -313,6 +313,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file &apos;{0}&apos; is within the path &apos;{1}&apos;..
+        /// </summary>
+        internal static string NotWithinPath {
+            get {
+                return ResourceManager.GetString("NotWithinPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The field value &apos;{0}&apos; is null..
         /// </summary>
         internal static string Null {
@@ -435,6 +444,15 @@ namespace PSRule.Resources {
         internal static string WithinNot {
             get {
                 return ResourceManager.GetString("WithinNot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file &apos;{0}&apos; is not within the path &apos;{1}&apos;..
+        /// </summary>
+        internal static string WithinPath {
+            get {
+                return ResourceManager.GetString("WithinPath", resourceCulture);
             }
         }
     }

@@ -6,8 +6,6 @@ using PSRule.Resources;
 using PSRule.Runtime;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace PSRule.Definitions.Selectors
 {
@@ -490,50 +488,6 @@ namespace PSRule.Definitions.Selectors
             }
             propertyValue = null;
             return false;
-        }
-
-        private static bool Contains(Array array, object o)
-        {
-            if (ExpressionHelpers.TryString(o, out string svalue))
-            {
-                for (var i = 0; i < array.Length; i++)
-                {
-                    if (StringEquals(array.GetValue(i), svalue))
-                        return true;
-                }
-            }
-            else
-            {
-                for (var i = 0; i < array.Length; i++)
-                {
-                    if (ObjectEquals(array.GetValue(i), o))
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        private static bool StringEquals(object operand, string value)
-        {
-            if (!ExpressionHelpers.TryString(operand, out string soperand))
-                return false;
-
-            return soperand == value;
-        }
-
-        private static bool ObjectEquals(object operand, object value)
-        {
-            var objectType = operand.GetType();
-            if (objectType != value.GetType())
-                return false;
-
-            var props = objectType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
-            for (var i = 0; i < props.Length; i++)
-            {
-                if (!object.Equals(props[i].GetValue(operand), props[i].GetValue(value)))
-                    return false;
-            }
-            return true;
         }
 
         private static SelectorExpression.PropertyBag GetProperties(object[] args)
