@@ -363,6 +363,9 @@ namespace PSRule
         {
             var expected = PSRuleOption.GetRootedBasePath(expectedPath).Replace(Backslash, Slash);
             var actual = PSRuleOption.GetRootedPath(actualPath).Replace(Backslash, Slash);
+            Console.WriteLine($"expected: {expected}");
+            Console.WriteLine($"actual: {actual}");
+
             return actual.StartsWith(expected, ignoreCase: !caseSensitive, Thread.CurrentThread.CurrentCulture);
         }
 
