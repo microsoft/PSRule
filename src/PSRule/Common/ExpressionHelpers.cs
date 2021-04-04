@@ -361,8 +361,8 @@ namespace PSRule
 
         internal static bool WithinPath(string actualPath, string expectedPath, bool caseSensitive)
         {
-            var expected = PSRuleOption.GetRootedBasePath(expectedPath);
-            var actual = PSRuleOption.GetRootedPath(actualPath);
+            var expected = PSRuleOption.GetRootedBasePath(expectedPath).Replace(Backslash, Slash);
+            var actual = PSRuleOption.GetRootedPath(actualPath).Replace(Backslash, Slash);
             return actual.StartsWith(expected, ignoreCase: !caseSensitive, Thread.CurrentThread.CurrentCulture);
         }
 
