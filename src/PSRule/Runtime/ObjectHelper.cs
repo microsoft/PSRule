@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Dynamic;
 using System.Management.Automation;
 using System.Reflection;
@@ -207,14 +209,33 @@ namespace PSRule.Runtime
             // Handle all other CLR types
             else if (token.Type == NameTokenType.Field)
             {
-                if (TryPropertyValue(targetObject, token.Name, baseType, caseSensitive, out field) || TryFieldValue(targetObject, token.Name, baseType, caseSensitive, out field))
+                if (TryPropertyValue(targetObject, token.Name, baseType, caseSensitive, out field) ||
+                    TryFieldValue(targetObject, token.Name, baseType, caseSensitive, out field) ||
+                    TryIndexerProperty(targetObject, token.Name, baseType, out field))
                     foundField = true;
             }
-            // Handle Index tokens
-            else if (baseType.IsArray && baseObject is Array array && token.Index < array.Length)
+            // Handle array indexes
+            else if (token.Type == NameTokenType.Index && baseType.IsArray && baseObject is Array array && token.Index < array.Length)
             {
                 field = array.GetValue(token.Index);
                 foundField = true;
+            }
+            // Handle IList
+            else if (token.Type == NameTokenType.Index && baseObject is IList list && token.Index < list.Count)
+            {
+                field = list[token.Index];
+                foundField = true;
+            }
+            // Handle IEnumerable
+            else if (token.Type == NameTokenType.Index && baseObject is IEnumerable enumerable && TryEnumerableIndex(enumerable, token.Index, out object element))
+            {
+                field = element;
+                foundField = true;
+            }
+            else if (token.Type == NameTokenType.Index)
+            {
+                if (TryIndexerProperty(targetObject, token.Index, baseType, out field))
+                    foundField = true;
             }
 
             if (foundField)
@@ -227,6 +248,21 @@ namespace PSRule.Runtime
                 else
                 {
                     return GetField(targetObject: field, token: token.Next, caseSensitive: caseSensitive, value: out value);
+                }
+            }
+            return false;
+        }
+
+        private static bool TryEnumerableIndex(IEnumerable o, int index, out object value)
+        {
+            value = null;
+            var e = o.GetEnumerator();
+            for (var i = 0; e.MoveNext(); i++)
+            {
+                if (i == index)
+                {
+                    value = e.Current;
+                    return true;
                 }
             }
             return false;
@@ -291,6 +327,71 @@ namespace PSRule.Runtime
 
             value = fieldInfo.GetValue(targetObject);
             return true;
+        }
+
+        private static bool TryIndexerProperty(object targetObject, object index, Type baseType, out object value)
+        {
+            value = null;
+            var properties = baseType.GetProperties();
+            foreach (PropertyInfo pi in GetIndexerProperties(baseType))
+            {
+                var p = pi.GetIndexParameters();
+                if (p.Length > 0)
+                {
+                    try
+                    {
+                        var converter = GetConverter(p[0].ParameterType);
+                        var p1 = converter(index);
+                        value = pi.GetValue(targetObject, new object[] { p1 });
+                        return true;
+                    }
+                    catch
+                    {
+                        // Discard converter exceptions
+                    }
+                }
+            }
+            return false;
+        }
+
+        private static Converter<object, object> GetConverter(Type targetType)
+        {
+            var convertAtribute = targetType.GetCustomAttribute<TypeConverterAttribute>();
+            if (convertAtribute != null)
+            {
+                var converterType = Type.GetType(convertAtribute.ConverterTypeName);
+                if (converterType.IsSubclassOf(typeof(TypeConverter)))
+                {
+                    var converter = (TypeConverter)Activator.CreateInstance(converterType);
+                    return s => converter.ConvertFrom(s);
+                }
+                else if (converterType.IsSubclassOf(typeof(PSTypeConverter)))
+                {
+                    var converter = (PSTypeConverter)Activator.CreateInstance(converterType);
+                    return s => converter.ConvertFrom(s, targetType, Thread.CurrentThread.CurrentCulture, true);
+                }
+            }
+            return s => Convert.ChangeType(s, targetType);
+        }
+
+        private static IEnumerable<PropertyInfo> GetIndexerProperties(Type baseType)
+        {
+            var attribute = baseType.GetCustomAttribute<DefaultMemberAttribute>();
+            if (attribute != null)
+            {
+                var property = baseType.GetProperty(attribute.MemberName);
+                yield return property;
+            }
+            else
+            {
+                var properties = baseType.GetProperties();
+                foreach(PropertyInfo pi in properties)
+                {
+                    var p = pi.GetIndexParameters();
+                    if (p.Length > 0)
+                        yield return pi;
+                }
+            }
         }
 
         private static NameToken GetNameToken(string expression)

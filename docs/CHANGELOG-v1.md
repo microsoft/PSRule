@@ -10,6 +10,9 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+- General improvements:
+  - Improved handling of field names for objects implementing `IList`, `IEnumerable`, and index properties. [#693](https://github.com/microsoft/PSRule/issues/693)
+
 ## v1.3.0-B2104021 (pre-release)
 
 What's changed since v1.2.0:
