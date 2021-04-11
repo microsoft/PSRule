@@ -10,8 +10,14 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.3.0-B2104030 (pre-release)
+
+What's changed since pre-release v1.3.0-B2104021:
+
 - General improvements:
   - Improved handling of field names for objects implementing `IList`, `IEnumerable`, and index properties. [#693](https://github.com/microsoft/PSRule/issues/693)
+- Engineering:
+  - Bump YamlDotNet from 8.1.2 to 11.1.1. [#690](https://github.com/microsoft/PSRule/pull/690)
 
 ## v1.3.0-B2104021 (pre-release)
 
@@ -82,7 +88,7 @@ What's changed since pre-release v1.2.0-B2103031:
     - Resources without a `apiVersion` field will not be supported from PSRule v2.
     - Added warning to flag baseline without `apiVersion` set.
 
-## 1.2.0-B2103031 (pre-release)
+## v1.2.0-B2103031 (pre-release)
 
 What's changed since pre-release v1.2.0-B2103023:
 
