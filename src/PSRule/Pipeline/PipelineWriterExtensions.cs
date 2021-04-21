@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Resources;
+using System;
 using System.Management.Automation;
 using System.Threading;
 
@@ -55,6 +56,18 @@ namespace PSRule.Pipeline
                 new PipelineBuilderException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.RequiredVersionMismatch, moduleName, moduleVersion, requiredVersion)),
                 "PSRule.RequiredVersionMismatch",
                 ErrorCategory.InvalidOperation
+            );
+        }
+
+        internal static void ErrorReadFileFailed(this PipelineWriter writer, string path, Exception innerException)
+        {
+            if (!writer.ShouldWriteError())
+                return;
+
+            writer.WriteError(
+                new PipelineSerializationException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ReadFileFailed, path, innerException.Message), path, innerException),
+                "PSRule.ReadFileFailed",
+                ErrorCategory.InvalidData
             );
         }
 

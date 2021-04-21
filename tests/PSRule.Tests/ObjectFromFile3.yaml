@@ -1,0 +1,7 @@
+# An object described in YAML for unit testing
+
+- name: item1
+  value: value1
+
+- name: item2
+  value: value2

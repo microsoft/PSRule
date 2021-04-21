@@ -207,6 +207,9 @@
   <data name="PropertyObsolete" xml:space="preserve">
     <value>The property '${0}.{1}' is obsolete and will be removed in the next major version.</value>
   </data>
+  <data name="ReadFileFailed" xml:space="preserve">
+    <value>Failed to deserialize the file '{0}': {1}</value>
+  </data>
   <data name="ReadJsonFailed" xml:space="preserve">
     <value>Read JSON failed.</value>
   </data>

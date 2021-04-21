@@ -4,16 +4,20 @@
 using Newtonsoft.Json;
 using PSRule.Data;
 using PSRule.Parser;
+using PSRule.Resources;
 using PSRule.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using System.Net;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NodeDeserializers;
+using YamlDotNet.Serialization.ValueDeserializers;
 
 namespace PSRule.Pipeline
 {
@@ -94,9 +98,21 @@ namespace PSRule.Pipeline
                 return new PSObject[] { sourceObject };
 
             var json = ReadAsString(sourceObject, out PSSourceInfo source);
-            var value = JsonConvert.DeserializeObject<PSObject[]>(json, new PSObjectArrayJsonConverter());
-            NoteSource(value, source);
-            return VisitItems(value, next);
+            try
+            {
+                var value = JsonConvert.DeserializeObject<PSObject[]>(json, new PSObjectArrayJsonConverter());
+                NoteSource(value, source);
+                return VisitItems(value, next);
+            }
+            catch (Exception ex)
+            {
+                if (source != null && !string.IsNullOrEmpty(source.PSPath))
+                {
+                    RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(source.PSPath, ex);
+                    return Array.Empty<PSObject>();
+                }
+                throw;
+            }
         }
 
         public static IEnumerable<PSObject> ConvertFromYaml(PSObject sourceObject, VisitTargetObject next)
@@ -108,32 +124,46 @@ namespace PSRule.Pipeline
             var d = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
                 .WithTypeConverter(new PSObjectYamlTypeConverter())
-                .WithNodeTypeResolver(new PSObjectYamlTypeResolver())
+                .WithNodeDeserializer(
+                    inner => new PSObjectYamlDeserializer(inner),
+                    s => s.InsteadOf<YamlConvertibleNodeDeserializer>())
                 .Build();
 
             var reader = ReadAsReader(sourceObject, out PSSourceInfo source);
-            var parser = new YamlDotNet.Core.Parser(reader);
-            var result = new List<PSObject>();
-            parser.TryConsume<StreamStart>(out _);
-            while (parser.Current is DocumentStart)
+            try
             {
-                var item = d.Deserialize<PSObject>(parser: parser);
-                if (item == null)
-                    continue;
+                var parser = new YamlDotNet.Core.Parser(reader);
+                var result = new List<PSObject>();
+                parser.TryConsume<StreamStart>(out _);
+                while (parser.Current is DocumentStart)
+                {
+                    var item = d.Deserialize<PSObject[]>(parser);
+                    if (item == null)
+                        continue;
 
-                NoteSource(item, source);
-                var items = next(item);
+                    NoteSource(item, source);
+                    var items = VisitItems(item.ToArray(), next);
 
-                if (items == null)
-                    continue;
+                    if (items == null)
+                        continue;
 
-                result.AddRange(items);
+                    result.AddRange(items);
+                }
+
+                if (result.Count == 0)
+                    return EmptyArray;
+
+                return result.ToArray();
             }
-
-            if (result.Count == 0)
-                return EmptyArray;
-
-            return result.ToArray();
+            catch (Exception ex)
+            {
+                if (source != null && !string.IsNullOrEmpty(source.PSPath))
+                {
+                    RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(source.PSPath, ex);
+                    return Array.Empty<PSObject>();
+                }
+                throw;
+            }
         }
 
         public static IEnumerable<PSObject> ConvertFromMarkdown(PSObject sourceObject, VisitTargetObject next)

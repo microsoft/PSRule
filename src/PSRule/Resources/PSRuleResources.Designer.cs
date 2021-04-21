@@ -313,6 +313,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to deserialize the file &apos;{0}&apos;: {1}.
+        /// </summary>
+        internal static string ReadFileFailed {
+            get {
+                return ResourceManager.GetString("ReadFileFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Read JSON failed..
         /// </summary>
         internal static string ReadJsonFailed {

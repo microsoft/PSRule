@@ -164,7 +164,19 @@ namespace PSRule
                 }
                 parser.Require<MappingEnd>();
                 parser.MoveNext();
+                //values.Add(result);
             }
+            //else if (parser.TryConsume<SequenceStart>(out _))
+            //{
+            //    while (!(parser.Current is SequenceEnd))
+            //    {
+            //        if (ReadYaml(parser, typeof(PSObject)) is PSObject o)
+            //            values.Add(o);
+            //    }
+            //    parser.Require<SequenceEnd>();
+            //    parser.MoveNext();
+            //}
+
             return result;
         }
 
@@ -212,7 +224,13 @@ namespace PSRule
     {
         public bool Resolve(NodeEvent nodeEvent, ref Type currentType)
         {
-            if (currentType == typeof(Dictionary<object, object>) || nodeEvent is MappingStart)
+            if (nodeEvent is SequenceStart)
+            {
+                currentType = typeof(PSObject[]);
+                return true;
+            }
+
+            else if (currentType == typeof(Dictionary<object, object>) || nodeEvent is MappingStart)
             {
                 currentType = typeof(PSObject);
                 return true;
@@ -635,6 +653,36 @@ namespace PSRule
                 return expression != null;
             }
             return false;
+        }
+    }
+
+    internal sealed class PSObjectYamlDeserializer : INodeDeserializer
+    {
+        private readonly INodeDeserializer _Next;
+        private readonly PSObjectYamlTypeConverter _Converter;
+
+        public PSObjectYamlDeserializer(INodeDeserializer next)
+        {
+            _Next = next;
+            _Converter = new PSObjectYamlTypeConverter();
+        }
+
+        bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
+        {
+            if (expectedType == typeof(PSObject[]) && reader.Current is MappingStart)
+            {
+                value = _Converter.ReadYaml(reader, typeof(PSObject));
+                if (value is PSObject pso)
+                {
+                    value = new PSObject[] { pso };
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                return _Next.Deserialize(reader, expectedType, nestedObjectDeserializer, out value);
+            }
         }
     }
 }
