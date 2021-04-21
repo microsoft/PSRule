@@ -644,7 +644,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $inputFiles = Join-Path -Path $here -ChildPath 'ObjectFromFile*.yaml';
             $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -InputPath $inputFiles);
             $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 3;
+            $result.Length | Should -Be 5;
         }
 
         It 'Returns error with bad path' {

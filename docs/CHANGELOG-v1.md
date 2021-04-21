@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.3.0-B2104030:
+
+- Bug fixes:
+  - Fixed expected DocumentEnd got SequenceEnd. [#698](https://github.com/microsoft/PSRule/issues/698)
+
 ## v1.3.0-B2104030 (pre-release)
 
 What's changed since pre-release v1.3.0-B2104021:
