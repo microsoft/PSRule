@@ -20,7 +20,7 @@ What's changed since pre-release v1.3.0-B2104030:
 What's changed since pre-release v1.3.0-B2104021:
 
 - General improvements:
-  - Improved handling of field names for objects implementing `IList`, `IEnumerable`, and index properties. [#693](https://github.com/microsoft/PSRule/issues/693)
+  - Improved handling of field names for objects implementing `IList`, `IEnumerable`, and index properties. [#692](https://github.com/microsoft/PSRule/issues/692)
 - Engineering:
   - Bump YamlDotNet from 8.1.2 to 11.1.1. [#690](https://github.com/microsoft/PSRule/pull/690)
 
