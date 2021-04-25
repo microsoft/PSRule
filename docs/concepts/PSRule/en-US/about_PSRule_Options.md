@@ -441,13 +441,13 @@ This option can be specified using:
 
 ```powershell
 # PowerShell: Using the BaselineConfiguration option with a hashtable
-$option = New-PSRuleOption -BaselineConfiguration @{ appServiceMinInstanceCount = 2 };
+$option = New-PSRuleOption -BaselineConfiguration @{ LOCAL_APPSERVICEMININSTANCECOUNT = 2 };
 ```
 
 ```yaml
 # YAML: Using the configuration property
 configuration:
-  appServiceMinInstanceCount: 2
+  LOCAL_APPSERVICEMININSTANCECOUNT: 2
 ```
 
 ### Convention.Include
@@ -1181,14 +1181,14 @@ This option can be specified using:
 
 ```powershell
 # PowerShell: Using the Requires.module hashtable key
-$option = New-PSRuleOption -Option @{ 'Requires.PSRule' = '>=0.18.0' };
+$option = New-PSRuleOption -Option @{ 'Requires.PSRule' = '>=1.0.0' };
 ```
 
 ```yaml
 # YAML: Using the requires property
 requires:
-  PSRule: '>=0.18.0'              # Require v0.18.0 or greater.
-  PSRule.Rules.Azure: '>=0.13.0'  # Require v0.13.0 or greater.
+  PSRule: '>=1.0.0'              # Require v1.0.0 or greater.
+  PSRule.Rules.Azure: '>=1.0.0'  # Require v1.0.0 or greater.
 ```
 
 ### Rule.Include

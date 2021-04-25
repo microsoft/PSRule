@@ -45,6 +45,7 @@
         "**/.azure-pipelines/jobs/*.yaml": "azure-pipelines"
     },
     "cSpell.words": [
+        "APPSERVICEMININSTANCECOUNT",
         "Gitter",
         "Kubernetes",
         "cmdlet",
