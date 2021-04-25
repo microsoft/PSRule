@@ -108,6 +108,12 @@ namespace PSRule.Pipeline
         {
         }
 
+        internal PipelineSerializationException(string message, string path, Exception innerException)
+            : this(message, innerException)
+        {
+            Path = path;
+        }
+
         /// <summary>
         /// Creates a serialization exception.
         /// </summary>
@@ -128,6 +134,11 @@ namespace PSRule.Pipeline
         private PipelineSerializationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
+
+        /// <summary>
+        /// The path to the file.
+        /// </summary>
+        public string Path { get; }
 
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
