@@ -107,24 +107,35 @@ PSRule extends PowerShell with domain specific language (DSL) keywords, cmdlets,
 These language features are only available within the sandbox.
 Stubs are exported from PSRule module to provide command completion during authoring.
 
+In additional to rules, a number of resources can be used within PSRule.
+Resources are defined in YAML files with the `.Rule.yaml` file extension.
+You can create one or many resource within a single `.Rule.yaml` file.
+
+PSRule supports the following resources:
+
+- `Baseline` - A reusable group of rules and configuration defaults for a given scenario.
+- `Selector` - A reusable filter to determine which objects a rule should be run against.
+
+A special `ModuleConfig` resource can also be defined to configure defaults for a module.
+
 ### Keywords and variables
 
 TBA
 
 ### Baselines
 
-A baseline is a artifact defined in YAML that determines which rules to run for a given scenario.
+A baseline is a resource defined in YAML that determines which rules to run for a given scenario.
 One or more baselines can be included in a `.Rule.yaml` file.
 Baselines can be created individually or bundled in a module.
 
 Common use cases where baselines are helpful include:
 
 - Separation of rules or features in development.
-For infrastructure code or rules early in their lifecycle, a recommend practice may not be fully ratify.
+For infrastructure code or rules early in their lifecycle, a recommend practice may not be fully ratified.
 Baselines allow rules to be distributed but not executed by default.
 - Progressive adoption.
 If validation has been added for a new use case, it may not be possible to adopt all rules at once.
-Baselines act a checkpoints to allow validation of a subset of rules.
+Baselines act as checkpoints to allow validation of a subset of rules.
 
 ## Execution
 
@@ -165,8 +176,25 @@ TBA
 
 ## Configuration
 
-TBA
+PSRule has built-in support for configuration of the engine and rules.
+Configuration can be set by:
+
+- Configuring the default `ps-rule.yaml` file.
+- Setting at runtime by passing a `-Option` parameter to PSRule cmdlets.
+
+### Engine options
+
+Configuration of the PSRule engine is referred to as options.
+Each option changes the default that PSRule uses during execution.
+The supported options that can be configured for PSRule are described in the [about_PSRule_Options] topic.
+
+### Rule configuration
+
+Separately, rules can optionally define configuration that can skip or change the rule conditions.
+Rule configuration is a key/ value pair.
 
 ## Integration
 
 TBA
+
+[about_PSRule_Options]: ../concpets/PSRule/en-US/about_PSRule_Options.md

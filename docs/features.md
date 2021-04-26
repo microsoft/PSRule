@@ -68,10 +68,18 @@ While this may be a subtle difference, for PSRule this means:
 
 These features make PSRule ideal for validating:
 
-- Infrastructure code templates and manifests, such as Kubernetes manifests.
+- Infrastructure as code, including:
+  - Kubernetes manifests.
+  - Azure Resource Manager templates.
+  - Configuration files.
+  - Pipeline files.
 - Deployments or configurations against a baseline.
 
 If you want to test PowerShell code, use Pester.
+
+### What pre-built modules are available for PSRule?
+
+PSRule rules modules can be found on the [PowerShell Gallery][PSRule-rules] using the tag `PSRule-rules`.
 
 ### How do I configure PSRule?
 
@@ -131,3 +139,4 @@ Alternatively, you can provide your own reasons to complement standard PowerShel
 [about_PSRule_Options]: concepts/PSRule/en-US/about_PSRule_Options.md
 [extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
 [extension-github]: https://github.com/marketplace/actions/psrule
+[PSRule-rules]: https://www.powershellgallery.com/packages?q=Tags%3A%22PSRule-rules%22
