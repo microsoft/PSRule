@@ -10,6 +10,8 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.3.0-B2104042 (pre-release)
+
 What's changed since pre-release v1.3.0-B2104030:
 
 - Bug fixes:
