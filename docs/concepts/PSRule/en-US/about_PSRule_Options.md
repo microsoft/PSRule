@@ -18,6 +18,7 @@ The following workspace options are available for use:
 - [Execution.InconclusiveWarning](#executioninconclusivewarning)
 - [Execution.NotProcessedWarning](#executionnotprocessedwarning)
 - [Input.Format](#inputformat)
+- [Input.IgnoreGitPath](#inputignoregitpath)
 - [Input.ObjectPath](#inputobjectpath)
 - [Input.PathIgnore](#inputpathignore)
 - [Input.TargetType](#inputtargettype)
@@ -886,6 +887,53 @@ env:
 variables:
 - name: PSRULE_INPUT_FORMAT
   value: Yaml
+```
+
+### Input.IgnoreGitPath
+
+When reading files from an input path, files within the `.git` sub-directory are ignored by default.
+Files stored within the `.git` sub-directory are system repository files used by git.
+To read files stored within the `.git` path, set this option to `$False`.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the InputIgnoreGitPath parameter
+$option = New-PSRuleOption -InputIgnoreGitPath $False;
+```
+
+```powershell
+# PowerShell: Using the Input.IgnoreGitPath hashtable key
+$option = New-PSRuleOption -Option @{ 'Input.IgnoreGitPath' = $False };
+```
+
+```powershell
+# PowerShell: Using the InputIgnoreGitPath parameter to set YAML
+Set-PSRuleOption -InputIgnoreGitPath $False;
+```
+
+```yaml
+# YAML: Using the input/ignoreGitPath property
+input:
+  ignoreGitPath: false
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_INPUT_IGNOREGITPATH=false
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_INPUT_IGNOREGITPATH: false
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_INPUT_IGNOREGITPATH
+  value: false
 ```
 
 ### Input.ObjectPath
@@ -1838,6 +1886,7 @@ execution:
 # Configures input options
 input:
   format: Yaml
+  ignoreGitPath: false
   objectPath: items
   pathIgnore:
   - '*.Designer.cs'
@@ -1930,6 +1979,7 @@ execution:
 # Configures input options
 input:
   format: Detect
+  ignoreGitPath: true
   objectPath: null
   pathIgnore: [ ]
   targetType: [ ]

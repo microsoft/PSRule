@@ -1070,6 +1070,10 @@ function New-PSRuleOption {
         [Alias('InputFormat')]
         [PSRule.Configuration.InputFormat]$Format = 'Detect',
 
+        # Sets the Input.IgnoreGitPath option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$InputIgnoreGitPath = $True,
+
         # Sets the Input.ObjectPath option
         [Parameter(Mandatory = $False)]
         [Alias('InputObjectPath')]
@@ -1280,6 +1284,10 @@ function Set-PSRuleOption {
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'Detect')]
         [Alias('InputFormat')]
         [PSRule.Configuration.InputFormat]$Format = 'Detect',
+
+        # Sets the Input.IgnoreGitPath option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$InputIgnoreGitPath = $True,
 
         # Sets the Input.ObjectPath option
         [Parameter(Mandatory = $False)]
@@ -1902,6 +1910,10 @@ function SetOptions {
         [Alias('InputFormat')]
         [PSRule.Configuration.InputFormat]$Format = 'Detect',
 
+        # Sets the Input.IgnoreGitPath option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$InputIgnoreGitPath = $True,
+
         # Sets the Input.ObjectPath option
         [Parameter(Mandatory = $False)]
         [Alias('InputObjectPath')]
@@ -2021,6 +2033,11 @@ function SetOptions {
         # Sets option Input.Format
         if ($PSBoundParameters.ContainsKey('Format')) {
             $Option.Input.Format = $Format;
+        }
+
+        # Sets option Input.IgnoreGitPath
+        if ($PSBoundParameters.ContainsKey('InputIgnoreGitPath')) {
+            $Option.Input.IgnoreGitPath = $InputIgnoreGitPath;
         }
 
         # Sets option Input.ObjectPath

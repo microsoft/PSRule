@@ -1073,6 +1073,14 @@ Describe 'Get-PSRuleTarget' -Tag 'Get-PSRuleTarget','Common' {
             $result.Length | Should -Be 1;
             $result[0].TargetName | Should -Be 'TestObject1';
         }
+
+        It 'None' {
+            $result = @(Get-PSRuleTarget -InputPath '**/HEAD');
+            $result.Length | Should -Be 0;
+
+            $result = @(Get-PSRuleTarget -InputPath '**/HEAD' -Option @{ 'Input.IgnoreGitPath' = $False });
+            $result.Length | Should -BeGreaterThan 0;
+        }
     }
 
     Context 'With -Format' {

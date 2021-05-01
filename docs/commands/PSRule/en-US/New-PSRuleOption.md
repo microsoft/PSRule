@@ -22,11 +22,11 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-Format <InputFormat>]
- [-ObjectPath <String>] [-InputTargetType <String[]>] [-InputPathIgnore <String[]>]
- [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>]
- [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
+ [-InputIgnoreGitPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
+ [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>]
+ [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
 ```
 
 ### FromOption
@@ -38,11 +38,11 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-Format <InputFormat>]
- [-ObjectPath <String>] [-InputTargetType <String[]>] [-InputPathIgnore <String[]>]
- [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>]
- [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
+ [-InputIgnoreGitPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
+ [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>]
+ [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
 ```
 
 ### FromDefault
@@ -53,11 +53,11 @@ New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTar
  [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
  [-Convention <String[]>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
- [-Format <InputFormat>] [-ObjectPath <String>] [-InputTargetType <String[]>] [-InputPathIgnore <String[]>]
- [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>]
- [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
+ [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
+ [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>]
+ [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -435,6 +435,23 @@ Accepted values: None, Yaml, Json, Markdown, PowerShellData, File, Detect
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InputIgnoreGitPath
+
+Sets the `Input.IgnoreGitPath` option to determine if files within the .git path are ignored.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: True
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

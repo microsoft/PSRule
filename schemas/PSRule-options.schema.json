@@ -160,6 +160,13 @@
                     ],
                     "default": "Detect"
                 },
+                "ignoreGitPath": {
+                    "type": "boolean",
+                    "title": "Ignore .git path",
+                    "description": "Determine if files within the .git path are ignored when the -InputPath parameter is used.",
+                    "markdownDescription": "Determine if files within the `.git` path are ignored when the `-InputPath` parameter is used. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#ignoregitpath)",
+                    "default": true
+                },
                 "objectPath": {
                     "type": "string",
                     "title": "Object path",

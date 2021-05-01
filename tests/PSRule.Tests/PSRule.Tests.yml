@@ -43,6 +43,7 @@ execution:
 # Configure input options
 input:
   format: Yaml
+  ignoreGitPath: false
   objectPath: items
   pathIgnore:
   - '*.Designer.cs'
