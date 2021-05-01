@@ -15,6 +15,10 @@ What's changed since pre-release v1.3.0-B2104042:
 - Engine features:
   - Options can be configured with environment variables. [#691](https://github.com/microsoft/PSRule/issues/691)
     - See [about_PSRule_Options] for details.
+- General improvements:
+  - Exclude `.git` sub-directory by default for recursive scans. [#697](https://github.com/microsoft/PSRule/issues/697)
+    - Added `Input.IgnoreGitPath` option to configure inclusion of `.git` path.
+    - See [about_PSRule_Options] for details.
 
 ## v1.3.0-B2104042 (pre-release)
 

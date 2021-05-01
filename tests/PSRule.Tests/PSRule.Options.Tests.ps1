@@ -688,6 +688,45 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Input.IgnoreGitPath' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Input.IgnoreGitPath | Should -Be $True;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Input.IgnoreGitPath' = $False };
+            $option.Input.IgnoreGitPath | Should -Be $False;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Input.IgnoreGitPath | Should -Be $False;
+        }
+
+        It 'from Environment' {
+            try {
+                # With bool
+                $Env:PSRULE_INPUT_IGNOREGITPATH = 'false';
+                $option = New-PSRuleOption;
+                $option.Input.IgnoreGitPath | Should -Be $False;
+
+                # With int
+                $Env:PSRULE_INPUT_IGNOREGITPATH = '0';
+                $option = New-PSRuleOption;
+                $option.Input.IgnoreGitPath | Should -Be $False;
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_INPUT_IGNOREGITPATH' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -InputIgnoreGitPath $False -Path $emptyOptionsFilePath;
+            $option.Input.IgnoreGitPath | Should -Be $False;
+        }
+    }
+
     Context 'Read Input.ObjectPath' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -1349,6 +1388,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -Format 'Yaml' @optionParams;
             $option.Input.Format | Should -Be 'Yaml';
+        }
+    }
+
+    Context 'Read Input.IgnoreGitPath' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -InputIgnoreGitPath $False @optionParams;
+            $option.Input.IgnoreGitPath | Should -Be $False;
         }
     }
 

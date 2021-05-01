@@ -18,12 +18,12 @@ Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force
  [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>] [-BindingNameSeparator <String>]
  [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
  [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>] [-InconclusiveWarning <Boolean>]
- [-NotProcessedWarning <Boolean>] [-Format <InputFormat>] [-ObjectPath <String>] [-InputPathIgnore <String[]>]
- [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
- [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
- [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>]
- [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [-NotProcessedWarning <Boolean>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
+ [-ObjectPath <String>] [-InputPathIgnore <String[]>] [-InputTargetType <String[]>]
+ [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>]
+ [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputCulture <String[]>]
+ [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
+ [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -326,6 +326,7 @@ Accept wildcard characters: False
 ### -Format
 
 Sets the `Input.Format` option to configure the input format for when a string is passed in as a target object.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: InputFormat
@@ -340,9 +341,27 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -InputIgnoreGitPath
+
+Sets the `Input.IgnoreGitPath` option to determine if files within the .git path are ignored.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: True
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ObjectPath
 
 Sets the `Input.ObjectPath` option to use an object path to use instead of the pipeline object.
+See about_PSRule_Options for more information.
 
 ```yaml
 Type: String

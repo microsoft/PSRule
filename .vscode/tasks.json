@@ -72,6 +72,7 @@
         },
         {
             "label": "scaffold-docs",
+            "detail": "Generate cmdlet markdown docs.",
             "type": "shell",
             "command": "Invoke-Build ScaffoldHelp",
             "problemMatcher": []
