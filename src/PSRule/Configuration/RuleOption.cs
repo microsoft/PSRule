@@ -62,12 +62,21 @@ namespace PSRule.Configuration
             return result;
         }
 
+        /// <summary>
+        /// A set of rules to include for execution.
+        /// </summary>
         [DefaultValue(null)]
         public string[] Include { get; set; }
 
+        /// <summary>
+        /// A set of rules to exclude for execution.
+        /// </summary>
         [DefaultValue(null)]
         public string[] Exclude { get; set; }
 
+        /// <summary>
+        /// A set of rule tags to include for execution.
+        /// </summary>
         [DefaultValue(null)]
         public Hashtable Tag { get; set; }
     }

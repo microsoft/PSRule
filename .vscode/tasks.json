@@ -19,6 +19,20 @@
             }
         },
         {
+            "label": "Run Pester test group",
+            "detail": "Runs a specific group for Pester tests.",
+            "type": "shell",
+            "command": "Invoke-Build Test -AssertStyle Client -TestGroup '${input:pesterTestGroup}'",
+            "group": "test",
+            "problemMatcher": [
+                "$pester"
+            ],
+            "presentation": {
+                "clear": true,
+                "panel": "dedicated"
+            }
+        },
+        {
             "label": "Analyze repository",
             "detail": "Run repository analysis.",
             "type": "shell",
@@ -94,6 +108,13 @@
                 "clear": true,
                 "panel": "dedicated"
             }
+        }
+    ],
+    "inputs": [
+        {
+            "id": "pesterTestGroup",
+            "type": "promptString",
+            "description": "A group to use for Pester tests."
         }
     ]
 }

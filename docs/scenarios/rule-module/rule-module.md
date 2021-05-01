@@ -117,13 +117,14 @@ Similarly, when including baselines within a module use the `.Rule.yaml` suffix.
 
 ## Defining a module configuration
 
-A module configuration that sets options defaults can be optionally packaged with a module.
+A module configuration that sets options defaults and can be optionally packaged with a module.
 To set a module configuration, define a `ModuleConfig` resource within an included `.Rule.yaml` file.
 A module configuration `.Rule.yaml` file must be distributed within the module directory structure.
 
 PSRule only supports a single `ModuleConfig` resource.
 The name of the `ModuleConfig` must match the name of the module.
 Additional `ModuleConfig` resources or with an alternative name are ignored.
+PSRule does not support module configurations distributed outside of a module.
 
 ```yaml
 ---
@@ -154,6 +155,7 @@ The following options are allowed within a `ModuleConfig`:
 - `Binding.Field`
 - `Binding.IgnoreCase`
 - `Binding.NameSeparator`
+- `Binding.PreferTargetInfo`
 - `Binding.TargetName`
 - `Binding.TargetType`
 - `Binding.UseQualifiedName`

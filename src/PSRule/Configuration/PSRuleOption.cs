@@ -4,14 +4,12 @@
 using Newtonsoft.Json;
 using PSRule.Definitions;
 using PSRule.Resources;
-using PSRule.Rules;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Management.Automation;
 using System.Threading;
 using YamlDotNet.Serialization;
@@ -207,7 +205,7 @@ namespace PSRule.Configuration
             if (!File.Exists(filePath))
                 throw new FileNotFoundException(PSRuleResources.OptionsNotFound, filePath);
 
-            return FromYaml(path: filePath, yaml: File.ReadAllText(filePath));
+            return FromEnvironment(FromYaml(path: filePath, yaml: File.ReadAllText(filePath)));
         }
 
         /// <summary>
@@ -227,7 +225,7 @@ namespace PSRule.Configuration
             if (!File.Exists(filePath))
                 return new PSRuleOption();
 
-            return FromYaml(path: filePath, yaml: File.ReadAllText(filePath));
+            return FromEnvironment(FromYaml(path: filePath, yaml: File.ReadAllText(filePath)));
         }
 
         /// <summary>
@@ -255,8 +253,44 @@ namespace PSRule.Configuration
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .WithTypeConverter(new SuppressionRuleYamlTypeConverter())
                 .Build();
+
             var option = d.Deserialize<PSRuleOption>(yaml) ?? new PSRuleOption();
             option.SourcePath = path;
+            return option;
+        }
+
+        private static PSRuleOption FromEnvironment(PSRuleOption option)
+        {
+            if (option == null)
+                option = new PSRuleOption();
+
+            // Start loading matching values
+            var env = EnvironmentHelper.Default;
+            option.Convention.Load(env);
+            option.Execution.Load(env);
+            option.Input.Load(env);
+            option.Logging.Load(env);
+            option.Output.Load(env);
+            option.Requires.Load(env);
+            BaselineOption.Load(option, env);
+            return option;
+        }
+
+        public static PSRuleOption FromHashtable(Hashtable hashtable)
+        {
+            var option = new PSRuleOption();
+            if (hashtable == null)
+                return option;
+
+            // Start loading matching values
+            var index = BuildIndex(hashtable);
+            option.Convention.Load(index);
+            option.Execution.Load(index);
+            option.Input.Load(index);
+            option.Logging.Load(index);
+            option.Output.Load(index);
+            option.Requires.Load(index);
+            BaselineOption.Load(option, index);
             return option;
         }
 
@@ -277,11 +311,13 @@ namespace PSRule.Configuration
             _GetWorkingPath = () => executionContext.SessionState.Path.CurrentFileSystemLocation.Path;
         }
 
+        [DebuggerStepThrough]
         public static void UseCurrentCulture()
         {
             UseCurrentCulture(Thread.CurrentThread.CurrentCulture);
         }
 
+        [DebuggerStepThrough]
         public static void UseCurrentCulture(string culture)
         {
             UseCurrentCulture(CultureInfo.CreateSpecificCulture(culture));
@@ -308,94 +344,7 @@ namespace PSRule.Configuration
         /// <param name="hashtable"></param>
         public static implicit operator PSRuleOption(Hashtable hashtable)
         {
-            var option = new PSRuleOption();
-            if (hashtable == null)
-                return option;
-
-            // Build index to allow mapping
-            var index = BuildIndex(hashtable);
-
-            // Start loading matching values
-
-            if (index.TryPopValue("Convention.Include", out object value))
-            {
-                option.Convention.Include = AsStringArray(value);
-            }
-            if (index.TryPopValue("execution.languagemode", out value))
-            {
-                option.Execution.LanguageMode = (LanguageMode)Enum.Parse(typeof(LanguageMode), (string)value);
-            }
-            if (index.TryPopBool("execution.inconclusivewarning", out bool bvalue))
-            {
-                option.Execution.InconclusiveWarning = bvalue;
-            }
-            if (index.TryPopBool("execution.notprocessedwarning", out bvalue))
-            {
-                option.Execution.NotProcessedWarning = bvalue;
-            }
-            if (index.TryPopValue("input.format", out value))
-            {
-                option.Input.Format = (InputFormat)Enum.Parse(typeof(InputFormat), (string)value);
-            }
-            if (index.TryPopValue("input.objectpath", out value))
-            {
-                option.Input.ObjectPath = (string)value;
-            }
-            if (index.TryPopValue("input.pathignore", out value))
-            {
-                option.Input.PathIgnore = AsStringArray(value);
-            }
-            if (index.TryPopValue("input.targettype", out value))
-            {
-                option.Input.TargetType = AsStringArray(value);
-            }
-            if (index.TryPopValue("logging.limitdebug", out value))
-            {
-                option.Logging.LimitDebug = AsStringArray(value);
-            }
-            if (index.TryPopValue("logging.limitverbose", out value))
-            {
-                option.Logging.LimitVerbose = AsStringArray(value);
-            }
-            if (index.TryPopValue("logging.rulefail", out value))
-            {
-                option.Logging.RuleFail = (OutcomeLogStream)Enum.Parse(typeof(OutcomeLogStream), (string)value);
-            }
-            if (index.TryPopValue("logging.rulepass", out value))
-            {
-                option.Logging.RulePass = (OutcomeLogStream)Enum.Parse(typeof(OutcomeLogStream), (string)value);
-            }
-            if (index.TryPopValue("output.as", out value))
-            {
-                option.Output.As = (ResultFormat)Enum.Parse(typeof(ResultFormat), (string)value);
-            }
-            if (index.TryPopValue("output.culture", out value))
-            {
-                option.Output.Culture = AsStringArray(value);
-            }
-            if (index.TryPopValue("output.encoding", out value))
-            {
-                option.Output.Encoding = (OutputEncoding)Enum.Parse(typeof(OutputEncoding), (string)value);
-            }
-            if (index.TryPopValue("output.format", out value))
-            {
-                option.Output.Format = (OutputFormat)Enum.Parse(typeof(OutputFormat), (string)value);
-            }
-            if (index.TryPopValue("output.outcome", out value))
-            {
-                option.Output.Outcome = (RuleOutcome)Enum.Parse(typeof(RuleOutcome), (string)value);
-            }
-            if (index.TryPopValue("output.path", out value))
-            {
-                option.Output.Path = (string)value;
-            }
-            if (index.TryPopValue("output.style", out value))
-            {
-                option.Output.Style = (OutputStyle)Enum.Parse(typeof(OutputStyle), (string)value);
-            }
-            option.Requires.Load(index);
-            BaselineOption.Load(option, index);
-            return option;
+            return FromHashtable(hashtable);
         }
 
         /// <summary>
@@ -404,8 +353,7 @@ namespace PSRule.Configuration
         /// <param name="path">A file or directory to read options from.</param>
         public static implicit operator PSRuleOption(string path)
         {
-            var option = FromFile(path);
-            return option;
+            return FromFile(path);
         }
 
         public override bool Equals(object obj)
@@ -494,6 +442,9 @@ namespace PSRule.Configuration
             return string.Concat(rootedPath, Path.DirectorySeparatorChar);
         }
 
+        /// <summary>
+        /// Build index to allow mapping values.
+        /// </summary>
         [DebuggerStepThrough]
         internal static Dictionary<string, object> BuildIndex(Hashtable hashtable)
         {
@@ -537,15 +488,6 @@ namespace PSRule.Configuration
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .Build();
             return s.Serialize(this);
-        }
-
-        [DebuggerStepThrough]
-        private static string[] AsStringArray(object value)
-        {
-            if (value == null)
-                return null;
-
-            return value.GetType().IsArray ? ((object[])value).OfType<string>().ToArray() : new string[] { value.ToString() };
         }
 
         [DebuggerStepThrough]

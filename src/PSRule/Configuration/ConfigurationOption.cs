@@ -11,7 +11,8 @@ namespace PSRule.Configuration
     /// </summary>
     public sealed class ConfigurationOption : KeyMapDictionary<object>
     {
-        private const string KEYMAP_PREFIX = "Configuration.";
+        private const string ENVIRONMENT_PREFIX = "PSRULE_CONFIGURATION_";
+        private const string DICTIONARY_PREFIX = "Configuration.";
 
         public ConfigurationOption()
             : base() { }
@@ -34,9 +35,14 @@ namespace PSRule.Configuration
             return result;
         }
 
+        internal void Load(EnvironmentHelper env)
+        {
+            base.Load(ENVIRONMENT_PREFIX, env);
+        }
+
         internal void Load(IDictionary<string, object> dictionary)
         {
-            base.Load(KEYMAP_PREFIX, dictionary);
+            base.Load(DICTIONARY_PREFIX, dictionary);
         }
     }
 }

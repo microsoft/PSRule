@@ -22,7 +22,10 @@ param (
     [String]$ArtifactPath = (Join-Path -Path $PWD -ChildPath out/modules),
 
     [Parameter(Mandatory = $False)]
-    [String]$AssertStyle = 'AzurePipelines'
+    [String]$AssertStyle = 'AzurePipelines',
+
+    [Parameter(Mandatory = $False)]
+    [String]$TestGroup = $Null
 )
 
 Write-Host -Object "[Pipeline] -- PowerShell v$($PSVersionTable.PSVersion.ToString())" -ForegroundColor Green;
@@ -272,6 +275,10 @@ task TestModule Pester, PSScriptAnalyzer, {
 
     if (!(Test-Path -Path reports)) {
         $Null = New-Item -Path reports -ItemType Directory -Force;
+    }
+
+    if ($Null -ne $TestGroup) {
+        $pesterParams['Tags'] = $TestGroup;
     }
 
     $results = Invoke-Pester @pesterParams;

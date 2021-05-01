@@ -10,15 +10,15 @@ namespace PSRule
         public static string GetHeadRef(string path)
         {
             // Try PSRule
-            if (EnvironmentHelper.TryString("PSRULE_GITREF", out string value))
+            if (EnvironmentHelper.Default.TryString("PSRULE_GITREF", out string value))
                 return value;
 
             // Try Azure Pipelines
-            if (EnvironmentHelper.TryString("BUILD_SOURCEBRANCH", out value))
+            if (EnvironmentHelper.Default.TryString("BUILD_SOURCEBRANCH", out value))
                 return value;
 
             // Try GitHub Actions
-            if (EnvironmentHelper.TryString("GITHUB_REF", out value))
+            if (EnvironmentHelper.Default.TryString("GITHUB_REF", out value))
                 return value;
 
             // Try .git/HEAD

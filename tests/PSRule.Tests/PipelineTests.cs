@@ -87,6 +87,8 @@ namespace PSRule
             Assert.Null(builder.Build());
         }
 
+        #region Helper methods
+
         private static Source[] GetSource()
         {
             var builder = new SourcePipelineBuilder(null, null);
@@ -106,5 +108,7 @@ namespace PSRule
         {
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
         }
+
+        #endregion Helper methods
     }
 }

@@ -147,6 +147,8 @@ spec: { }
 ### Example Baseline.Rule.yaml
 
 ```yaml
+# Example Baseline.Rule.yaml
+
 ---
 # Synopsis: This is an example baseline
 apiVersion: github.com/microsoft/PSRule/v1
@@ -183,3 +185,10 @@ spec:
   configuration:
     key1: value1
 ```
+
+## KEYWORDS
+
+- Options
+- PSRule
+- Baseline
+- Binding
