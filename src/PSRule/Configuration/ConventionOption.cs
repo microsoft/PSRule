@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace PSRule.Configuration
@@ -61,5 +62,17 @@ namespace PSRule.Configuration
 
         [DefaultValue(null)]
         public string[] Include { get; set; }
+
+        internal void Load(EnvironmentHelper env)
+        {
+            if (env.TryStringArray("PSRULE_CONVENTION_INCLUDE", out string[] include))
+                Include = include;
+        }
+
+        internal void Load(Dictionary<string, object> index)
+        {
+            if (index.TryPopStringArray("Convention.Include", out string[] include))
+                Include = include;
+        }
     }
 }

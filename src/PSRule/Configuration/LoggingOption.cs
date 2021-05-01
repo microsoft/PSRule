@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace PSRule.Configuration
@@ -103,5 +104,35 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public OutcomeLogStream? RulePass { get; set; }
+
+        internal void Load(EnvironmentHelper env)
+        {
+            if (env.TryStringArray("PSRULE_LOGGING_LIMITDEBUG", out string[] limitDebug))
+                LimitDebug = limitDebug;
+
+            if (env.TryStringArray("PSRULE_LOGGING_LIMITVERBOSE", out string[] limitVerbose))
+                LimitVerbose = limitVerbose;
+
+            if (env.TryEnum("PSRULE_LOGGING_RULEFAIL", out OutcomeLogStream ruleFail))
+                RuleFail = ruleFail;
+
+            if (env.TryEnum("PSRULE_LOGGING_RULEPASS", out OutcomeLogStream rulePass))
+                RulePass = rulePass;
+        }
+
+        internal void Load(Dictionary<string, object> index)
+        {
+            if (index.TryPopStringArray("Logging.LimitDebug", out string[] limitDebug))
+                LimitDebug = limitDebug;
+
+            if (index.TryPopStringArray("Logging.LimitVerbose", out string[] limitVerbose))
+                LimitVerbose = limitVerbose;
+
+            if (index.TryPopEnum("Logging.RuleFail", out OutcomeLogStream ruleFail))
+                RuleFail = ruleFail;
+
+            if (index.TryPopEnum("Logging.RulePass", out OutcomeLogStream rulePass))
+                RulePass = rulePass;
+        }
     }
 }

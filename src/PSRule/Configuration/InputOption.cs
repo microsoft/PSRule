@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace PSRule.Configuration
@@ -105,5 +106,35 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public string[] TargetType { get; set; }
+
+        internal void Load(EnvironmentHelper env)
+        {
+            if (env.TryEnum("PSRULE_INPUT_FORMAT", out InputFormat format))
+                Format = format;
+
+            if (env.TryString("PSRULE_INPUT_OBJECTPATH", out string objectPath))
+                ObjectPath = objectPath;
+
+            if (env.TryStringArray("PSRULE_INPUT_PATHIGNORE", out string[] pathIgnore))
+                PathIgnore = pathIgnore;
+
+            if (env.TryStringArray("PSRULE_INPUT_TARGETTYPE", out string[] targetType))
+                TargetType = targetType;
+        }
+
+        internal void Load(Dictionary<string, object> index)
+        {
+            if (index.TryPopEnum("Input.Format", out InputFormat format))
+                Format = format;
+
+            if (index.TryPopString("Input.ObjectPath", out string objectPath))
+                ObjectPath = objectPath;
+
+            if (index.TryPopStringArray("Input.PathIgnore", out string[] pathIgnore))
+                PathIgnore = pathIgnore;
+
+            if (index.TryPopStringArray("Input.TargetType", out string[] targetType))
+                TargetType = targetType;
+        }
     }
 }

@@ -1,27 +1,26 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net;
 using System.Security;
 
 namespace PSRule
 {
-    internal static class EnvironmentHelper
+    internal sealed class EnvironmentHelper
     {
-        private const char UNDERSCORE = '_';
+        private readonly static char[] STRINGARRAY_SEPARATOR = new char[] { ';' };
 
-        internal static bool TryString(string key, out string value)
+        public static readonly EnvironmentHelper Default = new EnvironmentHelper();
+
+        internal bool TryString(string key, out string value)
         {
-            value = null;
-            var variable = System.Environment.GetEnvironmentVariable(key);
-            if (string.IsNullOrEmpty(variable))
-                return false;
-
-            value = variable;
-            return true;
+            return TryVariable(key, out value) && !string.IsNullOrEmpty(value);
         }
 
-        internal static bool TrySecureString(string key, out SecureString value)
+        internal bool TrySecureString(string key, out SecureString value)
         {
             value = null;
             if (!TryString(key, out string variable))
@@ -31,27 +30,68 @@ namespace PSRule
             return true;
         }
 
-        internal static bool TryInt(string key, out int value)
+        internal bool TryInt(string key, out int value)
         {
-            var variable = System.Environment.GetEnvironmentVariable(key);
-            if (!int.TryParse(variable, out value))
-                return false;
-
-            return true;
+            value = default;
+            return TryVariable(key, out string variable) && int.TryParse(variable, out value);
         }
 
-        internal static bool TryBool(string key, out bool value)
+        internal bool TryBool(string key, out bool value)
         {
-            var variable = System.Environment.GetEnvironmentVariable(key);
-            if (!bool.TryParse(variable, out value))
-                return false;
-
-            return true;
+            value = default;
+            return TryVariable(key, out string variable) && TryParseBool(variable, out value);
         }
 
-        private static string CombineKey(string prefix, string key)
+        internal bool TryEnum<TEnum>(string key, out TEnum value) where TEnum : struct
         {
-            return string.IsNullOrEmpty(prefix) ? key : string.Concat(prefix, UNDERSCORE, key);
+            value = default;
+            if (!TryVariable(key, out string variable))
+                return false;
+
+            return Enum.TryParse(variable, ignoreCase: true, out value);
+        }
+
+        internal bool TryStringArray(string key, out string[] value)
+        {
+            value = default;
+            if (!TryVariable(key, out string variable))
+                return false;
+
+            value = variable.Split(STRINGARRAY_SEPARATOR, options: StringSplitOptions.RemoveEmptyEntries);
+            return value != null;
+        }
+
+        private bool TryVariable(string key, out string variable)
+        {
+            variable = Environment.GetEnvironmentVariable(key);
+            return variable != null;
+        }
+
+        private static bool TryParseBool(string variable, out bool value)
+        {
+            if (bool.TryParse(variable, out value))
+                return true;
+
+            if (int.TryParse(variable, out int ivalue))
+            {
+                value = ivalue > 0;
+                return true;
+            }
+            return false;
+        }
+
+        internal IEnumerable<KeyValuePair<string, object>> WithPrefix(string prefix)
+        {
+            var env = Environment.GetEnvironmentVariables();
+            var enumerator = env.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var key = enumerator.Key.ToString();
+                if (key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    yield return new KeyValuePair<string, object>(key, enumerator.Value);
+                }
+            }
         }
     }
 }

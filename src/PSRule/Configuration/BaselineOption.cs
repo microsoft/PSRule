@@ -65,6 +65,40 @@ namespace PSRule.Configuration
             return new BaselineRef(value);
         }
 
+        internal static void Load(IBaselineSpec option, EnvironmentHelper env)
+        {
+            // Binding.Field - currently not supported
+
+            if (env.TryBool("PSRULE_BINDING_IGNORECASE", out bool ignoreCase))
+                option.Binding.IgnoreCase = ignoreCase;
+
+            if (env.TryString("PSRULE_BINDING_NAMESEPARATOR", out string nameSeparator))
+                option.Binding.NameSeparator = nameSeparator;
+
+            if (env.TryBool("PSRULE_BINDING_PREFERTARGETINFO", out bool preferTargetInfo))
+                option.Binding.PreferTargetInfo = preferTargetInfo;
+
+            if (env.TryStringArray("PSRULE_BINDING_TARGETNAME", out string[] targetName))
+                option.Binding.TargetName = targetName;
+
+            if (env.TryStringArray("PSRULE_BINDING_TARGETTYPE", out string[] targetType))
+                option.Binding.TargetType = targetType;
+
+            if (env.TryBool("PSRULE_BINDING_USEQUALIFIEDNAME", out bool useQualifiedName))
+                option.Binding.UseQualifiedName = useQualifiedName;
+
+            if (env.TryStringArray("PSRULE_RULE_INCLUDE", out string[] include))
+                option.Rule.Include = include;
+
+            if (env.TryStringArray("PSRULE_RULE_EXCLUDE", out string[] exclude))
+                option.Rule.Exclude = exclude;
+
+            // Rule.Tag - currently not supported
+
+            // Process configuration values
+            option.Configuration.Load(env);
+        }
+
         /// <summary>
         /// Load matching values
         /// </summary>
@@ -75,46 +109,29 @@ namespace PSRule.Configuration
             if (properties.TryPopValue("Binding.Field", out Hashtable map))
                 option.Binding.Field = new FieldMap(map);
 
-            if (properties.TryPopBool("Binding.IgnoreCase", out bool bvalue))
-                option.Binding.IgnoreCase = bvalue;
+            if (properties.TryPopBool("Binding.IgnoreCase", out bool ignoreCase))
+                option.Binding.IgnoreCase = ignoreCase;
 
-            if (properties.TryPopBool("Binding.PreferTargetInfo", out bvalue))
-                option.Binding.PreferTargetInfo = bvalue;
+            if (properties.TryPopString("Binding.NameSeparator", out string nameSeparator))
+                option.Binding.NameSeparator = nameSeparator;
 
-            if (properties.TryPopValue("Binding.NameSeparator", out object value))
-                option.Binding.NameSeparator = value.ToString();
+            if (properties.TryPopBool("Binding.PreferTargetInfo", out bool preferTargetInfo))
+                option.Binding.PreferTargetInfo = preferTargetInfo;
 
-            if (properties.TryPopValue("Binding.TargetName", out value))
-            {
-                if (value.GetType().IsArray)
-                    option.Binding.TargetName = ((object[])value).OfType<string>().ToArray();
-                else
-                    option.Binding.TargetName = new string[] { value.ToString() };
-            }
-            if (properties.TryPopValue("Binding.targettype", out value))
-            {
-                if (value.GetType().IsArray)
-                    option.Binding.TargetType = ((object[])value).OfType<string>().ToArray();
-                else
-                    option.Binding.TargetType = new string[] { value.ToString() };
-            }
-            if (properties.TryPopValue("Binding.UseQualifiedName", out bvalue))
-                option.Binding.UseQualifiedName = bvalue;
+            if (properties.TryPopStringArray("Binding.TargetName", out string[] targetName))
+                option.Binding.TargetName = targetName;
 
-            if (properties.TryPopValue("Rule.Include", out value))
-            {
-                if (value.GetType().IsArray)
-                    option.Rule.Include = ((object[])value).OfType<string>().ToArray();
-                else
-                    option.Rule.Include = new string[] { value.ToString() };
-            }
-            if (properties.TryPopValue("Rule.Exclude", out value))
-            {
-                if (value.GetType().IsArray)
-                    option.Rule.Exclude = ((object[])value).OfType<string>().ToArray();
-                else
-                    option.Rule.Exclude = new string[] { value.ToString() };
-            }
+            if (properties.TryPopStringArray("Binding.TargetType", out string[] targetType))
+                option.Binding.TargetType = targetType;
+
+            if (properties.TryPopValue("Binding.UseQualifiedName", out bool useQualifiedName))
+                option.Binding.UseQualifiedName = useQualifiedName;
+
+            if (properties.TryPopStringArray("Rule.Include", out string[] include))
+                option.Rule.Include = include;
+            if (properties.TryPopStringArray("Rule.Exclude", out string[] exclude))
+                option.Rule.Exclude = exclude;
+
             if (properties.TryPopValue("Rule.Tag", out Hashtable tag))
                 option.Rule.Tag = tag;
 

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace PSRule.Configuration
@@ -80,5 +81,29 @@ namespace PSRule.Configuration
 
         [DefaultValue(null)]
         public bool? NotProcessedWarning { get; set; }
+
+        internal void Load(EnvironmentHelper env)
+        {
+            if (env.TryEnum("PSRULE_EXECUTION_LANGUAGEMODE", out LanguageMode languageMode))
+                LanguageMode = languageMode;
+
+            if (env.TryBool("PSRULE_EXECUTION_INCONCLUSIVEWARNING", out bool bvalue))
+                InconclusiveWarning = bvalue;
+
+            if (env.TryBool("PSRULE_EXECUTION_NOTPROCESSEDWARNING", out bvalue))
+                NotProcessedWarning = bvalue;
+        }
+
+        internal void Load(Dictionary<string, object> index)
+        {
+            if (index.TryPopEnum("Execution.LanguageMode", out LanguageMode languageMode))
+                LanguageMode = languageMode;
+
+            if (index.TryPopBool("Execution.InconclusiveWarning", out bool bvalue))
+                InconclusiveWarning = bvalue;
+
+            if (index.TryPopBool("Execution.NotProcessedWarning", out bvalue))
+                NotProcessedWarning = bvalue;
+        }
     }
 }

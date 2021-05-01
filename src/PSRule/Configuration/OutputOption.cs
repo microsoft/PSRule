@@ -3,6 +3,7 @@
 
 using PSRule.Rules;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace PSRule.Configuration
@@ -131,5 +132,53 @@ namespace PSRule.Configuration
 
         [DefaultValue(null)]
         public OutputStyle? Style { get; set; }
+
+        internal void Load(EnvironmentHelper env)
+        {
+            if (env.TryEnum("PSRULE_OUTPUT_AS", out ResultFormat value))
+                As = value;
+
+            if (env.TryStringArray("PSRULE_OUTPUT_CULTURE", out string[] culture))
+                Culture = culture;
+
+            if (env.TryEnum("PSRULE_OUTPUT_ENCODING", out OutputEncoding encoding))
+                Encoding = encoding;
+
+            if (env.TryEnum("PSRULE_OUTPUT_FORMAT", out OutputFormat format))
+                Format = format;
+
+            if (env.TryEnum("PSRULE_OUTPUT_OUTCOME", out RuleOutcome outcome))
+                Outcome = outcome;
+
+            if (env.TryString("PSRULE_OUTPUT_PATH", out string path))
+                Path = path;
+
+            if (env.TryEnum("PSRULE_OUTPUT_STYLE", out OutputStyle style))
+                Style = style;
+        }
+
+        internal void Load(Dictionary<string, object> index)
+        {
+            if (index.TryPopEnum("Output.As", out ResultFormat value))
+                As = value;
+
+            if (index.TryPopStringArray("Output.Culture", out string[] culture))
+                Culture = culture;
+
+            if (index.TryPopEnum("Output.Encoding", out OutputEncoding encoding))
+                Encoding = encoding;
+
+            if (index.TryPopEnum("Output.Format", out OutputFormat format))
+                Format = format;
+
+            if (index.TryPopEnum("Output.Outcome", out RuleOutcome outcome))
+                Outcome = outcome;
+
+            if (index.TryPopString("Output.Path", out string path))
+                Path = path;
+
+            if (index.TryPopEnum("Output.Style", out OutputStyle style))
+                Style = style;
+        }
     }
 }

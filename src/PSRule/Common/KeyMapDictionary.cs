@@ -108,6 +108,9 @@ namespace PSRule
             return GetEnumerator();
         }
 
+        /// <summary>
+        /// Load options from a hashtable.
+        /// </summary>
         protected void Load(Hashtable hashtable)
         {
             if (hashtable == null)
@@ -117,6 +120,29 @@ namespace PSRule
                 _Map.Add(entry.Key.ToString(), (TValue)entry.Value);
         }
 
+        /// <summary>
+        /// Load options from environment variables.
+        /// </summary>
+        internal void Load(string prefix, EnvironmentHelper env, Func<string, string> format = null)
+        {
+            if (env == null)
+                throw new ArgumentNullException(nameof(env));
+
+            foreach (var variable in env.WithPrefix(prefix))
+            {
+                if (TryKeyPrefix(variable.Key, prefix, out string suffix))
+                {
+                    if (format != null)
+                        suffix = format(suffix);
+
+                    _Map[suffix] = (TValue)variable.Value;
+                }   
+            }
+        }
+
+        /// <summary>
+        /// Load options from a dictionary.
+        /// </summary>
         protected void Load(string prefix, IDictionary<string, object> dictionary)
         {
             if (dictionary == null)
@@ -133,6 +159,9 @@ namespace PSRule
             }
         }
 
+        /// <summary>
+        /// Try a key prefix.
+        /// </summary>
         private static bool TryKeyPrefix(string key, string prefix, out string suffix)
         {
             suffix = key;
