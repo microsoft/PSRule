@@ -10,6 +10,37 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.3.0
+
+What's changed since v1.2.0:
+
+- Engine features:
+  - Options can be configured with environment variables. [#691](https://github.com/microsoft/PSRule/issues/691)
+    - See [about_PSRule_Options] for details.
+- General improvements:
+  - Exclude `.git` sub-directory by default for recursive scans. [#697](https://github.com/microsoft/PSRule/issues/697)
+    - Added `Input.IgnoreGitPath` option to configure inclusion of `.git` path.
+    - See [about_PSRule_Options] for details.
+  - Added file path assertion helpers. [#679](https://github.com/microsoft/PSRule/issues/679)
+    - Added `WithinPath` to check the file path field is within a specified path.
+    - Added `NotWithinPath` to check the file path field is not within a specified path
+    - See [about_PSRule_Assert] for details.
+  - Added DateTime type assertion helper. [#680](https://github.com/microsoft/PSRule/issues/680)
+    - Added `IsDateTime` to check of object field is `[DateTime]`.
+    - See [about_PSRule_Assert] for details.
+  - Improved numeric comparison assertion helpers to compare `[DateTime]` fields. [#685](https://github.com/microsoft/PSRule/issues/685)
+    - `Less`, `LessOrEqual`, `Greater`, and `GreaterOrEqual` compare the number of days from the current time.
+    - See [about_PSRule_Assert] for details.
+  - Improved handling of field names for objects implementing `IList`, `IEnumerable`, and index properties. [#692](https://github.com/microsoft/PSRule/issues/692)
+- Engineering:
+  - Bump YamlDotNet from 8.1.2 to 11.1.1. [#690](https://github.com/microsoft/PSRule/pull/690)
+- Bug fixes:
+  - Fixed expected DocumentEnd got SequenceEnd. [#698](https://github.com/microsoft/PSRule/issues/698)
+
+What's changed since pre-release v1.3.0-B2105004:
+
+- No additional changes.
+
 ## v1.3.0-B2105004 (pre-release)
 
 What's changed since pre-release v1.3.0-B2104042:
