@@ -68,6 +68,200 @@
 <li>YAML resources will require an <code>apiVersion</code> from PSRule v2. <a href="https://github.com/microsoft/PSRule/issues/648">#648</a></li>
 </ul>
 <h2 id="unreleased">Unreleased</h2>
+<h2 id="v130">v1.3.0</h2>
+<p>What's changed since v1.2.0:</p>
+<ul>
+<li>Engine features:
+<ul>
+<li>Options can be configured with environment variables. <a href="https://github.com/microsoft/PSRule/issues/691">#691</a>
+<ul>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>General improvements:
+<ul>
+<li>Exclude <code>.git</code> sub-directory by default for recursive scans. <a href="https://github.com/microsoft/PSRule/issues/697">#697</a>
+<ul>
+<li>Added <code>Input.IgnoreGitPath</code> option to configure inclusion of <code>.git</code> path.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+<li>Added file path assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/679">#679</a>
+<ul>
+<li>Added <code>WithinPath</code> to check the file path field is within a specified path.</li>
+<li>Added <code>NotWithinPath</code> to check the file path field is not within a specified path</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+<li>Added DateTime type assertion helper. <a href="https://github.com/microsoft/PSRule/issues/680">#680</a>
+<ul>
+<li>Added <code>IsDateTime</code> to check of object field is <code>[DateTime]</code>.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+<li>Improved numeric comparison assertion helpers to compare <code>[DateTime]</code> fields. <a href="https://github.com/microsoft/PSRule/issues/685">#685</a>
+<ul>
+<li><code>Less</code>, <code>LessOrEqual</code>, <code>Greater</code>, and <code>GreaterOrEqual</code> compare the number of days from the current time.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+<li>Improved handling of field names for objects implementing <code>IList</code>, <code>IEnumerable</code>, and index properties. <a href="https://github.com/microsoft/PSRule/issues/692">#692</a></li>
+</ul>
+</li>
+<li>Engineering:
+<ul>
+<li>Bump YamlDotNet from 8.1.2 to 11.1.1. <a href="https://github.com/microsoft/PSRule/pull/690">#690</a></li>
+</ul>
+</li>
+<li>Bug fixes:
+<ul>
+<li>Fixed expected DocumentEnd got SequenceEnd. <a href="https://github.com/microsoft/PSRule/issues/698">#698</a></li>
+</ul>
+</li>
+</ul>
+<p>What's changed since pre-release v1.3.0-B2105004:</p>
+<ul>
+<li>No additional changes.</li>
+</ul>
+<h2 id="v130-b2105004-pre-release">v1.3.0-B2105004 (pre-release)</h2>
+<p>What's changed since pre-release v1.3.0-B2104042:</p>
+<ul>
+<li>Engine features:
+<ul>
+<li>Options can be configured with environment variables. <a href="https://github.com/microsoft/PSRule/issues/691">#691</a>
+<ul>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>General improvements:
+<ul>
+<li>Exclude <code>.git</code> sub-directory by default for recursive scans. <a href="https://github.com/microsoft/PSRule/issues/697">#697</a>
+<ul>
+<li>Added <code>Input.IgnoreGitPath</code> option to configure inclusion of <code>.git</code> path.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v130-b2104042-pre-release">v1.3.0-B2104042 (pre-release)</h2>
+<p>What's changed since pre-release v1.3.0-B2104030:</p>
+<ul>
+<li>Bug fixes:
+<ul>
+<li>Fixed expected DocumentEnd got SequenceEnd. <a href="https://github.com/microsoft/PSRule/issues/698">#698</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v130-b2104030-pre-release">v1.3.0-B2104030 (pre-release)</h2>
+<p>What's changed since pre-release v1.3.0-B2104021:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Improved handling of field names for objects implementing <code>IList</code>, <code>IEnumerable</code>, and index properties. <a href="https://github.com/microsoft/PSRule/issues/692">#692</a></li>
+</ul>
+</li>
+<li>Engineering:
+<ul>
+<li>Bump YamlDotNet from 8.1.2 to 11.1.1. <a href="https://github.com/microsoft/PSRule/pull/690">#690</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v130-b2104021-pre-release">v1.3.0-B2104021 (pre-release)</h2>
+<p>What's changed since v1.2.0:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added file path assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/679">#679</a>
+<ul>
+<li>Added <code>WithinPath</code> to check the file path field is within a specified path.</li>
+<li>Added <code>NotWithinPath</code> to check the file path field is not within a specified path</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+<li>Added DateTime type assertion helper. <a href="https://github.com/microsoft/PSRule/issues/680">#680</a>
+<ul>
+<li>Added <code>IsDateTime</code> to check of object field is <code>[DateTime]</code>.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+<li>Improved numeric comparison assertion helpers to compare <code>[DateTime]</code> fields. <a href="https://github.com/microsoft/PSRule/issues/685">#685</a>
+<ul>
+<li><code>Less</code>, <code>LessOrEqual</code>, <code>Greater</code>, and <code>GreaterOrEqual</code> compare the number of days from the current time.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v120">v1.2.0</h2>
+<p>What's changed since v1.1.0:</p>
+<ul>
+<li>Engine features:
+<ul>
+<li>Added support for extensibility with conventions. <a href="https://github.com/microsoft/PSRule/issues/650">#650</a>
+<ul>
+<li>Conventions provide an extensibility point within PSRule to execute actions within the pipeline.</li>
+<li>A convention can expose <code>Begin</code>, <code>Process</code>, and <code>End</code> blocks.</li>
+<li>In additional to within rules <code>$PSRule.Data</code> can be accessed from <code>Begin</code> and <code>Process</code> blocks.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Conventions.html">about_PSRule_Conventions</a> for details.</li>
+</ul>
+</li>
+<li>Added support for object expansion with conventions. <a href="https://github.com/microsoft/PSRule/issues/661">#661</a>
+<ul>
+<li>Use the <code>$PSRule.Import</code> method to import child source objects into the pipeline.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Variables.html">about_PSRule_Variables</a> for details.</li>
+</ul>
+</li>
+<li>Added support for complex pre-conditions with selectors. <a href="https://github.com/microsoft/PSRule/issues/649">#649</a>
+<ul>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Selectors.html">about_PSRule_Selectors</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>General improvements:
+<ul>
+<li>Added support for preferring automatic binding over custom binding configurations. <a href="https://github.com/microsoft/PSRule/issues/670">#670</a>
+<ul>
+<li>Added the <code>Binding.PreferTargetInfo</code> option to prefer target info specified by the object.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+<li>Added strong apiVersion to resource types. <a href="https://github.com/microsoft/PSRule/issues/647">#647</a>
+<ul>
+<li>Resource schemas now support an <code>apiVersion</code> field.</li>
+<li>The <code>apiVersion</code> field is optional but recommended.</li>
+<li>Resources without a <code>apiVersion</code> field will not be supported from PSRule v2.</li>
+<li>Added warning to flag baseline without <code>apiVersion</code> set.</li>
+</ul>
+</li>
+<li>Added support for detecting files headers from additional file extensions using <code>FileHeader</code>. <a href="https://github.com/microsoft/PSRule/issues/664">#664</a>
+<ul>
+<li>Added <code>.bicep</code>, <code>.csx</code>, <code>.jsx</code>, <code>.groovy</code>, <code>.java</code>, <code>.json</code>, <code>.jsonc</code>,
+<code>.scala</code>, <code>.rb</code>, <code>.bat</code>, <code>.cmd</code>.</li>
+<li>Added support for <code>Jenkinsfile</code> and <code>Dockerfile</code> without an extension.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+<li>Added support for automatic type binding with files that do not have a file extension. <a href="https://github.com/microsoft/PSRule/issues/665">#665</a></li>
+</ul>
+</li>
+<li>Bug fixes:
+<ul>
+<li>Fixed dependent rule execution is skipped for consequent input objects. <a href="https://github.com/microsoft/PSRule/issues/657">#657</a></li>
+</ul>
+</li>
+</ul>
+<p>What's changed since pre-release v1.2.0-B2103043:</p>
+<ul>
+<li>No additional changes.</li>
+</ul>
+<h2 id="v120-b2103043-pre-release">v1.2.0-B2103043 (pre-release)</h2>
 <p>What's changed since pre-release v1.2.0-B2103031:</p>
 <ul>
 <li>Engine features:
@@ -80,6 +274,7 @@
 <li>Added support for preferring automatic binding over custom binding configurations. <a href="https://github.com/microsoft/PSRule/issues/670">#670</a>
 <ul>
 <li>Added the <code>Binding.PreferTargetInfo</code> option to prefer target info specified by the object.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
 </ul>
 </li>
 <li>Added strong apiVersion to resource types. <a href="https://github.com/microsoft/PSRule/issues/647">#647</a>
@@ -93,7 +288,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="120-b2103031-pre-release">1.2.0-B2103031 (pre-release)</h2>
+<h2 id="v120-b2103031-pre-release">v1.2.0-B2103031 (pre-release)</h2>
 <p>What's changed since pre-release v1.2.0-B2103023:</p>
 <ul>
 <li>General improvements:
@@ -103,6 +298,7 @@
 <li>Added <code>.bicep</code>, <code>.csx</code>, <code>.jsx</code>, <code>.groovy</code>, <code>.java</code>, <code>.json</code>, <code>.jsonc</code>,
 <code>.scala</code>, <code>.rb</code>, <code>.bat</code>, <code>.cmd</code>.</li>
 <li>Added support for <code>Jenkinsfile</code> and <code>Dockerfile</code> without an extension.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
 </ul>
 </li>
 <li>Added support for automatic type binding with files that do not have a file extension. <a href="https://github.com/microsoft/PSRule/issues/665">#665</a></li>
@@ -117,6 +313,7 @@
 <li>Added support for object expansion with conventions. <a href="https://github.com/microsoft/PSRule/issues/661">#661</a>
 <ul>
 <li>Use the <code>$PSRule.Import</code> method to import child source objects into the pipeline.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Variables.html">about_PSRule_Variables</a> for details.</li>
 </ul>
 </li>
 </ul>
@@ -141,6 +338,7 @@
 <li>Conventions provide an extensibility point within PSRule to execute actions within the pipeline.</li>
 <li>A convention can expose <code>Begin</code>, <code>Process</code>, and <code>End</code> blocks.</li>
 <li>In additional to within rules <code>$PSRule.Data</code> can be accessed from <code>Begin</code> and <code>Process</code> blocks.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Conventions.html">about_PSRule_Conventions</a> for details.</li>
 </ul>
 </li>
 </ul>
@@ -156,6 +354,7 @@
 <li>Added <code>NotHasField</code> to check object does not have any of the specified fields.</li>
 <li>Added <code>Null</code> to check field value is null.</li>
 <li>Added <code>NotNull</code> to check field value is not null.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
 </ul>
 </li>
 <li>Added type assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/635">#635</a>
@@ -166,12 +365,14 @@
 <li>Added <code>IsArray</code> to check field value is an array.</li>
 <li>Added <code>IsString</code> to check field value is a string.</li>
 <li>Added <code>TypeOf</code> to check field value is a specified type.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
 </ul>
 </li>
 <li>Added content helpers. <a href="https://github.com/microsoft/PSRule/issues/637">#637</a>
 <ul>
 <li>Added <code>$PSRule.GetContentFirstOrDefault</code> to get content and return the first object.</li>
 <li>Added <code>$PSRule.GetContentField</code> to get the field from content objects.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Variables.html">about_PSRule_Variables</a> for details.</li>
 </ul>
 </li>
 </ul>
@@ -182,12 +383,14 @@
 <ul>
 <li>The URI scheme can optionally be ignored for <code>http://</code> or <code>https://</code> URIs.</li>
 <li>The fragment <code>#</code> is ignored.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
 </ul>
 </li>
 <li>Added support for <code>-Outcome</code> and <code>-As</code> to produce filtered output from <code>Assert-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/643">#643</a>
 <ul>
 <li>Configure <code>Output.As</code> with <code>Summary</code> to produce summarized results per object.</li>
 <li>Configure <code>Output.Outcome</code> to limit output to <code>Fail</code> or <code>Error</code>.</li>
+<li>See <a href="commands/PSRule/en-US/Assert-PSRule.html">Assert-PSRule</a> for details.</li>
 </ul>
 </li>
 </ul>
@@ -206,6 +409,7 @@
 <ul>
 <li>Configure <code>Output.As</code> with <code>Summary</code> to produce summarized results per object.</li>
 <li>Configure <code>Output.Outcome</code> to limit output to <code>Fail</code> or <code>Error</code>.</li>
+<li>See <a href="commands/PSRule/en-US/Assert-PSRule.html">Assert-PSRule</a> for details.</li>
 </ul>
 </li>
 </ul>
@@ -221,6 +425,7 @@
 <li>Added <code>NotHasField</code> to check object does not have any of the specified fields.</li>
 <li>Added <code>Null</code> to check field value is null.</li>
 <li>Added <code>NotNull</code> to check field value is not null.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
 </ul>
 </li>
 </ul>
@@ -239,12 +444,14 @@
 <li>Added <code>IsArray</code> to check field value is an array.</li>
 <li>Added <code>IsString</code> to check field value is a string.</li>
 <li>Added <code>TypeOf</code> to check field value is a specified type.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
 </ul>
 </li>
 <li>Added content helpers. <a href="https://github.com/microsoft/PSRule/issues/637">#637</a>
 <ul>
 <li>Added <code>$PSRule.GetContentFirstOrDefault</code> to get content and return the first object.</li>
 <li>Added <code>$PSRule.GetContentField</code> to get the field from content objects.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Variables.html">about_PSRule_Variables</a> for details.</li>
 </ul>
 </li>
 </ul>
@@ -255,6 +462,7 @@
 <ul>
 <li>The URI scheme can optionally be ignored for <code>http://</code> or <code>https://</code> URIs.</li>
 <li>The fragment <code>#</code> is ignored.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
 </ul>
 </li>
 </ul>

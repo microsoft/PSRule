@@ -163,12 +163,13 @@ This is because some file systems are case-sensitive.
 For example, on Linux <code>Standards.rule.ps1</code> would be ignored by PSRule.</p>
 <p>Similarly, when including baselines within a module use the <code>.Rule.yaml</code> suffix.</p>
 <h2 id="defining-a-module-configuration">Defining a module configuration</h2>
-<p>A module configuration that sets options defaults can be optionally packaged with a module.
+<p>A module configuration that sets options defaults and can be optionally packaged with a module.
 To set a module configuration, define a <code>ModuleConfig</code> resource within an included <code>.Rule.yaml</code> file.
 A module configuration <code>.Rule.yaml</code> file must be distributed within the module directory structure.</p>
 <p>PSRule only supports a single <code>ModuleConfig</code> resource.
 The name of the <code>ModuleConfig</code> must match the name of the module.
-Additional <code>ModuleConfig</code> resources or with an alternative name are ignored.</p>
+Additional <code>ModuleConfig</code> resources or with an alternative name are ignored.
+PSRule does not support module configurations distributed outside of a module.</p>
 <pre><code class="lang-yaml">---
 # Synopsis: Example module configuration for Enterprise.Rules module
 apiVersion: github.com/microsoft/PSRule/v1
@@ -196,6 +197,7 @@ spec:
 <li><code>Binding.Field</code></li>
 <li><code>Binding.IgnoreCase</code></li>
 <li><code>Binding.NameSeparator</code></li>
+<li><code>Binding.PreferTargetInfo</code></li>
 <li><code>Binding.TargetName</code></li>
 <li><code>Binding.TargetType</code></li>
 <li><code>Binding.UseQualifiedName</code></li>

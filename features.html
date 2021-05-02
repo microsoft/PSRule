@@ -120,10 +120,19 @@ This allows not only the cause of the issue to be identified but detailed instru
 </ul>
 <p>These features make PSRule ideal for validating:</p>
 <ul>
-<li>Infrastructure code templates and manifests, such as Kubernetes manifests.</li>
+<li>Infrastructure as code, including:
+<ul>
+<li>Kubernetes manifests.</li>
+<li>Azure Resource Manager templates.</li>
+<li>Configuration files.</li>
+<li>Pipeline files.</li>
+</ul>
+</li>
 <li>Deployments or configurations against a baseline.</li>
 </ul>
 <p>If you want to test PowerShell code, use Pester.</p>
+<h3 id="what-pre-built-modules-are-available-for-psrule">What pre-built modules are available for PSRule?</h3>
+<p>PSRule rules modules can be found on the <a href="https://www.powershellgallery.com/packages?q=Tags%3A%22PSRule-rules%22">PowerShell Gallery</a> using the tag <code>PSRule-rules</code>.</p>
 <h3 id="how-do-i-configure-psrule">How do I configure PSRule?</h3>
 <p>PSRule can be configured at runtime by passing the <code>-Option</code> parameter to cmdlets.
 Additionally, PSRule uses the <code>ps-rule.yaml</code> option file to load configuration from disk.

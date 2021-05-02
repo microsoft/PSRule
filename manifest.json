@@ -24,7 +24,7 @@
       "output": {
         ".html": {
           "relative_path": "CHANGELOG-v1.html",
-          "hash": "PW6ALtm+JjkNgve6KTfCSQ=="
+          "hash": "ca+bjzA1XsaHRMomo4TuIw=="
         }
       },
       "is_incremental": false,
@@ -108,7 +108,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "Zr7BAv33eqttx5myZKBoqQ=="
+          "hash": "A8yaCDgmrHIcuP1bV0WV0w=="
         }
       },
       "is_incremental": false,
@@ -132,7 +132,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Set-PSRuleOption.html",
-          "hash": "znIHqqoUolVZ/fOZL22tNA=="
+          "hash": "yuQx2YY7ht+jxK5HyES9fg=="
         }
       },
       "is_incremental": false,
@@ -168,7 +168,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Assert.html",
-          "hash": "MB4ZwC27TNQCOPK+Dd74SQ=="
+          "hash": "2d+NWgIYe+4EWRLdsaP/bA=="
         }
       },
       "is_incremental": false,
@@ -180,7 +180,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Baseline.html",
-          "hash": "gzKs6wu5K3IJ5jOAilrW9g=="
+          "hash": "0sTNmEFB+G/9qtvx/9GcxQ=="
         }
       },
       "is_incremental": false,
@@ -216,7 +216,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "q+9cXw3c58mWeufEwU+nag=="
+          "hash": "/p5gIYR0R241JF8d7o8D2g=="
         }
       },
       "is_incremental": false,
@@ -252,7 +252,7 @@
       "output": {
         ".html": {
           "relative_path": "features.html",
-          "hash": "ZFWuf9Kyivb03wY55InXRw=="
+          "hash": "+JAZUf/WC7il9DWwyF83nQ=="
         }
       },
       "is_incremental": false,
@@ -701,7 +701,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/rule-module/rule-module.html",
-          "hash": "2+jbDFefRjsLCWbEc8NQEw=="
+          "hash": "62te7TJi5v6oM8AJBZ4PMQ=="
         }
       },
       "is_incremental": false,
@@ -776,12 +776,15 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
       "type": "Conceptual",
       "source_relative_path": "specs/design-spec.md",
       "output": {
         ".html": {
           "relative_path": "specs/design-spec.html",
-          "hash": "7KVdE8aWoDSNZgla7VhKZA=="
+          "hash": "DSiWgN9PUdtVHlukfJ5Sxg=="
         }
       },
       "is_incremental": false,

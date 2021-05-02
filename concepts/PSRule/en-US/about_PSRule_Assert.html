@@ -92,6 +92,7 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 <li><a href="#in">In</a> - The field value must be included in the set.</li>
 <li><a href="#isarray">IsArray</a> - The field value must be an array.</li>
 <li><a href="#isboolean">IsBoolean</a> - The field value must be a boolean.</li>
+<li><a href="#isdatetime">IsDateTime</a> - The field value must be a DateTime.</li>
 <li><a href="#isinteger">IsInteger</a> - The field value must be an integer.</li>
 <li><a href="#islower">IsLower</a> - The field value must include only lowercase characters.</li>
 <li><a href="#isnumeric">IsNumeric</a> - The field value must be a numeric type.</li>
@@ -105,11 +106,13 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 <li><a href="#notin">NotIn</a> - The field value must not be included in the set.</li>
 <li><a href="#notmatch">NotMatch</a> - The field value does not match a regular expression pattern.</li>
 <li><a href="#notnull">NotNull</a> - The field value must not be null.</li>
+<li><a href="#notwithinpath">NotWithinPath</a> - The field must not be within the specified path.</li>
 <li><a href="#null">Null</a> - The field value must not exist or be null.</li>
 <li><a href="#nullorempty">NullOrEmpty</a> - The object must not have the specified field or it must be empty.</li>
 <li><a href="#typeof">TypeOf</a> - The field value must be of the specified type.</li>
 <li><a href="#startswith">StartsWith</a> - The field value must match at least one prefix.</li>
 <li><a href="#version">Version</a> - The field value must be a semantic version string.</li>
+<li><a href="#withinpath">WithinPath</a> - The field value must be within the specified path.</li>
 </ul>
 <p>The <code>$Assert</code> variable can only be used within a rule definition block or script pre-conditions.</p>
 <h3 id="using-assertion-methods">Using assertion methods</h3>
@@ -257,7 +260,7 @@ When set, detection by file extension is skipped.</li>
 </code></pre>
 <h3 id="filepath">FilePath</h3>
 <p>The <code>FilePath</code> assertion method checks the file exists.
-Checks use OS case-sensitivity rules.</p>
+Checks use file system case-sensitivity rules.</p>
 <p>The following parameters are accepted:</p>
 <ul>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
@@ -294,6 +297,7 @@ When the field value is:</p>
 <li>An integer or float, a numerical comparison is used.</li>
 <li>An array, the number of elements is compared.</li>
 <li>A string, the length of the string is compared.</li>
+<li>A DateTime, the number of days from the current time is compared.</li>
 </ul>
 <p>The following parameters are accepted:</p>
 <ul>
@@ -324,6 +328,7 @@ When the field value is:</p>
 <li>An integer or float, a numerical comparison is used.</li>
 <li>An array, the number of elements is compared.</li>
 <li>A string, the length of the string is compared.</li>
+<li>A DateTime, the number of days from the current time is compared.</li>
 </ul>
 <p>The following parameters are accepted:</p>
 <ul>
@@ -574,6 +579,33 @@ By default strings are not converted.</li>
     $Assert.IsBoolean($TargetObject, 'Value1', $True)
 }
 </code></pre>
+<h3 id="isdatetime">IsDateTime</h3>
+<p>The <code>IsBoolean</code> assertion method checks the field value is a DateTime type.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+<li><code>convert</code> (optional) - Try to convert strings.
+By default strings are not converted.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is null.</em></li>
+<li><em>The field value '{1}' of type {0} is not [DateTime].</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'IsBoolean' {
+    # Require Value1 to be a DateTime
+    $Assert.IsDateTime($TargetObject, 'Value1')
+
+    # Require Value1 to be a DateTime or a DateTime string
+    $Assert.IsDateTime($TargetObject, 'Value1', $True)
+}
+</code></pre>
 <h3 id="isinteger">IsInteger</h3>
 <p>The <code>IsInteger</code> assertion method checks the field value is a integer type.
 The following types are considered integer types <code>int</code>, <code>long</code>, <code>byte</code>.</p>
@@ -716,6 +748,7 @@ When the field value is:</p>
 <li>An integer or float, a numerical comparison is used.</li>
 <li>An array, the number of elements is compared.</li>
 <li>A string, the length of the string is compared.</li>
+<li>A DateTime, the number of days from the current time is compared.</li>
 </ul>
 <p>The following parameters are accepted:</p>
 <ul>
@@ -746,14 +779,15 @@ When the field value is:</p>
 <li>An integer or float, a numerical comparison is used.</li>
 <li>An array, the number of elements is compared.</li>
 <li>A string, the length of the string is compared.</li>
-<li><code>convert</code> (optional) - Convert numerical strings and use a numerical comparison instead of using string length.
-By default the string length is compared.</li>
+<li>A DateTime, the number of days from the current time is compared.</li>
 </ul>
 <p>The following parameters are accepted:</p>
 <ul>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
 <li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
 <li><code>value</code> - A integer to compare the field value against.</li>
+<li><code>convert</code> (optional) - Convert numerical strings and use a numerical comparison instead of using string length.
+By default the string length is compared.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
@@ -887,6 +921,34 @@ This is a case insensitive compare.</li>
 <pre><code class="lang-powershell">Rule 'NotNull' {
     $Assert.NotNull($TargetObject, 'Name')
     $Assert.NotNull($TargetObject, 'tag.Environment')
+}
+</code></pre>
+<h3 id="notwithinpath">NotWithinPath</h3>
+<p>The <code>NotWithinPath</code> assertion method checks the file is not within a specified path.
+Checks use file system case-sensitivity rules by default.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field containing a file path.
+When the field is <code>InputFileInfo</code> or <code>FileInfo</code>, PSRule will automatically resolve the file path.</li>
+<li><code>path</code> - An array of one or more directory paths to check.
+Only one path must match.</li>
+<li><code>caseSensitive</code> (optional) - Determines if case-sensitive path matching is used.
+This can be set to <code>$True</code> or <code>$False</code>.
+When not set or <code>$Null</code>, the case-sensitivity rules of the working path file system will be used.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The parameter 'path' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The file '{0}' is within the path '{1}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'NotWithinPath' {
+    # The file must not be within either policy/ or security/ sub-directories.
+    $Assert.NotWithinPath($TargetObject, 'FullName', @('policy/', 'security/'));
 }
 </code></pre>
 <h3 id="null">Null</h3>
@@ -1061,6 +1123,34 @@ A constraint can optionally be provided to require the semantic version to be wi
 
 Rule 'MinimumVersion' {
     $Assert.Version($TargetObject, 'version', '&gt;=1.2.3')
+}
+</code></pre>
+<h3 id="withinpath">WithinPath</h3>
+<p>The <code>WithinPath</code> assertion method checks if the file path is within a required path.
+Checks use file system case-sensitivity rules by default.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field containing a file path.
+When the field is <code>InputFileInfo</code> or <code>FileInfo</code>, PSRule will automatically resolve the file path.</li>
+<li><code>path</code> - An array of one or more directory paths to check.
+Only one path must match.</li>
+<li><code>caseSensitive</code> (optional) - Determines if case-sensitive path matching is used.
+This can be set to <code>$True</code> or <code>$False</code>.
+When not set or <code>$Null</code>, the case-sensitivity rules of the working path file system will be used.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The parameter 'path' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The file '{0}' is not within the path '{1}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'WithinPath' {
+    # Require the file to be within either policy/ or security/ sub-directories.
+    $Assert.WithinPath($TargetObject, 'FullName', @('policy/', 'security/'));
 }
 </code></pre>
 <h3 id="advanced-usage">Advanced usage</h3>
