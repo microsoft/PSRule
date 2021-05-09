@@ -168,6 +168,7 @@ namespace PSRule.Pipeline
             Option.Input.Format = Option.Input.Format ?? InputOption.Default.Format;
             Option.Output = new OutputOption(option.Output);
             Option.Output.Outcome = Option.Output.Outcome ?? OutputOption.Default.Outcome;
+            Option.Output.Banner = Option.Output.Banner ?? OutputOption.Default.Banner;
             return this;
         }
 

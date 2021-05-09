@@ -23,6 +23,7 @@ input:
 
 # Configure output
 output:
+  banner: 1
   culture:
   - 'en-CC'
   - 'en-DD'

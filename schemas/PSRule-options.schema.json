@@ -312,6 +312,28 @@
                     ],
                     "default": "Detail"
                 },
+                "banner": {
+                    "title": "Banner format",
+                    "description": "The information displayed for Assert-PSRule banner. The default is Default which includes Title, Source, and SupportLinks.",
+                    "markdownDescription": "The information displayed for Assert-PSRule banner. The default is `Default` which includes `Title`, `Source`, and `SupportLinks`. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#outputbanner)",
+                    "oneOf": [
+                        {
+                            "type": "string",
+                            "enum": [
+                                "None",
+                                "Title",
+                                "Source",
+                                "SupportLinks",
+                                "Default",
+                                "Minimal"
+                            ]
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ],
+                    "default": "Default"
+                },
                 "culture": {
                     "type": "array",
                     "title": "Culture",

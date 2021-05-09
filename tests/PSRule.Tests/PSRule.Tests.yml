@@ -62,6 +62,7 @@ logging:
 # Configure output options
 output:
   as: Summary
+  banner: Minimal
   culture: [ 'en-CC' ]
   encoding: UTF7
   format: Json
