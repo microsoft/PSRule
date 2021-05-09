@@ -18,10 +18,12 @@ namespace PSRule.Configuration
         private const OutputFormat DEFAULT_FORMAT = OutputFormat.None;
         private const RuleOutcome DEFAULT_OUTCOME = RuleOutcome.Processed;
         private const OutputStyle DEFAULT_STYLE = OutputStyle.Client;
+        private const BannerFormat DEFAULT_BANNER = BannerFormat.Default;
 
         internal static readonly OutputOption Default = new OutputOption
         {
             As = DEFAULT_AS,
+            Banner = DEFAULT_BANNER,
             Encoding = DEFAULT_ENCODING,
             Format = DEFAULT_FORMAT,
             Outcome = DEFAULT_OUTCOME,
@@ -31,6 +33,7 @@ namespace PSRule.Configuration
         public OutputOption()
         {
             As = null;
+            Banner = null;
             Culture = null;
             Encoding = null;
             Format = null;
@@ -44,6 +47,7 @@ namespace PSRule.Configuration
                 return;
 
             As = option.As;
+            Banner = option.Banner;
             Culture = option.Culture;
             Encoding = option.Encoding;
             Format = option.Format;
@@ -61,6 +65,7 @@ namespace PSRule.Configuration
         {
             return other != null &&
                 As == other.As &&
+                Banner == other.Banner &&
                 Culture == other.Culture &&
                 Encoding == other.Encoding &&
                 Format == other.Format &&
@@ -75,6 +80,7 @@ namespace PSRule.Configuration
             {
                 int hash = 17;
                 hash = hash * 23 + (As.HasValue ? As.Value.GetHashCode() : 0);
+                hash = hash * 23 + (Banner.HasValue ? Banner.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Culture != null ? Culture.GetHashCode() : 0);
                 hash = hash * 23 + (Encoding.HasValue ? Encoding.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Format.HasValue ? Format.Value.GetHashCode() : 0);
@@ -90,6 +96,7 @@ namespace PSRule.Configuration
             var result = new OutputOption(o1)
             {
                 As = o1.As ?? o2.As,
+                Banner = o1.Banner ?? o2.Banner,
                 Culture = o1.Culture ?? o2.Culture,
                 Encoding = o1.Encoding ?? o2.Encoding,
                 Format = o1.Format ?? o2.Format,
@@ -106,6 +113,15 @@ namespace PSRule.Configuration
         [DefaultValue(null)]
         public ResultFormat? As { get; set; }
 
+        /// <summary>
+        /// The information displayed for Assert-PSRule banner.
+        /// </summary>
+        [DefaultValue(null)]
+        public BannerFormat? Banner { get; set; }
+
+        /// <summary>
+        /// One or more cultures to use for generating output.
+        /// </summary>
         [DefaultValue(null)]
         public string[] Culture { get; set; }
 
@@ -121,6 +137,9 @@ namespace PSRule.Configuration
         [DefaultValue(null)]
         public OutputFormat? Format { get; set; }
 
+        /// <summary>
+        /// The outcome of rule results to return.
+        /// </summary>
         [DefaultValue(null)]
         public RuleOutcome? Outcome { get; set; }
 
@@ -130,6 +149,9 @@ namespace PSRule.Configuration
         [DefaultValue(null)]
         public string Path { get; set; }
 
+        /// <summary>
+        /// The style that results will be presented in.
+        /// </summary>
         [DefaultValue(null)]
         public OutputStyle? Style { get; set; }
 
@@ -137,6 +159,9 @@ namespace PSRule.Configuration
         {
             if (env.TryEnum("PSRULE_OUTPUT_AS", out ResultFormat value))
                 As = value;
+
+            if (env.TryEnum("PSRULE_OUTPUT_BANNER", out BannerFormat banner))
+                Banner = banner;
 
             if (env.TryStringArray("PSRULE_OUTPUT_CULTURE", out string[] culture))
                 Culture = culture;
@@ -161,6 +186,9 @@ namespace PSRule.Configuration
         {
             if (index.TryPopEnum("Output.As", out ResultFormat value))
                 As = value;
+
+            if (index.TryPopEnum("Output.Banner", out BannerFormat banner))
+                Banner = banner;
 
             if (index.TryPopStringArray("Output.Culture", out string[] culture))
                 Culture = culture;

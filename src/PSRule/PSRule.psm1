@@ -1108,6 +1108,11 @@ function New-PSRuleOption {
         [ValidateSet('Detail', 'Summary')]
         [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
 
+        # Sets the Output.Banner option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Default', 'Minimal', 'None', 'Title', 'Source', 'SupportLinks')]
+        [PSRule.Configuration.BannerFormat]$OutputBanner = 'Default',
+
         # Sets the Output.Culture option
         [Parameter(Mandatory = $False)]
         [String[]]$OutputCulture,
@@ -1322,6 +1327,11 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [ValidateSet('Detail', 'Summary')]
         [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
+
+        # Sets the Output.Banner option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Default', 'Minimal', 'None', 'Title', 'Source', 'SupportLinks')]
+        [PSRule.Configuration.BannerFormat]$OutputBanner = 'Default',
 
         # Sets the Output.Culture option
         [Parameter(Mandatory = $False)]
@@ -1948,6 +1958,11 @@ function SetOptions {
         [ValidateSet('Detail', 'Summary')]
         [PSRule.Configuration.ResultFormat]$OutputAs = 'Detail',
 
+        # Sets the Output.Banner option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Default', 'Minimal', 'None', 'Title', 'Source', 'SupportLinks')]
+        [PSRule.Configuration.BannerFormat]$OutputBanner = 'Default',
+
         # Sets the Output.Culture option
         [Parameter(Mandatory = $False)]
         [String[]]$OutputCulture,
@@ -2078,6 +2093,11 @@ function SetOptions {
         # Sets option Output.As
         if ($PSBoundParameters.ContainsKey('OutputAs')) {
             $Option.Output.As = $OutputAs;
+        }
+
+        # Sets option Output.As
+        if ($PSBoundParameters.ContainsKey('OutputBanner')) {
+            $Option.Output.Banner = $OutputBanner;
         }
 
         # Sets option Output.Culture

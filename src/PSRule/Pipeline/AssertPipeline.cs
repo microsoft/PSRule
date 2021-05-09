@@ -93,7 +93,7 @@ namespace PSRule.Pipeline
                     Option = option;
                     Banner();
                     Source(source);
-                    Help(source);
+                    SupportLinks(source);
                 }
 
                 public void Error(ErrorRecord errorRecord)
@@ -185,6 +185,9 @@ namespace PSRule.Pipeline
 
                 protected void Banner()
                 {
+                    if (!Option.Output.Banner.GetValueOrDefault(BannerFormat.Default).HasFlag(BannerFormat.Title))
+                        return;
+
                     WriteLine(FormatterStrings.Banner.Replace("\\n", Environment.NewLine));
                     LineBreak();
                 }
@@ -203,6 +206,9 @@ namespace PSRule.Pipeline
 
                 private void Source(Source[] source)
                 {
+                    if (!Option.Output.Banner.GetValueOrDefault(BannerFormat.Default).HasFlag(BannerFormat.Source))
+                        return;
+
                     var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
                     WriteLineFormat(FormatterStrings.PSRuleVersion, version);
                     var list = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -217,8 +223,11 @@ namespace PSRule.Pipeline
                     LineBreak();
                 }
 
-                private void Help(Source[] source)
+                private void SupportLinks(Source[] source)
                 {
+                    if (!Option.Output.Banner.GetValueOrDefault(BannerFormat.Default).HasFlag(BannerFormat.SupportLinks))
+                        return;
+
                     WriteLine(OUTPUT_SEPARATOR_BAR);
                     WriteLine(FormatterStrings.HelpDocs);
                     WriteLine(FormatterStrings.HelpContribute);

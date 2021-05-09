@@ -27,6 +27,7 @@ The following workspace options are available for use:
 - [Logging.RuleFail](#loggingrulefail)
 - [Logging.RulePass](#loggingrulepass)
 - [Output.As](#outputas)
+- [Output.Banner](#outputbanner)
 - [Output.Culture](#outputculture)
 - [Output.Encoding](#outputencoding)
 - [Output.Format](#outputformat)
@@ -1305,6 +1306,68 @@ variables:
   value: Summary
 ```
 
+### Output.Banner
+
+The information displayed for PSRule banner.
+This option is only applicable when using `Assert-PSRule` cmdlet.
+
+The following information can be shown or hidden by configuring this option.
+
+- `Title` (1) - Shows the PSRule title ASCII text.
+- `Source` (2) - Shows rules module versions used in this run.
+- `SupportLinks` (4) - Shows supporting links for PSRule and rules modules.
+
+Additionally the following rollup options exist:
+
+- `Default` - Shows `Title`, `Source`, and `SupportLinks`.
+This is the default option.
+- `Minimal` - Shows `Source`.
+
+This option can be configured using one of the named values described above.
+Alternatively, this value can be configured by specifying a bit mask as an integer.
+For example `6` would show `Source`, and `SupportLinks`.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the OutputBanner parameter
+$option = New-PSRuleOption -OutputBanner Minimal;
+```
+
+```powershell
+# PowerShell: Using the Output.Banner hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Banner' = 'Minimal' };
+```
+
+```powershell
+# PowerShell: Using the OutputBanner parameter to set YAML
+Set-PSRuleOption -OutputBanner Minimal;
+```
+
+```yaml
+# YAML: Using the output/banner property
+output:
+  banner: OutputBanner
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_OUTPUT_BANNER=Minimal
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_OUTPUT_BANNER: Minimal
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_OUTPUT_BANNER
+  value: Minimal
+```
+
 ### Output.Culture
 
 Specified the name of one or more cultures to use for generating output.
@@ -1907,6 +1970,7 @@ logging:
 
 output:
   as: Summary
+  banner: Minimal
   culture:
   - en-US
   encoding: UTF8
@@ -1993,6 +2057,7 @@ logging:
 
 output:
   as: Detail
+  banner: Default
   culture: [ ]
   encoding: Default
   format: None

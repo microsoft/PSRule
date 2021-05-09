@@ -974,6 +974,45 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Output.Banner' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Output.Banner | Should -Be 'Default';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Output.Banner' = 'Minimal' };
+            $option.Output.Banner | Should -Be 'Minimal';
+
+            $option = New-PSRuleOption -Option @{ 'Output.Banner' = 1 };
+            $option.Output.Banner | Should -Be 'Title';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Output.Banner | Should -Be 'Minimal';
+
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests2.yml');
+            $option.Output.Banner | Should -Be 'Title';
+        }
+
+        It 'from Environment' {
+            try {
+                $Env:PSRULE_OUTPUT_BANNER = 'Minimal';
+                $option = New-PSRuleOption;
+                $option.Output.Banner | Should -Be 'Minimal';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_OUTPUT_BANNER' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -OutputBanner 'Minimal' -Path $emptyOptionsFilePath;
+            $option.Output.Banner | Should -Be 'Minimal';
+        }
+    }
+
     Context 'Read Output.Culture' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -1444,6 +1483,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputAs 'Summary' @optionParams;
             $option.Output.As | Should -Be 'Summary';
+        }
+    }
+
+    Context 'Read Output.Banner' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -OutputBanner 'Minimal' @optionParams;
+            $option.Output.Banner | Should -Be 'Minimal';
         }
     }
 

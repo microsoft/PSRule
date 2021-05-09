@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since v1.3.0:
+
+- General improvements:
+  - PSRule banner can be configured in output when using `Assert-PSRule`. [#708](https://github.com/microsoft/PSRule/issues/708)
+
 ## v1.3.0
 
 What's changed since v1.2.0:
