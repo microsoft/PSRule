@@ -10,6 +10,8 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.4.0-B2105004 (pre-release)
+
 What's changed since v1.3.0:
 
 - General improvements:
