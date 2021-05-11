@@ -2,6 +2,14 @@
 
 This is an example of how PSRule can be used to validate Kubernetes resources to match an internal metadata and configuration standard.
 
+> [!NOTE]
+> A pre-built module to validate Kubernetes resources already exists.
+> This scenario demonstrates the process and features of PSRule for illustration purposes.
+>
+> Consider using or contributing these pre-built rule modules instead:
+>
+> - [PSRule.Rules.Kubernetes]
+
 This scenario covers the following:
 
 - Defining a basic rule.
@@ -15,7 +23,8 @@ In this scenario we will use a YAML file:
 
 ## Define rules
 
-To validate our Kubernetes resources, we need to define some rules. Rules are defined by using the `Rule` keyword in a file ending with the `.Rule.ps1` extension.
+To validate our Kubernetes resources, we need to define some rules.
+Rules are defined by using the `Rule` keyword in a file ending with the `.Rule.ps1` extension.
 
 Our business rules for configuration Kubernetes resources can be defined with the following dot points:
 
@@ -29,7 +38,8 @@ Our business rules for configuration Kubernetes resources can be defined with th
 
 In the example below:
 
-- We use `metadata.Name` directly after the `Rule` keyword to name the rule definition. Each rule must be named uniquely.
+- We use `metadata.Name` directly after the `Rule` keyword to name the rule definition.
+Each rule must be named uniquely.
 - The `# Synopsis: ` comment is used to add additional metadata interpreted by PSRule.
 - One or more conditions are defined within the curly braces `{ }`.
 - The rule definition is saved within a file named `kubernetes.Rule.ps1`.
@@ -55,8 +65,10 @@ PSRule includes several convenience keywords such as `AllOf`, `AnyOf`, `Exists`,
 In the example below:
 
 - We use the `Exists` keyword to check that the resource has the `app.kubernetes.io/name` label set.
-  - By default, PSRule will step through nested properties separated by a `.`. i.e. `labels` is a property of `metadata`.
-  - Kubernetes supports and recommends label namespaces, which often use `.` in their name. PSRule supports this by enclosing the field name (`app.kubernetes.io/name`) in apostrophes (`'`) so that `app.kubernetes.io/name` is checked instead of `app`.
+  - By default, PSRule will step through nested properties separated by a `.`.
+  i.e. `labels` is a property of `metadata`.
+  - Kubernetes supports and recommends label namespaces, which often use `.` in their name.
+  PSRule supports this by enclosing the field name (`app.kubernetes.io/name`) in apostrophes (`'`) so that `app.kubernetes.io/name` is checked instead of `app`.
 
 ```powershell
 # Synopsis: Must have the app.kubernetes.io/name label
@@ -87,14 +99,17 @@ Rule 'metadata.Component' {
 
 ## Use custom binding
 
-Before processing rules, PSRule binds `TargetName` and `TargetType` properties to the pipeline object. These properties are used for filtering and displaying results.
+Before processing rules, PSRule binds `TargetName` and `TargetType` properties to the pipeline object.
+These properties are used for filtering and displaying results.
 
-The default properties that PSRule binds are different from how Kubernetes resources are structured. Kubernetes uses:
+The default properties that PSRule binds are different from how Kubernetes resources are structured.
+Kubernetes uses:
 
 - `metadata.name` to store the name of a resource.
 - `kind` to store the type of resource.
 
-The default bindings can be updated by providing custom property names or a custom script. To change binding property names set the `Binding.TargetName` and `Binding.TargetType` configuration options.
+The default bindings can be updated by providing custom property names or a custom script.
+To change binding property names set the `Binding.TargetName` and `Binding.TargetType` configuration options.
 
 The following example shows how to set the options using a YAML configuration file:
 
@@ -109,7 +124,8 @@ binding:
   - kind
 ```
 
-These options can be set in the file `.\ps-rule.yaml` to be automatically loaded at when PSRule cmdlets are called. To set these configuration options either edit the file manually or use the following command.
+These options can be set in the file `.\ps-rule.yaml` to be automatically loaded at when PSRule cmdlets are called.
+To set these configuration options either edit the file manually or use the following command.
 
 ```powershell
 # Set options in ps-rule.yaml
@@ -127,7 +143,8 @@ These options will be passed to `Invoke-PSRule` using the `-Option` parameter in
 
 ## Define preconditions
 
-Currently the `metadata.Name` rule defined in a previous step will be executed for any type of object. Kubernetes has many types of built-in resource such as _Services_, _Deployments_, _Namespaces_, _Pods_ and _ClusterRoles_.
+Currently the `metadata.Name` rule defined in a previous step will be executed for any type of object.
+Kubernetes has many types of built-in resource such as _Services_, _Deployments_, _Namespaces_, _Pods_ and _ClusterRoles_.
 
 By defining a precondition, we can ensure that the rule is only processed for _Services_ or _Deployments_ to match our business rules.
 
@@ -154,7 +171,8 @@ Rule 'metadata.Name' -Type 'Deployment', 'Service' {
 }
 ```
 
-Using a type precondition satisfies our business rules and will deliver faster performance then using a script block. An example using a script block precondition is also shown below.
+Using a type precondition satisfies our business rules and will deliver faster performance then using a script block.
+An example using a script block precondition is also shown below.
 
 ```powershell
 # Synopsis: Must have the app.kubernetes.io/name label
@@ -165,7 +183,8 @@ Rule 'metadata.Name' -If { $TargetObject.kind -eq 'Deployment' -or $TargetObject
 
 ## Complete remaining rules
 
-The remaining rule definitions from our defined business rules are included below. Each follows a similar pattern and builds on the previous sections.
+The remaining rule definitions from our defined business rules are included below.
+Each follows a similar pattern and builds on the previous sections.
 
 In the example below:
 
@@ -200,18 +219,26 @@ Rule 'deployment.ResourcesSet' -Type 'Deployment' {
 
 ## Execute rules
 
-With some rules defined, the next step is to execute them. For this example, we'll use `Invoke-PSRule` to get the result for each rule. The `Test-PSRuleTarget` cmdlet can be used if only a _true_ or _false_ is required.
+With some rules defined, the next step is to execute them.
+For this example, we'll use `Invoke-PSRule` to get the result for each rule.
+The `Test-PSRuleTarget` cmdlet can be used if only a _true_ or _false_ is required.
 
-In our example we are using the YAML format to store Kubernetes resources. PSRule has built-in support for YAML so we can import these files directly from disk or process output from a command such as `kubectl`.
+In our example we are using the YAML format to store Kubernetes resources.
+PSRule has built-in support for YAML so we can import these files directly from disk or process output from a command such as `kubectl`.
 
 In the examples below:
 
-- The `-InputPath` parameter is used to load objects from disk as YAML. YAML is automatically detected based on the `.yaml` file extension. Alternatively the `-Foramt Yaml` parameter can be used.
-- Binding parameters are read from `ps-rule.yaml` in the current working path. Alternatively the `-Option` parameter could be used to specify an alternative file path.
+- The `-InputPath` parameter is used to load objects from disk as YAML.
+YAML is automatically detected based on the `.yaml` file extension.
+Alternatively the `-Foramt Yaml` parameter can be used.
+- Binding parameters are read from `ps-rule.yaml` in the current working path.
+Alternatively the `-Option` parameter could be used to specify an alternative file path.
 - `kubectl` is called with the `-o yaml` to output resources as YAML.
 - `kubectl` is piped to `Out-String` to convert the multi-line output to a single string.
 - The `-Format` parameter informs PSRule that the string is YAML and it should convert the string into structured objects.
-- The `-ObjectPath` parameter is used with the output from `kubectl`. This is required because the output from `kubectl` is a collection of resources instead of individual resources. Specifically `-ObjectPath items` gets the resources from the `items` property of the output.
+- The `-ObjectPath` parameter is used with the output from `kubectl`.
+This is required because the output from `kubectl` is a collection of resources instead of individual resources.
+Specifically `-ObjectPath items` gets the resources from the `items` property of the output.
 
 ```powershell
 # Validate resources from file
@@ -263,3 +290,5 @@ metadata.Version                    Fail       Must have the app.kubernetes.io/v
 - [kubernetes.Rule.ps1](kubernetes.Rule.ps1) - Example rules for validating Kubernetes resources.
 - [resources.yaml](resources.yaml) - An example Kubernetes manifest.
 - [ps-rule.yaml](ps-rule.yaml) - PSRule options configuration file.
+
+[PSRule.Rules.Kubernetes]: https://github.com/Microsoft/PSRule.Rules.Kubernetes

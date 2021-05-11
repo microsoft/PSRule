@@ -574,8 +574,8 @@ Configuration values can be overridden at different scopes.
 This option can be specified using:
 
 ```powershell
-# PowerShell: Using the BaselineConfiguration option with a hashtable
-$option = New-PSRuleOption -BaselineConfiguration @{ LOCAL_APPSERVICEMININSTANCECOUNT = 2 };
+# PowerShell: Using the Configuration option with a hashtable
+$option = New-PSRuleOption -Configuration @{ LOCAL_APPSERVICEMININSTANCECOUNT = 2 };
 ```
 
 ```yaml

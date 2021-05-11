@@ -37,12 +37,12 @@ PSRule | Validate infrastructure as code (IaC) and objects using PowerShell rule
 ## Visual Studio Code extension
 
 You can download and install the companion extension for Visual Studio Code from the Visual Studio Marketplace.
+The extension is available to download in to release channels.
 
-Extension | Description | Downloads / instructions
---------- | ----------- | ------------------------
-PSRule    | An extension for IT Pros using the PSRule PowerShell module. | [latest][extension-vscode] / [instructions][install]
-
-![extension-vscode-ci-badge] ![extension-vscode-version-badge] ![extension-vscode-installs-badge]
+Channel | Description | Version/ installs
+------- | ----------- | ---
+[Preview][ext-preview] | More frequent releases but more likely to contain bugs. | [![Preview][ext-preview-version-badge]][ext-preview] ![ext-preview-installs-badge]
+[Stable][ext-stable] | Less frequent releases, with more user testing, experimental features are disabled. | [![Stable][ext-stable-version-badge]][ext-stable] ![ext-stable-installs-badge]
 
 ## Azure DevOps extension
 
@@ -85,10 +85,12 @@ Module                    | Description | Version / downloads
 [module-ci-badge]: https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=main
 [module-version-badge]: https://img.shields.io/powershellgallery/v/PSRule.svg?label=PowerShell%20Gallery&color=brightgreen
 [module-downloads-badge]: https://img.shields.io/powershellgallery/dt/PSRule.svg?color=brightgreen
-[extension-vscode]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
-[extension-vscode-ci-badge]: https://dev.azure.com/bewhite/PSRule-vscode/_apis/build/status/PSRule-vscode-CI?branchName=main
-[extension-vscode-version-badge]: https://vsmarketplacebadge.apphb.com/version/bewhite.psrule-vscode-preview.svg
-[extension-vscode-installs-badge]: https://vsmarketplacebadge.apphb.com/installs-short/bewhite.psrule-vscode-preview.svg
+[ext-preview]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
+[ext-preview-version-badge]: https://vsmarketplacebadge.apphb.com/version/bewhite.psrule-vscode-preview.svg
+[ext-preview-installs-badge]: https://vsmarketplacebadge.apphb.com/installs-short/bewhite.psrule-vscode-preview.svg
+[ext-stable]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode
+[ext-stable-version-badge]: https://vsmarketplacebadge.apphb.com/version/bewhite.psrule-vscode.svg
+[ext-stable-installs-badge]: https://vsmarketplacebadge.apphb.com/installs-short/bewhite.psrule-vscode.svg
 [extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
 [extension-pipelines-ci-badge]: https://dev.azure.com/bewhite/PSRule-pipelines/_apis/build/status/PSRule-pipelines-CI?branchName=main
 [extension-pipelines-version-badge]: https://vsmarketplacebadge.apphb.com/version/bewhite.ps-rule.svg

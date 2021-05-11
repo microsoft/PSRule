@@ -9,7 +9,6 @@ Describes usage of documentation within PSRule.
 ## LONG DESCRIPTION
 
 PSRule includes a built-in documentation system that provide culture specific help and metadata for rules.
-
 Rule documentation is composed of markdown files that can be optionally shipped with a module.
 
 ### Getting documentation
@@ -106,6 +105,8 @@ The markdown of each file uses following structure.
 
 Optionally, one or more annotations formatted as YAML key value pairs can be included.
 i.e. `severity: Critical`
+
+Additional sections such as `EXAMPLES` can be included although are not exposed with `Get-PSRuleHelp`.
 
 ## NOTE
 
