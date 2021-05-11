@@ -7,9 +7,10 @@ For example, Azure resources can be validated to match and internal standard or 
 > A pre-built module to validate Azure resources already exists.
 > This scenario demonstrates the process and features of PSRule for illustration purposes.
 >
-> Consider using these pre-built rule modules instead:
+> Consider using or contributing these pre-built rule modules instead:
 >
 > - [PSRule.Rules.Azure]
+> - [PSRule.Rules.CAF]
 
 This scenario covers the following:
 
@@ -45,7 +46,8 @@ So start we are going to define a `storageAccounts.UseHttps` rule, which will va
 
 In the example below:
 
-- We use `storageAccounts.UseHttps` directly after the `Rule` keyword to name the rule definition. Each rule must be named uniquely.
+- We use `storageAccounts.UseHttps` directly after the `Rule` keyword to name the rule definition.
+Each rule must be named uniquely.
 - The `# Synopsis: ` comment is used to add additional metadata interpreted by PSRule.
 - One or more conditions are defined within the curly braces `{ }`.
 - The rule definition is saved within a file named `storageAccounts.Rule.ps1`.
@@ -201,7 +203,8 @@ function global:NameOfFunction {
 }
 ```
 
-In our example, we are going to define a `ResourceType` function in a file named `common.Rule.ps1`. This function will be used by preconditions to check the type of Azure resource.
+In our example, we are going to define a `ResourceType` function in a file named `common.Rule.ps1`.
+This function will be used by preconditions to check the type of Azure resource.
 
 ```powershell
 # A custom function to filter by resource type
@@ -234,5 +237,6 @@ Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAcc
 - [resources.json](resources.json) - Offline export of Azure resources.
 - [common.Rule.ps1](common.Rule.ps1) - ResourceType helper function.
 
-[azure-docs-secure-transfer]: https://docs.microsoft.com/en-us/azure/storage/common/storage-require-secure-transfer
+[azure-docs-secure-transfer]: https://docs.microsoft.com/azure/storage/common/storage-require-secure-transfer
 [PSRule.Rules.Azure]: https://github.com/Microsoft/PSRule.Rules.Azure
+[PSRule.Rules.CAF]: https://github.com/Microsoft/PSRule.Rules.CAF
