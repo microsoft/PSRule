@@ -24,7 +24,7 @@
       "output": {
         ".html": {
           "relative_path": "CHANGELOG-v1.html",
-          "hash": "ca+bjzA1XsaHRMomo4TuIw=="
+          "hash": "fElF2Fzc6lUO/ADcZ9rfpg=="
         }
       },
       "is_incremental": false,
@@ -204,7 +204,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Docs.html",
-          "hash": "OluhQhtY0cdQEm6TjrW2ng=="
+          "hash": "+vs0ec4chqH1BG5gxqNmUg=="
         }
       },
       "is_incremental": false,
@@ -216,7 +216,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "/p5gIYR0R241JF8d7o8D2g=="
+          "hash": "u8Qr8OjdPAIb7V4TDUWWOw=="
         }
       },
       "is_incremental": false,
@@ -252,7 +252,7 @@
       "output": {
         ".html": {
           "relative_path": "features.html",
-          "hash": "+JAZUf/WC7il9DWwyF83nQ=="
+          "hash": "/Yi+V89Zf0IyFhjcnTVpRA=="
         }
       },
       "is_incremental": false,
@@ -264,7 +264,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "YfyJeJysJZYsgb6Mg/qFHg=="
+          "hash": "kHELixZ3Zm9c/jIPsh60Cg=="
         }
       },
       "is_incremental": false,
@@ -311,7 +311,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/azure-resources/azure-resources.html",
-          "hash": "6I1B6IaJuzO0Z6VN9Db37Q=="
+          "hash": "gw9B59VikHqqfVNYmOAqNQ=="
         }
       },
       "is_incremental": false,
@@ -542,7 +542,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/kubernetes-resources/kubernetes-resources.html",
-          "hash": "5Hfg1lamdwpFMKKD8p/GUw=="
+          "hash": "Vi1kjc+XQ9QSKa32cKbxuQ=="
         }
       },
       "is_incremental": false,

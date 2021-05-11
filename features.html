@@ -97,7 +97,14 @@ Additionally, PSRule has extensions for:</p>
 For installation options see <a href="install-instructions.html">install instructions</a>.</p>
 <h2 id="reusable">Reusable</h2>
 <p>Define rules once then reuse and share rules across teams or organizations.
-Rules can be packaged up into a module then distributed.</p>
+The following built-in features improve portability:</p>
+<ul>
+<li><a href="concepts/PSRule/en-US/about_PSRule_Options.html">Configuration</a> - PSRule and rules can be configured.</li>
+<li><a href="concepts/PSRule/en-US/about_PSRule_Baseline.html">Baselines</a> - An artifact containing rules and configuration for a scenario.</li>
+<li><a href="concepts/PSRule/en-US/about_PSRule_Options.html#suppression">Suppression</a> - Handle exceptions to a rule.</li>
+<li><a href="concepts/PSRule/en-US/about_PSRule_Docs.html">Documentation</a> - Provide detailed guidance to resolve issues.</li>
+</ul>
+<p>Rules can be packaged up into a module then distributed.</p>
 <p>PSRule uses PowerShell modules as the standard way to distribute rules.
 Modules containing rules can be published on the PowerShell Gallery or network share using the same process as regular PowerShell modules.</p>
 <p>For a walk through see <a href="scenarios/rule-module/rule-module.html">Packaging rules in a module</a>.</p>
@@ -107,16 +114,42 @@ This allows not only the cause of the issue to be identified but detailed instru
 <p>For more information see <a href="concepts/PSRule/en-US/about_PSRule_Docs.html">about_PSRule_Docs</a>.</p>
 <h2 id="frequently-asked-questions-faq">Frequently Asked Questions (FAQ)</h2>
 <h3 id="how-is-psrule-different-to-pester">How is PSRule different to Pester?</h3>
-<p>PSRule is a framework for preforming validation against objects using PowerShell.</p>
-<p>Pester is a framework for running unit tests to execute and validate PowerShell commands.</p>
-<p>While this may be a subtle difference, for PSRule this means:</p>
+<p>PSRule is a framework for validating infrastructure as code (IaC) and objects using PowerShell.
+Some features include:</p>
 <ul>
-<li>Rules understand which objects they apply to.</li>
-<li>Rules can be reused between projects and optionally packaged into a module.</li>
-<li>PowerShell objects can be validated on the pipeline.</li>
-<li>Objects that originate from outside PowerShell can be imported.</li>
-<li>Optimized keywords and variables make authoring rules faster.</li>
-<li>Built-in assertions, automatically traverse object properties.</li>
+<li><strong>Objects</strong> - PowerShell objects can be validated on the pipeline or imported.
+<ul>
+<li>Objects can be <a href="concepts/PSRule/en-US/about_PSRule_Options.html#inputformat">imported</a> directly from <code>JSON</code>, <code>YAML</code>, or <code>.psd1</code>.</li>
+<li>Each object is automatically bound to a <em>target type</em> for use with pre-conditions.</li>
+<li>Rule results are orientated to validating an object.</li>
+<li>Built-in <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">assertions</a>, automatically traverse object properties.</li>
+</ul>
+</li>
+<li><strong>Pre-conditions</strong> - Rules understand which objects they apply to.
+Objects are bound to a type as they are processed using object properties.
+Dissimilar objects can be processed quickly.
+<ul>
+<li>Objects that match no rules are flagged with a warning by default.</li>
+</ul>
+</li>
+<li><strong>Packaging</strong> - Rules can be reused between projects and optionally packaged into a module.
+<ul>
+<li>Portable rules, configuration, baselines, and documentation allow greater reuse and distribution.</li>
+<li><a href="concepts/PSRule/en-US/about_PSRule_Docs.html">Documentation</a> with detailed guidance or next steps can be included.</li>
+<li>Standalone or rules from modules can be combined together with <code>-Module</code> and <code>-Path</code>.</li>
+</ul>
+</li>
+<li><strong>Configuration</strong> - <a href="concepts/PSRule/en-US/about_PSRule_Options.html#configuration">Configuration</a> of rules is handled by PSRule.
+<ul>
+<li>Rules can be configured at runtime, from YAML configuration, or environment variables.</li>
+<li><a href="concepts/PSRule/en-US/about_PSRule_Baseline.html">Baselines</a> can be used to pair rules and configuration for a specific scenario.</li>
+</ul>
+</li>
+<li><strong>Exceptions</strong> - Exceptions to a rule can be ignored for a single object using <a href="concepts/PSRule/en-US/about_PSRule_Options.html#suppression">suppression</a>.
+<ul>
+<li>Exclusion can be used additionally to ignore a rule entirely.</li>
+</ul>
+</li>
 </ul>
 <p>These features make PSRule ideal for validating:</p>
 <ul>
@@ -130,14 +163,50 @@ This allows not only the cause of the issue to be identified but detailed instru
 </li>
 <li>Deployments or configurations against a baseline.</li>
 </ul>
-<p>If you want to test PowerShell code, use Pester.</p>
+<p>If you want to test PowerShell code, consider using Pester, we do!</p>
 <h3 id="what-pre-built-modules-are-available-for-psrule">What pre-built modules are available for PSRule?</h3>
 <p>PSRule rules modules can be found on the <a href="https://www.powershellgallery.com/packages?q=Tags%3A%22PSRule-rules%22">PowerShell Gallery</a> using the tag <code>PSRule-rules</code>.</p>
 <h3 id="how-do-i-configure-psrule">How do I configure PSRule?</h3>
-<p>PSRule can be configured at runtime by passing the <code>-Option</code> parameter to cmdlets.
-Additionally, PSRule uses the <code>ps-rule.yaml</code> option file to load configuration from disk.
-The <code>ps-rule.yaml</code> option file is read automatically from the current working path by default.
-When checking into source control, store this file in the root directory of the repository.</p>
+<p>PSRule and rules can be configured by:</p>
+<ul>
+<li><strong>Parameter</strong> - PSRule can be configured at runtime by passing the <code>-Option</code> parameter to cmdlets.</li>
+<li><strong>Options file</strong> - Options stored in YAML are load configuration from file.
+The default <code>ps-rule.yaml</code> option file is read automatically from the current working path by default.
+When checking into source control, store this file in the root directory of the repository.</li>
+<li><strong>Environment variables</strong> - Configuration can be specified using environment variables.</li>
+</ul>
+<p>For example:</p>
+<pre><code class="lang-powershell"># With cmdlet
+$option = New-PSRuleOption -OutputAs Summary -OutputCulture 'en-AU' -NotProcessedWarning $False -Configuration @{
+  CUSTOM_VALUE = 'example'
+}
+$items | Assert-PSRule -Option $option
+
+# With hashtable
+$items | Assert-PSRule -Option @{
+  'Output.As' = 'Summary'
+  'Output.Culture' = 'en-AU'
+  'Execution.NotProcessedWarning' = $False
+  'Configuration.CUSTOM_VALUE' = 'Example'
+}
+</code></pre>
+<pre><code class="lang-yaml"># With YAML
+output:
+  as: Summary
+  culture: [ 'en-AU' ]
+
+execution:
+  notProcessedWarning: false
+
+configuration:
+  CUSTOM_VALUE: Example
+</code></pre>
+<pre><code class="lang-bash"># With environment variable in bash
+export PSRULE_EXECUTION_NOTPROCESSEDWARNING=false
+export PSRULE_OUTPUT_AS=Summary
+export PSRULE_OUTPUT_CULTURE=en-AU
+export PSRULE_CONFIGURATION_CUSTOM_VALUE=Example
+</code></pre>
 <p>For a list of configuration options and usage see <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a>.</p>
 <h3 id="how-do-i-ignore-a-rule">How do I ignore a rule?</h3>
 <p>To prevent a rule executing you can either:</p>
@@ -165,6 +234,27 @@ suppression:
 </code></pre>
 <p>The name of the object is reported by PSRule in output results.</p>
 <p>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for additional usage for both of these options.</p>
+<h3 id="how-do-i-layer-on-custom-rules-on-top-of-an-existing-module">How do I layer on custom rules on top of an existing module?</h3>
+<p>PSRule allows rules from modules and standalone <em>(loose)</em> rules to be run together.</p>
+<p>To run rules from a standalone path use:</p>
+<pre><code class="lang-powershell"># Note: .ps-rule/ is a standard path to include standalone rules.
+
+# With input from the pipeline
+$items | Assert-PSRule -Path '.ps-rule/'
+
+# With input from file
+Assert-PSRule -Path '.ps-rule/' -InputPath 'src/'
+</code></pre>
+<p>To run rules from an installed module use:</p>
+<pre><code class="lang-powershell"># With input from the pipeline
+$items | Assert-PSRule -Module 'PSRule.Rules.Azure'
+
+# With input from file
+Assert-PSRule -Module 'PSRule.Rules.Azure' -InputPath 'src/'
+</code></pre>
+<p>Combining both:</p>
+<pre><code class="lang-powershell">Assert-PSRule -Module 'PSRule.Rules.Azure', 'PSRule.Rules.CAF' -Path '.ps-rule/' -InputPath 'src/'
+</code></pre>
 <h3 id="why-should-i-use-psrule-keywords-and-assertions">Why should I use PSRule keywords and assertions?</h3>
 <p>Except for the <code>Rule</code> keyword, using the built-in language features are optional.</p>
 <p>The built-in keywords and assertions accelerate rule creation.
