@@ -496,6 +496,9 @@ namespace PSRule
             Assert.True(assert.Version(value, "version2", ">1.2.3-alpha.3").Result);
             Assert.False(assert.Version(value, "version3", ">1.2.3-alpha.3").Result);
 
+            Assert.True(assert.Version(value, "version", ">=1.2.3-0").Result);
+            Assert.True(assert.Version(value, "version2", ">=1.2.3-0").Result);
+
             Assert.False(assert.Version(value, "notversion", null).Result);
             Assert.Throws<RuleException>(() => assert.Version(value, "version", "2.0.0<").Result);
             Assert.Throws<RuleException>(() => assert.Version(value, "version", "z2.0.0").Result);

@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.4.0-B2105004:
+
+- Bug fixes:
+  - Fixed pre-release constraint handling for pre-releases versions. [#712](https://github.com/microsoft/PSRule/issues/712)
+
 ## v1.4.0-B2105004 (pre-release)
 
 What's changed since v1.3.0:

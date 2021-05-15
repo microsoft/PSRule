@@ -1175,7 +1175,8 @@ A constraint can optionally be provided to require the semantic version to be wi
 The following parameters are accepted:
 
 - `inputObject` - The object being checked for the specified field.
-- `field` - The name of the field to check. This is a case insensitive compare.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
 - `constraint` (optional) - A version constraint, see below for details of version constrain format.
 
 The following are supported constraints:
@@ -1191,11 +1192,37 @@ The following are supported constraints:
 - `<=version` - Must be less than or equal to version.
   - e.g. `<=1.2.3`
 - `^version` - Compatible with version.
-  - e.g. `^1.2.3` - >=1.2.3, <2.0.0
+  - e.g. `^1.2.3` - `>=1.2.3`, `<2.0.0`
 - `~version` - Approximately equivalent to version
-  - e.g. `~1.2.3` - >=1.2.3, <1.3.0
+  - e.g. `~1.2.3` - `>=1.2.3`, `<1.3.0`
 
-An empty, null or `*` version constraint matches all valid semantic versions.
+An empty, null or `*` constraint matches all valid semantic versions.
+
+Handling for pre-release versions:
+
+- Constraints and versions containing pre-release identifiers are supported.
+i.e. `>=1.2.3-build.1` or `1.2.3-build.1`.
+- A version containing a pre-release identifer follows semantic versioning rules.
+i.e. `1.2.3-alpha` < `1.2.3-alpha.1` < `1.2.3-alpha.beta` < `1.2.3-beta` < `1.2.3-beta.2` < `1.2.3-beta.11` < `1.2.3-rc.1` < `1.2.3`.
+- A constraint without a pre-release identifer will only match a stable version.
+- Constraints with a pre-release identifer will only match:
+  - Matching pre-release versions of the same major.minor.patch version.
+  - Matching stable versions.
+
+By example:
+
+- `>=1.2.3` results in:
+  - Pass: `1.2.3`, `9.9.9`.
+  - Fail: `1.2.3-build.1`, `9.9.9-build.1`.
+- `>=1.2.3-0` results in:
+  - Pass: `1.2.3`, `1.2.3-build.1`, `9.9.9`.
+  - Fail: `9.9.9-build.1`.
+- `<1.2.3` results in:
+  - Pass: `1.2.2`, `1.0.0`.
+  - Fail: `1.0.0-build.1`, `1.2.3-build.1`.
+- `<1.2.3-0` results in:
+  - Pass: `1.2.2`, `1.0.0`.
+  - Fail: `1.0.0-build.1`, `1.2.3-build.1`.
 
 Reasons include:
 
