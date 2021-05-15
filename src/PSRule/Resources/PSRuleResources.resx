@@ -214,7 +214,7 @@
     <value>Read JSON failed.</value>
   </data>
   <data name="RequiredVersionMismatch" xml:space="preserve">
-    <value>The module version '{1}' for '{0}' does not match the required version '{2}'.</value>
+    <value>The module version '{1}' for '{0}' does not match the required version '{2}'. To continue, first update the module to match the version requirement.</value>
   </data>
   <data name="RuleErrorPipelineException" xml:space="preserve">
     <value>One or more rules reported errors.</value>
