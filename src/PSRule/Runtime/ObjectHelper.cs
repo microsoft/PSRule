@@ -385,7 +385,7 @@ namespace PSRule.Runtime
             else
             {
                 var properties = baseType.GetProperties();
-                foreach(PropertyInfo pi in properties)
+                foreach (PropertyInfo pi in properties)
                 {
                     var p = pi.GetIndexParameters();
                     if (p.Length > 0)

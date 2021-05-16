@@ -1178,6 +1178,8 @@ The following parameters are accepted:
 - `field` - The name of the field to check.
 This is a case insensitive compare.
 - `constraint` (optional) - A version constraint, see below for details of version constrain format.
+- `includePrerelease` (optional) - Determines if prerelease versions are included.
+Unless specified this defaults to `$False`.
 
 The following are supported constraints:
 
@@ -1198,15 +1200,29 @@ The following are supported constraints:
 
 An empty, null or `*` constraint matches all valid semantic versions.
 
+Multiple constraints can be joined together:
+
+- Use a _space_ to separate multiple constraints, each must be true (_logical AND_).
+- Separates constraint sets with the double pipe `||`.
+Only one constraint set must be true (_logical OR_).
+
+By example:
+
+- `1.2.3 || >=3.4.5 <5.0.0` results in:
+  - Pass: `1.2.3`, `3.4.5`, `3.5.0`, `4.9.9`.
+  - Fail: `3.0.0`, `5.0.0`.
+
 Handling for pre-release versions:
 
 - Constraints and versions containing pre-release identifiers are supported.
 i.e. `>=1.2.3-build.1` or `1.2.3-build.1`.
 - A version containing a pre-release identifer follows semantic versioning rules.
 i.e. `1.2.3-alpha` < `1.2.3-alpha.1` < `1.2.3-alpha.beta` < `1.2.3-beta` < `1.2.3-beta.2` < `1.2.3-beta.11` < `1.2.3-rc.1` < `1.2.3`.
-- A constraint without a pre-release identifer will only match a stable version.
+- A constraint without a pre-release identifer will only match a stable version by default.
+Set `includePrerelease` to `$True` to include prerelease versions.
 - Constraints with a pre-release identifer will only match:
-  - Matching pre-release versions of the same major.minor.patch version.
+  - Matching pre-release versions of the same major.minor.patch version by default.
+  Set `includePrerelease` to `$True` to include prerelease versions of all matching versions.
   - Matching stable versions.
 
 By example:
