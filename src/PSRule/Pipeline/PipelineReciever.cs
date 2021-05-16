@@ -4,7 +4,6 @@
 using Newtonsoft.Json;
 using PSRule.Data;
 using PSRule.Parser;
-using PSRule.Resources;
 using PSRule.Runtime;
 using System;
 using System.Collections;
@@ -17,7 +16,6 @@ using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NodeDeserializers;
-using YamlDotNet.Serialization.ValueDeserializers;
 
 namespace PSRule.Pipeline
 {

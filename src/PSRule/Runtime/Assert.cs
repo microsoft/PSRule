@@ -8,7 +8,6 @@ using PSRule.Configuration;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using System;
-using System.Collections;
 using System.IO;
 using System.Management.Automation;
 using System.Net;
@@ -571,7 +570,7 @@ namespace PSRule.Runtime
         /// <summary>
         /// The object field value should match the version constraint. Only applies to strings.
         /// </summary>
-        public AssertResult Version(PSObject inputObject, string field, string constraint = null)
+        public AssertResult Version(PSObject inputObject, string field, string constraint = null, bool includePrerelease = false)
         {
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
@@ -580,7 +579,7 @@ namespace PSRule.Runtime
                 GuardSemanticVersion(fieldValue, out SemanticVersion.Version value, out result))
                 return result;
 
-            if (!Runtime.SemanticVersion.TryParseConstraint(constraint, out SemanticVersion.Constraint c))
+            if (!SemanticVersion.TryParseConstraint(constraint, out SemanticVersion.IConstraint c, includePrerelease))
                 throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VersionConstraintInvalid, value));
 
             // Assert

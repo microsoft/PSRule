@@ -136,7 +136,7 @@ namespace PSRule
                         suffix = format(suffix);
 
                     _Map[suffix] = (TValue)variable.Value;
-                }   
+                }
             }
         }
 

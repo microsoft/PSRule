@@ -513,8 +513,19 @@
             "description": "Specifies the required version of a module to use.",
             "markdownDescription": "Specifies the required version of a module to use. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#requires)",
             "additionalProperties": {
-                "type": "string"
-            }
+                "type": "string",
+                "title": "Version constraint",
+                "description": "Specifies a module to constrain to a specific version.",
+                "markdownDescription": "Specifies a module to constrain to a specific version. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#requires)"
+            },
+            "defaultSnippets": [
+                {
+                    "label": "Version constraint",
+                    "body": {
+                        "${1:Module}": "${2:'>=1.0.0'}"
+                    }
+                }
+            ]
         },
         "rule-option": {
             "type": "object",
