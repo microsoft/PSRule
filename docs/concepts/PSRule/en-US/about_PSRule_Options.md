@@ -1721,8 +1721,9 @@ $option = New-PSRuleOption -Option @{ 'Requires.PSRule' = '>=1.0.0' };
 ```yaml
 # YAML: Using the requires property
 requires:
-  PSRule: '>=1.0.0'              # Require v1.0.0 or greater.
-  PSRule.Rules.Azure: '>=1.0.0'  # Require v1.0.0 or greater.
+  PSRule: '>=1.0.0'                 # Require v1.0.0 or greater.
+  PSRule.Rules.Azure: '>=1.0.0'     # Require v1.0.0 or greater.
+  PSRule.Rules.CAF: '@pre >=0.1.0'  # Require stable or pre-releases v0.1.0 or greater.
 ```
 
 This option can be configured using environment variables.
@@ -1733,6 +1734,7 @@ When the module name includes a dot (`.`) use an underscore (`_`) instead.
 # Bash: Using environment variable
 export PSRULE_REQUIRES_PSRULE='>=1.0.0'
 export PSRULE_REQUIRES_PSRULE_RULES_AZURE='>=1.0.0'
+export PSRULE_REQUIRES_PSRULE_RULES_CAF='@pre >=0.1.0'
 ```
 
 ```yaml
@@ -1740,6 +1742,7 @@ export PSRULE_REQUIRES_PSRULE_RULES_AZURE='>=1.0.0'
 env:
   PSRULE_REQUIRES_PSRULE: '>=1.0.0'
   PSRULE_REQUIRES_PSRULE_RULES_AZURE: '>=1.0.0'
+  PSRULE_REQUIRES_PSRULE_RULES_CAF: '@pre >=0.1.0'
 ```
 
 ```yaml
@@ -1749,6 +1752,8 @@ variables:
   value: '>=1.0.0'
 - name: PSRULE_REQUIRES_PSRULE_RULES_AZURE
   value: '>=1.0.0'
+- name: PSRULE_REQUIRES_PSRULE_RULES_CAF
+  value: '@pre >=0.1.0'
 ```
 
 ### Rule.Include

@@ -15,6 +15,7 @@ What's changed since pre-release v1.4.0-B2105004:
 - General improvements:
   - Improved support for version constraints by:
     - Constraints can include prerelease versions of other matching versions. [#714](https://github.com/microsoft/PSRule/issues/714)
+    - Constraints support using a `@prerelease` or `@pre` to include prerelease versions. [#717](https://github.com/microsoft/PSRule/issues/717)
     - Constraint sets allow multiple constraints to be joined together. [#715](https://github.com/microsoft/PSRule/issues/715)
     - See [about_PSRule_Assert] for details.
 - Bug fixes:

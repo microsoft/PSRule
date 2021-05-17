@@ -63,6 +63,8 @@ namespace PSRule
             Assert.True(Runtime.SemanticVersion.TryParseConstraint("1.2.3||3.4.5", out Runtime.SemanticVersion.IConstraint actual17));
             Assert.True(Runtime.SemanticVersion.TryParseConstraint(">=1.2.3", out Runtime.SemanticVersion.IConstraint actual18, includePrerelease: true));
             Assert.True(Runtime.SemanticVersion.TryParseConstraint("<=3.4.5-0", out Runtime.SemanticVersion.IConstraint actual19, includePrerelease: true));
+            Assert.True(Runtime.SemanticVersion.TryParseConstraint("@pre >=1.2.3", out Runtime.SemanticVersion.IConstraint actual20));
+            Assert.True(Runtime.SemanticVersion.TryParseConstraint("@prerelease <=3.4.5-0", out Runtime.SemanticVersion.IConstraint actual21));
 
             // Version1 - 1.2.3
             Assert.True(actual1.Equals(version1));
@@ -84,6 +86,8 @@ namespace PSRule
             Assert.True(actual17.Equals(version1));
             Assert.True(actual18.Equals(version1));
             Assert.True(actual19.Equals(version1));
+            Assert.True(actual20.Equals(version1));
+            Assert.True(actual21.Equals(version1));
 
             // Version2 - 1.2.3-alpha.3+7223b39
             Assert.False(actual1.Equals(version2));
@@ -105,6 +109,8 @@ namespace PSRule
             Assert.False(actual17.Equals(version2));
             Assert.False(actual18.Equals(version2));
             Assert.True(actual19.Equals(version2));
+            Assert.False(actual20.Equals(version2));
+            Assert.True(actual21.Equals(version2));
 
             // Version3 - 3.4.5-alpha.9
             Assert.False(actual1.Equals(version3));
@@ -126,6 +132,8 @@ namespace PSRule
             Assert.False(actual17.Equals(version3));
             Assert.True(actual18.Equals(version3));
             Assert.False(actual19.Equals(version3));
+            Assert.True(actual20.Equals(version3));
+            Assert.False(actual21.Equals(version3));
 
             // Version4 - 3.4.5
             Assert.False(actual1.Equals(version4));
@@ -147,6 +155,8 @@ namespace PSRule
             Assert.True(actual17.Equals(version4));
             Assert.True(actual18.Equals(version4));
             Assert.False(actual19.Equals(version4));
+            Assert.True(actual20.Equals(version4));
+            Assert.False(actual21.Equals(version4));
         }
 
         [Fact]
