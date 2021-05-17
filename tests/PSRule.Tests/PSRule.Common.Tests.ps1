@@ -6,9 +6,7 @@
 #
 
 [CmdletBinding()]
-param (
-
-)
+param ()
 
 # Setup error handling
 $ErrorActionPreference = 'Stop';
@@ -607,6 +605,10 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
             $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
+            $result[0].Source[0].File | Should -Be 'some-file.json';
+            $result[0].Source[0].Line | Should -Be 1;
+            $result[1].Source[0].File.Split([char[]]@('\', '/'))[-1] | Should -Be 'ObjectFromFile.json';
+            $result[1].Source[0].Line | Should -Be 43;
 
             # Multiple file
             $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles);

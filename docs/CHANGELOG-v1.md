@@ -13,6 +13,8 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 What's changed since pre-release v1.4.0-B2105004:
 
 - General improvements:
+  - Source location of object from input files are included in rule records. [#624](https://github.com/microsoft/PSRule/issues/624)
+    - Currently only JSON and YAML files support source locations.
   - Improved support for version constraints by:
     - Constraints can include prerelease versions of other matching versions. [#714](https://github.com/microsoft/PSRule/issues/714)
     - Constraints support using a `@prerelease` or `@pre` to include prerelease versions. [#717](https://github.com/microsoft/PSRule/issues/717)

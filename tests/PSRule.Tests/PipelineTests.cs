@@ -87,6 +87,18 @@ namespace PSRule
             Assert.Null(builder.Build());
         }
 
+        [Fact]
+        public void PipelineWithSource()
+        {
+            var option = GetOption();
+            option.Rule.Include = new string[] { "FromFile1" };
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            builder.InputPath(new string[] { "./**/ObjectFromFile.json" });
+            var pipeline = builder.Build();
+            pipeline.Begin();
+            pipeline.End();
+        }
+
         #region Helper methods
 
         private static Source[] GetSource()

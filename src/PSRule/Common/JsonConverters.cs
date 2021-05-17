@@ -4,6 +4,7 @@
 using Newtonsoft.Json;
 using PSRule.Pipeline;
 using PSRule.Resources;
+using PSRule.Runtime;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -156,7 +157,7 @@ namespace PSRule
 
             while (reader.TokenType != JsonToken.None && (!isArray || (isArray && reader.TokenType != JsonToken.EndArray)))
             {
-                var value = ReadObject(reader: reader);
+                var value = ReadObject(reader, bindTargetInfo: true);
                 result.Add(value);
 
                 // Consume the EndObject token
@@ -165,13 +166,21 @@ namespace PSRule
             return result.ToArray();
         }
 
-        private static PSObject ReadObject(JsonReader reader)
+        private static PSObject ReadObject(JsonReader reader, bool bindTargetInfo)
         {
             if (reader.TokenType != JsonToken.StartObject || !reader.Read())
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
 
             var result = new PSObject();
             string name = null;
+            var lineNumber = 0;
+            var linePosition = 0;
+
+            if (bindTargetInfo && reader is IJsonLineInfo lineInfo && lineInfo.HasLineInfo())
+            {
+                lineNumber = lineInfo.LineNumber;
+                linePosition = lineInfo.LinePosition;
+            }
 
             // Read each token
             while (reader.TokenType != JsonToken.EndObject)
@@ -180,29 +189,49 @@ namespace PSRule
                 {
                     case JsonToken.PropertyName:
                         name = reader.Value.ToString();
+                        if (name == PSRuleTargetInfo.PropertyName)
+                        {
+                            var targetInfo = ReadInfo(reader);
+                            if (targetInfo != null)
+                                result.SetTargetInfo(targetInfo);
+                        }
                         break;
 
                     case JsonToken.StartObject:
-                        var value = ReadObject(reader: reader);
-                        result.Properties.Add(new PSNoteProperty(name: name, value: value));
+                        var value = ReadObject(reader, bindTargetInfo: false);
+                        result.Properties.Add(new PSNoteProperty(name, value: value));
                         break;
 
                     case JsonToken.StartArray:
                         var items = ReadArray(reader: reader);
-                        result.Properties.Add(new PSNoteProperty(name: name, value: items));
+                        result.Properties.Add(new PSNoteProperty(name, value: items));
                         break;
 
                     case JsonToken.Comment:
                         break;
 
                     default:
-                        result.Properties.Add(new PSNoteProperty(name: name, value: reader.Value));
+                        result.Properties.Add(new PSNoteProperty(name, value: reader.Value));
                         break;
                 }
                 if (!reader.Read() || reader.TokenType == JsonToken.None)
                     throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
             }
+            if (bindTargetInfo)
+            {
+                result.UseTargetInfo(out PSRuleTargetInfo info);
+                info.WithSource(lineNumber, linePosition);
+            }
             return result;
+        }
+
+        private static PSRuleTargetInfo ReadInfo(JsonReader reader)
+        {
+            if (!reader.Read() || reader.TokenType == JsonToken.None || reader.TokenType != JsonToken.StartObject)
+                return null;
+
+            var s = JsonSerializer.Create();
+            return s.Deserialize<PSRuleTargetInfo>(reader);
         }
 
         private static PSObject[] ReadArray(JsonReader reader)
@@ -218,7 +247,7 @@ namespace PSRule
                 switch (reader.TokenType)
                 {
                     case JsonToken.StartObject:
-                        result.Add(ReadObject(reader: reader));
+                        result.Add(ReadObject(reader, bindTargetInfo: false));
                         break;
 
                     case JsonToken.StartArray:

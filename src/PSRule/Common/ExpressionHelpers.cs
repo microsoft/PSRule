@@ -387,7 +387,7 @@ namespace PSRule
             }
             else if (targetInfo != null)
             {
-                return PSRuleOption.GetRootedPath(targetInfo.PSPath);
+                return PSRuleOption.GetRootedPath(targetInfo.Path);
             }
             else if (baseObject is string s)
             {

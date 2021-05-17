@@ -24,38 +24,9 @@ namespace PSRule.Pipeline
 
     internal static class PipelineReceiverActions
     {
-        private const string PropertyName_PSPath = "PSPath";
-        private const string PropertyName_PSParentPath = "PSParentPath";
-        private const string PropertyName_PSChildName = "PSChildName";
         private const string InputFileInfo_GitHead = ".git/HEAD";
 
         private static readonly PSObject[] EmptyArray = Array.Empty<PSObject>();
-
-        private sealed class PSSourceInfo
-        {
-            public readonly string PSPath;
-            public readonly string PSChildName;
-            public readonly string PSParentPath;
-
-            public PSSourceInfo(InputFileInfo info)
-            {
-                PSPath = info.FullName;
-                PSChildName = info.Name;
-                PSParentPath = info.DirectoryName;
-            }
-
-            public PSSourceInfo(FileInfo info)
-            {
-                PSPath = info.FullName;
-                PSChildName = info.Name;
-                PSParentPath = info.DirectoryName;
-            }
-
-            public PSSourceInfo(Uri uri)
-            {
-                PSPath = uri.AbsoluteUri;
-            }
-        }
 
         public static IEnumerable<PSObject> PassThru(PSObject targetObject)
         {
@@ -95,21 +66,28 @@ namespace PSRule.Pipeline
             if (!IsAcceptedType(sourceObject))
                 return new PSObject[] { sourceObject };
 
-            var json = ReadAsString(sourceObject, out PSSourceInfo source);
+            var reader = ReadAsReader(sourceObject, out TargetSourceInfo source);
             try
             {
-                var value = JsonConvert.DeserializeObject<PSObject[]>(json, new PSObjectArrayJsonConverter());
+                var jsonReader = AsJsonTextReader(reader);
+                var d = new JsonSerializer();
+                d.Converters.Add(new PSObjectArrayJsonConverter());
+                var value = d.Deserialize<PSObject[]>(jsonReader);
                 NoteSource(value, source);
                 return VisitItems(value, next);
             }
             catch (Exception ex)
             {
-                if (source != null && !string.IsNullOrEmpty(source.PSPath))
+                if (source != null && !string.IsNullOrEmpty(source.File))
                 {
-                    RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(source.PSPath, ex);
+                    RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(source.File, ex);
                     return Array.Empty<PSObject>();
                 }
                 throw;
+            }
+            finally
+            {
+                reader.Dispose();
             }
         }
 
@@ -127,7 +105,7 @@ namespace PSRule.Pipeline
                     s => s.InsteadOf<YamlConvertibleNodeDeserializer>())
                 .Build();
 
-            var reader = ReadAsReader(sourceObject, out PSSourceInfo source);
+            var reader = ReadAsReader(sourceObject, out TargetSourceInfo source);
             try
             {
                 var parser = new YamlDotNet.Core.Parser(reader);
@@ -155,12 +133,16 @@ namespace PSRule.Pipeline
             }
             catch (Exception ex)
             {
-                if (source != null && !string.IsNullOrEmpty(source.PSPath))
+                if (source != null && !string.IsNullOrEmpty(source.File))
                 {
-                    RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(source.PSPath, ex);
+                    RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(source.File, ex);
                     return Array.Empty<PSObject>();
                 }
                 throw;
+            }
+            finally
+            {
+                reader.Dispose();
             }
         }
 
@@ -170,7 +152,7 @@ namespace PSRule.Pipeline
             if (!IsAcceptedType(sourceObject))
                 return new PSObject[] { sourceObject };
 
-            var markdown = ReadAsString(sourceObject, out PSSourceInfo source);
+            var markdown = ReadAsString(sourceObject, out TargetSourceInfo source);
             var value = MarkdownConvert.DeserializeObject(markdown);
             NoteSource(value, source);
             return VisitItems(value, next);
@@ -182,7 +164,7 @@ namespace PSRule.Pipeline
             if (!IsAcceptedType(sourceObject))
                 return new PSObject[] { sourceObject };
 
-            var data = ReadAsString(sourceObject, out PSSourceInfo source);
+            var data = ReadAsString(sourceObject, out TargetSourceInfo source);
             var ast = System.Management.Automation.Language.Parser.ParseInput(data, out _, out _);
             var hashtables = ast.FindAll(item => item is System.Management.Automation.Language.HashtableAst, false);
             if (hashtables == null)
@@ -262,7 +244,7 @@ namespace PSRule.Pipeline
             return new RepositoryInfo(inputFileInfo.BasePath, headRef);
         }
 
-        private static string ReadAsString(PSObject sourceObject, out PSSourceInfo sourceInfo)
+        private static string ReadAsString(PSObject sourceObject, out TargetSourceInfo sourceInfo)
         {
             sourceInfo = null;
             if (sourceObject.BaseObject is string)
@@ -271,7 +253,7 @@ namespace PSRule.Pipeline
             }
             else if (sourceObject.BaseObject is InputFileInfo inputFileInfo)
             {
-                sourceInfo = new PSSourceInfo(inputFileInfo);
+                sourceInfo = new TargetSourceInfo(inputFileInfo);
                 using (var reader = new StreamReader(inputFileInfo.FullName))
                 {
                     return reader.ReadToEnd();
@@ -279,7 +261,7 @@ namespace PSRule.Pipeline
             }
             else if (sourceObject.BaseObject is FileInfo fileInfo)
             {
-                sourceInfo = new PSSourceInfo(fileInfo);
+                sourceInfo = new TargetSourceInfo(fileInfo);
                 using (var reader = new StreamReader(fileInfo.FullName))
                 {
                     return reader.ReadToEnd();
@@ -288,7 +270,7 @@ namespace PSRule.Pipeline
             else
             {
                 var uri = sourceObject.BaseObject as Uri;
-                sourceInfo = new PSSourceInfo(uri);
+                sourceInfo = new TargetSourceInfo(uri);
                 using (var webClient = new WebClient())
                 {
                     return webClient.DownloadString(uri);
@@ -296,7 +278,7 @@ namespace PSRule.Pipeline
             }
         }
 
-        private static TextReader ReadAsReader(PSObject sourceObject, out PSSourceInfo sourceInfo)
+        private static TextReader ReadAsReader(PSObject sourceObject, out TargetSourceInfo sourceInfo)
         {
             sourceInfo = null;
             if (sourceObject.BaseObject is string)
@@ -305,18 +287,18 @@ namespace PSRule.Pipeline
             }
             else if (sourceObject.BaseObject is InputFileInfo inputFileInfo)
             {
-                sourceInfo = new PSSourceInfo(inputFileInfo);
+                sourceInfo = new TargetSourceInfo(inputFileInfo);
                 return new StreamReader(inputFileInfo.FullName);
             }
             else if (sourceObject.BaseObject is FileInfo fileInfo)
             {
-                sourceInfo = new PSSourceInfo(fileInfo);
+                sourceInfo = new TargetSourceInfo(fileInfo);
                 return new StreamReader(fileInfo.FullName);
             }
             else
             {
                 var uri = sourceObject.BaseObject as Uri;
-                sourceInfo = new PSSourceInfo(uri);
+                sourceInfo = new TargetSourceInfo(uri);
                 using (var webClient = new WebClient())
                 {
                     return new StringReader(webClient.DownloadString(uri));
@@ -345,7 +327,7 @@ namespace PSRule.Pipeline
             return result.ToArray();
         }
 
-        private static void NoteSource(PSObject[] value, PSSourceInfo source)
+        private static void NoteSource(PSObject[] value, TargetSourceInfo source)
         {
             if (value == null || value.Length == 0 || source == null)
                 return;
@@ -354,24 +336,18 @@ namespace PSRule.Pipeline
                 NoteSource(value[i], source);
         }
 
-        private static void NoteSource(PSObject value, PSSourceInfo source)
+        private static void NoteSource(PSObject value, TargetSourceInfo source)
         {
             if (value == null || source == null)
                 return;
 
-            if (!value.HasProperty(PropertyName_PSPath))
-                value.Properties.Add(new PSNoteProperty(PropertyName_PSPath, source.PSPath));
-
-            if (!value.HasProperty(PropertyName_PSParentPath))
-                value.Properties.Add(new PSNoteProperty(PropertyName_PSParentPath, source.PSParentPath));
-
-            if (!value.HasProperty(PropertyName_PSChildName))
-                value.Properties.Add(new PSNoteProperty(PropertyName_PSChildName, source.PSChildName));
-
             value.UseTargetInfo(out PSRuleTargetInfo targetInfo);
-            targetInfo.PSPath = source.PSPath;
-            targetInfo.PSParentPath = source.PSParentPath;
-            targetInfo.PSChildName = source.PSChildName;
+            targetInfo.WithSource(source);
+        }
+
+        private static JsonTextReader AsJsonTextReader(TextReader reader)
+        {
+            return new JsonTextReader(reader);
         }
     }
 }

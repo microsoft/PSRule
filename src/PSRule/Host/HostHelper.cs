@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using PSRule.Annotations;
-using PSRule.Common;
 using PSRule.Definitions;
 using PSRule.Definitions.Conventions;
 using PSRule.Definitions.Selectors;
