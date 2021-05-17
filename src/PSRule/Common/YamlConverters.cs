@@ -659,9 +659,13 @@ namespace PSRule
         {
             if (expectedType == typeof(PSObject[]) && reader.Current is MappingStart)
             {
+                int lineNumber = reader.Current.Start.Line;
+                int linePosition = reader.Current.Start.Column;
                 value = _Converter.ReadYaml(reader, typeof(PSObject));
                 if (value is PSObject pso)
                 {
+                    pso.UseTargetInfo(out PSRuleTargetInfo info);
+                    info.WithSource(lineNumber, linePosition);
                     value = new PSObject[] { pso };
                     return true;
                 }

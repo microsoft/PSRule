@@ -593,7 +593,8 @@ namespace PSRule.Runtime
                 tag: ruleBlock.Tag,
                 info: ruleBlock.Info,
                 field: Pipeline.Binder.Field,
-                data: Data
+                data: Data,
+                source: TargetObject.GetSourceInfo()
             );
 
             if (Writer != null)

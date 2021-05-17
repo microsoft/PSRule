@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
+using PSRule.Data;
 using PSRule.Runtime;
 using System;
 using System.Collections;
@@ -61,7 +62,7 @@ namespace PSRule
 
         public static bool TryTargetInfo(this PSObject o, out PSRuleTargetInfo targetInfo)
         {
-            return TryProperty(o, PSRuleTargetInfo.PropertyName, out targetInfo);
+            return TryMember(o, PSRuleTargetInfo.PropertyName, out targetInfo);
         }
 
         public static void UseTargetInfo(this PSObject o, out PSRuleTargetInfo targetInfo)
@@ -70,7 +71,26 @@ namespace PSRule
                 return;
 
             targetInfo = new PSRuleTargetInfo();
-            o.Properties.Add(new PSNoteProperty(PSRuleTargetInfo.PropertyName, targetInfo));
+            o.Members.Add(targetInfo);
+        }
+
+        public static void SetTargetInfo(this PSObject o, PSRuleTargetInfo targetInfo)
+        {
+            if (TryTargetInfo(o, out PSRuleTargetInfo orginalInfo))
+            {
+                targetInfo.Combine(orginalInfo);
+                o.Members[PSRuleTargetInfo.PropertyName].Value = targetInfo;
+                return;
+            }
+            o.Members.Add(targetInfo);
+        }
+
+        public static TargetSourceInfo[] GetSourceInfo(this PSObject o)
+        {
+            if (!TryTargetInfo(o, out PSRuleTargetInfo targetInfo))
+                return Array.Empty<TargetSourceInfo>();
+
+            return targetInfo.Source.ToArray();
         }
 
         private static T ConvertValue<T>(object value)
@@ -81,10 +101,10 @@ namespace PSRule
             return typeof(T).IsValueType ? (T)Convert.ChangeType(value, typeof(T), Thread.CurrentThread.CurrentCulture) : (T)value;
         }
 
-        private static bool TryProperty<T>(PSObject o, string name, out T value)
+        private static bool TryMember<T>(PSObject o, string name, out T value)
         {
             value = default;
-            if (o.Properties[name] is T tValue)
+            if (o.Members[name]?.Value is T tValue)
             {
                 value = tValue;
                 return true;

@@ -29,6 +29,14 @@
                     ]
                 ]
             }
+        },
+        "_PSRule": {
+            "source": [
+                {
+                    "file": "some-file.json",
+                    "line": 1
+                }
+            ]
         }
     },
     {

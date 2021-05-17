@@ -44,6 +44,10 @@ namespace PSRule
             Assert.Equal(2, actual[1].PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value2"));
             Assert.Equal(3, actual[1].PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
             Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0]));
+            actual[0].TryTargetInfo(out Runtime.PSRuleTargetInfo info1);
+            actual[1].TryTargetInfo(out Runtime.PSRuleTargetInfo info2);
+            Assert.Equal("some-file.json", info1.Source[0].File);
+            Assert.NotNull(info2.Source[0]);
 
             // Single item
             actual = PipelineReceiverActions.ConvertFromJson(GetJsonContent("Single"), PipelineReceiverActions.PassThru).ToArray();
