@@ -596,22 +596,21 @@ namespace PSRule.Runtime
                 return true;
             }
 
-            internal bool Build(out string label)
+            internal void Build(out string label)
             {
                 label = string.Empty;
                 if (EOF || _Current != PLUS)
-                    return true;
+                    return;
 
                 Next();
                 var start = _Position;
                 if (_Current == ZERO)
-                    return false;
+                    return;
 
                 while (!EOF && IsBuildChar(_Current))
                     Next();
 
                 label = _Value.Substring(start, _Position - start);
-                return label.Length > 0;
             }
 
             /// <summary>

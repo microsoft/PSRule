@@ -164,19 +164,7 @@ namespace PSRule
                 }
                 parser.Require<MappingEnd>();
                 parser.MoveNext();
-                //values.Add(result);
             }
-            //else if (parser.TryConsume<SequenceStart>(out _))
-            //{
-            //    while (!(parser.Current is SequenceEnd))
-            //    {
-            //        if (ReadYaml(parser, typeof(PSObject)) is PSObject o)
-            //            values.Add(o);
-            //    }
-            //    parser.Require<SequenceEnd>();
-            //    parser.MoveNext();
-            //}
-
             return result;
         }
 
