@@ -516,7 +516,8 @@
                 "type": "string",
                 "title": "Version constraint",
                 "description": "Specifies a module to constrain to a specific version.",
-                "markdownDescription": "Specifies a module to constrain to a specific version. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#requires)"
+                "markdownDescription": "Specifies a module to constrain to a specific version. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#requires)",
+                "pattern": "^(@pre|@prerelease )?(((?:^|~|\\>=|\\>|=|\\<=|\\<)?v?(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?)(?:\\s|\\s?\\|\\|\\s?)?){1,}$"
             },
             "defaultSnippets": [
                 {
