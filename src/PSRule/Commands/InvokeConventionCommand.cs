@@ -50,8 +50,7 @@ namespace PSRule.Commands
                 {
                     // Evaluate script block
                     context.PushScope(Scope);
-                    var invokeResult = RuleConditionHelper.Create(Body.Invoke());
-                    WriteObject(invokeResult);
+                    Body.Invoke();
                 }
                 finally
                 {

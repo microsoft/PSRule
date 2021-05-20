@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.4.0-B2105019:
+
+- Bug fixes:
+  - Fixed null reference in convention for nested exceptions. [#725](https://github.com/microsoft/PSRule/issues/725)
+
 ## v1.4.0-B2105019 (pre-release)
 
 What's changed since pre-release v1.4.0-B2105004:
