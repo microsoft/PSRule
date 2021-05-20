@@ -417,6 +417,11 @@ namespace PSRule.Runtime
             var scriptStackTrace = errorRecord != null ? GetStackTrace(errorRecord) : null;
             var category = errorRecord != null ? errorRecord.CategoryInfo.Category : ErrorCategory.NotSpecified;
             var errorId = errorRecord != null ? GetErrorId(errorRecord) : null;
+            if (RuleRecord == null)
+            {
+                Writer.WriteError(errorRecord);
+                return;
+            }
             RuleRecord.Outcome = RuleOutcome.Error;
             RuleRecord.Error = new ErrorInfo(
                 message: ex.Message,

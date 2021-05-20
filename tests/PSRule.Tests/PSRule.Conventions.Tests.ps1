@@ -26,7 +26,7 @@ $outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Conven
 Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
 $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 
-Describe 'PSRule -- Conventions' -Tag 'Conventions' {
+Describe 'PSRule -- Conventions' -Tag 'Convention' {
     $rulePath = Join-Path -Path $here -ChildPath 'FromFileConventions.Rule.ps1';
 
     Context 'With -Convention' {
@@ -90,6 +90,12 @@ Describe 'PSRule -- Conventions' -Tag 'Conventions' {
             $result.Length | Should -Be 4;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[1].TargetName | Should -Be 'TestObject2';
+        }
+
+        It 'Handles nested exceptions' {
+            $Null = Invoke-PSRule @invokeParams -Name 'ConventionTest' -Convention 'Convention.WithException' -ErrorVariable errors -ErrorAction SilentlyContinue;
+            $errors | Should -Not -BeNullOrEmpty;
+            $errors.Exception.Message | Should -Be 'Some exception';
         }
     }
 }

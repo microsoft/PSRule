@@ -43,6 +43,11 @@ Export-PSRuleConvention 'Convention.Expansion' -If { $TargetObject.Name -eq 'Tes
     $PSRule.Import(@($newObject, $newObject));
 }
 
+# Synopsis: A convention for unit testing
+Export-PSRuleConvention 'Convention.WithException' -Begin {
+    throw 'Some exception';
+}
+
 # Synopsis: A rule for testing conventions
 Rule 'ConventionTest' {
     $Assert.HasFieldValue($PSRule.Data, 'count', 1);
