@@ -70,6 +70,9 @@ namespace PSRule.Runtime
 
         internal void WithSource(TargetSourceInfo source)
         {
+            if (source == null)
+                return;
+
             if (Source.Count == 0)
             {
                 Source.Add(source);

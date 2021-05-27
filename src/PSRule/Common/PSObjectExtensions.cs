@@ -14,6 +14,8 @@ namespace PSRule
 {
     internal static class PSObjectExtensions
     {
+        private const string PROPERTY_SOURCE = "source";
+
         public static T PropertyValue<T>(this PSObject o, string propertyName)
         {
             if (o.BaseObject is Hashtable hashtable)
@@ -49,6 +51,18 @@ namespace PSRule
             {
                 if (property.MemberType == PSMemberTypes.NoteProperty)
                     return true;
+            }
+            return false;
+        }
+
+        public static bool TryProperty<T>(this PSObject o, string name, out T value)
+        {
+            value = default;
+            var pValue = ConvertValue<T>(o.Properties[name]?.Value);
+            if (pValue is T tValue)
+            {
+                value = tValue;
+                return true;
             }
             return false;
         }
@@ -91,6 +105,22 @@ namespace PSRule
                 return Array.Empty<TargetSourceInfo>();
 
             return targetInfo.Source.ToArray();
+        }
+
+        public static void ConvertTargetInfoProperty(this PSObject o)
+        {
+            if (o == null || !TryProperty(o, PSRuleTargetInfo.PropertyName, out PSObject value))
+                return;
+
+            UseTargetInfo(o, out PSRuleTargetInfo targetInfo);
+            if (TryProperty(value, PROPERTY_SOURCE, out Array sources))
+            {
+                for (var i = 0; i < sources.Length; i++)
+                {
+                    var source = TargetSourceInfo.Create(sources.GetValue(i));
+                    targetInfo.WithSource(source);
+                }
+            }
         }
 
         private static T ConvertValue<T>(object value)
