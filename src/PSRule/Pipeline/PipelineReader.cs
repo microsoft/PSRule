@@ -32,6 +32,7 @@ namespace PSRule.Pipeline
 
             if (_Input == null || skipExpansion)
             {
+                sourceObject.ConvertTargetInfoProperty();
                 _Queue.Enqueue(sourceObject);
                 return;
             }
@@ -42,7 +43,10 @@ namespace PSRule.Pipeline
                 return;
 
             foreach (var item in input)
+            {
+                sourceObject.ConvertTargetInfoProperty();
                 _Queue.Enqueue(item);
+            }
         }
 
         public bool TryDequeue(out PSObject sourceObject)

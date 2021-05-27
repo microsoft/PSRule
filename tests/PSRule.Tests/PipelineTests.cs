@@ -95,6 +95,7 @@ namespace PSRule
             var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
             builder.InputPath(new string[] { "./**/ObjectFromFile.json" });
             var pipeline = builder.Build();
+            Assert.NotNull(pipeline);
             pipeline.Begin();
             pipeline.End();
         }
