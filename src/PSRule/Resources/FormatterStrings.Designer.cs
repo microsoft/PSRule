@@ -106,15 +106,6 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to     | - .
-        /// </summary>
-        internal static string HelpLinkPrefix {
-            get {
-                return ResourceManager.GetString("HelpLinkPrefix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0}: {1}.
         /// </summary>
         internal static string HelpModule {
@@ -129,15 +120,6 @@ namespace PSRule.Resources {
         internal static string Message {
             get {
                 return ResourceManager.GetString("Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to     | .
-        /// </summary>
-        internal static string MessagePrefix {
-            get {
-                return ResourceManager.GetString("MessagePrefix", resourceCulture);
             }
         }
         
@@ -178,15 +160,6 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to     | - .
-        /// </summary>
-        internal static string ReasonPrefix {
-            get {
-                return ResourceManager.GetString("ReasonPrefix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to     | RECOMMEND:.
         /// </summary>
         internal static string Recommend {
@@ -196,16 +169,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to     | .
-        /// </summary>
-        internal static string RecommendPrefix {
-            get {
-                return ResourceManager.GetString("RecommendPrefix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to     [ERROR] {0}.
+        ///   Looks up a localized string similar to     [ERROR] .
         /// </summary>
         internal static string Result_Error {
             get {
@@ -223,7 +187,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to     [FAIL] {0}.
+        ///   Looks up a localized string similar to     [FAIL] .
         /// </summary>
         internal static string Result_Fail {
             get {
@@ -241,7 +205,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to     [PASS] {0}.
+        ///   Looks up a localized string similar to     [PASS] .
         /// </summary>
         internal static string Result_Pass {
             get {
@@ -250,11 +214,20 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to     [WARN] {0}.
+        ///   Looks up a localized string similar to     [WARN] .
         /// </summary>
         internal static string Result_Warning {
             get {
                 return ResourceManager.GetString("Result_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At.
+        /// </summary>
+        internal static string SourceAt {
+            get {
+                return ResourceManager.GetString("SourceAt", resourceCulture);
             }
         }
         
@@ -268,11 +241,101 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  -&gt; .
+        /// </summary>
+        internal static string StartObjectPrefix {
+            get {
+                return ResourceManager.GetString("StartObjectPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rules processed: {0}, failed: {1}, errored: {2}.
         /// </summary>
         internal static string Summary {
             get {
                 return ResourceManager.GetString("Summary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     | SYNOPSIS: .
+        /// </summary>
+        internal static string SynopsisPrefix {
+            get {
+                return ResourceManager.GetString("SynopsisPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  ERROR .
+        /// </summary>
+        internal static string VSCode_Error {
+            get {
+                return ResourceManager.GetString("VSCode_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  FAIL .
+        /// </summary>
+        internal static string VSCode_Fail {
+            get {
+                return ResourceManager.GetString("VSCode_Fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Help:.
+        /// </summary>
+        internal static string VSCode_Help {
+            get {
+                return ResourceManager.GetString("VSCode_Help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  PASS .
+        /// </summary>
+        internal static string VSCode_Pass {
+            get {
+                return ResourceManager.GetString("VSCode_Pass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Reason:.
+        /// </summary>
+        internal static string VSCode_Reason {
+            get {
+                return ResourceManager.GetString("VSCode_Reason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Recommend:.
+        /// </summary>
+        internal static string VSCode_Recommend {
+            get {
+                return ResourceManager.GetString("VSCode_Recommend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &gt; .
+        /// </summary>
+        internal static string VSCode_StartObjectPrefix {
+            get {
+                return ResourceManager.GetString("VSCode_StartObjectPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  WARN .
+        /// </summary>
+        internal static string VSCode_Warning {
+            get {
+                return ResourceManager.GetString("VSCode_Warning", resourceCulture);
             }
         }
     }

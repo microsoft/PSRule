@@ -14,11 +14,11 @@ namespace PSRule.Configuration
     public sealed class OutputOption : IEquatable<OutputOption>
     {
         private const ResultFormat DEFAULT_AS = ResultFormat.Detail;
+        private const BannerFormat DEFAULT_BANNER = BannerFormat.Default;
         private const OutputEncoding DEFAULT_ENCODING = OutputEncoding.Default;
         private const OutputFormat DEFAULT_FORMAT = OutputFormat.None;
         private const RuleOutcome DEFAULT_OUTCOME = RuleOutcome.Processed;
-        private const OutputStyle DEFAULT_STYLE = OutputStyle.Client;
-        private const BannerFormat DEFAULT_BANNER = BannerFormat.Default;
+        private const OutputStyle DEFAULT_STYLE = OutputStyle.Detect;
 
         internal static readonly OutputOption Default = new OutputOption
         {

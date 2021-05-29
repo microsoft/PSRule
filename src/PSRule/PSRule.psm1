@@ -476,8 +476,8 @@ function Assert-PSRule {
         [String[]]$Convention,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions')]
-        [PSRule.Configuration.OutputStyle]$Style = [PSRule.Configuration.OutputStyle]::Client,
+        [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
+        [PSRule.Configuration.OutputStyle]$Style = [PSRule.Configuration.OutputStyle]::Detect,
 
         [Parameter(Mandatory = $False)]
         [PSRule.Rules.RuleOutcome]$Outcome = [PSRule.Rules.RuleOutcome]::Processed,
@@ -1139,8 +1139,8 @@ function New-PSRuleOption {
 
         # Sets the Output.Style option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions')]
-        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Client
+        [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
+        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect
     )
 
     begin {
@@ -1359,8 +1359,8 @@ function Set-PSRuleOption {
 
         # Sets the Output.Style option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions')]
-        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Client
+        [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
+        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect
     )
     begin {
         Write-Verbose -Message "[Set-PSRuleOption] BEGIN::";
@@ -1989,8 +1989,8 @@ function SetOptions {
 
         # Sets the Output.Style option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions')]
-        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Client
+        [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
+        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect
     )
     process {
         # Options

@@ -42,6 +42,28 @@ namespace PSRule.Pipeline
 
         internal RuleOutcome Outcome => _Outcome;
 
+        internal string TargetName
+        {
+            get
+            {
+                if (_Record == null || _Record.Count == 0)
+                    return null;
+
+                return _Record[0].TargetName;
+            }
+        }
+
+        internal string TargetType
+        {
+            get
+            {
+                if (_Record == null || _Record.Count == 0)
+                    return null;
+
+                return _Record[0].TargetType;
+            }
+        }
+
         /// <summary>
         /// Get the individual records for the target object.
         /// </summary>

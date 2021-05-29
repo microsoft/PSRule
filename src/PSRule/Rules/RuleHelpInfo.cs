@@ -64,7 +64,7 @@ namespace PSRule.Rules
         public string Synopsis { get; internal set; }
 
         /// <summary>
-        /// An extented description of the rule.
+        /// An extended description of the rule.
         /// </summary>
         [JsonProperty(PropertyName = "description")]
         public string Description { get; internal set; }
