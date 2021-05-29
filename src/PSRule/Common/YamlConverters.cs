@@ -665,7 +665,7 @@ namespace PSRule
                 if (value is PSObject pso)
                 {
                     pso.UseTargetInfo(out PSRuleTargetInfo info);
-                    info.WithSource(lineNumber, linePosition);
+                    info.SetSource(lineNumber, linePosition);
                     value = new PSObject[] { pso };
                     return true;
                 }

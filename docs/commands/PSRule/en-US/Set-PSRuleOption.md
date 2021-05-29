@@ -21,9 +21,10 @@ Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force
  [-NotProcessedWarning <Boolean>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
  [-ObjectPath <String>] [-InputPathIgnore <String[]>] [-InputTargetType <String[]>]
  [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>]
- [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>]
+ [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>]
+ [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -489,6 +490,24 @@ Accepted values: Detail, Summary
 Required: False
 Position: Named
 Default value: Detail
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputBanner
+
+Sets the option `Output.Banner`.
+The `Output.Banner` option configure information displayed with PSRule banner.
+This option is only applicable when using `Assert-PSRule` cmdlet.
+
+```yaml
+Type: BannerFormat
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: Default
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

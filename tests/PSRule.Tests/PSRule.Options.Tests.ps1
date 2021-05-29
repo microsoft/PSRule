@@ -1208,7 +1208,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
     Context 'Read Output.Style' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
-            $option.Output.Style | Should -Be 'Client';
+            $option.Output.Style | Should -Be 'Detect';
         }
 
         It 'from Hashtable' {

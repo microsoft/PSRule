@@ -73,6 +73,14 @@ namespace PSRule.Runtime
             if (source == null)
                 return;
 
+            Source.Add(source);
+        }
+
+        internal void UpdateSource(TargetSourceInfo source)
+        {
+            if (source == null)
+                return;
+
             if (Source.Count == 0)
             {
                 Source.Add(source);
@@ -83,7 +91,7 @@ namespace PSRule.Runtime
                 Source[0].File = source.File;
         }
 
-        internal void WithSource(int lineNumber, int linePosition)
+        internal void SetSource(int lineNumber, int linePosition)
         {
             if (Source.Count > 0)
                 return;

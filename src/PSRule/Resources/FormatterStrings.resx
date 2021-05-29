@@ -132,17 +132,11 @@
   <data name="HelpIssues" xml:space="preserve">
     <value>Report issues: https://github.com/microsoft/PSRule/issues</value>
   </data>
-  <data name="HelpLinkPrefix" xml:space="preserve">
-    <value>    | - </value>
-  </data>
   <data name="HelpModule" xml:space="preserve">
     <value>{0}: {1}</value>
   </data>
   <data name="Message" xml:space="preserve">
     <value>    | MESSAGE:</value>
-  </data>
-  <data name="MessagePrefix" xml:space="preserve">
-    <value>    | </value>
   </data>
   <data name="ModuleVersion" xml:space="preserve">
     <value>Using {0} v{1}</value>
@@ -157,38 +151,65 @@
     <value>    | REASON:</value>
     <comment>Reason output header</comment>
   </data>
-  <data name="ReasonPrefix" xml:space="preserve">
-    <value>    | - </value>
-  </data>
   <data name="Recommend" xml:space="preserve">
     <value>    | RECOMMEND:</value>
     <comment>Recommendation output header</comment>
   </data>
-  <data name="RecommendPrefix" xml:space="preserve">
-    <value>    | </value>
-  </data>
   <data name="Result_Error" xml:space="preserve">
-    <value>    [ERROR] {0}</value>
+    <value>    [ERROR] </value>
   </data>
   <data name="Result_ErrorDetail" xml:space="preserve">
     <value>{0} failed {1} with the error '{2}'.</value>
   </data>
   <data name="Result_Fail" xml:space="preserve">
-    <value>    [FAIL] {0}</value>
+    <value>    [FAIL] </value>
   </data>
   <data name="Result_FailDetail" xml:space="preserve">
     <value>{0} failed {1}. {2}</value>
   </data>
   <data name="Result_Pass" xml:space="preserve">
-    <value>    [PASS] {0}</value>
+    <value>    [PASS] </value>
   </data>
   <data name="Result_Warning" xml:space="preserve">
-    <value>    [WARN] {0}</value>
+    <value>    [WARN] </value>
+  </data>
+  <data name="SourceAt" xml:space="preserve">
+    <value>At</value>
   </data>
   <data name="StackTrace" xml:space="preserve">
     <value>    | STACK TRACE:</value>
   </data>
+  <data name="StartObjectPrefix" xml:space="preserve">
+    <value> -&gt; </value>
+  </data>
   <data name="Summary" xml:space="preserve">
     <value>Rules processed: {0}, failed: {1}, errored: {2}</value>
+  </data>
+  <data name="SynopsisPrefix" xml:space="preserve">
+    <value>    | SYNOPSIS: </value>
+  </data>
+  <data name="VSCode_Error" xml:space="preserve">
+    <value> ERROR </value>
+  </data>
+  <data name="VSCode_Fail" xml:space="preserve">
+    <value> FAIL </value>
+  </data>
+  <data name="VSCode_Help" xml:space="preserve">
+    <value>  Help:</value>
+  </data>
+  <data name="VSCode_Pass" xml:space="preserve">
+    <value> PASS </value>
+  </data>
+  <data name="VSCode_Reason" xml:space="preserve">
+    <value>  Reason:</value>
+  </data>
+  <data name="VSCode_Recommend" xml:space="preserve">
+    <value>  Recommend:</value>
+  </data>
+  <data name="VSCode_StartObjectPrefix" xml:space="preserve">
+    <value>&gt; </value>
+  </data>
+  <data name="VSCode_Warning" xml:space="preserve">
+    <value> WARN </value>
   </data>
 </root>

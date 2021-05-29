@@ -30,6 +30,16 @@ namespace PSRule.Configuration
         /// <summary>
         /// Text written to output stream, with fails marked for GitHub Actions.
         /// </summary>
-        GitHubActions = 3
+        GitHubActions = 3,
+
+        /// <summary>
+        /// Text is written to output stream formatted for Visual Studio Code.
+        /// </summary>
+        VisualStudioCode = 4,
+
+        /// <summary>
+        /// Automatically detect the style to use.
+        /// </summary>
+        Detect = 255
     }
 }

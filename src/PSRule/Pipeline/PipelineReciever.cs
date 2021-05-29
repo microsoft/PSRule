@@ -342,7 +342,7 @@ namespace PSRule.Pipeline
                 return;
 
             value.UseTargetInfo(out PSRuleTargetInfo targetInfo);
-            targetInfo.WithSource(source);
+            targetInfo.UpdateSource(source);
         }
 
         private static JsonTextReader AsJsonTextReader(TextReader reader)

@@ -1653,10 +1653,21 @@ If specified, the `-Style` parameter takes precedence, over this option.
 
 The following styles are available:
 
-- Client - Output is written to the host directly in green/ red to indicate outcome. This is the default.
-- Plain - Output is written as an unformatted string. This option can be redirected to a file.
-- AzurePipelines - Output is written with commands that can be interpreted by Azure Pipelines.
-- GitHubActions - Output is written with commands that can be interpreted by GitHub Actions.
+- Client - Output is written to the host directly in green/ red to indicate outcome.
+- Plain - Output is written as an unformatted string.
+This option can be redirected to a file.
+- AzurePipelines - Output is written for integration Azure Pipelines.
+- GitHubActions - Output is written for integration GitHub Actions.
+- VisualStudioCode - Output is written for integration with Visual Studio Code.
+- Detect - Output style will be detected by checking the environment variables.
+This is the default.
+
+Detect uses the following logic:
+
+1. If the `TF_BUILD` environment variable is set to `true`, `AzurePipelines` will be used.
+2. If the `GITHUB_ACTIONS` environment variable is set to `true`, `GitHubActions` will be used.
+3. If the `TERM_PROGRAM` environment variable is set to `vscode`, `VisualStudioCode` will be used.
+4. Use `Client`.
 
 This option can be specified using:
 
@@ -2067,7 +2078,7 @@ output:
   encoding: Default
   format: None
   outcome: Processed
-  style: Client
+  style: Detect
 
 # Configure rule suppression
 suppression: { }

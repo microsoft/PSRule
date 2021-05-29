@@ -421,15 +421,17 @@
                 "style": {
                     "type": "string",
                     "title": "Output Style",
-                    "description": "The style that results will be presented in. The default is Client.",
-                    "markdownDescription": "The style that results will be presented in. The default is `Client`. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#outputstyle)",
+                    "description": "The style that results will be presented in. The default is Detect.",
+                    "markdownDescription": "The style that results will be presented in. The default is `Detect`. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#outputstyle)",
                     "enum": [
                         "Client",
                         "Plain",
                         "AzurePipelines",
-                        "GitHubActions"
+                        "GitHubActions",
+                        "VisualStudioCode",
+                        "Detect"
                     ],
-                    "default": "Client"
+                    "default": "Detect"
                 }
             },
             "additionalProperties": false

@@ -220,7 +220,7 @@ namespace PSRule
             if (bindTargetInfo)
             {
                 result.UseTargetInfo(out PSRuleTargetInfo info);
-                info.WithSource(lineNumber, linePosition);
+                info.SetSource(lineNumber, linePosition);
             }
             return result;
         }

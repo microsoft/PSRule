@@ -60,14 +60,129 @@ namespace PSRule.Pipeline
                 if (!string.IsNullOrEmpty(resultVariableName))
                     _Results = new List<RuleRecord>();
 
-                if (style == OutputStyle.AzurePipelines)
-                    _Formatter = new AzurePipelinesFormatter(source, inner, option);
-                else if (style == OutputStyle.GitHubActions)
-                    _Formatter = new GitHubActionsFormatter(source, inner, option);
-                else if (style == OutputStyle.Plain)
-                    _Formatter = new PlainFormatter(source, inner, option);
-                else if (style == OutputStyle.Client)
-                    _Formatter = new ClientFormatter(source, inner, option);
+                style = GetStyle(style);
+                _Formatter = GetFormatter(GetStyle(style), source, inner, option);
+            }
+
+            private static IAssertFormatter GetFormatter(OutputStyle style, Source[] source, PipelineWriter inner, PSRuleOption option)
+            {
+                switch (style)
+                {
+                    case OutputStyle.AzurePipelines: return new AzurePipelinesFormatter(source, inner, option);
+                    case OutputStyle.GitHubActions: return new GitHubActionsFormatter(source, inner, option);
+                    case OutputStyle.VisualStudioCode: return new VisualStudioCodeFormatter(source, inner, option);
+                    case OutputStyle.Plain: return new PlainFormatter(source, inner, option);
+                    default: return new ClientFormatter(source, inner, option);
+                }
+            }
+
+            private static OutputStyle GetStyle(OutputStyle style)
+            {
+                if (style != OutputStyle.Detect)
+                    return style;
+
+                if (EnvironmentHelper.Default.TryBool("TF_BUILD", out bool azp) && azp)
+                    return OutputStyle.AzurePipelines;
+
+                if (EnvironmentHelper.Default.TryBool("GITHUB_ACTIONS", out bool gh) && gh)
+                    return OutputStyle.GitHubActions;
+
+                if (EnvironmentHelper.Default.TryString("TERM_PROGRAM", out string term) && term == "vscode")
+                    return OutputStyle.VisualStudioCode;
+
+                return OutputStyle.Client;
+            }
+
+            internal sealed class TerminalSupport
+            {
+                public TerminalSupport(int indent)
+                {
+                    BodyIndent = new string(' ', indent);
+                    MessageIdent = BodyIndent;
+                    StartResultIndent = FormatterStrings.StartObjectPrefix;
+                    SourceLocationPrefix = "| ";
+                    SynopsisPrefix = FormatterStrings.SynopsisPrefix;
+                    PassStatus = FormatterStrings.Result_Pass;
+                    FailStatus = FormatterStrings.Result_Fail;
+                    WarningStatus = FormatterStrings.Result_Warning;
+                    ErrorStatus = FormatterStrings.Result_Error;
+                    RecommendationHeading = FormatterStrings.Recommend;
+                    RecommendationPrefix = "| ";
+                    ReasonHeading = FormatterStrings.Reason;
+                    ReasonItemPrefix = "| - ";
+                    HelpHeading = FormatterStrings.Help;
+                    HelpLinkPrefix = "| - ";
+                }
+
+                public string BodyIndent { get; }
+
+                public string MessageIdent { get; internal set; }
+
+                public string StartResultIndent { get; internal set; }
+
+                public ConsoleColor? StartResultForegroundColor { get; internal set; }
+
+                public string SourceLocationPrefix { get; internal set; }
+
+                public ConsoleColor? SourceLocationForegroundColor { get; internal set; }
+
+                public string SynopsisPrefix { get; internal set; }
+
+                public ConsoleColor? SynopsisForegroundColor { get; internal set; }
+
+                public string PassStatus { get; internal set; }
+
+                public ConsoleColor? PassForegroundColor { get; internal set; }
+
+                public ConsoleColor? PassBackgroundColor { get; internal set; }
+
+                public ConsoleColor? PassStatusBackgroundColor { get; internal set; }
+
+                public ConsoleColor? PassStatusForegroundColor { get; internal set; }
+
+                public string FailStatus { get; internal set; }
+
+                public ConsoleColor? FailForegroundColor { get; internal set; }
+
+                public ConsoleColor? FailBackgroundColor { get; internal set; }
+
+                public ConsoleColor? FailStatusBackgroundColor { get; internal set; }
+
+                public ConsoleColor? FailStatusForegroundColor { get; internal set; }
+
+                public string WarningStatus { get; internal set; }
+
+                public ConsoleColor? WarningForegroundColor { get; internal set; }
+
+                public ConsoleColor? WarningBackgroundColor { get; internal set; }
+
+                public ConsoleColor? WarningStatusBackgroundColor { get; internal set; }
+
+                public ConsoleColor? WarningStatusForegroundColor { get; internal set; }
+
+                public string ErrorStatus { get; internal set; }
+
+                public ConsoleColor? ErrorForegroundColor { get; internal set; }
+
+                public ConsoleColor? ErrorBackgroundColor { get; internal set; }
+
+                public ConsoleColor? ErrorStatusBackgroundColor { get; internal set; }
+
+                public ConsoleColor? ErrorStatusForegroundColor { get; internal set; }
+
+                public ConsoleColor? BodyForegroundColor { get; internal set; }
+
+                public string RecommendationHeading { get; internal set; }
+
+                public string RecommendationPrefix { get; internal set; }
+
+                public string ReasonHeading { get; internal set; }
+
+                public string ReasonItemPrefix { get; internal set; }
+
+                public string HelpHeading { get; internal set; }
+
+                public string HelpLinkPrefix { get; internal set; }
             }
 
             /// <summary>
@@ -77,8 +192,6 @@ namespace PSRule.Pipeline
             {
                 private const string OUTPUT_SEPARATOR_BAR = "----------------------------";
 
-                private readonly bool _VTSupport;
-
                 protected readonly IPipelineWriter Writer;
                 protected readonly PSRuleOption Option;
 
@@ -86,9 +199,10 @@ namespace PSRule.Pipeline
                 private bool _UnbrokenInfo;
                 private bool _UnbrokenObject;
 
-                protected AssertFormatterBase(Source[] source, IPipelineWriter writer, PSRuleOption option, bool vtSupport)
+                private static readonly TerminalSupport DefaultTerminalSupport = new TerminalSupport(4);
+
+                protected AssertFormatterBase(Source[] source, IPipelineWriter writer, PSRuleOption option)
                 {
-                    _VTSupport = vtSupport;
                     Writer = writer;
                     Option = option;
                     Banner();
@@ -111,7 +225,7 @@ namespace PSRule.Pipeline
                     if ((Option.Output.Outcome.Value & result.Outcome) != result.Outcome)
                         return;
 
-                    StartObject(result, out RuleRecord[] records);
+                    StartResult(result, out RuleRecord[] records);
                     for (var i = 0; i < records.Length; i++)
                     {
                         if (records[i].IsSuccess())
@@ -126,45 +240,27 @@ namespace PSRule.Pipeline
                 protected virtual void Pass(RuleRecord record)
                 {
                     if (Option.Output.As == ResultFormat.Detail && (Option.Output.Outcome.Value & RuleOutcome.Pass) == RuleOutcome.Pass)
-                        WritePass(FormatterStrings.Result_Pass, record);
+                        WritePass(record);
                 }
 
                 protected virtual void Fail(RuleRecord record)
                 {
                     if ((Option.Output.Outcome.Value & RuleOutcome.Fail) == RuleOutcome.Fail)
-                        WriteFail(FormatterStrings.Result_Fail, record);
+                        WriteFail(record);
                 }
 
                 protected virtual void FailWithError(RuleRecord record)
                 {
                     if ((Option.Output.Outcome.Value & RuleOutcome.Error) == RuleOutcome.Error)
-                        WriteFailWithError(FormatterStrings.Result_Error, record);
+                        WriteFailWithError(record);
                 }
 
                 protected virtual void FailDetail(RuleRecord record)
                 {
-                    if (!string.IsNullOrEmpty(record.Recommendation))
-                    {
-                        LineBreak();
-                        WriteLine(FormatterStrings.Recommend);
-                        WriteLines(record.Recommendation, prefix: FormatterStrings.RecommendPrefix);
-                    }
-                    if (record.Reason != null && record.Reason.Length > 0)
-                    {
-                        LineBreak();
-                        WriteLine(FormatterStrings.Reason);
-                        for (var i = 0; i < record.Reason.Length; i++)
-                        {
-                            WriteLines(record.Reason[i], prefix: FormatterStrings.ReasonPrefix);
-                        }
-                    }
-                    var link = record.Info?.GetOnlineHelpUri()?.ToString();
-                    if (!string.IsNullOrEmpty(link))
-                    {
-                        LineBreak();
-                        WriteLine(FormatterStrings.Help);
-                        WriteLines(link, prefix: FormatterStrings.HelpLinkPrefix);
-                    }
+                    WriteSourceLocation(record, shouldBreak: false);
+                    WriteRecommendation(record);
+                    WriteReason(record);
+                    WriteHelp(record);
                     LineBreak();
                 }
 
@@ -175,12 +271,12 @@ namespace PSRule.Pipeline
 
                 protected virtual void Error(string message)
                 {
-                    WriteErrorMessage(null, FormatterStrings.Result_Error, message);
+                    WriteErrorMessage(GetTerminalSupport().MessageIdent, message);
                 }
 
                 protected virtual void Warning(string message)
                 {
-                    WriteWarningMessage(null, FormatterStrings.Result_Warning, message);
+                    WriteWarningMessage(GetTerminalSupport().MessageIdent, message);
                 }
 
                 protected void Banner()
@@ -192,7 +288,7 @@ namespace PSRule.Pipeline
                     LineBreak();
                 }
 
-                protected void StartObject(InvokeResult result, out RuleRecord[] records, ConsoleColor? forgroundColor = null)
+                protected void StartResult(InvokeResult result, out RuleRecord[] records)
                 {
                     records = result.AsRecord();
                     if (records == null || records.Length == 0)
@@ -200,8 +296,18 @@ namespace PSRule.Pipeline
 
                     BreakIfUnbrokenContent();
                     BreakIfUnbrokenInfo();
-                    WriteLine(string.Concat(" -> ", records[0].TargetName, " : ", records[0].TargetType, " [", result.Pass, "/", result.Total, "]"), forgroundColor: forgroundColor);
+                    WriteStartResult(result);
                     UnbrokenObject();
+                }
+
+                private void WriteStartResult(InvokeResult result)
+                {
+                    WriteLine(string.Concat(GetTerminalSupport().StartResultIndent, result.TargetName, " : ", result.TargetType, " [", result.Pass, "/", result.Total, "]"), forgroundColor: GetTerminalSupport().StartResultForegroundColor);
+                }
+
+                protected virtual TerminalSupport GetTerminalSupport()
+                {
+                    return DefaultTerminalSupport;
                 }
 
                 private void Source(Source[] source)
@@ -281,6 +387,22 @@ namespace PSRule.Pipeline
                     WriteLineFormat(FormatterStrings.Summary, total, fail, error);
                 }
 
+                protected void WriteStatus(string status, string statusIndent, ConsoleColor? statusForeground, ConsoleColor? statusBackground, ConsoleColor? messageForeground, ConsoleColor? messageBackground, string message)
+                {
+                    var output = message;
+                    if (statusForeground != null || statusBackground != null)
+                    {
+                        Writer.WriteHost(new HostInformationMessage { Message = statusIndent, NoNewLine = true });
+                        Writer.WriteHost(new HostInformationMessage { Message = status, ForegroundColor = statusForeground, BackgroundColor = statusBackground, NoNewLine = true });
+                        Writer.WriteHost(new HostInformationMessage { Message = " ", NoNewLine = true });
+                    }
+                    else
+                    {
+                        output = string.Concat(status, output);
+                    }
+                    Writer.WriteHost(new HostInformationMessage { Message = output, ForegroundColor = messageForeground, BackgroundColor = messageBackground });
+                }
+
                 protected void WriteLine(string prefix, ConsoleColor? forgroundColor, string message, params object[] args)
                 {
                     var output = args == null || args.Length == 0 ? message : string.Format(Thread.CurrentThread.CurrentCulture, message, args);
@@ -291,6 +413,25 @@ namespace PSRule.Pipeline
                 {
                     var output = string.IsNullOrEmpty(prefix) ? message : string.Concat(prefix, message);
                     Writer.WriteHost(new HostInformationMessage { Message = output, ForegroundColor = forgroundColor });
+                }
+
+                protected void WriteIndentedLine(string message, string indent, string prefix = null, ConsoleColor? forgroundColor = null)
+                {
+                    if (string.IsNullOrEmpty(message))
+                        return;
+
+                    var output = string.Concat(indent, prefix, message);
+                    Writer.WriteHost(new HostInformationMessage { Message = output, ForegroundColor = forgroundColor });
+                }
+
+                protected void WriteIndentedLines(string message, string indent, string prefix = null, ConsoleColor? forgroundColor = null)
+                {
+                    if (string.IsNullOrEmpty(message))
+                        return;
+
+                    var lines = message.SplitSemantic();
+                    for (var i = 0; i < lines.Length; i++)
+                        WriteIndentedLine(lines[i], indent, prefix, forgroundColor);
                 }
 
                 protected void WriteLineFormat(string message, params object[] args)
@@ -353,75 +494,125 @@ namespace PSRule.Pipeline
                     _UnbrokenObject = true;
                 }
 
-                protected ConsoleColor? GetErrorForeground()
+                protected void WriteSourceLocation(RuleRecord record, bool shouldBreak = true)
                 {
-                    if (!_VTSupport)
-                        return null;
+                    if (record.Source != null && record.Source.Length > 0)
+                    {
+                        if (shouldBreak)
+                            LineBreak();
 
-                    return ConsoleColor.Red;
+                        for (var i = 0; i < record.Source.Length; i++)
+                            WriteIndentedLine(
+                                record.Source[i].ToString(FormatterStrings.SourceAt, useRelativePath: true),
+                                GetTerminalSupport().BodyIndent,
+                                GetTerminalSupport().SourceLocationPrefix,
+                                forgroundColor: GetTerminalSupport().SourceLocationForegroundColor
+                            );
+                    }
                 }
 
-                protected ConsoleColor? GetWarningForeground()
+                protected void WriteSynopsis(RuleRecord record, bool shouldBreak = true)
                 {
-                    if (!_VTSupport)
-                        return null;
+                    if (!string.IsNullOrEmpty(record.Info.Synopsis))
+                    {
+                        if (shouldBreak)
+                            LineBreak();
 
-                    return ConsoleColor.Yellow;
+                        WriteIndentedLine(
+                            record.Info.Synopsis,
+                            GetTerminalSupport().BodyIndent,
+                            GetTerminalSupport().SynopsisPrefix,
+                            forgroundColor: GetTerminalSupport().SynopsisForegroundColor
+                        );
+                    }
                 }
 
-                protected ConsoleColor? GetPassForeground()
+                protected void WriteRecommendation(RuleRecord record)
                 {
-                    if (!_VTSupport)
-                        return null;
-
-                    return ConsoleColor.Green;
+                    if (!string.IsNullOrEmpty(record.Recommendation))
+                    {
+                        LineBreak();
+                        WriteLine(GetTerminalSupport().RecommendationHeading, forgroundColor: GetTerminalSupport().BodyForegroundColor);
+                        WriteIndentedLines(
+                            record.Recommendation,
+                            GetTerminalSupport().BodyIndent,
+                            GetTerminalSupport().RecommendationPrefix,
+                            forgroundColor: GetTerminalSupport().BodyForegroundColor
+                        );
+                    }
                 }
 
-                protected ConsoleColor? GetFailForeground()
+                protected void WriteReason(RuleRecord record)
                 {
-                    if (!_VTSupport)
-                        return null;
-
-                    return ConsoleColor.Red;
+                    if (record.Reason != null && record.Reason.Length > 0)
+                    {
+                        LineBreak();
+                        WriteLine(GetTerminalSupport().ReasonHeading, forgroundColor: GetTerminalSupport().BodyForegroundColor);
+                        for (var i = 0; i < record.Reason.Length; i++)
+                        {
+                            WriteIndentedLine(
+                                record.Reason[i],
+                                GetTerminalSupport().BodyIndent,
+                                GetTerminalSupport().ReasonItemPrefix,
+                                forgroundColor: GetTerminalSupport().BodyForegroundColor
+                            );
+                        }
+                    }
                 }
 
-                protected void WriteErrorMessage(string prefix, string message, params object[] args)
+                protected void WriteHelp(RuleRecord record)
+                {
+                    var link = record.Info?.GetOnlineHelpUri()?.ToString();
+                    if (!string.IsNullOrEmpty(link))
+                    {
+                        LineBreak();
+                        WriteLine(GetTerminalSupport().HelpHeading, forgroundColor: GetTerminalSupport().BodyForegroundColor);
+                        WriteIndentedLine(
+                            link,
+                            GetTerminalSupport().BodyIndent,
+                            GetTerminalSupport().HelpLinkPrefix,
+                            forgroundColor: GetTerminalSupport().BodyForegroundColor
+                        );
+                    }
+                }
+
+                protected void WriteErrorMessage(string indent, string message)
                 {
                     BreakIfUnbrokenObject();
                     BreakIfUnbrokenContent();
-                    WriteLine(prefix, GetErrorForeground(), message, args);
+                    WriteStatus(GetTerminalSupport().ErrorStatus, indent, GetTerminalSupport().ErrorStatusForegroundColor, GetTerminalSupport().ErrorStatusBackgroundColor, GetTerminalSupport().ErrorForegroundColor, GetTerminalSupport().ErrorBackgroundColor, message);
                     UnbrokenInfo();
                 }
 
-                protected void WriteWarningMessage(string prefix, string message, params object[] args)
+                protected void WriteWarningMessage(string indent, string message)
                 {
                     BreakIfUnbrokenObject();
                     BreakIfUnbrokenContent();
-                    WriteLine(prefix, GetWarningForeground(), message, args);
+                    WriteStatus(GetTerminalSupport().WarningStatus, indent, GetTerminalSupport().WarningStatusForegroundColor, GetTerminalSupport().WarningStatusBackgroundColor, GetTerminalSupport().WarningForegroundColor, GetTerminalSupport().WarningBackgroundColor, message);
                     UnbrokenInfo();
                 }
 
-                protected void WritePass(string message, RuleRecord record)
+                protected void WritePass(RuleRecord record)
                 {
                     BreakIfUnbrokenObject();
                     BreakIfUnbrokenInfo();
-                    WriteLine(null, GetPassForeground(), message, record.RuleName);
+                    WriteStatus(GetTerminalSupport().PassStatus, GetTerminalSupport().BodyIndent, GetTerminalSupport().PassStatusForegroundColor, GetTerminalSupport().PassStatusBackgroundColor, GetTerminalSupport().PassForegroundColor, GetTerminalSupport().PassBackgroundColor, record.RuleName);
                     UnbrokenContent();
                 }
 
-                protected void WriteFail(string message, RuleRecord record)
+                protected void WriteFail(RuleRecord record)
                 {
                     BreakIfUnbrokenObject();
                     BreakIfUnbrokenInfo();
-                    WriteLine(null, GetFailForeground(), message, record.RuleName);
+                    WriteStatus(GetTerminalSupport().FailStatus, GetTerminalSupport().BodyIndent, GetTerminalSupport().FailStatusForegroundColor, GetTerminalSupport().FailStatusBackgroundColor, GetTerminalSupport().FailForegroundColor, GetTerminalSupport().FailBackgroundColor, record.RuleName);
                     FailDetail(record);
                 }
 
-                protected void WriteFailWithError(string message, RuleRecord record)
+                protected void WriteFailWithError(RuleRecord record)
                 {
                     BreakIfUnbrokenObject();
                     BreakIfUnbrokenInfo();
-                    WriteLine(null, GetFailForeground(), message, record.RuleName);
+                    WriteStatus(GetTerminalSupport().ErrorStatus, GetTerminalSupport().BodyIndent, GetTerminalSupport().ErrorStatusForegroundColor, GetTerminalSupport().ErrorStatusBackgroundColor, GetTerminalSupport().ErrorForegroundColor, GetTerminalSupport().ErrorBackgroundColor, record.RuleName);
                     ErrorDetail(record);
                     UnbrokenContent();
                 }
@@ -432,24 +623,27 @@ namespace PSRule.Pipeline
             /// </summary>
             private sealed class ClientFormatter : AssertFormatterBase, IAssertFormatter
             {
+                private readonly TerminalSupport _TerminalSupport;
+
                 internal ClientFormatter(Source[] source, IPipelineWriter logger, PSRuleOption option)
-                    : base(source, logger, option, true) { }
-
-                public override void Result(InvokeResult result)
+                    : base(source, logger, option)
                 {
-                    if ((Option.Output.Outcome.Value & result.Outcome) != result.Outcome)
-                        return;
-
-                    StartObject(result, out RuleRecord[] records, forgroundColor: ConsoleColor.Green);
-                    for (var i = 0; i < records.Length; i++)
+                    _TerminalSupport = new TerminalSupport(4)
                     {
-                        if (records[i].IsSuccess())
-                            Pass(records[i]);
-                        else if (records[i].Outcome == RuleOutcome.Error)
-                            FailWithError(records[i]);
-                        else
-                            Fail(records[i]);
-                    }
+                        StartResultForegroundColor = ConsoleColor.Green,
+                        SourceLocationForegroundColor = ConsoleColor.Red,
+                        SynopsisForegroundColor = ConsoleColor.Red,
+                        ErrorForegroundColor = ConsoleColor.Red,
+                        FailForegroundColor = ConsoleColor.Red,
+                        PassForegroundColor = ConsoleColor.Green,
+                        WarningForegroundColor = ConsoleColor.Yellow,
+                        BodyForegroundColor = ConsoleColor.Cyan,
+                    };
+                }
+
+                protected override TerminalSupport GetTerminalSupport()
+                {
+                    return _TerminalSupport;
                 }
 
                 protected override void ErrorDetail(RuleRecord record)
@@ -458,38 +652,14 @@ namespace PSRule.Pipeline
                         return;
 
                     LineBreak();
-                    WriteLine(FormatterStrings.Message, forgroundColor: ConsoleColor.Red);
-                    WriteLines(record.Error.Message, prefix: FormatterStrings.MessagePrefix, forgroundColor: ConsoleColor.Red);
+                    WriteLine(FormatterStrings.Message, forgroundColor: GetTerminalSupport().ErrorForegroundColor);
+                    WriteIndentedLine(record.Error.Message, GetTerminalSupport().BodyIndent, forgroundColor: GetTerminalSupport().ErrorForegroundColor);
                     LineBreak();
-                    WriteLine(FormatterStrings.Position, forgroundColor: ConsoleColor.Cyan);
-                    WriteLines(record.Error.PositionMessage, prefix: FormatterStrings.MessagePrefix, forgroundColor: ConsoleColor.Cyan);
+                    WriteLine(FormatterStrings.Position, forgroundColor: GetTerminalSupport().BodyForegroundColor);
+                    WriteIndentedLine(record.Error.PositionMessage, GetTerminalSupport().BodyIndent, forgroundColor: GetTerminalSupport().BodyForegroundColor);
                     LineBreak();
-                    WriteLine(FormatterStrings.StackTrace, forgroundColor: ConsoleColor.Cyan);
-                    WriteLines(record.Error.ScriptStackTrace, prefix: FormatterStrings.MessagePrefix, forgroundColor: ConsoleColor.Cyan);
-                }
-
-                protected override void FailDetail(RuleRecord record)
-                {
-                    LineBreak();
-                    WriteLine(FormatterStrings.Recommend, forgroundColor: ConsoleColor.Cyan);
-                    WriteLines(record.Recommendation, prefix: FormatterStrings.RecommendPrefix, forgroundColor: ConsoleColor.Cyan);
-                    if (record.Reason != null && record.Reason.Length > 0)
-                    {
-                        LineBreak();
-                        WriteLine(FormatterStrings.Reason, forgroundColor: ConsoleColor.Cyan);
-                        for (var i = 0; i < record.Reason.Length; i++)
-                        {
-                            WriteLines(record.Reason[i], prefix: FormatterStrings.ReasonPrefix, forgroundColor: ConsoleColor.Cyan);
-                        }
-                    }
-                    var link = record.Info?.GetOnlineHelpUri()?.ToString();
-                    if (!string.IsNullOrEmpty(link))
-                    {
-                        LineBreak();
-                        WriteLine(FormatterStrings.Help, forgroundColor: ConsoleColor.Cyan);
-                        WriteLines(link, prefix: FormatterStrings.HelpLinkPrefix, forgroundColor: ConsoleColor.Cyan);
-                    }
-                    LineBreak();
+                    WriteLine(FormatterStrings.StackTrace, forgroundColor: GetTerminalSupport().BodyForegroundColor);
+                    WriteIndentedLine(record.Error.ScriptStackTrace, GetTerminalSupport().BodyIndent, forgroundColor: GetTerminalSupport().BodyForegroundColor);
                 }
             }
 
@@ -499,7 +669,7 @@ namespace PSRule.Pipeline
             private sealed class PlainFormatter : AssertFormatterBase, IAssertFormatter
             {
                 internal PlainFormatter(Source[] source, IPipelineWriter logger, PSRuleOption option)
-                    : base(source, logger, option, false) { }
+                    : base(source, logger, option) { }
 
                 protected override void DoWriteError(ErrorRecord errorRecord)
                 {
@@ -517,14 +687,14 @@ namespace PSRule.Pipeline
                         return;
 
                     LineBreak();
-                    WriteLine(FormatterStrings.Message);
-                    WriteLines(record.Error.Message, prefix: FormatterStrings.MessagePrefix);
+                    WriteLine(FormatterStrings.Message, forgroundColor: GetTerminalSupport().ErrorForegroundColor);
+                    WriteIndentedLine(record.Error.Message, GetTerminalSupport().BodyIndent, forgroundColor: GetTerminalSupport().ErrorForegroundColor);
                     LineBreak();
-                    WriteLine(FormatterStrings.Position);
-                    WriteLines(record.Error.PositionMessage, prefix: FormatterStrings.MessagePrefix);
+                    WriteLine(FormatterStrings.Position, forgroundColor: GetTerminalSupport().BodyForegroundColor);
+                    WriteIndentedLine(record.Error.PositionMessage, GetTerminalSupport().BodyIndent, forgroundColor: GetTerminalSupport().BodyForegroundColor);
                     LineBreak();
-                    WriteLine(FormatterStrings.StackTrace);
-                    WriteLines(record.Error.ScriptStackTrace, prefix: FormatterStrings.MessagePrefix);
+                    WriteLine(FormatterStrings.StackTrace, forgroundColor: GetTerminalSupport().BodyForegroundColor);
+                    WriteIndentedLine(record.Error.ScriptStackTrace, GetTerminalSupport().BodyIndent, forgroundColor: GetTerminalSupport().BodyForegroundColor);
                 }
             }
 
@@ -536,17 +706,22 @@ namespace PSRule.Pipeline
                 private const string MESSAGE_PREFIX_ERROR = "##vso[task.logissue type=error]";
                 private const string MESSAGE_PREFIX_WARNING = "##vso[task.logissue type=warning]";
 
-                internal AzurePipelinesFormatter(Source[] source, IPipelineWriter logger, PSRuleOption option)
-                    : base(source, logger, option, false) { }
+                private readonly TerminalSupport _TerminalSupport;
 
-                protected override void Error(string message)
+                internal AzurePipelinesFormatter(Source[] source, IPipelineWriter logger, PSRuleOption option)
+                    : base(source, logger, option)
                 {
-                    WriteErrorMessage(MESSAGE_PREFIX_ERROR, message);
+                    _TerminalSupport = new TerminalSupport(4)
+                    {
+                        MessageIdent = string.Empty,
+                        ErrorStatus = MESSAGE_PREFIX_ERROR,
+                        WarningStatus = MESSAGE_PREFIX_WARNING,
+                    };
                 }
 
-                protected override void Warning(string message)
+                protected override TerminalSupport GetTerminalSupport()
                 {
-                    WriteWarningMessage(MESSAGE_PREFIX_WARNING, message);
+                    return _TerminalSupport;
                 }
 
                 protected override void ErrorDetail(RuleRecord record)
@@ -578,17 +753,22 @@ namespace PSRule.Pipeline
                 private const string MESSAGE_PREFIX_ERROR = "::error::";
                 private const string MESSAGE_PREFIX_WARNING = "::warning::";
 
-                internal GitHubActionsFormatter(Source[] source, IPipelineWriter logger, PSRuleOption option)
-                    : base(source, logger, option, false) { }
+                private readonly TerminalSupport _TerminalSupport;
 
-                protected override void Error(string message)
+                internal GitHubActionsFormatter(Source[] source, IPipelineWriter logger, PSRuleOption option)
+                    : base(source, logger, option)
                 {
-                    WriteErrorMessage(MESSAGE_PREFIX_ERROR, message);
+                    _TerminalSupport = new TerminalSupport(4)
+                    {
+                        MessageIdent = string.Empty,
+                        ErrorStatus = MESSAGE_PREFIX_ERROR,
+                        WarningStatus = MESSAGE_PREFIX_WARNING,
+                    };
                 }
 
-                protected override void Warning(string message)
+                protected override TerminalSupport GetTerminalSupport()
                 {
-                    WriteWarningMessage(MESSAGE_PREFIX_WARNING, message);
+                    return _TerminalSupport;
                 }
 
                 protected override void ErrorDetail(RuleRecord record)
@@ -608,6 +788,66 @@ namespace PSRule.Pipeline
                 {
                     base.FailDetail(record);
                     Error(string.Format(Thread.CurrentThread.CurrentCulture, FormatterStrings.Result_FailDetail, record.TargetName, record.RuleName, record.Info.Synopsis));
+                    LineBreak();
+                }
+            }
+
+            /// <summary>
+            /// Visual Studio Code assert formatter.
+            /// </summary>
+            private sealed class VisualStudioCodeFormatter : AssertFormatterBase, IAssertFormatter
+            {
+                private readonly TerminalSupport _TerminalSupport;
+
+                internal VisualStudioCodeFormatter(Source[] source, IPipelineWriter logger, PSRuleOption option)
+                    : base(source, logger, option)
+                {
+                    _TerminalSupport = new TerminalSupport(2)
+                    {
+                        StartResultIndent = FormatterStrings.VSCode_StartObjectPrefix,
+                        StartResultForegroundColor = ConsoleColor.Green,
+                        SourceLocationForegroundColor = ConsoleColor.Cyan,
+                        SourceLocationPrefix = null,
+                        SynopsisPrefix = null,
+                        SynopsisForegroundColor = ConsoleColor.Cyan,
+                        ErrorStatus = FormatterStrings.VSCode_Error,
+                        ErrorForegroundColor = ConsoleColor.Red,
+                        ErrorStatusForegroundColor = ConsoleColor.Black,
+                        ErrorStatusBackgroundColor = ConsoleColor.Red,
+                        FailStatus = FormatterStrings.VSCode_Fail,
+                        FailForegroundColor = ConsoleColor.Red,
+                        FailStatusForegroundColor = ConsoleColor.Black,
+                        FailStatusBackgroundColor = ConsoleColor.Red,
+                        PassStatus = FormatterStrings.VSCode_Pass,
+                        PassForegroundColor = ConsoleColor.Green,
+                        PassStatusForegroundColor = ConsoleColor.Black,
+                        PassStatusBackgroundColor = ConsoleColor.Green,
+                        WarningStatus = FormatterStrings.VSCode_Warning,
+                        WarningForegroundColor = ConsoleColor.Yellow,
+                        WarningStatusForegroundColor = ConsoleColor.Black,
+                        WarningStatusBackgroundColor = ConsoleColor.Yellow,
+                        BodyForegroundColor = ConsoleColor.White,
+                        RecommendationHeading = FormatterStrings.VSCode_Recommend,
+                        RecommendationPrefix = null,
+                        ReasonHeading = FormatterStrings.VSCode_Reason,
+                        ReasonItemPrefix = "- ",
+                        HelpHeading = FormatterStrings.VSCode_Help,
+                        HelpLinkPrefix = "- ",
+                    };
+                }
+
+                protected override TerminalSupport GetTerminalSupport()
+                {
+                    return _TerminalSupport;
+                }
+
+                protected override void FailDetail(RuleRecord record)
+                {
+                    WriteSynopsis(record, shouldBreak: true);
+                    WriteSourceLocation(record, shouldBreak: true);
+                    WriteRecommendation(record);
+                    WriteReason(record);
+                    WriteHelp(record);
                     LineBreak();
                 }
             }
