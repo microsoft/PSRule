@@ -10,6 +10,34 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.4.0
+
+What's changed since v1.3.0:
+
+- General improvements:
+  - PSRule banner can be configured in output when using `Assert-PSRule`. [#708](https://github.com/microsoft/PSRule/issues/708)
+  - Source location of objects are included in results.
+    - Source location of objects from JSON and YAML input files are read automatically. [#624](https://github.com/microsoft/PSRule/issues/624)
+    - Source location of objects from the pipeline are read from properties. [#729](https://github.com/microsoft/PSRule/issues/729)
+  - Assert output improvements:
+    - Added support for Visual Studio Code with `VisualStudioCode` style. [#731](https://github.com/microsoft/PSRule/issues/731)
+      - Updated output format provides support for problem matchers in task output.
+    - Automatically detect output style from environment variables. [#732](https://github.com/microsoft/PSRule/issues/732)
+      - _Assert-PSRule_ now defaults to `Detect` instead of `Client`.
+    - See [about_PSRule_Options] for details.
+  - Improved support for version constraints by:
+    - Constraints can include prerelease versions of other matching versions. [#714](https://github.com/microsoft/PSRule/issues/714)
+    - Constraints support using a `@prerelease` or `@pre` to include prerelease versions. [#717](https://github.com/microsoft/PSRule/issues/717)
+    - Constraint sets allow multiple constraints to be joined together. [#715](https://github.com/microsoft/PSRule/issues/715)
+    - See [about_PSRule_Assert] for details.
+- Bug fixes:
+  - Fixed prerelease constraint handling for prerelease versions. [#712](https://github.com/microsoft/PSRule/issues/712)
+  - Fixed null reference in convention for nested exceptions. [#725](https://github.com/microsoft/PSRule/issues/725)
+
+What's changed since pre-release v1.4.0-B2105041:
+
+- No additional changes.
+
 ## v1.4.0-B2105041 (pre-release)
 
 What's changed since pre-release v1.4.0-B2105032:
