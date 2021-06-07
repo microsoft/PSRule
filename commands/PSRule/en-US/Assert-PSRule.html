@@ -327,17 +327,28 @@ Accept wildcard characters: False
 <p>Configures the style that results will be presented in.</p>
 <p>The following styles are available:</p>
 <ul>
-<li>Client - Output is written to the host directly in green/ red to indicate outcome. This is the default.</li>
-<li>Plain - Output is written to the host as a plain string.</li>
-<li>AzurePipelines - Output is written with commands that can be interpreted by Azure Pipelines.</li>
-<li>GitHubActions - Output is written with commands that can be interpreted by GitHub Actions.</li>
+<li>Client - Output is written to the host directly in green/ red to indicate outcome.</li>
+<li>Plain - Output is written as an unformatted string.
+This option can be redirected to a file.</li>
+<li>AzurePipelines - Output is written for integration Azure Pipelines.</li>
+<li>GitHubActions - Output is written for integration GitHub Actions.</li>
+<li>VisualStudioCode - Output is written for integration with Visual Studio Code.</li>
+<li>Detect - Output style will be detected by checking the environment variables.
+This is the default.</li>
 </ul>
+<p>Detect uses the following logic:</p>
+<ol>
+<li>If the <code>TF_BUILD</code> environment variable is set to <code>true</code>, <code>AzurePipelines</code> will be used.</li>
+<li>If the <code>GITHUB_ACTIONS</code> environment variable is set to <code>true</code>, <code>GitHubActions</code> will be used.</li>
+<li>If the <code>TERM_PROGRAM</code> environment variable is set to <code>vscode</code>, <code>VisualStudioCode</code> will be used.</li>
+<li>Use <code>Client</code>.</li>
+</ol>
 <p>Each of these styles outputs to the host. To capture output as a string redirect the information stream.
 For example: <code>6&gt;&amp;1</code></p>
 <pre><code class="lang-yaml">Type: OutputStyle
 Parameter Sets: (All)
 Aliases:
-Accepted values: Client, Plain, AzurePipelines, GitHubActions
+Accepted values: Client, Plain, AzurePipelines, GitHubActions, VisualStudioCode, Detect
 
 Required: False
 Position: Named

@@ -82,8 +82,9 @@
  [-InputIgnoreGitPath &lt;Boolean&gt;] [-ObjectPath &lt;String&gt;] [-InputTargetType &lt;String[]&gt;]
  [-InputPathIgnore &lt;String[]&gt;] [-LoggingLimitDebug &lt;String[]&gt;] [-LoggingLimitVerbose &lt;String[]&gt;]
  [-LoggingRuleFail &lt;OutcomeLogStream&gt;] [-LoggingRulePass &lt;OutcomeLogStream&gt;] [-OutputAs &lt;ResultFormat&gt;]
- [-OutputCulture &lt;String[]&gt;] [-OutputEncoding &lt;OutputEncoding&gt;] [-OutputFormat &lt;OutputFormat&gt;]
- [-OutputOutcome &lt;RuleOutcome&gt;] [-OutputPath &lt;String&gt;] [-OutputStyle &lt;OutputStyle&gt;] [&lt;CommonParameters&gt;]
+ [-OutputBanner &lt;BannerFormat&gt;] [-OutputCulture &lt;String[]&gt;] [-OutputEncoding &lt;OutputEncoding&gt;]
+ [-OutputFormat &lt;OutputFormat&gt;] [-OutputOutcome &lt;RuleOutcome&gt;] [-OutputPath &lt;String&gt;]
+ [-OutputStyle &lt;OutputStyle&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h3 id="fromoption">FromOption</h3>
 <pre><code class="lang-text">New-PSRuleOption [-Option] &lt;PSRuleOption&gt; [-Configuration &lt;ConfigurationOption&gt;]
@@ -95,8 +96,9 @@
  [-InputIgnoreGitPath &lt;Boolean&gt;] [-ObjectPath &lt;String&gt;] [-InputTargetType &lt;String[]&gt;]
  [-InputPathIgnore &lt;String[]&gt;] [-LoggingLimitDebug &lt;String[]&gt;] [-LoggingLimitVerbose &lt;String[]&gt;]
  [-LoggingRuleFail &lt;OutcomeLogStream&gt;] [-LoggingRulePass &lt;OutcomeLogStream&gt;] [-OutputAs &lt;ResultFormat&gt;]
- [-OutputCulture &lt;String[]&gt;] [-OutputEncoding &lt;OutputEncoding&gt;] [-OutputFormat &lt;OutputFormat&gt;]
- [-OutputOutcome &lt;RuleOutcome&gt;] [-OutputPath &lt;String&gt;] [-OutputStyle &lt;OutputStyle&gt;] [&lt;CommonParameters&gt;]
+ [-OutputBanner &lt;BannerFormat&gt;] [-OutputCulture &lt;String[]&gt;] [-OutputEncoding &lt;OutputEncoding&gt;]
+ [-OutputFormat &lt;OutputFormat&gt;] [-OutputOutcome &lt;RuleOutcome&gt;] [-OutputPath &lt;String&gt;]
+ [-OutputStyle &lt;OutputStyle&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h3 id="fromdefault">FromDefault</h3>
 <pre><code class="lang-text">New-PSRuleOption [-Default] [-Configuration &lt;ConfigurationOption&gt;] [-SuppressTargetName &lt;SuppressionOption&gt;]
@@ -107,8 +109,9 @@
  [-Format &lt;InputFormat&gt;] [-InputIgnoreGitPath &lt;Boolean&gt;] [-ObjectPath &lt;String&gt;] [-InputTargetType &lt;String[]&gt;]
  [-InputPathIgnore &lt;String[]&gt;] [-LoggingLimitDebug &lt;String[]&gt;] [-LoggingLimitVerbose &lt;String[]&gt;]
  [-LoggingRuleFail &lt;OutcomeLogStream&gt;] [-LoggingRulePass &lt;OutcomeLogStream&gt;] [-OutputAs &lt;ResultFormat&gt;]
- [-OutputCulture &lt;String[]&gt;] [-OutputEncoding &lt;OutputEncoding&gt;] [-OutputFormat &lt;OutputFormat&gt;]
- [-OutputOutcome &lt;RuleOutcome&gt;] [-OutputPath &lt;String&gt;] [-OutputStyle &lt;OutputStyle&gt;] [&lt;CommonParameters&gt;]
+ [-OutputBanner &lt;BannerFormat&gt;] [-OutputCulture &lt;String[]&gt;] [-OutputEncoding &lt;OutputEncoding&gt;]
+ [-OutputFormat &lt;OutputFormat&gt;] [-OutputOutcome &lt;RuleOutcome&gt;] [-OutputPath &lt;String&gt;]
+ [-OutputStyle &lt;OutputStyle&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>The <strong>New-PSRuleOption</strong> cmdlet creates an options object that can be passed to PSRule cmdlets to configure execution.</p>
@@ -510,6 +513,20 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-outputbanner">-OutputBanner</h3>
+<p>Sets the option <code>Output.Banner</code>.
+The <code>Output.Banner</code> option configure information displayed with PSRule banner.
+This option is only applicable when using <code>Assert-PSRule</code> cmdlet.</p>
+<pre><code class="lang-yaml">Type: BannerFormat
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: Default
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>

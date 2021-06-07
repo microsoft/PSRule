@@ -1066,8 +1066,11 @@ A constraint can optionally be provided to require the semantic version to be wi
 <p>The following parameters are accepted:</p>
 <ul>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
-<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
 <li><code>constraint</code> (optional) - A version constraint, see below for details of version constrain format.</li>
+<li><code>includePrerelease</code> (optional) - Determines if prerelease versions are included.
+Unless specified this defaults to <code>$False</code>.</li>
 </ul>
 <p>The following are supported constraints:</p>
 <ul>
@@ -1098,16 +1101,86 @@ A constraint can optionally be provided to require the semantic version to be wi
 </li>
 <li><code>^version</code> - Compatible with version.
 <ul>
-<li>e.g. <code>^1.2.3</code> - &gt;=1.2.3, &lt;2.0.0</li>
+<li>e.g. <code>^1.2.3</code> - <code>&gt;=1.2.3</code>, <code>&lt;2.0.0</code></li>
 </ul>
 </li>
 <li><code>~version</code> - Approximately equivalent to version
 <ul>
-<li>e.g. <code>~1.2.3</code> - &gt;=1.2.3, &lt;1.3.0</li>
+<li>e.g. <code>~1.2.3</code> - <code>&gt;=1.2.3</code>, <code>&lt;1.3.0</code></li>
 </ul>
 </li>
 </ul>
-<p>An empty, null or <code>*</code> version constraint matches all valid semantic versions.</p>
+<p>An empty, null or <code>*</code> constraint matches all valid semantic versions.</p>
+<p>Multiple constraints can be joined together:</p>
+<ul>
+<li>Use a <em>space</em> to separate multiple constraints, each must be true (<em>logical AND</em>).</li>
+<li>Separates constraint sets with the double pipe <code>||</code>.
+Only one constraint set must be true (<em>logical OR</em>).</li>
+</ul>
+<p>By example:</p>
+<ul>
+<li><code>1.2.3 || &gt;=3.4.5 &lt;5.0.0</code> results in:
+<ul>
+<li>Pass: <code>1.2.3</code>, <code>3.4.5</code>, <code>3.5.0</code>, <code>4.9.9</code>.</li>
+<li>Fail: <code>3.0.0</code>, <code>5.0.0</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Handling for prerelease versions:</p>
+<ul>
+<li>Constraints and versions containing prerelease identifiers are supported.
+i.e. <code>&gt;=1.2.3-build.1</code> or <code>1.2.3-build.1</code>.</li>
+<li>A version containing a prerelease identifer follows semantic versioning rules.
+i.e. <code>1.2.3-alpha</code> &lt; <code>1.2.3-alpha.1</code> &lt; <code>1.2.3-alpha.beta</code> &lt; <code>1.2.3-beta</code> &lt; <code>1.2.3-beta.2</code> &lt; <code>1.2.3-beta.11</code> &lt; <code>1.2.3-rc.1</code> &lt; <code>1.2.3</code>.</li>
+<li>A constraint without a prerelease identifer will only match a stable version by default.
+Set <code>includePrerelease</code> to <code>$True</code> to include prerelease versions.</li>
+<li>Constraints with a prerelease identifer will only match:
+<ul>
+<li>Matching prerelease versions of the same major.minor.patch version by default.
+Set <code>includePrerelease</code> to <code>$True</code> to include prerelease versions of all matching versions.
+Alternatively use the <code>@pre</code> or <code>@prerelease</code> flag in a constraint.</li>
+<li>Matching stable versions.</li>
+</ul>
+</li>
+</ul>
+<p>By example:</p>
+<ul>
+<li><code>&gt;=1.2.3</code> results in:
+<ul>
+<li>Pass: <code>1.2.3</code>, <code>9.9.9</code>.</li>
+<li>Fail: <code>1.2.3-build.1</code>, <code>9.9.9-build.1</code>.</li>
+</ul>
+</li>
+<li><code>&gt;=1.2.3-0</code> results in:
+<ul>
+<li>Pass: <code>1.2.3</code>, <code>1.2.3-build.1</code>, <code>9.9.9</code>.</li>
+<li>Fail: <code>9.9.9-build.1</code>.</li>
+</ul>
+</li>
+<li><code>&lt;1.2.3</code> results in:
+<ul>
+<li>Pass: <code>1.2.2</code>, <code>1.0.0</code>.</li>
+<li>Fail: <code>1.0.0-build.1</code>, <code>1.2.3-build.1</code>.</li>
+</ul>
+</li>
+<li><code>&lt;1.2.3-0</code> results in:
+<ul>
+<li>Pass: <code>1.2.2</code>, <code>1.0.0</code>.</li>
+<li>Fail: <code>1.0.0-build.1</code>, <code>1.2.3-build.1</code>.</li>
+</ul>
+</li>
+<li><code>@pre &gt;=1.2.3</code> results in:
+<ul>
+<li>Pass: <code>1.2.3</code>, <code>9.9.9</code>, <code>9.9.9-build.1</code></li>
+<li>Fail: <code>1.2.3-build.1</code>.</li>
+</ul>
+</li>
+<li><code>@pre &gt;=1.2.3-0</code> results in:
+<ul>
+<li>Pass: <code>1.2.3</code>, <code>1.2.3-build.1</code>, <code>9.9.9</code>, <code>9.9.9-build.1</code>.</li>
+</ul>
+</li>
+</ul>
 <p>Reasons include:</p>
 <ul>
 <li><em>The parameter 'inputObject' is null.</em></li>
@@ -1123,6 +1196,14 @@ A constraint can optionally be provided to require the semantic version to be wi
 
 Rule 'MinimumVersion' {
     $Assert.Version($TargetObject, 'version', '&gt;=1.2.3')
+}
+
+Rule 'MinimumVersionWithPrerelease' {
+    $Assert.Version($TargetObject, 'version', '&gt;=1.2.3-0', $True)
+}
+
+Rule 'MinimumVersionWithFlag' {
+    $Assert.Version($TargetObject, 'version', '@pre &gt;=1.2.3-0')
 }
 </code></pre>
 <h3 id="withinpath">WithinPath</h3>

@@ -63,7 +63,43 @@
 <h1 id="upgrade-notes">Upgrade notes</h1>
 
 <p>This document contains notes to help upgrade from previous versions of PSRule.</p>
-<h2 id="upgrade-to-v0220-from-v100">Upgrade to v0.22.0 from v1.0.0</h2>
+<h2 id="upgrading-to-v140">Upgrading to v1.4.0</h2>
+<p>Follow these notes to upgrade from PSRule version <em>v1.3.0</em> to <em>v1.4.0</em>.</p>
+<h3 id="change-in-default-output-styles">Change in default output styles</h3>
+<p>Previously in PSRule <em>v1.3.0</em> and prior the default style when using <code>Assert-PSRule</code> was <code>Client</code>.
+From <em>v1.4.0</em> PSRule now defaults to <code>Detect</code>.</p>
+<p>The <code>Detect</code> output style falls back to <code>Client</code> however may detect one of the following styles instead:</p>
+<ul>
+<li><code>AzurePipelines</code> - Output is written for integration Azure Pipelines.</li>
+<li><code>GitHubActions</code> - Output is written for integration GitHub Actions.</li>
+<li><code>VisualStudioCode</code> - Output is written for integration with Visual Studio Code.</li>
+</ul>
+<p>Detect uses the following logic:</p>
+<ol>
+<li>If the <code>TF_BUILD</code> environment variable is set to <code>true</code>, <code>AzurePipelines</code> will be used.</li>
+<li>If the <code>GITHUB_ACTIONS</code> environment variable is set to <code>true</code>, <code>GitHubActions</code> will be used.</li>
+<li>If the <code>TERM_PROGRAM</code> environment variable is set to <code>vscode</code>, <code>VisualStudioCode</code> will be used.</li>
+<li>Use <code>Client</code>.</li>
+</ol>
+<p>To force usage of the <code>Client</code> output style set the <code>Output.Style</code> option.
+For example:</p>
+<pre><code class="lang-yaml"># YAML: Using the output/style property
+output:
+  style: Client
+</code></pre>
+<pre><code class="lang-bash"># Bash: Using environment variable
+export PSRULE_OUTPUT_STYLE=Client
+</code></pre>
+<pre><code class="lang-yaml"># GitHub Actions: Using environment variable
+env:
+  PSRULE_OUTPUT_STYLE: Client
+</code></pre>
+<pre><code class="lang-yaml"># Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_OUTPUT_STYLE
+  value: Client
+</code></pre>
+<h2 id="upgrading-to-v100">Upgrading to v1.0.0</h2>
 <p>Follow these notes to upgrade from PSRule version <em>v0.22.0</em> to <em>v1.0.0</em>.</p>
 <h3 id="replaced-rule-target-properties">Replaced $Rule target properties</h3>
 <p>Previously in PSRule <em>v0.22.0</em> and prior the <code>$Rule</code> automatic variable had the following properties:</p>

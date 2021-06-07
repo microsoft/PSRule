@@ -68,6 +68,113 @@
 <li>YAML resources will require an <code>apiVersion</code> from PSRule v2. <a href="https://github.com/microsoft/PSRule/issues/648">#648</a></li>
 </ul>
 <h2 id="unreleased">Unreleased</h2>
+<h2 id="v140">v1.4.0</h2>
+<p>What's changed since v1.3.0:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>PSRule banner can be configured in output when using <code>Assert-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/708">#708</a></li>
+<li>Source location of objects are included in results.
+<ul>
+<li>Source location of objects from JSON and YAML input files are read automatically. <a href="https://github.com/microsoft/PSRule/issues/624">#624</a></li>
+<li>Source location of objects from the pipeline are read from properties. <a href="https://github.com/microsoft/PSRule/issues/729">#729</a></li>
+</ul>
+</li>
+<li>Assert output improvements:
+<ul>
+<li>Added support for Visual Studio Code with <code>VisualStudioCode</code> style. <a href="https://github.com/microsoft/PSRule/issues/731">#731</a>
+<ul>
+<li>Updated output format provides support for problem matchers in task output.</li>
+</ul>
+</li>
+<li>Automatically detect output style from environment variables. <a href="https://github.com/microsoft/PSRule/issues/732">#732</a>
+<ul>
+<li><em>Assert-PSRule</em> now defaults to <code>Detect</code> instead of <code>Client</code>.</li>
+</ul>
+</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+<li>Improved support for version constraints by:
+<ul>
+<li>Constraints can include prerelease versions of other matching versions. <a href="https://github.com/microsoft/PSRule/issues/714">#714</a></li>
+<li>Constraints support using a <code>@prerelease</code> or <code>@pre</code> to include prerelease versions. <a href="https://github.com/microsoft/PSRule/issues/717">#717</a></li>
+<li>Constraint sets allow multiple constraints to be joined together. <a href="https://github.com/microsoft/PSRule/issues/715">#715</a></li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Bug fixes:
+<ul>
+<li>Fixed prerelease constraint handling for prerelease versions. <a href="https://github.com/microsoft/PSRule/issues/712">#712</a></li>
+<li>Fixed null reference in convention for nested exceptions. <a href="https://github.com/microsoft/PSRule/issues/725">#725</a></li>
+</ul>
+</li>
+</ul>
+<p>What's changed since pre-release v1.4.0-B2105041:</p>
+<ul>
+<li>No additional changes.</li>
+</ul>
+<h2 id="v140-b2105041-pre-release">v1.4.0-B2105041 (pre-release)</h2>
+<p>What's changed since pre-release v1.4.0-B2105032:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Source location of objects from the pipeline are read from properties. <a href="https://github.com/microsoft/PSRule/issues/729">#729</a></li>
+<li>Assert output improvements:
+<ul>
+<li>Added support for Visual Studio Code with <code>VisualStudioCode</code> style. <a href="https://github.com/microsoft/PSRule/issues/731">#731</a>
+<ul>
+<li>Updated output format provides support for problem matchers in task output.</li>
+</ul>
+</li>
+<li>Automatically detect output style from environment variables. <a href="https://github.com/microsoft/PSRule/issues/732">#732</a>
+<ul>
+<li><em>Assert-PSRule</em> now defaults to <code>Detect</code> instead of <code>Client</code>.</li>
+</ul>
+</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v140-b2105032-pre-release">v1.4.0-B2105032 (pre-release)</h2>
+<p>What's changed since pre-release v1.4.0-B2105019:</p>
+<ul>
+<li>Bug fixes:
+<ul>
+<li>Fixed null reference in convention for nested exceptions. <a href="https://github.com/microsoft/PSRule/issues/725">#725</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v140-b2105019-pre-release">v1.4.0-B2105019 (pre-release)</h2>
+<p>What's changed since pre-release v1.4.0-B2105004:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Source location of objects are included in results.
+<ul>
+<li>Source location of objects from JSON and YAML input files are read automatically. <a href="https://github.com/microsoft/PSRule/issues/624">#624</a></li>
+</ul>
+</li>
+<li>Improved support for version constraints by:
+<ul>
+<li>Constraints can include prerelease versions of other matching versions. <a href="https://github.com/microsoft/PSRule/issues/714">#714</a></li>
+<li>Constraints support using a <code>@prerelease</code> or <code>@pre</code> to include prerelease versions. <a href="https://github.com/microsoft/PSRule/issues/717">#717</a></li>
+<li>Constraint sets allow multiple constraints to be joined together. <a href="https://github.com/microsoft/PSRule/issues/715">#715</a></li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Bug fixes:
+<ul>
+<li>Fixed prerelease constraint handling for prerelease versions. <a href="https://github.com/microsoft/PSRule/issues/712">#712</a></li>
+</ul>
+</li>
+</ul>
 <h2 id="v140-b2105004-pre-release">v1.4.0-B2105004 (pre-release)</h2>
 <p>What's changed since v1.3.0:</p>
 <ul>

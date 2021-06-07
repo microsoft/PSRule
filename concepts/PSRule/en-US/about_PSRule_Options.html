@@ -1246,11 +1246,22 @@ variables:
 If specified, the <code>-Style</code> parameter takes precedence, over this option.</p>
 <p>The following styles are available:</p>
 <ul>
-<li>Client - Output is written to the host directly in green/ red to indicate outcome. This is the default.</li>
-<li>Plain - Output is written as an unformatted string. This option can be redirected to a file.</li>
-<li>AzurePipelines - Output is written with commands that can be interpreted by Azure Pipelines.</li>
-<li>GitHubActions - Output is written with commands that can be interpreted by GitHub Actions.</li>
+<li>Client - Output is written to the host directly in green/ red to indicate outcome.</li>
+<li>Plain - Output is written as an unformatted string.
+This option can be redirected to a file.</li>
+<li>AzurePipelines - Output is written for integration Azure Pipelines.</li>
+<li>GitHubActions - Output is written for integration GitHub Actions.</li>
+<li>VisualStudioCode - Output is written for integration with Visual Studio Code.</li>
+<li>Detect - Output style will be detected by checking the environment variables.
+This is the default.</li>
 </ul>
+<p>Detect uses the following logic:</p>
+<ol>
+<li>If the <code>TF_BUILD</code> environment variable is set to <code>true</code>, <code>AzurePipelines</code> will be used.</li>
+<li>If the <code>GITHUB_ACTIONS</code> environment variable is set to <code>true</code>, <code>GitHubActions</code> will be used.</li>
+<li>If the <code>TERM_PROGRAM</code> environment variable is set to <code>vscode</code>, <code>VisualStudioCode</code> will be used.</li>
+<li>Use <code>Client</code>.</li>
+</ol>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the OutputStyle parameter
 $option = New-PSRuleOption -OutputStyle AzurePipelines;
@@ -1291,8 +1302,9 @@ $option = New-PSRuleOption -Option @{ 'Requires.PSRule' = '&gt;=1.0.0' };
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the requires property
 requires:
-  PSRule: '&gt;=1.0.0'              # Require v1.0.0 or greater.
-  PSRule.Rules.Azure: '&gt;=1.0.0'  # Require v1.0.0 or greater.
+  PSRule: '&gt;=1.0.0'                 # Require v1.0.0 or greater.
+  PSRule.Rules.Azure: '&gt;=1.0.0'     # Require v1.0.0 or greater.
+  PSRule.Rules.CAF: '@pre &gt;=0.1.0'  # Require stable or pre-releases v0.1.0 or greater.
 </code></pre>
 <p>This option can be configured using environment variables.
 To specify a module version constraint, prefix the module name with <code>PSRULE_REQUIRES_</code>.
@@ -1300,11 +1312,13 @@ When the module name includes a dot (<code>.</code>) use an underscore (<code>_<
 <pre><code class="lang-bash"># Bash: Using environment variable
 export PSRULE_REQUIRES_PSRULE='&gt;=1.0.0'
 export PSRULE_REQUIRES_PSRULE_RULES_AZURE='&gt;=1.0.0'
+export PSRULE_REQUIRES_PSRULE_RULES_CAF='@pre &gt;=0.1.0'
 </code></pre>
 <pre><code class="lang-yaml"># GitHub Actions: Using environment variable
 env:
   PSRULE_REQUIRES_PSRULE: '&gt;=1.0.0'
   PSRULE_REQUIRES_PSRULE_RULES_AZURE: '&gt;=1.0.0'
+  PSRULE_REQUIRES_PSRULE_RULES_CAF: '@pre &gt;=0.1.0'
 </code></pre>
 <pre><code class="lang-yaml"># Azure Pipelines: Using environment variable
 variables:
@@ -1312,6 +1326,8 @@ variables:
   value: '&gt;=1.0.0'
 - name: PSRULE_REQUIRES_PSRULE_RULES_AZURE
   value: '&gt;=1.0.0'
+- name: PSRULE_REQUIRES_PSRULE_RULES_CAF
+  value: '@pre &gt;=0.1.0'
 </code></pre>
 <h3 id="ruleinclude">Rule.Include</h3>
 <p>The name of specific rules to evaluate.
@@ -1563,7 +1579,7 @@ output:
   encoding: Default
   format: None
   outcome: Processed
-  style: Client
+  style: Detect
 
 # Configure rule suppression
 suppression: { }

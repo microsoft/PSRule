@@ -24,7 +24,7 @@
       "output": {
         ".html": {
           "relative_path": "CHANGELOG-v1.html",
-          "hash": "fElF2Fzc6lUO/ADcZ9rfpg=="
+          "hash": "MAvFcwmVRI4hIPh99XxDLA=="
         }
       },
       "is_incremental": false,
@@ -36,7 +36,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Assert-PSRule.html",
-          "hash": "aBx+lKwWF/MzO51gkAXWCg=="
+          "hash": "clvdQWmqXQJngOBauqX6Cw=="
         }
       },
       "is_incremental": false,
@@ -108,7 +108,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "A8yaCDgmrHIcuP1bV0WV0w=="
+          "hash": "W8p1YUQkFU5dxXOIXWiGsg=="
         }
       },
       "is_incremental": false,
@@ -132,7 +132,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Set-PSRuleOption.html",
-          "hash": "yuQx2YY7ht+jxK5HyES9fg=="
+          "hash": "3s9IMggwya+D18SZhe1M5A=="
         }
       },
       "is_incremental": false,
@@ -168,7 +168,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Assert.html",
-          "hash": "2d+NWgIYe+4EWRLdsaP/bA=="
+          "hash": "9B4zypqs6nXZ+BRT4aQ+6Q=="
         }
       },
       "is_incremental": false,
@@ -216,7 +216,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "u8Qr8OjdPAIb7V4TDUWWOw=="
+          "hash": "h67bQLg6Jj+3lESDfHMjiA=="
         }
       },
       "is_incremental": false,
@@ -808,7 +808,7 @@
       "output": {
         ".html": {
           "relative_path": "upgrade-notes.html",
-          "hash": "Eidtpkpoo8hkSltZz8xipA=="
+          "hash": "zAoGmxJmtm/pdg/AWCHn6Q=="
         }
       },
       "is_incremental": false,
