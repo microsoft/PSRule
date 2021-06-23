@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since v1.4.0:
+
+- Engineering:
+  - Bump YamlDotNet from 11.1.1 to 11.2.0. [#736](https://github.com/microsoft/PSRule/pull/736)
+
 ## v1.4.0
 
 What's changed since v1.3.0:
