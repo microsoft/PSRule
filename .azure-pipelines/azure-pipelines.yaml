@@ -5,7 +5,7 @@ variables:
   version: '1.5.0'
   buildConfiguration: 'Release'
   disable.coverage.autogenerate: 'true'
-  imageName: 'ubuntu-18.04'
+  imageName: 'ubuntu-20.04'
 
  # Use build number format, i.e. 1.5.0-B2010001
 name: $(version)-B$(date:yyMM)$(rev:rrr)
@@ -138,8 +138,8 @@ stages:
 
   - template: jobs/test.yaml
     parameters:
-      name: ubuntu_18_04_coverage
-      imageName: 'ubuntu-18.04'
+      name: ubuntu_20_04_coverage
+      imageName: 'ubuntu-20.04'
       displayName: 'PowerShell coverage'
       coverage: 'true'
       publishResults: 'false'
@@ -172,13 +172,6 @@ stages:
 
   - template: jobs/testContainer.yaml
     parameters:
-      name: ps_7_0_ubuntu_18_04
-      displayName: 'PowerShell 7.0 - ubuntu-18.04'
-      imageName: mcr.microsoft.com/powershell
-      imageTag: 7.0.3-ubuntu-18.04
-
-  - template: jobs/testContainer.yaml
-    parameters:
       name: ps_7_1_ubuntu_18_04
       displayName: 'PowerShell 7.1 - ubuntu-18.04'
       imageName: mcr.microsoft.com/powershell
@@ -193,10 +186,10 @@ stages:
 
   - template: jobs/testContainer.yaml
     parameters:
-      name: ps_6_ubuntu_18_04
-      displayName: 'PowerShell 6.2.4 - ubuntu-18.04'
+      name: ps_7_2_ubuntu_20_04_preview
+      displayName: 'PowerShell 7.2 (Preview 7) - ubuntu-20.04'
       imageName: mcr.microsoft.com/powershell
-      imageTag: 6.2.4-ubuntu-18.04
+      imageTag: 7.2.0-preview.7-ubuntu-20.04
 
 # Release pipeline
 - stage: Release

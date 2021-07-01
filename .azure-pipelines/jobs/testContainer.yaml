@@ -5,7 +5,7 @@ parameters:
   name: ''
   displayName: ''
   buildConfiguration: 'Release'
-  vmImage: 'ubuntu-16.04'
+  vmImage: 'ubuntu-20.04'
   imageName: ''
   imageTag: ''
   coverage: 'false'
