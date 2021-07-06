@@ -10,6 +10,9 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+- Bug fixes:
+  - Fixed options schema should allow spacing after `@pre`. [#743](https://github.com/microsoft/PSRule/issues/743)
+
 ## v1.5.0-B2106006 (pre-release)
 
 What's changed since v1.4.0:
