@@ -19,18 +19,24 @@ When evaluating an object from input, PSRule can use selectors to perform comple
 
 The following conditions are available:
 
-- [Exists](#exists)
+- [Contains](#contains)
 - [Equals](#equals)
+- [EndsWith](#endswith)
+- [Exists](#exists)
 - [Greater](#greater)
 - [GreaterOrEquals](#greaterorequals)
 - [HasValue](#hasvalue)
 - [In](#in)
+- [IsLower](#islower)
+- [IsString](#isstring)
+- [IsUpper](#isupper)
 - [Less](#less)
 - [LessOrEquals](#lessorequals)
 - [Match](#match)
 - [NotEquals](#notequals)
 - [NotIn](#notin)
 - [NotMatch](#notmatch)
+- [StartsWith](#startswith)
 
 The following operators are available:
 
@@ -142,6 +148,91 @@ spec:
       exists: true
 ```
 
+### Contains
+
+The `contains` condition can be used to determine if the operand contains a specified sub-string.
+One or more strings to compare can be specified.
+
+Syntax:
+
+```yaml
+contains: <string | array>
+```
+
+- If the operand is a field, and the field does not exist, _contains_ always returns `false`.
+
+For example:
+
+```yaml
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleContains'
+spec:
+  if:
+    anyOf:
+    - field: 'url'
+      contains: '/azure/'
+    - field: 'url'
+      contains:
+      - 'github.io'
+      - 'github.com'
+```
+
+### Equals
+
+The `equals` condition can be used to compare if a field is equal to a supplied value.
+
+Syntax:
+
+```yaml
+equals: <string | int | bool>
+```
+
+For example:
+
+```yaml
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleEquals'
+spec:
+  if:
+    field: 'Name'
+    equals: 'TargetObject1'
+```
+
+### EndsWith
+
+The `endsWith` condition can be used to determine if the operand ends with a specified string.
+One or more strings to compare can be specified.
+
+Syntax:
+
+```yaml
+endsWith: <string | array>
+```
+
+- If the operand is a field, and the field does not exist, _endsWith_ always returns `false`.
+
+For example:
+
+```yaml
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleEndsWith'
+spec:
+  if:
+    anyOf:
+    - field: 'hostname'
+      endsWith: '.com'
+    - field: 'hostname'
+      endsWith:
+      - '.com.au'
+      - '.com'
+```
+
 ### Exists
 
 The `exists` condition determines if the specified field exists.
@@ -166,29 +257,6 @@ spec:
   if:
     field: 'Name'
     exists: true
-```
-
-### Equals
-
-The `equals` condition can be used to compare if a field is equal to a supplied value.
-
-Syntax:
-
-```yaml
-equals: <string | int | bool>
-```
-
-For example:
-
-```yaml
-apiVersion: github.com/microsoft/PSRule/v1
-kind: Selector
-metadata:
-  name: 'ExampleEquals'
-spec:
-  if:
-    field: 'Name'
-    equals: 'TargetObject1'
 ```
 
 ### Field
@@ -311,6 +379,89 @@ spec:
     in:
     - 'Value1'
     - 'Value2'
+```
+
+### IsLower
+
+The `isLower` condition determines if the operand is a lowercase string.
+
+Syntax:
+
+```yaml
+isLower: <bool>
+```
+
+- When `isLower: true`, _isLower_ will return `true` if the operand is a lowercase string.
+  Non-letter characters are ignored.
+- When `isLower: false`, _isLower_ will return `true` if the operand is not a lowercase string.
+- If the operand is a field, and the field does not exist _isLower_ always returns `false`.
+
+For example:
+
+```yaml
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleIsLower'
+spec:
+  if:
+    field: 'Name'
+    isLower: true
+```
+
+### IsString
+
+The `isString` condition determines if the operand is a string or other type.
+
+Syntax:
+
+```yaml
+isString: <bool>
+```
+
+- When `isString: true`, _isString_ will return `true` if the operand is a string.
+- When `isString: false`, _isString_ will return `true` if the operand is not a string or is null.
+- If the operand is a field, and the field does not exist _isString_ always returns `false`.
+
+For example:
+
+```yaml
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleIsString'
+spec:
+  if:
+    field: 'Name'
+    isString: true
+```
+
+### IsUpper
+
+The `isUpper` condition determines if the operand is an uppercase string.
+
+Syntax:
+
+```yaml
+isLower: <bool>
+```
+
+- When `isUpper: true`, _isUpper_ will return `true` if the operand is an uppercase string.
+  Non-letter characters are ignored.
+- When `isUpper: false`, _isUpper_ will return `true` if the operand is not an uppercase string.
+- If the operand is a field, and the field does not exist _isUpper_ always returns `false`.
+
+For example:
+
+```yaml
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleIsUpper'
+spec:
+  if:
+    field: 'Name'
+    isUpper: true
 ```
 
 ### Less
@@ -474,6 +625,37 @@ spec:
   if:
     field: 'Name'
     notMatch: '$(abc|efg)$'
+```
+
+### StartsWith
+
+The `startsWith` condition can be used to determine if the operand starts with a specified string.
+One or more strings to compare can be specified.
+
+Syntax:
+
+```yaml
+startsWith: <string | array>
+```
+
+- If the operand is a field, and the field does not exist, _startsWith_ always returns `false`.
+
+For example:
+
+```yaml
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleStartsWith'
+spec:
+  if:
+    anyOf:
+    - field: 'url'
+      startsWith: 'http'
+    - field: 'url'
+      startsWith:
+      - 'http://'
+      - 'https://'
 ```
 
 ## EXAMPLES

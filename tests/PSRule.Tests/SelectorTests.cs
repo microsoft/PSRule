@@ -23,7 +23,7 @@ namespace PSRule
             var context = PipelineContext.New(GetOption(), null, null, null, new OptionContext(), null);
             var selector = HostHelper.GetSelector(GetSource(), new RunspaceContext(context, null)).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(21, selector.Length);
+            Assert.Equal(30, selector.Length);
 
             Assert.Equal("BasicSelector", selector[0].Name);
             Assert.Equal("YamlAllOf", selector[4].Name);
@@ -279,6 +279,147 @@ namespace PSRule
             Assert.False(greaterOrEquals.Match(actual5));
             Assert.False(greaterOrEquals.Match(actual6));
             Assert.False(greaterOrEquals.Match(actual7));
+        }
+
+        [Fact]
+        public void StartsWithExpression()
+        {
+            var startsWith = GetSelectorVisitor("YamlStartsWith");
+            var actual1 = GetObject((name: "value", value: "abc"));
+            var actual2 = GetObject((name: "value", value: "efg"));
+            var actual3 = GetObject((name: "value", value: "hij"));
+            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual5 = GetObject((name: "value", value: null));
+            var actual6 = GetObject();
+
+            Assert.True(startsWith.Match(actual1));
+            Assert.True(startsWith.Match(actual2));
+            Assert.False(startsWith.Match(actual3));
+            Assert.False(startsWith.Match(actual4));
+            Assert.False(startsWith.Match(actual5));
+            Assert.False(startsWith.Match(actual6));
+        }
+
+        [Fact]
+        public void EndsWithExpression()
+        {
+            var endsWith = GetSelectorVisitor("YamlEndsWith");
+            var actual1 = GetObject((name: "value", value: "abc"));
+            var actual2 = GetObject((name: "value", value: "efg"));
+            var actual3 = GetObject((name: "value", value: "hij"));
+            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual5 = GetObject((name: "value", value: null));
+            var actual6 = GetObject();
+
+            Assert.True(endsWith.Match(actual1));
+            Assert.True(endsWith.Match(actual2));
+            Assert.False(endsWith.Match(actual3));
+            Assert.False(endsWith.Match(actual4));
+            Assert.False(endsWith.Match(actual5));
+            Assert.False(endsWith.Match(actual6));
+        }
+
+        [Fact]
+        public void ContainsExpression()
+        {
+            var contains = GetSelectorVisitor("YamlContains");
+            var actual1 = GetObject((name: "value", value: "abc"));
+            var actual2 = GetObject((name: "value", value: "bcd"));
+            var actual3 = GetObject((name: "value", value: "hij"));
+            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual5 = GetObject((name: "value", value: null));
+            var actual6 = GetObject();
+
+            Assert.True(contains.Match(actual1));
+            Assert.True(contains.Match(actual2));
+            Assert.False(contains.Match(actual3));
+            Assert.False(contains.Match(actual4));
+            Assert.False(contains.Match(actual5));
+            Assert.False(contains.Match(actual6));
+        }
+
+        [Fact]
+        public void IsStringExpression()
+        {
+            var isStringTrue = GetSelectorVisitor("YamlIsStringTrue");
+            var isStringFalse = GetSelectorVisitor("YamlIsStringFalse");
+            var actual1 = GetObject((name: "value", value: "abc"));
+            var actual2 = GetObject((name: "value", value: 4));
+            var actual3 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: null));
+            var actual5 = GetObject();
+
+            // isString: true
+            Assert.True(isStringTrue.Match(actual1));
+            Assert.False(isStringTrue.Match(actual2));
+            Assert.False(isStringTrue.Match(actual3));
+            Assert.False(isStringTrue.Match(actual4));
+            Assert.False(isStringTrue.Match(actual5));
+
+            // isString: false
+            Assert.False(isStringFalse.Match(actual1));
+            Assert.True(isStringFalse.Match(actual2));
+            Assert.True(isStringFalse.Match(actual3));
+            Assert.True(isStringFalse.Match(actual4));
+            Assert.False(isStringFalse.Match(actual5));
+        }
+
+        [Fact]
+        public void IsLowerExpression()
+        {
+            var isLowerTrue = GetSelectorVisitor("YamlIsLowerTrue");
+            var isLowerFalse = GetSelectorVisitor("YamlIsLowerFalse");
+            var actual1 = GetObject((name: "value", value: "abc"));
+            var actual2 = GetObject((name: "value", value: "aBc"));
+            var actual3 = GetObject((name: "value", value: "a-b-c"));
+            var actual4 = GetObject((name: "value", value: 4));
+            var actual5 = GetObject((name: "value", value: null));
+            var actual6 = GetObject();
+
+            // isLower: true
+            Assert.True(isLowerTrue.Match(actual1));
+            Assert.False(isLowerTrue.Match(actual2));
+            Assert.True(isLowerTrue.Match(actual3));
+            Assert.False(isLowerTrue.Match(actual4));
+            Assert.False(isLowerTrue.Match(actual5));
+            Assert.False(isLowerTrue.Match(actual6));
+
+            // isLower: false
+            Assert.False(isLowerFalse.Match(actual1));
+            Assert.True(isLowerFalse.Match(actual2));
+            Assert.False(isLowerFalse.Match(actual3));
+            Assert.True(isLowerFalse.Match(actual4));
+            Assert.True(isLowerFalse.Match(actual5));
+            Assert.False(isLowerTrue.Match(actual6));
+        }
+
+        [Fact]
+        public void IsUpperExpression()
+        {
+            var isUpperTrue = GetSelectorVisitor("YamlIsUpperTrue");
+            var isUpperFalse = GetSelectorVisitor("YamlIsUpperFalse");
+            var actual1 = GetObject((name: "value", value: "ABC"));
+            var actual2 = GetObject((name: "value", value: "aBc"));
+            var actual3 = GetObject((name: "value", value: "A-B-C"));
+            var actual4 = GetObject((name: "value", value: 4));
+            var actual5 = GetObject((name: "value", value: null));
+            var actual6 = GetObject();
+
+            // isUpper: true
+            Assert.True(isUpperTrue.Match(actual1));
+            Assert.False(isUpperTrue.Match(actual2));
+            Assert.True(isUpperTrue.Match(actual3));
+            Assert.False(isUpperTrue.Match(actual4));
+            Assert.False(isUpperTrue.Match(actual5));
+            Assert.False(isUpperTrue.Match(actual6));
+
+            // isUpper: false
+            Assert.False(isUpperFalse.Match(actual1));
+            Assert.True(isUpperFalse.Match(actual2));
+            Assert.False(isUpperFalse.Match(actual3));
+            Assert.True(isUpperFalse.Match(actual4));
+            Assert.True(isUpperFalse.Match(actual5));
+            Assert.False(isUpperFalse.Match(actual6));
         }
 
         #endregion Conditions

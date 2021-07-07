@@ -305,7 +305,7 @@ namespace PSRule.Runtime
             // Assert
             for (var i = 0; i < prefix.Length; i++)
             {
-                if (value.StartsWith(prefix[i], caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
+                if (ExpressionHelpers.StartsWith(value, prefix[i], caseSensitive))
                     return Pass();
             }
             return Fail(ReasonStrings.StartsWith, field, FormatArray(prefix));
@@ -330,7 +330,7 @@ namespace PSRule.Runtime
             // Assert
             for (var i = 0; i < suffix.Length; i++)
             {
-                if (value.EndsWith(suffix[i], caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
+                if (ExpressionHelpers.EndsWith(value, suffix[i], caseSensitive))
                     return Pass();
             }
             return Fail(ReasonStrings.EndsWith, field, FormatArray(suffix));
@@ -355,7 +355,7 @@ namespace PSRule.Runtime
             // Assert
             for (var i = 0; i < text.Length; i++)
             {
-                if (value.IndexOf(text[i], caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) >= 0)
+                if (ExpressionHelpers.Contains(value, text[i], caseSensitive))
                     return Pass();
             }
             return Fail(ReasonStrings.Contains, field, FormatArray(text));
@@ -373,14 +373,9 @@ namespace PSRule.Runtime
                 GuardString(fieldValue, out string value, out result))
                 return result;
 
-            for (var i = 0; i < value.Length; i++)
-            {
-                if (!char.IsLetter(value, i) && requireLetters)
-                    return Fail(ReasonStrings.IsLetter, value);
+            if (!ExpressionHelpers.IsLower(value, requireLetters, out bool notLetters))
+                return Fail(notLetters ? ReasonStrings.IsLetter : ReasonStrings.IsLower, value);
 
-                if (char.IsLetter(value, i) && !char.IsLower(value, i))
-                    return Fail(ReasonStrings.IsLower, value);
-            }
             return Pass();
         }
 
@@ -396,14 +391,9 @@ namespace PSRule.Runtime
                 GuardString(fieldValue, out string value, out result))
                 return result;
 
-            for (var i = 0; i < value.Length; i++)
-            {
-                if (!char.IsLetter(value, i) && requireLetters)
-                    return Fail(ReasonStrings.IsLetter, value);
+            if (!ExpressionHelpers.IsUpper(value, requireLetters, out bool notLetters))
+                return Fail(notLetters ? ReasonStrings.IsLetter : ReasonStrings.IsUpper, value);
 
-                if (char.IsLetter(value, i) && !char.IsUpper(value, i))
-                    return Fail(ReasonStrings.IsUpper, value);
-            }
             return Pass();
         }
 

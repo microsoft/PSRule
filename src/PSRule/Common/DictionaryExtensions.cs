@@ -107,6 +107,16 @@ namespace PSRule
         }
 
         [DebuggerStepThrough]
+        public static bool TryGetStringArray(this IDictionary<string, object> dictionary, string key, out string[] value)
+        {
+            value = null;
+            if (!dictionary.TryGetValue(key, out object o))
+                return false;
+
+            return TryStringArray(o, out value);
+        }
+
+        [DebuggerStepThrough]
         public static void AddUnique(this IDictionary<string, object> dictionary, IEnumerable<KeyValuePair<string, object>> values)
         {
             foreach (var kv in values)

@@ -186,6 +186,12 @@ namespace PSRule.Definitions.Selectors
         private const string LESSOREQUALS = "lessOrEquals";
         private const string GREATER = "greater";
         private const string GREATEROREQUALS = "greaterOrEquals";
+        private const string STARTSWITH = "startsWith";
+        private const string ENDSWITH = "endsWith";
+        private const string CONTAINS = "contains";
+        private const string ISSTRING = "isString";
+        private const string ISLOWER = "isLower";
+        private const string ISUPPER = "isUpper";
 
         // Operators
         private const string IF = "if";
@@ -218,6 +224,12 @@ namespace PSRule.Definitions.Selectors
             new SelectorExpresssionDescriptor(LESSOREQUALS, SelectorExpressionType.Condition, LessOrEquals),
             new SelectorExpresssionDescriptor(GREATER, SelectorExpressionType.Condition, Greater),
             new SelectorExpresssionDescriptor(GREATEROREQUALS, SelectorExpressionType.Condition, GreaterOrEquals),
+            new SelectorExpresssionDescriptor(STARTSWITH, SelectorExpressionType.Condition, StartsWith),
+            new SelectorExpresssionDescriptor(ENDSWITH, SelectorExpressionType.Condition, EndsWith),
+            new SelectorExpresssionDescriptor(CONTAINS, SelectorExpressionType.Condition, Contains),
+            new SelectorExpresssionDescriptor(ISSTRING, SelectorExpressionType.Condition, IsString),
+            new SelectorExpresssionDescriptor(ISLOWER, SelectorExpressionType.Condition, IsLower),
+            new SelectorExpresssionDescriptor(ISUPPER, SelectorExpressionType.Condition, IsUpper),
         };
 
         #region Operators
@@ -459,6 +471,102 @@ namespace PSRule.Definitions.Selectors
             return false;
         }
 
+        internal static bool StartsWith(SelectorContext context, SelectorInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyStringArray(properties, STARTSWITH, out string[] propertyValue) && TryOperand(context, o, properties, out object operand))
+            {
+                context.Debug(PSRuleResources.SelectorExpressionTrace, STARTSWITH, operand, propertyValue);
+                if (!ExpressionHelpers.TryString(operand, out string value))
+                    return false;
+
+                for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
+                {
+                    if (ExpressionHelpers.StartsWith(value, propertyValue[i], caseSensitive: false))
+                        return true;
+                }
+                return false;
+            }
+            return false;
+        }
+
+        internal static bool EndsWith(SelectorContext context, SelectorInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyStringArray(properties, ENDSWITH, out string[] propertyValue) && TryOperand(context, o, properties, out object operand))
+            {
+                context.Debug(PSRuleResources.SelectorExpressionTrace, ENDSWITH, operand, propertyValue);
+                if (!ExpressionHelpers.TryString(operand, out string value))
+                    return false;
+
+                for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
+                {
+                    if (ExpressionHelpers.EndsWith(value, propertyValue[i], caseSensitive: false))
+                        return true;
+                }
+                return false;
+            }
+            return false;
+        }
+
+        internal static bool Contains(SelectorContext context, SelectorInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyStringArray(properties, CONTAINS, out string[] propertyValue) && TryOperand(context, o, properties, out object operand))
+            {
+                context.Debug(PSRuleResources.SelectorExpressionTrace, CONTAINS, operand, propertyValue);
+                if (!ExpressionHelpers.TryString(operand, out string value))
+                    return false;
+
+                for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
+                {
+                    if (ExpressionHelpers.Contains(value, propertyValue[i], caseSensitive: false))
+                        return true;
+                }
+                return false;
+            }
+            return false;
+        }
+
+        internal static bool IsString(SelectorContext context, SelectorInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyBool(properties, ISSTRING, out bool? propertyValue) && TryOperand(context, o, properties, out object operand))
+            {
+                context.Debug(PSRuleResources.SelectorExpressionTrace, ISSTRING, operand, propertyValue);
+                return propertyValue == ExpressionHelpers.TryString(operand, out _);
+            }
+            return false;
+        }
+
+        internal static bool IsLower(SelectorContext context, SelectorInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyBool(properties, ISLOWER, out bool? propertyValue) && TryOperand(context, o, properties, out object operand))
+            {
+                if (!ExpressionHelpers.TryString(operand, out string value))
+                    return !propertyValue.Value;
+
+                context.Debug(PSRuleResources.SelectorExpressionTrace, ISLOWER, operand, propertyValue);
+                return propertyValue == ExpressionHelpers.IsLower(value, requireLetters: false, notLetter: out _);
+            }
+            return false;
+        }
+
+        internal static bool IsUpper(SelectorContext context, SelectorInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyBool(properties, ISUPPER, out bool? propertyValue) && TryOperand(context, o, properties, out object operand))
+            {
+                if (!ExpressionHelpers.TryString(operand, out string value))
+                    return !propertyValue.Value;
+
+                context.Debug(PSRuleResources.SelectorExpressionTrace, ISUPPER, operand, propertyValue);
+                return propertyValue == ExpressionHelpers.IsUpper(value, requireLetters: false, notLetter: out _);
+            }
+            return false;
+        }
+
         #endregion Conditions
 
         #region Helper methods
@@ -483,11 +591,35 @@ namespace PSRule.Definitions.Selectors
             return properties.TryGetString(FIELD, out field);
         }
 
+        private static bool TryOperand(SelectorContext context, object o, SelectorExpression.PropertyBag properties, out object operand)
+        {
+            operand = null;
+            if (properties.TryGetString(FIELD, out string field))
+                return ObjectHelper.GetField(context, o, field, caseSensitive: false, out operand);
+
+            return false;
+        }
+
         private static bool TryPropertyArray(SelectorExpression.PropertyBag properties, string propertyName, out Array propertyValue)
         {
             if (properties.TryGetValue(propertyName, out object array) && array is Array arrayValue)
             {
                 propertyValue = arrayValue;
+                return true;
+            }
+            propertyValue = null;
+            return false;
+        }
+
+        private static bool TryPropertyStringArray(SelectorExpression.PropertyBag properties, string propertyName, out string[] propertyValue)
+        {
+            if (properties.TryGetStringArray(propertyName, out propertyValue))
+            {
+                return true;
+            }
+            else if (properties.TryGetString(propertyName, out string s))
+            {
+                propertyValue = new string[] { s };
                 return true;
             }
             propertyValue = null;
