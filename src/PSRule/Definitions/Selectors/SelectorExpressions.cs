@@ -173,6 +173,7 @@ namespace PSRule.Definitions.Selectors
     /// </summary>
     internal sealed class SelectorExpressions
     {
+        // Conditions
         private const string EXISTS = "exists";
         private const string EQUALS = "equals";
         private const string NOTEQUALS = "notEquals";
@@ -186,10 +187,13 @@ namespace PSRule.Definitions.Selectors
         private const string GREATER = "greater";
         private const string GREATEROREQUALS = "greaterOrEquals";
 
+        // Operators
         private const string IF = "if";
         private const string ANYOF = "anyOf";
         private const string ALLOF = "allOf";
         private const string NOT = "not";
+
+        // Properties
         private const string FIELD = "field";
 
         // Define built-ins
@@ -324,7 +328,7 @@ namespace PSRule.Definitions.Selectors
             {
                 context.Debug(PSRuleResources.SelectorExpressionTrace, MATCH, field, propertyValue);
                 if (!ObjectHelper.GetField(context, o, field, caseSensitive: false, out object value))
-                    return true;
+                    return false;
 
                 return ExpressionHelpers.Match(propertyValue, value, caseSensitive: false);
             }

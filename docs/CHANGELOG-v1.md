@@ -10,15 +10,20 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.5.0-B2106006:
+
+- Engineering:
+  - Bump YamlDotNet dependency to 11.2.1. [#740](https://github.com/microsoft/PSRule/pull/740)
 - Bug fixes:
   - Fixed options schema should allow spacing after `@pre`. [#743](https://github.com/microsoft/PSRule/issues/743)
+  - Fixed match selector expression passing on missing field. [#745](https://github.com/microsoft/PSRule/issues/745)
 
 ## v1.5.0-B2106006 (pre-release)
 
 What's changed since v1.4.0:
 
 - Engineering:
-  - Bump YamlDotNet from 11.1.1 to 11.2.0. [#736](https://github.com/microsoft/PSRule/pull/736)
+  - Bump YamlDotNet dependency to 11.2.0. [#736](https://github.com/microsoft/PSRule/pull/736)
 
 ## v1.4.0
 
@@ -113,7 +118,7 @@ What's changed since v1.2.0:
     - See [about_PSRule_Assert] for details.
   - Improved handling of field names for objects implementing `IList`, `IEnumerable`, and index properties. [#692](https://github.com/microsoft/PSRule/issues/692)
 - Engineering:
-  - Bump YamlDotNet from 8.1.2 to 11.1.1. [#690](https://github.com/microsoft/PSRule/pull/690)
+  - Bump YamlDotNet dependency to 11.1.1. [#690](https://github.com/microsoft/PSRule/pull/690)
 - Bug fixes:
   - Fixed expected DocumentEnd got SequenceEnd. [#698](https://github.com/microsoft/PSRule/issues/698)
 
@@ -147,7 +152,7 @@ What's changed since pre-release v1.3.0-B2104021:
 - General improvements:
   - Improved handling of field names for objects implementing `IList`, `IEnumerable`, and index properties. [#692](https://github.com/microsoft/PSRule/issues/692)
 - Engineering:
-  - Bump YamlDotNet from 8.1.2 to 11.1.1. [#690](https://github.com/microsoft/PSRule/pull/690)
+  - Bump YamlDotNet dependency to 11.1.1. [#690](https://github.com/microsoft/PSRule/pull/690)
 
 ## v1.3.0-B2104021 (pre-release)
 
@@ -349,7 +354,7 @@ What's changed since v1.0.2:
 What's changed since v1.0.1:
 
 - Engineering:
-  - Bump Manatee.Json from 13.0.4 to 13.0.5. [#619](https://github.com/microsoft/PSRule/pull/619)
+  - Bump Manatee.Json dependency to 13.0.5. [#619](https://github.com/microsoft/PSRule/pull/619)
 - Bug fixes:
   - Fixed `GetContent` processing of `InputFileInfo`. [#625](https://github.com/microsoft/PSRule/issues/625)
   - Fixed null reference of rule reason with wide output. [#626](https://github.com/microsoft/PSRule/issues/626)
@@ -371,7 +376,7 @@ What's changed since v0.22.0:
   - Added rule help link in failed `Assert-PSRule` output. [#595](https://github.com/microsoft/PSRule/issues/595)
 - Engineering:
   - **Breaking change**: Removed deprecated `$Rule` properties. [#495](https://github.com/microsoft/PSRule/pull/495)
-  - Bump Manatee.Json from 13.0.3 to 13.0.4. [#591](https://github.com/microsoft/PSRule/pull/591)
+  - Bump Manatee.Json dependency to 13.0.4. [#591](https://github.com/microsoft/PSRule/pull/591)
 
 What's changed since pre-release v1.0.0-B2011028:
 
@@ -385,7 +390,7 @@ What's changed since v0.22.0:
   - Added rule help link in failed `Assert-PSRule` output. [#595](https://github.com/microsoft/PSRule/issues/595)
 - Engineering:
   - **Breaking change**: Removed deprecated `$Rule` properties. [#495](https://github.com/microsoft/PSRule/pull/495)
-  - Bump Manatee.Json from 13.0.3 to 13.0.4. [#591](https://github.com/microsoft/PSRule/pull/591)
+  - Bump Manatee.Json dependency to 13.0.4. [#591](https://github.com/microsoft/PSRule/pull/591)
 
 [Assert-PSRule]: commands/PSRule/en-US/Assert-PSRule.md
 [about_PSRule_Assert]: concepts/PSRule/en-US/about_PSRule_Assert.md
