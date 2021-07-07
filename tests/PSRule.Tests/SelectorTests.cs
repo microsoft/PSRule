@@ -137,11 +137,13 @@ namespace PSRule
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
             var actual4 = GetObject((name: "value", value: 0));
+            var actual5 = GetObject();
 
             Assert.True(match.Match(actual1));
             Assert.True(match.Match(actual2));
             Assert.False(match.Match(actual3));
             Assert.False(match.Match(actual4));
+            Assert.False(match.Match(actual5));
         }
 
         [Fact]
@@ -168,12 +170,14 @@ namespace PSRule
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
             var actual4 = GetObject((name: "value", value: new string[] { }));
             var actual5 = GetObject((name: "value", value: null));
+            var actual6 = GetObject();
 
             Assert.True(@in.Match(actual1));
             Assert.True(@in.Match(actual2));
             Assert.False(@in.Match(actual3));
             Assert.False(@in.Match(actual4));
             Assert.False(@in.Match(actual5));
+            Assert.False(@in.Match(actual6));
         }
 
         [Fact]
