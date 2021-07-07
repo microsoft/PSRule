@@ -262,3 +262,127 @@ spec:
   if:
     field: 'Value'
     greaterOrEquals: 3
+
+---
+# Synopsis: Test startsWith
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlStartsWith
+spec:
+  if:
+    allOf:
+    - anyOf:
+      - field: 'Value'
+        startsWith: 'a'
+      - field: 'Value'
+        startsWith: 'e'
+    - field: 'Value'
+      startsWith:
+      - 'a'
+      - 'e'
+
+---
+# Synopsis: Test endsWith
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlEndsWith
+spec:
+  if:
+    allOf:
+    - anyOf:
+      - field: 'Value'
+        endsWith: 'c'
+      - field: 'Value'
+        endsWith: 'g'
+    - field: 'Value'
+      endsWith:
+      - 'c'
+      - 'g'
+
+---
+# Synopsis: Test contains
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlContains
+spec:
+  if:
+    allOf:
+    - anyOf:
+      - field: 'Value'
+        contains: 'ab'
+      - field: 'Value'
+        contains: 'bc'
+    - field: 'Value'
+      contains:
+      - 'ab'
+      - 'bc'
+
+---
+# Synopsis: Test isString
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsStringTrue
+spec:
+  if:
+    field: 'Value'
+    isString: true
+
+---
+# Synopsis: Test isString
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsStringFalse
+spec:
+  if:
+    field: 'Value'
+    isString: false
+
+---
+# Synopsis: Test isLower
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsLowerTrue
+spec:
+  if:
+    field: 'Value'
+    isLower: true
+
+---
+# Synopsis: Test isLower
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsLowerFalse
+spec:
+  if:
+    field: 'Value'
+    isLower: false
+
+
+---
+# Synopsis: Test isUpper
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsUpperTrue
+spec:
+  if:
+    field: 'Value'
+    isUpper: true
+
+---
+# Synopsis: Test isUpper
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsUpperFalse
+spec:
+  if:
+    field: 'Value'
+    isUpper: false
