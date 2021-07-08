@@ -443,7 +443,7 @@ The `isUpper` condition determines if the operand is an uppercase string.
 Syntax:
 
 ```yaml
-isLower: <bool>
+isUpper: <bool>
 ```
 
 - When `isUpper: true`, _isUpper_ will return `true` if the operand is an uppercase string.
