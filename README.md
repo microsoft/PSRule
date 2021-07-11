@@ -3,7 +3,7 @@
 A cross-platform module to validate infrastructure as code (IaC) and objects using PowerShell rules.
 PSRule works great and integrates with popular continuous integration (CI) systems.
 
-![ci-badge]
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/microsoft/PSRule) ![ci-badge]
 
 Features of PSRule include:
 
