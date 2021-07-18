@@ -10,6 +10,25 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.5.0
+
+What's changed since v1.4.0:
+
+- General improvements:
+  - Added string selector conditions. [#747](https://github.com/microsoft/PSRule/issues/747)
+    - Use `startWith`, `contains`, and `endsWith` to check for a sub-string.
+    - Use `isString`, `isLower`, and `isUpper` to check for string type and casing.
+    - See [about_PSRule_Selectors] for details.
+- Engineering:
+  - Bump YamlDotNet dependency to 11.2.1. [#740](https://github.com/microsoft/PSRule/pull/740)
+- Bug fixes:
+  - Fixed options schema should allow spacing after `@pre`. [#743](https://github.com/microsoft/PSRule/issues/743)
+  - Fixed match selector expression passing on missing field. [#745](https://github.com/microsoft/PSRule/issues/745)
+
+What's changed since pre-release v1.5.0-B2107009:
+
+- No additional changes.
+
 ## v1.5.0-B2107009 (pre-release)
 
 What's changed since pre-release v1.5.0-B2106006:
