@@ -42,6 +42,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                         file = 'source.json'
                         Line = 100
                         Position = 1000
+                        type = "Origin"
                     }
                 )
             }
@@ -621,7 +622,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result[0].Source[0].File | Should -Be 'some-file.json';
             $result[0].Source[0].Line | Should -Be 1;
             $result[1].Source[0].File.Split([char[]]@('\', '/'))[-1] | Should -Be 'ObjectFromFile.json';
-            $result[1].Source[0].Line | Should -Be 43;
+            $result[1].Source[0].Line | Should -Be 44;
 
             # Multiple file
             $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles);
@@ -660,6 +661,26 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -InputPath $inputFiles);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 5;
+        }
+
+        It 'Uses source paths' {
+            $inputFiles = @(
+                (Join-Path -Path $rootPath -ChildPath 'ps-rule.yaml')
+                (Join-Path -Path $here -ChildPath 'ObjectFromFile2.yaml')
+            )
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'SourceTest' -InputPath $inputFiles);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Passing
+            $filteredResult = @($result | Where-Object { $_.Outcome -eq 'Pass' });
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult[0].Source[0].File | Should -Be $inputFiles[1];
+
+            # Failing
+            $filteredResult = @($result | Where-Object { $_.Outcome -eq 'Fail' });
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult[0].Source[0].File | Should -Be $inputFiles[0];
         }
 
         It 'Returns error with bad path' {

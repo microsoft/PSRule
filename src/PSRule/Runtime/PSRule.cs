@@ -17,10 +17,27 @@ namespace PSRule.Runtime
     /// </summary>
     public sealed class PSRule : ScopedItem
     {
+        private PSRuleSource _Source;
+
         public PSRule() { }
 
         internal PSRule(RunspaceContext context)
             : base(context) { }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "Exposed as helper for PowerShell.")]
+        private sealed class PSRuleSource : ScopedItem, ITargetSourceCollection
+        {
+            internal PSRuleSource(RunspaceContext context)
+                : base(context) { }
+
+            public TargetSourceInfo this[string type]
+            {
+                get
+                {
+                    return GetContext().TargetObject?.Source[type];
+                }
+            }
+        }
 
         /// <summary>
         /// Custom data set by the rule for this target object.
@@ -55,6 +72,8 @@ namespace PSRule.Runtime
             }
         }
 
+        public ITargetSourceCollection Source => GetSource();
+
         /// <summary>
         /// The current target object.
         /// </summary>
@@ -85,7 +104,11 @@ namespace PSRule.Runtime
             if (GetContext().Pipeline.ContentCache.TryGetValue(cacheKey, out PSObject[] result))
                 return result;
 
-            result = PipelineReceiverActions.DetectInputFormat(sourceObject, PipelineReceiverActions.PassThru).ToArray();
+            var items = PipelineReceiverActions.DetectInputFormat(new TargetObject(sourceObject), PipelineReceiverActions.PassThru).ToArray();
+            result = new PSObject[items.Length];
+            for (var i = 0; i < items.Length; i++)
+                result[i] = items[i].Value;
+
             GetContext().Pipeline.ContentCache.Add(cacheKey, result);
             return result;
         }
@@ -146,5 +169,18 @@ namespace PSRule.Runtime
                 GetContext().Pipeline.Reader.Enqueue(sourceObject[i], skipExpansion: true);
             }
         }
+
+        #region Helper methods
+
+        private ITargetSourceCollection GetSource()
+        {
+            RequireScope(RunspaceScope.Runtime);
+            if (_Source == null)
+                _Source = new PSRuleSource(GetContext());
+
+            return _Source;
+        }
+
+        #endregion Helper methods
     }
 }

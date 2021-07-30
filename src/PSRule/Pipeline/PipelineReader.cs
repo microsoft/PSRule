@@ -12,13 +12,13 @@ namespace PSRule.Pipeline
     {
         private readonly VisitTargetObject _Input;
         private readonly InputFileInfo[] _InputPath;
-        private readonly ConcurrentQueue<PSObject> _Queue;
+        private readonly ConcurrentQueue<TargetObject> _Queue;
 
         public PipelineReader(VisitTargetObject input, InputFileInfo[] inputPath)
         {
             _Input = input;
             _InputPath = inputPath;
-            _Queue = new ConcurrentQueue<PSObject>();
+            _Queue = new ConcurrentQueue<TargetObject>();
         }
 
         public int Count => _Queue.Count;
@@ -30,26 +30,27 @@ namespace PSRule.Pipeline
             if (sourceObject == null)
                 return;
 
+            var targetObject = new TargetObject(sourceObject);
             if (_Input == null || skipExpansion)
             {
-                sourceObject.ConvertTargetInfoProperty();
-                _Queue.Enqueue(sourceObject);
+                targetObject.Value.ConvertTargetInfoProperty();
+                _Queue.Enqueue(targetObject);
                 return;
             }
 
             // Visit the object, which may change or expand the object
-            var input = _Input(sourceObject);
+            var input = _Input(targetObject);
             if (input == null)
                 return;
 
             foreach (var item in input)
             {
-                sourceObject.ConvertTargetInfoProperty();
+                targetObject.Value.ConvertTargetInfoProperty();
                 _Queue.Enqueue(item);
             }
         }
 
-        public bool TryDequeue(out PSObject sourceObject)
+        public bool TryDequeue(out TargetObject sourceObject)
         {
             return _Queue.TryDequeue(out sourceObject);
         }

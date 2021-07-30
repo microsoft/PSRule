@@ -160,6 +160,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        internal static string FileSourceType {
+            get {
+                return ResourceManager.GetString("FileSourceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [PSRule][D] -- Found {0} PSRule module(s).
         /// </summary>
         internal static string FoundModules {

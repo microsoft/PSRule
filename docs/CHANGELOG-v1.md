@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since v1.5.0:
+
+- General improvements:
+  - Added support for object source location in validation. [#757](https://github.com/microsoft/PSRule/issues/757)
+
 ## v1.5.0
 
 What's changed since v1.4.0:

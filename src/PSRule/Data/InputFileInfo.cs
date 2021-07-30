@@ -20,11 +20,12 @@ namespace PSRule.Data
                 return;
             }
             BasePath = basePath;
-            Name = Path.GetFileName(path);
-            Extension = Path.GetExtension(path);
-            DirectoryName = Path.GetDirectoryName(path);
+            Name = System.IO.Path.GetFileName(path);
+            Extension = System.IO.Path.GetExtension(path);
+            DirectoryName = System.IO.Path.GetDirectoryName(path);
             DisplayName = ExpressionHelpers.NormalizePath(basePath, FullName);
-            _TargetType = string.IsNullOrEmpty(Extension) ? Path.GetFileNameWithoutExtension(path) : Extension;
+            Path = ExpressionHelpers.NormalizePath(basePath, FullName);
+            _TargetType = string.IsNullOrEmpty(Extension) ? System.IO.Path.GetFileNameWithoutExtension(path) : Extension;
         }
 
         public string FullName { get; }
@@ -36,6 +37,8 @@ namespace PSRule.Data
         public string Extension { get; }
 
         public string DirectoryName { get; }
+
+        public string Path { get; }
 
         public string DisplayName { get; }
 

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
+using PSRule.Data;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -132,6 +133,13 @@ namespace PSRule
     /// </summary>
     internal sealed class PSObjectArrayJsonConverter : JsonConverter
     {
+        private readonly TargetSourceInfo _SourceInfo;
+
+        public PSObjectArrayJsonConverter(TargetSourceInfo sourceInfo)
+        {
+            _SourceInfo = sourceInfo;
+        }
+
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(PSObject[]);
@@ -157,7 +165,7 @@ namespace PSRule
 
             while (reader.TokenType != JsonToken.None && (!isArray || (isArray && reader.TokenType != JsonToken.EndArray)))
             {
-                var value = ReadObject(reader, bindTargetInfo: true);
+                var value = ReadObject(reader, bindTargetInfo: true, _SourceInfo);
                 result.Add(value);
 
                 // Consume the EndObject token
@@ -166,7 +174,7 @@ namespace PSRule
             return result.ToArray();
         }
 
-        private static PSObject ReadObject(JsonReader reader, bool bindTargetInfo)
+        private static PSObject ReadObject(JsonReader reader, bool bindTargetInfo, TargetSourceInfo sourceInfo)
         {
             if (reader.TokenType != JsonToken.StartObject || !reader.Read())
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
@@ -198,7 +206,7 @@ namespace PSRule
                         break;
 
                     case JsonToken.StartObject:
-                        var value = ReadObject(reader, bindTargetInfo: false);
+                        var value = ReadObject(reader, bindTargetInfo: false, sourceInfo: null);
                         result.Properties.Add(new PSNoteProperty(name, value: value));
                         break;
 
@@ -220,7 +228,7 @@ namespace PSRule
             if (bindTargetInfo)
             {
                 result.UseTargetInfo(out PSRuleTargetInfo info);
-                info.SetSource(lineNumber, linePosition);
+                info.SetSource(sourceInfo?.File, lineNumber, linePosition);
             }
             return result;
         }
@@ -247,7 +255,7 @@ namespace PSRule
                 switch (reader.TokenType)
                 {
                     case JsonToken.StartObject:
-                        result.Add(ReadObject(reader, bindTargetInfo: false));
+                        result.Add(ReadObject(reader, bindTargetInfo: false, sourceInfo: null));
                         break;
 
                     case JsonToken.StartArray:

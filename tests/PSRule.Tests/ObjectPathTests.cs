@@ -20,15 +20,15 @@ namespace PSRule
             ).ToArray();
 
             Assert.Equal(2, actual.Length);
-            Assert.Equal("TestObject1", actual[0].Properties["targetName"].Value);
-            Assert.Equal("Test", actual[0].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<string>("kind"));
-            Assert.Equal(2, actual[1].PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<int>("value2"));
+            Assert.Equal("TestObject1", actual[0].Value.Properties["targetName"].Value);
+            Assert.Equal("Test", actual[0].Value.PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<string>("kind"));
+            Assert.Equal(2, actual[1].Value.PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<int>("value2"));
         }
 
-        private string GetYamlContent()
+        private TargetObject GetYamlContent()
         {
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ObjectFromNestedFile.yaml");
-            return File.ReadAllText(path);
+            return new TargetObject(new PSObject(File.ReadAllText(path)));
         }
     }
 }
