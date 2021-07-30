@@ -173,6 +173,7 @@ See option `Binding.Field` for more information.
 This property will automatically default to `TargetName` or `Name` properties of the object if they exist.
 - `TargetType` - The type of the object currently being processed on the pipeline.
 This property will automatically bind to `PSObject.TypeNames[0]` by default.
+- `Source` - A collection of sources for the object currently being processed on the pipeline.
 
 The following properties are available for read/ write access:
 

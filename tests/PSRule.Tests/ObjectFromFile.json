@@ -34,7 +34,8 @@
             "source": [
                 {
                     "file": "some-file.json",
-                    "line": 1
+                    "line": 1,
+                    "type": "Origin"
                 }
             ]
         }

@@ -93,7 +93,7 @@ namespace PSRule.Host
 
         }
 
-        public override object Value => RunspaceContext.CurrentThread.TargetObject;
+        public override object Value => RunspaceContext.CurrentThread.TargetObject.Value;
     }
 
     internal sealed class ConfigurationVariable : PSVariable

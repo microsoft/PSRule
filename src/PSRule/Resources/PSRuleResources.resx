@@ -154,6 +154,9 @@
   <data name="ExistsTrue" xml:space="preserve">
     <value>Exists: {0}</value>
   </data>
+  <data name="FileSourceType" xml:space="preserve">
+    <value>File</value>
+  </data>
   <data name="FoundModules" xml:space="preserve">
     <value>[PSRule][D] -- Found {0} PSRule module(s)</value>
   </data>

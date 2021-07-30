@@ -3,6 +3,7 @@
 
 using PSRule.Annotations;
 using PSRule.Configuration;
+using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Selectors;
 using PSRule.Host;
@@ -648,11 +649,13 @@ namespace PSRule
     {
         private readonly INodeDeserializer _Next;
         private readonly PSObjectYamlTypeConverter _Converter;
+        private readonly TargetSourceInfo _SourceInfo;
 
-        public PSObjectYamlDeserializer(INodeDeserializer next)
+        public PSObjectYamlDeserializer(INodeDeserializer next, TargetSourceInfo sourceInfo)
         {
             _Next = next;
             _Converter = new PSObjectYamlTypeConverter();
+            _SourceInfo = sourceInfo;
         }
 
         bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
@@ -665,7 +668,7 @@ namespace PSRule
                 if (value is PSObject pso)
                 {
                     pso.UseTargetInfo(out PSRuleTargetInfo info);
-                    info.SetSource(lineNumber, linePosition);
+                    info.SetSource(_SourceInfo?.File, lineNumber, linePosition);
                     value = new PSObject[] { pso };
                     return true;
                 }

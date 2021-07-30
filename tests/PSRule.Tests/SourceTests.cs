@@ -15,6 +15,7 @@ namespace PSRule
             source.Properties.Add(new PSNoteProperty("file", "file.json"));
             source.Properties.Add(new PSNoteProperty("line", 100));
             source.Properties.Add(new PSNoteProperty("position", 1000));
+            source.Properties.Add(new PSNoteProperty("Type", "Origin"));
             var info = new PSObject();
             info.Properties.Add(new PSNoteProperty("source", new PSObject[] { source }));
             var o = new PSObject();
@@ -26,6 +27,7 @@ namespace PSRule
             Assert.Equal("file.json", actual[0].File);
             Assert.Equal(100, actual[0].Line);
             Assert.Equal(1000, actual[0].Position);
+            Assert.Equal("Origin", actual[0].Type);
         }
     }
 }

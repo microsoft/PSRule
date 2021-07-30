@@ -19,69 +19,74 @@ using YamlDotNet.Serialization.NodeDeserializers;
 
 namespace PSRule.Pipeline
 {
-    public delegate IEnumerable<PSObject> VisitTargetObject(PSObject sourceObject);
-    public delegate IEnumerable<PSObject> VisitTargetObjectAction(PSObject sourceObject, VisitTargetObject next);
+    internal delegate IEnumerable<TargetObject> VisitTargetObject(TargetObject sourceObject);
+    internal delegate IEnumerable<TargetObject> VisitTargetObjectAction(TargetObject sourceObject, VisitTargetObject next);
 
     internal static class PipelineReceiverActions
     {
         private const string InputFileInfo_GitHead = ".git/HEAD";
+        private const string JSON = ".json";
+        private const string JSONC = ".jsonc";
+        private const string YAML = ".yaml";
+        private const string YML = ".yml";
+        private const string MD = ".md";
+        private const string MARKDOWN = ".markdown";
+        private const string PSD1 = ".psd1";
 
-        private static readonly PSObject[] EmptyArray = Array.Empty<PSObject>();
+        private static readonly TargetObject[] EmptyArray = Array.Empty<TargetObject>();
 
-        public static IEnumerable<PSObject> PassThru(PSObject targetObject)
+        public static IEnumerable<TargetObject> PassThru(TargetObject targetObject)
         {
             yield return targetObject;
         }
 
-        public static IEnumerable<PSObject> DetectInputFormat(PSObject sourceObject, VisitTargetObject next)
+        public static IEnumerable<TargetObject> DetectInputFormat(TargetObject targetObject, VisitTargetObject next)
         {
-            var pathExtension = GetPathExtension(sourceObject);
+            var pathExtension = GetPathExtension(targetObject);
 
             // Handle JSON
-            if (pathExtension == ".json" || pathExtension == ".jsonc")
+            if (pathExtension == JSON || pathExtension == JSONC)
             {
-                return ConvertFromJson(sourceObject, next);
+                return ConvertFromJson(targetObject, next);
             }
             // Handle YAML
-            else if (pathExtension == ".yaml" || pathExtension == ".yml")
+            else if (pathExtension == YAML || pathExtension == YML)
             {
-                return ConvertFromYaml(sourceObject, next);
+                return ConvertFromYaml(targetObject, next);
             }
             // Handle Markdown
-            else if (pathExtension == ".md" || pathExtension == ".markdown")
+            else if (pathExtension == MD || pathExtension == MARKDOWN)
             {
-                return ConvertFromMarkdown(sourceObject, next);
+                return ConvertFromMarkdown(targetObject, next);
             }
             // Handle PowerShell Data
-            else if (pathExtension == ".psd1")
+            else if (pathExtension == PSD1)
             {
-                return ConvertFromPowerShellData(sourceObject, next);
+                return ConvertFromPowerShellData(targetObject, next);
             }
-            return new PSObject[] { sourceObject };
+            return new TargetObject[] { targetObject };
         }
 
-        public static IEnumerable<PSObject> ConvertFromJson(PSObject sourceObject, VisitTargetObject next)
+        public static IEnumerable<TargetObject> ConvertFromJson(TargetObject targetObject, VisitTargetObject next)
         {
             // Only attempt to deserialize if the input is a string, file or URI
-            if (!IsAcceptedType(sourceObject))
-                return new PSObject[] { sourceObject };
+            if (!IsAcceptedType(targetObject))
+                return new TargetObject[] { targetObject };
 
-            var reader = ReadAsReader(sourceObject, out TargetSourceInfo source);
+            var reader = ReadAsReader(targetObject, out TargetSourceInfo sourceInfo);
             try
             {
-                var jsonReader = AsJsonTextReader(reader);
-                var d = new JsonSerializer();
-                d.Converters.Add(new PSObjectArrayJsonConverter());
-                var value = d.Deserialize<PSObject[]>(jsonReader);
-                NoteSource(value, source);
-                return VisitItems(value, next);
+                var d = new JsonSerializer(); // Think about caching this.
+                d.Converters.Add(new PSObjectArrayJsonConverter(sourceInfo));
+                var value = d.Deserialize<PSObject[]>(AsJsonTextReader(reader));
+                return VisitItems(value, sourceInfo, next);
             }
             catch (Exception ex)
             {
-                if (source != null && !string.IsNullOrEmpty(source.File))
+                if (sourceInfo != null && !string.IsNullOrEmpty(sourceInfo.File))
                 {
-                    RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(source.File, ex);
-                    return Array.Empty<PSObject>();
+                    RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(sourceInfo.File, ex);
+                    return EmptyArray;
                 }
                 throw;
             }
@@ -91,25 +96,25 @@ namespace PSRule.Pipeline
             }
         }
 
-        public static IEnumerable<PSObject> ConvertFromYaml(PSObject sourceObject, VisitTargetObject next)
+        public static IEnumerable<TargetObject> ConvertFromYaml(TargetObject targetObject, VisitTargetObject next)
         {
             // Only attempt to deserialize if the input is a string, file or URI
-            if (!IsAcceptedType(sourceObject))
-                return new PSObject[] { sourceObject };
+            if (!IsAcceptedType(targetObject))
+                return new TargetObject[] { targetObject };
 
+            var reader = ReadAsReader(targetObject, out TargetSourceInfo sourceInfo);
             var d = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
                 .WithTypeConverter(new PSObjectYamlTypeConverter())
                 .WithNodeDeserializer(
-                    inner => new PSObjectYamlDeserializer(inner),
+                    inner => new PSObjectYamlDeserializer(inner, sourceInfo),
                     s => s.InsteadOf<YamlConvertibleNodeDeserializer>())
                 .Build();
 
-            var reader = ReadAsReader(sourceObject, out TargetSourceInfo source);
             try
             {
                 var parser = new YamlDotNet.Core.Parser(reader);
-                var result = new List<PSObject>();
+                var result = new List<TargetObject>();
                 parser.TryConsume<StreamStart>(out _);
                 while (parser.Current is DocumentStart)
                 {
@@ -117,9 +122,7 @@ namespace PSRule.Pipeline
                     if (item == null)
                         continue;
 
-                    NoteSource(item, source);
-                    var items = VisitItems(item.ToArray(), next);
-
+                    var items = VisitItems(item, sourceInfo, next);
                     if (items == null)
                         continue;
 
@@ -133,10 +136,10 @@ namespace PSRule.Pipeline
             }
             catch (Exception ex)
             {
-                if (source != null && !string.IsNullOrEmpty(source.File))
+                if (sourceInfo != null && !string.IsNullOrEmpty(sourceInfo.File))
                 {
-                    RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(source.File, ex);
-                    return Array.Empty<PSObject>();
+                    RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(sourceInfo.File, ex);
+                    return EmptyArray;
                 }
                 throw;
             }
@@ -146,25 +149,24 @@ namespace PSRule.Pipeline
             }
         }
 
-        public static IEnumerable<PSObject> ConvertFromMarkdown(PSObject sourceObject, VisitTargetObject next)
+        public static IEnumerable<TargetObject> ConvertFromMarkdown(TargetObject targetObject, VisitTargetObject next)
         {
             // Only attempt to deserialize if the input is a string or a file
-            if (!IsAcceptedType(sourceObject))
-                return new PSObject[] { sourceObject };
+            if (!IsAcceptedType(targetObject))
+                return new TargetObject[] { targetObject };
 
-            var markdown = ReadAsString(sourceObject, out TargetSourceInfo source);
+            var markdown = ReadAsString(targetObject, out TargetSourceInfo sourceInfo);
             var value = MarkdownConvert.DeserializeObject(markdown);
-            NoteSource(value, source);
-            return VisitItems(value, next);
+            return VisitItems(value, sourceInfo, next);
         }
 
-        public static IEnumerable<PSObject> ConvertFromPowerShellData(PSObject sourceObject, VisitTargetObject next)
+        public static IEnumerable<TargetObject> ConvertFromPowerShellData(TargetObject targetObject, VisitTargetObject next)
         {
             // Only attempt to deserialize if the input is a string or a file
-            if (!IsAcceptedType(sourceObject))
-                return new PSObject[] { sourceObject };
+            if (!IsAcceptedType(targetObject))
+                return new TargetObject[] { targetObject };
 
-            var data = ReadAsString(sourceObject, out TargetSourceInfo source);
+            var data = ReadAsString(targetObject, out TargetSourceInfo sourceInfo);
             var ast = System.Management.Automation.Language.Parser.ParseInput(data, out _, out _);
             var hashtables = ast.FindAll(item => item is System.Management.Automation.Language.HashtableAst, false);
             if (hashtables == null)
@@ -177,81 +179,82 @@ namespace PSRule.Pipeline
                     result.Add(PSObject.AsPSObject(hashtable.SafeGetValue()));
             }
             var value = result.ToArray();
-            NoteSource(value, source);
-            return VisitItems(value, next);
+            return VisitItems(value, sourceInfo, next);
         }
 
-        public static IEnumerable<PSObject> ConvertFromGitHead(PSObject sourceObject, VisitTargetObject next)
+        public static IEnumerable<TargetObject> ConvertFromGitHead(TargetObject targetObject, VisitTargetObject next)
         {
             // Only attempt to convert if Git HEAD file
-            if (!IsGitHead(sourceObject))
-                return new PSObject[] { sourceObject };
+            if (!IsGitHead(targetObject))
+                return new TargetObject[] { targetObject };
 
-            var value = PSObject.AsPSObject(GetRepositoryInfo(sourceObject));
-            return VisitItems(new PSObject[] { value }, next);
+            var value = PSObject.AsPSObject(GetRepositoryInfo(targetObject, out TargetSourceInfo sourceInfo));
+            return VisitItems(new PSObject[] { value }, sourceInfo, next);
         }
 
-        public static IEnumerable<PSObject> ReadObjectPath(PSObject sourceObject, VisitTargetObject source, string objectPath, bool caseSensitive)
+        public static IEnumerable<TargetObject> ReadObjectPath(TargetObject targetObject, VisitTargetObject source, string objectPath, bool caseSensitive)
         {
-            if (!ObjectHelper.GetField(bindingContext: null, targetObject: sourceObject, name: objectPath, caseSensitive: caseSensitive, value: out object nestedObject))
+            if (!ObjectHelper.GetField(bindingContext: null, targetObject: targetObject.Value, name: objectPath, caseSensitive: caseSensitive, value: out object nestedObject))
                 return EmptyArray;
 
             var nestedType = nestedObject.GetType();
             if (typeof(IEnumerable).IsAssignableFrom(nestedType))
             {
-                var result = new List<PSObject>();
+                var result = new List<TargetObject>();
                 foreach (var item in (nestedObject as IEnumerable))
-                    result.Add(PSObject.AsPSObject(item));
+                    result.Add(new TargetObject(PSObject.AsPSObject(item)));
 
                 return result.ToArray();
             }
             else
             {
-                return new PSObject[] { PSObject.AsPSObject(nestedObject) };
+                return new TargetObject[] { new TargetObject(PSObject.AsPSObject(nestedObject), targetObject.Source) };
             }
         }
 
-        private static string GetPathExtension(PSObject sourceObject)
+        private static string GetPathExtension(TargetObject targetObject)
         {
-            if (sourceObject.BaseObject is InputFileInfo inputFileInfo)
+            if (targetObject.Value.BaseObject is InputFileInfo inputFileInfo)
                 return inputFileInfo.Extension;
 
-            if (sourceObject.BaseObject is FileInfo fileInfo)
+            if (targetObject.Value.BaseObject is FileInfo fileInfo)
                 return fileInfo.Extension;
 
-            if (sourceObject.BaseObject is Uri uri)
+            if (targetObject.Value.BaseObject is Uri uri)
                 return Path.GetExtension(uri.OriginalString);
 
             return null;
         }
 
-        private static bool IsAcceptedType(PSObject sourceObject)
+        private static bool IsAcceptedType(TargetObject targetObject)
         {
-            return sourceObject.BaseObject is string || sourceObject.BaseObject is InputFileInfo || sourceObject.BaseObject is FileInfo || sourceObject.BaseObject is Uri;
+            return targetObject.Value.BaseObject is string || targetObject.Value.BaseObject is InputFileInfo || targetObject.Value.BaseObject is FileInfo || targetObject.Value.BaseObject is Uri;
         }
 
-        private static bool IsGitHead(PSObject sourceObject)
+        private static bool IsGitHead(TargetObject targetObject)
         {
-            return sourceObject.BaseObject is InputFileInfo info && info.DisplayName == InputFileInfo_GitHead;
+            return targetObject.Value.BaseObject is InputFileInfo info && info.DisplayName == InputFileInfo_GitHead;
         }
 
-        private static RepositoryInfo GetRepositoryInfo(PSObject sourceObject)
+        private static RepositoryInfo GetRepositoryInfo(TargetObject targetObject, out TargetSourceInfo sourceInfo)
         {
-            if (!(sourceObject.BaseObject is InputFileInfo inputFileInfo))
+            sourceInfo = null;
+            if (!(targetObject.Value.BaseObject is InputFileInfo inputFileInfo))
                 return null;
 
+            sourceInfo = new TargetSourceInfo(inputFileInfo);
             var headRef = GitHelper.GetHeadRef(inputFileInfo.DirectoryName);
             return new RepositoryInfo(inputFileInfo.BasePath, headRef);
         }
 
-        private static string ReadAsString(PSObject sourceObject, out TargetSourceInfo sourceInfo)
+        private static string ReadAsString(TargetObject targetObject, out TargetSourceInfo sourceInfo)
         {
             sourceInfo = null;
-            if (sourceObject.BaseObject is string)
+            if (targetObject.Value.BaseObject is string)
             {
-                return sourceObject.BaseObject.ToString();
+                return targetObject.Value.BaseObject.ToString();
             }
-            else if (sourceObject.BaseObject is InputFileInfo inputFileInfo)
+            else if (targetObject.Value.BaseObject is InputFileInfo inputFileInfo)
             {
                 sourceInfo = new TargetSourceInfo(inputFileInfo);
                 using (var reader = new StreamReader(inputFileInfo.FullName))
@@ -259,7 +262,7 @@ namespace PSRule.Pipeline
                     return reader.ReadToEnd();
                 }
             }
-            else if (sourceObject.BaseObject is FileInfo fileInfo)
+            else if (targetObject.Value.BaseObject is FileInfo fileInfo)
             {
                 sourceInfo = new TargetSourceInfo(fileInfo);
                 using (var reader = new StreamReader(fileInfo.FullName))
@@ -269,7 +272,7 @@ namespace PSRule.Pipeline
             }
             else
             {
-                var uri = sourceObject.BaseObject as Uri;
+                var uri = targetObject.Value.BaseObject as Uri;
                 sourceInfo = new TargetSourceInfo(uri);
                 using (var webClient = new WebClient())
                 {
@@ -278,26 +281,26 @@ namespace PSRule.Pipeline
             }
         }
 
-        private static TextReader ReadAsReader(PSObject sourceObject, out TargetSourceInfo sourceInfo)
+        private static TextReader ReadAsReader(TargetObject targetObject, out TargetSourceInfo sourceInfo)
         {
             sourceInfo = null;
-            if (sourceObject.BaseObject is string)
+            if (targetObject.Value.BaseObject is string)
             {
-                return new StringReader(sourceObject.BaseObject.ToString());
+                return new StringReader(targetObject.Value.BaseObject.ToString());
             }
-            else if (sourceObject.BaseObject is InputFileInfo inputFileInfo)
+            else if (targetObject.Value.BaseObject is InputFileInfo inputFileInfo)
             {
                 sourceInfo = new TargetSourceInfo(inputFileInfo);
                 return new StreamReader(inputFileInfo.FullName);
             }
-            else if (sourceObject.BaseObject is FileInfo fileInfo)
+            else if (targetObject.Value.BaseObject is FileInfo fileInfo)
             {
                 sourceInfo = new TargetSourceInfo(fileInfo);
                 return new StreamReader(fileInfo.FullName);
             }
             else
             {
-                var uri = sourceObject.BaseObject as Uri;
+                var uri = targetObject.Value.BaseObject as Uri;
                 sourceInfo = new TargetSourceInfo(uri);
                 using (var webClient = new WebClient())
                 {
@@ -306,43 +309,41 @@ namespace PSRule.Pipeline
             }
         }
 
-        private static IEnumerable<PSObject> VisitItems(PSObject[] value, VisitTargetObject next)
+        private static IEnumerable<TargetObject> VisitItem(PSObject value, TargetSourceInfo sourceInfo, VisitTargetObject next)
         {
             if (value == null)
                 return EmptyArray;
 
-            var result = new List<PSObject>();
-            foreach (var item in value)
-            {
-                var items = next(item);
-                if (items == null)
-                    continue;
-
-                result.AddRange(items);
-            }
-
-            if (result.Count == 0)
+            var items = next(new TargetObject(value));
+            if (items == null)
                 return EmptyArray;
 
-            return result.ToArray();
+            foreach (var i in items)
+                NoteSource(i, sourceInfo);
+
+            return items;
         }
 
-        private static void NoteSource(PSObject[] value, TargetSourceInfo source)
+        private static IEnumerable<TargetObject> VisitItems(IEnumerable<PSObject> value, TargetSourceInfo sourceInfo, VisitTargetObject next)
         {
-            if (value == null || value.Length == 0 || source == null)
-                return;
+            if (value == null)
+                return EmptyArray;
 
-            for (var i = 0; i < value.Length; i++)
-                NoteSource(value[i], source);
+            var result = new List<TargetObject>();
+            foreach (var item in value)
+                result.AddRange(VisitItem(item, sourceInfo, next));
+
+            return result.Count == 0 ? EmptyArray : result.ToArray();
         }
 
-        private static void NoteSource(PSObject value, TargetSourceInfo source)
+        private static void NoteSource(TargetObject value, TargetSourceInfo source)
         {
             if (value == null || source == null)
                 return;
 
-            value.UseTargetInfo(out PSRuleTargetInfo targetInfo);
+            value.Value.UseTargetInfo(out PSRuleTargetInfo targetInfo);
             targetInfo.UpdateSource(source);
+            value.Source.AddRange(targetInfo.Source.ToArray());
         }
 
         private static JsonTextReader AsJsonTextReader(TextReader reader)

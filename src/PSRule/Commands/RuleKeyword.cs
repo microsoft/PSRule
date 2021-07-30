@@ -24,7 +24,7 @@ namespace PSRule.Commands
 
         protected static PSObject GetTargetObject()
         {
-            return RunspaceContext.CurrentThread.TargetObject;
+            return RunspaceContext.CurrentThread.TargetObject.Value;
         }
 
         protected static bool GetField(object targetObject, string name, bool caseSensitive, out object value)

@@ -424,3 +424,10 @@ Rule 'ReasonTest3' {
     Reason 'This is a reason'
     $True
 }
+
+# Synopsis: Test for $PSRule.Source
+Rule 'SourceTest' {
+    $Assert.WithinPath($PSRule.Source['File'], '.', @(
+        'tests/PSRule.Tests/'
+    ));
+}

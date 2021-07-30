@@ -3,6 +3,7 @@
 
 using Newtonsoft.Json;
 using PSRule.Data;
+using PSRule.Resources;
 using System.Collections.Generic;
 using System.Management.Automation;
 
@@ -91,13 +92,15 @@ namespace PSRule.Runtime
                 Source[0].File = source.File;
         }
 
-        internal void SetSource(int lineNumber, int linePosition)
+        internal void SetSource(string file, int lineNumber, int linePosition)
         {
             if (Source.Count > 0)
                 return;
 
             var s = new TargetSourceInfo
             {
+                File = file,
+                Type = PSRuleResources.FileSourceType,
                 Line = lineNumber,
                 Position = linePosition
             };

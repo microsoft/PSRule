@@ -99,11 +99,11 @@ namespace PSRule.Pipeline
         /// <summary>
         /// Bind target object based on the supplied baseline.
         /// </summary>
-        public void Bind(OptionContext baseline, PSObject targetObject)
+        public void Bind(OptionContext baseline, TargetObject targetObject)
         {
             var binding = baseline.GetTargetBinding();
-            TargetName = _BindTargetName(binding.TargetName, !binding.IgnoreCase, binding.PreferTargetInfo, targetObject);
-            TargetType = _BindTargetType(binding.TargetType, !binding.IgnoreCase, binding.PreferTargetInfo, targetObject);
+            TargetName = _BindTargetName(binding.TargetName, !binding.IgnoreCase, binding.PreferTargetInfo, targetObject.Value);
+            TargetType = _BindTargetType(binding.TargetType, !binding.IgnoreCase, binding.PreferTargetInfo, targetObject.Value);
             ShouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(TargetType));
 
             // Use qualified name
@@ -111,7 +111,7 @@ namespace PSRule.Pipeline
                 TargetName = string.Concat(TargetType, binding.NameSeparator, TargetName);
 
             // Bind custom fields
-            BindField(binding.Field, !binding.IgnoreCase, targetObject);
+            BindField(binding.Field, !binding.IgnoreCase, targetObject.Value);
         }
 
         /// <summary>

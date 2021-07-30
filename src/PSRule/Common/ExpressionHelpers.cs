@@ -385,6 +385,10 @@ namespace PSRule
             {
                 return PSRuleOption.GetRootedPath(fileInfo.FullName);
             }
+            else if (baseObject is TargetSourceInfo sourceInfo && !string.IsNullOrEmpty(sourceInfo.File))
+            {
+                return PSRuleOption.GetRootedPath(sourceInfo.File);
+            }
             else if (targetInfo != null)
             {
                 return PSRuleOption.GetRootedPath(targetInfo.Path);

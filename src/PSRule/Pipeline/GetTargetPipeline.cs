@@ -132,8 +132,8 @@ namespace PSRule.Pipeline
             try
             {
                 Reader.Enqueue(sourceObject);
-                while (Reader.TryDequeue(out PSObject next))
-                    Writer.WriteObject(next, false);
+                while (Reader.TryDequeue(out TargetObject next))
+                    Writer.WriteObject(next.Value, false);
             }
             catch (Exception)
             {

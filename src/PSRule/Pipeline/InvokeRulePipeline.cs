@@ -197,7 +197,7 @@ namespace PSRule.Pipeline
             try
             {
                 Reader.Enqueue(sourceObject);
-                while (Reader.TryDequeue(out PSObject next))
+                while (Reader.TryDequeue(out TargetObject next))
                 {
                     var result = ProcessTargetObject(next);
                     _Completed.Add(result);
@@ -226,7 +226,7 @@ namespace PSRule.Pipeline
             Writer.End();
         }
 
-        private InvokeResult ProcessTargetObject(PSObject targetObject)
+        private InvokeResult ProcessTargetObject(TargetObject targetObject)
         {
             try
             {

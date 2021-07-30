@@ -3,6 +3,7 @@
 
 using Newtonsoft.Json;
 using PSRule.Configuration;
+using PSRule.Resources;
 using System;
 using System.IO;
 using System.Management.Automation;
@@ -27,16 +28,19 @@ namespace PSRule.Data
         internal TargetSourceInfo(InputFileInfo info)
         {
             File = info.FullName;
+            Type = PSRuleResources.FileSourceType;
         }
 
         internal TargetSourceInfo(FileInfo info)
         {
             File = info.FullName;
+            Type = PSRuleResources.FileSourceType;
         }
 
         internal TargetSourceInfo(Uri uri)
         {
             File = uri.AbsoluteUri;
+            Type = PSRuleResources.FileSourceType;
         }
 
         [JsonProperty(PropertyName = PROPERTY_FILE)]

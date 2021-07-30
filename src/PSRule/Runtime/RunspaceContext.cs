@@ -70,7 +70,6 @@ namespace PSRule.Runtime
 
         // Fields exposed to engine
         internal RuleRecord RuleRecord;
-        internal PSObject TargetObject;
         internal RuleBlock RuleBlock;
 
         internal SourceScope Source;
@@ -119,11 +118,13 @@ namespace PSRule.Runtime
             _Scope = new Stack<RunspaceScope>();
         }
 
-        public bool HadErrors => _RuleErrors > 0;
+        internal bool HadErrors => _RuleErrors > 0;
 
-        public Hashtable Data { get; private set; }
+        internal Hashtable Data { get; private set; }
 
-        public IEnumerable<InvokeResult> Output { get; private set; }
+        internal IEnumerable<InvokeResult> Output { get; private set; }
+
+        internal TargetObject TargetObject { get; private set; }
 
         internal bool IsScope(RunspaceScope scope)
         {
@@ -544,7 +545,7 @@ namespace PSRule.Runtime
         /// <summary>
         /// Increment the pipeline object number.
         /// </summary>
-        public void EnterTargetObject(PSObject targetObject)
+        internal void EnterTargetObject(TargetObject targetObject)
         {
             _ObjectNumber++;
             TargetObject = targetObject;
@@ -571,15 +572,13 @@ namespace PSRule.Runtime
             if (TargetObject == null || Pipeline == null || !Pipeline.Selector.TryGetValue(name, out SelectorVisitor selector))
                 return false;
 
-            //var annotation = TargetObject.GetAnnotation<SelectorTargetAnnotation>();
-            //if (annotation.TryGetSelectorResult(selector, out bool result))
-            //    return result;
+            var annotation = TargetObject.GetAnnotation<SelectorTargetAnnotation>();
+            if (annotation.TryGetSelectorResult(selector, out bool result))
+                return result;
 
-            //result = selector.Match(TargetObject.Value);
-            //annotation.SetSelectorResult(selector, result);
-            //return result;
-
-            return selector.Match(TargetObject);
+            result = selector.Match(TargetObject.Value);
+            annotation.SetSelectorResult(selector, result);
+            return result;
         }
 
         /// <summary>
@@ -592,14 +591,14 @@ namespace PSRule.Runtime
             RuleRecord = new RuleRecord(
                 ruleId: ruleBlock.RuleId,
                 ruleName: ruleBlock.RuleName,
-                targetObject: TargetObject,
+                targetObject: TargetObject.Value,
                 targetName: Pipeline.Binder.TargetName,
                 targetType: Pipeline.Binder.TargetType,
                 tag: ruleBlock.Tag,
                 info: ruleBlock.Info,
                 field: Pipeline.Binder.Field,
                 data: Data,
-                source: TargetObject.GetSourceInfo()
+                source: TargetObject.Source.GetSourceInfo()
             );
 
             if (Writer != null)
