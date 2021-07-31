@@ -36,6 +36,7 @@ namespace PSRule.Configuration
             Binding = BindingOption.Default,
             Convention = ConventionOption.Default,
             Execution = ExecutionOption.Default,
+            Include = IncludeOption.Default,
             Input = InputOption.Default,
             Logging = LoggingOption.Default,
             Output = OutputOption.Default
@@ -58,6 +59,7 @@ namespace PSRule.Configuration
             Configuration = new ConfigurationOption();
             Convention = new ConventionOption();
             Execution = new ExecutionOption();
+            Include = new IncludeOption();
             Input = new InputOption();
             Logging = new LoggingOption();
             Output = new OutputOption();
@@ -76,6 +78,7 @@ namespace PSRule.Configuration
             Configuration = new ConfigurationOption(option?.Configuration);
             Convention = new ConventionOption(option?.Convention);
             Execution = new ExecutionOption(option?.Execution);
+            Include = new IncludeOption(option?.Include);
             Input = new InputOption(option?.Input);
             Logging = new LoggingOption(option?.Logging);
             Output = new OutputOption(option?.Output);
@@ -98,9 +101,14 @@ namespace PSRule.Configuration
         public ConventionOption Convention { get; set; }
 
         /// <summary>
-        /// Options that affect script execution.
+        /// Options that configure the execution sandbox.
         /// </summary>
         public ExecutionOption Execution { get; set; }
+
+        /// <summary>
+        /// Options that affect source locations imported for execution.
+        /// </summary>
+        public IncludeOption Include { get; set; }
 
         /// <summary>
         /// Options that affect how input types are processed.
@@ -166,6 +174,7 @@ namespace PSRule.Configuration
             result.Configuration = ConfigurationOption.Combine(result.Configuration, o2?.Configuration);
             result.Convention = ConventionOption.Combine(result.Convention, o2?.Convention);
             result.Execution = ExecutionOption.Combine(result.Execution, o2?.Execution);
+            result.Include = IncludeOption.Combine(result.Include, o2?.Include);
             result.Input = InputOption.Combine(result.Input, o2?.Input);
             result.Logging = LoggingOption.Combine(result.Logging, o2?.Logging);
             result.Output = OutputOption.Combine(result.Output, o2?.Output);
@@ -268,6 +277,7 @@ namespace PSRule.Configuration
             var env = EnvironmentHelper.Default;
             option.Convention.Load(env);
             option.Execution.Load(env);
+            option.Include.Load(env);
             option.Input.Load(env);
             option.Logging.Load(env);
             option.Output.Load(env);
@@ -286,6 +296,7 @@ namespace PSRule.Configuration
             var index = BuildIndex(hashtable);
             option.Convention.Load(index);
             option.Execution.Load(index);
+            option.Include.Load(index);
             option.Input.Load(index);
             option.Logging.Load(index);
             option.Output.Load(index);
@@ -368,6 +379,7 @@ namespace PSRule.Configuration
                 Configuration == other.Configuration &&
                 Convention == other.Convention &&
                 Execution == other.Execution &&
+                Include == other.Include &&
                 Input == other.Input &&
                 Logging == other.Logging &&
                 Output == other.Output &&
@@ -385,6 +397,7 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (Configuration != null ? Configuration.GetHashCode() : 0);
                 hash = hash * 23 + (Convention != null ? Convention.GetHashCode() : 0);
                 hash = hash * 23 + (Execution != null ? Execution.GetHashCode() : 0);
+                hash = hash * 23 + (Include != null ? Include.GetHashCode() : 0);
                 hash = hash * 23 + (Input != null ? Input.GetHashCode() : 0);
                 hash = hash * 23 + (Logging != null ? Logging.GetHashCode() : 0);
                 hash = hash * 23 + (Output != null ? Output.GetHashCode() : 0);

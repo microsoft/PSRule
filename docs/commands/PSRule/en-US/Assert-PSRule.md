@@ -210,9 +210,7 @@ Accept wildcard characters: False
 ### -Module
 
 Search for rule definitions within a module.
-When specified without the `-Path` parameter, only rule definitions in the module will be discovered.
-
-When both `-Path` and `-Module` are specified, rule definitions from both are discovered.
+If no sources are specified by `-Path`, `-Module`, or options, the current working directory is used.
 
 ```yaml
 Type: String[]
@@ -435,10 +433,7 @@ Accept wildcard characters: False
 ### -Path
 
 One or more paths to search for rule definitions within.
-
-If this parameter is not specified the current working path will be used, unless the `-Module` parameter is used.
-
-If the `-Module` parameter is used, rule definitions from the currently working path will not be included by default.
+If no sources are specified by `-Path`, `-Module`, or options, the current working directory is used.
 
 ```yaml
 Type: String[]

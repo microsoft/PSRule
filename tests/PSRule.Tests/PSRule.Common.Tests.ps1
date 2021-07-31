@@ -1334,7 +1334,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
 
 Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
     $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
-    $emptyOptionsFilePath = (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml');
+    $emptyOptionsFilePath = (Join-Path -Path $here -ChildPath 'PSRule.Tests8.yml');
 
     Context 'With defaults' {
         # Get a list of rules
@@ -1453,6 +1453,41 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
                 $Null = New-Item -Path $emptyPath -ItemType Directory -Force;
             }
             $Null = Get-PSRule -Path $emptyPath;
+        }
+
+        It 'Uses rules with include option' {
+            Push-Location -Path (Join-Path -Path $here -ChildPath 'rules/')
+            try {
+                $result = @(Get-PSRule)
+                $result.Length | Should -Be 4;
+
+                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/' })
+                $result.Length | Should -Be 1;
+
+                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/', 'extra/' })
+                $result.Length | Should -Be 2;
+
+                $result = @(Get-PSRule -Option @{ 'Include.Path' = '.' })
+                $result.Length | Should -Be 4;
+
+                $result = @(Get-PSRule -Path 'main/')
+                $result.Length | Should -Be 2;
+
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = @() })
+                $result.Length | Should -Be 1;
+
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/' })
+                $result.Length | Should -Be 2;
+
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/', '.ps-rule/' })
+                $result.Length | Should -Be 3;
+
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'main/' })
+                $result.Length | Should -Be 1;
+            }
+            finally {
+                Pop-Location;
+            }
         }
     }
 
