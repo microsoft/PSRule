@@ -7,6 +7,9 @@ using System.ComponentModel;
 
 namespace PSRule.Configuration
 {
+    /// <summary>
+    /// Options that configure the execution sandbox.
+    /// </summary>
     public sealed class ExecutionOption : IEquatable<ExecutionOption>
     {
         private const LanguageMode DEFAULT_LANGUAGEMODE = Configuration.LanguageMode.FullLanguage;

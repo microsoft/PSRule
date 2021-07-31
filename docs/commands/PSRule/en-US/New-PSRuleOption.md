@@ -21,13 +21,13 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
  [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
- [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-Format <InputFormat>]
- [-InputIgnoreGitPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
- [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
- [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
- [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
- [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
- [-OutputStyle <OutputStyle>] [<CommonParameters>]
+ [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-IncludeModule <String[]>]
+ [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>] [-ObjectPath <String>]
+ [-InputTargetType <String[]>] [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>]
+ [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
+ [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
+ [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
+ [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
 ```
 
 ### FromOption
@@ -38,13 +38,13 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
  [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
- [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-Format <InputFormat>]
- [-InputIgnoreGitPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
- [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
- [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
- [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
- [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
- [-OutputStyle <OutputStyle>] [<CommonParameters>]
+ [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-IncludeModule <String[]>]
+ [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>] [-ObjectPath <String>]
+ [-InputTargetType <String[]>] [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>]
+ [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
+ [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
+ [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
+ [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
 ```
 
 ### FromDefault
@@ -55,12 +55,12 @@ New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTar
  [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
  [-Convention <String[]>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
- [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
- [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
- [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
- [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
- [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
- [-OutputStyle <OutputStyle>] [<CommonParameters>]
+ [-IncludeModule <String[]>] [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
+ [-ObjectPath <String>] [-InputTargetType <String[]>] [-InputPathIgnore <String[]>]
+ [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>]
+ [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>]
+ [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>]
+ [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -416,6 +416,40 @@ See about_PSRule_Options for more information.
 Type: Boolean
 Parameter Sets: (All)
 Aliases: ExecutionNotProcessedWarning
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludeModule
+
+Sets the `Include.Module` option to include additional module sources.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludePath
+
+Sets the `Include.Path` option to include additional standalone sources.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

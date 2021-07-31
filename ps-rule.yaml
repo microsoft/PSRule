@@ -13,3 +13,6 @@ input:
   pathIgnore:
   - '*.Designer.cs'
   - '*.md'
+
+include:
+  path: []

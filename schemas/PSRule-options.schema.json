@@ -139,6 +139,40 @@
             },
             "additionalProperties": false
         },
+        "include-option": {
+            "type": "object",
+            "title": "Include options",
+            "description": "Options that affect source locations imported for execution.",
+            "properties": {
+                "module": {
+                    "type": "array",
+                    "title": "Include module",
+                    "description": "Automatically include rules and resources from the specified modules.",
+                    "markdownDescription": "Automatically include rules and resources from the specified modules. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#includemodule)",
+                    "items": {
+                        "type": "string",
+                        "title": "Include module",
+                        "description": "Automatically include rules and resources from the specified modules.",
+                        "markdownDescription": "Automatically include rules and resources from the specified modules. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#includemodule)"
+                    },
+                    "uniqueItems": true
+                },
+                "path": {
+                    "type": "array",
+                    "title": "Include path",
+                    "description": "Automatically include rules and resources from the specified paths.",
+                    "markdownDescription": "Automatically include rules and resources from the specified paths. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#includepath)",
+                    "items": {
+                        "type": "string",
+                        "title": "Include path",
+                    "description": "Automatically include rules and resources from the specified paths.",
+                    "markdownDescription": "Automatically include rules and resources from the specified paths. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#includepath)"
+                    },
+                    "uniqueItems": true
+                }
+            },
+            "additionalProperties": false
+        },
         "input-option": {
             "type": "object",
             "title": "Input options",
@@ -465,6 +499,10 @@
                             "$ref": "#/definitions/execution-option"
                         }
                     ]
+                },
+                "include": {
+                    "type": "object",
+                    "$ref": "#/definitions/include-option"
                 },
                 "input": {
                     "type": "object",

@@ -655,6 +655,84 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Include.Path' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Include.Path | Should -BeNullOrEmpty;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Include.Path' = 'out/' };
+            $option.Include.Path.Length | Should -Be 1;
+            $option.Include.Path | Should -BeIn 'out/';
+
+            $option = New-PSRuleOption -Option @{ 'Include.Path' = 'out/','.ps-rule/' };
+            $option.Include.Path.Length | Should -Be 2;
+            $option.Include.Path | Should -BeIn 'out/', '.ps-rule/';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests7.yml');
+            $option.Include.Path.Length | Should -Be 2;
+            $option.Include.Path | Should -BeIn 'out/', '.ps-rule/';
+        }
+
+        It 'from Environment' {
+            try {
+                $Env:PSRULE_INCLUDE_PATH = 'out/;.ps-rule/';
+                $option = New-PSRuleOption;
+                $option.Include.Path | Should -BeIn 'out/', '.ps-rule/';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_INCLUDE_PATH' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -IncludePath 'out/', '.ps-rule/' -Path $emptyOptionsFilePath;
+            $option.Include.Path | Should -BeIn 'out/', '.ps-rule/';
+        }
+    }
+
+    Context 'Read Include.Module' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Include.Module | Should -BeNullOrEmpty;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Include.Module' = 'TestModule' };
+            $option.Include.Module.Length | Should -Be 1;
+            $option.Include.Module | Should -BeIn 'TestModule';
+
+            $option = New-PSRuleOption -Option @{ 'Include.Module' = 'TestModule','TestModule2' };
+            $option.Include.Module.Length | Should -Be 2;
+            $option.Include.Module | Should -BeIn 'TestModule', 'TestModule2';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests7.yml');
+            $option.Include.Module.Length | Should -Be 2;
+            $option.Include.Module | Should -BeIn 'TestModule', 'TestModule2';
+        }
+
+        It 'from Environment' {
+            try {
+                $Env:PSRULE_INCLUDE_MODULE = 'TestModule;TestModule2';
+                $option = New-PSRuleOption;
+                $option.Include.Module | Should -BeIn 'TestModule', 'TestModule2';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_INCLUDE_MODULE' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -IncludeModule 'TestModule', 'TestModule2' -Path $emptyOptionsFilePath;
+            $option.Include.Module | Should -BeIn 'TestModule', 'TestModule2';
+        }
+    }
+
     Context 'Read Input.Format' {
         It 'from default' {
             $option = New-PSRuleOption -Default;

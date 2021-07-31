@@ -14,6 +14,9 @@ What's changed since v1.5.0:
 
 - General improvements:
   - Added support for object source location in validation. [#757](https://github.com/microsoft/PSRule/issues/757)
+  - Default rule source location `.ps-rule/` is automatically included. [#742](https://github.com/microsoft/PSRule/issues/742)
+    - Added `Include.Path` and `Include.Module` options to automatically include rule sources.
+    - See [about_PSRule_Options] for details.
 
 ## v1.5.0
 
@@ -62,9 +65,9 @@ What's changed since v1.3.0:
 
 - General improvements:
   - PSRule banner can be configured in output when using `Assert-PSRule`. [#708](https://github.com/microsoft/PSRule/issues/708)
-  - Source location of objects are included in results.
-    - Source location of objects from JSON and YAML input files are read automatically. [#624](https://github.com/microsoft/PSRule/issues/624)
-    - Source location of objects from the pipeline are read from properties. [#729](https://github.com/microsoft/PSRule/issues/729)
+  - Input source location of objects are included in results.
+    - Input source location of objects from JSON and YAML input files are read automatically. [#624](https://github.com/microsoft/PSRule/issues/624)
+    - Input source location of objects from the pipeline are read from properties. [#729](https://github.com/microsoft/PSRule/issues/729)
   - Assert output improvements:
     - Added support for Visual Studio Code with `VisualStudioCode` style. [#731](https://github.com/microsoft/PSRule/issues/731)
       - Updated output format provides support for problem matchers in task output.

@@ -118,7 +118,7 @@ function Invoke-PSRule {
             $sourceParams['Module'] = $Module;
         }
         if ($sourceParams.Count -eq 0) {
-            $sourceParams['Path'] = $Path;
+            $sourceParams['UsePWD'] = $True;
         }
         $sourceParams['Option'] = $Option;
         [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
@@ -277,7 +277,7 @@ function Test-PSRuleTarget {
             $sourceParams['Module'] = $Module;
         }
         if ($sourceParams.Count -eq 0) {
-            $sourceParams['Path'] = $Path;
+            $sourceParams['UsePWD'] = $True;
         }
         $sourceParams['Option'] = $Option;
         [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
@@ -550,7 +550,7 @@ function Assert-PSRule {
             $sourceParams['Module'] = $Module;
         }
         if ($sourceParams.Count -eq 0) {
-            $sourceParams['Path'] = $Path;
+            $sourceParams['UsePWD'] = $True;
         }
         $sourceParams['Option'] = $Option;
         [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
@@ -705,7 +705,7 @@ function Get-PSRule {
             $sourceParams['ListAvailable'] = $ListAvailable;
         }
         if ($sourceParams.Count -eq 0) {
-            $sourceParams['Path'] = $Path;
+            $sourceParams['UsePWD'] = $True;
         }
         $sourceParams['Option'] = $Option;
         [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
@@ -820,7 +820,7 @@ function Get-PSRuleBaseline {
             $sourceParams['ListAvailable'] = $ListAvailable;
         }
         if ($sourceParams.Count -eq 0) {
-            $sourceParams['Path'] = $Path;
+            $sourceParams['UsePWD'] = $True;
         }
         $sourceParams['Option'] = $Option;
         [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
@@ -927,7 +927,7 @@ function Get-PSRuleHelp {
             $sourceParams['Culture'] = $Culture;
         }
         if ($sourceParams['PreferPath']) {
-            $sourceParams['Path'] = $Path;
+            $sourceParams['UsePWD'] = $True;
         }
         $sourceParams['Option'] = $Option;
         [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
@@ -1063,6 +1063,14 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionNotProcessedWarning')]
         [System.Boolean]$NotProcessedWarning = $True,
+
+        # Sets the Include.Module option
+        [Parameter(Mandatory = $False)]
+        [String[]]$IncludeModule,
+
+        # Sets the Include.Path option
+        [Parameter(Mandatory = $False)]
+        [String[]]$IncludePath,
 
         # Sets the Input.Format option
         [Parameter(Mandatory = $False)]
@@ -1283,6 +1291,14 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionNotProcessedWarning')]
         [System.Boolean]$NotProcessedWarning = $True,
+
+        # Sets the Include.Module option
+        [Parameter(Mandatory = $False)]
+        [String[]]$IncludeModule,
+
+        # Sets the Include.Path option
+        [Parameter(Mandatory = $False)]
+        [String[]]$IncludePath,
 
         # Sets the Input.Format option
         [Parameter(Mandatory = $False)]
@@ -1741,10 +1757,16 @@ function GetSource {
         [Switch]$PreferModule = $False,
 
         [Parameter(Mandatory = $True)]
-        [PSRule.Configuration.PSRuleOption]$Option
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$UsePWD
     )
     process {
         $builder = [PSRule.Pipeline.PipelineBuilder]::RuleSource($Option, $PSCmdlet, $ExecutionContext);
+        if ($UsePWD) {
+            $builder.UsePWD();
+        }
         if ($PSBoundParameters.ContainsKey('Path')) {
             try {
                 $builder.Directory($Path);
@@ -1770,6 +1792,19 @@ function GetSource {
 
         if ($PSBoundParameters.ContainsKey('ListAvailable')) {
             $moduleParams['ListAvailable'] = $ListAvailable.ToBool();
+        }
+
+        if ($Null -ne $Option.Include -and $Null -ne $Option.Include.Module -and $Option.Include.Module.Length -gt 0) {
+            # Determine if module should be automatically loaded
+            if (GetAutoloadPreference) {
+                foreach ($m in $Option.Include.Module) {
+                    if ($Null -eq (GetRuleModule -Name $m)) {
+                        LoadModule -Name $m -Verbose:$VerbosePreference;
+                    }
+                }
+            }
+            $modules = @(GetRuleModule -Name $Option.Include.Module);
+            $builder.Module($modules);
         }
 
         if ($moduleParams.Count -gt 0 -or $PreferModule) {
@@ -1914,6 +1949,14 @@ function SetOptions {
         [Alias('ExecutionNotProcessedWarning')]
         [System.Boolean]$NotProcessedWarning = $True,
 
+        # Sets the Include.Module option
+        [Parameter(Mandatory = $False)]
+        [String[]]$IncludeModule,
+
+        # Sets the Include.Path option
+        [Parameter(Mandatory = $False)]
+        [String[]]$IncludePath,
+
         # Sets the Input.Format option
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'Detect')]
@@ -2043,6 +2086,16 @@ function SetOptions {
         # Sets option Execution.NotProcessedWarning
         if ($PSBoundParameters.ContainsKey('NotProcessedWarning')) {
             $Option.Execution.NotProcessedWarning = $NotProcessedWarning;
+        }
+
+        # Sets option Include.Module
+        if ($PSBoundParameters.ContainsKey('IncludeModule')) {
+            $Option.Include.Module = $IncludeModule;
+        }
+
+        # Sets option Include.Path
+        if ($PSBoundParameters.ContainsKey('IncludePath')) {
+            $Option.Include.Path = $IncludePath;
         }
 
         # Sets option Input.Format

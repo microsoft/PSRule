@@ -17,6 +17,8 @@ The following workspace options are available for use:
 - [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InconclusiveWarning](#executioninconclusivewarning)
 - [Execution.NotProcessedWarning](#executionnotprocessedwarning)
+- [Include.Module](#includemodule)
+- [Include.Path](#includepath)
 - [Input.Format](#inputformat)
 - [Input.IgnoreGitPath](#inputignoregitpath)
 - [Input.ObjectPath](#inputobjectpath)
@@ -801,6 +803,115 @@ env:
 variables:
 - name: PSRULE_EXECUTION_NOTPROCESSEDWARNING
   value: false
+```
+
+### Include.Module
+
+Automatically include rules and resources from the specified module.
+To automatically import and include a module specify the module by name.
+The module must already be installed on the system.
+
+When `$PSModuleAutoLoadingPreference` is set to a value other then `All` the module must be imported.
+
+This option is equivalent to using the `-Module` parameter on PSRule cmdlets, with the following addition:
+
+- Modules specified with `Include.Module` are combined with `-Module`.
+  Both sets of modules will be imported and used using execution.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the IncludeModule parameter
+$option = New-PSRuleOption -IncludeModule 'TestModule1', 'TestModule2';
+```
+
+```powershell
+# PowerShell: Using the Include.Module hashtable key
+$option = New-PSRuleOption -Option @{ 'Include.Module' = 'TestModule1', 'TestModule2' };
+```
+
+```powershell
+# PowerShell: Using the IncludeModule parameter to set YAML
+Set-PSRuleOption -IncludeModule 'TestModule1', 'TestModule2';
+```
+
+```yaml
+# YAML: Using the include/module property
+include:
+  module:
+  - TestModule1
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_INCLUDE_MODULE=TestModule1;TestModule2
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_INCLUDE_MODULE: TestModule1;TestModule2
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_INCLUDE_MODULE
+  value: TestModule1;TestModule2
+```
+
+### Include.Path
+
+Automatically include rules and resources from the specified path.
+By default, `.ps-rule/` is included.
+
+This option is equivalent to using the `-Path` parameter on PSRule cmdlets, with the following additions:
+
+- Paths specified with `Include.Path` are combined with `-Path`.
+  Both sets of paths will be imported and used using execution.
+- The `Include.Path` option defaults to `.ps-rule/`.
+  To override this default, specify one or more alternative paths or an empty array.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the IncludePath parameter
+$option = New-PSRuleOption -IncludePath '.ps-rule/', 'custom-rules/';
+```
+
+```powershell
+# PowerShell: Using the Include.Path hashtable key
+$option = New-PSRuleOption -Option @{ 'Include.Path' = '.ps-rule/', 'custom-rules/' };
+```
+
+```powershell
+# PowerShell: Using the IncludePath parameter to set YAML
+Set-PSRuleOption -IncludePath '.ps-rule/', 'custom-rules/';
+```
+
+```yaml
+# YAML: Using the include/path property
+include:
+  path:
+  - custom-rules/
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_INCLUDE_PATH=.ps-rule/;custom-rules/
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_INCLUDE_PATH: .ps-rule/;custom-rules/
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_INCLUDE_PATH
+  value: .ps-rule/;custom-rules/
 ```
 
 ### Input.Format
@@ -1721,6 +1832,7 @@ Module version constraints a not enforced prior to PSRule v0.19.0.
 
 The version constraint for a rule module is enforced when the module is included with `-Module`.
 A version constraint does not require a rule module to be included.
+Use the `Include.Module` option to automatically include a rule module.
 
 This option can be specified using:
 
@@ -1962,6 +2074,12 @@ execution:
   inconclusiveWarning: false
   notProcessedWarning: false
 
+# Configure include options
+include:
+  module:
+  - 'PSRule.Rules.Azure'
+  path: [ ]
+
 # Configures input options
 input:
   format: Yaml
@@ -2055,6 +2173,12 @@ execution:
   languageMode: FullLanguage
   inconclusiveWarning: true
   notProcessedWarning: true
+
+# Configure include options
+include:
+  module: [ ]
+  path:
+  - '.ps-rule/'
 
 # Configures input options
 input:

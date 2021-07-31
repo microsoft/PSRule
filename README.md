@@ -321,6 +321,8 @@ The following conceptual topics exist in the `PSRule` module:
   - [Execution.LanguageMode](docs/concepts/PSRule/en-US/about_PSRule_Options.md#executionlanguagemode)
   - [Execution.InconclusiveWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#executioninconclusivewarning)
   - [Execution.NotProcessedWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#executionnotprocessedwarning)
+  - [Include.Module](docs/concepts/PSRule/en-US/about_PSRule_Options.md#includemodule)
+  - [Include.Path](docs/concepts/PSRule/en-US/about_PSRule_Options.md#includepath)
   - [Input.Format](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inputformat)
   - [Input.IgnoreGitPath](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inputignoregitpath)
   - [Input.ObjectPath](docs/concepts/PSRule/en-US/about_PSRule_Options.md#inputobjectpath)

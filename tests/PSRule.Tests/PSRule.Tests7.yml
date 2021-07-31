@@ -1,0 +1,10 @@
+# These are options for unit tests
+
+# Configure include options
+include:
+  path:
+  - out/
+  - .ps-rule/
+  module:
+  - TestModule
+  - TestModule2

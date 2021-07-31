@@ -142,10 +142,13 @@ namespace PSRule.Pipeline
         private const string SourceFileExtension_YML = ".yaml";
         private const string SourceFileExtension_PS1 = ".ps1";
         private const string RuleModuleTag = "PSRule-rules";
+        private const string DefaultRulePath = ".ps-rule/";
 
         private readonly Dictionary<string, Source> _Source;
         private readonly HostContext _HostContext;
         private readonly HostPipelineWriter _Writer;
+        private readonly bool _UseDefaultPath;
+        private readonly bool _NoSourcesConfigured;
 
         internal SourcePipelineBuilder(HostContext hostContext, PSRuleOption option)
         {
@@ -153,6 +156,12 @@ namespace PSRule.Pipeline
             _HostContext = hostContext;
             _Writer = new HostPipelineWriter(hostContext, option);
             _Writer.EnterScope("[Discovery.Source]");
+            _UseDefaultPath = option == null || option.Include == null || option.Include.Path == null;
+            _NoSourcesConfigured = option == null || option.Include == null || (option.Include.Path == null && option.Include.Module == null);
+
+            // Include paths from options
+            if (!_UseDefaultPath)
+                Directory(option.Include.Path);
         }
 
         public bool ShouldLoadModule => _HostContext.GetAutoLoadingPreference() == PSModuleAutoLoadingPreference.All;
@@ -181,6 +190,14 @@ namespace PSRule.Pipeline
             _Writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ScanModule, moduleName));
         }
 
+        public void UsePWD()
+        {
+            if (!_NoSourcesConfigured)
+                return;
+
+            Directory(PSRuleOption.GetWorkingPath());
+        }
+
         /// <summary>
         /// Add loose files as a source.
         /// </summary>
@@ -200,6 +217,7 @@ namespace PSRule.Pipeline
                 return;
 
             VerboseScanSource(path);
+            path = PSRuleOption.GetRootedPath(path);
             var files = GetFiles(path, null);
             if (files == null || files.Length == 0)
                 return;
@@ -256,7 +274,14 @@ namespace PSRule.Pipeline
 
         public Source[] Build()
         {
+            Default();
             return _Source.Values.ToArray();
+        }
+
+        private void Default()
+        {
+            if (_UseDefaultPath)
+              Directory(DefaultRulePath);
         }
 
         private void Source(Source source)

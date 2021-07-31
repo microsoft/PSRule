@@ -18,13 +18,13 @@ Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force
  [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>] [-BindingNameSeparator <String>]
  [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
  [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>] [-InconclusiveWarning <Boolean>]
- [-NotProcessedWarning <Boolean>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
- [-ObjectPath <String>] [-InputPathIgnore <String[]>] [-InputTargetType <String[]>]
- [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>]
- [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>]
- [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>]
- [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [-NotProcessedWarning <Boolean>] [-IncludeModule <String[]>] [-IncludePath <String[]>] [-Format <InputFormat>]
+ [-InputIgnoreGitPath <Boolean>] [-ObjectPath <String>] [-InputPathIgnore <String[]>]
+ [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
+ [-OutputStyle <OutputStyle>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -320,6 +320,40 @@ Aliases: ExecutionNotProcessedWarning
 Required: False
 Position: Named
 Default value: True
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludeModule
+
+Sets the `Include.Module` option to include additional module sources.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludePath
+
+Sets the `Include.Path` option to include additional standalone sources.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
