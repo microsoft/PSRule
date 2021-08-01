@@ -38,7 +38,7 @@ namespace PSRule
             var pso1 = PSObject.AsPSObject(testObject1);
             var pso2 = PSObject.AsPSObject(testObject2);
 
-            PipelineContext.CurrentThread = PipelineContext.New(option: GetOption(), hostContext: null, reader: null, binder: new TargetBinder(null, null, null, null), baseline: null, unresolved: null);
+            PipelineContext.CurrentThread = PipelineContext.New(GetOption(), null, null, null, null, null, null, null);
             var actual1 = PipelineHookActions.BindTargetName(null, false, false, pso1);
             var actual2 = PipelineHookActions.BindTargetName(null, false, false, pso2);
 
@@ -52,7 +52,7 @@ namespace PSRule
             var testObject1 = new TestModel3 { Name = "OtherName" };
             var pso1 = PSObject.AsPSObject(testObject1);
 
-            PipelineContext.CurrentThread = PipelineContext.New(option: GetOption(), hostContext: null, reader: null, binder: new TargetBinder(null, null, null, null), baseline: null, unresolved: null);
+            PipelineContext.CurrentThread = PipelineContext.New(GetOption(), null, null, null, null, null, null, null);
 
             var actual = PipelineHookActions.BindTargetName(new string[] { "Name" }, false, false, pso1);
             Assert.Equal(expected: "OtherName", actual: actual);

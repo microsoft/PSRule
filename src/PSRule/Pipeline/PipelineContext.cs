@@ -26,7 +26,6 @@ namespace PSRule.Pipeline
         internal static PipelineContext CurrentThread;
 
         // Configuration parameters
-        internal readonly TargetBinder Binder;
         private readonly IDictionary<string, ResourceRef> _Unresolved;
         private readonly LanguageMode _LanguageMode;
         private readonly Dictionary<string, NameToken> _NameTokenCache;
@@ -48,6 +47,9 @@ namespace PSRule.Pipeline
         internal readonly OptionContext Baseline;
         internal readonly HostContext HostContext;
         internal readonly PipelineReader Reader;
+        internal readonly BindTargetMethod BindTargetName;
+        internal readonly BindTargetMethod BindTargetType;
+        internal readonly BindTargetMethod BindField;
 
         public HashAlgorithm ObjectHashAlgorithm
         {
@@ -60,26 +62,28 @@ namespace PSRule.Pipeline
             }
         }
 
-        private PipelineContext(PSRuleOption option, HostContext hostContext, PipelineReader reader, TargetBinder binder, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
+        private PipelineContext(PSRuleOption option, HostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
         {
             Option = option;
             HostContext = hostContext;
             Reader = reader;
+            BindTargetName = bindTargetName;
+            BindTargetType = bindTargetType;
+            BindField = bindField;
             _LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode.Value;
             _NameTokenCache = new Dictionary<string, NameToken>();
             LocalizedDataCache = new Dictionary<string, Hashtable>();
             ExpressionCache = new Dictionary<string, object>();
             ContentCache = new Dictionary<string, PSObject[]>();
             Selector = new Dictionary<string, SelectorVisitor>();
-            Binder = binder;
             Baseline = baseline;
             _Unresolved = unresolved;
             _TrackedIssues = new List<ResourceIssue>();
         }
 
-        public static PipelineContext New(PSRuleOption option, HostContext hostContext, PipelineReader reader, TargetBinder binder, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
+        public static PipelineContext New(PSRuleOption option, HostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
         {
-            var context = new PipelineContext(option, hostContext, reader, binder, baseline, unresolved);
+            var context = new PipelineContext(option, hostContext, reader, bindTargetName, bindTargetType, bindField, baseline, unresolved);
             CurrentThread = context;
             return context;
         }
@@ -176,11 +180,6 @@ namespace PSRule.Pipeline
                 return true;
             }
             return false;
-        }
-
-        public bool ShouldFilter()
-        {
-            return Binder.ShouldFilter;
         }
 
         internal void Init(RunspaceContext runspaceContext)

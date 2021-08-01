@@ -55,7 +55,7 @@ namespace PSRule
         public void PipelineWithInvariantCulture()
         {
             PSRuleOption.UseCurrentCulture(CultureInfo.InvariantCulture);
-            var context = PipelineContext.New(GetOption(), null, null, null, new OptionContext(), null);
+            var context = PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null);
             var writer = new TestWriter(GetOption());
             var pipeline = new GetRulePipeline(context, GetSource(), new PipelineReader(null, null), writer, false);
             try

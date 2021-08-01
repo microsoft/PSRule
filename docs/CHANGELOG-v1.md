@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.6.0-B2107008:
+
+- Bug fixes:
+  - Fixed target binding across multiple scopes. [#762](https://github.com/microsoft/PSRule/issues/762)
+
 ## v1.6.0-B2107008 (pre-release)
 
 What's changed since v1.5.0:
