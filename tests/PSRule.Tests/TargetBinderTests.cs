@@ -29,7 +29,7 @@ namespace PSRule
 
             var m0 = binder.Using(".");
             Assert.Equal("Name1", m0.TargetName);
-            Assert.Equal(" System.Management.Automation.PSCustomObject", m0.TargetType);
+            Assert.Equal("System.Management.Automation.PSCustomObject", m0.TargetType);
         }
 
         private TargetObject GetTargetObject()
