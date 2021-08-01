@@ -257,7 +257,9 @@ namespace PSRule.Pipeline
                 option: Option,
                 hostContext: HostContext,
                 reader: PrepareReader(),
-                binder: new TargetBinder(bindTargetName, bindTargetType, bindField, Option.Input.TargetType),
+                bindTargetName: bindTargetName,
+                bindTargetType: bindTargetType,
+                bindField: bindField,
                 baseline: GetOptionContext(),
                 unresolved: unresolved
             );

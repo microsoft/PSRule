@@ -45,6 +45,7 @@ namespace PSRule.Host
             Import(GetConventions(blocks, context), context);
             var builder = new DependencyGraphBuilder<RuleBlock>(includeDependencies: true);
             builder.Include(items: blocks.OfType<RuleBlock>(), filter: (b) => Match(context, b));
+            ImportScopes(builder.GetItems(), context);
             return builder.Build();
         }
 
@@ -454,6 +455,20 @@ namespace PSRule.Host
         {
             foreach (var resource in blocks)
                 context.Import(resource);
+        }
+
+        public static void ImportScopes(ILanguageBlock[] blocks, RunspaceContext context)
+        {
+            var scopeNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            for (var i = 0; blocks != null && i < blocks.Length; i++)
+            {
+                if (!scopeNames.Contains(blocks[i].Module))
+                {
+                    context.Import(new LanguageScope(blocks[i].Module));
+                    scopeNames.Add(blocks[i].Module);
+                }
+            }
         }
 
         private static bool Match(RunspaceContext context, RuleBlock resource)

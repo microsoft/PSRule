@@ -243,7 +243,7 @@ namespace PSRule.Pipeline
 
                     try
                     {
-                        if (Pipeline.ShouldFilter())
+                        if (Context.Binding.ShouldFilter)
                             continue;
 
                         // Check if dependency failed
