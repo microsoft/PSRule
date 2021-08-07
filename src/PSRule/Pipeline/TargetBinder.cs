@@ -211,10 +211,10 @@ namespace PSRule.Pipeline
             }
         }
 
-        
+
         public bool ShouldFilter { get; private set; }
 
-        
+
         //public void Bind(OptionContext baseline, TargetObject targetObject)
         //{
         //    var binding = baseline.GetTargetBinding();

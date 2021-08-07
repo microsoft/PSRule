@@ -2,6 +2,9 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "oneOf": [
         {
+            "$ref": "#/definitions/rule-v1"
+        },
+        {
             "$ref": "#/definitions/baseline-v1"
         },
         {
@@ -26,6 +29,13 @@
                 "annotations": {
                     "type": "object",
                     "title": "Annotations"
+                },
+                "tags": {
+                    "type": "object",
+                    "title": "Tags",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 }
             },
             "required": [
@@ -391,6 +401,77 @@
             },
             "required": [
                 "if"
+            ],
+            "additionalProperties": false
+        },
+        "rule-v1": {
+            "type": "object",
+            "title": "Rule",
+            "description": "A PSRule Rule.",
+            "markdownDescription": "A PSRule Rule. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Rules.html)",
+            "properties": {
+                "apiVersion": {
+                    "type": "string",
+                    "title": "API Version",
+                    "description": "The API Version for the PSRule resources.",
+                    "enum": [
+                        "github.com/microsoft/PSRule/v1"
+                    ]
+                },
+                "kind": {
+                    "type": "string",
+                    "title": "Kind",
+                    "description": "A PSRule Rule resource.",
+                    "enum": [
+                        "Rule"
+                    ]
+                },
+                "metadata": {
+                    "type": "object",
+                    "$ref": "#/definitions/resource-metadata"
+                },
+                "spec": {
+                    "type": "object",
+                    "$ref": "#/definitions/ruleSpec"
+                }
+            },
+            "required": [
+                "apiVersion",
+                "kind",
+                "metadata",
+                "spec"
+            ]
+        },
+        "ruleSpec": {
+            "type": "object",
+            "title": "Spec",
+            "description": "PSRule rule specification.",
+            "properties": {
+                "condition": {
+                    "type": "object",
+                    "$ref": "#/definitions/selectorExpression"
+                },
+                "type": {
+                    "type": "array",
+                    "title": "Type pre-condition",
+                    "description": "This rule only applies to objects that match the specifies types.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "with": {
+                    "type": "array",
+                    "title": "Selector pre-condition",
+                    "description": "This rule only applies to objects that match the specified selectors.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                }
+            },
+            "required": [
+                "condition"
             ],
             "additionalProperties": false
         },

@@ -3,6 +3,7 @@
 
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.Baselines;
 using PSRule.Host;
 using System.Linq;
 
@@ -62,7 +63,7 @@ namespace PSRule.Pipeline
 
         public override void End()
         {
-            Writer.WriteObject(HostHelper.GetBaseline(Source, Context).Where(Match), true);
+            Writer.WriteObject(HostHelper.GetBaselineYaml(Source, Context).Where(Match), true);
         }
 
         private bool Match(Baseline baseline)

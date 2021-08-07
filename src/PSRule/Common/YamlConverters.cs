@@ -5,7 +5,7 @@ using PSRule.Annotations;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Definitions;
-using PSRule.Definitions.Selectors;
+using PSRule.Definitions.Expressions;
 using PSRule.Host;
 using PSRule.Runtime;
 using System;
@@ -508,25 +508,25 @@ namespace PSRule
         }
     }
 
-    internal sealed class SelectorExpressionDeserializer : INodeDeserializer
+    internal sealed class LanguageExpressionDeserializer : INodeDeserializer
     {
         private const string OPERATOR_IF = "if";
 
         private readonly INodeDeserializer _Next;
-        private readonly SelectorExpressionFactory _Factory;
+        private readonly LanguageExpressionFactory _Factory;
 
-        public SelectorExpressionDeserializer(INodeDeserializer next)
+        public LanguageExpressionDeserializer(INodeDeserializer next)
         {
             _Next = next;
-            _Factory = new SelectorExpressionFactory();
+            _Factory = new LanguageExpressionFactory();
         }
 
         bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
         {
-            if (typeof(SelectorExpression).IsAssignableFrom(expectedType))
+            if (typeof(LanguageExpression).IsAssignableFrom(expectedType))
             {
                 var resource = MapOperator(OPERATOR_IF, reader, nestedObjectDeserializer);
-                value = new SelectorIf(resource);
+                value = new LanguageIf(resource);
                 return true;
             }
             else
@@ -535,9 +535,9 @@ namespace PSRule
             }
         }
 
-        private SelectorExpression MapOperator(string type, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
+        private LanguageExpression MapOperator(string type, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
         {
-            if (TryExpression(reader, type, nestedObjectDeserializer, out SelectorOperator result))
+            if (TryExpression(reader, type, nestedObjectDeserializer, out LanguageOperator result))
             {
                 // If and Not
                 if (reader.TryConsume<MappingStart>(out _))
@@ -562,9 +562,9 @@ namespace PSRule
             return result;
         }
 
-        private SelectorExpression MapCondition(string type, SelectorExpression.PropertyBag properties, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
+        private LanguageExpression MapCondition(string type, LanguageExpression.PropertyBag properties, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
         {
-            if (TryExpression(reader, type, nestedObjectDeserializer, out SelectorCondition result))
+            if (TryExpression(reader, type, nestedObjectDeserializer, out LanguageCondition result))
             {
                 while (!reader.Accept(out MappingEnd end))
                 {
@@ -575,10 +575,10 @@ namespace PSRule
             return result;
         }
 
-        private SelectorExpression MapExpression(IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
+        private LanguageExpression MapExpression(IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
         {
-            SelectorExpression result = null;
-            var properties = new SelectorExpression.PropertyBag();
+            LanguageExpression result = null;
+            var properties = new LanguageExpression.PropertyBag();
             MapProperty(properties, reader, nestedObjectDeserializer, out string key);
             if (key != null && TryCondition(key))
             {
@@ -595,7 +595,7 @@ namespace PSRule
             return result;
         }
 
-        private void MapProperty(SelectorExpression.PropertyBag properties, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, out string name)
+        private void MapProperty(LanguageExpression.PropertyBag properties, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, out string name)
         {
             name = null;
             while (reader.TryConsume(out Scalar scalar))
@@ -633,10 +633,10 @@ namespace PSRule
             return _Factory.IsCondition(key);
         }
 
-        private bool TryExpression<T>(IParser reader, string type, Func<IParser, Type, object> nestedObjectDeserializer, out T expression) where T : SelectorExpression
+        private bool TryExpression<T>(IParser reader, string type, Func<IParser, Type, object> nestedObjectDeserializer, out T expression) where T : LanguageExpression
         {
             expression = null;
-            if (_Factory.TryDescriptor(type, out ISelectorExpresssionDescriptor descriptor))
+            if (_Factory.TryDescriptor(type, out ILanguageExpresssionDescriptor descriptor))
             {
                 expression = (T)descriptor.CreateInstance(RunspaceContext.CurrentThread.Source.File, null);
                 return expression != null;

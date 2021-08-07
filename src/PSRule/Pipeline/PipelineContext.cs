@@ -3,6 +3,8 @@
 
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.Baselines;
+using PSRule.Definitions.ModuleConfigs;
 using PSRule.Definitions.Selectors;
 using PSRule.Host;
 using PSRule.Runtime;
@@ -165,16 +167,16 @@ namespace PSRule.Pipeline
             }
             else if (resource.Kind == ResourceKind.Selector && resource is SelectorV1 selector)
                 Selector[selector.Id] = new SelectorVisitor(selector.Id, selector.Spec.If);
-            else if (TryModuleConfig(resource, out ModuleConfig moduleConfig))
+            else if (TryModuleConfig(resource, out ModuleConfigV1 moduleConfig))
             {
                 Baseline.Add(new OptionContext.ConfigScope(OptionContext.ScopeType.Module, resource.Module, moduleConfig.Spec));
             }
         }
 
-        private static bool TryModuleConfig(IResource resource, out ModuleConfig moduleConfig)
+        private static bool TryModuleConfig(IResource resource, out ModuleConfigV1 moduleConfig)
         {
             moduleConfig = null;
-            if (resource.Kind == ResourceKind.ModuleConfig && !string.IsNullOrEmpty(resource.Module) && resource.Module == resource.Name && resource is ModuleConfig result)
+            if (resource.Kind == ResourceKind.ModuleConfig && !string.IsNullOrEmpty(resource.Module) && resource.Module == resource.Name && resource is ModuleConfigV1 result)
             {
                 moduleConfig = result;
                 return true;

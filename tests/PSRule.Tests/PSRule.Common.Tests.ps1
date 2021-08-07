@@ -30,6 +30,7 @@ $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 
 Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
     $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1';
+    $yamlFilePath = Join-Path -Path $here -ChildPath 'FromFile.Rule.yaml';
     $emptyOptionsFilePath = Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml';
 
     Context 'With defaults' {
@@ -152,9 +153,9 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         It 'Processes rule tags' {
             # Ensure that rules can be selected by tag and that tags are mapped back to the rule results
-            $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Tag @{ feature = 'tag' };
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath, $yamlFilePath -Tag @{ feature = 'tag' };
             $result | Should -Not -BeNullOrEmpty;
-            $result.Count | Should -Be 5;
+            $result.Count | Should -Be 6;
             $result.Tag.feature | Should -BeIn 'tag';
 
             # Ensure that tag selection is and'ed together, requiring all tags to be selected
@@ -274,6 +275,25 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name WithConfiguration;
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $True;
+        }
+
+        It 'Returns failure reason' {
+            $testObject = @(
+                [PSCustomObject]@{
+                    Name = "TestObject1"
+                }
+                [PSCustomObject]@{
+                    Name = "TestObject2"
+                }
+            )
+
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath, $yamlFilePath -Tag @{ test = 'Reason' };
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 4;
+            $result[0].Reason | Should -Be 'The field ''Name'' is set to ''TestObject1''.';
+            $result[1].Reason | Should -Be 'The field ''Name'' is set to ''TestObject1''.';
+            $result[2].Reason | Should -Be 'The field ''Name'' is set to ''TestObject2''.';
+            $result[3].Reason | Should -Be 'The field ''Name'' is set to ''TestObject2''.';
         }
     }
 
@@ -1345,8 +1365,8 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             It 'Returns rules in current path' {
                 $result = @(Get-PSRule)
                 $result | Should -Not -BeNullOrEmpty;
-                $result.Length | Should -Be 2;
-                $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2';
+                $result.Length | Should -Be 3;
+                $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
                 ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.Rule';
             }
         }
@@ -1363,11 +1383,11 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result.Count | Should -BeGreaterThan 0;
         }
 
-        It 'Finds .Rule.ps1 files' {
+        It 'Finds rules files' {
             $searchPath = Join-Path -Path $here -ChildPath 'TestModule';
             $result = @(Get-PSRule -Path $searchPath);
-            $result.Length | Should -Be 2;
-            $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2';
+            $result.Length | Should -Be 3;
+            $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
         }
 
         It 'Accepts .ps1 files' {
@@ -1498,10 +1518,24 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $Null = Import-Module $testModuleSourcePath -Force;
             $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-US');
             $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 2;
-            $result[0].RuleName | Should -Be 'M1.Rule1';
-            $result[0].Description | Should -Be 'Synopsis en-US.';
-            $result[0].Info.Annotations.culture | Should -Be 'en-US';
+            $result.Length | Should -Be 3;
+
+            $filteredResult = @($result | Where-Object { $_.RuleName -Eq 'M1.Rule1' })
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult[0].Description | Should -Be 'Synopsis en-US.';
+            $filteredResult[0].Info.Annotations.culture | Should -Be 'en-US';
+            $filteredResult[0].Info.Recommendation | Should -Be 'Recommendation en-US.';
+
+            $filteredResult = @($result | Where-Object { $_.RuleName -Eq 'M1.Rule2' })
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult[0].Description | Should -Be 'This is the default';
+            $filteredResult[0].Info.Annotations | Should -BeNullOrEmpty;
+
+            $filteredResult = @($result | Where-Object { $_.RuleName -Eq 'M1.YamlTestName' })
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult[0].Synopsis | Should -Be 'This is an example YAML rule.';
+            $filteredResult[0].Info.Description | Should -Be 'An additional description for the YAML test rule.';
+            $filteredResult[0].Tag['type'] | Should -Be 'Yaml';
         }
 
         if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
@@ -1542,8 +1576,8 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result = @(Get-PSRule -Module 'TestModule')
             Assert-MockCalled -CommandName 'LoadModule' -ModuleName 'PSRule' -Times 0 -Scope 'It';
             $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 2;
-            $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2';
+            $result.Length | Should -Be 3;
+            $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
         }
 
         if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
@@ -1571,7 +1605,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $Null = Import-Module $testModuleDestinationPath -Force;
             $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-US');
             $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 2;
+            $result.Length | Should -Be 3;
             $result[0].RuleName | Should -Be 'M1.Rule1';
             $result[0].Description | Should -Be 'Synopsis en-US.';
             $result[0].Info.Annotations.culture | Should -Be 'en-US';
@@ -1585,8 +1619,8 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $Null = Import-Module $testModuleSourcePath -Force;
             $result = @(Get-PSRule -Path $testModuleSourcePath -Module 'TestModule');
             $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 4;
-            $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2';
+            $result.Length | Should -Be 6;
+            $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
         }
 
         if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
@@ -1600,7 +1634,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
                 $Null = Import-Module $testModuleSourcePath -Force;
                 $result = @(Get-PSRule -Module 'TestModule');
                 $result | Should -Not -BeNullOrEmpty;
-                $result.Length | Should -Be 2;
+                $result.Length | Should -Be 3;
                 $result[0].RuleName | Should -Be 'M1.Rule1';
                 $result[0].Description | Should -Be 'Synopsis en-US.';
                 $result[0].Info.Annotations.culture | Should -Be 'en-US';
@@ -1609,7 +1643,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
                 $Null = Import-Module $testModuleSourcePath -Force;
                 $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-AU');
                 $result | Should -Not -BeNullOrEmpty;
-                $result.Length | Should -Be 2;
+                $result.Length | Should -Be 3;
                 $result[0].RuleName | Should -Be 'M1.Rule1';
                 $result[0].Description | Should -Be 'Synopsis en-AU.';
                 $result[0].Info.Annotations.culture | Should -Be 'en-AU';
@@ -1624,7 +1658,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
                 $Null = Import-Module $testModuleSourcePath -Force;
                 $result = @(Get-PSRule -Module 'TestModule' -Option $emptyOptionsFilePath);
                 $result | Should -Not -BeNullOrEmpty;
-                $result.Length | Should -Be 2;
+                $result.Length | Should -Be 3;
                 $result[0].RuleName | Should -Be 'M1.Rule1';
                 $result[0].Description | Should -Be 'Synopsis en-AU.';
                 $result[0].Info.Annotations.culture | Should -Be 'en-AU';
@@ -1633,7 +1667,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
                 $Null = Import-Module $testModuleSourcePath -Force;
                 $result = @(Get-PSRule -Module 'TestModule' -Culture 'en-ZZ');
                 $result | Should -Not -BeNullOrEmpty;
-                $result.Length | Should -Be 2;
+                $result.Length | Should -Be 3;
                 $result[0].RuleName | Should -Be 'M1.Rule1';
                 $result[0].Description | Should -Be 'Synopsis en.';
                 $result[0].Info.Annotations.culture | Should -Be 'en';
@@ -1648,7 +1682,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
                 $Null = Import-Module $testModuleSourcePath -Force;
                 $result = @(Get-PSRule -Module 'TestModule' -Option $emptyOptionsFilePath);
                 $result | Should -Not -BeNullOrEmpty;
-                $result.Length | Should -Be 2;
+                $result.Length | Should -Be 3;
                 $result[0].RuleName | Should -Be 'M1.Rule1';
                 $result[0].Description | Should -Be 'Synopsis en.';
                 $result[0].Info.Annotations.culture | Should -Be 'en';
@@ -1761,7 +1795,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
             Push-Location $searchPath;
             It 'Docs from imported module' {
                 $result = @(Get-PSRuleHelp);
-                $result.Length | Should -Be 4;
+                $result.Length | Should -Be 6;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
                 $result[2].Name | Should -Be 'M1.Rule1';
@@ -1771,7 +1805,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
 
             It 'Using wildcard in name' {
                 $result = @(Get-PSRuleHelp -Name M1.*);
-                $result.Length | Should -Be 4;
+                $result.Length | Should -Be 6;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
                 $result[2].Name | Should -Be 'M1.Rule1';
@@ -1813,7 +1847,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
     Context 'With -Module' {
         It 'Docs from module' {
             $result = @(Get-PSRuleHelp -Module 'TestModule' -Culture 'en-US');
-            $result.Length | Should -Be 2;
+            $result.Length | Should -Be 3;
             $result[0].Name | Should -Be 'M1.Rule1';
             $result[0].DisplayName | Should -Be 'Module Rule1';
             $result[0].ModuleName | Should -Be 'TestModule';
@@ -1822,6 +1856,11 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
             $result[1].Name | Should -Be 'M1.Rule2';
             $result[1].DisplayName | Should -Be 'M1.Rule2';
             $result[1].ModuleName | Should -Be 'TestModule';
+            $result[2].Name | Should -Be 'M1.YamlTestName';
+            $result[2].DisplayName | Should -Be 'Yaml Test Rule 1';
+            $result[2].ModuleName | Should -Be 'TestModule';
+            $result[2].Synopsis | Should -Be 'This is an example YAML rule.'
+            $result[2].Recommendation | Should -Be 'Use YAML rules they are great.'
         }
     }
 
@@ -1840,7 +1879,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
 
         It 'Returns collection' {
             $result = @(Get-PSRuleHelp -Module 'TestModule' -Online);
-            $result.Length | Should -Be 2;
+            $result.Length | Should -Be 3;
         }
     }
 

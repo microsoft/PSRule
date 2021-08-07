@@ -23,7 +23,7 @@ namespace PSRule.Rules
     [DebuggerDisplay("{RuleId} @{Source.Path}")]
     public sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     {
-        internal RuleBlock(SourceFile source, string ruleName, RuleHelpInfo info, PowerShell condition, TagSet tag, string[] dependsOn, Hashtable configuration, RuleExtent extent, ActionPreference errorPreference)
+        internal RuleBlock(SourceFile source, string ruleName, RuleHelpInfo info, ICondition condition, TagSet tag, string[] dependsOn, Hashtable configuration, RuleExtent extent, ActionPreference errorPreference)
         {
             Source = source;
             RuleName = ruleName;
@@ -55,7 +55,7 @@ namespace PSRule.Rules
         /// <summary>
         /// The body of the rule definition where conditions are provided that either pass or fail the rule.
         /// </summary>
-        public readonly PowerShell Condition;
+        public readonly ICondition Condition;
 
         /// <summary>
         /// Other rules that must completed successfully before calling this rule.

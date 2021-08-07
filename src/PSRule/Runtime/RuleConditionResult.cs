@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Definitions;
 using System.Collections.Generic;
 using System.Management.Automation;
 
@@ -69,12 +70,8 @@ namespace PSRule.Runtime
         }
     }
 
-    internal sealed class RuleConditionResult
+    internal sealed class RuleConditionResult : IConditionResult
     {
-        public readonly int Pass;
-        public readonly int Count;
-        public readonly bool HadErrors;
-
         internal RuleConditionResult(int pass, int count, bool hadErrors)
         {
             Pass = pass;
@@ -82,14 +79,10 @@ namespace PSRule.Runtime
             HadErrors = hadErrors;
         }
 
-        public bool AllOf()
-        {
-            return Count > 0 && Pass == Count;
-        }
+        public int Pass { get; }
 
-        public bool AnyOf()
-        {
-            return Pass > 0;
-        }
+        public int Count { get; }
+
+        public bool HadErrors { get; }
     }
 }

@@ -19,19 +19,24 @@ namespace PSRule.Definitions
         None = 0,
 
         /// <summary>
+        /// A rule resource.
+        /// </summary>
+        Rule = 1,
+
+        /// <summary>
         /// A baseline resource.
         /// </summary>
-        Baseline = 1,
+        Baseline = 2,
 
         /// <summary>
         /// A module configuration resource.
         /// </summary>
-        ModuleConfig = 2,
+        ModuleConfig = 3,
 
         /// <summary>
         /// A selector resource.
         /// </summary>
-        Selector = 3
+        Selector = 4
     }
 
     internal interface IResource : ILanguageBlock
@@ -88,7 +93,7 @@ namespace PSRule.Definitions
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .WithNodeDeserializer(
-                    inner => new LanguageBlockDeserializer(new SelectorExpressionDeserializer(inner)),
+                    inner => new LanguageBlockDeserializer(new LanguageExpressionDeserializer(inner)),
                     s => s.InsteadOf<ObjectNodeDeserializer>())
                 .Build();
         }
@@ -121,16 +126,24 @@ namespace PSRule.Definitions
 
     }
 
+    public sealed class ResourceTags : Dictionary<string, string>
+    {
+
+    }
+
     public sealed class ResourceMetadata
     {
         public ResourceMetadata()
         {
             Annotations = new ResourceAnnotations();
+            Tags = new ResourceTags();
         }
 
         public string Name { get; set; }
 
         public ResourceAnnotations Annotations { get; set; }
+
+        public ResourceTags Tags { get; set; }
     }
 
     public sealed class ResourceExtent
@@ -195,7 +208,11 @@ namespace PSRule.Definitions
             : base(kind, apiVersion, source, metadata, info, spec)
         {
             _Annotations = new Dictionary<Type, ResourceAnnotation>();
+            Obsolete = ResourceHelper.IsObsolete(metadata);
         }
+
+        [YamlIgnore()]
+        internal readonly bool Obsolete;
 
         string ILanguageBlock.Id => Id;
 

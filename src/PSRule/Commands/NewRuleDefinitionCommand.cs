@@ -1,14 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Parser;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime;
 using System;
 using System.Collections;
-using System.IO;
 using System.Management.Automation;
 using System.Threading;
 
@@ -25,8 +23,6 @@ namespace PSRule.Commands
         private const string Cmdlet_IfParameter = "If";
         private const string Cmdlet_WithParameter = "With";
         private const string Cmdlet_BodyParameter = "Body";
-
-        private const string Markdown_Extension = ".md";
 
         /// <summary>
         /// The name of the rule.
@@ -96,8 +92,8 @@ namespace PSRule.Commands
             context.VerboseFoundResource(name: Name, moduleName: source.ModuleName, scriptName: MyInvocation.ScriptName);
 
             CheckDependsOn();
-            var ps = GetCondition(context);
-            var helpInfo = GetHelpInfo(context: context, name: Name) ?? new RuleHelpInfo(
+            var ps = GetCondition(context, errorPreference);
+            var helpInfo = PSRule.Host.HostHelper.GetHelpInfo(context, Name) ?? new RuleHelpInfo(
                 name: Name,
                 displayName: Name,
                 moduleName: source.ModuleName
@@ -122,7 +118,7 @@ namespace PSRule.Commands
             WriteObject(block);
         }
 
-        private PowerShell GetCondition(RunspaceContext context)
+        private PowerShellCondition GetCondition(RunspaceContext context, ActionPreference errorAction)
         {
             var result = context.GetPowerShell();
             result.AddCommand(new CmdletInfo(CmdletName, typeof(InvokeRuleBlockCommand)));
@@ -130,7 +126,7 @@ namespace PSRule.Commands
             result.AddParameter(Cmdlet_WithParameter, With);
             result.AddParameter(Cmdlet_IfParameter, If);
             result.AddParameter(Cmdlet_BodyParameter, Body);
-            return result;
+            return new PowerShellCondition(result, errorAction);
         }
 
         private void CheckDependsOn()
@@ -144,53 +140,6 @@ namespace PSRule.Commands
                     targetObject: null
                 ));
             }
-        }
-
-        private static RuleHelpInfo GetHelpInfo(RunspaceContext context, string name)
-        {
-            if (string.IsNullOrEmpty(context.Source.File.HelpPath))
-                return null;
-
-            var helpFileName = string.Concat(name, Markdown_Extension);
-            var path = context.GetLocalizedPath(helpFileName);
-            if (path == null || !TryDocument(path, out RuleDocument document))
-                return null;
-
-            return new RuleHelpInfo(name: name, displayName: document.Name ?? name, moduleName: context.Source.File.ModuleName)
-            {
-                Synopsis = document.Synopsis?.Text,
-                Description = document.Description?.Text,
-                Recommendation = document.Recommendation?.Text ?? document.Synopsis?.Text,
-                Notes = document.Notes?.Text,
-                Links = GetLinks(document.Links),
-                Annotations = document.Annotations?.ToHashtable()
-            };
-        }
-
-        private static bool TryDocument(string path, out RuleDocument document)
-        {
-            document = null;
-            var markdown = File.ReadAllText(path);
-            if (string.IsNullOrEmpty(markdown))
-                return false;
-
-            var reader = new MarkdownReader(yamlHeaderOnly: false);
-            var stream = reader.Read(markdown, path);
-            var lexer = new RuleLexer();
-            document = lexer.Process(stream);
-            return document != null;
-        }
-
-        private static RuleHelpInfo.Link[] GetLinks(Link[] links)
-        {
-            if (links == null || links.Length == 0)
-                return null;
-
-            var result = new RuleHelpInfo.Link[links.Length];
-            for (var i = 0; i < links.Length; i++)
-                result[i] = new RuleHelpInfo.Link(links[i].Name, links[i].Uri);
-
-            return result;
         }
     }
 }

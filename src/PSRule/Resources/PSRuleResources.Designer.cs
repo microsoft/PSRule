@@ -232,6 +232,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [PSRule][S][Trace] -- {0}: {1} {0} {2}.
+        /// </summary>
+        internal static string LanguageExpressionTrace {
+            get {
+                return ResourceManager.GetString("LanguageExpressionTrace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please open your browser to the following location: {0}.
         /// </summary>
         internal static string LaunchBrowser {
@@ -435,15 +444,6 @@ namespace PSRule.Resources {
         internal static string ScriptNotFound {
             get {
                 return ResourceManager.GetString("ScriptNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [PSRule][S][Trace] -- {0}: {1} {0} {2}.
-        /// </summary>
-        internal static string SelectorExpressionTrace {
-            get {
-                return ResourceManager.GetString("SelectorExpressionTrace", resourceCulture);
             }
         }
         

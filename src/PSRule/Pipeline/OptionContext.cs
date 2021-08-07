@@ -3,7 +3,9 @@
 
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.Baselines;
 using PSRule.Definitions.Conventions;
+using PSRule.Definitions.ModuleConfigs;
 using PSRule.Rules;
 using PSRule.Runtime;
 using System;
@@ -169,7 +171,7 @@ namespace PSRule.Pipeline
                 Convention = new ConventionOption(option.Convention);
             }
 
-            public ConfigScope(ScopeType type, string moduleName, ModuleConfigSpec spec)
+            public ConfigScope(ScopeType type, string moduleName, ModuleConfigV1Spec spec)
                 : base(type, moduleName)
             {
                 Field = spec.Binding?.Field;

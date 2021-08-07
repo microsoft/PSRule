@@ -179,6 +179,9 @@
   <data name="KeywordSourceScope" xml:space="preserve">
     <value>The keyword '{0}' can not be nested in a Rule block.</value>
   </data>
+  <data name="LanguageExpressionTrace" xml:space="preserve">
+    <value>[PSRule][S][Trace] -- {0}: {1} {0} {2}</value>
+  </data>
   <data name="LaunchBrowser" xml:space="preserve">
     <value>Please open your browser to the following location: {0}</value>
   </data>
@@ -250,9 +253,6 @@
   <data name="ScriptNotFound" xml:space="preserve">
     <value>The script was not found.</value>
     <comment>Occurs when the script rule file specified does not exist.</comment>
-  </data>
-  <data name="SelectorExpressionTrace" xml:space="preserve">
-    <value>[PSRule][S][Trace] -- {0}: {1} {0} {2}</value>
   </data>
   <data name="SelectorMatchTrace" xml:space="preserve">
     <value>[PSRule][S][Trace] -- {0}</value>

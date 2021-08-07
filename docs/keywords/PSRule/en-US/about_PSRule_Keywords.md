@@ -8,7 +8,8 @@ Describes the language keywords that can be used within PSRule rule definitions.
 
 ## LONG DESCRIPTION
 
-PSRule lets you define rules using PowerShell blocks. To define a rule use the `Rule` keyword.
+PSRule lets you define rules using PowerShell blocks.
+To define a rule use the `Rule` keyword.
 
 - [Rule](#rule) - Creates a rule definition.
 
