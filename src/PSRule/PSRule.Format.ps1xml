@@ -553,9 +553,9 @@
       </CustomControl>
     </View>
     <View>
-      <Name>PSRule.Definitions.Baseline</Name>
+      <Name>PSRule.Definitions.Baselines.Baseline</Name>
       <ViewSelectedBy>
-        <TypeName>PSRule.Definitions.Baseline</TypeName>
+        <TypeName>PSRule.Definitions.Baselines.Baseline</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>

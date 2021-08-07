@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Definitions.Expressions;
 using PSRule.Resources;
 using System;
 using System.Diagnostics;
@@ -10,13 +11,13 @@ namespace PSRule.Definitions.Selectors
     [DebuggerDisplay("Id: {Id}")]
     internal sealed class SelectorVisitor
     {
-        private readonly SelectorExpressionOuterFn _Fn;
+        private readonly LanguageExpressionOuterFn _Fn;
 
-        public SelectorVisitor(string id, SelectorIf expression)
+        public SelectorVisitor(string id, LanguageIf expression)
         {
             Id = id;
             InstanceId = Guid.NewGuid();
-            var builder = new SelectorExpressionBuilder();
+            var builder = new LanguageExpressionBuilder();
             _Fn = builder.Build(expression);
         }
 
@@ -26,9 +27,9 @@ namespace PSRule.Definitions.Selectors
 
         public bool Match(object o)
         {
-            var context = new SelectorContext();
+            var context = new ExpressionContext();
             context.Debug(PSRuleResources.SelectorMatchTrace, Id);
-            return _Fn(context, o);
+            return _Fn(context, o).GetValueOrDefault(false);
         }
     }
 }

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Definitions;
+using PSRule.Definitions.Baselines;
 
 namespace PSRule
 {

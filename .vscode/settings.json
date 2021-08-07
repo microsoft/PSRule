@@ -21,6 +21,7 @@
         ],
         "./schemas/PSRule-language.schema.json": [
             "/tests/PSRule.Tests/**.Rule.yaml",
+            "/tests/PSRule.Tests/**/**.Rule.yaml",
             "/docs/scenarios/*/*.Rule.yaml"
         ]
     },

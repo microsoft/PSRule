@@ -73,7 +73,6 @@ namespace PSRule.Runtime
         internal RuleBlock RuleBlock;
         private ITargetBinder TargetBinder;
         internal ITargetBindingContext Binding;
-        internal SourceScope Source;
 
         private readonly bool _InconclusiveWarning;
         private readonly bool _NotProcessedWarning;
@@ -128,6 +127,8 @@ namespace PSRule.Runtime
         internal IEnumerable<InvokeResult> Output { get; private set; }
 
         internal TargetObject TargetObject { get; private set; }
+
+        internal SourceScope Source { get; private set; }
 
         internal bool IsScope(RunspaceScope scope)
         {

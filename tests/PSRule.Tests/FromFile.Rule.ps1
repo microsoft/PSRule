@@ -431,3 +431,8 @@ Rule 'SourceTest' {
         'tests/PSRule.Tests/'
     ));
 }
+
+# Synopsis: Test reason from rule.
+Rule 'ScriptReasonTest' -Tag @{ test = 'Reason' } {
+    $Assert.HasFieldValue($TargetObject, 'Name', 'TestValue')
+}

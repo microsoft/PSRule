@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
-using PSRule.Definitions;
+using PSRule.Definitions.Baselines;
 using PSRule.Pipeline;
 using System.Management.Automation;
 using Xunit;

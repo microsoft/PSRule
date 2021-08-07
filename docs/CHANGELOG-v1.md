@@ -10,6 +10,15 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.6.0-B2108003:
+
+- Engine features:
+  - Added support for YAML rules. [#603](https://github.com/microsoft/PSRule/issues/603)
+    - YAML rules evaluate an expression tree and return a result for each object.
+    - YAML provides an additional option for defining rules in addition to PowerShell script rules.
+    - Type and selector pre-conditions are supported.
+    - See [about_PSRule_Rules] for details.
+
 ## v1.6.0-B2108003 (pre-release)
 
 What's changed since pre-release v1.6.0-B2107008:
@@ -441,3 +450,4 @@ What's changed since v0.22.0:
 [about_PSRule_Variables]: concepts/PSRule/en-US/about_PSRule_Variables.md
 [about_PSRule_Conventions]: concepts/PSRule/en-US/about_PSRule_Conventions.md
 [about_PSRule_Selectors]: concepts/PSRule/en-US/about_PSRule_Selectors.md
+[about_PSRule_Rules]: concepts/PSRule/en-US/about_PSRule_Rules.md

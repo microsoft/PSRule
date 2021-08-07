@@ -3,6 +3,7 @@
 
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.Baselines;
 using PSRule.Pipeline.Output;
 using PSRule.Resources;
 using PSRule.Runtime;

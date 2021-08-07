@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Management.Automation;
 using YamlDotNet.Serialization;
 
-namespace PSRule.Definitions
+namespace PSRule.Definitions.Baselines
 {
     internal interface IBaselineSpec
     {
@@ -28,16 +28,10 @@ namespace PSRule.Definitions
     public sealed class Baseline : InternalResource<BaselineSpec>, IResource
     {
         public Baseline(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, BaselineSpec spec)
-            : base(ResourceKind.Baseline, apiVersion, source, metadata, info, spec)
-        {
-            Obsolete = ResourceHelper.IsObsolete(metadata);
-        }
+            : base(ResourceKind.Baseline, apiVersion, source, metadata, info, spec) { }
 
         [YamlIgnore()]
         public string BaselineId => Name;
-
-        [YamlIgnore()]
-        internal readonly bool Obsolete;
 
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.

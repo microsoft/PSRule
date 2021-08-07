@@ -281,7 +281,7 @@ namespace PSRule.Pipeline
         private void Default()
         {
             if (_UseDefaultPath)
-              Directory(DefaultRulePath);
+                Directory(DefaultRulePath);
         }
 
         private void Source(Source source)

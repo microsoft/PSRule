@@ -769,7 +769,7 @@ function Get-PSRule {
 # .ExternalHelp PSRule-Help.xml
 function Get-PSRuleBaseline {
     [CmdletBinding()]
-    [OutputType([PSRule.Definitions.Baseline])]
+    [OutputType([PSRule.Definitions.Baselines.Baseline])]
     param (
         [Parameter(Mandatory = $False)]
         [Alias('m')]

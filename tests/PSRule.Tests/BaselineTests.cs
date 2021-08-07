@@ -19,7 +19,7 @@ namespace PSRule
         public void ReadBaseline()
         {
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
-            var baseline = HostHelper.GetBaseline(GetSource(), context).ToArray();
+            var baseline = HostHelper.GetBaselineYaml(GetSource(), context).ToArray();
             Assert.NotNull(baseline);
             Assert.Equal(5, baseline.Length);
 

@@ -1,0 +1,13 @@
+
+---
+# Synopsis: A YAML rule for testing
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: M1.YamlTestName
+  tags:
+    type: Yaml
+spec:
+  condition:
+    field: 'Name'
+    equals: 'TestObject'
