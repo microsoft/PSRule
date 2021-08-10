@@ -10,6 +10,28 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.6.0
+
+What's changed since v1.5.0:
+
+- Engine features:
+  - Added support for YAML rules. [#603](https://github.com/microsoft/PSRule/issues/603)
+    - YAML rules evaluate an expression tree and return a result for each object.
+    - YAML provides an additional option for defining rules in addition to PowerShell script rules.
+    - Type and selector pre-conditions are supported.
+    - See [about_PSRule_Rules] for details.
+- General improvements:
+  - Added support for object source location in validation. [#757](https://github.com/microsoft/PSRule/issues/757)
+  - Default rule source location `.ps-rule/` is automatically included. [#742](https://github.com/microsoft/PSRule/issues/742)
+    - Added `Include.Path` and `Include.Module` options to automatically include rule sources.
+    - See [about_PSRule_Options] for details.
+- Bug fixes:
+  - Fixed target binding across multiple scopes. [#762](https://github.com/microsoft/PSRule/issues/762)
+
+What's changed since pre-release v1.6.0-B2108009:
+
+- No additional changes.
+
 ## v1.6.0-B2108009 (pre-release)
 
 What's changed since pre-release v1.6.0-B2108003:
