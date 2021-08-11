@@ -30,7 +30,7 @@ Steps to reproduce the issue:
 **Module in use and version:**
 
 - Module: PSRule
-- Version: **[e.g. 1.0.0]**
+- Version: **[e.g. 1.6.0]**
 
 Captured output from `$PSVersionTable`:
 
