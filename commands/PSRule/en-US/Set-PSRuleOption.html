@@ -77,12 +77,12 @@
  [-BindingPreferTargetInfo &lt;Boolean&gt;] [-TargetName &lt;String[]&gt;] [-TargetType &lt;String[]&gt;]
  [-BindingUseQualifiedName &lt;Boolean&gt;] [-Convention &lt;String[]&gt;] [-InconclusiveWarning &lt;Boolean&gt;]
  [-NotProcessedWarning &lt;Boolean&gt;] [-IncludeModule &lt;String[]&gt;] [-IncludePath &lt;String[]&gt;] [-Format &lt;InputFormat&gt;]
- [-InputIgnoreGitPath &lt;Boolean&gt;] [-ObjectPath &lt;String&gt;] [-InputPathIgnore &lt;String[]&gt;]
- [-InputTargetType &lt;String[]&gt;] [-LoggingLimitDebug &lt;String[]&gt;] [-LoggingLimitVerbose &lt;String[]&gt;]
- [-LoggingRuleFail &lt;OutcomeLogStream&gt;] [-LoggingRulePass &lt;OutcomeLogStream&gt;] [-OutputAs &lt;ResultFormat&gt;]
- [-OutputBanner &lt;BannerFormat&gt;] [-OutputCulture &lt;String[]&gt;] [-OutputEncoding &lt;OutputEncoding&gt;]
- [-OutputFormat &lt;OutputFormat&gt;] [-OutputOutcome &lt;RuleOutcome&gt;] [-OutputPath &lt;String&gt;]
- [-OutputStyle &lt;OutputStyle&gt;] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
+ [-InputIgnoreGitPath &lt;Boolean&gt;] [-InputIgnoreRepositoryCommon &lt;Boolean&gt;] [-ObjectPath &lt;String&gt;]
+ [-InputPathIgnore &lt;String[]&gt;] [-InputTargetType &lt;String[]&gt;] [-LoggingLimitDebug &lt;String[]&gt;]
+ [-LoggingLimitVerbose &lt;String[]&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;] [-LoggingRulePass &lt;OutcomeLogStream&gt;]
+ [-OutputAs &lt;ResultFormat&gt;] [-OutputBanner &lt;BannerFormat&gt;] [-OutputCulture &lt;String[]&gt;]
+ [-OutputEncoding &lt;OutputEncoding&gt;] [-OutputFormat &lt;OutputFormat&gt;] [-OutputOutcome &lt;RuleOutcome&gt;]
+ [-OutputPath &lt;String&gt;] [-OutputStyle &lt;OutputStyle&gt;] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Sets options that configure PSRule execution.</p>
@@ -356,6 +356,19 @@ Aliases:
 Required: False
 Position: Named
 Default value: True
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-inputignorerepositorycommon">-InputIgnoreRepositoryCommon</h3>
+<p>Sets the <code>Input.IgnoreRepositoryCommon</code> option to determine if files common repository files are ignored.
+See about_PSRule_Options for more information.</p>
+<pre><code class="lang-yaml">Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>

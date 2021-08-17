@@ -85,6 +85,7 @@ This topic describes what options are available, when to and how to use them.</p
 <li><a href="#includepath">Include.Path</a></li>
 <li><a href="#inputformat">Input.Format</a></li>
 <li><a href="#inputignoregitpath">Input.IgnoreGitPath</a></li>
+<li><a href="#inputignorerepositorycommon">Input.IgnoreRepositoryCommon</a></li>
 <li><a href="#inputobjectpath">Input.ObjectPath</a></li>
 <li><a href="#inputpathignore">Input.PathIgnore</a></li>
 <li><a href="#inputtargettype">Input.TargetType</a></li>
@@ -838,6 +839,54 @@ env:
 <pre><code class="lang-yaml"># Azure Pipelines: Using environment variable
 variables:
 - name: PSRULE_INPUT_IGNOREGITPATH
+  value: false
+</code></pre>
+<h3 id="inputignorerepositorycommon">Input.IgnoreRepositoryCommon</h3>
+<p>When reading files from an input path, files are discovered recursively.
+A number of files are commonly found within a private and open-source repositories.
+In many cases these files are of no interest for analysis and should be ignored by rules.
+PSRule will ignore the following files by default:</p>
+<ul>
+<li><code>README.md</code></li>
+<li><code>.DS_Store</code></li>
+<li><code>.gitignore</code></li>
+<li><code>.gitattributes</code></li>
+<li><code>.gitmodules</code></li>
+<li><code>LICENSE</code></li>
+<li><code>LICENSE.txt</code></li>
+<li><code>CODE_OF_CONDUCT.md</code></li>
+<li><code>CONTRIBUTING.md</code></li>
+<li><code>SECURITY.md</code></li>
+<li><code>SUPPORT.md</code></li>
+<li><code>.vscode/*.json</code></li>
+<li><code>.github/**/*.md</code></li>
+<li><code>.github/CODEOWNERS</code></li>
+</ul>
+<p>To include these files, set this option to <code>$False</code>.
+This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the InputIgnoreRepositoryCommon parameter
+$option = New-PSRuleOption -InputIgnoreRepositoryCommon $False;
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Input.IgnoreRepositoryCommon hashtable key
+$option = New-PSRuleOption -Option @{ 'Input.IgnoreRepositoryCommon' = $False };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the InputIgnoreRepositoryCommon parameter to set YAML
+Set-PSRuleOption -InputIgnoreRepositoryCommon $False;
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the input/ignoreRepositoryCommon property
+input:
+  ignoreRepositoryCommon: false
+</code></pre>
+<pre><code class="lang-bash"># Bash: Using environment variable
+export PSRULE_INPUT_IGNOREREPOSITORYCOMMON=false
+</code></pre>
+<pre><code class="lang-yaml"># GitHub Actions: Using environment variable
+env:
+  PSRULE_INPUT_IGNOREREPOSITORYCOMMON: false
+</code></pre>
+<pre><code class="lang-yaml"># Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_INPUT_IGNOREREPOSITORYCOMMON
   value: false
 </code></pre>
 <h3 id="inputobjectpath">Input.ObjectPath</h3>
