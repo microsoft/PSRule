@@ -22,12 +22,13 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-IncludeModule <String[]>]
- [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>] [-ObjectPath <String>]
- [-InputTargetType <String[]>] [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>]
- [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
- [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
+ [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
+ [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
+ [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
+ [-OutputStyle <OutputStyle>] [<CommonParameters>]
 ```
 
 ### FromOption
@@ -39,12 +40,13 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-IncludeModule <String[]>]
- [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>] [-ObjectPath <String>]
- [-InputTargetType <String[]>] [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>]
- [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
- [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
+ [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
+ [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
+ [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
+ [-OutputStyle <OutputStyle>] [<CommonParameters>]
 ```
 
 ### FromDefault
@@ -56,11 +58,12 @@ New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTar
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
  [-Convention <String[]>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
  [-IncludeModule <String[]>] [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
- [-ObjectPath <String>] [-InputTargetType <String[]>] [-InputPathIgnore <String[]>]
- [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>]
- [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>]
- [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>]
- [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputStyle <OutputStyle>] [<CommonParameters>]
+ [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
+ [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
+ [-OutputStyle <OutputStyle>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -489,6 +492,23 @@ Aliases:
 Required: False
 Position: Named
 Default value: True
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InputIgnoreRepositoryCommon
+
+Sets the `Input.IgnoreRepositoryCommon` option to determine if files common repository files are ignored.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

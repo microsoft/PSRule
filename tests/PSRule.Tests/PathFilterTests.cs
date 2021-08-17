@@ -59,6 +59,34 @@ namespace PSRule
             Assert.True(filter.Match("reports/bin/other.json"));
         }
 
+        [Fact]
+        public void Builder()
+        {
+            var builder = PathFilterBuilder.Create(GetWorkingPath(), new string[] { "out/" }, false, false);
+            var actual1 = builder.Build();
+            Assert.False(actual1.Match("out/not.file"));
+            Assert.True(actual1.Match(".git/HEAD"));
+            Assert.True(actual1.Match(".gitignore"));
+            Assert.True(actual1.Match(".github/CODEOWNERS"));
+            Assert.True(actual1.Match(".github/dependabot.yml"));
+
+            builder = PathFilterBuilder.Create(GetWorkingPath(), new string[] { "out/" }, true, false);
+            var actual2 = builder.Build();
+            Assert.False(actual2.Match("out/not.file"));
+            Assert.False(actual2.Match(".git/HEAD"));
+            Assert.True(actual2.Match(".gitignore"));
+            Assert.True(actual2.Match(".github/CODEOWNERS"));
+            Assert.True(actual2.Match(".github/dependabot.yml"));
+
+            builder = PathFilterBuilder.Create(GetWorkingPath(), new string[] { "out/" }, true, true);
+            var actual3 = builder.Build();
+            Assert.False(actual3.Match("out/not.file"));
+            Assert.False(actual3.Match(".git/HEAD"));
+            Assert.False(actual3.Match(".gitignore"));
+            Assert.False(actual3.Match(".github/CODEOWNERS"));
+            Assert.True(actual3.Match(".github/dependabot.yml"));
+        }
+
         private static string GetWorkingPath()
         {
             return AppDomain.CurrentDomain.BaseDirectory;

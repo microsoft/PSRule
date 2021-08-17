@@ -1082,6 +1082,10 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [System.Boolean]$InputIgnoreGitPath = $True,
 
+        # Sets the Input.IgnoreRepositoryCommon option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$InputIgnoreRepositoryCommon = $True,
+
         # Sets the Input.ObjectPath option
         [Parameter(Mandatory = $False)]
         [Alias('InputObjectPath')]
@@ -1309,6 +1313,10 @@ function Set-PSRuleOption {
         # Sets the Input.IgnoreGitPath option
         [Parameter(Mandatory = $False)]
         [System.Boolean]$InputIgnoreGitPath = $True,
+
+        # Sets the Input.IgnoreRepositoryCommon option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$InputIgnoreRepositoryCommon = $True,
 
         # Sets the Input.ObjectPath option
         [Parameter(Mandatory = $False)]
@@ -1967,6 +1975,10 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [System.Boolean]$InputIgnoreGitPath = $True,
 
+        # Sets the Input.IgnoreRepositoryCommon option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$InputIgnoreRepositoryCommon = $True,
+
         # Sets the Input.ObjectPath option
         [Parameter(Mandatory = $False)]
         [Alias('InputObjectPath')]
@@ -2106,6 +2118,11 @@ function SetOptions {
         # Sets option Input.IgnoreGitPath
         if ($PSBoundParameters.ContainsKey('InputIgnoreGitPath')) {
             $Option.Input.IgnoreGitPath = $InputIgnoreGitPath;
+        }
+
+        # Sets option Input.IgnoreRepositoryCommon
+        if ($PSBoundParameters.ContainsKey('InputIgnoreRepositoryCommon')) {
+            $Option.Input.IgnoreRepositoryCommon = $InputIgnoreRepositoryCommon;
         }
 
         # Sets option Input.ObjectPath
