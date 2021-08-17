@@ -61,7 +61,7 @@
 
 - name: Rules
   href: ../../../concepts/PSRule/en-US/about_PSRule_Rules.md
-  topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Rule.md
+  topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Rules.md
 
 - name: Selectors
   href: ../../../concepts/PSRule/en-US/about_PSRule_Selectors.md
