@@ -213,8 +213,7 @@ Accept wildcard characters: False
 </code></pre>
 <h3 id="-module">-Module</h3>
 <p>Search for rule definitions within a module.
-When specified without the <code>-Path</code> parameter, only rule definitions in the module will be discovered.</p>
-<p>When both <code>-Path</code> and <code>-Module</code> are specified, rule definitions from both are discovered.</p>
+If no sources are specified by <code>-Path</code>, <code>-Module</code>, or options, the current working directory is used.</p>
 <pre><code class="lang-yaml">Type: String[]
 Parameter Sets: (All)
 Aliases: m
@@ -389,9 +388,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
 <h3 id="-path">-Path</h3>
-<p>One or more paths to search for rule definitions within.</p>
-<p>If this parameter is not specified the current working path will be used, unless the <code>-Module</code> parameter is used.</p>
-<p>If the <code>-Module</code> parameter is used, rule definitions from the currently working path will not be included by default.</p>
+<p>One or more paths to search for rule definitions within.
+If no sources are specified by <code>-Path</code>, <code>-Module</code>, or options, the current working directory is used.</p>
 <pre><code class="lang-yaml">Type: String[]
 Parameter Sets: (All)
 Aliases: p

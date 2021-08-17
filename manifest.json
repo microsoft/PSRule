@@ -24,7 +24,7 @@
       "output": {
         ".html": {
           "relative_path": "CHANGELOG-v1.html",
-          "hash": "MAvFcwmVRI4hIPh99XxDLA=="
+          "hash": "7PTh42VJPURjUcUEEl1cTQ=="
         }
       },
       "is_incremental": false,
@@ -36,7 +36,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Assert-PSRule.html",
-          "hash": "clvdQWmqXQJngOBauqX6Cw=="
+          "hash": "md1XOsrmPv3Wdm8A1Fofpg=="
         }
       },
       "is_incremental": false,
@@ -48,7 +48,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRule.html",
-          "hash": "PIjYbenWYm8HX0uuKwIXtw=="
+          "hash": "zbBwuIJcXG/9Tu/xHLQ1fw=="
         }
       },
       "is_incremental": false,
@@ -60,7 +60,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRuleBaseline.html",
-          "hash": "qSn82Yx0Gvrjr3jaMlQREg=="
+          "hash": "QZFeq2ZCCaCfT3TJ4M6BoQ=="
         }
       },
       "is_incremental": false,
@@ -96,7 +96,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Invoke-PSRule.html",
-          "hash": "pziypQFI7dG0CSbvcWAHcA=="
+          "hash": "DT3ERZyx3O2iR5zIvj+20Q=="
         }
       },
       "is_incremental": false,
@@ -108,7 +108,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "W8p1YUQkFU5dxXOIXWiGsg=="
+          "hash": "tgVApg4W2ztQo8Gio2QhZA=="
         }
       },
       "is_incremental": false,
@@ -132,7 +132,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Set-PSRuleOption.html",
-          "hash": "3s9IMggwya+D18SZhe1M5A=="
+          "hash": "+QB+vWdRHaWwfh2bXfFa6g=="
         }
       },
       "is_incremental": false,
@@ -212,11 +212,35 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "concepts/PSRule/en-US/about_PSRule_Expressions.md",
+      "output": {
+        ".html": {
+          "relative_path": "concepts/PSRule/en-US/about_PSRule_Expressions.html",
+          "hash": "o2LhbzJ+FQligTCIAnMlXg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "concepts/PSRule/en-US/about_PSRule_Options.md",
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "h67bQLg6Jj+3lESDfHMjiA=="
+          "hash": "hDxbCADlF19wbLvn8nPAug=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "concepts/PSRule/en-US/about_PSRule_Rules.md",
+      "output": {
+        ".html": {
+          "relative_path": "concepts/PSRule/en-US/about_PSRule_Rules.html",
+          "hash": "Z/YmLghBuaO1zbQhCdTb/g=="
         }
       },
       "is_incremental": false,
@@ -228,7 +252,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Selectors.html",
-          "hash": "vvlZovo8TCcDdfMQTAU2Ig=="
+          "hash": "fdtjSBp8tzR7jfltW6zj4w=="
         }
       },
       "is_incremental": false,
@@ -240,7 +264,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Variables.html",
-          "hash": "xd/udTmq/CHQJpIYe95jBA=="
+          "hash": "ZCE19p7bUjMjGDONMVG05w=="
         }
       },
       "is_incremental": false,
@@ -288,7 +312,7 @@
       "output": {
         ".html": {
           "relative_path": "keywords/PSRule/en-US/about_PSRule_Keywords.html",
-          "hash": "0G0yU0aNUXwcXcsDlUzSew=="
+          "hash": "1uuKhAlpOUr8g6g2r5Ogdw=="
         }
       },
       "is_incremental": false,
@@ -829,7 +853,7 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 43,
+          "total_file_count": 45,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {

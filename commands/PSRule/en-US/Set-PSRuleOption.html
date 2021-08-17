@@ -76,13 +76,13 @@
  [-BindingIgnoreCase &lt;Boolean&gt;] [-BindingField &lt;Hashtable&gt;] [-BindingNameSeparator &lt;String&gt;]
  [-BindingPreferTargetInfo &lt;Boolean&gt;] [-TargetName &lt;String[]&gt;] [-TargetType &lt;String[]&gt;]
  [-BindingUseQualifiedName &lt;Boolean&gt;] [-Convention &lt;String[]&gt;] [-InconclusiveWarning &lt;Boolean&gt;]
- [-NotProcessedWarning &lt;Boolean&gt;] [-Format &lt;InputFormat&gt;] [-InputIgnoreGitPath &lt;Boolean&gt;]
- [-ObjectPath &lt;String&gt;] [-InputPathIgnore &lt;String[]&gt;] [-InputTargetType &lt;String[]&gt;]
- [-LoggingLimitDebug &lt;String[]&gt;] [-LoggingLimitVerbose &lt;String[]&gt;] [-LoggingRuleFail &lt;OutcomeLogStream&gt;]
- [-LoggingRulePass &lt;OutcomeLogStream&gt;] [-OutputAs &lt;ResultFormat&gt;] [-OutputBanner &lt;BannerFormat&gt;]
- [-OutputCulture &lt;String[]&gt;] [-OutputEncoding &lt;OutputEncoding&gt;] [-OutputFormat &lt;OutputFormat&gt;]
- [-OutputOutcome &lt;RuleOutcome&gt;] [-OutputPath &lt;String&gt;] [-OutputStyle &lt;OutputStyle&gt;] [-WhatIf] [-Confirm]
- [&lt;CommonParameters&gt;]
+ [-NotProcessedWarning &lt;Boolean&gt;] [-IncludeModule &lt;String[]&gt;] [-IncludePath &lt;String[]&gt;] [-Format &lt;InputFormat&gt;]
+ [-InputIgnoreGitPath &lt;Boolean&gt;] [-ObjectPath &lt;String&gt;] [-InputPathIgnore &lt;String[]&gt;]
+ [-InputTargetType &lt;String[]&gt;] [-LoggingLimitDebug &lt;String[]&gt;] [-LoggingLimitVerbose &lt;String[]&gt;]
+ [-LoggingRuleFail &lt;OutcomeLogStream&gt;] [-LoggingRulePass &lt;OutcomeLogStream&gt;] [-OutputAs &lt;ResultFormat&gt;]
+ [-OutputBanner &lt;BannerFormat&gt;] [-OutputCulture &lt;String[]&gt;] [-OutputEncoding &lt;OutputEncoding&gt;]
+ [-OutputFormat &lt;OutputFormat&gt;] [-OutputOutcome &lt;RuleOutcome&gt;] [-OutputPath &lt;String&gt;]
+ [-OutputStyle &lt;OutputStyle&gt;] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Sets options that configure PSRule execution.</p>
@@ -303,6 +303,32 @@ Aliases: ExecutionNotProcessedWarning
 Required: False
 Position: Named
 Default value: True
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-includemodule">-IncludeModule</h3>
+<p>Sets the <code>Include.Module</code> option to include additional module sources.
+See about_PSRule_Options for more information.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-includepath">-IncludePath</h3>
+<p>Sets the <code>Include.Path</code> option to include additional standalone sources.
+See about_PSRule_Options for more information.</p>
+<pre><code class="lang-yaml">Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>

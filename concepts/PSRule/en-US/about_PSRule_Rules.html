@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>PSRule_Rules </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="PSRule_Rules ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../favicon.ico">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="../../../toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="psrule_rules">PSRule_Rules</h1>
+
+<h2 id="about_psrule_rules">about_PSRule_Rules</h2>
+<h2 id="short-description">SHORT DESCRIPTION</h2>
+<p>Describes PSRule rules including how to use and author them.</p>
+<h2 id="long-description">LONG DESCRIPTION</h2>
+<p>PSRule executes rules to validate an object from input either from a file or PowerShell pipeline.
+The PowerShell pipeline only available when running PSRule directly.
+PSRule can also be run from a continuous integration (CI) pipeline or Visual Studio Code.
+When using these methods, the PowerShell pipeline is not available.</p>
+<p>To evaluate an object PSRule can use rules defined in script or YAML.</p>
+<p>When using script rules:</p>
+<ul>
+<li>Each rule is defined PowerShell within a <code>.Rule.ps1</code> file by using a <code>Rule</code> block.</li>
+<li>PowerShell variables, functions, and cmdlets can be used just like regular PowerShell scripts.</li>
+<li>Built-in assertion helpers can be used to quickly build out rules.</li>
+<li>Pre-conditions can be defined with using a script block, type binding, or YAML-based selector.</li>
+</ul>
+<p>To learn more about assertion helpers see <a href="about_PSRule_Assert.html">about_PSRule_Assert</a>.</p>
+<p>When using YAML rules:</p>
+<ul>
+<li>Each rule is defined in a <code>.Rule.yaml</code> file by using the <code>Rule</code> resource.</li>
+<li>YAML-based expressions can be used.</li>
+<li>Pre-conditions can be defined with using a type binding, or YAML-based selector.</li>
+</ul>
+<p>To learn more about YAML-based expressions see <a href="about_PSRule_Expressions.html">about_PSRule_Expressions</a>.</p>
+<h3 id="using-pre-conditions">Using pre-conditions</h3>
+<p>Pre-conditions are used to determine if a rule should be executed.
+While pre-conditions are not required for each rule, it is a good practice to define them.
+If a rule does not specify a pre-condition it may be executed against an object it does not expect.</p>
+<p>Pre-conditions come in three forms:</p>
+<ul>
+<li>Script - A PowerShell script block that is executed and if true will cause the rule to be executed.
+Script block pre-conditions only work with script rules.
+To use a script block pre-condition, specify the <code>-If</code> script parameter on the <code>Rule</code> block.</li>
+<li>Type - A type string that is compared against the bound object type.
+When the type matches the rule will be executed.
+To use a type pre-conditions, specify the <code>-Type</code> script parameter or <code>type</code> YAML property.</li>
+<li>Selector - A YAML-based expression that is evaluated against the object.
+When the expression matches the rule will be executed.
+To use a selector pre-conditions, specify the <code>-With</code> script parameter or <code>with</code> YAML property.</li>
+</ul>
+<p>Different forms of pre-conditions can be combined.
+When combining pre-conditions, different forms must be all true (logical AND).
+i.e. Script AND Type AND Selector must be all be true for the rule to be executed.</p>
+<p>Multiple Type and Selector pre-conditions can be specified.
+If multiple Type and Selector pre-conditions are specified, only one must be true (logical OR).</p>
+<p>For example:</p>
+<pre><code class="lang-powershell"># Synopsis: An example script rule with pre-conditions.
+Rule 'ScriptRule' -If { $True } -Type 'CustomType1', 'CustomType2' -With 'Selector.1', 'Selector.2' {
+    # Rule condition
+}
+</code></pre>
+<pre><code class="lang-yaml">---
+# Synopsis: An example YAML rule with pre-conditions.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'YamlRule'
+spec:
+  type:
+  - 'CustomType1'
+  - 'CustomType2'
+  with:
+  - 'Selector.1'
+  - 'Selector.2'
+  condition: { }
+</code></pre>
+<p>Pre-conditions are evaluated in the following order: Selector, Type, then Script.</p>
+<h3 id="defining-script-rules">Defining script rules</h3>
+<p>To define a script rule use the <code>Rule</code> keyword followed by a name and a pair of squiggly brackets <code>{</code>.
+Within the <code>{ }</code> one or more conditions can be used.
+Script rule must be defined within <code>.Rule.ps1</code> files.
+Multiple rules can be defined in a single file by creating multiple <code>Rule</code> blocks.
+Rule blocks can not be nested within each other.</p>
+<p>Within the <code>Rule</code> block, define one or more conditions to determine pass or fail of the rule.</p>
+<p>Syntax:</p>
+<pre><code class="lang-text">Rule [-Name] &lt;string&gt; [-Tag &lt;hashtable&gt;] [-When &lt;string[]&gt;] [-Type &lt;string[]&gt;] [-If &lt;scriptBlock&gt;] [-DependsOn &lt;string[]&gt;] [-Configure &lt;hashtable&gt;] [-ErrorAction &lt;ActionPreference&gt;] [-Body] {
+    ...
+}
+</code></pre>
+<p>Example:</p>
+<pre><code class="lang-powershell"># Synopsis: Use a Standard load-balancer with AKS clusters.
+Rule 'Azure.AKS.StandardLB' -Type 'Microsoft.ContainerService/managedClusters' -Tag @{ release = 'GA'; ruleSet = '2020_06' } {
+    $Assert.HasFieldValue($TargetObject, 'Properties.networkProfile.loadBalancerSku', 'standard');
+}
+</code></pre>
+<h3 id="defining-yaml-rules">Defining YAML rules</h3>
+<p>To define a YAML rule use the <code>Rule</code> resource in a YAML file.
+Each rule must be defined within a <code>.Rule.yaml</code> file following a standard schema.
+Multiple rules can be defined in a single YAML file by separating each rule with a <code>---</code>.</p>
+<p>Within the <code>Rule</code> resource, the <code>condition</code> property specifies conditions to pass or fail the rule.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">---
+# Synopsis: {{ Synopsis }}
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: '{{ Name }}'
+  tags: { }
+spec:
+  type: [ ]
+  with: [ ]
+  condition: { }
+</code></pre>
+<p>Example:</p>
+<pre><code class="lang-yaml">---
+# Synopsis: Use a Standard load-balancer with AKS clusters.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'Azure.AKS.StandardLB'
+  tags:
+    release: 'GA'
+    ruleSet: '2020_06'
+spec:
+  type:
+  - Microsoft.ContainerService/managedClusters
+  condition:
+    field: 'Properties.networkProfile.loadBalancerSku'
+    equals: 'standard'
+</code></pre>
+<h2 id="note">NOTE</h2>
+<p>An online version of this document is available at <a href="https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Rules.md">https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Rules.md</a>.</p>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a href="https://microsoft.github.io/PSRule/commands/PSRule/en-US/Invoke-PSRule.html">Invoke-PSRule</a></li>
+</ul>
+<h2 id="keywords">KEYWORDS</h2>
+<ul>
+<li>Rules</li>
+<li>Expressions</li>
+<li>PSRule</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Rules.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

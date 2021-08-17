@@ -81,6 +81,8 @@ This topic describes what options are available, when to and how to use them.</p
 <li><a href="#executionlanguagemode">Execution.LanguageMode</a></li>
 <li><a href="#executioninconclusivewarning">Execution.InconclusiveWarning</a></li>
 <li><a href="#executionnotprocessedwarning">Execution.NotProcessedWarning</a></li>
+<li><a href="#includemodule">Include.Module</a></li>
+<li><a href="#includepath">Include.Path</a></li>
 <li><a href="#inputformat">Input.Format</a></li>
 <li><a href="#inputignoregitpath">Input.IgnoreGitPath</a></li>
 <li><a href="#inputobjectpath">Input.ObjectPath</a></li>
@@ -669,6 +671,80 @@ env:
 variables:
 - name: PSRULE_EXECUTION_NOTPROCESSEDWARNING
   value: false
+</code></pre>
+<h3 id="includemodule">Include.Module</h3>
+<p>Automatically include rules and resources from the specified module.
+To automatically import and include a module specify the module by name.
+The module must already be installed on the system.</p>
+<p>When <code>$PSModuleAutoLoadingPreference</code> is set to a value other then <code>All</code> the module must be imported.</p>
+<p>This option is equivalent to using the <code>-Module</code> parameter on PSRule cmdlets, with the following addition:</p>
+<ul>
+<li>Modules specified with <code>Include.Module</code> are combined with <code>-Module</code>.
+Both sets of modules will be imported and used using execution.</li>
+</ul>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the IncludeModule parameter
+$option = New-PSRuleOption -IncludeModule 'TestModule1', 'TestModule2';
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Include.Module hashtable key
+$option = New-PSRuleOption -Option @{ 'Include.Module' = 'TestModule1', 'TestModule2' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the IncludeModule parameter to set YAML
+Set-PSRuleOption -IncludeModule 'TestModule1', 'TestModule2';
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the include/module property
+include:
+  module:
+  - TestModule1
+</code></pre>
+<pre><code class="lang-bash"># Bash: Using environment variable
+export PSRULE_INCLUDE_MODULE=TestModule1;TestModule2
+</code></pre>
+<pre><code class="lang-yaml"># GitHub Actions: Using environment variable
+env:
+  PSRULE_INCLUDE_MODULE: TestModule1;TestModule2
+</code></pre>
+<pre><code class="lang-yaml"># Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_INCLUDE_MODULE
+  value: TestModule1;TestModule2
+</code></pre>
+<h3 id="includepath">Include.Path</h3>
+<p>Automatically include rules and resources from the specified path.
+By default, <code>.ps-rule/</code> is included.</p>
+<p>This option is equivalent to using the <code>-Path</code> parameter on PSRule cmdlets, with the following additions:</p>
+<ul>
+<li>Paths specified with <code>Include.Path</code> are combined with <code>-Path</code>.
+Both sets of paths will be imported and used using execution.</li>
+<li>The <code>Include.Path</code> option defaults to <code>.ps-rule/</code>.
+To override this default, specify one or more alternative paths or an empty array.</li>
+</ul>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the IncludePath parameter
+$option = New-PSRuleOption -IncludePath '.ps-rule/', 'custom-rules/';
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Include.Path hashtable key
+$option = New-PSRuleOption -Option @{ 'Include.Path' = '.ps-rule/', 'custom-rules/' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the IncludePath parameter to set YAML
+Set-PSRuleOption -IncludePath '.ps-rule/', 'custom-rules/';
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the include/path property
+include:
+  path:
+  - custom-rules/
+</code></pre>
+<pre><code class="lang-bash"># Bash: Using environment variable
+export PSRULE_INCLUDE_PATH=.ps-rule/;custom-rules/
+</code></pre>
+<pre><code class="lang-yaml"># GitHub Actions: Using environment variable
+env:
+  PSRULE_INCLUDE_PATH: .ps-rule/;custom-rules/
+</code></pre>
+<pre><code class="lang-yaml"># Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_INCLUDE_PATH
+  value: .ps-rule/;custom-rules/
 </code></pre>
 <h3 id="inputformat">Input.Format</h3>
 <p>Configures the input format for when a string is passed in as a target object.
@@ -1295,7 +1371,8 @@ The format for version constraints are the same as the <code>Version</code> asse
 See <a href="about_PSRule_Assert.html">about_PSRule_Assert</a> for more information.</p>
 <p>Module version constraints a not enforced prior to PSRule v0.19.0.</p>
 <p>The version constraint for a rule module is enforced when the module is included with <code>-Module</code>.
-A version constraint does not require a rule module to be included.</p>
+A version constraint does not require a rule module to be included.
+Use the <code>Include.Module</code> option to automatically include a rule module.</p>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the Requires.module hashtable key
 $option = New-PSRuleOption -Option @{ 'Requires.PSRule' = '&gt;=1.0.0' };
@@ -1466,6 +1543,12 @@ execution:
   inconclusiveWarning: false
   notProcessedWarning: false
 
+# Configure include options
+include:
+  module:
+  - 'PSRule.Rules.Azure'
+  path: [ ]
+
 # Configures input options
 input:
   format: Yaml
@@ -1556,6 +1639,12 @@ execution:
   languageMode: FullLanguage
   inconclusiveWarning: true
   notProcessedWarning: true
+
+# Configure include options
+include:
+  module: [ ]
+  path:
+  - '.ps-rule/'
 
 # Configures input options
 input:

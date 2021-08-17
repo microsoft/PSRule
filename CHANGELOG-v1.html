@@ -68,16 +68,157 @@
 <li>YAML resources will require an <code>apiVersion</code> from PSRule v2. <a href="https://github.com/microsoft/PSRule/issues/648">#648</a></li>
 </ul>
 <h2 id="unreleased">Unreleased</h2>
+<h2 id="v160">v1.6.0</h2>
+<p>What's changed since v1.5.0:</p>
+<ul>
+<li>Engine features:
+<ul>
+<li>Added support for YAML rules. <a href="https://github.com/microsoft/PSRule/issues/603">#603</a>
+<ul>
+<li>YAML rules evaluate an expression tree and return a result for each object.</li>
+<li>YAML provides an additional option for defining rules in addition to PowerShell script rules.</li>
+<li>Type and selector pre-conditions are supported.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Rules.html">about_PSRule_Rules</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>General improvements:
+<ul>
+<li>Added support for object source location in validation. <a href="https://github.com/microsoft/PSRule/issues/757">#757</a></li>
+<li>Default rule source location <code>.ps-rule/</code> is automatically included. <a href="https://github.com/microsoft/PSRule/issues/742">#742</a>
+<ul>
+<li>Added <code>Include.Path</code> and <code>Include.Module</code> options to automatically include rule sources.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Bug fixes:
+<ul>
+<li>Fixed target binding across multiple scopes. <a href="https://github.com/microsoft/PSRule/issues/762">#762</a></li>
+</ul>
+</li>
+</ul>
+<p>What's changed since pre-release v1.6.0-B2108009:</p>
+<ul>
+<li>No additional changes.</li>
+</ul>
+<h2 id="v160-b2108009-pre-release">v1.6.0-B2108009 (pre-release)</h2>
+<p>What's changed since pre-release v1.6.0-B2108003:</p>
+<ul>
+<li>Engine features:
+<ul>
+<li>Added support for YAML rules. <a href="https://github.com/microsoft/PSRule/issues/603">#603</a>
+<ul>
+<li>YAML rules evaluate an expression tree and return a result for each object.</li>
+<li>YAML provides an additional option for defining rules in addition to PowerShell script rules.</li>
+<li>Type and selector pre-conditions are supported.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Rules.html">about_PSRule_Rules</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v160-b2108003-pre-release">v1.6.0-B2108003 (pre-release)</h2>
+<p>What's changed since pre-release v1.6.0-B2107008:</p>
+<ul>
+<li>Bug fixes:
+<ul>
+<li>Fixed target binding across multiple scopes. <a href="https://github.com/microsoft/PSRule/issues/762">#762</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v160-b2107008-pre-release">v1.6.0-B2107008 (pre-release)</h2>
+<p>What's changed since v1.5.0:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added support for object source location in validation. <a href="https://github.com/microsoft/PSRule/issues/757">#757</a></li>
+<li>Default rule source location <code>.ps-rule/</code> is automatically included. <a href="https://github.com/microsoft/PSRule/issues/742">#742</a>
+<ul>
+<li>Added <code>Include.Path</code> and <code>Include.Module</code> options to automatically include rule sources.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v150">v1.5.0</h2>
+<p>What's changed since v1.4.0:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added string selector conditions. <a href="https://github.com/microsoft/PSRule/issues/747">#747</a>
+<ul>
+<li>Use <code>startWith</code>, <code>contains</code>, and <code>endsWith</code> to check for a sub-string.</li>
+<li>Use <code>isString</code>, <code>isLower</code>, and <code>isUpper</code> to check for string type and casing.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Selectors.html">about_PSRule_Selectors</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Engineering:
+<ul>
+<li>Bump YamlDotNet dependency to 11.2.1. <a href="https://github.com/microsoft/PSRule/pull/740">#740</a></li>
+</ul>
+</li>
+<li>Bug fixes:
+<ul>
+<li>Fixed options schema should allow spacing after <code>@pre</code>. <a href="https://github.com/microsoft/PSRule/issues/743">#743</a></li>
+<li>Fixed match selector expression passing on missing field. <a href="https://github.com/microsoft/PSRule/issues/745">#745</a></li>
+</ul>
+</li>
+</ul>
+<p>What's changed since pre-release v1.5.0-B2107009:</p>
+<ul>
+<li>No additional changes.</li>
+</ul>
+<h2 id="v150-b2107009-pre-release">v1.5.0-B2107009 (pre-release)</h2>
+<p>What's changed since pre-release v1.5.0-B2106006:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added string selector conditions. <a href="https://github.com/microsoft/PSRule/issues/747">#747</a>
+<ul>
+<li>Use <code>startWith</code>, <code>contains</code>, and <code>endsWith</code> to check for a sub-string.</li>
+<li>Use <code>isString</code>, <code>isLower</code>, and <code>isUpper</code> to check for string type and casing.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Selectors.html">about_PSRule_Selectors</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Engineering:
+<ul>
+<li>Bump YamlDotNet dependency to 11.2.1. <a href="https://github.com/microsoft/PSRule/pull/740">#740</a></li>
+</ul>
+</li>
+<li>Bug fixes:
+<ul>
+<li>Fixed options schema should allow spacing after <code>@pre</code>. <a href="https://github.com/microsoft/PSRule/issues/743">#743</a></li>
+<li>Fixed match selector expression passing on missing field. <a href="https://github.com/microsoft/PSRule/issues/745">#745</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v150-b2106006-pre-release">v1.5.0-B2106006 (pre-release)</h2>
+<p>What's changed since v1.4.0:</p>
+<ul>
+<li>Engineering:
+<ul>
+<li>Bump YamlDotNet dependency to 11.2.0. <a href="https://github.com/microsoft/PSRule/pull/736">#736</a></li>
+</ul>
+</li>
+</ul>
 <h2 id="v140">v1.4.0</h2>
 <p>What's changed since v1.3.0:</p>
 <ul>
 <li>General improvements:
 <ul>
 <li>PSRule banner can be configured in output when using <code>Assert-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/708">#708</a></li>
-<li>Source location of objects are included in results.
+<li>Input source location of objects are included in results.
 <ul>
-<li>Source location of objects from JSON and YAML input files are read automatically. <a href="https://github.com/microsoft/PSRule/issues/624">#624</a></li>
-<li>Source location of objects from the pipeline are read from properties. <a href="https://github.com/microsoft/PSRule/issues/729">#729</a></li>
+<li>Input source location of objects from JSON and YAML input files are read automatically. <a href="https://github.com/microsoft/PSRule/issues/624">#624</a></li>
+<li>Input source location of objects from the pipeline are read from properties. <a href="https://github.com/microsoft/PSRule/issues/729">#729</a></li>
 </ul>
 </li>
 <li>Assert output improvements:
@@ -228,7 +369,7 @@
 </li>
 <li>Engineering:
 <ul>
-<li>Bump YamlDotNet from 8.1.2 to 11.1.1. <a href="https://github.com/microsoft/PSRule/pull/690">#690</a></li>
+<li>Bump YamlDotNet dependency to 11.1.1. <a href="https://github.com/microsoft/PSRule/pull/690">#690</a></li>
 </ul>
 </li>
 <li>Bug fixes:
@@ -283,7 +424,7 @@
 </li>
 <li>Engineering:
 <ul>
-<li>Bump YamlDotNet from 8.1.2 to 11.1.1. <a href="https://github.com/microsoft/PSRule/pull/690">#690</a></li>
+<li>Bump YamlDotNet dependency to 11.1.1. <a href="https://github.com/microsoft/PSRule/pull/690">#690</a></li>
 </ul>
 </li>
 </ul>
@@ -598,7 +739,7 @@
 <ul>
 <li>Engineering:
 <ul>
-<li>Bump Manatee.Json from 13.0.4 to 13.0.5. <a href="https://github.com/microsoft/PSRule/pull/619">#619</a></li>
+<li>Bump Manatee.Json dependency to 13.0.5. <a href="https://github.com/microsoft/PSRule/pull/619">#619</a></li>
 </ul>
 </li>
 <li>Bug fixes:
@@ -630,7 +771,7 @@
 <li>Engineering:
 <ul>
 <li><strong>Breaking change</strong>: Removed deprecated <code>$Rule</code> properties. <a href="https://github.com/microsoft/PSRule/pull/495">#495</a></li>
-<li>Bump Manatee.Json from 13.0.3 to 13.0.4. <a href="https://github.com/microsoft/PSRule/pull/591">#591</a></li>
+<li>Bump Manatee.Json dependency to 13.0.4. <a href="https://github.com/microsoft/PSRule/pull/591">#591</a></li>
 </ul>
 </li>
 </ul>
@@ -649,7 +790,7 @@
 <li>Engineering:
 <ul>
 <li><strong>Breaking change</strong>: Removed deprecated <code>$Rule</code> properties. <a href="https://github.com/microsoft/PSRule/pull/495">#495</a></li>
-<li>Bump Manatee.Json from 13.0.3 to 13.0.4. <a href="https://github.com/microsoft/PSRule/pull/591">#591</a></li>
+<li>Bump Manatee.Json dependency to 13.0.4. <a href="https://github.com/microsoft/PSRule/pull/591">#591</a></li>
 </ul>
 </li>
 </ul>
