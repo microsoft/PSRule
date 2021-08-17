@@ -44,6 +44,7 @@ execution:
 input:
   format: Yaml
   ignoreGitPath: false
+  ignoreRepositoryCommon: false
   objectPath: items
   pathIgnore:
   - '*.Designer.cs'

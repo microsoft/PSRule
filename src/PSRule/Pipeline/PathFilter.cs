@@ -12,22 +12,43 @@ namespace PSRule.Pipeline
     {
         private const string GitIgnoreFileName = ".gitignore";
 
+        private static readonly string[] CommonFiles = new string[]
+        {
+            "README.md",
+            ".DS_Store",
+            ".gitignore",
+            ".gitattributes",
+            ".gitmodules",
+            "LICENSE",
+            "LICENSE.txt",
+            "CODE_OF_CONDUCT.md",
+            "CONTRIBUTING.md",
+            "SECURITY.md",
+            "SUPPORT.md",
+            ".vscode/*.json",
+            ".github/**/*.md",
+            ".github/CODEOWNERS"
+        };
+
         private readonly string _BasePath;
         private readonly List<string> _Expressions;
         private readonly bool _MatchResult;
 
-        private PathFilterBuilder(string basePath, string[] expressions, bool matchResult, bool ignoreGitPath)
+        private PathFilterBuilder(string basePath, string[] expressions, bool matchResult, bool ignoreGitPath, bool ignoreRepositoryCommon)
         {
             _BasePath = basePath;
             _Expressions = expressions == null || expressions.Length == 0 ? new List<string>() : new List<string>(expressions);
             _MatchResult = matchResult;
+            if (ignoreRepositoryCommon)
+                _Expressions.InsertRange(0, CommonFiles);
+
             if (ignoreGitPath)
                 _Expressions.Add(".git/");
         }
 
-        internal static PathFilterBuilder Create(string basePath, string[] expressions, bool ignoreGitPath)
+        internal static PathFilterBuilder Create(string basePath, string[] expressions, bool ignoreGitPath, bool ignoreRepositoryCommon)
         {
-            return new PathFilterBuilder(basePath, expressions, false, ignoreGitPath);
+            return new PathFilterBuilder(basePath, expressions, false, ignoreGitPath, ignoreRepositoryCommon);
         }
 
         internal void UseGitIgnore(string basePath = null)

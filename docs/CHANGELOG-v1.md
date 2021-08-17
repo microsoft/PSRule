@@ -10,6 +10,13 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since v1.6.0:
+
+- General improvements:
+  - Automatically exclude common repository files from input files. [#721](https://github.com/microsoft/PSRule/issues/721)
+    - Added `Input.IgnoreRepositoryCommon` option to change default behavior.
+    - See [about_PSRule_Options] for details.
+
 ## v1.6.0
 
 What's changed since v1.5.0:

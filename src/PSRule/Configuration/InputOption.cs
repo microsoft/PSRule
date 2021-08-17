@@ -14,6 +14,7 @@ namespace PSRule.Configuration
     {
         private const InputFormat DEFAULT_FORMAT = PSRule.Configuration.InputFormat.Detect;
         private const bool DEFAULT_IGNOREGITPATH = true;
+        private const bool DEFAULT_IGNOREREPOSITORYCOMMON = true;
         private const string DEFAULT_OBJECTPATH = null;
         private const string[] DEFAULT_PATHIGNORE = null;
         private const string[] DEFAULT_TARGETTYPE = null;
@@ -22,6 +23,7 @@ namespace PSRule.Configuration
         {
             Format = DEFAULT_FORMAT,
             IgnoreGitPath = DEFAULT_IGNOREGITPATH,
+            IgnoreRepositoryCommon = DEFAULT_IGNOREREPOSITORYCOMMON,
             ObjectPath = DEFAULT_OBJECTPATH,
             PathIgnore = DEFAULT_PATHIGNORE,
             TargetType = DEFAULT_TARGETTYPE,
@@ -31,6 +33,7 @@ namespace PSRule.Configuration
         {
             Format = null;
             IgnoreGitPath = null;
+            IgnoreRepositoryCommon = null;
             ObjectPath = null;
             PathIgnore = null;
             TargetType = null;
@@ -43,6 +46,7 @@ namespace PSRule.Configuration
 
             Format = option.Format;
             IgnoreGitPath = option.IgnoreGitPath;
+            IgnoreRepositoryCommon = option.IgnoreRepositoryCommon;
             ObjectPath = option.ObjectPath;
             PathIgnore = option.PathIgnore;
             TargetType = option.TargetType;
@@ -58,6 +62,7 @@ namespace PSRule.Configuration
             return other != null &&
                 Format == other.Format &&
                 IgnoreGitPath == other.IgnoreGitPath &&
+                IgnoreRepositoryCommon == other.IgnoreRepositoryCommon &&
                 ObjectPath == other.ObjectPath &&
                 PathIgnore == other.PathIgnore &&
                 TargetType == other.TargetType;
@@ -70,6 +75,7 @@ namespace PSRule.Configuration
                 int hash = 17;
                 hash = hash * 23 + (Format.HasValue ? Format.Value.GetHashCode() : 0);
                 hash = hash * 23 + (IgnoreGitPath.HasValue ? IgnoreGitPath.Value.GetHashCode() : 0);
+                hash = hash * 23 + (IgnoreRepositoryCommon.HasValue ? IgnoreRepositoryCommon.Value.GetHashCode() : 0);
                 hash = hash * 23 + (ObjectPath != null ? ObjectPath.GetHashCode() : 0);
                 hash = hash * 23 + (PathIgnore != null ? PathIgnore.GetHashCode() : 0);
                 hash = hash * 23 + (TargetType != null ? TargetType.GetHashCode() : 0);
@@ -83,6 +89,7 @@ namespace PSRule.Configuration
             {
                 Format = o1.Format ?? o2.Format,
                 IgnoreGitPath = o1.IgnoreGitPath ?? o2.IgnoreGitPath,
+                IgnoreRepositoryCommon = o1.IgnoreRepositoryCommon ?? o2.IgnoreRepositoryCommon,
                 ObjectPath = o1.ObjectPath ?? o2.ObjectPath,
                 PathIgnore = o1.PathIgnore ?? o2.PathIgnore,
                 TargetType = o1.TargetType ?? o2.TargetType
@@ -101,6 +108,12 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public bool? IgnoreGitPath { get; set; }
+
+        /// <summary>
+        /// Determine if common repository files are ignored.
+        /// </summary>
+        [DefaultValue(null)]
+        public bool? IgnoreRepositoryCommon { get; set; }
 
         /// <summary>
         /// The object path to a property to use instead of the pipeline object.
@@ -128,6 +141,9 @@ namespace PSRule.Configuration
             if (env.TryBool("PSRULE_INPUT_IGNOREGITPATH", out bool ignoreGitPath))
                 IgnoreGitPath = ignoreGitPath;
 
+            if (env.TryBool("PSRULE_INPUT_IGNOREREPOSITORYCOMMON", out bool ignoreRepositoryCommon))
+                IgnoreRepositoryCommon = ignoreRepositoryCommon;
+
             if (env.TryString("PSRULE_INPUT_OBJECTPATH", out string objectPath))
                 ObjectPath = objectPath;
 
@@ -145,6 +161,9 @@ namespace PSRule.Configuration
 
             if (index.TryPopBool("Input.IgnoreGitPath", out bool ignoreGitPath))
                 IgnoreGitPath = ignoreGitPath;
+
+            if (index.TryPopBool("Input.IgnoreRepositoryCommon", out bool ignoreRepositoryCommon))
+                IgnoreRepositoryCommon = ignoreRepositoryCommon;
 
             if (index.TryPopString("Input.ObjectPath", out string objectPath))
                 ObjectPath = objectPath;

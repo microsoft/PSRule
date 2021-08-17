@@ -21,6 +21,7 @@ The following workspace options are available for use:
 - [Include.Path](#includepath)
 - [Input.Format](#inputformat)
 - [Input.IgnoreGitPath](#inputignoregitpath)
+- [Input.IgnoreRepositoryCommon](#inputignorerepositorycommon)
 - [Input.ObjectPath](#inputobjectpath)
 - [Input.PathIgnore](#inputpathignore)
 - [Input.TargetType](#inputtargettype)
@@ -1045,6 +1046,70 @@ env:
 # Azure Pipelines: Using environment variable
 variables:
 - name: PSRULE_INPUT_IGNOREGITPATH
+  value: false
+```
+
+### Input.IgnoreRepositoryCommon
+
+When reading files from an input path, files are discovered recursively.
+A number of files are commonly found within a private and open-source repositories.
+In many cases these files are of no interest for analysis and should be ignored by rules.
+PSRule will ignore the following files by default:
+
+- `README.md`
+- `.DS_Store`
+- `.gitignore`
+- `.gitattributes`
+- `.gitmodules`
+- `LICENSE`
+- `LICENSE.txt`
+- `CODE_OF_CONDUCT.md`
+- `CONTRIBUTING.md`
+- `SECURITY.md`
+- `SUPPORT.md`
+- `.vscode/*.json`
+- `.github/**/*.md`
+- `.github/CODEOWNERS`
+
+To include these files, set this option to `$False`.
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the InputIgnoreRepositoryCommon parameter
+$option = New-PSRuleOption -InputIgnoreRepositoryCommon $False;
+```
+
+```powershell
+# PowerShell: Using the Input.IgnoreRepositoryCommon hashtable key
+$option = New-PSRuleOption -Option @{ 'Input.IgnoreRepositoryCommon' = $False };
+```
+
+```powershell
+# PowerShell: Using the InputIgnoreRepositoryCommon parameter to set YAML
+Set-PSRuleOption -InputIgnoreRepositoryCommon $False;
+```
+
+```yaml
+# YAML: Using the input/ignoreRepositoryCommon property
+input:
+  ignoreRepositoryCommon: false
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_INPUT_IGNOREREPOSITORYCOMMON=false
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_INPUT_IGNOREREPOSITORYCOMMON: false
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_INPUT_IGNOREREPOSITORYCOMMON
   value: false
 ```
 

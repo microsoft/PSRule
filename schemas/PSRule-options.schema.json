@@ -165,8 +165,8 @@
                     "items": {
                         "type": "string",
                         "title": "Include path",
-                    "description": "Automatically include rules and resources from the specified paths.",
-                    "markdownDescription": "Automatically include rules and resources from the specified paths. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#includepath)"
+                        "description": "Automatically include rules and resources from the specified paths.",
+                        "markdownDescription": "Automatically include rules and resources from the specified paths. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#includepath)"
                     },
                     "uniqueItems": true
                 }
@@ -198,7 +198,14 @@
                     "type": "boolean",
                     "title": "Ignore .git path",
                     "description": "Determine if files within the .git path are ignored when the -InputPath parameter is used.",
-                    "markdownDescription": "Determine if files within the `.git` path are ignored when the `-InputPath` parameter is used. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#ignoregitpath)",
+                    "markdownDescription": "Determine if files within the `.git` path are ignored when the `-InputPath` parameter is used. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#inputignoregitpath)",
+                    "default": true
+                },
+                "ignoreRepositoryCommon": {
+                    "type": "boolean",
+                    "title": "Ignore common files",
+                    "description": "Determine if common repository files are ignored when the -InputPath parameter is used.",
+                    "markdownDescription": "Determine if common repository files are ignored when the `-InputPath` parameter is used. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#inputignorerepositorycommon)",
                     "default": true
                 },
                 "objectPath": {

@@ -364,7 +364,6 @@ spec:
     field: 'Value'
     isLower: false
 
-
 ---
 # Synopsis: Test isUpper
 apiVersion: github.com/microsoft/PSRule/v1

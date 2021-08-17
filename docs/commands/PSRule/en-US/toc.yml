@@ -47,6 +47,10 @@
   href: ../../../concepts/PSRule/en-US/about_PSRule_Docs.md
   topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Docs.md
 
+- name: Expressions
+  href: ../../../concepts/PSRule/en-US/about_PSRule_Expressions.md
+  topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Expressions.md
+
 - name: Keywords
   href: ../../../keywords/PSRule/en-US/about_PSRule_Keywords.md
   topicHref: ../../../keywords/PSRule/en-US/about_PSRule_Keywords.md
@@ -54,6 +58,10 @@
 - name: Options
   href: ../../../concepts/PSRule/en-US/about_PSRule_Options.md
   topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Options.md
+
+- name: Rules
+  href: ../../../concepts/PSRule/en-US/about_PSRule_Rules.md
+  topicHref: ../../../concepts/PSRule/en-US/about_PSRule_Rule.md
 
 - name: Selectors
   href: ../../../concepts/PSRule/en-US/about_PSRule_Selectors.md

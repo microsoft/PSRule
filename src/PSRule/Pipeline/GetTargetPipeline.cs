@@ -49,7 +49,8 @@ namespace PSRule.Pipeline
 
             var basePath = PSRuleOption.GetWorkingPath();
             var ignoreGitPath = Option.Input.IgnoreGitPath ?? InputOption.Default.IgnoreGitPath.Value;
-            var filter = PathFilterBuilder.Create(basePath, Option.Input.PathIgnore, ignoreGitPath);
+            var ignoreRepositoryCommon = Option.Input.IgnoreRepositoryCommon ?? InputOption.Default.IgnoreRepositoryCommon.Value;
+            var filter = PathFilterBuilder.Create(basePath, Option.Input.PathIgnore, ignoreGitPath, ignoreRepositoryCommon);
             if (Option.Input.Format == InputFormat.File)
                 filter.UseGitIgnore();
 
