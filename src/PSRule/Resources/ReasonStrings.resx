@@ -222,6 +222,9 @@
   <data name="NullParameter" xml:space="preserve">
     <value>The parameter '{0}' is null.</value>
   </data>
+  <data name="ResultsNotProvided" xml:space="preserve">
+    <value>No results were provided.</value>
+  </data>
   <data name="StartsWith" xml:space="preserve">
     <value>The field '{0}' does not start with '{1}'.</value>
   </data>

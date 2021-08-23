@@ -169,6 +169,21 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].Reason[2] | Should -Be 'Reason 5';
         }
 
+        It 'AnyOf' {
+            $result = @($testObject | Invoke-PSRule @invokeParams -Name 'Assert.AnyOf');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result.Outcome | Should -BeIn 'Pass';
+        }
+
+        It 'AllOf' {
+            $result = @($testObject | Invoke-PSRule @invokeParams -Name 'Assert.AllOf');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[1].IsSuccess() | Should -Be $False;
+        }
+
         It 'Contains' {
             $result = @($testObject | Invoke-PSRule @invokeParams -Name 'Assert.Contains');
             $result | Should -Not -BeNullOrEmpty;

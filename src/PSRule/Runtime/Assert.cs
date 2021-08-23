@@ -69,6 +69,46 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
+        /// Aggregates one or more results. If any one results is a pass, then pass is returned.
+        /// </summary>
+        public AssertResult AnyOf(params AssertResult[] results)
+        {
+            if (results == null || results.Length == 0)
+                return Fail(ReasonStrings.ResultsNotProvided);
+
+            var result = Fail();
+            for (var i = 0; i < results.Length; i++)
+            {
+                if (results[i].Result)
+                    return Pass();
+                else
+                    result.AddReason(result);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Aggregates one or more results. If all results are a pass, then pass is returned.
+        /// </summary>
+        public AssertResult AllOf(params AssertResult[] results)
+        {
+            if (results == null || results.Length == 0)
+                return Fail(ReasonStrings.ResultsNotProvided);
+
+            var result = Fail();
+            var shouldPass = true;
+            for (var i = 0; i < results.Length; i++)
+            {
+                if (!results[i].Result)
+                {
+                    result.AddReason(results[i]);
+                    shouldPass = false;
+                }
+            }
+            return shouldPass ? Pass() : result;
+        }
+
+        /// <summary>
         /// The object should match the defined schema.
         /// </summary>
         public AssertResult JsonSchema(PSObject inputObject, string uri)
