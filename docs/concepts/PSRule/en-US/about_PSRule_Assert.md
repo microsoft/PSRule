@@ -1372,11 +1372,36 @@ Rule 'Assert.HasCustomValue' {
 The following built-in helper methods are provided for working with `$Assert` when authoring new assertion methods:
 
 - `Create(<bool> condition, <string> reason, params <object[]> args)` - Returns a result either pass or fail assertion result.
-Additional arguments can be provided to format the custom reason string.
+  Additional arguments can be provided to format the custom reason string.
 - `Pass()` - Returns a pass assertion result.
 - `Fail()` - Results a fail assertion result.
 - `Fail(<string> reason, params <object[]> args)` - Results a fail assertion result with a custom reason.
-Additional arguments can be provided to format the custom reason string.
+  Additional arguments can be provided to format the custom reason string.
+
+### Aggregating assertion methods
+
+The following built-in helper methods are provided for aggregating assertion results:
+
+- `AnyOf(<AssertResult[]> results)` - Results from assertion methods are aggregated into a single result.
+  If any result is a pass, the result is a pass.
+  If all results are fails, the result is a fail and any reasons are added to the result.
+  If no results are provided, the result is a fail.
+- `AllOf(<AssertResult[]> results)` - Results from assertion methods are aggregated into a single result.
+  If all results are passes, the result is a pass.
+  If any result is a fail, the result is a fail and any reasons are added to the result.
+  If no results are provided, the result is a fail.
+
+For example:
+
+```powershell
+Rule 'Assert.HasFieldValue' {
+    $Assert.AllOf(
+        $Assert.HasFieldValue($TargetObject, 'Name'),
+        $Assert.HasFieldValue($TargetObject, 'Type'),
+        $Assert.HasFieldValue($TargetObject, 'Value')
+    )
+}
+```
 
 ## NOTE
 

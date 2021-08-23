@@ -49,6 +49,17 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
+        /// Add a reasons from an existing result.
+        /// </summary>
+        internal void AddReason(AssertResult result)
+        {
+            if (result == null || Result || result.Result || result._Reason == null || result._Reason.Count == 0)
+                return;
+
+            _Reason.AddRange(result._Reason);
+        }
+
+        /// <summary>
         /// Add a reason.
         /// </summary>
         /// <param name="text">The text of a reason to add. This text should already be localized for the currently culture.</param>

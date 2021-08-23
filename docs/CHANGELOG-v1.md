@@ -16,6 +16,8 @@ What's changed since v1.6.0:
   - Automatically exclude common repository files from input files. [#721](https://github.com/microsoft/PSRule/issues/721)
     - Added `Input.IgnoreRepositoryCommon` option to change default behavior.
     - See [about_PSRule_Options] for details.
+  - Added aggregation assertion methods for `AnyOf` and `AllOf`. [#776](https://github.com/microsoft/PSRule/issues/776)
+    - See [about_PSRule_Assert] for details.
 
 ## v1.6.0
 

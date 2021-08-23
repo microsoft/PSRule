@@ -358,6 +358,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No results were provided..
+        /// </summary>
+        internal static string ResultsNotProvided {
+            get {
+                return ResourceManager.GetString("ResultsNotProvided", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The field &apos;{0}&apos; does not start with &apos;{1}&apos;..
         /// </summary>
         internal static string StartsWith {

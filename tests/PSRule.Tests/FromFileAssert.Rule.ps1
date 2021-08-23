@@ -48,6 +48,24 @@ Rule 'Assert.Fail' {
     $Assert.Fail('Reason {0}', 3).Reason('Reason 4').Reason('Reason {0}', '5')
 }
 
+# Synopsis: Test for $Assert.AnyOf
+Rule 'Assert.AnyOf' {
+    $Assert.AnyOf(
+        $Assert.HasField($TargetObject, 'Name'),
+        $Assert.HasField($TargetObject, 'Type'),
+        $Assert.HasField($TargetObject, 'OtherField')
+    )
+}
+
+# Synopsis: Test for $Assert.AllOf
+Rule 'Assert.AllOf' {
+    $Assert.AllOf(@(
+        $Assert.HasField($TargetObject, 'Name'),
+        $Assert.HasField($TargetObject, 'Type'),
+        $Assert.HasField($TargetObject, 'OtherField')
+    ))
+}
+
 # Synopsis: Test for $Assert.Contains
 Rule 'Assert.Contains' {
     $Assert.Contains($TargetObject, 'OtherField', @('abc', 'th'))

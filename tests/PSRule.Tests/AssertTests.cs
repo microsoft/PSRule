@@ -54,6 +54,20 @@ namespace PSRule
             Assert.Equal("Fail reason", actual3.ToString());
             actual3 = assert.Fail("Fail {0}", "reason");
             Assert.Equal("Fail reason", actual3.ToString());
+
+            // Aggregate results
+            Assert.True(assert.AnyOf(actual2, actual3).Result);
+            Assert.True(assert.AnyOf(actual2).Result);
+            Assert.True(assert.AnyOf(actual3, actual2, actual1).Result);
+            Assert.False(assert.AnyOf().Result);
+
+            Assert.False(assert.AllOf(actual2, actual3).Result);
+            Assert.Equal("Fail reason", assert.AllOf(actual2, actual3).ToString());
+            Assert.Equal("New New Reason Fail reason", assert.AllOf(actual1, actual2, actual3).ToString());
+            Assert.True(assert.AllOf(actual2, actual2).Result);
+            Assert.True(assert.AllOf(actual2).Result);
+            Assert.False(assert.AllOf().Result);
+
         }
 
         [Fact]
