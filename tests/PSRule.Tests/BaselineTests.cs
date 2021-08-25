@@ -8,6 +8,7 @@ using PSRule.Runtime;
 using System;
 using System.IO;
 using System.Linq;
+using System.Management.Automation;
 using Xunit;
 using Assert = Xunit.Assert;
 
@@ -29,6 +30,15 @@ namespace PSRule
             Assert.Equal("value", baseline[0].Metadata.Annotations["key"]);
             Assert.False(baseline[0].Obsolete);
             Assert.False(baseline[0].GetApiVersionIssue());
+            
+            var config = baseline[0].Spec.Configuration["key2"] as Array;
+            Assert.NotNull(config);
+            Assert.Equal(2, config.Length);
+            Assert.IsType<PSObject>(config.GetValue(0));
+            var pso = config.GetValue(0) as PSObject;
+            Assert.Equal("abc", pso.PropertyValue<string>("value1"));
+            pso = config.GetValue(1) as PSObject;
+            Assert.Equal("def", pso.PropertyValue<string>("value2"));
 
             // TestBaseline5
             Assert.Equal("TestBaseline5", baseline[4].Name);

@@ -222,6 +222,8 @@ namespace PSRule.Host
                 .IgnoreUnmatchedProperties()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
+                .WithTypeConverter(new PSObjectYamlTypeConverter())
+                .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
                 .WithNodeDeserializer(
                     inner => new LanguageBlockDeserializer(new LanguageExpressionDeserializer(inner)),
                     s => s.InsteadOf<ObjectNodeDeserializer>())
