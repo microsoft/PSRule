@@ -29,6 +29,9 @@ spec:
     - 'WithBaseline'
   configuration:
     key1: value1
+    key2:
+    - value1: abc
+    - value2: def
 
 ---
 # Synopsis: This is an example baseline

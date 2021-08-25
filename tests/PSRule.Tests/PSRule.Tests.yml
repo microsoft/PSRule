@@ -14,6 +14,14 @@ configuration:
   option1: option
   option2: 2
   option3: [ 'option3a', 'option3b' ]
+  option4:
+  - location: 'East US'
+    zones: [ "1", "2", "3" ]
+  - location: 'Australia South East'
+    zones: [ ]
+  option5:
+  - option5a
+  - option5b
 
 # Configure conventions
 convention:

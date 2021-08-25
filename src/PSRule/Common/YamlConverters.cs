@@ -145,16 +145,15 @@ namespace PSRule
         public object ReadYaml(IParser parser, Type type)
         {
             // Handle empty objects
-            if (parser.TryConsume<Scalar>(out _))
+            if (parser.TryConsume(out Scalar scalar))
             {
-                parser.TryConsume<Scalar>(out _);
-                return null;
+                return PSObject.AsPSObject(scalar.Value);
             }
 
             var result = new PSObject();
             if (parser.TryConsume<MappingStart>(out _))
             {
-                while (parser.TryConsume(out Scalar scalar))
+                while (parser.TryConsume(out scalar))
                 {
                     var name = scalar.Value;
                     var property = ReadNoteProperty(parser, name);
@@ -218,10 +217,22 @@ namespace PSRule
                 currentType = typeof(PSObject[]);
                 return true;
             }
-
             else if (currentType == typeof(Dictionary<object, object>) || nodeEvent is MappingStart)
             {
                 currentType = typeof(PSObject);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    internal sealed class PSOptionYamlTypeResolver : INodeTypeResolver
+    {
+        public bool Resolve(NodeEvent nodeEvent, ref Type currentType)
+        {
+            if (currentType == typeof(object) && nodeEvent is SequenceStart)
+            {
+                currentType = typeof(PSObject[]);
                 return true;
             }
             return false;
