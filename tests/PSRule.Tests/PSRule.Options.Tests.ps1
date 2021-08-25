@@ -193,6 +193,10 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
             $option.Configuration.option1 | Should -Be 'option';
             $option.Configuration.option2 | Should -Be 2;
             $option.Configuration.option3 | Should -BeIn 'option3a', 'option3b';
+            $option.Configuration.option4.Length | Should -Be 2;
+            $option.Configuration.option4[0].location | Should -Be 'East US';
+            $option.Configuration.option4[0].zones | Should -BeIn '1', '2', '3';
+            $option.Configuration.option5 | Should -BeIn 'option5a', 'option5b';
         }
 
         It 'from Environment' {
