@@ -49,6 +49,10 @@ This project uses GitHub Issues to track bugs and feature requests. See GitHub p
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PSRule.Badges\PSRule.Badges.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Resources\DocumentStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

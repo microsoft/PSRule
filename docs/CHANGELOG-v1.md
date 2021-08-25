@@ -10,6 +10,13 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.7.0-B2108021:
+
+- Engine features:
+  - Added support for generating badges from rule results. [#623](https://github.com/microsoft/PSRule/issues/623)
+    - Standard or custom badges can be generated using a convention and the badge API.
+    - See [about_PSRule_Badges] for details.
+
 ## v1.7.0-B2108021 (pre-release)
 
 What's changed since pre-release v1.7.0-B2108016:
@@ -500,3 +507,4 @@ What's changed since v0.22.0:
 [about_PSRule_Conventions]: concepts/PSRule/en-US/about_PSRule_Conventions.md
 [about_PSRule_Selectors]: concepts/PSRule/en-US/about_PSRule_Selectors.md
 [about_PSRule_Rules]: concepts/PSRule/en-US/about_PSRule_Rules.md
+[about_PSRule_Badges]: concepts/PSRule/en-US/about_PSRule_Badges.md

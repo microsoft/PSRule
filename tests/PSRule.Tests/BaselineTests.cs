@@ -30,7 +30,7 @@ namespace PSRule
             Assert.Equal("value", baseline[0].Metadata.Annotations["key"]);
             Assert.False(baseline[0].Obsolete);
             Assert.False(baseline[0].GetApiVersionIssue());
-            
+
             var config = baseline[0].Spec.Configuration["key2"] as Array;
             Assert.NotNull(config);
             Assert.Equal(2, config.Length);

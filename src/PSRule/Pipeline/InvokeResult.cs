@@ -40,7 +40,7 @@ namespace PSRule.Pipeline
 
         internal int Pass => _Total - _Error - _Fail;
 
-        internal RuleOutcome Outcome => _Outcome;
+        public RuleOutcome Outcome => _Outcome;
 
         internal string TargetName
         {
@@ -93,7 +93,7 @@ namespace PSRule.Pipeline
         /// <param name="ruleRecord">The record after processing a rule.</param>
         internal void Add(RuleRecord ruleRecord)
         {
-            _Outcome = GetWorstCase(ruleRecord.Outcome);
+            _Outcome = _Outcome.GetWorstCase(ruleRecord.Outcome);
             _Time += ruleRecord.Time;
             _Total++;
 
@@ -104,23 +104,6 @@ namespace PSRule.Pipeline
                 _Fail++;
 
             _Record.Add(ruleRecord);
-        }
-
-        private RuleOutcome GetWorstCase(RuleOutcome outcome)
-        {
-            if (outcome == RuleOutcome.Error || _Outcome == RuleOutcome.Error)
-            {
-                return RuleOutcome.Error;
-            }
-            else if (outcome == RuleOutcome.Fail || _Outcome == RuleOutcome.Fail)
-            {
-                return RuleOutcome.Fail;
-            }
-            else if (outcome == RuleOutcome.Pass || _Outcome == RuleOutcome.Pass)
-            {
-                return RuleOutcome.Pass;
-            }
-            return outcome;
         }
     }
 }
