@@ -221,6 +221,7 @@ task PackageModule {
     }
 }
 
+# Synopsis: Publish to PowerShell Gallery
 task ReleaseModule VersionModule, {
     $modulePath = (Join-Path -Path $ArtifactPath -ChildPath 'PSRule');
     Write-Verbose -Message "[ReleaseModule] -- Checking module path: $modulePath";
