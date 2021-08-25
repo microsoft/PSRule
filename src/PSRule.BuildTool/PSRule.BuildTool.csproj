@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Authors>Bernie White</Authors>
+    <AssemblyTitle>PSRule.BuildTool</AssemblyTitle>
+    <RepositoryUrl>https://github.com/Microsoft/PSRule</RepositoryUrl>
+    <PackageLicenseExpression>https://github.com/Microsoft/PSRule/blob/main/LICENSE</PackageLicenseExpression>
+    <Version>0.0.1</Version>
+    <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
+    <Description>Tools for building PSRule.
+
+This project uses GitHub Issues to track bugs and feature requests. See GitHub project for more information.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+    <DefineConstants>Windows</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0-preview.7.21377.19" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\CmdStrings.Designer.cs">
+      <DependentUpon>CmdStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\CmdStrings.resx">
+      <LastGenOutput>CmdStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

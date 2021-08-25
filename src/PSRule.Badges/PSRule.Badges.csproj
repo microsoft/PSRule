@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Authors>Bernie White</Authors>
+    <AssemblyTitle>PSRule.Badges</AssemblyTitle>
+    <RepositoryUrl>https://github.com/Microsoft/PSRule</RepositoryUrl>
+    <PackageLicenseExpression>https://github.com/Microsoft/PSRule/blob/main/LICENSE</PackageLicenseExpression>
+    <Version>0.0.1</Version>
+    <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
+    <Description>Contains resources for PSRule to work with badges.
+
+This project uses GitHub Issues to track bugs and feature requests. See GitHub project for more information.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+    <DefineConstants>Windows</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\en.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\en.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+</Project>

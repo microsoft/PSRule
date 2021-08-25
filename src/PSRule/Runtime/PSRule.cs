@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Badges;
 using PSRule.Data;
 using PSRule.Pipeline;
 using System;
@@ -18,6 +19,7 @@ namespace PSRule.Runtime
     public sealed class PSRule : ScopedItem
     {
         private PSRuleSource _Source;
+        private IBadgeBuilder _BadgeBuilder;
 
         public PSRule() { }
 
@@ -36,6 +38,21 @@ namespace PSRule.Runtime
                 {
                     return GetContext().TargetObject?.Source[type];
                 }
+            }
+        }
+
+        /// <summary>
+        /// Exposes the badge API for used within conventions.
+        /// </summary>
+        public IBadgeBuilder Badges
+        {
+            get
+            {
+                RequireScope(RunspaceScope.ConventionEnd);
+                if (_BadgeBuilder == null)
+                    _BadgeBuilder = new BadgeBuilder();
+
+                return _BadgeBuilder;
             }
         }
 

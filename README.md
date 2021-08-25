@@ -294,6 +294,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [StartsWith](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#startswith)
   - [Version](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#version)
   - [WithinPath](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#withinpath)
+- [Badges](docs/concepts/PSRule/en-US/about_PSRule_Badges.md)
 - [Baselines](docs/concepts/PSRule/en-US/about_PSRule_Baseline.md)
   - [Baseline specs](docs/concepts/PSRule/en-US/about_PSRule_Baseline.md#baseline-specs)
   - [Baseline scopes](docs/concepts/PSRule/en-US/about_PSRule_Baseline.md#baseline-scopes)

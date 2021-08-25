@@ -304,6 +304,33 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string OutcomeError {
+            get {
+                return ResourceManager.GetString("OutcomeError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fail.
+        /// </summary>
+        internal static string OutcomeFail {
+            get {
+                return ResourceManager.GetString("OutcomeFail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pass.
+        /// </summary>
+        internal static string OutcomePass {
+            get {
+                return ResourceManager.GetString("OutcomePass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [FAIL] -- {0}:: Reported for &apos;{1}&apos;.
         /// </summary>
         internal static string OutcomeRuleFail {
@@ -318,6 +345,15 @@ namespace PSRule.Resources {
         internal static string OutcomeRulePass {
             get {
                 return ResourceManager.GetString("OutcomeRulePass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        internal static string OutcomeUnknown {
+            get {
+                return ResourceManager.GetString("OutcomeUnknown", resourceCulture);
             }
         }
         
