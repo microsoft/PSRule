@@ -28,6 +28,13 @@ What's changed since v1.6.0:
   - Added aggregation assertion methods for `AnyOf` and `AllOf`. [#776](https://github.com/microsoft/PSRule/issues/776)
     - See [about_PSRule_Assert] for details.
 
+## v1.6.1
+
+What's changed since v1.6.0:
+
+- Bug fixes:
+  - Fixed configuration array deserializes as dictionary from YAML options. [#779](https://github.com/microsoft/PSRule/issues/779)
+
 ## v1.6.0
 
 What's changed since v1.5.0:
