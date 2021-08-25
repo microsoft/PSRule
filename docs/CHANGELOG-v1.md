@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.7.0-B2108016:
+
+- Bug fixes:
+  - Fixed configuration array deserializes as dictionary from YAML options. [#779](https://github.com/microsoft/PSRule/issues/779)
+
 ## v1.7.0-B2108016 (pre-release)
 
 What's changed since v1.6.0:

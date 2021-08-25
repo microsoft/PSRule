@@ -261,6 +261,8 @@ namespace PSRule.Configuration
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .WithTypeConverter(new SuppressionRuleYamlTypeConverter())
+                .WithTypeConverter(new PSObjectYamlTypeConverter())
+                .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
                 .Build();
 
             var option = d.Deserialize<PSRuleOption>(yaml) ?? new PSRuleOption();
