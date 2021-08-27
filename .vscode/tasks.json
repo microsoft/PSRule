@@ -12,7 +12,9 @@
                 "kind": "test",
                 "isDefault": true
             },
-            "problemMatcher": [ "$pester" ],
+            "problemMatcher": [
+                "$pester"
+            ],
             "presentation": {
                 "clear": true,
                 "panel": "dedicated"
@@ -37,7 +39,7 @@
             "detail": "Run repository analysis.",
             "type": "shell",
             "command": "Invoke-Build AnalyzeRepository -AssertStyle Client",
-            "problemMatcher": [ ],
+            "problemMatcher": [],
             "presentation": {
                 "clear": true,
                 "panel": "dedicated"
@@ -58,7 +60,9 @@
             "label": "coverage",
             "type": "shell",
             "command": "Invoke-Build Test -CodeCoverage",
-            "problemMatcher": [ "$pester" ],
+            "problemMatcher": [
+                "$pester"
+            ],
             "presentation": {
                 "clear": true,
                 "panel": "dedicated"

@@ -1227,6 +1227,42 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Output.Footer' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Output.Footer | Should -Be 'Default';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Output.Footer' = 'RuleCount' };
+            $option.Output.Footer | Should -Be 'RuleCount';
+
+            $option = New-PSRuleOption -Option @{ 'Output.Footer' = 1 };
+            $option.Output.Footer | Should -Be 'RuleCount';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Output.Footer | Should -Be 'RuleCount';
+        }
+
+        It 'from Environment' {
+            try {
+                $Env:PSRULE_OUTPUT_FOOTER = 'RuleCount';
+                $option = New-PSRuleOption;
+                $option.Output.Footer | Should -Be 'RuleCount';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_OUTPUT_FOOTER' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -OutputFooter 'RuleCount' -Path $emptyOptionsFilePath;
+            $option.Output.Footer | Should -Be 'RuleCount';
+        }
+    }
+
     Context 'Read Output.Format' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -1639,6 +1675,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputEncoding 'UTF7' @optionParams;
             $option.Output.Encoding | Should -Be 'UTF7';
+        }
+    }
+
+    Context 'Read Output.Footer' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -OutputFooter 'RuleCount' @optionParams;
+            $option.Output.Footer | Should -Be 'RuleCount';
         }
     }
 

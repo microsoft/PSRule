@@ -11,6 +11,7 @@ using PSRule.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Security.Cryptography;
@@ -52,6 +53,9 @@ namespace PSRule.Pipeline
         internal readonly BindTargetMethod BindTargetName;
         internal readonly BindTargetMethod BindTargetType;
         internal readonly BindTargetMethod BindField;
+        internal readonly string RunId;
+
+        internal readonly Stopwatch RunTime;
 
         public HashAlgorithm ObjectHashAlgorithm
         {
@@ -81,6 +85,8 @@ namespace PSRule.Pipeline
             Baseline = baseline;
             _Unresolved = unresolved;
             _TrackedIssues = new List<ResourceIssue>();
+            RunId = EnvironmentHelper.Default.GetRunId() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
+            RunTime = Stopwatch.StartNew();
         }
 
         public static PipelineContext New(PSRuleOption option, HostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
@@ -237,6 +243,7 @@ namespace PSRule.Pipeline
                     LocalizedDataCache.Clear();
                     ExpressionCache.Clear();
                     ContentCache.Clear();
+                    RunTime.Stop();
                 }
                 _Disposed = true;
             }

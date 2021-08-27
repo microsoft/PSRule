@@ -361,6 +361,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Output.Banner](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputbanner)
   - [Output.Culture](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputculture)
   - [Output.Encoding](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputencoding)
+  - [Output.Footer](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputfooter)
   - [Output.Format](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputformat)
   - [Output.Outcome](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputoutcome)
   - [Output.Path](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputpath)

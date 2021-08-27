@@ -20,8 +20,9 @@ namespace PSRule.Rules
     [JsonObject]
     public sealed class RuleRecord
     {
-        internal RuleRecord(string ruleId, string ruleName, PSObject targetObject, string targetName, string targetType, TagSet tag, RuleHelpInfo info, Hashtable field, Hashtable data, TargetSourceInfo[] source, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
+        internal RuleRecord(string runId, string ruleId, string ruleName, PSObject targetObject, string targetName, string targetType, TagSet tag, RuleHelpInfo info, Hashtable field, Hashtable data, TargetSourceInfo[] source, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
+            RunId = runId;
             RuleId = ruleId;
             RuleName = ruleName;
             TargetObject = targetObject;
@@ -40,6 +41,12 @@ namespace PSRule.Rules
             // Limit allocations for most scenarios. Runtime calls GetData().
             Data = data;
         }
+
+        /// <summary>
+        /// A unique identifier for the run.
+        /// </summary>
+        [JsonProperty(PropertyName = "runId")]
+        public string RunId { get;  }
 
         /// <summary>
         /// A unique identifier for the rule.

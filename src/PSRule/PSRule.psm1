@@ -1134,6 +1134,11 @@ function New-PSRuleOption {
         [ValidateSet('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII')]
         [PSRule.Configuration.OutputEncoding]$OutputEncoding = 'Default',
 
+        # Sets the Output.Footer option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Default', 'None', 'RuleCount', 'RunInfo')]
+        [PSRule.Configuration.FooterFormat]$OutputFooter = 'Default',
+
         # Sets the Output.Format option
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide')]
@@ -1365,6 +1370,11 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [ValidateSet('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII')]
         [PSRule.Configuration.OutputEncoding]$OutputEncoding = 'Default',
+
+        # Sets the Output.Footer option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Default', 'None', 'RuleCount', 'RunInfo')]
+        [PSRule.Configuration.FooterFormat]$OutputFooter = 'Default',
 
         # Sets the Output.Format option
         [Parameter(Mandatory = $False)]
@@ -2027,6 +2037,11 @@ function SetOptions {
         [ValidateSet('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII')]
         [PSRule.Configuration.OutputEncoding]$OutputEncoding = 'Default',
 
+        # Sets the Output.Footer option
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Default', 'None', 'RuleCount', 'RunInfo')]
+        [PSRule.Configuration.FooterFormat]$OutputFooter = 'Default',
+
         # Sets the Output.Format option
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide')]
@@ -2165,7 +2180,7 @@ function SetOptions {
             $Option.Output.As = $OutputAs;
         }
 
-        # Sets option Output.As
+        # Sets option Output.Banner
         if ($PSBoundParameters.ContainsKey('OutputBanner')) {
             $Option.Output.Banner = $OutputBanner;
         }
@@ -2178,6 +2193,11 @@ function SetOptions {
         # Sets option Output.Encoding
         if ($PSBoundParameters.ContainsKey('OutputEncoding')) {
             $Option.Output.Encoding = $OutputEncoding;
+        }
+
+        # Sets option Output.Footer
+        if ($PSBoundParameters.ContainsKey('OutputFooter')) {
+            $Option.Output.Footer = $OutputFooter;
         }
 
         # Sets option Output.Format

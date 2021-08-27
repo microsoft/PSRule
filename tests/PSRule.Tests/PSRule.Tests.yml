@@ -74,6 +74,7 @@ output:
   banner: Minimal
   culture: [ 'en-CC' ]
   encoding: UTF7
+  footer: RuleCount
   format: Json
   outcome: Pass
   path: 'out/OutputPath.txt'
