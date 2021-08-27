@@ -67,4 +67,4 @@ When you are ready to contribute a fix or feature:
 [github-fork]: https://help.github.com/en/github/getting-started-with-github/fork-a-repo
 [github-pr]: https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests
 [github-pr-create]: https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork
-[build]: docs/scenarios/install-instructions.md#building-from-source
+[build]: https://github.com/microsoft/PSRule/blob/main/docs/install-instructions.md#building-from-source
