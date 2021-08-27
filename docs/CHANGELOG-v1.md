@@ -10,6 +10,8 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.7.0-B2108032 (pre-release)
+
 What's changed since pre-release v1.7.0-B2108021:
 
 - Engine features:
