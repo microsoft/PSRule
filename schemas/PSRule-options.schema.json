@@ -422,6 +422,26 @@
                     ],
                     "default": "Default"
                 },
+                "footer": {
+                    "title": "Footer format",
+                    "description": "The information displayed for Assert-PSRule footer. The default is Default which includes RuleCount, and RunInfo.",
+                    "markdownDescription": "The information displayed for Assert-PSRule footer. The default is `Default` which includes `RuleCount`, and `RunInfo`. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#outputfooter)",
+                    "oneOf": [
+                        {
+                            "type": "string",
+                            "enum": [
+                                "None",
+                                "RuleCount",
+                                "RunInfo",
+                                "Default"
+                            ]
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ],
+                    "default": "Default"
+                },
                 "format": {
                     "type": "string",
                     "title": "Output format",

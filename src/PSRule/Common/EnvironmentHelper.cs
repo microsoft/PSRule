@@ -8,6 +8,38 @@ using System.Security;
 
 namespace PSRule
 {
+    internal static class EnvironmentHelperExtensions
+    {
+        public static bool IsAzurePipelines(this EnvironmentHelper helper)
+        {
+            return helper.TryBool("TF_BUILD", out bool azp) && azp;
+        }
+
+        public static bool IsGitHubActions(this EnvironmentHelper helper)
+        {
+            return helper.TryBool("GITHUB_ACTIONS", out bool gh) && gh;
+        }
+
+        public static bool IsVisualStudioCode(this EnvironmentHelper helper)
+        {
+            return helper.TryString("TERM_PROGRAM", out string term) && term == "vscode";
+        }
+
+        public static string GetRunId(this EnvironmentHelper helper)
+        {
+            if (helper.TryString("PSRULE_RUN_ID", out string runId))
+                return runId;
+
+            if (helper.TryString("BUILD_REPOSITORY_NAME", out string prefix) && helper.TryString("BUILD_BUILDID", out string suffix))
+                return string.Concat(prefix, "/", suffix);
+
+            if (helper.TryString("GITHUB_REPOSITORY", out prefix) && helper.TryString("GITHUB_RUN_ID", out suffix))
+                return string.Concat(prefix, "/", suffix);
+
+            return null;
+        }
+    }
+
     internal sealed class EnvironmentHelper
     {
         private readonly static char[] STRINGARRAY_SEPARATOR = new char[] { ';' };

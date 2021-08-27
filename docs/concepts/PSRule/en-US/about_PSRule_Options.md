@@ -33,6 +33,7 @@ The following workspace options are available for use:
 - [Output.Banner](#outputbanner)
 - [Output.Culture](#outputculture)
 - [Output.Encoding](#outputencoding)
+- [Output.Footer](#outputfooter)
 - [Output.Format](#outputformat)
 - [Output.Outcome](#outputoutcome)
 - [Output.Path](#outputpath)
@@ -1523,7 +1524,7 @@ Set-PSRuleOption -OutputBanner Minimal;
 ```yaml
 # YAML: Using the output/banner property
 output:
-  banner: OutputBanner
+  banner: Minimal
 ```
 
 ```bash
@@ -1649,6 +1650,66 @@ env:
 variables:
 - name: PSRULE_OUTPUT_ENCODING
   value: UTF8
+```
+
+### Output.Footer
+
+The information displayed for PSRule footer.
+This option is only applicable when using `Assert-PSRule` cmdlet.
+
+The following information can be shown or hidden by configuring this option.
+
+- `RuleCount` (1) - Shows a summary of rules processed.
+- `RunInfo` (2) - Shows information about the run.
+
+Additionally the following rollup options exist:
+
+- `Default` - Shows `RuleCount`, and `RunInfo`.
+This is the default option.
+
+This option can be configured using one of the named values described above.
+Alternatively, this value can be configured by specifying a bit mask as an integer.
+For example `3` would show `RunInfo`, and `RuleCount`.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the OutputFooter parameter
+$option = New-PSRuleOption -OutputFooter RuleCount;
+```
+
+```powershell
+# PowerShell: Using the Output.Footer hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Footer' = 'RuleCount' };
+```
+
+```powershell
+# PowerShell: Using the OutputFooter parameter to set YAML
+Set-PSRuleOption -OutputFooter RuleCount;
+```
+
+```yaml
+# YAML: Using the output/footer property
+output:
+  footer: RuleCount
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_OUTPUT_FOOTER=RuleCount
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_OUTPUT_FOOTER: RuleCount
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_OUTPUT_FOOTER
+  value: RuleCount
 ```
 
 ### Output.Format
@@ -2173,6 +2234,7 @@ output:
   culture:
   - en-US
   encoding: UTF8
+  footer: RuleCount
   format: Json
   outcome: Fail
   style: GitHubActions
@@ -2265,6 +2327,7 @@ output:
   banner: Default
   culture: [ ]
   encoding: Default
+  footer: Default
   format: None
   outcome: Processed
   style: Detect

@@ -16,6 +16,7 @@ namespace PSRule.Configuration
         private const ResultFormat DEFAULT_AS = ResultFormat.Detail;
         private const BannerFormat DEFAULT_BANNER = BannerFormat.Default;
         private const OutputEncoding DEFAULT_ENCODING = OutputEncoding.Default;
+        private const FooterFormat DEFAULT_FOOTER = FooterFormat.Default;
         private const OutputFormat DEFAULT_FORMAT = OutputFormat.None;
         private const RuleOutcome DEFAULT_OUTCOME = RuleOutcome.Processed;
         private const OutputStyle DEFAULT_STYLE = OutputStyle.Detect;
@@ -25,6 +26,7 @@ namespace PSRule.Configuration
             As = DEFAULT_AS,
             Banner = DEFAULT_BANNER,
             Encoding = DEFAULT_ENCODING,
+            Footer = DEFAULT_FOOTER,
             Format = DEFAULT_FORMAT,
             Outcome = DEFAULT_OUTCOME,
             Style = DEFAULT_STYLE,
@@ -36,6 +38,7 @@ namespace PSRule.Configuration
             Banner = null;
             Culture = null;
             Encoding = null;
+            Footer = null;
             Format = null;
             Path = null;
             Style = null;
@@ -50,6 +53,7 @@ namespace PSRule.Configuration
             Banner = option.Banner;
             Culture = option.Culture;
             Encoding = option.Encoding;
+            Footer = option.Footer;
             Format = option.Format;
             Outcome = option.Outcome;
             Path = option.Path;
@@ -68,6 +72,7 @@ namespace PSRule.Configuration
                 Banner == other.Banner &&
                 Culture == other.Culture &&
                 Encoding == other.Encoding &&
+                Footer == other.Footer &&
                 Format == other.Format &&
                 Outcome == other.Outcome &&
                 Path == other.Path &&
@@ -83,6 +88,7 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (Banner.HasValue ? Banner.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Culture != null ? Culture.GetHashCode() : 0);
                 hash = hash * 23 + (Encoding.HasValue ? Encoding.Value.GetHashCode() : 0);
+                hash = hash * 23 + (Footer.HasValue ? Footer.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Format.HasValue ? Format.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Outcome.HasValue ? Outcome.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Path != null ? Path.GetHashCode() : 0);
@@ -99,6 +105,7 @@ namespace PSRule.Configuration
                 Banner = o1.Banner ?? o2.Banner,
                 Culture = o1.Culture ?? o2.Culture,
                 Encoding = o1.Encoding ?? o2.Encoding,
+                Footer = o1.Footer ?? o2.Footer,
                 Format = o1.Format ?? o2.Format,
                 Outcome = o1.Outcome ?? o2.Outcome,
                 Path = o1.Path ?? o2.Path,
@@ -130,6 +137,12 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public OutputEncoding? Encoding { get; set; }
+
+        /// <summary>
+        /// The information displayed for Assert-PSRule footer.
+        /// </summary>
+        [DefaultValue(null)]
+        public FooterFormat? Footer { get; set; }
 
         /// <summary>
         /// The output format.
@@ -169,6 +182,9 @@ namespace PSRule.Configuration
             if (env.TryEnum("PSRULE_OUTPUT_ENCODING", out OutputEncoding encoding))
                 Encoding = encoding;
 
+            if (env.TryEnum("PSRULE_OUTPUT_FOOTER", out FooterFormat footer))
+                Footer = footer;
+
             if (env.TryEnum("PSRULE_OUTPUT_FORMAT", out OutputFormat format))
                 Format = format;
 
@@ -195,6 +211,9 @@ namespace PSRule.Configuration
 
             if (index.TryPopEnum("Output.Encoding", out OutputEncoding encoding))
                 Encoding = encoding;
+
+            if (index.TryPopEnum("Output.Footer", out FooterFormat footer))
+                Footer = footer;
 
             if (index.TryPopEnum("Output.Format", out OutputFormat format))
                 Format = format;

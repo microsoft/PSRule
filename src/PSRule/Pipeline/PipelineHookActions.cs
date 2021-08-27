@@ -124,8 +124,7 @@ namespace PSRule.Pipeline
             var settings = new JsonSerializerSettings { Formatting = Formatting.None, TypeNameHandling = TypeNameHandling.None, MaxDepth = 1024, Culture = CultureInfo.InvariantCulture };
             settings.Converters.Insert(0, new PSObjectJsonConverter());
             var json = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(targetObject, settings));
-            var hash = PipelineContext.CurrentThread.ObjectHashAlgorithm.ComputeHash(json);
-            return string.Join("", hash.Select(b => b.ToString("x2")).ToArray());
+            return PipelineContext.CurrentThread.ObjectHashAlgorithm.GetDigest(json);
         }
 
         /// <summary>

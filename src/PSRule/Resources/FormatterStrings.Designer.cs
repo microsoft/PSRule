@@ -70,6 +70,24 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rules processed: {0}, failed: {1}, errored: {2}.
+        /// </summary>
+        internal static string FooterRuleCount {
+            get {
+                return ResourceManager.GetString("FooterRuleCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run {0} completed in {1}.
+        /// </summary>
+        internal static string FooterRunInfo {
+            get {
+                return ResourceManager.GetString("FooterRunInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to     | HELP:.
         /// </summary>
         internal static string Help {
@@ -246,15 +264,6 @@ namespace PSRule.Resources {
         internal static string StartObjectPrefix {
             get {
                 return ResourceManager.GetString("StartObjectPrefix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rules processed: {0}, failed: {1}, errored: {2}.
-        /// </summary>
-        internal static string Summary {
-            get {
-                return ResourceManager.GetString("Summary", resourceCulture);
             }
         }
         

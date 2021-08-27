@@ -21,6 +21,8 @@ namespace PSRule.Pipeline
 
         void Warning(WarningRecord warningRecord);
 
+        void Begin();
+
         void End(int total, int fail, int error);
     }
 
@@ -81,13 +83,13 @@ namespace PSRule.Pipeline
                 if (style != OutputStyle.Detect)
                     return style;
 
-                if (EnvironmentHelper.Default.TryBool("TF_BUILD", out bool azp) && azp)
+                if (EnvironmentHelper.Default.IsAzurePipelines())
                     return OutputStyle.AzurePipelines;
 
-                if (EnvironmentHelper.Default.TryBool("GITHUB_ACTIONS", out bool gh) && gh)
+                if (EnvironmentHelper.Default.IsGitHubActions())
                     return OutputStyle.GitHubActions;
 
-                if (EnvironmentHelper.Default.TryString("TERM_PROGRAM", out string term) && term == "vscode")
+                if (EnvironmentHelper.Default.IsVisualStudioCode())
                     return OutputStyle.VisualStudioCode;
 
                 return OutputStyle.Client;
@@ -208,6 +210,11 @@ namespace PSRule.Pipeline
                     Banner();
                     Source(source);
                     SupportLinks(source);
+                }
+
+                public void Begin()
+                {
+                    // Do nothing
                 }
 
                 public void Error(ErrorRecord errorRecord)
@@ -383,8 +390,28 @@ namespace PSRule.Pipeline
 
                 public void End(int total, int fail, int error)
                 {
-                    LineBreak();
-                    WriteLineFormat(FormatterStrings.Summary, total, fail, error);
+                    if (Option.Output.Footer.GetValueOrDefault(FooterFormat.Default) != FooterFormat.None) 
+                        LineBreak();
+
+                    FooterRuleCount(total, fail, error);
+                    FooterRunInfo();
+                }
+
+                public void FooterRuleCount(int total, int fail, int error)
+                {
+                    if (!Option.Output.Footer.GetValueOrDefault(FooterFormat.Default).HasFlag(FooterFormat.RuleCount))
+                        return;
+
+                    WriteLineFormat(FormatterStrings.FooterRuleCount, total, fail, error);
+                }
+
+                public void FooterRunInfo()
+                {
+                    if (!Option.Output.Footer.GetValueOrDefault(FooterFormat.Default).HasFlag(FooterFormat.RunInfo))
+                        return;
+
+                    var elapsed = PipelineContext.CurrentThread.RunTime.Elapsed;
+                    WriteLineFormat(FormatterStrings.FooterRunInfo, PipelineContext.CurrentThread.RunId, elapsed.ToString("c", Thread.CurrentThread.CurrentCulture));
                 }
 
                 protected void WriteStatus(string status, string statusIndent, ConsoleColor? statusForeground, ConsoleColor? statusBackground, ConsoleColor? messageForeground, ConsoleColor? messageBackground, string message)
@@ -879,6 +906,12 @@ namespace PSRule.Pipeline
 
                 _PSError = true;
                 _Formatter.Error(errorRecord);
+            }
+
+            public override void Begin()
+            {
+                base.Begin();
+                _Formatter.Begin();
             }
 
             public override void End()

@@ -16,6 +16,12 @@ What's changed since pre-release v1.7.0-B2108021:
   - Added support for generating badges from rule results. [#623](https://github.com/microsoft/PSRule/issues/623)
     - Standard or custom badges can be generated using a convention and the badge API.
     - See [about_PSRule_Badges] for details.
+- General improvements:
+  - Rule results now include a run ID or each run. [#774](https://github.com/microsoft/PSRule/issues/774)
+    - Run ID is returned in `Assert-PSRule` output at the end of each run by default.
+    - By default a unique `runId` is generated when the rule is run.
+    - The `Output.Footer`option was added to configure the output footer.
+    - See [about_PSRule_Options] for details.
 
 ## v1.7.0-B2108021 (pre-release)
 

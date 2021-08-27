@@ -13,6 +13,8 @@ input:
   pathIgnore:
   - '*.Designer.cs'
   - '*.md'
+  - '*.sln'
+  - 'docs/**/toc.yml'
 
 include:
   path: []

@@ -595,6 +595,7 @@ namespace PSRule.Runtime
             _RuleErrors = 0;
             RuleBlock = ruleBlock;
             RuleRecord = new RuleRecord(
+                runId: Pipeline.RunId,
                 ruleId: ruleBlock.RuleId,
                 ruleName: ruleBlock.RuleName,
                 targetObject: TargetObject.Value,
