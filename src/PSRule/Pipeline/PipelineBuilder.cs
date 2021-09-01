@@ -375,19 +375,9 @@ namespace PSRule.Pipeline
 
         private OptionContext GetOptionContext()
         {
-            var result = new OptionContext();
-
-            // Baseline
-            var baselineScope = new OptionContext.BaselineScope(type: OptionContext.ScopeType.Workspace, baselineId: null, moduleName: null, option: Option, obsolete: false);
-            result.Add(baselineScope);
-            baselineScope = new OptionContext.BaselineScope(type: OptionContext.ScopeType.Parameter, include: _Include, tag: _Tag, convention: _Convention);
-            result.Add(baselineScope);
-
-            // Config
-            var configScope = new OptionContext.ConfigScope(type: OptionContext.ScopeType.Workspace, moduleName: null, option: Option);
-            result.Add(configScope);
-
-            return result;
+            var builder = new OptionContextBuilder(Option);
+            builder.Parameter(_Include, _Tag, _Convention);
+            return builder.Build();
         }
 
         protected void ConfigureBinding(PSRuleOption option)

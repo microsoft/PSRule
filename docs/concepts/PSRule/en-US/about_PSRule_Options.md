@@ -52,6 +52,7 @@ Additionally the following baseline options can be included:
 - [Binding.UseQualifiedName](#bindingusequalifiedname)
 - [Configuration](#configuration)
 - [Rule.Include](#ruleinclude)
+- [Rule.IncludeLocal](#ruleincludelocal)
 - [Rule.Exclude](#ruleexclude)
 - [Rule.Tag](#ruletag)
 
@@ -2045,6 +2046,55 @@ variables:
   value: 'Rule1;Rule2'
 ```
 
+### Rule.IncludeLocal
+
+Automatically include all local rules in the search path unless they have been explicitly excluded.
+This option will include local rules even when they do not match `Rule.Include` or `Rule.Tag` filters.
+By default, local rules will be filtered with `Rule.Include` and `Rule.Tag` filters.
+
+This option is useful when you want to include local rules not included in a baseline.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the RuleIncludeLocal parameter
+$option = New-PSRuleOption -RuleIncludeLocal $True;
+```
+
+```powershell
+# PowerShell: Using the Rule.IncludeLocal hashtable key
+$option = New-PSRuleOption -Option @{ 'Rule.IncludeLocal' = $True };
+```
+
+```powershell
+# PowerShell: Using the RuleIncludeLocal parameter to set YAML
+Set-PSRuleOption -RuleIncludeLocal $True;
+```
+
+```yaml
+# YAML: Using the rule/includeLocal property
+rule:
+  includeLocal: true
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_RULE_INCLUDELOCAL=true
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_RULE_INCLUDELOCAL: true
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_RULE_INCLUDELOCAL
+  value: true
+```
+
 ### Rule.Exclude
 
 The name of specific rules to exclude from being evaluated.
@@ -2270,6 +2320,7 @@ rule:
   include:
   - rule1
   - rule2
+  includeLocal: true
   exclude:
   - rule3
   - rule4
@@ -2352,6 +2403,7 @@ configuration: { }
 
 rule:
   include: [ ]
+  includeLocal: false
   exclude: [ ]
   tag: { }
 ```

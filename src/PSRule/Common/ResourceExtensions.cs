@@ -29,7 +29,12 @@ namespace PSRule
 
         internal static bool Match(this IResourceFilter filter, Baseline resource)
         {
-            return filter.Match(resource.Name, null);
+            return filter.Match(resource);
+        }
+
+        internal static bool IsLocalScope(this IResource resource)
+        {
+            return string.IsNullOrEmpty(resource.Module);
         }
     }
 }

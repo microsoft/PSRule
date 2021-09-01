@@ -32,7 +32,7 @@ namespace PSRule.Host
     {
         private const string Markdown_Extension = ".md";
 
-        public static Rule[] GetRule(Source[] source, RunspaceContext context, bool includeDependencies)
+        internal static Rule[] GetRule(Source[] source, RunspaceContext context, bool includeDependencies)
         {
             var rules = ToRuleV1(GetLanguageBlock(context, source), context);
             var builder = new DependencyGraphBuilder<Rule>(includeDependencies);
@@ -40,19 +40,18 @@ namespace PSRule.Host
             return builder.GetItems();
         }
 
-        public static RuleHelpInfo[] GetRuleHelp(Source[] source, RunspaceContext context)
+        internal static RuleHelpInfo[] GetRuleHelp(Source[] source, RunspaceContext context)
         {
             return ToRuleHelp(ToRuleBlockV1(GetLanguageBlock(context, source), context), context);
         }
 
-        public static DependencyGraph<RuleBlock> GetRuleBlockGraph(Source[] source, RunspaceContext context)
+        internal static DependencyGraph<RuleBlock> GetRuleBlockGraph(Source[] source, RunspaceContext context)
         {
             var blocks = GetLanguageBlock(context, source);
             var rules = ToRuleBlockV1(blocks, context);
             Import(GetConventions(blocks, context), context);
             var builder = new DependencyGraphBuilder<RuleBlock>(includeDependencies: true);
             builder.Include(rules, filter: (b) => Match(context, b));
-            ImportScopes(builder.GetItems(), context);
             return builder.Build();
         }
 
@@ -95,6 +94,9 @@ namespace PSRule.Host
 
         internal static void ImportResource(Source[] source, RunspaceContext context)
         {
+            if (source == null || source.Length == 0)
+                return;
+
             Import(ReadYamlObjects(source, context), context);
         }
 
@@ -345,7 +347,7 @@ namespace PSRule.Host
                             RuleId = block.Id,
                             RuleName = block.Name,
                             Source = block.Source,
-                            Tag = TagSet.FromDictionary(block.Metadata.Tags),
+                            Tag = block.Metadata.Tags,
                             Info = info,
                             DependsOn = null // TODO: No support for DependsOn yet
                         };
@@ -384,7 +386,7 @@ namespace PSRule.Host
                             ruleName: yaml.Name,
                             info: info,
                             condition: new RuleVisitor(yaml.Id, yaml.Spec),
-                            tag: TagSet.FromDictionary(yaml.Metadata.Tags),
+                            tag: yaml.Metadata.Tags,
                             dependsOn: null,  // TODO: No support for DependsOn yet
                             configuration: null, // TODO: No support for rule configuration use module or workspace config
                             extent: null,
@@ -536,36 +538,25 @@ namespace PSRule.Host
                 context.Import(resource);
         }
 
-        public static void ImportScopes(ILanguageBlock[] blocks, RunspaceContext context)
-        {
-            var scopeNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            for (var i = 0; blocks != null && i < blocks.Length; i++)
-            {
-                if (!scopeNames.Contains(blocks[i].Module))
-                {
-                    context.Import(new LanguageScope(blocks[i].Module));
-                    scopeNames.Add(blocks[i].Module);
-                }
-            }
-        }
-
         private static bool Match(RunspaceContext context, RuleBlock resource)
         {
-            var scope = context.EnterSourceScope(resource.Source);
-            return scope.Filter.Match(resource.RuleName, resource.Tag);
+            context.EnterSourceScope(resource.Source);
+            var filter = context.LanguageScope.GetFilter();
+            return filter.Match(resource);
         }
 
         private static bool Match(RunspaceContext context, Rule resource)
         {
-            var scope = context.EnterSourceScope(resource.Source);
-            return scope.Filter.Match(resource.RuleName, resource.Tag);
+            context.EnterSourceScope(resource.Source);
+            var filter = context.LanguageScope.GetFilter();
+            return filter.Match(resource);
         }
 
         private static bool Match(RunspaceContext context, Baseline resource)
         {
-            var scope = context.EnterSourceScope(resource.Source);
-            return scope.Filter.Match(resource.Name, null);
+            context.EnterSourceScope(resource.Source);
+            var filter = context.LanguageScope.GetFilter();
+            return filter.Match(resource);
         }
 
         private static bool Match(RunspaceContext context, ScriptBlockConvention block, out int order)
@@ -573,13 +564,14 @@ namespace PSRule.Host
             context.EnterSourceScope(block.Source);
             order = int.MaxValue;
             var filter = context.Pipeline.Baseline.GetConventionFilter();
-            return filter.Match(block.Name, null) || filter.Match(block.Id, null);
+            return filter.Match(block);
         }
 
         private static bool Match(RunspaceContext context, SelectorV1 resource)
         {
             var scope = context.EnterSourceScope(source: resource.Source);
-            return scope.Filter.Match(resource.Name, null);
+            var filter = context.LanguageScope.GetFilter();
+            return filter.Match(resource);
         }
 
         internal static RuleHelpInfo GetHelpInfo(RunspaceContext context, string name)

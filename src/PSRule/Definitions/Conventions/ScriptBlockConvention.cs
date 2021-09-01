@@ -10,7 +10,7 @@ using System.Management.Automation;
 
 namespace PSRule.Definitions.Conventions
 {
-    internal sealed class ScriptBlockConvention : BaseConvention, ILanguageBlock, IDisposable
+    internal sealed class ScriptBlockConvention : BaseConvention, ILanguageBlock, IDisposable, IResource
     {
         private readonly LanguageScriptBlock _Begin;
         private readonly LanguageScriptBlock _Process;
@@ -38,6 +38,16 @@ namespace PSRule.Definitions.Conventions
         string ILanguageBlock.Module => Source.ModuleName;
 
         string ILanguageBlock.SourcePath => Source.Path;
+
+        ResourceKind IResource.Kind => ResourceKind.Convention;
+
+        string IResource.ApiVersion => Specs.V1;
+
+        string IResource.Name => Name;
+
+        ResourceTags IResource.Tags => null;
+
+        string ILanguageBlock.Id => Id;
 
         public override void Begin(RunspaceContext context, IEnumerable input)
         {

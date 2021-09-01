@@ -14,8 +14,6 @@ namespace PSRule.Runtime
     {
         private readonly RunspaceContext _Context;
 
-        internal Configuration() { }
-
         internal Configuration(RunspaceContext context)
         {
             _Context = context;
@@ -80,23 +78,22 @@ namespace PSRule.Runtime
         private bool TryGetValue(string name, out object value)
         {
             value = null;
-            var context = GetContext();
-            if (context == null)
+            if (_Context == null)
                 return false;
 
             // Get from baseline configuration
-            if (context.Source.Configuration.TryGetValue(name, out object result))
+            if (_Context.LanguageScope.TryConfigurationValue(name, out object result))
             {
                 value = result;
                 return true;
             }
 
             // Check if value exists in Rule definition defaults
-            if (context.RuleBlock == null || context.RuleBlock.Configuration == null || !context.RuleBlock.Configuration.ContainsKey(name))
+            if (_Context.RuleBlock == null || _Context.RuleBlock.Configuration == null || !_Context.RuleBlock.Configuration.ContainsKey(name))
                 return false;
 
             // Get from rule default
-            value = context.RuleBlock.Configuration[name];
+            value = _Context.RuleBlock.Configuration[name];
             return true;
         }
 
@@ -120,11 +117,6 @@ namespace PSRule.Runtime
                 return true;
             }
             return false;
-        }
-
-        private RunspaceContext GetContext()
-        {
-            return _Context ?? RunspaceContext.CurrentThread;
         }
     }
 }

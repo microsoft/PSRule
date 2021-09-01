@@ -39,7 +39,8 @@ namespace PSRule.Configuration
             Include = IncludeOption.Default,
             Input = InputOption.Default,
             Logging = LoggingOption.Default,
-            Output = OutputOption.Default
+            Output = OutputOption.Default,
+            Rule = RuleOption.Default,
         };
 
         /// <summary>

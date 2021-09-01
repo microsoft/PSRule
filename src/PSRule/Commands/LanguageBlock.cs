@@ -23,9 +23,9 @@ namespace PSRule.Commands
             return HostHelper.GetCommentMeta(path, lineNumber - 2, offset);
         }
 
-        protected static TagSet GetTag(Hashtable hashtable)
+        protected static ResourceTags GetTag(Hashtable hashtable)
         {
-            return TagSet.FromHashtable(hashtable);
+            return ResourceTags.FromHashtable(hashtable);
         }
 
         protected static bool IsSourceScope()

@@ -607,6 +607,13 @@
                     "markdownDescription": "Optionally filter to rules by name. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#ruleinclude)",
                     "$ref": "#/definitions/rule-names"
                 },
+                "includeLocal": {
+                    "type": "boolean",
+                    "title": "Include local",
+                    "description": "Automatically include all local rules in the search path unless they have been explicitly excluded.",
+                    "markdownDescription": "Automatically include all local rules in the search path unless they have been explicitly excluded. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#ruleincludelocal)",
+                    "default": false
+                },
                 "exclude": {
                     "type": "array",
                     "title": "Exclude rules",

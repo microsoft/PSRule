@@ -100,15 +100,11 @@ namespace PSRule.Pipeline
         {
             public readonly SourceFile File;
             public readonly string[] SourceContentCache;
-            public readonly IResourceFilter Filter;
-            public readonly Dictionary<string, object> Configuration;
 
-            public SourceScope(SourceFile source, string[] content, IResourceFilter filter, Dictionary<string, object> configuration)
+            public SourceScope(SourceFile source, string[] content)
             {
                 File = source;
                 SourceContentCache = content;
-                Filter = filter;
-                Configuration = configuration;
             }
         }
 
@@ -166,7 +162,7 @@ namespace PSRule.Pipeline
             if (resource.GetApiVersionIssue())
                 _TrackedIssues.Add(new ResourceIssue(resource.Kind, resource.Id, ResourceIssueType.MissingApiVersion));
 
-            if (resource.Kind == ResourceKind.Baseline && resource is Baseline baseline && _Unresolved.TryGetValue(resource.Id, out ResourceRef rr) && rr is BaselineRef baselineRef)
+            if (_Unresolved != null && resource.Kind == ResourceKind.Baseline && resource is Baseline baseline && _Unresolved.TryGetValue(resource.Id, out ResourceRef rr) && rr is BaselineRef baselineRef)
             {
                 _Unresolved.Remove(resource.Id);
                 Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, baseline.BaselineId, resource.Module, baseline.Spec, baseline.Obsolete));
@@ -190,7 +186,7 @@ namespace PSRule.Pipeline
             return false;
         }
 
-        internal void Init(RunspaceContext runspaceContext)
+        internal void Begin(RunspaceContext runspaceContext)
         {
             for (var i = 0; _TrackedIssues != null && i < _TrackedIssues.Count; i++)
             {

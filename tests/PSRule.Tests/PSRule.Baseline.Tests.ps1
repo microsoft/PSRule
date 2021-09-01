@@ -162,6 +162,20 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result[0].RuleName | Should -Be 'M4.Rule4';
             $result[0].Outcome | Should -Be 'Pass';
             $result[0].Field.AlternativeType | Should -Be 'TestObject1';
+
+            # Explict with default
+            $result = @($testObject | Invoke-PSRule -Module TestModule4 -Path $ruleFilePath -Baseline 'Module4');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result[0].RuleName | Should -Be 'M4.Rule1';
+
+            # Explict with local scope
+            $result = @($testObject | Invoke-PSRule -Module TestModule4 -Path $ruleFilePath -Baseline 'Module4' -Option @{
+                'Rule.IncludeLocal' = $True
+            });
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 3;
+            $result.RuleName | Should -BeIn 'M4.Rule1', 'WithBaseline', 'NotInBaseline';
         }
     }
 

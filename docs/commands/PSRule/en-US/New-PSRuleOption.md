@@ -27,8 +27,8 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
- [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
- [-OutputStyle <OutputStyle>] [<CommonParameters>]
+ [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
+ [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ### FromOption
@@ -45,8 +45,8 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
- [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
- [-OutputStyle <OutputStyle>] [<CommonParameters>]
+ [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
+ [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ### FromDefault
@@ -62,8 +62,8 @@ New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTar
  [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
- [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
- [-OutputStyle <OutputStyle>] [<CommonParameters>]
+ [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
+ [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -705,6 +705,24 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -OutputFooter
+
+Sets the option `Output.Footer`.
+The `Output.Footer` option configures the information displayed for PSRule footer.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: FooterFormat
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: Default
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -OutputFormat
 
 Sets the option `Output.Format`.
@@ -775,6 +793,24 @@ Accepted values: Client, Plain, AzurePipelines, GitHubActions
 Required: False
 Position: Named
 Default value: Client
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RuleIncludeLocal
+
+Sets the option `Rule.IncludeLocal`.
+The `Rule.IncludeLocal` option configures if local rules are automatically included.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

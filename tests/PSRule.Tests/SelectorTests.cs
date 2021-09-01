@@ -20,8 +20,10 @@ namespace PSRule
         [Fact]
         public void ReadSelector()
         {
-            var context = PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null);
-            var selector = HostHelper.GetSelectorYaml(GetSource(), new RunspaceContext(context, null)).ToArray();
+            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
+            context.Init(GetSource());
+            context.Begin();
+            var selector = HostHelper.GetSelectorYaml(GetSource(), context).ToArray();
             Assert.NotNull(selector);
             Assert.Equal(30, selector.Length);
 
@@ -498,8 +500,10 @@ namespace PSRule
 
         private static SelectorVisitor GetSelectorVisitor(string name)
         {
-            var context = PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null);
-            var selector = HostHelper.GetSelectorYaml(GetSource(), new RunspaceContext(context, null)).ToArray();
+            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
+            context.Init(GetSource());
+            context.Begin();
+            var selector = HostHelper.GetSelectorYaml(GetSource(), context).ToArray();
             return new SelectorVisitor(name, selector.FirstOrDefault(s => s.Name == name).Spec.If);
         }
 

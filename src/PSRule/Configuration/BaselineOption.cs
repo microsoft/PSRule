@@ -86,6 +86,9 @@ namespace PSRule.Configuration
             if (env.TryBool("PSRULE_BINDING_USEQUALIFIEDNAME", out bool useQualifiedName))
                 option.Binding.UseQualifiedName = useQualifiedName;
 
+            if (env.TryBool("PSRULE_RULE_INCLUDELOCAL", out bool includeLocal))
+                option.Rule.IncludeLocal = includeLocal;
+
             if (env.TryStringArray("PSRULE_RULE_INCLUDE", out string[] include))
                 option.Rule.Include = include;
 
@@ -126,8 +129,12 @@ namespace PSRule.Configuration
             if (properties.TryPopValue("Binding.UseQualifiedName", out bool useQualifiedName))
                 option.Binding.UseQualifiedName = useQualifiedName;
 
+            if (properties.TryPopBool("Rule.IncludeLocal", out bool includeLocal))
+                option.Rule.IncludeLocal = includeLocal;
+
             if (properties.TryPopStringArray("Rule.Include", out string[] include))
                 option.Rule.Include = include;
+
             if (properties.TryPopStringArray("Rule.Exclude", out string[] exclude))
                 option.Rule.Exclude = exclude;
 

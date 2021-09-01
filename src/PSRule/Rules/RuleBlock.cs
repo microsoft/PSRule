@@ -21,9 +21,9 @@ namespace PSRule.Rules
     /// Define an instance of a rule block. Each rule block has a unique id.
     /// </summary>
     [DebuggerDisplay("{RuleId} @{Source.Path}")]
-    public sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
+    public sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable, IResource
     {
-        internal RuleBlock(SourceFile source, string ruleName, RuleHelpInfo info, ICondition condition, TagSet tag, string[] dependsOn, Hashtable configuration, RuleExtent extent, ActionPreference errorPreference)
+        internal RuleBlock(SourceFile source, string ruleName, RuleHelpInfo info, ICondition condition, ResourceTags tag, string[] dependsOn, Hashtable configuration, RuleExtent extent, ActionPreference errorPreference)
         {
             Source = source;
             RuleName = ruleName;
@@ -65,7 +65,7 @@ namespace PSRule.Rules
         /// <summary>
         /// Tags assigned to block. Tags are additional metadata used to select rules to execute and identify results.
         /// </summary>
-        public readonly TagSet Tag;
+        public readonly ResourceTags Tag;
 
         /// <summary>
         /// Configuration defaults for the rule definition.
@@ -94,6 +94,14 @@ namespace PSRule.Rules
         string[] IDependencyTarget.DependsOn => DependsOn;
 
         bool IDependencyTarget.Dependency => Source.IsDependency();
+
+        ResourceKind IResource.Kind => ResourceKind.Rule;
+
+        string IResource.ApiVersion => Specs.V1;
+
+        string IResource.Name => RuleName;
+
+        ResourceTags IResource.Tags => Tag;
 
         #region IDisposable
 

@@ -28,12 +28,14 @@ namespace PSRule.Definitions.Conventions
             }
         }
 
-        public bool Match(string name, TagSet tag)
+        ResourceKind IResourceFilter.Kind => ResourceKind.Convention;
+
+        public bool Match(IResource resource)
         {
             if (_Include == null)
                 return false;
 
-            return _Include.Contains(name) || MatchWildcard(name);
+            return _Include.Contains(resource.Name) || _Include.Contains(resource.Id) || MatchWildcard(resource.Name) || MatchWildcard(resource.Id);
         }
 
         private bool MatchWildcard(string name)

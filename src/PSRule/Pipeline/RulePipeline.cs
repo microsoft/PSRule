@@ -25,6 +25,9 @@ namespace PSRule.Pipeline
             Source = source;
             Reader = reader;
             Writer = writer;
+
+            // Initialize contexts
+            Context.Init(source);
         }
 
         #region IPipeline

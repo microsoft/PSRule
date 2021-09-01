@@ -1157,7 +1157,11 @@ function New-PSRuleOption {
         # Sets the Output.Style option
         [Parameter(Mandatory = $False)]
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
-        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect
+        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect,
+
+        # Sets the Rule.IncludeLocal option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$RuleIncludeLocal = $False
     )
 
     begin {
@@ -1394,7 +1398,11 @@ function Set-PSRuleOption {
         # Sets the Output.Style option
         [Parameter(Mandatory = $False)]
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
-        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect
+        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect,
+
+        # Sets the Rule.IncludeLocal option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$RuleIncludeLocal = $False
     )
     begin {
         Write-Verbose -Message "[Set-PSRuleOption] BEGIN::";
@@ -2060,7 +2068,11 @@ function SetOptions {
         # Sets the Output.Style option
         [Parameter(Mandatory = $False)]
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
-        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect
+        [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect,
+
+        # Sets the Rule.IncludeLocal option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$RuleIncludeLocal = $False
     )
     process {
         # Options
@@ -2218,6 +2230,11 @@ function SetOptions {
         # Sets option Output.Style
         if ($PSBoundParameters.ContainsKey('OutputStyle')) {
             $Option.Output.Style = $OutputStyle;
+        }
+
+        # Sets option Rule.IncludeLocal
+        if ($PSBoundParameters.ContainsKey('RuleIncludeLocal')) {
+            $Option.Rule.IncludeLocal = $RuleIncludeLocal;
         }
 
         return $Option;

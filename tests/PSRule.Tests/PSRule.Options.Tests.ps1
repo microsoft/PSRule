@@ -105,6 +105,45 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Rule.IncludeLocal' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Rule.IncludeLocal | Should -Be $False;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Rule.IncludeLocal' = $True };
+            $option.Rule.IncludeLocal | Should -Be $True;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Rule.IncludeLocal | Should -Be $True;
+        }
+
+        It 'from Environment' {
+            try {
+                # With bool
+                $Env:PSRULE_RULE_INCLUDELOCAL = 'true';
+                $option = New-PSRuleOption;
+                $option.Rule.IncludeLocal | Should -Be $True;
+
+                # With int
+                $Env:PSRULE_RULE_INCLUDELOCAL = '1';
+                $option = New-PSRuleOption;
+                $option.Rule.IncludeLocal | Should -Be $True;
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_RULE_INCLUDELOCAL' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -RuleIncludeLocal $True -Path $emptyOptionsFilePath;
+            $option.Rule.IncludeLocal | Should -Be $True;
+        }
+    }
+
     Context 'Read Rule.Exclude' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -1710,6 +1749,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputStyle 'AzurePipelines' @optionParams;
             $option.Output.Style | Should -Be 'AzurePipelines';
+        }
+    }
+
+    Context 'Read Rule.IncludeLocal' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -RuleIncludeLocal $True @optionParams;
+            $option.Rule.IncludeLocal | Should -Be $True;
         }
     }
 }

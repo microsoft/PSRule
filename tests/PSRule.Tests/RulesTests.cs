@@ -21,6 +21,8 @@ namespace PSRule
         public void ReadYamlRule()
         {
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), new TestWriter(GetOption()));
+            context.Init(GetSource());
+            context.Begin();
             var rule = HostHelper.GetRuleYaml(GetSource(), context).ToArray();
             Assert.NotNull(rule);
             Assert.Equal("BasicRule", rule[0].RuleName);
@@ -30,10 +32,9 @@ namespace PSRule
         public void EvaluateYamlRule()
         {
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContext(), null), new TestWriter(GetOption()));
-            RunspaceContext.CurrentThread = context;
-            context.Import(new LanguageScope(null));
-            ImportSelectors(context);
+            context.Init(GetSource());
             context.Begin();
+            ImportSelectors(context);
             var yamlTrue = GetRuleVisitor(context, "RuleYamlTrue");
             var yamlFalse = GetRuleVisitor(context, "RuleYamlFalse");
             var customType = GetRuleVisitor(context, "RuleWithCustomType");

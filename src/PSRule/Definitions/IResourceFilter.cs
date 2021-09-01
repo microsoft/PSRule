@@ -5,6 +5,8 @@ namespace PSRule.Definitions
 {
     internal interface IResourceFilter
     {
-        bool Match(string name, TagSet tag);
+        ResourceKind Kind { get; }
+
+        bool Match(IResource resource);
     }
 }

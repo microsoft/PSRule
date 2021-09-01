@@ -15,7 +15,7 @@ namespace PSRule.Rules
     /// Define a single rule.
     /// </summary>
     [JsonObject]
-    public sealed class Rule : IDependencyTarget, ITargetInfo
+    public sealed class Rule : IDependencyTarget, ITargetInfo, IResource
     {
         /// <summary>
         /// A unique identifier for the rule.
@@ -60,7 +60,7 @@ namespace PSRule.Rules
         /// </summary>
         [JsonProperty(PropertyName = "tag")]
         [DefaultValue(null)]
-        public TagSet Tag { get; set; }
+        public ResourceTags Tag { get; set; }
 
         [JsonProperty(PropertyName = "info")]
         [DefaultValue(null)]
@@ -81,5 +81,19 @@ namespace PSRule.Rules
         string ITargetInfo.TargetType => typeof(Rule).FullName;
 
         bool IDependencyTarget.Dependency => Source.IsDependency();
+
+        ResourceKind IResource.Kind => ResourceKind.Rule;
+
+        string IResource.ApiVersion => Specs.V1;
+
+        string IResource.Name => RuleName;
+
+        ResourceTags IResource.Tags => Tag;
+
+        string ILanguageBlock.Id => RuleId;
+
+        string ILanguageBlock.SourcePath => Source.Path;
+
+        string ILanguageBlock.Module => Source.ModuleName;
     }
 }
