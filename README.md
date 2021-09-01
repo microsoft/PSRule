@@ -3,7 +3,7 @@
 A cross-platform module to validate infrastructure as code (IaC) and objects using PowerShell rules.
 PSRule works great and integrates with popular continuous integration (CI) systems.
 
-[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/microsoft/PSRule) ![ci-badge]
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/microsoft/PSRule)
 
 Features of PSRule include:
 
@@ -368,6 +368,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Output.Style](docs/concepts/PSRule/en-US/about_PSRule_Options.md#outputstyle)
   - [Requires](docs/concepts/PSRule/en-US/about_PSRule_Options.md#requires)
   - [Rule.Include](docs/concepts/PSRule/en-US/about_PSRule_Options.md#ruleinclude)
+  - [Rule.IncludeLocal](docs/concepts/PSRule/en-US/about_PSRule_Options.md#ruleincludelocal)
   - [Rule.Exclude](docs/concepts/PSRule/en-US/about_PSRule_Options.md#ruleexclude)
   - [Rule.Tag](docs/concepts/PSRule/en-US/about_PSRule_Options.md#ruletag)
   - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#suppression)
@@ -435,7 +436,6 @@ This project is [licensed under the MIT License](LICENSE).
 [issue]: https://github.com/Microsoft/PSRule/issues
 [discussion]: https://github.com/microsoft/PSRule/discussions
 [install]: docs/install-instructions.md
-[ci-badge]: https://dev.azure.com/bewhite/PSRule/_apis/build/status/PSRule-CI?branchName=main
 [module-psrule]: https://www.powershellgallery.com/packages/PSRule
 [extension-vscode]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
 [extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule

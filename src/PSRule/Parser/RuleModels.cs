@@ -76,6 +76,6 @@ namespace PSRule.Parser
 
         public Link[] Links;
 
-        public TagSet Annotations;
+        public ResourceTags Annotations;
     }
 }

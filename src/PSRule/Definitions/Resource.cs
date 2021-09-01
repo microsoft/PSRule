@@ -4,8 +4,10 @@
 using PSRule.Host;
 using PSRule.Pipeline;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -36,7 +38,12 @@ namespace PSRule.Definitions
         /// <summary>
         /// A selector resource.
         /// </summary>
-        Selector = 4
+        Selector = 4,
+
+        /// <summary>
+        /// A convention.
+        /// </summary>
+        Convention = 5
     }
 
     internal interface IResource : ILanguageBlock
@@ -46,6 +53,8 @@ namespace PSRule.Definitions
         string ApiVersion { get; }
 
         string Name { get; }
+
+        ResourceTags Tags { get; }
     }
 
     internal abstract class ResourceRef
@@ -128,7 +137,94 @@ namespace PSRule.Definitions
 
     public sealed class ResourceTags : Dictionary<string, string>
     {
+        public ResourceTags() : base(StringComparer.OrdinalIgnoreCase) { }
 
+        internal static ResourceTags FromHashtable(Hashtable hashtable)
+        {
+            if (hashtable == null || hashtable.Count == 0)
+                return null;
+
+            var tags = new ResourceTags();
+            foreach (DictionaryEntry kv in hashtable)
+                tags[kv.Key.ToString()] = kv.Value.ToString();
+
+            return tags;
+        }
+
+        internal static ResourceTags FromDictionary(Dictionary<string, string> dictionary)
+        {
+            if (dictionary == null)
+                return null;
+
+            var tags = new ResourceTags();
+            foreach (var kv in dictionary)
+                tags[kv.Key] = kv.Value;
+
+            return tags;
+        }
+
+        internal Hashtable ToHashtable()
+        {
+            return new Hashtable(this, StringComparer.OrdinalIgnoreCase);
+        }
+
+        internal bool Contains(object key, object value)
+        {
+            if (key == null || value == null || !(key is string k) || !ContainsKey(k))
+                return false;
+
+            if (TryArray(value, out string[] values))
+            {
+                for (var i = 0; i < values.Length; i++)
+                {
+                    if (Comparer.Equals(values[i], this[k]))
+                        return true;
+                }
+                return false;
+            }
+            var v = value.ToString();
+            return v == "*" || Comparer.Equals(v, this[k]);
+        }
+
+        private static bool TryArray(object o, out string[] values)
+        {
+            values = null;
+            if (o is string[] sArray)
+            {
+                values = sArray;
+                return true;
+            }
+            if (o is IEnumerable<object> oValues)
+            {
+                var result = new List<string>();
+                foreach (var obj in oValues)
+                    result.Add(obj.ToString());
+
+                values = result.ToArray();
+                return true;
+            }
+            return false;
+        }
+
+        public string ToViewString()
+        {
+            var sb = new StringBuilder();
+            var i = 0;
+
+            foreach (var kv in this)
+            {
+                if (i > 0)
+                    sb.Append(Environment.NewLine);
+
+                sb.Append(kv.Key);
+                sb.Append('=');
+                sb.Append('\'');
+                sb.Append(kv.Value);
+                sb.Append('\'');
+                i++;
+            }
+            return sb.ToString();
+        }
     }
 
     public sealed class ResourceMetadata
@@ -225,6 +321,8 @@ namespace PSRule.Definitions
         string IResource.ApiVersion => ApiVersion;
 
         string IResource.Name => Name;
+
+        ResourceTags IResource.Tags => Metadata.Tags;
 
         TAnnotation IAnnotated<ResourceAnnotation>.GetAnnotation<TAnnotation>()
         {

@@ -20,7 +20,7 @@ namespace PSRule.Rules
     [JsonObject]
     public sealed class RuleRecord
     {
-        internal RuleRecord(string runId, string ruleId, string ruleName, PSObject targetObject, string targetName, string targetType, TagSet tag, RuleHelpInfo info, Hashtable field, Hashtable data, TargetSourceInfo[] source, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
+        internal RuleRecord(string runId, string ruleId, string ruleName, PSObject targetObject, string targetName, string targetType, ResourceTags tag, RuleHelpInfo info, Hashtable field, Hashtable data, TargetSourceInfo[] source, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
             RunId = runId;
             RuleId = ruleId;

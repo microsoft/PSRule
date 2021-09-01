@@ -22,6 +22,7 @@ The following baseline options can be configured:
 - [Binding.UseQualifiedName](about_PSRule_Options.md#bindingusequalifiedname)
 - [Configuration](about_PSRule_Options.md#configuration)
 - [Rule.Include](about_PSRule_Options.md#ruleinclude)
+- [Rule.IncludeLocal](about_PSRule_Options.md#ruleincludelocal)
 - [Rule.Exclude](about_PSRule_Options.md#ruleexclude)
 - [Rule.Tag](about_PSRule_Options.md#ruletag)
 

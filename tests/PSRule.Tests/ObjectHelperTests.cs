@@ -46,7 +46,7 @@ namespace PSRule
                 { "Name", "TestObject1" },
                 { "Value", "Value1" }
             };
-            var testObject = TagSet.FromHashtable(hashtable);
+            var testObject = ResourceTags.FromHashtable(hashtable);
 
             Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: "Name", caseSensitive: true, value: out object actual1);
             Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: "Value", caseSensitive: true, value: out object actual2);

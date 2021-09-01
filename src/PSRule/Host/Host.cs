@@ -104,7 +104,7 @@ namespace PSRule.Host
         public ConfigurationVariable()
             : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
         {
-            _Value = new Runtime.Configuration();
+            _Value = new Runtime.Configuration(RunspaceContext.CurrentThread);
         }
 
         public override object Value => _Value;

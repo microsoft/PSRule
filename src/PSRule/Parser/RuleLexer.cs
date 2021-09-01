@@ -36,7 +36,7 @@ namespace PSRule.Parser
                 {
                     doc = new RuleDocument(stream.Current.Text)
                     {
-                        Annotations = TagSet.FromDictionary(metadata)
+                        Annotations = ResourceTags.FromDictionary(metadata)
                     };
                 }
                 else if (doc != null && IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL))

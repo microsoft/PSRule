@@ -10,6 +10,14 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.7.0-B2108032:
+
+- General improvements:
+  - Allow baselines to include local rules. [#756](https://github.com/microsoft/PSRule/issues/756)
+    - The `Rule.IncludeLocal`option was automatically include local/ standalone rules not in a module.
+    - This option is useful when you want to include local rules not included in a baseline.
+    - See [about_PSRule_Options] for details.
+
 ## v1.7.0-B2108032 (pre-release)
 
 What's changed since pre-release v1.7.0-B2108021:

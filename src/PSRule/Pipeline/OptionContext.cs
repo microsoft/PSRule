@@ -85,6 +85,7 @@ namespace PSRule.Pipeline
             public bool Obsolete;
 
             // Rule
+            public bool? IncludeLocal;
             public string[] Include;
             public string[] Exclude;
             public Hashtable Tag;
@@ -115,6 +116,7 @@ namespace PSRule.Pipeline
                 TargetName = option.Binding?.TargetName;
                 TargetType = option.Binding?.TargetType;
                 UseQualifiedName = option.Binding?.UseQualifiedName;
+                IncludeLocal = option.Rule?.IncludeLocal;
                 Include = option.Rule?.Include;
                 Exclude = option.Rule?.Exclude;
                 Tag = option.Rule?.Tag;
@@ -268,7 +270,8 @@ namespace PSRule.Pipeline
             string[] include = _Parameter?.Include ?? _Explicit?.Include ?? _WorkspaceBaseline?.Include ?? _ModuleBaseline?.Include;
             string[] exclude = _Explicit?.Exclude ?? _WorkspaceBaseline?.Exclude ?? _ModuleBaseline?.Exclude;
             Hashtable tag = _Parameter?.Tag ?? _Explicit?.Tag ?? _WorkspaceBaseline?.Tag ?? _ModuleBaseline?.Tag;
-            return _Filter = new RuleFilter(include, tag, exclude);
+            bool? includeLocal = _Explicit?.IncludeLocal ?? _WorkspaceBaseline?.IncludeLocal ?? _ModuleBaseline?.IncludeLocal;
+            return _Filter = new RuleFilter(include, tag, exclude, includeLocal);
         }
 
         public IResourceFilter GetConventionFilter()
@@ -351,6 +354,14 @@ namespace PSRule.Pipeline
                 _WorkspaceConfig = scope;
         }
 
+        internal void BuildScope(ILanguageScope languageScope)
+        {
+            UseScope(languageScope.Name);
+            var configuration = GetConfiguration();
+            languageScope.Configure(configuration);
+            languageScope.WithFilter(RuleFilter());
+        }
+
         private Dictionary<string, object> AddConfiguration()
         {
             var result = new Dictionary<string, object>();
@@ -387,6 +398,38 @@ namespace PSRule.Pipeline
                     result.Add(p.Name);
             }
             return result.ToArray();
+        }
+    }
+
+    internal sealed class OptionContextBuilder
+    {
+        private readonly OptionContext _OptionContext;
+
+        internal OptionContextBuilder()
+        {
+            _OptionContext = new OptionContext();
+        }
+
+        internal OptionContextBuilder(PSRuleOption option)
+            : this()
+        {
+            Workspace(option);
+        }
+
+        internal OptionContext Build()
+        {
+            return _OptionContext;
+        }
+
+        internal void Parameter(string[] include, Hashtable tag, string[] convention)
+        {
+            _OptionContext.Add(new OptionContext.BaselineScope(type: OptionContext.ScopeType.Parameter, include: include, tag: tag, convention: convention));
+        }
+
+        private void Workspace(PSRuleOption option)
+        {
+            _OptionContext.Add(new OptionContext.BaselineScope(type: OptionContext.ScopeType.Workspace, baselineId: null, moduleName: null, option: option, obsolete: false));
+            _OptionContext.Add(new OptionContext.ConfigScope(type: OptionContext.ScopeType.Workspace, moduleName: null, option: option));
         }
     }
 }

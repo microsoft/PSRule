@@ -21,9 +21,8 @@ namespace PSRule
         {
             var option = new PSRuleOption();
             option.Configuration.Add("key1", "value1");
-            BuildPipeline(option);
 
-            dynamic configuration = GetConfigurationHelper();
+            dynamic configuration = GetConfigurationHelper(option);
             Assert.Equal("value1", configuration.key1);
         }
 
@@ -34,9 +33,8 @@ namespace PSRule
             option.Configuration.Add("key1", "123");
             option.Configuration.Add("key2", new string[] { "123" });
             option.Configuration.Add("key3", new object[] { "123", 456 });
-            BuildPipeline(option);
 
-            var configuration = GetConfigurationHelper();
+            var configuration = GetConfigurationHelper(option);
             Assert.Equal(new string[] { "123" }, configuration.GetStringValues("key1"));
             Assert.Equal(new string[] { "123" }, configuration.GetStringValues("key2"));
             Assert.Equal(new string[] { "123", "456" }, configuration.GetStringValues("key3"));
@@ -53,8 +51,7 @@ namespace PSRule
             var pso = actual.GetValue(0) as PSObject;
             Assert.Equal("option5a", pso.BaseObject);
 
-            BuildPipeline(option);
-            var configuration = GetConfigurationHelper();
+            var configuration = GetConfigurationHelper(option);
             Assert.Equal(new string[] { "option5a", "option5b" }, configuration.GetStringValues("option5"));
         }
 
@@ -70,15 +67,13 @@ namespace PSRule
             Assert.Equal("East US", pso.PropertyValue<string>("location"));
         }
 
-        private static void BuildPipeline(PSRuleOption option)
+        private static Runtime.Configuration GetConfigurationHelper(PSRuleOption option)
         {
-            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
-            builder.Build();
-        }
-
-        private static Runtime.Configuration GetConfigurationHelper()
-        {
-            return new Runtime.Configuration();
+            var builder = new OptionContextBuilder(option);
+            var context = new PSRule.Runtime.RunspaceContext(PipelineContext.New(option, null, null, null, null, null, builder.Build(), null), null);
+            context.Init(null);
+            context.Begin();
+            return new Runtime.Configuration(context);
         }
 
         private static Source[] GetSource()

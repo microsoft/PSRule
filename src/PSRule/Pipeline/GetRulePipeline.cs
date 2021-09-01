@@ -65,7 +65,6 @@ namespace PSRule.Pipeline
         internal GetRulePipeline(PipelineContext pipeline, Source[] source, PipelineReader reader, PipelineWriter writer, bool includeDependencies)
             : base(pipeline, source, reader, writer)
         {
-            HostHelper.ImportResource(Source, Context);
             _IncludeDependencies = includeDependencies;
         }
 

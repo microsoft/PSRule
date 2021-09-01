@@ -61,10 +61,6 @@ namespace PSRule.Pipeline
 
     public sealed class Source
     {
-        public string Path { get; }
-
-        public SourceFile[] File { get; }
-
         internal bool Dependency;
 
         internal readonly ModuleInfo Module;
@@ -85,12 +81,6 @@ namespace PSRule.Pipeline
             File = file;
             Dependency = dependency;
             SetSource();
-        }
-
-        private void SetSource()
-        {
-            for (var i = 0; File != null && i < File.Length; i++)
-                File[i].Source = this;
         }
 
         internal sealed class ModuleInfo
@@ -130,6 +120,24 @@ namespace PSRule.Pipeline
                 }
                 return false;
             }
+        }
+
+        public string Path { get; }
+
+        public SourceFile[] File { get; }
+
+        internal string Scope
+        {
+            get
+            {
+                return Module?.Name ?? Runtime.LanguageScope.STANDALONE_SCOPENAME;
+            }
+        }
+
+        private void SetSource()
+        {
+            for (var i = 0; File != null && i < File.Length; i++)
+                File[i].Source = this;
         }
     }
 

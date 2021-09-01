@@ -72,17 +72,19 @@ namespace PSRule.Definitions.Baselines
             }
         }
 
-        public bool Match(string name, TagSet tag)
+        ResourceKind IResourceFilter.Kind => ResourceKind.Baseline;
+
+        public bool Match(IResource resource)
         {
-            return _Include == null || _Include.Contains(name) || MatchWildcard(ruleName: name);
+            return _Include == null || _Include.Contains(resource.Name) || MatchWildcard(resource.Name);
         }
 
-        private bool MatchWildcard(string ruleName)
+        private bool MatchWildcard(string name)
         {
             if (_WildcardMatch == null)
                 return false;
 
-            return _WildcardMatch.IsMatch(ruleName);
+            return _WildcardMatch.IsMatch(name);
         }
     }
 

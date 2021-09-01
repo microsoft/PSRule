@@ -4,6 +4,7 @@
 rule:
   include:
   - rule1
+  includeLocal: true
   exclude:
   - rule3
   tag:

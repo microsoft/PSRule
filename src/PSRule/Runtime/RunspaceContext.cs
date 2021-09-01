@@ -95,7 +95,7 @@ namespace PSRule.Runtime
         private readonly Stopwatch _RuleTimer;
         private readonly List<string> _Reason;
         private readonly List<IConvention> _Conventions;
-        private readonly List<ILanguageScope> _LanguageScopes;
+        private readonly LanguageScopeSet _LanguageScopes;
 
         // Track whether Dispose has been called.
         private bool _Disposed;
@@ -116,7 +116,7 @@ namespace PSRule.Runtime
             _RuleTimer = new Stopwatch();
             _Reason = new List<string>();
             _Conventions = new List<IConvention>();
-            _LanguageScopes = new List<ILanguageScope>();
+            _LanguageScopes = new LanguageScopeSet();
             _Scope = new Stack<RunspaceScope>();
         }
 
@@ -129,6 +129,14 @@ namespace PSRule.Runtime
         internal TargetObject TargetObject { get; private set; }
 
         internal SourceScope Source { get; private set; }
+
+        internal ILanguageScope LanguageScope
+        {
+            get
+            {
+                return _LanguageScopes.Current;
+            }
+        }
 
         internal bool IsScope(RunspaceScope scope)
         {
@@ -535,9 +543,11 @@ namespace PSRule.Runtime
             if (Source != null && Source.File == source)
                 return Source;
 
+            _LanguageScopes.UseScope(source.ModuleName);
+
             // Change scope
             Pipeline.Baseline.UseScope(moduleName: source.ModuleName);
-            Source = new SourceScope(source, File.ReadAllLines(source.Path, Encoding.UTF8), Pipeline.Baseline.RuleFilter(), Pipeline.Baseline.GetConfiguration());
+            Source = new SourceScope(source, File.ReadAllLines(source.Path, Encoding.UTF8));
             return Source;
         }
 
@@ -643,11 +653,6 @@ namespace PSRule.Runtime
             _Conventions.Add(resource);
         }
 
-        internal void Import(ILanguageScope languageScope)
-        {
-            _LanguageScopes.Add(languageScope);
-        }
-
         private void RunConventionBegin()
         {
             if (_Conventions == null || _Conventions.Count == 0)
@@ -683,14 +688,30 @@ namespace PSRule.Runtime
             _Reason.Add(text);
         }
 
+        public void Init(Source[] source)
+        {
+            InitLanguageScopes(source);
+            Host.HostHelper.ImportResource(source, this);
+
+            foreach (var languageScope in _LanguageScopes.Get())
+            {
+                Pipeline.Baseline.BuildScope(languageScope);
+            }
+        }
+
+        private void InitLanguageScopes(Source[] source)
+        {
+            for (var i = 0; source != null && i < source.Length; i++)
+                _LanguageScopes.Import(source[i].Scope, out _);
+        }
+
         public void Begin()
         {
-            Pipeline.Init(this);
+            Pipeline.Begin(this);
 
             var builder = new TargetBinderBuilder(Pipeline.BindTargetName, Pipeline.BindTargetType, Pipeline.BindField, Pipeline.Option.Input.TargetType);
-            foreach (var languageScope in _LanguageScopes)
+            foreach (var languageScope in _LanguageScopes.Get())
             {
-                Pipeline.Baseline.UseScope(languageScope.Name);
                 var targetBinding = Pipeline.Baseline.GetTargetBinding();
                 builder.With(new TargetBinder.TargetBindingContext(languageScope.Name, targetBinding));
             }

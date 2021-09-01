@@ -23,8 +23,9 @@ Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force
  [-InputPathIgnore <String[]>] [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>]
  [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
  [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
+ [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputStyle <OutputStyle>]
+ [-RuleIncludeLocal <Boolean>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -599,6 +600,24 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -OutputFooter
+
+Sets the option `Output.Footer`.
+The `Output.Footer` option configures the information displayed for PSRule footer.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: FooterFormat
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: Default
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -OutputFormat
 
 Sets the option `Output.Format`.
@@ -700,6 +719,24 @@ Aliases: cf
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RuleIncludeLocal
+
+Sets the option `Rule.IncludeLocal`.
+The `Rule.IncludeLocal` option configures if local rules are automatically included.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

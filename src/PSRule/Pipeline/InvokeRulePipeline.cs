@@ -178,7 +178,6 @@ namespace PSRule.Pipeline
         internal InvokeRulePipeline(PipelineContext context, Source[] source, PipelineWriter writer, RuleOutcome outcome)
             : base(context, source, context.Reader, writer)
         {
-            HostHelper.ImportResource(Source, Context);
             _RuleGraph = HostHelper.GetRuleBlockGraph(Source, Context);
             RuleCount = _RuleGraph.Count;
             if (RuleCount == 0)
