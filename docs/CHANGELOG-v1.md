@@ -10,6 +10,36 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.7.0
+
+What's changed since v1.6.0:
+
+- Engine features:
+  - Added support for generating badges from rule results. [#623](https://github.com/microsoft/PSRule/issues/623)
+    - Standard or custom badges can be generated using a convention and the badge API.
+    - See [about_PSRule_Badges] for details.
+- General improvements:
+  - Rule results now include a run ID or each run. [#774](https://github.com/microsoft/PSRule/issues/774)
+    - Run ID is returned in `Assert-PSRule` output at the end of each run by default.
+    - By default a unique `runId` is generated when the rule is run.
+    - The `Output.Footer`option was added to configure the output footer.
+    - See [about_PSRule_Options] for details.
+  - Automatically exclude common repository files from input files. [#721](https://github.com/microsoft/PSRule/issues/721)
+    - Added `Input.IgnoreRepositoryCommon` option to change default behavior.
+    - See [about_PSRule_Options] for details.
+  - Added aggregation assertion methods for `AnyOf` and `AllOf`. [#776](https://github.com/microsoft/PSRule/issues/776)
+    - See [about_PSRule_Assert] for details.
+  - Allow baselines to include local rules. [#756](https://github.com/microsoft/PSRule/issues/756)
+    - The `Rule.IncludeLocal`option was automatically include local/ standalone rules not in a module.
+    - This option is useful when you want to include local rules not included in a baseline.
+    - See [about_PSRule_Options] for details.
+- Bug fixes:
+  - Fixed configuration array deserializes as dictionary from YAML options. [#779](https://github.com/microsoft/PSRule/issues/779)
+
+What's changed since pre-release v1.7.0-B2109002:
+
+- No additional changes.
+
 ## v1.7.0-B2109002 (pre-release)
 
 What's changed since pre-release v1.7.0-B2108032:
