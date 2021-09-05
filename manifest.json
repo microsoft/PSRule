@@ -24,7 +24,7 @@
       "output": {
         ".html": {
           "relative_path": "CHANGELOG-v1.html",
-          "hash": "sH1qcOZdAmEWdc/nXfTz+Q=="
+          "hash": "9tfDsRpNdKtbSEvid0EP2Q=="
         }
       },
       "is_incremental": false,
@@ -108,7 +108,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/New-PSRuleOption.html",
-          "hash": "jFzTCbRDhSCwVMaM5F5PZA=="
+          "hash": "pwbUAfLskAZQMvY5IAf8+A=="
         }
       },
       "is_incremental": false,
@@ -132,7 +132,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Set-PSRuleOption.html",
-          "hash": "OXTyK6b+pob9ZeKjAlWLVg=="
+          "hash": "uc0lmw7Zw6IhX/S7fPBR1Q=="
         }
       },
       "is_incremental": false,
@@ -156,7 +156,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/toc.html",
-          "hash": "3LPC4lOSjpHp5iN+bF7Z5g=="
+          "hash": "f+N7xPc6z4ChF0L9X3OBag=="
         }
       },
       "is_incremental": false,
@@ -168,7 +168,19 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Assert.html",
-          "hash": "9B4zypqs6nXZ+BRT4aQ+6Q=="
+          "hash": "R7ImNzot1/tG1eaodhCVYg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "concepts/PSRule/en-US/about_PSRule_Badges.md",
+      "output": {
+        ".html": {
+          "relative_path": "concepts/PSRule/en-US/about_PSRule_Badges.html",
+          "hash": "+2L6C5bVCAE53AmXuxOI3w=="
         }
       },
       "is_incremental": false,
@@ -180,7 +192,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Baseline.html",
-          "hash": "0sTNmEFB+G/9qtvx/9GcxQ=="
+          "hash": "6IvxyL31crzvUkmv1eZfwg=="
         }
       },
       "is_incremental": false,
@@ -228,7 +240,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "i34BiMB+Hfmhe/BbM+v6/w=="
+          "hash": "W4U/d6M6I91Ffl0j740ZWw=="
         }
       },
       "is_incremental": false,
@@ -853,7 +865,7 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 45,
+          "total_file_count": 46,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {

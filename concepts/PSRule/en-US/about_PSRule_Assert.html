@@ -1295,6 +1295,27 @@ Additional arguments can be provided to format the custom reason string.</li>
 <li><code>Fail(&lt;string&gt; reason, params &lt;object[]&gt; args)</code> - Results a fail assertion result with a custom reason.
 Additional arguments can be provided to format the custom reason string.</li>
 </ul>
+<h3 id="aggregating-assertion-methods">Aggregating assertion methods</h3>
+<p>The following built-in helper methods are provided for aggregating assertion results:</p>
+<ul>
+<li><code>AnyOf(&lt;AssertResult[]&gt; results)</code> - Results from assertion methods are aggregated into a single result.
+If any result is a pass, the result is a pass.
+If all results are fails, the result is a fail and any reasons are added to the result.
+If no results are provided, the result is a fail.</li>
+<li><code>AllOf(&lt;AssertResult[]&gt; results)</code> - Results from assertion methods are aggregated into a single result.
+If all results are passes, the result is a pass.
+If any result is a fail, the result is a fail and any reasons are added to the result.
+If no results are provided, the result is a fail.</li>
+</ul>
+<p>For example:</p>
+<pre><code class="lang-powershell">Rule 'Assert.HasFieldValue' {
+    $Assert.AllOf(
+        $Assert.HasFieldValue($TargetObject, 'Name'),
+        $Assert.HasFieldValue($TargetObject, 'Type'),
+        $Assert.HasFieldValue($TargetObject, 'Value')
+    )
+}
+</code></pre>
 <h2 id="note">NOTE</h2>
 <p>An online version of this document is available at <a href="https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Assert.md">https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Assert.md</a>.</p>
 <h2 id="see-also">SEE ALSO</h2>

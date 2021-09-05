@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>PSRule_Badges </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="PSRule_Badges ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../favicon.ico">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="../../../commands/PSRule/en-US/toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="psrule_badges">PSRule_Badges</h1>
+
+<h2 id="about_psrule_badges">about_PSRule_Badges</h2>
+<h2 id="short-description">SHORT DESCRIPTION</h2>
+<p>Describes using the badge API with PSRule.</p>
+<h2 id="long-description">LONG DESCRIPTION</h2>
+<p>PSRule executes rules to validate an object from input.
+When processing input it may be necessary to perform custom actions before or after rules execute.
+Conventions provide an extensibility point that can be shipped with or external to standard rules.
+The badge API can be used to create badges within a convention.</p>
+<h3 id="using-the-api">Using the API</h3>
+<p>PSRule provides the <code>$PSRule</code> built-in variable that exposes the badge API.
+By using the <code>$PSRule.Badges.Create</code> method you can create a standard or custom badge.</p>
+<p>The create method provides the following overloads:</p>
+<pre><code class="lang-csharp">// Create a badge for the worst case of an analyzed object.
+IBadge Create(InvokeResult result);
+
+// Create a badge for the worst case of all analyzed objects.
+IBadge Create(IEnumerable&lt;InvokeResult&gt; result);
+
+// Create a custom badge.
+IBadge Create(string title, BadgeType type, string label);
+</code></pre>
+<p>A badge once created can be read as a string or written to disk with the following methods:</p>
+<pre><code class="lang-csharp">// Get the badge as SVG text content.
+string ToSvg();
+
+// Write the SVG badge content directly to disk.
+void ToFile(string path);
+</code></pre>
+<h3 id="defining-conventions">Defining conventions</h3>
+<p>To define a convention, add a <code>Export-PSRuleConvention</code> block within a <code>.Rule.ps1</code> file.
+The <code>.Rule.ps1</code> must be in an included path or module with <code>-Path</code> or <code>-Module</code>.</p>
+<p>The <code>Export-PSRuleConvention</code> block works similar to the <code>Rule</code> block.
+Each convention must have a unique name.
+Currently the badge API support creating badges in the <code>-End</code> block.</p>
+<p>For example:</p>
+<pre><code class="lang-powershell"># Synopsis: A convention that generates a badge for an aggregate result.
+Export-PSRuleConvention 'Local.Aggregate' -End {
+    $PSRule.Badges.Create($PSRule.Output).ToFile('out/badges/aggregate.svg');
+}
+</code></pre>
+<pre><code class="lang-powershell"># Synopsis: A convention that generates a custom badge.
+Export-PSRuleConvention 'Local.CustomBadge' -End {
+    $PSRule.Badges.Create('PSRule', [PSRule.Badges.BadgeType]::Success, 'OK').ToFile('out/badges/custom.svg');
+}
+</code></pre>
+<h3 id="using-conventions">Using conventions</h3>
+<p>A convention can be included by using the <code>-Convention</code> parameter when executing a PSRule cmdlet.
+Alternatively, conventions can be included with options.
+To use a convention specify the name of the convention by name.
+For example:</p>
+<pre><code class="lang-powershell">Invoke-PSRule -Convention 'Local.Aggregate';
+</code></pre>
+<h2 id="note">NOTE</h2>
+<p>An online version of this document is available at <a href="https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Badges.md">https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Badges.md</a>.</p>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a href="https://microsoft.github.io/PSRule/commands/PSRule/en-US/Invoke-PSRule.html">Invoke-PSRule</a></li>
+</ul>
+<h2 id="keywords">KEYWORDS</h2>
+<ul>
+<li>Badges</li>
+<li>Conventions</li>
+<li>PSRule</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Badges.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

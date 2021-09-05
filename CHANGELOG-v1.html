@@ -68,6 +68,110 @@
 <li>YAML resources will require an <code>apiVersion</code> from PSRule v2. <a href="https://github.com/microsoft/PSRule/issues/648">#648</a></li>
 </ul>
 <h2 id="unreleased">Unreleased</h2>
+<h2 id="v170">v1.7.0</h2>
+<p>What's changed since v1.6.0:</p>
+<ul>
+<li>Engine features:
+<ul>
+<li>Added support for generating badges from rule results. <a href="https://github.com/microsoft/PSRule/issues/623">#623</a>
+<ul>
+<li>Standard or custom badges can be generated using a convention and the badge API.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Badges.html">about_PSRule_Badges</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>General improvements:
+<ul>
+<li>Rule results now include a run ID or each run. <a href="https://github.com/microsoft/PSRule/issues/774">#774</a>
+<ul>
+<li>Run ID is returned in <code>Assert-PSRule</code> output at the end of each run by default.</li>
+<li>By default a unique <code>runId</code> is generated when the rule is run.</li>
+<li>The <code>Output.Footer</code>option was added to configure the output footer.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+<li>Automatically exclude common repository files from input files. <a href="https://github.com/microsoft/PSRule/issues/721">#721</a>
+<ul>
+<li>Added <code>Input.IgnoreRepositoryCommon</code> option to change default behavior.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+<li>Added aggregation assertion methods for <code>AnyOf</code> and <code>AllOf</code>. <a href="https://github.com/microsoft/PSRule/issues/776">#776</a>
+<ul>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+<li>Allow baselines to include local rules. <a href="https://github.com/microsoft/PSRule/issues/756">#756</a>
+<ul>
+<li>The <code>Rule.IncludeLocal</code>option was automatically include local/ standalone rules not in a module.</li>
+<li>This option is useful when you want to include local rules not included in a baseline.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Bug fixes:
+<ul>
+<li>Fixed configuration array deserializes as dictionary from YAML options. <a href="https://github.com/microsoft/PSRule/issues/779">#779</a></li>
+</ul>
+</li>
+</ul>
+<p>What's changed since pre-release v1.7.0-B2109002:</p>
+<ul>
+<li>No additional changes.</li>
+</ul>
+<h2 id="v170-b2109002-pre-release">v1.7.0-B2109002 (pre-release)</h2>
+<p>What's changed since pre-release v1.7.0-B2108032:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Allow baselines to include local rules. <a href="https://github.com/microsoft/PSRule/issues/756">#756</a>
+<ul>
+<li>The <code>Rule.IncludeLocal</code>option was automatically include local/ standalone rules not in a module.</li>
+<li>This option is useful when you want to include local rules not included in a baseline.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v170-b2108032-pre-release">v1.7.0-B2108032 (pre-release)</h2>
+<p>What's changed since pre-release v1.7.0-B2108021:</p>
+<ul>
+<li>Engine features:
+<ul>
+<li>Added support for generating badges from rule results. <a href="https://github.com/microsoft/PSRule/issues/623">#623</a>
+<ul>
+<li>Standard or custom badges can be generated using a convention and the badge API.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Badges.html">about_PSRule_Badges</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>General improvements:
+<ul>
+<li>Rule results now include a run ID or each run. <a href="https://github.com/microsoft/PSRule/issues/774">#774</a>
+<ul>
+<li>Run ID is returned in <code>Assert-PSRule</code> output at the end of each run by default.</li>
+<li>By default a unique <code>runId</code> is generated when the rule is run.</li>
+<li>The <code>Output.Footer</code>option was added to configure the output footer.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v170-b2108021-pre-release">v1.7.0-B2108021 (pre-release)</h2>
+<p>What's changed since pre-release v1.7.0-B2108016:</p>
+<ul>
+<li>Bug fixes:
+<ul>
+<li>Fixed configuration array deserializes as dictionary from YAML options. <a href="https://github.com/microsoft/PSRule/issues/779">#779</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v170-b2108016-pre-release">v1.7.0-B2108016 (pre-release)</h2>
 <p>What's changed since v1.6.0:</p>
 <ul>
 <li>General improvements:
@@ -78,6 +182,20 @@
 <li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
 </ul>
 </li>
+<li>Added aggregation assertion methods for <code>AnyOf</code> and <code>AllOf</code>. <a href="https://github.com/microsoft/PSRule/issues/776">#776</a>
+<ul>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v161">v1.6.1</h2>
+<p>What's changed since v1.6.0:</p>
+<ul>
+<li>Bug fixes:
+<ul>
+<li>Fixed configuration array deserializes as dictionary from YAML options. <a href="https://github.com/microsoft/PSRule/issues/779">#779</a></li>
 </ul>
 </li>
 </ul>

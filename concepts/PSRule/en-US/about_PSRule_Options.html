@@ -97,6 +97,7 @@ This topic describes what options are available, when to and how to use them.</p
 <li><a href="#outputbanner">Output.Banner</a></li>
 <li><a href="#outputculture">Output.Culture</a></li>
 <li><a href="#outputencoding">Output.Encoding</a></li>
+<li><a href="#outputfooter">Output.Footer</a></li>
 <li><a href="#outputformat">Output.Format</a></li>
 <li><a href="#outputoutcome">Output.Outcome</a></li>
 <li><a href="#outputpath">Output.Path</a></li>
@@ -115,6 +116,7 @@ This topic describes what options are available, when to and how to use them.</p
 <li><a href="#bindingusequalifiedname">Binding.UseQualifiedName</a></li>
 <li><a href="#configuration">Configuration</a></li>
 <li><a href="#ruleinclude">Rule.Include</a></li>
+<li><a href="#ruleincludelocal">Rule.IncludeLocal</a></li>
 <li><a href="#ruleexclude">Rule.Exclude</a></li>
 <li><a href="#ruletag">Rule.Tag</a></li>
 </ul>
@@ -1160,7 +1162,7 @@ Set-PSRuleOption -OutputBanner Minimal;
 </code></pre>
 <pre><code class="lang-yaml"># YAML: Using the output/banner property
 output:
-  banner: OutputBanner
+  banner: Minimal
 </code></pre>
 <pre><code class="lang-bash"># Bash: Using environment variable
 export PSRULE_OUTPUT_BANNER=Minimal
@@ -1244,6 +1246,48 @@ env:
 variables:
 - name: PSRULE_OUTPUT_ENCODING
   value: UTF8
+</code></pre>
+<h3 id="outputfooter">Output.Footer</h3>
+<p>The information displayed for PSRule footer.
+This option is only applicable when using <code>Assert-PSRule</code> cmdlet.</p>
+<p>The following information can be shown or hidden by configuring this option.</p>
+<ul>
+<li><code>RuleCount</code> (1) - Shows a summary of rules processed.</li>
+<li><code>RunInfo</code> (2) - Shows information about the run.</li>
+</ul>
+<p>Additionally the following rollup options exist:</p>
+<ul>
+<li><code>Default</code> - Shows <code>RuleCount</code>, and <code>RunInfo</code>.
+This is the default option.</li>
+</ul>
+<p>This option can be configured using one of the named values described above.
+Alternatively, this value can be configured by specifying a bit mask as an integer.
+For example <code>3</code> would show <code>RunInfo</code>, and <code>RuleCount</code>.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputFooter parameter
+$option = New-PSRuleOption -OutputFooter RuleCount;
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Output.Footer hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.Footer' = 'RuleCount' };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputFooter parameter to set YAML
+Set-PSRuleOption -OutputFooter RuleCount;
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the output/footer property
+output:
+  footer: RuleCount
+</code></pre>
+<pre><code class="lang-bash"># Bash: Using environment variable
+export PSRULE_OUTPUT_FOOTER=RuleCount
+</code></pre>
+<pre><code class="lang-yaml"># GitHub Actions: Using environment variable
+env:
+  PSRULE_OUTPUT_FOOTER: RuleCount
+</code></pre>
+<pre><code class="lang-yaml"># Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_OUTPUT_FOOTER
+  value: RuleCount
 </code></pre>
 <h3 id="outputformat">Output.Format</h3>
 <p>Configures the format that results will be presented in.
@@ -1481,6 +1525,37 @@ variables:
 - name: PSRULE_RULE_INCLUDE
   value: 'Rule1;Rule2'
 </code></pre>
+<h3 id="ruleincludelocal">Rule.IncludeLocal</h3>
+<p>Automatically include all local rules in the search path unless they have been explicitly excluded.
+This option will include local rules even when they do not match <code>Rule.Include</code> or <code>Rule.Tag</code> filters.
+By default, local rules will be filtered with <code>Rule.Include</code> and <code>Rule.Tag</code> filters.</p>
+<p>This option is useful when you want to include local rules not included in a baseline.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the RuleIncludeLocal parameter
+$option = New-PSRuleOption -RuleIncludeLocal $True;
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Rule.IncludeLocal hashtable key
+$option = New-PSRuleOption -Option @{ 'Rule.IncludeLocal' = $True };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the RuleIncludeLocal parameter to set YAML
+Set-PSRuleOption -RuleIncludeLocal $True;
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the rule/includeLocal property
+rule:
+  includeLocal: true
+</code></pre>
+<pre><code class="lang-bash"># Bash: Using environment variable
+export PSRULE_RULE_INCLUDELOCAL=true
+</code></pre>
+<pre><code class="lang-yaml"># GitHub Actions: Using environment variable
+env:
+  PSRULE_RULE_INCLUDELOCAL: true
+</code></pre>
+<pre><code class="lang-yaml"># Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_RULE_INCLUDELOCAL
+  value: true
+</code></pre>
 <h3 id="ruleexclude">Rule.Exclude</h3>
 <p>The name of specific rules to exclude from being evaluated.
 This will exclude rules specified by <code>Rule.Include</code> or discovered from a search path.</p>
@@ -1626,6 +1701,7 @@ output:
   culture:
   - en-US
   encoding: UTF8
+  footer: RuleCount
   format: Json
   outcome: Fail
   style: GitHubActions
@@ -1661,6 +1737,7 @@ rule:
   include:
   - rule1
   - rule2
+  includeLocal: true
   exclude:
   - rule3
   - rule4
@@ -1715,6 +1792,7 @@ output:
   banner: Default
   culture: [ ]
   encoding: Default
+  footer: Default
   format: None
   outcome: Processed
   style: Detect
@@ -1739,6 +1817,7 @@ configuration: { }
 
 rule:
   include: [ ]
+  includeLocal: false
   exclude: [ ]
   tag: { }
 </code></pre>
