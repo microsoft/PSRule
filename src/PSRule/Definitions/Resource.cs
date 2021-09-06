@@ -139,6 +139,9 @@ namespace PSRule.Definitions
     {
         public ResourceTags() : base(StringComparer.OrdinalIgnoreCase) { }
 
+        /// <summary>
+        /// Convert from a hashtable to resource tags.
+        /// </summary>
         internal static ResourceTags FromHashtable(Hashtable hashtable)
         {
             if (hashtable == null || hashtable.Count == 0)
@@ -151,6 +154,9 @@ namespace PSRule.Definitions
             return tags;
         }
 
+        /// <summary>
+        /// Convert from a dictionary of string pairs to resource tags.
+        /// </summary>
         internal static ResourceTags FromDictionary(Dictionary<string, string> dictionary)
         {
             if (dictionary == null)
@@ -163,11 +169,17 @@ namespace PSRule.Definitions
             return tags;
         }
 
-        internal Hashtable ToHashtable()
+        /// <summary>
+        /// Convert resource tags to a hashtable.
+        /// </summary>
+        public Hashtable ToHashtable()
         {
             return new Hashtable(this, StringComparer.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// Check if a specific resource tag exists.
+        /// </summary>
         internal bool Contains(object key, object value)
         {
             if (key == null || value == null || !(key is string k) || !ContainsKey(k))
