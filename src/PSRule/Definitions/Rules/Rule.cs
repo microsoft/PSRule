@@ -38,7 +38,6 @@ namespace PSRule.Definitions.Rules
         string ILanguageBlock.Id => Name;
     }
 
-
     internal sealed class RuleV1Spec : Spec, IRuleSpec
     {
         public LanguageIf Condition { get; set; }

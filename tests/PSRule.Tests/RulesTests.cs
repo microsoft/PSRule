@@ -26,6 +26,9 @@ namespace PSRule
             var rule = HostHelper.GetRuleYaml(GetSource(), context).ToArray();
             Assert.NotNull(rule);
             Assert.Equal("BasicRule", rule[0].RuleName);
+
+            var hashtable = rule[0].Tag.ToHashtable();
+            Assert.Equal("tag", hashtable["feature"]);
         }
 
         [Fact]

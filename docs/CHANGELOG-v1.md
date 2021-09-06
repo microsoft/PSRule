@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since v1.7.0:
+
+- Bug fixes:
+  - Fixed ResourceTags does not contain a method named ToHashtable. [#798](https://github.com/microsoft/PSRule/issues/798)
+
 ## v1.7.0
 
 What's changed since v1.6.0:
