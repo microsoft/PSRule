@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since v1.7.1:
+
+- Bug fixes:
+  - Fixed `Get-PSRuleBaseline` does not return any results from module. [#801](https://github.com/microsoft/PSRule/issues/801)
+
 ## v1.7.1
 
 What's changed since v1.7.0:

@@ -262,7 +262,7 @@ namespace PSRule.Pipeline
             _ConventionFilter = null;
         }
 
-        public IResourceFilter RuleFilter()
+        private IResourceFilter GetRuleFilter()
         {
             if (_Filter != null)
                 return _Filter;
@@ -274,7 +274,7 @@ namespace PSRule.Pipeline
             return _Filter = new RuleFilter(include, tag, exclude, includeLocal);
         }
 
-        public IResourceFilter GetConventionFilter()
+        private IResourceFilter GetConventionFilter()
         {
             if (_ConventionFilter != null)
                 return _ConventionFilter;
@@ -359,7 +359,8 @@ namespace PSRule.Pipeline
             UseScope(languageScope.Name);
             var configuration = GetConfiguration();
             languageScope.Configure(configuration);
-            languageScope.WithFilter(RuleFilter());
+            languageScope.WithFilter(GetRuleFilter());
+            languageScope.WithFilter(GetConventionFilter());
         }
 
         private Dictionary<string, object> AddConfiguration()

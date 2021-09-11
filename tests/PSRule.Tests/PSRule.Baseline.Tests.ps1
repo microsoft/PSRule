@@ -6,9 +6,7 @@
 #
 
 [CmdletBinding()]
-param (
-
-)
+param ()
 
 # Setup error handling
 $ErrorActionPreference = 'Stop';
@@ -39,7 +37,8 @@ Describe 'Get-PSRuleBaseline' -Tag 'Baseline','Get-PSRuleBaseline' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 5;
             $result[0].Name | Should -Be 'TestBaseline1';
-            $result[3].Name | Should -Be 'TestBaseline4';;
+            $result[0].Module | Should -BeNullOrEmpty;
+            $result[3].Name | Should -Be 'TestBaseline4';
         }
 
         It 'With -Name' {
@@ -47,6 +46,24 @@ Describe 'Get-PSRuleBaseline' -Tag 'Baseline','Get-PSRuleBaseline' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
             $result[0].Name | Should -Be 'TestBaseline1';
+        }
+
+        It 'With -Module' {
+            $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule4';
+            $Null = Import-Module $testModuleSourcePath;
+
+            $result = @(Get-PSRuleBaseline -Module 'TestModule4');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 3;
+            $result.Name | Should -BeIn 'Module4', 'Baseline2', 'Baseline3';
+            $result.Module | Should -BeIn 'TestModule4';
+
+            # Filter by name
+            $result = @(Get-PSRuleBaseline -Module 'TestModule4' -Name 'Baseline2');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result.Name | Should -BeIn 'Baseline2';
+            $result.Module | Should -BeIn 'TestModule4';
         }
     }
 }

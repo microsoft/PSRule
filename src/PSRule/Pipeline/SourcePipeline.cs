@@ -33,8 +33,11 @@ namespace PSRule.Pipeline
         internal Source Source;
 
         public string Path { get; }
+
         public string ModuleName { get; }
+
         public SourceType Type { get; }
+
         public string HelpPath { get; }
 
         public SourceFile(string path, string moduleName, SourceType type, string helpPath)

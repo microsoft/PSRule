@@ -837,8 +837,6 @@ function Get-PSRuleBaseline {
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::GetBaseline($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);;
         $builder.Name($Name);
-        # $builder.UseCommandRuntime($PSCmdlet);
-        # $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
             if ($Null -ne $pipeline) {
