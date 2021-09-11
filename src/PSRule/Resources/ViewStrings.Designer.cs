@@ -88,6 +88,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Module.
+        /// </summary>
+        internal static string Module {
+            get {
+                return ResourceManager.GetString("Module", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ModuleName.
         /// </summary>
         internal static string ModuleName {

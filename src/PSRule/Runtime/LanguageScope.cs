@@ -26,7 +26,7 @@ namespace PSRule.Runtime
 
         void WithFilter(IResourceFilter resourceFilter);
 
-        IResourceFilter GetFilter();
+        IResourceFilter GetFilter(ResourceKind kind);
     }
 
     internal sealed class LanguageScope : ILanguageScope
@@ -35,12 +35,13 @@ namespace PSRule.Runtime
 
         private readonly Dictionary<string, object> _Configuration;
 
-        private IResourceFilter _Filter;
+        private Dictionary<ResourceKind, IResourceFilter> _Filter;
 
         public LanguageScope(string name)
         {
             Name = name ?? STANDALONE_SCOPENAME;
             _Configuration = new Dictionary<string, object>();
+            _Filter = new Dictionary<ResourceKind, IResourceFilter>();
         }
 
         public string Name { get; }
@@ -61,12 +62,12 @@ namespace PSRule.Runtime
 
         public void WithFilter(IResourceFilter resourceFilter)
         {
-            _Filter = resourceFilter;
+            _Filter[resourceFilter.Kind] = resourceFilter;
         }
 
-        public IResourceFilter GetFilter()
+        public IResourceFilter GetFilter(ResourceKind kind)
         {
-            return _Filter;
+            return _Filter.TryGetValue(kind, out IResourceFilter filter) ? filter : null;
         }
     }
 

@@ -126,6 +126,9 @@
   <data name="Message" xml:space="preserve">
     <value>Message</value>
   </data>
+  <data name="Module" xml:space="preserve">
+    <value>Module</value>
+  </data>
   <data name="ModuleName" xml:space="preserve">
     <value>ModuleName</value>
   </data>

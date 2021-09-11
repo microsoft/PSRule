@@ -541,37 +541,37 @@ namespace PSRule.Host
         private static bool Match(RunspaceContext context, RuleBlock resource)
         {
             context.EnterSourceScope(resource.Source);
-            var filter = context.LanguageScope.GetFilter();
-            return filter.Match(resource);
+            var filter = context.LanguageScope.GetFilter(ResourceKind.Rule);
+            return filter == null || filter.Match(resource);
         }
 
         private static bool Match(RunspaceContext context, Rule resource)
         {
             context.EnterSourceScope(resource.Source);
-            var filter = context.LanguageScope.GetFilter();
-            return filter.Match(resource);
+            var filter = context.LanguageScope.GetFilter(ResourceKind.Rule);
+            return filter == null || filter.Match(resource);
         }
 
         private static bool Match(RunspaceContext context, Baseline resource)
         {
             context.EnterSourceScope(resource.Source);
-            var filter = context.LanguageScope.GetFilter();
-            return filter.Match(resource);
+            var filter = context.LanguageScope.GetFilter(ResourceKind.Baseline);
+            return filter == null || filter.Match(resource);
         }
 
         private static bool Match(RunspaceContext context, ScriptBlockConvention block, out int order)
         {
             context.EnterSourceScope(block.Source);
             order = int.MaxValue;
-            var filter = context.Pipeline.Baseline.GetConventionFilter();
-            return filter.Match(block);
+            var filter = context.LanguageScope.GetFilter(ResourceKind.Convention);
+            return filter == null || filter.Match(block);
         }
 
         private static bool Match(RunspaceContext context, SelectorV1 resource)
         {
-            var scope = context.EnterSourceScope(source: resource.Source);
-            var filter = context.LanguageScope.GetFilter();
-            return filter.Match(resource);
+            context.EnterSourceScope(source: resource.Source);
+            var filter = context.LanguageScope.GetFilter(ResourceKind.Selector);
+            return filter == null || filter.Match(resource);
         }
 
         internal static RuleHelpInfo GetHelpInfo(RunspaceContext context, string name)
