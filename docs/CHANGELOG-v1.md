@@ -10,6 +10,8 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.7.2
+
 What's changed since v1.7.1:
 
 - Bug fixes:
