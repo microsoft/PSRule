@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -84,7 +85,7 @@ namespace PSRule
                 value = actualDateTime;
                 return true;
             }
-            else if ((TryStringLength(actual, out actualInt) || TryArrayLength(actual, out actualInt)) && TryInt(expected, convert: true, value: out expectedInt))
+            else if ((TryStringLength(actual, out actualInt) || TryEnumerableLength(actual, out actualInt)) && TryInt(expected, convert: true, value: out expectedInt))
             {
                 compare = Comparer<int>.Default.Compare(actualInt, expectedInt);
                 value = actualInt;
@@ -288,12 +289,27 @@ namespace PSRule
             return false;
         }
 
-        internal static bool TryArrayLength(object o, out int value)
+        internal static bool TryEnumerableLength(object o, out int value)
         {
             o = GetBaseObject(o);
             if (o is Array array)
             {
                 value = array.Length;
+                return true;
+            }
+            if (o is ICollection collection)
+            {
+                value = collection.Count;
+                return true;
+            }
+            if (o is JArray jArray)
+            {
+                value = jArray.Count;
+                return true;
+            }
+            if (o is IEnumerable enumerable)
+            {
+                value = enumerable.OfType<object>().Count();
                 return true;
             }
             value = 0;
@@ -354,6 +370,27 @@ namespace PSRule
             if (Equal(expectedBase, actualValue, caseSensitive))
             {
                 foundValue = actualValue;
+                return true;
+            }
+            return false;
+        }
+
+        internal static bool CountValue(object actualValue, object expectedValue, bool caseSensitive, out int count)
+        {
+            count = 0;
+            var expectedBase = GetBaseObject(expectedValue);
+            if (actualValue is IEnumerable items)
+            {
+                foreach (var item in items)
+                {
+                    if (Equal(expectedBase, item, caseSensitive))
+                        count++;
+                }
+                return count > 0;
+            }
+            if (Equal(expectedBase, actualValue, caseSensitive))
+            {
+                count = 1;
                 return true;
             }
             return false;

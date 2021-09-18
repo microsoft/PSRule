@@ -16,6 +16,7 @@ Each `$Assert` method returns an `AssertResult` object that contains the result 
 The following built-in assertion methods are provided:
 
 - [Contains](#contains) - The field value must contain at least one of the strings.
+- [Count](#count) - The field value must contain the specified number of items.
 - [EndsWith](#endswith) - The field value must match at least one suffix.
 - [FileHeader](#fileheader) - The file must contain a comment header.
 - [FilePath](#filepath) - The file path must exist.
@@ -47,7 +48,9 @@ The following built-in assertion methods are provided:
 - [Null](#null) - The field value must not exist or be null.
 - [NullOrEmpty](#nullorempty) - The object must not have the specified field or it must be empty.
 - [TypeOf](#typeof) - The field value must be of the specified type.
+- [SetOf](#setof) - The field value must match a set of specified values.
 - [StartsWith](#startswith) - The field value must match at least one prefix.
+- [Subset](#subset) - The field value must include a set of specified values.
 - [Version](#version) - The field value must be a semantic version string.
 - [WithinPath](#withinpath) - The field value must be within the specified path.
 
@@ -136,6 +139,33 @@ Examples:
 Rule 'Contains' {
     $Assert.Contains($TargetObject, 'ResourceGroupName', 'prod')
     $Assert.Contains($TargetObject, 'Name', @('prod', 'test'), $True)
+}
+```
+
+### Count
+
+The `Count` assertion method checks the field value contains the specified number of items.
+The field value must be an array or collection.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `count` - The number of items that the field value must contain.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field '{0}' is not enumerable._
+- _The field '{0}' has '{1}' items instead of '{2}'._
+
+Examples:
+
+```powershell
+Rule 'Count' {
+    $Assert.Count($TargetObject, 'items', 2)
 }
 ```
 
@@ -517,10 +547,12 @@ When the field value is an array, only one item must be included in the set.
 The following parameters are accepted:
 
 - `inputObject` - The object being checked for the specified field.
-- `field` - The name of the field to check. This is a case insensitive compare.
+- `field` - The name of the field to check.
+  This is a case insensitive compare.
 - `values` - An array of values that the field value is compared against.
-When an empty array is specified, `In` will always fail.
-- `caseSensitive` (optional) - Use a case sensitive compare of the field value. Case is ignored by default.
+  When an empty array is specified, `In` will always fail.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value.
+  Case is ignored by default.
 
 Reasons include:
 
@@ -1133,6 +1165,39 @@ Rule 'TypeOf' {
 }
 ```
 
+### SetOf
+
+The `SetOf` assertion method checks the field value only includes all of the specified values.
+The field value must be an array or collection.
+Specified values can be included in the field value in any order.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+  This is a case insensitive compare.
+- `values` - An array of values that the field value is compared against.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value.
+  Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The parameter 'values' is null._
+- _The field '{0}' does not exist._
+- _The field '{0}' is not enumerable._
+- _The field '{0}' did not contain '{1}'._
+- _The field '{0}' has '{1}' items instead of '{2}'._
+
+Examples:
+
+```powershell
+Rule 'Subset' {
+    $Assert.SetOf($TargetObject, 'zones', @('1', '2', '3'))
+}
+```
+
 ### StartsWith
 
 The `StartsWith` assertion method checks the field value starts with the specified prefix.
@@ -1164,6 +1229,43 @@ Examples:
 Rule 'StartsWith' {
     $Assert.StartsWith($TargetObject, 'ResourceGroupName', 'rg-')
     $Assert.StartsWith($TargetObject, 'Name', @('st', 'diag'), $True)
+}
+```
+
+### Subset
+
+The `Subset` assertion method checks the field value includes all of the specified values.
+The field value may also contain additional values that are not specified in the `values` parameter.
+The field value must be an array or collection.
+Specified values can be included in the field value in any order.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+  This is a case insensitive compare.
+- `values` - An array of values that the field value is compared against.
+  When an empty array is specified, `Subset` will always pass.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value.
+  Case is ignored by default.
+- `unique` (optional) - A boolean value that indicates if the items must be unique.
+  When `true` the field value must not contain duplicate items.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The parameter 'values' is null._
+- _The field '{0}' does not exist._
+- _The field '{0}' is not enumerable._
+- _The field '{0}' did not contain '{1}'._
+- _The field '{0}' included multiple instances of '{1}'._
+
+Examples:
+
+```powershell
+Rule 'Subset' {
+    $Assert.Subset($TargetObject, 'logs', @('cluster-autoscaler', 'kube-apiserver', 'kube-scheduler'), $True, $True)
 }
 ```
 

@@ -25,7 +25,7 @@ namespace PSRule
             context.Begin();
             var selector = HostHelper.GetSelectorYaml(GetSource(), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(30, selector.Length);
+            Assert.Equal(33, selector.Length);
 
             Assert.Equal("BasicSelector", selector[0].Name);
             Assert.Equal("YamlAllOf", selector[4].Name);
@@ -197,6 +197,83 @@ namespace PSRule
             Assert.True(notIn.Match(actual3));
             Assert.True(notIn.Match(actual4));
             Assert.True(notIn.Match(actual5));
+        }
+
+        [Fact]
+        public void SetOfExpression()
+        {
+            var setOf = GetSelectorVisitor("YamlSetOf");
+            var actual1 = GetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-apiserver", "kube-scheduler" }));
+            var actual2 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler" }));
+            var actual3 = GetObject((name: "value", value: new string[] { "cluster-autoscaler" }));
+            var actual4 = GetObject((name: "value", value: new string[] { "kube-apiserver", "kube-scheduler" }));
+            var actual5 = GetObject((name: "value", value: new string[] { "kube-scheduler" }));
+            var actual6 = GetObject((name: "value", value: new string[] { }));
+            var actual7 = GetObject((name: "value", value: null));
+            var actual8 = GetObject();
+            var actual9 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler", "kube-apiserver" }));
+            var actual10 = GetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-APIserver" }));
+
+            Assert.False(setOf.Match(actual1));
+            Assert.True(setOf.Match(actual2));
+            Assert.False(setOf.Match(actual3));
+            Assert.False(setOf.Match(actual4));
+            Assert.False(setOf.Match(actual5));
+            Assert.False(setOf.Match(actual6));
+            Assert.False(setOf.Match(actual7));
+            Assert.False(setOf.Match(actual8));
+            Assert.False(setOf.Match(actual9));
+            Assert.False(setOf.Match(actual10));
+        }
+
+        [Fact]
+        public void SubsetExpression()
+        {
+            var subset = GetSelectorVisitor("YamlSubset");
+            var actual1 = GetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-apiserver", "kube-scheduler" }));
+            var actual2 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler" }));
+            var actual3 = GetObject((name: "value", value: new string[] { "cluster-autoscaler" }));
+            var actual4 = GetObject((name: "value", value: new string[] { "kube-apiserver", "kube-scheduler" }));
+            var actual5 = GetObject((name: "value", value: new string[] { "kube-scheduler" }));
+            var actual6 = GetObject((name: "value", value: new string[] { }));
+            var actual7 = GetObject((name: "value", value: null));
+            var actual8 = GetObject();
+            var actual9 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler", "kube-apiserver" }));
+            var actual10 = GetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-APIserver" }));
+
+            Assert.True(subset.Match(actual1));
+            Assert.True(subset.Match(actual2));
+            Assert.False(subset.Match(actual3));
+            Assert.False(subset.Match(actual4));
+            Assert.False(subset.Match(actual5));
+            Assert.False(subset.Match(actual6));
+            Assert.False(subset.Match(actual7));
+            Assert.False(subset.Match(actual8));
+            Assert.False(subset.Match(actual9));
+            Assert.False(subset.Match(actual10));
+        }
+
+        [Fact]
+        public void CountExpression()
+        {
+            var count = GetSelectorVisitor("YamlCount");
+            var actual1 = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
+            var actual2 = GetObject((name: "value", value: new string[] { "2", "1" }));
+            var actual3 = GetObject((name: "value", value: new string[] { "1" }));
+            var actual4 = GetObject((name: "value", value: new int[] { 2, 3 }));
+            var actual5 = GetObject((name: "value", value: new int[] { 3 }));
+            var actual6 = GetObject((name: "value", value: new string[] { }));
+            var actual7 = GetObject((name: "value", value: null));
+            var actual8 = GetObject();
+
+            Assert.False(count.Match(actual1));
+            Assert.True(count.Match(actual2));
+            Assert.False(count.Match(actual3));
+            Assert.True(count.Match(actual4));
+            Assert.False(count.Match(actual5));
+            Assert.False(count.Match(actual6));
+            Assert.False(count.Match(actual7));
+            Assert.False(count.Match(actual8));
         }
 
         [Fact]

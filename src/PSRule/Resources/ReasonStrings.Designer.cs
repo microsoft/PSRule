@@ -79,6 +79,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The field &apos;{0}&apos; has &apos;{1}&apos; items instead of &apos;{2}&apos;..
+        /// </summary>
+        internal static string Count {
+            get {
+                return ResourceManager.GetString("Count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The field &apos;{0}&apos; does not end with &apos;{1}&apos;..
         /// </summary>
         internal static string EndsWith {
@@ -268,6 +277,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The field &apos;{0}&apos; is not enumerable..
+        /// </summary>
+        internal static string NotEnumerable {
+            get {
+                return ResourceManager.GetString("NotEnumerable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The field &apos;{0}&apos; does not exist..
         /// </summary>
         internal static string NotHasField {
@@ -381,6 +399,24 @@ namespace PSRule.Resources {
         internal static string String {
             get {
                 return ResourceManager.GetString("String", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field &apos;{0}&apos; did not contain &apos;{1}&apos;..
+        /// </summary>
+        internal static string Subset {
+            get {
+                return ResourceManager.GetString("Subset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field &apos;{0}&apos; included multiple instances of &apos;{1}&apos;..
+        /// </summary>
+        internal static string SubsetDuplicate {
+            get {
+                return ResourceManager.GetString("SubsetDuplicate", resourceCulture);
             }
         }
         

@@ -244,6 +244,9 @@ namespace PSRule.Definitions.Expressions
         private const string ISSTRING = "isString";
         private const string ISLOWER = "isLower";
         private const string ISUPPER = "isUpper";
+        private const string SETOF = "setOf";
+        private const string SUBSET = "subset";
+        private const string COUNT = "count";
 
         // Operators
         private const string IF = "if";
@@ -253,6 +256,8 @@ namespace PSRule.Definitions.Expressions
 
         // Properties
         private const string FIELD = "field";
+        private const string CASESENSITIVE = "caseSensitive";
+        private const string UNIQUE = "unique";
 
         // Define built-ins
         internal readonly static ILanguageExpresssionDescriptor[] Builtin = new ILanguageExpresssionDescriptor[]
@@ -282,6 +287,9 @@ namespace PSRule.Definitions.Expressions
             new LanguageExpresssionDescriptor(ISSTRING, LanguageExpressionType.Condition, IsString),
             new LanguageExpresssionDescriptor(ISLOWER, LanguageExpressionType.Condition, IsLower),
             new LanguageExpresssionDescriptor(ISUPPER, LanguageExpressionType.Condition, IsUpper),
+            new LanguageExpresssionDescriptor(SETOF, LanguageExpressionType.Condition, SetOf),
+            new LanguageExpresssionDescriptor(SUBSET, LanguageExpressionType.Condition, Subset),
+            new LanguageExpresssionDescriptor(COUNT, LanguageExpressionType.Condition, Count),
         };
 
         #region Operators
@@ -486,6 +494,79 @@ namespace PSRule.Definitions.Expressions
                 return Pass();
             }
             return Invalid(context, NOTIN);
+        }
+
+        internal static bool SetOf(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyArray(properties, SETOF, out Array expectedValue) && TryField(properties, out string field) && GetCaseSensitive(properties, out bool caseSensitive))
+            {
+                context.ExpressionTrace(SETOF, field, expectedValue);
+                if (!ObjectHelper.GetField(context, o, field, caseSensitive: false, out object actualValue))
+                    return NotHasField(context, field);
+
+                if (!ExpressionHelpers.TryEnumerableLength(actualValue, out int count))
+                    return Fail(context, ReasonStrings.NotEnumerable, field);
+
+                if (count != expectedValue.Length)
+                    return Fail(context, ReasonStrings.Count, field, count, expectedValue.Length);
+
+                for (var i = 0; expectedValue != null && i < expectedValue.Length; i++)
+                {
+                    if (!ExpressionHelpers.AnyValue(actualValue, expectedValue.GetValue(i), caseSensitive, out _))
+                        return Fail(context, ReasonStrings.Subset, field, expectedValue.GetValue(i));
+                }
+                return Pass();
+            }
+            return Invalid(context, SETOF);
+        }
+
+        internal static bool Subset(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyArray(properties, SUBSET, out Array expectedValue) && TryField(properties, out string field) &&
+                GetCaseSensitive(properties, out bool caseSensitive) && GetUnique(properties, out bool unique))
+            {
+                context.ExpressionTrace(SUBSET, field, expectedValue);
+                if (!ObjectHelper.GetField(context, o, field, caseSensitive: false, out object actualValue))
+                    return NotHasField(context, field);
+
+                if (!ExpressionHelpers.TryEnumerableLength(actualValue, out _))
+                    return Fail(context, ReasonStrings.NotEnumerable, field);
+
+                for (var i = 0; expectedValue != null && i < expectedValue.Length; i++)
+                {
+                    if (!ExpressionHelpers.CountValue(actualValue, expectedValue.GetValue(i), caseSensitive, out int count) || (count > 1 && unique))
+                        return count == 0 ? Fail(context, ReasonStrings.Subset, field, expectedValue.GetValue(i)) : Fail(context, ReasonStrings.SubsetDuplicate, field, expectedValue.GetValue(i));
+                }
+                return Pass();
+            }
+            return Invalid(context, SUBSET);
+        }
+
+        internal static bool Count(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyLong(properties, COUNT, out long? expectedValue) && TryField(properties, out string field))
+            {
+                context.ExpressionTrace(COUNT, field, expectedValue);
+                if (!ObjectHelper.GetField(context, o, field, caseSensitive: false, out object value))
+                    return NotHasField(context, field);
+
+                if (value == null)
+                    return Fail(context, ReasonStrings.Null, field);
+
+                if (ExpressionHelpers.TryEnumerableLength(value, value: out int actualValue))
+                    return Condition(
+                        context,
+                        actualValue == expectedValue,
+                        ReasonStrings.Count,
+                        field,
+                        actualValue,
+                        expectedValue
+                    );
+            }
+            return Invalid(context, COUNT);
         }
 
         internal static bool Less(ExpressionContext context, ExpressionInfo info, object[] args, object o)
@@ -803,6 +884,24 @@ namespace PSRule.Definitions.Expressions
         private static bool TryField(LanguageExpression.PropertyBag properties, out string field)
         {
             return properties.TryGetString(FIELD, out field);
+        }
+
+        private static bool GetCaseSensitive(LanguageExpression.PropertyBag properties, out bool caseSensitive, bool defaultValue = false)
+        {
+            caseSensitive = defaultValue;
+            if (properties.TryGetBool(CASESENSITIVE, out bool? value))
+                caseSensitive = value.Value;
+
+            return true;
+        }
+
+        private static bool GetUnique(LanguageExpression.PropertyBag properties, out bool unique, bool defaultValue = false)
+        {
+            unique = defaultValue;
+            if (properties.TryGetBool(UNIQUE, out bool? value))
+                unique = value.Value;
+
+            return true;
         }
 
         private static bool TryOperand(ExpressionContext context, string name, object o, LanguageExpression.PropertyBag properties, out object operand)

@@ -833,6 +833,92 @@ namespace PSRule
         }
 
         [Fact]
+        public void SetOf()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            // Int
+            var value = GetObject((name: "value", value: 3), (name: "values", value: new int[] { 3, 5 }));
+            Assert.False(assert.SetOf(value, "value", new int[] { 3 }).Result);
+            Assert.False(assert.SetOf(value, "values", new int[] { 3 }).Result);
+            Assert.True(assert.SetOf(value, "values", new int[] { 5, 3 }).Result);
+            Assert.False(assert.SetOf(value, "values", new int[] { 4 }).Result);
+            Assert.False(assert.SetOf(value, "values", new int[] { 2, 3, 5 }).Result);
+
+            // Float
+            value = GetObject((name: "value", value: 3.0f), (name: "values", value: new float[] { 3f, 5f }));
+            Assert.False(assert.SetOf(value, "value", new float[] { 3f }).Result);
+            Assert.False(assert.SetOf(value, "values", new float[] { 3.0f }).Result);
+            Assert.True(assert.SetOf(value, "values", new float[] { 5.0f, 3f }).Result);
+            Assert.False(assert.SetOf(value, "values", new float[] { 4f }).Result);
+            Assert.False(assert.SetOf(value, "values", new float[] { 2f, 3f, 5f }).Result);
+
+            // String
+            value = GetObject((name: "value", value: "value2"), (name: "values", value: new string[] { "value2", "value5" }));
+            Assert.False(assert.SetOf(value, "value", new string[] { "value2" }).Result);
+            Assert.False(assert.SetOf(value, "values", new string[] { "Value5" }).Result);
+            Assert.True(assert.SetOf(value, "values", new string[] { "Value5", "Value2" }).Result);
+            Assert.False(assert.SetOf(value, "values", new string[] { "VALUE1", "VALUE2", "VALUE3" }).Result);
+            Assert.False(assert.SetOf(value, "values", new string[] { "Value3", "Value5" }).Result);
+            Assert.False(assert.SetOf(value, "values", new string[] { "Value2", "Value5" }, true).Result);
+            Assert.True(assert.SetOf(value, "values", new string[] { "value2", "value5" }, true).Result);
+        }
+
+        [Fact]
+        public void Subset()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            // Int
+            var value = GetObject((name: "value", value: 3), (name: "values", value: new int[] { 3, 5, 3 }));
+            Assert.False(assert.Subset(value, "value", new int[] { 3 }).Result);
+
+            Assert.True(assert.Subset(value, "values", new int[] { 3 }).Result);
+            Assert.True(assert.Subset(value, "values", new int[] { 5, 3 }).Result);
+            Assert.False(assert.Subset(value, "values", new int[] { 5, 3 }, false, true).Result);
+            Assert.False(assert.Subset(value, "values", new int[] { 4 }).Result);
+            Assert.False(assert.Subset(value, "values", new int[] { 2, 3, 5 }).Result);
+
+            // Float
+            value = GetObject((name: "value", value: 3.0f), (name: "values", value: new float[] { 3f, 5f, 5f }));
+            Assert.False(assert.Subset(value, "value", new float[] { 3f }).Result);
+
+            Assert.True(assert.Subset(value, "values", new float[] { 3.0f }).Result);
+            Assert.True(assert.Subset(value, "values", new float[] { 5.0f, 3f }).Result);
+            Assert.False(assert.Subset(value, "values", new float[] { 5.0f, 3f }, false, true).Result);
+            Assert.False(assert.Subset(value, "values", new float[] { 4f }).Result);
+            Assert.False(assert.Subset(value, "values", new float[] { 2f, 3f, 5f }).Result);
+
+            // String
+            value = GetObject((name: "value", value: "value2"), (name: "values", value: new string[] { "value2", "value5", "Value2" }));
+            Assert.False(assert.Subset(value, "value", new string[] { "value2" }).Result);
+
+            Assert.True(assert.Subset(value, "values", new string[] { "Value5" }).Result);
+            Assert.True(assert.Subset(value, "values", new string[] { "Value5", "Value2" }).Result);
+            Assert.False(assert.Subset(value, "values", new string[] { "Value5", "Value2" }, false, true).Result);
+            Assert.False(assert.Subset(value, "values", new string[] { "VALUE1", "VALUE2", "VALUE3" }).Result);
+            Assert.False(assert.Subset(value, "values", new string[] { "Value3", "Value5" }).Result);
+            Assert.False(assert.Subset(value, "values", new string[] { "Value2", "Value5" }, true).Result);
+        }
+
+        [Fact]
+        public void Count()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            // Array
+            var value = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
+            Assert.False(assert.Count(value, "value", 2).Result);
+            Assert.True(assert.Count(value, "value", 3).Result);
+            Assert.False(assert.Count(value, "value", 4).Result);
+            Assert.False(assert.Count(value, "value", 0).Result);
+            Assert.False(assert.Count(value, "value", -1).Result);
+        }
+
+        [Fact]
         public void Match()
         {
             SetContext();

@@ -385,3 +385,43 @@ spec:
   if:
     field: 'Value'
     isUpper: false
+
+---
+# Synopsis: Test setOf
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlSetOf
+spec:
+  if:
+    field: 'Value'
+    setOf:
+    - 'cluster-autoscaler'
+    - 'kube-apiserver'
+    caseSensitive: true
+
+---
+# Synopsis: Test subset
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlSubset
+spec:
+  if:
+    field: 'Value'
+    subset:
+    - 'cluster-autoscaler'
+    - 'kube-apiserver'
+    caseSensitive: true
+    unique: true
+
+---
+# Synopsis: Test count
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlCount
+spec:
+  if:
+    field: 'Value'
+    count: 2
