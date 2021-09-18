@@ -10,6 +10,15 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since v1.7.2:
+
+- General improvements:
+  - Added assertion helpers and expressions for improving intersection checks. [#795](https://github.com/microsoft/PSRule/issues/795)
+    - Added `Count` to determine of the field has a specific number of elements.
+    - Added `SetOf` to determine if a collection is another collection.
+    - Added `Subset` to determine if a collection is includes another collection.
+    - See [about_PSRule_Assert] and [about_PSRule_Expressions] for details.
+
 ## v1.7.2
 
 What's changed since v1.7.1:
@@ -570,3 +579,4 @@ What's changed since v0.22.0:
 [about_PSRule_Selectors]: concepts/PSRule/en-US/about_PSRule_Selectors.md
 [about_PSRule_Rules]: concepts/PSRule/en-US/about_PSRule_Rules.md
 [about_PSRule_Badges]: concepts/PSRule/en-US/about_PSRule_Badges.md
+[about_PSRule_Expressions]: concepts/PSRule/en-US/about_PSRule_Expressions.md

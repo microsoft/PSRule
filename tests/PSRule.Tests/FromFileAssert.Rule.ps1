@@ -73,6 +73,11 @@ Rule 'Assert.Contains' {
     $Assert.Contains($TargetObject, 'Name', '')
 }
 
+# Synopsis: Test for $Assert.Count
+Rule 'Assert.Count' {
+    $Assert.Count($TargetObject, 'CompareArray', 3)
+}
+
 # Synopsis: Test for $Assert.EndsWith
 Rule 'Assert.EndsWith' {
     $Assert.EndsWith($TargetObject, 'Name', '1')
@@ -288,11 +293,22 @@ Rule 'Assert.NullOrEmpty' {
     $Assert.NullOrEmpty($TargetObject, 'Array')
 }
 
+# Synopsis: Test for $Assert.SetOf
+Rule 'Assert.SetOf' {
+    $Assert.SetOf($TargetObject, 'InArray', @('Item3', 'Item3', 'Item4'), $True)
+}
+
 # Synopsis: Test for $Assert.StartsWith
 Rule 'Assert.StartsWith' {
     $Assert.StartsWith($TargetObject, 'Version', '2.0')
     $Assert.StartsWith($TargetObject, 'Name', @())
     $Assert.StartsWith($TargetObject, 'Name', '')
+}
+
+# Synopsis: Test for $Assert.Subset
+Rule 'Assert.Subset' {
+    $Assert.Subset($TargetObject, 'Array', 'Item2')
+    $Assert.Subset($TargetObject, 'InArray', @('Item3', 'Item4'), $True, $True)
 }
 
 # Synopsis: Test for $Assert.Version

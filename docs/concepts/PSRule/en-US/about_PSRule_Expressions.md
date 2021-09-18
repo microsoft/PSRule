@@ -14,6 +14,7 @@ Expressions are comprised of nested conditions, operators, and comparison proper
 The following conditions are available:
 
 - [Contains](#contains)
+- [Count](#count)
 - [Equals](#equals)
 - [EndsWith](#endswith)
 - [Exists](#exists)
@@ -30,7 +31,9 @@ The following conditions are available:
 - [NotEquals](#notequals)
 - [NotIn](#notin)
 - [NotMatch](#notmatch)
+- [SetOf](#setof)
 - [StartsWith](#startswith)
+- [Subset](#subset)
 
 The following operators are available:
 
@@ -178,9 +181,43 @@ spec:
       - 'github.com'
 ```
 
+### Count
+
+The `count` condition is used to determine if the operand contains a specified number of items.
+
+Syntax:
+
+```yaml
+count: <int>
+```
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleCount'
+spec:
+  condition:
+    field: 'items'
+    count: 2
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleCount'
+spec:
+  if:
+    field: 'items'
+    count: 2
+```
+
 ### Equals
 
-The `equals` condition can be used to compare if a field is equal to a supplied value.
+The `equals` condition can be used to compare if the operand is equal to a supplied value.
 
 Syntax:
 
@@ -871,6 +908,53 @@ spec:
     notMatch: '$(abc|efg)$'
 ```
 
+### SetOf
+
+The `setOf` condition can be used to determine if the operand is a set of specified values.
+Additionally the following properties are accepted:
+
+- `caseSensitive` - Optionally, a case sensitive-comparison can be performed.
+  By default, case-insensitive comparison is performed.
+
+Syntax:
+
+```yaml
+setOf: <array>
+caseSensitive: <bool>
+```
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleSetOf'
+spec:
+  condition:
+    field: 'zones'
+    setOf:
+    - 1
+    - 2
+    - 3
+    caseSensitive: false
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleSetOf'
+spec:
+  if:
+    field: 'zones'
+    setOf:
+    - 1
+    - 2
+    - 3
+    caseSensitive: false
+```
+
 ### StartsWith
 
 The `startsWith` condition can be used to determine if the operand starts with a specified string.
@@ -916,6 +1000,58 @@ spec:
       startsWith:
       - 'http://'
       - 'https://'
+```
+
+### Subset
+
+The `subset` condition can be used to determine if the operand is a set of specified values.
+Additionally the following properties are accepted:
+
+- `caseSensitive` - Optionally, a case-sensitive comparison can be performed.
+  By default, case-insensitive comparison is performed.
+- `unique` - Optionally, the operand must not contain duplicates.
+  By default, duplicates are allowed.
+
+Syntax:
+
+```yaml
+subset: <array>
+caseSensitive: <bool>
+unique: <bool>
+```
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleSubset'
+spec:
+  condition:
+    field: 'logs'
+    subset:
+    - 'cluster-autoscaler'
+    - 'kube-apiserver'
+    - 'kube-scheduler'
+    caseSensitive: true
+    unique: true
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleSubset'
+spec:
+  if:
+    field: 'logs'
+    subset:
+    - 'cluster-autoscaler'
+    - 'kube-apiserver'
+    - 'kube-scheduler'
+    caseSensitive: true
+    unique: true
 ```
 
 ## NOTE

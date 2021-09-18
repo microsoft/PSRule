@@ -718,6 +718,63 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
+        /// The object field value must include the set.
+        /// </summary>
+        public AssertResult Subset(PSObject inputObject, string field, Array values, bool caseSensitive = false, bool unique = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullParam(values, nameof(values), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardFieldEnumerable(fieldValue, field, out _, out result))
+                return result;
+
+            for (var i = 0; values != null && i < values.Length; i++)
+            {
+                if (!ExpressionHelpers.CountValue(fieldValue, values.GetValue(i), caseSensitive, out int count) || (count > 1 && unique))
+                    return count == 0 ? Fail(ReasonStrings.Subset, field, values.GetValue(i)) : Fail(ReasonStrings.SubsetDuplicate, field, values.GetValue(i));
+            }
+            return Pass();
+        }
+
+        public AssertResult SetOf(PSObject inputObject, string field, Array values, bool caseSensitive = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullParam(values, nameof(values), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardFieldEnumerable(fieldValue, field, out int count, out result))
+                return result;
+
+            if (count != values.Length)
+                return Fail(ReasonStrings.Count, field, count, values.Length);
+
+            for (var i = 0; values != null && i < values.Length; i++)
+            {
+                if (!ExpressionHelpers.AnyValue(fieldValue, values.GetValue(i), caseSensitive, out _))
+                    return Fail(ReasonStrings.Subset, field, values.GetValue(i));
+            }
+            return Pass();
+        }
+
+        /// <summary>
+        ///  The field value must contain the specified number of items.
+        /// </summary>
+        public AssertResult Count(PSObject inputObject, string field, int count)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out object fieldValue, out result) ||
+                GuardFieldEnumerable(fieldValue, field, out int actual, out result))
+                return result;
+
+            return actual == count ? Pass() : Fail(ReasonStrings.Count, field, actual, count);
+        }
+
+        /// <summary>
         /// The object field value must match the regular expression.
         /// </summary>
         public AssertResult Match(PSObject inputObject, string field, string pattern, bool caseSensitive = false)
@@ -948,6 +1005,23 @@ namespace PSRule.Runtime
                 return false;
 
             result = Fail(ReasonStrings.Version, fieldValue);
+            return true;
+        }
+
+        /// <summary>
+        /// Fails if the field is not enumerable.
+        /// </summary>
+        /// <returns>Returns true of the field value is not enumerable.</returns>
+        /// <remarks>
+        /// Reason: The field '{0}' is not enumerable.
+        /// </remarks>
+        private bool GuardFieldEnumerable(object fieldValue, string field, out int count, out AssertResult result)
+        {
+            result = null;
+            if (ExpressionHelpers.TryEnumerableLength(fieldValue, out count))
+                return false;
+
+            result = Fail(ReasonStrings.NotEnumerable, field);
             return true;
         }
 

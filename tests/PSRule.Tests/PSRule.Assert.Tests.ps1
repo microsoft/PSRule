@@ -200,6 +200,22 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].Reason | Should -BeLike "The field '*' does not exist.";
         }
 
+        It 'Count' {
+            $result = @($testObject | Invoke-PSRule @invokeParams -Name 'Assert.Count');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason.Length | Should -Be 1;
+            $result[1].Reason | Should -BeLike "The field 'CompareArray' has '0' items instead of '3'.";
+        }
+
         It 'EndsWith' {
             $result = @($testObject | Invoke-PSRule @invokeParams -Name 'Assert.EndsWith');
             $result | Should -Not -BeNullOrEmpty;
@@ -706,6 +722,21 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].Reason | Should -BeLike "The field '*' is not empty.";
         }
 
+        It 'SetOf' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.SetOf');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason[0] | Should -Be "The field 'InArray' did not contain 'Item3'.";
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
+        }
+
         It 'StartsWith' {
             $result = @($testObject | Invoke-PSRule @invokeParams -Name 'Assert.StartsWith');
             $result | Should -Not -BeNullOrEmpty;
@@ -720,6 +751,21 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
             $result[1].Reason | Should -BeLike "The field '*' does not start with '*'.";
+        }
+
+        It 'Subset' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'Assert.Subset');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Negative case
+            $result[1].IsSuccess() | Should -Be $False;
+            $result[1].TargetName | Should -Be 'TestObject2';
+            $result[1].Reason[0] | Should -Be "The field 'Array' did not contain 'Item2'.";
+
+            # Positive case
+            $result[0].IsSuccess() | Should -Be $True;
+            $result[0].TargetName | Should -Be 'TestObject1';
         }
 
         It 'Version' {
