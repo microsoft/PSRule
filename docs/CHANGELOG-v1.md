@@ -10,6 +10,12 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.8.0-B2109015:
+
+- General improvements:
+  - Added support for conditional reason messages with `ReasonIf`. [#804](https://github.com/microsoft/PSRule/issues/804)
+    - See [about_PSRule_Assert] for details.
+
 ## v1.8.0-B2109015 (pre-release)
 
 What's changed since v1.7.2:

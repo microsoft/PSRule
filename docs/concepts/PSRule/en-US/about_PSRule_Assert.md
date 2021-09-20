@@ -1423,20 +1423,22 @@ The following properties are available:
 The following methods are available:
 
 - `AddReason(<string> text)` - Can be used to append additional reasons to the result.
-A reason can only be set if the assertion failed.
-Reason text should be localized before calling this method.
-Localization can be done using the `$LocalizedData` automatic variable.
+  A reason can only be set if the assertion failed.
+  Reason text should be localized before calling this method.
+  Localization can be done using the `$LocalizedData` automatic variable.
 - `WithReason(<string> text, <bool> replace)` - Can be used to append or replace reasons on the result.
-In addition, `WithReason` can be chained.
+  In addition, `WithReason` can be chained.
 - `Reason(<string> text, params <object[]> args)` - Replaces the reason on the results with a formatted string.
-This method can be chained.
-For usage see examples below.
+  This method can be chained.
+  For usage see examples below.
+- `ReasonIf(<bool> condition, <string> text, params <object[]> args)` - Replaces the reason if the condition is true.
+  This method can be chained, similar to `Reason`.
 - `GetReason()` - Gets any reasons currently associated with the failed result.
 - `Complete()` - Returns `$True` (Pass) or `$False` (Fail) to the rule record.
-If the assertion failed, any reasons are automatically added to the rule record.
-To read the result without adding reason to the rule record use the `Result` property.
+  If the assertion failed, any reasons are automatically added to the rule record.
+  To read the result without adding reason to the rule record use the `Result` property.
 - `Ignore()` - Ignores the result. Nothing future is returned and any reasons are cleared.
-Use this method when implementing custom handling.
+  Use this method when implementing custom handling.
 
 Use of `Complete` is optional, uncompleted results are automatically completed after the rule has executed.
 Uncompleted results may return reasons out of sequence.
