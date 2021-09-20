@@ -92,7 +92,7 @@ namespace PSRule.Runtime
         /// <summary>
         /// Replace the existing reason with the supplied format string.
         /// </summary>
-        /// <param name="text">The text of a reason to add. This text should already be localized for the currently culture.</param>
+        /// <param name="text">The text of a reason to use. This text should already be localized for the currently culture.</param>
         /// <param name="args">Replacement arguments for the format string.</param>
         public AssertResult Reason(string text, params object[] args)
         {
@@ -101,6 +101,21 @@ namespace PSRule.Runtime
 
             AddReason(text, args);
             return this;
+        }
+
+        /// <summary>
+        /// Replace the existing reason with the supplied format string if the condition is true.
+        /// </summary>
+        /// <param name="condition">When true the reason will be used. When false the existing reason will be used.</param>
+        /// <param name="text">The text of a reason to use. This text should already be localized for the currently culture.</param>
+        /// <param name="args">Replacement arguments for the format string.</param>
+        /// <returns></returns>
+        public AssertResult ReasonIf(bool condition, string text, params object[] args)
+        {
+            if (!condition)
+                return this;
+
+            return Reason(text, args);
         }
 
         /// <summary>

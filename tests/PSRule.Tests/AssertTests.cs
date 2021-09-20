@@ -49,6 +49,10 @@ namespace PSRule
             actual1.Reason("New {0}", "Reason");
             actual1.Reason("New New Reason");
             Assert.Equal("New New Reason", actual1.ToString());
+            actual1.ReasonIf(false, "Not a reason");
+            Assert.Equal("New New Reason", actual1.ToString());
+            actual1.ReasonIf(true, "New New New Reason");
+            Assert.Equal("New New New Reason", actual1.ToString());
 
             var actual3 = assert.Fail("Fail reason");
             Assert.Equal("Fail reason", actual3.ToString());
@@ -63,7 +67,7 @@ namespace PSRule
 
             Assert.False(assert.AllOf(actual2, actual3).Result);
             Assert.Equal("Fail reason", assert.AllOf(actual2, actual3).ToString());
-            Assert.Equal("New New Reason Fail reason", assert.AllOf(actual1, actual2, actual3).ToString());
+            Assert.Equal("New New New Reason Fail reason", assert.AllOf(actual1, actual2, actual3).ToString());
             Assert.True(assert.AllOf(actual2, actual2).Result);
             Assert.True(assert.AllOf(actual2).Result);
             Assert.False(assert.AllOf().Result);
