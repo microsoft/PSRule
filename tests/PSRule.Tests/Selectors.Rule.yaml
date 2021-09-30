@@ -425,3 +425,209 @@ spec:
   if:
     field: 'Value'
     count: 2
+
+---
+# Synopsis: Test with type
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlTypeEquals
+spec:
+  if:
+    type: '.'
+    equals: 'CustomType1'
+
+---
+# Synopsis: Test equals with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameEquals
+spec:
+  if:
+    name: '.'
+    equals: 'TargetObject1'
+
+---
+# Synopsis: Test notEquals with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameNotEquals
+spec:
+  if:
+    name: '.'
+    notEquals: 'TargetObject1'
+
+---
+# Synopsis: Test hasValue with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameHasValue
+spec:
+  if:
+    name: '.'
+    hasValue: true
+
+---
+# Synopsis: Test match with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameMatch
+spec:
+  if:
+    name: '.'
+    match: '.*1$'
+
+---
+# Synopsis: Test notMatch with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameNotMatch
+spec:
+  if:
+    name: '.'
+    notMatch: '.*1$'
+
+---
+# Synopsis: Test in with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameIn
+spec:
+  if:
+    name: '.'
+    in:
+    - 'TargetObject1'
+
+---
+# Synopsis: Test notIn with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameNotIn
+spec:
+  if:
+    name: '.'
+    notIn:
+    - 'TargetObject1'
+
+
+
+
+---
+# Synopsis: Test startsWith with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameStartsWith
+spec:
+  if:
+    name: '.'
+    startsWith:
+    - '1'
+
+---
+# Synopsis: Test endsWith with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameEndsWith
+spec:
+  if:
+    name: '.'
+    endsWith:
+    - '1'
+
+---
+# Synopsis: Test contains with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameContains
+spec:
+  if:
+    name: '.'
+    contains:
+    - '.1.'
+
+---
+# Synopsis: Test isString with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameIsString
+spec:
+  if:
+    name: '.'
+    isString: true
+
+---
+# Synopsis: Test less with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameLess
+spec:
+  if:
+    name: '.'
+    less: 8
+
+---
+# Synopsis: Test lessOrEquals with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameLessOrEquals
+spec:
+  if:
+    name: '.'
+    lessOrEquals: 7
+
+---
+# Synopsis: Test greater with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameGreater
+spec:
+  if:
+    name: '.'
+    greater: 8
+
+---
+# Synopsis: Test greaterOrEquals with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameGreaterOrEquals
+spec:
+  if:
+    name: '.'
+    greaterOrEquals: 9
+
+---
+# Synopsis: Test isLower with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameIsLower
+spec:
+  if:
+    name: '.'
+    isLower: true
+
+---
+# Synopsis: Test isUpper with name
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNameIsUpper
+spec:
+  if:
+    name: '.'
+    isUpper: true

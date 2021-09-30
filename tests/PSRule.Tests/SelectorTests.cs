@@ -25,7 +25,7 @@ namespace PSRule
             context.Begin();
             var selector = HostHelper.GetSelectorYaml(GetSource(), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(33, selector.Length);
+            Assert.Equal(51, selector.Length);
 
             Assert.Equal("BasicSelector", selector[0].Name);
             Assert.Equal("YamlAllOf", selector[4].Name);
@@ -36,8 +36,8 @@ namespace PSRule
         [Fact]
         public void ExistsExpression()
         {
-            var existsTrue = GetSelectorVisitor("YamlExistsTrue");
-            var existsFalse = GetSelectorVisitor("YamlExistsFalse");
+            var existsTrue = GetSelectorVisitor("YamlExistsTrue", out _);
+            var existsFalse = GetSelectorVisitor("YamlExistsFalse", out _);
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "notValue", value: 3));
             var actual3 = GetObject((name: "value", value: null));
@@ -54,7 +54,7 @@ namespace PSRule
         [Fact]
         public void EqualsExpression()
         {
-            var equals = GetSelectorVisitor("YamlEquals");
+            var equals = GetSelectorVisitor("YamlEquals", out _);
             var actual1 = GetObject(
                 (name: "ValueString", value: "abc"),
                 (name: "ValueInt", value: 123),
@@ -80,12 +80,40 @@ namespace PSRule
             Assert.False(equals.Match(actual2));
             Assert.False(equals.Match(actual3));
             Assert.False(equals.Match(actual4));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameEquals", out RunspaceContext context);
+            var actual5 = GetObject(
+               (name: "Name", value: "TargetObject1")
+            );
+            var actual6 = GetObject(
+               (name: "Name", value: "TargetObject2")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual5));
+            Assert.True(withName.Match(actual5));
+
+            context.EnterTargetObject(new TargetObject(actual6));
+            Assert.False(withName.Match(actual6));
+
+            // With type
+            var withType = GetSelectorVisitor("YamlTypeEquals", out context);
+            var actual7 = GetObject();
+            actual7.TypeNames.Insert(0, "CustomType1");
+            var actual8 = GetObject();
+            actual8.TypeNames.Insert(0, "CustomType2");
+
+            context.EnterTargetObject(new TargetObject(actual7));
+            Assert.True(withType.Match(actual7));
+
+            context.EnterTargetObject(new TargetObject(actual8));
+            Assert.False(withType.Match(actual8));
         }
 
         [Fact]
         public void NotEqualsExpression()
         {
-            var notEquals = GetSelectorVisitor("YamlNotEquals");
+            var notEquals = GetSelectorVisitor("YamlNotEquals", out _);
             var actual1 = GetObject(
                 (name: "ValueString", value: "efg"),
                 (name: "ValueInt", value: 456),
@@ -111,13 +139,28 @@ namespace PSRule
             Assert.False(notEquals.Match(actual2));
             Assert.False(notEquals.Match(actual3));
             Assert.False(notEquals.Match(actual4));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameNotEquals", out RunspaceContext context);
+            var actual5 = GetObject(
+               (name: "Name", value: "TargetObject1")
+            );
+            var actual6 = GetObject(
+               (name: "Name", value: "TargetObject2")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual5));
+            Assert.False(withName.Match(actual5));
+
+            context.EnterTargetObject(new TargetObject(actual6));
+            Assert.True(withName.Match(actual6));
         }
 
         [Fact]
         public void HasValueExpression()
         {
-            var hasValueTrue = GetSelectorVisitor("YamlHasValueTrue");
-            var hasValueFalse = GetSelectorVisitor("YamlHasValueFalse");
+            var hasValueTrue = GetSelectorVisitor("YamlHasValueTrue", out _);
+            var hasValueFalse = GetSelectorVisitor("YamlHasValueFalse", out _);
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "notValue", value: 3));
             var actual3 = GetObject((name: "value", value: null));
@@ -129,12 +172,19 @@ namespace PSRule
             Assert.False(hasValueFalse.Match(actual1));
             Assert.True(hasValueFalse.Match(actual2));
             Assert.True(hasValueFalse.Match(actual3));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameHasValue", out RunspaceContext context);
+            var actual4 = GetObject();
+
+            context.EnterTargetObject(new TargetObject(actual4));
+            Assert.True(withName.Match(actual4));
         }
 
         [Fact]
         public void MatchExpression()
         {
-            var match = GetSelectorVisitor("YamlMatch");
+            var match = GetSelectorVisitor("YamlMatch", out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
@@ -146,12 +196,27 @@ namespace PSRule
             Assert.False(match.Match(actual3));
             Assert.False(match.Match(actual4));
             Assert.False(match.Match(actual5));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameMatch", out RunspaceContext context);
+            var actual6 = GetObject(
+               (name: "Name", value: "TargetObject1")
+            );
+            var actual7 = GetObject(
+               (name: "Name", value: "TargetObject2")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual6));
+            Assert.True(withName.Match(actual6));
+
+            context.EnterTargetObject(new TargetObject(actual7));
+            Assert.False(withName.Match(actual7));
         }
 
         [Fact]
         public void NotMatchExpression()
         {
-            var notMatch = GetSelectorVisitor("YamlNotMatch");
+            var notMatch = GetSelectorVisitor("YamlNotMatch", out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
@@ -161,12 +226,27 @@ namespace PSRule
             Assert.False(notMatch.Match(actual2));
             Assert.True(notMatch.Match(actual3));
             Assert.True(notMatch.Match(actual4));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameNotMatch", out RunspaceContext context);
+            var actual6 = GetObject(
+               (name: "Name", value: "TargetObject1")
+            );
+            var actual7 = GetObject(
+               (name: "Name", value: "TargetObject2")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual6));
+            Assert.False(withName.Match(actual6));
+
+            context.EnterTargetObject(new TargetObject(actual7));
+            Assert.True(withName.Match(actual7));
         }
 
         [Fact]
         public void InExpression()
         {
-            var @in = GetSelectorVisitor("YamlIn");
+            var @in = GetSelectorVisitor("YamlIn", out _);
             var actual1 = GetObject((name: "value", value: new string[] { "Value1" }));
             var actual2 = GetObject((name: "value", value: new string[] { "Value2" }));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
@@ -180,12 +260,27 @@ namespace PSRule
             Assert.False(@in.Match(actual4));
             Assert.False(@in.Match(actual5));
             Assert.False(@in.Match(actual6));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameIn", out RunspaceContext context);
+            var actual7 = GetObject(
+               (name: "Name", value: "TargetObject1")
+            );
+            var actual8 = GetObject(
+               (name: "Name", value: "TargetObject2")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual7));
+            Assert.True(withName.Match(actual7));
+
+            context.EnterTargetObject(new TargetObject(actual8));
+            Assert.False(withName.Match(actual8));
         }
 
         [Fact]
         public void NotInExpression()
         {
-            var notIn = GetSelectorVisitor("YamlNotIn");
+            var notIn = GetSelectorVisitor("YamlNotIn", out _);
             var actual1 = GetObject((name: "value", value: new string[] { "Value1" }));
             var actual2 = GetObject((name: "value", value: new string[] { "Value2" }));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
@@ -197,12 +292,27 @@ namespace PSRule
             Assert.True(notIn.Match(actual3));
             Assert.True(notIn.Match(actual4));
             Assert.True(notIn.Match(actual5));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameNotIn", out RunspaceContext context);
+            var actual6 = GetObject(
+               (name: "Name", value: "TargetObject1")
+            );
+            var actual7 = GetObject(
+               (name: "Name", value: "TargetObject2")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual6));
+            Assert.False(withName.Match(actual6));
+
+            context.EnterTargetObject(new TargetObject(actual7));
+            Assert.True(withName.Match(actual7));
         }
 
         [Fact]
         public void SetOfExpression()
         {
-            var setOf = GetSelectorVisitor("YamlSetOf");
+            var setOf = GetSelectorVisitor("YamlSetOf", out _);
             var actual1 = GetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-apiserver", "kube-scheduler" }));
             var actual2 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler" }));
             var actual3 = GetObject((name: "value", value: new string[] { "cluster-autoscaler" }));
@@ -229,7 +339,7 @@ namespace PSRule
         [Fact]
         public void SubsetExpression()
         {
-            var subset = GetSelectorVisitor("YamlSubset");
+            var subset = GetSelectorVisitor("YamlSubset", out _);
             var actual1 = GetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-apiserver", "kube-scheduler" }));
             var actual2 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler" }));
             var actual3 = GetObject((name: "value", value: new string[] { "cluster-autoscaler" }));
@@ -256,7 +366,7 @@ namespace PSRule
         [Fact]
         public void CountExpression()
         {
-            var count = GetSelectorVisitor("YamlCount");
+            var count = GetSelectorVisitor("YamlCount", out _);
             var actual1 = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
             var actual2 = GetObject((name: "value", value: new string[] { "2", "1" }));
             var actual3 = GetObject((name: "value", value: new string[] { "1" }));
@@ -279,7 +389,7 @@ namespace PSRule
         [Fact]
         public void LessExpression()
         {
-            var less = GetSelectorVisitor("YamlLess");
+            var less = GetSelectorVisitor("YamlLess", out _);
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
@@ -295,12 +405,27 @@ namespace PSRule
             Assert.True(less.Match(actual5));
             Assert.True(less.Match(actual6));
             Assert.True(less.Match(actual7));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameLess", out RunspaceContext context);
+            var actual8 = GetObject(
+               (name: "Name", value: "ItemTwo")
+            );
+            var actual9 = GetObject(
+               (name: "Name", value: "ItemThree")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual8));
+            Assert.True(withName.Match(actual8));
+
+            context.EnterTargetObject(new TargetObject(actual9));
+            Assert.False(withName.Match(actual9));
         }
 
         [Fact]
         public void LessOrEqualsExpression()
         {
-            var lessOrEquals = GetSelectorVisitor("YamlLessOrEquals");
+            var lessOrEquals = GetSelectorVisitor("YamlLessOrEquals", out _);
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
@@ -316,12 +441,27 @@ namespace PSRule
             Assert.True(lessOrEquals.Match(actual5));
             Assert.True(lessOrEquals.Match(actual6));
             Assert.True(lessOrEquals.Match(actual7));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameLessOrEquals", out RunspaceContext context);
+            var actual8 = GetObject(
+               (name: "Name", value: "ItemTwo")
+            );
+            var actual9 = GetObject(
+               (name: "Name", value: "ItemThree")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual8));
+            Assert.True(withName.Match(actual8));
+
+            context.EnterTargetObject(new TargetObject(actual9));
+            Assert.False(withName.Match(actual9));
         }
 
         [Fact]
         public void GreaterExpression()
         {
-            var greater = GetSelectorVisitor("YamlGreater");
+            var greater = GetSelectorVisitor("YamlGreater", out _);
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
@@ -337,12 +477,27 @@ namespace PSRule
             Assert.False(greater.Match(actual5));
             Assert.False(greater.Match(actual6));
             Assert.False(greater.Match(actual7));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameGreater", out RunspaceContext context);
+            var actual8 = GetObject(
+               (name: "Name", value: "ItemTwo")
+            );
+            var actual9 = GetObject(
+               (name: "Name", value: "ItemThree")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual8));
+            Assert.False(withName.Match(actual8));
+
+            context.EnterTargetObject(new TargetObject(actual9));
+            Assert.True(withName.Match(actual9));
         }
 
         [Fact]
         public void GreaterOrEqualsExpression()
         {
-            var greaterOrEquals = GetSelectorVisitor("YamlGreaterOrEquals");
+            var greaterOrEquals = GetSelectorVisitor("YamlGreaterOrEquals", out _);
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
@@ -358,12 +513,27 @@ namespace PSRule
             Assert.False(greaterOrEquals.Match(actual5));
             Assert.False(greaterOrEquals.Match(actual6));
             Assert.False(greaterOrEquals.Match(actual7));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameGreaterOrEquals", out RunspaceContext context);
+            var actual8 = GetObject(
+               (name: "Name", value: "ItemTwo")
+            );
+            var actual9 = GetObject(
+               (name: "Name", value: "ItemThree")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual8));
+            Assert.False(withName.Match(actual8));
+
+            context.EnterTargetObject(new TargetObject(actual9));
+            Assert.True(withName.Match(actual9));
         }
 
         [Fact]
         public void StartsWithExpression()
         {
-            var startsWith = GetSelectorVisitor("YamlStartsWith");
+            var startsWith = GetSelectorVisitor("YamlStartsWith", out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
@@ -377,12 +547,27 @@ namespace PSRule
             Assert.False(startsWith.Match(actual4));
             Assert.False(startsWith.Match(actual5));
             Assert.False(startsWith.Match(actual6));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameStartsWith", out RunspaceContext context);
+            var actual7 = GetObject(
+               (name: "Name", value: "1TargetObject")
+            );
+            var actual8 = GetObject(
+               (name: "Name", value: "2TargetObject")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual7));
+            Assert.True(withName.Match(actual7));
+
+            context.EnterTargetObject(new TargetObject(actual8));
+            Assert.False(withName.Match(actual8));
         }
 
         [Fact]
         public void EndsWithExpression()
         {
-            var endsWith = GetSelectorVisitor("YamlEndsWith");
+            var endsWith = GetSelectorVisitor("YamlEndsWith", out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
@@ -396,12 +581,27 @@ namespace PSRule
             Assert.False(endsWith.Match(actual4));
             Assert.False(endsWith.Match(actual5));
             Assert.False(endsWith.Match(actual6));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameEndsWith", out RunspaceContext context);
+            var actual7 = GetObject(
+               (name: "Name", value: "TargetObject1")
+            );
+            var actual8 = GetObject(
+               (name: "Name", value: "TargetObject2")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual7));
+            Assert.True(withName.Match(actual7));
+
+            context.EnterTargetObject(new TargetObject(actual8));
+            Assert.False(withName.Match(actual8));
         }
 
         [Fact]
         public void ContainsExpression()
         {
-            var contains = GetSelectorVisitor("YamlContains");
+            var contains = GetSelectorVisitor("YamlContains", out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "bcd"));
             var actual3 = GetObject((name: "value", value: "hij"));
@@ -415,13 +615,28 @@ namespace PSRule
             Assert.False(contains.Match(actual4));
             Assert.False(contains.Match(actual5));
             Assert.False(contains.Match(actual6));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameContains", out RunspaceContext context);
+            var actual7 = GetObject(
+               (name: "Name", value: "Target.1.Object")
+            );
+            var actual8 = GetObject(
+               (name: "Name", value: "Target.2.Object")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual7));
+            Assert.True(withName.Match(actual7));
+
+            context.EnterTargetObject(new TargetObject(actual8));
+            Assert.False(withName.Match(actual8));
         }
 
         [Fact]
         public void IsStringExpression()
         {
-            var isStringTrue = GetSelectorVisitor("YamlIsStringTrue");
-            var isStringFalse = GetSelectorVisitor("YamlIsStringFalse");
+            var isStringTrue = GetSelectorVisitor("YamlIsStringTrue", out _);
+            var isStringFalse = GetSelectorVisitor("YamlIsStringFalse", out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { }));
@@ -441,13 +656,28 @@ namespace PSRule
             Assert.True(isStringFalse.Match(actual3));
             Assert.True(isStringFalse.Match(actual4));
             Assert.False(isStringFalse.Match(actual5));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameIsString", out RunspaceContext context);
+            var actual7 = GetObject(
+               (name: "Name", value: "TargetObject1")
+            );
+            var actual8 = GetObject(
+               (name: "Name", value: 1)
+            );
+
+            context.EnterTargetObject(new TargetObject(actual7));
+            Assert.True(withName.Match(actual7));
+
+            context.EnterTargetObject(new TargetObject(actual8));
+            Assert.True(withName.Match(actual8));
         }
 
         [Fact]
         public void IsLowerExpression()
         {
-            var isLowerTrue = GetSelectorVisitor("YamlIsLowerTrue");
-            var isLowerFalse = GetSelectorVisitor("YamlIsLowerFalse");
+            var isLowerTrue = GetSelectorVisitor("YamlIsLowerTrue", out _);
+            var isLowerFalse = GetSelectorVisitor("YamlIsLowerFalse", out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "aBc"));
             var actual3 = GetObject((name: "value", value: "a-b-c"));
@@ -470,13 +700,28 @@ namespace PSRule
             Assert.True(isLowerFalse.Match(actual4));
             Assert.True(isLowerFalse.Match(actual5));
             Assert.False(isLowerTrue.Match(actual6));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameIsLower", out RunspaceContext context);
+            var actual7 = GetObject(
+               (name: "Name", value: "targetobject1")
+            );
+            var actual8 = GetObject(
+               (name: "Name", value: "TargetObject2")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual7));
+            Assert.True(withName.Match(actual7));
+
+            context.EnterTargetObject(new TargetObject(actual8));
+            Assert.False(withName.Match(actual8));
         }
 
         [Fact]
         public void IsUpperExpression()
         {
-            var isUpperTrue = GetSelectorVisitor("YamlIsUpperTrue");
-            var isUpperFalse = GetSelectorVisitor("YamlIsUpperFalse");
+            var isUpperTrue = GetSelectorVisitor("YamlIsUpperTrue", out _);
+            var isUpperFalse = GetSelectorVisitor("YamlIsUpperFalse", out _);
             var actual1 = GetObject((name: "value", value: "ABC"));
             var actual2 = GetObject((name: "value", value: "aBc"));
             var actual3 = GetObject((name: "value", value: "A-B-C"));
@@ -499,6 +744,21 @@ namespace PSRule
             Assert.True(isUpperFalse.Match(actual4));
             Assert.True(isUpperFalse.Match(actual5));
             Assert.False(isUpperFalse.Match(actual6));
+
+            // With name
+            var withName = GetSelectorVisitor("YamlNameIsUpper", out RunspaceContext context);
+            var actual7 = GetObject(
+               (name: "Name", value: "TARGETOBJECT1")
+            );
+            var actual8 = GetObject(
+               (name: "Name", value: "TargetObject2")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual7));
+            Assert.True(withName.Match(actual7));
+
+            context.EnterTargetObject(new TargetObject(actual8));
+            Assert.False(withName.Match(actual8));
         }
 
         #endregion Conditions
@@ -508,7 +768,7 @@ namespace PSRule
         [Fact]
         public void AllOf()
         {
-            var allOf = GetSelectorVisitor("YamlAllOf");
+            var allOf = GetSelectorVisitor("YamlAllOf", out _);
             var actual1 = GetObject((name: "Name", value: "Name1"));
             var actual2 = GetObject((name: "AlternateName", value: "Name2"));
             var actual3 = GetObject((name: "Name", value: "Name1"), (name: "AlternateName", value: "Name2"));
@@ -523,7 +783,7 @@ namespace PSRule
         [Fact]
         public void AnyOf()
         {
-            var allOf = GetSelectorVisitor("YamlAnyOf");
+            var allOf = GetSelectorVisitor("YamlAnyOf", out _);
             var actual1 = GetObject((name: "Name", value: "Name1"));
             var actual2 = GetObject((name: "AlternateName", value: "Name2"));
             var actual3 = GetObject((name: "Name", value: "Name1"), (name: "AlternateName", value: "Name2"));
@@ -538,7 +798,7 @@ namespace PSRule
         [Fact]
         public void Not()
         {
-            var allOf = GetSelectorVisitor("YamlNot");
+            var allOf = GetSelectorVisitor("YamlNot", out _);
             var actual1 = GetObject((name: "Name", value: "Name1"));
             var actual2 = GetObject((name: "AlternateName", value: "Name2"));
             var actual3 = GetObject((name: "Name", value: "Name1"), (name: "AlternateName", value: "Name2"));
@@ -551,6 +811,35 @@ namespace PSRule
         }
 
         #endregion Operators
+
+        #region Properties
+
+        [Fact]
+        public void Type()
+        {
+            var equals = GetSelectorVisitor("YamlTypeEquals", out RunspaceContext context);
+            var actual1 = GetObject();
+            actual1.TypeNames.Insert(0, "CustomType1");
+
+            context.EnterTargetObject(new TargetObject(actual1));
+
+            Assert.True(equals.Match(actual1));
+        }
+
+        [Fact]
+        public void Name()
+        {
+            var equals = GetSelectorVisitor("YamlNameEquals", out RunspaceContext context);
+            var actual1 = GetObject(
+                (name: "Name", value: "TargetObject1")
+            );
+
+            context.EnterTargetObject(new TargetObject(actual1));
+
+            Assert.True(equals.Match(actual1));
+        }
+
+        #endregion Properties
 
         #region Helper methods
 
@@ -575,13 +864,13 @@ namespace PSRule
             return result;
         }
 
-        private static SelectorVisitor GetSelectorVisitor(string name)
+        private static SelectorVisitor GetSelectorVisitor(string name, out RunspaceContext context)
         {
-            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
+            context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContext(), null), null);
             context.Init(GetSource());
             context.Begin();
             var selector = HostHelper.GetSelectorYaml(GetSource(), context).ToArray();
-            return new SelectorVisitor(name, selector.FirstOrDefault(s => s.Name == name).Spec.If);
+            return new SelectorVisitor(null, name, selector.FirstOrDefault(s => s.Name == name).Spec.If);
         }
 
         private static string GetSourcePath(string fileName)

@@ -168,7 +168,7 @@ namespace PSRule.Pipeline
                 Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, baseline.BaselineId, resource.Module, baseline.Spec, baseline.Obsolete));
             }
             else if (resource.Kind == ResourceKind.Selector && resource is SelectorV1 selector)
-                Selector[selector.Id] = new SelectorVisitor(selector.Id, selector.Spec.If);
+                Selector[selector.Id] = new SelectorVisitor(resource.Module, selector.Id, selector.Spec.If);
             else if (TryModuleConfig(resource, out ModuleConfigV1 moduleConfig))
             {
                 Baseline.Add(new OptionContext.ConfigScope(OptionContext.ScopeType.Module, resource.Module, moduleConfig.Spec));

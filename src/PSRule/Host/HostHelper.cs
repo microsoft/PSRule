@@ -385,7 +385,7 @@ namespace PSRule.Host
                             source: yaml.Source,
                             ruleName: yaml.Name,
                             info: info,
-                            condition: new RuleVisitor(yaml.Id, yaml.Spec),
+                            condition: new RuleVisitor(yaml.Source.ModuleName, yaml.Id, yaml.Spec),
                             tag: yaml.Metadata.Tags,
                             dependsOn: null,  // TODO: No support for DependsOn yet
                             configuration: null, // TODO: No support for rule configuration use module or workspace config

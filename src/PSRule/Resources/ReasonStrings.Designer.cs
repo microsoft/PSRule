@@ -61,6 +61,114 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not match the expression &apos;{1}&apos;..
+        /// </summary>
+        internal static string Assert_DoesNotMatch {
+            get {
+                return ResourceManager.GetString("Assert_DoesNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not contain only lowercase characters..
+        /// </summary>
+        internal static string Assert_IsLower {
+            get {
+                return ResourceManager.GetString("Assert_IsLower", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is null or empty..
+        /// </summary>
+        internal static string Assert_IsNullOrEmpty {
+            get {
+                return ResourceManager.GetString("Assert_IsNullOrEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is set to &apos;{0}&apos;..
+        /// </summary>
+        internal static string Assert_IsSetTo {
+            get {
+                return ResourceManager.GetString("Assert_IsSetTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not contain only uppercase characters..
+        /// </summary>
+        internal static string Assert_IsUpper {
+            get {
+                return ResourceManager.GetString("Assert_IsUpper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; matches the expression &apos;{1}&apos;..
+        /// </summary>
+        internal static string Assert_Matches {
+            get {
+                return ResourceManager.GetString("Assert_Matches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is not {1} {2}..
+        /// </summary>
+        internal static string Assert_NotComparedTo {
+            get {
+                return ResourceManager.GetString("Assert_NotComparedTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not contain any of {1}..
+        /// </summary>
+        internal static string Assert_NotContains {
+            get {
+                return ResourceManager.GetString("Assert_NotContains", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not end with any of {1}..
+        /// </summary>
+        internal static string Assert_NotEndsWith {
+            get {
+                return ResourceManager.GetString("Assert_NotEndsWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; was not in {1}..
+        /// </summary>
+        internal static string Assert_NotInSet {
+            get {
+                return ResourceManager.GetString("Assert_NotInSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not start with any of {1}..
+        /// </summary>
+        internal static string Assert_NotStartsWith {
+            get {
+                return ResourceManager.GetString("Assert_NotStartsWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is not a string..
+        /// </summary>
+        internal static string Assert_NotString {
+            get {
+                return ResourceManager.GetString("Assert_NotString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The field value &apos;{0}&apos; can not be compared with &apos;{1}&apos;..
         /// </summary>
         internal static string Compare {
@@ -192,24 +300,6 @@ namespace PSRule.Resources {
         internal static string IsLetter {
             get {
                 return ResourceManager.GetString("IsLetter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not contain only lowercase characters..
-        /// </summary>
-        internal static string IsLower {
-            get {
-                return ResourceManager.GetString("IsLower", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not contain only uppercase characters..
-        /// </summary>
-        internal static string IsUpper {
-            get {
-                return ResourceManager.GetString("IsUpper", resourceCulture);
             }
         }
         

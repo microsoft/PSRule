@@ -390,7 +390,7 @@ namespace PSRule.Pipeline
 
                 public void End(int total, int fail, int error)
                 {
-                    if (Option.Output.Footer.GetValueOrDefault(FooterFormat.Default) != FooterFormat.None) 
+                    if (Option.Output.Footer.GetValueOrDefault(FooterFormat.Default) != FooterFormat.None)
                         LineBreak();
 
                     FooterRuleCount(total, fail, error);
