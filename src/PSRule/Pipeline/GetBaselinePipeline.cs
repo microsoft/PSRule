@@ -34,7 +34,7 @@ namespace PSRule.Pipeline
 
             Option.Output.As = ResultFormat.Detail;
             Option.Output.Culture = GetCulture(option.Output.Culture);
-            Option.Output.Format = OutputFormat.None;
+            Option.Output.Format = SuppressFormat(option.Output.Format);
             return this;
         }
 
@@ -48,6 +48,11 @@ namespace PSRule.Pipeline
                 writer: PrepareWriter(),
                 filter: filter
             );
+        }
+
+        private static OutputFormat SuppressFormat(OutputFormat? format)
+        {
+            return !format.HasValue || format != OutputFormat.Yaml ? OutputFormat.None : format.Value;
         }
     }
 
@@ -64,6 +69,7 @@ namespace PSRule.Pipeline
         public override void End()
         {
             Writer.WriteObject(HostHelper.GetBaselineYaml(Source, Context).Where(Match), true);
+            Writer.End();
         }
 
         private bool Match(Baseline baseline)

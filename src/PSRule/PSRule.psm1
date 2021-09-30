@@ -791,7 +791,12 @@ function Get-PSRuleBaseline {
         [PSRule.Configuration.PSRuleOption]$Option,
 
         [Parameter(Mandatory = $False)]
-        [String]$Culture
+        [String]$Culture,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('None', 'Yaml')]
+        [Alias('o')]
+        [PSRule.Configuration.OutputFormat]$OutputFormat
     )
     begin {
         Write-Verbose -Message "[Get-PSRuleBaseline] BEGIN::";
@@ -833,6 +838,10 @@ function Get-PSRuleBaseline {
 
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $Option.Output.Culture = $Culture;
+        }
+        
+        if ($PSBoundParameters.ContainsKey('OutputFormat')) {
+            $Option.Output.Format = $OutputFormat;
         }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::GetBaseline($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);;
