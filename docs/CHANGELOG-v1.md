@@ -15,6 +15,10 @@ What's changed since pre-release v1.8.0-B2109015:
 - General improvements:
   - Added support for conditional reason messages with `ReasonIf`. [#804](https://github.com/microsoft/PSRule/issues/804)
     - See [about_PSRule_Assert] for details.
+  - Added support for `type` and `name` expression properties. [#810](https://github.com/microsoft/PSRule/issues/810)
+    - Use `type` to compare the bound type of the current object.
+    - Use `name` to compare the bound name of the current object.
+    - See [about_PSRule_Expressions] for details.
 
 ## v1.8.0-B2109015 (pre-release)
 

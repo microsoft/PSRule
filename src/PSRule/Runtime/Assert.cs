@@ -414,7 +414,7 @@ namespace PSRule.Runtime
                 return result;
 
             if (!ExpressionHelpers.IsLower(value, requireLetters, out bool notLetters))
-                return Fail(notLetters ? ReasonStrings.IsLetter : ReasonStrings.IsLower, value);
+                return Fail(notLetters ? ReasonStrings.IsLetter : ReasonStrings.Assert_IsLower, value);
 
             return Pass();
         }
@@ -432,7 +432,7 @@ namespace PSRule.Runtime
                 return result;
 
             if (!ExpressionHelpers.IsUpper(value, requireLetters, out bool notLetters))
-                return Fail(notLetters ? ReasonStrings.IsLetter : ReasonStrings.IsUpper, value);
+                return Fail(notLetters ? ReasonStrings.IsLetter : ReasonStrings.Assert_IsUpper, value);
 
             return Pass();
         }

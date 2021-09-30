@@ -46,7 +46,7 @@ namespace PSRule.Rules
         /// A unique identifier for the run.
         /// </summary>
         [JsonProperty(PropertyName = "runId")]
-        public string RunId { get;  }
+        public string RunId { get; }
 
         /// <summary>
         /// A unique identifier for the rule.

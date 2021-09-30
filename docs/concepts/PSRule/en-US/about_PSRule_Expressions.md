@@ -44,6 +44,8 @@ The following operators are available:
 The following comparison properties are available:
 
 - [Field](#field)
+- [Name](#name)
+- [Type](#type)
 
 ### AllOf
 
@@ -762,6 +764,44 @@ spec:
     match: '$(abc|efg)$'
 ```
 
+### Name
+
+The comparison property `name` is used with a condition to evaluate the target name of the object.
+The `name` property must be set to `.`.
+Any other value will cause the condition to evaluate to `false`.
+
+Syntax:
+
+```yaml
+name: '.'
+```
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleName'
+spec:
+  condition:
+    name: '.'
+    equals: 'TargetObject1'
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleName'
+spec:
+  if:
+    name: '.'
+    in:
+    - 'TargetObject1'
+    - 'TargetObject2'
+```
+
 ### Not
 
 The `any` operator is used to invert the result of the nested expression.
@@ -1052,6 +1092,44 @@ spec:
     - 'kube-scheduler'
     caseSensitive: true
     unique: true
+```
+
+### Type
+
+The comparison property `type` is used with a condition to evaluate the target type of the object.
+The `type` property must be set to `.`.
+Any other value will cause the condition to evaluate to `false`.
+
+Syntax:
+
+```yaml
+type: '.'
+```
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleType'
+spec:
+  condition:
+    type: '.'
+    equals: 'CustomType'
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleType'
+spec:
+  if:
+    type: '.'
+    in:
+    - 'Microsoft.Storage/storageAccounts'
+    - 'Microsoft.Storage/storageAccounts/blobServices'
 ```
 
 ## NOTE

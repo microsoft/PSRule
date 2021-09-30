@@ -117,6 +117,42 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Assert_DoesNotMatch" xml:space="preserve">
+    <value>The value '{0}' does not match the expression '{1}'.</value>
+  </data>
+  <data name="Assert_IsLower" xml:space="preserve">
+    <value>The value '{0}' does not contain only lowercase characters.</value>
+  </data>
+  <data name="Assert_IsNullOrEmpty" xml:space="preserve">
+    <value>Is null or empty.</value>
+  </data>
+  <data name="Assert_IsSetTo" xml:space="preserve">
+    <value>Is set to '{0}'.</value>
+  </data>
+  <data name="Assert_IsUpper" xml:space="preserve">
+    <value>The value '{0}' does not contain only uppercase characters.</value>
+  </data>
+  <data name="Assert_Matches" xml:space="preserve">
+    <value>The value '{0}' matches the expression '{1}'.</value>
+  </data>
+  <data name="Assert_NotComparedTo" xml:space="preserve">
+    <value>The value '{0}' is not {1} {2}.</value>
+  </data>
+  <data name="Assert_NotContains" xml:space="preserve">
+    <value>The value '{0}' does not contain any of {1}.</value>
+  </data>
+  <data name="Assert_NotEndsWith" xml:space="preserve">
+    <value>The value '{0}' does not end with any of {1}.</value>
+  </data>
+  <data name="Assert_NotInSet" xml:space="preserve">
+    <value>The value '{0}' was not in {1}.</value>
+  </data>
+  <data name="Assert_NotStartsWith" xml:space="preserve">
+    <value>The value '{0}' does not start with any of {1}.</value>
+  </data>
+  <data name="Assert_NotString" xml:space="preserve">
+    <value>The value '{0}' is not a string.</value>
+  </data>
   <data name="Compare" xml:space="preserve">
     <value>The field value '{0}' can not be compared with '{1}'.</value>
   </data>
@@ -164,12 +200,6 @@
   </data>
   <data name="IsLetter" xml:space="preserve">
     <value>The value '{0}' does not contain only letters.</value>
-  </data>
-  <data name="IsLower" xml:space="preserve">
-    <value>The value '{0}' does not contain only lowercase characters.</value>
-  </data>
-  <data name="IsUpper" xml:space="preserve">
-    <value>The value '{0}' does not contain only uppercase characters.</value>
   </data>
   <data name="JsonSchemaInvalid" xml:space="preserve">
     <value>Failed schema validation on {0}. {1}</value>

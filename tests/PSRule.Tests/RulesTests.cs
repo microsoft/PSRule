@@ -59,7 +59,7 @@ namespace PSRule
             context.EnterRuleBlock(yamlTrue);
             Assert.False(yamlTrue.Condition.If().AllOf());
             context.EnterRuleBlock(yamlFalse);
-            Assert.True(yamlFalse.Condition.If().AllOf());
+            Assert.False(yamlFalse.Condition.If().AllOf());
 
             context.EnterTargetObject(actual3);
             context.EnterRuleBlock(yamlTrue);

@@ -44,15 +44,18 @@ Conditions and operators available for use include:
 The following comparison properties are available:
 
 - Field
+- Name
+- Type
 
 To learn more about conditions, operators, and properties see [about_PSRule_Expressions](about_PSRule_Expressions.md).
 
 Currently the following limitations apply:
 
-- Selectors can only evaluate a field of the target object.
-The following examples can not be evaluated by selectors:
-  - Bound properties such as `TargetName`, `TargetType`, and `Field`.
-  - State variables such as `$PSRule`.
+- Selectors can evaluate:
+  - Fields of the target object.
+  - Type and name binding of the target object by using `name` and `type` comparison properties.
+- State variables such has `$PSRule` can not be evaluated.
+- Bound fields can not be evaluated.
 
 ### Using selectors as pre-conditions
 

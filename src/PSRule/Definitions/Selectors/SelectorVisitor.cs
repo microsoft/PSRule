@@ -13,8 +13,9 @@ namespace PSRule.Definitions.Selectors
     {
         private readonly LanguageExpressionOuterFn _Fn;
 
-        public SelectorVisitor(string id, LanguageIf expression)
+        public SelectorVisitor(string module, string id, LanguageIf expression)
         {
+            Module = module;
             Id = id;
             InstanceId = Guid.NewGuid();
             var builder = new LanguageExpressionBuilder();
@@ -23,11 +24,13 @@ namespace PSRule.Definitions.Selectors
 
         public Guid InstanceId { get; }
 
+        public string Module { get; }
+
         public string Id { get; }
 
         public bool Match(object o)
         {
-            var context = new ExpressionContext();
+            var context = new ExpressionContext(Module);
             context.Debug(PSRuleResources.SelectorMatchTrace, Id);
             return _Fn(context, o).GetValueOrDefault(false);
         }

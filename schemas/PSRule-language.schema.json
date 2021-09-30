@@ -571,18 +571,62 @@
         "selectorProperties": {
             "oneOf": [
                 {
-                    "properties": {
-                        "field": {
-                            "type": "string",
-                            "title": "Field",
-                            "description": "The path of the field.",
-                            "markdownDescription": "The path of the field. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#field)"
-                        }
-                    },
-                    "required": [
-                        "field"
-                    ]
+                    "$ref": "#/definitions/selectorPropertyField"
                 }
+            ]
+        },
+        "selectorPropertiesString": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorPropertyField"
+                },
+                {
+                    "$ref": "#/definitions/selectorPropertyType"
+                },
+                {
+                    "$ref": "#/definitions/selectorPropertyName"
+                }
+            ]
+        },
+        "selectorPropertyField": {
+            "properties": {
+                "field": {
+                    "type": "string",
+                    "title": "Field",
+                    "description": "The path of the field.",
+                    "markdownDescription": "The path of the field. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#field)"
+                }
+            },
+            "required": [
+                "field"
+            ]
+        },
+        "selectorPropertyType": {
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "Type",
+                    "description": "The target type of the object.",
+                    "markdownDescription": "The target type of the object. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#type)",
+                    "default": "."
+                }
+            },
+            "required": [
+                "type"
+            ]
+        },
+        "selectorPropertyName": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "title": "Name",
+                    "description": "The target name of the object.",
+                    "markdownDescription": "The target name of the object. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#name)",
+                    "default": "."
+                }
+            },
+            "required": [
+                "name"
             ]
         },
         "selectorOperatorAllOf": {
@@ -688,7 +732,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -723,7 +767,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -742,7 +786,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -761,7 +805,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -780,7 +824,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -799,7 +843,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -818,7 +862,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -916,7 +960,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -935,7 +979,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -954,7 +998,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -973,7 +1017,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -992,7 +1036,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -1011,7 +1055,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -1030,7 +1074,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -1049,7 +1093,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -1068,7 +1112,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },
@@ -1087,7 +1131,7 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "#/definitions/selectorProperties"
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },

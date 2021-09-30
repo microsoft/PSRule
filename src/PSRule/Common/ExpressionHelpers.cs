@@ -358,7 +358,7 @@ namespace PSRule
         {
             foundValue = actualValue;
             var expectedBase = GetBaseObject(expectedValue);
-            if (actualValue is IEnumerable items)
+            if (actualValue is IEnumerable items && !(actualValue is string))
             {
                 foreach (var item in items)
                 {

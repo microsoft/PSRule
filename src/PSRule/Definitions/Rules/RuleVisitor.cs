@@ -14,8 +14,9 @@ namespace PSRule.Definitions.Rules
     {
         private readonly LanguageExpressionOuterFn _Condition;
 
-        public RuleVisitor(string id, IRuleSpec spec)
+        public RuleVisitor(string module, string id, IRuleSpec spec)
         {
+            Module = module;
             Id = id;
             InstanceId = Guid.NewGuid();
             var builder = new LanguageExpressionBuilder();
@@ -27,6 +28,8 @@ namespace PSRule.Definitions.Rules
 
         public Guid InstanceId { get; }
 
+        public string Module { get; }
+
         public string Id { get; }
 
         public void Dispose()
@@ -36,7 +39,7 @@ namespace PSRule.Definitions.Rules
 
         public IConditionResult If()
         {
-            var context = new ExpressionContext();
+            var context = new ExpressionContext(Module);
             context.Debug(PSRuleResources.SelectorMatchTrace, Id);
             context.PushScope(RunspaceScope.Rule);
             try

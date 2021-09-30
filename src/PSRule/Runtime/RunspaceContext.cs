@@ -71,7 +71,6 @@ namespace PSRule.Runtime
         // Fields exposed to engine
         internal RuleRecord RuleRecord;
         internal RuleBlock RuleBlock;
-        private ITargetBinder TargetBinder;
         internal ITargetBindingContext Binding;
 
         private readonly bool _InconclusiveWarning;
@@ -127,6 +126,8 @@ namespace PSRule.Runtime
         internal IEnumerable<InvokeResult> Output { get; private set; }
 
         internal TargetObject TargetObject { get; private set; }
+
+        internal ITargetBinder TargetBinder { get; private set; }
 
         internal SourceScope Source { get; private set; }
 
