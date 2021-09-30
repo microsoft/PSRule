@@ -15,7 +15,9 @@ namespace PSRule.Pipeline.Output
         protected override string Serialize(object[] o)
         {
             var s = new SerializerBuilder()
+                .DisableAliases()
                 .WithTypeInspector(f => new FieldYamlTypeInspector())
+                .WithTypeConverter(new HashtableYamlTypeConverter())
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
 
