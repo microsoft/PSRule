@@ -40,6 +40,22 @@
             "request": "launch",
             "name": "PowerShell Interactive Session",
             "cwd": "${workspaceRoot}"
+        },
+        {
+            "name": "Debug C# Code",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "Build",
+            "program": "pwsh",
+            "args": [
+                "-NoExit",
+                "-NoProfile",
+                "-Command",
+                "Import-Module ${workspaceFolder}/out/modules/PSRule/PSRule.dll, ${workspaceFolder}/out/modules/PSRule/PSRule.psd1",
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "integratedTerminal"
         }
     ]
 }

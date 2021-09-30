@@ -60,5 +60,8 @@
         "runspace",
         "runspaces",
         "unencrypted"
-    ]
+    ],
+    "[csharp]": {
+        "editor.formatOnSave": true
+    }
 }
