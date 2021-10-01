@@ -17,6 +17,7 @@ namespace PSRule.Pipeline.Output
             var s = new SerializerBuilder()
                 .DisableAliases()
                 .WithTypeInspector(f => new FieldYamlTypeInspector())
+                .WithTypeInspector(inspector => new SortedPropertyYamlTypeInspector(inspector))
                 .WithTypeConverter(new HashtableYamlTypeConverter())
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();

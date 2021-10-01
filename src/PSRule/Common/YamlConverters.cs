@@ -322,6 +322,26 @@ namespace PSRule
     }
 
     /// <summary>
+    /// A YAML type inspector to sort properties by name
+    /// </summary>
+    internal sealed class SortedPropertyYamlTypeInspector : TypeInspectorSkeleton
+    {
+        private readonly ITypeInspector _innerTypeDescriptor;
+
+        public SortedPropertyYamlTypeInspector(ITypeInspector innerTypeDescriptor)
+        {
+            this._innerTypeDescriptor = innerTypeDescriptor;
+        }
+
+        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
+        {
+            return _innerTypeDescriptor
+                .GetProperties(type, container)
+                .OrderBy(p => p.Name);
+        }
+    }
+
+    /// <summary>
     /// A YAML type inspector to read fields and properties from a type for serialization.
     /// </summary>
     internal sealed class FieldYamlTypeInspector : TypeInspectorSkeleton
