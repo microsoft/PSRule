@@ -297,6 +297,7 @@ namespace PSRule.Definitions
         [YamlIgnore()]
         public readonly SourceFile Source;
 
+        [YamlIgnore()]
         public readonly ResourceHelpInfo Info;
 
         public ResourceMetadata Metadata { get; }

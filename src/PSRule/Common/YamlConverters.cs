@@ -357,7 +357,7 @@ namespace PSRule
         {
             return type
                 .GetRuntimeFields()
-                .Where(f => !f.IsStatic && f.IsPublic)
+                .Where(f => !f.IsStatic && f.IsPublic && !f.IsDefined(typeof(YamlIgnoreAttribute), true))
                 .Select(p => new Field(p, _TypeResolver, _NamingConvention));
         }
 
@@ -365,7 +365,7 @@ namespace PSRule
         {
             return type
                 .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance)
-                .Where(p => p.CanRead && IsAllowedProperty(p.Name))
+                .Where(p => p.CanRead && IsAllowedProperty(p.Name) && !p.IsDefined(typeof(YamlIgnoreAttribute), true))
                 .Select(p => new Property(p, _TypeResolver, _NamingConvention));
         }
 
