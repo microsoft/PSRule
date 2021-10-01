@@ -15,7 +15,7 @@ Get a list of baselines.
 
 ```text
 Get-PSRuleBaseline [-Module <String[]>] [-ListAvailable] [[-Path] <String[]>] [-Name <String[]>]
- [-Option <PSRuleOption>] [-Culture <String>] [<CommonParameters>]
+ [-Option <PSRuleOption>] [-Culture <String>] [-OutputFormat <OutputFormat>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -135,6 +135,28 @@ The PowerShell cmdlet `Get-Culture` shows the current culture of PowerShell.
 Type: String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputFormat
+
+Configures the format that output is presented in.
+
+The following format options are available:
+
+- None - Output is presented as an object using PowerShell defaults. This is the default.
+- Yaml - Output is serialized as YAML.
+
+```yaml
+Type: OutputFormat
+Parameter Sets: (All)
+Aliases: o
+Accepted values: None, Yaml
 
 Required: False
 Position: Named
