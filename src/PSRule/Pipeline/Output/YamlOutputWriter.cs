@@ -14,12 +14,20 @@ namespace PSRule.Pipeline.Output
 
         protected override string Serialize(object[] o)
         {
+            return ToYaml(o);
+        }
+
+        internal static string ToYaml(object[] o)
+        {
             var s = new SerializerBuilder()
                 .DisableAliases()
                 .WithTypeInspector(f => new FieldYamlTypeInspector())
                 .WithTypeInspector(inspector => new SortedPropertyYamlTypeInspector(inspector))
                 .WithTypeConverter(new HashtableYamlTypeConverter())
+                .WithTypeConverter(new PSObjectYamlTypeConverter())
+                .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
                 .Build();
 
             return s.Serialize(o);

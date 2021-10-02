@@ -152,9 +152,10 @@ namespace PSRule
             {
                 emitter.Emit(new MappingStart());
                 emitter.Emit(new MappingEnd());
+                return;
             }
 
-            if (!(value is Hashtable hashtable))
+            if (!(value is IDictionary hashtable))
                 return;
 
             emitter.Emit(new MappingStart());
@@ -217,7 +218,7 @@ namespace PSRule
     /// <summary>
     /// A YAML converter to deserialize a map/ object as a PSObject.
     /// </summary>
-    internal sealed class PSObjectYamlTypeConverter : IYamlTypeConverter
+    internal sealed class PSObjectYamlTypeConverter : MappingTypeConverter, IYamlTypeConverter
     {
         public bool Accepts(Type type)
         {
@@ -252,7 +253,7 @@ namespace PSRule
 
         public void WriteYaml(IEmitter emitter, object value, Type type)
         {
-            throw new NotImplementedException();
+            Map(emitter, value);
         }
 
         private PSNoteProperty ReadNoteProperty(IParser parser, string name)
@@ -284,6 +285,74 @@ namespace PSRule
                 return new PSNoteProperty(name, scalar.Value);
             }
             return null;
+        }
+    }
+
+    internal abstract class MappingTypeConverter
+    {
+        protected void Map(IEmitter emitter, object value)
+        {
+            emitter.Emit(new MappingStart());
+            foreach (var kv in GetKV(value))
+            {
+                emitter.Emit(new Scalar(kv.Key));
+                Primitive(emitter, kv.Value);
+            }
+            emitter.Emit(new MappingEnd());
+        }
+
+        protected void Primitive(IEmitter emitter, object value)
+        {
+            if (value == null)
+                return;
+
+            value = GetBaseObject(value);
+            if (value is string s)
+            {
+                emitter.Emit(new Scalar(s));
+                return;
+            }
+
+            if (value is int || value is long || value is bool)
+            {
+                emitter.Emit(new Scalar(null, null, value.ToString(), ScalarStyle.Plain, false, false));
+                return;
+            }
+
+            if (value is IEnumerable enumerable)
+            {
+                emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
+                foreach (var item in enumerable)
+                    Primitive(emitter, item);
+
+                emitter.Emit(new SequenceEnd());
+                return;
+            }
+
+            if (value is PSObject || value is IDictionary)
+            {
+                Map(emitter, value);
+                return;
+            }
+
+            emitter.Emit(new Scalar(value.ToString()));
+        }
+
+        private static IEnumerable<KeyValuePair<string, object>> GetKV(object value)
+        {
+            var o = GetBaseObject(value);
+            if (o is IDictionary d)
+                foreach (DictionaryEntry kv in d)
+                    yield return new KeyValuePair<string, object>(kv.Key.ToString(), kv.Value);
+
+            if (o is PSObject psObject)
+                foreach (var p in psObject.Properties)
+                    yield return new KeyValuePair<string, object>(p.Name, p.Value);
+        }
+
+        private static object GetBaseObject(object value)
+        {
+            return value is PSObject psObject && psObject.BaseObject != null && !(psObject.BaseObject is PSCustomObject) ? psObject.BaseObject : value;
         }
     }
 

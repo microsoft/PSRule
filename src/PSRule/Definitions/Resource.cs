@@ -249,8 +249,10 @@ namespace PSRule.Definitions
 
         public string Name { get; set; }
 
+        [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitEmptyCollections)]
         public ResourceAnnotations Annotations { get; set; }
 
+        [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitEmptyCollections)]
         public ResourceTags Tags { get; set; }
     }
 
