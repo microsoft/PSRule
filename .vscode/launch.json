@@ -51,7 +51,7 @@
                 "-NoExit",
                 "-NoProfile",
                 "-Command",
-                "Import-Module ${workspaceFolder}/out/modules/PSRule/PSRule.dll, ${workspaceFolder}/out/modules/PSRule/PSRule.psd1",
+                "Import-Module ${workspaceFolder}/out/modules/PSRule/PSRule.psd1",
             ],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
