@@ -1736,6 +1736,8 @@ RuleName, Pass, Fail, Outcome, Synopsis, Recommendation
 The Wide format is ignored by `Assert-PSRule`. `Get-PSRule` only accepts `Wide` or `None`.
 Usage of other formats are treated as `None`.
 
+The `Get-PSRuleBaseline` cmdlet only accepts `None` or `Yaml`.
+
 This option can be specified using:
 
 ```powershell
