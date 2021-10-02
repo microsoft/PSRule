@@ -42,7 +42,7 @@
             "cwd": "${workspaceRoot}"
         },
         {
-            "name": "Debug C# Code",
+            "name": "Debug PSRule Cmdlets",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "Build",
