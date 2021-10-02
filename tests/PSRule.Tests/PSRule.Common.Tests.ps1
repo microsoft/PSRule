@@ -8,47 +8,53 @@
 [CmdletBinding()]
 param ()
 
-# Setup error handling
-$ErrorActionPreference = 'Stop';
-Set-StrictMode -Version latest;
+BeforeAll {
+    # Setup error handling
+    $ErrorActionPreference = 'Stop';
+    Set-StrictMode -Version latest;
 
-if ($Env:SYSTEM_DEBUG -eq 'true') {
-    $VerbosePreference = 'Continue';
+    if ($Env:SYSTEM_DEBUG -eq 'true') {
+        $VerbosePreference = 'Continue';
+    }
+
+    # Setup tests paths
+    $rootPath = $PWD;
+
+    Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
+
+    $here = (Resolve-Path $PSScriptRoot).Path;
+    $outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Common;
+    Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
+    $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 }
-
-# Setup tests paths
-$rootPath = $PWD;
-
-Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-
-$here = (Resolve-Path $PSScriptRoot).Path;
-$outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Common;
-Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
-$Null = New-Item -Path $outputPath -ItemType Directory -Force;
 
 #region Invoke-PSRule
 
 Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
-    $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1';
-    $yamlFilePath = Join-Path -Path $here -ChildPath 'FromFile.Rule.yaml';
-    $emptyOptionsFilePath = Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml';
+    BeforeAll {
+        $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1';
+        $yamlFilePath = Join-Path -Path $here -ChildPath 'FromFile.Rule.yaml';
+        $emptyOptionsFilePath = Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml';
+    }
 
     Context 'With defaults' {
-        $testObject = [PSCustomObject]@{
-            Name = 'TestObject1'
-            Value = 1
-            '_PSRule' = [PSCustomObject]@{
-                source = @(
-                    [PSCustomObject]@{
-                        file = 'source.json'
-                        Line = 100
-                        Position = 1000
-                        type = "Origin"
-                    }
-                )
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+                Value = 1
+                '_PSRule' = [PSCustomObject]@{
+                    source = @(
+                        [PSCustomObject]@{
+                            file = 'source.json'
+                            Line = 100
+                            Position = 1000
+                            type = "Origin"
+                        }
+                    )
+                }
             }
+            $testObject.PSObject.TypeNames.Insert(0, 'TestType');
         }
-        $testObject.PSObject.TypeNames.Insert(0, 'TestType');
 
         It 'Returns passed' {
             [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-ZZ');
@@ -298,9 +304,11 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
     }
 
     Context 'Using -Path' {
-        $testObject = [PSCustomObject]@{
-            Name = 'TestObject1'
-            Value = 1
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+                Value = 1
+            }
         }
 
         It 'Returns error with bad path' {
@@ -322,16 +330,18 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
     }
 
     Context 'Using -As' {
-        $testObject = @(
-            [PSCustomObject]@{
-                Name = "TestObject1"
-                Value = 1
-            }
-            [PSCustomObject]@{
-                Name = "TestObject2"
-                Value = 2
-            }
-        );
+        BeforeAll {
+            $testObject = @(
+                [PSCustomObject]@{
+                    Name = "TestObject1"
+                    Value = 1
+                }
+                [PSCustomObject]@{
+                    Name = "TestObject2"
+                    Value = 2
+                }
+            );
+        }
 
         It 'Returns detail' {
             $option = Join-Path -Path $here -ChildPath 'PSRule.Tests5.yml';
@@ -455,11 +465,13 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
     }
 
     Context 'Using -OutputFormat' {
-        $testObject = [PSCustomObject]@{
-            Name = 'TestObject1'
-            Value = 1
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+                Value = 1
+            }
+            $testObject.PSObject.TypeNames.Insert(0, 'TestType');
         }
-        $testObject.PSObject.TypeNames.Insert(0, 'TestType');
 
         It 'Yaml' {
             $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Yaml);
@@ -794,9 +806,11 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
     }
 
     Context 'With constrained language' {
-        $testObject = [PSCustomObject]@{
-            Name = 'TestObject1'
-            Value = 1
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+                Value = 1
+            }
         }
 
         It 'Checks if DeviceGuard is enabled' {
@@ -957,11 +971,15 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 #region Test-PSRuleTarget
 
 Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
-    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    BeforeAll {
+        $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    }
 
     Context 'With defaults' {
-        $testObject = [PSCustomObject]@{
-            Name = 'TestObject1'
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+            }
         }
 
         It 'Returns boolean' {
@@ -1072,9 +1090,11 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
     }
 
     Context 'With constrained language' {
-        $testObject = [PSCustomObject]@{
-            Name = 'TestObject1'
-            Value = 1
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+                Value = 1
+            }
         }
 
         It 'Checks if DeviceGuard is enabled' {
@@ -1161,11 +1181,15 @@ Describe 'Get-PSRuleTarget' -Tag 'Get-PSRuleTarget','Common' {
 #region Assert-PSRule
 
 Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
-    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    BeforeAll {
+        $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    }
 
     Context 'With defaults' {
-        $testObject = [PSCustomObject]@{
-            Name = 'TestObject1'
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+            }
         }
 
         It 'Returns output' {
@@ -1193,8 +1217,10 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
     }
 
     Context 'With -OutputPath' {
-        $testObject = [PSCustomObject]@{
-            Name = 'TestObject1'
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+            }
         }
 
         It 'Returns output' {
@@ -1256,8 +1282,10 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
     }
 
     Context 'With -Style' {
-        $testObject = [PSCustomObject]@{
-            Name = 'TestObject1'
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+            }
         }
 
         It 'GitHub Actions' {
@@ -1296,9 +1324,12 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
     }
 
     Context 'With -ResultVariable' {
-        $testObject = [PSCustomObject]@{
-            Name = 'TestObject1'
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+            }
         }
+
         It 'Returns output' {
             $assertParams = @{
                 Path = $ruleFilePath
@@ -1317,9 +1348,11 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
     }
 
     Context 'With constrained language' {
-        $testObject = [PSCustomObject]@{
-            Name = 'TestObject1'
-            Value = 1
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+                Value = 1
+            }
         }
 
         It 'Checks if DeviceGuard is enabled' {
@@ -1353,25 +1386,29 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
 #region Get-PSRule
 
 Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
-    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
-    $emptyOptionsFilePath = (Join-Path -Path $here -ChildPath 'PSRule.Tests8.yml');
+    BeforeAll {
+        $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+        $emptyOptionsFilePath = (Join-Path -Path $here -ChildPath 'PSRule.Tests8.yml');
+    }
 
     Context 'With defaults' {
-        # Get a list of rules
-        $searchPath = Join-Path -Path $here -ChildPath 'TestModule';
+        BeforeAll {
+            # Get a list of rules
+            $searchPath = Join-Path -Path $here -ChildPath 'TestModule';
+        }
 
-        try {
-            Push-Location -Path $searchPath;
-            It 'Returns rules in current path' {
+        It 'Returns rules in current path' {
+            try {
+                Push-Location -Path $searchPath;
                 $result = @(Get-PSRule)
                 $result | Should -Not -BeNullOrEmpty;
                 $result.Length | Should -Be 3;
                 $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
                 ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.Rule';
             }
-        }
-        finally {
-            Pop-Location;
+            finally {
+                Pop-Location;
+            }
         }
     }
 
@@ -1512,7 +1549,9 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
     }
 
     Context 'With -Module' {
-        $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule';
+        BeforeAll {
+            $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule';
+        }
 
         It 'Returns module rules' {
             $Null = Import-Module $testModuleSourcePath -Force;
@@ -1538,11 +1577,11 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $filteredResult[0].Tag['type'] | Should -Be 'Yaml';
         }
 
-        if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
-            $Null = Remove-Module -Name TestModule;
-        }
-
         It 'Loads module with preference' {
+            if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
+                $Null = Remove-Module -Name TestModule;
+            }
+
             Mock -CommandName 'LoadModule' -ModuleName 'PSRule';
             $currentLoadingPreference = Get-Variable -Name PSModuleAutoLoadingPreference -ErrorAction SilentlyContinue -ValueOnly;
 
@@ -1580,11 +1619,11 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
         }
 
-        if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
-            $Null = Remove-Module -Name TestModule;
-        }
-
         It 'Handles path spaces' {
+            if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
+                $Null = Remove-Module -Name TestModule;
+            }
+
             # Copy file
             $testParentPath = Join-Path -Path $outputPath -ChildPath 'Program Files\';
             $testRuleDestinationPath = Join-Path -Path $testParentPath -ChildPath 'FromFile.Rule.ps1';
@@ -1611,11 +1650,11 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result[0].Info.Annotations.culture | Should -Be 'en-US';
         }
 
-        if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
-            $Null = Remove-Module -Name TestModule;
-        }
-
         It 'Returns module and path rules' {
+            if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
+                $Null = Remove-Module -Name TestModule;
+            }
+
             $Null = Import-Module $testModuleSourcePath -Force;
             $result = @(Get-PSRule -Path $testModuleSourcePath -Module 'TestModule');
             $result | Should -Not -BeNullOrEmpty;
@@ -1623,11 +1662,11 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
         }
 
-        if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
-            $Null = Remove-Module -Name TestModule;
-        }
-
         It 'Read from documentation' {
+            if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
+                $Null = Remove-Module -Name TestModule;
+            }
+
             [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-US');
             try {
                 # en-US default
@@ -1692,8 +1731,10 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             }
         }
 
-        if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
-            $Null = Remove-Module -Name TestModule;
+        AfterAll {
+            if ($Null -ne (Get-Module -Name TestModule -ErrorAction SilentlyContinue)) {
+                $Null = Remove-Module -Name TestModule;
+            }
         }
     }
 
@@ -1783,37 +1824,57 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
 #region Get-PSRuleHelp
 
 Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
-    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
-    Remove-Module TestModule*;
-    $Null = Import-Module (Join-Path $here -ChildPath 'TestModule') -Force;
+    BeforeAll {
+        $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+        Remove-Module TestModule*;
+        $Null = Import-Module (Join-Path $here -ChildPath 'TestModule') -Force;
+    }
 
     Context 'With defaults' {
-        # Get a list of rules
-        $searchPath = Join-Path -Path $here -ChildPath 'TestModule';
+        BeforeAll {
+            # Get a list of rules
+            $searchPath = Join-Path -Path $here -ChildPath 'TestModule';
+        }
 
-        try {
-            Push-Location $searchPath;
-            It 'Docs from imported module' {
+        It 'Docs from imported module' {
+            try {
+                Push-Location $searchPath;
                 $result = @(Get-PSRuleHelp);
                 $result.Length | Should -Be 6;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
                 $result[2].Name | Should -Be 'M1.Rule1';
                 $result[3].Name | Should -Be 'M1.Rule2';
+                $result[4].Name | Should -Be 'M1.YamlTestName';
+                $result[5].Name | Should -Be 'M1.YamlTestName';
                 ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.RuleHelpInfo+Collection';
             }
+            finally {
+                Pop-Location;
+            }
+        }
 
-            It 'Using wildcard in name' {
+        It 'Using wildcard in name' {
+            try {
+                Push-Location $searchPath;
                 $result = @(Get-PSRuleHelp -Name M1.*);
                 $result.Length | Should -Be 6;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
                 $result[2].Name | Should -Be 'M1.Rule1';
                 $result[3].Name | Should -Be 'M1.Rule2';
+                $result[4].Name | Should -Be 'M1.YamlTestName';
+                $result[5].Name | Should -Be 'M1.YamlTestName';
                 ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.RuleHelpInfo+Collection';
             }
+            finally {
+                Pop-Location;
+            }
+        }
 
-            It 'With -Full' {
+        It 'With -Full' {
+            try {
+                Push-Location $searchPath;
                 $getParams = @{
                     Module = 'TestModule'
                     Name = 'M1.Rule1'
@@ -1822,9 +1883,9 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
                 $result | Should -Not -BeNullOrEmpty;
                 ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.RuleHelpInfo+Full';
             }
-        }
-        finally {
-            Pop-Location;
+            finally {
+                Pop-Location;
+            }
         }
     }
 
@@ -1905,20 +1966,24 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
 #region Rules
 
 Describe 'Rules' -Tag 'Common', 'Rules' {
-    $testObject = [PSCustomObject]@{
-        Name = 'TestObject1'
-        Value = 1
-    }
-    $testParams = @{
-        ErrorVariable = 'outError'
-        ErrorAction = 'SilentlyContinue'
-        WarningAction = 'SilentlyContinue'
+    BeforeAll {
+        $testObject = [PSCustomObject]@{
+            Name = 'TestObject1'
+            Value = 1
+        }
+        $testParams = @{
+            ErrorVariable = 'outError'
+            ErrorAction = 'SilentlyContinue'
+            WarningAction = 'SilentlyContinue'
+        }
     }
 
     Context 'Parsing' {
-        $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileParseError.Rule.ps1';
-        $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithNestedRule;
-        $messages = @($outError);
+        BeforeAll {
+            $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileParseError.Rule.ps1';
+            $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithNestedRule;
+            $messages = @($outError);
+        }
 
         It 'Error on nested rules' {
             $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidRuleNesting' });
@@ -2032,7 +2097,9 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
 #region Binding
 
 Describe 'Binding' -Tag Common, Binding {
-    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    BeforeAll {
+        $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    }
 
     Context 'TargetName binding' {
         It 'Binds to TargetName' {
@@ -2164,12 +2231,14 @@ Describe 'Binding' -Tag Common, Binding {
     }
 
     Context 'TargetType binding' {
-        $testObject = [PSCustomObject]@{
-            ResourceType = 'ResourceType'
-            kind = 'kind'
-            OtherType = 'OtherType'
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                ResourceType = 'ResourceType'
+                kind = 'kind'
+                OtherType = 'OtherType'
+            }
+            $testObject.PSObject.TypeNames.Insert(0, 'TestType');
         }
-        $testObject.PSObject.TypeNames.Insert(0, 'TestType');
 
         It 'Uses default TypeName' {
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1';

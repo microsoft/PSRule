@@ -13,35 +13,41 @@ param (
 
 )
 
-# Setup error handling
-$ErrorActionPreference = 'Stop';
-Set-StrictMode -Version latest;
+BeforeAll {
+    # Setup error handling
+    $ErrorActionPreference = 'Stop';
+    Set-StrictMode -Version latest;
 
-if ($Env:SYSTEM_DEBUG -eq 'true') {
-    $VerbosePreference = 'Continue';
+    if ($Env:SYSTEM_DEBUG -eq 'true') {
+        $VerbosePreference = 'Continue';
+    }
+
+    # Setup tests paths
+    $rootPath = $PWD;
+
+    Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
+    $here = (Resolve-Path $PSScriptRoot).Path;
 }
-
-# Setup tests paths
-$rootPath = $PWD;
-
-Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-$here = (Resolve-Path $PSScriptRoot).Path;
 
 #region PSRule variables
 
 Describe 'PSRule variables' -Tag 'Variables' {
-    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    BeforeAll {
+        $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    }
 
     Context 'PowerShell automatic variables' {
-        $testObject = [PSCustomObject]@{
-            Name = 'VariableTest'
-            Type = 'TestType'
-            PSScriptRoot = $PSScriptRoot
-            PWD = $PWD
-            PSCommandPath = $ruleFilePath
-            RuleTest = 'WithRuleVariable'
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'VariableTest'
+                Type = 'TestType'
+                PSScriptRoot = $PSScriptRoot
+                PWD = $PWD
+                PSCommandPath = $ruleFilePath
+                RuleTest = 'WithRuleVariable'
+            }
+            $testObject.PSObject.TypeNames.Insert(0, $testObject.Type);
         }
-        $testObject.PSObject.TypeNames.Insert(0, $testObject.Type);
 
         It '$PSRule' {
             $option = New-PSRuleOption -BindingField @{ kind = 'Type' };

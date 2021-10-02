@@ -8,35 +8,42 @@
 [CmdletBinding()]
 param ()
 
-# Setup error handling
-$ErrorActionPreference = 'Stop';
-Set-StrictMode -Version latest;
+BeforeAll {
+    # Setup error handling
+    $ErrorActionPreference = 'Stop';
+    Set-StrictMode -Version latest;
 
-if ($Env:SYSTEM_DEBUG -eq 'true') {
-    $VerbosePreference = 'Continue';
+    if ($Env:SYSTEM_DEBUG -eq 'true') {
+        $VerbosePreference = 'Continue';
+    }
+
+    # Setup tests paths
+    $rootPath = $PWD;
+
+    Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
+
+    $here = (Resolve-Path $PSScriptRoot).Path;
+    $outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Conventions;
+    Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
+    $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 }
 
-# Setup tests paths
-$rootPath = $PWD;
-
-Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-
-$here = (Resolve-Path $PSScriptRoot).Path;
-$outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Conventions;
-Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
-$Null = New-Item -Path $outputPath -ItemType Directory -Force;
-
 Describe 'PSRule -- Conventions' -Tag 'Convention' {
-    $rulePath = Join-Path -Path $here -ChildPath 'FromFileConventions.Rule.ps1';
+    BeforeAll {
+        $rulePath = Join-Path -Path $here -ChildPath 'FromFileConventions.Rule.ps1';
+    }
 
     Context 'With -Convention' {
-        $invokeParams = @{
-            Path = $rulePath
-            InputObject = [PSCustomObject]@{
-                Name = 'TestObject1'
-                IfTest = 0
+        BeforeAll {
+            $invokeParams = @{
+                Path = $rulePath
+                InputObject = [PSCustomObject]@{
+                    Name = 'TestObject1'
+                    IfTest = 0
+                }
             }
         }
+
         It 'Uses convention' {
             # Single convention
             $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Convention 'Convention1');
