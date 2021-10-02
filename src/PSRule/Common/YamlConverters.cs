@@ -9,6 +9,7 @@ using PSRule.Definitions.Expressions;
 using PSRule.Host;
 using PSRule.Runtime;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
@@ -133,9 +134,91 @@ namespace PSRule
     }
 
     /// <summary>
+    /// A YAML converter for serializing Hashtable
+    /// </summary>
+    internal sealed class HashtableYamlTypeConverter : IYamlTypeConverter
+    {
+        public bool Accepts(Type type)
+        {
+            return type == typeof(Hashtable);
+        }
+        public object ReadYaml(IParser parser, Type type)
+        {
+            throw new NotImplementedException();
+        }
+        public void WriteYaml(IEmitter emitter, object value, Type type)
+        {
+            if (type == typeof(Hashtable) && value == null)
+            {
+                emitter.Emit(new MappingStart());
+                emitter.Emit(new MappingEnd());
+                return;
+            }
+
+            if (!(value is IDictionary hashtable))
+                return;
+
+            emitter.Emit(new MappingStart());
+
+            if (hashtable != null && hashtable.Count > 0)
+            {
+                foreach (DictionaryEntry entry in hashtable)
+                {
+                    emitter.Emit(new Scalar(entry.Key.ToString()));
+
+                    if (entry.Value == null)
+                    {
+                        emitter.Emit(new Scalar(string.Empty));
+                    }
+
+                    else if (entry.Value is string stringEntryValue)
+                    {
+                        emitter.Emit(new Scalar(stringEntryValue));
+                    }
+
+                    else if (entry.Value is string[] stringEntryValueArray)
+                    {
+                        emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
+
+                        foreach (string strVal in stringEntryValueArray)
+                        {
+                            emitter.Emit(new Scalar(strVal));
+                        }
+
+                        emitter.Emit(new SequenceEnd());
+                    }
+
+                    else if (entry.Value is PSObject psObjectEntryValue)
+                    {
+                        emitter.Emit(new Scalar(psObjectEntryValue.BaseObject.ToString()));
+                    }
+
+                    else if (entry.Value is PSObject[] psObjectEntryValueArray)
+                    {
+                        emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
+
+                        foreach (PSObject obj in psObjectEntryValueArray)
+                        {
+                            emitter.Emit(new Scalar(obj.BaseObject.ToString()));
+                        }
+
+                        emitter.Emit(new SequenceEnd());
+                    }
+                    else
+                    {
+                        emitter.Emit(new Scalar(entry.Value.ToString()));
+                    }
+                }
+            }
+
+            emitter.Emit(new MappingEnd());
+        }
+    }
+
+    /// <summary>
     /// A YAML converter to deserialize a map/ object as a PSObject.
     /// </summary>
-    internal sealed class PSObjectYamlTypeConverter : IYamlTypeConverter
+    internal sealed class PSObjectYamlTypeConverter : MappingTypeConverter, IYamlTypeConverter
     {
         public bool Accepts(Type type)
         {
@@ -170,7 +253,7 @@ namespace PSRule
 
         public void WriteYaml(IEmitter emitter, object value, Type type)
         {
-            throw new NotImplementedException();
+            Map(emitter, value);
         }
 
         private PSNoteProperty ReadNoteProperty(IParser parser, string name)
@@ -205,6 +288,74 @@ namespace PSRule
         }
     }
 
+    internal abstract class MappingTypeConverter
+    {
+        protected void Map(IEmitter emitter, object value)
+        {
+            emitter.Emit(new MappingStart());
+            foreach (var kv in GetKV(value))
+            {
+                emitter.Emit(new Scalar(kv.Key));
+                Primitive(emitter, kv.Value);
+            }
+            emitter.Emit(new MappingEnd());
+        }
+
+        protected void Primitive(IEmitter emitter, object value)
+        {
+            if (value == null)
+                return;
+
+            value = GetBaseObject(value);
+            if (value is string s)
+            {
+                emitter.Emit(new Scalar(s));
+                return;
+            }
+
+            if (value is int || value is long || value is bool)
+            {
+                emitter.Emit(new Scalar(null, null, value.ToString(), ScalarStyle.Plain, false, false));
+                return;
+            }
+
+            if (value is IEnumerable enumerable)
+            {
+                emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
+                foreach (var item in enumerable)
+                    Primitive(emitter, item);
+
+                emitter.Emit(new SequenceEnd());
+                return;
+            }
+
+            if (value is PSObject || value is IDictionary)
+            {
+                Map(emitter, value);
+                return;
+            }
+
+            emitter.Emit(new Scalar(value.ToString()));
+        }
+
+        private static IEnumerable<KeyValuePair<string, object>> GetKV(object value)
+        {
+            var o = GetBaseObject(value);
+            if (o is IDictionary d)
+                foreach (DictionaryEntry kv in d)
+                    yield return new KeyValuePair<string, object>(kv.Key.ToString(), kv.Value);
+
+            if (o is PSObject psObject)
+                foreach (var p in psObject.Properties)
+                    yield return new KeyValuePair<string, object>(p.Name, p.Value);
+        }
+
+        private static object GetBaseObject(object value)
+        {
+            return value is PSObject psObject && psObject.BaseObject != null && !(psObject.BaseObject is PSCustomObject) ? psObject.BaseObject : value;
+        }
+    }
+
     /// <summary>
     /// A YAML resolver to convert any dictionary types to PSObjects instead.
     /// </summary>
@@ -236,6 +387,26 @@ namespace PSRule
                 return true;
             }
             return false;
+        }
+    }
+
+    /// <summary>
+    /// A YAML type inspector to sort properties by name
+    /// </summary>
+    internal sealed class SortedPropertyYamlTypeInspector : TypeInspectorSkeleton
+    {
+        private readonly ITypeInspector _innerTypeDescriptor;
+
+        public SortedPropertyYamlTypeInspector(ITypeInspector innerTypeDescriptor)
+        {
+            this._innerTypeDescriptor = innerTypeDescriptor;
+        }
+
+        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
+        {
+            return _innerTypeDescriptor
+                .GetProperties(type, container)
+                .OrderBy(p => p.Name);
         }
     }
 
@@ -275,7 +446,7 @@ namespace PSRule
         {
             return type
                 .GetRuntimeFields()
-                .Where(f => !f.IsStatic && f.IsPublic)
+                .Where(f => !f.IsStatic && f.IsPublic && !f.IsDefined(typeof(YamlIgnoreAttribute), true))
                 .Select(p => new Field(p, _TypeResolver, _NamingConvention));
         }
 
@@ -283,7 +454,7 @@ namespace PSRule
         {
             return type
                 .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance)
-                .Where(p => p.CanRead && IsAllowedProperty(p.Name))
+                .Where(p => p.CanRead && IsAllowedProperty(p.Name) && !p.IsDefined(typeof(YamlIgnoreAttribute), true))
                 .Select(p => new Property(p, _TypeResolver, _NamingConvention));
         }
 

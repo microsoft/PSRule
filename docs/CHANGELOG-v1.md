@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.8.0-B2109022:
+
+- Engine features:
+  - Added YAML output format support for `Get-PSRuleBaseline`. [#326](https://github.com/microsoft/PSRule/issues/326)
+
 ## v1.8.0-B2109022 (pre-release)
 
 What's changed since pre-release v1.8.0-B2109015:

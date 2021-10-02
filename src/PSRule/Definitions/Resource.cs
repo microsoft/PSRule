@@ -249,8 +249,10 @@ namespace PSRule.Definitions
 
         public string Name { get; set; }
 
+        [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitEmptyCollections)]
         public ResourceAnnotations Annotations { get; set; }
 
+        [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitEmptyCollections)]
         public ResourceTags Tags { get; set; }
     }
 
@@ -297,6 +299,7 @@ namespace PSRule.Definitions
         [YamlIgnore()]
         public readonly SourceFile Source;
 
+        [YamlIgnore()]
         public readonly ResourceHelpInfo Info;
 
         public ResourceMetadata Metadata { get; }

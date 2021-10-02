@@ -1716,7 +1716,7 @@ variables:
 ### Output.Format
 
 Configures the format that results will be presented in.
-This option applies to `Invoke-PSRule`, `Assert-PSRule`, and `Get-PSRule`.
+This option applies to `Invoke-PSRule`, `Assert-PSRule`, `Get-PSRule` and `Get-PSRuleBaseline`.
 This options is ignored by other cmdlets.
 
 The following format options are available:
@@ -1735,6 +1735,8 @@ RuleName, Pass, Fail, Outcome, Synopsis, Recommendation
 
 The Wide format is ignored by `Assert-PSRule`. `Get-PSRule` only accepts `Wide` or `None`.
 Usage of other formats are treated as `None`.
+
+The `Get-PSRuleBaseline` cmdlet only accepts `None` or `Yaml`.
 
 This option can be specified using:
 

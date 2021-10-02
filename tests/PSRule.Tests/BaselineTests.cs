@@ -5,12 +5,14 @@ using PSRule.Configuration;
 using PSRule.Definitions.Baselines;
 using PSRule.Host;
 using PSRule.Pipeline;
+using PSRule.Pipeline.Output;
 using PSRule.Runtime;
 using System;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using Xunit;
+using YamlDotNet.Serialization;
 using Assert = Xunit.Assert;
 
 namespace PSRule
@@ -72,6 +74,30 @@ namespace PSRule
             var actual = baseline.FirstOrDefault(b => filter.Match(b));
 
             Assert.Equal("TestBaseline5", actual.Name);
+        }
+
+        [Fact]
+        public void BaselineAsYaml()
+        {
+            var expected = GetBaselines(GetSource());
+            var s = YamlOutputWriter.ToYaml(expected);
+            var d = new DeserializerBuilder().Build();
+            var actual = d.Deserialize<dynamic>(s);
+
+            // TestBaseline1
+            Assert.Equal("github.com/microsoft/PSRule/v1", actual[0]["apiVersion"]);
+            Assert.Equal("Baseline", actual[0]["kind"]);
+            Assert.Equal("TestBaseline1", actual[0]["metadata"]["name"]);
+            Assert.NotNull(actual[0]["spec"]);
+            Assert.Equal("kind", actual[0]["spec"]["binding"]["field"]["kind"][0]);
+            Assert.Equal("Id", actual[0]["spec"]["binding"]["field"]["uniqueIdentifer"][0]);
+            Assert.Equal("AlternateName", actual[0]["spec"]["binding"]["field"]["uniqueIdentifer"][1]);
+            Assert.Equal("AlternateName", actual[0]["spec"]["binding"]["targetName"][0]);
+            Assert.Equal("kind", actual[0]["spec"]["binding"]["targetType"][0]);
+            Assert.Equal("WithBaseline", actual[0]["spec"]["rule"]["include"][0]);
+            Assert.Equal("value1", actual[0]["spec"]["configuration"]["key1"]);
+            Assert.Equal("abc", actual[0]["spec"]["configuration"]["key2"][0]["value1"]);
+            Assert.Equal("def", actual[0]["spec"]["configuration"]["key2"][1]["value2"]);
         }
 
         #region Helper methods
