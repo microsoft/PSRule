@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using PSRule.Data;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -9,6 +10,7 @@ using PSRule.Runtime;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
 
 namespace PSRule
@@ -302,6 +304,20 @@ namespace PSRule
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// A contract resolver to sort properties alphabetically
+    /// </summary>
+    internal sealed class SortedPropertyContractResolver : DefaultContractResolver
+    {
+        protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+        {
+            return base
+                .CreateProperties(type, memberSerialization)
+                .OrderBy(prop => prop.PropertyName)
+                .ToList();
         }
     }
 }

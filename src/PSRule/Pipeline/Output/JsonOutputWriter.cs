@@ -19,6 +19,7 @@ namespace PSRule.Pipeline.Output
                 Formatting = Formatting.Indented
             };
             settings.Converters.Add(new ErrorCategoryJsonConverter());
+            settings.ContractResolver = new SortedPropertyContractResolver();
             return JsonConvert.SerializeObject(o, settings: settings);
         }
     }
