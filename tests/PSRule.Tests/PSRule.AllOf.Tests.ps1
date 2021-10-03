@@ -10,31 +10,37 @@ param (
 
 )
 
-# Setup error handling
-$ErrorActionPreference = 'Stop';
-Set-StrictMode -Version latest;
+BeforeAll {
+    # Setup error handling
+    $ErrorActionPreference = 'Stop';
+    Set-StrictMode -Version latest;
 
-if ($Env:SYSTEM_DEBUG -eq 'true') {
-    $VerbosePreference = 'Continue';
-}
-
-# Setup tests paths
-$rootPath = $PWD;
-
-Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-$here = (Resolve-Path $PSScriptRoot).Path;
-
-Describe 'PSRule -- AllOf keyword' -Tag 'AllOf' {
-    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
-    $invokeParams = @{
-        Path = $ruleFilePath
+    if ($Env:SYSTEM_DEBUG -eq 'true') {
+        $VerbosePreference = 'Continue';
     }
 
-    Context 'AllOf' {
-        $testObject = @{
-            Key = 'Value'
+    # Setup tests paths
+    $rootPath = $PWD;
+
+    Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
+    $here = (Resolve-Path $PSScriptRoot).Path;
+}
+
+Describe 'PSRule -- AllOf keyword' -Tag 'AllOf' {
+    BeforeAll {
+        $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+        $invokeParams = @{
+            Path = $ruleFilePath
         }
-        $result = $testObject | Invoke-PSRule @invokeParams -Name 'AllOfTest','AllOfTestNegative';
+    }
+    
+    Context 'AllOf' {
+        BeforeAll {
+            $testObject = @{
+                Key = 'Value'
+            }
+            $result = $testObject | Invoke-PSRule @invokeParams -Name 'AllOfTest','AllOfTestNegative';
+        }
 
         It 'Should succeed on all positive conditions' {
             $filteredResult = $result | Where-Object { $_.RuleName -eq 'AllOfTest' };

@@ -8,31 +8,37 @@
 [CmdletBinding()]
 param ()
 
-# Setup error handling
-$ErrorActionPreference = 'Stop';
-Set-StrictMode -Version latest;
+BeforeAll {
+    # Setup error handling
+    $ErrorActionPreference = 'Stop';
+    Set-StrictMode -Version latest;
 
-if ($Env:SYSTEM_DEBUG -eq 'true') {
-    $VerbosePreference = 'Continue';
+    if ($Env:SYSTEM_DEBUG -eq 'true') {
+        $VerbosePreference = 'Continue';
+    }
+
+    # Setup tests paths
+    $rootPath = $PWD;
+
+    Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
+
+    $here = (Resolve-Path $PSScriptRoot).Path;
+    $outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Selectors;
+    Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
+    $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 }
 
-# Setup tests paths
-$rootPath = $PWD;
-
-Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-
-$here = (Resolve-Path $PSScriptRoot).Path;
-$outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Selectors;
-Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
-$Null = New-Item -Path $outputPath -ItemType Directory -Force;
-
 Describe 'PSRule -- Selectors' -Tag 'Selectors' {
-    $rulePath = Join-Path -Path $here -ChildPath 'FromFileWithSelectors.Rule.ps1';
-    $selectorPath = Join-Path -Path $here -ChildPath 'Selectors.Rule.yaml';
+    BeforeAll {
+        $rulePath = Join-Path -Path $here -ChildPath 'FromFileWithSelectors.Rule.ps1';
+        $selectorPath = Join-Path -Path $here -ChildPath 'Selectors.Rule.yaml';
+    }
 
     Context 'With selector' {
-        $invokeParams = @{
-            Path = $rulePath, $selectorPath
+        BeforeAll {
+            $invokeParams = @{
+                Path = $rulePath, $selectorPath
+            }
         }
         It 'From file' {
             $testObjects = @(

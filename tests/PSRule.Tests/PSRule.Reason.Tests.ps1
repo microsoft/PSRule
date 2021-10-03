@@ -10,24 +10,30 @@ param (
 
 )
 
-# Setup error handling
-$ErrorActionPreference = 'Stop';
-Set-StrictMode -Version latest;
+BeforeAll {
+    # Setup error handling
+    $ErrorActionPreference = 'Stop';
+    Set-StrictMode -Version latest;
 
-# Setup tests paths
-$rootPath = $PWD;
+    # Setup tests paths
+    $rootPath = $PWD;
 
-Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-$here = (Resolve-Path $PSScriptRoot).Path;
+    Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
+    $here = (Resolve-Path $PSScriptRoot).Path;
+}
 
 Describe 'PSRule -- Reason keyword' -Tag 'Reason' {
-    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    BeforeAll {
+        $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1');
+    }
 
     Context 'Reason' {
-        $testObject = [PSCustomObject]@{
-            Name = 'TestObject1'
-            Value = @{
-                Value1 = 1
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+                Value = @{
+                    Value1 = 1
+                }
             }
         }
 

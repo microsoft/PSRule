@@ -243,10 +243,10 @@ task NuGet {
 
 # Synopsis: Install Pester module
 task Pester NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name Pester -RequiredVersion 4.10.1 -ErrorAction Ignore)) {
-        Install-Module -Name Pester -RequiredVersion 4.10.1 -Scope CurrentUser -Force -SkipPublisherCheck;
+    if ($Null -eq (Get-InstalledModule -Name Pester -RequiredVersion 5.3.0 -ErrorAction Ignore)) {
+        Install-Module -Name Pester -RequiredVersion 5.3.0 -Scope CurrentUser -Force -SkipPublisherCheck;
     }
-    Import-Module -Name Pester -RequiredVersion 4.10.1 -Verbose:$False;
+    Import-Module -Name Pester -RequiredVersion 5.3.0 -Verbose:$False;
 }
 
 # Synopsis: Install PSScriptAnalyzer module
@@ -267,11 +267,26 @@ task platyPS {
 # Synopsis: Test the module
 task TestModule Pester, PSScriptAnalyzer, {
     # Run Pester tests
-    $pesterParams = @{ Path = $PWD; OutputFile = 'reports/pester-unit.xml'; OutputFormat = 'NUnitXml'; PesterOption = @{ IncludeVSCodeMarker = $True }; PassThru = $True; };
+    $pesterOptions = @{
+        Run = @{
+            Path = $PWD;
+            PassThru = $True;
+        }
+        TestResult = @{
+            Enabled = $True;
+            OutputFormat = 'NUnitXml';
+            OutputPath = 'reports/pester-unit.xml';
+        };
+    }
 
     if ($CodeCoverage) {
-        $pesterParams.Add('CodeCoverage', (Join-Path -Path $PWD -ChildPath 'out/modules/**/*.psm1'));
-        $pesterParams.Add('CodeCoverageOutputFile', (Join-Path -Path $PWD -ChildPath reports/pester-coverage.xml));
+        $codeCoverageOptions = @{
+            Enabled = $True;
+            OutputPath = (Join-Path -Path $PWD -ChildPath reports/pester-coverage.xml);
+            Path = (Join-Path -Path $PWD -ChildPath 'out/modules/**/*.psm1');
+        };
+
+        $pesterOptions.Add('CodeCoverage', $codeCoverageOptions);
     }
 
     if (!(Test-Path -Path reports)) {
@@ -279,10 +294,13 @@ task TestModule Pester, PSScriptAnalyzer, {
     }
 
     if ($Null -ne $TestGroup) {
-        $pesterParams['Tags'] = $TestGroup;
+        $pesterOptions.Add('Filter', @{ Tag = $TestGroup });
     }
 
-    $results = Invoke-Pester @pesterParams;
+    # https://pester.dev/docs/commands/New-PesterConfiguration
+    $pesterConfiguration = New-PesterConfiguration -Hashtable $pesterOptions;
+
+    $results = Invoke-Pester -Configuration $pesterConfiguration;
 
     # Throw an error if pester tests failed
     if ($Null -eq $results) {

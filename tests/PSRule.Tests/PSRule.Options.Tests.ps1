@@ -10,28 +10,32 @@ param (
 
 )
 
-# Setup error handling
-$ErrorActionPreference = 'Stop';
-Set-StrictMode -Version latest;
+BeforeAll {
+    # Setup error handling
+    $ErrorActionPreference = 'Stop';
+    Set-StrictMode -Version latest;
 
-if ($Env:SYSTEM_DEBUG -eq 'true') {
-    $VerbosePreference = 'Continue';
+    if ($Env:SYSTEM_DEBUG -eq 'true') {
+        $VerbosePreference = 'Continue';
+    }
+
+    # Setup tests paths
+    $rootPath = $PWD;
+
+    Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
+
+    $here = (Resolve-Path $PSScriptRoot).Path;
+    $outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Options;
+    Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
+    $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 }
-
-# Setup tests paths
-$rootPath = $PWD;
-
-Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-
-$here = (Resolve-Path $PSScriptRoot).Path;
-$outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Options;
-Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
-$Null = New-Item -Path $outputPath -ItemType Directory -Force;
 
 #region New-PSRuleOption
 
 Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
-    $emptyOptionsFilePath = (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml');
+    BeforeAll {
+        $emptyOptionsFilePath = (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml');
+    }
 
     Context 'Use -Path' {
         It 'With file' {
@@ -1489,18 +1493,22 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 #region Set-PSRuleOption
 
 Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
-    $emptyOptionsFilePath = (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml');
-    $optionParams = @{
-        Path = $emptyOptionsFilePath
-        PassThru = $True
+    BeforeAll {
+        $emptyOptionsFilePath = (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml');
+        $optionParams = @{
+            Path = $emptyOptionsFilePath
+            PassThru = $True
+        }
     }
 
     Context 'Use -AllowClobber' {
-        $filePath = (Join-Path -Path $outputPath -ChildPath 'PSRule.Tests4.yml');
-        Copy-Item -Path (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml') -Destination $filePath;
+        BeforeAll {
+            $filePath = (Join-Path -Path $outputPath -ChildPath 'PSRule.Tests4.yml');
+            Copy-Item -Path (Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml') -Destination $filePath;
+        }
 
         It 'Errors with comments' {
-            { Set-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Throw -ErrorId 'PSRule.PSRuleOption.YamlContainsComments';
+            { Set-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Throw -ErrorId 'PSRule.PSRuleOption.YamlContainsComments,Set-PSRuleOption';
         }
 
         it 'Overwrites file' {
@@ -1519,7 +1527,7 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
 
         It 'With missing directory' {
             $filePath = (Join-Path -Path $outputPath -ChildPath 'set-dir/ps-rule.yaml');
-            { Set-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Throw -ErrorId 'PSRule.PSRuleOption.ParentPathNotFound';
+            { Set-PSRuleOption -Path $filePath -ErrorAction Stop } | Should -Throw -ErrorId 'PSRule.PSRuleOption.ParentPathNotFound,Set-PSRuleOption';
             Test-Path -Path $filePath | Should -Be $False;
         }
 

@@ -8,97 +8,103 @@
 [CmdletBinding()]
 param ()
 
-# Setup error handling
-$ErrorActionPreference = 'Stop';
-Set-StrictMode -Version latest;
+BeforeAll {
+    # Setup error handling
+    $ErrorActionPreference = 'Stop';
+    Set-StrictMode -Version latest;
 
-if ($Env:SYSTEM_DEBUG -eq 'true') {
-    $VerbosePreference = 'Continue';
+    if ($Env:SYSTEM_DEBUG -eq 'true') {
+        $VerbosePreference = 'Continue';
+    }
+
+    # Setup tests paths
+    $rootPath = $PWD;
+
+    Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
+    $here = (Resolve-Path $PSScriptRoot).Path;
 }
-
-# Setup tests paths
-$rootPath = $PWD;
-
-Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
-$here = (Resolve-Path $PSScriptRoot).Path;
 
 #region PSRule variables
 
 Describe 'PSRule assertions' -Tag 'Assert' {
-    $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileAssert.Rule.ps1');
-    $invokeParams = @{
-        Path = $ruleFilePath
+    BeforeAll {
+        $ruleFilePath = (Join-Path -Path $here -ChildPath 'FromFileAssert.Rule.ps1');
+        $invokeParams = @{
+            Path = $ruleFilePath
+        }
     }
 
     Context '$Assert' {
-        $testObject = @(
-            [PSCustomObject]@{
-                Name = 'TestObject1'
-                Type = 'TestType'
-                Value = 'Value1'
-                Array = 'Item1', 'Item2'
-                String = 'Value'
-                OtherField = 'Other'
-                Int = 1
-                Bool = $True
-                Version = '2.0.0'
-                CompareNumeric = 3
-                CompareArray = 1, 2, 3
-                CompareString = 'abc'
-                CompareDate = [DateTime]::Now.AddDays(3)
-                InArray = @(
-                    'Item1'
-                    'Item3'
-                    'Item4'
-                )
-                Path = $PSCommandPath
-                ParentPath = $here
-                Lower = 'test123'
-                Upper = 'TEST123'
-                LetterLower = 'test'
-                LetterUpper = 'TEST'
-                IsInteger = 1
-                IsBoolean = $True
-                IsArray = 1, 2, 3
-                IsDateTime = [DateTime]::Now.AddDays(4)
-            }
-            [PSCustomObject]@{
-                '$schema' = "http://json-schema.org/draft-07/schema`#"
-                Name = 'TestObject2'
-                NotType = 'TestType'
-                Value = $Null
-                Array = @()
-                String = ''
-                Int = 2
-                Bool = $False
-                OtherBool = $False
-                OtherInt = 2
-                Version = '1.0.0'
-                CompareNumeric = 0
-                CompareArray = @()
-                CompareString = ''
-                CompareDate = [DateTime]::Now
-                InArray = @(
-                    'item1'
-                    'item2'
-                    'item3'
-                )
-                InArrayPSObject = [PSObject[]]@(
-                    'item1'
-                    'item2'
-                    'item3'
-                )
-                ParentPath = (Join-Path -Path $here -ChildPath 'notapath/template.json')
-                Lower = 'Test123'
-                Upper = 'Test123'
-                LetterLower = 'test123'
-                LetterUpper = 'TEST123'
-                IsInteger = '1'
-                IsBoolean = 'true'
-                IsArray = '123'
-                IsDateTime = ([DateTime]::Now.AddDays(4).ToString('o'))
-            }
-        )
+        BeforeAll {
+            $testObject = @(
+                [PSCustomObject]@{
+                    Name = 'TestObject1'
+                    Type = 'TestType'
+                    Value = 'Value1'
+                    Array = 'Item1', 'Item2'
+                    String = 'Value'
+                    OtherField = 'Other'
+                    Int = 1
+                    Bool = $True
+                    Version = '2.0.0'
+                    CompareNumeric = 3
+                    CompareArray = 1, 2, 3
+                    CompareString = 'abc'
+                    CompareDate = [DateTime]::Now.AddDays(3)
+                    InArray = @(
+                        'Item1'
+                        'Item3'
+                        'Item4'
+                    )
+                    Path = $PSCommandPath
+                    ParentPath = $here
+                    Lower = 'test123'
+                    Upper = 'TEST123'
+                    LetterLower = 'test'
+                    LetterUpper = 'TEST'
+                    IsInteger = 1
+                    IsBoolean = $True
+                    IsArray = 1, 2, 3
+                    IsDateTime = [DateTime]::Now.AddDays(4)
+                }
+                [PSCustomObject]@{
+                    '$schema' = "http://json-schema.org/draft-07/schema`#"
+                    Name = 'TestObject2'
+                    NotType = 'TestType'
+                    Value = $Null
+                    Array = @()
+                    String = ''
+                    Int = 2
+                    Bool = $False
+                    OtherBool = $False
+                    OtherInt = 2
+                    Version = '1.0.0'
+                    CompareNumeric = 0
+                    CompareArray = @()
+                    CompareString = ''
+                    CompareDate = [DateTime]::Now
+                    InArray = @(
+                        'item1'
+                        'item2'
+                        'item3'
+                    )
+                    InArrayPSObject = [PSObject[]]@(
+                        'item1'
+                        'item2'
+                        'item3'
+                    )
+                    ParentPath = (Join-Path -Path $here -ChildPath 'notapath/template.json')
+                    Lower = 'Test123'
+                    Upper = 'Test123'
+                    LetterLower = 'test123'
+                    LetterUpper = 'TEST123'
+                    IsInteger = '1'
+                    IsBoolean = 'true'
+                    IsArray = '123'
+                    IsDateTime = ([DateTime]::Now.AddDays(4).ToString('o'))
+                }
+            )
+        }
 
         It 'In pre-conditions' {
             $result = @($testObject | Invoke-PSRule @invokeParams -Name 'Assert.Precondition' -Outcome All -WarningAction SilentlyContinue);
@@ -802,16 +808,18 @@ Describe 'PSRule assertions' -Tag 'Assert' {
     }
 
     Context '$Assert extension' {
-        $testObject = @(
-            [PSCustomObject]@{
-                Name = 'TestObject1'
-                Type = 'TestType'
-            }
-            [PSCustomObject]@{
-                Name = 'TestObject2'
-                NotType = 'TestType'
-            }
-        )
+        BeforeAll {
+            $testObject = @(
+                [PSCustomObject]@{
+                    Name = 'TestObject1'
+                    Type = 'TestType'
+                }
+                [PSCustomObject]@{
+                    Name = 'TestObject2'
+                    NotType = 'TestType'
+                }
+            )
+        }
 
         It 'With Add-Member' {
             $result = @($testObject | Invoke-PSRule @invokeParams -Name 'Assert.AddMember');

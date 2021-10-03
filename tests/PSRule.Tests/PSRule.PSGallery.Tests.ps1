@@ -10,15 +10,19 @@ param (
 
 )
 
-# Setup error handling
-$ErrorActionPreference = 'Stop';
-Set-StrictMode -Version latest;
+BeforeAll {
+    # Setup error handling
+    $ErrorActionPreference = 'Stop';
+    Set-StrictMode -Version latest;
 
-# Setup tests paths
-$rootPath = $PWD;
+    # Setup tests paths
+    $rootPath = $PWD;
+}
 
 Describe 'PSRule' -Tag 'PowerShellGallery' {
-    $modulePath = (Join-Path -Path $rootPath -ChildPath out/modules/PSRule);
+    BeforeAll {
+        $modulePath = (Join-Path -Path $rootPath -ChildPath out/modules/PSRule);
+    }
 
     Context 'Module' {
         It 'Can be imported' {
@@ -27,11 +31,13 @@ Describe 'PSRule' -Tag 'PowerShellGallery' {
     }
 
     Context 'Manifest' {
-        $manifestPath = (Join-Path -Path $rootPath -ChildPath out/modules/PSRule/PSRule.psd1);
-        $result = Test-ModuleManifest -Path $manifestPath;
-        $Global:psEditor = $True;
-        $Null = Import-Module $modulePath -Force;
-        $commands = Get-Command -Module PSRule -All;
+        BeforeAll {
+            $manifestPath = (Join-Path -Path $rootPath -ChildPath out/modules/PSRule/PSRule.psd1);
+            $result = Test-ModuleManifest -Path $manifestPath;
+            $Global:psEditor = $True;
+            $Null = Import-Module $modulePath -Force;
+            $commands = Get-Command -Module PSRule -All;
+        }
 
         It 'Has required fields' {
             $result.Name | Should -Be 'PSRule';

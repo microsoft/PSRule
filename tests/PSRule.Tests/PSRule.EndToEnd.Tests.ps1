@@ -10,26 +10,32 @@ param (
 
 )
 
-# Setup error handling
-$ErrorActionPreference = 'Stop';
-Set-StrictMode -Version latest;
+BeforeAll {
+    # Setup error handling
+    $ErrorActionPreference = 'Stop';
+    Set-StrictMode -Version latest;
 
-# Setup tests paths
-$rootPath = $PWD;
-Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
+    # Setup tests paths
+    $rootPath = $PWD;
+    Import-Module (Join-Path -Path $rootPath -ChildPath out/modules/PSRule) -Force;
 
-$reportPath = Join-Path -Path $rootPath -ChildPath reports/;
-if (!(Test-Path -Path $reportPath)) {
-    $Null = New-Item -Path $reportPath -ItemType Directory -Force;
+    $reportPath = Join-Path -Path $rootPath -ChildPath reports/;
+    if (!(Test-Path -Path $reportPath)) {
+        $Null = New-Item -Path $reportPath -ItemType Directory -Force;
+    }
 }
 
 Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd','azure-resources' {
-    $option = @{ 'Execution.NotProcessedWarning' = $False };
-    $jsonData = Get-Content -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources/resources.json) | ConvertFrom-Json;
-    $result = $jsonData | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources) -Option $option;
+    BeforeAll {
+        $option = @{ 'Execution.NotProcessedWarning' = $False };
+        $jsonData = Get-Content -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources/resources.json) | ConvertFrom-Json;
+        $result = $jsonData | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources) -Option $option;
+    }
 
     Context 'App Service' {
-        $scopedResult = $result | Where-Object -FilterScript { $_.RuleName -like 'appService*' };
+        BeforeAll {
+            $scopedResult = $result | Where-Object -FilterScript { $_.RuleName -like 'appService*' };
+        }
 
         It 'Processes rules' {
             $scopedResult | Should -Not -BeNullOrEmpty;
@@ -46,7 +52,9 @@ Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd','azure-resources' {
     }
 
     Context 'Storage Accounts' {
-        $scopedResult = $result | Where-Object -FilterScript { $_.RuleName -like 'storageAccounts.*' };
+        BeforeAll {
+            $scopedResult = $result | Where-Object -FilterScript { $_.RuleName -like 'storageAccounts.*' };
+        }
 
         It 'Processes rules' {
             $scopedResult | Should -Not -BeNullOrEmpty;
@@ -62,9 +70,11 @@ Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd','azure-resources' {
 }
 
 Describe 'Scenarios -- azure-tags' -Tag 'EndToEnd','azure-tags' {
-    $option = Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-tags/ps-rule.yaml;
-    $jsonData = Get-Content -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-tags/resources.json) | ConvertFrom-Json;
-    $result = $jsonData | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-tags) -Option $option;
+    BeforeAll {
+        $option = Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-tags/ps-rule.yaml;
+        $jsonData = Get-Content -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-tags/resources.json) | ConvertFrom-Json;
+        $result = $jsonData | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-tags) -Option $option;
+    }
 
     Context 'Resources' {
         It 'Processes rules' {
@@ -90,11 +100,12 @@ Describe 'Scenarios -- azure-tags' -Tag 'EndToEnd','azure-tags' {
 }
 
 Describe 'Scenarios -- fruit' -Tag 'EndToEnd','fruit' {
-
-    # Define objects
-    $items = @();
-    $items += [PSCustomObject]@{ Name = 'Fridge' };
-    $items += [PSCustomObject]@{ Name = 'Apple' };
+    BeforeAll {
+        # Define objects
+        $items = @();
+        $items += [PSCustomObject]@{ Name = 'Fridge' };
+        $items += [PSCustomObject]@{ Name = 'Apple' };
+    }
 
     Context 'Invoke-PSRule' {
         It 'Detailed results' {
@@ -120,16 +131,20 @@ Describe 'Scenarios -- fruit' -Tag 'EndToEnd','fruit' {
 }
 
 Describe 'Scenarios -- kubernetes-resources' -Tag 'EndToEnd','kubernetes-resources' {
-    $scenarioPath = Join-Path -Path $rootPath -ChildPath docs/scenarios/kubernetes-resources;
-    $yamlData = Get-Content -Path (Join-Path -Path $scenarioPath -ChildPath 'resources.yaml') -Raw;
+    BeforeAll {
+        $scenarioPath = Join-Path -Path $rootPath -ChildPath docs/scenarios/kubernetes-resources;
+        $yamlData = Get-Content -Path (Join-Path -Path $scenarioPath -ChildPath 'resources.yaml') -Raw;
+    }
 
     Context 'Invoke-PSRule' {
-        $invokeParams = @{
-            Path = $scenarioPath
-            Format = 'Yaml'
-            Option = (Join-Path -Path $scenarioPath -ChildPath 'ps-rule.yaml')
+        BeforeAll {
+            $invokeParams = @{
+                Path = $scenarioPath
+                Format = 'Yaml'
+                Option = (Join-Path -Path $scenarioPath -ChildPath 'ps-rule.yaml')
+            }
+            $result = @($yamlData | Invoke-PSRule @invokeParams);
         }
-        $result = @($yamlData | Invoke-PSRule @invokeParams);
 
         It 'Processes rules' {
             $result.Count | Should -Be 18;
@@ -170,12 +185,16 @@ Describe 'Scenarios -- kubernetes-resources' -Tag 'EndToEnd','kubernetes-resourc
 }
 
 Describe 'Scenarios -- rule-module' -Tag 'EndToEnd', 'rule-module' {
-    $scenarioPath = Join-Path -Path $rootPath -ChildPath docs/scenarios/rule-module;
-    $inputPath = Join-Path -Path $scenarioPath -ChildPath 'resources.json';
+    BeforeAll {
+        $scenarioPath = Join-Path -Path $rootPath -ChildPath docs/scenarios/rule-module;
+        $inputPath = Join-Path -Path $scenarioPath -ChildPath 'resources.json';
+    }
 
     Context 'Invoke-PSRule' {
-        Import-Module (Join-Path -Path $scenarioPath -ChildPath 'Enterprise.Rules') -Force;
-        $result = @(Invoke-PSRule -InputPath $inputPath -Module 'Enterprise.Rules' -WarningAction SilentlyContinue);
+        BeforeAll {
+            Import-Module (Join-Path -Path $scenarioPath -ChildPath 'Enterprise.Rules') -Force;
+            $result = @(Invoke-PSRule -InputPath $inputPath -Module 'Enterprise.Rules' -WarningAction SilentlyContinue);
+        }
 
         It 'Binds fields' {
             $result.TargetName | Should -BeIn 'storage', 'app-service-plan', 'web-app', 'web-app/staging';
@@ -192,13 +211,17 @@ Describe 'Scenarios -- rule-module' -Tag 'EndToEnd', 'rule-module' {
 }
 
 Describe 'Scenarios -- validation-pipeline' -Tag 'EndToEnd', 'validation-pipeline' {
-    $scenarioPath = Join-Path -Path $rootPath -ChildPath docs/scenarios/validation-pipeline;
-    $sourcePath = Join-Path -Path $rootPath -ChildPath src/PSRule;
-    $sourceFiles = Get-ChildItem -Path $sourcePath -Recurse -Include *.ps1,*.psm1,*.psd1;
+    BeforeAll {
+        $scenarioPath = Join-Path -Path $rootPath -ChildPath docs/scenarios/validation-pipeline;
+        $sourcePath = Join-Path -Path $rootPath -ChildPath src/PSRule;
+        $sourceFiles = Get-ChildItem -Path $sourcePath -Recurse -Include *.ps1,*.psm1,*.psd1;
+    }
 
     Context 'Invoke-PSRule' {
-        $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error'; };
-        $result = $sourceFiles | Invoke-PSRule -Path $scenarioPath -Option $option;
+        BeforeAll {
+            $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error'; };
+            $result = $sourceFiles | Invoke-PSRule -Path $scenarioPath -Option $option;
+        }
 
         It 'Module quality' {
             $fail = @($result | Where-Object -FilterScript { !$_.IsSuccess() });
