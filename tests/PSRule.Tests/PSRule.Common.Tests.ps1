@@ -489,10 +489,10 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Json);
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
-            $result -cmatch '"ruleName":"FromFile1"' | Should -Be $True;
-            $result -cmatch '"outcome":"Pass"' | Should -Be $True;
-            $result -cmatch '"targetName":"TestObject1"' | Should -Be $True;
-            $result -cmatch '"targetType":"TestType"' | Should -Be $True;
+            $result -cmatch '"ruleName": "FromFile1"' | Should -Be $True;
+            $result -cmatch '"outcome": "Pass"' | Should -Be $True;
+            $result -cmatch '"targetName": "TestObject1"' | Should -Be $True;
+            $result -cmatch '"targetType": "TestType"' | Should -Be $True;
             $result | Should -Not -Match '"targetObject":';
         }
 
