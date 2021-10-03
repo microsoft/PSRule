@@ -1764,19 +1764,19 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.Rule+Wide';
         }
 
-        # It 'Yaml' {
-        #     $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Yaml;
-        #     $result | Should -Not -BeNullOrEmpty;
-        #     $result | Should -BeOfType System.String;
-        #     $result -cmatch 'ruleName: FromFile1' | Should -Be $True;
-        # }
+        It 'Yaml' {
+            $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Yaml;
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $result -cmatch 'ruleName: FromFile1' | Should -Be $True;
+        }
 
-        # It 'Json' {
-        #     $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Json;
-        #     $result | Should -Not -BeNullOrEmpty;
-        #     $result | Should -BeOfType System.String;
-        #     $result -cmatch '"ruleName":"FromFile1"' | Should -Be $True;
-        # }
+        It 'Json' {
+            $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Json;
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $result -cmatch '"ruleName": "FromFile1"' | Should -Be $True;
+        }
     }
 
     Context 'With -Culture' {

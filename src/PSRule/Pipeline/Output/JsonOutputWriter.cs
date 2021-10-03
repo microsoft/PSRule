@@ -16,6 +16,7 @@ namespace PSRule.Pipeline.Output
             var settings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
+                Formatting = Formatting.Indented
             };
             settings.Converters.Add(new ErrorCategoryJsonConverter());
             return JsonConvert.SerializeObject(o, settings: settings);

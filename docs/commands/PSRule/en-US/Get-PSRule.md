@@ -226,12 +226,14 @@ The following format options are available:
 
 - None - Output is presented as an object using PowerShell defaults. This is the default.
 - Wide - Output is presented using the wide table format, which includes tags and wraps columns.
+- Yaml - Output is serialized as YAML.
+- Json - Output is serialized as JSON.
 
 ```yaml
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases: o
-Accepted values: None, Wide
+Accepted values: None, Wide, Yaml, Json
 
 Required: False
 Position: Named
