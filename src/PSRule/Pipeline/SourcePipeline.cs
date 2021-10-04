@@ -37,6 +37,7 @@ namespace PSRule.Pipeline
         [JsonProperty(PropertyName = "path")]
         public string Path { get; }
 
+        [JsonProperty(PropertyName = "moduleName")]
         public string ModuleName { get; }
 
         [YamlIgnore]
