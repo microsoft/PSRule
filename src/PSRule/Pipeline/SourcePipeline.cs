@@ -12,6 +12,8 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Threading;
+using YamlDotNet.Serialization;
+using Newtonsoft.Json;
 
 namespace PSRule.Pipeline
 {
@@ -32,12 +34,18 @@ namespace PSRule.Pipeline
 
         internal Source Source;
 
+        [JsonProperty(PropertyName = "path")]
         public string Path { get; }
 
+        [JsonProperty(PropertyName = "moduleName")]
         public string ModuleName { get; }
 
+        [YamlIgnore]
+        [JsonIgnore]
         public SourceType Type { get; }
 
+        [YamlIgnore]
+        [JsonIgnore]
         public string HelpPath { get; }
 
         public SourceFile(string path, string moduleName, SourceType type, string helpPath)

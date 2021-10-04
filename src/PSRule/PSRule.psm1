@@ -649,7 +649,7 @@ function Get-PSRule {
         [Switch]$ListAvailable,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Wide')]
+        [ValidateSet('None', 'Wide', 'Yaml', 'Json')]
         [Alias('o')]
         [PSRule.Configuration.OutputFormat]$OutputFormat,
 

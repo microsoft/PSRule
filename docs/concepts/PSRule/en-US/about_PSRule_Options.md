@@ -1733,7 +1733,7 @@ RuleName, TargetName, TargetType, Outcome, OutcomeReason, Synopsis, Recommendati
 RuleName, Pass, Fail, Outcome, Synopsis, Recommendation
 - Wide -  Output is presented using the wide table format, which includes reason and wraps columns.
 
-The Wide format is ignored by `Assert-PSRule`. `Get-PSRule` only accepts `Wide` or `None`.
+The Wide format is ignored by `Assert-PSRule`. `Get-PSRule` only accepts `None`, `Wide`, `Yaml` and `Json`.
 Usage of other formats are treated as `None`.
 
 The `Get-PSRuleBaseline` cmdlet only accepts `None` or `Yaml`.
