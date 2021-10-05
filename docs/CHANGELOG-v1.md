@@ -10,12 +10,14 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.8.0-B2110020 (pre-release)
+
 What's changed since pre-release v1.8.0-B2110006:
 
-- Engineering:
-  - Migration of Pester v4 tests to Pester v5. [#478](https://github.com/microsoft/PSRule/issues/478)
 - Engine features
   - Added YAML/JSON output format support for `Get-PSRule`. [#128](https://github.com/microsoft/PSRule/issues/128)
+- Engineering:
+  - Migration of Pester v4 tests to Pester v5. [#478](https://github.com/microsoft/PSRule/issues/478)
 
 ## v1.8.0-B2110006 (pre-release)
 
