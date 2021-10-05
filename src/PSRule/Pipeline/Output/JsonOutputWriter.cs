@@ -3,6 +3,7 @@
 
 using Newtonsoft.Json;
 using PSRule.Configuration;
+using System.IO;
 
 namespace PSRule.Pipeline.Output
 {
@@ -13,14 +14,30 @@ namespace PSRule.Pipeline.Output
 
         protected override string Serialize(object[] o)
         {
-            var settings = new JsonSerializerSettings
+            using (StringWriter stringWriter = new StringWriter())
             {
-                NullValueHandling = NullValueHandling.Ignore,
-                Formatting = Formatting.Indented
-            };
-            settings.Converters.Add(new ErrorCategoryJsonConverter());
-            settings.ContractResolver = new SortedPropertyContractResolver();
-            return JsonConvert.SerializeObject(o, settings: settings);
+                using (JsonTextWriter jsonTextWriter = new JsonTextWriter(stringWriter))
+                {
+                    JsonSerializer jsonSerializer = new JsonSerializer();
+
+                    jsonSerializer.NullValueHandling = NullValueHandling.Ignore;
+
+                    OutputJsonIndent? outputJsonIndent = Option.Output.JsonIndent;
+                    if (outputJsonIndent.HasValue && outputJsonIndent != OutputJsonIndent.MachineFirst)
+                    {
+                        jsonSerializer.Formatting = Formatting.Indented;
+                        jsonTextWriter.Indentation = (int)outputJsonIndent;
+                    }
+
+                    jsonSerializer.ContractResolver = new SortedPropertyContractResolver();
+
+                    jsonSerializer.Converters.Add(new ErrorCategoryJsonConverter());
+
+                    jsonSerializer.Serialize(jsonTextWriter, o);
+
+                    return stringWriter.ToString();
+                }
+            }
         }
     }
 }

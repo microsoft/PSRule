@@ -1438,6 +1438,39 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Output.JsonIndent' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Output.JsonIndent | Should -Be 'MachineFirst';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Output.JsonIndent' = 'TwoSpaces' };
+            $option.Output.JsonIndent | Should -Be 'TwoSpaces';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests11.yml');
+            $option.Output.JsonIndent | Should -Be 'FourSpaces';
+        }
+
+        It 'from Environment' {
+            try {
+                $env:PSRULE_OUTPUT_JSON_INDENT = 'TwoSpaces';
+                $option = New-PSRuleOption;
+                $option.Output.JsonIndent | Should -Be 'TwoSpaces';
+            }
+            finally {
+                Remove-Item 'env:PSRULE_OUTPUT_JSON_INDENT' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -OutputJsonIndent 'FourSpaces' -Path $emptyOptionsFilePath;
+            $option.Output.JsonIndent | Should -Be 'FourSpaces';
+        }
+    }
+
     Context 'Read Requires' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -1757,6 +1790,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputStyle 'AzurePipelines' @optionParams;
             $option.Output.Style | Should -Be 'AzurePipelines';
+        }
+    }
+
+    Context 'Read Output.JsonIndent' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -OutputJsonIndent 'FourSpaces' @optionParams;
+            $option.Output.JsonIndent | Should -Be 'FourSpaces';
         }
     }
 

@@ -493,6 +493,18 @@
                         "Detect"
                     ],
                     "default": "Detect"
+                },
+                "jsonIndent": {
+                    "type": "string",
+                    "title": "Output Json Indent",
+                    "description": "The indentation level for JSON output. The default is MachineFirst.",
+                    "markdownDescription": "The indentation level for JSON output. The default is `MachineFirst`. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#outputjsonindent)",
+                    "enum": [
+                        "MachineFirst",
+                        "TwoSpaces",
+                        "FourSpaces"
+                    ],
+                    "default": "MachineFirst"
                 }
             },
             "additionalProperties": false

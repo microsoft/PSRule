@@ -489,10 +489,10 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Json);
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
-            $result -cmatch '"ruleName": "FromFile1"' | Should -Be $True;
-            $result -cmatch '"outcome": "Pass"' | Should -Be $True;
-            $result -cmatch '"targetName": "TestObject1"' | Should -Be $True;
-            $result -cmatch '"targetType": "TestType"' | Should -Be $True;
+            $result -cmatch '"ruleName":"FromFile1"' | Should -Be $True;
+            $result -cmatch '"outcome":"Pass"' | Should -Be $True;
+            $result -cmatch '"targetName":"TestObject1"' | Should -Be $True;
+            $result -cmatch '"targetType":"TestType"' | Should -Be $True;
             $result | Should -Not -Match '"targetObject":';
         }
 
@@ -611,6 +611,90 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.Length | Should -Be 2;
             $result.RuleName | Should -BeIn 'WithFormat';
             $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
+        }
+    }
+
+    Context 'With -OutputFormat Json and JsonIndent output option' {
+        BeforeDiscovery {
+            # Redefining $here since the one above is not visible in discovery phase
+            $here = (Resolve-Path $PSScriptRoot).Path;
+
+            $testCases = @(
+                @{
+                    Title = 'Given MachineFirst option the JSON is indented machine first'
+                    OptionHashtable = @{'Output.JsonIndent' = 'MachineFirst'}
+                    YamlPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests9.yml')
+                    ExpectedJson = '"outcomeReason":"Processed","ruleName":"FromFile1"'
+                }
+                @{
+                    Title = 'Given TwoSpaces option the JSON is indented with two spaces'
+                    OptionHashtable = @{'Output.JsonIndent' = 'TwoSpaces'}
+                    YamlPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests10.yml')
+                    ExpectedJson = "`"outcomeReason`": `"Processed`",$([Environment]::Newline)    `"ruleName`": `"FromFile1`""
+                }
+                @{
+                    Title = 'Given FourSpaces option the JSON is indented with four spaces'
+                    OptionHashtable = @{'Output.JsonIndent' = 'FourSpaces'}
+                    YamlPath = (Join-Path -Pat $here -ChildPath 'PSRule.Tests11.yml')
+                    ExpectedJson = "`"outcomeReason`": `"Processed`",$([Environment]::Newline)        `"ruleName`": `"FromFile1`""
+                }
+            )
+        }
+
+        BeforeAll {
+            $testObject = [PSCustomObject]@{
+                Name = 'TestObject1'
+                Value = 1
+            }
+        }
+
+        Context 'Using Hashtable option' {
+            It '<title>' -TestCases $testCases {
+                param($Title, $OptionHashtable, $ExpectedJson)
+                $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option $OptionHashtable;
+                $result | Should -MatchExactly $ExpectedJson;
+            }
+        }
+
+        Context 'Using New-PSRuleOption -Option' {
+            It '<title>' -TestCases $testCases {
+                param($Title, $OptionHashtable, $ExpectedJson)
+                $option = New-PSRuleOption -Option $OptionHashtable;
+                $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option $option;
+                $result | Should -MatchExactly $ExpectedJson;
+            }
+        }
+
+        Context 'Using New-PSRuleOption -OutputJsonIndent' {
+            It '<title>' -TestCases $testCases {
+                param($Title, $OptionHashtable, $ExpectedJson)
+                $option = New-PSRuleOption -OutputJsonIndent $OptionHashtable['Output.JsonIndent'];
+                $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option $option;
+                $result | Should -MatchExactly $ExpectedJson;
+            }
+        }
+
+        Context 'Using New-PSRuleOption with YAML config' {
+            It '<title>' -TestCases $testCases {
+                param($Title, $YamlPath, $ExpectedJson)
+                $option = New-PSRuleOption -Option $YamlPath;
+                $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option $option;
+                $result | Should -MatchExactly $ExpectedJson;
+            }
+        }
+
+        Context 'Using environment variable' {
+            It '<title>' -TestCases $testCases {
+                param($Title, $OptionHashtable, $ExpectedJson)
+                try {
+                    $env:PSRULE_OUTPUT_JSON_INDENT = $OptionHashtable['Output.JsonIndent'];
+                    $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json';
+                    $result | Should -MatchExactly $ExpectedJson;
+                }
+                finally {
+                    Remove-Item 'Env:PSRULE_OUTPUT_JSON_INDENT' -Force;
+                }
+            }
         }
     }
 
@@ -1775,7 +1859,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Json;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
-            $result -cmatch '"ruleName": "FromFile1"' | Should -Be $True;
+            $result -cmatch '"ruleName":"FromFile1"' | Should -Be $True;
         }
     }
 
@@ -1794,6 +1878,83 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             }
             finally {
                 [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
+            }
+        }
+    }
+
+    Context 'With -OutputFormat Json and JsonIndent output option' {
+        BeforeDiscovery {
+            # Redefining $here since the one above is not visible in discovery phase
+            $here = (Resolve-Path $PSScriptRoot).Path;
+
+            $testCases = @(
+                @{
+                    Title = 'Given MachineFirst option the JSON is indented machine first'
+                    OptionHashtable = @{'Output.JsonIndent' = 'MachineFirst'}
+                    YamlPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests9.yml')
+                    ExpectedJson = '"ruleId":"FromFile1","ruleName":"FromFile1"'
+                }
+                @{
+                    Title = 'Given TwoSpaces option the JSON is indented with two spaces'
+                    OptionHashtable = @{'Output.JsonIndent' = 'TwoSpaces'}
+                    YamlPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests10.yml')
+                    ExpectedJson = "`"ruleId`": `"FromFile1`",$([Environment]::Newline)    `"ruleName`": `"FromFile1`""
+                }
+                @{
+                    Title = 'Given FourSpaces option the JSON is indented with four spaces'
+                    OptionHashtable = @{'Output.JsonIndent' = 'FourSpaces'}
+                    YamlPath = (Join-Path -Pat $here -ChildPath 'PSRule.Tests11.yml')
+                    ExpectedJson = "`"ruleId`": `"FromFile1`",$([Environment]::Newline)        `"ruleName`": `"FromFile1`""
+                }
+            )
+        }
+
+        Context 'Using Hashtable option' {
+            It '<title>' -TestCases $testCases {
+                param($Title, $OptionHashtable, $ExpectedJson)
+                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option $OptionHashtable;
+                $result | Should -MatchExactly $ExpectedJson;
+            }
+        }
+
+        Context 'Using New-PSRuleOption -Option' {
+            It '<title>' -TestCases $testCases {
+                param($Title, $OptionHashtable, $ExpectedJson)
+                $option = New-PSRuleOption -Option $OptionHashtable;
+                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option $option;
+                $result | Should -MatchExactly $ExpectedJson;
+            }
+        }
+
+        Context 'Using New-PSRuleOption -OutputJsonIndent' {
+            It '<title>' -TestCases $testCases {
+                param($Title, $OptionHashtable, $ExpectedJson)
+                $option = New-PSRuleOption -OutputJsonIndent $OptionHashtable['Output.JsonIndent'];
+                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option $option;
+                $result | Should -MatchExactly $ExpectedJson;
+            }
+        }
+
+        Context 'Using New-PSRuleOption with YAML config' {
+            It '<title>' -TestCases $testCases {
+                param($Title, $YamlPath, $ExpectedJson)
+                $option = New-PSRuleOption -Option $YamlPath;
+                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option $option;
+                $result | Should -MatchExactly $ExpectedJson;
+            }
+        }
+
+        Context 'Using environment variable' {
+            It '<title>' -TestCases $testCases {
+                param($Title, $OptionHashtable, $ExpectedJson)
+                try {
+                    $env:PSRULE_OUTPUT_JSON_INDENT = $OptionHashtable['Output.JsonIndent'];
+                    $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json';
+                    $result | Should -MatchExactly $ExpectedJson;
+                }
+                finally {
+                    Remove-Item 'Env:PSRULE_OUTPUT_JSON_INDENT' -Force;
+                }
             }
         }
     }
