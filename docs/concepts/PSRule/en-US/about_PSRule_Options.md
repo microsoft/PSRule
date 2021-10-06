@@ -1957,56 +1957,52 @@ Configures the indentation level for JSON output.
 
 This option only applies to output generated from `-OutputFormat Json` for `Get-PSRule` and `Invoke-PSRule` cmdlets.
 
-The following indentation levels are available:
-
-- MachineFirst - Compressed 0 space indentation. This is the default.
-- TwoSpaces - 2 space indentation.
-- FourSpaces - 4 space indentation.
+The range of indentation accepts a minimum of 0(machine first) spaces and a maximum of 4 spaces.
 
 This option can be specified using:
 
 ```powershell
 # PowerShell: Using the OutputJsonIndent parameter
-$option = New-PSRuleOption -OutputJsonIndent TwoSpaces;
+$option = New-PSRuleOption -OutputJsonIndent 2;
 ```
 
 ```powershell
 # PowerShell: Using the Output.JsonIndent hashtable key
-$option = New-PSRuleOption -Option @{ 'Output.JsonIndent' = 'TwoSpaces' };
+$option = New-PSRuleOption -Option @{ 'Output.JsonIndent' = 2 };
 ```
 
 ```powershell
 # PowerShell: Using the OutputStyle parameter to set YAML
-Set-PSRuleOption -OutputJsonIndent TwoSpaces;
+Set-PSRuleOption -OutputJsonIndent 2;
 ```
 
 ```yaml
 # YAML: Using the output/jsonIndent property
 output:
-  jsonIndent: TwoSpaces
+  jsonIndent: 2
 ```
 
 ```bash
 # Bash: Using environment variable
-export PSRULE_OUTPUT_JSON_INDENT=TwoSpaces
+export PSRULE_OUTPUT_JSON_INDENT=2
 ```
 
 ```powershell
 # PowerShell: Using environment variable
-$env:PSRULE_OUTPUT_JSON_INDENT = 'TwoSpaces';
+$env:PSRULE_OUTPUT_JSON_INDENT = 2;
 ```
 
 ```yaml
 # GitHub Actions: Using environment variable
 env:
-  PSRULE_OUTPUT_JSON_INDENT: TwoSpaces
+  PSRULE_OUTPUT_JSON_INDENT: 2
 ```
 
 ```yaml
 # Azure Pipelines: Using environment variable
 variables:
 - name: PSRULE_OUTPUT_JSON_INDENT
-  value: TwoSpaces
+  value: 2
 ```
 
 ### Requires

@@ -1168,9 +1168,9 @@ function New-PSRuleOption {
 
         # Sets the Output.JsonIndent option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('MachineFirst', 'TwoSpaces', 'FourSpaces')]
+        [ValidateRange(0, 4)]
         [Alias('JsonIndent')]
-        [PSRule.Configuration.OutputJsonIndent]$OutputJsonIndent = 'MachineFirst',
+        [int]$OutputJsonIndent = 0,
 
         # Sets the Rule.IncludeLocal option
         [Parameter(Mandatory = $False)]
@@ -1415,9 +1415,9 @@ function Set-PSRuleOption {
 
         # Sets the Output.JsonIndent option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('MachineFirst', 'TwoSpaces', 'FourSpaces')]
+        [ValidateRange(0, 4)]
         [Alias('JsonIndent')]
-        [PSRule.Configuration.OutputJsonIndent]$OutputJsonIndent = 'MachineFirst',
+        [Int]$OutputJsonIndent = 0,
 
         # Sets the Rule.IncludeLocal option
         [Parameter(Mandatory = $False)]
@@ -2091,9 +2091,9 @@ function SetOptions {
 
         # Sets the Output.JsonIndent option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('MachineFirst', 'TwoSpaces', 'FourSpaces')]
+        [ValidateRange(0, 4)]
         [Alias('JsonIndent')]
-        [PSRule.Configuration.OutputJsonIndent]$OutputJsonIndent = 'MachineFirst',
+        [Int]$OutputJsonIndent = 0,
 
         # Sets the Rule.IncludeLocal option
         [Parameter(Mandatory = $False)]

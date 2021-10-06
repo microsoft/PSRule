@@ -20,7 +20,7 @@ namespace PSRule.Configuration
         private const OutputFormat DEFAULT_FORMAT = OutputFormat.None;
         private const RuleOutcome DEFAULT_OUTCOME = RuleOutcome.Processed;
         private const OutputStyle DEFAULT_STYLE = OutputStyle.Detect;
-        private const OutputJsonIndent DEFAULT_JSON_INDENT = OutputJsonIndent.MachineFirst;
+        private const int DEFAULT_JSON_INDENT = 0;
 
         internal static readonly OutputOption Default = new OutputOption
         {
@@ -179,7 +179,7 @@ namespace PSRule.Configuration
         /// The indentation for JSON output
         /// </summary>
         [DefaultValue(null)]
-        public OutputJsonIndent? JsonIndent { get; set; }
+        public int? JsonIndent { get; set; }
 
         internal void Load(EnvironmentHelper env)
         {
@@ -210,7 +210,7 @@ namespace PSRule.Configuration
             if (env.TryEnum("PSRULE_OUTPUT_STYLE", out OutputStyle style))
                 Style = style;
 
-            if (env.TryEnum("PSRULE_OUTPUT_JSON_INDENT", out OutputJsonIndent jsonIndent))
+            if (env.TryInt("PSRULE_OUTPUT_JSON_INDENT", out int jsonIndent))
                 JsonIndent = jsonIndent;
         }
 
@@ -243,7 +243,7 @@ namespace PSRule.Configuration
             if (index.TryPopEnum("Output.Style", out OutputStyle style))
                 Style = style;
 
-            if (index.TryPopEnum("Output.JsonIndent", out OutputJsonIndent jsonIndent))
+            if (index.TryPopValue<int>("Output.JsonIndent", out int jsonIndent))
                 JsonIndent = jsonIndent;
         }
     }

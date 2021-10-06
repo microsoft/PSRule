@@ -72,7 +72,7 @@ namespace PSRule.Pipeline
             Option.Output.Encoding = option.Output.Encoding ?? OutputOption.Default.Encoding;
             Option.Output.Format = option.Output.Format ?? OutputOption.Default.Format;
             Option.Output.Path = option.Output.Path ?? OutputOption.Default.Path;
-            Option.Output.JsonIndent = option.Output.JsonIndent ?? OutputJsonIndent.MachineFirst;
+            Option.Output.JsonIndent = LimitJsonIndentRange(option.Output.JsonIndent);
 
             if (option.Rule != null)
                 Option.Rule = new RuleOption(option.Rule);

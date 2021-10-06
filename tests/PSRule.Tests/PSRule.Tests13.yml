@@ -2,4 +2,4 @@
 
 # Configure output options
 output:
-  jsonIndent: 0
+  jsonIndent: 4

@@ -25,7 +25,7 @@ Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force
  [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
  [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
  [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputStyle <OutputStyle>]
- [-OutputJsonIndent <OutputJsonIndent>] [-RuleIncludeLocal <Boolean>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-OutputJsonIndent <Int>] [-RuleIncludeLocal <Boolean>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -699,14 +699,14 @@ The `Output.JsonIndent` option configures indentation for JSON output.
 This option only applies to `Get-PSRule` and `Invoke-PSRule` cmdlets.
 
 ```yaml
-Type: OutputJsonIndent
+Type: Int
 Parameter Sets: (All)
 Aliases: JsonIndent
-Accepted values: MachineFirst, TwoSpaces, FourSpaces
+Accepted values: 0, 1, 2, 3, 4
 
 Required: False
 Position: Named
-Default value: MachineFirst
+Default value: 0
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

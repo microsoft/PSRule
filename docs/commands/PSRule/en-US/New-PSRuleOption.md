@@ -28,7 +28,7 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
  [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-OutputJsonIndent <OutputJsonIndent>]
+ [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-OutputJsonIndent <Int>]
  [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
@@ -47,7 +47,7 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
  [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-OutputJsonIndent <OutputJsonIndent>]
+ [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-OutputJsonIndent <Int>]
  [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
@@ -65,7 +65,7 @@ New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTar
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
  [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-OutputJsonIndent <OutputJsonIndent>]
+ [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-OutputJsonIndent <Int>]
  [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
@@ -808,14 +808,14 @@ The `Output.JsonIndent` option configures indentation for JSON output.
 This option only applies to `Get-PSRule` and `Invoke-PSRule` cmdlets.
 
 ```yaml
-Type: OutputJsonIndent
+Type: Int
 Parameter Sets: (All)
 Aliases: JsonIndent
-Accepted values: MachineFirst, TwoSpaces, FourSpaces
+Accepted values: 0, 1, 2, 3, 4
 
 Required: False
 Position: Named
-Default value: MachineFirst
+Default value: 0
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

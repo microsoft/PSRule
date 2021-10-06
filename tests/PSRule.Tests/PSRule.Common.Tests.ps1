@@ -621,21 +621,33 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
             $testCases = @(
                 @{
-                    Title = 'Given MachineFirst option the JSON is indented machine first'
-                    OptionHashtable = @{'Output.JsonIndent' = 'MachineFirst'}
+                    Title = '0 space indentation'
+                    OptionHashtable = @{'Output.JsonIndent' = 0}
                     YamlPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests9.yml')
                     ExpectedJson = '"outcomeReason":"Processed","ruleName":"FromFile1"'
                 }
                 @{
-                    Title = 'Given TwoSpaces option the JSON is indented with two spaces'
-                    OptionHashtable = @{'Output.JsonIndent' = 'TwoSpaces'}
+                    Title = '1 space indentation'
+                    OptionHashtable = @{'Output.JsonIndent' = 1}
                     YamlPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests10.yml')
+                    ExpectedJson = "`"outcomeReason`": `"Processed`",$([Environment]::Newline)  `"ruleName`": `"FromFile1`""
+                }
+                @{
+                    Title = '2 space indentation'
+                    OptionHashtable = @{'Output.JsonIndent' = 2}
+                    YamlPath = (Join-Path -Pat $here -ChildPath 'PSRule.Tests11.yml')
                     ExpectedJson = "`"outcomeReason`": `"Processed`",$([Environment]::Newline)    `"ruleName`": `"FromFile1`""
                 }
                 @{
-                    Title = 'Given FourSpaces option the JSON is indented with four spaces'
-                    OptionHashtable = @{'Output.JsonIndent' = 'FourSpaces'}
-                    YamlPath = (Join-Path -Pat $here -ChildPath 'PSRule.Tests11.yml')
+                    Title = '3 space indentation'
+                    OptionHashtable = @{'Output.JsonIndent' = 3}
+                    YamlPath = (Join-Path -Pat $here -ChildPath 'PSRule.Tests12.yml')
+                    ExpectedJson = "`"outcomeReason`": `"Processed`",$([Environment]::Newline)      `"ruleName`": `"FromFile1`""
+                }
+                @{
+                    Title = '4 space indentation'
+                    OptionHashtable = @{'Output.JsonIndent' = 4}
+                    YamlPath = (Join-Path -Pat $here -ChildPath 'PSRule.Tests13.yml')
                     ExpectedJson = "`"outcomeReason`": `"Processed`",$([Environment]::Newline)        `"ruleName`": `"FromFile1`""
                 }
             )
@@ -1889,21 +1901,33 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
 
             $testCases = @(
                 @{
-                    Title = 'Given MachineFirst option the JSON is indented machine first'
-                    OptionHashtable = @{'Output.JsonIndent' = 'MachineFirst'}
+                    Title = '0 space indentation'
+                    OptionHashtable = @{'Output.JsonIndent' = 0}
                     YamlPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests9.yml')
                     ExpectedJson = '"ruleId":"FromFile1","ruleName":"FromFile1"'
                 }
                 @{
-                    Title = 'Given TwoSpaces option the JSON is indented with two spaces'
-                    OptionHashtable = @{'Output.JsonIndent' = 'TwoSpaces'}
+                    Title = '1 space indentation'
+                    OptionHashtable = @{'Output.JsonIndent' = 1}
                     YamlPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests10.yml')
+                    ExpectedJson = "`"ruleId`": `"FromFile1`",$([Environment]::Newline)  `"ruleName`": `"FromFile1`""
+                }
+                @{
+                    Title = '2 space indentation'
+                    OptionHashtable = @{'Output.JsonIndent' = 2}
+                    YamlPath = (Join-Path -Pat $here -ChildPath 'PSRule.Tests11.yml')
                     ExpectedJson = "`"ruleId`": `"FromFile1`",$([Environment]::Newline)    `"ruleName`": `"FromFile1`""
                 }
                 @{
-                    Title = 'Given FourSpaces option the JSON is indented with four spaces'
-                    OptionHashtable = @{'Output.JsonIndent' = 'FourSpaces'}
-                    YamlPath = (Join-Path -Pat $here -ChildPath 'PSRule.Tests11.yml')
+                    Title = '3 space indentation'
+                    OptionHashtable = @{'Output.JsonIndent' = 3}
+                    YamlPath = (Join-Path -Pat $here -ChildPath 'PSRule.Tests12.yml')
+                    ExpectedJson = "`"ruleId`": `"FromFile1`",$([Environment]::Newline)      `"ruleName`": `"FromFile1`""
+                }
+                @{
+                    Title = '4 space indentation'
+                    OptionHashtable = @{'Output.JsonIndent' = 4}
+                    YamlPath = (Join-Path -Pat $here -ChildPath 'PSRule.Tests13.yml')
                     ExpectedJson = "`"ruleId`": `"FromFile1`",$([Environment]::Newline)        `"ruleName`": `"FromFile1`""
                 }
             )

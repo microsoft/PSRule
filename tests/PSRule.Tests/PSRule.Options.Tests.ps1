@@ -1441,24 +1441,24 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
     Context 'Output.JsonIndent' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
-            $option.Output.JsonIndent | Should -Be 'MachineFirst';
+            $option.Output.JsonIndent | Should -Be 0;
         }
 
         It 'from Hashtable' {
-            $option = New-PSRuleOption -Option @{ 'Output.JsonIndent' = 'TwoSpaces' };
-            $option.Output.JsonIndent | Should -Be 'TwoSpaces';
+            $option = New-PSRuleOption -Option @{ 'Output.JsonIndent' = 2 };
+            $option.Output.JsonIndent | Should -Be 2;
         }
 
         It 'from YAML' {
-            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests11.yml');
-            $option.Output.JsonIndent | Should -Be 'FourSpaces';
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests13.yml');
+            $option.Output.JsonIndent | Should -Be 4;
         }
 
         It 'from Environment' {
             try {
-                $env:PSRULE_OUTPUT_JSON_INDENT = 'TwoSpaces';
+                $env:PSRULE_OUTPUT_JSON_INDENT = 2;
                 $option = New-PSRuleOption;
-                $option.Output.JsonIndent | Should -Be 'TwoSpaces';
+                $option.Output.JsonIndent | Should -Be 2;
             }
             finally {
                 Remove-Item 'env:PSRULE_OUTPUT_JSON_INDENT' -Force;
@@ -1466,8 +1466,8 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
 
         It 'from parameter' {
-            $option = New-PSRuleOption -OutputJsonIndent 'FourSpaces' -Path $emptyOptionsFilePath;
-            $option.Output.JsonIndent | Should -Be 'FourSpaces';
+            $option = New-PSRuleOption -OutputJsonIndent 4 -Path $emptyOptionsFilePath;
+            $option.Output.JsonIndent | Should -Be 4;
         }
     }
 
@@ -1795,8 +1795,8 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
 
     Context 'Read Output.JsonIndent' {
         It 'from parameter' {
-            $option = Set-PSRuleOption -OutputJsonIndent 'FourSpaces' @optionParams;
-            $option.Output.JsonIndent | Should -Be 'FourSpaces';
+            $option = Set-PSRuleOption -OutputJsonIndent 4 @optionParams;
+            $option.Output.JsonIndent | Should -Be 4;
         }
     }
 

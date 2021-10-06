@@ -426,5 +426,10 @@ namespace PSRule.Pipeline
             var previous = VisitTargetObject;
             VisitTargetObject = (targetObject) => action(targetObject, previous);
         }
+
+        protected static int LimitJsonIndentRange(int? jsonIndent)
+        {
+            return (jsonIndent.HasValue && 0 <= jsonIndent && jsonIndent <= 4) ? jsonIndent.Value : 0;
+        }
     }
 }

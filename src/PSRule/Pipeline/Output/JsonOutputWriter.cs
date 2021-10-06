@@ -22,11 +22,11 @@ namespace PSRule.Pipeline.Output
 
                     jsonSerializer.NullValueHandling = NullValueHandling.Ignore;
 
-                    OutputJsonIndent? outputJsonIndent = Option.Output.JsonIndent;
-                    if (outputJsonIndent.HasValue && outputJsonIndent != OutputJsonIndent.MachineFirst)
+                    int? outputJsonIndent = Option.Output.JsonIndent;
+                    if (outputJsonIndent.HasValue && outputJsonIndent > 0)
                     {
                         jsonSerializer.Formatting = Formatting.Indented;
-                        jsonTextWriter.Indentation = (int)outputJsonIndent;
+                        jsonTextWriter.Indentation = outputJsonIndent.Value;
                     }
 
                     jsonSerializer.ContractResolver = new SortedPropertyContractResolver();

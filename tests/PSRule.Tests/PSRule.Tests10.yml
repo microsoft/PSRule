@@ -2,4 +2,4 @@
 
 # Configure output options
 output:
-  jsonIndent: TwoSpaces
+  jsonIndent: 1
