@@ -699,13 +699,25 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             It '<title>' -TestCases $testCases {
                 param($Title, $OptionHashtable, $ExpectedJson)
                 try {
-                    $env:PSRULE_OUTPUT_JSON_INDENT = $OptionHashtable['Output.JsonIndent'];
+                    $env:PSRULE_OUTPUT_JSONINDENT = $OptionHashtable['Output.JsonIndent'];
                     $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json';
                     $result | Should -MatchExactly $ExpectedJson;
                 }
                 finally {
-                    Remove-Item 'Env:PSRULE_OUTPUT_JSON_INDENT' -Force;
+                    Remove-Item 'env:PSRULE_OUTPUT_JSONINDENT' -Force;
                 }
+            }
+        }
+
+        Context 'Normalizie range' {
+            It 'Normalize to 0 when indentation is less than 0' {
+                $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option @{'Output.JsonIndent' = -1};
+                $result | Should -MatchExactly '"outcomeReason":"Processed","ruleName":"FromFile1"';
+            }
+
+            It 'Normalize to 4 when indentation is more than 4' {
+                $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option @{'Output.JsonIndent' = 5};
+                $result | Should -MatchExactly "`"outcomeReason`": `"Processed`",$([Environment]::Newline)        `"ruleName`": `"FromFile1`"";
             }
         }
     }
@@ -1972,13 +1984,25 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             It '<title>' -TestCases $testCases {
                 param($Title, $OptionHashtable, $ExpectedJson)
                 try {
-                    $env:PSRULE_OUTPUT_JSON_INDENT = $OptionHashtable['Output.JsonIndent'];
+                    $env:PSRULE_OUTPUT_JSONINDENT = $OptionHashtable['Output.JsonIndent'];
                     $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json';
                     $result | Should -MatchExactly $ExpectedJson;
                 }
                 finally {
-                    Remove-Item 'Env:PSRULE_OUTPUT_JSON_INDENT' -Force;
+                    Remove-Item 'env:PSRULE_OUTPUT_JSONINDENT' -Force;
                 }
+            }
+        }
+
+        Context 'Normalizie range' {
+            It 'Normalize to 0 when indentation is less than 0' {
+                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option @{'Output.JsonIndent' = -1};
+                $result | Should -MatchExactly '"ruleId":"FromFile1","ruleName":"FromFile1"';
+            }
+
+            It 'Normalize to 4 when indentation is more than 4' {
+                $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option @{'Output.JsonIndent' = 5};
+                $result | Should -MatchExactly "`"ruleId`": `"FromFile1`",$([Environment]::Newline)        `"ruleName`": `"FromFile1`"";
             }
         }
     }

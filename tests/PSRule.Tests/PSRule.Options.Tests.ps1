@@ -1456,12 +1456,12 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
 
         It 'from Environment' {
             try {
-                $env:PSRULE_OUTPUT_JSON_INDENT = 2;
+                $env:PSRULE_OUTPUT_JSONINDENT = 2;
                 $option = New-PSRuleOption;
                 $option.Output.JsonIndent | Should -Be 2;
             }
             finally {
-                Remove-Item 'env:PSRULE_OUTPUT_JSON_INDENT' -Force;
+                Remove-Item 'env:PSRULE_OUTPUT_JSONINDENT' -Force;
             }
         }
 

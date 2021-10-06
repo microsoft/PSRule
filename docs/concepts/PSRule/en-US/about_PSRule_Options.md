@@ -1955,7 +1955,8 @@ variables:
 
 Configures the indentation level for JSON output.
 
-This option only applies to output generated from `-OutputFormat Json` for `Get-PSRule` and `Invoke-PSRule` cmdlets.
+This option applies to output generated from `-OutputFormat Json` for `Get-PSRule` and `Invoke-PSRule`.
+This option also applies to output generated from `-OutputPath` for `Assert-PSRule`.
 
 The range of indentation accepts a minimum of 0(machine first) spaces and a maximum of 4 spaces.
 
@@ -1984,24 +1985,24 @@ output:
 
 ```bash
 # Bash: Using environment variable
-export PSRULE_OUTPUT_JSON_INDENT=2
+export PSRULE_OUTPUT_JSONINDENT=2
 ```
 
 ```powershell
 # PowerShell: Using environment variable
-$env:PSRULE_OUTPUT_JSON_INDENT = 2;
+$env:PSRULE_OUTPUT_JSONINDENT = 2;
 ```
 
 ```yaml
 # GitHub Actions: Using environment variable
 env:
-  PSRULE_OUTPUT_JSON_INDENT: 2
+  PSRULE_OUTPUT_JSONINDENT: 2
 ```
 
 ```yaml
 # Azure Pipelines: Using environment variable
 variables:
-- name: PSRULE_OUTPUT_JSON_INDENT
+- name: PSRULE_OUTPUT_JSONINDENT
   value: 2
 ```
 

@@ -210,7 +210,7 @@ namespace PSRule.Configuration
             if (env.TryEnum("PSRULE_OUTPUT_STYLE", out OutputStyle style))
                 Style = style;
 
-            if (env.TryInt("PSRULE_OUTPUT_JSON_INDENT", out int jsonIndent))
+            if (env.TryInt("PSRULE_OUTPUT_JSONINDENT", out int jsonIndent))
                 JsonIndent = jsonIndent;
         }
 

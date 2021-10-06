@@ -30,7 +30,7 @@ namespace PSRule.Pipeline
             Option.Output.Culture = GetCulture(option.Output.Culture);
             Option.Output.Format = SuppressFormat(option.Output.Format);
             Option.Requires = new RequiresOption(option.Requires);
-            Option.Output.JsonIndent = LimitJsonIndentRange(option.Output.JsonIndent);
+            Option.Output.JsonIndent = NormalizeJsonIndentRange(option.Output.JsonIndent);
 
             if (option.Rule != null)
                 Option.Rule = new RuleOption(option.Rule);

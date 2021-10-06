@@ -805,7 +805,7 @@ Accept wildcard characters: False
 Sets the option `Output.JsonIndent`.
 The `Output.JsonIndent` option configures indentation for JSON output.
 
-This option only applies to `Get-PSRule` and `Invoke-PSRule` cmdlets.
+This option only applies to `Get-PSRule`, `Invoke-PSRule` and `Assert-PSRule` cmdlets.
 
 ```yaml
 Type: Int
