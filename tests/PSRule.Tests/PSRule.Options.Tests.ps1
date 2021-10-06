@@ -1469,6 +1469,14 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
             $option = New-PSRuleOption -OutputJsonIndent 4 -Path $emptyOptionsFilePath;
             $option.Output.JsonIndent | Should -Be 4;
         }
+
+        It 'from invalid range using -OutputJsonIndent' {
+            { New-PSRuleOption -OutputJsonIndent -1 } | Should -Throw;
+            { New-PSRuleOption -OutputJsonIndent 5 } | Should -Throw;
+
+            { Set-PSRuleOption -OutputJsonIndent -1 } | Should -Throw;
+            { Set-PSRuleOption -OutputJsonIndent 5 } | Should -Throw;
+        }
     }
 
     Context 'Read Requires' {
