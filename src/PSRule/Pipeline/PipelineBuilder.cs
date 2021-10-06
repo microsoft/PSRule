@@ -448,8 +448,6 @@ namespace PSRule.Pipeline
                 {
                     return MAX_JSON_INDENT;
                 }
-
-                return jsonIndent.Value;
             }
 
             return jsonIndent;
