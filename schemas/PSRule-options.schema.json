@@ -493,6 +493,15 @@
                         "Detect"
                     ],
                     "default": "Detect"
+                },
+                "jsonIndent": {
+                    "type": "number",
+                    "title": "Output Json Indent",
+                    "description": "The indentation level for JSON output. The default is 0.",
+                    "markdownDescription": "The indentation level for JSON output. The default is `0`. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#outputjsonindent)",
+                    "minimum": 0,
+                    "maximum": 4,
+                    "default": 0
                 }
             },
             "additionalProperties": false

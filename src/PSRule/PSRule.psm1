@@ -1166,6 +1166,12 @@ function New-PSRuleOption {
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
         [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect,
 
+        # Sets the Output.JsonIndent option
+        [Parameter(Mandatory = $False)]
+        [ValidateRange(0, 4)]
+        [Alias('JsonIndent')]
+        [int]$OutputJsonIndent = 0,
+
         # Sets the Rule.IncludeLocal option
         [Parameter(Mandatory = $False)]
         [System.Boolean]$RuleIncludeLocal = $False
@@ -1406,6 +1412,12 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
         [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect,
+
+        # Sets the Output.JsonIndent option
+        [Parameter(Mandatory = $False)]
+        [ValidateRange(0, 4)]
+        [Alias('JsonIndent')]
+        [Int]$OutputJsonIndent = 0,
 
         # Sets the Rule.IncludeLocal option
         [Parameter(Mandatory = $False)]
@@ -2077,6 +2089,12 @@ function SetOptions {
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
         [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect,
 
+        # Sets the Output.JsonIndent option
+        [Parameter(Mandatory = $False)]
+        [ValidateRange(0, 4)]
+        [Alias('JsonIndent')]
+        [Int]$OutputJsonIndent = 0,
+
         # Sets the Rule.IncludeLocal option
         [Parameter(Mandatory = $False)]
         [System.Boolean]$RuleIncludeLocal = $False
@@ -2237,6 +2255,11 @@ function SetOptions {
         # Sets option Output.Style
         if ($PSBoundParameters.ContainsKey('OutputStyle')) {
             $Option.Output.Style = $OutputStyle;
+        }
+
+        # Sets option Output.JsonIndent
+        if ($PSBoundParameters.ContainsKey('OutputJsonIndent')) {
+            $Option.Output.JsonIndent = $OutputJsonIndent;
         }
 
         # Sets option Rule.IncludeLocal

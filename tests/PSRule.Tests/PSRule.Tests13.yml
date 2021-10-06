@@ -1,0 +1,5 @@
+# These are options for unit tests
+
+# Configure output options
+output:
+  jsonIndent: 4

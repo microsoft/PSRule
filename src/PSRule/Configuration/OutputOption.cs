@@ -20,6 +20,7 @@ namespace PSRule.Configuration
         private const OutputFormat DEFAULT_FORMAT = OutputFormat.None;
         private const RuleOutcome DEFAULT_OUTCOME = RuleOutcome.Processed;
         private const OutputStyle DEFAULT_STYLE = OutputStyle.Detect;
+        private const int DEFAULT_JSON_INDENT = 0;
 
         internal static readonly OutputOption Default = new OutputOption
         {
@@ -30,6 +31,7 @@ namespace PSRule.Configuration
             Format = DEFAULT_FORMAT,
             Outcome = DEFAULT_OUTCOME,
             Style = DEFAULT_STYLE,
+            JsonIndent = DEFAULT_JSON_INDENT
         };
 
         public OutputOption()
@@ -42,6 +44,7 @@ namespace PSRule.Configuration
             Format = null;
             Path = null;
             Style = null;
+            JsonIndent = null;
         }
 
         public OutputOption(OutputOption option)
@@ -58,6 +61,7 @@ namespace PSRule.Configuration
             Outcome = option.Outcome;
             Path = option.Path;
             Style = option.Style;
+            JsonIndent = option.JsonIndent;
         }
 
         public override bool Equals(object obj)
@@ -76,7 +80,8 @@ namespace PSRule.Configuration
                 Format == other.Format &&
                 Outcome == other.Outcome &&
                 Path == other.Path &&
-                Style == other.Style;
+                Style == other.Style &&
+                JsonIndent == other.JsonIndent;
         }
 
         public override int GetHashCode()
@@ -93,6 +98,7 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (Outcome.HasValue ? Outcome.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Path != null ? Path.GetHashCode() : 0);
                 hash = hash * 23 + (Style.HasValue ? Style.Value.GetHashCode() : 0);
+                hash = hash * 23 + (JsonIndent.HasValue ? JsonIndent.Value.GetHashCode() : 0);
                 return hash;
             }
         }
@@ -109,7 +115,8 @@ namespace PSRule.Configuration
                 Format = o1.Format ?? o2.Format,
                 Outcome = o1.Outcome ?? o2.Outcome,
                 Path = o1.Path ?? o2.Path,
-                Style = o1.Style ?? o2.Style
+                Style = o1.Style ?? o2.Style,
+                JsonIndent = o1.JsonIndent ?? o2.JsonIndent
             };
             return result;
         }
@@ -168,6 +175,12 @@ namespace PSRule.Configuration
         [DefaultValue(null)]
         public OutputStyle? Style { get; set; }
 
+        /// <summary>
+        /// The indentation for JSON output
+        /// </summary>
+        [DefaultValue(null)]
+        public int? JsonIndent { get; set; }
+
         internal void Load(EnvironmentHelper env)
         {
             if (env.TryEnum("PSRULE_OUTPUT_AS", out ResultFormat value))
@@ -196,6 +209,9 @@ namespace PSRule.Configuration
 
             if (env.TryEnum("PSRULE_OUTPUT_STYLE", out OutputStyle style))
                 Style = style;
+
+            if (env.TryInt("PSRULE_OUTPUT_JSONINDENT", out int jsonIndent))
+                JsonIndent = jsonIndent;
         }
 
         internal void Load(Dictionary<string, object> index)
@@ -226,6 +242,9 @@ namespace PSRule.Configuration
 
             if (index.TryPopEnum("Output.Style", out OutputStyle style))
                 Style = style;
+
+            if (index.TryPopValue<int>("Output.JsonIndent", out int jsonIndent))
+                JsonIndent = jsonIndent;
         }
     }
 }

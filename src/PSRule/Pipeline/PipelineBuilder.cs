@@ -120,6 +120,9 @@ namespace PSRule.Pipeline
 
         private readonly HostPipelineWriter _Output;
 
+        private const int MIN_JSON_INDENT = 0;
+        private const int MAX_JSON_INDENT = 4;
+
         protected PipelineBuilderBase(Source[] source, HostContext hostContext)
         {
             Option = new PSRuleOption();
@@ -425,6 +428,29 @@ namespace PSRule.Pipeline
             // Execution chain will be: action -> previous -> previous..n
             var previous = VisitTargetObject;
             VisitTargetObject = (targetObject) => action(targetObject, previous);
+        }
+
+        /// <summary>
+        /// Normalizes JSON indent range between minimum 0 and maximum 4.
+        /// </summary>
+        /// <param name="jsonIndent"></param>
+        /// <returns></returns>
+        protected static int? NormalizeJsonIndentRange(int? jsonIndent)
+        {
+            if (jsonIndent.HasValue)
+            {
+                if (jsonIndent < MIN_JSON_INDENT)
+                {
+                    return MIN_JSON_INDENT;
+                }
+
+                else if (jsonIndent > MAX_JSON_INDENT)
+                {
+                    return MAX_JSON_INDENT;
+                }
+            }
+
+            return jsonIndent;
         }
     }
 }

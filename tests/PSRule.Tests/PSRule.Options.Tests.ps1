@@ -1438,6 +1438,47 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Output.JsonIndent' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Output.JsonIndent | Should -Be 0;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Output.JsonIndent' = 2 };
+            $option.Output.JsonIndent | Should -Be 2;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests13.yml');
+            $option.Output.JsonIndent | Should -Be 4;
+        }
+
+        It 'from Environment' {
+            try {
+                $env:PSRULE_OUTPUT_JSONINDENT = 2;
+                $option = New-PSRuleOption;
+                $option.Output.JsonIndent | Should -Be 2;
+            }
+            finally {
+                Remove-Item 'env:PSRULE_OUTPUT_JSONINDENT' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -OutputJsonIndent 4 -Path $emptyOptionsFilePath;
+            $option.Output.JsonIndent | Should -Be 4;
+        }
+
+        It 'from invalid range using -OutputJsonIndent' {
+            { New-PSRuleOption -OutputJsonIndent -1 } | Should -Throw;
+            { New-PSRuleOption -OutputJsonIndent 5 } | Should -Throw;
+
+            { Set-PSRuleOption -OutputJsonIndent -1 } | Should -Throw;
+            { Set-PSRuleOption -OutputJsonIndent 5 } | Should -Throw;
+        }
+    }
+
     Context 'Read Requires' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -1757,6 +1798,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputStyle 'AzurePipelines' @optionParams;
             $option.Output.Style | Should -Be 'AzurePipelines';
+        }
+    }
+
+    Context 'Read Output.JsonIndent' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -OutputJsonIndent 4 @optionParams;
+            $option.Output.JsonIndent | Should -Be 4;
         }
     }
 

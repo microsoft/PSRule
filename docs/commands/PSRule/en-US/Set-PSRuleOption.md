@@ -25,7 +25,7 @@ Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force
  [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
  [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
  [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputStyle <OutputStyle>]
- [-RuleIncludeLocal <Boolean>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-OutputJsonIndent <Int>] [-RuleIncludeLocal <Boolean>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -687,6 +687,26 @@ Accepted values: Client, Plain, AzurePipelines, GitHubActions
 Required: False
 Position: Named
 Default value: Client
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputJsonIndent
+
+Sets the option `Output.JsonIndent`.
+The `Output.JsonIndent` option configures indentation for JSON output.
+
+This option only applies to `Get-PSRule`, `Invoke-PSRule` and `Assert-PSRule` cmdlets.
+
+```yaml
+Type: Int
+Parameter Sets: (All)
+Aliases: JsonIndent
+Accepted values: 0, 1, 2, 3, 4
+
+Required: False
+Position: Named
+Default value: 0
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

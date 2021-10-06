@@ -38,6 +38,7 @@ The following workspace options are available for use:
 - [Output.Outcome](#outputoutcome)
 - [Output.Path](#outputpath)
 - [Output.Style](#outputstyle)
+- [Output.JsonIndent](#outputjsonindent)
 - [Requires](#requires)
 - [Suppression](#suppression)
 
@@ -1948,6 +1949,61 @@ env:
 variables:
 - name: PSRULE_OUTPUT_STYLE
   value: AzurePipelines
+```
+
+### Output.JsonIndent
+
+Configures the indentation level for JSON output.
+
+This option applies to output generated from `-OutputFormat Json` for `Get-PSRule` and `Invoke-PSRule`.
+This option also applies to output generated from `-OutputPath` for `Assert-PSRule`.
+
+The range of indentation accepts a minimum of 0(machine first) spaces and a maximum of 4 spaces.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the OutputJsonIndent parameter
+$option = New-PSRuleOption -OutputJsonIndent 2;
+```
+
+```powershell
+# PowerShell: Using the Output.JsonIndent hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.JsonIndent' = 2 };
+```
+
+```powershell
+# PowerShell: Using the OutputStyle parameter to set YAML
+Set-PSRuleOption -OutputJsonIndent 2;
+```
+
+```yaml
+# YAML: Using the output/jsonIndent property
+output:
+  jsonIndent: 2
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_OUTPUT_JSONINDENT=2
+```
+
+```powershell
+# PowerShell: Using environment variable
+$env:PSRULE_OUTPUT_JSONINDENT = 2;
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_OUTPUT_JSONINDENT: 2
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_OUTPUT_JSONINDENT
+  value: 2
 ```
 
 ### Requires

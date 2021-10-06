@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.8.0-B2110020:
+
+- Engine features
+  - Added `Output.JsonIndent` option for JSON output format. [#817](https://github.com/microsoft/PSRule/issues/817)
+
 ## v1.8.0-B2110020 (pre-release)
 
 What's changed since pre-release v1.8.0-B2110006:
