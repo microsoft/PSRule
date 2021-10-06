@@ -10,16 +10,18 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.8.0-B2110030 (pre-release)
+
 What's changed since pre-release v1.8.0-B2110020:
 
-- Engine features
+- Engine features:
   - Added `Output.JsonIndent` option for JSON output format. [#817](https://github.com/microsoft/PSRule/issues/817)
 
 ## v1.8.0-B2110020 (pre-release)
 
 What's changed since pre-release v1.8.0-B2110006:
 
-- Engine features
+- Engine features:
   - Added YAML/JSON output format support for `Get-PSRule`. [#128](https://github.com/microsoft/PSRule/issues/128)
 - Engineering:
   - Migration of Pester v4 tests to Pester v5. [#478](https://github.com/microsoft/PSRule/issues/478)
