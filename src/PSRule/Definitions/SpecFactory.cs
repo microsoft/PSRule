@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Annotations;
-using PSRule.Pipeline;
 using System;
 using System.Collections.Generic;
+using PSRule.Annotations;
+using PSRule.Pipeline;
 
 namespace PSRule.Definitions
 {

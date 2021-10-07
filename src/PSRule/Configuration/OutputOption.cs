@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Rules;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using PSRule.Rules;
 
 namespace PSRule.Configuration
 {

@@ -1,12 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Configuration;
-using PSRule.Definitions;
-using PSRule.Definitions.Selectors;
-using PSRule.Pipeline;
-using PSRule.Resources;
-using PSRule.Rules;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,6 +10,12 @@ using System.Management.Automation;
 using System.Management.Automation.Language;
 using System.Text;
 using System.Threading;
+using PSRule.Configuration;
+using PSRule.Definitions;
+using PSRule.Definitions.Selectors;
+using PSRule.Pipeline;
+using PSRule.Resources;
+using PSRule.Rules;
 using static PSRule.Pipeline.PipelineContext;
 
 namespace PSRule.Runtime

@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Definitions;
 using System;
+using PSRule.Definitions;
 
 namespace PSRule.Parser
 {

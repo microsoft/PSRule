@@ -1,11 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using Newtonsoft.Json.Linq;
-using PSRule.Configuration;
-using PSRule.Data;
-using PSRule.Pipeline;
-using PSRule.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,6 +9,11 @@ using System.Linq;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Newtonsoft.Json.Linq;
+using PSRule.Configuration;
+using PSRule.Data;
+using PSRule.Pipeline;
+using PSRule.Runtime;
 
 namespace PSRule
 {

@@ -1,16 +1,16 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using Newtonsoft.Json;
-using PSRule.Data;
-using PSRule.Parser;
-using PSRule.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Management.Automation;
 using System.Net;
+using Newtonsoft.Json;
+using PSRule.Data;
+using PSRule.Parser;
+using PSRule.Runtime;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;

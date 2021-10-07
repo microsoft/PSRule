@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using Newtonsoft.Json;
-using PSRule.Configuration;
-using PSRule.Data;
-using PSRule.Runtime;
 using System.Globalization;
 using System.Linq;
 using System.Management.Automation;
 using System.Text;
+using Newtonsoft.Json;
+using PSRule.Configuration;
+using PSRule.Data;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline
 {

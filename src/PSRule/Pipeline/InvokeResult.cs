@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Rules;
 using System.Collections.Generic;
+using PSRule.Rules;
 
 namespace PSRule.Pipeline
 {

@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Definitions;
 using System;
 using System.Collections.Generic;
+using PSRule.Definitions;
 
 namespace PSRule.Runtime
 {

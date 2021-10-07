@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Definitions.Baselines;
 using PSRule.Pipeline;
-using System.Management.Automation;
 using Xunit;
 using static PSRule.Pipeline.TargetBinder;
 

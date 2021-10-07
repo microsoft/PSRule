@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using PSRule.Runtime;
 
 namespace PSRule.Definitions.Expressions
 {

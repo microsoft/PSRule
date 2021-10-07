@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.Diagnostics;
 using PSRule.Definitions.Expressions;
 using PSRule.Resources;
 using PSRule.Runtime;
-using System;
-using System.Diagnostics;
 
 namespace PSRule.Definitions.Rules
 {

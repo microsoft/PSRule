@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.Collections;
+using System.Management.Automation;
 using PSRule.Annotations;
 using PSRule.Definitions;
 using PSRule.Host;
 using PSRule.Runtime;
-using System;
-using System.Collections;
-using System.Management.Automation;
 
 namespace PSRule.Commands
 {

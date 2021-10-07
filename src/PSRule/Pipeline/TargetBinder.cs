@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Configuration;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Management.Automation;
+using PSRule.Configuration;
 
 namespace PSRule.Pipeline
 {

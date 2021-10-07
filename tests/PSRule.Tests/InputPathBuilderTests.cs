@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Pipeline;
 using System;
 using System.IO;
+using PSRule.Pipeline;
 using Xunit;
 
 namespace PSRule

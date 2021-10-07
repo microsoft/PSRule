@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections.Generic;
+using System.Management.Automation;
 using Newtonsoft.Json;
 using PSRule.Data;
 using PSRule.Resources;
-using System.Collections.Generic;
-using System.Management.Automation;
 
 namespace PSRule.Runtime
 {
