@@ -10,18 +10,44 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.8.0
+
+What's changed since v1.7.2:
+
+- General improvements:
+  - Added YAML output format support for `Get-PSRuleBaseline`. [#326](https://github.com/microsoft/PSRule/issues/326)
+  - Added YAML/JSON output format support for `Get-PSRule`. [#128](https://github.com/microsoft/PSRule/issues/128)
+  - Added `Output.JsonIndent` option for JSON output format. [#817](https://github.com/microsoft/PSRule/issues/817)
+  - Added assertion helpers and expressions for improving intersection checks. [#795](https://github.com/microsoft/PSRule/issues/795)
+    - Added `Count` to determine of the field has a specific number of elements.
+    - Added `SetOf` to determine if a collection is another collection.
+    - Added `Subset` to determine if a collection is includes another collection.
+    - See [about_PSRule_Assert] and [about_PSRule_Expressions] for details.
+  - Added support for conditional reason messages with `ReasonIf`. [#804](https://github.com/microsoft/PSRule/issues/804)
+    - See [about_PSRule_Assert] for details.
+  - Added support for `type` and `name` expression properties. [#810](https://github.com/microsoft/PSRule/issues/810)
+    - Use `type` to compare the bound type of the current object.
+    - Use `name` to compare the bound name of the current object.
+    - See [about_PSRule_Expressions] for details.
+- Engineering:
+  - Migration of Pester v4 tests to Pester v5. [#478](https://github.com/microsoft/PSRule/issues/478)
+
+What's changed since pre-release v1.8.0-B2110030:
+
+- No additional changes.
+
 ## v1.8.0-B2110030 (pre-release)
 
 What's changed since pre-release v1.8.0-B2110020:
 
-- Engine features:
+- General improvements:
   - Added `Output.JsonIndent` option for JSON output format. [#817](https://github.com/microsoft/PSRule/issues/817)
 
 ## v1.8.0-B2110020 (pre-release)
 
 What's changed since pre-release v1.8.0-B2110006:
 
-- Engine features:
+- General improvements:
   - Added YAML/JSON output format support for `Get-PSRule`. [#128](https://github.com/microsoft/PSRule/issues/128)
 - Engineering:
   - Migration of Pester v4 tests to Pester v5. [#478](https://github.com/microsoft/PSRule/issues/478)
@@ -30,7 +56,7 @@ What's changed since pre-release v1.8.0-B2110006:
 
 What's changed since pre-release v1.8.0-B2109022:
 
-- Engine features:
+- General improvements:
   - Added YAML output format support for `Get-PSRuleBaseline`. [#326](https://github.com/microsoft/PSRule/issues/326)
 
 ## v1.8.0-B2109022 (pre-release)
