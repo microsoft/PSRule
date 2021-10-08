@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.Collections.Generic;
+using System.Management.Automation;
 using Newtonsoft.Json;
 using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Resources;
-using System;
-using System.Collections.Generic;
-using System.Management.Automation;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Definitions.Baselines

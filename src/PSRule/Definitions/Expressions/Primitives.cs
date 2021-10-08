@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Pipeline;
 using System.Collections.Generic;
 using System.Diagnostics;
+using PSRule.Pipeline;
 
 namespace PSRule.Definitions.Expressions
 {

@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Definitions.Baselines;
 using System.Collections;
 using System.Collections.Generic;
+using PSRule.Definitions.Baselines;
 
 namespace PSRule.Configuration
 {

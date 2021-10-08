@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
 using PSRule.Configuration;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace PSRule.Badges
 {

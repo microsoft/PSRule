@@ -1,16 +1,16 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.IO;
+using System.Linq;
+using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Definitions.Baselines;
 using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Pipeline.Output;
 using PSRule.Runtime;
-using System;
-using System.IO;
-using System.Linq;
-using System.Management.Automation;
 using Xunit;
 using YamlDotNet.Serialization;
 using Assert = Xunit.Assert;

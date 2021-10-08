@@ -1,13 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Configuration;
-using PSRule.Definitions;
-using PSRule.Definitions.Baselines;
-using PSRule.Definitions.ModuleConfigs;
-using PSRule.Definitions.Selectors;
-using PSRule.Host;
-using PSRule.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,6 +8,13 @@ using System.Diagnostics;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Security.Cryptography;
+using PSRule.Configuration;
+using PSRule.Definitions;
+using PSRule.Definitions.Baselines;
+using PSRule.Definitions.ModuleConfigs;
+using PSRule.Definitions.Selectors;
+using PSRule.Host;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline
 {

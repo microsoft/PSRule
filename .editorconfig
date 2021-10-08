@@ -1,0 +1,9 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Dotnet code style settings:
+[*.cs]
+# Sort using and Import directives with System.* appearing first
+dotnet_sort_system_directives_first = true

@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using Newtonsoft.Json;
-using PSRule.Definitions;
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using PSRule.Definitions;
 
 namespace PSRule.Rules
 {

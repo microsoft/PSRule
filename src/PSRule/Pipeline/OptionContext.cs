@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
@@ -8,9 +11,6 @@ using PSRule.Definitions.Conventions;
 using PSRule.Definitions.ModuleConfigs;
 using PSRule.Rules;
 using PSRule.Runtime;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace PSRule.Pipeline
 {

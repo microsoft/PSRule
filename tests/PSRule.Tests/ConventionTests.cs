@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Configuration;
-using PSRule.Pipeline;
 using System;
 using System.IO;
 using System.Management.Automation;
+using PSRule.Configuration;
+using PSRule.Pipeline;
 using Xunit;
 using static PSRule.PipelineTests;
 

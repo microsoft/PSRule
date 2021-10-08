@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Management.Automation;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
-using System.Management.Automation;
 
 namespace PSRule.Commands
 {

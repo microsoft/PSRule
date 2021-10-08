@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Configuration;
-using PSRule.Resources;
 using System.IO;
 using System.Text;
+using PSRule.Configuration;
+using PSRule.Resources;
 
 namespace PSRule.Pipeline.Output
 {

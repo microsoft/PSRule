@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Configuration;
-using PSRule.Pipeline.Output;
-using PSRule.Resources;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,8 +9,11 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Threading;
-using YamlDotNet.Serialization;
 using Newtonsoft.Json;
+using PSRule.Configuration;
+using PSRule.Pipeline.Output;
+using PSRule.Resources;
+using YamlDotNet.Serialization;
 
 namespace PSRule.Pipeline
 {

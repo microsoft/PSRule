@@ -1,15 +1,15 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Badges;
-using PSRule.Data;
-using PSRule.Pipeline;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using PSRule.Badges;
+using PSRule.Data;
+using PSRule.Pipeline;
 
 namespace PSRule.Runtime
 {

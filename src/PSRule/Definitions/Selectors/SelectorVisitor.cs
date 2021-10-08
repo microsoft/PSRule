@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Definitions.Expressions;
-using PSRule.Resources;
 using System;
 using System.Diagnostics;
+using PSRule.Definitions.Expressions;
+using PSRule.Resources;
 
 namespace PSRule.Definitions.Selectors
 {

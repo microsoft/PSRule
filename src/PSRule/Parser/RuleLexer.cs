@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Definitions;
-using PSRule.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using PSRule.Definitions;
+using PSRule.Resources;
 
 namespace PSRule.Parser
 {

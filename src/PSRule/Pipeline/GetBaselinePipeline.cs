@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Linq;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Host;
-using System.Linq;
 
 namespace PSRule.Pipeline
 {
