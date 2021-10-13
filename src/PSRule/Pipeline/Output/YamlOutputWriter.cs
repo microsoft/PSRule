@@ -23,9 +23,9 @@ namespace PSRule.Pipeline.Output
                 .DisableAliases()
                 .WithTypeInspector(f => new FieldYamlTypeInspector())
                 .WithTypeInspector(inspector => new SortedPropertyYamlTypeInspector(inspector))
-                .WithTypeConverter(new HashtableYamlTypeConverter())
                 .WithTypeConverter(new PSObjectYamlTypeConverter())
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
+                .WithTypeConverter(new BaselineYamlTypeConverter())
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
                 .Build();
