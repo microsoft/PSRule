@@ -23,20 +23,33 @@ namespace PSRule
         internal static void MapBaseline(IEmitter emitter, Baseline baseline)
         {
             emitter.Emit(new MappingStart());
+
             emitter.Emit(new Comment($"Synopsis: {baseline.Synopsis}", isInline: false));
 
-            MapPropertyName(emitter, nameof(baseline.ApiVersion));
-            emitter.Emit(new Scalar(baseline.ApiVersion));
+            if (baseline?.ApiVersion != null)
+            {
+                MapPropertyName(emitter, nameof(baseline.ApiVersion));
+                emitter.Emit(new Scalar(baseline.ApiVersion));
+            }
 
-            MapPropertyName(emitter, nameof(baseline.Kind));
-            string kind = Enum.GetName(typeof(ResourceKind), baseline.Kind);
-            emitter.Emit(new Scalar(kind));
+            if (baseline?.Kind != null)
+            {
+                MapPropertyName(emitter, nameof(baseline.Kind));
+                string kind = Enum.GetName(typeof(ResourceKind), baseline.Kind);
+                emitter.Emit(new Scalar(kind));
+            }
 
-            MapPropertyName(emitter, nameof(baseline.Metadata));
-            MapResourceMetadata(emitter, baseline.Metadata);
+            if (baseline?.Metadata != null)
+            {
+                MapPropertyName(emitter, nameof(baseline.Metadata));
+                MapResourceMetadata(emitter, baseline.Metadata);
+            }
 
-            MapPropertyName(emitter, nameof(baseline.Spec));
-            MapBaselineSpec(emitter, baseline.Spec);
+            if (baseline?.Spec != null)
+            {
+                MapPropertyName(emitter, nameof(baseline.Spec));
+                MapBaselineSpec(emitter, baseline.Spec);
+            }
 
             emitter.Emit(new MappingEnd());
         }
@@ -50,28 +63,23 @@ namespace PSRule
         {
             emitter.Emit(new MappingStart());
 
-            MapPropertyName(emitter, nameof(resourceMetadata.Annotations));
-
-            emitter.Emit(new MappingStart());
-            foreach (KeyValuePair<string, object> kvp in resourceMetadata.Annotations)
+            if (resourceMetadata?.Annotations != null)
             {
-                emitter.Emit(new Scalar(kvp.Key));
-                emitter.Emit(new Scalar(kvp.Value.ToString()));
+                MapPropertyName(emitter, nameof(resourceMetadata.Annotations));
+                MapDictionary(emitter, resourceMetadata.Annotations);
             }
-            emitter.Emit(new MappingEnd());
 
-            MapPropertyName(emitter, nameof(resourceMetadata.Name));
-            emitter.Emit(new Scalar(resourceMetadata.Name));
-
-            MapPropertyName(emitter, nameof(resourceMetadata.Tags));
-
-            emitter.Emit(new MappingStart());
-            foreach (KeyValuePair<string, string> kvp in resourceMetadata.Tags)
+            if (resourceMetadata?.Name != null)
             {
-                emitter.Emit(new Scalar(kvp.Key));
-                emitter.Emit(new Scalar(kvp.Value));
+                MapPropertyName(emitter, nameof(resourceMetadata.Name));
+                emitter.Emit(new Scalar(resourceMetadata.Name));
             }
-            emitter.Emit(new MappingEnd());
+
+            if (resourceMetadata?.Tags != null)
+            {
+                MapPropertyName(emitter, nameof(resourceMetadata.Tags));
+                MapDictionary(emitter, resourceMetadata.Tags);
+            }
 
             emitter.Emit(new MappingEnd());
         }
@@ -80,17 +88,29 @@ namespace PSRule
         {
             emitter.Emit(new MappingStart());
 
-            MapPropertyName(emitter, nameof(baselineSpec.Binding));
-            MapBindingOption(emitter, baselineSpec.Binding);
+            if (baselineSpec?.Binding != null)
+            {
+                MapPropertyName(emitter, nameof(baselineSpec.Binding));
+                MapBindingOption(emitter, baselineSpec.Binding);
+            }
 
-            MapPropertyName(emitter, nameof(baselineSpec.Configuration));
-            MapConfigurationOption(emitter, baselineSpec.Configuration);
+            if (baselineSpec?.Configuration != null)
+            {
+                MapPropertyName(emitter, nameof(baselineSpec.Configuration));
+                MapDictionary(emitter, baselineSpec.Configuration);
+            }
 
-            MapPropertyName(emitter, nameof(baselineSpec.Convention));
-            MapConventionOption(emitter, baselineSpec.Convention);
+            if (baselineSpec?.Convention != null)
+            {
+                MapPropertyName(emitter, nameof(baselineSpec.Convention));
+                MapConventionOption(emitter, baselineSpec.Convention);
+            }
 
-            MapPropertyName(emitter, nameof(baselineSpec.Rule));
-            MapRuleOption(emitter, baselineSpec.Rule);
+            if (baselineSpec?.Rule != null)
+            {
+                MapPropertyName(emitter, nameof(baselineSpec.Rule));
+                MapRuleOption(emitter, baselineSpec.Rule);
+            }
 
             emitter.Emit(new MappingEnd());
         }
@@ -102,16 +122,7 @@ namespace PSRule
             if (bindingOption?.Field != null)
             {
                 MapPropertyName(emitter, nameof(bindingOption.Field));
-
-                emitter.Emit(new MappingStart());
-
-                foreach (KeyValuePair<string, string[]> kvp in bindingOption.Field)
-                {
-                    emitter.Emit(new Scalar(kvp.Key));
-                    MapStringArraySequence(emitter, kvp.Value);
-                }
-
-                emitter.Emit(new MappingEnd());
+                MapDictionary(emitter, bindingOption.Field.GetFieldMap);
             }
 
             if ((bindingOption?.IgnoreCase).HasValue)
@@ -148,30 +159,6 @@ namespace PSRule
             {
                 MapPropertyName(emitter, nameof(bindingOption.UseQualifiedName));
                 emitter.Emit(new Scalar(bindingOption.UseQualifiedName.ToString()));
-            }
-
-            emitter.Emit(new MappingEnd());
-        }
-
-        private static void MapConfigurationOption(IEmitter emitter, ConfigurationOption configurationOption)
-        {
-            emitter.Emit(new MappingStart());
-
-            if (configurationOption != null)
-            {
-                foreach (KeyValuePair<string, object> kvp in configurationOption)
-                {
-                    emitter.Emit(new Scalar(kvp.Key));
-
-                    if (kvp.Value is PSObject[] psObjects)
-                    {
-                        MapPSObjectArraySequence(emitter, psObjects);
-                    }
-                    else
-                    {
-                        emitter.Emit(new Scalar(kvp.Value.ToString()));
-                    }
-                }
             }
 
             emitter.Emit(new MappingEnd());
@@ -216,6 +203,38 @@ namespace PSRule
             {
                 MapPropertyName(emitter, nameof(ruleOption.Tag));
                 MapHashtable(emitter, ruleOption.Tag);
+            }
+
+            emitter.Emit(new MappingEnd());
+        }
+
+        private static void MapDictionary<T>(IEmitter emitter, IDictionary<string, T> dictionary)
+        {
+            emitter.Emit(new MappingStart());
+
+            foreach (KeyValuePair<string, T> kvp in dictionary)
+            {
+                emitter.Emit(new Scalar(kvp.Key));
+
+                if (kvp.Value is string stringValue)
+                {
+                    emitter.Emit(new Scalar(stringValue));
+                }
+
+                else if (kvp.Value is string[] stringValues)
+                {
+                    MapStringArraySequence(emitter, stringValues);
+                }
+
+                else if (kvp.Value is PSObject[] psObjects)
+                {
+                    MapPSObjectArraySequence(emitter, psObjects);
+                }
+
+                else
+                {
+                    emitter.Emit(new Scalar(kvp.Value.ToString()));
+                }
             }
 
             emitter.Emit(new MappingEnd());

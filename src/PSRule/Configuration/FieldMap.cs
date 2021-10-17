@@ -81,5 +81,10 @@ namespace PSRule.Configuration
             result = value;
             return found;
         }
+
+        internal IDictionary<string, string[]> GetFieldMap
+        {
+            get => _Map;
+        }
     }
 }
