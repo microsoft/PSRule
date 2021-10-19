@@ -70,6 +70,161 @@ Describe 'Get-PSRuleBaseline' -Tag 'Baseline','Get-PSRuleBaseline' {
             $result.Module | Should -BeIn 'TestModule4';
         }
     }
+
+    Context 'Using -OutputFormat Yaml' {
+        BeforeAll {
+            $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule4';
+            $Null = Import-Module $testModuleSourcePath;
+        }
+        It '<baseline>' -TestCases @(
+            @{Baseline = 'Module4'; ExpectedYaml = @"
+`# Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  annotations: {}
+  name: Module4
+  tags: {}
+spec:
+  binding:
+    field:
+      kind:
+      - Id
+      uniqueIdentifer:
+      - Id
+      - AlternateName
+    targetName:
+    - AlternateName
+    targetType:
+    - Kind
+  configuration:
+    ruleConfig1: Test
+  rule:
+    include:
+    - M4.Rule1
+"@}
+@{Baseline = 'Baseline2'; ExpectedYaml = @"
+`# Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  annotations: {}
+  name: Baseline2
+  tags: {}
+spec:
+  binding:
+    targetName:
+    - AlternateName
+    targetType:
+    - Kind
+  configuration:
+    ruleConfig2: Test3
+  rule:
+    include:
+    - M4.Rule1
+"@}
+@{Baseline = 'Baseline3'; ExpectedYaml = @"
+`# Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  annotations: {}
+  name: Baseline3
+  tags: {}
+spec:
+  binding:
+    field:
+      AlternativeType:
+      - AlternateName
+    targetName:
+    - AlternateName
+    targetType:
+    - Kind
+  configuration:
+    ruleConfig2: Test3
+  rule:
+    include:
+    - M4.Rule1
+"@}) {
+    param($Baseline, $ExpectedYaml)
+    $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -Name $Baseline);
+    $result | Should -Not -BeNullOrEmpty;
+    $result | Should -MatchExactly $ExpectedYaml;
+}
+        It 'All Baselines' {
+            $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml);
+            $result | Should -Not -BeNullOrEmpty;
+
+            $expectedYaml = @"
+`# Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  annotations: {}
+  name: Module4
+  tags: {}
+spec:
+  binding:
+    field:
+      kind:
+      - Id
+      uniqueIdentifer:
+      - Id
+      - AlternateName
+    targetName:
+    - AlternateName
+    targetType:
+    - Kind
+  configuration:
+    ruleConfig1: Test
+  rule:
+    include:
+    - M4.Rule1
+---
+`# Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  annotations: {}
+  name: Baseline2
+  tags: {}
+spec:
+  binding:
+    targetName:
+    - AlternateName
+    targetType:
+    - Kind
+  configuration:
+    ruleConfig2: Test3
+  rule:
+    include:
+    - M4.Rule1
+---
+`# Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  annotations: {}
+  name: Baseline3
+  tags: {}
+spec:
+  binding:
+    field:
+      AlternativeType:
+      - AlternateName
+    targetName:
+    - AlternateName
+    targetType:
+    - Kind
+  configuration:
+    ruleConfig2: Test3
+  rule:
+    include:
+    - M4.Rule1
+"@
+            $result | Should -MatchExactly $expectedYaml;
+        }
+    }
 }
 
 #endregion Get-PSRuleBaseline
