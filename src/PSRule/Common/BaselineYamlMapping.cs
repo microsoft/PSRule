@@ -15,10 +15,7 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace PSRule
 {
-    /// <summary>
-    /// This class provides encapsulation for baseline mapping
-    /// </summary>
-    internal static class BaselineMapping
+    internal static class BaselineYamlMapping
     {
         internal static void MapBaseline(IEmitter emitter, Baseline baseline)
         {

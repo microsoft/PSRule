@@ -53,7 +53,7 @@ namespace PSRule.Pipeline.Output
                 foreach (Baseline baseline in baselines)
                 {
                     emitter.Emit(new DocumentStart());
-                    BaselineMapping.MapBaseline(emitter, baseline);
+                    BaselineYamlMapping.MapBaseline(emitter, baseline);
                     emitter.Emit(new DocumentEnd(true));
                 }
 
