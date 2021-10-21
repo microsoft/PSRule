@@ -60,7 +60,7 @@ namespace PSRule
         {
             emitter.Emit(new MappingStart());
 
-            if (resourceMetadata?.Annotations != null)
+            if (resourceMetadata?.Annotations != null && resourceMetadata?.Annotations.Count > 0)
             {
                 MapPropertyName(emitter, nameof(resourceMetadata.Annotations));
                 MapDictionary(emitter, resourceMetadata.Annotations);
@@ -72,7 +72,7 @@ namespace PSRule
                 emitter.Emit(new Scalar(resourceMetadata.Name));
             }
 
-            if (resourceMetadata?.Tags != null)
+            if (resourceMetadata?.Tags != null && resourceMetadata?.Tags.Count > 0)
             {
                 MapPropertyName(emitter, nameof(resourceMetadata.Tags));
                 MapDictionary(emitter, resourceMetadata.Tags);

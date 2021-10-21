@@ -82,9 +82,7 @@ Describe 'Get-PSRuleBaseline' -Tag 'Baseline','Get-PSRuleBaseline' {
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
-  annotations: {}
   name: Module4
-  tags: {}
 spec:
   binding:
     field:
@@ -108,9 +106,7 @@ spec:
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
-  annotations: {}
   name: Baseline2
-  tags: {}
 spec:
   binding:
     targetName:
@@ -128,9 +124,7 @@ spec:
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
-  annotations: {}
   name: Baseline3
-  tags: {}
 spec:
   binding:
     field:
@@ -160,9 +154,7 @@ spec:
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
-  annotations: {}
   name: Module4
-  tags: {}
 spec:
   binding:
     field:
@@ -185,9 +177,7 @@ spec:
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
-  annotations: {}
   name: Baseline2
-  tags: {}
 spec:
   binding:
     targetName:
@@ -204,9 +194,7 @@ spec:
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
-  annotations: {}
   name: Baseline3
-  tags: {}
 spec:
   binding:
     field:
