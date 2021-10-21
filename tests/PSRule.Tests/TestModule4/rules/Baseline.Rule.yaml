@@ -2,6 +2,7 @@
 # Licensed under the MIT License.
 
 ---
+# Synopsis: This is an example baseline
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
@@ -25,6 +26,7 @@ spec:
     ruleConfig1: 'Test'
 
 ---
+# Synopsis: This is an example baseline
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
@@ -42,6 +44,7 @@ spec:
     ruleConfig2: 'Test3'
 
 ---
+# Synopsis: This is an example baseline
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:

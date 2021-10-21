@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since v1.8.0
+
+- General improvements:
+  - Added improvements to YAML output for `Get-PSRuleBaseline`. [#829](https://github.com/microsoft/PSRule/issues/829)
+
 ## v1.8.0
 
 What's changed since v1.7.2:

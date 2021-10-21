@@ -11,6 +11,7 @@ using PSRule.Annotations;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Definitions;
+using PSRule.Definitions.Baselines;
 using PSRule.Definitions.Expressions;
 using PSRule.Host;
 using PSRule.Runtime;
@@ -129,88 +130,6 @@ namespace PSRule
                 }
                 emitter.Emit(new SequenceEnd());
             }
-            emitter.Emit(new MappingEnd());
-        }
-    }
-
-    /// <summary>
-    /// A YAML converter for serializing Hashtable
-    /// </summary>
-    internal sealed class HashtableYamlTypeConverter : IYamlTypeConverter
-    {
-        public bool Accepts(Type type)
-        {
-            return type == typeof(Hashtable);
-        }
-        public object ReadYaml(IParser parser, Type type)
-        {
-            throw new NotImplementedException();
-        }
-        public void WriteYaml(IEmitter emitter, object value, Type type)
-        {
-            if (type == typeof(Hashtable) && value == null)
-            {
-                emitter.Emit(new MappingStart());
-                emitter.Emit(new MappingEnd());
-                return;
-            }
-
-            if (!(value is IDictionary hashtable))
-                return;
-
-            emitter.Emit(new MappingStart());
-
-            if (hashtable != null && hashtable.Count > 0)
-            {
-                foreach (DictionaryEntry entry in hashtable)
-                {
-                    emitter.Emit(new Scalar(entry.Key.ToString()));
-
-                    if (entry.Value == null)
-                    {
-                        emitter.Emit(new Scalar(string.Empty));
-                    }
-
-                    else if (entry.Value is string stringEntryValue)
-                    {
-                        emitter.Emit(new Scalar(stringEntryValue));
-                    }
-
-                    else if (entry.Value is string[] stringEntryValueArray)
-                    {
-                        emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-
-                        foreach (string strVal in stringEntryValueArray)
-                        {
-                            emitter.Emit(new Scalar(strVal));
-                        }
-
-                        emitter.Emit(new SequenceEnd());
-                    }
-
-                    else if (entry.Value is PSObject psObjectEntryValue)
-                    {
-                        emitter.Emit(new Scalar(psObjectEntryValue.BaseObject.ToString()));
-                    }
-
-                    else if (entry.Value is PSObject[] psObjectEntryValueArray)
-                    {
-                        emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
-
-                        foreach (PSObject obj in psObjectEntryValueArray)
-                        {
-                            emitter.Emit(new Scalar(obj.BaseObject.ToString()));
-                        }
-
-                        emitter.Emit(new SequenceEnd());
-                    }
-                    else
-                    {
-                        emitter.Emit(new Scalar(entry.Value.ToString()));
-                    }
-                }
-            }
-
             emitter.Emit(new MappingEnd());
         }
     }
