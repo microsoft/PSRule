@@ -14,6 +14,15 @@ What's changed since v1.8.0
 
 - General improvements:
   - Added improvements to YAML output for `Get-PSRuleBaseline`. [#829](https://github.com/microsoft/PSRule/issues/829)
+  - Added `-Initialize` convention block. [#826](https://github.com/microsoft/PSRule/issues/826)
+    - Use this block to perform any initialization that is required before any rules are run.
+    - This block is only run once instead of `-Begin` which is run once per object.
+    - See [about_PSRule_Conventions] for details.
+  - Allow lifetime services to be used. [#827](https://github.com/microsoft/PSRule/issues/827)
+    - Use `$PSRule.AddService` and `$PSRule.GetService` to add a service.
+    - Services allows a singleton instance to be used and shared across multiple rules.
+    - PSRule will automatically dispose the service when all rules have run.
+    - See [about_PSRule_Variables] for details.
 
 ## v1.8.0
 

@@ -11,9 +11,9 @@ using BenchmarkDotNet.Running;
 
 #endif
 
-using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Diagnostics;
+using Microsoft.Extensions.CommandLineUtils;
 
 namespace PSRule.Benchmark
 {

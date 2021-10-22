@@ -45,8 +45,14 @@ Describe 'PSRule -- Conventions' -Tag 'Convention' {
         }
 
         It 'Uses convention' {
-            # Single convention
+            # Without init convention
             $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Convention 'Convention1');
+            $result | Should -Not -BeNullOrEmpty;
+            $result[0].Outcome | Should -Be 'Fail';
+            $result[0].Data.count | Should -Be 2;
+
+            # Single convention + init convention
+            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Convention 'Convention1', 'Convention.Init');
             $result | Should -Not -BeNullOrEmpty;
             $result[0].Outcome | Should -Be 'Pass';
             $result[0].Data.count | Should -Be 2;

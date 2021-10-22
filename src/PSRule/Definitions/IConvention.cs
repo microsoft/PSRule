@@ -10,6 +10,8 @@ namespace PSRule.Definitions
     {
         string Name { get; }
 
+        void Initialize(RunspaceContext context, IEnumerable input);
+
         void Begin(RunspaceContext context, IEnumerable input);
 
         void Process(RunspaceContext context, IEnumerable input);

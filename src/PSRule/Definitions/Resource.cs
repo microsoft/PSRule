@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using PSRule.Host;
 using PSRule.Pipeline;
+using PSRule.Runtime;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -282,7 +283,7 @@ namespace PSRule.Definitions
             Info = info;
             Source = source;
             Spec = spec;
-            Id = ResourceHelper.GetId(source.ModuleName, metadata.Name);
+            Id = ResourceHelper.GetIdString(source.ModuleName, metadata.Name);
             Metadata = metadata;
             Name = metadata.Name;
         }
@@ -354,15 +355,54 @@ namespace PSRule.Definitions
     {
         private const string ANNOTATION_OBSOLETE = "obsolete";
 
-        private const string LooseModuleName = ".";
-        private const char ModuleSeparator = '\\';
+        private const char ID_SEPARATOR = '\\';
 
-        internal static string GetId(string moduleName, string name)
+        internal static string GetIdString(string scope, string name)
         {
-            if (name.IndexOf(ModuleSeparator) >= 0)
+            if (name.IndexOf(ID_SEPARATOR) >= 0)
                 return name;
 
-            return string.Concat(string.IsNullOrEmpty(moduleName) ? LooseModuleName : moduleName, ModuleSeparator, name);
+            return string.Concat(string.IsNullOrEmpty(scope) ? LanguageScope.STANDALONE_SCOPENAME : scope, ID_SEPARATOR, name);
+        }
+
+        internal static void ParseIdString(string defaultScope, string id, out string scope, out string name)
+        {
+            if (string.IsNullOrEmpty(defaultScope))
+                defaultScope = LanguageScope.STANDALONE_SCOPENAME;
+
+            var index = id.IndexOf(ID_SEPARATOR);
+            scope = index >= 0 ? id.Substring(0, index) : defaultScope;
+            name = id.Substring(index + 1);
+        }
+
+        /// <summary>
+        /// Checks each RuleName and converts each to a RuleId.
+        /// </summary>
+        /// <param name="name">An array of names. Qualified names (RuleIds) supplied are left intact.</param>
+        /// <returns>An array of RuleIds.</returns>
+        internal static string[] GetRuleIdStrings(string scope, string[] name)
+        {
+            if (name == null)
+                return null;
+
+            var result = new string[name.Length];
+            name.CopyTo(result, 0);
+
+            for (var i = 0; i < name.Length; i++)
+            {
+                if (name[i] == null)
+                    continue;
+
+                // The name is not already qualified
+                if (name[i].IndexOf(ID_SEPARATOR) == -1)
+                    result[i] = GetRuleIdString(scope, name[i]);
+            }
+            return (result.Length == 0) ? null : result;
+        }
+
+        internal static string GetRuleIdString(string scope, string name)
+        {
+            return (scope == null) ? name : string.Concat(scope, ID_SEPARATOR, name);
         }
 
         internal static bool IsObsolete(ResourceMetadata metadata)

@@ -1,6 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Management.Automation.Language;
 using PSRule.Annotations;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
@@ -12,13 +19,6 @@ using PSRule.Parser;
 using PSRule.Pipeline;
 using PSRule.Rules;
 using PSRule.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Management.Automation;
-using System.Management.Automation.Language;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;

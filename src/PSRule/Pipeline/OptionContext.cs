@@ -287,7 +287,7 @@ namespace PSRule.Pipeline
                 include.Add(_WorkspaceConfig.Convention.Include[i]);
 
             for (var i = 0; _ModuleConfig?.Convention?.Include != null && i < _ModuleConfig.Convention.Include.Length; i++)
-                include.Add(ResourceHelper.GetId(_ModuleConfig.ModuleName, _ModuleConfig.Convention.Include[i]));
+                include.Add(ResourceHelper.GetIdString(_ModuleConfig.ModuleName, _ModuleConfig.Convention.Include[i]));
 
             return _ConventionFilter = new ConventionFilter(include.ToArray());
         }

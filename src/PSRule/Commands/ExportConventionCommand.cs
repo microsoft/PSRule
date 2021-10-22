@@ -20,20 +20,36 @@ namespace PSRule.Commands
         [ValidateNotNullOrEmpty()]
         public string Name { get; set; }
 
+        /// <summary>
+        /// A script block to call once before any objects are processed.
+        /// </summary>
+        [Parameter(Mandatory = false)]
+        [ValidateNotNullOrEmpty()]
+        public ScriptBlock Initialize { get; set; }
+
+        /// <summary>
+        /// A script block to call once per object before being processed by any rule.
+        /// </summary>
         [Parameter(Mandatory = false)]
         [ValidateNotNullOrEmpty()]
         public ScriptBlock Begin { get; set; }
 
+        /// <summary>
+        /// A script block to call once per object after rules are processed.
+        /// </summary>
         [Parameter(Mandatory = false, Position = 1)]
         [ValidateNotNullOrEmpty()]
         public ScriptBlock Process { get; set; }
 
+        /// <summary>
+        /// A script block to call once after all rules and all objects are processed.
+        /// </summary>
         [Parameter(Mandatory = false)]
         [ValidateNotNullOrEmpty()]
         public ScriptBlock End { get; set; }
 
         /// <summary>
-        /// An optional precondition before the hook is evaluated.
+        /// An optional pre-condition before the convention is evaluated.
         /// </summary>
         [Parameter(Mandatory = false)]
         public ScriptBlock If { get; set; }
@@ -63,6 +79,7 @@ namespace PSRule.Commands
                 source: source,
                 metadata: metadata,
                 info: helpInfo,
+                initialize: ConventionBlock(context, Initialize, RunspaceScope.ConventionInitialize),
                 begin: ConventionBlock(context, Begin, RunspaceScope.ConventionBegin),
                 process: ConventionBlock(context, Process, RunspaceScope.ConventionProcess),
                 end: ConventionBlock(context, End, RunspaceScope.ConventionEnd),

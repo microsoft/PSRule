@@ -187,11 +187,29 @@ namespace PSRule.Runtime
             }
         }
 
+        public void AddService(string id, object service)
+        {
+            if (service == null || string.IsNullOrEmpty(id))
+                return;
+
+            RequireScope(RunspaceScope.ConventionInitialize);
+            GetContext().AddService(id, service);
+        }
+
+        public object GetService(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return null;
+
+            RequireScope(RunspaceScope.Runtime);
+            return GetContext().GetService(id);
+        }
+
         #region Helper methods
 
         private ITargetSourceCollection GetSource()
         {
-            RequireScope(RunspaceScope.Runtime);
+            RequireScope(RunspaceScope.Target);
             if (_Source == null)
                 _Source = new PSRuleSource(GetContext());
 
