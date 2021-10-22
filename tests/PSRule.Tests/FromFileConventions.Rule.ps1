@@ -48,7 +48,17 @@ Export-PSRuleConvention 'Convention.WithException' -Begin {
     throw 'Some exception';
 }
 
+# Synopsis: A convention for unit testing
+Export-PSRuleConvention 'Convention.Init' -Initialize {
+    $PSRule.AddService('Store', [PSCustomObject]@{
+        Name = 'TestObject1'
+    });
+}
+
 # Synopsis: A rule for testing conventions
 Rule 'ConventionTest' {
     $Assert.HasFieldValue($PSRule.Data, 'count', 1);
+
+    $store = $PSRule.GetService('Store');
+    $Assert.HasFieldValue($store, 'Name', 'TestObject1');
 }

@@ -166,14 +166,18 @@ An object representing the current context during execution.
 
 The following properties are available for read access:
 
+- `Badges` - A helper to generate badges within PSRule.
+  This property can only be called within the `-End` block of a convention.
 - `Field` - A hashtable of custom bound fields.
-See option `Binding.Field` for more information.
+  See option `Binding.Field` for more information.
 - `TargetObject` - The object currently being processed on the pipeline.
 - `TargetName` - The name of the object currently being processed on the pipeline.
-This property will automatically default to `TargetName` or `Name` properties of the object if they exist.
+  This property will automatically default to `TargetName` or `Name` properties of the object if they exist.
 - `TargetType` - The type of the object currently being processed on the pipeline.
-This property will automatically bind to `PSObject.TypeNames[0]` by default.
+  This property will automatically bind to `PSObject.TypeNames[0]` by default.
 - `Source` - A collection of sources for the object currently being processed on the pipeline.
+- `Output` - The output of all rules.
+  This property can only be called within the `-End` block of a convention.
 
 The following properties are available for read/ write access:
 
@@ -187,18 +191,25 @@ Use custom data to store data that must be calculated during rule execution.
 The following helper methods are available:
 
 - `GetContent(PSObject sourceObject)` - Returns the content of a file as one or more objects.
-The parameter `sourceObject` should be a `InputFileInfo`,`FileInfo`, or `Uri` object.
+  The parameter `sourceObject` should be a `InputFileInfo`,`FileInfo`, or `Uri` object.
 - `GetContentField(PSObject sourceObject, string field)` - Returns the content of a file as one or more objects.
-The parameter `sourceObject` should be a `InputFileInfo`,`FileInfo`, or `Uri` object.
-The parameter `field` is an field within each object to return.
-If the field does not exist on the object, an object is not returned.
+  The parameter `sourceObject` should be a `InputFileInfo`,`FileInfo`, or `Uri` object.
+  The parameter `field` is an field within each object to return.
+  If the field does not exist on the object, an object is not returned.
 - `GetContentFirstOrDefault(PSObject sourceObject)` - Returns the content of a file as on object.
-The parameter `sourceObject` should be a `InputFileInfo`,`FileInfo`, or `Uri` object.
-If more than one object is contained in the file, only the first object is returned.
-When the source file contains no objects null is returned.
+  The parameter `sourceObject` should be a `InputFileInfo`,`FileInfo`, or `Uri` object.
+  If more than one object is contained in the file, only the first object is returned.
+  When the source file contains no objects null is returned.
 - `Import(PSObject[] sourceObject)` - Imports one or more source objects into the pipeline.
-Use this method to expand an object into child objects that will be processed independently.
-Objects imported using this method will be excluded from the `Input.ObjectPath` option if set.
+  This method can only be called within the `-Begin` block of a convention.
+  Use this method to expand an object into child objects that will be processed independently.
+  Objects imported using this method will be excluded from the `Input.ObjectPath` option if set.
+- `AddService(string id, object service)` - Add a service to the current context.
+  The service can be retrieved using `$PSRule.GetService(id)`.
+  The service object will be available to all rules and cleaned up after all rules are executed.
+  Services should implement the `IDisposable` interface to perform additional cleanup.
+  This method can only be called within the `-Initialize` block of a convention.
+- `GetService(string id)` - Retrieves a service previously added by a convention.
 
 The file format is detected based on the same file formats as the option `Input.Format`.
 i.e. Yaml, Json, Markdown, and PowerShell Data.

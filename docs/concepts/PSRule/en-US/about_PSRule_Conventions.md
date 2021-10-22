@@ -47,23 +47,28 @@ Export-PSRuleConvention 'ExampleConvention' {
 }
 ```
 
-### Begin Process End blocks
+### Initialize Begin Process End blocks
 
-Conventions define three executable blocks `Begin`, `Process`, `End` similar to a PowerShell function.
+Conventions define four executable blocks `Initialize`, `Begin`, `Process`, `End` similar to a PowerShell function.
 Each block is injected in a different part of the pipeline as follows:
 
+- `Initialize` occurs once at the beginning of the pipeline.
+  Use `Initialize` to perform any initialization required by the convention.
 - `Begin` occurs once per object before the any rules are executed.
-Use `Begin` blocks to perform expansion, set data, or alter the object before rules are processed.
+  Use `Begin` blocks to perform expansion, set data, or alter the object before rules are processed.
 - `Process` occurs once per object after all rules are executed.
-Use `Process` blocks to perform per object tasks such as generate badges.
+  Use `Process` blocks to perform per object tasks such as generate badges.
 - `End` occurs only once after all objects have been processed.
-Use `End` blocks to upload results to an external service.
+  Use `End` blocks to upload results to an external service.
 
 Convention block limitations:
 
+- `Initialize` can not use automatic variables except `$PSRule`.
+  Most methods and properties of `$PSRule` are not available in `Initialize`.
 - `Begin` and `Process` can not use rule specific variables such as `$Rule`.
-These blocks are executed outside of the context of a single rule.
-- `End` can not use automatic variables except `$PSRule.Output`.
+  These blocks are executed outside of the context of a single rule.
+- `End` can not use automatic variables except `$PSRule`.
+  Most methods and properties of `$PSRule` are not available in `End`.
 
 By default, the `Process` block used.
 For example:
@@ -80,7 +85,7 @@ Export-PSRuleConvention 'ExampleConvention' -Process {
 }
 ```
 
-To use `Begin` or `End` explicitly add these blocks.
+To use `Initialize`, `Begin`, or `End` explicitly add these blocks.
 For example:
 
 ```powershell
@@ -90,6 +95,8 @@ Export-PSRuleConvention 'ExampleConvention' -Process {
     # Begin block
 } -End {
     # End block
+} -Initialize {
+    # Initialize block
 }
 ```
 
@@ -133,7 +140,7 @@ spec:
 ### Execution order
 
 Conventions are executed in the order they are specified.
-This is true for `Begin`, `Process`, and `End` blocks.
+This is true for `Initialize`, `Begin`, `Process`, and `End` blocks.
 i.e. In the following example `ExampleConvention1` is execute before `ExampleConvention2`.
 
 ```powershell

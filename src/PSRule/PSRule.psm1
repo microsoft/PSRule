@@ -1755,6 +1755,9 @@ function Export-PSRuleConvention {
         [String]$Name,
 
         [Parameter(Mandatory = $False)]
+        [ScriptBlock]$Initialize,
+
+        [Parameter(Mandatory = $False)]
         [ScriptBlock]$Begin,
 
         [Parameter(Mandatory = $False, Position = 1)]

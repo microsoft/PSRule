@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using Newtonsoft.Json;
 using System;
 using System.CommandLine.Invocation;
 using System.Drawing;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace PSRule.BuildTool
 {

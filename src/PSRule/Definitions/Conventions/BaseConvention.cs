@@ -56,6 +56,11 @@ namespace PSRule.Definitions.Conventions
 
         public string Name { get; }
 
+        public virtual void Initialize(RunspaceContext context, IEnumerable input)
+        {
+
+        }
+
         public virtual void Begin(RunspaceContext context, IEnumerable input)
         {
 

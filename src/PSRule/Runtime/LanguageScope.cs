@@ -10,7 +10,7 @@ namespace PSRule.Runtime
     /// <summary>
     /// A named scope for langauge elements.
     /// </summary>
-    internal interface ILanguageScope
+    internal interface ILanguageScope : IDisposable
     {
         string Name { get; }
 
@@ -27,6 +27,10 @@ namespace PSRule.Runtime
         void WithFilter(IResourceFilter resourceFilter);
 
         IResourceFilter GetFilter(ResourceKind kind);
+
+        void AddService(string name, object service);
+
+        object GetService(string name);
     }
 
     internal sealed class LanguageScope : ILanguageScope
@@ -34,14 +38,17 @@ namespace PSRule.Runtime
         internal const string STANDALONE_SCOPENAME = ".";
 
         private readonly Dictionary<string, object> _Configuration;
+        private readonly Dictionary<string, object> _Service;
 
         private Dictionary<ResourceKind, IResourceFilter> _Filter;
+        private bool _Disposed;
 
         public LanguageScope(string name)
         {
             Name = name ?? STANDALONE_SCOPENAME;
             _Configuration = new Dictionary<string, object>();
             _Filter = new Dictionary<ResourceKind, IResourceFilter>();
+            _Service = new Dictionary<string, object>();
         }
 
         public string Name { get; }
@@ -69,13 +76,55 @@ namespace PSRule.Runtime
         {
             return _Filter.TryGetValue(kind, out IResourceFilter filter) ? filter : null;
         }
+
+        public void AddService(string name, object service)
+        {
+            if (_Service.ContainsKey(name))
+                return;
+
+            _Service.Add(name, service);
+        }
+
+        public object GetService(string name)
+        {
+            return _Service.TryGetValue(name, out object service) ? service : null;
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!_Disposed)
+            {
+                if (disposing)
+                {
+                    // Release and dispose services
+                    if (_Service != null && _Service.Count > 0)
+                    {
+                        foreach (var kv in _Service)
+                        {
+                            if (kv.Value is IDisposable d)
+                                d.Dispose();
+                        }
+                        _Service.Clear();
+                    }
+                }
+                _Disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 
-    internal sealed class LanguageScopeSet
+    internal sealed class LanguageScopeSet : IDisposable
     {
         private readonly Dictionary<string, ILanguageScope> _Scopes;
 
         private ILanguageScope _Current;
+        private bool _Disposed;
 
         public LanguageScopeSet()
         {
@@ -107,6 +156,11 @@ namespace PSRule.Runtime
                 _Current = scope;
         }
 
+        internal bool TryScope(string name, out ILanguageScope scope)
+        {
+            return _Scopes.TryGetValue(GetScopeName(name), out scope);
+        }
+
         internal bool Import(string name, out ILanguageScope scope)
         {
             if (_Scopes.TryGetValue(GetScopeName(name), out scope))
@@ -120,6 +174,32 @@ namespace PSRule.Runtime
         private static string GetScopeName(string name)
         {
             return name ?? LanguageScope.STANDALONE_SCOPENAME;
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!_Disposed)
+            {
+                if (disposing)
+                {
+                    // Release and dispose scopes
+                    if (_Scopes != null && _Scopes.Count > 0)
+                    {
+                        foreach (var kv in _Scopes)
+                            kv.Value.Dispose();
+
+                        _Scopes.Clear();
+                    }
+                }
+                _Disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

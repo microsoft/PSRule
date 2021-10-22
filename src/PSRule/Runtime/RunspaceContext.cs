@@ -45,8 +45,10 @@ namespace PSRule.Runtime
         ConventionBegin = 16,
         ConventionProcess = 32,
         ConventionEnd = 64,
+        ConventionInitialize = 128,
 
-        Convention = ConventionBegin | ConventionProcess | ConventionEnd,
+        Convention = ConventionInitialize | ConventionBegin | ConventionProcess | ConventionEnd,
+        Target = Rule | Precondition | ConventionBegin | ConventionProcess,
         Runtime = Rule | Precondition | Convention,
         All = Source | Rule | Precondition | Resource | Convention,
     }
@@ -583,7 +585,7 @@ namespace PSRule.Runtime
 
         public bool TrySelector(string name)
         {
-            name = ResourceHelper.GetId(Source.File.ModuleName, name);
+            name = ResourceHelper.GetIdString(Source.File.ModuleName, name);
             if (TargetObject == null || Pipeline == null || !Pipeline.Selector.TryGetValue(name, out SelectorVisitor selector))
                 return false;
 
@@ -654,6 +656,33 @@ namespace PSRule.Runtime
             _Conventions.Add(resource);
         }
 
+        internal void AddService(string id, object service)
+        {
+            ResourceHelper.ParseIdString(_LanguageScopes.Current.Name, id, out string scopeName, out string name);
+            if (!StringComparer.OrdinalIgnoreCase.Equals(_LanguageScopes.Current.Name, scopeName))
+                return;
+
+            _LanguageScopes.Current.AddService(name, service);
+        }
+
+        internal object GetService(string id)
+        {
+            ResourceHelper.ParseIdString(_LanguageScopes.Current.Name, id, out string scopeName, out string name);
+            if (!_LanguageScopes.TryScope(scopeName, out ILanguageScope scope))
+                return null;
+
+            return scope.GetService(name);
+        }
+
+        private void RunConventionInitialize()
+        {
+            if (_Conventions == null || _Conventions.Count == 0)
+                return;
+
+            for (var i = 0; i < _Conventions.Count; i++)
+                _Conventions[i].Initialize(this, null);
+        }
+
         private void RunConventionBegin()
         {
             if (_Conventions == null || _Conventions.Count == 0)
@@ -695,9 +724,7 @@ namespace PSRule.Runtime
             Host.HostHelper.ImportResource(source, this);
 
             foreach (var languageScope in _LanguageScopes.Get())
-            {
                 Pipeline.Baseline.BuildScope(languageScope);
-            }
         }
 
         private void InitLanguageScopes(Source[] source)
@@ -717,6 +744,7 @@ namespace PSRule.Runtime
                 builder.With(new TargetBinder.TargetBindingContext(languageScope.Name, targetBinding));
             }
             TargetBinder = builder.Build();
+            RunConventionInitialize();
         }
 
         public void End(IEnumerable<InvokeResult> output)
@@ -777,6 +805,7 @@ namespace PSRule.Runtime
                         if (_Conventions[i] is IDisposable d)
                             d.Dispose();
                     }
+                    _LanguageScopes.Dispose();
                 }
                 _Disposed = true;
             }

@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Management.Automation;
 using System.Threading;
+using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
@@ -109,7 +110,7 @@ namespace PSRule.Commands
                 info: helpInfo,
                 condition: ps,
                 tag: tag,
-                dependsOn: RuleHelper.ExpandRuleName(DependsOn, MyInvocation.ScriptName, source.ModuleName),
+                dependsOn: ResourceHelper.GetRuleIdStrings(source.ModuleName, DependsOn),
                 configuration: Configure,
                 extent: extent,
                 errorPreference: errorPreference

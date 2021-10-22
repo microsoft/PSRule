@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Pipeline;
-using PSRule.Resources;
 using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 using System.Management.Automation.Language;
 using System.Threading;
+using PSRule.Pipeline;
+using PSRule.Resources;
 
 namespace PSRule.Host
 {

@@ -4,7 +4,6 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using System.IO;
 using System.Management.Automation;
 using PSRule.Definitions;
 using PSRule.Host;
@@ -28,10 +27,8 @@ namespace PSRule.Rules
             Source = source;
             RuleName = ruleName;
 
-            var scriptFileName = Path.GetFileName(Source.Path);
-
             // Get fully qualified Id, either RuleName or Module\RuleName
-            RuleId = RuleHelper.ExpandRuleName(ruleName: ruleName, scriptFileName: scriptFileName, moduleName: Source.ModuleName);
+            RuleId = ResourceHelper.GetRuleIdString(Source.ModuleName, ruleName);
 
             Info = info;
             Condition = condition;
