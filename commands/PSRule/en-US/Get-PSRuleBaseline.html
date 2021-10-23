@@ -73,7 +73,7 @@
 <p>Get a list of baselines.</p>
 <h2 id="syntax">SYNTAX</h2>
 <pre><code class="lang-text">Get-PSRuleBaseline [-Module &lt;String[]&gt;] [-ListAvailable] [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;]
- [-Option &lt;PSRuleOption&gt;] [-Culture &lt;String&gt;] [&lt;CommonParameters&gt;]
+ [-Option &lt;PSRuleOption&gt;] [-Culture &lt;String&gt;] [-OutputFormat &lt;OutputFormat&gt;] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Get a list of matching baselines within the search path.</p>
@@ -157,6 +157,24 @@ Accept wildcard characters: False
 <pre><code class="lang-yaml">Type: String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-outputformat">-OutputFormat</h3>
+<p>Configures the format that output is presented in.</p>
+<p>The following format options are available:</p>
+<ul>
+<li>None - Output is presented as an object using PowerShell defaults. This is the default.</li>
+<li>Yaml - Output is serialized as YAML.</li>
+</ul>
+<pre><code class="lang-yaml">Type: OutputFormat
+Parameter Sets: (All)
+Aliases: o
+Accepted values: None, Yaml
 
 Required: False
 Position: Named

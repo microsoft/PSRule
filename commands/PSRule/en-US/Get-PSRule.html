@@ -225,11 +225,13 @@ Accept wildcard characters: False
 <ul>
 <li>None - Output is presented as an object using PowerShell defaults. This is the default.</li>
 <li>Wide - Output is presented using the wide table format, which includes tags and wraps columns.</li>
+<li>Yaml - Output is serialized as YAML.</li>
+<li>Json - Output is serialized as JSON.</li>
 </ul>
 <pre><code class="lang-yaml">Type: OutputFormat
 Parameter Sets: (All)
 Aliases: o
-Accepted values: None, Wide
+Accepted values: None, Wide, Yaml, Json
 
 Required: False
 Position: Named

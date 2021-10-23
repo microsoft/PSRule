@@ -191,6 +191,8 @@ Rule 'WithLocalizedData' {
 <p>An object representing the current context during execution.</p>
 <p>The following properties are available for read access:</p>
 <ul>
+<li><code>Badges</code> - A helper to generate badges within PSRule.
+This property can only be called within the <code>-End</code> block of a convention.</li>
 <li><code>Field</code> - A hashtable of custom bound fields.
 See option <code>Binding.Field</code> for more information.</li>
 <li><code>TargetObject</code> - The object currently being processed on the pipeline.</li>
@@ -199,6 +201,8 @@ This property will automatically default to <code>TargetName</code> or <code>Nam
 <li><code>TargetType</code> - The type of the object currently being processed on the pipeline.
 This property will automatically bind to <code>PSObject.TypeNames[0]</code> by default.</li>
 <li><code>Source</code> - A collection of sources for the object currently being processed on the pipeline.</li>
+<li><code>Output</code> - The output of all rules.
+This property can only be called within the <code>-End</code> block of a convention.</li>
 </ul>
 <p>The following properties are available for read/ write access:</p>
 <ul>
@@ -221,8 +225,15 @@ The parameter <code>sourceObject</code> should be a <code>InputFileInfo</code>,<
 If more than one object is contained in the file, only the first object is returned.
 When the source file contains no objects null is returned.</li>
 <li><code>Import(PSObject[] sourceObject)</code> - Imports one or more source objects into the pipeline.
+This method can only be called within the <code>-Begin</code> block of a convention.
 Use this method to expand an object into child objects that will be processed independently.
 Objects imported using this method will be excluded from the <code>Input.ObjectPath</code> option if set.</li>
+<li><code>AddService(string id, object service)</code> - Add a service to the current context.
+The service can be retrieved using <code>$PSRule.GetService(id)</code>.
+The service object will be available to all rules and cleaned up after all rules are executed.
+Services should implement the <code>IDisposable</code> interface to perform additional cleanup.
+This method can only be called within the <code>-Initialize</code> block of a convention.</li>
+<li><code>GetService(string id)</code> - Retrieves a service previously added by a convention.</li>
 </ul>
 <p>The file format is detected based on the same file formats as the option <code>Input.Format</code>.
 i.e. Yaml, Json, Markdown, and PowerShell Data.</p>

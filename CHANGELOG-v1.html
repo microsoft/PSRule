@@ -68,6 +68,156 @@
 <li>YAML resources will require an <code>apiVersion</code> from PSRule v2. <a href="https://github.com/microsoft/PSRule/issues/648">#648</a></li>
 </ul>
 <h2 id="unreleased">Unreleased</h2>
+<h2 id="v190-b2110015-pre-release">v1.9.0-B2110015 (pre-release)</h2>
+<p>What's changed since v1.8.0:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added improvements to YAML output for <code>Get-PSRuleBaseline</code>. <a href="https://github.com/microsoft/PSRule/issues/829">#829</a></li>
+<li>Added <code>-Initialize</code> convention block. <a href="https://github.com/microsoft/PSRule/issues/826">#826</a>
+<ul>
+<li>Use this block to perform any initialization that is required before any rules are run.</li>
+<li>This block is only run once instead of <code>-Begin</code> which is run once per object.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Conventions.html">about_PSRule_Conventions</a> for details.</li>
+</ul>
+</li>
+<li>Allow lifetime services to be used. <a href="https://github.com/microsoft/PSRule/issues/827">#827</a>
+<ul>
+<li>Use <code>$PSRule.AddService</code> and <code>$PSRule.GetService</code> to add a service.</li>
+<li>Services allows a singleton instance to be used and shared across multiple rules.</li>
+<li>PSRule will automatically dispose the service when all rules have run.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Variables.html">about_PSRule_Variables</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v180">v1.8.0</h2>
+<p>What's changed since v1.7.2:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added YAML output format support for <code>Get-PSRuleBaseline</code>. <a href="https://github.com/microsoft/PSRule/issues/326">#326</a></li>
+<li>Added YAML/JSON output format support for <code>Get-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/128">#128</a></li>
+<li>Added <code>Output.JsonIndent</code> option for JSON output format. <a href="https://github.com/microsoft/PSRule/issues/817">#817</a></li>
+<li>Added assertion helpers and expressions for improving intersection checks. <a href="https://github.com/microsoft/PSRule/issues/795">#795</a>
+<ul>
+<li>Added <code>Count</code> to determine of the field has a specific number of elements.</li>
+<li>Added <code>SetOf</code> to determine if a collection is another collection.</li>
+<li>Added <code>Subset</code> to determine if a collection is includes another collection.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> and <a href="concepts/PSRule/en-US/about_PSRule_Expressions.html">about_PSRule_Expressions</a> for details.</li>
+</ul>
+</li>
+<li>Added support for conditional reason messages with <code>ReasonIf</code>. <a href="https://github.com/microsoft/PSRule/issues/804">#804</a>
+<ul>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+<li>Added support for <code>type</code> and <code>name</code> expression properties. <a href="https://github.com/microsoft/PSRule/issues/810">#810</a>
+<ul>
+<li>Use <code>type</code> to compare the bound type of the current object.</li>
+<li>Use <code>name</code> to compare the bound name of the current object.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Expressions.html">about_PSRule_Expressions</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Engineering:
+<ul>
+<li>Migration of Pester v4 tests to Pester v5. <a href="https://github.com/microsoft/PSRule/issues/478">#478</a></li>
+</ul>
+</li>
+</ul>
+<p>What's changed since pre-release v1.8.0-B2110030:</p>
+<ul>
+<li>No additional changes.</li>
+</ul>
+<h2 id="v180-b2110030-pre-release">v1.8.0-B2110030 (pre-release)</h2>
+<p>What's changed since pre-release v1.8.0-B2110020:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added <code>Output.JsonIndent</code> option for JSON output format. <a href="https://github.com/microsoft/PSRule/issues/817">#817</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v180-b2110020-pre-release">v1.8.0-B2110020 (pre-release)</h2>
+<p>What's changed since pre-release v1.8.0-B2110006:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added YAML/JSON output format support for <code>Get-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/128">#128</a></li>
+</ul>
+</li>
+<li>Engineering:
+<ul>
+<li>Migration of Pester v4 tests to Pester v5. <a href="https://github.com/microsoft/PSRule/issues/478">#478</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v180-b2110006-pre-release">v1.8.0-B2110006 (pre-release)</h2>
+<p>What's changed since pre-release v1.8.0-B2109022:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added YAML output format support for <code>Get-PSRuleBaseline</code>. <a href="https://github.com/microsoft/PSRule/issues/326">#326</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v180-b2109022-pre-release">v1.8.0-B2109022 (pre-release)</h2>
+<p>What's changed since pre-release v1.8.0-B2109015:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added support for conditional reason messages with <code>ReasonIf</code>. <a href="https://github.com/microsoft/PSRule/issues/804">#804</a>
+<ul>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+<li>Added support for <code>type</code> and <code>name</code> expression properties. <a href="https://github.com/microsoft/PSRule/issues/810">#810</a>
+<ul>
+<li>Use <code>type</code> to compare the bound type of the current object.</li>
+<li>Use <code>name</code> to compare the bound name of the current object.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Expressions.html">about_PSRule_Expressions</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v180-b2109015-pre-release">v1.8.0-B2109015 (pre-release)</h2>
+<p>What's changed since v1.7.2:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added assertion helpers and expressions for improving intersection checks. <a href="https://github.com/microsoft/PSRule/issues/795">#795</a>
+<ul>
+<li>Added <code>Count</code> to determine of the field has a specific number of elements.</li>
+<li>Added <code>SetOf</code> to determine if a collection is another collection.</li>
+<li>Added <code>Subset</code> to determine if a collection is includes another collection.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> and <a href="concepts/PSRule/en-US/about_PSRule_Expressions.html">about_PSRule_Expressions</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="v172">v1.7.2</h2>
+<p>What's changed since v1.7.1:</p>
+<ul>
+<li>Bug fixes:
+<ul>
+<li>Fixed <code>Get-PSRuleBaseline</code> does not return any results from module. <a href="https://github.com/microsoft/PSRule/issues/801">#801</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v171">v1.7.1</h2>
+<p>What's changed since v1.7.0:</p>
+<ul>
+<li>Bug fixes:
+<ul>
+<li>Fixed ResourceTags does not contain a method named ToHashtable. <a href="https://github.com/microsoft/PSRule/issues/798">#798</a></li>
+</ul>
+</li>
+</ul>
 <h2 id="v170">v1.7.0</h2>
 <p>What's changed since v1.6.0:</p>
 <ul>

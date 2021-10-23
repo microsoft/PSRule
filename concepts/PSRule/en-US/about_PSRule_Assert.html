@@ -79,6 +79,7 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 <p>The following built-in assertion methods are provided:</p>
 <ul>
 <li><a href="#contains">Contains</a> - The field value must contain at least one of the strings.</li>
+<li><a href="#count">Count</a> - The field value must contain the specified number of items.</li>
 <li><a href="#endswith">EndsWith</a> - The field value must match at least one suffix.</li>
 <li><a href="#fileheader">FileHeader</a> - The file must contain a comment header.</li>
 <li><a href="#filepath">FilePath</a> - The file path must exist.</li>
@@ -110,7 +111,9 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 <li><a href="#null">Null</a> - The field value must not exist or be null.</li>
 <li><a href="#nullorempty">NullOrEmpty</a> - The object must not have the specified field or it must be empty.</li>
 <li><a href="#typeof">TypeOf</a> - The field value must be of the specified type.</li>
+<li><a href="#setof">SetOf</a> - The field value must match a set of specified values.</li>
 <li><a href="#startswith">StartsWith</a> - The field value must match at least one prefix.</li>
+<li><a href="#subset">Subset</a> - The field value must include a set of specified values.</li>
 <li><a href="#version">Version</a> - The field value must be a semantic version string.</li>
 <li><a href="#withinpath">WithinPath</a> - The field value must be within the specified path.</li>
 </ul>
@@ -186,6 +189,28 @@ Case is ignored by default.</li>
 <pre><code class="lang-powershell">Rule 'Contains' {
     $Assert.Contains($TargetObject, 'ResourceGroupName', 'prod')
     $Assert.Contains($TargetObject, 'Name', @('prod', 'test'), $True)
+}
+</code></pre>
+<h3 id="count">Count</h3>
+<p>The <code>Count</code> assertion method checks the field value contains the specified number of items.
+The field value must be an array or collection.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>count</code> - The number of items that the field value must contain.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field '{0}' is not enumerable.</em></li>
+<li><em>The field '{0}' has '{1}' items instead of '{2}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'Count' {
+    $Assert.Count($TargetObject, 'items', 2)
 }
 </code></pre>
 <h3 id="endswith">EndsWith</h3>
@@ -511,10 +536,12 @@ When the field value is an array, only one item must be included in the set.</p>
 <p>The following parameters are accepted:</p>
 <ul>
 <li><code>inputObject</code> - The object being checked for the specified field.</li>
-<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
 <li><code>values</code> - An array of values that the field value is compared against.
 When an empty array is specified, <code>In</code> will always fail.</li>
-<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value. Case is ignored by default.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.</li>
 </ul>
 <p>Reasons include:</p>
 <ul>
@@ -1031,6 +1058,34 @@ The field value only has to match a single type of more than one type is specifi
     $Assert.TypeOf($TargetObject, 'Value1', @([int], [long]))
 }
 </code></pre>
+<h3 id="setof">SetOf</h3>
+<p>The <code>SetOf</code> assertion method checks the field value only includes all of the specified values.
+The field value must be an array or collection.
+Specified values can be included in the field value in any order.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+<li><code>values</code> - An array of values that the field value is compared against.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The parameter 'values' is null.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field '{0}' is not enumerable.</em></li>
+<li><em>The field '{0}' did not contain '{1}'.</em></li>
+<li><em>The field '{0}' has '{1}' items instead of '{2}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'Subset' {
+    $Assert.SetOf($TargetObject, 'zones', @('1', '2', '3'))
+}
+</code></pre>
 <h3 id="startswith">StartsWith</h3>
 <p>The <code>StartsWith</code> assertion method checks the field value starts with the specified prefix.
 Optionally a case-sensitive compare can be used, however case is ignored by default.</p>
@@ -1058,6 +1113,38 @@ Case is ignored by default.</li>
 <pre><code class="lang-powershell">Rule 'StartsWith' {
     $Assert.StartsWith($TargetObject, 'ResourceGroupName', 'rg-')
     $Assert.StartsWith($TargetObject, 'Name', @('st', 'diag'), $True)
+}
+</code></pre>
+<h3 id="subset">Subset</h3>
+<p>The <code>Subset</code> assertion method checks the field value includes all of the specified values.
+The field value may also contain additional values that are not specified in the <code>values</code> parameter.
+The field value must be an array or collection.
+Specified values can be included in the field value in any order.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check.
+This is a case insensitive compare.</li>
+<li><code>values</code> - An array of values that the field value is compared against.
+When an empty array is specified, <code>Subset</code> will always pass.</li>
+<li><code>caseSensitive</code> (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.</li>
+<li><code>unique</code> (optional) - A boolean value that indicates if the items must be unique.
+When <code>true</code> the field value must not contain duplicate items.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The parameter 'values' is null.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field '{0}' is not enumerable.</em></li>
+<li><em>The field '{0}' did not contain '{1}'.</em></li>
+<li><em>The field '{0}' included multiple instances of '{1}'.</em></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="lang-powershell">Rule 'Subset' {
+    $Assert.Subset($TargetObject, 'logs', @('cluster-autoscaler', 'kube-apiserver', 'kube-scheduler'), $True, $True)
 }
 </code></pre>
 <h3 id="version">Version</h3>
@@ -1255,6 +1342,8 @@ In addition, <code>WithReason</code> can be chained.</li>
 <li><code>Reason(&lt;string&gt; text, params &lt;object[]&gt; args)</code> - Replaces the reason on the results with a formatted string.
 This method can be chained.
 For usage see examples below.</li>
+<li><code>ReasonIf(&lt;bool&gt; condition, &lt;string&gt; text, params &lt;object[]&gt; args)</code> - Replaces the reason if the condition is true.
+This method can be chained, similar to <code>Reason</code>.</li>
 <li><code>GetReason()</code> - Gets any reasons currently associated with the failed result.</li>
 <li><code>Complete()</code> - Returns <code>$True</code> (Pass) or <code>$False</code> (Fail) to the rule record.
 If the assertion failed, any reasons are automatically added to the rule record.

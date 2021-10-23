@@ -109,17 +109,20 @@ When evaluating an object from input, PSRule can use selectors to perform comple
 <p>The following comparison properties are available:</p>
 <ul>
 <li>Field</li>
+<li>Name</li>
+<li>Type</li>
 </ul>
 <p>To learn more about conditions, operators, and properties see <a href="about_PSRule_Expressions.html">about_PSRule_Expressions</a>.</p>
 <p>Currently the following limitations apply:</p>
 <ul>
-<li>Selectors can only evaluate a field of the target object.
-The following examples can not be evaluated by selectors:
+<li>Selectors can evaluate:
 <ul>
-<li>Bound properties such as <code>TargetName</code>, <code>TargetType</code>, and <code>Field</code>.</li>
-<li>State variables such as <code>$PSRule</code>.</li>
+<li>Fields of the target object.</li>
+<li>Type and name binding of the target object by using <code>name</code> and <code>type</code> comparison properties.</li>
 </ul>
 </li>
+<li>State variables such has <code>$PSRule</code> can not be evaluated.</li>
+<li>Bound fields can not be evaluated.</li>
 </ul>
 <h3 id="using-selectors-as-pre-conditions">Using selectors as pre-conditions</h3>
 <p>Selectors can be referenced by name as a rule pre-condition by using the <code>-With</code> parameter.

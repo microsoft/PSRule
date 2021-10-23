@@ -78,6 +78,7 @@ Expressions are comprised of nested conditions, operators, and comparison proper
 <p>The following conditions are available:</p>
 <ul>
 <li><a href="#contains">Contains</a></li>
+<li><a href="#count">Count</a></li>
 <li><a href="#equals">Equals</a></li>
 <li><a href="#endswith">EndsWith</a></li>
 <li><a href="#exists">Exists</a></li>
@@ -94,7 +95,9 @@ Expressions are comprised of nested conditions, operators, and comparison proper
 <li><a href="#notequals">NotEquals</a></li>
 <li><a href="#notin">NotIn</a></li>
 <li><a href="#notmatch">NotMatch</a></li>
+<li><a href="#setof">SetOf</a></li>
 <li><a href="#startswith">StartsWith</a></li>
+<li><a href="#subset">Subset</a></li>
 </ul>
 <p>The following operators are available:</p>
 <ul>
@@ -105,6 +108,8 @@ Expressions are comprised of nested conditions, operators, and comparison proper
 <p>The following comparison properties are available:</p>
 <ul>
 <li><a href="#field">Field</a></li>
+<li><a href="#name">Name</a></li>
+<li><a href="#type">Type</a></li>
 </ul>
 <h3 id="allof">AllOf</h3>
 <p>The <code>allOf</code> operator is used to require all nested expressions to match.
@@ -219,8 +224,34 @@ spec:
       - 'github.io'
       - 'github.com'
 </code></pre>
+<h3 id="count">Count</h3>
+<p>The <code>count</code> condition is used to determine if the operand contains a specified number of items.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">count: &lt;int&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleCount'
+spec:
+  condition:
+    field: 'items'
+    count: 2
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleCount'
+spec:
+  if:
+    field: 'items'
+    count: 2
+</code></pre>
 <h3 id="equals">Equals</h3>
-<p>The <code>equals</code> condition can be used to compare if a field is equal to a supplied value.</p>
+<p>The <code>equals</code> condition can be used to compare if the operand is equal to a supplied value.</p>
 <p>Syntax:</p>
 <pre><code class="lang-yaml">equals: &lt;string | int | bool&gt;
 </code></pre>
@@ -665,6 +696,36 @@ spec:
     field: 'Name'
     match: '$(abc|efg)$'
 </code></pre>
+<h3 id="name">Name</h3>
+<p>The comparison property <code>name</code> is used with a condition to evaluate the target name of the object.
+The <code>name</code> property must be set to <code>.</code>.
+Any other value will cause the condition to evaluate to <code>false</code>.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">name: '.'
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleName'
+spec:
+  condition:
+    name: '.'
+    equals: 'TargetObject1'
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleName'
+spec:
+  if:
+    name: '.'
+    in:
+    - 'TargetObject1'
+    - 'TargetObject2'
+</code></pre>
 <h3 id="not">Not</h3>
 <p>The <code>any</code> operator is used to invert the result of the nested expression.
 When a nested expression matches, <code>not</code> does not match.
@@ -779,6 +840,46 @@ spec:
     field: 'Name'
     notMatch: '$(abc|efg)$'
 </code></pre>
+<h3 id="setof">SetOf</h3>
+<p>The <code>setOf</code> condition can be used to determine if the operand is a set of specified values.
+Additionally the following properties are accepted:</p>
+<ul>
+<li><code>caseSensitive</code> - Optionally, a case sensitive-comparison can be performed.
+By default, case-insensitive comparison is performed.</li>
+</ul>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">setOf: &lt;array&gt;
+caseSensitive: &lt;bool&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleSetOf'
+spec:
+  condition:
+    field: 'zones'
+    setOf:
+    - 1
+    - 2
+    - 3
+    caseSensitive: false
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleSetOf'
+spec:
+  if:
+    field: 'zones'
+    setOf:
+    - 1
+    - 2
+    - 3
+    caseSensitive: false
+</code></pre>
 <h3 id="startswith">StartsWith</h3>
 <p>The <code>startsWith</code> condition can be used to determine if the operand starts with a specified string.
 One or more strings to compare can be specified.</p>
@@ -818,6 +919,81 @@ spec:
       startsWith:
       - 'http://'
       - 'https://'
+</code></pre>
+<h3 id="subset">Subset</h3>
+<p>The <code>subset</code> condition can be used to determine if the operand is a set of specified values.
+Additionally the following properties are accepted:</p>
+<ul>
+<li><code>caseSensitive</code> - Optionally, a case-sensitive comparison can be performed.
+By default, case-insensitive comparison is performed.</li>
+<li><code>unique</code> - Optionally, the operand must not contain duplicates.
+By default, duplicates are allowed.</li>
+</ul>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">subset: &lt;array&gt;
+caseSensitive: &lt;bool&gt;
+unique: &lt;bool&gt;
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleSubset'
+spec:
+  condition:
+    field: 'logs'
+    subset:
+    - 'cluster-autoscaler'
+    - 'kube-apiserver'
+    - 'kube-scheduler'
+    caseSensitive: true
+    unique: true
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleSubset'
+spec:
+  if:
+    field: 'logs'
+    subset:
+    - 'cluster-autoscaler'
+    - 'kube-apiserver'
+    - 'kube-scheduler'
+    caseSensitive: true
+    unique: true
+</code></pre>
+<h3 id="type">Type</h3>
+<p>The comparison property <code>type</code> is used with a condition to evaluate the target type of the object.
+The <code>type</code> property must be set to <code>.</code>.
+Any other value will cause the condition to evaluate to <code>false</code>.</p>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">type: '.'
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-yaml">---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleType'
+spec:
+  condition:
+    type: '.'
+    equals: 'CustomType'
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleType'
+spec:
+  if:
+    type: '.'
+    in:
+    - 'Microsoft.Storage/storageAccounts'
+    - 'Microsoft.Storage/storageAccounts/blobServices'
 </code></pre>
 <h2 id="note">NOTE</h2>
 <p>An online version of this document is available at <a href="https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Expressions.md">https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Expressions.md</a>.</p>

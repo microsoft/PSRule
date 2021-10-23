@@ -102,6 +102,7 @@ This topic describes what options are available, when to and how to use them.</p
 <li><a href="#outputoutcome">Output.Outcome</a></li>
 <li><a href="#outputpath">Output.Path</a></li>
 <li><a href="#outputstyle">Output.Style</a></li>
+<li><a href="#outputjsonindent">Output.JsonIndent</a></li>
 <li><a href="#requires">Requires</a></li>
 <li><a href="#suppression">Suppression</a></li>
 </ul>
@@ -1291,7 +1292,7 @@ variables:
 </code></pre>
 <h3 id="outputformat">Output.Format</h3>
 <p>Configures the format that results will be presented in.
-This option applies to <code>Invoke-PSRule</code>, <code>Assert-PSRule</code>, and <code>Get-PSRule</code>.
+This option applies to <code>Invoke-PSRule</code>, <code>Assert-PSRule</code>, <code>Get-PSRule</code> and <code>Get-PSRuleBaseline</code>.
 This options is ignored by other cmdlets.</p>
 <p>The following format options are available:</p>
 <ul>
@@ -1310,8 +1311,9 @@ RuleName, Pass, Fail, Outcome, Synopsis, Recommendation</li>
 </li>
 <li>Wide -  Output is presented using the wide table format, which includes reason and wraps columns.</li>
 </ul>
-<p>The Wide format is ignored by <code>Assert-PSRule</code>. <code>Get-PSRule</code> only accepts <code>Wide</code> or <code>None</code>.
+<p>The Wide format is ignored by <code>Assert-PSRule</code>. <code>Get-PSRule</code> only accepts <code>None</code>, <code>Wide</code>, <code>Yaml</code> and <code>Json</code>.
 Usage of other formats are treated as <code>None</code>.</p>
+<p>The <code>Get-PSRuleBaseline</code> cmdlet only accepts <code>None</code> or <code>Yaml</code>.</p>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the OutputFormat parameter
 $option = New-PSRuleOption -OutputFormat Yaml;
@@ -1456,6 +1458,40 @@ env:
 variables:
 - name: PSRULE_OUTPUT_STYLE
   value: AzurePipelines
+</code></pre>
+<h3 id="outputjsonindent">Output.JsonIndent</h3>
+<p>Configures the indentation level for JSON output.</p>
+<p>This option applies to output generated from <code>-OutputFormat Json</code> for <code>Get-PSRule</code> and <code>Invoke-PSRule</code>.
+This option also applies to output generated from <code>-OutputPath</code> for <code>Assert-PSRule</code>.</p>
+<p>The range of indentation accepts a minimum of 0(machine first) spaces and a maximum of 4 spaces.</p>
+<p>This option can be specified using:</p>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputJsonIndent parameter
+$option = New-PSRuleOption -OutputJsonIndent 2;
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the Output.JsonIndent hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.JsonIndent' = 2 };
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using the OutputStyle parameter to set YAML
+Set-PSRuleOption -OutputJsonIndent 2;
+</code></pre>
+<pre><code class="lang-yaml"># YAML: Using the output/jsonIndent property
+output:
+  jsonIndent: 2
+</code></pre>
+<pre><code class="lang-bash"># Bash: Using environment variable
+export PSRULE_OUTPUT_JSONINDENT=2
+</code></pre>
+<pre><code class="lang-powershell"># PowerShell: Using environment variable
+$env:PSRULE_OUTPUT_JSONINDENT = 2;
+</code></pre>
+<pre><code class="lang-yaml"># GitHub Actions: Using environment variable
+env:
+  PSRULE_OUTPUT_JSONINDENT: 2
+</code></pre>
+<pre><code class="lang-yaml"># Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_OUTPUT_JSONINDENT
+  value: 2
 </code></pre>
 <h3 id="requires">Requires</h3>
 <p>Specifies module version constraints for running PSRule.

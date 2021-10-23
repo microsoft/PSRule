@@ -83,7 +83,7 @@
  [-OutputAs &lt;ResultFormat&gt;] [-OutputBanner &lt;BannerFormat&gt;] [-OutputCulture &lt;String[]&gt;]
  [-OutputEncoding &lt;OutputEncoding&gt;] [-OutputFooter &lt;FooterFormat&gt;] [-OutputFormat &lt;OutputFormat&gt;]
  [-OutputOutcome &lt;RuleOutcome&gt;] [-OutputPath &lt;String&gt;] [-OutputStyle &lt;OutputStyle&gt;]
- [-RuleIncludeLocal &lt;Boolean&gt;] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
+ [-OutputJsonIndent &lt;Int&gt;] [-RuleIncludeLocal &lt;Boolean&gt;] [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
 <p>Sets options that configure PSRule execution.</p>
@@ -585,6 +585,21 @@ Accepted values: Client, Plain, AzurePipelines, GitHubActions
 Required: False
 Position: Named
 Default value: Client
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-outputjsonindent">-OutputJsonIndent</h3>
+<p>Sets the option <code>Output.JsonIndent</code>.
+The <code>Output.JsonIndent</code> option configures indentation for JSON output.</p>
+<p>This option only applies to <code>Get-PSRule</code>, <code>Invoke-PSRule</code> and <code>Assert-PSRule</code> cmdlets.</p>
+<pre><code class="lang-yaml">Type: Int
+Parameter Sets: (All)
+Aliases: JsonIndent
+Accepted values: 0, 1, 2, 3, 4
+
+Required: False
+Position: Named
+Default value: 0
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>

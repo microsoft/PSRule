@@ -99,10 +99,12 @@ Export-PSRuleConvention 'ExampleConvention' {
     # Add code here
 }
 </code></pre>
-<h3 id="begin-process-end-blocks">Begin Process End blocks</h3>
-<p>Conventions define three executable blocks <code>Begin</code>, <code>Process</code>, <code>End</code> similar to a PowerShell function.
+<h3 id="initialize-begin-process-end-blocks">Initialize Begin Process End blocks</h3>
+<p>Conventions define four executable blocks <code>Initialize</code>, <code>Begin</code>, <code>Process</code>, <code>End</code> similar to a PowerShell function.
 Each block is injected in a different part of the pipeline as follows:</p>
 <ul>
+<li><code>Initialize</code> occurs once at the beginning of the pipeline.
+Use <code>Initialize</code> to perform any initialization required by the convention.</li>
 <li><code>Begin</code> occurs once per object before the any rules are executed.
 Use <code>Begin</code> blocks to perform expansion, set data, or alter the object before rules are processed.</li>
 <li><code>Process</code> occurs once per object after all rules are executed.
@@ -112,9 +114,12 @@ Use <code>End</code> blocks to upload results to an external service.</li>
 </ul>
 <p>Convention block limitations:</p>
 <ul>
+<li><code>Initialize</code> can not use automatic variables except <code>$PSRule</code>.
+Most methods and properties of <code>$PSRule</code> are not available in <code>Initialize</code>.</li>
 <li><code>Begin</code> and <code>Process</code> can not use rule specific variables such as <code>$Rule</code>.
 These blocks are executed outside of the context of a single rule.</li>
-<li><code>End</code> can not use automatic variables except <code>$PSRule.Output</code>.</li>
+<li><code>End</code> can not use automatic variables except <code>$PSRule</code>.
+Most methods and properties of <code>$PSRule</code> are not available in <code>End</code>.</li>
 </ul>
 <p>By default, the <code>Process</code> block used.
 For example:</p>
@@ -128,7 +133,7 @@ Export-PSRuleConvention 'ExampleConvention' -Process {
     # Process block
 }
 </code></pre>
-<p>To use <code>Begin</code> or <code>End</code> explicitly add these blocks.
+<p>To use <code>Initialize</code>, <code>Begin</code>, or <code>End</code> explicitly add these blocks.
 For example:</p>
 <pre><code class="lang-powershell">Export-PSRuleConvention 'ExampleConvention' -Process {
     # Process block
@@ -136,6 +141,8 @@ For example:</p>
     # Begin block
 } -End {
     # End block
+} -Initialize {
+    # Initialize block
 }
 </code></pre>
 <h3 id="including-with-options">Including with options</h3>
@@ -168,7 +175,7 @@ spec:
 </code></pre>
 <h3 id="execution-order">Execution order</h3>
 <p>Conventions are executed in the order they are specified.
-This is true for <code>Begin</code>, <code>Process</code>, and <code>End</code> blocks.
+This is true for <code>Initialize</code>, <code>Begin</code>, <code>Process</code>, and <code>End</code> blocks.
 i.e. In the following example <code>ExampleConvention1</code> is execute before <code>ExampleConvention2</code>.</p>
 <pre><code class="lang-powershell">Assert-PSRule -Convention 'ExampleConvention1', 'ExampleConvention2';
 </code></pre>
