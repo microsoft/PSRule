@@ -277,7 +277,7 @@ Consider setting the recommended label `app.kubernetes.io/name` on deployment an
 
 The notes section is indicated by the heading `## NOTES`.
 Any text following the heading is interpreted by PSRule and included in pipeline output.
-Notes are excluded when formating output as YAML and JSON.
+Notes are excluded when formatting output as YAML and JSON.
 
 To view any included notes use the `Get-PSRuleHelp` cmdlet with the `-Full` switch.
 
@@ -305,7 +305,7 @@ The Kubernetes recommended labels include:
 
 The links section is indicated by the heading `## LINKS`.
 Any markdown links following the heading are interpreted by PSRule and included in pipeline output.
-Links are excluded when formating output as YAML and JSON.
+Links are excluded when formatting output as YAML and JSON.
 
 To view any included links use the `Get-PSRuleHelp` cmdlet with the `-Full` switch.
 
