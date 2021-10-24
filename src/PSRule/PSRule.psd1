@@ -81,6 +81,7 @@ FunctionsToExport = @(
     'Get-PSRule'
     'Get-PSRuleHelp'
     'Get-PSRuleBaseline'
+    'Export-PSRuleBaseline'
     'New-PSRuleOption'
     'Set-PSRuleOption'
     'AllOf'

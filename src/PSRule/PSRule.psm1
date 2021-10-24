@@ -770,6 +770,7 @@ function Get-PSRule {
 function Get-PSRuleBaseline {
     [CmdletBinding()]
     [OutputType([PSRule.Definitions.Baselines.Baseline])]
+    [OutputType([System.String])]
     param (
         [Parameter(Mandatory = $False)]
         [Alias('m')]
@@ -867,6 +868,116 @@ function Get-PSRuleBaseline {
             }
         }
         Write-Verbose -Message '[Get-PSRuleBaseline] END::';
+    }
+}
+
+# .ExternalHelp PSRule-Help.xml
+function Export-PSRuleBaseline {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess', '', Justification = 'ShouldProcess is used within CSharp code.')]
+    [CmdletBinding(SupportsShouldProcess = $True)]
+    [OutputType([void])]
+    param (
+        [Parameter(Mandatory = $False)]
+        [Alias('m')]
+        [String[]]$Module,
+
+        [Parameter(Mandatory = $False, Position = 0)]
+        [Alias('p')]
+        [String[]]$Path = $PWD,
+
+        [Parameter(Mandatory = $False)]
+        [Alias('n')]
+        [SupportsWildcards()]
+        [String[]]$Name,
+
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.PSRuleOption]$Option,
+
+        [Parameter(Mandatory = $False)]
+        [String]$Culture,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Yaml')]
+        [Alias('o')]
+        [PSRule.Configuration.OutputFormat]$OutputFormat = 'Yaml',
+
+        [Parameter(Mandatory = $True)]
+        [String]$OutputPath,
+
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII')]
+        [PSRule.Configuration.OutputEncoding]$OutputEncoding = 'Default'
+    )
+    begin {
+        Write-Verbose -Message "[Export-PSRuleBaseline] BEGIN::";
+        $pipelineReady = $False;
+
+        # Get parameter options, which will override options from other sources
+        $optionParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Option')) {
+            $optionParams['Option'] = $Option;
+        }
+
+        # Get an options object
+        $Option = New-PSRuleOption @optionParams;
+
+        # Discover scripts in the specified paths
+        $sourceParams = @{ };
+
+        if ($PSBoundParameters.ContainsKey('Path')) {
+            $sourceParams['Path'] = $Path;
+        }
+
+        if ($PSBoundParameters.ContainsKey('Module')) {
+            $sourceParams['Module'] = $Module;
+        }
+
+        if ($sourceParams.Count -eq 0) {
+            $sourceParams['UsePWD'] = $True;
+        }
+
+        $sourceParams['Option'] = $Option;
+
+        [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
+
+        # Check that some matching script files were found
+        if ($Null -eq $sourceFiles) {
+            Write-Verbose -Message "[Export-PSRuleBaseline] -- Could not find any .Rule.ps1 script files in the path";
+            return; # continue causes issues with Pester
+        }
+
+        if ($PSBoundParameters.ContainsKey('Culture')) {
+            $Option.Output.Culture = $Culture;
+        }
+
+        $Option.Output.Format = $OutputFormat;
+        $Option.Output.Path = $OutputPath;
+        $Option.Output.Encoding = $OutputEncoding;
+
+        $builder = [PSRule.Pipeline.PipelineBuilder]::ExportBaseline($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);;
+        $builder.Name($Name);
+        try {
+            $pipeline = $builder.Build();
+            if ($Null -ne $pipeline) {
+                $pipeline.Begin();
+                $pipelineReady = $True;
+            }
+        }
+        catch {
+            throw $_.Exception.GetBaseException();
+        }
+    }
+    end {
+        if ($pipelineReady) {
+            try {
+                $pipeline.End();
+            }
+            finally {
+                $pipeline.Dispose();
+            }
+        }
+        Write-Verbose -Message '[Export-PSRuleBaseline] END::';
     }
 }
 
@@ -2387,7 +2498,8 @@ Export-ModuleMember -Function @(
     'Assert-PSRule'
     'Get-PSRule'
     'Get-PSRuleHelp'
-    'Get-PSRuleBaseline'
+    'Get-PSRuleBaseline',
+    'Export-PSRuleBaseline'
     'New-PSRuleOption'
     'Set-PSRuleOption'
 )

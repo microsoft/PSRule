@@ -61,6 +61,7 @@ See [about_PSRule_Baseline](about_PSRule_Baseline.md) for more information on ba
 
 Options can be used with the following PSRule cmdlets:
 
+- Export-PSRuleBaseline
 - Get-PSRule
 - Get-PSRuleBaseline
 - Get-PSRuleHelp
@@ -1738,6 +1739,7 @@ The Wide format is ignored by `Assert-PSRule`. `Get-PSRule` only accepts `None`,
 Usage of other formats are treated as `None`.
 
 The `Get-PSRuleBaseline` cmdlet only accepts `None` or `Yaml`.
+The `Export-PSRuleBaseline` cmdlet only accepts `Yaml`.
 
 This option can be specified using:
 

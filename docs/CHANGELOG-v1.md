@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.9.0-B2110015:
+
+- General improvements:
+  - Added `Export-PSRuleBaseline` cmdlet to export baseline. [#622](https://github.com/microsoft/PSRule/issues/622)
+
 ## v1.9.0-B2110015 (pre-release)
 
 What's changed since v1.8.0:
