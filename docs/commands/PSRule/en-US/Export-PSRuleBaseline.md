@@ -31,7 +31,7 @@ Exports a list of baselines to a file.
 Export-PSRuleBaseline -Module PSRule.Rules.Azure -OutputFormat Yaml -OutputPath Baseline.Rule.yml
 ```
 
-Exports list of baselines from `PSRule.Rules.Azure` module in YAML format to file `Baseline.Rule.yml`.
+Exports list of baselines from `PSRule.Rules.Azure` module to file `Baseline.Rule.yml` in YAML output format.
 
 ## PARAMETERS
 

@@ -175,6 +175,12 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### PSRule.Definitions.Baseline
 
+This is the default.
+
+### System.String
+
+When you use `-OutputFormat Yaml` or `-OutputFormat Json`.
+
 ## NOTES
 
 ## RELATED LINKS
