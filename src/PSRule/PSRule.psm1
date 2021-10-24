@@ -953,7 +953,10 @@ function Export-PSRuleBaseline {
 
         $Option.Output.Format = $OutputFormat;
         $Option.Output.Path = $OutputPath;
-        $Option.Output.Encoding = $OutputEncoding;
+
+        if ($PSBoundParameters.ContainsKey('OutputEncoding')) {
+            $Option.Output.Encoding = $OutputEncoding;
+        }
 
         $builder = [PSRule.Pipeline.PipelineBuilder]::ExportBaseline($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);;
         $builder.Name($Name);

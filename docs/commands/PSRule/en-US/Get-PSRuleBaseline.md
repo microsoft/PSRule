@@ -179,7 +179,7 @@ This is the default.
 
 ### System.String
 
-When you use `-OutputFormat Yaml` or `-OutputFormat Json`.
+When you use `-OutputFormat Yaml`.
 
 ## NOTES
 

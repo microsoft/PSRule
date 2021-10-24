@@ -31,9 +31,9 @@ namespace PSRule.Pipeline
 
             Option.Output.As = ResultFormat.Detail;
             Option.Output.Culture = GetCulture(option.Output.Culture);
-            Option.Output.Format = option.Output.Format;
-            Option.Output.Encoding = option.Output.Encoding;
-            Option.Output.Path = option.Output.Path;
+            Option.Output.Format = option.Output.Format ?? OutputOption.Default.Format;
+            Option.Output.Encoding = option.Output.Encoding ?? OutputOption.Default.Encoding;
+            Option.Output.Path = option.Output.Path ?? OutputOption.Default.Path;
 
             return this;
         }
