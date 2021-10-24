@@ -249,7 +249,6 @@ Describe 'Export-PSRuleBaseline' -Tag 'Baseline','Export-PSRuleBaseline' {
             It 'Exception is thrown for invalid path' {
                 { Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -OutputPath $null } | Should -Throw "Cannot bind argument to parameter 'OutputPath' because it is an empty string.";
                 { Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -OutputPath '' } | Should -Throw "Cannot bind argument to parameter 'OutputPath' because it is an empty string.";
-                { Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -OutputPath ' ' } | Should -Throw "Could not find a part of the path '$PWD\'.";
             }
 
             It "File is created even if parent directory doesn't exist" {
