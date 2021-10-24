@@ -245,6 +245,7 @@ The following language keywords are used by the `PSRule` module:
 The following commands exist in the `PSRule` module:
 
 - [Assert-PSRule](docs/commands/PSRule/en-US/Assert-PSRule.md) - Evaluate objects against matching rules and assert any failures.
+- [Export-PSRuleBaseline](docs/commands/PSRule/en-US/Export-PSRuleBaseline.md) - Exports a list of baselines to a file.
 - [Get-PSRule](docs/commands/PSRule/en-US/Get-PSRule.md) - Get a list of rule definitions.
 - [Get-PSRuleBaseline](docs/commands/PSRule/en-US/Get-PSRuleBaseline.md) - Get a list of baselines.
 - [Get-PSRuleHelp](docs/commands/PSRule/en-US/Get-PSRuleHelp.md) - Get documentation for a rule.

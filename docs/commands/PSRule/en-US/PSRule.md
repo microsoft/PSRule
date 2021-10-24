@@ -18,6 +18,10 @@ A PowerShell rules engine.
 
 Evaluate objects against matching rules and assert any failures.
 
+### [Export-PSRuleBaseline](Export-PSRuleBaseline.md)
+
+Exports a list of baselines to a file.
+
 ### [Get-PSRule](Get-PSRule.md)
 
 Get a list of matching rule definitions within the search path.

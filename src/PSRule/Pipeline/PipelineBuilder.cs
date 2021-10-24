@@ -75,6 +75,14 @@ namespace PSRule.Pipeline
             return pipeline;
         }
 
+        public static IPipelineBuilder ExportBaseline(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
+        {
+            var hostContext = new HostContext(commandRuntime, executionContext);
+            var pipeline = new ExportBaselinePipelineBuilder(source, hostContext);
+            pipeline.Configure(option);
+            return pipeline;
+        }
+
         public static IGetTargetPipelineBuilder GetTarget(PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
         {
             var hostContext = new HostContext(commandRuntime, executionContext);

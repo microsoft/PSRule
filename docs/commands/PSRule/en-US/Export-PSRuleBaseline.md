@@ -1,36 +1,37 @@
 ---
 external help file: PSRule-help.xml
 Module Name: PSRule
-online version: https://microsoft.github.io/PSRule/commands/PSRule/en-US/Get-PSRuleBaseline.html
+online version: https://microsoft.github.io/PSRule/commands/PSRule/en-US/Export-PSRuleBaseline.html
 schema: 2.0.0
 ---
 
-# Get-PSRuleBaseline
+# Export-PSRuleBaseline
 
 ## SYNOPSIS
 
-Get a list of baselines.
+Exports a list of baselines.
 
 ## SYNTAX
 
 ```text
-Get-PSRuleBaseline [-Module <String[]>] [-ListAvailable] [[-Path] <String[]>] [-Name <String[]>]
- [-Option <PSRuleOption>] [-Culture <String>] [-OutputFormat <OutputFormat>] [<CommonParameters>]
+Export-PSRuleBaseline [[-Path] <string[]>] -OutputPath <string> [-Module <string[]>] [-Name <string[]>]
+ [-Option <PSRuleOption>] [-Culture <string>] [-OutputFormat <OutputFormat>] [-OutputEncoding <OutputEncoding>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Get a list of matching baselines within the search path.
+Exports a list of baselines to a file.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-Get-PSRuleBaseline;
+Export-PSRuleBaseline -Module PSRule.Rules.Azure -OutputFormat Yaml -OutputPath Baseline.Rule.yml
 ```
 
-Get a list of baselines from the current working path.
+Exports list of baselines from `PSRule.Rules.Azure` module to file `Baseline.Rule.yml` in YAML output format.
 
 ## PARAMETERS
 
@@ -47,24 +48,6 @@ Aliases: m
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ListAvailable
-
-Look for modules containing baselines including modules that are currently not imported.
-
-This switch is used with the `-Module` parameter.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -100,7 +83,7 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
-Accept wildcard characters: False
+Accept wildcard characters: True
 ```
 
 ### -Option
@@ -149,14 +132,81 @@ Configures the format that output is presented in.
 
 The following format options are available:
 
-- None - Output is presented as an object using PowerShell defaults. This is the default.
-- Yaml - Output is serialized as YAML.
+- Yaml - Output is serialized as YAML. This is the default.
 
 ```yaml
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases: o
-Accepted values: None, Yaml
+Accepted values: Yaml
+
+Required: False
+Position: Named
+Default value: Yaml
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputEncoding
+
+Sets the option `Output.Encoding`.
+The `Output.Encoding` option configured the encoding used to write results to file.
+
+```yaml
+Type: OutputEncoding
+Parameter Sets: (All)
+Aliases:
+Accepted values: Default, UTF8, UTF7, Unicode, UTF32, ASCII
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputPath
+
+Sets the option `Output.Path`.
+The `Output.Path` option configures the output path the results are written to.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
 
 Required: False
 Position: Named
@@ -166,23 +216,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ## OUTPUTS
 
-### PSRule.Definitions.Baseline
-
-This is the default.
-
-### System.String
-
-When you use `-OutputFormat Yaml`.
-
 ## NOTES
 
 ## RELATED LINKS
 
-[Get-PSRule](Get-PSRule.md)
+[Get-PSRuleBaseline](Get-PSRuleBaseline.md)

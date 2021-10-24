@@ -26,58 +26,73 @@ BeforeAll {
     $outputPath = Join-Path -Path $rootPath -ChildPath out/tests/PSRule.Tests/Common;
     Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
     $Null = New-Item -Path $outputPath -ItemType Directory -Force;
+
+        $allBaselines = @"
+`# Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  name: Module4
+spec:
+  binding:
+    field:
+      kind:
+      - Id
+      uniqueIdentifer:
+      - Id
+      - AlternateName
+    targetName:
+    - AlternateName
+    targetType:
+    - Kind
+  configuration:
+    ruleConfig1: Test
+  rule:
+    include:
+    - M4.Rule1
+---
+`# Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  name: Baseline2
+spec:
+  binding:
+    targetName:
+    - AlternateName
+    targetType:
+    - Kind
+  configuration:
+    ruleConfig2: Test3
+  rule:
+    include:
+    - M4.Rule1
+---
+`# Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  name: Baseline3
+spec:
+  binding:
+    field:
+      AlternativeType:
+      - AlternateName
+    targetName:
+    - AlternateName
+    targetType:
+    - Kind
+  configuration:
+    ruleConfig2: Test3
+  rule:
+    include:
+    - M4.Rule1
+"@
 }
 
-#region Get-PSRuleBaseline
-
-Describe 'Get-PSRuleBaseline' -Tag 'Baseline','Get-PSRuleBaseline' {
-    BeforeAll {
-        $baselineFilePath = Join-Path -Path $here -ChildPath 'Baseline.Rule.yaml';
-    }
-
-    Context 'Read baseline' {
-        It 'With defaults' {
-            $result = @(Get-PSRuleBaseline -Path $baselineFilePath);
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 5;
-            $result[0].Name | Should -Be 'TestBaseline1';
-            $result[0].Module | Should -BeNullOrEmpty;
-            $result[3].Name | Should -Be 'TestBaseline4';
-        }
-
-        It 'With -Name' {
-            $result = @(Get-PSRuleBaseline -Path $baselineFilePath -Name TestBaseline1);
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 1;
-            $result[0].Name | Should -Be 'TestBaseline1';
-        }
-
-        It 'With -Module' {
-            $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule4';
-            $Null = Import-Module $testModuleSourcePath;
-
-            $result = @(Get-PSRuleBaseline -Module 'TestModule4');
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 3;
-            $result.Name | Should -BeIn 'Module4', 'Baseline2', 'Baseline3';
-            $result.Module | Should -BeIn 'TestModule4';
-
-            # Filter by name
-            $result = @(Get-PSRuleBaseline -Module 'TestModule4' -Name 'Baseline2');
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 1;
-            $result.Name | Should -BeIn 'Baseline2';
-            $result.Module | Should -BeIn 'TestModule4';
-        }
-    }
-
-    Context 'Using -OutputFormat Yaml' {
-        BeforeAll {
-            $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule4';
-            $Null = Import-Module $testModuleSourcePath;
-        }
-        It '<baseline>' -TestCases @(
-            @{Baseline = 'Module4'; ExpectedYaml = @"
+BeforeDiscovery {
+    $baselineTestCases = @(
+        @{Baseline = 'Module4'; ExpectedYaml = @"
 `# Synopsis: This is an example baseline
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
@@ -139,83 +154,127 @@ spec:
   rule:
     include:
     - M4.Rule1
-"@}) {
-    param($Baseline, $ExpectedYaml)
-    $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -Name $Baseline);
-    $result | Should -Not -BeNullOrEmpty;
-    $result | Should -MatchExactly $ExpectedYaml;
+"@})
 }
+
+#region Get-PSRuleBaseline
+
+Describe 'Get-PSRuleBaseline' -Tag 'Baseline','Get-PSRuleBaseline' {
+    BeforeAll {
+        $baselineFilePath = Join-Path -Path $here -ChildPath 'Baseline.Rule.yaml';
+    }
+
+    Context 'Read baseline' {
+        It 'With defaults' {
+            $result = @(Get-PSRuleBaseline -Path $baselineFilePath);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 5;
+            $result[0].Name | Should -Be 'TestBaseline1';
+            $result[0].Module | Should -BeNullOrEmpty;
+            $result[3].Name | Should -Be 'TestBaseline4';
+        }
+
+        It 'With -Name' {
+            $result = @(Get-PSRuleBaseline -Path $baselineFilePath -Name TestBaseline1);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result[0].Name | Should -Be 'TestBaseline1';
+        }
+
+        It 'With -Module' {
+            $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule4';
+            $Null = Import-Module $testModuleSourcePath;
+
+            $result = @(Get-PSRuleBaseline -Module 'TestModule4');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 3;
+            $result.Name | Should -BeIn 'Module4', 'Baseline2', 'Baseline3';
+            $result.Module | Should -BeIn 'TestModule4';
+
+            # Filter by name
+            $result = @(Get-PSRuleBaseline -Module 'TestModule4' -Name 'Baseline2');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result.Name | Should -BeIn 'Baseline2';
+            $result.Module | Should -BeIn 'TestModule4';
+        }
+    }
+
+    Context 'Using -OutputFormat Yaml' {
+        BeforeAll {
+            $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule4';
+            $Null = Import-Module $testModuleSourcePath;
+        }
+        It '<baseline>' -TestCases $baselineTestCases {
+            param($Baseline, $ExpectedYaml)
+            $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -Name $Baseline);
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -MatchExactly $ExpectedYaml;
+        }
         It 'All Baselines' {
             $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml);
             $result | Should -Not -BeNullOrEmpty;
-
-            $expectedYaml = @"
-`# Synopsis: This is an example baseline
-apiVersion: github.com/microsoft/PSRule/v1
-kind: Baseline
-metadata:
-  name: Module4
-spec:
-  binding:
-    field:
-      kind:
-      - Id
-      uniqueIdentifer:
-      - Id
-      - AlternateName
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
-  configuration:
-    ruleConfig1: Test
-  rule:
-    include:
-    - M4.Rule1
----
-`# Synopsis: This is an example baseline
-apiVersion: github.com/microsoft/PSRule/v1
-kind: Baseline
-metadata:
-  name: Baseline2
-spec:
-  binding:
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
-  configuration:
-    ruleConfig2: Test3
-  rule:
-    include:
-    - M4.Rule1
----
-`# Synopsis: This is an example baseline
-apiVersion: github.com/microsoft/PSRule/v1
-kind: Baseline
-metadata:
-  name: Baseline3
-spec:
-  binding:
-    field:
-      AlternativeType:
-      - AlternateName
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
-  configuration:
-    ruleConfig2: Test3
-  rule:
-    include:
-    - M4.Rule1
-"@
-            $result | Should -MatchExactly $expectedYaml;
+            $result | Should -MatchExactly $allBaselines;
         }
     }
 }
 
 #endregion Get-PSRuleBaseline
+
+#region Export-PSRuleBaseline
+
+Describe 'Export-PSRuleBaseline' -Tag 'Baseline','Export-PSRuleBaseline' {
+    Context 'Export baseline' {
+        BeforeAll {
+            $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule4';
+            $Null = Import-Module $testModuleSourcePath;
+
+            $tempPath = (New-TemporaryFile).FullName;
+        }
+
+        Context 'Yaml' {
+            It '<baseline>' -TestCases $baselineTestCases {
+                param($Baseline, $ExpectedYaml)
+                Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -Name $Baseline -OutputPath $tempPath;
+                $fileContents = Get-Content -Path $tempPath -Raw;
+                $fileContents | Should -MatchExactly $ExpectedYaml;
+            }
+
+            It 'All Baselines' {
+                Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -OutputPath $tempPath;
+                $fileContents = Get-Content -Path $tempPath -Raw;
+                $fileContents | Should -MatchExactly $allBaselines;
+            }
+
+            It 'Exception is thrown for invalid path' {
+                { Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -OutputPath $null } | Should -Throw "Cannot bind argument to parameter 'OutputPath' because it is an empty string.";
+                { Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -OutputPath '' } | Should -Throw "Cannot bind argument to parameter 'OutputPath' because it is an empty string.";
+            }
+
+            It "File is created even if parent directory doesn't exist" {
+                $path = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), 'parentDir', 'test.yml');
+                $path | Should -Not -Exist;
+                Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -OutputPath $path;
+                $path | Should -Exist;
+                $fileContents = Get-Content -Path $path -Raw;
+                $fileContents | Should -MatchExactly $allBaselines;
+                Remove-Item -Path $path -Force;
+            }
+
+            It '<_>' -Foreach @('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII') {
+                Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -OutputPath $tempPath -OutputEncoding $_;
+                $fileContents = Get-Content -Path $tempPath -Raw -Encoding $_;
+                $fileContents | Should -MatchExactly $allBaselines;
+            }
+        }
+
+        AfterAll {
+            Remove-Item -Path $tempPath -Force;
+        }
+    }
+}
+
+#endregion Export-PSRuleBaseline
 
 #region Baseline
 

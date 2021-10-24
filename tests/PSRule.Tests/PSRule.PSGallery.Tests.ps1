@@ -56,6 +56,7 @@ Describe 'PSRule' -Tag 'PowerShellGallery' {
                 'Get-PSRule'
                 'Get-PSRuleHelp'
                 'Get-PSRuleBaseline'
+                'Export-PSRuleBaseline'
                 'New-PSRuleOption'
                 'Set-PSRuleOption'
                 'Rule'

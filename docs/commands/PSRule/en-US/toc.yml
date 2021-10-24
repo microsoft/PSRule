@@ -6,6 +6,9 @@
     - name: Assert-PSRule
       href: Assert-PSRule.md
       topicHref: Assert-PSRule.md
+    - name: Export-PSRuleBaseline
+      href: Export-PSRuleBaseline.md
+      topicHref: Export-PSRuleBaseline.md
     - name: Get-PSRule
       href: Get-PSRule.md
       topicHref: Get-PSRule.md
