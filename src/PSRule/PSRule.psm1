@@ -2498,7 +2498,7 @@ Export-ModuleMember -Function @(
     'Assert-PSRule'
     'Get-PSRule'
     'Get-PSRuleHelp'
-    'Get-PSRuleBaseline',
+    'Get-PSRuleBaseline'
     'Export-PSRuleBaseline'
     'New-PSRuleOption'
     'Set-PSRuleOption'
