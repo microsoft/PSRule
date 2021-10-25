@@ -10,6 +10,8 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.9.0-B2110027 (pre-release)
+
 What's changed since pre-release v1.9.0-B2110015:
 
 - General improvements:
