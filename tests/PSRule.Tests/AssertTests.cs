@@ -1113,7 +1113,7 @@ namespace PSRule
         {
             var result = new PSObject();
             for (var i = 0; properties != null && i < properties.Length; i++)
-                result.Properties.Add(new PSNoteProperty(properties[i].Item1, properties[i].Item2));
+                result.Properties.Add(new PSNoteProperty(properties[i].name, properties[i].value));
 
             return result;
         }

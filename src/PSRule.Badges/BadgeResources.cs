@@ -27,20 +27,16 @@ namespace PSRule.Badges
                 return;
 
             var assembly = Assembly.GetExecutingAssembly();
-            using (var stream = assembly.GetManifestResourceStream(DEFAULT_CULTURE_RESOURCE))
+            using var stream = assembly.GetManifestResourceStream(DEFAULT_CULTURE_RESOURCE);
+            using var reader = new StreamReader(stream);
+            var json = reader.ReadToEnd();
+            var d = JsonConvert.DeserializeObject<object[][]>(json);
+            _Char = new char[d.Length];
+            _Width = new double[d.Length];
+            for (var i = 0; i < d.Length; i++)
             {
-                using (var reader = new StreamReader(stream))
-                {
-                    var json = reader.ReadToEnd();
-                    var d = JsonConvert.DeserializeObject<object[][]>(json);
-                    _Char = new char[d.Length];
-                    _Width = new double[d.Length];
-                    for (var i = 0; i < d.Length; i++)
-                    {
-                        _Char[i] = Convert.ToChar(d[i][0]);
-                        _Width[i] = Convert.ToDouble(d[i][1]);
-                    }
-                }
+                _Char[i] = Convert.ToChar(d[i][0]);
+                _Width[i] = Convert.ToDouble(d[i][1]);
             }
         }
 

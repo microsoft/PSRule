@@ -65,5 +65,7 @@
         "editor.formatOnSave": true
     },
     "omnisharp.enableImportCompletion": true,
-    "omnisharp.organizeImportsOnFormat": true
+    "omnisharp.organizeImportsOnFormat": true,
+    "omnisharp.enableEditorConfigSupport": true,
+    "omnisharp.enableRoslynAnalyzers": true
 }

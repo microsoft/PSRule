@@ -256,27 +256,21 @@ namespace PSRule.Pipeline
             else if (targetObject.Value.BaseObject is InputFileInfo inputFileInfo)
             {
                 sourceInfo = new TargetSourceInfo(inputFileInfo);
-                using (var reader = new StreamReader(inputFileInfo.FullName))
-                {
-                    return reader.ReadToEnd();
-                }
+                using var reader = new StreamReader(inputFileInfo.FullName);
+                return reader.ReadToEnd();
             }
             else if (targetObject.Value.BaseObject is FileInfo fileInfo)
             {
                 sourceInfo = new TargetSourceInfo(fileInfo);
-                using (var reader = new StreamReader(fileInfo.FullName))
-                {
-                    return reader.ReadToEnd();
-                }
+                using var reader = new StreamReader(fileInfo.FullName);
+                return reader.ReadToEnd();
             }
             else
             {
                 var uri = targetObject.Value.BaseObject as Uri;
                 sourceInfo = new TargetSourceInfo(uri);
-                using (var webClient = new WebClient())
-                {
-                    return webClient.DownloadString(uri);
-                }
+                using var webClient = new WebClient();
+                return webClient.DownloadString(uri);
             }
         }
 
@@ -301,10 +295,8 @@ namespace PSRule.Pipeline
             {
                 var uri = targetObject.Value.BaseObject as Uri;
                 sourceInfo = new TargetSourceInfo(uri);
-                using (var webClient = new WebClient())
-                {
-                    return new StringReader(webClient.DownloadString(uri));
-                }
+                using var webClient = new WebClient();
+                return new StringReader(webClient.DownloadString(uri));
             }
         }
 

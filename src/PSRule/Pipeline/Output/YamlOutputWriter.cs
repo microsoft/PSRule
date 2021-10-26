@@ -44,23 +44,21 @@ namespace PSRule.Pipeline.Output
 
         internal static string ToBaselineYaml(IEnumerable<Baseline> baselines)
         {
-            using (StringWriter output = new StringWriter())
+            using StringWriter output = new StringWriter();
+            IEmitter emitter = new Emitter(output, bestIndent: 2, bestWidth: int.MaxValue, isCanonical: false);
+
+            emitter.Emit(new StreamStart());
+
+            foreach (Baseline baseline in baselines)
             {
-                IEmitter emitter = new Emitter(output, bestIndent: 2, bestWidth: int.MaxValue, isCanonical: false);
-
-                emitter.Emit(new StreamStart());
-
-                foreach (Baseline baseline in baselines)
-                {
-                    emitter.Emit(new DocumentStart());
-                    BaselineYamlMapping.MapBaseline(emitter, baseline);
-                    emitter.Emit(new DocumentEnd(true));
-                }
-
-                emitter.Emit(new StreamEnd());
-
-                return output.ToString();
+                emitter.Emit(new DocumentStart());
+                BaselineYamlMapping.MapBaseline(emitter, baseline);
+                emitter.Emit(new DocumentEnd(true));
             }
+
+            emitter.Emit(new StreamEnd());
+
+            return output.ToString();
         }
     }
 }

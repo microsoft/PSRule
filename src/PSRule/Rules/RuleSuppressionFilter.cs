@@ -37,8 +37,11 @@ namespace PSRule.Rules
 
             public SuppressionKey(string ruleName, string targetName)
             {
-                if (string.IsNullOrEmpty(ruleName) || string.IsNullOrEmpty(targetName))
-                    throw new ArgumentNullException();
+                if (string.IsNullOrEmpty(ruleName))
+                    throw new ArgumentNullException(nameof(ruleName));
+
+                if (string.IsNullOrEmpty(targetName))
+                    throw new ArgumentNullException(nameof(targetName));
 
                 RuleName = ruleName;
                 TargetName = targetName;

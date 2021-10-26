@@ -168,7 +168,7 @@ namespace PSRule
                 value = ivalue;
                 return true;
             }
-            value = default(int);
+            value = default;
             return false;
         }
 
@@ -190,7 +190,7 @@ namespace PSRule
                 value = bvalue;
                 return true;
             }
-            value = default(bool);
+            value = default;
             return false;
         }
 
@@ -212,7 +212,7 @@ namespace PSRule
                 value = bvalue;
                 return true;
             }
-            value = default(byte);
+            value = default;
             return false;
         }
 
@@ -244,7 +244,7 @@ namespace PSRule
                 value = l;
                 return true;
             }
-            value = default(long);
+            value = default;
             return false;
         }
 
@@ -261,7 +261,7 @@ namespace PSRule
                 value = ivalue;
                 return true;
             }
-            value = default(float);
+            value = default;
             return false;
         }
 
@@ -273,7 +273,7 @@ namespace PSRule
                 value = dvalue;
                 return true;
             }
-            value = default(double);
+            value = default;
             return false;
         }
 
@@ -339,7 +339,7 @@ namespace PSRule
                 value = DateTime.Now.AddDays(daysOffset);
                 return true;
             }
-            value = default(DateTime);
+            value = default;
             return false;
         }
 

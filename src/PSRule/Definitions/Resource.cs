@@ -110,18 +110,16 @@ namespace PSRule.Definitions
 
         internal void FromFile(SourceFile file)
         {
-            using (var reader = new StreamReader(file.Path))
+            using var reader = new StreamReader(file.Path);
+            var parser = new YamlDotNet.Core.Parser(reader);
+            parser.TryConsume<StreamStart>(out _);
+            while (parser.Current is DocumentStart)
             {
-                var parser = new YamlDotNet.Core.Parser(reader);
-                parser.TryConsume<StreamStart>(out _);
-                while (parser.Current is DocumentStart)
-                {
-                    var item = _Deserializer.Deserialize<ResourceObject>(parser: parser);
-                    if (item == null || item.Block == null)
-                        continue;
+                var item = _Deserializer.Deserialize<ResourceObject>(parser: parser);
+                if (item == null || item.Block == null)
+                    continue;
 
-                    _Output.Add(item.Block);
-                }
+                _Output.Add(item.Block);
             }
         }
 
