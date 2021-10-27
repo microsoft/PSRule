@@ -297,7 +297,7 @@ namespace PSRule.Pipeline
             if (_Binding != null)
                 return _Binding;
 
-            FieldMap[] field = new FieldMap[] { _Explicit?.Field, _WorkspaceBaseline?.Field, _ModuleBaseline?.Field, _ModuleConfig?.Field };
+            var field = new FieldMap[] { _Explicit?.Field, _WorkspaceBaseline?.Field, _ModuleBaseline?.Field, _ModuleConfig?.Field };
             bool ignoreCase = _Explicit?.IgnoreCase ?? _WorkspaceBaseline?.IgnoreCase ?? _ModuleBaseline?.IgnoreCase ?? _ModuleConfig?.IgnoreCase ?? Configuration.BindingOption.Default.IgnoreCase.Value;
             string nameSeparator = _Explicit?.NameSeparator ?? _WorkspaceBaseline?.NameSeparator ?? _ModuleBaseline?.NameSeparator ?? _ModuleConfig?.NameSeparator ?? Configuration.BindingOption.Default.NameSeparator;
             bool preferTargetInfo = _Explicit?.PreferTargetInfo ?? _WorkspaceBaseline?.PreferTargetInfo ?? _ModuleBaseline?.PreferTargetInfo ?? _ModuleConfig?.PreferTargetInfo ?? Configuration.BindingOption.Default.PreferTargetInfo.Value;

@@ -14,10 +14,10 @@ namespace PSRule.Pipeline.Output
 
         protected override string Serialize(object[] o)
         {
-            using StringWriter stringWriter = new StringWriter();
-            using JsonTextWriter jsonTextWriter = new JsonTextWriter(stringWriter);
+            using var stringWriter = new StringWriter();
+            using var jsonTextWriter = new JsonTextWriter(stringWriter);
 
-            JsonSerializer jsonSerializer = new JsonSerializer
+            var jsonSerializer = new JsonSerializer
             {
                 NullValueHandling = NullValueHandling.Ignore
             };
