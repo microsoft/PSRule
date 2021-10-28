@@ -64,7 +64,7 @@ namespace PSRule.Pipeline
 
         private TargetSourceCollection ReadSourceInfo(TargetSourceCollection source)
         {
-            var result = source == null ? new TargetSourceCollection() : source;
+            var result = source ?? new TargetSourceCollection();
             Value.ConvertTargetInfoProperty();
             result.AddRange(Value.GetSourceInfo());
             return result;

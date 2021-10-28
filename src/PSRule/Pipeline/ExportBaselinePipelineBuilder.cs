@@ -40,7 +40,7 @@ namespace PSRule.Pipeline
 
         public override IPipeline Build()
         {
-            BaselineFilter filter = new BaselineFilter(_Name);
+            var filter = new BaselineFilter(_Name);
             return new GetBaselinePipeline(
                 pipeline: PrepareContext(null, null, null),
                 source: Source,

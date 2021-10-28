@@ -86,8 +86,10 @@ namespace PSRule
         private static PSRuleOption GetOption()
         {
             var loaded = PSRuleOption.FromFile(GetSourcePath("PSRule.Tests.yml"));
-            var option = new PSRuleOption();
-            option.Configuration = loaded.Configuration;
+            var option = new PSRuleOption
+            {
+                Configuration = loaded.Configuration
+            };
             return option;
         }
 

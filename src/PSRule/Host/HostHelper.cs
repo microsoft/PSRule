@@ -244,18 +244,16 @@ namespace PSRule.Host
 
                         context.VerboseRuleDiscovery(path: file.Path);
                         context.EnterSourceScope(source: file);
-                        using (var reader = new StreamReader(file.Path))
+                        using var reader = new StreamReader(file.Path);
+                        var parser = new YamlDotNet.Core.Parser(reader);
+                        parser.TryConsume<StreamStart>(out _);
+                        while (parser.Current is DocumentStart)
                         {
-                            var parser = new YamlDotNet.Core.Parser(reader);
-                            parser.TryConsume<StreamStart>(out _);
-                            while (parser.Current is DocumentStart)
-                            {
-                                var item = d.Deserialize<ResourceObject>(parser: parser);
-                                if (item == null || item.Block == null)
-                                    continue;
+                            var item = d.Deserialize<ResourceObject>(parser: parser);
+                            if (item == null || item.Block == null)
+                                continue;
 
-                                result.Add(item.Block);
-                            }
+                            result.Add(item.Block);
                         }
                     }
                 }

@@ -40,7 +40,7 @@ namespace PSRule.Runtime
         private readonly Dictionary<string, object> _Configuration;
         private readonly Dictionary<string, object> _Service;
 
-        private Dictionary<ResourceKind, IResourceFilter> _Filter;
+        private readonly Dictionary<ResourceKind, IResourceFilter> _Filter;
         private bool _Disposed;
 
         public LanguageScope(string name)

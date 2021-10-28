@@ -1068,19 +1068,15 @@ namespace PSRule.Runtime
             }
             else if (uri.IsUri())
             {
-                using (var webClient = new WebClient())
-                {
-                    json = webClient.DownloadString(uri);
-                    return true;
-                }
+                using var webClient = new WebClient();
+                json = webClient.DownloadString(uri);
+                return true;
             }
             else if (TryFilePath(uri, out string path))
             {
-                using (var reader = new StreamReader(path))
-                {
-                    json = reader.ReadToEnd();
-                    return true;
-                }
+                using var reader = new StreamReader(path);
+                json = reader.ReadToEnd();
+                return true;
             }
             return false;
         }

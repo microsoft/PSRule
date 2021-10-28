@@ -1,9 +1,43 @@
 # EditorConfig is awesome: https://EditorConfig.org
 
-# top-most EditorConfig file
+# Top-most EditorConfig file
 root = true
 
-# Dotnet code style settings:
+# Default
+[*]
+charset = utf-8
+indent_style = space
+
+# Source code
+[*.{cs,ps1,psd1,psm1}]
+indent_size = 4
+
+# Xml project files
+[*.{csproj,resx,ps1xml}]
+indent_size = 2
+
+# C# files
 [*.cs]
+
 # Sort using and Import directives with System.* appearing first
 dotnet_sort_system_directives_first = true
+
+# License header
+file_header_template = Copyright (c) Microsoft Corporation.\nLicensed under the MIT License.
+
+# Suggest more modern language features when available
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_explicit_tuple_names = true:suggestion
+dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_null_propagation = true:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+dotnet_style_prefer_inferred_tuple_names = true:suggestion
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
+dotnet_style_prefer_auto_properties = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = true:silent
+dotnet_style_prefer_conditional_expression_over_return = true:silent
+csharp_prefer_simple_default_expression = true:suggestion
+
+# Use var when it's obvious what the variable type is
+csharp_style_var_when_type_is_apparent = true:suggestion
