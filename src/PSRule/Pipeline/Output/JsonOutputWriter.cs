@@ -1,9 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using PSRule.Configuration;
+using PSRule.Definitions.Baselines;
 
 namespace PSRule.Pipeline.Output
 {
@@ -22,16 +27,50 @@ namespace PSRule.Pipeline.Output
                 NullValueHandling = NullValueHandling.Ignore
             };
 
-            int? outputJsonIndent = Option.Output.JsonIndent;
-            if (outputJsonIndent.HasValue && outputJsonIndent > 0)
+            var outputJsonIndent = Option.Output.JsonIndent ?? 0;
+            var isIndented = outputJsonIndent > 0;
+
+            if (isIndented)
             {
                 jsonSerializer.Formatting = Formatting.Indented;
-                jsonTextWriter.Indentation = outputJsonIndent.Value;
+                jsonTextWriter.Indentation = outputJsonIndent;
             }
 
-            jsonSerializer.ContractResolver = new SortedPropertyContractResolver();
+            jsonSerializer.ContractResolver = new OrderedPropertiesContractResolver();
 
             jsonSerializer.Converters.Add(new ErrorCategoryJsonConverter());
+            jsonSerializer.Converters.Add(new PSObjectJsonConverter());
+
+            // To avoid writing baselines with an extra outer array
+            // We can serialize the first object which has all the baselines
+            if (o[0] is IEnumerable<Baseline> baselines)
+            {
+                jsonSerializer.Converters.Add(new BaselineConverter());
+
+                jsonSerializer.Serialize(jsonTextWriter, baselines);
+
+                var indentMultiplier = string.Concat(Enumerable.Repeat(" ", outputJsonIndent * 2));
+
+                var jsonString = stringWriter.ToString();
+
+                // Workaround given JSON.NET doesn't support writing inline comments
+                // Can write multiline comments first then replace with inline comment delimiter
+                // We use /\*(.*?)\*/ to capture comments between /* */ deimiters
+                var jsonWithMultilineCommentsReplaced = Regex.Replace(jsonString, @"/\*(.*?)\*/", match =>
+                {
+                    var group = match.Groups[1];
+                    var inlineDelimiterComment = $"// {group.Value.Trim()}";
+
+                    // If indented prepend newline with correct indentation
+                    // Otherwise append a space for no indentation(machine first)
+                    return isIndented ?
+                        Environment.NewLine + indentMultiplier + inlineDelimiterComment :
+                        inlineDelimiterComment + " ";
+
+                }, RegexOptions.Singleline);
+
+                return jsonWithMultilineCommentsReplaced;
+            }
 
             jsonSerializer.Serialize(jsonTextWriter, o);
 

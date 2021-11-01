@@ -133,12 +133,13 @@ Configures the format that output is presented in.
 The following format options are available:
 
 - Yaml - Output is serialized as YAML. This is the default.
+- Json - Output is serialized as JSON.
 
 ```yaml
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases: o
-Accepted values: Yaml
+Accepted values: Yaml, Json
 
 Required: False
 Position: Named

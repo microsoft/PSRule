@@ -443,7 +443,7 @@ namespace PSRule.Pipeline
         /// </summary>
         /// <param name="jsonIndent"></param>
         /// <returns></returns>
-        protected static int? NormalizeJsonIndentRange(int? jsonIndent)
+        protected static int NormalizeJsonIndentRange(int? jsonIndent)
         {
             if (jsonIndent.HasValue)
             {
@@ -456,9 +456,11 @@ namespace PSRule.Pipeline
                 {
                     return MAX_JSON_INDENT;
                 }
+
+                return jsonIndent.Value;
             }
 
-            return jsonIndent;
+            return MIN_JSON_INDENT;
         }
     }
 }

@@ -68,5 +68,10 @@ namespace PSRule
         {
             return char.GetUnicodeCategory(c) == System.Globalization.UnicodeCategory.LineSeparator;
         }
+
+        public static string ToCamelCase(this string str)
+        {
+            return !string.IsNullOrEmpty(str) ? char.ToLowerInvariant(str[0]) + str.Substring(1) : string.Empty;
+        }
     }
 }
