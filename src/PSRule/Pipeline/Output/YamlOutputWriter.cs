@@ -32,7 +32,7 @@ namespace PSRule.Pipeline.Output
             var s = new SerializerBuilder()
                 .DisableAliases()
                 .WithTypeInspector(f => new FieldYamlTypeInspector())
-                .WithTypeInspector(inspector => new SortedPropertyYamlTypeInspector(inspector))
+                .WithTypeInspector(inspector => new OrderedPropertiesTypeInspector(inspector))
                 .WithTypeConverter(new PSObjectYamlTypeConverter())
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
