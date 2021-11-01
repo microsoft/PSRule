@@ -208,7 +208,7 @@ namespace PSRule
 
             foreach (var kvp in dictionary.ToSortedDictionary())
             {
-                writer.WritePropertyName(kvp.Key);
+                MapPropertyName(writer, kvp.Key);
 
                 if (kvp.Value is string stringValue)
                 {
@@ -258,7 +258,7 @@ namespace PSRule
 
                     foreach (var propertyInfo in obj.Properties.OrderBy(prop => prop.Name))
                     {
-                        writer.WritePropertyName(propertyInfo.Name);
+                        MapPropertyName(writer, propertyInfo.Name);
                         serializer.Serialize(writer, propertyInfo.Value);
                     }
 

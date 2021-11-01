@@ -78,7 +78,7 @@ metadata:
 spec:
   binding:
     field:
-      AlternativeType:
+      alternativeType:
       - AlternateName
     targetName:
     - AlternateName
@@ -164,7 +164,7 @@ spec:
         "spec": {
             "binding": {
                 "field": {
-                    "AlternativeType": [
+                    "alternativeType": [
                         "AlternateName"
                     ]
                 },
@@ -260,7 +260,7 @@ spec:
     "spec": {
       "binding": {
         "field": {
-          "AlternativeType": [
+          "alternativeType": [
             "AlternateName"
           ]
         },
@@ -283,7 +283,7 @@ spec:
   }
 ]
 "@
-    $allZeroSpaceJsonBaslines = '[{// Synopsis: This is an example baseline "apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Module4"},"spec":{"binding":{"field":{"kind":["Id"],"uniqueIdentifer":["AlternateName","Id"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig1":"Test"},"rule":{"include":["M4.Rule1"]}}},{// Synopsis: This is an example baseline "apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline2"},"spec":{"binding":{"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}},{// Synopsis: This is an example baseline "apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline3"},"spec":{"binding":{"field":{"AlternativeType":["AlternateName"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}}]'
+    $allZeroSpaceJsonBaslines = '[{// Synopsis: This is an example baseline "apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Module4"},"spec":{"binding":{"field":{"kind":["Id"],"uniqueIdentifer":["AlternateName","Id"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig1":"Test"},"rule":{"include":["M4.Rule1"]}}},{// Synopsis: This is an example baseline "apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline2"},"spec":{"binding":{"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}},{// Synopsis: This is an example baseline "apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline3"},"spec":{"binding":{"field":{"alternativeType":["AlternateName"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}}]'
     #endregion
 }
 
@@ -341,7 +341,7 @@ metadata:
 spec:
   binding:
     field:
-      AlternativeType:
+      alternativeType:
       - AlternateName
     targetName:
     - AlternateName
@@ -436,7 +436,7 @@ spec:
         "spec": {
             "binding": {
                 "field": {
-                    "AlternativeType": [
+                    "alternativeType": [
                         "AlternateName"
                     ]
                 },
@@ -541,7 +541,7 @@ $baselineTwoSpaceJsonTestCases = @(
     "spec": {
       "binding": {
         "field": {
-          "AlternativeType": [
+          "alternativeType": [
             "AlternateName"
           ]
         },
@@ -567,7 +567,7 @@ $baselineTwoSpaceJsonTestCases = @(
 $baselineZeroSpaceJsonTestCases = @(
     @{Baseline = 'Module4'; ExpectedJson = '[{// Synopsis: This is an example baseline "apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Module4"},"spec":{"binding":{"field":{"kind":["Id"],"uniqueIdentifer":["AlternateName","Id"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig1":"Test"},"rule":{"include":["M4.Rule1"]}}}]'}
     @{Baseline = 'Baseline2'; ExpectedJson = '[{// Synopsis: This is an example baseline "apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline2"},"spec":{"binding":{"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}}]'}
-    @{Baseline = 'Baseline3'; ExpectedJson = '[{// Synopsis: This is an example baseline "apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline3"},"spec":{"binding":{"field":{"AlternativeType":["AlternateName"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}}]'}
+    @{Baseline = 'Baseline3'; ExpectedJson = '[{// Synopsis: This is an example baseline "apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline3"},"spec":{"binding":{"field":{"alternativeType":["AlternateName"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}}]'}
 )
     #endregion
 }

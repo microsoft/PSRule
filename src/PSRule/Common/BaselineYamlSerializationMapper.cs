@@ -209,7 +209,7 @@ namespace PSRule
 
             foreach (var kvp in dictionary.ToSortedDictionary())
             {
-                emitter.Emit(new Scalar(kvp.Key));
+                MapPropertyName(emitter, kvp.Key);
 
                 if (kvp.Value is string stringValue)
                 {
@@ -259,7 +259,7 @@ namespace PSRule
 
                     foreach (var propertyInfo in obj.Properties.OrderBy(prop => prop.Name))
                     {
-                        emitter.Emit(new Scalar(propertyInfo.Name));
+                        MapPropertyName(emitter, propertyInfo.Name);
                         emitter.Emit(new Scalar(propertyInfo.Value.ToString()));
                     }
 
