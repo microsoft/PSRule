@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.9.0-B2110027:
+
+- General improvements:
+  - Added JSON output format for Baseline cmdlets. [#839](https://github.com/microsoft/PSRule/issues/839)
+
 ## v1.9.0-B2110027 (pre-release)
 
 What's changed since pre-release v1.9.0-B2110015:
