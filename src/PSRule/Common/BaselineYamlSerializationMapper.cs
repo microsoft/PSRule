@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
@@ -11,11 +10,10 @@ using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace PSRule
 {
-    internal static class BaselineYamlMapping
+    internal static class BaselineYamlSerializationMapper
     {
         internal static void MapBaseline(IEmitter emitter, Baseline baseline)
         {
@@ -32,7 +30,7 @@ namespace PSRule
             if (baseline?.Kind != null)
             {
                 MapPropertyName(emitter, nameof(baseline.Kind));
-                string kind = Enum.GetName(typeof(ResourceKind), baseline.Kind);
+                var kind = Enum.GetName(typeof(ResourceKind), baseline.Kind);
                 emitter.Emit(new Scalar(kind));
             }
 
@@ -53,14 +51,14 @@ namespace PSRule
 
         private static void MapPropertyName(IEmitter emitter, string propertyName)
         {
-            emitter.Emit(new Scalar(CamelCaseNamingConvention.Instance.Apply(propertyName)));
+            emitter.Emit(new Scalar(propertyName.ToCamelCase()));
         }
 
         private static void MapResourceMetadata(IEmitter emitter, ResourceMetadata resourceMetadata)
         {
             emitter.Emit(new MappingStart());
 
-            if (resourceMetadata?.Annotations != null && resourceMetadata?.Annotations.Count > 0)
+            if (!(resourceMetadata?.Annotations).NullOrEmpty())
             {
                 MapPropertyName(emitter, nameof(resourceMetadata.Annotations));
                 MapDictionary(emitter, resourceMetadata.Annotations);
@@ -72,7 +70,7 @@ namespace PSRule
                 emitter.Emit(new Scalar(resourceMetadata.Name));
             }
 
-            if (resourceMetadata?.Tags != null && resourceMetadata?.Tags.Count > 0)
+            if (!(resourceMetadata?.Tags).NullOrEmpty())
             {
                 MapPropertyName(emitter, nameof(resourceMetadata.Tags));
                 MapDictionary(emitter, resourceMetadata.Tags);
@@ -199,7 +197,7 @@ namespace PSRule
             if (ruleOption?.Tag != null)
             {
                 MapPropertyName(emitter, nameof(ruleOption.Tag));
-                MapHashtable(emitter, ruleOption.Tag);
+                MapDictionary(emitter, ruleOption.Tag.ToDictionary());
             }
 
             emitter.Emit(new MappingEnd());
@@ -209,7 +207,7 @@ namespace PSRule
         {
             emitter.Emit(new MappingStart());
 
-            foreach (KeyValuePair<string, T> kvp in dictionary)
+            foreach (var kvp in dictionary.ToSortedDictionary())
             {
                 emitter.Emit(new Scalar(kvp.Key));
 
@@ -237,43 +235,11 @@ namespace PSRule
             emitter.Emit(new MappingEnd());
         }
 
-        private static void MapHashtable(IEmitter emitter, Hashtable hashtable)
-        {
-            emitter.Emit(new MappingStart());
-
-            foreach (DictionaryEntry entry in hashtable)
-            {
-                emitter.Emit(new Scalar(entry.Key.ToString()));
-
-                if (entry.Value is string entryValue)
-                {
-                    emitter.Emit(new Scalar(entryValue));
-                }
-
-                else if (entry.Value is string[] entryValues)
-                {
-                    MapStringArraySequence(emitter, entryValues);
-                }
-
-                else if (entry.Value is PSObject[] psObjects)
-                {
-                    MapPSObjectArraySequence(emitter, psObjects);
-                }
-
-                else
-                {
-                    emitter.Emit(new Scalar(entry.Value.ToString()));
-                }
-            }
-
-            emitter.Emit(new MappingEnd());
-        }
-
         private static void MapStringArraySequence(IEmitter emitter, string[] sequence)
         {
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
 
-            foreach (string item in sequence)
+            foreach (var item in sequence.OrderBy(item => item))
             {
                 emitter.Emit(new Scalar(item));
             }
@@ -285,16 +251,13 @@ namespace PSRule
         {
             emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
 
-            foreach (PSObject obj in sequence)
+            foreach (var obj in sequence)
             {
-                IEnumerable<PSPropertyInfo> noteProperties = obj.Properties
-                    .Where(prop => prop.MemberType == PSMemberTypes.NoteProperty);
-
-                if (noteProperties.Any())
+                if (obj.BaseObject == null || obj.HasNoteProperty())
                 {
                     emitter.Emit(new MappingStart());
 
-                    foreach (PSPropertyInfo propertyInfo in noteProperties)
+                    foreach (var propertyInfo in obj.Properties.OrderBy(prop => prop.Name))
                     {
                         emitter.Emit(new Scalar(propertyInfo.Name));
                         emitter.Emit(new Scalar(propertyInfo.Value.ToString()));
