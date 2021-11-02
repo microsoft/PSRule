@@ -1,11 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using PSRule.Configuration;
 using PSRule.Definitions.Baselines;
@@ -20,7 +18,7 @@ namespace PSRule.Pipeline.Output
         protected override string Serialize(object[] o)
         {
             using var stringWriter = new StringWriter();
-            using var jsonTextWriter = new JsonTextWriter(stringWriter);
+            using var jsonTextWriter = new JsonCommentWriter(stringWriter);
 
             var jsonSerializer = new JsonSerializer
             {
@@ -56,20 +54,20 @@ namespace PSRule.Pipeline.Output
                 // Workaround given JSON.NET doesn't support writing inline comments
                 // Can write multiline comments first then replace with inline comment delimiter
                 // We use /\*(.*?)\*/ to capture comments between /* */ deimiters
-                var jsonWithMultilineCommentsReplaced = Regex.Replace(jsonString, @"/\*(.*?)\*/", match =>
-                {
-                    var group = match.Groups[1];
-                    var inlineDelimiterComment = $"// {group.Value.Trim()}";
+                //var jsonWithMultilineCommentsReplaced = Regex.Replace(jsonString, @"/\*(.*?)\*/", match =>
+                //{
+                //    var group = match.Groups[1];
+                //    var inlineDelimiterComment = $"// {group.Value.Trim()}";
 
-                    // If indented prepend newline with correct indentation
-                    // Otherwise append a space for no indentation(machine first)
-                    return isIndented ?
-                        Environment.NewLine + indentMultiplier + inlineDelimiterComment :
-                        inlineDelimiterComment + " ";
+                //    // If indented prepend newline with correct indentation
+                //    // Otherwise append a space for no indentation(machine first)
+                //    return isIndented ?
+                //        Environment.NewLine + indentMultiplier + inlineDelimiterComment :
+                //        inlineDelimiterComment + " ";
 
-                }, RegexOptions.Singleline);
+                //}, RegexOptions.Singleline);
 
-                return jsonWithMultilineCommentsReplaced;
+                return jsonString;
             }
 
             jsonSerializer.Serialize(jsonTextWriter, o);

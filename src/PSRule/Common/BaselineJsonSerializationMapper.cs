@@ -17,7 +17,6 @@ namespace PSRule
         internal static void MapBaseline(JsonWriter writer, JsonSerializer serializer, Baseline baseline)
         {
             writer.WriteStartObject();
-
             writer.WriteComment($"Synopsis: {baseline.Synopsis}");
 
             if (baseline?.ApiVersion != null)
