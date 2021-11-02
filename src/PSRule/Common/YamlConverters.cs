@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -11,7 +11,6 @@ using PSRule.Annotations;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Definitions;
-using PSRule.Definitions.Baselines;
 using PSRule.Definitions.Expressions;
 using PSRule.Host;
 using PSRule.Runtime;
@@ -471,7 +470,7 @@ namespace PSRule
         }
     }
 
-    internal sealed class LanguageBlockDeserializer : INodeDeserializer
+    internal sealed class ResourceNodeDeserializer : INodeDeserializer
     {
         private const string FIELD_APIVERSION = "apiVersion";
         private const string FIELD_KIND = "kind";
@@ -481,7 +480,7 @@ namespace PSRule
         private readonly INodeDeserializer _Next;
         private readonly SpecFactory _Factory;
 
-        public LanguageBlockDeserializer(INodeDeserializer next)
+        public ResourceNodeDeserializer(INodeDeserializer next)
         {
             _Next = next;
             _Factory = new SpecFactory();

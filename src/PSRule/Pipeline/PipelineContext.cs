@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -172,6 +172,8 @@ namespace PSRule.Pipeline
             else if (TryModuleConfig(resource, out ModuleConfigV1 moduleConfig))
             {
                 Baseline.Add(new OptionContext.ConfigScope(OptionContext.ScopeType.Module, resource.Module, moduleConfig.Spec));
+
+                //_ConventionOrder.AddRange = moduleConfig?.Spec?.Convention?.Include;
             }
         }
 
@@ -194,6 +196,7 @@ namespace PSRule.Pipeline
                     runspaceContext.WarnMissingApiVersion(_TrackedIssues[i].Kind, _TrackedIssues[i].Id);
             }
             Baseline.Init(runspaceContext);
+            //Baseline.
         }
 
         #region IBindingContext

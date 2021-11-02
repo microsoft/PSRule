@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -103,7 +103,7 @@ namespace PSRule.Definitions
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .WithNodeDeserializer(
-                    inner => new LanguageBlockDeserializer(new LanguageExpressionDeserializer(inner)),
+                    inner => new ResourceNodeDeserializer(new LanguageExpressionDeserializer(inner)),
                     s => s.InsteadOf<ObjectNodeDeserializer>())
                 .Build();
         }

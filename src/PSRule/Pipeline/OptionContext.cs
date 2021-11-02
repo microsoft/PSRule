@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -35,6 +35,7 @@ namespace PSRule.Pipeline
     {
         private readonly Dictionary<string, BaselineScope> _ModuleBaselineScope;
         private readonly Dictionary<string, ConfigScope> _ModuleConfigScope;
+        private readonly List<string> _ConventionOrder;
         private readonly string[] _DefaultCulture;
 
         private BaselineScope _Parameter;
@@ -56,6 +57,7 @@ namespace PSRule.Pipeline
         {
             _ModuleBaselineScope = new Dictionary<string, BaselineScope>();
             _ModuleConfigScope = new Dictionary<string, ConfigScope>();
+            _ConventionOrder = new List<string>();
             _DefaultCulture = GetDefaultCulture();
         }
 
@@ -336,22 +338,60 @@ namespace PSRule.Pipeline
 
         internal void Add(BaselineScope scope)
         {
+            var conventions = scope?.Convention?.Include;
             if (scope.Type == ScopeType.Module && !string.IsNullOrEmpty(scope.ModuleName))
+            {
                 _ModuleBaselineScope.Add(scope.ModuleName, scope);
+                conventions = GetConventions(scope.ModuleName, scope?.Convention?.Include);
+            }
             else if (scope.Type == ScopeType.Explicit)
+            {
                 _Explicit = scope;
+                if (scope.ModuleName != null)
+                    conventions = GetConventions(scope.ModuleName, scope?.Convention?.Include);
+            }
             else if (scope.Type == ScopeType.Workspace)
                 _WorkspaceBaseline = scope;
             else if (scope.Type == ScopeType.Parameter)
                 _Parameter = scope;
+
+            if (conventions != null)
+                _ConventionOrder.AddRange(conventions);
         }
 
         internal void Add(ConfigScope scope)
         {
+            var conventions = scope?.Convention?.Include;
             if (scope.Type == ScopeType.Module && !string.IsNullOrEmpty(scope.ModuleName))
+            {
                 _ModuleConfigScope.Add(scope.ModuleName, scope);
+                conventions = GetConventions(scope.ModuleName, scope?.Convention?.Include);
+            }
             else if (scope.Type == ScopeType.Workspace)
                 _WorkspaceConfig = scope;
+
+            if (conventions != null)
+                _ConventionOrder.AddRange(conventions);
+        }
+
+        internal int GetConventionOrder(IConvention convention)
+        {
+            var index = _ConventionOrder.IndexOf(convention.Id);
+            if (index == -1)
+                index = _ConventionOrder.IndexOf(convention.Name);
+
+            return index > -1 ? index : int.MaxValue;
+        }
+
+        private string[] GetConventions(string scope, string[] include)
+        {
+            if (include == null || include.Length == 0)
+                return null;
+
+            for (var i = 0; i < include.Length; i++)
+                include[i] = ResourceHelper.GetIdString(scope, include[i]);
+
+            return include;
         }
 
         internal void BuildScope(ILanguageScope languageScope)
@@ -411,9 +451,10 @@ namespace PSRule.Pipeline
             _OptionContext = new OptionContext();
         }
 
-        internal OptionContextBuilder(PSRuleOption option)
+        internal OptionContextBuilder(PSRuleOption option, string[] include, Hashtable tag, string[] convention)
             : this()
         {
+            Parameter(include, tag, convention);
             Workspace(option);
         }
 
@@ -422,7 +463,7 @@ namespace PSRule.Pipeline
             return _OptionContext;
         }
 
-        internal void Parameter(string[] include, Hashtable tag, string[] convention)
+        private void Parameter(string[] include, Hashtable tag, string[] convention)
         {
             _OptionContext.Add(new OptionContext.BaselineScope(type: OptionContext.ScopeType.Parameter, include: include, tag: tag, convention: convention));
         }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -114,6 +114,16 @@ namespace PSRule.Pipeline
         public virtual bool ShouldWriteDebug()
         {
             return true;
+        }
+
+        public virtual void Begin()
+        {
+
+        }
+
+        public virtual void End()
+        {
+
         }
 
         protected abstract void DoWriteError(ErrorRecord errorRecord);

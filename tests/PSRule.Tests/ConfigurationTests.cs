@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -69,7 +69,7 @@ namespace PSRule
 
         private static Runtime.Configuration GetConfigurationHelper(PSRuleOption option)
         {
-            var builder = new OptionContextBuilder(option);
+            var builder = new OptionContextBuilder(option, null, null, null);
             var context = new PSRule.Runtime.RunspaceContext(PipelineContext.New(option, null, null, null, null, null, builder.Build(), null), null);
             context.Init(null);
             context.Begin();

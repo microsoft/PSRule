@@ -1,10 +1,12 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Management.Automation;
+using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
 
@@ -47,14 +49,25 @@ namespace PSRule.Definitions.Conventions
         }
     }
 
+    [DebuggerDisplay("{Id}")]
     internal abstract class BaseConvention : IConvention
     {
-        protected BaseConvention(string name)
+        protected BaseConvention(SourceFile source, string name)
         {
+            Source = source;
             Name = name;
+            Id = ResourceHelper.GetIdString(Source.ModuleName, name);
         }
 
+        public SourceFile Source { get; }
+
+        public string Id { get; }
+
         public string Name { get; }
+
+        public string SourcePath => Source.Path;
+
+        public string Module => Source.ModuleName;
 
         public virtual void Initialize(RunspaceContext context, IEnumerable input)
         {

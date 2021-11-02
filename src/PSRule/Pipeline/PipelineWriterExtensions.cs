@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -8,22 +8,17 @@ using PSRule.Resources;
 
 namespace PSRule.Pipeline
 {
-    internal static class IPipelineWriterExtensions
+    internal static class PipelineWriterExtensions
     {
-        public static void DebugMessage(this IPipelineWriter logger, string message)
+        internal static void DebugMessage(this IPipelineWriter logger, string message)
         {
             if (!logger.ShouldWriteDebug())
-            {
                 return;
-            }
 
             logger.WriteDebug(new DebugRecord(message));
         }
-    }
 
-    internal static class PipelineWriterExtensions
-    {
-        internal static void WarnUsingInvariantCulture(this PipelineWriter writer)
+        internal static void WarnUsingInvariantCulture(this IPipelineWriter writer)
         {
             if (!writer.ShouldWriteWarning())
                 return;
@@ -31,7 +26,7 @@ namespace PSRule.Pipeline
             writer.WriteWarning(PSRuleResources.UsingInvariantCulture);
         }
 
-        internal static void WarnRulePathNotFound(this PipelineWriter writer)
+        internal static void WarnRulePathNotFound(this IPipelineWriter writer)
         {
             if (!writer.ShouldWriteWarning())
                 return;
@@ -39,7 +34,7 @@ namespace PSRule.Pipeline
             writer.WriteWarning(PSRuleResources.RulePathNotFound);
         }
 
-        internal static void WriteWarning(this PipelineWriter writer, string message, params object[] args)
+        internal static void WriteWarning(this IPipelineWriter writer, string message, params object[] args)
         {
             if (!writer.ShouldWriteWarning() || string.IsNullOrEmpty(message))
                 return;
@@ -47,7 +42,7 @@ namespace PSRule.Pipeline
             writer.WriteWarning(Format(message, args));
         }
 
-        internal static void ErrorRequiredVersionMismatch(this PipelineWriter writer, string moduleName, string moduleVersion, string requiredVersion)
+        internal static void ErrorRequiredVersionMismatch(this IPipelineWriter writer, string moduleName, string moduleVersion, string requiredVersion)
         {
             if (!writer.ShouldWriteError())
                 return;
@@ -59,7 +54,7 @@ namespace PSRule.Pipeline
             );
         }
 
-        internal static void ErrorReadFileFailed(this PipelineWriter writer, string path, Exception innerException)
+        internal static void ErrorReadFileFailed(this IPipelineWriter writer, string path, Exception innerException)
         {
             if (!writer.ShouldWriteError())
                 return;
@@ -71,12 +66,12 @@ namespace PSRule.Pipeline
             );
         }
 
-        internal static void WriteError(this PipelineWriter writer, PipelineException exception, string errorId, ErrorCategory errorCategory)
+        internal static void WriteError(this IPipelineWriter writer, PipelineException exception, string errorId, ErrorCategory errorCategory)
         {
             writer.WriteError(new ErrorRecord(exception, errorId, errorCategory, null));
         }
 
-        internal static void WriteDebug(this PipelineWriter writer, string message, params object[] args)
+        internal static void WriteDebug(this IPipelineWriter writer, string message, params object[] args)
         {
             if (!writer.ShouldWriteDebug() || string.IsNullOrEmpty(message))
                 return;

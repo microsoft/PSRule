@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -20,8 +20,6 @@ namespace PSRule.Pipeline
         void Error(ErrorRecord errorRecord);
 
         void Warning(WarningRecord warningRecord);
-
-        void Begin();
 
         void End(int total, int fail, int error);
     }
@@ -210,11 +208,6 @@ namespace PSRule.Pipeline
                     Banner();
                     Source(source);
                     SupportLinks(source);
-                }
-
-                public void Begin()
-                {
-                    // Do nothing
                 }
 
                 public void Error(ErrorRecord errorRecord)
@@ -979,12 +972,12 @@ namespace PSRule.Pipeline
                 Option.Output.Format == OutputFormat.None);
         }
 
-        public sealed override IPipeline Build()
+        public sealed override IPipeline Build(IPipelineWriter writer = null)
         {
             if (!RequireModules() || !RequireSources())
                 return null;
 
-            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, PrepareWriter(), RuleOutcome.Processed);
+            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, writer ?? PrepareWriter(), RuleOutcome.Processed);
         }
     }
 }

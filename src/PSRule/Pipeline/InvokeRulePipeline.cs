@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -88,12 +88,12 @@ namespace PSRule.Pipeline
             return this;
         }
 
-        public override IPipeline Build()
+        public override IPipeline Build(IPipelineWriter writer = null)
         {
             if (!RequireModules() || !RequireSources())
                 return null;
 
-            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, PrepareWriter(), Option.Output.Outcome.Value);
+            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, writer ?? PrepareWriter(), Option.Output.Outcome.Value);
         }
 
         protected override PipelineReader PrepareReader()
@@ -176,7 +176,7 @@ namespace PSRule.Pipeline
         // Track whether Dispose has been called.
         private bool _Disposed;
 
-        internal InvokeRulePipeline(PipelineContext context, Source[] source, PipelineWriter writer, RuleOutcome outcome)
+        internal InvokeRulePipeline(PipelineContext context, Source[] source, IPipelineWriter writer, RuleOutcome outcome)
             : base(context, source, context.Reader, writer)
         {
             _RuleGraph = HostHelper.GetRuleBlockGraph(Source, Context);

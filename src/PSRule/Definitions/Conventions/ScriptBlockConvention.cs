@@ -1,16 +1,15 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.Collections;
 using System.Management.Automation;
-using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions.Conventions
 {
-    internal sealed class ScriptBlockConvention : BaseConvention, ILanguageBlock, IDisposable, IResource
+    internal sealed class ScriptBlockConvention : BaseConvention, IDisposable, IResource
     {
         private readonly LanguageScriptBlock _Initialize;
         private readonly LanguageScriptBlock _Begin;
@@ -20,26 +19,16 @@ namespace PSRule.Definitions.Conventions
         private bool _Disposed;
 
         internal ScriptBlockConvention(SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, LanguageScriptBlock begin, LanguageScriptBlock initialize, LanguageScriptBlock process, LanguageScriptBlock end, ActionPreference errorPreference)
-            : base(metadata.Name)
+            : base(source, metadata.Name)
         {
             Info = info;
-            Source = source;
-            Id = ResourceHelper.GetIdString(source.ModuleName, metadata.Name);
             _Initialize = initialize;
             _Begin = begin;
             _Process = process;
             _End = end;
         }
 
-        public string Id { get; }
-
-        public SourceFile Source { get; }
-
         public ResourceHelpInfo Info { get; }
-
-        string ILanguageBlock.Module => Source.ModuleName;
-
-        string ILanguageBlock.SourcePath => Source.Path;
 
         ResourceKind IResource.Kind => ResourceKind.Convention;
 
@@ -48,8 +37,6 @@ namespace PSRule.Definitions.Conventions
         string IResource.Name => Name;
 
         ResourceTags IResource.Tags => null;
-
-        string ILanguageBlock.Id => Id;
 
         public override void Initialize(RunspaceContext context, IEnumerable input)
         {

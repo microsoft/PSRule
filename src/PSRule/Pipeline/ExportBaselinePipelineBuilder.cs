@@ -38,14 +38,14 @@ namespace PSRule.Pipeline
             return this;
         }
 
-        public override IPipeline Build()
+        public override IPipeline Build(IPipelineWriter writer = null)
         {
             var filter = new BaselineFilter(_Name);
             return new GetBaselinePipeline(
                 pipeline: PrepareContext(null, null, null),
                 source: Source,
                 reader: PrepareReader(),
-                writer: PrepareWriter(),
+                writer: writer ?? PrepareWriter(),
                 filter: filter
             );
         }

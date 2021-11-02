@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -25,6 +25,38 @@ namespace PSRule
             pipeline.Begin();
             pipeline.Process(PSObject.AsPSObject(testObject1));
             pipeline.End();
+        }
+
+        [Fact]
+        public void ConventionOrder()
+        {
+            var testObject1 = new TestObject { Name = "TestObject1" };
+            var option = GetOption();
+            option.Rule.Include = new string[] { "ConventionTest" };
+
+            // Order 1
+            option.Convention.Include = new string[] { "Convention1", "Convention2" };
+            var writer = new TestWriter(option);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            var pipeline = builder.Build(writer);
+            pipeline.Begin();
+            pipeline.Process(PSObject.AsPSObject(testObject1));
+            pipeline.End();
+            var actual1 = writer.Output[0] as InvokeResult;
+            var actual2 = actual1.AsRecord()[0].Data["count"];
+            Assert.Equal(110, actual2);
+
+            // Order 2
+            option.Convention.Include = new string[] { "Convention2", "Convention1" };
+            writer = new TestWriter(option);
+            builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            pipeline = builder.Build(writer);
+            pipeline.Begin();
+            pipeline.Process(PSObject.AsPSObject(testObject1));
+            pipeline.End();
+            actual1 = writer.Output[0] as InvokeResult;
+            actual2 = actual1.AsRecord()[0].Data["count"];
+            Assert.Equal(11, actual2);
         }
 
         #region Helper methods

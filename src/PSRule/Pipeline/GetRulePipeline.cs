@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
@@ -42,12 +42,12 @@ namespace PSRule.Pipeline
             _IncludeDependencies = true;
         }
 
-        public override IPipeline Build()
+        public override IPipeline Build(IPipelineWriter writer = null)
         {
             if (!RequireModules() || !RequireSources())
                 return null;
 
-            return new GetRulePipeline(PrepareContext(null, null, null), Source, PrepareReader(), PrepareWriter(), _IncludeDependencies);
+            return new GetRulePipeline(PrepareContext(null, null, null), Source, PrepareReader(), writer ?? PrepareWriter(), _IncludeDependencies);
         }
 
         private static OutputFormat SuppressFormat(OutputFormat? format)
@@ -63,7 +63,7 @@ namespace PSRule.Pipeline
     {
         private readonly bool _IncludeDependencies;
 
-        internal GetRulePipeline(PipelineContext pipeline, Source[] source, PipelineReader reader, PipelineWriter writer, bool includeDependencies)
+        internal GetRulePipeline(PipelineContext pipeline, Source[] source, PipelineReader reader, IPipelineWriter writer, bool includeDependencies)
             : base(pipeline, source, reader, writer)
         {
             _IncludeDependencies = includeDependencies;
