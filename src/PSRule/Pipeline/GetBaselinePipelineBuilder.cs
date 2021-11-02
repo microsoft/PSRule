@@ -32,6 +32,8 @@ namespace PSRule.Pipeline
             Option.Output.As = ResultFormat.Detail;
             Option.Output.Culture = GetCulture(option.Output.Culture);
             Option.Output.Format = SuppressFormat(option.Output.Format);
+            Option.Output.JsonIndent = NormalizeJsonIndentRange(option.Output.JsonIndent);
+
             return this;
         }
 
@@ -49,7 +51,9 @@ namespace PSRule.Pipeline
 
         private static OutputFormat SuppressFormat(OutputFormat? format)
         {
-            return !format.HasValue || format != OutputFormat.Yaml ? OutputFormat.None : format.Value;
+            return !format.HasValue ||
+                !(format == OutputFormat.Yaml ||
+                format == OutputFormat.Json) ? OutputFormat.None : format.Value;
         }
     }
 }

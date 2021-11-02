@@ -795,7 +795,7 @@ function Get-PSRuleBaseline {
         [String]$Culture,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml')]
+        [ValidateSet('None', 'Yaml', 'Json')]
         [Alias('o')]
         [PSRule.Configuration.OutputFormat]$OutputFormat
     )
@@ -897,7 +897,7 @@ function Export-PSRuleBaseline {
         [String]$Culture,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('Yaml')]
+        [ValidateSet('Yaml', 'Json')]
         [Alias('o')]
         [PSRule.Configuration.OutputFormat]$OutputFormat = 'Yaml',
 

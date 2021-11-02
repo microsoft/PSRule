@@ -32,7 +32,7 @@ namespace PSRule.Pipeline.Output
             var s = new SerializerBuilder()
                 .DisableAliases()
                 .WithTypeInspector(f => new FieldYamlTypeInspector())
-                .WithTypeInspector(inspector => new SortedPropertyYamlTypeInspector(inspector))
+                .WithTypeInspector(inspector => new OrderedPropertiesTypeInspector(inspector))
                 .WithTypeConverter(new PSObjectYamlTypeConverter())
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
@@ -52,7 +52,7 @@ namespace PSRule.Pipeline.Output
             foreach (var baseline in baselines)
             {
                 emitter.Emit(new DocumentStart());
-                BaselineYamlMapping.MapBaseline(emitter, baseline);
+                BaselineYamlSerializationMapper.MapBaseline(emitter, baseline);
                 emitter.Emit(new DocumentEnd(true));
             }
 

@@ -151,12 +151,13 @@ The following format options are available:
 
 - None - Output is presented as an object using PowerShell defaults. This is the default.
 - Yaml - Output is serialized as YAML.
+- Json - Output is serialized as JSON.
 
 ```yaml
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases: o
-Accepted values: None, Yaml
+Accepted values: None, Yaml, Json
 
 Required: False
 Position: Named
@@ -179,7 +180,7 @@ This is the default.
 
 ### System.String
 
-When you use `-OutputFormat Yaml`.
+When you use `-OutputFormat Yaml` or `-OutputFormat Json`.
 
 ## NOTES
 
