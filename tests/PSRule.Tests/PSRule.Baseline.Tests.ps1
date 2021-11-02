@@ -27,7 +27,9 @@ BeforeAll {
     Remove-Item -Path $outputPath -Force -Recurse -Confirm:$False -ErrorAction Ignore;
     $Null = New-Item -Path $outputPath -ItemType Directory -Force;
 
-        $allBaselines = @"
+    #region TestCases
+
+    $allYamlBaselines = @"
 `# Synopsis: This is an example baseline
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
@@ -39,8 +41,8 @@ spec:
       kind:
       - Id
       uniqueIdentifer:
-      - Id
       - AlternateName
+      - Id
     targetName:
     - AlternateName
     targetType:
@@ -76,7 +78,7 @@ metadata:
 spec:
   binding:
     field:
-      AlternativeType:
+      alternativeType:
       - AlternateName
     targetName:
     - AlternateName
@@ -88,10 +90,214 @@ spec:
     include:
     - M4.Rule1
 "@
+
+    $allFourSpaceJsonBaslines = @"
+[
+    {
+        // Synopsis: This is an example baseline
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Baseline",
+        "metadata": {
+            "name": "Module4"
+        },
+        "spec": {
+            "binding": {
+                "field": {
+                    "kind": [
+                        "Id"
+                    ],
+                    "uniqueIdentifer": [
+                        "AlternateName",
+                        "Id"
+                    ]
+                },
+                "targetName": [
+                    "AlternateName"
+                ],
+                "targetType": [
+                    "Kind"
+                ]
+            },
+            "configuration": {
+                "ruleConfig1": "Test"
+            },
+            "rule": {
+                "include": [
+                    "M4.Rule1"
+                ]
+            }
+        }
+    },
+    {
+        // Synopsis: This is an example baseline
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Baseline",
+        "metadata": {
+            "name": "Baseline2"
+        },
+        "spec": {
+            "binding": {
+                "targetName": [
+                    "AlternateName"
+                ],
+                "targetType": [
+                    "Kind"
+                ]
+            },
+            "configuration": {
+                "ruleConfig2": "Test3"
+            },
+            "rule": {
+                "include": [
+                    "M4.Rule1"
+                ]
+            }
+        }
+    },
+    {
+        // Synopsis: This is an example baseline
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Baseline",
+        "metadata": {
+            "name": "Baseline3"
+        },
+        "spec": {
+            "binding": {
+                "field": {
+                    "alternativeType": [
+                        "AlternateName"
+                    ]
+                },
+                "targetName": [
+                    "AlternateName"
+                ],
+                "targetType": [
+                    "Kind"
+                ]
+            },
+            "configuration": {
+                "ruleConfig2": "Test3"
+            },
+            "rule": {
+                "include": [
+                    "M4.Rule1"
+                ]
+            }
+        }
+    }
+]
+"@
+    $allTwoSpaceJsonBaslines = @"
+[
+  {
+    // Synopsis: This is an example baseline
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Baseline",
+    "metadata": {
+      "name": "Module4"
+    },
+    "spec": {
+      "binding": {
+        "field": {
+          "kind": [
+            "Id"
+          ],
+          "uniqueIdentifer": [
+            "AlternateName",
+            "Id"
+          ]
+        },
+        "targetName": [
+          "AlternateName"
+        ],
+        "targetType": [
+          "Kind"
+        ]
+      },
+      "configuration": {
+        "ruleConfig1": "Test"
+      },
+      "rule": {
+        "include": [
+          "M4.Rule1"
+        ]
+      }
+    }
+  },
+  {
+    // Synopsis: This is an example baseline
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Baseline",
+    "metadata": {
+      "name": "Baseline2"
+    },
+    "spec": {
+      "binding": {
+        "targetName": [
+          "AlternateName"
+        ],
+        "targetType": [
+          "Kind"
+        ]
+      },
+      "configuration": {
+        "ruleConfig2": "Test3"
+      },
+      "rule": {
+        "include": [
+          "M4.Rule1"
+        ]
+      }
+    }
+  },
+  {
+    // Synopsis: This is an example baseline
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Baseline",
+    "metadata": {
+      "name": "Baseline3"
+    },
+    "spec": {
+      "binding": {
+        "field": {
+          "alternativeType": [
+            "AlternateName"
+          ]
+        },
+        "targetName": [
+          "AlternateName"
+        ],
+        "targetType": [
+          "Kind"
+        ]
+      },
+      "configuration": {
+        "ruleConfig2": "Test3"
+      },
+      "rule": {
+        "include": [
+          "M4.Rule1"
+        ]
+      }
+    }
+  }
+]
+"@
+    $allZeroSpaceJsonBaslines = @"
+[{
+// Synopsis: This is an example baseline
+"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Module4"},"spec":{"binding":{"field":{"kind":["Id"],"uniqueIdentifer":["AlternateName","Id"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig1":"Test"},"rule":{"include":["M4.Rule1"]}}},{
+// Synopsis: This is an example baseline
+"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline2"},"spec":{"binding":{"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}},{
+// Synopsis: This is an example baseline
+"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline3"},"spec":{"binding":{"field":{"alternativeType":["AlternateName"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}}]
+"@
+    #endregion
 }
 
 BeforeDiscovery {
-    $baselineTestCases = @(
+    #region TestCases
+    $baselineYamlTestCases = @(
         @{Baseline = 'Module4'; ExpectedYaml = @"
 `# Synopsis: This is an example baseline
 apiVersion: github.com/microsoft/PSRule/v1
@@ -104,8 +310,8 @@ spec:
       kind:
       - Id
       uniqueIdentifer:
-      - Id
       - AlternateName
+      - Id
     targetName:
     - AlternateName
     targetType:
@@ -143,7 +349,7 @@ metadata:
 spec:
   binding:
     field:
-      AlternativeType:
+      alternativeType:
       - AlternateName
     targetName:
     - AlternateName
@@ -155,6 +361,235 @@ spec:
     include:
     - M4.Rule1
 "@})
+
+    $baselineFourSpaceJsonTestCases = @(
+        @{Baseline = 'Module4'; ExpectedJson = @"
+[
+    {
+        // Synopsis: This is an example baseline
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Baseline",
+        "metadata": {
+            "name": "Module4"
+        },
+        "spec": {
+            "binding": {
+                "field": {
+                    "kind": [
+                        "Id"
+                    ],
+                    "uniqueIdentifer": [
+                        "AlternateName",
+                        "Id"
+                    ]
+                },
+                "targetName": [
+                    "AlternateName"
+                ],
+                "targetType": [
+                    "Kind"
+                ]
+            },
+            "configuration": {
+                "ruleConfig1": "Test"
+            },
+            "rule": {
+                "include": [
+                    "M4.Rule1"
+                ]
+            }
+        }
+    }
+]
+"@}
+@{Baseline = 'Baseline2'; ExpectedJson = @"
+[
+    {
+        // Synopsis: This is an example baseline
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Baseline",
+        "metadata": {
+            "name": "Baseline2"
+        },
+        "spec": {
+            "binding": {
+                "targetName": [
+                    "AlternateName"
+                ],
+                "targetType": [
+                    "Kind"
+                ]
+            },
+            "configuration": {
+                "ruleConfig2": "Test3"
+            },
+            "rule": {
+                "include": [
+                    "M4.Rule1"
+                ]
+            }
+        }
+    }
+]
+"@}
+@{Baseline = 'Baseline3'; ExpectedJson = @"
+[
+    {
+        // Synopsis: This is an example baseline
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Baseline",
+        "metadata": {
+            "name": "Baseline3"
+        },
+        "spec": {
+            "binding": {
+                "field": {
+                    "alternativeType": [
+                        "AlternateName"
+                    ]
+                },
+                "targetName": [
+                    "AlternateName"
+                ],
+                "targetType": [
+                    "Kind"
+                ]
+            },
+            "configuration": {
+                "ruleConfig2": "Test3"
+            },
+            "rule": {
+                "include": [
+                    "M4.Rule1"
+                ]
+            }
+        }
+    }
+]
+"@})
+$baselineTwoSpaceJsonTestCases = @(
+    @{Baseline = 'Module4'; ExpectedJson = @"
+[
+  {
+    // Synopsis: This is an example baseline
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Baseline",
+    "metadata": {
+      "name": "Module4"
+    },
+    "spec": {
+      "binding": {
+        "field": {
+          "kind": [
+            "Id"
+          ],
+          "uniqueIdentifer": [
+            "AlternateName",
+            "Id"
+          ]
+        },
+        "targetName": [
+          "AlternateName"
+        ],
+        "targetType": [
+          "Kind"
+        ]
+      },
+      "configuration": {
+        "ruleConfig1": "Test"
+      },
+      "rule": {
+        "include": [
+          "M4.Rule1"
+        ]
+      }
+    }
+  }
+]
+"@}
+@{Baseline = 'Baseline2'; ExpectedJson = @"
+[
+  {
+    // Synopsis: This is an example baseline
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Baseline",
+    "metadata": {
+      "name": "Baseline2"
+    },
+    "spec": {
+      "binding": {
+        "targetName": [
+          "AlternateName"
+        ],
+        "targetType": [
+          "Kind"
+        ]
+      },
+      "configuration": {
+        "ruleConfig2": "Test3"
+      },
+      "rule": {
+        "include": [
+          "M4.Rule1"
+        ]
+      }
+    }
+  }
+]
+"@}
+@{Baseline = 'Baseline3'; ExpectedJson = @"
+[
+  {
+    // Synopsis: This is an example baseline
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Baseline",
+    "metadata": {
+      "name": "Baseline3"
+    },
+    "spec": {
+      "binding": {
+        "field": {
+          "alternativeType": [
+            "AlternateName"
+          ]
+        },
+        "targetName": [
+          "AlternateName"
+        ],
+        "targetType": [
+          "Kind"
+        ]
+      },
+      "configuration": {
+        "ruleConfig2": "Test3"
+      },
+      "rule": {
+        "include": [
+          "M4.Rule1"
+        ]
+      }
+    }
+  }
+]
+"@})
+$baselineZeroSpaceJsonTestCases = @(
+    @{Baseline = 'Module4'; ExpectedJson = @"
+[{
+// Synopsis: This is an example baseline
+"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Module4"},"spec":{"binding":{"field":{"kind":["Id"],"uniqueIdentifer":["AlternateName","Id"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig1":"Test"},"rule":{"include":["M4.Rule1"]}}}]
+"@}
+    @{Baseline = 'Baseline2'; ExpectedJson = @"
+[{
+// Synopsis: This is an example baseline
+"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline2"},"spec":{"binding":{"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}}]
+"@}
+    @{Baseline = 'Baseline3'; ExpectedJson = @"
+[{
+// Synopsis: This is an example baseline
+"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline3"},"spec":{"binding":{"field":{"alternativeType":["AlternateName"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}}]
+"@}
+)
+    #endregion
 }
 
 #region Get-PSRuleBaseline
@@ -200,21 +635,66 @@ Describe 'Get-PSRuleBaseline' -Tag 'Baseline','Get-PSRuleBaseline' {
         }
     }
 
-    Context 'Using -OutputFormat Yaml' {
+    Context 'Using -OutputFormat' {
         BeforeAll {
             $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule4';
             $Null = Import-Module $testModuleSourcePath;
         }
-        It '<baseline>' -TestCases $baselineTestCases {
-            param($Baseline, $ExpectedYaml)
-            $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -Name $Baseline);
-            $result | Should -Not -BeNullOrEmpty;
-            $result | Should -MatchExactly $ExpectedYaml;
+        
+        Context 'Yaml'{
+            It '<baseline>' -TestCases $baselineYamlTestCases {
+                param($Baseline, $ExpectedYaml)
+                $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -Name $Baseline);
+                $result | Should -Not -BeNullOrEmpty;
+                $result | Should -MatchExactly $ExpectedYaml;
+            }
+            It 'All Baselines' {
+                $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml);
+                $result | Should -Not -BeNullOrEmpty;
+                $result | Should -MatchExactly $allYamlBaselines;
+            }
         }
-        It 'All Baselines' {
-            $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml);
-            $result | Should -Not -BeNullOrEmpty;
-            $result | Should -MatchExactly $allBaselines;
+
+        Context 'Json' {
+            Context '4 space indentation' {
+                It '<baseline>' -TestCases $baselineFourSpaceJsonTestCases {
+                    param($Baseline, $ExpectedJson)
+                    $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -Name $Baseline -Option @{'Output.JsonIndent' = 4});
+                    $result | Should -Not -BeNullOrEmpty;
+                    Compare-Object -ReferenceObject ($ExpectedJson -split '\r?\n') -DifferenceObject ($result -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+                It 'All Baselines' {
+                    $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -Option @{'Output.JsonIndent' = 4});
+                    $result | Should -Not -BeNullOrEmpty;
+                    Compare-Object -ReferenceObject ($allFourSpaceJsonBaslines -split '\r?\n') -DifferenceObject ($result -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+            }
+            Context '2 space indentation' {
+                It '<baseline>' -TestCases $baselineTwoSpaceJsonTestCases {
+                    param($Baseline, $ExpectedJson)
+                    $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -Name $Baseline -Option @{'Output.JsonIndent' = 2});
+                    $result | Should -Not -BeNullOrEmpty;
+                    Compare-Object -ReferenceObject ($ExpectedJson -split '\r?\n') -DifferenceObject ($result -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+                It 'All Baselines' {
+                    $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -Option @{'Output.JsonIndent' = 2});
+                    $result | Should -Not -BeNullOrEmpty;
+                    Compare-Object -ReferenceObject ($allTwoSpaceJsonBaslines -split '\r?\n') -DifferenceObject ($result -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+            }
+            Context '0 space indentation' {
+                It '<baseline>' -TestCases $baselineZeroSpaceJsonTestCases {
+                    param($Baseline, $ExpectedJson)
+                    $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -Name $Baseline -Option @{'Output.JsonIndent' = 0});
+                    $result | Should -Not -BeNullOrEmpty;
+                    Compare-Object -ReferenceObject ($ExpectedJson -split '\r?\n') -DifferenceObject ($result -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+                It 'All Baselines' {
+                    $result = @(Get-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -Option @{'Output.JsonIndent' = 0});
+                    $result | Should -Not -BeNullOrEmpty;
+                    Compare-Object -ReferenceObject ($allZeroSpaceJsonBaslines -split '\r?\n') -DifferenceObject ($result -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+            }
         }
     }
 }
@@ -233,7 +713,7 @@ Describe 'Export-PSRuleBaseline' -Tag 'Baseline','Export-PSRuleBaseline' {
         }
 
         Context 'Yaml' {
-            It '<baseline>' -TestCases $baselineTestCases {
+            It '<baseline>' -TestCases $baselineYamlTestCases {
                 param($Baseline, $ExpectedYaml)
                 Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -Name $Baseline -OutputPath $tempPath;
                 $fileContents = Get-Content -Path $tempPath -Raw;
@@ -243,7 +723,7 @@ Describe 'Export-PSRuleBaseline' -Tag 'Baseline','Export-PSRuleBaseline' {
             It 'All Baselines' {
                 Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -OutputPath $tempPath;
                 $fileContents = Get-Content -Path $tempPath -Raw;
-                $fileContents | Should -MatchExactly $allBaselines;
+                $fileContents | Should -MatchExactly $allYamlBaselines;
             }
 
             It 'Exception is thrown for invalid path' {
@@ -252,19 +732,98 @@ Describe 'Export-PSRuleBaseline' -Tag 'Baseline','Export-PSRuleBaseline' {
             }
 
             It "File is created even if parent directory doesn't exist" {
-                $path = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), 'parentDir', 'test.yml');
-                $path | Should -Not -Exist;
-                Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -OutputPath $path;
-                $path | Should -Exist;
-                $fileContents = Get-Content -Path $path -Raw;
-                $fileContents | Should -MatchExactly $allBaselines;
-                Remove-Item -Path $path -Force;
+                $parentDir = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), [System.Guid]::NewGuid());
+                $path = [System.IO.Path]::Combine($parentDir, [System.IO.Path]::GetRandomFileName());
+
+                try {
+                    $parentDir | Should -Not -Exist;
+                    $path | Should -Not -Exist;
+                    Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -OutputPath $path;
+                    $parentDir | Should -Exist;
+                    $path | Should -Exist;
+                    $fileContents = Get-Content -Path $path -Raw;
+                    $fileContents | Should -MatchExactly $allYamlBaselines;
+                }
+                catch {
+                    Remove-Item -Path $parentDir -Recurse -Force;
+                }
             }
 
             It '<_>' -Foreach @('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII') {
                 Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -OutputPath $tempPath -OutputEncoding $_;
                 $fileContents = Get-Content -Path $tempPath -Raw -Encoding $_;
-                $fileContents | Should -MatchExactly $allBaselines;
+                $fileContents | Should -MatchExactly $allYamlBaselines;
+            }
+        }
+
+        Context 'Json' {
+            Context '4 space indentation' {
+                It '<baseline>' -TestCases $baselineFourSpaceJsonTestCases {
+                    param($Baseline, $ExpectedJson)
+                    Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -Name $Baseline -Option @{'Output.JsonIndent' = 4} -OutputPath $tempPath;
+                    $fileContents = Get-Content -Path $tempPath -Raw;
+                    Compare-Object -ReferenceObject ($ExpectedJson -split '\r?\n') -DifferenceObject ($fileContents -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+                It 'All Baselines' {
+                    Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -Option @{'Output.JsonIndent' = 4} -OutputPath $tempPath;
+                    $fileContents = Get-Content -Path $tempPath -Raw;
+                    Compare-Object -ReferenceObject ($allFourSpaceJsonBaslines -split '\r?\n') -DifferenceObject ($fileContents -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+            }
+            Context '2 space indentation' {
+                It '<baseline>' -TestCases $baselineTwoSpaceJsonTestCases {
+                    param($Baseline, $ExpectedJson)
+                    Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -Name $Baseline -Option @{'Output.JsonIndent' = 2} -OutputPath $tempPath;
+                    $fileContents = Get-Content -Path $tempPath -Raw;
+                    Compare-Object -ReferenceObject ($ExpectedJson -split '\r?\n') -DifferenceObject ($fileContents -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+                It 'All Baselines' {
+                    Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -Option @{'Output.JsonIndent' = 2} -OutputPath $tempPath;
+                    $fileContents = Get-Content -Path $tempPath -Raw;
+                    Compare-Object -ReferenceObject ($allTwoSpaceJsonBaslines -split '\r?\n') -DifferenceObject ($fileContents -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+            }
+            Context '0 space indentation' {
+                It '<baseline>' -TestCases $baselineZeroSpaceJsonTestCases {
+                    param($Baseline, $ExpectedJson)
+                    Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -Name $Baseline -Option @{'Output.JsonIndent' = 0} -OutputPath $tempPath;
+                    $fileContents = Get-Content -Path $tempPath -Raw;
+                    Compare-Object -ReferenceObject ($ExpectedJson -split '\r?\n') -DifferenceObject ($fileContents -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+                It 'All Baselines' {
+                    Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -Option @{'Output.JsonIndent' = 0} -OutputPath $tempPath;
+                    $fileContents = Get-Content -Path $tempPath -Raw;
+                    Compare-Object -ReferenceObject ($allZeroSpaceJsonBaslines -split '\r?\n') -DifferenceObject ($fileContents -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+            }
+
+            It 'Exception is thrown for invalid path' {
+                { Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -OutputPath $null } | Should -Throw "Cannot bind argument to parameter 'OutputPath' because it is an empty string.";
+                { Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -OutputPath '' } | Should -Throw "Cannot bind argument to parameter 'OutputPath' because it is an empty string.";
+            }
+
+            It "File is created even if parent directory doesn't exist" {
+                $parentDir = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), [System.Guid]::NewGuid());
+                $path = [System.IO.Path]::Combine($parentDir, [System.IO.Path]::GetRandomFileName());
+
+                try {
+                    $parentDir | Should -Not -Exist;
+                    $path | Should -Not -Exist;
+                    Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -OutputPath $path;
+                    $parentDir | Should -Exist;
+                    $path | Should -Exist;
+                    $fileContents = Get-Content -Path $path -Raw;
+                    Compare-Object -ReferenceObject ($allZeroSpaceJsonBaslines -split '\r?\n') -DifferenceObject ($fileContents -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+                finally {
+                    Remove-Item -Path $parentDir -Recurse -Force;
+                }
+            }
+
+            It '<_>' -Foreach @('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII') {
+                Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -OutputPath $tempPath -OutputEncoding $_;
+                $fileContents = Get-Content -Path $tempPath -Raw -Encoding $_;
+                Compare-Object -ReferenceObject ($allZeroSpaceJsonBaslines -split '\r?\n') -DifferenceObject ($fileContents -split '\r?\n') | Should -BeNullOrEmpty;
             }
         }
 

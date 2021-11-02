@@ -14,6 +14,8 @@ What's changed since pre-release v1.9.0-B2110027:
 
 - Bug fixes:
   - Fixed convention execution is out of order. [#835](https://github.com/microsoft/PSRule/issues/835)
+- General improvements:
+  - Added JSON output format for Baseline cmdlets. [#839](https://github.com/microsoft/PSRule/issues/839)
 
 ## v1.9.0-B2110027 (pre-release)
 

@@ -309,22 +309,22 @@ namespace PSRule
     }
 
     /// <summary>
-    /// A YAML type inspector to sort properties by name
+    /// A YAML type inspector to order properties alphabetically
     /// </summary>
-    internal sealed class SortedPropertyYamlTypeInspector : TypeInspectorSkeleton
+    internal sealed class OrderedPropertiesTypeInspector : TypeInspectorSkeleton
     {
         private readonly ITypeInspector _innerTypeDescriptor;
 
-        public SortedPropertyYamlTypeInspector(ITypeInspector innerTypeDescriptor)
+        public OrderedPropertiesTypeInspector(ITypeInspector innerTypeDescriptor)
         {
-            this._innerTypeDescriptor = innerTypeDescriptor;
+            _innerTypeDescriptor = innerTypeDescriptor;
         }
 
         public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
         {
             return _innerTypeDescriptor
                 .GetProperties(type, container)
-                .OrderBy(p => p.Name);
+                .OrderBy(prop => prop.Name);
         }
     }
 

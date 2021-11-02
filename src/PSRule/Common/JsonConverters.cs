@@ -9,6 +9,7 @@ using System.Management.Automation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using PSRule.Data;
+using PSRule.Definitions.Baselines;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -307,10 +308,32 @@ namespace PSRule
         }
     }
 
+    internal sealed class BaselineConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(Baseline);
+        }
+
+        public override bool CanWrite => true;
+
+        public override bool CanRead => false;
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            BaselineJsonSerializationMapper.MapBaseline(writer, serializer, value as Baseline);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     /// <summary>
-    /// A contract resolver to sort properties alphabetically
+    /// A contract resolver to order properties alphabetically
     /// </summary>
-    internal sealed class SortedPropertyContractResolver : DefaultContractResolver
+    internal sealed class OrderedPropertiesContractResolver : DefaultContractResolver
     {
         protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
         {

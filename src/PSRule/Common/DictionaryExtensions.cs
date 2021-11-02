@@ -134,5 +134,15 @@ namespace PSRule
             value = o.GetType().IsArray ? ((object[])o).OfType<string>().ToArray() : new string[] { o.ToString() };
             return true;
         }
+
+        internal static SortedDictionary<TKey, TValue> ToSortedDictionary<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
+        {
+            return new SortedDictionary<TKey, TValue>(dictionary);
+        }
+
+        internal static bool NullOrEmpty<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
+        {
+            return dictionary == null || dictionary.Count == 0;
+        }
     }
 }
