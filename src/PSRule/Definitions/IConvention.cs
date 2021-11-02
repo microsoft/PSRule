@@ -1,12 +1,13 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections;
+using PSRule.Host;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions
 {
-    internal interface IConvention
+    internal interface IConvention : ILanguageBlock
     {
         string Name { get; }
 

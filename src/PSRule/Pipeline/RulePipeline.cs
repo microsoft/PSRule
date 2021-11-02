@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -13,12 +13,12 @@ namespace PSRule.Pipeline
         protected readonly RunspaceContext Context;
         protected readonly Source[] Source;
         protected readonly PipelineReader Reader;
-        protected readonly PipelineWriter Writer;
+        protected readonly IPipelineWriter Writer;
 
         // Track whether Dispose has been called.
         private bool _Disposed;
 
-        protected RulePipeline(PipelineContext context, Source[] source, PipelineReader reader, PipelineWriter writer)
+        protected RulePipeline(PipelineContext context, Source[] source, PipelineReader reader, IPipelineWriter writer)
         {
             Pipeline = context;
             Context = new RunspaceContext(Pipeline, writer);

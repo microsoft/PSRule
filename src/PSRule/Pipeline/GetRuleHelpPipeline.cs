@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -50,9 +50,9 @@ namespace PSRule.Pipeline
             _Online = true;
         }
 
-        public override IPipeline Build()
+        public override IPipeline Build(IPipelineWriter writer = null)
         {
-            return new GetRuleHelpPipeline(PrepareContext(null, null, null), Source, PrepareReader(), PrepareWriter());
+            return new GetRuleHelpPipeline(PrepareContext(null, null, null), Source, PrepareReader(), writer ?? PrepareWriter());
         }
 
         private sealed class HelpWriter : PipelineWriter
@@ -150,7 +150,7 @@ namespace PSRule.Pipeline
 
     internal sealed class GetRuleHelpPipeline : RulePipeline, IPipeline
     {
-        internal GetRuleHelpPipeline(PipelineContext pipeline, Source[] source, PipelineReader reader, PipelineWriter writer)
+        internal GetRuleHelpPipeline(PipelineContext pipeline, Source[] source, PipelineReader reader, IPipelineWriter writer)
             : base(pipeline, source, reader, writer)
         {
             // Do nothing

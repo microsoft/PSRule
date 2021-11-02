@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -68,7 +68,7 @@ namespace PSRule.Runtime
         internal static RunspaceContext CurrentThread;
 
         internal readonly PipelineContext Pipeline;
-        internal readonly PipelineWriter Writer;
+        internal readonly IPipelineWriter Writer;
 
         // Fields exposed to engine
         internal RuleRecord RuleRecord;
@@ -101,7 +101,7 @@ namespace PSRule.Runtime
         // Track whether Dispose has been called.
         private bool _Disposed;
 
-        internal RunspaceContext(PipelineContext pipeline, PipelineWriter writer)
+        internal RunspaceContext(PipelineContext pipeline, IPipelineWriter writer)
         {
             Writer = writer;
             CurrentThread = this;

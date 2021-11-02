@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -96,7 +96,7 @@ namespace PSRule.Pipeline
     {
         IPipelineBuilder Configure(PSRuleOption option);
 
-        IPipeline Build();
+        IPipeline Build(IPipelineWriter writer = null);
     }
 
     public interface IPipeline
@@ -184,7 +184,7 @@ namespace PSRule.Pipeline
             return this;
         }
 
-        public abstract IPipeline Build();
+        public abstract IPipeline Build(IPipelineWriter writer = null);
 
         /// <summary>
         /// Use a baseline, either by name or by path.
@@ -386,8 +386,7 @@ namespace PSRule.Pipeline
 
         private OptionContext GetOptionContext()
         {
-            var builder = new OptionContextBuilder(Option);
-            builder.Parameter(_Include, _Tag, _Convention);
+            var builder = new OptionContextBuilder(Option, _Include, _Tag, _Convention);
             return builder.Build();
         }
 

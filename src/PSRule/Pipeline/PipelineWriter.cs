@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
@@ -45,6 +45,10 @@ namespace PSRule.Pipeline
         void EnterScope(string scopeName);
 
         void ExitScope();
+
+        void Begin();
+
+        void End();
     }
 
     internal abstract class PipelineWriter : IPipelineWriter

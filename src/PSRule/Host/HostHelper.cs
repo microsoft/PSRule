@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -227,7 +227,7 @@ namespace PSRule.Host
                 .WithTypeConverter(new PSObjectYamlTypeConverter())
                 .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
                 .WithNodeDeserializer(
-                    inner => new LanguageBlockDeserializer(new LanguageExpressionDeserializer(inner)),
+                    inner => new ResourceNodeDeserializer(new LanguageExpressionDeserializer(inner)),
                     s => s.InsteadOf<ObjectNodeDeserializer>())
                 .Build();
 
@@ -481,21 +481,21 @@ namespace PSRule.Host
             var results = new List<IConvention>(blocks.Length);
             try
             {
-                foreach (var block in blocks.OfType<ScriptBlockConvention>())
+                foreach (var block in blocks.OfType<ScriptBlockConvention>().ToArray())
                 {
                     // Ignore blocks that don't match
-                    if (!Match(context, block, out int order))
+                    if (!Match(context, block))
                         continue;
 
                     if (!index.Contains(block.Id))
-                        results.AddOrInsert(order, block);
+                        results.Add(block);
                 }
             }
             finally
             {
                 context.ExitSourceScope();
             }
-            return results.ToArray();
+            return Sort(context, results.ToArray());
         }
 
         private static SelectorV1[] ToSelectorV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
@@ -557,10 +557,9 @@ namespace PSRule.Host
             return filter == null || filter.Match(resource);
         }
 
-        private static bool Match(RunspaceContext context, ScriptBlockConvention block, out int order)
+        private static bool Match(RunspaceContext context, ScriptBlockConvention block)
         {
             context.EnterSourceScope(block.Source);
-            order = int.MaxValue;
             var filter = context.LanguageScope.GetFilter(ResourceKind.Convention);
             return filter == null || filter.Match(block);
         }
@@ -570,6 +569,12 @@ namespace PSRule.Host
             context.EnterSourceScope(source: resource.Source);
             var filter = context.LanguageScope.GetFilter(ResourceKind.Selector);
             return filter == null || filter.Match(resource);
+        }
+
+        private static IConvention[] Sort(RunspaceContext context, IConvention[] conventions)
+        {
+            Array.Sort(conventions, new ConventionComparer(context));
+            return conventions;
         }
 
         internal static RuleHelpInfo GetHelpInfo(RunspaceContext context, string name)

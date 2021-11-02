@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -59,9 +59,9 @@ namespace PSRule.Pipeline
             _InputPath = builder.Build();
         }
 
-        public override IPipeline Build()
+        public override IPipeline Build(IPipelineWriter writer = null)
         {
-            return new GetTargetPipeline(PrepareContext(null, null, null), PrepareReader(), PrepareWriter());
+            return new GetTargetPipeline(PrepareContext(null, null, null), PrepareReader(), writer ?? PrepareWriter());
         }
 
         protected override PipelineReader PrepareReader()
@@ -125,7 +125,7 @@ namespace PSRule.Pipeline
     /// </summary>
     internal sealed class GetTargetPipeline : RulePipeline
     {
-        internal GetTargetPipeline(PipelineContext context, PipelineReader reader, PipelineWriter writer)
+        internal GetTargetPipeline(PipelineContext context, PipelineReader reader, IPipelineWriter writer)
             : base(context, null, reader, writer) { }
 
         public override void Process(PSObject sourceObject)
