@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
@@ -26,9 +26,8 @@ namespace PSRule.Pipeline.Output
             };
 
             var outputJsonIndent = Option.Output.JsonIndent ?? 0;
-            var isIndented = outputJsonIndent > 0;
 
-            if (isIndented)
+            if (outputJsonIndent > 0)
             {
                 jsonSerializer.Formatting = Formatting.Indented;
                 jsonTextWriter.Indentation = outputJsonIndent;
@@ -44,33 +43,12 @@ namespace PSRule.Pipeline.Output
             if (o[0] is IEnumerable<Baseline> baselines)
             {
                 jsonSerializer.Converters.Add(new BaselineConverter());
-
                 jsonSerializer.Serialize(jsonTextWriter, baselines);
-
-                var indentMultiplier = string.Concat(Enumerable.Repeat(" ", outputJsonIndent * 2));
-
-                var jsonString = stringWriter.ToString();
-
-                // Workaround given JSON.NET doesn't support writing inline comments
-                // Can write multiline comments first then replace with inline comment delimiter
-                // We use /\*(.*?)\*/ to capture comments between /* */ deimiters
-                //var jsonWithMultilineCommentsReplaced = Regex.Replace(jsonString, @"/\*(.*?)\*/", match =>
-                //{
-                //    var group = match.Groups[1];
-                //    var inlineDelimiterComment = $"// {group.Value.Trim()}";
-
-                //    // If indented prepend newline with correct indentation
-                //    // Otherwise append a space for no indentation(machine first)
-                //    return isIndented ?
-                //        Environment.NewLine + indentMultiplier + inlineDelimiterComment :
-                //        inlineDelimiterComment + " ";
-
-                //}, RegexOptions.Singleline);
-
-                return jsonString;
             }
-
-            jsonSerializer.Serialize(jsonTextWriter, o);
+            else
+            {
+                jsonSerializer.Serialize(jsonTextWriter, o);
+            }
 
             return stringWriter.ToString();
         }

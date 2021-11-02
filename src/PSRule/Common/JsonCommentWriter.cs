@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -13,16 +14,16 @@ namespace PSRule
 
         public override void WriteComment(string text)
         {
-            base.SetWriteState(JsonToken.Comment, text);
+            SetWriteState(JsonToken.Comment, text);
             if (Indentation > 0 && Formatting == Formatting.Indented)
-                base.WriteIndent();
+                WriteIndent();
             else
-                WriteRaw(System.Environment.NewLine);
+                WriteRaw(Environment.NewLine);
 
             WriteRaw("// ");
             WriteRaw(text);
             if (Indentation == 0 || Formatting == Formatting.None)
-                WriteRaw(System.Environment.NewLine);
+                WriteRaw(Environment.NewLine);
         }
     }
 }
