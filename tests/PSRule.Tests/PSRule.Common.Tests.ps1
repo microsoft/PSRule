@@ -762,7 +762,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result[0].Source[0].File | Should -Be 'some-file.json';
             $result[0].Source[0].Line | Should -Be 1;
             $result[1].Source[0].File.Split([char[]]@('\', '/'))[-1] | Should -Be 'ObjectFromFile.json';
-            $result[1].Source[0].Line | Should -Be 44;
+            $result[1].Source[0].Line | Should -Be 51;
 
             # Multiple file
             $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles);
@@ -944,6 +944,41 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
             $option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -BindTargetName $bindFn;
             { $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop } | Should -Throw 'Exception calling "Invoke" with "4" argument(s): "Binding functions are not supported in this language mode."';
+        }
+    }
+
+    Context 'With downstream issues' {
+        It 'Uses issues' {
+            $inputFiles = @(
+                (Join-Path -Path $here -ChildPath 'ObjectFromFile.json')
+            )
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'IssueGetTest' -InputPath $inputFiles);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Pass
+            $filteredResult = @($result | Where-Object { $_.Outcome -eq 'Pass' });
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult.Length | Should -Be 2;
+        }
+
+        It 'Assert with issues' {
+            $inputFiles = @(
+                (Join-Path -Path $here -ChildPath 'ObjectFromFile.json')
+            )
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'IssueReportTest' -InputPath $inputFiles);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 2;
+
+            # Pass
+            $filteredResult = @($result | Where-Object { $_.Outcome -eq 'Pass' });
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult[0].TargetName | Should -Be 'TestObject2';
+
+            # Fail
+            $filteredResult = @($result | Where-Object { $_.Outcome -eq 'Fail' });
+            $filteredResult | Should -Not -BeNullOrEmpty;
+            $filteredResult[0].TargetName | Should -Be 'TestObject1';
         }
     }
 

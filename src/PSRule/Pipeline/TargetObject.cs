@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -45,12 +45,15 @@ namespace PSRule.Pipeline
         {
             Value = o;
             Source = ReadSourceInfo(source);
+            Issue = ReadIssueInfo(null);
             _Annotations = new Dictionary<Type, TargetObjectAnnotation>();
         }
 
         internal PSObject Value { get; }
 
         internal TargetSourceCollection Source { get; private set; }
+
+        internal TargetIssueCollection Issue { get; private set; }
 
         internal T GetAnnotation<T>() where T : TargetObjectAnnotation, new()
         {
@@ -67,6 +70,14 @@ namespace PSRule.Pipeline
             var result = source ?? new TargetSourceCollection();
             Value.ConvertTargetInfoProperty();
             result.AddRange(Value.GetSourceInfo());
+            return result;
+        }
+
+        private TargetIssueCollection ReadIssueInfo(TargetIssueCollection issue)
+        {
+            var result = issue ?? new TargetIssueCollection();
+            Value.ConvertTargetInfoProperty();
+            result.AddRange(Value.GetIssueInfo());
             return result;
         }
     }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -10,6 +10,7 @@ using Manatee.Json;
 using Manatee.Json.Schema;
 using Manatee.Json.Serialization;
 using PSRule.Configuration;
+using PSRule.Data;
 using PSRule.Pipeline;
 using PSRule.Resources;
 
@@ -40,6 +41,18 @@ namespace PSRule.Runtime
                 throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VariableConditionScope, VARIABLE_NAME));
 
             return new AssertResult(this, condition, reason, args);
+        }
+
+        public AssertResult Create(TargetIssueInfo[] issue)
+        {
+            if (issue == null || issue.Length == 0)
+                return Pass();
+
+            var result = Fail();
+            for (var i = 0; i < issue.Length; i++)
+                result.AddReason(issue[i].Message);
+
+            return result;
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -335,6 +335,7 @@ namespace PSRule.Pipeline
             value.Value.UseTargetInfo(out PSRuleTargetInfo targetInfo);
             targetInfo.UpdateSource(source);
             value.Source.AddRange(targetInfo.Source.ToArray());
+            value.Issue.AddRange(targetInfo.Issue.ToArray());
         }
 
         private static JsonTextReader AsJsonTextReader(TextReader reader)
