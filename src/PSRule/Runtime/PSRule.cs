@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -18,7 +18,8 @@ namespace PSRule.Runtime
     /// </summary>
     public sealed class PSRule : ScopedItem
     {
-        private PSRuleSource _Source;
+        private ITargetSourceCollection _Source;
+        private ITargetIssueCollection _Issue;
         private IBadgeBuilder _BadgeBuilder;
 
         public PSRule() { }
@@ -38,6 +39,23 @@ namespace PSRule.Runtime
                 {
                     return GetContext().TargetObject?.Source[type];
                 }
+            }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "Exposed as helper for PowerShell.")]
+        private sealed class PSRuleIssue : ScopedItem, ITargetIssueCollection
+        {
+            internal PSRuleIssue(RunspaceContext context)
+                : base(context) { }
+
+            public TargetIssueInfo[] Get(string type = null)
+            {
+                return GetContext().TargetObject.Issue.Get(type);
+            }
+
+            public bool Any(string type = null)
+            {
+                return GetContext().TargetObject.Issue.Any(type);
             }
         }
 
@@ -90,6 +108,8 @@ namespace PSRule.Runtime
         }
 
         public ITargetSourceCollection Source => GetSource();
+
+        public ITargetIssueCollection Issue => GetIssue();
 
         /// <summary>
         /// The current target object.
@@ -214,6 +234,15 @@ namespace PSRule.Runtime
                 _Source = new PSRuleSource(GetContext());
 
             return _Source;
+        }
+
+        private ITargetIssueCollection GetIssue()
+        {
+            RequireScope(RunspaceScope.Target);
+            if (_Issue == null)
+                _Issue = new PSRuleIssue(GetContext());
+
+            return _Issue;
         }
 
         #endregion Helper methods

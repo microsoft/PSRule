@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -15,6 +15,7 @@ namespace PSRule
     internal static class PSObjectExtensions
     {
         private const string PROPERTY_SOURCE = "source";
+        private const string PROPERTY_ISSUE = "issue";
 
         public static T PropertyValue<T>(this PSObject o, string propertyName)
         {
@@ -107,6 +108,14 @@ namespace PSRule
             return targetInfo.Source.ToArray();
         }
 
+        public static TargetIssueInfo[] GetIssueInfo(this PSObject o)
+        {
+            if (!TryTargetInfo(o, out PSRuleTargetInfo targetInfo))
+                return Array.Empty<TargetIssueInfo>();
+
+            return targetInfo.Issue.ToArray();
+        }
+
         public static void ConvertTargetInfoProperty(this PSObject o)
         {
             if (o == null || !TryProperty(o, PSRuleTargetInfo.PropertyName, out PSObject value))
@@ -119,6 +128,14 @@ namespace PSRule
                 {
                     var source = TargetSourceInfo.Create(sources.GetValue(i));
                     targetInfo.WithSource(source);
+                }
+            }
+            if (TryProperty(value, PROPERTY_ISSUE, out Array issues))
+            {
+                for (var i = 0; i < issues.Length; i++)
+                {
+                    var issue = TargetIssueInfo.Create(issues.GetValue(i));
+                    targetInfo.WithIssue(issue);
                 }
             }
         }

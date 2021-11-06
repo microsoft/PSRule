@@ -37,6 +37,13 @@
                     "line": 1,
                     "type": "Origin"
                 }
+            ],
+            "issue": [
+                {
+                    "type": "Downstream.Issue",
+                    "name": "Custom.NoNesting",
+                    "message": "A custom downstream issue reporting nesting not allowed."
+                }
             ]
         }
     },

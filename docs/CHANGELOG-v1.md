@@ -10,6 +10,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.9.0-B2111009:
+
+- General improvements:
+  - Allow downstream issues to be consumed. [#843](https://github.com/microsoft/PSRule/issues/843)
+
 ## v1.9.0-B2111009 (pre-release)
 
 What's changed since pre-release v1.9.0-B2110027:

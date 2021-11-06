@@ -1471,12 +1471,51 @@ Rule 'Assert.HasCustomValue' {
 }
 ```
 
+### Downstream issues
+
+Before PSRule performs analysis external tools or rules modules may have already performed analysis.
+Issues identified by downstream tools can be consumed by PSRule using the `_PSRule.issue` property.
+If a `_PSRule` property exists with `issue` sub-property PSRule will consume `issue` as an array of issues.
+
+Each issue has the following properties:
+
+- `type` - The issue type.
+  Issues are filtered by type.
+- `name` - The name of a specific issue.
+- `message` - The reason message for the issue.
+
+To get issues for an object use the `Get` or `Any` methods.
+
+```powershell
+# Get an array of all issues for the current object.
+$PSRule.Issue.Get();
+
+# Get an array of issues of a specific type.
+$PSRule.Issue.Get('CustomIssue');
+
+# Return true of any issues exist.
+$PSRule.Issue.Any();
+
+# Return true of any issues of a specific type exist.
+$PSRule.Issue.Any('CustomIssue');
+```
+
+For example:
+
+```powershell
+# Synopsis: Fail if the object has any 'PSRule.Rules.Azure.Parameter.Insecure' issues.
+Rule 'IssueReportTest' {
+    $Assert.Create($PSRule.Issue.Get('PSRule.Rules.Azure.Parameter.Insecure'));
+}
+```
+
 ### Authoring assertion methods
 
 The following built-in helper methods are provided for working with `$Assert` when authoring new assertion methods:
 
 - `Create(<bool> condition, <string> reason, params <object[]> args)` - Returns a result either pass or fail assertion result.
   Additional arguments can be provided to format the custom reason string.
+- `Create(<TargetIssueInfo[]>)` - Returns a result based on reported downstream issues.
 - `Pass()` - Returns a pass assertion result.
 - `Fail()` - Results a fail assertion result.
 - `Fail(<string> reason, params <object[]> args)` - Results a fail assertion result with a custom reason.

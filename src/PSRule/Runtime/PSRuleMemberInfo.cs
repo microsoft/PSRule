@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
@@ -18,6 +18,9 @@ namespace PSRule.Runtime
             SetMemberName(PropertyName);
             if (Source == null)
                 Source = new List<TargetSourceInfo>();
+
+            if (Issue == null)
+                Issue = new List<TargetIssueInfo>();
         }
 
         private PSRuleTargetInfo(PSRuleTargetInfo targetInfo)
@@ -27,6 +30,7 @@ namespace PSRule.Runtime
                 return;
 
             Source = targetInfo.Source;
+            Issue = targetInfo.Issue;
         }
 
         public string Path
@@ -42,6 +46,9 @@ namespace PSRule.Runtime
 
         [JsonProperty(PropertyName = "source")]
         public List<TargetSourceInfo> Source { get; internal set; }
+
+        [JsonProperty(PropertyName = "issue")]
+        public List<TargetIssueInfo> Issue { get; internal set; }
 
         [JsonIgnore]
         public override PSMemberTypes MemberType => PSMemberTypes.PropertySet;
@@ -75,6 +82,14 @@ namespace PSRule.Runtime
                 return;
 
             Source.Add(source);
+        }
+
+        internal void WithIssue(TargetIssueInfo issue)
+        {
+            if (issue == null)
+                return;
+
+            Issue.Add(issue);
         }
 
         internal void UpdateSource(TargetSourceInfo source)

@@ -436,3 +436,15 @@ Rule 'SourceTest' {
 Rule 'ScriptReasonTest' -Tag @{ test = 'Reason' } {
     $Assert.HasFieldValue($TargetObject, 'Name', 'TestValue')
 }
+
+# Synopsis: Test for $PSRule.Issue.Get
+Rule 'IssueGetTest' {
+    $actual1 = $PSRule.Issue.Get();
+    $actual2 = $PSRule.Issue.Get('Downstream.Issue')
+    $Assert.Create(($actual1.Length -eq $actual2.Length), 'Issues should be same')
+}
+
+# Synopsis: Test for $PSRule.Issue.Report
+Rule 'IssueReportTest' {
+    $Assert.Create($PSRule.Issue.Get('Downstream.Issue'));
+}
