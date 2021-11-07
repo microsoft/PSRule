@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Language;
+using Newtonsoft.Json;
 using PSRule.Annotations;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
@@ -73,7 +74,12 @@ namespace PSRule.Host
         /// </summary>
         internal static IEnumerable<Baseline> GetBaselineYaml(Source[] source, RunspaceContext context)
         {
-            return ToBaselineV1(ReadYamlObjects(source, context), context);
+            var results = new List<ILanguageBlock>();
+
+            results.AddRange(ReadYamlObjects(source, context));
+            results.AddRange(ReadJsonObjects(source, context));
+
+            return ToBaselineV1(results, context);
         }
 
         /// <summary>
@@ -97,7 +103,12 @@ namespace PSRule.Host
             if (source == null || source.Length == 0)
                 return;
 
-            Import(ReadYamlObjects(source, context), context);
+            var results = new List<ILanguageBlock>();
+
+            results.AddRange(ReadYamlObjects(source, context));
+            results.AddRange(ReadJsonObjects(source, context));
+
+            Import(results.ToArray(), context);
         }
 
         /// <summary>
@@ -141,6 +152,7 @@ namespace PSRule.Host
             var results = new List<ILanguageBlock>();
             results.AddRange(GetPowerShellRule(context, sources));
             results.AddRange(ReadYamlObjects(sources, context));
+            results.AddRange(ReadJsonObjects(sources, context));
             return results.ToArray();
         }
 
@@ -264,6 +276,65 @@ namespace PSRule.Host
                 context.PopScope(RunspaceScope.Resource);
                 context.ExitSourceScope();
             }
+            return result.Count == 0 ? Array.Empty<ILanguageBlock>() : result.ToArray();
+        }
+
+        private static ILanguageBlock[] ReadJsonObjects(Source[] sources, RunspaceContext context)
+        {
+            var result = new Collection<ILanguageBlock>();
+
+            var deserializer = new JsonSerializer();
+
+            deserializer.Converters.Add(new ResourceObjectJsonConverter());
+            deserializer.Converters.Add(new FieldMapJsonConverter());
+
+            try
+            {
+                context.Writer?.EnterScope("[Discovery.Resource]");
+                context.PushScope(RunspaceScope.Resource);
+
+                foreach (var source in sources)
+                {
+                    foreach (var file in source.File)
+                    {
+                        if (file.Type == SourceType.Json)
+                        {
+                            context.VerboseRuleDiscovery(file.Path);
+                            context.EnterSourceScope(file);
+
+                            using var reader = new JsonTextReader(new StreamReader(file.Path));
+
+                            // Consume lines until start of array is found
+                            while (reader.TokenType != JsonToken.StartArray)
+                            {
+                                reader.Read();
+                            }
+
+                            if (reader.TokenType == JsonToken.StartArray && reader.Read())
+                            {
+                                while (reader.TokenType != JsonToken.EndArray)
+                                {
+                                    var value = deserializer.Deserialize<ResourceObject>(reader);
+
+                                    if (value?.Block != null)
+                                    {
+                                        result.Add(value.Block);
+                                    }
+
+                                    reader.Read();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                context.Writer?.ExitScope();
+                context.PopScope(RunspaceScope.Resource);
+                context.ExitSourceScope();
+            }
+
             return result.Count == 0 ? Array.Empty<ILanguageBlock>() : result.ToArray();
         }
 

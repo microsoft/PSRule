@@ -41,7 +41,7 @@ namespace PSRule.Pipeline.Output
             // We can serialize the first object which has all the baselines
             if (o[0] is IEnumerable<Baseline> baselines)
             {
-                jsonSerializer.Converters.Add(new BaselineConverter());
+                jsonSerializer.Converters.Add(new BaselineJsonConverter());
                 jsonSerializer.Serialize(jsonTextWriter, baselines);
             }
             else

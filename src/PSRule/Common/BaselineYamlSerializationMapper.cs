@@ -237,9 +237,11 @@ namespace PSRule
 
         private static void MapStringArraySequence(IEmitter emitter, string[] sequence)
         {
-            emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
+            emitter.Emit(new SequenceStart(anchor: null, tag: null, isImplicit: false, style: SequenceStyle.Block));
 
-            foreach (var item in sequence.OrderBy(item => item))
+            var sortedSequence = sequence.OrderBy(item => item);
+
+            foreach (var item in sortedSequence)
             {
                 emitter.Emit(new Scalar(item));
             }
@@ -249,7 +251,7 @@ namespace PSRule
 
         private static void MapPSObjectArraySequence(IEmitter emitter, PSObject[] sequence)
         {
-            emitter.Emit(new SequenceStart(null, null, false, SequenceStyle.Block));
+            emitter.Emit(new SequenceStart(anchor: null, tag: null, isImplicit: false, style: SequenceStyle.Block));
 
             foreach (var obj in sequence)
             {
@@ -257,7 +259,9 @@ namespace PSRule
                 {
                     emitter.Emit(new MappingStart());
 
-                    foreach (var propertyInfo in obj.Properties.OrderBy(prop => prop.Name))
+                    var sortedProperties = obj.Properties.OrderBy(prop => prop.Name);
+
+                    foreach (var propertyInfo in sortedProperties)
                     {
                         MapPropertyName(emitter, propertyInfo.Name);
                         emitter.Emit(new Scalar(propertyInfo.Value.ToString()));
