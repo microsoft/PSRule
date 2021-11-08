@@ -22,6 +22,7 @@ What's changed since pre-release v1.9.0-B2111009:
     - This depreciate configuring the default baseline within the module manifest.
     - Modules using manifest configuration will start warning from v1.9.0.
     - See [about_PSRule_Options] for details.
+  - Added JSON support to read baselines from pipeline. [#845](https://github.com/microsoft/PSRule/issues/845)
 
 ## v1.9.0-B2111009 (pre-release)
 

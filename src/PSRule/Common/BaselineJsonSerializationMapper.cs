@@ -237,7 +237,9 @@ namespace PSRule
         {
             writer.WriteStartArray();
 
-            foreach (var item in sequence.OrderBy(item => item))
+            var sortedSequence = sequence.OrderBy(item => item);
+
+            foreach (var item in sortedSequence)
             {
                 writer.WriteValue(item);
             }
@@ -255,7 +257,9 @@ namespace PSRule
                 {
                     writer.WriteStartObject();
 
-                    foreach (var propertyInfo in obj.Properties.OrderBy(prop => prop.Name))
+                    var sortedProperties = obj.Properties.OrderBy(prop => prop.Name);
+
+                    foreach (var propertyInfo in sortedProperties)
                     {
                         MapPropertyName(writer, propertyInfo.Name);
                         serializer.Serialize(writer, propertyInfo.Value);

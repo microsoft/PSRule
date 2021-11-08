@@ -53,7 +53,7 @@ namespace PSRule.Pipeline.Output
             {
                 emitter.Emit(new DocumentStart());
                 BaselineYamlSerializationMapper.MapBaseline(emitter, baseline);
-                emitter.Emit(new DocumentEnd(true));
+                emitter.Emit(new DocumentEnd(isImplicit: true));
             }
 
             emitter.Emit(new StreamEnd());

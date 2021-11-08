@@ -22,7 +22,9 @@ namespace PSRule.Pipeline
     {
         Script = 1,
 
-        Yaml = 2
+        Yaml = 2,
+
+        Json = 3
     }
 
     /// <summary>
@@ -159,7 +161,9 @@ namespace PSRule.Pipeline
     public sealed class SourcePipelineBuilder
     {
         private const string SourceFileExtension_YAML = ".yaml";
-        private const string SourceFileExtension_YML = ".yaml";
+        private const string SourceFileExtension_YML = ".yml";
+        private const string SourceFileExtension_JSON = ".json";
+        private const string SourceFileExtension_JSONC = ".jsonc";
         private const string SourceFileExtension_PS1 = ".ps1";
         private const string RuleModuleTag = "PSRule-rules";
         private const string DefaultRulePath = ".ps-rule/";
@@ -334,8 +338,11 @@ namespace PSRule.Pipeline
 
         private static bool ShouldInclude(string path)
         {
-            return path.EndsWith(".rule.ps1", System.StringComparison.OrdinalIgnoreCase) ||
-                path.EndsWith(".rule.yaml", System.StringComparison.OrdinalIgnoreCase);
+            return path.EndsWith(".rule.ps1", StringComparison.OrdinalIgnoreCase) ||
+                path.EndsWith(".rule.yaml", StringComparison.OrdinalIgnoreCase) ||
+                path.EndsWith(".rule.yml", StringComparison.OrdinalIgnoreCase) ||
+                path.EndsWith(".rule.json", StringComparison.OrdinalIgnoreCase) ||
+                path.EndsWith(".rule.jsonc", StringComparison.OrdinalIgnoreCase);
         }
 
         private static SourceFile[] IncludeFile(string path, string helpPath)
@@ -369,17 +376,33 @@ namespace PSRule.Pipeline
         private static SourceType GetSourceType(string path)
         {
             var extension = Path.GetExtension(path);
-            return IsYamlFile(extension) ? SourceType.Yaml : SourceType.Script;
+
+            if (IsYamlFile(extension))
+            {
+                return SourceType.Yaml;
+            }
+
+            else if (IsJsonFile(extension))
+            {
+                return SourceType.Json;
+            }
+
+            return SourceType.Script;
         }
 
         private static bool IsSourceFile(string extension)
         {
-            return extension == SourceFileExtension_PS1 || extension == SourceFileExtension_YAML || extension == SourceFileExtension_YML;
+            return extension == SourceFileExtension_PS1 || IsYamlFile(extension) || IsJsonFile(extension);
         }
 
         private static bool IsYamlFile(string extension)
         {
             return extension == SourceFileExtension_YAML || extension == SourceFileExtension_YML;
+        }
+
+        private static bool IsJsonFile(string extension)
+        {
+            return extension == SourceFileExtension_JSON || extension == SourceFileExtension_JSONC;
         }
     }
 }

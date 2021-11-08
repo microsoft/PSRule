@@ -461,6 +461,66 @@ Describe 'Get-PSRuleBaseline' -Tag 'Baseline','Get-PSRuleBaseline' {
                     Compare-Object -ReferenceObject ($allZeroSpaceJsonBaslines -split '\r?\n') -DifferenceObject ($result -split '\r?\n') | Should -BeNullOrEmpty;
                 }
             }
+
+            Context 'Read baselines from JSON in module' {
+                BeforeAll {
+                    $testModuleSourcePath = Join-Path $here -ChildPath 'TestModule5';
+                    $Null = Import-Module $testModuleSourcePath;
+                }
+                
+                It '<baseline>' -TestCases $baselineFourSpaceJsonTestCases {
+                    param($Baseline, $ExpectedJson)
+
+                    # Gets baseline from module
+                    $result = @(Get-PSRuleBaseline -Module 'TestModule5' -Name $Baseline);
+                    $result | Should -Not -BeNullOrEmpty;
+                    $result | Should -HaveCount 1;
+                    $result[0].Synopsis | Should -BeExactly "This is an example baseline"
+                    $result[0].Kind | Should -BeExactly "Baseline";
+                    $result[0].Metadata | Should -Not -BeNullOrEmpty;
+                    $result[0].Metadata.Name | Should -BeExactly $Baseline;
+                    $result[0].ApiVersion | Should -BeExactly "github.com/microsoft/PSRule/v1";
+                    $result[0].Spec | Should -Not -BeNullOrEmpty;
+
+                    # Generates correct JSON from module
+                    $result = @(Get-PSRuleBaseline -Module 'TestModule5' -OutputFormat Json -Name $Baseline -Option @{'Output.JsonIndent' = 4});
+                    $result | Should -Not -BeNullOrEmpty;
+                    Compare-Object -ReferenceObject ($ExpectedJson -split '\r?\n') -DifferenceObject ($result -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+                It 'All Baselines' {
+
+                    # Gets baseline from module
+                    $result = @(Get-PSRuleBaseline -Module 'TestModule5');
+                    $result | Should -Not -BeNullOrEmpty;
+                    $result | Should -HaveCount 3;
+
+                    $result[0].Synopsis | Should -BeExactly "This is an example baseline"
+                    $result[0].Kind | Should -BeExactly "Baseline";
+                    $result[0].Metadata | Should -Not -BeNullOrEmpty;
+                    $result[0].Metadata.Name | Should -BeExactly "Module4";
+                    $result[0].ApiVersion | Should -BeExactly "github.com/microsoft/PSRule/v1";
+                    $result[0].Spec | Should -Not -BeNullOrEmpty;
+
+                    $result[1].Synopsis | Should -BeExactly "This is an example baseline"
+                    $result[1].Kind | Should -BeExactly "Baseline";
+                    $result[1].Metadata | Should -Not -BeNullOrEmpty;
+                    $result[1].Metadata.Name | Should -BeExactly "Baseline2";
+                    $result[1].ApiVersion | Should -BeExactly "github.com/microsoft/PSRule/v1";
+                    $result[1].Spec | Should -Not -BeNullOrEmpty;
+
+                    $result[2].Synopsis | Should -BeExactly "This is an example baseline"
+                    $result[2].Kind | Should -BeExactly "Baseline";
+                    $result[2].Metadata | Should -Not -BeNullOrEmpty;
+                    $result[2].Metadata.Name | Should -BeExactly "Baseline3";
+                    $result[2].ApiVersion | Should -BeExactly "github.com/microsoft/PSRule/v1";
+                    $result[2].Spec | Should -Not -BeNullOrEmpty;
+
+                    # Generates correct JSON from module
+                    $result = @(Get-PSRuleBaseline -Module 'TestModule5' -OutputFormat Json -Option @{'Output.JsonIndent' = 4});
+                    $result | Should -Not -BeNullOrEmpty;
+                    Compare-Object -ReferenceObject ($allFourSpaceJsonBaslines -split '\r?\n') -DifferenceObject ($result -split '\r?\n') | Should -BeNullOrEmpty;
+                }
+            }
         }
     }
 }

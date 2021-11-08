@@ -8,7 +8,10 @@ using System.Linq;
 using System.Management.Automation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using PSRule.Annotations;
+using PSRule.Configuration;
 using PSRule.Data;
+using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -308,7 +311,10 @@ namespace PSRule
         }
     }
 
-    internal sealed class BaselineConverter : JsonConverter
+    /// <summary>
+    /// A custom serializer to convert Baseline object to JSON
+    /// </summary>
+    internal sealed class BaselineJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
@@ -341,6 +347,274 @@ namespace PSRule
                 .CreateProperties(type, memberSerialization)
                 .OrderBy(prop => prop.PropertyName)
                 .ToList();
+        }
+    }
+
+    /// <summary>
+    /// A customer deserializer to convert JSON into ResourceObject
+    /// </summary>
+    internal sealed class ResourceObjectJsonConverter : JsonConverter
+    {
+        private const string FIELD_APIVERSION = "apiVersion";
+        private const string FIELD_KIND = "kind";
+        private const string FIELD_METADATA = "metadata";
+        private const string FIELD_SPEC = "spec";
+
+        public override bool CanRead => true;
+
+        public override bool CanWrite => false;
+
+        private readonly SpecFactory _Factory;
+
+        public ResourceObjectJsonConverter()
+        {
+            _Factory = new SpecFactory();
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(ResourceObject);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var resource = MapResource(reader, serializer);
+            return new ResourceObject(resource);
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        private IResource MapResource(JsonReader reader, JsonSerializer serializer)
+        {
+            if (reader.TokenType != JsonToken.StartObject)
+            {
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
+            }
+
+            IResource result = null;
+            string apiVersion = null;
+            string kind = null;
+            ResourceMetadata metadata = null;
+            CommentMetadata comment = null;
+
+            if (reader.Read())
+            {
+                while (reader.TokenType != JsonToken.EndObject)
+                {
+                    if (reader.TokenType == JsonToken.PropertyName)
+                    {
+                        var propertyName = reader.Value.ToString();
+
+                        // Read apiVersion
+                        if (TryApiVersion(reader: reader, propertyName: propertyName, apiVersion: out string apiVersionValue))
+                        {
+                            apiVersion = apiVersionValue;
+                        }
+
+                        // Read kind
+                        else if (TryKind(reader: reader, propertyName: propertyName, kind: out string kindValue))
+                        {
+                            kind = kindValue;
+                        }
+
+                        // Read metadata
+                        else if (TryMetadata(
+                            reader: reader,
+                            serializer: serializer,
+                            propertyName: propertyName,
+                            metadata: out ResourceMetadata metadataValue))
+                        {
+                            metadata = metadataValue;
+                        }
+
+                        // Try Spec
+                        else if (kind != null && TrySpec(
+                            reader: reader,
+                            serializer: serializer,
+                            propertyName: propertyName,
+                            apiVersion: apiVersion,
+                            kind: kind,
+                            metadata: metadata,
+                            comment: comment,
+                            spec: out IResource specValue))
+                        {
+                            result = specValue;
+                        }
+
+                        else
+                        {
+                            reader.Skip();
+                        }
+
+                    }
+                    else if (reader.TokenType == JsonToken.Comment)
+                    {
+                        var commentLine = reader.Value.ToString().TrimStart();
+
+                        if (commentLine.StartsWith("Synopsis: "))
+                        {
+                            comment = new CommentMetadata
+                            {
+                                Synopsis = commentLine.Substring(10)
+                            };
+                        }
+                    }
+                    reader.Read();
+                }
+            }
+
+            return result;
+        }
+
+        private static bool TryApiVersion(JsonReader reader, string propertyName, out string apiVersion)
+        {
+            apiVersion = null;
+
+            if (propertyName == FIELD_APIVERSION)
+            {
+                apiVersion = reader.ReadAsString();
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryKind(JsonReader reader, string propertyName, out string kind)
+        {
+            kind = null;
+
+            if (propertyName == FIELD_KIND)
+            {
+                kind = reader.ReadAsString();
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryMetadata(JsonReader reader, JsonSerializer serializer, string propertyName, out ResourceMetadata metadata)
+        {
+            metadata = null;
+
+            if (propertyName == FIELD_METADATA)
+            {
+                reader.Read();
+                metadata = serializer.Deserialize<ResourceMetadata>(reader);
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool TrySpec(
+            JsonReader reader,
+            JsonSerializer serializer,
+            string propertyName,
+            string apiVersion,
+            string kind,
+            ResourceMetadata metadata,
+            CommentMetadata comment,
+            out IResource spec)
+        {
+            spec = null;
+
+            if (propertyName == FIELD_SPEC && _Factory.TryDescriptor(
+                apiVersion: apiVersion,
+                name: kind,
+                descriptor: out ISpecDescriptor descriptor))
+            {
+                reader.Read();
+
+                var deserializedSpec = serializer.Deserialize(reader, objectType: descriptor.SpecType);
+
+                spec = descriptor.CreateInstance(
+                    source: RunspaceContext.CurrentThread.Source.File,
+                    metadata: metadata,
+                    comment: comment,
+                    spec: deserializedSpec
+                );
+
+                if (string.IsNullOrEmpty(apiVersion))
+                {
+                    spec.SetApiVersionIssue();
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// A JSON converter for de/serializing a field map.
+    /// </summary>
+    internal sealed class FieldMapJsonConverter : JsonConverter
+    {
+        public override bool CanRead => true;
+
+        public override bool CanWrite => false;
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(FieldMap);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var fieldMap = existingValue as FieldMap ?? new FieldMap();
+
+            ReadFieldMap(fieldMap, reader);
+
+            return fieldMap;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ReadFieldMap(FieldMap map, JsonReader reader)
+        {
+            if (reader.TokenType != JsonToken.StartObject)
+            {
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
+            }
+
+            if (reader.Read())
+            {
+                string propertyName = null;
+
+                while (reader.TokenType != JsonToken.EndObject)
+                {
+                    if (reader.TokenType == JsonToken.PropertyName)
+                    {
+                        propertyName = reader.Value.ToString();
+                    }
+
+                    else if (reader.TokenType == JsonToken.StartArray)
+                    {
+                        var items = new List<string>();
+
+                        while (reader.TokenType != JsonToken.EndArray)
+                        {
+                            var item = reader.ReadAsString();
+
+                            if (!string.IsNullOrEmpty(item))
+                            {
+                                items.Add(item);
+                            }
+                        }
+
+                        map.Set(propertyName, items.ToArray());
+                    }
+
+                    reader.Read();
+                }
+            }
         }
     }
 }
