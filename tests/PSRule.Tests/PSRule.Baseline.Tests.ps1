@@ -492,7 +492,7 @@ Describe 'Get-PSRuleBaseline' -Tag 'Baseline','Get-PSRuleBaseline' {
                     # Gets baseline from module
                     $result = @(Get-PSRuleBaseline -Module 'TestModule5');
                     $result | Should -Not -BeNullOrEmpty;
-                    $result | Should -HaveCount 3;
+                    $result | Should -HaveCount 4;
 
                     $result[0].Synopsis | Should -BeExactly "This is an example baseline"
                     $result[0].Kind | Should -BeExactly "Baseline";
@@ -504,16 +504,23 @@ Describe 'Get-PSRuleBaseline' -Tag 'Baseline','Get-PSRuleBaseline' {
                     $result[1].Synopsis | Should -BeExactly "This is an example baseline"
                     $result[1].Kind | Should -BeExactly "Baseline";
                     $result[1].Metadata | Should -Not -BeNullOrEmpty;
-                    $result[1].Metadata.Name | Should -BeExactly "Baseline2";
+                    $result[1].Metadata.Name | Should -BeExactly "Module4a";
                     $result[1].ApiVersion | Should -BeExactly "github.com/microsoft/PSRule/v1";
                     $result[1].Spec | Should -Not -BeNullOrEmpty;
 
                     $result[2].Synopsis | Should -BeExactly "This is an example baseline"
                     $result[2].Kind | Should -BeExactly "Baseline";
                     $result[2].Metadata | Should -Not -BeNullOrEmpty;
-                    $result[2].Metadata.Name | Should -BeExactly "Baseline3";
+                    $result[2].Metadata.Name | Should -BeExactly "Baseline2";
                     $result[2].ApiVersion | Should -BeExactly "github.com/microsoft/PSRule/v1";
                     $result[2].Spec | Should -Not -BeNullOrEmpty;
+
+                    $result[3].Synopsis | Should -BeExactly "This is an example baseline"
+                    $result[3].Kind | Should -BeExactly "Baseline";
+                    $result[3].Metadata | Should -Not -BeNullOrEmpty;
+                    $result[3].Metadata.Name | Should -BeExactly "Baseline3";
+                    $result[3].ApiVersion | Should -BeExactly "github.com/microsoft/PSRule/v1";
+                    $result[3].Spec | Should -Not -BeNullOrEmpty;
 
                     # Generates correct JSON from module
                     $result = @(Get-PSRuleBaseline -Module 'TestModule5' -OutputFormat Json -Option @{'Output.JsonIndent' = 4});
