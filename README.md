@@ -397,7 +397,8 @@ The following conceptual topics exist in the `PSRule` module:
 PSRule uses the following schemas:
 
 - [Options](schemas/PSRule-options.schema.json) - Schema for PSRule YAML options file.
-- [Resources](schemas/PSRule-language.schema.json) - Schema for PSRule YAML resources such as baselines.
+- [Language](schemas/PSRule-language.schema.json) - Schema for PSRule resources such as baselines.
+- [Resources](schemas/PSRule-resources.schema.json) - Schema for PSRule resources documents used with JSON.
 
 ## Related projects
 

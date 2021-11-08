@@ -14,6 +14,7 @@ What's changed since pre-release v1.9.0-B2111009:
 
 - General improvements:
   - Allow downstream issues to be consumed. [#843](https://github.com/microsoft/PSRule/issues/843)
+  - Added JSON support to read baselines from pipeline. [#845](https://github.com/microsoft/PSRule/issues/845)
 
 ## v1.9.0-B2111009 (pre-release)
 

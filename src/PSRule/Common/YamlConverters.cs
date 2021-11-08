@@ -542,12 +542,12 @@ namespace PSRule
             return result;
         }
 
-        private static bool TryApiVersion(IParser reader, Scalar scalar, out string kind)
+        private static bool TryApiVersion(IParser reader, Scalar scalar, out string apiVersion)
         {
-            kind = null;
+            apiVersion = null;
             if (scalar.Value == FIELD_APIVERSION)
             {
-                kind = reader.Consume<Scalar>().Value;
+                apiVersion = reader.Consume<Scalar>().Value;
                 return true;
             }
             return false;
