@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Management.Automation;
 using Newtonsoft.Json;
 using PSRule.Configuration;
-using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using YamlDotNet.Serialization;
@@ -40,7 +39,7 @@ namespace PSRule.Definitions.Baselines
         [YamlIgnore]
         public string Synopsis => Info.Synopsis;
 
-        string ILanguageBlock.Id => Name;
+        //string ILanguageBlock.Id => Name;
     }
 
     public sealed class BaselineSpec : Spec, IBaselineSpec

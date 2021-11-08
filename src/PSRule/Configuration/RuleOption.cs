@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -18,9 +18,10 @@ namespace PSRule.Configuration
 
         public RuleOption()
         {
+            Baseline = null;
+            Exclude = null;
             IncludeLocal = null;
             Include = null;
-            Exclude = null;
             Tag = null;
         }
 
@@ -29,9 +30,10 @@ namespace PSRule.Configuration
             if (option == null)
                 return;
 
+            Baseline = option.Baseline;
+            Exclude = option.Exclude;
             IncludeLocal = option.IncludeLocal;
             Include = option.Include;
-            Exclude = option.Exclude;
             Tag = option.Tag;
         }
 
@@ -43,9 +45,10 @@ namespace PSRule.Configuration
         public bool Equals(RuleOption other)
         {
             return other != null &&
+                Baseline == other.Baseline &&
+                Exclude == other.Exclude &&
                 IncludeLocal == other.IncludeLocal &&
                 Include == other.Include &&
-                Exclude == other.Exclude &&
                 Tag == other.Tag;
         }
 
@@ -54,9 +57,10 @@ namespace PSRule.Configuration
             unchecked // Overflow is fine
             {
                 int hash = 17;
+                hash = hash * 23 + (Baseline != null ? Baseline.GetHashCode() : 0);
+                hash = hash * 23 + (Exclude != null ? Exclude.GetHashCode() : 0);
                 hash = hash * 23 + (IncludeLocal.HasValue ? IncludeLocal.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Include != null ? Include.GetHashCode() : 0);
-                hash = hash * 23 + (Exclude != null ? Exclude.GetHashCode() : 0);
                 hash = hash * 23 + (Tag != null ? Tag.GetHashCode() : 0);
                 return hash;
             }
@@ -66,13 +70,26 @@ namespace PSRule.Configuration
         {
             var result = new RuleOption(o1)
             {
+                Baseline = o1.Baseline ?? o2.Baseline,
+                Exclude = o1.Exclude ?? o2.Exclude,
                 IncludeLocal = o1.IncludeLocal ?? o2.IncludeLocal,
                 Include = o1.Include ?? o2.Include,
-                Exclude = o1.Exclude ?? o2.Exclude,
                 Tag = o1.Tag ?? o2.Tag
             };
             return result;
         }
+
+        /// <summary>
+        /// The name of a baseline to use.
+        /// </summary>
+        [DefaultValue(null)]
+        public string Baseline { get; set; }
+
+        /// <summary>
+        /// A set of rules to exclude for execution.
+        /// </summary>
+        [DefaultValue(null)]
+        public string[] Exclude { get; set; }
 
         /// <summary>
         /// Automatically include all local rules in the search path unless they have been explicitly excluded.
@@ -85,12 +102,6 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public string[] Include { get; set; }
-
-        /// <summary>
-        /// A set of rules to exclude for execution.
-        /// </summary>
-        [DefaultValue(null)]
-        public string[] Exclude { get; set; }
 
         /// <summary>
         /// A set of rule tags to include for execution.

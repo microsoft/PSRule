@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using PSRule.Host;
@@ -272,6 +273,7 @@ namespace PSRule.Definitions
         public string Synopsis { get; private set; }
     }
 
+    [DebuggerDisplay("Kind = {Kind}, Id = {Id}")]
     public abstract class Resource<TSpec> where TSpec : Spec, new()
     {
         protected Resource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, TSpec spec)
@@ -368,8 +370,20 @@ namespace PSRule.Definitions
             if (string.IsNullOrEmpty(defaultScope))
                 defaultScope = LanguageScope.STANDALONE_SCOPENAME;
 
+            ParseIdString(id, out scope, out name);
+            if (scope == null)
+                scope = defaultScope;
+        }
+
+        internal static void ParseIdString(string id, out string scope, out string name)
+        {
+            scope = null;
+            name = null;
+            if (string.IsNullOrEmpty(id))
+                return;
+
             var index = id.IndexOf(ID_SEPARATOR);
-            scope = index >= 0 ? id.Substring(0, index) : defaultScope;
+            scope = index >= 0 ? id.Substring(0, index) : null;
             name = id.Substring(index + 1);
         }
 
@@ -409,6 +423,39 @@ namespace PSRule.Definitions
                 return false;
 
             return obsolete.GetValueOrDefault(false);
+        }
+    }
+
+    internal sealed class ResourceIdEqualityComparer : EqualityComparer<string>
+    {
+        public override bool Equals(string x, string y)
+        {
+            return IdEquals(x, y);
+        }
+
+        public override int GetHashCode(string obj)
+        {
+            ResourceHelper.ParseIdString(obj, out string scope, out string name);
+            unchecked // Overflow is fine
+            {
+                int hash = 17;
+                hash = hash * 23 + (scope != null ? scope.GetHashCode() : 0);
+                hash = hash * 23 + (name != null ? name.GetHashCode() : 0);
+                return hash;
+            }
+        }
+
+        public static bool IdEquals(string x, string y)
+        {
+            ResourceHelper.ParseIdString(x, out string scope_x, out string name_x);
+            ResourceHelper.ParseIdString(y, out string scope_y, out string name_y);
+            return EqualOrNull(scope_x, scope_y) &&
+                EqualOrNull(name_x, name_y);
+        }
+
+        private static bool EqualOrNull(string x, string y)
+        {
+            return x == null || y == null || StringComparer.OrdinalIgnoreCase.Equals(x, y);
         }
     }
 }

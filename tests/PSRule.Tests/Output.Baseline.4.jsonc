@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
-
 [
     {
         // Synopsis: This is an example baseline
@@ -108,7 +105,7 @@
         "spec": {
             "binding": {
                 "field": {
-                    "AlternativeType": [
+                    "alternativeType": [
                         "AlternateName"
                     ]
                 },

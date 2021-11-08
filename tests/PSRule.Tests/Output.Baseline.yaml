@@ -1,7 +1,3 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License.
-
----
 # Synopsis: This is an example baseline
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
@@ -13,18 +9,17 @@ spec:
       kind:
       - Id
       uniqueIdentifer:
+      - AlternateName
       - Id
-      - AlternateName
     targetName:
-      - AlternateName
+    - AlternateName
     targetType:
-      - Kind
+    - Kind
+  configuration:
+    ruleConfig1: Test
   rule:
     include:
-    - 'M4.Rule1'
-  configuration:
-    ruleConfig1: 'Test'
-
+    - M4.Rule1
 ---
 # Synopsis: This is an example baseline
 apiVersion: github.com/microsoft/PSRule/v1
@@ -37,18 +32,17 @@ spec:
       kind:
       - Id
       uniqueIdentifer:
+      - AlternateName
       - Id
-      - AlternateName
     targetName:
-      - AlternateName
+    - AlternateName
     targetType:
-      - Kind
+    - Kind
+  configuration:
+    ruleConfig1: Test2
   rule:
     include:
-    - 'M4.Rule1'
-  configuration:
-    ruleConfig1: 'Test2'
-
+    - M4.Rule1
 ---
 # Synopsis: This is an example baseline
 apiVersion: github.com/microsoft/PSRule/v1
@@ -58,15 +52,14 @@ metadata:
 spec:
   binding:
     targetName:
-      - AlternateName
+    - AlternateName
     targetType:
-      - Kind
+    - Kind
+  configuration:
+    ruleConfig2: Test3
   rule:
     include:
-    - 'M4.Rule1'
-  configuration:
-    ruleConfig2: 'Test3'
-
+    - M4.Rule1
 ---
 # Synopsis: This is an example baseline
 apiVersion: github.com/microsoft/PSRule/v1
@@ -75,14 +68,15 @@ metadata:
   name: Baseline3
 spec:
   binding:
-    targetName:
-      - AlternateName
-    targetType:
-      - Kind
     field:
-      AlternativeType: [ 'AlternateName' ]
+      alternativeType:
+      - AlternateName
+    targetName:
+    - AlternateName
+    targetType:
+    - Kind
+  configuration:
+    ruleConfig2: Test3
   rule:
     include:
-    - 'M4.Rule1'
-  configuration:
-    ruleConfig2: 'Test3'
+    - M4.Rule1

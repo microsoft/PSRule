@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Management.Automation;
 using System.Reflection;
 using System.Text;
@@ -255,14 +255,17 @@ namespace PSRule.Pipeline
 
         protected PipelineContext PrepareContext(BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField)
         {
-            var unresolved = new Dictionary<string, ResourceRef>(StringComparer.OrdinalIgnoreCase);
+            var unresolved = new List<ResourceRef>();
             if (_Baseline is BaselineOption.BaselineRef baselineRef)
-                unresolved.Add(baselineRef.Name, new BaselineRef(baselineRef.Name, OptionContext.ScopeType.Explicit));
+                unresolved.Add(new BaselineRef(baselineRef.Name, OptionContext.ScopeType.Explicit));
 
             for (var i = 0; Source != null && i < Source.Length; i++)
             {
-                if (Source[i].Module != null && Source[i].Module.Baseline != null && !unresolved.ContainsKey(Source[i].Module.Baseline))
-                    unresolved.Add(Source[i].Module.Baseline, new BaselineRef(Source[i].Module.Baseline, OptionContext.ScopeType.Module));
+                if (Source[i].Module != null && Source[i].Module.Baseline != null && !unresolved.Any(u => ResourceIdEqualityComparer.IdEquals(u.Id, Source[i].Module.Baseline)))
+                {
+                    unresolved.Add(new BaselineRef(Source[i].Module.Baseline, OptionContext.ScopeType.Module));
+                    PrepareWriter().WarnModuleManifestBaseline(Source[i].Module.Name);
+                }
             }
 
             return PipelineContext.New(

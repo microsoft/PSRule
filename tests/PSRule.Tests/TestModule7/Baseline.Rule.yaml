@@ -1,0 +1,47 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: ModuleConfig
+metadata:
+  name: TestModule7
+spec:
+  output:
+    culture:
+    - 'en-US'
+  rule:
+    baseline: 'TestModule7\Module7'
+
+---
+# Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  name: Module7
+spec:
+  rule:
+    include:
+    - 'TestModule7\M7.Rule2'
+
+---
+# Synopsis: An example rule
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: M7.Rule1
+spec:
+  condition:
+    field: 'name'
+    exists: true
+
+---
+# Synopsis: An example rule
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: M7.Rule2
+spec:
+  condition:
+    field: 'name'
+    exists: true

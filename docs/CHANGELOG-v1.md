@@ -7,6 +7,7 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 **Important notes**:
 
 - YAML resources will require an `apiVersion` from PSRule v2. [#648](https://github.com/microsoft/PSRule/issues/648)
+- Setting the default module baseline requires a module configuration from PSRule v2. [#809](https://github.com/microsoft/PSRule/issues/809)
 
 ## Unreleased
 
@@ -14,6 +15,13 @@ What's changed since pre-release v1.9.0-B2111009:
 
 - General improvements:
   - Allow downstream issues to be consumed. [#843](https://github.com/microsoft/PSRule/issues/843)
+    - Objects can be flagged with issues that have been generated externally.
+    - See [about_PSRule_Assert] for details.
+  - Migrated default baseline to module configuration. [#809](https://github.com/microsoft/PSRule/issues/809)
+    - This enables configuration of the default baseline for a module with a module configuration.
+    - This depreciate configuring the default baseline within the module manifest.
+    - Modules using manifest configuration will start warning from v1.9.0.
+    - See [about_PSRule_Options] for details.
   - Added JSON support to read baselines from pipeline. [#845](https://github.com/microsoft/PSRule/issues/845)
 
 ## v1.9.0-B2111009 (pre-release)

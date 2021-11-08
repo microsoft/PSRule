@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Security.Cryptography;
@@ -29,7 +30,7 @@ namespace PSRule.Pipeline
         internal static PipelineContext CurrentThread;
 
         // Configuration parameters
-        private readonly IDictionary<string, ResourceRef> _Unresolved;
+        private readonly IList<ResourceRef> _Unresolved;
         private readonly LanguageMode _LanguageMode;
         private readonly Dictionary<string, NameToken> _NameTokenCache;
         private readonly List<ResourceIssue> _TrackedIssues;
@@ -68,7 +69,7 @@ namespace PSRule.Pipeline
             }
         }
 
-        private PipelineContext(PSRuleOption option, HostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
+        private PipelineContext(PSRuleOption option, HostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IList<ResourceRef> unresolved)
         {
             Option = option;
             HostContext = hostContext;
@@ -83,13 +84,13 @@ namespace PSRule.Pipeline
             ContentCache = new Dictionary<string, PSObject[]>();
             Selector = new Dictionary<string, SelectorVisitor>();
             Baseline = baseline;
-            _Unresolved = unresolved;
+            _Unresolved = unresolved ?? new List<ResourceRef>();
             _TrackedIssues = new List<ResourceIssue>();
             RunId = EnvironmentHelper.Default.GetRunId() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
             RunTime = Stopwatch.StartNew();
         }
 
-        public static PipelineContext New(PSRuleOption option, HostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IDictionary<string, ResourceRef> unresolved)
+        public static PipelineContext New(PSRuleOption option, HostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IList<ResourceRef> unresolved)
         {
             var context = new PipelineContext(option, hostContext, reader, bindTargetName, bindTargetType, bindField, baseline, unresolved);
             CurrentThread = context;
@@ -162,19 +163,45 @@ namespace PSRule.Pipeline
             if (resource.GetApiVersionIssue())
                 _TrackedIssues.Add(new ResourceIssue(resource.Kind, resource.Id, ResourceIssueType.MissingApiVersion));
 
-            if (_Unresolved != null && resource.Kind == ResourceKind.Baseline && resource is Baseline baseline && _Unresolved.TryGetValue(resource.Id, out ResourceRef rr) && rr is BaselineRef baselineRef)
+            if (TryBaseline(resource, out Baseline baseline) && TryBaselineRef(resource.Id, out BaselineRef baselineRef))
             {
-                _Unresolved.Remove(resource.Id);
+                _Unresolved.Remove(baselineRef);
                 Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, baseline.BaselineId, resource.Module, baseline.Spec, baseline.Obsolete));
             }
             else if (resource.Kind == ResourceKind.Selector && resource is SelectorV1 selector)
                 Selector[selector.Id] = new SelectorVisitor(resource.Module, selector.Id, selector.Spec.If);
             else if (TryModuleConfig(resource, out ModuleConfigV1 moduleConfig))
             {
+                if (!string.IsNullOrEmpty(moduleConfig?.Spec?.Rule?.Baseline))
+                {
+                    var baselineId = ResourceHelper.GetIdString(moduleConfig.Source.ModuleName, moduleConfig.Spec.Rule.Baseline);
+                    if (!Baseline.ContainsBaseline(baselineId))
+                        _Unresolved.Add(new BaselineRef(baselineId, OptionContext.ScopeType.Module));
+                }
                 Baseline.Add(new OptionContext.ConfigScope(OptionContext.ScopeType.Module, resource.Module, moduleConfig.Spec));
-
-                //_ConventionOrder.AddRange = moduleConfig?.Spec?.Convention?.Include;
             }
+        }
+
+        private bool TryBaselineRef(string resourceId, out BaselineRef baselineRef)
+        {
+            baselineRef = null;
+            var r = _Unresolved.FirstOrDefault(i => ResourceIdEqualityComparer.IdEquals(i.Id, resourceId));
+            if (r == null || !(r is BaselineRef br))
+                return false;
+
+            baselineRef = br;
+            return true;
+        }
+
+        private static bool TryBaseline(IResource resource, out Baseline baseline)
+        {
+            baseline = null;
+            if (resource.Kind == ResourceKind.Baseline && resource is Baseline result)
+            {
+                baseline = result;
+                return true;
+            }
+            return false;
         }
 
         private static bool TryModuleConfig(IResource resource, out ModuleConfigV1 moduleConfig)
@@ -196,7 +223,6 @@ namespace PSRule.Pipeline
                     runspaceContext.WarnMissingApiVersion(_TrackedIssues[i].Kind, _TrackedIssues[i].Id);
             }
             Baseline.Init(runspaceContext);
-            //Baseline.
         }
 
         #region IBindingContext

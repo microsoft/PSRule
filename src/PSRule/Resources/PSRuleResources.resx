@@ -194,6 +194,9 @@
   <data name="MissingApiVersion" xml:space="preserve">
     <value>The {0} resource {1} does not have an apiVersion set. An apiVersion will be required in the next major version.</value>
   </data>
+  <data name="ModuleManifestBaseline" xml:space="preserve">
+    <value>Update module '{0}' to set the default baseline using a module configuration resource instead. Configuring the default baseline via manifest will be removed in the next major version. See https://aka.ms/ps-rule/module-config.</value>
+  </data>
   <data name="ObjectNotProcessed" xml:space="preserve">
     <value>Target object '{0}' has not been processed because no matching rules were found.</value>
   </data>

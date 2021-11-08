@@ -597,7 +597,14 @@ namespace PSRule.Host
 
         private static void Import(ILanguageBlock[] blocks, RunspaceContext context)
         {
-            foreach (var resource in blocks.OfType<IResource>().ToArray())
+            var resources = blocks.OfType<IResource>();
+
+            // Process module configurations first
+            foreach (var resource in resources.Where(r => r.Kind == ResourceKind.ModuleConfig).ToArray())
+                context.Pipeline.Import(resource);
+
+            // Process other resources
+            foreach (var resource in resources.Where(r => r.Kind != ResourceKind.ModuleConfig).ToArray())
                 context.Pipeline.Import(resource);
         }
 

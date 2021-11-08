@@ -52,6 +52,7 @@ Additionally the following baseline options can be included:
 - [Binding.TargetType](#bindingtargettype)
 - [Binding.UseQualifiedName](#bindingusequalifiedname)
 - [Configuration](#configuration)
+- [Rule.Baseline](#rulebaseline)
 - [Rule.Include](#ruleinclude)
 - [Rule.IncludeLocal](#ruleincludelocal)
 - [Rule.Exclude](#ruleexclude)
@@ -2064,6 +2065,25 @@ variables:
   value: '>=1.0.0'
 - name: PSRULE_REQUIRES_PSRULE_RULES_CAF
   value: '@pre >=0.1.0'
+```
+
+### Rule.Baseline
+
+The name of a default baseline to use for the module.
+Currently this option can only be set within a module configuration resource.
+
+For example:
+
+```yaml
+---
+# Synopsis: Example module configuration for Enterprise.Rules module.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: ModuleConfig
+metadata:
+  name: Enterprise.Rules
+spec:
+  rule:
+    baseline: Enterprise.Baseline1
 ```
 
 ### Rule.Include

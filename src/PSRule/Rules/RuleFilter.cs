@@ -1,9 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Definitions;
@@ -16,8 +15,8 @@ namespace PSRule.Rules
     /// </summary>
     internal sealed class RuleFilter : IResourceFilter
     {
-        private readonly HashSet<string> _Include;
-        private readonly HashSet<string> _Excluded;
+        private readonly string[] _Include;
+        private readonly string[] _Excluded;
         private readonly Hashtable _Tag;
         private readonly bool _IncludeLocal;
         private readonly WildcardPattern _WildcardMatch;
@@ -30,8 +29,8 @@ namespace PSRule.Rules
         /// <param name="exclude">Rule that are always excluded by name.</param>
         public RuleFilter(string[] include, Hashtable tag, string[] exclude, bool? includeLocal)
         {
-            _Include = include == null || include.Length == 0 ? null : new HashSet<string>(include, StringComparer.OrdinalIgnoreCase);
-            _Excluded = exclude == null || exclude.Length == 0 ? null : new HashSet<string>(exclude, StringComparer.OrdinalIgnoreCase);
+            _Include = include == null || include.Length == 0 ? null : include;
+            _Excluded = exclude == null || exclude.Length == 0 ? null : exclude;
             _Tag = tag ?? null;
             _IncludeLocal = includeLocal ?? RuleOption.Default.IncludeLocal.Value;
             _WildcardMatch = null;
@@ -72,12 +71,12 @@ namespace PSRule.Rules
 
         private bool IsExcluded(string name)
         {
-            return _Excluded != null && _Excluded.Contains(name);
+            return _Excluded != null && Contains(name, _Excluded);
         }
 
         private bool IsIncluded(string name, ResourceTags tag)
         {
-            if (_Include == null || _Include.Contains(name) || MatchWildcard(name))
+            if (_Include == null || Contains(name, _Include) || MatchWildcard(name))
             {
                 if (_Tag == null)
                     return true;
@@ -95,14 +94,18 @@ namespace PSRule.Rules
             return false;
         }
 
+        private bool Contains(string name, string[] set)
+        {
+            for (var i = 0; set != null && i < set.Length; i++)
+                if (ResourceIdEqualityComparer.IdEquals(name, set[i]))
+                    return true;
+
+            return false;
+        }
+
         private bool MatchWildcard(string name)
         {
-            if (_WildcardMatch == null)
-            {
-                return false;
-            }
-
-            return _WildcardMatch.IsMatch(name);
+            return _WildcardMatch != null && _WildcardMatch.IsMatch(name);
         }
     }
 }
