@@ -11,6 +11,8 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.9.0-B2111024 (pre-release)
+
 What's changed since pre-release v1.9.0-B2111009:
 
 - General improvements:
@@ -23,6 +25,8 @@ What's changed since pre-release v1.9.0-B2111009:
     - Modules using manifest configuration will start warning from v1.9.0.
     - See [about_PSRule_Options] for details.
   - Added JSON support to read baselines from pipeline. [#845](https://github.com/microsoft/PSRule/issues/845)
+- Engineering:
+  - Bump System.Drawing.Common dependency to v6.0.0. [#848](https://github.com/microsoft/PSRule/pull/848)
 
 ## v1.9.0-B2111009 (pre-release)
 
