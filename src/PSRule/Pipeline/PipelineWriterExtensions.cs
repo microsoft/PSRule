@@ -34,6 +34,14 @@ namespace PSRule.Pipeline
             writer.WriteWarning(PSRuleResources.RulePathNotFound);
         }
 
+        internal static void WarnModuleManifestBaseline(this IPipelineWriter writer, string moduleName)
+        {
+            if (!writer.ShouldWriteWarning())
+                return;
+
+            writer.WriteWarning(PSRuleResources.ModuleManifestBaseline, moduleName);
+        }
+
         internal static void WriteWarning(this IPipelineWriter writer, string message, params object[] args)
         {
             if (!writer.ShouldWriteWarning() || string.IsNullOrEmpty(message))

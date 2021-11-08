@@ -253,6 +253,11 @@ namespace PSRule.Pipeline
             }
         }
 
+        public bool ContainsBaseline(string baselineId)
+        {
+            return _ModuleBaselineScope.ContainsKey(baselineId);
+        }
+
         public void UseScope(string moduleName)
         {
             _ModuleConfig = !string.IsNullOrEmpty(moduleName) && _ModuleConfigScope.TryGetValue(moduleName, out ConfigScope configScope) ? configScope : null;
@@ -339,7 +344,7 @@ namespace PSRule.Pipeline
         internal void Add(BaselineScope scope)
         {
             var conventions = scope?.Convention?.Include;
-            if (scope.Type == ScopeType.Module && !string.IsNullOrEmpty(scope.ModuleName))
+            if (scope.Type == ScopeType.Module && !string.IsNullOrEmpty(scope.ModuleName) && !_ModuleBaselineScope.ContainsKey(scope.ModuleName))
             {
                 _ModuleBaselineScope.Add(scope.ModuleName, scope);
                 conventions = GetConventions(scope.ModuleName, scope?.Convention?.Include);

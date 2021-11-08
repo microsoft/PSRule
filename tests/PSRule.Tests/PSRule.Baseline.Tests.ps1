@@ -29,269 +29,11 @@ BeforeAll {
 
     #region TestCases
 
-    $allYamlBaselines = @"
-`# Synopsis: This is an example baseline
-apiVersion: github.com/microsoft/PSRule/v1
-kind: Baseline
-metadata:
-  name: Module4
-spec:
-  binding:
-    field:
-      kind:
-      - Id
-      uniqueIdentifer:
-      - AlternateName
-      - Id
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
-  configuration:
-    ruleConfig1: Test
-  rule:
-    include:
-    - M4.Rule1
----
-`# Synopsis: This is an example baseline
-apiVersion: github.com/microsoft/PSRule/v1
-kind: Baseline
-metadata:
-  name: Baseline2
-spec:
-  binding:
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
-  configuration:
-    ruleConfig2: Test3
-  rule:
-    include:
-    - M4.Rule1
----
-`# Synopsis: This is an example baseline
-apiVersion: github.com/microsoft/PSRule/v1
-kind: Baseline
-metadata:
-  name: Baseline3
-spec:
-  binding:
-    field:
-      alternativeType:
-      - AlternateName
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
-  configuration:
-    ruleConfig2: Test3
-  rule:
-    include:
-    - M4.Rule1
-"@
+    $allYamlBaselines = Get-Content -Path (Join-Path -Path $here -ChildPath 'Output.Baseline.yaml') -Raw;
+    $allFourSpaceJsonBaslines = Get-Content -Path (Join-Path -Path $here -ChildPath 'Output.Baseline.4.jsonc') -Raw;
+    $allTwoSpaceJsonBaslines = Get-Content -Path (Join-Path -Path $here -ChildPath 'Output.Baseline.2.jsonc') -Raw;
+    $allZeroSpaceJsonBaslines = Get-Content -Path (Join-Path -Path $here -ChildPath 'Output.Baseline.0.jsonc') -Raw;
 
-    $allFourSpaceJsonBaslines = @"
-[
-    {
-        // Synopsis: This is an example baseline
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Baseline",
-        "metadata": {
-            "name": "Module4"
-        },
-        "spec": {
-            "binding": {
-                "field": {
-                    "kind": [
-                        "Id"
-                    ],
-                    "uniqueIdentifer": [
-                        "AlternateName",
-                        "Id"
-                    ]
-                },
-                "targetName": [
-                    "AlternateName"
-                ],
-                "targetType": [
-                    "Kind"
-                ]
-            },
-            "configuration": {
-                "ruleConfig1": "Test"
-            },
-            "rule": {
-                "include": [
-                    "M4.Rule1"
-                ]
-            }
-        }
-    },
-    {
-        // Synopsis: This is an example baseline
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Baseline",
-        "metadata": {
-            "name": "Baseline2"
-        },
-        "spec": {
-            "binding": {
-                "targetName": [
-                    "AlternateName"
-                ],
-                "targetType": [
-                    "Kind"
-                ]
-            },
-            "configuration": {
-                "ruleConfig2": "Test3"
-            },
-            "rule": {
-                "include": [
-                    "M4.Rule1"
-                ]
-            }
-        }
-    },
-    {
-        // Synopsis: This is an example baseline
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Baseline",
-        "metadata": {
-            "name": "Baseline3"
-        },
-        "spec": {
-            "binding": {
-                "field": {
-                    "alternativeType": [
-                        "AlternateName"
-                    ]
-                },
-                "targetName": [
-                    "AlternateName"
-                ],
-                "targetType": [
-                    "Kind"
-                ]
-            },
-            "configuration": {
-                "ruleConfig2": "Test3"
-            },
-            "rule": {
-                "include": [
-                    "M4.Rule1"
-                ]
-            }
-        }
-    }
-]
-"@
-    $allTwoSpaceJsonBaslines = @"
-[
-  {
-    // Synopsis: This is an example baseline
-    "apiVersion": "github.com/microsoft/PSRule/v1",
-    "kind": "Baseline",
-    "metadata": {
-      "name": "Module4"
-    },
-    "spec": {
-      "binding": {
-        "field": {
-          "kind": [
-            "Id"
-          ],
-          "uniqueIdentifer": [
-            "AlternateName",
-            "Id"
-          ]
-        },
-        "targetName": [
-          "AlternateName"
-        ],
-        "targetType": [
-          "Kind"
-        ]
-      },
-      "configuration": {
-        "ruleConfig1": "Test"
-      },
-      "rule": {
-        "include": [
-          "M4.Rule1"
-        ]
-      }
-    }
-  },
-  {
-    // Synopsis: This is an example baseline
-    "apiVersion": "github.com/microsoft/PSRule/v1",
-    "kind": "Baseline",
-    "metadata": {
-      "name": "Baseline2"
-    },
-    "spec": {
-      "binding": {
-        "targetName": [
-          "AlternateName"
-        ],
-        "targetType": [
-          "Kind"
-        ]
-      },
-      "configuration": {
-        "ruleConfig2": "Test3"
-      },
-      "rule": {
-        "include": [
-          "M4.Rule1"
-        ]
-      }
-    }
-  },
-  {
-    // Synopsis: This is an example baseline
-    "apiVersion": "github.com/microsoft/PSRule/v1",
-    "kind": "Baseline",
-    "metadata": {
-      "name": "Baseline3"
-    },
-    "spec": {
-      "binding": {
-        "field": {
-          "alternativeType": [
-            "AlternateName"
-          ]
-        },
-        "targetName": [
-          "AlternateName"
-        ],
-        "targetType": [
-          "Kind"
-        ]
-      },
-      "configuration": {
-        "ruleConfig2": "Test3"
-      },
-      "rule": {
-        "include": [
-          "M4.Rule1"
-        ]
-      }
-    }
-  }
-]
-"@
-    $allZeroSpaceJsonBaslines = @"
-[{
-// Synopsis: This is an example baseline
-"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Module4"},"spec":{"binding":{"field":{"kind":["Id"],"uniqueIdentifer":["AlternateName","Id"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig1":"Test"},"rule":{"include":["M4.Rule1"]}}},{
-// Synopsis: This is an example baseline
-"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline2"},"spec":{"binding":{"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}},{
-// Synopsis: This is an example baseline
-"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline3"},"spec":{"binding":{"field":{"alternativeType":["AlternateName"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}}]
-"@
     #endregion
 }
 
@@ -318,6 +60,30 @@ spec:
     - Kind
   configuration:
     ruleConfig1: Test
+  rule:
+    include:
+    - M4.Rule1
+"@}
+@{Baseline = 'Module4a'; ExpectedYaml = @"
+`# Synopsis: This is an example baseline
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  name: Module4a
+spec:
+  binding:
+    field:
+      kind:
+      - Id
+      uniqueIdentifer:
+      - AlternateName
+      - Id
+    targetName:
+    - AlternateName
+    targetType:
+    - Kind
+  configuration:
+    ruleConfig1: Test2
   rule:
     include:
     - M4.Rule1
@@ -622,8 +388,8 @@ Describe 'Get-PSRuleBaseline' -Tag 'Baseline','Get-PSRuleBaseline' {
 
             $result = @(Get-PSRuleBaseline -Module 'TestModule4');
             $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 3;
-            $result.Name | Should -BeIn 'Module4', 'Baseline2', 'Baseline3';
+            $result.Length | Should -Be 4;
+            $result.Name | Should -BeIn 'Module4', 'Module4a', 'Baseline2', 'Baseline3';
             $result.Module | Should -BeIn 'TestModule4';
 
             # Filter by name
@@ -878,7 +644,7 @@ Describe 'Baseline' -Tag 'Baseline' {
                 $_ -notlike "The * resource * does not have an apiVersion set.*"
             });
             $warnings.Length | Should -Be 1;
-            $warnings[0] | Should -BeLike "*'TestBaseline5'*";
+            $warnings[0] | Should -BeExactly "The baseline 'TestBaseline5' is obsolete. Consider switching to an alternative baseline.";
         }
 
         It 'With -Module' {
@@ -962,6 +728,26 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 3;
             $result.RuleName | Should -BeIn 'M4.Rule1', 'WithBaseline', 'NotInBaseline';
+
+            # Module default via manifest and config
+            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule6') -Force;
+            $result = @(Get-PSRule -Module TestModule6 -WarningVariable outWarn -WarningAction SilentlyContinue);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result[0].RuleName | Should -Be 'M6.Rule1';
+            $warnings = @($outWarn);
+            $warnings.Length | Should -Be 1;
+            $warnings | Should -BeExactly "Update module 'TestModule6' to set the default baseline using a module configuration resource instead. Configuring the default baseline via manifest will be removed in the next major version. See https://aka.ms/ps-rule/module-config.";
+
+            # Module default via manifest
+            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule7') -Force;
+            $result = @(Get-PSRule -Module TestModule7 -WarningVariable outWarn -WarningAction SilentlyContinue);
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result[0].RuleName | Should -Be 'M7.Rule2';
+            $warnings = @($outWarn);
+            $warnings.Length | Should -Be 1;
+            $warnings | Should -BeExactly "Update module 'TestModule7' to set the default baseline using a module configuration resource instead. Configuring the default baseline via manifest will be removed in the next major version. See https://aka.ms/ps-rule/module-config.";
         }
     }
 

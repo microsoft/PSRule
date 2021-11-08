@@ -17,7 +17,7 @@ ModuleVersion = '0.0.1'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '747039cb-8f49-426d-b205-bf45d72da5dc'
+GUID = '9351337d-174d-4ef1-ac48-3a19f19b8040'
 
 # Author of this module
 Author = 'Bernie White'
@@ -106,6 +106,9 @@ PrivateData = @{
         # ReleaseNotes of this module
         # ReleaseNotes = ''
     } # End of PSData hashtable
+    PSRule = @{
+        Baseline = 'Module6b'
+    }
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module

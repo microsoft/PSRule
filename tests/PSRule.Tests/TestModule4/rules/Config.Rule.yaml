@@ -19,3 +19,5 @@ spec:
   binding:
     field:
       AlternativeType: [ 'Kind' ]
+  rule:
+    baseline: 'Module4'

@@ -16,14 +16,9 @@ spec:
       - Id
       - AlternateName
     targetName:
-      #field:
-      - AlternateName
+    - AlternateName
     targetType:
-      #field:
-      - kind
-      #aggregate:
-      #- virtualNetwork:
-      #  - 'Microsoft.Networking/virtualNetworks'
+    - kind
   rule:
     include:
     - 'WithBaseline'
@@ -42,14 +37,9 @@ metadata:
 spec:
   binding:
     targetName:
-      #field:
-      - metadata.name
+    - metadata.name
     targetType:
-      #field:
-      - kind
-      #aggregate:
-      #- virtualNetwork:
-      #  - 'Microsoft.Networking/virtualNetworks'
+    - kind
   rule:
     include:
     - ''

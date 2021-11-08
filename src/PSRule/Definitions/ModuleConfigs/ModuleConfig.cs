@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
@@ -37,5 +37,7 @@ namespace PSRule.Definitions.ModuleConfigs
         public ConventionOption Convention { get; set; }
 
         public OutputOption Output { get; set; }
+
+        public RuleOption Rule { get; set; }
     }
 }

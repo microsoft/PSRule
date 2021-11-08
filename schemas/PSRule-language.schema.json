@@ -232,6 +232,21 @@
                         }
                     },
                     "additionalProperties": false
+                },
+                "rule": {
+                    "type": "object",
+                    "title": "Rule",
+                    "description": "A filter for included or excluded rules.",
+                    "properties": {
+                        "baseline": {
+                            "type": "string",
+                            "title": "Baseline",
+                            "description": "The name of a baseline to use.",
+                            "markdownDescription": "The name of a baseline to use. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#rulebaseline)",
+                            "$ref": "#/definitions/rule-names"
+                        }
+                    },
+                    "additionalProperties": false
                 }
             },
             "additionalProperties": false

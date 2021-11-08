@@ -61,35 +61,6 @@ PrivateData = @{
 }
 ```
 
-### Setting a default baseline
-
-Optionally, baselines can be included in rule modules.
-If a baseline contains configuration or binding options then setting a default baseline is often desirable.
-When a default baseline is set, PSRule will use the named baseline automatically when processing rules from that module.
-This feature removes the need for users to specify it manually.
-
-To set a default baseline, add a new property after the `PSData` hashtable ends called `PSRule`.
-The `PSRule` property is a hashtable of configuration for PSRule.
-Within the hashtable specify the `Baseline` property with the name of the baseline.
-
-For example:
-
-```powershell
-# Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
-PrivateData = @{
-    PSData = @{
-        # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('PSRule-rules')
-    }
-    PSRule = @{
-        Baseline = 'Enterprise.Default'
-    }
-}
-```
-
-This examples set the default baseline to `Enterprise.Default`.
-The default baseline must be included in file ending with `.Rule.yaml` within the module directory structure.
-
 ## Including rules and baselines
 
 Rules and baselines can be included anywhere within the module directory structure.
@@ -128,7 +99,7 @@ PSRule does not support module configurations distributed outside of a module.
 
 ```yaml
 ---
-# Synopsis: Example module configuration for Enterprise.Rules module
+# Synopsis: Example module configuration for Enterprise.Rules module.
 apiVersion: github.com/microsoft/PSRule/v1
 kind: ModuleConfig
 metadata:
@@ -147,7 +118,8 @@ spec:
       resourceId: [ 'ResourceId' ]
       subscriptionId: [ 'SubscriptionId' ]
       resourceGroupName: [ 'ResourceGroupName' ]
-
+  rule:
+    baseline: Enterprise.Default
 ```
 
 The following options are allowed within a `ModuleConfig`:
@@ -161,6 +133,46 @@ The following options are allowed within a `ModuleConfig`:
 - `Binding.UseQualifiedName`
 - `Configuration`
 - `Output.Culture`
+- `Rule.Baseline`
+
+### Setting a default baseline
+
+Optionally, baselines can be included in rule modules.
+If a baseline contains configuration or binding options then setting a default baseline is often desirable.
+When a default baseline is set, PSRule will use the named baseline automatically when processing rules from that module.
+This feature removes the need for users to specify it manually.
+
+To set a default baseline, set the `Rule.Baseline` property of the `ModuleConfig` resource.
+
+For example:
+
+```yaml
+---
+# Synopsis: Example module configuration for Enterprise.Rules module.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: ModuleConfig
+metadata:
+  name: Enterprise.Rules
+spec:
+  binding:
+    targetName:
+    - ResourceName
+    - FullName
+    - name
+    targetType:
+    - ResourceType
+    - type
+    - Extension
+    field:
+      resourceId: [ 'ResourceId' ]
+      subscriptionId: [ 'SubscriptionId' ]
+      resourceGroupName: [ 'ResourceGroupName' ]
+  rule:
+    baseline: Enterprise.Default
+```
+
+This examples set the default baseline to `Enterprise.Default`.
+The default baseline must be included in file ending with `.Rule.yaml` within the module directory structure.
 
 ## Including documentation
 
