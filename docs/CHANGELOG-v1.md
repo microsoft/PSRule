@@ -11,6 +11,42 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+## v1.9.0
+
+What's changed since v1.8.0:
+
+- General improvements:
+  - Added improvements to YAML output for `Get-PSRuleBaseline`. [#829](https://github.com/microsoft/PSRule/issues/829)
+  - Added `-Initialize` convention block. [#826](https://github.com/microsoft/PSRule/issues/826)
+    - Use this block to perform any initialization that is required before any rules are run.
+    - This block is only run once instead of `-Begin` which is run once per object.
+    - See [about_PSRule_Conventions] for details.
+  - Allow lifetime services to be used. [#827](https://github.com/microsoft/PSRule/issues/827)
+    - Use `$PSRule.AddService` and `$PSRule.GetService` to add a service.
+    - Services allows a singleton instance to be used and shared across multiple rules.
+    - PSRule will automatically dispose the service when all rules have run.
+    - See [about_PSRule_Variables] for details.
+  - Added `Export-PSRuleBaseline` cmdlet to export baseline. [#622](https://github.com/microsoft/PSRule/issues/622)
+  - Added JSON output format for Baseline cmdlets. [#839](https://github.com/microsoft/PSRule/issues/839)
+  - Allow downstream issues to be consumed. [#843](https://github.com/microsoft/PSRule/issues/843)
+    - Objects can be flagged with issues that have been generated externally.
+    - See [about_PSRule_Assert] for details.
+  - Migrated default baseline to module configuration. [#809](https://github.com/microsoft/PSRule/issues/809)
+    - This enables configuration of the default baseline for a module with a module configuration.
+    - This depreciate configuring the default baseline within the module manifest.
+    - Modules using manifest configuration will start warning from v1.9.0.
+    - See [about_PSRule_Options] for details.
+  - Added JSON support to read baselines from pipeline. [#845](https://github.com/microsoft/PSRule/issues/845)
+- Engineering:
+  - Bump System.Drawing.Common dependency to v6.0.0. [#848](https://github.com/microsoft/PSRule/pull/848)
+- Bug fixes:
+  - Fixed convention execution is out of order. [#835](https://github.com/microsoft/PSRule/issues/835)
+
+What's changed since pre-release v1.9.0-B2111024:
+
+- Engineering:
+  - Bump Microsoft.CodeAnalysis.NetAnalyzers to v6.0.0. [#851](https://github.com/microsoft/PSRule/pull/851)
+
 ## v1.9.0-B2111024 (pre-release)
 
 What's changed since pre-release v1.9.0-B2111009:
