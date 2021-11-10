@@ -440,6 +440,7 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 ## Maintainers
 
 - [Bernie White](https://github.com/BernieWhite)
+- [Armaan Mcleod](https://github.com/ArmaanMcleod)
 
 ## License
 
