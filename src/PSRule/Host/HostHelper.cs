@@ -70,9 +70,9 @@ namespace PSRule.Host
         }
 
         /// <summary>
-        /// Read YAML objects and return baselines.
+        /// Read YAML/JSON objects and return baselines.
         /// </summary>
-        internal static IEnumerable<Baseline> GetBaselineYaml(Source[] source, RunspaceContext context)
+        internal static IEnumerable<Baseline> GetBaseline(Source[] source, RunspaceContext context)
         {
             var results = new List<ILanguageBlock>();
 
@@ -287,6 +287,7 @@ namespace PSRule.Host
 
             deserializer.Converters.Add(new ResourceObjectJsonConverter());
             deserializer.Converters.Add(new FieldMapJsonConverter());
+            deserializer.Converters.Add(new LanguageExpressionJsonConverter());
 
             try
             {
@@ -321,7 +322,11 @@ namespace PSRule.Host
                                         result.Add(value.Block);
                                     }
 
-                                    reader.Read();
+                                    // Consume all end objects at the end of each resource
+                                    while (reader.TokenType == JsonToken.EndObject)
+                                    {
+                                        reader.Read();
+                                    }
                                 }
                             }
                         }

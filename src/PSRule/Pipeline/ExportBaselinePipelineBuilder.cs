@@ -42,8 +42,13 @@ namespace PSRule.Pipeline
         public override IPipeline Build(IPipelineWriter writer = null)
         {
             var filter = new BaselineFilter(_Name);
+
             return new GetBaselinePipeline(
-                pipeline: PrepareContext(null, null, null),
+                pipeline: PrepareContext(
+                    bindTargetName: null,
+                    bindTargetType: null,
+                    bindField: null
+                ),
                 source: Source,
                 reader: PrepareReader(),
                 writer: writer ?? PrepareWriter(),

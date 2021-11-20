@@ -45,10 +45,10 @@ Pre-conditions come in three forms:
   To use a script block pre-condition, specify the `-If` script parameter on the `Rule` block.
 - Type - A type string that is compared against the bound object type.
   When the type matches the rule will be executed.
-  To use a type pre-conditions, specify the `-Type` script parameter or `type` YAML property.
-- Selector - A YAML-based expression that is evaluated against the object.
+  To use a type pre-conditions, specify the `-Type` script parameter or `type` YAML/JSON property.
+- Selector - A YAML/JSON based expression that is evaluated against the object.
   When the expression matches the rule will be executed.
-  To use a selector pre-conditions, specify the `-With` script parameter or `with` YAML property.
+  To use a selector pre-conditions, specify the `-With` script parameter or `with` YAML/JSON property.
 
 Different forms of pre-conditions can be combined.
 When combining pre-conditions, different forms must be all true (logical AND).
@@ -81,6 +81,30 @@ spec:
   - 'Selector.1'
   - 'Selector.2'
   condition: { }
+```
+
+```json
+[
+  {
+    // Synopsis: An example YAML rule with pre-conditions.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "YamlRule"
+    },
+    "spec": {
+      "type": [
+        "CustomType1",
+        "CustomType2"
+      ],
+      "with": [
+        "Selector.1",
+        "Selector.2"
+      ],
+      "condition": {}
+    }
+  }
+]
 ```
 
 Pre-conditions are evaluated in the following order: Selector, Type, then Script.
@@ -154,6 +178,66 @@ spec:
   condition:
     field: 'Properties.networkProfile.loadBalancerSku'
     equals: 'standard'
+```
+
+### Defining JSON rules
+
+To define a JSON rule use the `Rule` resource in a JSON file.
+Each rule must be defined within a `.Rule.json` file following a standard schema.
+One or more rules can be defined in a single JSON array separating each rule in a JSON object.
+
+Within the `Rule` resource, the `condition` property specifies conditions to pass or fail the rule.
+
+JSON rules can also be saved with the `.Rule.jsonc` extension, for example `CustomRules.Rule.jsonc`.
+Use `.jsonc` to view [JSON with Comments](https://code.visualstudio.com/docs/languages/json#_json-with-comments) in Visual Studio Code.
+
+Syntax:
+
+```json
+[
+  {
+    // Synopsis: {{ Synopsis }}
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "{{ Name }}",
+      "tags": {}
+    },
+    "spec": {
+      "type": [],
+      "with": [],
+      "condition": {}
+    }
+  }
+]
+```
+
+Example:
+
+```json
+[
+  {
+    // Synopsis: Use a Standard load-balancer with AKS clusters.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "Azure.AKS.StandardLB",
+      "tags": {
+        "release": "GA",
+        "ruleSet": "2020_06"
+      }
+    },
+    "spec": {
+      "type": [
+        "Microsoft.ContainerService/managedClusters"
+      ],
+      "condition": {
+        "field": "Properties.networkProfile.loadBalancerSku",
+        "equals": "standard"
+      }
+    }
+  }
+]
 ```
 
 ## NOTE

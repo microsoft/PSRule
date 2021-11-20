@@ -11,7 +11,7 @@ Describes PSRule Selectors including how to use and author them.
 PSRule executes rules to validate an object from input.
 When evaluating an object from input, PSRule can use selectors to perform complex matches of an object.
 
-- A selector is a YAML-based expression that evaluates an object.
+- A selector is a YAML/JSON based expression that evaluates an object.
 - Each selector is comprised of nested conditions, operators, and comparison properties.
 - Selectors must use one or more available conditions with a comparison property to evaluate the object.
 - Optionally a condition can be nested in an operator.
@@ -73,9 +73,12 @@ If one or more selector pre-conditions are used, they are evaluated before type 
 
 ### Defining selectors
 
-Selectors are defined in YAML and can be included within a module or standalone `.Rule.yaml` file.
-In either case, define a selector within a file ending with the `.Rule.yaml` extension.
+Selectors can be defined with either YAML or JSON format, and can be included with a module or standalone `.Rule.yaml` or `.Rule.json` file.
+In either case, define a selector within a file ending with the `.Rule.yaml` or `.Rule.json` extension.
 A selector can be defined side-by-side with other resources such as baselines or module configurations.
+
+JSON selectors can also be saved with the `.Rule.jsonc` extension, for example `Selectors.Rule.jsonc`.
+Use `.jsonc` to view [JSON with Comments](https://code.visualstudio.com/docs/languages/json#_json-with-comments) in Visual Studio Code.
 
 Use the following template to define a selector:
 
@@ -88,6 +91,22 @@ metadata:
   name: '{{ Name }}'
 spec:
   if: { }
+```
+
+```json
+[
+  {
+    // Synopsis: {{ Synopsis }}
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "{{ Name }}"
+    },
+    "spec": {
+      "if": {}
+    }
+  }
+]
 ```
 
 Within the `if` object, one or more conditions or logical operators can be used.
@@ -135,6 +154,67 @@ spec:
     in:
     - 'Value1'
     - 'Value2'
+```
+
+### Example Selectors.Rule.json
+
+```json
+// Example Selectors.Rule.json
+[
+  {
+    // Synopsis: Require the CustomValue field.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "RequireCustomValue"
+    },
+    "spec": {
+      "if": {
+        "field": "CustomValue",
+        "exists": true
+      }
+    }
+  },
+  {
+    // Synopsis: Require a Name or AlternativeName.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "RequireName"
+    },
+    "spec": {
+      "if": {
+        "anyOf": [
+          {
+            "field": "AlternateName",
+            "exists": true
+          },
+          {
+            "field": "Name",
+            "exists": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    // Synopsis: Require a specific CustomValue
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "RequireSpecificCustomValue"
+    },
+    "spec": {
+      "if": {
+        "field": "CustomValue",
+        "in": [
+          "Value1",
+          "Value2"
+        ]
+      }
+    }
+  }
+]
 ```
 
 ## NOTE

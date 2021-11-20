@@ -1,0 +1,142 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+//
+// YAML-based rules for unit testing
+//
+
+[
+    {
+        // Synopsis: A YAML rule for testing.
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Rule",
+        "metadata": {
+            "name": "BasicRule",
+            "tags": {
+                "feature": "tag"
+            }
+        },
+        "spec": {
+            "condition": {
+                "allOf": [
+                    {
+                        "field": "Name",
+                        "equals": "TargetObject1"
+                    },
+                    {
+                        "field": "Value",
+                        "in": [
+                            "Value1",
+                            "Value2"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    {
+        // Synopsis: A YAML rule for testing.
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Rule",
+        "metadata": {
+            "name": "RuleJsonTrue",
+            "tags": {
+                "release": "GA"
+            }
+        },
+        "spec": {
+            "condition": {
+                "field": "Value",
+                "equals": 3
+            }
+        }
+    },
+    {
+        // Synopsis: A YAML rule for testing.
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Rule",
+        "metadata": {
+            "name": "RuleJsonFalse",
+            "tags": {
+                "release": "GA"
+            }
+        },
+        "spec": {
+            "condition": {
+                "field": "Value",
+                "greater": 3
+            }
+        }
+    },
+    {
+        // Synopsis: A YAML rule for testing.
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Rule",
+        "metadata": {
+            "name": "RuleWithCustomType",
+            "tags": {
+                "release": "GA"
+            }
+        },
+        "spec": {
+            "type": [
+                "CustomType"
+            ],
+            "condition": {
+                "field": "Value",
+                "greater": 3
+            }
+        }
+    },
+    {
+        // Synopsis: A YAML rule for testing.
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Rule",
+        "metadata": {
+            "name": "RuleWithSelector",
+            "tags": {
+                "release": "GA"
+            }
+        },
+        "spec": {
+            "with": [
+                "Test.Rule.Selector.1"
+            ],
+            "condition": {
+                "field": "notValue",
+                "greaterOrEquals": 3
+            }
+        }
+    },
+    {
+        // Synopsis: A selector for YAML rule tests
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "Test.Rule.Selector.1"
+        },
+        "spec": {
+            "if": {
+                "field": "notValue",
+                "exists": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test reason from rule.
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Rule",
+        "metadata": {
+            "name": "JsonReasonTest",
+            "tags": {
+                "test": "Reason"
+            }
+        },
+        "spec": {
+            "condition": {
+                "field": "Name",
+                "equals": "TestValue"
+            }
+        }
+    }
+]
