@@ -11,6 +11,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+Whats's changed since v1.9.0:
+
+- General improvements:
+  - Added JSON support for reading rules and selectors from pipeline. [#857](https://github.com/microsoft/PSRule/issues/857)
+
 ## v1.9.0
 
 What's changed since v1.8.0:
