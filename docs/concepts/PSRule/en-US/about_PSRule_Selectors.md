@@ -155,7 +155,7 @@ spec:
     - 'Value2'
 ```
 
-### Example Selectors.Rule.json
+### Example Selectors.Rule.jsonc
 
 ```jsonc
 // Example Selectors.Rule.jsonc
