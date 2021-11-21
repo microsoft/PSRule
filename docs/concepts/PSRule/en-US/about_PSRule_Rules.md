@@ -188,7 +188,8 @@ One or more rules can be defined in a single JSON array separating each rule in 
 
 Within the `Rule` resource, the `condition` property specifies conditions to pass or fail the rule.
 
-Use the `.jsonc` extension to view [JSON with Comments](https://code.visualstudio.com/docs/languages/json#_json-with-comments) in Visual Studio Code.
+Rules can also be defined within `.json` files.
+We recommend using `.jsonc` to view [JSON with Comments](https://code.visualstudio.com/docs/languages/json#_json-with-comments) in Visual Studio Code.
 
 Syntax:
 
