@@ -77,7 +77,8 @@ Selectors can be defined with either YAML or JSON format, and can be included wi
 In either case, define a selector within a file ending with the `.Rule.yaml` or `.Rule.jsonc` extension.
 A selector can be defined side-by-side with other resources such as baselines or module configurations.
 
-Use `.jsonc` to view [JSON with Comments](https://code.visualstudio.com/docs/languages/json#_json-with-comments) in Visual Studio Code.
+Selectors can also be defined within `.json` files.
+We recommend using `.jsonc` to view [JSON with Comments](https://code.visualstudio.com/docs/languages/json#_json-with-comments) in Visual Studio Code.
 
 Use the following template to define a selector:
 
