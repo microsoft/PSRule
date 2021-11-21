@@ -360,8 +360,7 @@ namespace PSRule
         private const string FIELD_KIND = "kind";
         private const string FIELD_METADATA = "metadata";
         private const string FIELD_SPEC = "spec";
-
-        private const string SYNOPSIS = "Synopsis: ";
+        private const string FIELD_SYNOPSIS = "Synopsis: ";
 
         public override bool CanRead => true;
 
@@ -462,11 +461,11 @@ namespace PSRule
                 {
                     var commentLine = reader.Value.ToString().TrimStart();
 
-                    if (commentLine.Length > SYNOPSIS.Length && commentLine.StartsWith(SYNOPSIS))
+                    if (commentLine.Length > FIELD_SYNOPSIS.Length && commentLine.StartsWith(FIELD_SYNOPSIS))
                     {
                         comment = new CommentMetadata
                         {
-                            Synopsis = commentLine.Substring(SYNOPSIS.Length)
+                            Synopsis = commentLine.Substring(FIELD_SYNOPSIS.Length)
                         };
                     }
                 }
