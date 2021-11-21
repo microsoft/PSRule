@@ -460,7 +460,7 @@ namespace PSRule
                 {
                     var commentLine = reader.Value.ToString().TrimStart();
 
-                    if (commentLine.StartsWith("Synopsis: "))
+                    if (commentLine.Length > 10 && commentLine.StartsWith("Synopsis: "))
                     {
                         comment = new CommentMetadata
                         {
