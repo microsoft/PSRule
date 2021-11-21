@@ -83,7 +83,7 @@ spec:
   condition: { }
 ```
 
-```json
+```jsonc
 [
   {
     // Synopsis: An example YAML rule with pre-conditions.
@@ -192,7 +192,7 @@ Use the `.jsonc` extension to view [JSON with Comments](https://code.visualstudi
 
 Syntax:
 
-```json
+```jsonc
 [
   {
     // Synopsis: {{ Synopsis }}
@@ -213,7 +213,7 @@ Syntax:
 
 Example:
 
-```json
+```jsonc
 [
   {
     // Synopsis: Use a Standard load-balancer with AKS clusters.

@@ -92,7 +92,7 @@ spec:
   if: { }
 ```
 
-```json
+```jsonc
 [
   {
     // Synopsis: {{ Synopsis }}
@@ -157,8 +157,8 @@ spec:
 
 ### Example Selectors.Rule.json
 
-```json
-// Example Selectors.Rule.json
+```jsonc
+// Example Selectors.Rule.jsonc
 [
   {
     // Synopsis: Require the CustomValue field.
