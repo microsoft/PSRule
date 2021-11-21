@@ -183,13 +183,12 @@ spec:
 ### Defining JSON rules
 
 To define a JSON rule use the `Rule` resource in a JSON file.
-Each rule must be defined within a `.Rule.json` file following a standard schema.
+Each rule must be defined within a `.Rule.jsonc` file following a standard schema.
 One or more rules can be defined in a single JSON array separating each rule in a JSON object.
 
 Within the `Rule` resource, the `condition` property specifies conditions to pass or fail the rule.
 
-JSON rules can also be saved with the `.Rule.jsonc` extension, for example `CustomRules.Rule.jsonc`.
-Use `.jsonc` to view [JSON with Comments](https://code.visualstudio.com/docs/languages/json#_json-with-comments) in Visual Studio Code.
+Use the `.jsonc` extension to view [JSON with Comments](https://code.visualstudio.com/docs/languages/json#_json-with-comments) in Visual Studio Code.
 
 Syntax:
 

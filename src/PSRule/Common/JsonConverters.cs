@@ -361,6 +361,8 @@ namespace PSRule
         private const string FIELD_METADATA = "metadata";
         private const string FIELD_SPEC = "spec";
 
+        private const string SYNOPSIS = "Synopsis: ";
+
         public override bool CanRead => true;
 
         public override bool CanWrite => false;
@@ -460,11 +462,11 @@ namespace PSRule
                 {
                     var commentLine = reader.Value.ToString().TrimStart();
 
-                    if (commentLine.Length > 10 && commentLine.StartsWith("Synopsis: "))
+                    if (commentLine.Length > SYNOPSIS.Length && commentLine.StartsWith(SYNOPSIS))
                     {
                         comment = new CommentMetadata
                         {
-                            Synopsis = commentLine.Substring(10)
+                            Synopsis = commentLine.Substring(SYNOPSIS.Length)
                         };
                     }
                 }
