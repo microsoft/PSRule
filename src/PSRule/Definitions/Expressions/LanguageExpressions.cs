@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -247,6 +247,7 @@ namespace PSRule.Definitions.Expressions
         private const string SETOF = "setOf";
         private const string SUBSET = "subset";
         private const string COUNT = "count";
+        private const string HASSCHEMA = "hasSchema";
 
         // Operators
         private const string IF = "if";
@@ -260,12 +261,15 @@ namespace PSRule.Definitions.Expressions
         private const string NAME = "name";
         private const string CASESENSITIVE = "caseSensitive";
         private const string UNIQUE = "unique";
+        private const string IGNORESCHEME = "ignoreScheme";
 
         // Comparisons
         private const string LESS_THAN = "<";
         private const string LESS_THAN_EQUALS = "<=";
         private const string GREATER_THAN = ">=";
         private const string GREATER_THAN_EQUALS = ">=";
+
+        private const string PROPERTY_SCHEMA = "$schema";
 
         // Define built-ins
         internal readonly static ILanguageExpresssionDescriptor[] Builtin = new ILanguageExpresssionDescriptor[]
@@ -298,6 +302,7 @@ namespace PSRule.Definitions.Expressions
             new LanguageExpresssionDescriptor(SETOF, LanguageExpressionType.Condition, SetOf),
             new LanguageExpresssionDescriptor(SUBSET, LanguageExpressionType.Condition, Subset),
             new LanguageExpresssionDescriptor(COUNT, LanguageExpressionType.Condition, Count),
+            new LanguageExpresssionDescriptor(HASSCHEMA, LanguageExpressionType.Condition, HasSchema),
         };
 
         #region Operators
@@ -698,12 +703,7 @@ namespace PSRule.Definitions.Expressions
             {
                 context.ExpressionTrace(STARTSWITH, operand.Value, propertyValue);
                 if (!ExpressionHelpers.TryString(operand.Value, out string value))
-                    return Fail(
-                        context,
-                        operand,
-                        ReasonStrings.Assert_NotString,
-                        operand.Value
-                    );
+                    return NotString(context, operand);
 
                 for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
                     if (ExpressionHelpers.StartsWith(value, propertyValue[i], caseSensitive: false))
@@ -727,12 +727,7 @@ namespace PSRule.Definitions.Expressions
             {
                 context.ExpressionTrace(ENDSWITH, operand.Value, propertyValue);
                 if (!ExpressionHelpers.TryString(operand.Value, out string value))
-                    return Fail(
-                        context,
-                        operand,
-                        ReasonStrings.Assert_NotString,
-                        operand.Value
-                    );
+                    return NotString(context, operand);
 
                 for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
                     if (ExpressionHelpers.EndsWith(value, propertyValue[i], caseSensitive: false))
@@ -756,12 +751,7 @@ namespace PSRule.Definitions.Expressions
             {
                 context.ExpressionTrace(CONTAINS, operand.Value, propertyValue);
                 if (!ExpressionHelpers.TryString(operand.Value, out string value))
-                    return Fail(
-                        context,
-                        operand,
-                        ReasonStrings.Assert_NotString,
-                        operand.Value
-                    );
+                    return NotString(context, operand);
 
                 for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
                     if (ExpressionHelpers.Contains(value, propertyValue[i], caseSensitive: false))
@@ -847,6 +837,40 @@ namespace PSRule.Definitions.Expressions
             return false;
         }
 
+        internal static bool HasSchema(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyArray(properties, HASSCHEMA, out Array expectedValue) && TryField(properties, out string field) &&
+                TryPropertyBoolOrDefault(properties, IGNORESCHEME, out bool ignoreScheme, false))
+            {
+                context.ExpressionTrace(HASSCHEMA, field, expectedValue);
+                if (!ObjectHelper.GetField(context, o, field, caseSensitive: false, out object actualValue))
+                    return NotHasField(context, field);
+
+                if(!ObjectHelper.GetField(context, actualValue, PROPERTY_SCHEMA, caseSensitive: false, out object schemaValue))
+                    return NotHasField(context, PROPERTY_SCHEMA);
+
+                if (!ExpressionHelpers.TryString(schemaValue, out string actualSchema))
+                    return NotString(context, Operand.FromField(PROPERTY_SCHEMA, schemaValue));
+
+                if (string.IsNullOrEmpty(actualSchema))
+                    return NullOrEmpty(context, Operand.FromField(PROPERTY_SCHEMA, schemaValue));
+
+                if (expectedValue == null || expectedValue.Length == 0)
+                    return Pass();
+
+                if (ExpressionHelpers.AnySchema(actualSchema, expectedValue, ignoreScheme, false))
+                    return Pass();
+
+                return Fail(
+                    context,
+                    ReasonStrings.Assert_NotSpecifiedSchema,
+                    actualSchema
+                );
+            }
+            return Invalid(context, HASSCHEMA);
+        }
+
         #endregion Conditions
 
         #region Helper methods
@@ -889,9 +913,28 @@ namespace PSRule.Definitions.Expressions
             return false;
         }
 
+        /// <summary>
+        /// Reason: The field '{0}' does not exist.
+        /// </summary>
         private static bool NotHasField(IExpressionContext context, string field)
         {
             return Fail(context, ReasonStrings.NotHasField, field);
+        }
+
+        /// <summary>
+        /// Reason: Is null or empty.
+        /// </summary>
+        private static bool NullOrEmpty(ExpressionContext context, IOperand operand)
+        {
+            return Fail(context, operand, ReasonStrings.Assert_IsNullOrEmpty);
+        }
+
+        /// <summary>
+        /// Reason: The value '{0}' is not a string.
+        /// </summary>
+        private static bool NotString(ExpressionContext context, IOperand operand)
+        {
+            return Fail(context, operand, ReasonStrings.Assert_NotString, operand.Value);
         }
 
         private static bool TryPropertyAny(LanguageExpression.PropertyBag properties, string propertyName, out object propertyValue)
@@ -902,6 +945,15 @@ namespace PSRule.Definitions.Expressions
         private static bool TryPropertyBool(LanguageExpression.PropertyBag properties, string propertyName, out bool? propertyValue)
         {
             return properties.TryGetBool(propertyName, out propertyValue);
+        }
+
+        private static bool TryPropertyBoolOrDefault(LanguageExpression.PropertyBag properties, string propertyName, out bool propertyValue, bool defaultValue)
+        {
+            propertyValue = defaultValue;
+            if (properties.TryGetBool(propertyName, out bool? value))
+                propertyValue = value.Value;
+
+            return true;
         }
 
         private static bool TryPropertyLong(LanguageExpression.PropertyBag properties, string propertyName, out long? propertyValue)
@@ -964,20 +1016,12 @@ namespace PSRule.Definitions.Expressions
 
         private static bool GetCaseSensitive(LanguageExpression.PropertyBag properties, out bool caseSensitive, bool defaultValue = false)
         {
-            caseSensitive = defaultValue;
-            if (properties.TryGetBool(CASESENSITIVE, out bool? value))
-                caseSensitive = value.Value;
-
-            return true;
+            return TryPropertyBoolOrDefault(properties, CASESENSITIVE, out caseSensitive, defaultValue);
         }
 
         private static bool GetUnique(LanguageExpression.PropertyBag properties, out bool unique, bool defaultValue = false)
         {
-            unique = defaultValue;
-            if (properties.TryGetBool(UNIQUE, out bool? value))
-                unique = value.Value;
-
-            return true;
+            return TryPropertyBoolOrDefault(properties, UNIQUE, out unique, defaultValue);
         }
 
         /// <summary>

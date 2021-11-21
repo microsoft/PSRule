@@ -427,6 +427,60 @@ spec:
     count: 2
 
 ---
+# Synopsis: Test hasSchema
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlHasSchema
+spec:
+  if:
+    field: '.'
+    hasSchema:
+    - https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#
+    - https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#
+
+---
+# Synopsis: Test hasSchema ignoring scheme
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlHasSchemaIgnoreScheme
+spec:
+  if:
+    field: '.'
+    hasSchema:
+    - https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#
+    - https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#
+    ignoreScheme: true
+
+---
+# Synopsis: Test hasSchema with case sensitivity
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlHasSchemaCaseSensitive
+spec:
+  if:
+    field: '.'
+    hasSchema:
+    - https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#
+    - https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#
+    caseSensitive: true
+
+---
+# Synopsis: Test hasSchema matching any schema
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlHasAnySchema
+spec:
+  if:
+    field: '.'
+    hasSchema: []
+
+#region With type tests
+
+---
 # Synopsis: Test with type
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Selector
@@ -436,6 +490,10 @@ spec:
   if:
     type: '.'
     equals: 'CustomType1'
+
+#endregion With type tests
+
+#region With name tests
 
 ---
 # Synopsis: Test equals with name
@@ -631,3 +689,5 @@ spec:
   if:
     name: '.'
     isUpper: true
+
+#endregion With name tests

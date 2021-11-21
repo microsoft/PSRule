@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -150,6 +150,7 @@ namespace PSRule
             var actual2 = GetObject((name: "schema", value: "abc"));
             var actual3 = GetObject((name: "$schema", value: "http://json-schema.org/draft-07/schema#"));
             var actual4 = GetObject((name: "$schema", value: "http://json-schema.org/draft-07/schema#definition"));
+            var actual5 = GetObject((name: "$schema", value: ""));
 
             Assert.True(assert.HasJsonSchema(actual1, null).Result);
             Assert.True(assert.HasJsonSchema(actual1, new string[] { "abc" }).Result);
@@ -159,6 +160,7 @@ namespace PSRule
             Assert.True(assert.HasJsonSchema(actual3, new string[] { "https://json-schema.org/draft-07/schema#" }, true).Result);
             Assert.True(assert.HasJsonSchema(actual3, new string[] { "https://json-schema.org/draft-07/schema#", "http://json-schema.org/draft-07/schema#" }).Result);
             Assert.False(assert.HasJsonSchema(actual4, new string[] { "https://json-schema.org/draft-07/schema#" }, true).Result);
+            Assert.False(assert.HasJsonSchema(actual5, null).Result);
         }
 
         [Fact]

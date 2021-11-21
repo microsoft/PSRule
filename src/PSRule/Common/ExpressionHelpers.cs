@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -435,6 +435,32 @@ namespace PSRule
                 return PSRuleOption.GetRootedPath(s);
             }
             return null;
+        }
+
+        private static string NormalizeSchemaUri(string value, bool ignoreScheme)
+        {
+            if (!Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out Uri uri))
+                return value;
+
+            var result = uri.IsAbsoluteUri ? uri.AbsoluteUri : uri.ToString();
+            if (ignoreScheme && result.StartsWith(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+                result = result.Remove(0, 8);
+            else if (ignoreScheme && result.StartsWith(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
+                result = result.Remove(0, 7);
+
+            return uri.IsAbsoluteUri && uri.Fragment == "#" ? result.TrimEnd('#') : result;
+        }
+
+        internal static bool AnySchema(string actualValue, Array expectedValue, bool ignoreScheme, bool caseSensitive)
+        {
+            var actualNormal =  NormalizeSchemaUri(actualValue, ignoreScheme);
+            var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
+            for (var i = 0; expectedValue != null && i < expectedValue.Length; i++)
+            {
+                if (expectedValue.GetValue(i) is string uri && comparer.Equals(actualNormal, NormalizeSchemaUri(uri, ignoreScheme)))
+                    return true;
+            }
+            return false;
         }
 
         private static Regex GetRegularExpression(string pattern, bool caseSensitive)
