@@ -415,7 +415,7 @@ namespace PSRule.Host
                     if (!results.ContainsKey(block.Id))
                     {
                         context.EnterSourceScope(block.Source);
-                        var info = GetHelpInfo(context, block.Name);
+                        var info = GetHelpInfo(context, block.Name, block.Synopsis);
                         results[block.Id] = new Rule
                         {
                             RuleId = block.Id,
@@ -450,7 +450,7 @@ namespace PSRule.Host
                     else if (block is RuleV1 yaml && !results.ContainsKey(yaml.Id))
                     {
                         context.EnterSourceScope(yaml.Source);
-                        var info = GetHelpInfo(context, yaml.Name) ?? new RuleHelpInfo(yaml.Name, yaml.Name, yaml.Source.ModuleName)
+                        var info = GetHelpInfo(context, yaml.Name, yaml.Synopsis) ?? new RuleHelpInfo(yaml.Name, yaml.Name, yaml.Source.ModuleName)
                         {
                             Synopsis = yaml.Synopsis
                         };
@@ -660,25 +660,34 @@ namespace PSRule.Host
             return conventions;
         }
 
-        internal static RuleHelpInfo GetHelpInfo(RunspaceContext context, string name)
+        internal static RuleHelpInfo GetHelpInfo(RunspaceContext context, string name, string defaultSynopsis)
         {
-            if (string.IsNullOrEmpty(context.Source.File.HelpPath))
-                return null;
-
-            var helpFileName = string.Concat(name, Markdown_Extension);
-            var path = context.GetLocalizedPath(helpFileName);
-            if (path == null || !TryDocument(path, out RuleDocument document))
-                return null;
+            if (!TryHelpPath(context, name, out string path) || !TryDocument(path, out RuleDocument document))
+                return new RuleHelpInfo(name, name, context.Source.File.ModuleName)
+                {
+                    Synopsis = defaultSynopsis
+                };
 
             return new RuleHelpInfo(name: name, displayName: document.Name ?? name, moduleName: context.Source.File.ModuleName)
             {
-                Synopsis = document.Synopsis?.Text,
+                Synopsis = document.Synopsis?.Text ?? defaultSynopsis,
                 Description = document.Description?.Text,
-                Recommendation = document.Recommendation?.Text ?? document.Synopsis?.Text,
+                Recommendation = document.Recommendation?.Text ?? document.Synopsis?.Text ?? defaultSynopsis,
                 Notes = document.Notes?.Text,
                 Links = GetLinks(document.Links),
                 Annotations = document.Annotations?.ToHashtable()
             };
+        }
+
+        private static bool TryHelpPath(RunspaceContext context, string name, out string path)
+        {
+            path = null;
+            if (string.IsNullOrEmpty(context.Source.File.HelpPath))
+                return false;
+
+            var helpFileName = string.Concat(name, Markdown_Extension);
+            path = context.GetLocalizedPath(helpFileName);
+            return path != null;
         }
 
         private static bool TryDocument(string path, out RuleDocument document)

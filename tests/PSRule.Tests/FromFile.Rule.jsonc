@@ -14,6 +14,9 @@
             "name": "BasicRule",
             "tags": {
                 "feature": "tag"
+            },
+            "annotations": {
+                "obsolete": true
             }
         },
         "spec": {

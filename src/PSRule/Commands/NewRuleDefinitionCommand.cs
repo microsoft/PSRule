@@ -94,14 +94,11 @@ namespace PSRule.Commands
 
             CheckDependsOn();
             var ps = GetCondition(context, errorPreference);
-            var helpInfo = PSRule.Host.HostHelper.GetHelpInfo(context, Name) ?? new RuleHelpInfo(
+            var helpInfo = PSRule.Host.HostHelper.GetHelpInfo(context, Name, metadata.Synopsis) ?? new RuleHelpInfo(
                 name: Name,
                 displayName: Name,
                 moduleName: source.ModuleName
             );
-
-            if (helpInfo.Synopsis == null)
-                helpInfo.Synopsis = metadata.Synopsis;
 
 #pragma warning disable CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
             var block = new RuleBlock(
