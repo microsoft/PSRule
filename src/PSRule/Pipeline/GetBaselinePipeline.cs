@@ -26,7 +26,7 @@ namespace PSRule.Pipeline
 
         public override void End()
         {
-            Writer.WriteObject(HostHelper.GetBaselineYaml(Source, Context).Where(Match), true);
+            Writer.WriteObject(HostHelper.GetBaseline(Source, Context).Where(Match), true);
             Writer.End();
         }
 

@@ -34,6 +34,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
     BeforeAll {
         $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1';
         $yamlFilePath = Join-Path -Path $here -ChildPath 'FromFile.Rule.yaml';
+        $jsonFilePath = Join-Path -Path $here -ChildPath 'FromFile.Rule.jsonc';
         $emptyOptionsFilePath = Join-Path -Path $here -ChildPath 'PSRule.Tests4.yml';
     }
 
@@ -158,8 +159,14 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         It 'Processes rule tags' {
-            # Ensure that rules can be selected by tag and that tags are mapped back to the rule results
+            # Ensure that rules can be selected by tag and that tags are mapped back to the rule results using Yaml file path
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath, $yamlFilePath -Tag @{ feature = 'tag' };
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 6;
+            $result.Tag.feature | Should -BeIn 'tag';
+
+            # Ensure that rules can be selected by tag and that tags are mapped back to the rule results using Json file path
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath, $jsonFilePath -Tag @{ feature = 'tag' };
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 6;
             $result.Tag.feature | Should -BeIn 'tag';
@@ -293,6 +300,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 }
             )
 
+            # With Yaml path
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath, $yamlFilePath -Tag @{ test = 'Reason' };
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 4;
@@ -300,6 +308,16 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result[1].Reason | Should -BeExactly 'Field Name: Is set to ''TestObject1''.';
             $result[2].Reason | Should -BeExactly 'The field ''Name'' is set to ''TestObject2''.';
             $result[3].Reason | Should -BeExactly 'Field Name: Is set to ''TestObject2''.';
+
+            # With Json path
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath, $jsonFilePath -Tag @{ test = 'Reason' };
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 4;
+            $result[0].Reason | Should -BeExactly 'The field ''Name'' is set to ''TestObject1''.';
+            $result[1].Reason | Should -BeExactly 'Field Name: Is set to ''TestObject1''.';
+            $result[2].Reason | Should -BeExactly 'The field ''Name'' is set to ''TestObject2''.';
+            $result[3].Reason | Should -BeExactly 'Field Name: Is set to ''TestObject2''.';
+
         }
     }
 

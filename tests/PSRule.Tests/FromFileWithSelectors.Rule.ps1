@@ -5,7 +5,10 @@ Rule 'WithSelectorTrue' -With 'BasicSelector' {
     $True
 }
 
-Rule 'WithSelectorFalse' -With 'YamlCustomValueIn' {
+Rule 'WithSelectorFalse1' -With 'YamlCustomValueIn' {
     $False
 }
 
+Rule 'WithSelectorFalse2' -With 'JsonCustomValueIn' {
+    $False
+}

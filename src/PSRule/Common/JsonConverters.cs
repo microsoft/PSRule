@@ -13,6 +13,7 @@ using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
+using PSRule.Definitions.Expressions;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -359,6 +360,7 @@ namespace PSRule
         private const string FIELD_KIND = "kind";
         private const string FIELD_METADATA = "metadata";
         private const string FIELD_SPEC = "spec";
+        private const string FIELD_SYNOPSIS = "Synopsis: ";
 
         public override bool CanRead => true;
 
@@ -389,7 +391,7 @@ namespace PSRule
 
         private IResource MapResource(JsonReader reader, JsonSerializer serializer)
         {
-            if (reader.TokenType != JsonToken.StartObject)
+            if (reader.TokenType != JsonToken.StartObject || !reader.Read())
             {
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
             }
@@ -400,70 +402,75 @@ namespace PSRule
             ResourceMetadata metadata = null;
             CommentMetadata comment = null;
 
-            if (reader.Read())
+            while (reader.TokenType != JsonToken.EndObject)
             {
-                while (reader.TokenType != JsonToken.EndObject)
+                if (reader.TokenType == JsonToken.PropertyName)
                 {
-                    if (reader.TokenType == JsonToken.PropertyName)
+                    var propertyName = reader.Value.ToString();
+
+                    // Read apiVersion
+                    if (TryApiVersion(reader: reader, propertyName: propertyName, apiVersion: out string apiVersionValue))
                     {
-                        var propertyName = reader.Value.ToString();
-
-                        // Read apiVersion
-                        if (TryApiVersion(reader: reader, propertyName: propertyName, apiVersion: out string apiVersionValue))
-                        {
-                            apiVersion = apiVersionValue;
-                        }
-
-                        // Read kind
-                        else if (TryKind(reader: reader, propertyName: propertyName, kind: out string kindValue))
-                        {
-                            kind = kindValue;
-                        }
-
-                        // Read metadata
-                        else if (TryMetadata(
-                            reader: reader,
-                            serializer: serializer,
-                            propertyName: propertyName,
-                            metadata: out ResourceMetadata metadataValue))
-                        {
-                            metadata = metadataValue;
-                        }
-
-                        // Try Spec
-                        else if (kind != null && TrySpec(
-                            reader: reader,
-                            serializer: serializer,
-                            propertyName: propertyName,
-                            apiVersion: apiVersion,
-                            kind: kind,
-                            metadata: metadata,
-                            comment: comment,
-                            spec: out IResource specValue))
-                        {
-                            result = specValue;
-                        }
-
-                        else
-                        {
-                            reader.Skip();
-                        }
-
+                        apiVersion = apiVersionValue;
                     }
-                    else if (reader.TokenType == JsonToken.Comment)
-                    {
-                        var commentLine = reader.Value.ToString().TrimStart();
 
-                        if (commentLine.StartsWith("Synopsis: "))
+                    // Read kind
+                    else if (TryKind(reader: reader, propertyName: propertyName, kind: out string kindValue))
+                    {
+                        kind = kindValue;
+                    }
+
+                    // Read metadata
+                    else if (TryMetadata(
+                        reader: reader,
+                        serializer: serializer,
+                        propertyName: propertyName,
+                        metadata: out ResourceMetadata metadataValue))
+                    {
+                        metadata = metadataValue;
+                    }
+
+                    // Try Spec
+                    else if (kind != null && TrySpec(
+                        reader: reader,
+                        serializer: serializer,
+                        propertyName: propertyName,
+                        apiVersion: apiVersion,
+                        kind: kind,
+                        metadata: metadata,
+                        comment: comment,
+                        spec: out IResource specValue))
+                    {
+                        result = specValue;
+
+                        // Break out of loop if result is populated
+                        // Needed so we don't read more than we have to
+                        if (result != null && reader.TokenType == JsonToken.EndObject)
                         {
-                            comment = new CommentMetadata
-                            {
-                                Synopsis = commentLine.Substring(10)
-                            };
+                            break;
                         }
                     }
-                    reader.Read();
+
+                    else
+                    {
+                        reader.Skip();
+                    }
                 }
+
+                else if (reader.TokenType == JsonToken.Comment)
+                {
+                    var commentLine = reader.Value.ToString().TrimStart();
+
+                    if (commentLine.Length > FIELD_SYNOPSIS.Length && commentLine.StartsWith(FIELD_SYNOPSIS))
+                    {
+                        comment = new CommentMetadata
+                        {
+                            Synopsis = commentLine.Substring(FIELD_SYNOPSIS.Length)
+                        };
+                    }
+                }
+
+                reader.Read();
             }
 
             return result;
@@ -501,9 +508,11 @@ namespace PSRule
 
             if (propertyName == FIELD_METADATA)
             {
-                reader.Read();
-                metadata = serializer.Deserialize<ResourceMetadata>(reader);
-                return true;
+                if (reader.Read() && reader.TokenType == JsonToken.StartObject)
+                {
+                    metadata = serializer.Deserialize<ResourceMetadata>(reader);
+                    return true;
+                }
             }
 
             return false;
@@ -526,23 +535,24 @@ namespace PSRule
                 name: kind,
                 descriptor: out ISpecDescriptor descriptor))
             {
-                reader.Read();
-
-                var deserializedSpec = serializer.Deserialize(reader, objectType: descriptor.SpecType);
-
-                spec = descriptor.CreateInstance(
-                    source: RunspaceContext.CurrentThread.Source.File,
-                    metadata: metadata,
-                    comment: comment,
-                    spec: deserializedSpec
-                );
-
-                if (string.IsNullOrEmpty(apiVersion))
+                if (reader.Read() && reader.TokenType == JsonToken.StartObject)
                 {
-                    spec.SetApiVersionIssue();
-                }
+                    var deserializedSpec = serializer.Deserialize(reader, objectType: descriptor.SpecType);
 
-                return true;
+                    spec = descriptor.CreateInstance(
+                        source: RunspaceContext.CurrentThread.Source.File,
+                        metadata: metadata,
+                        comment: comment,
+                        spec: deserializedSpec
+                    );
+
+                    if (string.IsNullOrEmpty(apiVersion))
+                    {
+                        spec.SetApiVersionIssue();
+                    }
+
+                    return true;
+                }
             }
 
             return false;
@@ -579,42 +589,218 @@ namespace PSRule
 
         private static void ReadFieldMap(FieldMap map, JsonReader reader)
         {
-            if (reader.TokenType != JsonToken.StartObject)
+            if (reader.TokenType != JsonToken.StartObject || !reader.Read())
             {
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
             }
 
-            if (reader.Read())
-            {
-                string propertyName = null;
+            string propertyName = null;
 
+            while (reader.TokenType != JsonToken.EndObject)
+            {
+                if (reader.TokenType == JsonToken.PropertyName)
+                {
+                    propertyName = reader.Value.ToString();
+                }
+
+                else if (reader.TokenType == JsonToken.StartArray)
+                {
+                    var items = new List<string>();
+
+                    while (reader.TokenType != JsonToken.EndArray)
+                    {
+                        var item = reader.ReadAsString();
+
+                        if (!string.IsNullOrEmpty(item))
+                        {
+                            items.Add(item);
+                        }
+                    }
+
+                    map.Set(propertyName, items.ToArray());
+                }
+
+                reader.Read();
+            }
+        }
+    }
+
+    /// <summary>
+    /// A JSON converter for deserializing Language Expressions
+    /// </summary>
+    internal sealed class LanguageExpressionJsonConverter : JsonConverter
+    {
+        private const string OPERATOR_IF = "if";
+
+        public override bool CanRead => true;
+
+        public override bool CanWrite => false;
+
+        private readonly LanguageExpressionFactory _Factory;
+
+        public LanguageExpressionJsonConverter()
+        {
+            _Factory = new LanguageExpressionFactory();
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(LanguageExpression).IsAssignableFrom(objectType);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var expression = MapOperator(OPERATOR_IF, reader);
+            return new LanguageIf(expression);
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        private LanguageExpression MapOperator(string type, JsonReader reader)
+        {
+            if (TryExpression(type, out LanguageOperator result))
+            {
+                if (reader.TokenType == JsonToken.StartObject)
+                {
+                    result.Add(MapExpression(reader));
+                    reader.Read();
+                }
+
+                else if (reader.TokenType == JsonToken.StartArray && reader.Read())
+                {
+                    while (reader.TokenType != JsonToken.EndArray)
+                    {
+                        result.Add(MapExpression(reader));
+                        reader.Read();
+                    }
+                    reader.Read();
+                }
+            }
+
+            return result;
+        }
+
+        private LanguageExpression MapCondition(string type, LanguageExpression.PropertyBag properties, JsonReader reader)
+        {
+            if (TryExpression(type, out LanguageCondition result))
+            {
                 while (reader.TokenType != JsonToken.EndObject)
                 {
-                    if (reader.TokenType == JsonToken.PropertyName)
+                    MapProperty(properties, reader, out _);
+                }
+                result.Add(properties);
+            }
+            return result;
+        }
+
+        private LanguageExpression MapExpression(JsonReader reader)
+        {
+            LanguageExpression result = null;
+
+            var properties = new LanguageExpression.PropertyBag();
+
+            MapProperty(properties, reader, out string key);
+
+            if (key != null && TryCondition(key))
+            {
+                result = MapCondition(key, properties, reader);
+            }
+
+            else if (TryOperator(key) &&
+                (reader.TokenType == JsonToken.StartObject ||
+                 reader.TokenType == JsonToken.StartArray))
+            {
+                result = MapOperator(key, reader);
+            }
+
+            return result;
+        }
+
+        private void MapProperty(LanguageExpression.PropertyBag properties, JsonReader reader, out string name)
+        {
+            if (reader.TokenType != JsonToken.StartObject || !reader.Read())
+            {
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
+            }
+
+            name = null;
+
+            while (reader.TokenType != JsonToken.EndObject)
+            {
+                var key = reader.Value.ToString();
+
+                if (TryCondition(key) || TryOperator(key))
+                {
+                    name = key;
+                }
+
+                if (reader.Read())
+                {
+                    if (reader.TokenType == JsonToken.StartObject)
                     {
-                        propertyName = reader.Value.ToString();
+                        break;
                     }
 
                     else if (reader.TokenType == JsonToken.StartArray)
                     {
-                        var items = new List<string>();
+                        if (!TryCondition(key))
+                        {
+                            break;
+                        }
+
+                        var objects = new List<string>();
 
                         while (reader.TokenType != JsonToken.EndArray)
                         {
-                            var item = reader.ReadAsString();
+                            var value = reader.ReadAsString();
 
-                            if (!string.IsNullOrEmpty(item))
+                            if (!string.IsNullOrEmpty(value))
                             {
-                                items.Add(item);
+                                objects.Add(value);
                             }
                         }
 
-                        map.Set(propertyName, items.ToArray());
+                        properties.Add(key, objects.ToArray());
                     }
 
-                    reader.Read();
+                    else
+                    {
+                        properties.Add(key, reader.Value);
+                    }
                 }
+
+                reader.Read();
             }
+        }
+
+        private bool TryOperator(string key)
+        {
+            return _Factory.IsOperator(key);
+        }
+
+        private bool TryCondition(string key)
+        {
+            return _Factory.IsCondition(key);
+        }
+
+        private bool TryExpression<T>(string type, out T expression) where T : LanguageExpression
+        {
+            expression = null;
+
+            if (_Factory.TryDescriptor(type, out ILanguageExpresssionDescriptor descriptor))
+            {
+                expression = (T)descriptor.CreateInstance(
+                    source: RunspaceContext.CurrentThread.Source.File,
+                    properties: null
+                );
+
+                return expression != null;
+            }
+
+            return false;
         }
     }
 }

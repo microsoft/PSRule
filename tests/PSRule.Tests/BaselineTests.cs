@@ -107,7 +107,7 @@ namespace PSRule
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
             context.Init(GetSource());
             context.Begin();
-            var baseline = HostHelper.GetBaselineYaml(source, context).ToArray();
+            var baseline = HostHelper.GetBaseline(source, context).ToArray();
             return baseline;
         }
 

@@ -2,46 +2,51 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
-using PSRule.Definitions.Baselines;
 
 namespace PSRule.Pipeline
 {
-    internal sealed class GetBaselinePipelineBuilder : PipelineBuilderBase
+    public interface IGetPipelineBuilder : IPipelineBuilder
     {
-        private string[] _Name;
+        void IncludeDependencies();
+    }
 
-        internal GetBaselinePipelineBuilder(Source[] source, HostContext hostContext)
+    /// <summary>
+    /// A helper to construct a get pipeline.
+    /// </summary>
+    internal sealed class GetRulePipelineBuilder : PipelineBuilderBase, IGetPipelineBuilder
+    {
+        private bool _IncludeDependencies;
+
+        internal GetRulePipelineBuilder(Source[] source, HostContext hostContext)
             : base(source, hostContext) { }
-
-        /// <summary>
-        /// Filter returned baselines by name.
-        /// </summary>
-        public new void Name(string[] name)
-        {
-            if (name == null || name.Length == 0)
-                return;
-
-            _Name = name;
-        }
 
         public override IPipelineBuilder Configure(PSRuleOption option)
         {
             if (option == null)
                 return this;
 
-            Option.Output.As = ResultFormat.Detail;
+            Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
             Option.Output.Culture = GetCulture(option.Output.Culture);
             Option.Output.Format = SuppressFormat(option.Output.Format);
+            Option.Requires = new RequiresOption(option.Requires);
             Option.Output.JsonIndent = NormalizeJsonIndentRange(option.Output.JsonIndent);
 
+            if (option.Rule != null)
+                Option.Rule = new RuleOption(option.Rule);
+
             return this;
+        }
+        public void IncludeDependencies()
+        {
+            _IncludeDependencies = true;
         }
 
         public override IPipeline Build(IPipelineWriter writer = null)
         {
-            var filter = new BaselineFilter(_Name);
+            if (!RequireModules() || !RequireSources())
+                return null;
 
-            return new GetBaselinePipeline(
+            return new GetRulePipeline(
                 pipeline: PrepareContext(
                     bindTargetName: null,
                     bindTargetType: null,
@@ -50,15 +55,16 @@ namespace PSRule.Pipeline
                 source: Source,
                 reader: PrepareReader(),
                 writer: writer ?? PrepareWriter(),
-                filter: filter
+                includeDependencies: _IncludeDependencies
             );
         }
 
         private static OutputFormat SuppressFormat(OutputFormat? format)
         {
             return !format.HasValue ||
-                !(format == OutputFormat.Yaml ||
-                format == OutputFormat.Json) ? OutputFormat.None : format.Value;
+                !(format == OutputFormat.Wide ||
+                format == OutputFormat.Json ||
+                format == OutputFormat.Yaml) ? OutputFormat.None : format.Value;
         }
     }
 }
