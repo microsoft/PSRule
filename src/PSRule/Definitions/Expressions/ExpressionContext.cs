@@ -1,8 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using PSRule.Runtime;
 
@@ -33,11 +34,13 @@ namespace PSRule.Definitions.Expressions
 
         public string LanguageScope { get; }
 
+        [DebuggerStepThrough]
         void IBindingContext.CacheNameToken(string expression, NameToken nameToken)
         {
             _NameTokenCache[expression] = nameToken;
         }
 
+        [DebuggerStepThrough]
         bool IBindingContext.GetNameToken(string expression, out NameToken nameToken)
         {
             return _NameTokenCache.TryGetValue(expression, out nameToken);

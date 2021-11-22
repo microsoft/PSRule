@@ -580,6 +580,9 @@
                 },
                 {
                     "$ref": "#/definitions/selectorConditionIsUpper"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionHasSchema"
                 }
             ]
         },
@@ -609,7 +612,8 @@
                     "type": "string",
                     "title": "Field",
                     "description": "The path of the field.",
-                    "markdownDescription": "The path of the field. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#field)"
+                    "markdownDescription": "The path of the field. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#field)",
+                    "default": "."
                 }
             },
             "required": [
@@ -1147,6 +1151,48 @@
             "oneOf": [
                 {
                     "$ref": "#/definitions/selectorPropertiesString"
+                }
+            ]
+        },
+        "selectorConditionHasSchema": {
+            "type": "object",
+            "properties": {
+                "hasSchema": {
+                    "type": "array",
+                    "title": "Has schema",
+                    "description": "Must use one of the specified schemas of the value of $schema. If an empty array is specified any non-empty $schema can be specified.",
+                    "markdownDescription": "Must use one of the specified schemas of the value of `$schema`. If an empty array is specified any non-empty `$schema` can be specified [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#hasschema)",
+                    "default": [],
+                    "items": {
+                        "type": "string",
+                        "title": "Has schema",
+                        "description": "Must use one of the specified schemas of the value of $schema. If an empty array is specified any non-empty $schema can be specified.",
+                    "markdownDescription": "Must use one of the specified schemas of the value of `$schema`. If an empty array is specified any non-empty `$schema` can be specified [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#hasschema)",
+                        "minLength": 1
+                    },
+                    "uniqueItems": true
+                },
+                "ignoreScheme": {
+                    "type": "boolean",
+                    "title": "Ignore scheme",
+                    "description": "Determines comparing values is case-sensitive.",
+                    "markdownDescription": "Determines comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#hasschema)",
+                    "default": false
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines comparing schemas is case-sensitive.",
+                    "markdownDescription": "Determines comparing schemas is case-sensitive. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#hasschema)",
+                    "default": false
+                }
+            },
+            "required": [
+                "hasSchema"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
                 }
             ]
         },

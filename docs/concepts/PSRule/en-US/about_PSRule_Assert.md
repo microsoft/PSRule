@@ -484,7 +484,7 @@ Rule 'HasFieldValue' {
 ### HasJsonSchema
 
 The `HasJsonSchema` assertion method determines if the input object has a `$schema` property defined.
-If the `$schema` property is defined, it must match one of the supplied schemas.
+If the `$schema` property is defined, it must not be empty and match one of the supplied schemas.
 If a trailing `#` is specified it is ignored from the `$schema` property and `uri` parameter below.
 
 The following parameters are accepted:
@@ -501,6 +501,7 @@ Reasons include:
 - _The parameter 'inputObject' is null._
 - _The field '$schema' does not exist._
 - _The field value '$schema' is not a string._
+- _The value of '$schema' is null or empty._
 - _None of the specified schemas match '{0}'._
 
 Examples:

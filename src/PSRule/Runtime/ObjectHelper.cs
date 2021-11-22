@@ -1,10 +1,11 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Management.Automation;
 using System.Reflection;
@@ -17,6 +18,7 @@ namespace PSRule.Runtime
     /// </summary>
     internal static class ObjectHelper
     {
+        [DebuggerStepThrough]
         private sealed class NameTokenStream
         {
             private const char Separator = '.';
@@ -153,22 +155,19 @@ namespace PSRule.Runtime
 
         public static bool GetField(PSObject targetObject, string name, bool caseSensitive, out object value)
         {
-            if (targetObject.BaseObject is IDictionary dictionary)
-                return TryDictionary(dictionary, name, caseSensitive, out value);
-
-            return TryPropertyValue(targetObject, name, caseSensitive, out value);
+            return targetObject.BaseObject is IDictionary dictionary ?
+                TryDictionary(dictionary, name, caseSensitive, out value) :
+                TryPropertyValue(targetObject, name, caseSensitive, out value);
         }
 
         public static bool GetField(IBindingContext bindingContext, object targetObject, string name, bool caseSensitive, out object value)
         {
-            // Try to load nameToken from cache
-            if (bindingContext == null || !bindingContext.GetNameToken(expression: name, nameToken: out NameToken nameToken))
-            {
-                nameToken = GetNameToken(expression: name);
-                if (bindingContext != null)
-                    bindingContext.CacheNameToken(expression: name, nameToken: nameToken);
-            }
-            return GetField(targetObject: targetObject, token: nameToken, caseSensitive: caseSensitive, value: out value);
+            return GetField(
+                targetObject,
+                token: GetNameToken(bindingContext, name),
+                caseSensitive: caseSensitive,
+                value: out value
+            );
         }
 
         private static bool GetField(object targetObject, NameToken token, bool caseSensitive, out object value)
@@ -394,24 +393,25 @@ namespace PSRule.Runtime
             }
         }
 
-        private static NameToken GetNameToken(string expression)
+        /// <summary>
+        /// Get a token for the specified name either by creating or reading from cache.
+        /// </summary>
+        [DebuggerStepThrough]
+        private static NameToken GetNameToken(IBindingContext bindingContext, string name)
         {
-            var stream = new NameTokenStream(expression);
-            return stream.Get();
+            // Try to load nameToken from cache
+            if (bindingContext == null || !bindingContext.GetNameToken(expression: name, nameToken: out NameToken nameToken))
+            {
+                nameToken = new NameTokenStream(name).Get();
+                if (bindingContext != null)
+                    bindingContext.CacheNameToken(expression: name, nameToken: nameToken);
+            }
+            return nameToken;
         }
 
         private static object GetBaseObject(object value)
         {
-            if (value == null)
-                return null;
-
-            if (value is PSObject ovalue)
-            {
-                var baseObject = ovalue.BaseObject;
-                if (baseObject != null)
-                    return baseObject;
-            }
-            return value;
+            return value is PSObject ovalue && ovalue.BaseObject != null && !(ovalue.BaseObject is PSCustomObject) ? ovalue.BaseObject : value;
         }
     }
 }

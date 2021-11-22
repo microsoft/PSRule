@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -25,7 +25,7 @@ namespace PSRule
             context.Begin();
             var selector = HostHelper.GetSelectorYaml(GetSource(), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(51, selector.Length);
+            Assert.Equal(55, selector.Length);
 
             Assert.Equal("BasicSelector", selector[0].Name);
             Assert.Equal("YamlAllOf", selector[4].Name);
@@ -759,6 +759,50 @@ namespace PSRule
 
             context.EnterTargetObject(new TargetObject(actual8));
             Assert.False(withName.Match(actual8));
+        }
+
+
+        [Fact]
+        public void HasSchemaExpression()
+        {
+            var hasSchema = GetSelectorVisitor("YamlHasSchema", out _);
+            var actual1 = GetObject((name: "key", value: "value"), (name: "$schema", value: "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#"));
+            var actual2 = GetObject((name: "key", value: "value"), (name: "$schema", value: "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json"));
+            var actual3 = GetObject((name: "key", value: "value"), (name: "$schema", value: "http://schema.management.azure.com/schemas/2019-04-01/DeploymentParameters.json#"));
+            var actual4 = GetObject((name: "key", value: "value"), (name: "$schema", value: null));
+            var actual5 = GetObject((name: "key", value: "value"), (name: "$schema", value: ""));
+            var actual6 = GetObject();
+
+            Assert.True(hasSchema.Match(actual1));
+            Assert.True(hasSchema.Match(actual2));
+            Assert.False(hasSchema.Match(actual3));
+            Assert.False(hasSchema.Match(actual4));
+            Assert.False(hasSchema.Match(actual5));
+            Assert.False(hasSchema.Match(actual6));
+
+            hasSchema = GetSelectorVisitor("YamlHasSchemaIgnoreScheme", out _);
+            Assert.True(hasSchema.Match(actual1));
+            Assert.True(hasSchema.Match(actual2));
+            Assert.True(hasSchema.Match(actual3));
+            Assert.False(hasSchema.Match(actual4));
+            Assert.False(hasSchema.Match(actual5));
+            Assert.False(hasSchema.Match(actual6));
+
+            hasSchema = GetSelectorVisitor("YamlHasSchemaCaseSensitive", out _);
+            Assert.True(hasSchema.Match(actual1));
+            Assert.True(hasSchema.Match(actual2));
+            Assert.False(hasSchema.Match(actual3));
+            Assert.False(hasSchema.Match(actual4));
+            Assert.False(hasSchema.Match(actual5));
+            Assert.False(hasSchema.Match(actual6));
+
+            hasSchema = GetSelectorVisitor("YamlHasAnySchema", out _);
+            Assert.True(hasSchema.Match(actual1));
+            Assert.True(hasSchema.Match(actual2));
+            Assert.True(hasSchema.Match(actual3));
+            Assert.False(hasSchema.Match(actual4));
+            Assert.False(hasSchema.Match(actual5));
+            Assert.False(hasSchema.Match(actual6));
         }
 
         #endregion Conditions

@@ -168,23 +168,28 @@ namespace PSRule.Runtime
         /// <summary>
         /// The object should have the $schema property defined with the URI.
         /// </summary>
+        /// <remarks>
+        /// The parameter 'inputObject' is null.
+        /// The field '$schema' does not exist.
+        /// The field value '$schema' is not a string.
+        /// The value of '$schema' is null or empty.
+        /// None of the specified schemas match '{0}'.
+        /// </remarks>
         public AssertResult HasJsonSchema(PSObject inputObject, string[] uri = null, bool ignoreScheme = false)
         {
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
                 GuardField(inputObject, PROPERTY_SCHEMA, false, out object fieldValue, out result) ||
-                GuardString(fieldValue, out string value, out result))
+                GuardString(fieldValue, out string actualSchema, out result))
                 return result;
 
-            if (uri == null || uri.Length == 0)
+            if (string.IsNullOrEmpty(actualSchema))
+                return Fail(ReasonStrings.NotHasFieldValue, PROPERTY_SCHEMA);
+
+            if (uri == null || uri.Length == 0 || ExpressionHelpers.AnySchema(actualSchema, uri, ignoreScheme, false))
                 return Pass();
 
-            var normalUri = NormalizeUri(value, ignoreScheme);
-            for (var i = 0; i < uri.Length; i++)
-                if (StringComparer.OrdinalIgnoreCase.Equals(normalUri, NormalizeUri(uri[i], ignoreScheme)))
-                    return Pass();
-
-            return Fail(ReasonStrings.HasJsonSchema, value);
+            return Fail(ReasonStrings.Assert_NotSpecifiedSchema, actualSchema);
         }
 
         /// <summary>
@@ -1103,20 +1108,6 @@ namespace PSRule.Runtime
         private static string FormatArray(string[] values)
         {
             return string.Join(COMMASEPARATOR, values);
-        }
-
-        private static string NormalizeUri(string value, bool ignoreScheme)
-        {
-            if (!Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out Uri uri))
-                return value;
-
-            var result = uri.IsAbsoluteUri ? uri.AbsoluteUri : uri.ToString();
-            if (ignoreScheme && result.StartsWith(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
-                result = result.Remove(0, 8);
-            else if (ignoreScheme && result.StartsWith(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
-                result = result.Remove(0, 7);
-
-            return uri.IsAbsoluteUri && uri.Fragment == "#" ? result.TrimEnd('#') : result;
         }
 
         /// <summary>

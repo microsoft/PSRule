@@ -147,6 +147,9 @@
   <data name="Assert_NotInSet" xml:space="preserve">
     <value>The value '{0}' was not in {1}.</value>
   </data>
+  <data name="Assert_NotSpecifiedSchema" xml:space="preserve">
+    <value>None of the specified schemas match '{0}'.</value>
+  </data>
   <data name="Assert_NotStartsWith" xml:space="preserve">
     <value>The value '{0}' does not start with any of {1}.</value>
   </data>

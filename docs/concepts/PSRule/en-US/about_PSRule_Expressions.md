@@ -20,6 +20,7 @@ The following conditions are available:
 - [Exists](#exists)
 - [Greater](#greater)
 - [GreaterOrEquals](#greaterorequals)
+- [HasSchema](#hasschema)
 - [HasValue](#hasvalue)
 - [In](#in)
 - [IsLower](#islower)
@@ -89,7 +90,6 @@ spec:
       exists: true
     - field: 'Description'
       exists: true
-
 ```
 
 ### AnyOf
@@ -455,6 +455,68 @@ spec:
   if:
     field: 'Name'
     greaterOrEquals: 3
+```
+
+### HasSchema
+
+The `hasSchema` condition determines if the operand has a `$schema` property defined.
+If the `$schema` property is defined, it must match one of the specified schemas.
+If a trailing `#` is specified it is ignored.
+
+The following properties are accepted:
+
+- `caseSensitive` - Optionally, a case-sensitive comparison can be performed.
+  By default, case-insensitive comparison is performed.
+- `ignoreScheme` - Optionally, the URI scheme is ignored in the comparison.
+  By default, the scheme is compared.
+  When `true`, the schema will match if either `http://` or `https://` is specified.
+
+Syntax:
+
+```yaml
+hasSchema: <array>
+caseSensitive: <bool>
+ignoreScheme: <bool>
+```
+
+- When `hasSchema: []`, hasSchema will return `true` if any non-empty `$schema` property is defined.
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleHasSchema'
+spec:
+  condition:
+    field: '.'
+    hasSchema:
+    - https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleHasSchema'
+spec:
+  if:
+    field: '.'
+    hasSchema:
+    - https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#
+    - https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#
+    ignoreScheme: true
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleHasAnySchema'
+spec:
+  if:
+    field: '.'
+    hasSchema: []
 ```
 
 ### HasValue
@@ -1045,7 +1107,7 @@ spec:
 ### Subset
 
 The `subset` condition can be used to determine if the operand is a set of specified values.
-Additionally the following properties are accepted:
+The following properties are accepted:
 
 - `caseSensitive` - Optionally, a case-sensitive comparison can be performed.
   By default, case-insensitive comparison is performed.

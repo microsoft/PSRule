@@ -15,6 +15,10 @@ Whats's changed since v1.9.0:
 
 - General improvements:
   - Added JSON support for reading rules and selectors from pipeline. [#857](https://github.com/microsoft/PSRule/issues/857)
+  - Added `HasSchema` expression to check the schema of an object. [#860](https://github.com/microsoft/PSRule/issues/860)
+    - See [about_PSRule_Expressions] for details.
+- Bug fixes:
+  - Fixed `$Assert.HasJsonSchema` accepts empty value. [#859](https://github.com/microsoft/PSRule/issues/859)
 
 ## v1.9.0
 
