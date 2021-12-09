@@ -11,6 +11,11 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since pre-release v1.10.0-B2111024:
+
+- Bug fixes:
+  - Fixed module configuration is not loaded when case does not match. [#864](https://github.com/microsoft/PSRule/issues/864)
+
 ## v1.10.0-B2111024 (pre-release)
 
 Whats's changed since v1.9.0:
