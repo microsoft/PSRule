@@ -207,7 +207,10 @@ namespace PSRule.Pipeline
         private static bool TryModuleConfig(IResource resource, out ModuleConfigV1 moduleConfig)
         {
             moduleConfig = null;
-            if (resource.Kind == ResourceKind.ModuleConfig && !string.IsNullOrEmpty(resource.Module) && resource.Module == resource.Name && resource is ModuleConfigV1 result)
+            if (resource.Kind == ResourceKind.ModuleConfig &&
+                !string.IsNullOrEmpty(resource.Module) &&
+                StringComparer.OrdinalIgnoreCase.Equals(resource.Module, resource.Name) &&
+                resource is ModuleConfigV1 result)
             {
                 moduleConfig = result;
                 return true;
