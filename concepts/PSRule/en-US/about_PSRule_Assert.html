@@ -484,7 +484,7 @@ If <code>expectedValue</code> is <code>$Null</code> the field value will not be 
 </code></pre>
 <h3 id="hasjsonschema">HasJsonSchema</h3>
 <p>The <code>HasJsonSchema</code> assertion method determines if the input object has a <code>$schema</code> property defined.
-If the <code>$schema</code> property is defined, it must match one of the supplied schemas.
+If the <code>$schema</code> property is defined, it must not be empty and match one of the supplied schemas.
 If a trailing <code>#</code> is specified it is ignored from the <code>$schema</code> property and <code>uri</code> parameter below.</p>
 <p>The following parameters are accepted:</p>
 <ul>
@@ -500,6 +500,7 @@ When <code>$True</code>, the schema will match if <code>http</code> or <code>htt
 <li><em>The parameter 'inputObject' is null.</em></li>
 <li><em>The field '$schema' does not exist.</em></li>
 <li><em>The field value '$schema' is not a string.</em></li>
+<li><em>The value of '$schema' is null or empty.</em></li>
 <li><em>None of the specified schemas match '{0}'.</em></li>
 </ul>
 <p>Examples:</p>
@@ -1374,11 +1375,42 @@ The reason text is automatically formatted with any parameters provided.</p>
         Reason($LocalizedData.NonDefaultValue, 'value', $TargetObject.value)
 }
 </code></pre>
+<h3 id="downstream-issues">Downstream issues</h3>
+<p>Before PSRule performs analysis external tools or rules modules may have already performed analysis.
+Issues identified by downstream tools can be consumed by PSRule using the <code>_PSRule.issue</code> property.
+If a <code>_PSRule</code> property exists with <code>issue</code> sub-property PSRule will consume <code>issue</code> as an array of issues.</p>
+<p>Each issue has the following properties:</p>
+<ul>
+<li><code>type</code> - The issue type.
+Issues are filtered by type.</li>
+<li><code>name</code> - The name of a specific issue.</li>
+<li><code>message</code> - The reason message for the issue.</li>
+</ul>
+<p>To get issues for an object use the <code>Get</code> or <code>Any</code> methods.</p>
+<pre><code class="lang-powershell"># Get an array of all issues for the current object.
+$PSRule.Issue.Get();
+
+# Get an array of issues of a specific type.
+$PSRule.Issue.Get('CustomIssue');
+
+# Return true of any issues exist.
+$PSRule.Issue.Any();
+
+# Return true of any issues of a specific type exist.
+$PSRule.Issue.Any('CustomIssue');
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-powershell"># Synopsis: Fail if the object has any 'PSRule.Rules.Azure.Parameter.Insecure' issues.
+Rule 'IssueReportTest' {
+    $Assert.Create($PSRule.Issue.Get('PSRule.Rules.Azure.Parameter.Insecure'));
+}
+</code></pre>
 <h3 id="authoring-assertion-methods">Authoring assertion methods</h3>
 <p>The following built-in helper methods are provided for working with <code>$Assert</code> when authoring new assertion methods:</p>
 <ul>
 <li><code>Create(&lt;bool&gt; condition, &lt;string&gt; reason, params &lt;object[]&gt; args)</code> - Returns a result either pass or fail assertion result.
 Additional arguments can be provided to format the custom reason string.</li>
+<li><code>Create(&lt;TargetIssueInfo[]&gt;)</code> - Returns a result based on reported downstream issues.</li>
 <li><code>Pass()</code> - Returns a pass assertion result.</li>
 <li><code>Fail()</code> - Results a fail assertion result.</li>
 <li><code>Fail(&lt;string&gt; reason, params &lt;object[]&gt; args)</code> - Results a fail assertion result with a custom reason.

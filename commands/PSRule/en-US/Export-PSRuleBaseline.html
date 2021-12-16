@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Get-PSRuleBaseline </title>
+    <title>Export-PSRuleBaseline </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Get-PSRuleBaseline ">
+    <meta name="title" content="Export-PSRuleBaseline ">
     <meta name="generator" content="docfx 2.56.2.0">
     
     <link rel="shortcut icon" href="../../../favicon.ico">
@@ -67,21 +67,22 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="get-psrulebaseline">Get-PSRuleBaseline</h1>
+<h1 id="export-psrulebaseline">Export-PSRuleBaseline</h1>
 
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>Get a list of baselines.</p>
+<p>Exports a list of baselines.</p>
 <h2 id="syntax">SYNTAX</h2>
-<pre><code class="lang-text">Get-PSRuleBaseline [-Module &lt;String[]&gt;] [-ListAvailable] [[-Path] &lt;String[]&gt;] [-Name &lt;String[]&gt;]
- [-Option &lt;PSRuleOption&gt;] [-Culture &lt;String&gt;] [-OutputFormat &lt;OutputFormat&gt;] [&lt;CommonParameters&gt;]
+<pre><code class="lang-text">Export-PSRuleBaseline [[-Path] &lt;string[]&gt;] -OutputPath &lt;string&gt; [-Module &lt;string[]&gt;] [-Name &lt;string[]&gt;]
+ [-Option &lt;PSRuleOption&gt;] [-Culture &lt;string&gt;] [-OutputFormat &lt;OutputFormat&gt;] [-OutputEncoding &lt;OutputEncoding&gt;]
+ [-WhatIf] [-Confirm] [&lt;CommonParameters&gt;]
 </code></pre>
 <h2 id="description">DESCRIPTION</h2>
-<p>Get a list of matching baselines within the search path.</p>
+<p>Exports a list of baselines to a file.</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-1">Example 1</h3>
-<pre><code class="lang-powershell">Get-PSRuleBaseline;
+<pre><code class="lang-powershell">Export-PSRuleBaseline -Module PSRule.Rules.Azure -OutputFormat Yaml -OutputPath Baseline.Rule.yml
 </code></pre>
-<p>Get a list of baselines from the current working path.</p>
+<p>Exports list of baselines from <code>PSRule.Rules.Azure</code> module to file <code>Baseline.Rule.yml</code> in YAML output format.</p>
 <h2 id="parameters">PARAMETERS</h2>
 <h3 id="-module">-Module</h3>
 <p>Search for baselines definitions within a module.
@@ -93,19 +94,6 @@ Aliases: m
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-</code></pre>
-<h3 id="-listavailable">-ListAvailable</h3>
-<p>Look for modules containing baselines including modules that are currently not imported.</p>
-<p>This switch is used with the <code>-Module</code> parameter.</p>
-<pre><code class="lang-yaml">Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 </code></pre>
@@ -133,7 +121,7 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
-Accept wildcard characters: False
+Accept wildcard characters: True
 </code></pre>
 <h3 id="-option">-Option</h3>
 <p>Additional options that configure execution.
@@ -168,14 +156,65 @@ Accept wildcard characters: False
 <p>Configures the format that output is presented in.</p>
 <p>The following format options are available:</p>
 <ul>
-<li>None - Output is presented as an object using PowerShell defaults. This is the default.</li>
-<li>Yaml - Output is serialized as YAML.</li>
+<li>Yaml - Output is serialized as YAML. This is the default.</li>
 <li>Json - Output is serialized as JSON.</li>
 </ul>
 <pre><code class="lang-yaml">Type: OutputFormat
 Parameter Sets: (All)
 Aliases: o
-Accepted values: None, Yaml, Json
+Accepted values: Yaml, Json
+
+Required: False
+Position: Named
+Default value: Yaml
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-outputencoding">-OutputEncoding</h3>
+<p>Sets the option <code>Output.Encoding</code>.
+The <code>Output.Encoding</code> option configured the encoding used to write results to file.</p>
+<pre><code class="lang-yaml">Type: OutputEncoding
+Parameter Sets: (All)
+Aliases:
+Accepted values: Default, UTF8, UTF7, Unicode, UTF32, ASCII
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-outputpath">-OutputPath</h3>
+<p>Sets the option <code>Output.Path</code>.
+The <code>Output.Path</code> option configures the output path the results are written to.</p>
+<pre><code class="lang-yaml">Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-whatif">-WhatIf</h3>
+<p>Shows what would happen if the cmdlet runs.
+The cmdlet is not run.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+</code></pre>
+<h3 id="-confirm">-Confirm</h3>
+<p>Prompts you for confirmation before running the cmdlet.</p>
+<pre><code class="lang-yaml">Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
 
 Required: False
 Position: Named
@@ -187,13 +226,9 @@ Accept wildcard characters: False
 <p>This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see <a href="http://go.microsoft.com/fwlink/?LinkID=113216">about_CommonParameters</a>.</p>
 <h2 id="inputs">INPUTS</h2>
 <h2 id="outputs">OUTPUTS</h2>
-<h3 id="psruledefinitionsbaseline">PSRule.Definitions.Baseline</h3>
-<p>This is the default.</p>
-<h3 id="systemstring">System.String</h3>
-<p>When you use <code>-OutputFormat Yaml</code> or <code>-OutputFormat Json</code>.</p>
 <h2 id="notes">NOTES</h2>
 <h2 id="related-links">RELATED LINKS</h2>
-<p><a href="Get-PSRule.html">Get-PSRule</a></p>
+<p><a href="Get-PSRuleBaseline.html">Get-PSRuleBaseline</a></p>
 </article>
           </div>
           
@@ -202,7 +237,7 @@ Accept wildcard characters: False
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/Microsoft/PSRule/blob/main/docs/commands/PSRule/en-US/Get-PSRuleBaseline.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Microsoft/PSRule/blob/main/docs/commands/PSRule/en-US/Export-PSRuleBaseline.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

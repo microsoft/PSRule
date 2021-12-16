@@ -24,7 +24,7 @@
       "output": {
         ".html": {
           "relative_path": "CHANGELOG-v1.html",
-          "hash": "KDDtciKqJFdbFT/2efL6CQ=="
+          "hash": "+1ioIv4oNg+zHOrzgOiliQ=="
         }
       },
       "is_incremental": false,
@@ -37,6 +37,18 @@
         ".html": {
           "relative_path": "commands/PSRule/en-US/Assert-PSRule.html",
           "hash": "md1XOsrmPv3Wdm8A1Fofpg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "commands/PSRule/en-US/Export-PSRuleBaseline.md",
+      "output": {
+        ".html": {
+          "relative_path": "commands/PSRule/en-US/Export-PSRuleBaseline.html",
+          "hash": "gHsdZPT2wpcleLnsVhtrjA=="
         }
       },
       "is_incremental": false,
@@ -60,7 +72,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/Get-PSRuleBaseline.html",
-          "hash": "Gf6KbCZB8c2p9xPqueicRg=="
+          "hash": "qViUNY8NBL+9ymQCK01Ptw=="
         }
       },
       "is_incremental": false,
@@ -120,7 +132,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/PSRule.html",
-          "hash": "pST+wCESXgrXwgFlkvACoA=="
+          "hash": "W8XwqnisRMSfDG2xKJiCbg=="
         }
       },
       "is_incremental": false,
@@ -156,7 +168,7 @@
       "output": {
         ".html": {
           "relative_path": "commands/PSRule/en-US/toc.html",
-          "hash": "f+N7xPc6z4ChF0L9X3OBag=="
+          "hash": "VBQaGA8VvzxpWZJA23NUiQ=="
         }
       },
       "is_incremental": false,
@@ -168,7 +180,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Assert.html",
-          "hash": "rvE7EcH8SxQoroAiV31x+Q=="
+          "hash": "rzXUauFigJD4x7fwTqRNxg=="
         }
       },
       "is_incremental": false,
@@ -192,7 +204,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Baseline.html",
-          "hash": "6IvxyL31crzvUkmv1eZfwg=="
+          "hash": "M+SNdh/t4nwvnHLTRaq3Eg=="
         }
       },
       "is_incremental": false,
@@ -228,7 +240,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Expressions.html",
-          "hash": "PE4ex/udOpnmvKwpjiGw/A=="
+          "hash": "1Te/ezQtxDyuHR0jUxkJ8A=="
         }
       },
       "is_incremental": false,
@@ -240,7 +252,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Options.html",
-          "hash": "DBIIqozR7KoMF9NslIuWjA=="
+          "hash": "aQCh62bVfnTavigA+pBhRQ=="
         }
       },
       "is_incremental": false,
@@ -252,7 +264,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Rules.html",
-          "hash": "oLca2xka3WoI6vZzvgVfpQ=="
+          "hash": "VgpHUDQFB6fEQYyuqgc1fg=="
         }
       },
       "is_incremental": false,
@@ -264,7 +276,7 @@
       "output": {
         ".html": {
           "relative_path": "concepts/PSRule/en-US/about_PSRule_Selectors.html",
-          "hash": "f1+OaqHHN7BJlkiDCg8rPQ=="
+          "hash": "wo4y8wbokqeS2NqUCcbssA=="
         }
       },
       "is_incremental": false,
@@ -737,7 +749,7 @@
       "output": {
         ".html": {
           "relative_path": "scenarios/rule-module/rule-module.html",
-          "hash": "62te7TJi5v6oM8AJBZ4PMQ=="
+          "hash": "feDUaqFb9ImehW7gHPoIbQ=="
         }
       },
       "is_incremental": false,
@@ -865,7 +877,7 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 46,
+          "total_file_count": 47,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {

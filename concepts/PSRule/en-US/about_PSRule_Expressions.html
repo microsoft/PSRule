@@ -84,6 +84,7 @@ Expressions are comprised of nested conditions, operators, and comparison proper
 <li><a href="#exists">Exists</a></li>
 <li><a href="#greater">Greater</a></li>
 <li><a href="#greaterorequals">GreaterOrEquals</a></li>
+<li><a href="#hasschema">HasSchema</a></li>
 <li><a href="#hasvalue">HasValue</a></li>
 <li><a href="#in">In</a></li>
 <li><a href="#islower">IsLower</a></li>
@@ -146,7 +147,6 @@ spec:
       exists: true
     - field: 'Description'
       exists: true
-
 </code></pre>
 <h3 id="anyof">AnyOf</h3>
 <p>The <code>anyOf</code> operator is used to require one or more nested expressions to match.
@@ -446,6 +446,61 @@ spec:
   if:
     field: 'Name'
     greaterOrEquals: 3
+</code></pre>
+<h3 id="hasschema">HasSchema</h3>
+<p>The <code>hasSchema</code> condition determines if the operand has a <code>$schema</code> property defined.
+If the <code>$schema</code> property is defined, it must match one of the specified schemas.
+If a trailing <code>#</code> is specified it is ignored.</p>
+<p>The following properties are accepted:</p>
+<ul>
+<li><code>caseSensitive</code> - Optionally, a case-sensitive comparison can be performed.
+By default, case-insensitive comparison is performed.</li>
+<li><code>ignoreScheme</code> - Optionally, the URI scheme is ignored in the comparison.
+By default, the scheme is compared.
+When <code>true</code>, the schema will match if either <code>http://</code> or <code>https://</code> is specified.</li>
+</ul>
+<p>Syntax:</p>
+<pre><code class="lang-yaml">hasSchema: &lt;array&gt;
+caseSensitive: &lt;bool&gt;
+ignoreScheme: &lt;bool&gt;
+</code></pre>
+<ul>
+<li>When <code>hasSchema: []</code>, hasSchema will return <code>true</code> if any non-empty <code>$schema</code> property is defined.</li>
+</ul>
+<p>For example:</p>
+<pre><code class="lang-yaml">---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleHasSchema'
+spec:
+  condition:
+    field: '.'
+    hasSchema:
+    - https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleHasSchema'
+spec:
+  if:
+    field: '.'
+    hasSchema:
+    - https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#
+    - https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#
+    ignoreScheme: true
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleHasAnySchema'
+spec:
+  if:
+    field: '.'
+    hasSchema: []
 </code></pre>
 <h3 id="hasvalue">HasValue</h3>
 <p>The <code>hasValue</code> condition determines if the field exists and has a non-empty value.</p>
@@ -922,7 +977,7 @@ spec:
 </code></pre>
 <h3 id="subset">Subset</h3>
 <p>The <code>subset</code> condition can be used to determine if the operand is a set of specified values.
-Additionally the following properties are accepted:</p>
+The following properties are accepted:</p>
 <ul>
 <li><code>caseSensitive</code> - Optionally, a case-sensitive comparison can be performed.
 By default, case-insensitive comparison is performed.</li>

@@ -76,7 +76,7 @@
 <p>PSRule executes rules to validate an object from input.
 When evaluating an object from input, PSRule can use selectors to perform complex matches of an object.</p>
 <ul>
-<li>A selector is a YAML-based expression that evaluates an object.</li>
+<li>A selector is a YAML/JSON based expression that evaluates an object.</li>
 <li>Each selector is comprised of nested conditions, operators, and comparison properties.</li>
 <li>Selectors must use one or more available conditions with a comparison property to evaluate the object.</li>
 <li>Optionally a condition can be nested in an operator.</li>
@@ -134,9 +134,11 @@ For example:</p>
 <p>Selector pre-conditions can be used together with type and script block pre-conditions.
 If one or more selector pre-conditions are used, they are evaluated before type or script block pre-conditions.</p>
 <h3 id="defining-selectors">Defining selectors</h3>
-<p>Selectors are defined in YAML and can be included within a module or standalone <code>.Rule.yaml</code> file.
-In either case, define a selector within a file ending with the <code>.Rule.yaml</code> extension.
+<p>Selectors can be defined with either YAML or JSON format, and can be included with a module or standalone <code>.Rule.yaml</code> or <code>.Rule.jsonc</code> file.
+In either case, define a selector within a file ending with the <code>.Rule.yaml</code> or <code>.Rule.jsonc</code> extension.
 A selector can be defined side-by-side with other resources such as baselines or module configurations.</p>
+<p>Selectors can also be defined within <code>.json</code> files.
+We recommend using <code>.jsonc</code> to view <a href="https://code.visualstudio.com/docs/languages/json#_json-with-comments">JSON with Comments</a> in Visual Studio Code.</p>
 <p>Use the following template to define a selector:</p>
 <pre><code class="lang-yaml">---
 # Synopsis: {{ Synopsis }}
@@ -146,6 +148,20 @@ metadata:
   name: '{{ Name }}'
 spec:
   if: { }
+</code></pre>
+<pre><code class="lang-jsonc">[
+  {
+    // Synopsis: {{ Synopsis }}
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;kind&quot;: &quot;Selector&quot;,
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;{{ Name }}&quot;
+    },
+    &quot;spec&quot;: {
+      &quot;if&quot;: {}
+    }
+  }
+]
 </code></pre>
 <p>Within the <code>if</code> object, one or more conditions or logical operators can be used.</p>
 <h2 id="examples">EXAMPLES</h2>
@@ -188,6 +204,64 @@ spec:
     in:
     - 'Value1'
     - 'Value2'
+</code></pre>
+<h3 id="example-selectorsrulejsonc">Example Selectors.Rule.jsonc</h3>
+<pre><code class="lang-jsonc">// Example Selectors.Rule.jsonc
+[
+  {
+    // Synopsis: Require the CustomValue field.
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;kind&quot;: &quot;Selector&quot;,
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;RequireCustomValue&quot;
+    },
+    &quot;spec&quot;: {
+      &quot;if&quot;: {
+        &quot;field&quot;: &quot;CustomValue&quot;,
+        &quot;exists&quot;: true
+      }
+    }
+  },
+  {
+    // Synopsis: Require a Name or AlternativeName.
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;kind&quot;: &quot;Selector&quot;,
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;RequireName&quot;
+    },
+    &quot;spec&quot;: {
+      &quot;if&quot;: {
+        &quot;anyOf&quot;: [
+          {
+            &quot;field&quot;: &quot;AlternateName&quot;,
+            &quot;exists&quot;: true
+          },
+          {
+            &quot;field&quot;: &quot;Name&quot;,
+            &quot;exists&quot;: true
+          }
+        ]
+      }
+    }
+  },
+  {
+    // Synopsis: Require a specific CustomValue
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;kind&quot;: &quot;Selector&quot;,
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;RequireSpecificCustomValue&quot;
+    },
+    &quot;spec&quot;: {
+      &quot;if&quot;: {
+        &quot;field&quot;: &quot;CustomValue&quot;,
+        &quot;in&quot;: [
+          &quot;Value1&quot;,
+          &quot;Value2&quot;
+        ]
+      }
+    }
+  }
+]
 </code></pre>
 <h2 id="note">NOTE</h2>
 <p>An online version of this document is available at <a href="https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.md">https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.md</a>.</p>

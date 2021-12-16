@@ -115,28 +115,6 @@ PrivateData = @{
     }
 }
 </code></pre>
-<h3 id="setting-a-default-baseline">Setting a default baseline</h3>
-<p>Optionally, baselines can be included in rule modules.
-If a baseline contains configuration or binding options then setting a default baseline is often desirable.
-When a default baseline is set, PSRule will use the named baseline automatically when processing rules from that module.
-This feature removes the need for users to specify it manually.</p>
-<p>To set a default baseline, add a new property after the <code>PSData</code> hashtable ends called <code>PSRule</code>.
-The <code>PSRule</code> property is a hashtable of configuration for PSRule.
-Within the hashtable specify the <code>Baseline</code> property with the name of the baseline.</p>
-<p>For example:</p>
-<pre><code class="lang-powershell"># Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
-PrivateData = @{
-    PSData = @{
-        # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('PSRule-rules')
-    }
-    PSRule = @{
-        Baseline = 'Enterprise.Default'
-    }
-}
-</code></pre>
-<p>This examples set the default baseline to <code>Enterprise.Default</code>.
-The default baseline must be included in file ending with <code>.Rule.yaml</code> within the module directory structure.</p>
 <h2 id="including-rules-and-baselines">Including rules and baselines</h2>
 <p>Rules and baselines can be included anywhere within the module directory structure.
 Such as in the root directory of the module or in a nested sub-directory.</p>
@@ -171,7 +149,7 @@ The name of the <code>ModuleConfig</code> must match the name of the module.
 Additional <code>ModuleConfig</code> resources or with an alternative name are ignored.
 PSRule does not support module configurations distributed outside of a module.</p>
 <pre><code class="lang-yaml">---
-# Synopsis: Example module configuration for Enterprise.Rules module
+# Synopsis: Example module configuration for Enterprise.Rules module.
 apiVersion: github.com/microsoft/PSRule/v1
 kind: ModuleConfig
 metadata:
@@ -190,7 +168,8 @@ spec:
       resourceId: [ 'ResourceId' ]
       subscriptionId: [ 'SubscriptionId' ]
       resourceGroupName: [ 'ResourceGroupName' ]
-
+  rule:
+    baseline: Enterprise.Default
 </code></pre>
 <p>The following options are allowed within a <code>ModuleConfig</code>:</p>
 <ul>
@@ -203,7 +182,40 @@ spec:
 <li><code>Binding.UseQualifiedName</code></li>
 <li><code>Configuration</code></li>
 <li><code>Output.Culture</code></li>
+<li><code>Rule.Baseline</code></li>
 </ul>
+<h3 id="setting-a-default-baseline">Setting a default baseline</h3>
+<p>Optionally, baselines can be included in rule modules.
+If a baseline contains configuration or binding options then setting a default baseline is often desirable.
+When a default baseline is set, PSRule will use the named baseline automatically when processing rules from that module.
+This feature removes the need for users to specify it manually.</p>
+<p>To set a default baseline, set the <code>Rule.Baseline</code> property of the <code>ModuleConfig</code> resource.</p>
+<p>For example:</p>
+<pre><code class="lang-yaml">---
+# Synopsis: Example module configuration for Enterprise.Rules module.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: ModuleConfig
+metadata:
+  name: Enterprise.Rules
+spec:
+  binding:
+    targetName:
+    - ResourceName
+    - FullName
+    - name
+    targetType:
+    - ResourceType
+    - type
+    - Extension
+    field:
+      resourceId: [ 'ResourceId' ]
+      subscriptionId: [ 'SubscriptionId' ]
+      resourceGroupName: [ 'ResourceGroupName' ]
+  rule:
+    baseline: Enterprise.Default
+</code></pre>
+<p>This examples set the default baseline to <code>Enterprise.Default</code>.
+The default baseline must be included in file ending with <code>.Rule.yaml</code> within the module directory structure.</p>
 <h2 id="including-documentation">Including documentation</h2>
 <p>PSRule supports write and packaging rule modules with markdown documentation.
 Markdown documentation is automatically interpreted by PSRule and included in output.</p>

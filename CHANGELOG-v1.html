@@ -66,8 +66,171 @@
 <p><strong>Important notes</strong>:</p>
 <ul>
 <li>YAML resources will require an <code>apiVersion</code> from PSRule v2. <a href="https://github.com/microsoft/PSRule/issues/648">#648</a></li>
+<li>Setting the default module baseline requires a module configuration from PSRule v2. <a href="https://github.com/microsoft/PSRule/issues/809">#809</a></li>
 </ul>
 <h2 id="unreleased">Unreleased</h2>
+<h2 id="v1100">v1.10.0</h2>
+<p>What's changed since v1.9.0:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added JSON support for reading rules and selectors from pipeline. <a href="https://github.com/microsoft/PSRule/issues/857">#857</a></li>
+<li>Added <code>HasSchema</code> expression to check the schema of an object. <a href="https://github.com/microsoft/PSRule/issues/860">#860</a>
+<ul>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Expressions.html">about_PSRule_Expressions</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Bug fixes:
+<ul>
+<li>Fixed <code>$Assert.HasJsonSchema</code> accepts empty value. <a href="https://github.com/microsoft/PSRule/issues/859">#859</a></li>
+<li>Fixed module configuration is not loaded when case does not match. <a href="https://github.com/microsoft/PSRule/issues/864">#864</a></li>
+</ul>
+</li>
+</ul>
+<p>What's changed since pre-release v1.10.0-B2112002:</p>
+<ul>
+<li>No additional changes.</li>
+</ul>
+<h2 id="v1100-b2112002-pre-release">v1.10.0-B2112002 (pre-release)</h2>
+<p>What's changed since pre-release v1.10.0-B2111024:</p>
+<ul>
+<li>Bug fixes:
+<ul>
+<li>Fixed module configuration is not loaded when case does not match. <a href="https://github.com/microsoft/PSRule/issues/864">#864</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v1100-b2111024-pre-release">v1.10.0-B2111024 (pre-release)</h2>
+<p>What's changed since v1.9.0:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added JSON support for reading rules and selectors from pipeline. <a href="https://github.com/microsoft/PSRule/issues/857">#857</a></li>
+<li>Added <code>HasSchema</code> expression to check the schema of an object. <a href="https://github.com/microsoft/PSRule/issues/860">#860</a>
+<ul>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Expressions.html">about_PSRule_Expressions</a> for details.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Bug fixes:
+<ul>
+<li>Fixed <code>$Assert.HasJsonSchema</code> accepts empty value. <a href="https://github.com/microsoft/PSRule/issues/859">#859</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v190">v1.9.0</h2>
+<p>What's changed since v1.8.0:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added improvements to YAML output for <code>Get-PSRuleBaseline</code>. <a href="https://github.com/microsoft/PSRule/issues/829">#829</a></li>
+<li>Added <code>-Initialize</code> convention block. <a href="https://github.com/microsoft/PSRule/issues/826">#826</a>
+<ul>
+<li>Use this block to perform any initialization that is required before any rules are run.</li>
+<li>This block is only run once instead of <code>-Begin</code> which is run once per object.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Conventions.html">about_PSRule_Conventions</a> for details.</li>
+</ul>
+</li>
+<li>Allow lifetime services to be used. <a href="https://github.com/microsoft/PSRule/issues/827">#827</a>
+<ul>
+<li>Use <code>$PSRule.AddService</code> and <code>$PSRule.GetService</code> to add a service.</li>
+<li>Services allows a singleton instance to be used and shared across multiple rules.</li>
+<li>PSRule will automatically dispose the service when all rules have run.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Variables.html">about_PSRule_Variables</a> for details.</li>
+</ul>
+</li>
+<li>Added <code>Export-PSRuleBaseline</code> cmdlet to export baseline. <a href="https://github.com/microsoft/PSRule/issues/622">#622</a></li>
+<li>Added JSON output format for Baseline cmdlets. <a href="https://github.com/microsoft/PSRule/issues/839">#839</a></li>
+<li>Allow downstream issues to be consumed. <a href="https://github.com/microsoft/PSRule/issues/843">#843</a>
+<ul>
+<li>Objects can be flagged with issues that have been generated externally.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+<li>Migrated default baseline to module configuration. <a href="https://github.com/microsoft/PSRule/issues/809">#809</a>
+<ul>
+<li>This enables configuration of the default baseline for a module with a module configuration.</li>
+<li>This depreciate configuring the default baseline within the module manifest.</li>
+<li>Modules using manifest configuration will start warning from v1.9.0.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+<li>Added JSON support to read baselines from pipeline. <a href="https://github.com/microsoft/PSRule/issues/845">#845</a></li>
+</ul>
+</li>
+<li>Engineering:
+<ul>
+<li>Bump System.Drawing.Common dependency to v6.0.0. <a href="https://github.com/microsoft/PSRule/pull/848">#848</a></li>
+</ul>
+</li>
+<li>Bug fixes:
+<ul>
+<li>Fixed convention execution is out of order. <a href="https://github.com/microsoft/PSRule/issues/835">#835</a></li>
+</ul>
+</li>
+</ul>
+<p>What's changed since pre-release v1.9.0-B2111024:</p>
+<ul>
+<li>Engineering:
+<ul>
+<li>Bump Microsoft.CodeAnalysis.NetAnalyzers to v6.0.0. <a href="https://github.com/microsoft/PSRule/pull/851">#851</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v190-b2111024-pre-release">v1.9.0-B2111024 (pre-release)</h2>
+<p>What's changed since pre-release v1.9.0-B2111009:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Allow downstream issues to be consumed. <a href="https://github.com/microsoft/PSRule/issues/843">#843</a>
+<ul>
+<li>Objects can be flagged with issues that have been generated externally.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Assert.html">about_PSRule_Assert</a> for details.</li>
+</ul>
+</li>
+<li>Migrated default baseline to module configuration. <a href="https://github.com/microsoft/PSRule/issues/809">#809</a>
+<ul>
+<li>This enables configuration of the default baseline for a module with a module configuration.</li>
+<li>This depreciate configuring the default baseline within the module manifest.</li>
+<li>Modules using manifest configuration will start warning from v1.9.0.</li>
+<li>See <a href="concepts/PSRule/en-US/about_PSRule_Options.html">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
+<li>Added JSON support to read baselines from pipeline. <a href="https://github.com/microsoft/PSRule/issues/845">#845</a></li>
+</ul>
+</li>
+<li>Engineering:
+<ul>
+<li>Bump System.Drawing.Common dependency to v6.0.0. <a href="https://github.com/microsoft/PSRule/pull/848">#848</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v190-b2111009-pre-release">v1.9.0-B2111009 (pre-release)</h2>
+<p>What's changed since pre-release v1.9.0-B2110027:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added JSON output format for Baseline cmdlets. <a href="https://github.com/microsoft/PSRule/issues/839">#839</a></li>
+</ul>
+</li>
+<li>Bug fixes:
+<ul>
+<li>Fixed convention execution is out of order. <a href="https://github.com/microsoft/PSRule/issues/835">#835</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="v190-b2110027-pre-release">v1.9.0-B2110027 (pre-release)</h2>
+<p>What's changed since pre-release v1.9.0-B2110015:</p>
+<ul>
+<li>General improvements:
+<ul>
+<li>Added <code>Export-PSRuleBaseline</code> cmdlet to export baseline. <a href="https://github.com/microsoft/PSRule/issues/622">#622</a></li>
+</ul>
+</li>
+</ul>
 <h2 id="v190-b2110015-pre-release">v1.9.0-B2110015 (pre-release)</h2>
 <p>What's changed since v1.8.0:</p>
 <ul>

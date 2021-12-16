@@ -104,10 +104,10 @@ Script block pre-conditions only work with script rules.
 To use a script block pre-condition, specify the <code>-If</code> script parameter on the <code>Rule</code> block.</li>
 <li>Type - A type string that is compared against the bound object type.
 When the type matches the rule will be executed.
-To use a type pre-conditions, specify the <code>-Type</code> script parameter or <code>type</code> YAML property.</li>
-<li>Selector - A YAML-based expression that is evaluated against the object.
+To use a type pre-conditions, specify the <code>-Type</code> script parameter or <code>type</code> YAML/JSON property.</li>
+<li>Selector - A YAML/JSON based expression that is evaluated against the object.
 When the expression matches the rule will be executed.
-To use a selector pre-conditions, specify the <code>-With</code> script parameter or <code>with</code> YAML property.</li>
+To use a selector pre-conditions, specify the <code>-With</code> script parameter or <code>with</code> YAML/JSON property.</li>
 </ul>
 <p>Different forms of pre-conditions can be combined.
 When combining pre-conditions, different forms must be all true (logical AND).
@@ -134,6 +134,28 @@ spec:
   - 'Selector.1'
   - 'Selector.2'
   condition: { }
+</code></pre>
+<pre><code class="lang-jsonc">[
+  {
+    // Synopsis: An example YAML rule with pre-conditions.
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;kind&quot;: &quot;Rule&quot;,
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;YamlRule&quot;
+    },
+    &quot;spec&quot;: {
+      &quot;type&quot;: [
+        &quot;CustomType1&quot;,
+        &quot;CustomType2&quot;
+      ],
+      &quot;with&quot;: [
+        &quot;Selector.1&quot;,
+        &quot;Selector.2&quot;
+      ],
+      &quot;condition&quot;: {}
+    }
+  }
+]
 </code></pre>
 <p>Pre-conditions are evaluated in the following order: Selector, Type, then Script.</p>
 <h3 id="defining-script-rules">Defining script rules</h3>
@@ -188,6 +210,56 @@ spec:
   condition:
     field: 'Properties.networkProfile.loadBalancerSku'
     equals: 'standard'
+</code></pre>
+<h3 id="defining-json-rules">Defining JSON rules</h3>
+<p>To define a JSON rule use the <code>Rule</code> resource in a JSON file.
+Each rule must be defined within a <code>.Rule.jsonc</code> file following a standard schema.
+One or more rules can be defined in a single JSON array separating each rule in a JSON object.</p>
+<p>Within the <code>Rule</code> resource, the <code>condition</code> property specifies conditions to pass or fail the rule.</p>
+<p>Rules can also be defined within <code>.json</code> files.
+We recommend using <code>.jsonc</code> to view <a href="https://code.visualstudio.com/docs/languages/json#_json-with-comments">JSON with Comments</a> in Visual Studio Code.</p>
+<p>Syntax:</p>
+<pre><code class="lang-jsonc">[
+  {
+    // Synopsis: {{ Synopsis }}
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;kind&quot;: &quot;Rule&quot;,
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;{{ Name }}&quot;,
+      &quot;tags&quot;: {}
+    },
+    &quot;spec&quot;: {
+      &quot;type&quot;: [],
+      &quot;with&quot;: [],
+      &quot;condition&quot;: {}
+    }
+  }
+]
+</code></pre>
+<p>Example:</p>
+<pre><code class="lang-jsonc">[
+  {
+    // Synopsis: Use a Standard load-balancer with AKS clusters.
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;kind&quot;: &quot;Rule&quot;,
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;Azure.AKS.StandardLB&quot;,
+      &quot;tags&quot;: {
+        &quot;release&quot;: &quot;GA&quot;,
+        &quot;ruleSet&quot;: &quot;2020_06&quot;
+      }
+    },
+    &quot;spec&quot;: {
+      &quot;type&quot;: [
+        &quot;Microsoft.ContainerService/managedClusters&quot;
+      ],
+      &quot;condition&quot;: {
+        &quot;field&quot;: &quot;Properties.networkProfile.loadBalancerSku&quot;,
+        &quot;equals&quot;: &quot;standard&quot;
+      }
+    }
+  }
+]
 </code></pre>
 <h2 id="note">NOTE</h2>
 <p>An online version of this document is available at <a href="https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Rules.md">https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Rules.md</a>.</p>

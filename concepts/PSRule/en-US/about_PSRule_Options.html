@@ -116,6 +116,7 @@ This topic describes what options are available, when to and how to use them.</p
 <li><a href="#bindingtargettype">Binding.TargetType</a></li>
 <li><a href="#bindingusequalifiedname">Binding.UseQualifiedName</a></li>
 <li><a href="#configuration">Configuration</a></li>
+<li><a href="#rulebaseline">Rule.Baseline</a></li>
 <li><a href="#ruleinclude">Rule.Include</a></li>
 <li><a href="#ruleincludelocal">Rule.IncludeLocal</a></li>
 <li><a href="#ruleexclude">Rule.Exclude</a></li>
@@ -124,6 +125,7 @@ This topic describes what options are available, when to and how to use them.</p
 <p>See <a href="about_PSRule_Baseline.html">about_PSRule_Baseline</a> for more information on baseline options.</p>
 <p>Options can be used with the following PSRule cmdlets:</p>
 <ul>
+<li>Export-PSRuleBaseline</li>
 <li>Get-PSRule</li>
 <li>Get-PSRuleBaseline</li>
 <li>Get-PSRuleHelp</li>
@@ -1313,7 +1315,8 @@ RuleName, Pass, Fail, Outcome, Synopsis, Recommendation</li>
 </ul>
 <p>The Wide format is ignored by <code>Assert-PSRule</code>. <code>Get-PSRule</code> only accepts <code>None</code>, <code>Wide</code>, <code>Yaml</code> and <code>Json</code>.
 Usage of other formats are treated as <code>None</code>.</p>
-<p>The <code>Get-PSRuleBaseline</code> cmdlet only accepts <code>None</code> or <code>Yaml</code>.</p>
+<p>The <code>Get-PSRuleBaseline</code> cmdlet only accepts <code>None</code> or <code>Yaml</code>.
+The <code>Export-PSRuleBaseline</code> cmdlet only accepts <code>Yaml</code>.</p>
 <p>This option can be specified using:</p>
 <pre><code class="lang-powershell"># PowerShell: Using the OutputFormat parameter
 $option = New-PSRuleOption -OutputFormat Yaml;
@@ -1534,6 +1537,20 @@ variables:
   value: '&gt;=1.0.0'
 - name: PSRULE_REQUIRES_PSRULE_RULES_CAF
   value: '@pre &gt;=0.1.0'
+</code></pre>
+<h3 id="rulebaseline">Rule.Baseline</h3>
+<p>The name of a default baseline to use for the module.
+Currently this option can only be set within a module configuration resource.</p>
+<p>For example:</p>
+<pre><code class="lang-yaml">---
+# Synopsis: Example module configuration for Enterprise.Rules module.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: ModuleConfig
+metadata:
+  name: Enterprise.Rules
+spec:
+  rule:
+    baseline: Enterprise.Baseline1
 </code></pre>
 <h3 id="ruleinclude">Rule.Include</h3>
 <p>The name of specific rules to evaluate.

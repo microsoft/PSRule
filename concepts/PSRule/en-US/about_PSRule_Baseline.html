@@ -92,13 +92,14 @@ A baseline includes a set of rule and configuration options that are used for ev
 </ul>
 <p>Baseline options can be:</p>
 <ul>
-<li>Included as a baseline spec within a YAML file.
+<li>Included as a baseline spec within a YAML or JSON file.
 <ul>
-<li>When using this method, multiple baseline specs can be defined within the same YAML file.</li>
-<li>Each baseline spec is separated using <code>---</code>.</li>
+<li>When using this method, multiple baseline specs can be defined within the same YAML/JSON file.</li>
+<li>Each YAML baseline spec is separated using <code>---</code>.</li>
+<li>Each JSON baseline spec is separated by JSON objects in a JSON array.</li>
 </ul>
 </li>
-<li>Set within a workspace options file like <code>ps-rule.yaml</code>.
+<li>Set within a workspace options file like <code>ps-rule.yaml</code> or <code>ps-rule.json</code>.
 <ul>
 <li>Only a single baseline can be specified.</li>
 <li>See <a href="about_PSRule_Options.html">about_PSRule_Options</a> for details on using this method.</li>
@@ -106,8 +107,10 @@ A baseline includes a set of rule and configuration options that are used for ev
 </li>
 </ul>
 <h3 id="baseline-specs">Baseline specs</h3>
-<p>A baseline spec is defined and saved within a YAML file with a <code>.Rule.yaml</code> extension, for example <code>Baseline.Rule.yaml</code>.</p>
-<p>To define a baseline spec use the following structure:</p>
+<p>YAML baseline specs are saved within a YAML file with a <code>.Rule.yaml</code> or <code>.Rule.yml</code> extension, for example <code>Baseline.Rule.yaml</code>.</p>
+<p>JSON baseline specs are saved within a file with a <code>.Rule.json</code> or <code>.Rule.jsonc</code> extension, for example <code>Baseline.Rule.json</code>.
+Use <code>.jsonc</code> to view <a href="https://code.visualstudio.com/docs/languages/json#_json-with-comments">JSON with Comments</a> in Visual Studio Code.</p>
+<p>To define a YAML baseline spec use the following structure:</p>
 <pre><code class="lang-yaml">---
 # Synopsis: &lt;synopsis&gt;
 apiVersion: github.com/microsoft/PSRule/v1
@@ -170,13 +173,103 @@ spec:
     allowedLocations:
     - 'Australia East'
 </code></pre>
+<p>To define a JSON baseline spec use the following structure:</p>
+<pre><code class="lang-json">[
+  {
+    // Synopsis: &lt;synopsis&gt;
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;kind&quot;: &quot;Baseline&quot;,
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;&lt;name&gt;&quot;,
+      &quot;annotations&quot;: {}
+    },
+    &quot;spec&quot;: {
+      &quot;binding&quot;: {},
+      &quot;rule&quot;: {},
+      &quot;configuration&quot;: {}
+    }
+  }
+]
+</code></pre>
+<p>For example:</p>
+<pre><code class="lang-json">[
+  {
+    // Synopsis: This is an example baseline
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;kind&quot;: &quot;Baseline&quot;,
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;Baseline1&quot;
+    },
+    &quot;spec&quot;: {
+      &quot;binding&quot;: {
+        &quot;field&quot;: {
+          &quot;id&quot;: [
+            &quot;ResourceId&quot;
+          ]
+        },
+        &quot;targetName&quot;: [
+          &quot;Name&quot;,
+          &quot;ResourceName&quot;,
+          &quot;ResourceGroupName&quot;
+        ],
+        &quot;targetType&quot;: [
+          &quot;ResourceType&quot;
+        ]
+      },
+      &quot;rule&quot;: {
+        &quot;include&quot;: [
+          &quot;Rule1&quot;,
+          &quot;Rule2&quot;
+        ]
+      },
+      &quot;configuration&quot;: {
+        &quot;allowedLocations&quot;: [
+          &quot;Australia East&quot;,
+          &quot;Australia South East&quot;
+        ]
+      }
+    }
+  },
+  {
+    // Synopsis: This is an example baseline
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;kind&quot;: &quot;Baseline&quot;,
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;Baseline2&quot;
+    },
+    &quot;spec&quot;: {
+      &quot;binding&quot;: {
+        &quot;targetName&quot;: [
+          &quot;Name&quot;,
+          &quot;ResourceName&quot;,
+          &quot;ResourceGroupName&quot;
+        ],
+        &quot;targetType&quot;: [
+          &quot;ResourceType&quot;
+        ]
+      },
+      &quot;rule&quot;: {
+        &quot;include&quot;: [
+          &quot;Rule1&quot;,
+          &quot;Rule3&quot;
+        ]
+      },
+      &quot;configuration&quot;: {
+        &quot;allowedLocations&quot;: [
+          &quot;Australia East&quot;
+        ]
+      }
+    }
+  }
+]
+</code></pre>
 <h3 id="baseline-scopes">Baseline scopes</h3>
 <p>When baseline options are set, PSRule uses the following order to determine precedence.</p>
 <ol>
 <li>Parameter - <code>-Name</code> and <code>-Tag</code>.</li>
 <li>Explicit - A named baseline specified with <code>-Baseline</code>.</li>
 <li>Workspace - Included in <code>ps-rule.yaml</code> or specified on the command line with <code>-Option</code>.</li>
-<li>Module - A baseline object included in a <code>.Rule.yaml</code> file.</li>
+<li>Module - A baseline object included in a <code>.Rule.yaml</code> or <code>.Rule.json</code> file.</li>
 </ol>
 <p>After precedence is determined, baselines are merged and null values are ignored, such that:</p>
 <h3 id="annotations">Annotations</h3>
@@ -187,7 +280,7 @@ Annotations can be used to provide additional information that is available in <
 <li><code>obsolete</code> - Marks the baseline as obsolete when set to <code>true</code>.
 PSRule will generate a warning when an obsolete baseline is used.</li>
 </ul>
-<p>For example:</p>
+<p>YAML example:</p>
 <pre><code class="lang-yaml">---
 # Synopsis: This is an example baseline that is obsolete
 apiVersion: github.com/microsoft/PSRule/v1
@@ -197,6 +290,22 @@ metadata:
   annotations:
     obsolete: true
 spec: { }
+</code></pre>
+<p>JSON example:</p>
+<pre><code class="lang-json">[
+  {
+    // Synopsis: This is an example baseline that is obsolete
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;kind&quot;: &quot;Baseline&quot;,
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;ObsoleteBaseline&quot;,
+      &quot;annotations&quot;: {
+        &quot;obsolete&quot;: true
+      }
+    },
+    &quot;spec&quot;: {}
+  }
+]
 </code></pre>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="example-baselineruleyaml">Example Baseline.Rule.yaml</h3>
@@ -237,6 +346,64 @@ spec:
     - 'WithBaseline'
   configuration:
     key1: value1
+</code></pre>
+<h3 id="example-baselinerulejson">Example Baseline.Rule.json</h3>
+<pre><code class="lang-json">// Example Baseline.Rule.json
+
+[
+  {
+    // Synopsis: This is an example baseline
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;kind&quot;: &quot;Baseline&quot;,
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;TestBaseline1&quot;
+    },
+    &quot;spec&quot;: {
+      &quot;binding&quot;: {
+        &quot;targetName&quot;: [
+          &quot;AlternateName&quot;
+        ],
+        &quot;targetType&quot;: [
+          &quot;kind&quot;
+        ]
+      },
+      &quot;rule&quot;: {
+        &quot;include&quot;: [
+          &quot;WithBaseline&quot;
+        ]
+      },
+      &quot;configuration&quot;: {
+        &quot;key1&quot;: &quot;value1&quot;
+      }
+    }
+  },
+  {
+    // Synopsis: This is an example baseline
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;kind&quot;: &quot;Baseline&quot;,
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;TestBaseline2&quot;
+    },
+    &quot;spec&quot;: {
+      &quot;binding&quot;: {
+        &quot;targetName&quot;: [
+          &quot;AlternateName&quot;
+        ],
+        &quot;targetType&quot;: [
+          &quot;kind&quot;
+        ]
+      },
+      &quot;rule&quot;: {
+        &quot;include&quot;: [
+          &quot;WithBaseline&quot;
+        ]
+      },
+      &quot;configuration&quot;: {
+        &quot;key1&quot;: &quot;value1&quot;
+      }
+    }
+  }
+]
 </code></pre>
 <h2 id="keywords">KEYWORDS</h2>
 <ul>
