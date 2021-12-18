@@ -3,9 +3,9 @@
 ## Prerequisites
 
 - Windows PowerShell 5.1 with .NET Framework 4.7.2+ or
-- PowerShell 7.1 or greater on Windows, MacOS, and Linux
+- PowerShell 7.2 or greater on Windows, MacOS, and Linux
 
-For a list of platforms that PowerShell 7.1 is supported on [see][get-powershell].
+For a list of platforms that PowerShell 7.2 is supported on [see][get-powershell].
 
 ## Getting the module
 
@@ -65,7 +65,7 @@ Add the [latest version][extension-github] from the GitHub Marketplace to a work
 
 ```yaml
 - name: Run PSRule analysis
-  uses: Microsoft/ps-rule@v1.1.0
+  uses: Microsoft/ps-rule@v1.10.0
 ```
 
 For detailed instructions and change log see the [action details][extension-github].
