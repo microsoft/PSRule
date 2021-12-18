@@ -155,14 +155,14 @@ stages:
 
   - template: jobs/test.yaml
     parameters:
-      name: windows_2019
+      name: ps_5_1_windows_2019
       displayName: 'PowerShell 5.1 - Windows 2019'
       imageName: 'windows-2019'
       pwsh: 'false'
 
   - template: jobs/test.yaml
     parameters:
-      name: windows_2019
+      name: ps_7_2_windows_2019
       displayName: 'PowerShell 7.2 - Windows 2019'
       imageName: 'windows-2019'
 
