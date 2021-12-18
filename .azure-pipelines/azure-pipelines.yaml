@@ -2,12 +2,12 @@
 # CI pipeline for PSRule
 
 variables:
-  version: '1.10.0'
+  version: '1.11.0'
   buildConfiguration: 'Release'
   disable.coverage.autogenerate: 'true'
   imageName: 'ubuntu-20.04'
 
- # Use build number format, i.e. 1.10.0-B2110001
+ # Use build number format, i.e. 1.11.0-B2110001
 name: $(version)-B$(date:yyMM)$(rev:rrr)
 
 trigger:
@@ -113,7 +113,8 @@ stages:
       displayName: 'Complete SonarCloud'
 
   - job: Secret_Scan
-    pool: 'Hosted VS2017'
+    pool:
+      vmImage: 'windows-2019'
     displayName: Secret scan
 
     steps:
@@ -149,49 +150,35 @@ stages:
   - template: jobs/test.yaml
     parameters:
       name: macOS_10_15
-      displayName: 'PowerShell 7.1 - macOS-10.15'
+      displayName: 'PowerShell 7.2 - macOS-10.15'
       imageName: 'macOS-10.15'
 
   - template: jobs/test.yaml
     parameters:
-      name: windows_2016
-      displayName: 'PowerShell 5.1 - Windows 2016'
-      imageName: 'vs2017-win2016'
+      name: windows_2019
+      displayName: 'PowerShell 5.1 - Windows 2019'
+      imageName: 'windows-2019'
       pwsh: 'false'
 
   - template: jobs/test.yaml
     parameters:
       name: windows_2019
-      displayName: 'PowerShell 7.1 - Windows 2019'
+      displayName: 'PowerShell 7.2 - Windows 2019'
       imageName: 'windows-2019'
 
   - template: jobs/testContainer.yaml
     parameters:
       name: alpine_3_10
-      displayName: 'PowerShell 7.1 - alpine-3.10'
+      displayName: 'PowerShell 7.1 - alpine-3.14'
       imageName: mcr.microsoft.com/powershell/test-deps
-      imageTag: alpine-3.10
-
-  - template: jobs/testContainer.yaml
-    parameters:
-      name: ps_7_2_ubuntu_18_04
-      displayName: 'PowerShell 7.2 - ubuntu-18.04'
-      imageName: mcr.microsoft.com/powershell
-      imageTag: 7.2.0-ubuntu-18.04
+      imageTag: alpine-3.14
 
   - template: jobs/testContainer.yaml
     parameters:
       name: ps_7_2_ubuntu_20_04
       displayName: 'PowerShell 7.2 - ubuntu-20.04'
       imageName: mcr.microsoft.com/powershell
-      imageTag: 7.2.0-ubuntu-20.04
-
-  # - template: jobs/testContainer.yaml
-  #   parameters:
-  #     name: ps_7_2_ubuntu_20_04_preview
-  #     displayName: 'PowerShell 7.2 (Preview 7) - ubuntu-20.04'
-  #     imageName: mcr.microsoft.com/powershell
-  #     imageTag: 7.2.0-preview.7-ubuntu-20.04
+      imageTag: 7.2.1-ubuntu-20.04
 
 # Release pipeline
 - stage: Release
