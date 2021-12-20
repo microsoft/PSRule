@@ -16,6 +16,8 @@ What's changed since v1.10.0:
 - General improvements:
   - Added `version` expression to check semantic version constraints. [#861](https://github.com/microsoft/PSRule/issues/861)
     - See [about_PSRule_Expressions] for details.
+  - Added `hasDefault` expression to check field default value. [#870](https://github.com/microsoft/PSRule/issues/870)
+    - See [about_PSRule_Expressions] for details.
 
 ## v1.10.0
 

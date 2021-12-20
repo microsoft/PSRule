@@ -324,6 +324,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Field](docs/concepts/PSRule/en-US/about_PSRule_Expressions.md#field)
   - [Greater](docs/concepts/PSRule/en-US/about_PSRule_Expressions.md#greater)
   - [GreaterOrEquals](docs/concepts/PSRule/en-US/about_PSRule_Expressions.md#greaterorequals)
+  - [HasDefault](docs/concepts/PSRule/en-US/about_PSRule_Expressions.md#hasdefault)
   - [HasSchema](docs/concepts/PSRule/en-US/about_PSRule_Expressions.md#hasschema)
   - [HasValue](docs/concepts/PSRule/en-US/about_PSRule_Expressions.md#hasvalue)
   - [In](docs/concepts/PSRule/en-US/about_PSRule_Expressions.md#in)

@@ -512,6 +512,23 @@ spec:
     field: 'version'
     version: ''
 
+---
+# Synopsis: Test hasDefault
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlHasDefault
+spec:
+  if:
+    allOf:
+    - field: 'integerValue'
+      hasDefault: 100
+    - field: 'boolValue'
+      hasDefault: true
+    - field: 'stringValue'
+      hasDefault: 'testValue'
+      caseSensitive: true
+
 #region With type tests
 
 ---

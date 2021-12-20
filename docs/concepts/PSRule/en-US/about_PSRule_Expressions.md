@@ -20,6 +20,7 @@ The following conditions are available:
 - [Exists](#exists)
 - [Greater](#greater)
 - [GreaterOrEquals](#greaterorequals)
+- [HasDefault](#hasdefault)
 - [HasSchema](#hasschema)
 - [HasValue](#hasvalue)
 - [In](#in)
@@ -456,6 +457,47 @@ spec:
   if:
     field: 'Name'
     greaterOrEquals: 3
+```
+
+### HasDefault
+
+The `hasDefault` condition determines if the field exists that it is set to the specified value.
+If the field does not exist, the condition will return `true`.
+
+The following properties are accepted:
+
+- `caseSensitive` - Optionally, a case-sensitive comparison can be performed for string values.
+  By default, case-insensitive comparison is performed.
+
+Syntax:
+
+```yaml
+hasDefault: <string | int | bool>
+caseSensitive: <bool>
+```
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleHasDefault'
+spec:
+  condition:
+    field: 'enabled'
+    hasDefault: true
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleHasDefault'
+spec:
+  if:
+    field: 'enabled'
+    hasDefault: true
 ```
 
 ### HasSchema

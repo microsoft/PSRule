@@ -231,6 +231,8 @@ namespace PSRule.Definitions.Expressions
         private const string EXISTS = "exists";
         private const string EQUALS = "equals";
         private const string NOTEQUALS = "notEquals";
+        private const string HASDEFAULT = "hasDefault";
+        private const string HASSCHEMA = "hasSchema";
         private const string HASVALUE = "hasValue";
         private const string MATCH = "match";
         private const string NOTMATCH = "notMatch";
@@ -249,7 +251,6 @@ namespace PSRule.Definitions.Expressions
         private const string SETOF = "setOf";
         private const string SUBSET = "subset";
         private const string COUNT = "count";
-        private const string HASSCHEMA = "hasSchema";
         private const string VERSION = "version";
 
         // Operators
@@ -307,6 +308,7 @@ namespace PSRule.Definitions.Expressions
             new LanguageExpresssionDescriptor(COUNT, LanguageExpressionType.Condition, Count),
             new LanguageExpresssionDescriptor(HASSCHEMA, LanguageExpressionType.Condition, HasSchema),
             new LanguageExpresssionDescriptor(VERSION, LanguageExpressionType.Condition, Version),
+            new LanguageExpresssionDescriptor(HASDEFAULT, LanguageExpressionType.Condition, HasDefault),
         };
 
         #region Operators
@@ -403,6 +405,28 @@ namespace PSRule.Definitions.Expressions
             return Condition(
                 context,
                 !ExpressionHelpers.Equal(propertyValue, operand.Value, caseSensitive: false, convertExpected: true),
+                operand,
+                ReasonStrings.Assert_IsSetTo,
+                operand.Value
+            );
+        }
+
+        internal static bool HasDefault(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (!TryPropertyAny(properties, HASDEFAULT, out object propertyValue))
+                return Invalid(context, HASDEFAULT);
+
+            GetCaseSensitive(properties, out bool caseSensitive);
+            if (TryFieldNotExists(context, o, properties))
+                return Pass();
+
+            if (!TryOperand(context, HASDEFAULT, o, properties, out IOperand operand))
+                return Invalid(context, HASDEFAULT);
+
+            return Condition(
+                context,
+                ExpressionHelpers.Equal(propertyValue, operand.Value, caseSensitive, convertExpected: true),
                 operand,
                 ReasonStrings.Assert_IsSetTo,
                 operand.Value

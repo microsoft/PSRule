@@ -26,6 +26,7 @@ The following conditions are available:
 - [Exists](about_PSRule_Expressions.md#exists)
 - [Greater](about_PSRule_Expressions.md#greater)
 - [GreaterOrEquals](about_PSRule_Expressions.md#greaterorequals)
+- [HasDefault](about_PSRule_Expressions.md#hasdefault)
 - [HasSchema](about_PSRule_Expressions.md#hasschema)
 - [HasValue](about_PSRule_Expressions.md#hasvalue)
 - [In](about_PSRule_Expressions.md#in)
