@@ -583,6 +583,9 @@
                 },
                 {
                     "$ref": "#/definitions/selectorConditionHasSchema"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionVersion"
                 }
             ]
         },
@@ -1167,7 +1170,7 @@
                         "type": "string",
                         "title": "Has schema",
                         "description": "Must use one of the specified schemas of the value of $schema. If an empty array is specified any non-empty $schema can be specified.",
-                    "markdownDescription": "Must use one of the specified schemas of the value of `$schema`. If an empty array is specified any non-empty `$schema` can be specified [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#hasschema)",
+                        "markdownDescription": "Must use one of the specified schemas of the value of `$schema`. If an empty array is specified any non-empty `$schema` can be specified [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#hasschema)",
                         "minLength": 1
                     },
                     "uniqueItems": true
@@ -1189,6 +1192,33 @@
             },
             "required": [
                 "hasSchema"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionVersion": {
+            "type": "object",
+            "properties": {
+                "version": {
+                    "type": "string",
+                    "title": "Version",
+                    "description": "Must be a valid semantic version. A constraint can optionally be provided to require the semantic version to be within a range.",
+                    "markdownDescription": "Must be a valid semantic version. A constraint can optionally be provided to require the semantic version to be within a range. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#version)",
+                    "default": ""
+                },
+                "includePrerelease": {
+                    "type": "boolean",
+                    "title": "Include pre-release",
+                    "description": "Determines if pre-release versions are included. By default, pre-release versions are not included.",
+                    "markdownDescription": "Determines if pre-release versions are included. By default, pre-release versions are not included. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#version)",
+                    "default": false
+                }
+            },
+            "required": [
+                "version"
             ],
             "oneOf": [
                 {

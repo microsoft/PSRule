@@ -453,7 +453,7 @@ namespace PSRule
 
         internal static bool AnySchema(string actualValue, Array expectedValue, bool ignoreScheme, bool caseSensitive)
         {
-            var actualNormal =  NormalizeSchemaUri(actualValue, ignoreScheme);
+            var actualNormal = NormalizeSchemaUri(actualValue, ignoreScheme);
             var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
             for (var i = 0; expectedValue != null && i < expectedValue.Length; i++)
             {

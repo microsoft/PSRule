@@ -35,6 +35,7 @@ The following conditions are available:
 - [SetOf](#setof)
 - [StartsWith](#startswith)
 - [Subset](#subset)
+- [Version](#version)
 
 The following operators are available:
 
@@ -1192,6 +1193,54 @@ spec:
     in:
     - 'Microsoft.Storage/storageAccounts'
     - 'Microsoft.Storage/storageAccounts/blobServices'
+```
+
+### Version
+
+The `version` condition determines if the operand is a valid semantic version.
+A constraint can optionally be provided to require the semantic version to be within a range.
+Supported version constraints for expression are the same as the `$Assert.Version` assertion helper.
+
+Syntax:
+
+```yaml
+version: <string>
+includePrerelease: <bool>
+```
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleVersion'
+spec:
+  condition:
+    field: 'engine.version'
+    version: '^1.2.3'
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleAnyVersion'
+spec:
+  if:
+    field: 'engine.version'
+    version: ''
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleVersionIncludingPrerelease'
+spec:
+  if:
+    field: 'engine.version'
+    version: '>=1.5.0'
+    includePrerelease: true
 ```
 
 ## NOTE

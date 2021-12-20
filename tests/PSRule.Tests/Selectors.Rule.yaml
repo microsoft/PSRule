@@ -478,6 +478,40 @@ spec:
     field: '.'
     hasSchema: []
 
+---
+# Synopsis: Test version
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlVersion
+spec:
+  if:
+    field: 'version'
+    version: '^1.2.3'
+
+---
+# Synopsis: Test version with prerelease
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlVersionWithPrerelease
+spec:
+  if:
+    field: 'version'
+    version: '^1.2.3'
+    includePrerelease: true
+
+---
+# Synopsis: Test any valid version
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlVersionAnyVersion
+spec:
+  if:
+    field: 'version'
+    version: ''
+
 #region With type tests
 
 ---
@@ -573,9 +607,6 @@ spec:
     name: '.'
     notIn:
     - 'TargetObject1'
-
-
-
 
 ---
 # Synopsis: Test startsWith with name

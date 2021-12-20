@@ -342,6 +342,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [StartsWith](docs/concepts/PSRule/en-US/about_PSRule_Expressions.md#startswith)
   - [Subset](docs/concepts/PSRule/en-US/about_PSRule_Expressions.md#subset)
   - [Type](docs/concepts/PSRule/en-US/about_PSRule_Expressions.md#type)
+  - [Version](docs/concepts/PSRule/en-US/about_PSRule_Expressions.md#version)
 - [Options](docs/concepts/PSRule/en-US/about_PSRule_Options.md)
   - [Binding.Field](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingfield)
   - [Binding.IgnoreCase](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingignorecase)
