@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
 
@@ -229,6 +231,8 @@ namespace PSRule.Definitions.Expressions
         private const string EXISTS = "exists";
         private const string EQUALS = "equals";
         private const string NOTEQUALS = "notEquals";
+        private const string HASDEFAULT = "hasDefault";
+        private const string HASSCHEMA = "hasSchema";
         private const string HASVALUE = "hasValue";
         private const string MATCH = "match";
         private const string NOTMATCH = "notMatch";
@@ -247,7 +251,7 @@ namespace PSRule.Definitions.Expressions
         private const string SETOF = "setOf";
         private const string SUBSET = "subset";
         private const string COUNT = "count";
-        private const string HASSCHEMA = "hasSchema";
+        private const string VERSION = "version";
 
         // Operators
         private const string IF = "if";
@@ -262,14 +266,14 @@ namespace PSRule.Definitions.Expressions
         private const string CASESENSITIVE = "caseSensitive";
         private const string UNIQUE = "unique";
         private const string IGNORESCHEME = "ignoreScheme";
+        private const string INCLUDEPRERELEASE = "includePrerelease";
+        private const string PROPERTY_SCHEMA = "$schema";
 
         // Comparisons
         private const string LESS_THAN = "<";
         private const string LESS_THAN_EQUALS = "<=";
         private const string GREATER_THAN = ">=";
         private const string GREATER_THAN_EQUALS = ">=";
-
-        private const string PROPERTY_SCHEMA = "$schema";
 
         // Define built-ins
         internal readonly static ILanguageExpresssionDescriptor[] Builtin = new ILanguageExpresssionDescriptor[]
@@ -303,6 +307,8 @@ namespace PSRule.Definitions.Expressions
             new LanguageExpresssionDescriptor(SUBSET, LanguageExpressionType.Condition, Subset),
             new LanguageExpresssionDescriptor(COUNT, LanguageExpressionType.Condition, Count),
             new LanguageExpresssionDescriptor(HASSCHEMA, LanguageExpressionType.Condition, HasSchema),
+            new LanguageExpresssionDescriptor(VERSION, LanguageExpressionType.Condition, Version),
+            new LanguageExpresssionDescriptor(HASDEFAULT, LanguageExpressionType.Condition, HasDefault),
         };
 
         #region Operators
@@ -399,6 +405,28 @@ namespace PSRule.Definitions.Expressions
             return Condition(
                 context,
                 !ExpressionHelpers.Equal(propertyValue, operand.Value, caseSensitive: false, convertExpected: true),
+                operand,
+                ReasonStrings.Assert_IsSetTo,
+                operand.Value
+            );
+        }
+
+        internal static bool HasDefault(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (!TryPropertyAny(properties, HASDEFAULT, out object propertyValue))
+                return Invalid(context, HASDEFAULT);
+
+            GetCaseSensitive(properties, out bool caseSensitive);
+            if (TryFieldNotExists(context, o, properties))
+                return Pass();
+
+            if (!TryOperand(context, HASDEFAULT, o, properties, out IOperand operand))
+                return Invalid(context, HASDEFAULT);
+
+            return Condition(
+                context,
+                ExpressionHelpers.Equal(propertyValue, operand.Value, caseSensitive, convertExpected: true),
                 operand,
                 ReasonStrings.Assert_IsSetTo,
                 operand.Value
@@ -847,7 +875,7 @@ namespace PSRule.Definitions.Expressions
                 if (!ObjectHelper.GetField(context, o, field, caseSensitive: false, out object actualValue))
                     return NotHasField(context, field);
 
-                if(!ObjectHelper.GetField(context, actualValue, PROPERTY_SCHEMA, caseSensitive: false, out object schemaValue))
+                if (!ObjectHelper.GetField(context, actualValue, PROPERTY_SCHEMA, caseSensitive: false, out object schemaValue))
                     return NotHasField(context, PROPERTY_SCHEMA);
 
                 if (!ExpressionHelpers.TryString(schemaValue, out string actualSchema))
@@ -869,6 +897,30 @@ namespace PSRule.Definitions.Expressions
                 );
             }
             return Invalid(context, HASSCHEMA);
+        }
+
+        internal static bool Version(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyString(properties, VERSION, out string expectedValue) && TryOperand(context, VERSION, o, properties, out IOperand operand) &&
+                TryPropertyBoolOrDefault(properties, INCLUDEPRERELEASE, out bool includePrerelease, false))
+            {
+                context.ExpressionTrace(VERSION, operand.Value, expectedValue);
+                if (!ExpressionHelpers.TryString(operand.Value, out string version))
+                    return NotString(context, operand);
+
+                if (!SemanticVersion.TryParseVersion(version, out SemanticVersion.Version actualVersion))
+                    return Fail(context, operand, ReasonStrings.Version, operand.Value);
+
+                if (!SemanticVersion.TryParseConstraint(expectedValue, out SemanticVersion.IConstraint constraint, includePrerelease))
+                    throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VersionConstraintInvalid, expectedValue));
+
+                if (constraint != null && !constraint.Equals(actualVersion))
+                    return Fail(context, operand, ReasonStrings.VersionContraint, actualVersion, constraint);
+
+                return Pass();
+            }
+            return Invalid(context, VERSION);
         }
 
         #endregion Conditions
@@ -940,6 +992,11 @@ namespace PSRule.Definitions.Expressions
         private static bool TryPropertyAny(LanguageExpression.PropertyBag properties, string propertyName, out object propertyValue)
         {
             return properties.TryGetValue(propertyName, out propertyValue);
+        }
+
+        private static bool TryPropertyString(LanguageExpression.PropertyBag properties, string propertyName, out string propertyValue)
+        {
+            return properties.TryGetString(propertyName, out propertyValue);
         }
 
         private static bool TryPropertyBool(LanguageExpression.PropertyBag properties, string propertyName, out bool? propertyValue)

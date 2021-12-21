@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
 using PSRule.Definitions.Selectors;
 using PSRule.Host;
@@ -25,7 +26,7 @@ namespace PSRule
             context.Begin();
             var selector = HostHelper.GetSelectorYaml(GetSource(), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(55, selector.Length);
+            Assert.Equal(59, selector.Length);
 
             Assert.Equal("BasicSelector", selector[0].Name);
             Assert.Equal("YamlAllOf", selector[4].Name);
@@ -803,6 +804,68 @@ namespace PSRule
             Assert.False(hasSchema.Match(actual4));
             Assert.False(hasSchema.Match(actual5));
             Assert.False(hasSchema.Match(actual6));
+        }
+
+        [Fact]
+        public void Version()
+        {
+            var actual1 = GetObject((name: "version", value: "1.2.3"));
+            var actual2 = GetObject((name: "version", value: "0.2.3"));
+            var actual3 = GetObject((name: "version", value: "2.2.3"));
+            var actual4 = GetObject((name: "version", value: "1.1.3"));
+            var actual5 = GetObject((name: "version", value: "1.3.3-preview.1"));
+            var actual6 = GetObject();
+            var actual7 = GetObject((name: "version", value: "a.b.c"));
+
+            var version = GetSelectorVisitor("YamlVersion", out _);
+            Assert.True(version.Match(actual1));
+            Assert.False(version.Match(actual2));
+            Assert.False(version.Match(actual3));
+            Assert.False(version.Match(actual4));
+            Assert.False(version.Match(actual5));
+            Assert.False(version.Match(actual6));
+            Assert.False(version.Match(actual7));
+
+            version = GetSelectorVisitor("YamlVersionWithPrerelease", out _);
+            Assert.True(version.Match(actual1));
+            Assert.False(version.Match(actual2));
+            Assert.False(version.Match(actual3));
+            Assert.False(version.Match(actual4));
+            Assert.True(version.Match(actual5));
+            Assert.False(version.Match(actual6));
+            Assert.False(version.Match(actual7));
+
+            version = GetSelectorVisitor("YamlVersionAnyVersion", out _);
+            Assert.True(version.Match(actual1));
+            Assert.True(version.Match(actual2));
+            Assert.True(version.Match(actual3));
+            Assert.True(version.Match(actual4));
+            Assert.True(version.Match(actual5));
+            Assert.False(version.Match(actual6));
+            Assert.False(version.Match(actual7));
+        }
+
+        [Fact]
+        public void HasDefault()
+        {
+            var actual1 = GetObject((name: "integerValue", value: 100), (name: "boolValue", value: true), (name: "stringValue", value: "testValue"));
+            var actual2 = GetObject((name: "integerValue", value: 1));
+            var actual3 = GetObject((name: "boolValue", value: false));
+            var actual4 = GetObject((name: "stringValue", value: "TestValue"));
+            var actual5 = GetObject();
+            var actual6 = GetObject((name: "integerValue", value: new JValue(100)));
+            var actual7 = GetObject((name: "boolValue", value: new JValue(true)));
+            var actual8 = GetObject((name: "stringValue", value: new JValue("testValue")));
+
+            var hasDefault = GetSelectorVisitor("YamlHasDefault", out _);
+            Assert.True(hasDefault.Match(actual1));
+            Assert.False(hasDefault.Match(actual2));
+            Assert.False(hasDefault.Match(actual3));
+            Assert.False(hasDefault.Match(actual4));
+            Assert.True(hasDefault.Match(actual5));
+            Assert.True(hasDefault.Match(actual6));
+            Assert.True(hasDefault.Match(actual7));
+            Assert.True(hasDefault.Match(actual8));
         }
 
         #endregion Conditions

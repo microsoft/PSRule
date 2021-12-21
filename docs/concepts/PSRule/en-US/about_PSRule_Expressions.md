@@ -20,6 +20,7 @@ The following conditions are available:
 - [Exists](#exists)
 - [Greater](#greater)
 - [GreaterOrEquals](#greaterorequals)
+- [HasDefault](#hasdefault)
 - [HasSchema](#hasschema)
 - [HasValue](#hasvalue)
 - [In](#in)
@@ -35,6 +36,7 @@ The following conditions are available:
 - [SetOf](#setof)
 - [StartsWith](#startswith)
 - [Subset](#subset)
+- [Version](#version)
 
 The following operators are available:
 
@@ -455,6 +457,47 @@ spec:
   if:
     field: 'Name'
     greaterOrEquals: 3
+```
+
+### HasDefault
+
+The `hasDefault` condition determines if the field exists that it is set to the specified value.
+If the field does not exist, the condition will return `true`.
+
+The following properties are accepted:
+
+- `caseSensitive` - Optionally, a case-sensitive comparison can be performed for string values.
+  By default, case-insensitive comparison is performed.
+
+Syntax:
+
+```yaml
+hasDefault: <string | int | bool>
+caseSensitive: <bool>
+```
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleHasDefault'
+spec:
+  condition:
+    field: 'enabled'
+    hasDefault: true
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleHasDefault'
+spec:
+  if:
+    field: 'enabled'
+    hasDefault: true
 ```
 
 ### HasSchema
@@ -1192,6 +1235,54 @@ spec:
     in:
     - 'Microsoft.Storage/storageAccounts'
     - 'Microsoft.Storage/storageAccounts/blobServices'
+```
+
+### Version
+
+The `version` condition determines if the operand is a valid semantic version.
+A constraint can optionally be provided to require the semantic version to be within a range.
+Supported version constraints for expression are the same as the `$Assert.Version` assertion helper.
+
+Syntax:
+
+```yaml
+version: <string>
+includePrerelease: <bool>
+```
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleVersion'
+spec:
+  condition:
+    field: 'engine.version'
+    version: '^1.2.3'
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleAnyVersion'
+spec:
+  if:
+    field: 'engine.version'
+    version: ''
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleVersionIncludingPrerelease'
+spec:
+  if:
+    field: 'engine.version'
+    version: '>=1.5.0'
+    includePrerelease: true
 ```
 
 ## NOTE

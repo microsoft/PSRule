@@ -583,6 +583,12 @@
                 },
                 {
                     "$ref": "#/definitions/selectorConditionHasSchema"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionVersion"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionHasDefault"
                 }
             ]
         },
@@ -653,7 +659,7 @@
             "properties": {
                 "allOf": {
                     "type": "array",
-                    "title": "AllOf",
+                    "title": "All Of",
                     "description": "All of the expressions must be true.",
                     "markdownDescription": "All of the expressions must be true. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#allof)",
                     "items": {
@@ -671,7 +677,7 @@
             "properties": {
                 "anyOf": {
                     "type": "array",
-                    "title": "AnyOf",
+                    "title": "Any Of",
                     "description": "One of the expressions must be true.",
                     "markdownDescription": "All of the expressions must be true. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#anyof)",
                     "items": {
@@ -724,26 +730,10 @@
             "type": "object",
             "properties": {
                 "equals": {
-                    "oneOf": [
-                        {
-                            "type": "string",
-                            "title": "Equals",
-                            "description": "Must have the specified value.",
-                            "markdownDescription": "Must have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#equals)"
-                        },
-                        {
-                            "type": "integer",
-                            "title": "Equals",
-                            "description": "Must have the specified value.",
-                            "markdownDescription": "Must have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#equals)"
-                        },
-                        {
-                            "type": "boolean",
-                            "title": "Equals",
-                            "description": "Must have the specified value.",
-                            "markdownDescription": "Must have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#equals)"
-                        }
-                    ]
+                    "title": "Equals",
+                    "description": "Must have the specified value.",
+                    "markdownDescription": "Must have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#equals)",
+                    "$ref": "#/definitions/selectorExpressionValue"
                 }
             },
             "required": [
@@ -759,26 +749,10 @@
             "type": "object",
             "properties": {
                 "notEquals": {
-                    "oneOf": [
-                        {
-                            "type": "string",
-                            "title": "Not Equals",
-                            "description": "Must not have the specified value.",
-                            "markdownDescription": "Must not have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#notequals)"
-                        },
-                        {
-                            "type": "integer",
-                            "title": "Not Equals",
-                            "description": "Must not have the specified value.",
-                            "markdownDescription": "Must not have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#notequals)"
-                        },
-                        {
-                            "type": "boolean",
-                            "title": "Not Equals",
-                            "description": "Must not have the specified value.",
-                            "markdownDescription": "Must not have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#notequals)"
-                        }
-                    ]
+                    "title": "Not Equals",
+                    "description": "Must not have the specified value.",
+                    "markdownDescription": "Must not have the specified value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#notequals)",
+                    "$ref": "#/definitions/selectorExpressionValue"
                 }
             },
             "required": [
@@ -897,8 +871,8 @@
                 "caseSensitive": {
                     "type": "boolean",
                     "title": "Case sensitive",
-                    "description": "Determines comparing values is case-sensitive.",
-                    "markdownDescription": "Determines comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#setof)",
+                    "description": "Determines if comparing values is case-sensitive.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#setof)",
                     "default": false
                 }
             },
@@ -923,15 +897,15 @@
                 "caseSensitive": {
                     "type": "boolean",
                     "title": "Case sensitive",
-                    "description": "Determines comparing values is case-sensitive.",
-                    "markdownDescription": "Determines comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#subset)",
+                    "description": "Determines if comparing values is case-sensitive.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#subset)",
                     "default": false
                 },
                 "unique": {
                     "type": "boolean",
                     "title": "Unique",
-                    "description": "Determines each of the field values must be unique.",
-                    "markdownDescription": "Determines each of the field values must be unique. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#subset)",
+                    "description": "Determines if each of the field values must be unique.",
+                    "markdownDescription": "Determines if each of the field values must be unique. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#subset)",
                     "default": false
                 }
             },
@@ -1167,7 +1141,7 @@
                         "type": "string",
                         "title": "Has schema",
                         "description": "Must use one of the specified schemas of the value of $schema. If an empty array is specified any non-empty $schema can be specified.",
-                    "markdownDescription": "Must use one of the specified schemas of the value of `$schema`. If an empty array is specified any non-empty `$schema` can be specified [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#hasschema)",
+                        "markdownDescription": "Must use one of the specified schemas of the value of `$schema`. If an empty array is specified any non-empty `$schema` can be specified [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#hasschema)",
                         "minLength": 1
                     },
                     "uniqueItems": true
@@ -1182,13 +1156,66 @@
                 "caseSensitive": {
                     "type": "boolean",
                     "title": "Case sensitive",
-                    "description": "Determines comparing schemas is case-sensitive.",
-                    "markdownDescription": "Determines comparing schemas is case-sensitive. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#hasschema)",
+                    "description": "Determines if comparing schemas is case-sensitive.",
+                    "markdownDescription": "Determines if comparing schemas is case-sensitive. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#hasschema)",
                     "default": false
                 }
             },
             "required": [
                 "hasSchema"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionVersion": {
+            "type": "object",
+            "properties": {
+                "version": {
+                    "type": "string",
+                    "title": "Version",
+                    "description": "Must be a valid semantic version. A constraint can optionally be provided to require the semantic version to be within a range.",
+                    "markdownDescription": "Must be a valid semantic version. A constraint can optionally be provided to require the semantic version to be within a range. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#version)",
+                    "default": ""
+                },
+                "includePrerelease": {
+                    "type": "boolean",
+                    "title": "Include pre-release",
+                    "description": "Determines if pre-release versions are included. By default, pre-release versions are not included.",
+                    "markdownDescription": "Determines if pre-release versions are included. By default, pre-release versions are not included. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#version)",
+                    "default": false
+                }
+            },
+            "required": [
+                "version"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionHasDefault": {
+            "type": "object",
+            "properties": {
+                "hasDefault": {
+                    "title": "Has Default",
+                    "description": "The field must either not exist or be set to the configured value.",
+                    "markdownDescription": "The field must either not exist or be set to the configured value. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#hasdefault)",
+                    "$ref": "#/definitions/selectorExpressionValue"
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines if comparing values is case-sensitive.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Selectors.html#hasdefault)",
+                    "default": false
+                }
+            },
+            "required": [
+                "hasDefault"
             ],
             "oneOf": [
                 {
@@ -1207,6 +1234,19 @@
                         "type": "string"
                     },
                     "uniqueItems": true
+                }
+            ]
+        },
+        "selectorExpressionValue": {
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "integer"
                 }
             ]
         }

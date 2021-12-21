@@ -17,35 +17,44 @@ When evaluating an object from input, PSRule can use selectors to perform comple
 - Optionally a condition can be nested in an operator.
 - Operators can be nested within other operators.
 
-Conditions and operators available for use include:
+The following conditions are available:
 
-- AllOf
-- AnyOf
-- Contains
-- Equals
-- EndsWith
-- Exists
-- Greater
-- GreaterOrEquals
-- HasValue
-- In
-- IsLower
-- IsString
-- IsUpper
-- Less
-- LessOrEquals
-- Match
-- Not
-- NotEquals
-- NotIn
-- NotMatch
-- StartsWith
+- [Contains](about_PSRule_Expressions.md#contains)
+- [Count](about_PSRule_Expressions.md#count)
+- [Equals](about_PSRule_Expressions.md#equals)
+- [EndsWith](about_PSRule_Expressions.md#endswith)
+- [Exists](about_PSRule_Expressions.md#exists)
+- [Greater](about_PSRule_Expressions.md#greater)
+- [GreaterOrEquals](about_PSRule_Expressions.md#greaterorequals)
+- [HasDefault](about_PSRule_Expressions.md#hasdefault)
+- [HasSchema](about_PSRule_Expressions.md#hasschema)
+- [HasValue](about_PSRule_Expressions.md#hasvalue)
+- [In](about_PSRule_Expressions.md#in)
+- [IsLower](about_PSRule_Expressions.md#islower)
+- [IsString](about_PSRule_Expressions.md#isstring)
+- [IsUpper](about_PSRule_Expressions.md#isupper)
+- [Less](about_PSRule_Expressions.md#less)
+- [LessOrEquals](about_PSRule_Expressions.md#lessorequals)
+- [Match](about_PSRule_Expressions.md#match)
+- [NotEquals](about_PSRule_Expressions.md#notequals)
+- [NotIn](about_PSRule_Expressions.md#notin)
+- [NotMatch](about_PSRule_Expressions.md#notmatch)
+- [SetOf](about_PSRule_Expressions.md#setof)
+- [StartsWith](about_PSRule_Expressions.md#startswith)
+- [Subset](about_PSRule_Expressions.md#subset)
+- [Version](about_PSRule_Expressions.md#version)
+
+The following operators are available:
+
+- [AllOf](about_PSRule_Expressions.md#allof)
+- [AnyOf](about_PSRule_Expressions.md#anyof)
+- [Not](about_PSRule_Expressions.md#not)
 
 The following comparison properties are available:
 
-- Field
-- Name
-- Type
+- [Field](about_PSRule_Expressions.md#field)
+- [Name](about_PSRule_Expressions.md#name)
+- [Type](about_PSRule_Expressions.md#type)
 
 To learn more about conditions, operators, and properties see [about_PSRule_Expressions](about_PSRule_Expressions.md).
 
