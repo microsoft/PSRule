@@ -1041,15 +1041,24 @@ namespace PSRule
             // Fail
             test = assert.NotNullOrEmpty(value, "value2");
             Assert.False(test.Result);
-            Assert.Equal("The field 'value2' is empty.", test.GetReason()[0]);
+            var reason = test.GetReason();
+            Assert.NotEmpty(reason);
+            Assert.Single(reason);
+            Assert.Equal("The field 'value2' is empty.", reason[0]);
 
             test = assert.NotNullOrEmpty(value, "value3");
             Assert.False(test.Result);
-            Assert.Equal("The field 'value3' is empty.", test.GetReason()[0]);
+            reason = test.GetReason();
+            Assert.NotEmpty(reason);
+            Assert.Single(reason);
+            Assert.Equal("The field 'value3' is empty.", reason[0]);
 
             test = assert.NotNullOrEmpty(value, "value5");
             Assert.False(test.Result);
-            Assert.Equal("The field 'value5' is empty.", test.GetReason()[0]);
+            reason = test.GetReason();
+            Assert.NotEmpty(reason);
+            Assert.Single(reason);
+            Assert.Equal("The field 'value5' is empty.", reason[0]);
         }
 
         [Fact]
