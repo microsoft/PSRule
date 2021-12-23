@@ -124,7 +124,7 @@ namespace PSRule.Runtime
         /// <returns>Returns an array of reasons. This will always return null when the Value is true.</returns>
         public string[] GetReason()
         {
-            if (!Result || _Reason == null || _Reason.Count == 0)
+            if (Result || _Reason == null || _Reason.Count == 0)
                 return Array.Empty<string>();
 
             return _Reason.ToArray();

@@ -285,12 +285,21 @@ Rule 'Assert.Null' {
     $Assert.Null($TargetObject, 'Value')
 }
 
-# Synopsis: Test for $Assert.HasEmptyField
+# Synopsis: Test for $Assert.NullOrEmpty
 Rule 'Assert.NullOrEmpty' {
     $Assert.NullOrEmpty($TargetObject, 'Type')
     $Assert.NullOrEmpty($TargetObject, 'Value')
     $Assert.NullOrEmpty($TargetObject, 'String')
     $Assert.NullOrEmpty($TargetObject, 'Array')
+}
+
+
+# Synopsis: Test for $Assert.NotNullOrEmpty
+Rule 'Assert.NotNullOrEmpty' {
+    $Assert.NotNullOrEmpty($TargetObject, 'Type')
+    $Assert.NotNullOrEmpty($TargetObject, 'Value')
+    $Assert.NotNullOrEmpty($TargetObject, 'String')
+    $Assert.NotNullOrEmpty($TargetObject, 'Array')
 }
 
 # Synopsis: Test for $Assert.SetOf

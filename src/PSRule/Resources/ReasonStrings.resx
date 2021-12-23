@@ -255,6 +255,9 @@
   <data name="NullOrEmpty" xml:space="preserve">
     <value>The field '{0}' is not empty.</value>
   </data>
+  <data name="NotNullOrEmpty" xml:space="preserve">
+    <value>The field '{0}' is empty.</value>
+  </data>
   <data name="NullOrEmptyParameter" xml:space="preserve">
     <value>The parameter '{0}' is null or empty.</value>
   </data>

@@ -292,6 +292,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [NotWithinPath](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#notwithinpath)
   - [Null](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#null)
   - [NullOrEmpty](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#nullorempty)
+  - [NotNullOrEmpty](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#notnullorempty)
   - [TypeOf](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#typeof)
   - [SetOf](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#setof)
   - [StartsWith](docs/concepts/PSRule/en-US/about_PSRule_Assert.md#startswith)

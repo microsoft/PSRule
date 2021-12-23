@@ -47,6 +47,7 @@ The following built-in assertion methods are provided:
 - [NotWithinPath](#notwithinpath) - The field must not be within the specified path.
 - [Null](#null) - The field value must not exist or be null.
 - [NullOrEmpty](#nullorempty) - The object must not have the specified field or it must be empty.
+- [NotNullOrEmpty](#notnullorempty) - The object must have the specified field or it must not be empty.
 - [TypeOf](#typeof) - The field value must be of the specified type.
 - [SetOf](#setof) - The field value must match a set of specified values.
 - [StartsWith](#startswith) - The field value must match at least one prefix.
@@ -1130,6 +1131,38 @@ Examples:
 Rule 'NullOrEmpty' {
     $Assert.NullOrEmpty($TargetObject, 'Name')
     $Assert.NullOrEmpty($TargetObject, 'tag.Environment')
+}
+```
+
+### NotNullOrEmpty
+
+The `NotNullOrEmpty` assertion method checks the field value of the object is not null or empty.
+
+A field value is not null or empty if any of the following are true:
+
+- The field does exist.
+- The field value is not `$Null`.
+- The field value is not an empty array or collection.
+- The field value is not an empty string `''`.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is case insensitive compare.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' is empty._
+
+Examples:
+
+```powershell
+Rule 'NotNullOrEmpty' {
+    $Assert.NotNullOrEmpty($TargetObject, 'Name')
+    $Assert.NotNullOrEmpty($TargetObject, 'tag.Environment')
 }
 ```
 

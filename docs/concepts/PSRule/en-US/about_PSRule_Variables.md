@@ -24,7 +24,7 @@ The following variables are available for use:
 - [$PSRule](#psrule)
 - [$Rule](#rule)
 - [$TargetObject](#targetobject)
-
+  
 ### Assert
 
 An assertion helper with methods to evaluate objects.
@@ -60,6 +60,7 @@ The following built-in assertion methods are provided:
 - `NotIn` - The field value must not be included in the set.
 - `NotMatch` - The field value does not match a regular expression pattern.
 - `NullOrEmpty` - The object must not have the specified field or it must be empty.
+- `NotNullOrEmpty` - The object must have the specified field or it must not be empty.
 - `TypeOf` - The field value must be of the specified type.
 - `StartsWith` - The field value must match at least one prefix.
 - `Version` - The field value must be a semantic version string.

@@ -1015,6 +1015,44 @@ namespace PSRule
         }
 
         [Fact]
+        public void NotNullOrEmpty()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            var value = GetObject(
+                (name: "value", value: "Value1"),
+                (name: "value2", value: null),
+                (name: "value3", value: ""),
+                (name: "value4", value: 0),
+                (name: "value5", value: new string[] { })
+            );
+
+            // Pass
+            var test = assert.NotNullOrEmpty(value, "value");
+            Assert.True(test.Result);
+
+            test = assert.NotNullOrEmpty(value, "value4");
+            Assert.True(test.Result);
+
+            test = assert.NotNullOrEmpty(value, "notValue");
+            Assert.True(test.Result);
+
+            // Fail
+            test = assert.NotNullOrEmpty(value, "value2");
+            Assert.False(test.Result);
+            Assert.Equal("The field 'value2' is empty.", test.GetReason()[0]);
+
+            test = assert.NotNullOrEmpty(value, "value3");
+            Assert.False(test.Result);
+            Assert.Equal("The field 'value3' is empty.", test.GetReason()[0]);
+
+            test = assert.NotNullOrEmpty(value, "value5");
+            Assert.False(test.Result);
+            Assert.Equal("The field 'value5' is empty.", test.GetReason()[0]);
+        }
+
+        [Fact]
         public void FileHeader()
         {
             SetContext();

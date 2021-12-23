@@ -338,8 +338,37 @@ namespace PSRule.Runtime
                 return result;
 
             // Assert
-            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue) && !ExpressionHelpers.NullOrEmpty(fieldValue))
+            if (ObjectHelper.GetField(
+                bindingContext: PipelineContext.CurrentThread,
+                targetObject: inputObject,
+                name: field,
+                caseSensitive: false,
+                value: out object fieldValue) && !ExpressionHelpers.NullOrEmpty(fieldValue)
+            )
                 return Fail(ReasonStrings.NullOrEmpty, field);
+
+            return Pass();
+        }
+
+        /// <summary>
+        /// The object should have the field or the field value is not null or empty
+        /// </summary>
+        public AssertResult NotNullOrEmpty(PSObject inputObject, string field)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out AssertResult result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result))
+                return result;
+
+            // Assert
+            if (ObjectHelper.GetField(
+                bindingContext: PipelineContext.CurrentThread,
+                targetObject: inputObject,
+                name: field,
+                caseSensitive: false,
+                value: out object fieldValue) && ExpressionHelpers.NullOrEmpty(fieldValue)
+            )
+                return Fail(ReasonStrings.NotNullOrEmpty, field);
 
             return Pass();
         }
