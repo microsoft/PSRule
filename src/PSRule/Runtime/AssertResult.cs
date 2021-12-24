@@ -124,10 +124,7 @@ namespace PSRule.Runtime
         /// <returns>Returns an array of reasons. This will always return null when the Value is true.</returns>
         public string[] GetReason()
         {
-            if (!Result || _Reason == null || _Reason.Count == 0)
-                return Array.Empty<string>();
-
-            return _Reason.ToArray();
+            return (Result || IsNullOrEmptyReason()) ? Array.Empty<string>() : _Reason.ToArray();
         }
 
         /// <summary>
@@ -159,15 +156,17 @@ namespace PSRule.Runtime
 
         public override string ToString()
         {
-            if (_Reason == null)
-                return string.Empty;
-
-            return string.Join(" ", _Reason.ToArray());
+            return IsNullOrEmptyReason() ? string.Empty : string.Join(" ", _Reason.ToArray());
         }
 
         public bool ToBoolean()
         {
             return Result;
+        }
+
+        private bool IsNullOrEmptyReason()
+        {
+            return _Reason == null || _Reason.Count == 0;
         }
     }
 }

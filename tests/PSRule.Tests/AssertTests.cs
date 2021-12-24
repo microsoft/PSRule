@@ -35,8 +35,10 @@ namespace PSRule
             var actual1 = assert.Create(false, "Test reason");
             var actual2 = assert.Create(true, "Test reason");
             Assert.Equal("Test reason", actual1.ToString());
+            Assert.Equal("Test reason", actual1.GetReason()[0]);
             Assert.False(actual1.Result);
             Assert.Equal(string.Empty, actual2.ToString());
+            Assert.Empty(actual2.GetReason());
             Assert.True(actual2.Result);
 
             // WithReason
@@ -49,15 +51,20 @@ namespace PSRule
             actual1.Reason("New {0}", "Reason");
             actual1.Reason("New New Reason");
             Assert.Equal("New New Reason", actual1.ToString());
+            Assert.Equal("New New Reason", actual1.GetReason()[0]);
             actual1.ReasonIf(false, "Not a reason");
             Assert.Equal("New New Reason", actual1.ToString());
+            Assert.Equal("New New Reason", actual1.GetReason()[0]);
             actual1.ReasonIf(true, "New New New Reason");
             Assert.Equal("New New New Reason", actual1.ToString());
+            Assert.Equal("New New New Reason", actual1.GetReason()[0]);
 
             var actual3 = assert.Fail("Fail reason");
             Assert.Equal("Fail reason", actual3.ToString());
+            Assert.Equal("Fail reason", actual3.GetReason()[0]);
             actual3 = assert.Fail("Fail {0}", "reason");
             Assert.Equal("Fail reason", actual3.ToString());
+            Assert.Equal("Fail reason", actual3.GetReason()[0]);
 
             // Aggregate results
             Assert.True(assert.AnyOf(actual2, actual3).Result);
@@ -66,12 +73,16 @@ namespace PSRule
             Assert.False(assert.AnyOf().Result);
 
             Assert.False(assert.AllOf(actual2, actual3).Result);
-            Assert.Equal("Fail reason", assert.AllOf(actual2, actual3).ToString());
-            Assert.Equal("New New New Reason Fail reason", assert.AllOf(actual1, actual2, actual3).ToString());
+            var test1 = assert.AllOf(actual2, actual3);
+            Assert.Equal("Fail reason", test1.ToString());
+            Assert.Equal("Fail reason", test1.GetReason()[0]);
+
+            var test2 = assert.AllOf(actual1, actual2, actual3);
+            Assert.Equal("New New New Reason Fail reason", test2.ToString());
+            Assert.Equal(new string[] { "New New New Reason", "Fail reason" }, test2.GetReason());
             Assert.True(assert.AllOf(actual2, actual2).Result);
             Assert.True(assert.AllOf(actual2).Result);
             Assert.False(assert.AllOf().Result);
-
         }
 
         [Fact]
