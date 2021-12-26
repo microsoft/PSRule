@@ -18,6 +18,8 @@ What's changed since v1.10.0:
     - See [about_PSRule_Expressions] for details.
   - Added `hasDefault` expression to check field default value. [#870](https://github.com/microsoft/PSRule/issues/870)
     - See [about_PSRule_Expressions] for details.
+- Bug fixes:
+  - Fixed `GetReason()` not returning results for a failed assertion. [#874](https://github.com/microsoft/PSRule/issues/874)
 
 ## v1.10.0
 
