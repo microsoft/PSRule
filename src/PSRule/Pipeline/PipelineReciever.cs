@@ -193,7 +193,7 @@ namespace PSRule.Pipeline
 
         public static IEnumerable<TargetObject> ReadObjectPath(TargetObject targetObject, VisitTargetObject source, string objectPath, bool caseSensitive)
         {
-            if (!ObjectHelper.GetField(bindingContext: null, targetObject: targetObject.Value, name: objectPath, caseSensitive: caseSensitive, value: out object nestedObject))
+            if (!ObjectHelper.GetPath(bindingContext: null, targetObject: targetObject.Value, path: objectPath, caseSensitive: caseSensitive, value: out object nestedObject))
                 return EmptyArray;
 
             var nestedType = nestedObject.GetType();

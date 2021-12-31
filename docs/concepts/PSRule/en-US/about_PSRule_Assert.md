@@ -91,22 +91,38 @@ Rule 'Assert.HasRequiredFields' {
 
 ### Field names
 
-Many of the built-in assertion methods accept a field name.
-The field name is an expression that traverses object properties, keys or indexes of the _input object_.
+Many of the built-in assertion methods accept an object path or field name.
+An object path is an expression that traverses object properties, keys or indexes of the _input object_.
+The syntax for an object path is inspired by JSONPath which is current an IETF Internet-Draft.
 
-The field name can contain:
+The object path expression can contain:
 
 - Property names for PSObjects or .NET objects.
 - Keys for hash table or dictionaries.
 - Indexes for arrays or collections.
+- Queries that filter items from array or collection properties.
 
 For example:
 
-- `.` refers to _input object_ itself.
-- `Name` or `.Name` refers to the name property/ key of the _input object_.
-- `Properties.enabled` refers to the enabled property under the Properties property.
-- `Tags.env` refers to the env key under a hash table property of the _input object_.
-- `Properties.securityRules[0].name` references to the name property of the first security rule.
+- `.`, or `$` refers to _input object_ itself.
+- `Name`, `.Name`, or `$.Name` refers to the _name_ member of the _input object_.
+- `Properties.enabled` refers to the _enabled_ member under the Properties member.
+  Alternatively this can also be written as `Properties['enabled']`.
+- `Tags.env` refers to the env member under a hash table property of the _input object_.
+- `Tags+env` refers to the env member using a case-sensitive match.
+- `Properties.securityRules[0].name` references to the name member of the first security rule.
+- `Properties.securityRules[-1].name` references to the name member of the last security rule.
+- `Properties.securityRules[?@direction == 'Inbound'].name` returns the name of any inbound rules.
+  This will return an array of security rule names.
+
+Notable differences between object paths and JSONPath are:
+
+- Member names (properties and keys) are case-insensitive by default.
+  To perform a case-sensitive match of a member name use a plus selector `+` in front of the member name.
+  Some assertions such as `HasField` provide an option to match case when matching member names.
+  When this is used, the plus selector perform an case-insensitive match.
+- Quoted member names with single or double quotes are supported with dot selector.
+  i.e. `Properties.'spaced name'` is valid.
 
 ### Contains
 

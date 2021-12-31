@@ -1,0 +1,96 @@
+[
+    {
+        "name": "TestObject1",
+        "type": "cluster",
+        "resources": [
+            {
+                "name": "security",
+                "type": "diagnosticSettings",
+                "properties": {
+                    "logs": [
+                        {
+                            "category": "audit",
+                            "enabled": true
+                        },
+                        {
+                            "category": "firewall",
+                            "enabled": false
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "monitoring",
+                "type": "diagnosticSettings",
+                "properties": {
+                    "logs": [
+                        {
+                            "category": "debug",
+                            "enabled": true
+                        },
+                        {
+                            "category": "firewall",
+                            "enabled": true
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "name": "TestObject2",
+        "type": "cluster",
+        "resources": [
+            {
+                "name": "security",
+                "type": "diagnosticSettings",
+                "properties": {
+                    "logs": [
+                        {
+                            "category": "audit",
+                            "enabled": true
+                        },
+                        {
+                            "category": "firewall",
+                            "enabled": false
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "monitoring",
+                "type": "diagnosticSettings",
+                "properties": {
+                    "logs": [
+                        {
+                            "category": "debug",
+                            "enabled": true
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "name": "TestObject3",
+        "type": "cluster",
+        "resources": [
+            {
+                "name": "security",
+                "type": "DiagnosticSettings",
+                "properties": {
+                    "logs": [
+                        {
+                            "category": "audit",
+                            "enabled": true
+                        },
+                        {
+                            "category": "firewall",
+                            "enabled": true
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

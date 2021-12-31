@@ -37,7 +37,7 @@ namespace PSRule
 
         internal static bool Exists(IBindingContext bindingContext, object inputObject, string field, bool caseSensitive)
         {
-            return ObjectHelper.GetField(bindingContext, inputObject, field, caseSensitive, out _);
+            return ObjectHelper.GetPath(bindingContext, inputObject, field, caseSensitive, out object _);
         }
 
         internal static bool Equal(object expectedValue, object actualValue, bool caseSensitive, bool convertExpected = false, bool convertActual = false)
@@ -379,7 +379,8 @@ namespace PSRule
         {
             count = 0;
             var expectedBase = GetBaseObject(expectedValue);
-            if (actualValue is IEnumerable items)
+            var actualBase = GetBaseObject(actualValue);
+            if (actualBase is IEnumerable items)
             {
                 foreach (var item in items)
                 {
@@ -388,7 +389,7 @@ namespace PSRule
                 }
                 return count > 0;
             }
-            if (Equal(expectedBase, actualValue, caseSensitive))
+            else if (Equal(expectedBase, actualValue, caseSensitive))
             {
                 count = 1;
                 return true;
@@ -495,7 +496,7 @@ namespace PSRule
 
         private static object GetBaseObject(object o)
         {
-            return o is PSObject pso && pso.BaseObject != null ? pso.BaseObject : o;
+            return o is PSObject pso && pso.BaseObject != null && !(pso.BaseObject is PSCustomObject) ? pso.BaseObject : o;
         }
 
         private static PSRuleTargetInfo GetTargetInfo(object o)

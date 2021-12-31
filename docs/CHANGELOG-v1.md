@@ -11,6 +11,15 @@ See [upgrade notes][upgrade-notes] for helpful information when upgrading from p
 
 ## Unreleased
 
+What's changed since v1.11.0:
+
+- General improvements:
+  - Added support for object path expressions. [#808](https://github.com/microsoft/PSRule/issues/808) [#693](https://github.com/microsoft/PSRule/issues/693)
+    - Inspired by JSONPath, object path expressions can be used to access nested objects.
+    - Array members can be filtered and enumerated using object path expressions.
+    - Object path expressions can be used in YAML, JSON, and PowerShell rules and selectors.
+    - See [about_PSRule_Assert] for details.
+
 ## v1.11.0-B2112016 (pre-release)
 
 What's changed since v1.10.0:
