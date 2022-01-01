@@ -582,16 +582,16 @@ namespace PSRule.Runtime.ObjectPath
         {
             value = null;
             var properties = baseType.GetProperties();
-            foreach (var pi in GetIndexerProperties(baseType))
+            foreach (var property in GetIndexerProperties(baseType))
             {
-                var p = pi.GetIndexParameters();
-                if (p.Length > 0)
+                var parameters = property.GetIndexParameters();
+                if (parameters.Length > 0)
                 {
                     try
                     {
-                        var converter = GetConverter(p[0].ParameterType);
+                        var converter = GetConverter(parameters[0].ParameterType);
                         var p1 = converter(index);
-                        value = pi.GetValue(targetObject, new object[] { p1 });
+                        value = property.GetValue(targetObject, new object[] { p1 });
                         return true;
                     }
                     catch
@@ -634,11 +634,11 @@ namespace PSRule.Runtime.ObjectPath
             else
             {
                 var properties = baseType.GetProperties();
-                foreach (var pi in properties)
+                foreach (var property in properties)
                 {
-                    var p = pi.GetIndexParameters();
-                    if (p.Length > 0)
-                        yield return pi;
+                    var parameters = property.GetIndexParameters();
+                    if (parameters.Length > 0)
+                        yield return property;
                 }
             }
         }

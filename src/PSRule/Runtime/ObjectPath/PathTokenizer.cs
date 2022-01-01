@@ -287,7 +287,7 @@ namespace PSRule.Runtime.ObjectPath
 
             private char ConsumeChar(ref int position)
             {
-                return position > Last : NULL ? Path[position++];
+                return position > Last ? NULL : Path[position++];
             }
 
             /// <summary>
@@ -529,10 +529,7 @@ namespace PSRule.Runtime.ObjectPath
 
             private string CaptureMemberName(ref int position)
             {
-                if (!UntilQuote(ref position, out string value) && !WhileMemberName(ref position, out value))
-                    return null;
-
-                return value;
+                return UntilQuote(ref position, out string value) || WhileMemberName(ref position, out value) ? value : null;
             }
 
             private bool TryBoolean(int position, out bool value)
@@ -554,10 +551,7 @@ namespace PSRule.Runtime.ObjectPath
             private bool TryInteger(int position, out int value)
             {
                 value = default;
-                if (!WhileNumeric(position, out int end) || !int.TryParse(Substring(position, end), out value))
-                    return false;
-
-                return true;
+                return WhileNumeric(position, out int end) && int.TryParse(Substring(position, end), out value);
             }
 
             private bool IsSequence(int position, string sequence)

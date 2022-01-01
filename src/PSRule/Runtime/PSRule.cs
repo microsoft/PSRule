@@ -195,10 +195,10 @@ namespace PSRule.Runtime
         public object[] GetPath(object sourceObject, string path)
         {
             return (!ObjectHelper.GetPath(
-                bindingContext: GetContext()?.Pipeline, 
-                targetObject: sourceObject, 
-                path: path, 
-                caseSensitive: false, 
+                bindingContext: GetContext()?.Pipeline,
+                targetObject: sourceObject,
+                path: path,
+                caseSensitive: false,
                 out object[] value)) ? Array.Empty<object>() : value;
         }
 

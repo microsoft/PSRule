@@ -167,7 +167,7 @@ namespace PSRule.Runtime.ObjectPath
 
         public bool Consume(PathTokenType type)
         {
-            return (Peak(out IPathToken token) && token.Type == type) ? Next() : false;
+            return Peak(out IPathToken token) && token.Type == type && Next();
         }
 
         public bool Next(out IPathToken token)
