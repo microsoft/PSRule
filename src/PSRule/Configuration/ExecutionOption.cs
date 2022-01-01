@@ -57,7 +57,7 @@ namespace PSRule.Configuration
         {
             unchecked // Overflow is fine
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 23 + (LanguageMode.HasValue ? LanguageMode.Value.GetHashCode() : 0);
                 hash = hash * 23 + (InconclusiveWarning.HasValue ? InconclusiveWarning.Value.GetHashCode() : 0);
                 hash = hash * 23 + (NotProcessedWarning.HasValue ? NotProcessedWarning.Value.GetHashCode() : 0);
@@ -90,7 +90,7 @@ namespace PSRule.Configuration
             if (env.TryEnum("PSRULE_EXECUTION_LANGUAGEMODE", out LanguageMode languageMode))
                 LanguageMode = languageMode;
 
-            if (env.TryBool("PSRULE_EXECUTION_INCONCLUSIVEWARNING", out bool bvalue))
+            if (env.TryBool("PSRULE_EXECUTION_INCONCLUSIVEWARNING", out var bvalue))
                 InconclusiveWarning = bvalue;
 
             if (env.TryBool("PSRULE_EXECUTION_NOTPROCESSEDWARNING", out bvalue))
@@ -102,7 +102,7 @@ namespace PSRule.Configuration
             if (index.TryPopEnum("Execution.LanguageMode", out LanguageMode languageMode))
                 LanguageMode = languageMode;
 
-            if (index.TryPopBool("Execution.InconclusiveWarning", out bool bvalue))
+            if (index.TryPopBool("Execution.InconclusiveWarning", out var bvalue))
                 InconclusiveWarning = bvalue;
 
             if (index.TryPopBool("Execution.NotProcessedWarning", out bvalue))

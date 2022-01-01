@@ -49,7 +49,7 @@ namespace PSRule.Host
 
             private DependencyTargetState State
             {
-                get => Graph._State.TryGetValue(this, out DependencyTargetState state) ? state : DependencyTargetState.None;
+                get => Graph._State.TryGetValue(this, out var state) ? state : DependencyTargetState.None;
                 set => Graph._State[this] = value;
             }
 

@@ -31,7 +31,7 @@ namespace PSRule.Runtime
 
         public string[] GetStringValues(string configurationKey)
         {
-            if (!TryGetValue(configurationKey, out object value) || value == null)
+            if (!TryGetValue(configurationKey, out var value) || value == null)
                 return System.Array.Empty<string>();
 
             if (value is string valueT)
@@ -53,26 +53,17 @@ namespace PSRule.Runtime
 
         public object GetValueOrDefault(string configurationKey, object defaultValue)
         {
-            if (!TryGetValue(configurationKey, out object value) || value == null)
-                return defaultValue;
-
-            return value;
+            return !TryGetValue(configurationKey, out var value) || value == null ? defaultValue : value;
         }
 
         public bool GetBoolOrDefault(string configurationKey, bool defaultValue)
         {
-            if (!TryGetValue(configurationKey, out object value) || !TryBool(value, out bool result))
-                return defaultValue;
-
-            return result;
+            return !TryGetValue(configurationKey, out var value) || !TryBool(value, out var result) ? defaultValue : result;
         }
 
         public int GetIntegerOrDefault(string configurationKey, int defaultValue)
         {
-            if (!TryGetValue(configurationKey, out object value) || !TryInt(value, out int result))
-                return defaultValue;
-
-            return result;
+            return !TryGetValue(configurationKey, out var value) || !TryInt(value, out var result) ? defaultValue : result;
         }
 
         private bool TryGetValue(string name, out object value)
@@ -82,7 +73,7 @@ namespace PSRule.Runtime
                 return false;
 
             // Get from baseline configuration
-            if (_Context.LanguageScope.TryConfigurationValue(name, out object result))
+            if (_Context.LanguageScope.TryConfigurationValue(name, out var result))
             {
                 value = result;
                 return true;

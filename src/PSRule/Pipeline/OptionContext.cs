@@ -240,7 +240,7 @@ namespace PSRule.Pipeline
             {
                 unchecked // Overflow is fine
                 {
-                    int hash = 17;
+                    var hash = 17;
                     hash = hash * 23 + (Field != null ? Field.GetHashCode() : 0);
                     hash = hash * 23 + (IgnoreCase ? IgnoreCase.GetHashCode() : 0);
                     hash = hash * 23 + (NameSeparator != null ? NameSeparator.GetHashCode() : 0);
@@ -260,8 +260,8 @@ namespace PSRule.Pipeline
 
         public void UseScope(string moduleName)
         {
-            _ModuleConfig = !string.IsNullOrEmpty(moduleName) && _ModuleConfigScope.TryGetValue(moduleName, out ConfigScope configScope) ? configScope : null;
-            _ModuleBaseline = !string.IsNullOrEmpty(moduleName) && _ModuleBaselineScope.TryGetValue(moduleName, out BaselineScope baselineScope) ? baselineScope : null;
+            _ModuleConfig = !string.IsNullOrEmpty(moduleName) && _ModuleConfigScope.TryGetValue(moduleName, out var configScope) ? configScope : null;
+            _ModuleBaseline = !string.IsNullOrEmpty(moduleName) && _ModuleBaselineScope.TryGetValue(moduleName, out var baselineScope) ? baselineScope : null;
             _Binding = null;
             _Configuration = null;
             _Filter = null;
@@ -274,10 +274,10 @@ namespace PSRule.Pipeline
             if (_Filter != null)
                 return _Filter;
 
-            string[] include = _Parameter?.Include ?? _Explicit?.Include ?? _WorkspaceBaseline?.Include ?? _ModuleBaseline?.Include;
-            string[] exclude = _Explicit?.Exclude ?? _WorkspaceBaseline?.Exclude ?? _ModuleBaseline?.Exclude;
-            Hashtable tag = _Parameter?.Tag ?? _Explicit?.Tag ?? _WorkspaceBaseline?.Tag ?? _ModuleBaseline?.Tag;
-            bool? includeLocal = _Explicit?.IncludeLocal ?? _WorkspaceBaseline?.IncludeLocal ?? _ModuleBaseline?.IncludeLocal;
+            var include = _Parameter?.Include ?? _Explicit?.Include ?? _WorkspaceBaseline?.Include ?? _ModuleBaseline?.Include;
+            var exclude = _Explicit?.Exclude ?? _WorkspaceBaseline?.Exclude ?? _ModuleBaseline?.Exclude;
+            var tag = _Parameter?.Tag ?? _Explicit?.Tag ?? _WorkspaceBaseline?.Tag ?? _ModuleBaseline?.Tag;
+            var includeLocal = _Explicit?.IncludeLocal ?? _WorkspaceBaseline?.IncludeLocal ?? _ModuleBaseline?.IncludeLocal;
             return _Filter = new RuleFilter(include, tag, exclude, includeLocal);
         }
 
@@ -305,29 +305,23 @@ namespace PSRule.Pipeline
                 return _Binding;
 
             var field = new FieldMap[] { _Explicit?.Field, _WorkspaceBaseline?.Field, _ModuleBaseline?.Field, _ModuleConfig?.Field };
-            bool ignoreCase = _Explicit?.IgnoreCase ?? _WorkspaceBaseline?.IgnoreCase ?? _ModuleBaseline?.IgnoreCase ?? _ModuleConfig?.IgnoreCase ?? Configuration.BindingOption.Default.IgnoreCase.Value;
-            string nameSeparator = _Explicit?.NameSeparator ?? _WorkspaceBaseline?.NameSeparator ?? _ModuleBaseline?.NameSeparator ?? _ModuleConfig?.NameSeparator ?? Configuration.BindingOption.Default.NameSeparator;
-            bool preferTargetInfo = _Explicit?.PreferTargetInfo ?? _WorkspaceBaseline?.PreferTargetInfo ?? _ModuleBaseline?.PreferTargetInfo ?? _ModuleConfig?.PreferTargetInfo ?? Configuration.BindingOption.Default.PreferTargetInfo.Value;
-            string[] targetName = _Explicit?.TargetName ?? _WorkspaceBaseline?.TargetName ?? _ModuleBaseline?.TargetName ?? _ModuleConfig?.TargetName;
-            string[] targetType = _Explicit?.TargetType ?? _WorkspaceBaseline?.TargetType ?? _ModuleBaseline?.TargetType ?? _ModuleConfig?.TargetType;
-            bool useQualifiedName = _Explicit?.UseQualifiedName ?? _WorkspaceBaseline?.UseQualifiedName ?? _ModuleBaseline?.UseQualifiedName ?? _ModuleConfig?.UseQualifiedName ?? Configuration.BindingOption.Default.UseQualifiedName.Value;
+            var ignoreCase = _Explicit?.IgnoreCase ?? _WorkspaceBaseline?.IgnoreCase ?? _ModuleBaseline?.IgnoreCase ?? _ModuleConfig?.IgnoreCase ?? Configuration.BindingOption.Default.IgnoreCase.Value;
+            var nameSeparator = _Explicit?.NameSeparator ?? _WorkspaceBaseline?.NameSeparator ?? _ModuleBaseline?.NameSeparator ?? _ModuleConfig?.NameSeparator ?? Configuration.BindingOption.Default.NameSeparator;
+            var preferTargetInfo = _Explicit?.PreferTargetInfo ?? _WorkspaceBaseline?.PreferTargetInfo ?? _ModuleBaseline?.PreferTargetInfo ?? _ModuleConfig?.PreferTargetInfo ?? Configuration.BindingOption.Default.PreferTargetInfo.Value;
+            var targetName = _Explicit?.TargetName ?? _WorkspaceBaseline?.TargetName ?? _ModuleBaseline?.TargetName ?? _ModuleConfig?.TargetName;
+            var targetType = _Explicit?.TargetType ?? _WorkspaceBaseline?.TargetType ?? _ModuleBaseline?.TargetType ?? _ModuleConfig?.TargetType;
+            var useQualifiedName = _Explicit?.UseQualifiedName ?? _WorkspaceBaseline?.UseQualifiedName ?? _ModuleBaseline?.UseQualifiedName ?? _ModuleConfig?.UseQualifiedName ?? Configuration.BindingOption.Default.UseQualifiedName.Value;
             return _Binding = new BindingOption(field, ignoreCase, preferTargetInfo, nameSeparator, targetName, targetType, useQualifiedName);
         }
 
         public Dictionary<string, object> GetConfiguration()
         {
-            if (_Configuration != null)
-                return _Configuration;
-
-            return _Configuration = AddConfiguration();
+            return _Configuration ?? (_Configuration = AddConfiguration());
         }
 
         public string[] GetCulture()
         {
-            if (_Culture != null)
-                return _Culture;
-
-            return _Culture = _WorkspaceConfig?.Culture ?? _ModuleConfig?.Culture ?? _DefaultCulture;
+            return _Culture ?? (_Culture = _WorkspaceConfig?.Culture ?? _ModuleConfig?.Culture ?? _DefaultCulture);
         }
 
         internal void Init(RunspaceContext context)

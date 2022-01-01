@@ -38,7 +38,7 @@ namespace PSRule.Data
         {
             unchecked // Overflow is fine
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 23 + (Type != null ? Type.GetHashCode() : 0);
                 hash = hash * 23 + (Name != null ? Name.GetHashCode() : 0);
                 hash = hash * 23 + (Message != null ? Message.GetHashCode() : 0);
@@ -48,10 +48,7 @@ namespace PSRule.Data
 
         public static TargetIssueInfo Create(object o)
         {
-            if (o is PSObject pso)
-                return Create(pso);
-
-            return null;
+            return o is PSObject pso ? Create(pso) : null;
         }
 
         public static TargetIssueInfo Create(PSObject o)

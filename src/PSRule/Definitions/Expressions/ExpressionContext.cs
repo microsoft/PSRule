@@ -94,10 +94,7 @@ namespace PSRule.Definitions.Expressions
 
         internal string[] GetReasons()
         {
-            if (_Reason == null || _Reason.Count == 0)
-                return Array.Empty<string>();
-
-            return _Reason.ToArray();
+            return _Reason == null || _Reason.Count == 0 ? Array.Empty<string>() : _Reason.ToArray();
         }
 
         public RunspaceContext GetContext()

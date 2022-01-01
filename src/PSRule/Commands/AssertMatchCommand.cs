@@ -62,13 +62,13 @@ namespace PSRule.Commands
                 throw RuleScopeException(LanguageKeywords.Match);
 
             var targetObject = InputObject ?? GetTargetObject();
-            bool expected = !Not;
-            bool match = false;
-            string found = string.Empty;
+            var expected = !Not;
+            var match = false;
+            var found = string.Empty;
 
             // Pass with any match, or (-Not) fail with any match
 
-            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field, caseSensitive: false, value: out object fieldValue))
+            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field, caseSensitive: false, value: out var fieldValue))
             {
                 for (var i = 0; i < _Expressions.Length && !match; i++)
                 {

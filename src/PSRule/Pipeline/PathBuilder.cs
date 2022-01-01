@@ -86,7 +86,7 @@ namespace PSRule.Pipeline
             if (TryUrl(path) || TryPath(path, out path))
                 return;
 
-            var pathLiteral = GetSearchParameters(path, out string searchPattern, out SearchOption searchOption, out PathFilter filter);
+            var pathLiteral = GetSearchParameters(path, out var searchPattern, out var searchOption, out var filter);
             var files = Directory.EnumerateFiles(pathLiteral, searchPattern, searchOption);
             foreach (var file in files)
                 if (ShouldInclude(file, filter))
@@ -159,7 +159,7 @@ namespace PSRule.Pipeline
         private string GetSearchParameters(string path, out string searchPattern, out SearchOption searchOption, out PathFilter filter)
         {
             searchOption = SearchOption.AllDirectories;
-            var pathLiteral = TrimPath(path, out bool relativeAnchor);
+            var pathLiteral = TrimPath(path, out var relativeAnchor);
 
             if (TryFilter(pathLiteral, out searchPattern, out filter))
                 return _BasePath;

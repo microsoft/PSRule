@@ -130,7 +130,7 @@ namespace PSRule
 
             foreach (var variable in env.WithPrefix(prefix))
             {
-                if (TryKeyPrefix(variable.Key, prefix, out string suffix))
+                if (TryKeyPrefix(variable.Key, prefix, out var suffix))
                 {
                     if (format != null)
                         suffix = format(suffix);
@@ -154,7 +154,7 @@ namespace PSRule
             var keys = dictionary.Keys.ToArray();
             for (var i = 0; i < keys.Length; i++)
             {
-                if (TryKeyPrefix(keys[i], prefix, out string suffix) && dictionary.TryPopValue(keys[i], out object value))
+                if (TryKeyPrefix(keys[i], prefix, out var suffix) && dictionary.TryPopValue(keys[i], out var value))
                     _Map[suffix] = (TValue)value;
             }
         }
@@ -181,7 +181,7 @@ namespace PSRule
             if (binder == null)
                 throw new ArgumentNullException(nameof(binder));
 
-            var found = _Map.TryGetValue(binder.Name, out TValue value);
+            var found = _Map.TryGetValue(binder.Name, out var value);
             result = value;
             return found;
         }

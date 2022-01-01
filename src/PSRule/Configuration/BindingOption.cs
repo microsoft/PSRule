@@ -70,7 +70,7 @@ namespace PSRule.Configuration
         {
             unchecked // Overflow is fine
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 23 + (Field != null ? Field.GetHashCode() : 0);
                 hash = hash * 23 + (IgnoreCase.HasValue ? IgnoreCase.Value.GetHashCode() : 0);
                 hash = hash * 23 + (NameSeparator != null ? NameSeparator.GetHashCode() : 0);

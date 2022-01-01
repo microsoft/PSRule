@@ -68,34 +68,34 @@ namespace PSRule.Configuration
         {
             // Binding.Field - currently not supported
 
-            if (env.TryBool("PSRULE_BINDING_IGNORECASE", out bool ignoreCase))
+            if (env.TryBool("PSRULE_BINDING_IGNORECASE", out var ignoreCase))
                 option.Binding.IgnoreCase = ignoreCase;
 
-            if (env.TryString("PSRULE_BINDING_NAMESEPARATOR", out string nameSeparator))
+            if (env.TryString("PSRULE_BINDING_NAMESEPARATOR", out var nameSeparator))
                 option.Binding.NameSeparator = nameSeparator;
 
-            if (env.TryBool("PSRULE_BINDING_PREFERTARGETINFO", out bool preferTargetInfo))
+            if (env.TryBool("PSRULE_BINDING_PREFERTARGETINFO", out var preferTargetInfo))
                 option.Binding.PreferTargetInfo = preferTargetInfo;
 
-            if (env.TryStringArray("PSRULE_BINDING_TARGETNAME", out string[] targetName))
+            if (env.TryStringArray("PSRULE_BINDING_TARGETNAME", out var targetName))
                 option.Binding.TargetName = targetName;
 
-            if (env.TryStringArray("PSRULE_BINDING_TARGETTYPE", out string[] targetType))
+            if (env.TryStringArray("PSRULE_BINDING_TARGETTYPE", out var targetType))
                 option.Binding.TargetType = targetType;
 
-            if (env.TryBool("PSRULE_BINDING_USEQUALIFIEDNAME", out bool useQualifiedName))
+            if (env.TryBool("PSRULE_BINDING_USEQUALIFIEDNAME", out var useQualifiedName))
                 option.Binding.UseQualifiedName = useQualifiedName;
 
-            if (env.TryString("PSRULE_RULE_BASELINE", out string baseline))
+            if (env.TryString("PSRULE_RULE_BASELINE", out var baseline))
                 option.Rule.Baseline = baseline;
 
-            if (env.TryStringArray("PSRULE_RULE_EXCLUDE", out string[] exclude))
+            if (env.TryStringArray("PSRULE_RULE_EXCLUDE", out var exclude))
                 option.Rule.Exclude = exclude;
 
-            if (env.TryBool("PSRULE_RULE_INCLUDELOCAL", out bool includeLocal))
+            if (env.TryBool("PSRULE_RULE_INCLUDELOCAL", out var includeLocal))
                 option.Rule.IncludeLocal = includeLocal;
 
-            if (env.TryStringArray("PSRULE_RULE_INCLUDE", out string[] include))
+            if (env.TryStringArray("PSRULE_RULE_INCLUDE", out var include))
                 option.Rule.Include = include;
 
             // Rule.Tag - currently not supported
@@ -114,34 +114,34 @@ namespace PSRule.Configuration
             if (properties.TryPopValue("Binding.Field", out Hashtable map))
                 option.Binding.Field = new FieldMap(map);
 
-            if (properties.TryPopBool("Binding.IgnoreCase", out bool ignoreCase))
+            if (properties.TryPopBool("Binding.IgnoreCase", out var ignoreCase))
                 option.Binding.IgnoreCase = ignoreCase;
 
-            if (properties.TryPopString("Binding.NameSeparator", out string nameSeparator))
+            if (properties.TryPopString("Binding.NameSeparator", out var nameSeparator))
                 option.Binding.NameSeparator = nameSeparator;
 
-            if (properties.TryPopBool("Binding.PreferTargetInfo", out bool preferTargetInfo))
+            if (properties.TryPopBool("Binding.PreferTargetInfo", out var preferTargetInfo))
                 option.Binding.PreferTargetInfo = preferTargetInfo;
 
-            if (properties.TryPopStringArray("Binding.TargetName", out string[] targetName))
+            if (properties.TryPopStringArray("Binding.TargetName", out var targetName))
                 option.Binding.TargetName = targetName;
 
-            if (properties.TryPopStringArray("Binding.TargetType", out string[] targetType))
+            if (properties.TryPopStringArray("Binding.TargetType", out var targetType))
                 option.Binding.TargetType = targetType;
 
             if (properties.TryPopValue("Binding.UseQualifiedName", out bool useQualifiedName))
                 option.Binding.UseQualifiedName = useQualifiedName;
 
-            if (properties.TryPopString("Rule.Baseline", out string baseline))
+            if (properties.TryPopString("Rule.Baseline", out var baseline))
                 option.Rule.Baseline = baseline;
 
-            if (properties.TryPopStringArray("Rule.Exclude", out string[] exclude))
+            if (properties.TryPopStringArray("Rule.Exclude", out var exclude))
                 option.Rule.Exclude = exclude;
 
-            if (properties.TryPopBool("Rule.IncludeLocal", out bool includeLocal))
+            if (properties.TryPopBool("Rule.IncludeLocal", out var includeLocal))
                 option.Rule.IncludeLocal = includeLocal;
 
-            if (properties.TryPopStringArray("Rule.Include", out string[] include))
+            if (properties.TryPopStringArray("Rule.Include", out var include))
                 option.Rule.Include = include;
 
             if (properties.TryPopValue("Rule.Tag", out Hashtable tag))

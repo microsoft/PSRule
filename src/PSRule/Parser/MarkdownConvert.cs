@@ -23,7 +23,7 @@ namespace PSRule.Parser
                 return null;
 
             // Check if the line is just dashes indicating start of yaml header
-            if (!stream.PeakLine(Dash, out int count) || count < 2)
+            if (!stream.PeakLine(Dash, out var count) || count < 2)
                 return null;
 
             stream.Skip(count + 1);

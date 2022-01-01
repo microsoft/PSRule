@@ -68,7 +68,7 @@ namespace PSRule.Data
         {
             unchecked // Overflow is fine
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 23 + (File != null ? File.GetHashCode() : 0);
                 hash = hash * 23 + (Line.HasValue ? Line.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Position.HasValue ? Position.Value.GetHashCode() : 0);
@@ -91,10 +91,7 @@ namespace PSRule.Data
 
         public static TargetSourceInfo Create(object o)
         {
-            if (o is PSObject pso)
-                return Create(pso);
-
-            return null;
+            return o is PSObject pso ? Create(pso) : null;
         }
 
         public static TargetSourceInfo Create(PSObject o)

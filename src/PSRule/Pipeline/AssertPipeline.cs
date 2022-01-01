@@ -66,14 +66,14 @@ namespace PSRule.Pipeline
 
             private static IAssertFormatter GetFormatter(OutputStyle style, Source[] source, PipelineWriter inner, PSRuleOption option)
             {
-                switch (style)
+                return style switch
                 {
-                    case OutputStyle.AzurePipelines: return new AzurePipelinesFormatter(source, inner, option);
-                    case OutputStyle.GitHubActions: return new GitHubActionsFormatter(source, inner, option);
-                    case OutputStyle.VisualStudioCode: return new VisualStudioCodeFormatter(source, inner, option);
-                    case OutputStyle.Plain: return new PlainFormatter(source, inner, option);
-                    default: return new ClientFormatter(source, inner, option);
-                }
+                    OutputStyle.AzurePipelines => new AzurePipelinesFormatter(source, inner, option),
+                    OutputStyle.GitHubActions => new GitHubActionsFormatter(source, inner, option),
+                    OutputStyle.VisualStudioCode => new VisualStudioCodeFormatter(source, inner, option),
+                    OutputStyle.Plain => new PlainFormatter(source, inner, option),
+                    _ => new ClientFormatter(source, inner, option),
+                };
             }
 
             private static OutputStyle GetStyle(OutputStyle style)
@@ -225,7 +225,7 @@ namespace PSRule.Pipeline
                     if ((Option.Output.Outcome.Value & result.Outcome) != result.Outcome)
                         return;
 
-                    StartResult(result, out RuleRecord[] records);
+                    StartResult(result, out var records);
                     for (var i = 0; i < records.Length; i++)
                     {
                         if (records[i].IsSuccess())
@@ -974,10 +974,9 @@ namespace PSRule.Pipeline
 
         public sealed override IPipeline Build(IPipelineWriter writer = null)
         {
-            if (!RequireModules() || !RequireSources())
-                return null;
-
-            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, writer ?? PrepareWriter(), RuleOutcome.Processed);
+            return !RequireModules() || !RequireSources()
+                ? null
+                : (IPipeline)new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, writer ?? PrepareWriter(), RuleOutcome.Processed);
         }
     }
 }

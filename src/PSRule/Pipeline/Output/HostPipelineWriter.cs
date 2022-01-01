@@ -82,10 +82,7 @@ namespace PSRule.Pipeline.Output
         private static bool GetPreferenceVariable(EngineIntrinsics executionContext, string variableName)
         {
             var preference = GetPreferenceVariable(executionContext.SessionState, variableName);
-            if (preference == ActionPreference.Ignore)
-                return false;
-
-            return !(preference == ActionPreference.SilentlyContinue && (
+            return preference != ActionPreference.Ignore && !(preference == ActionPreference.SilentlyContinue && (
                 variableName == VerbosePreference ||
                 variableName == DebugPreference)
             );

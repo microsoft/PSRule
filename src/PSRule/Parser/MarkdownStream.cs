@@ -279,7 +279,7 @@ namespace PSRule.Parser
 
         public int PeakCount(char c)
         {
-            int count = 1;
+            var count = 1;
 
             while (Peak(count) == c)
             {

@@ -117,10 +117,10 @@ namespace PSRule.Pipeline
                 Name = info.Name;
                 Version = info.Version?.ToString();
                 ProjectUri = info.ProjectUri?.ToString();
-                if (TryPrivateData(info, FIELD_PSRULE, out Hashtable moduleData))
+                if (TryPrivateData(info, FIELD_PSRULE, out var moduleData))
                     Baseline = moduleData.ContainsKey(FIELD_BASELINE) ? ResourceHelper.GetIdString(Name, moduleData[FIELD_BASELINE] as string) : null;
 
-                if (TryPrivateData(info, FIELD_PSDATA, out Hashtable psData) && psData.ContainsKey(FIELD_PRERELEASE))
+                if (TryPrivateData(info, FIELD_PSDATA, out var psData) && psData.ContainsKey(FIELD_PRERELEASE))
                     Version = string.Concat(Version, PRERELEASE_SEPARATOR, psData[FIELD_PRERELEASE].ToString());
             }
 

@@ -21,7 +21,7 @@ namespace PSRule.Pipeline
 
         public static string BindTargetName(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject)
         {
-            if (preferTargetInfo && TryGetInfoTargetName(targetObject, out string targetName))
+            if (preferTargetInfo && TryGetInfoTargetName(targetObject, out var targetName))
                 return targetName;
 
             if (propertyNames != null)
@@ -35,7 +35,7 @@ namespace PSRule.Pipeline
 
         public static string BindTargetType(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject)
         {
-            if (preferTargetInfo && TryGetInfoTargetType(targetObject, out string targetType))
+            if (preferTargetInfo && TryGetInfoTargetType(targetObject, out var targetType))
                 return targetType;
 
             if (propertyNames != null)
@@ -65,12 +65,11 @@ namespace PSRule.Pipeline
         /// <returns>The TargetName of the object.</returns>
         private static string DefaultTargetNameBinding(PSObject targetObject)
         {
-            if (TryGetInfoTargetName(targetObject, out string targetName) ||
+            return TryGetInfoTargetName(targetObject, out var targetName) ||
                 TryGetTargetName(targetObject, propertyName: Property_TargetName, targetName: out targetName) ||
-                TryGetTargetName(targetObject, propertyName: Property_Name, targetName: out targetName))
-                return targetName;
-
-            return GetUnboundObjectTargetName(targetObject);
+                TryGetTargetName(targetObject, propertyName: Property_Name, targetName: out targetName)
+                ? targetName
+                : GetUnboundObjectTargetName(targetObject);
         }
 
         /// <summary>
@@ -101,10 +100,10 @@ namespace PSRule.Pipeline
         private static string NestedTargetPropertyBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next)
         {
             string targetName = null;
-            int score = int.MaxValue;
+            var score = int.MaxValue;
             for (var i = 0; i < propertyNames.Length && score > propertyNames.Length; i++)
             {
-                if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: propertyNames[i], caseSensitive: caseSensitive, value: out object value))
+                if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: propertyNames[i], caseSensitive: caseSensitive, value: out var value))
                 {
                     targetName = value.ToString();
                     score = i;
@@ -143,10 +142,7 @@ namespace PSRule.Pipeline
         /// <returns>The TargetObject of the object.</returns>
         private static string DefaultTargetTypeBinding(PSObject targetObject)
         {
-            if (TryGetInfoTargetType(targetObject, out string targetType))
-                return targetType;
-
-            return targetObject.TypeNames[0];
+            return TryGetInfoTargetType(targetObject, out var targetType) ? targetType : targetObject.TypeNames[0];
         }
 
         private static string DefaultFieldBinding(PSObject targetObject)

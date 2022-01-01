@@ -56,7 +56,7 @@ namespace PSRule.Configuration
         {
             unchecked // Overflow is fine
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 23 + (Baseline != null ? Baseline.GetHashCode() : 0);
                 hash = hash * 23 + (Exclude != null ? Exclude.GetHashCode() : 0);
                 hash = hash * 23 + (IncludeLocal.HasValue ? IncludeLocal.Value.GetHashCode() : 0);

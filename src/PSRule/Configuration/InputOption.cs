@@ -72,7 +72,7 @@ namespace PSRule.Configuration
         {
             unchecked // Overflow is fine
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 23 + (Format.HasValue ? Format.Value.GetHashCode() : 0);
                 hash = hash * 23 + (IgnoreGitPath.HasValue ? IgnoreGitPath.Value.GetHashCode() : 0);
                 hash = hash * 23 + (IgnoreRepositoryCommon.HasValue ? IgnoreRepositoryCommon.Value.GetHashCode() : 0);
@@ -138,19 +138,19 @@ namespace PSRule.Configuration
             if (env.TryEnum("PSRULE_INPUT_FORMAT", out InputFormat format))
                 Format = format;
 
-            if (env.TryBool("PSRULE_INPUT_IGNOREGITPATH", out bool ignoreGitPath))
+            if (env.TryBool("PSRULE_INPUT_IGNOREGITPATH", out var ignoreGitPath))
                 IgnoreGitPath = ignoreGitPath;
 
-            if (env.TryBool("PSRULE_INPUT_IGNOREREPOSITORYCOMMON", out bool ignoreRepositoryCommon))
+            if (env.TryBool("PSRULE_INPUT_IGNOREREPOSITORYCOMMON", out var ignoreRepositoryCommon))
                 IgnoreRepositoryCommon = ignoreRepositoryCommon;
 
-            if (env.TryString("PSRULE_INPUT_OBJECTPATH", out string objectPath))
+            if (env.TryString("PSRULE_INPUT_OBJECTPATH", out var objectPath))
                 ObjectPath = objectPath;
 
-            if (env.TryStringArray("PSRULE_INPUT_PATHIGNORE", out string[] pathIgnore))
+            if (env.TryStringArray("PSRULE_INPUT_PATHIGNORE", out var pathIgnore))
                 PathIgnore = pathIgnore;
 
-            if (env.TryStringArray("PSRULE_INPUT_TARGETTYPE", out string[] targetType))
+            if (env.TryStringArray("PSRULE_INPUT_TARGETTYPE", out var targetType))
                 TargetType = targetType;
         }
 
@@ -159,19 +159,19 @@ namespace PSRule.Configuration
             if (index.TryPopEnum("Input.Format", out InputFormat format))
                 Format = format;
 
-            if (index.TryPopBool("Input.IgnoreGitPath", out bool ignoreGitPath))
+            if (index.TryPopBool("Input.IgnoreGitPath", out var ignoreGitPath))
                 IgnoreGitPath = ignoreGitPath;
 
-            if (index.TryPopBool("Input.IgnoreRepositoryCommon", out bool ignoreRepositoryCommon))
+            if (index.TryPopBool("Input.IgnoreRepositoryCommon", out var ignoreRepositoryCommon))
                 IgnoreRepositoryCommon = ignoreRepositoryCommon;
 
-            if (index.TryPopString("Input.ObjectPath", out string objectPath))
+            if (index.TryPopString("Input.ObjectPath", out var objectPath))
                 ObjectPath = objectPath;
 
-            if (index.TryPopStringArray("Input.PathIgnore", out string[] pathIgnore))
+            if (index.TryPopStringArray("Input.PathIgnore", out var pathIgnore))
                 PathIgnore = pathIgnore;
 
-            if (index.TryPopStringArray("Input.TargetType", out string[] targetType))
+            if (index.TryPopStringArray("Input.TargetType", out var targetType))
                 TargetType = targetType;
         }
     }

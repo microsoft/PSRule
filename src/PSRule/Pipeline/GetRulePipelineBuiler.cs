@@ -43,20 +43,19 @@ namespace PSRule.Pipeline
 
         public override IPipeline Build(IPipelineWriter writer = null)
         {
-            if (!RequireModules() || !RequireSources())
-                return null;
-
-            return new GetRulePipeline(
-                pipeline: PrepareContext(
-                    bindTargetName: null,
-                    bindTargetType: null,
-                    bindField: null
-                ),
-                source: Source,
-                reader: PrepareReader(),
-                writer: writer ?? PrepareWriter(),
-                includeDependencies: _IncludeDependencies
-            );
+            return !RequireModules() || !RequireSources()
+                ? null
+                : (IPipeline)new GetRulePipeline(
+                    pipeline: PrepareContext(
+                        bindTargetName: null,
+                        bindTargetType: null,
+                        bindField: null
+                    ),
+                    source: Source,
+                    reader: PrepareReader(),
+                    writer: writer ?? PrepareWriter(),
+                    includeDependencies: _IncludeDependencies
+                );
         }
 
         private static OutputFormat SuppressFormat(OutputFormat? format)

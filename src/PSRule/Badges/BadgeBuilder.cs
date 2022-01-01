@@ -149,30 +149,24 @@ namespace PSRule.Badges
 
         private static string GetOutcomeFill(RuleOutcome outcome)
         {
-            if (outcome == RuleOutcome.Pass)
-                return BADGE_FILL_GREEN;
-
-            if (outcome == RuleOutcome.Fail)
-                return BADGE_FILL_RED;
-
-            if (outcome == RuleOutcome.Error)
-                return BADGE_FILL_RED;
-
-            return BADGE_FILL_GREY;
+            return outcome switch
+            {
+                RuleOutcome.Pass => BADGE_FILL_GREEN,
+                RuleOutcome.Fail => BADGE_FILL_RED,
+                RuleOutcome.Error => BADGE_FILL_RED,
+                _ => BADGE_FILL_GREY,
+            };
         }
 
         private static string GetOutcomeLabel(RuleOutcome outcome)
         {
-            if (outcome == RuleOutcome.Pass)
-                return PSRuleResources.OutcomePass;
-
-            if (outcome == RuleOutcome.Fail)
-                return PSRuleResources.OutcomeFail;
-
-            if (outcome == RuleOutcome.Error)
-                return PSRuleResources.OutcomeError;
-
-            return PSRuleResources.OutcomeUnknown;
+            return outcome switch
+            {
+                RuleOutcome.Pass => PSRuleResources.OutcomePass,
+                RuleOutcome.Fail => PSRuleResources.OutcomeFail,
+                RuleOutcome.Error => PSRuleResources.OutcomeError,
+                _ => PSRuleResources.OutcomeUnknown
+            };
         }
 
         private static RuleOutcome GetOutcome(InvokeResult result)
@@ -182,13 +176,12 @@ namespace PSRule.Badges
 
         private static string GetTypeFill(BadgeType type)
         {
-            if (type == BadgeType.Success)
-                return BADGE_FILL_GREEN;
-
-            if (type == BadgeType.Failure)
-                return BADGE_FILL_RED;
-
-            return BADGE_FILL_GREY;
+            return type switch
+            {
+                BadgeType.Success => BADGE_FILL_GREEN,
+                BadgeType.Failure => BADGE_FILL_RED,
+                _ => BADGE_FILL_GREY
+            };
         }
 
         private static IBadge CreateCustom(string title, string label, string fill)

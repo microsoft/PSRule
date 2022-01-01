@@ -52,8 +52,8 @@ namespace PSRule.Commands
             var targetObject = InputObject ?? GetTargetObject();
             var foundFields = new List<string>();
             var notFoundFields = new List<string>();
-            int found = 0;
-            int required = All ? Field.Length : 1;
+            var found = 0;
+            var required = All ? Field.Length : 1;
 
             for (var i = 0; i < Field.Length && found < required; i++)
             {

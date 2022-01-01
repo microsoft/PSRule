@@ -138,12 +138,12 @@ namespace PSRule.Pipeline
 
             public bool TryMatch(PathStream other, int offset)
             {
-                return other.Peak(offset, out char c) && IsMatch(c);
+                return other.Peak(offset, out var c) && IsMatch(c);
             }
 
             public bool IsUnmatchedSingle(PathStream other, int offset)
             {
-                return other.Peak(offset, out char c) && IsWilcardQ(c) && other.Peak(offset + 1, out char cnext) && IsMatch(cnext);
+                return other.Peak(offset, out var c) && IsWilcardQ(c) && other.Peak(offset + 1, out var cnext) && IsMatch(cnext);
             }
 
             private bool IsMatch(char c)
@@ -168,10 +168,7 @@ namespace PSRule.Pipeline
                     return true;
 
                 // Ends in **/
-                if (pos + 2 == _Path.Length - 1 && IsSeparator(_Path[pos + 2]))
-                    return true;
-
-                return false;
+                return pos + 2 == _Path.Length - 1 && IsSeparator(_Path[pos + 2]);
             }
 
             public bool SkipMatchAA()
@@ -419,10 +416,9 @@ namespace PSRule.Pipeline
 
         public static PathFilter Create(string basePath, string expression, bool matchResult = true)
         {
-            if (!ShouldSkipExpression(expression))
-                return new PathFilter(basePath, new PathFilterExpression[] { PathFilterExpression.Create(expression) }, matchResult);
-
-            return new PathFilter(basePath, null, matchResult);
+            return !ShouldSkipExpression(expression)
+                ? new PathFilter(basePath, new PathFilterExpression[] { PathFilterExpression.Create(expression) }, matchResult)
+                : new PathFilter(basePath, null, matchResult);
         }
 
         public static PathFilter Create(string basePath, string[] expression, bool matchResult = true)
@@ -454,7 +450,7 @@ namespace PSRule.Pipeline
             var cleanPath = start > 0 ? path.Remove(0, start) : path;
 
             // Include unless excluded
-            bool result = false;
+            var result = false;
 
             // Compare expressions
             for (var i = 0; i < _Expression.Length; i++)
@@ -474,10 +470,9 @@ namespace PSRule.Pipeline
         private static string NormalDirectoryPath(string path)
         {
             var c = path[path.Length - 1];
-            if (c == Path.DirectorySeparatorChar || c == Path.AltDirectorySeparatorChar)
-                return path;
-
-            return string.Concat(path, Path.DirectorySeparatorChar);
+            return c == Path.DirectorySeparatorChar || c == Path.AltDirectorySeparatorChar
+                ? path
+                : string.Concat(path, Path.DirectorySeparatorChar);
         }
     }
 }

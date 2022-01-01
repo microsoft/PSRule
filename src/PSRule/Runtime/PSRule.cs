@@ -138,7 +138,7 @@ namespace PSRule.Runtime
                 return new PSObject[] { sourceObject };
 
             var cacheKey = sourceObject.BaseObject.ToString();
-            if (GetContext().Pipeline.ContentCache.TryGetValue(cacheKey, out PSObject[] result))
+            if (GetContext().Pipeline.ContentCache.TryGetValue(cacheKey, out var result))
                 return result;
 
             var items = PipelineReceiverActions.DetectInputFormat(new TargetObject(sourceObject), PipelineReceiverActions.PassThru).ToArray();
@@ -156,13 +156,13 @@ namespace PSRule.Runtime
         public PSObject[] GetContentField(PSObject sourceObject, string field)
         {
             var content = GetContent(sourceObject);
-            if (content == null || content.Length == 0 || string.IsNullOrEmpty(field))
+            if (IsEmptyContent(content) || string.IsNullOrEmpty(field))
                 return Array.Empty<PSObject>();
 
             var result = new List<PSObject>();
             for (var i = 0; i < content.Length; i++)
             {
-                if (ObjectHelper.GetField(content[i], field, false, out object value) && value != null)
+                if (ObjectHelper.GetField(content[i], field, false, out var value) && value != null)
                 {
                     if (value is IEnumerable evalue)
                     {
@@ -183,10 +183,12 @@ namespace PSRule.Runtime
         public PSObject GetContentFirstOrDefault(PSObject sourceObject)
         {
             var content = GetContent(sourceObject);
-            if (content == null || content.Length == 0)
-                return null;
+            return IsEmptyContent(content) ? null : content[0];
+        }
 
-            return content[0];
+        private static bool IsEmptyContent(PSObject[] content)
+        {
+            return content == null || content.Length == 0;
         }
 
         /// <summary>

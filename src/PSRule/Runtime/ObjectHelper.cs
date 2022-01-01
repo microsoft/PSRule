@@ -116,7 +116,7 @@ namespace PSRule.Runtime
             public NameToken Get()
             {
                 var token = new NameToken();
-                NameToken result = token;
+                var result = token;
                 while (Next())
                 {
                     var start = Position;
@@ -127,7 +127,7 @@ namespace PSRule.Runtime
                     }
 
                     // Jump to the next separator or end
-                    var end = IndexOf(out NameTokenType tokenType);
+                    var end = IndexOf(out var tokenType);
                     token.Type = tokenType;
                     if (tokenType == NameTokenType.Field)
                     {
@@ -179,7 +179,7 @@ namespace PSRule.Runtime
 
             var baseType = baseObject.GetType();
             object field = null;
-            bool foundField = false;
+            var foundField = false;
 
             // Handle this object
             if (token.Type == NameTokenType.Self)
@@ -226,7 +226,7 @@ namespace PSRule.Runtime
                 foundField = true;
             }
             // Handle IEnumerable
-            else if (token.Type == NameTokenType.Index && baseObject is IEnumerable enumerable && TryEnumerableIndex(enumerable, token.Index, out object element))
+            else if (token.Type == NameTokenType.Index && baseObject is IEnumerable enumerable && TryEnumerableIndex(enumerable, token.Index, out var element))
             {
                 field = element;
                 foundField = true;
@@ -310,10 +310,7 @@ namespace PSRule.Runtime
 
         private static bool TryPropertyValue(DynamicObject targetObject, string propertyName, bool caseSensitive, out object value)
         {
-            if (!targetObject.TryGetMember(new DynamicPropertyBinder(propertyName, !caseSensitive), out value))
-                return false;
-
-            return true;
+            return targetObject.TryGetMember(new DynamicPropertyBinder(propertyName, !caseSensitive), out value);
         }
 
         private static bool TryFieldValue(object targetObject, string fieldName, Type baseType, bool caseSensitive, out object value)
@@ -332,7 +329,7 @@ namespace PSRule.Runtime
         {
             value = null;
             var properties = baseType.GetProperties();
-            foreach (PropertyInfo pi in GetIndexerProperties(baseType))
+            foreach (var pi in GetIndexerProperties(baseType))
             {
                 var p = pi.GetIndexParameters();
                 if (p.Length > 0)
@@ -384,7 +381,7 @@ namespace PSRule.Runtime
             else
             {
                 var properties = baseType.GetProperties();
-                foreach (PropertyInfo pi in properties)
+                foreach (var pi in properties)
                 {
                     var p = pi.GetIndexParameters();
                     if (p.Length > 0)
@@ -400,7 +397,7 @@ namespace PSRule.Runtime
         private static NameToken GetNameToken(IBindingContext bindingContext, string name)
         {
             // Try to load nameToken from cache
-            if (bindingContext == null || !bindingContext.GetNameToken(expression: name, nameToken: out NameToken nameToken))
+            if (bindingContext == null || !bindingContext.GetNameToken(expression: name, nameToken: out var nameToken))
             {
                 nameToken = new NameTokenStream(name).Get();
                 if (bindingContext != null)

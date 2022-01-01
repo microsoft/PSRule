@@ -52,7 +52,7 @@ namespace PSRule.Configuration
         {
             unchecked // Overflow is fine
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 23 + (Path != null ? Path.GetHashCode() : 0);
                 hash = hash * 23 + (Module != null ? Module.GetHashCode() : 0);
                 return hash;
@@ -83,19 +83,19 @@ namespace PSRule.Configuration
 
         internal void Load(EnvironmentHelper env)
         {
-            if (env.TryStringArray("PSRULE_INCLUDE_PATH", out string[] path))
+            if (env.TryStringArray("PSRULE_INCLUDE_PATH", out var path))
                 Path = path;
 
-            if (env.TryStringArray("PSRULE_INCLUDE_MODULE", out string[] module))
+            if (env.TryStringArray("PSRULE_INCLUDE_MODULE", out var module))
                 Module = module;
         }
 
         internal void Load(Dictionary<string, object> index)
         {
-            if (index.TryPopStringArray("Include.Path", out string[] path))
+            if (index.TryPopStringArray("Include.Path", out var path))
                 Path = path;
 
-            if (index.TryPopStringArray("Include.Module", out string[] module))
+            if (index.TryPopStringArray("Include.Module", out var module))
                 Module = module;
         }
     }

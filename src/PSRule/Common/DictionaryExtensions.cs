@@ -20,7 +20,7 @@ namespace PSRule
         public static bool TryPopValue<T>(this IDictionary<string, object> dictionary, string key, out T value)
         {
             value = default;
-            if (dictionary.TryGetValue(key, out object v) && dictionary.Remove(key) && v is T result)
+            if (dictionary.TryGetValue(key, out var v) && dictionary.Remove(key) && v is T result)
             {
                 value = result;
                 return true;
@@ -32,21 +32,21 @@ namespace PSRule
         public static bool TryPopBool(this IDictionary<string, object> dictionary, string key, out bool value)
         {
             value = default;
-            return TryPopValue(dictionary, key, out object v) && bool.TryParse(v.ToString(), out value);
+            return TryPopValue(dictionary, key, out var v) && bool.TryParse(v.ToString(), out value);
         }
 
         [DebuggerStepThrough]
         public static bool TryPopEnum<TEnum>(this IDictionary<string, object> dictionary, string key, out TEnum value) where TEnum : struct
         {
             value = default;
-            return TryPopValue(dictionary, key, out object v) && Enum.TryParse(v.ToString(), ignoreCase: true, result: out value);
+            return TryPopValue(dictionary, key, out var v) && Enum.TryParse(v.ToString(), ignoreCase: true, result: out value);
         }
 
         [DebuggerStepThrough]
         public static bool TryPopString(this IDictionary<string, object> dictionary, string key, out string value)
         {
             value = default;
-            if (TryPopValue(dictionary, key, out object v) && v is string svalue)
+            if (TryPopValue(dictionary, key, out var v) && v is string svalue)
             {
                 value = svalue;
                 return true;
@@ -58,14 +58,14 @@ namespace PSRule
         public static bool TryPopStringArray(this IDictionary<string, object> dictionary, string key, out string[] value)
         {
             value = default;
-            return TryPopValue(dictionary, key, out object v) && TryStringArray(v, out value);
+            return TryPopValue(dictionary, key, out var v) && TryStringArray(v, out value);
         }
 
         [DebuggerStepThrough]
         public static bool TryGetBool(this IDictionary<string, object> dictionary, string key, out bool? value)
         {
             value = null;
-            if (!dictionary.TryGetValue(key, out object o))
+            if (!dictionary.TryGetValue(key, out var o))
                 return false;
 
             if (o is bool bvalue || (o is string svalue && bool.TryParse(svalue, out bvalue)))
@@ -80,7 +80,7 @@ namespace PSRule
         public static bool TryGetLong(this IDictionary<string, object> dictionary, string key, out long? value)
         {
             value = null;
-            if (!dictionary.TryGetValue(key, out object o))
+            if (!dictionary.TryGetValue(key, out var o))
                 return false;
 
             if (o is long lvalue || (o is string svalue && long.TryParse(svalue, out lvalue)))
@@ -95,7 +95,7 @@ namespace PSRule
         public static bool TryGetString(this IDictionary<string, object> dictionary, string key, out string value)
         {
             value = null;
-            if (!dictionary.TryGetValue(key, out object o))
+            if (!dictionary.TryGetValue(key, out var o))
                 return false;
 
             if (o is string svalue)
@@ -110,10 +110,7 @@ namespace PSRule
         public static bool TryGetStringArray(this IDictionary<string, object> dictionary, string key, out string[] value)
         {
             value = null;
-            if (!dictionary.TryGetValue(key, out object o))
-                return false;
-
-            return TryStringArray(o, out value);
+            return dictionary.TryGetValue(key, out var o) && TryStringArray(o, out value);
         }
 
         [DebuggerStepThrough]

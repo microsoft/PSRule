@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading;
 using PSRule.Configuration;
 using PSRule.Definitions;
-using PSRule.Definitions.Selectors;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
@@ -471,26 +470,24 @@ namespace PSRule.Runtime
 
         private string GetStackTrace(ErrorRecord record)
         {
-            if (RuleBlock == null)
-                return record.ScriptStackTrace;
-
-            return string.Concat(
-                record.ScriptStackTrace,
-                Environment.NewLine,
-                string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.RuleStackTrace, RuleBlock.RuleName, RuleBlock.Extent.File, RuleBlock.Extent.StartLineNumber)
-            );
+            return RuleBlock == null
+                ? record.ScriptStackTrace
+                : string.Concat(
+                    record.ScriptStackTrace,
+                    Environment.NewLine,
+                    string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.RuleStackTrace, RuleBlock.RuleName, RuleBlock.Extent.File, RuleBlock.Extent.StartLineNumber)
+                );
         }
 
         private string GetErrorId(ErrorRecord record)
         {
-            if (RuleBlock == null)
-                return record.FullyQualifiedErrorId;
-
-            return string.Concat(
-                record.FullyQualifiedErrorId,
-                ",",
-                RuleBlock.RuleName
-            );
+            return RuleBlock == null
+                ? record.FullyQualifiedErrorId
+                : string.Concat(
+                    record.FullyQualifiedErrorId,
+                    ",",
+                    RuleBlock.RuleName
+                );
         }
 
         private static string GetPositionMessage(ErrorRecord errorRecord)
@@ -524,10 +521,7 @@ namespace PSRule.Runtime
                 return 0;
 
             var lines = positionMessage.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            if (lines.Length != 3)
-                return 0;
-
-            return lines[2].LastIndexOf('~') - 1;
+            return lines.Length != 3 ? 0 : lines[2].LastIndexOf('~') - 1;
         }
 
         private string GetLogPrefix()
@@ -586,11 +580,11 @@ namespace PSRule.Runtime
         public bool TrySelector(string name)
         {
             name = ResourceHelper.GetIdString(Source.File.ModuleName, name);
-            if (TargetObject == null || Pipeline == null || !Pipeline.Selector.TryGetValue(name, out SelectorVisitor selector))
+            if (TargetObject == null || Pipeline == null || !Pipeline.Selector.TryGetValue(name, out var selector))
                 return false;
 
             var annotation = TargetObject.GetAnnotation<SelectorTargetAnnotation>();
-            if (annotation.TryGetSelectorResult(selector, out bool result))
+            if (annotation.TryGetSelectorResult(selector, out var result))
                 return result;
 
             result = selector.Match(TargetObject.Value);
@@ -658,7 +652,7 @@ namespace PSRule.Runtime
 
         internal void AddService(string id, object service)
         {
-            ResourceHelper.ParseIdString(_LanguageScopes.Current.Name, id, out string scopeName, out string name);
+            ResourceHelper.ParseIdString(_LanguageScopes.Current.Name, id, out var scopeName, out var name);
             if (!StringComparer.OrdinalIgnoreCase.Equals(_LanguageScopes.Current.Name, scopeName))
                 return;
 
@@ -667,16 +661,13 @@ namespace PSRule.Runtime
 
         internal object GetService(string id)
         {
-            ResourceHelper.ParseIdString(_LanguageScopes.Current.Name, id, out string scopeName, out string name);
-            if (!_LanguageScopes.TryScope(scopeName, out ILanguageScope scope))
-                return null;
-
-            return scope.GetService(name);
+            ResourceHelper.ParseIdString(_LanguageScopes.Current.Name, id, out var scopeName, out var name);
+            return !_LanguageScopes.TryScope(scopeName, out var scope) ? null : scope.GetService(name);
         }
 
         private void RunConventionInitialize()
         {
-            if (_Conventions == null || _Conventions.Count == 0)
+            if (IsEmptyConventions())
                 return;
 
             for (var i = 0; i < _Conventions.Count; i++)
@@ -685,7 +676,7 @@ namespace PSRule.Runtime
 
         private void RunConventionBegin()
         {
-            if (_Conventions == null || _Conventions.Count == 0)
+            if (IsEmptyConventions())
                 return;
 
             for (var i = 0; i < _Conventions.Count; i++)
@@ -694,7 +685,7 @@ namespace PSRule.Runtime
 
         private void RunConventionProcess()
         {
-            if (_Conventions == null || _Conventions.Count == 0)
+            if (IsEmptyConventions())
                 return;
 
             for (var i = 0; i < _Conventions.Count; i++)
@@ -703,11 +694,16 @@ namespace PSRule.Runtime
 
         private void RunConventionEnd()
         {
-            if (_Conventions == null || _Conventions.Count == 0)
+            if (IsEmptyConventions())
                 return;
 
             for (var i = 0; i < _Conventions.Count; i++)
                 _Conventions[i].End(this, null);
+        }
+
+        private bool IsEmptyConventions()
+        {
+            return _Conventions == null || _Conventions.Count == 0;
         }
 
         public void WriteReason(string text)

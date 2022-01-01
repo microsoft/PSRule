@@ -63,13 +63,13 @@ namespace PSRule.Commands
                 throw RuleScopeException(LanguageKeywords.Within);
 
             var targetObject = InputObject ?? GetTargetObject();
-            bool expected = !Not;
-            bool match = false;
-            string found = string.Empty;
+            var expected = !Not;
+            var match = false;
+            var found = string.Empty;
 
             // Pass with any match, or (-Not) fail with any match
 
-            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field, caseSensitive: false, value: out object fieldValue))
+            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field, caseSensitive: false, value: out var fieldValue))
             {
                 for (var i = 0; (Value == null || i < Value.Length) && !match; i++)
                 {
@@ -126,7 +126,7 @@ namespace PSRule.Commands
             _LikePattern = new WildcardPattern[Value.Length];
             for (var i = 0; i < _LikePattern.Length; i++)
             {
-                if (!TryStringValue(Value[i], out string value))
+                if (!TryStringValue(Value[i], out var value))
                 {
                     throw new RuleException(PSRuleResources.WithinLikeNotString);
                 }
@@ -137,7 +137,7 @@ namespace PSRule.Commands
 
         private bool TryExpressionCache()
         {
-            if (!PipelineContext.CurrentThread.ExpressionCache.TryGetValue(MyInvocation.PositionMessage, out object cacheValue))
+            if (!PipelineContext.CurrentThread.ExpressionCache.TryGetValue(MyInvocation.PositionMessage, out var cacheValue))
                 return false;
 
             _LikePattern = (WildcardPattern[])cacheValue;
