@@ -1,8 +1,25 @@
 {
+    "name": "PSRule dev",
+    "settings": {
+        "terminal.integrated.defaultProfile.linux": "pwsh",
+        "terminal.integrated.profiles.linux": {
+            "pwsh": {
+                "path": "/bin/pwsh"
+            }
+        }
+    },
     "extensions": [
         "ms-azure-devops.azure-pipelines",
-        "ms-vscode.powershell",
         "davidanson.vscode-markdownlint",
-        "redhat.vscode-yaml"
-    ]
+        "bewhite.psrule-vscode-preview",
+        "ms-dotnettools.csharp",
+        "eamodio.gitlens",
+        "github.vscode-pull-request-github",
+        "streetsidesoftware.code-spell-checker"
+    ],
+    "features": {
+        "github-cli": "latest"
+    },
+    "onCreateCommand": "/bin/pwsh -f .devcontainer/container-build.ps1",
+    "postStartCommand": "/bin/pwsh -f .devcontainer/container-start.ps1"
 }
