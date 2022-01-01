@@ -20,6 +20,22 @@ What's changed since v1.11.0:
     - Object path expressions can be used in YAML, JSON, and PowerShell rules and selectors.
     - See [about_PSRule_Assert] for details.
 
+## v1.11.0
+
+What's changed since v1.10.0:
+
+- General improvements:
+  - Added `version` expression to check semantic version constraints. [#861](https://github.com/microsoft/PSRule/issues/861)
+    - See [about_PSRule_Expressions] for details.
+  - Added `hasDefault` expression to check field default value. [#870](https://github.com/microsoft/PSRule/issues/870)
+    - See [about_PSRule_Expressions] for details.
+- Bug fixes:
+  - Fixed `GetReason()` not returning results for a failed assertion. [#874](https://github.com/microsoft/PSRule/issues/874)
+
+What's changed since pre-release v1.11.0-B2112016:
+
+- No additional changes.
+
 ## v1.11.0-B2112016 (pre-release)
 
 What's changed since v1.10.0:
