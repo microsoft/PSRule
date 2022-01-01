@@ -2,12 +2,12 @@
 # CI pipeline for PSRule
 
 variables:
-  version: '1.11.0'
+  version: '2.0.0'
   buildConfiguration: 'Release'
   disable.coverage.autogenerate: 'true'
   imageName: 'ubuntu-20.04'
 
- # Use build number format, i.e. 1.11.0-B2110001
+ # Use build number format, i.e. 2.0.0-B2201001
 name: $(version)-B$(date:yyMM)$(rev:rrr)
 
 trigger:
@@ -18,6 +18,7 @@ trigger:
   tags:
     include:
     - 'v1.*'
+    - 'v2.*'
 
 pr:
   branches:
@@ -168,8 +169,8 @@ stages:
 
   - template: jobs/testContainer.yaml
     parameters:
-      name: alpine_3_10
-      displayName: 'PowerShell 7.1 - alpine-3.14'
+      name: alpine_3_14
+      displayName: 'PowerShell 7.2 - alpine-3.14'
       imageName: mcr.microsoft.com/powershell/test-deps
       imageTag: alpine-3.14
 
@@ -184,7 +185,7 @@ stages:
 - stage: Release
   displayName: Release
   dependsOn: [ 'Test', 'Analysis' ]
-  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v1.'))
+  condition: and(succeeded(), or(startsWith(variables['Build.SourceBranch'], 'refs/tags/v1.'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v2.')))
   jobs:
   - job:
     displayName: Live
