@@ -25,10 +25,7 @@ namespace PSRule.Runtime.ObjectPath
             {
                 get
                 {
-                    if (_Items.Count == 0)
-                        return null;
-
-                    return _Items[_Items.Count - 1];
+                    return _Items.Count > 0 ? _Items[_Items.Count - 1] : null;
                 }
             }
 
@@ -290,10 +287,7 @@ namespace PSRule.Runtime.ObjectPath
 
             private char ConsumeChar(ref int position)
             {
-                if (position > Last)
-                    return NULL;
-
-                return Path[position++];
+                return position > Last : NULL ? Path[position++];
             }
 
             /// <summary>
@@ -591,10 +585,7 @@ namespace PSRule.Runtime.ObjectPath
 
             private string Substring(int pos, int end)
             {
-                if (pos == end)
-                    return null;
-
-                return Path.Substring(pos, end - pos);
+                return pos == end ? null : Path.Substring(pos, end - pos);
             }
 
             /// <summary>

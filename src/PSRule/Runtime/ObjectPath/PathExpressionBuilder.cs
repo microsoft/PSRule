@@ -546,10 +546,7 @@ namespace PSRule.Runtime.ObjectPath
 
         private static bool TryPropertyValue(DynamicObject targetObject, string propertyName, bool caseSensitive, out object value)
         {
-            if (!targetObject.TryGetMember(new DynamicPropertyBinder(propertyName, !caseSensitive), out value))
-                return false;
-
-            return true;
+            return targetObject.TryGetMember(new DynamicPropertyBinder(propertyName, !caseSensitive), out value);
         }
 
         private static object GetTokenValue(JToken o)
@@ -585,7 +582,7 @@ namespace PSRule.Runtime.ObjectPath
         {
             value = null;
             var properties = baseType.GetProperties();
-            foreach (PropertyInfo pi in GetIndexerProperties(baseType))
+            foreach (var pi in GetIndexerProperties(baseType))
             {
                 var p = pi.GetIndexParameters();
                 if (p.Length > 0)
@@ -637,7 +634,7 @@ namespace PSRule.Runtime.ObjectPath
             else
             {
                 var properties = baseType.GetProperties();
-                foreach (PropertyInfo pi in properties)
+                foreach (var pi in properties)
                 {
                     var p = pi.GetIndexParameters();
                     if (p.Length > 0)

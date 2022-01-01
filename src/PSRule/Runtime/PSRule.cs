@@ -194,10 +194,12 @@ namespace PSRule.Runtime
         /// </summary>
         public object[] GetPath(object sourceObject, string path)
         {
-            if (!ObjectHelper.GetPath(GetContext()?.Pipeline, sourceObject, path, false, out object[] value))
-                return Array.Empty<object>();
-
-            return value;
+            return (!ObjectHelper.GetPath(
+                bindingContext: GetContext()?.Pipeline, 
+                targetObject: sourceObject, 
+                path: path, 
+                caseSensitive: false, 
+                out object[] value)) ? Array.Empty<object>() : value;
         }
 
         /// <summary>
