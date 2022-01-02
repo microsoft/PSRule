@@ -1,0 +1,366 @@
+{% extends "main.html" %}
+
+<!-- Render hero under tabs -->
+{% block tabs %}
+{{ super() }}
+
+<!-- Additional styles for landing page -->
+<style>
+    /* Application header should be static for the landing page */
+    .md-header {
+        position: initial;
+    }
+
+    /* Remove spacing, as we cannot hide it completely */
+    .md-main__inner {
+        margin: 0;
+    }
+
+    /* Hide main content for now */
+    .md-content {
+        display: none;
+    }
+
+    /* Hide table of contents */
+    @media screen and (min-width: 60em) {
+        .md-sidebar--secondary {
+            display: none;
+        }
+    }
+
+    /* Hide navigation */
+    @media screen and (min-width: 76.25em) {
+        .md-sidebar--primary {
+            display: none;
+        }
+    }
+
+    .hero-container {
+        background-color: rgb(27, 31, 35);
+        box-sizing: border-box;
+        display: block;
+    }
+
+    .hero-content {
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+        align-items: end;
+        box-sizing: border-box;
+
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .section-block {
+        padding-top: 32px;
+        display: block;
+        box-sizing: border-box;
+        padding-left: 32px;
+        padding-right: 32px;
+        font-family: SegoeUI, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    }
+
+    .hero-image {
+        width: 41.6667%;
+        display: block;
+    }
+
+    .hero-block {
+        padding-top: 128px;
+        padding-bottom: 64px;
+        background-color: var(--md-primary-fg-color);
+    }
+
+    .hero-block h1 {
+        font-size: 84px;
+        color: #258ede;
+        font-weight: 500;
+        display: block;
+        margin: 0px 0px 8px 0px;
+        line-height: 1.5;
+    }
+
+    .hero-block h2 {
+        font-size: 48px;
+        color: rgb(219, 237, 255);
+        font-weight: 400;
+        display: block;
+        margin: 0px 0px 16px 0px;
+    }
+
+    .hero-block span {
+        font-size: 18px;
+        color: rgb(200, 225, 255);
+        display: block;
+        margin: 16px 0px 0px 0px;
+        line-height: 1.5;
+    }
+
+    .hero-block svg {
+        margin-right: 10px;
+    }
+
+    .closing-block svg {
+        margin-left: 10px;
+    }
+
+    .feature-block, .md-main {
+        background-color: rgb(219, 237, 255)
+    }
+
+    .feature-block h3 {
+        font-size: 24px;
+    }
+
+    .feature-block p {
+        font-size: 18px;
+    }
+
+    .closing-block {
+        background-color: rgb(200, 225, 255);
+    }
+
+    .closing-block h2 {
+        font-size: 32px;
+        font-weight: 600;
+        margin: 0px 0px 16px 0px;
+    }
+
+    .closing-block span {
+        font-size: 16px;
+        font-weight: 400;
+        margin: 0px 0px 0px 0px;
+    }
+
+    .flex-item {
+        width: 100%;
+    }
+
+    .flex-grid {
+        display: flex;
+        -webkit-box-align: stretch;
+        align-items: stretch;
+        flex-wrap: wrap;
+        justify-content: center;
+        -webkit-box-pack: center;
+    }
+
+    .mr-2 {
+        margin-right: 0.5rem !important;
+    }
+
+    .mt-4 {
+        margin-top: 24px!important
+    }
+
+    .hero-content .md-button--primary {
+        background-color: var(--md-accent-fg-color);
+        color: rgb(27, 31, 35);
+        border: .1rem solid var(--md-accent-fg-color);
+        box-shadow: 0 1px 3px rgb(0 0 0 / 25%), 0 4px 10px rgb(0 0 0 / 12%);
+    }
+
+    .hero-content .md-button--secondary {
+        background-color: transparent;
+        color: var(--md-accent-bg-color);
+        border: .1rem solid;
+        box-shadow: 0 1px 3px rgb(0 0 0 / 25%), 0 4px 10px rgb(0 0 0 / 12%);
+    }
+
+    .hero-content .md-action {
+        margin-bottom: 16px;
+    }
+
+    .md-maintainer {
+        margin-top: 128px;
+        padding-top: 32px;
+        padding-bottom: 32px;
+        border-radius: 0px;
+        border-width: 2px 0px 0px;
+        border-image: initial;
+        border-style: solid;
+        border-color: rgb(27, 31, 35);
+    }
+
+    .text-white {
+        color: #fff!important;
+    }
+
+    .link-arrow {
+        display: -webkit-inline-box;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        font-weight: 400;
+        position: relative;
+        padding-right: 18px;
+        margin-right: 24px;
+        font-size: 16px;
+        letter-spacing: 0.1em;
+    }
+
+    .tile-grid {
+        margin-left: -8px;
+        margin-right: -8px;
+    }
+
+    .tile {
+        -webkit-box-shadow: 0 2px 1px rgb(0 0 0 / 10%), 0 3px 8px rgb(0 0 0 / 13%);
+        box-shadow: 0 2px 1px rgb(0 0 0 / 10%), 0 3px 8px rgb(0 0 0 / 13%);
+        border-radius: 4px;
+        /* width: 33%; */
+        min-width: 300px;
+        padding: 36px 16px;
+        text-align: center;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        -webkit-transition: -webkit-box-shadow .4s ease;
+        transition: -webkit-box-shadow .4s ease;
+        transition: box-shadow .4s ease;
+        transition: box-shadow .4s ease,-webkit-box-shadow .4s ease;
+        background-color: white;
+    }
+
+    .tile>* {
+        max-width: 400px;
+    }
+
+    .tile h3 {
+        color: var(--md-accent-fg-color)
+    }
+
+    .tile svg {
+        max-width: 100px;
+        width: 40%;
+    }
+
+    .tile p {
+        height: 40px;
+    }
+
+    @media (min-width: 400px) {
+        .tile {
+            width: 100%;
+            /* padding: 48px 24px; */
+            margin-left: 8px;
+            margin-right: 8px;
+        }
+    }
+
+    @media (min-width: 500px) {
+        .tile {
+            width: calc(33% - 16px);
+            /* padding: 60px 30px; */
+            margin-bottom: 16px;
+            margin-left: 8px;
+            margin-right: 8px;
+        }
+    }
+
+
+    /* Hide table of contents */
+    @media screen and (min-width: 60em) {
+        .closing-block .flex-item {
+            width: 100%;
+        }
+
+        .hero-content .md-action {
+            margin-bottom: 0px;
+        }
+    }
+
+    @media screen and (min-width: 76.25em) {
+        .closing-block .flex-item {
+            width: 50%;
+        }
+    }
+</style>
+
+<section class="section-block hero-block">
+    <div class="hero-content md-grid">
+        <div display="flex" class="flex-grid">
+            <div class="flex-item">
+                <h1>PSRule</h1>
+                <h2 class="text-white">Extensible · Continuous · Consistency.</h2>
+                <span class="text-white">Build test and governance controls for Infrastructure as Code (IaC).</span>
+                <div>
+                    <a class="link-arrow text-white mt-4 md-icon" href="{{ page.next_page.url | url }}" title="{{ page.next_page.title | e }}">{% include ".icons/octicons/arrow-right-24.svg" %}Get started now</a>
+                    <br>
+                    <a class="link-arrow text-white mt-4 md-icon" href="{{ config.extra.local.repo_url }}" title="{{ config.extra.local.repo_name }}">{% include ".icons/octicons/arrow-right-24.svg" %}Contribute on GitHub</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section-block feature-block">
+    <div class="md-grid">
+        <div display="flex" class="flex-grid tile-grid">
+            <a class="tile" href="{{ 'features/' | url }}#devops" target="_self" rel="noopener">
+                <div>
+                    {% include ".icons/octicons/infinity-24.svg" %}
+                    <h3 class="h4 text-brand font-weight-600 mb-3">DevOps</h3>
+                    <p>Built to support DevOps culture and tools.</p>
+                </div>
+            </a>
+            <a class="tile" href="{{ 'features/' | url }}#extensible" target="_self" rel="noopener">
+                <div>
+                    {% include ".icons/octicons/workflow-24.svg" %}
+                    <h3 class="h4 text-brand font-weight-600 mb-3">Extensible</h3>
+                    <p>Define rules using YAML, JSON, or PowerShell format.</p>
+                </div>
+            </a>
+            <a class="tile" href="{{ 'features/' | url }}#reusable" target="_self" rel="noopener">
+                <div>
+                    {% include ".icons/octicons/thumbsup-24.svg" %}
+                    <h3 class="h4 text-brand font-weight-600 mb-3">Reusable</h3>
+                    <p>Reuse and share rules across teams or organizations.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+<!-- Content -->
+{% block content %}{% endblock %}
+
+<!-- Application footer -->
+{% block footer %}
+<section class="section-block closing-block">
+    <div class="md-grid">
+        <h2>Community resources</h2>
+        <div display="flex" class="flex-grid">
+            <div class="flex-item">
+                <span>PSRule is open-sourced on GitHub.
+                    Contributions and feedback are welcome!</span>
+            </div>
+            <div class="flex-item">
+                <a class="link-arrow md-icon" href="{{ config.extra.local.repo_issue }}" title="{{ page.next_page.title | e }}">Report an issue{% include ".icons/octicons/arrow-up-right-24.svg" %}</a>
+                <br>
+                <a class="link-arrow md-icon" href="{{ config.extra.local.repo_discussion }}" title="{{ page.next_page.title | e }}">Start a discussion{% include ".icons/octicons/arrow-up-right-24.svg" %}</a>
+                <br>
+            </div>
+        </div>
+    </div>
+    <div class="md-grid md-maintainer">
+        <span>Built with ☁️ and powered by Open Source</span>
+    </div>
+</section>
+{% endblock %}

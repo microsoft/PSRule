@@ -1,0 +1,38 @@
+#
+# Build documentation site
+#
+
+# NOTES:
+# This workflow generates and published the documentation site https://microsoft.github.io/PSRule/.
+
+name: Build and deploy docs
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+
+      - uses: actions/checkout@v2.4.0
+
+      - name: Setup Python
+        uses: actions/setup-python@v2.3.1
+        with:
+          python-version: '3.9'
+          architecture: 'x64'
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install wheel
+          python3 -m pip install -r requirements-docs.txt
+
+      - name: Build site
+        run: |
+          mike set-default stable
+          mike deploy --push --update-aliases v1 stable
