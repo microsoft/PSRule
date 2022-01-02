@@ -44,8 +44,8 @@ nav:
     - License and contributing: license-contributing.md
     - Releases:
       - Change log:
-        - v1: 'CHANGELOG-v1.md'
-        - v0: 'CHANGELOG-v0.md'
+        - v1: CHANGELOG-v1.md
+        - v0: CHANGELOG-v0.md
       - Upgrade guide: upgrade-notes.md
     - Support: support.md
   - Reference:
@@ -117,7 +117,7 @@ extra:
       link: https://github.com/microsoft/PSRule/
 
   local:
-    social_preview: https://repository-images.githubusercontent.com/317488850/548f4800-8afc-11eb-98b1-9fb4c897d1d4
+    social_preview: https://repository-images.githubusercontent.com/125832556/d6685d9f-ba70-44a1-b11f-6534831143d1
     repo_issue: https://github.com/microsoft/PSRule/issues
     repo_discussion: https://github.com/microsoft/PSRule/discussions
 
