@@ -40,4 +40,6 @@ jobs:
           python3 -m pip install -r requirements-docs.txt
 
       - name: Deploy site
-        run: mike deploy --push --update-aliases v1 stable
+        run: |
+          git fetch origin gh-pages --depth=1
+          mike deploy --push --update-aliases v1 stable
