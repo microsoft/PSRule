@@ -197,4 +197,4 @@ Rule configuration is a key/ value pair.
 
 TBA
 
-[about_PSRule_Options]: ../concpets/PSRule/en-US/about_PSRule_Options.md
+[about_PSRule_Options]: ../concepts/PSRule/en-US/about_PSRule_Options.md
