@@ -33,6 +33,4 @@ jobs:
           python3 -m pip install -r requirements-docs.txt
 
       - name: Build site
-        run: |
-          mike set-default stable
-          mike deploy --push --update-aliases v1 stable
+        run: mike deploy --push --update-aliases v1 stable
