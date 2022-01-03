@@ -1,0 +1,14 @@
+
+---
+# Synopsis: An example rule to require TLS.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'Local.YAML.RequireTLS'
+spec:
+  condition:
+    allOf:
+    - field: 'configure.supportsHttpsTrafficOnly'
+      equals: true
+    - field: 'configure.minTLSVersion'
+      equals: '1.2'

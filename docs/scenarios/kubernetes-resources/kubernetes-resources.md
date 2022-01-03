@@ -2,13 +2,13 @@
 
 This is an example of how PSRule can be used to validate Kubernetes resources to match an internal metadata and configuration standard.
 
-> [!NOTE]
-> A pre-built module to validate Kubernetes resources already exists.
-> This scenario demonstrates the process and features of PSRule for illustration purposes.
->
-> Consider using or contributing these pre-built rule modules instead:
->
-> - [PSRule.Rules.Kubernetes]
+!!! Note
+    A pre-built module to validate Kubernetes resources already exists.
+    This scenario demonstrates the process and features of PSRule for illustration purposes.
+
+    Consider using or contributing these pre-built rule modules instead:
+
+    - [PSRule.Rules.Kubernetes]
 
 This scenario covers the following:
 
