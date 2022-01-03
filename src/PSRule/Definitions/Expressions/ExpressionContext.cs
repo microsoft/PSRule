@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using PSRule.Runtime;
+using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Definitions.Expressions
 {
@@ -22,28 +23,28 @@ namespace PSRule.Definitions.Expressions
 
     internal sealed class ExpressionContext : IExpressionContext, IBindingContext
     {
-        private readonly Dictionary<string, NameToken> _NameTokenCache;
+        private readonly Dictionary<string, PathExpression> _NameTokenCache;
 
         private List<string> _Reason;
 
         internal ExpressionContext(string languageScope)
         {
             LanguageScope = languageScope;
-            _NameTokenCache = new Dictionary<string, NameToken>();
+            _NameTokenCache = new Dictionary<string, PathExpression>();
         }
 
         public string LanguageScope { get; }
 
         [DebuggerStepThrough]
-        void IBindingContext.CacheNameToken(string expression, NameToken nameToken)
+        void IBindingContext.CachePathExpression(string path, PathExpression expression)
         {
-            _NameTokenCache[expression] = nameToken;
+            _NameTokenCache[path] = expression;
         }
 
         [DebuggerStepThrough]
-        bool IBindingContext.GetNameToken(string expression, out NameToken nameToken)
+        bool IBindingContext.GetPathExpression(string path, out PathExpression expression)
         {
-            return _NameTokenCache.TryGetValue(expression, out nameToken);
+            return _NameTokenCache.TryGetValue(path, out expression);
         }
 
         internal void Debug(string message, params object[] args)

@@ -226,7 +226,7 @@ namespace PSRule.Runtime
             result = Pass();
             for (var i = 0; field != null && i < field.Length; i++)
             {
-                if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field[i], caseSensitive: caseSensitive, value: out _))
+                if (ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, path: field[i], caseSensitive: caseSensitive, value: out object _))
                 {
                     if (result.Result)
                         result = Fail();
@@ -251,7 +251,7 @@ namespace PSRule.Runtime
             var missing = 0;
             for (var i = 0; field != null && i < field.Length; i++)
             {
-                if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field[i], caseSensitive: caseSensitive, value: out _))
+                if (!ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, path: field[i], caseSensitive: caseSensitive, value: out object _))
                 {
                     result.AddReason(ReasonStrings.NotHasField, field[i]);
                     missing++;
@@ -271,7 +271,7 @@ namespace PSRule.Runtime
                 return result;
 
             // Assert
-            if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue))
+            if (!ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, path: field, caseSensitive: false, value: out object fieldValue))
                 return Fail(ReasonStrings.NotHasField, field);
             else if (ExpressionHelpers.NullOrEmpty(fieldValue))
                 return Fail(ReasonStrings.NotHasFieldValue, field);
@@ -292,7 +292,7 @@ namespace PSRule.Runtime
                 return result;
 
             // Assert
-            if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue)
+            if (!ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, path: field, caseSensitive: false, value: out object fieldValue)
                 || ExpressionHelpers.Equal(defaultValue, fieldValue, caseSensitive: false))
                 return Pass();
 
@@ -309,7 +309,7 @@ namespace PSRule.Runtime
                 GuardNullOrEmptyParam(field, nameof(field), out result))
                 return result;
 
-            ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue);
+            ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, path: field, caseSensitive: false, value: out object fieldValue);
             return fieldValue == null ? Pass() : Fail(ReasonStrings.NotNull, field);
         }
 
@@ -338,7 +338,7 @@ namespace PSRule.Runtime
                 return result;
 
             // Assert
-            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: false, value: out object fieldValue) && !ExpressionHelpers.NullOrEmpty(fieldValue))
+            if (ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, path: field, caseSensitive: false, value: out object fieldValue) && !ExpressionHelpers.NullOrEmpty(fieldValue))
                 return Fail(ReasonStrings.NullOrEmpty, field);
 
             return Pass();
@@ -724,7 +724,7 @@ namespace PSRule.Runtime
                 GuardNullParam(values, nameof(values), out result))
                 return result;
 
-            if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: caseSensitive, value: out object fieldValue))
+            if (!ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, path: field, caseSensitive: caseSensitive, value: out object fieldValue))
                 return Pass();
 
             for (var i = 0; values != null && i < values.Length; i++)
@@ -820,7 +820,7 @@ namespace PSRule.Runtime
                 GuardNullOrEmptyParam(field, nameof(field), out result))
                 return result;
 
-            if (!ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: caseSensitive, value: out object fieldValue))
+            if (!ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, path: field, caseSensitive: caseSensitive, value: out object fieldValue))
                 return Pass();
 
             if (GuardString(fieldValue, out string value, out result))
@@ -1008,7 +1008,7 @@ namespace PSRule.Runtime
         private bool GuardField(PSObject inputObject, string field, bool caseSensitive, out object fieldValue, out AssertResult result)
         {
             result = null;
-            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, name: field, caseSensitive: caseSensitive, value: out fieldValue))
+            if (ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, path: field, caseSensitive: caseSensitive, value: out fieldValue))
                 return false;
 
             result = Fail(ReasonStrings.NotHasField, field);

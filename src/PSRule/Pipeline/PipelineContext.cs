@@ -16,6 +16,7 @@ using PSRule.Definitions.ModuleConfigs;
 using PSRule.Definitions.Selectors;
 using PSRule.Host;
 using PSRule.Runtime;
+using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Pipeline
 {
@@ -32,7 +33,7 @@ namespace PSRule.Pipeline
         // Configuration parameters
         private readonly IList<ResourceRef> _Unresolved;
         private readonly LanguageMode _LanguageMode;
-        private readonly Dictionary<string, NameToken> _NameTokenCache;
+        private readonly Dictionary<string, PathExpression> _PathExpressionCache;
         private readonly List<ResourceIssue> _TrackedIssues;
 
         // Objects kept for caching and disposal
@@ -78,7 +79,7 @@ namespace PSRule.Pipeline
             BindTargetType = bindTargetType;
             BindField = bindField;
             _LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode.Value;
-            _NameTokenCache = new Dictionary<string, NameToken>();
+            _PathExpressionCache = new Dictionary<string, PathExpression>();
             LocalizedDataCache = new Dictionary<string, Hashtable>();
             ExpressionCache = new Dictionary<string, object>();
             ContentCache = new Dictionary<string, PSObject[]>();
@@ -230,20 +231,14 @@ namespace PSRule.Pipeline
 
         #region IBindingContext
 
-        public bool GetNameToken(string expression, out NameToken nameToken)
+        public bool GetPathExpression(string path, out PathExpression expression)
         {
-            if (!_NameTokenCache.ContainsKey(expression))
-            {
-                nameToken = null;
-                return false;
-            }
-            nameToken = _NameTokenCache[expression];
-            return true;
+            return _PathExpressionCache.TryGetValue(path, out expression);
         }
 
-        public void CacheNameToken(string expression, NameToken nameToken)
+        public void CachePathExpression(string path, PathExpression expression)
         {
-            _NameTokenCache[expression] = nameToken;
+            _PathExpressionCache[path] = expression;
         }
 
         #endregion IBindingContext
@@ -267,7 +262,7 @@ namespace PSRule.Pipeline
                     if (_Runspace != null)
                         _Runspace.Dispose();
 
-                    _NameTokenCache.Clear();
+                    _PathExpressionCache.Clear();
                     LocalizedDataCache.Clear();
                     ExpressionCache.Clear();
                     ContentCache.Clear();

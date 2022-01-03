@@ -194,6 +194,15 @@ Rule 'VariableContextVariable' {
     # Get first content object
     $first = $PSRule.GetContentFirstOrDefault((Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath 'ObjectFromFile.json')));
     $Assert.HasField($first, 'Spec.Properties');
+
+    # Get object path
+    $firstObject = $PSRule.GetContentFirstOrDefault((Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath 'ObjectFromFile3.json')));
+    $categories = $PSRule.GetPath($firstObject, 'resources[?@.type==''diagnosticSettings''].properties.logs[?@.enabled==true].category');
+    $Assert.Subset($categories, '.', @(
+        'audit'
+        'debug'
+        'firewall'
+    ));
 }
 
 # Synopsis: Test $Rule automatic variables

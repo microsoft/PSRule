@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 #if BENCHMARK
@@ -82,8 +82,6 @@ namespace PSRule.Benchmark
             {
                 cmd.OnExecute(() =>
                 {
-                    Console.WriteLine("Press ENTER to start.");
-                    Console.ReadLine();
                     RunDebug();
                     return 0;
                 });
@@ -94,6 +92,9 @@ namespace PSRule.Benchmark
         {
             var profile = new PSRule();
             profile.Prepare();
+
+            Console.WriteLine("Press ENTER to start.");
+            Console.ReadLine();
 
             ProfileBlock();
             for (var i = 0; i < DebugIterations; i++)
@@ -134,6 +135,18 @@ namespace PSRule.Benchmark
             ProfileBlock();
             for (var i = 0; i < DebugIterations; i++)
                 profile.AssertHasFieldValue();
+
+            ProfileBlock();
+            for (var i = 0; i < DebugIterations; i++)
+                profile.PathTokenize();
+
+            ProfileBlock();
+            for (var i = 0; i < DebugIterations; i++)
+                profile.PathExpressionBuild();
+
+            ProfileBlock();
+            for (var i = 0; i < DebugIterations; i++)
+                profile.PathExpressionGet();
         }
 
         [DebuggerStepThrough]

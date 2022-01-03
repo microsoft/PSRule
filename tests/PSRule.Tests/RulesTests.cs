@@ -1,10 +1,11 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using Newtonsoft.Json;
 using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Pipeline;
@@ -94,6 +95,31 @@ namespace PSRule
             Assert.Null(withSelector.Condition.If());
         }
 
+        [Fact]
+        public void RuleWithObjectPath()
+        {
+            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContext(), null), new TestWriter(GetOption()));
+            context.Init(GetSource());
+            context.Begin();
+            ImportSelectors(context);
+            var yamlObjectPath = GetRuleVisitor(context, "YamlObjectPath");
+            context.EnterSourceScope(yamlObjectPath.Source);
+
+            var actual = GetObject(GetSourcePath("ObjectFromFile3.json"));
+
+            context.EnterTargetObject(new TargetObject(new PSObject(actual[0])));
+            context.EnterRuleBlock(yamlObjectPath);
+            Assert.True(yamlObjectPath.Condition.If().AllOf());
+
+            context.EnterTargetObject(new TargetObject(new PSObject(actual[1])));
+            context.EnterRuleBlock(yamlObjectPath);
+            Assert.False(yamlObjectPath.Condition.If().AllOf());
+
+            context.EnterTargetObject(new TargetObject(new PSObject(actual[2])));
+            context.EnterRuleBlock(yamlObjectPath);
+            Assert.True(yamlObjectPath.Condition.If().AllOf());
+        }
+
         private static PSRuleOption GetOption()
         {
             return new PSRuleOption();
@@ -113,6 +139,11 @@ namespace PSRule
                 result.Properties.Add(new PSNoteProperty(properties[i].name, properties[i].value));
 
             return new TargetObject(result);
+        }
+
+        private static object[] GetObject(string path)
+        {
+            return JsonConvert.DeserializeObject<object[]>(File.ReadAllText(path));
         }
 
         private static RuleBlock GetRuleVisitor(RunspaceContext context, string name)

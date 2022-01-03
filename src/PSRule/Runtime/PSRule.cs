@@ -162,7 +162,7 @@ namespace PSRule.Runtime
             var result = new List<PSObject>();
             for (var i = 0; i < content.Length; i++)
             {
-                if (ObjectHelper.GetField(content[i], field, false, out object value) && value != null)
+                if (ObjectHelper.GetPath(content[i], field, false, out object value) && value != null)
                 {
                     if (value is IEnumerable evalue)
                     {
@@ -187,6 +187,19 @@ namespace PSRule.Runtime
                 return null;
 
             return content[0];
+        }
+
+        /// <summary>
+        /// Evalute an object path expression and returns the resulting objects.
+        /// </summary>
+        public object[] GetPath(object sourceObject, string path)
+        {
+            return (!ObjectHelper.GetPath(
+                bindingContext: GetContext()?.Pipeline,
+                targetObject: sourceObject,
+                path: path,
+                caseSensitive: false,
+                out object[] value)) ? Array.Empty<object>() : value;
         }
 
         /// <summary>
