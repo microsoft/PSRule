@@ -21,6 +21,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2.4.0
+        with:
+          fetch-depth: 0
 
       - name: Configure
         run: |
@@ -40,6 +42,4 @@ jobs:
           python3 -m pip install -r requirements-docs.txt
 
       - name: Deploy site
-        run: |
-          git fetch origin gh-pages --depth=1
-          mike deploy --push --update-aliases v1 stable
+        run: mike deploy --push --update-aliases v1 stable

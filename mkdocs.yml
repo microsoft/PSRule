@@ -12,6 +12,7 @@ extra_css:
 theme:
   language: en
   name: material
+  custom_dir: overrides
   font:
     text: Roboto
   palette:
