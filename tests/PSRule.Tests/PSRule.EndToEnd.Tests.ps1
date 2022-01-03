@@ -6,9 +6,7 @@
 #
 
 [CmdletBinding()]
-param (
-
-)
+param ()
 
 BeforeAll {
     # Setup error handling
@@ -186,7 +184,7 @@ Describe 'Scenarios -- kubernetes-resources' -Tag 'EndToEnd','kubernetes-resourc
 
 Describe 'Scenarios -- rule-module' -Tag 'EndToEnd', 'rule-module' {
     BeforeAll {
-        $scenarioPath = Join-Path -Path $rootPath -ChildPath docs/scenarios/rule-module;
+        $scenarioPath = Join-Path -Path $rootPath -ChildPath docs/authoring/packaging-rules;
         $inputPath = Join-Path -Path $scenarioPath -ChildPath 'resources.json';
     }
 
