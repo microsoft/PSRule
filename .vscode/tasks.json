@@ -113,6 +113,17 @@
                 "clear": true,
                 "panel": "dedicated"
             }
+        },
+        {
+            "label": "Serve docs",
+            "detail": "Build and run documentation site locally.",
+            "type": "shell",
+            "command": "mkdocs serve",
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true,
+                "panel": "dedicated"
+            }
         }
     ],
     "inputs": [
