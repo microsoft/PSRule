@@ -382,7 +382,7 @@ Module file structure:
 
 ## More information
 
-- [kubernetes.Rule.ps1](kubernetes.Rule.ps1) - An example rule for validating name label.
-- [metadata.Name](en-US/metadata.Name.md) - An example markdown documentation file.
+- [kubernetes.Rule.ps1](writing-rule-help/kubernetes.Rule.ps1) - An example rule for validating name label.
+- [metadata.Name](writing-rule-help/en-US/metadata.Name.md) - An example markdown documentation file.
 
 [extension]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview

@@ -1,81 +1,130 @@
-# Install instructions
+---
+author: BernieWhite
+---
 
-## Prerequisites
+# Installation
 
-- Windows PowerShell 5.1 with .NET Framework 4.7.2+ or
-- PowerShell 7.2 or greater on Windows, MacOS, and Linux
+PSRule supports running within continuous integration (CI) systems or locally.
+It is shipped as a PowerShell module which makes it easy to install and distribute updates.
 
-For a list of platforms that PowerShell 7.2 is supported on [see][get-powershell].
+!!! Tip
+    PSRule provides native integration to popular CI systems such as GitHub Actions and Azure Pipelines.
+    If you are using a different CI system you can use the local install to run on MacOS,
+    Linux, and Windows worker nodes.
 
-## Getting the module
+## With GitHub Actions
 
-Install from [PowerShell Gallery][module] for all users (requires permissions):
+[:octicons-workflow-24: GitHub Action][1]
 
-```powershell
-# Install PSRule module
-Install-Module -Name 'PSRule' -Repository PSGallery;
-```
-
-Install from [PowerShell Gallery][module] for current user only:
-
-```powershell
-# Install PSRule module
-Install-Module -Name 'PSRule' -Repository PSGallery -Scope CurrentUser;
-```
-
-Save for offline use from PowerShell Gallery:
-
-```powershell
-# Save PSRule module, in the .\modules directory
-Save-Module -Name 'PSRule' -Repository PSGallery -Path '.\modules';
-```
-
-> For pre-release versions the `-AllowPrerelease` switch must be added when calling `Install-Module` or `Save-Module`.
->
-> To install pre-release module versions, upgrading to the latest version of _PowerShellGet_ may be required.
-To do this use:
->
-> `Install-Module -Name PowerShellGet -Repository PSGallery -Scope CurrentUser -Force`
-
-## Getting the extension for Visual Studio Code
-
-Install the [latest release][extension-vscode] from the Visual Studio Marketplace.
-Within Visual Studio Code (VSCode) search for `PSRule` in the extensions pane.
-
-Install by the command line:
-
-```text
-code --install-extension bewhite.psrule-vscode-preview
-```
-
-> NOTE: If you are using the Insiders build, the command will be `code-insiders`.
-
-For detailed instructions, follow the steps in the [Visual Studio Code documentation][vscode-ext-gallery].
-
-## Getting the extension for Azure Pipelines
-
-Install the [latest release][extension-pipelines] from the Visual Studio Marketplace.
-For detailed instructions see [Install extensions][pipelines-install].
-
-If you don't have permissions to install extensions within your Azure DevOps organization, you can request it to be installed by an admin instead.
-
-## Getting the GitHub action
-
-Add the [latest version][extension-github] from the GitHub Marketplace to a workflow.
+Install and use PSRule with GitHub Actions by referencing the `Microsoft/ps-rule` action.
 
 ```yaml
-- name: Run PSRule analysis
+- name: Analyze Azure template files
   uses: Microsoft/ps-rule@v1.10.0
 ```
 
-For detailed instructions and change log see the [action details][extension-github].
+This will automatically install compatible versions of all dependencies.
 
-## Building from source
+  [1]: https://github.com/marketplace/actions/psrule
 
-To build this module from source run `./build.ps1`.
+## With Azure Pipelines
+
+[:octicons-workflow-24: Extension][2]
+
+Install and use PSRule with Azure Pipeline by using extension tasks.
+Install the extension from the marketplace, then use the `ps-rule-assert` task in pipeline steps.
+
+```yaml
+- task: ps-rule-assert@0
+  displayName: Analyze Azure template files
+  inputs:
+    inputType: repository
+```
+
+This will automatically install compatible versions of all dependencies.
+
+  [2]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
+
+## Installing locally
+
+PSRule can be installed locally from the PowerShell Gallery using PowerShell.
+You can also use this option to install on CI workers that are not natively supported.
+
+The following platforms are supported:
+
+- Windows PowerShell 5.1 with .NET Framework 4.7.2 or greater.
+- PowerShell 7.1 or greater on MacOS, Linux, and Windows.
+
+### Installing PowerShell
+
+PowerShell 7.x can be installed on MacOS, Linux, and Windows but is not installed by default.
+For a list of platforms that PowerShell 7.1 is supported on and install instructions see [Get PowerShell][3].
+
+  [3]: https://github.com/PowerShell/PowerShell#get-powershell
+
+### Getting the modules
+
+[:octicons-download-24: Module][module]
+
+PSRule can be installed or updated from the PowerShell Gallery.
+Use the following command line examples from a PowerShell terminal to install or update PSRule.
+
+=== "For the current user"
+    To install PSRule for the current user use:
+
+    ```powershell
+    Install-Module -Name 'PSRule' -Repository PSGallery -Scope CurrentUser
+    ```
+
+    To update PSRule for the current user use:
+
+    ```powershell
+    Update-Module -Name 'PSRule' -Repository PSGallery -Scope CurrentUser
+    ```
+
+=== "For all users"
+    To install PSRule for all users (requires admin/ root permissions) use:
+
+    ```powershell
+    Install-Module -Name 'PSRule' -Repository PSGallery -Scope AllUsers
+    ```
+
+    To update PSRule for all users (requires admin/ root permissions) use:
+
+    ```powershell
+    Update-Module -Name 'PSRule' -Repository PSGallery -Scope AllUsers
+    ```
+
+### Pre-release versions
+
+To use a pre-release version of PSRule add the `-AllowPrerelease` switch when calling `Install-Module`,
+`Update-Module`, or `Save-Module` cmdlets.
+
+!!! tip
+    To install pre-release module versions, the latest version of _PowerShellGet_ may be required.
+
+    ```powershell
+    # Install the latest PowerShellGet version
+    Install-Module -Name PowerShellGet -Repository PSGallery -Scope CurrentUser -Force
+    ```
+
+### Building from source
+
+[:octicons-file-code-24: Source][5]
+
+PSRule is provided as open source on GitHub.
+To build PSRule from source code:
+
+1. Clone the GitHub [repository][5].
+2. Run `./build.ps1` from a PowerShell terminal in the cloned path.
+
 This build script will compile the module and documentation then output the result into `out/modules/PSRule`.
 
-The following PowerShell modules will be automatically downloaded if the required versions are not present:
+  [5]: https://github.com/microsoft/PSRule.git
+
+#### Development dependencies
+
+The following PowerShell modules will be automatically install if the required versions are not present:
 
 - PlatyPS
 - Pester
@@ -84,27 +133,42 @@ The following PowerShell modules will be automatically downloaded if the require
 - PackageManagement
 - InvokeBuild
 
-These additional modules are only required for building PSRule and are not required for running PSRule.
-
-If you are on a network that does not permit Internet access to the PowerShell Gallery,
-download these modules on an alternative device that has access.
-The following script can be used to download the required modules to an alternative device.
-After downloading the modules copy the module directories to devices with restricted Internet access.
-
-```powershell
-# Save modules, in the .\modules directory
-Save-Module -Name PlatyPS, Pester, PSScriptAnalyzer, PowerShellGet, PackageManagement, InvokeBuild -Repository PSGallery -Path '.\modules';
-```
+These additional modules are only required for building PSRule.
 
 Additionally .NET Core SDK v3.1 is required.
 .NET Core will not be automatically downloaded and installed.
 To download and install the latest SDK see [Download .NET Core 3.1][dotnet].
 
+### Limited access networks
+
+If you are on a network that does not permit Internet access to the PowerShell Gallery,
+download the required PowerShell modules on an alternative device that has access.
+PowerShell provides the `Save-Module` cmdlet that can be run from a PowerShell terminal to do this.
+
+The following command lines can be used to download the required modules using a PowerShell terminal.
+After downloading the modules, copy the module directories to devices with restricted Internet access.
+
+=== "Runtime modules"
+    To save PSRule for offline use:
+
+    ```powershell
+    Save-Module -Name 'PSRule' -Path '.\modules'
+    ```
+
+    This will save PSRule into the `modules` sub-directory.
+
+=== "Development modules"
+    To save PSRule development module dependencies for offline use:
+
+    ```powershell
+    $modules = @('PlatyPS', 'Pester', 'PSScriptAnalyzer', 'PowerShellGet',
+    'PackageManagement', 'InvokeBuild')
+    Save-Module -Name $modules -Repository PSGallery -Path '.\modules';
+    ```
+
+    This will save required developments dependencies into the `modules` sub-directory.
+
+*[CI]: continuous integration
+
 [module]: https://www.powershellgallery.com/packages/PSRule
-[get-powershell]: https://github.com/PowerShell/PowerShell#get-powershell
 [dotnet]: https://dotnet.microsoft.com/download/dotnet-core/3.1
-[extension-vscode]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
-[extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
-[extension-github]: https://github.com/marketplace/actions/psrule
-[vscode-ext-gallery]: https://code.visualstudio.com/docs/editor/extension-gallery
-[pipelines-install]: https://docs.microsoft.com/en-us/azure/devops/marketplace/install-extension?view=azure-devops&tabs=browser
