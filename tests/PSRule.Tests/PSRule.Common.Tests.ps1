@@ -1140,7 +1140,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Detail' {
             It 'From Parameter - Has warnings' {
-                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -q $True -OutputAs Detail;
+                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $True -OutputAs Detail;
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
