@@ -19,6 +19,8 @@ What's changed since v1.11.0:
     - Array members can be filtered and enumerated using object path expressions.
     - Object path expressions can be used in YAML, JSON, and PowerShell rules and selectors.
     - See [about_PSRule_Assert] for details.
+  - Improve tracking of suppressed objects. [#794](https://github.com/microsoft/PSRule/issues/794)
+    - Added `Execution.SuppressedRuleWarning` option to output warning for suppressed rules.
 
 ## v1.11.0
 
