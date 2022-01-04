@@ -1185,6 +1185,11 @@ function New-PSRuleOption {
         [Alias('ExecutionNotProcessedWarning')]
         [System.Boolean]$NotProcessedWarning = $True,
 
+        # Sets the Execution.SuppressedRuleWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionSuppressedRuleWarning')]
+        [System.Boolean]$SuppressedRuleWarning = $True,
+
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
         [String[]]$IncludeModule,
@@ -1431,6 +1436,11 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionNotProcessedWarning')]
         [System.Boolean]$NotProcessedWarning = $True,
+
+        # Sets the Execution.SuppressedRuleWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionSuppressedRuleWarning')]
+        [System.Boolean]$SuppressedRuleWarning = $True,
 
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
@@ -2111,6 +2121,11 @@ function SetOptions {
         [Alias('ExecutionNotProcessedWarning')]
         [System.Boolean]$NotProcessedWarning = $True,
 
+        # Sets the Execution.SuppressedRuleWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionSuppressedRuleWarning')]
+        [System.Boolean]$SuppressedRuleWarning = $True,
+
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
         [String[]]$IncludeModule,
@@ -2267,6 +2282,11 @@ function SetOptions {
         # Sets option Execution.NotProcessedWarning
         if ($PSBoundParameters.ContainsKey('NotProcessedWarning')) {
             $Option.Execution.NotProcessedWarning = $NotProcessedWarning;
+        }
+
+        # Sets option Execution.SuppressedRuleWarning
+        if ($PSBoundParameters.ContainsKey('SuppressedRuleWarning')) {
+            $Option.Execution.SuppressedRuleWarning = $SuppressedRuleWarning;
         }
 
         # Sets option Include.Module

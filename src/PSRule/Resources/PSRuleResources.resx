@@ -246,6 +246,12 @@
   <data name="RuleInconclusive" xml:space="preserve">
     <value>Inconclusive result reported for '{1}' @{0}.</value>
   </data>
+  <data name="RuleSuppressed" xml:space="preserve">
+    <value>Rule '{0}' was suppressed for '{1}'.</value>
+  </data>
+  <data name="RuleCountSuppressed" xml:space="preserve">
+    <value>{0} rule/s were suppressed for '{1}'.</value>
+  </data>
   <data name="RuleNotFound" xml:space="preserve">
     <value>Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.</value>
   </data>

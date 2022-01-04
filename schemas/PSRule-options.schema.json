@@ -135,6 +135,13 @@
                     "description": "Enable or disable warnings for objects that are not processed by any rule. The default is true.",
                     "markdownDescription": "Enable or disable warnings for objects that are not processed by any rule. The default is `true`. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#executionnotprocessedwarning)",
                     "default": true
+                },
+                "suppressedRuleWarning": {
+                    "type": "boolean",
+                    "title": "Warn on suppressed rules",
+                    "description": "Enable for disable warnings for suppressed rules. The default is `true`.",
+                    "markdownDescription": "Enable for disable warnings for suppressed rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#executionsuppressedrulewarning)",
+                    "default": true
                 }
             },
             "additionalProperties": false
