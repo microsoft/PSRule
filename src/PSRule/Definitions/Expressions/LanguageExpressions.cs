@@ -1076,10 +1076,7 @@ namespace PSRule.Definitions.Expressions
         /// </summary>
         private static bool TryFieldNotExists(ExpressionContext context, object o, LanguageExpression.PropertyBag properties)
         {
-            if (!properties.TryGetString(FIELD, out string field))
-                return false;
-
-            return !ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object _);
+            return properties.TryGetString(FIELD, out var field) && !ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object _);
         }
 
         private static bool TryOperand(ExpressionContext context, string name, object o, LanguageExpression.PropertyBag properties, out IOperand operand)

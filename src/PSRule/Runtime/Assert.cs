@@ -291,11 +291,15 @@ namespace PSRule.Runtime
                 return result;
 
             // Assert
-            if (!ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: inputObject, path: field, caseSensitive: false, value: out object fieldValue)
-                || ExpressionHelpers.Equal(defaultValue, fieldValue, caseSensitive: false))
-                return Pass();
-
-            return Fail(ReasonStrings.HasExpectedFieldValue, field, fieldValue);
+            return !ObjectHelper.GetPath(
+                bindingContext: PipelineContext.CurrentThread,
+                targetObject: inputObject,
+                path: field,
+                caseSensitive: false,
+                value: out object fieldValue)
+                || ExpressionHelpers.Equal(defaultValue, fieldValue, caseSensitive: false)
+                ? Pass()
+                : Fail(ReasonStrings.HasExpectedFieldValue, field, fieldValue);
         }
 
         /// <summary>

@@ -33,7 +33,7 @@ namespace PSRule
 
         public static string ValueAsString(this PSObject o, string propertyName, bool caseSensitive)
         {
-            return ObjectHelper.GetPath(o, propertyName, caseSensitive, out object value) && value != null ? value.ToString() : null;
+            return ObjectHelper.GetPath(o, propertyName, caseSensitive, out var value) && value != null ? value.ToString() : null;
         }
 
         public static bool HasProperty(this PSObject o, string propertyName)

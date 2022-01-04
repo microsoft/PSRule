@@ -48,10 +48,7 @@ namespace PSRule.Rules
 
         internal bool Match(string name, ResourceTags tag)
         {
-            if (IsExcluded(name))
-                return false;
-
-            return IsIncluded(name, tag);
+            return !IsExcluded(name) && IsIncluded(name, tag);
         }
 
         /// <summary>
