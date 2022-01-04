@@ -33,12 +33,13 @@ namespace PSRule.Definitions.Expressions
 
         public LanguageExpression CreateInstance(SourceFile source, LanguageExpression.PropertyBag properties)
         {
-            return Type switch
-            {
-                LanguageExpressionType.Operator => new LanguageOperator(this),
-                LanguageExpressionType.Condition => new LanguageCondition(this, properties),
-                _ => null
-            };
+            if (Type == LanguageExpressionType.Operator)
+                return new LanguageOperator(this);
+
+            if (Type == LanguageExpressionType.Condition)
+                return new LanguageCondition(this, properties);
+
+            return null;
         }
     }
 

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Management.Automation;
 using System.Reflection;
@@ -66,14 +67,27 @@ namespace PSRule.Pipeline
 
             private static IAssertFormatter GetFormatter(OutputStyle style, Source[] source, PipelineWriter inner, PSRuleOption option)
             {
-                return style switch
+                if (style == OutputStyle.AzurePipelines)
                 {
-                    OutputStyle.AzurePipelines => new AzurePipelinesFormatter(source, inner, option),
-                    OutputStyle.GitHubActions => new GitHubActionsFormatter(source, inner, option),
-                    OutputStyle.VisualStudioCode => new VisualStudioCodeFormatter(source, inner, option),
-                    OutputStyle.Plain => new PlainFormatter(source, inner, option),
-                    _ => new ClientFormatter(source, inner, option),
-                };
+                    return new AzurePipelinesFormatter(source, inner, option);
+                }
+
+                if (style == OutputStyle.GitHubActions)
+                {
+                    return new GitHubActionsFormatter(source, inner, option);
+                }
+
+                if (style == OutputStyle.VisualStudioCode)
+                {
+                    return new VisualStudioCodeFormatter(source, inner, option);
+                }
+
+                if (style == OutputStyle.Plain)
+                {
+                    return new PlainFormatter(source, inner, option);
+                }
+
+                return new ClientFormatter(source, inner, option);
             }
 
             private static OutputStyle GetStyle(OutputStyle style)

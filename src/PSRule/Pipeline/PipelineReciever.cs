@@ -210,13 +210,16 @@ namespace PSRule.Pipeline
 
         private static string GetPathExtension(TargetObject targetObject)
         {
-            return targetObject.Value.BaseObject switch
-            {
-                InputFileInfo inputFileInfo => inputFileInfo.Extension,
-                FileInfo fileInfo => fileInfo.Extension,
-                Uri uri => Path.GetExtension(uri.OriginalString),
-                _ => null
-            };
+            if (targetObject.Value.BaseObject is InputFileInfo inputFileInfo)
+                return inputFileInfo.Extension;
+
+            if (targetObject.Value.BaseObject is FileInfo fileInfo)
+                return fileInfo.Extension;
+
+            if (targetObject.Value.BaseObject is Uri uri)
+                return Path.GetExtension(uri.OriginalString);
+
+            return null;
         }
 
         private static bool IsAcceptedType(TargetObject targetObject)
