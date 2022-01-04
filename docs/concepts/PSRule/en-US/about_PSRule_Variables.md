@@ -210,6 +210,7 @@ The following helper methods are available:
   Services should implement the `IDisposable` interface to perform additional cleanup.
   This method can only be called within the `-Initialize` block of a convention.
 - `GetService(string id)` - Retrieves a service previously added by a convention.
+- `GetPath(object sourceObject, string path)` - Evalute an object path expression and returns the resulting objects.
 
 The file format is detected based on the same file formats as the option `Input.Format`.
 i.e. Yaml, Json, Markdown, and PowerShell Data.

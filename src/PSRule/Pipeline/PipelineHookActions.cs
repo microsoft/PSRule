@@ -103,7 +103,7 @@ namespace PSRule.Pipeline
             var score = int.MaxValue;
             for (var i = 0; i < propertyNames.Length && score > propertyNames.Length; i++)
             {
-                if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: propertyNames[i], caseSensitive: caseSensitive, value: out var value))
+                if (ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, path: propertyNames[i], caseSensitive: caseSensitive, value: out object value))
                 {
                     targetName = value.ToString();
                     score = i;

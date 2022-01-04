@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
@@ -57,7 +57,7 @@ namespace PSRule.Commands
 
             for (var i = 0; i < Field.Length && found < required; i++)
             {
-                if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field[i], caseSensitive: CaseSensitive, value: out _))
+                if (ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, path: Field[i], caseSensitive: CaseSensitive, value: out object _))
                 {
                     RunspaceContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Exists, message: PSRuleResources.ExistsTrue, args: Field[i]);
                     foundFields.Add(Field[i]);

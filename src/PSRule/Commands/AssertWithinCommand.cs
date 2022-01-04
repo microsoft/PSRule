@@ -69,7 +69,7 @@ namespace PSRule.Commands
 
             // Pass with any match, or (-Not) fail with any match
 
-            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field, caseSensitive: false, value: out var fieldValue))
+            if (ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, path: Field, caseSensitive: false, value: out object fieldValue))
             {
                 for (var i = 0; (Value == null || i < Value.Length) && !match; i++)
                 {

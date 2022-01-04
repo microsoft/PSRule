@@ -642,7 +642,7 @@ What's changed since v0.8.0:
     - Baselines can be packaged within module.
     - Modules can specify a default baseline in module manifest.
     - Target binding options (`Binding`) are now part of baselines.
-    - See [about_PSRule_Baseline](docs/concepts/PSRule/en-US/about_PSRule_Baseline.md) for more information.
+    - See [about_PSRule_Baseline] for more information.
 - Bug fixes:
   - Fix can not serialize nested System.IO.DirectoryInfo property. [#281](https://github.com/Microsoft/PSRule/issues/281)
   - Fix ModuleName not displayed in Get-PSRuleHelp list. [#275](https://github.com/Microsoft/PSRule/issues/275)
@@ -670,7 +670,7 @@ What's changed since pre-release v0.9.0-B190905:
     - Target binding options (`Binding`) are now part of baselines.
   - The previous `baseline` options property has been renamed to `rule`.
   - The previous `configuration` property is now a top level option.
-  - See [about_PSRule_Baseline](docs/concepts/PSRule/en-US/about_PSRule_Baseline.md) for more information.
+  - See [about_PSRule_Baseline] for more information.
 
 ## v0.9.0-B190819 (pre-release)
 
@@ -1077,3 +1077,5 @@ What's changed since pre-release v0.1.0-B181235:
 ## v0.1.0-B181212 (pre-release)
 
 - Initial pre-release.
+
+[about_PSRule_Baseline]: concepts/PSRule/en-US/about_PSRule_Baseline.md

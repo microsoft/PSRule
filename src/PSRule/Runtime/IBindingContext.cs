@@ -1,12 +1,14 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
+
+using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Runtime
 {
     internal interface IBindingContext
     {
-        bool GetNameToken(string expression, out NameToken nameToken);
+        bool GetPathExpression(string path, out PathExpression expression);
 
-        void CacheNameToken(string expression, NameToken nameToken);
+        void CachePathExpression(string path, PathExpression expression);
     }
 }

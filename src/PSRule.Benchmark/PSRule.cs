@@ -9,6 +9,7 @@ using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using PSRule.Configuration;
 using PSRule.Pipeline;
+using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Benchmark
 {
@@ -47,6 +48,9 @@ namespace PSRule.Benchmark
         private IPipeline _InvokeWithinPipeline;
         private IPipeline _InvokeWithinBulkPipeline;
         private IPipeline _InvokeWithinLikePipeline;
+        private PathExpressionBuilder _PathExpressionBuilder;
+        private IPathToken[] _PathExpressionTokens;
+        private PathExpression _PathExpression;
 
         [GlobalSetup]
         public void Prepare()
@@ -63,6 +67,8 @@ namespace PSRule.Benchmark
             PrepareInvokeWithinLikePipeline();
             PrepareTargetObjects();
             PrepareAssertHasFieldValuePipeline();
+            PreparePathExpressionBuild();
+            PreparePathExpressionSelect();
         }
 
         private void PrepareGetPipeline()
@@ -153,6 +159,17 @@ namespace PSRule.Benchmark
             option.Rule.Include = new string[] { "Assert.HasFieldValue" };
             var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
             _AssertHasFieldValuePipeline = builder.Build();
+        }
+
+        private void PreparePathExpressionBuild()
+        {
+            _PathExpressionBuilder = new PathExpressionBuilder();
+            _PathExpressionTokens = PathTokenizer.Get("$.Properties.logs[?@.enabled && @.enabled==true].category");
+        }
+
+        private void PreparePathExpressionSelect()
+        {
+            _PathExpression = PathExpression.Create("$.Properties.logs[?@.enabled && @.enabled==true].category");
         }
 
         private Source[] GetSource()
@@ -252,44 +269,57 @@ namespace PSRule.Benchmark
         [Benchmark]
         public void DefaultTargetNameBinding()
         {
-            foreach (var targetObject in _TargetObject)
-            {
-                PipelineHookActions.BindTargetName(null, false, false, targetObject);
-            }
+            for (var i = 0; i < _TargetObject.Length; i++)
+                PipelineHookActions.BindTargetName(null, false, false, _TargetObject[i]);
         }
 
         [Benchmark]
         public void CustomTargetNameBinding()
         {
-            foreach (var targetObject in _TargetObject)
-            {
+            for (var i = 0; i < _TargetObject.Length; i++)
                 PipelineHookActions.BindTargetName(
                     propertyNames: new string[] { "TargetName", "Name" },
                     caseSensitive: true,
                     preferTargetInfo: false,
-                    targetObject: targetObject
+                    targetObject: _TargetObject[i]
                 );
-            }
         }
 
         [Benchmark]
         public void NestedTargetNameBinding()
         {
-            foreach (var targetObject in _TargetObject)
-            {
+            for (var i = 0; i < _TargetObject.Length; i++)
                 PipelineHookActions.BindTargetName(
                     propertyNames: new string[] { "TargetName", "Name" },
                     caseSensitive: true,
                     preferTargetInfo: false,
-                    targetObject: targetObject
+                    targetObject: _TargetObject[i]
                 );
-            }
         }
 
         [Benchmark]
         public void AssertHasFieldValue()
         {
             RunPipelineTargets(_AssertHasFieldValuePipeline);
+        }
+
+        [Benchmark]
+        public void PathTokenize()
+        {
+            PathTokenizer.Get("$.Properties.logs[?@.enabled && @.enabled==true].category");
+        }
+
+        [Benchmark]
+        public void PathExpressionBuild()
+        {
+            _PathExpressionBuilder.Build(_PathExpressionTokens);
+        }
+
+        [Benchmark]
+        public void PathExpressionGet()
+        {
+            for (var i = 0; i < _TargetObject.Length; i++)
+                _PathExpression.TryGet(_TargetObject[i], false, out object _);
         }
 
         private void RunPipelineNull(IPipeline pipeline)

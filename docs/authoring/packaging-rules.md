@@ -97,30 +97,32 @@ The name of the `ModuleConfig` must match the name of the module.
 Additional `ModuleConfig` resources or with an alternative name are ignored.
 PSRule does not support module configurations distributed outside of a module.
 
-```yaml
----
-# Synopsis: Example module configuration for Enterprise.Rules module.
-apiVersion: github.com/microsoft/PSRule/v1
-kind: ModuleConfig
-metadata:
-  name: Enterprise.Rules
-spec:
-  binding:
-    targetName:
-    - ResourceName
-    - FullName
-    - name
-    targetType:
-    - ResourceType
-    - type
-    - Extension
-    field:
-      resourceId: [ 'ResourceId' ]
-      subscriptionId: [ 'SubscriptionId' ]
-      resourceGroupName: [ 'ResourceGroupName' ]
-  rule:
-    baseline: Enterprise.Default
-```
+!!! Example
+
+    ```yaml
+    ---
+    # Synopsis: Example module configuration for Enterprise.Rules module.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: ModuleConfig
+    metadata:
+      name: Enterprise.Rules
+    spec:
+      binding:
+        targetName:
+        - ResourceName
+        - FullName
+        - name
+        targetType:
+        - ResourceType
+        - type
+        - Extension
+        field:
+          resourceId: [ 'ResourceId' ]
+          subscriptionId: [ 'SubscriptionId' ]
+          resourceGroupName: [ 'ResourceGroupName' ]
+      rule:
+        baseline: Enterprise.Default
+    ```
 
 The following options are allowed within a `ModuleConfig`:
 
@@ -144,32 +146,32 @@ This feature removes the need for users to specify it manually.
 
 To set a default baseline, set the `Rule.Baseline` property of the `ModuleConfig` resource.
 
-For example:
+!!! Example
 
-```yaml
----
-# Synopsis: Example module configuration for Enterprise.Rules module.
-apiVersion: github.com/microsoft/PSRule/v1
-kind: ModuleConfig
-metadata:
-  name: Enterprise.Rules
-spec:
-  binding:
-    targetName:
-    - ResourceName
-    - FullName
-    - name
-    targetType:
-    - ResourceType
-    - type
-    - Extension
-    field:
-      resourceId: [ 'ResourceId' ]
-      subscriptionId: [ 'SubscriptionId' ]
-      resourceGroupName: [ 'ResourceGroupName' ]
-  rule:
-    baseline: Enterprise.Default
-```
+    ```yaml
+    ---
+    # Synopsis: Example module configuration for Enterprise.Rules module.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: ModuleConfig
+    metadata:
+      name: Enterprise.Rules
+    spec:
+      binding:
+        targetName:
+        - ResourceName
+        - FullName
+        - name
+        targetType:
+        - ResourceType
+        - type
+        - Extension
+        field:
+          resourceId: [ 'ResourceId' ]
+          subscriptionId: [ 'SubscriptionId' ]
+          resourceGroupName: [ 'ResourceGroupName' ]
+      rule:
+        baseline: Enterprise.Default
+    ```
 
 This examples set the default baseline to `Enterprise.Default`.
 The default baseline must be included in file ending with `.Rule.yaml` within the module directory structure.
@@ -209,6 +211,6 @@ For example:
 
 ## More information
 
-- [Enterprise.Rules.psd1](Enterprise.Rules/Enterprise.Rules.psd1) - An example module manifest.
-- [Baseline.Rule.yaml](Enterprise.Rules/rules/Baseline.Rule.yaml) - An example baseline.
-- [Config.Rule.yaml](Enterprise.Rules/rules/Config.Rule.yaml) - An example module configuration.
+- [Enterprise.Rules.psd1](packaging-rules/Enterprise.Rules/Enterprise.Rules.psd1) - An example module manifest.
+- [Baseline.Rule.yaml](packaging-rules/Enterprise.Rules/rules/Baseline.Rule.yaml) - An example baseline.
+- [Config.Rule.yaml](packaging-rules/Enterprise.Rules/rules/Config.Rule.yaml) - An example module configuration.

@@ -1,10 +1,11 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections;
 using System.Collections.Generic;
 using PSRule.Definitions;
 using Xunit;
+using ObjectHelper = PSRule.Runtime.ObjectHelper;
 
 namespace PSRule
 {
@@ -15,16 +16,16 @@ namespace PSRule
         {
             var testObject = GetTestObject();
 
-            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: "Name", caseSensitive: true, value: out var actual1);
-            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: "Value.Value1", caseSensitive: false, value: out var actual2);
-            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: "Metadata.'app.kubernetes.io/name'", caseSensitive: false, value: out var actual3);
-            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: "Value2[1]", caseSensitive: false, value: out var actual4);
-            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: ".", caseSensitive: true, value: out var actual5);
-            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: ".Value2[1]", caseSensitive: false, value: out var actual6);
-            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: ".Value3[1]", caseSensitive: false, value: out var actual7);
-            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: ".Value4[0]", caseSensitive: false, value: out var actual8);
-            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: ".Value5.name", caseSensitive: false, value: out var actual9);
-            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: ".Value5[2]", caseSensitive: false, value: out var actual10);
+            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, path: "Name", caseSensitive: true, value: out object actual1);
+            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, path: "Value.Value1", caseSensitive: false, value: out object actual2);
+            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, path: "Metadata.'app.kubernetes.io/name'", caseSensitive: false, value: out object actual3);
+            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, path: "Value2[1]", caseSensitive: false, value: out object actual4);
+            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, path: ".", caseSensitive: true, value: out object actual5);
+            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, path: ".Value2[1]", caseSensitive: false, value: out object actual6);
+            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, path: ".Value3[1]", caseSensitive: false, value: out object actual7);
+            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, path: ".Value4[0]", caseSensitive: false, value: out object actual8);
+            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, path: ".Value5.name", caseSensitive: false, value: out object actual9);
+            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, path: ".Value5[2]", caseSensitive: false, value: out object actual10);
 
             Assert.Equal(expected: testObject.Name, actual: actual1);
             Assert.Equal(expected: testObject.Value.Value1, actual: actual2);
@@ -48,11 +49,19 @@ namespace PSRule
             };
             var testObject = ResourceTags.FromHashtable(hashtable);
 
-            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: "Name", caseSensitive: true, value: out var actual1);
-            Runtime.ObjectHelper.GetField(bindingContext: null, targetObject: testObject, name: "Value", caseSensitive: true, value: out var actual2);
+            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, path: "Name", caseSensitive: true, value: out object actual1);
+            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, path: "Value", caseSensitive: true, value: out object actual2);
 
             Assert.Equal(expected: testObject["Name"], actual: actual1);
             Assert.Equal(expected: testObject["Value"], actual: actual2);
+        }
+
+        [Fact]
+        public void JsonPath()
+        {
+            var testObject = GetTestObject();
+
+            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, "$.Value2[*]", caseSensitive: true, value: out object actual1);
         }
 
         private static TestObject1 GetTestObject()

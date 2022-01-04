@@ -102,3 +102,16 @@ spec:
   condition:
     field: 'Name'
     equals: 'TestValue'
+
+---
+# Synopsis: Test a complex object path
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: YamlObjectPath
+spec:
+  condition:
+    field: '$.resources[?@.type==''diagnosticSettings''].properties.logs[?@.enabled==true].category'
+    subset:
+    - 'audit'
+    - 'firewall'

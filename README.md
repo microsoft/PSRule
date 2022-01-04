@@ -68,7 +68,7 @@ Visual Studio Code | Visual Studio Code extension for PSRule. | [latest][extensi
 The following example shows basic PSRule usage for validating PowerShell objects.
 For specific use cases see [scenarios](#scenarios).
 
-For frequently asked questions, see the [FAQ](docs/features.md#frequently-asked-questions-faq).
+For frequently asked questions, see the [FAQ](https://microsoft.github.io/PSRule/faq/).
 
 ### Define a rule
 
@@ -218,9 +218,9 @@ For walk through examples of PSRule usage see:
 - [Validate Azure resource configuration](docs/scenarios/azure-resources/azure-resources.md)
 - [Validate Azure resources tags](docs/scenarios/azure-tags/azure-tags.md)
 - [Validate Kubernetes resources](docs/scenarios/kubernetes-resources/kubernetes-resources.md)
-- [Using within continuous integration](docs/scenarios/validation-pipeline/validation-pipeline.md)
+- [Using within continuous integration](https://microsoft.github.io/PSRule/scenarios/validation-pipeline/validation-pipeline/)
 - [Packaging rules in a module](docs/scenarios/rule-module/rule-module.md)
-- [Writing rule help](docs/scenarios/rule-docs/rule-docs.md)
+- [Writing rule help](https://microsoft.github.io/PSRule/authoring/writing-rule-help/)
 
 ## Language reference
 

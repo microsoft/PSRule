@@ -531,7 +531,7 @@ namespace PSRule.Definitions.Expressions
             if (TryPropertyArray(properties, SETOF, out var expectedValue) && TryField(properties, out var field) && GetCaseSensitive(properties, out var caseSensitive))
             {
                 context.ExpressionTrace(SETOF, field, expectedValue);
-                if (!ObjectHelper.GetField(context, o, field, caseSensitive: false, out var actualValue))
+                if (!ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object actualValue))
                     return NotHasField(context, field);
 
                 if (!ExpressionHelpers.TryEnumerableLength(actualValue, out var count))
@@ -557,7 +557,7 @@ namespace PSRule.Definitions.Expressions
                 GetCaseSensitive(properties, out var caseSensitive) && GetUnique(properties, out var unique))
             {
                 context.ExpressionTrace(SUBSET, field, expectedValue);
-                if (!ObjectHelper.GetField(context, o, field, caseSensitive: false, out var actualValue))
+                if (!ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object actualValue))
                     return NotHasField(context, field);
 
                 if (!ExpressionHelpers.TryEnumerableLength(actualValue, out _))
@@ -579,7 +579,7 @@ namespace PSRule.Definitions.Expressions
             if (TryPropertyLong(properties, COUNT, out var expectedValue) && TryField(properties, out var field))
             {
                 context.ExpressionTrace(COUNT, field, expectedValue);
-                if (!ObjectHelper.GetField(context, o, field, caseSensitive: false, out var value))
+                if (!ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object value))
                     return NotHasField(context, field);
 
                 if (value == null)
@@ -862,10 +862,10 @@ namespace PSRule.Definitions.Expressions
                 TryPropertyBoolOrDefault(properties, IGNORESCHEME, out var ignoreScheme, false))
             {
                 context.ExpressionTrace(HASSCHEMA, field, expectedValue);
-                if (!ObjectHelper.GetField(context, o, field, caseSensitive: false, out var actualValue))
+                if (!ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object actualValue))
                     return NotHasField(context, field);
 
-                if (!ObjectHelper.GetField(context, actualValue, PROPERTY_SCHEMA, caseSensitive: false, out var schemaValue))
+                if (!ObjectHelper.GetPath(context, actualValue, PROPERTY_SCHEMA, caseSensitive: false, out object schemaValue))
                     return NotHasField(context, PROPERTY_SCHEMA);
 
                 if (!ExpressionHelpers.TryString(schemaValue, out var actualSchema))
@@ -1019,7 +1019,7 @@ namespace PSRule.Definitions.Expressions
             if (!properties.TryGetString(FIELD, out var field))
                 return false;
 
-            if (ObjectHelper.GetField(context, o, field, caseSensitive: false, out var value))
+            if (ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object value))
                 operand = Operand.FromField(field, value);
 
             return operand != null || NotHasField(context, field);
@@ -1076,7 +1076,10 @@ namespace PSRule.Definitions.Expressions
         /// </summary>
         private static bool TryFieldNotExists(ExpressionContext context, object o, LanguageExpression.PropertyBag properties)
         {
-            return properties.TryGetString(FIELD, out var field) && !ObjectHelper.GetField(context, o, field, caseSensitive: false, out _);
+            if (!properties.TryGetString(FIELD, out string field))
+                return false;
+
+            return !ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object _);
         }
 
         private static bool TryOperand(ExpressionContext context, string name, object o, LanguageExpression.PropertyBag properties, out IOperand operand)

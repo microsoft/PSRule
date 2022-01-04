@@ -31,3 +31,13 @@ updates:
   - 'ci-quality'
   reviewers:
   - 'microsoft/psrule'
+
+# Maintain dependencies for Python
+- package-ecosystem: 'pip'
+  directory: '/'
+  schedule:
+    interval: 'daily'
+  labels:
+  - 'ci-quality'
+  reviewers:
+  - 'azure/psrule-rules-azure'
