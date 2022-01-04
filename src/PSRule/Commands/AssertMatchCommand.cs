@@ -68,11 +68,7 @@ namespace PSRule.Commands
 
             // Pass with any match, or (-Not) fail with any match
 
-<<<<<<< HEAD
-            if (ObjectHelper.GetField(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, name: Field, caseSensitive: false, value: out var fieldValue))
-=======
             if (ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, path: Field, caseSensitive: false, value: out object fieldValue))
->>>>>>> main
             {
                 for (var i = 0; i < _Expressions.Length && !match; i++)
                 {
