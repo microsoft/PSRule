@@ -162,7 +162,7 @@ namespace PSRule.Runtime
             var result = new List<PSObject>();
             for (var i = 0; i < content.Length; i++)
             {
-                if (ObjectHelper.GetPath(content[i], field, false, out object value) && value != null)
+                if (ObjectHelper.GetPath(content[i], field, false, out var value) && value != null)
                 {
                     if (value is IEnumerable evalue)
                     {

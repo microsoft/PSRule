@@ -69,7 +69,7 @@ namespace PSRule.Runtime
         private static PathExpression GetPathExpression(IBindingContext bindingContext, string path)
         {
             // Try to load nameToken from cache
-            if (bindingContext == null || !bindingContext.GetPathExpression(path, out PathExpression expression))
+            if (bindingContext == null || !bindingContext.GetPathExpression(path, out var expression))
             {
                 expression = PathExpression.Create(path);
                 if (bindingContext != null)

@@ -25,10 +25,9 @@ namespace PSRule.Pipeline
                 return targetName;
 
             if (propertyNames != null)
-                if (propertyNames.Any(n => n.Contains('.')))
-                    return NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding);
-                else
-                    return CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding);
+                return propertyNames.Any(n => n.Contains('.'))
+                    ? NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding)
+                    : CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding);
 
             return DefaultTargetNameBinding(targetObject);
         }
@@ -39,10 +38,9 @@ namespace PSRule.Pipeline
                 return targetType;
 
             if (propertyNames != null)
-                if (propertyNames.Any(n => n.Contains('.')))
-                    return NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetTypeBinding);
-                else
-                    return CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetTypeBinding);
+                return propertyNames.Any(n => n.Contains('.'))
+                    ? NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetTypeBinding)
+                    : CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetTypeBinding);
 
             return DefaultTargetTypeBinding(targetObject);
         }
@@ -50,10 +48,9 @@ namespace PSRule.Pipeline
         public static string BindField(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject)
         {
             if (propertyNames != null)
-                if (propertyNames.Any(n => n.Contains('.')))
-                    return NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultFieldBinding);
-                else
-                    return CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultFieldBinding);
+                return propertyNames.Any(n => n.Contains('.'))
+                    ? NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultFieldBinding)
+                    : CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultFieldBinding);
 
             return DefaultFieldBinding(targetObject);
         }
@@ -103,7 +100,12 @@ namespace PSRule.Pipeline
             var score = int.MaxValue;
             for (var i = 0; i < propertyNames.Length && score > propertyNames.Length; i++)
             {
-                if (ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, path: propertyNames[i], caseSensitive: caseSensitive, value: out object value))
+                if (ObjectHelper.GetPath(
+                    bindingContext: PipelineContext.CurrentThread,
+                    targetObject: targetObject,
+                    path: propertyNames[i],
+                    caseSensitive: caseSensitive,
+                    value: out object value))
                 {
                     targetName = value.ToString();
                     score = i;
@@ -120,7 +122,14 @@ namespace PSRule.Pipeline
         /// <returns>The TargetName of the object.</returns>
         private static string GetUnboundObjectTargetName(PSObject targetObject)
         {
-            var settings = new JsonSerializerSettings { Formatting = Formatting.None, TypeNameHandling = TypeNameHandling.None, MaxDepth = 1024, Culture = CultureInfo.InvariantCulture };
+            var settings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.None,
+                TypeNameHandling = TypeNameHandling.None,
+                MaxDepth = 1024,
+                Culture = CultureInfo.InvariantCulture
+            };
+
             settings.Converters.Insert(0, new PSObjectJsonConverter());
             var json = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(targetObject, settings));
             return PipelineContext.CurrentThread.ObjectHashAlgorithm.GetDigest(json);

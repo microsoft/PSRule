@@ -68,7 +68,13 @@ namespace PSRule
 
         public static string ToJson(this PSObject o)
         {
-            var settings = new JsonSerializerSettings { Formatting = Formatting.None, TypeNameHandling = TypeNameHandling.None, MaxDepth = 1024, Culture = CultureInfo.InvariantCulture };
+            var settings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.None,
+                TypeNameHandling = TypeNameHandling.None,
+                MaxDepth = 1024,
+                Culture = CultureInfo.InvariantCulture
+            };
             settings.Converters.Insert(0, new PSObjectJsonConverter());
             return JsonConvert.SerializeObject(o, settings);
         }

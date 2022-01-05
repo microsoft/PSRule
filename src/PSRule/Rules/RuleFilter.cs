@@ -57,13 +57,9 @@ namespace PSRule.Rules
         /// <returns>Return true if rule is matched, otherwise false.</returns>
         public bool Match(IResource resource)
         {
-            if (IsExcluded(resource.Name))
-                return false;
-
-            if (_IncludeLocal && resource.IsLocalScope())
-                return true;
-
-            return IsIncluded(resource.Name, resource.Tags);
+            return !IsExcluded(resource.Name) &&
+                (_IncludeLocal && resource.IsLocalScope() ||
+                IsIncluded(resource.Name, resource.Tags));
         }
 
         private bool IsExcluded(string name)

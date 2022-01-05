@@ -528,7 +528,9 @@ namespace PSRule.Definitions.Expressions
         internal static bool SetOf(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (TryPropertyArray(properties, SETOF, out var expectedValue) && TryField(properties, out var field) && GetCaseSensitive(properties, out var caseSensitive))
+            if (TryPropertyArray(properties, SETOF, out var expectedValue) &&
+                TryField(properties, out var field) &&
+                GetCaseSensitive(properties, out var caseSensitive))
             {
                 context.ExpressionTrace(SETOF, field, expectedValue);
                 if (!ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object actualValue))
@@ -566,7 +568,9 @@ namespace PSRule.Definitions.Expressions
                 for (var i = 0; expectedValue != null && i < expectedValue.Length; i++)
                 {
                     if (!ExpressionHelpers.CountValue(actualValue, expectedValue.GetValue(i), caseSensitive, out var count) || (count > 1 && unique))
-                        return count == 0 ? Fail(context, ReasonStrings.Subset, field, expectedValue.GetValue(i)) : Fail(context, ReasonStrings.SubsetDuplicate, field, expectedValue.GetValue(i));
+                        return count == 0
+                            ? Fail(context, ReasonStrings.Subset, field, expectedValue.GetValue(i))
+                            : Fail(context, ReasonStrings.SubsetDuplicate, field, expectedValue.GetValue(i));
                 }
                 return Pass();
             }
@@ -630,7 +634,8 @@ namespace PSRule.Definitions.Expressions
         internal static bool LessOrEquals(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (!TryPropertyLong(properties, LESSOREQUALS, out var propertyValue) || !TryOperand(context, LESSOREQUALS, o, properties, out var operand))
+            if (!TryPropertyLong(properties, LESSOREQUALS, out var propertyValue) ||
+                !TryOperand(context, LESSOREQUALS, o, properties, out var operand))
                 return Invalid(context, LESSOREQUALS);
 
             if (operand.Value == null)
@@ -641,7 +646,12 @@ namespace PSRule.Definitions.Expressions
                     ReasonStrings.Assert_IsNullOrEmpty
                 );
 
-            if (!ExpressionHelpers.CompareNumeric(operand.Value, propertyValue, convert: false, compare: out var compare, value: out _))
+            if (!ExpressionHelpers.CompareNumeric(
+                operand.Value,
+                propertyValue,
+                convert: false,
+                compare: out var compare,
+                value: out _))
                 return Invalid(context, LESSOREQUALS);
 
             // int, string, bool
@@ -670,7 +680,12 @@ namespace PSRule.Definitions.Expressions
                     ReasonStrings.Assert_IsNullOrEmpty
                 );
 
-            if (!ExpressionHelpers.CompareNumeric(operand.Value, propertyValue, convert: false, compare: out var compare, value: out _))
+            if (!ExpressionHelpers.CompareNumeric(
+                operand.Value,
+                propertyValue,
+                convert: false,
+                compare: out var compare,
+                value: out _))
                 return Invalid(context, GREATER);
 
             // int, string, bool
@@ -699,7 +714,12 @@ namespace PSRule.Definitions.Expressions
                     ReasonStrings.Assert_IsNullOrEmpty
                 );
 
-            if (!ExpressionHelpers.CompareNumeric(operand.Value, propertyValue, convert: false, compare: out var compare, value: out _))
+            if (!ExpressionHelpers.CompareNumeric(
+                operand.Value,
+                propertyValue,
+                convert: false,
+                compare: out var compare,
+                value: out _))
                 return Invalid(context, GREATEROREQUALS);
 
             // int, string, bool

@@ -316,12 +316,12 @@ namespace PSRule.Pipeline
 
         public Dictionary<string, object> GetConfiguration()
         {
-            return _Configuration ?? (_Configuration = AddConfiguration());
+            return _Configuration ??= AddConfiguration();
         }
 
         public string[] GetCulture()
         {
-            return _Culture ?? (_Culture = _WorkspaceConfig?.Culture ?? _ModuleConfig?.Culture ?? _DefaultCulture);
+            return _Culture ??= _WorkspaceConfig?.Culture ?? _ModuleConfig?.Culture ?? _DefaultCulture;
         }
 
         internal void Init(RunspaceContext context)
@@ -464,13 +464,26 @@ namespace PSRule.Pipeline
 
         private void Parameter(string[] include, Hashtable tag, string[] convention)
         {
-            _OptionContext.Add(new OptionContext.BaselineScope(type: OptionContext.ScopeType.Parameter, include: include, tag: tag, convention: convention));
+            _OptionContext.Add(new OptionContext.BaselineScope(
+                type: OptionContext.ScopeType.Parameter,
+                include: include,
+                tag: tag,
+                convention: convention));
         }
 
         private void Workspace(PSRuleOption option)
         {
-            _OptionContext.Add(new OptionContext.BaselineScope(type: OptionContext.ScopeType.Workspace, baselineId: null, moduleName: null, option: option, obsolete: false));
-            _OptionContext.Add(new OptionContext.ConfigScope(type: OptionContext.ScopeType.Workspace, moduleName: null, option: option));
+            _OptionContext.Add(new OptionContext.BaselineScope(
+                type: OptionContext.ScopeType.Workspace,
+                baselineId: null,
+                moduleName: null,
+                option: option,
+                obsolete: false));
+
+            _OptionContext.Add(new OptionContext.ConfigScope(
+                type: OptionContext.ScopeType.Workspace,
+                moduleName: null,
+                option: option));
         }
     }
 }

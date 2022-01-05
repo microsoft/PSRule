@@ -68,14 +68,22 @@ namespace PSRule.Commands
 
             // Pass with any match, or (-Not) fail with any match
 
-            if (ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, path: Field, caseSensitive: false, value: out object fieldValue))
+            if (ObjectHelper.GetPath(
+                bindingContext: PipelineContext.CurrentThread,
+                targetObject: targetObject,
+                path: Field,
+                caseSensitive: false,
+                value: out object fieldValue))
             {
                 for (var i = 0; i < _Expressions.Length && !match; i++)
                 {
                     if (_Expressions[i].IsMatch(fieldValue.ToString()))
                     {
                         match = true;
-                        RunspaceContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Match, message: PSRuleResources.MatchTrue, args: fieldValue);
+                        RunspaceContext.CurrentThread.VerboseConditionMessage(
+                            condition: RuleLanguageNouns.Match,
+                            message: PSRuleResources.MatchTrue,
+                            args: fieldValue);
                         found = Expression[i];
                     }
                 }
@@ -85,7 +93,13 @@ namespace PSRule.Commands
             RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Match, outcome: result);
             if (!(result || TryReason(Reason)))
             {
-                WriteReason(Not ? string.Format(Thread.CurrentThread.CurrentCulture, ReasonStrings.MatchNot, found) : string.Format(Thread.CurrentThread.CurrentCulture, ReasonStrings.Match, string.Join(", ", Expression)));
+                WriteReason(Not ? string.Format(
+                    Thread.CurrentThread.CurrentCulture,
+                    ReasonStrings.MatchNot,
+                    found) : string.Format(
+                        Thread.CurrentThread.CurrentCulture,
+                        ReasonStrings.Match,
+                        string.Join(", ", Expression)));
             }
             WriteObject(result);
         }

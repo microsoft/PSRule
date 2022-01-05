@@ -85,7 +85,9 @@ namespace PSRule
                 value = actualDateTime;
                 return true;
             }
-            else if ((TryStringLength(actual, out actualInt) || TryEnumerableLength(actual, out actualInt)) && TryInt(expected, convert: true, value: out expectedInt))
+            else if ((TryStringLength(actual, out actualInt) ||
+                TryEnumerableLength(actual, out actualInt)) &&
+                TryInt(expected, convert: true, value: out expectedInt))
             {
                 compare = Comparer<int>.Default.Compare(actualInt, expectedInt);
                 value = actualInt;
