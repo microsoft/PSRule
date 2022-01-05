@@ -18,7 +18,8 @@ Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force
  [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>] [-BindingNameSeparator <String>]
  [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
  [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>] [-InconclusiveWarning <Boolean>]
- [-NotProcessedWarning <Boolean>] [-IncludeModule <String[]>] [-IncludePath <String[]>] [-Format <InputFormat>]
+ [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
+ [-IncludeModule <String[]>] [-IncludePath <String[]>] [-Format <InputFormat>]
  [-InputIgnoreGitPath <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>]
  [-InputPathIgnore <String[]>] [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>]
  [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
@@ -317,6 +318,24 @@ See about_PSRule_Options for more information.
 Type: Boolean
 Parameter Sets: (All)
 Aliases: ExecutionNotProcessedWarning
+
+Required: False
+Position: Named
+Default value: True
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SuppressedRuleWarning
+
+Sets the `Execution.SuppressedRuleWarning` option.
+The `Execution.SuppressedRuleWarning` option determines if a warning is generated when a rule is suppressed.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases: ExecutionSuppressedRuleWarning
 
 Required: False
 Position: Named

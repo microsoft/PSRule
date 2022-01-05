@@ -17,6 +17,7 @@ The following workspace options are available for use:
 - [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InconclusiveWarning](#executioninconclusivewarning)
 - [Execution.NotProcessedWarning](#executionnotprocessedwarning)
+- [Execution.SuppressedRuleWarning](#executionsuppressedrulewarning)
 - [Include.Module](#includemodule)
 - [Include.Path](#includepath)
 - [Input.Format](#inputformat)
@@ -808,6 +809,57 @@ env:
 # Azure Pipelines: Using environment variable
 variables:
 - name: PSRULE_EXECUTION_NOTPROCESSEDWARNING
+  value: false
+```
+
+### Execution.SuppressedRuleWarning
+
+When evaluating rules, it is possible to output suppressed rules as warnings.
+
+Suppressed rules will:
+
+- Output a warning by default.
+- Show which rules were suppressed when `Output.As` is set to `Detail`.
+- Show how many rules were suppressed when `Output.As` is set to `Summary`.
+
+The suppressed rule can be disabled by using:
+
+```powershell
+# PowerShell: Using the SuppressedRuleWarning parameter
+$option = New-PSRuleOption -SuppressedRuleWarning $False;
+```
+
+```powershell
+# PowerShell: Using the Execution.SuppressedRuleWarning hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.SuppressedRuleWarning' = $False };
+```
+
+```powershell
+# PowerShell: Using the SuppressedRuleWarning parameter to set YAML
+Set-PSRuleOption -SuppressedRuleWarning $False;
+```
+
+```yaml
+# YAML: Using the execution/suppressedRuleWarning property
+execution:
+  suppressedRuleWarning: false
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_SUPPRESSEDRULEWARNING=false
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_SUPPRESSEDRULEWARNING: false
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_SUPPRESSEDRULEWARNING
   value: false
 ```
 

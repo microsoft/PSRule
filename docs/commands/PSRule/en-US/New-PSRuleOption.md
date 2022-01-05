@@ -21,8 +21,8 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
  [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
- [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-IncludeModule <String[]>]
- [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
+ [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
+ [-IncludeModule <String[]>] [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
  [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
  [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
@@ -40,7 +40,7 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
  [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
- [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-IncludeModule <String[]>]
+ [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>] [-IncludeModule <String[]>]
  [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
  [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
  [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
@@ -58,7 +58,7 @@ New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTar
  [-BindTargetName <BindTargetName[]>] [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>]
  [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
- [-Convention <String[]>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
+ [-Convention <String[]>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
  [-IncludeModule <String[]>] [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
  [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
  [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
@@ -426,6 +426,24 @@ Aliases: ExecutionNotProcessedWarning
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SuppressedRuleWarning
+
+Sets the `Execution.SuppressedRuleWarning` option.
+The `Execution.SuppressedRuleWarning` option determines if a warning is generated when a rule is suppressed.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases: ExecutionSuppressedRuleWarning
+
+Required: False
+Position: Named
+Default value: True
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

@@ -48,6 +48,7 @@ execution:
   languageMode: ConstrainedLanguage
   inconclusiveWarning: false
   notProcessedWarning: false
+  suppressedRuleWarning: false
 
 # Configure input options
 input:
