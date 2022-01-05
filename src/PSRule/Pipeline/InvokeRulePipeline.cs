@@ -61,6 +61,7 @@ namespace PSRule.Pipeline
 
             Option.Execution.InconclusiveWarning = option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning;
             Option.Execution.NotProcessedWarning = option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning;
+            Option.Execution.SuppressedRuleWarning = option.Execution.SuppressedRuleWarning ?? ExecutionOption.Default.SuppressedRuleWarning;
 
             Option.Logging.RuleFail = option.Logging.RuleFail ?? LoggingOption.Default.RuleFail;
             Option.Logging.RulePass = option.Logging.RulePass ?? LoggingOption.Default.RulePass;
@@ -233,6 +234,7 @@ namespace PSRule.Pipeline
                 Context.EnterTargetObject(targetObject);
                 var result = new InvokeResult();
                 var ruleCounter = 0;
+                var suppressedRuleCounter = 0;
 
                 // Process rule blocks ordered by dependency graph
                 foreach (var ruleBlockTarget in _RuleGraph.GetSingleTarget())
@@ -255,6 +257,12 @@ namespace PSRule.Pipeline
                         else if (_SuppressionFilter.Match(ruleName: ruleRecord.RuleName, targetName: ruleRecord.TargetName))
                         {
                             ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
+                            suppressedRuleCounter++;
+
+                            if (_ResultFormat == ResultFormat.Detail)
+                            {
+                                Context.WarnRuleSuppressed(ruleId: ruleRecord.RuleId);
+                            }
                         }
                         else
                         {
@@ -282,6 +290,11 @@ namespace PSRule.Pipeline
 
                 if (ruleCounter == 0)
                     Context.WarnObjectNotProcessed();
+
+                if (_ResultFormat == ResultFormat.Summary && suppressedRuleCounter > 0)
+                {
+                    Context.WarnRuleCountSuppressed(ruleCount: suppressedRuleCounter);
+                }
 
                 return result;
             }

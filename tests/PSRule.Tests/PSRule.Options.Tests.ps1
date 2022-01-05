@@ -702,6 +702,45 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Execution.SuppressedRuleWarning' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.SuppressedRuleWarning | Should -Be $True;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.SuppressedRuleWarning' = $False };
+            $option.Execution.SuppressedRuleWarning | Should -Be $False;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.SuppressedRuleWarning | Should -Be $False;
+        }
+
+        It 'from Environment' {
+            try {
+                # With bool
+                $Env:PSRULE_EXECUTION_SUPPRESSEDRULEWARNING = 'false';
+                $option = New-PSRuleOption;
+                $option.Execution.SuppressedRuleWarning | Should -Be $False;
+
+                # With int
+                $Env:PSRULE_EXECUTION_SUPPRESSEDRULEWARNING = '0';
+                $option = New-PSRuleOption;
+                $option.Execution.SuppressedRuleWarning | Should -Be $False;
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_SUPPRESSEDRULEWARNING' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -SuppressedRuleWarning $False -Path $emptyOptionsFilePath;
+            $option.Execution.SuppressedRuleWarning | Should -Be $False;
+        }
+    }
+
     Context 'Read Include.Path' {
         It 'from default' {
             $option = New-PSRuleOption -Default;

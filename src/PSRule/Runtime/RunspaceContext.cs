@@ -76,6 +76,7 @@ namespace PSRule.Runtime
 
         private readonly bool _InconclusiveWarning;
         private readonly bool _NotProcessedWarning;
+        private readonly bool _SuppressedRuleWarning;
         private readonly OutcomeLogStream _FailStream;
         private readonly OutcomeLogStream _PassStream;
         private readonly Stack<RunspaceScope> _Scope;
@@ -108,6 +109,7 @@ namespace PSRule.Runtime
 
             _InconclusiveWarning = Pipeline.Option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning.Value;
             _NotProcessedWarning = Pipeline.Option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning.Value;
+            _SuppressedRuleWarning = Pipeline.Option.Execution.SuppressedRuleWarning ?? ExecutionOption.Default.SuppressedRuleWarning.Value;
             _FailStream = Pipeline.Option.Logging.RuleFail ?? LoggingOption.Default.RuleFail.Value;
             _PassStream = Pipeline.Option.Logging.RulePass ?? LoggingOption.Default.RulePass.Value;
             _WarnOnce = new HashSet<string>();
@@ -210,6 +212,26 @@ namespace PSRule.Runtime
                 return;
 
             Writer.WriteWarning(PSRuleResources.ObjectNotProcessed, Binding.TargetName);
+        }
+
+        public void WarnRuleSuppressed(string ruleId)
+        {
+            if (Writer == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
+            {
+                return;
+            }
+
+            Writer.WriteWarning(PSRuleResources.RuleSuppressed, ruleId, Binding.TargetName);
+        }
+
+        public void WarnRuleCountSuppressed(int ruleCount)
+        {
+            if (Writer == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
+            {
+                return;
+            }
+
+            Writer.WriteWarning(PSRuleResources.RuleCountSuppressed, ruleCount, Binding.TargetName);
         }
 
         public void WarnRuleNotFound()
