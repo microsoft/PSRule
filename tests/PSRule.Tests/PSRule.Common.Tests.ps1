@@ -1136,10 +1136,11 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                     Name = "TestObject2"
                 }
             )
+            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-AU');
         }
 
         Context 'Detail' {
-            It 'From Parameter - Has warnings' {
+            It 'Show Warnings' {
                 $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $True -OutputAs Detail;
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
@@ -1153,35 +1154,8 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages[1].Message | Should -BeExactly "Rule 'FromFile2' was suppressed for 'TestObject1'.";
             }
 
-            It 'From Parameter - No warnings' {
+            It 'No warnings' {
                 $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $False -OutputAs Detail;
-
-                $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
-    
-                $warningMessages = $outwarnings.ToArray();
-                $warningMessages.Length | Should -Be 0;
-            }
-
-            It 'From Yaml - Has warnings' {
-                $optionsPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests14.yml')
-
-                $option = New-PSRuleOption -Path $optionsPath -OutputAs Detail
-
-                $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
-    
-                $warningMessages = $outwarnings.ToArray();
-                $warningMessages.Length | Should -Be 2;
-    
-                $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[0].Message | Should -BeExactly "Rule 'FromFile1' was suppressed for 'TestObject1'.";
-                $warningMessages[1] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[1].Message | Should -BeExactly "Rule 'FromFile2' was suppressed for 'TestObject1'.";
-            }
-
-            It 'From Yaml - No warnings' {
-                $optionsPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests15.yml')
-
-                $option = New-PSRuleOption -Path $optionsPath -OutputAs Detail
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
@@ -1191,7 +1165,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         Context 'Summary' {
-            It 'From Parameter - Has warnings' {
+            It 'Show warnings' {
                 $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $True -OutputAs Summary;
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
@@ -1203,7 +1177,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages[0].Message | Should -BeExactly "2 rule/s were suppressed for 'TestObject1'.";
             }
 
-            It 'From Parameter - No warnings' {
+            It 'No warnings' {
                 $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $False -OutputAs Summary;
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
@@ -1211,31 +1185,10 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages = $outwarnings.ToArray();
                 $warningMessages.Length | Should -Be 0;
             }
+        }
 
-            It 'From Yaml - Has warnings' {
-                $optionsPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests14.yml')
-
-                $option = New-PSRuleOption -Path $optionsPath -OutputAs Summary
-
-                $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
-    
-                $warningMessages = $outwarnings.ToArray();
-                $warningMessages.Length | Should -Be 1;
-                
-                $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[0].Message | Should -BeExactly "2 rule/s were suppressed for 'TestObject1'.";
-            }
-
-            It 'From Yaml - No warnings' {
-                $optionsPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests15.yml')
-
-                $option = New-PSRuleOption -Path $optionsPath -OutputAs Summary
-
-                $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
-    
-                $warningMessages = $outwarnings.ToArray();
-                $warningMessages.Length | Should -Be 0;
-            }
+        AfterAll {
+            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
         }
     }
 }
