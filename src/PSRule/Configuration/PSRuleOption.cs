@@ -418,7 +418,8 @@ namespace PSRule.Configuration
             if (Path.HasExtension(rootedPath))
             {
                 var ext = Path.GetExtension(rootedPath);
-                if (string.Equals(ext, ".yaml", StringComparison.OrdinalIgnoreCase) || string.Equals(ext, ".yml", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(ext, ".yaml", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(ext, ".yml", StringComparison.OrdinalIgnoreCase))
                 {
                     return rootedPath;
                 }

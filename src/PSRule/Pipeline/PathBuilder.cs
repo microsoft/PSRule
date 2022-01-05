@@ -14,7 +14,7 @@ namespace PSRule.Pipeline
     {
         void Add(string path);
 
-        void Add(System.IO.FileInfo[] fileInfo);
+        void Add(FileInfo[] fileInfo);
 
         void Add(PathInfo[] pathInfo);
 

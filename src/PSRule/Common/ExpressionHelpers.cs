@@ -508,22 +508,27 @@ namespace PSRule
 
         private static bool StringEqual(string expectedValue, string actualValue, bool caseSensitive)
         {
-            return caseSensitive ? StringComparer.Ordinal.Equals(expectedValue, actualValue) : StringComparer.OrdinalIgnoreCase.Equals(expectedValue, actualValue);
+            return caseSensitive
+                ? StringComparer.Ordinal.Equals(expectedValue, actualValue)
+                : StringComparer.OrdinalIgnoreCase.Equals(expectedValue, actualValue);
         }
 
         internal static bool StartsWith(string actualValue, object expectedValue, bool caseSensitive)
         {
-            return TryString(expectedValue, out var expected) && actualValue.StartsWith(expected, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+            return TryString(expectedValue, out var expected) &&
+                actualValue.StartsWith(expected, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
         }
 
         internal static bool EndsWith(string actualValue, object expectedValue, bool caseSensitive)
         {
-            return TryString(expectedValue, out var expected) && actualValue.EndsWith(expected, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+            return TryString(expectedValue, out var expected)
+                && actualValue.EndsWith(expected, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
         }
 
         internal static bool Contains(string actualValue, object expectedValue, bool caseSensitive)
         {
-            return TryString(expectedValue, out var expected) && actualValue.IndexOf(expected, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) >= 0;
+            return TryString(expectedValue, out var expected)
+                && actualValue.IndexOf(expected, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         internal static bool IsLower(string actualValue, bool requireLetters, out bool notLetter)

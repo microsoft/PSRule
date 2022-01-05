@@ -177,10 +177,24 @@ namespace PSRule.Runtime
                 Writer.WriteWarning(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, Binding.TargetName);
 
             if (_PassStream == OutcomeLogStream.Error && Writer.ShouldWriteError())
-                Writer.WriteError(new ErrorRecord(new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, Binding.TargetName)), SOURCE_OUTCOME_PASS, ErrorCategory.InvalidData, null));
+                Writer.WriteError(new ErrorRecord(
+                    new RuleException(string.Format(
+                        Thread.CurrentThread.CurrentCulture,
+                        PSRuleResources.OutcomeRulePass,
+                        RuleRecord.RuleName,
+                        Binding.TargetName)),
+                    SOURCE_OUTCOME_PASS,
+                    ErrorCategory.InvalidData,
+                    null));
 
             if (_PassStream == OutcomeLogStream.Information && Writer.ShouldWriteInformation())
-                Writer.WriteInformation(new InformationRecord(messageData: string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, Binding.TargetName), source: SOURCE_OUTCOME_PASS));
+                Writer.WriteInformation(new InformationRecord(
+                    messageData: string.Format(
+                        Thread.CurrentThread.CurrentCulture,
+                        PSRuleResources.OutcomeRulePass,
+                        RuleRecord.RuleName,
+                        Binding.TargetName),
+                    source: SOURCE_OUTCOME_PASS));
         }
 
         public void Fail()
@@ -192,10 +206,24 @@ namespace PSRule.Runtime
                 Writer.WriteWarning(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, Binding.TargetName);
 
             if (_FailStream == OutcomeLogStream.Error && Writer.ShouldWriteError())
-                Writer.WriteError(new ErrorRecord(new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, Binding.TargetName)), SOURCE_OUTCOME_FAIL, ErrorCategory.InvalidData, null));
+                Writer.WriteError(new ErrorRecord(
+                    new RuleException(string.Format(
+                        Thread.CurrentThread.CurrentCulture,
+                        PSRuleResources.OutcomeRuleFail,
+                        RuleRecord.RuleName,
+                        Binding.TargetName)),
+                    SOURCE_OUTCOME_FAIL,
+                    ErrorCategory.InvalidData,
+                    null));
 
             if (_FailStream == OutcomeLogStream.Information && Writer.ShouldWriteInformation())
-                Writer.WriteInformation(new InformationRecord(messageData: string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, Binding.TargetName), source: SOURCE_OUTCOME_FAIL));
+                Writer.WriteInformation(new InformationRecord(
+                    messageData: string.Format(
+                        Thread.CurrentThread.CurrentCulture,
+                        PSRuleResources.OutcomeRuleFail,
+                        RuleRecord.RuleName,
+                        Binding.TargetName),
+                    source: SOURCE_OUTCOME_FAIL));
         }
 
         public void WarnRuleInconclusive(string ruleId)
@@ -281,7 +309,10 @@ namespace PSRule.Runtime
                 return;
 
             Writer.WriteError(new ErrorRecord(
-                exception: new RuleException(message: string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.InvalidRuleResult, RuleBlock.RuleId)),
+                exception: new RuleException(message: string.Format(
+                    Thread.CurrentThread.CurrentCulture,
+                    PSRuleResources.InvalidRuleResult,
+                    RuleBlock.RuleId)),
                 errorId: ERRORID_INVALIDRULERESULT,
                 errorCategory: ErrorCategory.InvalidResult,
                 targetObject: null
@@ -318,7 +349,12 @@ namespace PSRule.Runtime
             if (Writer == null || !Writer.ShouldWriteVerbose())
                 return;
 
-            Writer.WriteVerbose(string.Concat(GetLogPrefix(), "[", condition, "] -- ", string.Format(Thread.CurrentThread.CurrentCulture, message, args)));
+            Writer.WriteVerbose(string.Concat(
+                GetLogPrefix(),
+                "[",
+                condition,
+                "] -- ",
+                string.Format(Thread.CurrentThread.CurrentCulture, message, args)));
         }
 
         public void VerboseConditionResult(string condition, int pass, int count, bool outcome)
@@ -497,7 +533,12 @@ namespace PSRule.Runtime
                 : string.Concat(
                     record.ScriptStackTrace,
                     Environment.NewLine,
-                    string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.RuleStackTrace, RuleBlock.RuleName, RuleBlock.Extent.File, RuleBlock.Extent.StartLineNumber)
+                    string.Format(
+                        Thread.CurrentThread.CurrentCulture,
+                        PSRuleResources.RuleStackTrace,
+                        RuleBlock.RuleName,
+                        RuleBlock.Extent.File,
+                        RuleBlock.Extent.StartLineNumber)
                 );
         }
 
@@ -755,7 +796,12 @@ namespace PSRule.Runtime
         {
             Pipeline.Begin(this);
 
-            var builder = new TargetBinderBuilder(Pipeline.BindTargetName, Pipeline.BindTargetType, Pipeline.BindField, Pipeline.Option.Input.TargetType);
+            var builder = new TargetBinderBuilder(
+                Pipeline.BindTargetName,
+                Pipeline.BindTargetType,
+                Pipeline.BindField,
+                Pipeline.Option.Input.TargetType);
+
             foreach (var languageScope in _LanguageScopes.Get())
             {
                 var targetBinding = Pipeline.Baseline.GetTargetBinding();

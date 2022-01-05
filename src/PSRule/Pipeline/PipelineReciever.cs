@@ -190,7 +190,12 @@ namespace PSRule.Pipeline
 
         public static IEnumerable<TargetObject> ReadObjectPath(TargetObject targetObject, VisitTargetObject source, string objectPath, bool caseSensitive)
         {
-            if (!ObjectHelper.GetPath(bindingContext: null, targetObject: targetObject.Value, path: objectPath, caseSensitive: caseSensitive, value: out object nestedObject))
+            if (!ObjectHelper.GetPath(
+                bindingContext: null,
+                targetObject: targetObject.Value,
+                path: objectPath,
+                caseSensitive: caseSensitive,
+                value: out object nestedObject))
                 return EmptyArray;
 
             var nestedType = nestedObject.GetType();
@@ -224,7 +229,10 @@ namespace PSRule.Pipeline
 
         private static bool IsAcceptedType(TargetObject targetObject)
         {
-            return targetObject.Value.BaseObject is string || targetObject.Value.BaseObject is InputFileInfo || targetObject.Value.BaseObject is FileInfo || targetObject.Value.BaseObject is Uri;
+            return targetObject.Value.BaseObject is string ||
+                targetObject.Value.BaseObject is InputFileInfo ||
+                targetObject.Value.BaseObject is FileInfo ||
+                targetObject.Value.BaseObject is Uri;
         }
 
         private static bool IsGitHead(TargetObject targetObject)

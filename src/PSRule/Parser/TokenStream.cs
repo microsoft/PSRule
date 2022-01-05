@@ -174,12 +174,12 @@ namespace PSRule.Parser
             return stream.Count == 0
                 ? Enumerable.Empty<MarkdownToken>()
                 : stream
-                // Skip until we reach the header
-                .SkipWhile(token => token.Type != MarkdownTokenType.Header || token.Text != header)
+                    // Skip until we reach the header
+                    .SkipWhile(token => token.Type != MarkdownTokenType.Header || token.Text != header)
 
-                // Get all tokens to the next header
-                .Skip(1)
-                .TakeWhile(token => token.Type != MarkdownTokenType.Header);
+                    // Get all tokens to the next header
+                    .Skip(1)
+                    .TakeWhile(token => token.Type != MarkdownTokenType.Header);
         }
 
         public static IEnumerable<MarkdownToken> GetSections(this TokenStream stream)
@@ -187,12 +187,12 @@ namespace PSRule.Parser
             return stream.Count == 0
                 ? Enumerable.Empty<MarkdownToken>()
                 : stream
-                // Skip until we reach the header
-                .SkipWhile(token => token.Type != MarkdownTokenType.Header)
+                    // Skip until we reach the header
+                    .SkipWhile(token => token.Type != MarkdownTokenType.Header)
 
-                // Get all tokens to the next header
-                .Skip(1)
-                .TakeWhile(token => token.Type != MarkdownTokenType.Header);
+                    // Get all tokens to the next header
+                    .Skip(1)
+                    .TakeWhile(token => token.Type != MarkdownTokenType.Header);
         }
     }
 

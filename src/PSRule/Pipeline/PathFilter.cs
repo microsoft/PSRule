@@ -417,7 +417,10 @@ namespace PSRule.Pipeline
         public static PathFilter Create(string basePath, string expression, bool matchResult = true)
         {
             return !ShouldSkipExpression(expression)
-                ? new PathFilter(basePath, new PathFilterExpression[] { PathFilterExpression.Create(expression) }, matchResult)
+                ? new PathFilter(
+                    basePath,
+                    new PathFilterExpression[] { PathFilterExpression.Create(expression) },
+                    matchResult)
                 : new PathFilter(basePath, null, matchResult);
         }
 
@@ -428,7 +431,9 @@ namespace PSRule.Pipeline
                 if (!ShouldSkipExpression(expression[i]))
                     result.Add(PathFilterExpression.Create(expression[i]));
 
-            return result.Count == 0 ? new PathFilter(basePath, null, matchResult) : new PathFilter(basePath, result.ToArray(), matchResult);
+            return result.Count == 0
+                ? new PathFilter(basePath, null, matchResult)
+                : new PathFilter(basePath, result.ToArray(), matchResult);
         }
 
         /// <summary>

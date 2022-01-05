@@ -305,7 +305,13 @@ namespace PSRule.Parser
                 return null;
             }
 
-            var extent = new SourceExtent(_Source, null, _ExtentMarker.Value, _Position, _Line, _Column);
+            var extent = new SourceExtent(
+                source: _Source,
+                path: null,
+                start: _ExtentMarker.Value,
+                end: _Position,
+                line: _Line,
+                column: _Column);
 
             _ExtentMarker = null;
 
@@ -376,7 +382,14 @@ namespace PSRule.Parser
                 var next = _Source[position + 1];
 
                 // Check against list of escapable characters
-                if (next == Backslash || next == BracketOpen || next == ParenthesesOpen || next == AngleOpen || next == AngleClose || next == Backtick || next == BracketClose || next == ParenthesesClose)
+                if (next == Backslash ||
+                    next == BracketOpen ||
+                    next == ParenthesesOpen ||
+                    next == AngleOpen ||
+                    next == AngleClose ||
+                    next == Backtick ||
+                    next == BracketClose ||
+                    next == ParenthesesClose)
                 {
                     return 1;
                 }

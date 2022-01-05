@@ -195,7 +195,10 @@ namespace PSRule.Definitions.Expressions
             if (type == null)
                 return true;
 
-            var comparer = RunspaceContext.CurrentThread.Pipeline.Baseline.GetTargetBinding().IgnoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+            var comparer = RunspaceContext.CurrentThread.Pipeline.Baseline.GetTargetBinding().IgnoreCase
+                ? StringComparer.OrdinalIgnoreCase
+                : StringComparer.Ordinal;
+
             var targetType = RunspaceContext.CurrentThread.RuleRecord.TargetType;
             for (var i = 0; i < type.Length; i++)
             {
@@ -605,7 +608,8 @@ namespace PSRule.Definitions.Expressions
         internal static bool Less(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (!TryPropertyLong(properties, LESS, out var propertyValue) || !TryOperand(context, LESS, o, properties, out var operand))
+            if (!TryPropertyLong(properties, LESS, out var propertyValue) ||
+                !TryOperand(context, LESS, o, properties, out var operand))
                 return Invalid(context, LESS);
 
             if (operand.Value == null)
@@ -616,7 +620,12 @@ namespace PSRule.Definitions.Expressions
                     ReasonStrings.Assert_IsNullOrEmpty
                 );
 
-            if (!ExpressionHelpers.CompareNumeric(operand.Value, propertyValue, convert: false, compare: out var compare, value: out _))
+            if (!ExpressionHelpers.CompareNumeric(
+                operand.Value,
+                propertyValue,
+                convert: false,
+                compare: out var compare,
+                value: out _))
                 return Invalid(context, LESS);
 
             // int, string, bool
@@ -669,7 +678,8 @@ namespace PSRule.Definitions.Expressions
         internal static bool Greater(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (!TryPropertyLong(properties, GREATER, out var propertyValue) || !TryOperand(context, GREATER, o, properties, out var operand))
+            if (!TryPropertyLong(properties, GREATER, out var propertyValue) ||
+                !TryOperand(context, GREATER, o, properties, out var operand))
                 return Invalid(context, GREATER);
 
             if (operand.Value == null)
@@ -703,7 +713,8 @@ namespace PSRule.Definitions.Expressions
         internal static bool GreaterOrEquals(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (!TryPropertyLong(properties, GREATEROREQUALS, out var propertyValue) || !TryOperand(context, GREATEROREQUALS, o, properties, out var operand))
+            if (!TryPropertyLong(properties, GREATEROREQUALS, out var propertyValue) ||
+                !TryOperand(context, GREATEROREQUALS, o, properties, out var operand))
                 return Invalid(context, GREATEROREQUALS);
 
             if (operand.Value == null)
@@ -737,7 +748,8 @@ namespace PSRule.Definitions.Expressions
         internal static bool StartsWith(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (TryPropertyStringArray(properties, STARTSWITH, out var propertyValue) && TryOperand(context, STARTSWITH, o, properties, out var operand))
+            if (TryPropertyStringArray(properties, STARTSWITH, out var propertyValue) &&
+                TryOperand(context, STARTSWITH, o, properties, out var operand))
             {
                 context.ExpressionTrace(STARTSWITH, operand.Value, propertyValue);
                 if (!ExpressionHelpers.TryString(operand.Value, out var value))
@@ -761,7 +773,8 @@ namespace PSRule.Definitions.Expressions
         internal static bool EndsWith(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (TryPropertyStringArray(properties, ENDSWITH, out var propertyValue) && TryOperand(context, ENDSWITH, o, properties, out var operand))
+            if (TryPropertyStringArray(properties, ENDSWITH, out var propertyValue) &&
+                TryOperand(context, ENDSWITH, o, properties, out var operand))
             {
                 context.ExpressionTrace(ENDSWITH, operand.Value, propertyValue);
                 if (!ExpressionHelpers.TryString(operand.Value, out var value))
@@ -785,7 +798,8 @@ namespace PSRule.Definitions.Expressions
         internal static bool Contains(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (TryPropertyStringArray(properties, CONTAINS, out var propertyValue) && TryOperand(context, CONTAINS, o, properties, out var operand))
+            if (TryPropertyStringArray(properties, CONTAINS, out var propertyValue) &&
+                TryOperand(context, CONTAINS, o, properties, out var operand))
             {
                 context.ExpressionTrace(CONTAINS, operand.Value, propertyValue);
                 if (!ExpressionHelpers.TryString(operand.Value, out var value))
@@ -809,7 +823,8 @@ namespace PSRule.Definitions.Expressions
         internal static bool IsString(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (TryPropertyBool(properties, ISSTRING, out var propertyValue) && TryOperand(context, ISSTRING, o, properties, out var operand))
+            if (TryPropertyBool(properties, ISSTRING, out var propertyValue) &&
+                TryOperand(context, ISSTRING, o, properties, out var operand))
             {
                 context.ExpressionTrace(ISSTRING, operand.Value, propertyValue);
                 return Condition(
@@ -826,7 +841,8 @@ namespace PSRule.Definitions.Expressions
         internal static bool IsLower(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (TryPropertyBool(properties, ISLOWER, out var propertyValue) && TryOperand(context, ISLOWER, o, properties, out var operand))
+            if (TryPropertyBool(properties, ISLOWER, out var propertyValue) &&
+                TryOperand(context, ISLOWER, o, properties, out var operand))
             {
                 if (!ExpressionHelpers.TryString(operand.Value, out var value))
                     return Condition(
@@ -852,7 +868,8 @@ namespace PSRule.Definitions.Expressions
         internal static bool IsUpper(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (TryPropertyBool(properties, ISUPPER, out var propertyValue) && TryOperand(context, ISUPPER, o, properties, out var operand))
+            if (TryPropertyBool(properties, ISUPPER, out var propertyValue) &&
+                TryOperand(context, ISUPPER, o, properties, out var operand))
             {
                 if (!ExpressionHelpers.TryString(operand.Value, out var value))
                     return Condition(
@@ -912,7 +929,8 @@ namespace PSRule.Definitions.Expressions
         internal static bool Version(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (TryPropertyString(properties, VERSION, out var expectedValue) && TryOperand(context, VERSION, o, properties, out var operand) &&
+            if (TryPropertyString(properties, VERSION, out var expectedValue) &&
+                TryOperand(context, VERSION, o, properties, out var operand) &&
                 TryPropertyBoolOrDefault(properties, INCLUDEPRERELEASE, out var includePrerelease, false))
             {
                 context.ExpressionTrace(VERSION, operand.Value, expectedValue);

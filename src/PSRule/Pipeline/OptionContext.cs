@@ -122,8 +122,9 @@ namespace PSRule.Pipeline
                 Include = option.Rule?.Include;
                 Exclude = option.Rule?.Exclude;
                 Tag = option.Rule?.Tag;
-                Configuration = option.Configuration != null ?
-                    new Dictionary<string, object>(option.Configuration, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                Configuration = option.Configuration != null
+                    ? new Dictionary<string, object>(option.Configuration, StringComparer.OrdinalIgnoreCase)
+                    : new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
                 Convention = new ConventionOption(option.Convention);
             }
 
@@ -170,8 +171,9 @@ namespace PSRule.Pipeline
                 TargetType = option.Binding?.TargetType;
                 UseQualifiedName = option.Binding?.UseQualifiedName;
                 Culture = option.Output?.Culture;
-                Configuration = option.Configuration != null ?
-                    new Dictionary<string, object>(option.Configuration, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                Configuration = option.Configuration != null
+                    ? new Dictionary<string, object>(option.Configuration, StringComparer.OrdinalIgnoreCase)
+                    : new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
                 Convention = new ConventionOption(option.Convention);
             }
 
@@ -186,8 +188,9 @@ namespace PSRule.Pipeline
                 TargetType = spec.Binding?.TargetType;
                 UseQualifiedName = spec.Binding?.UseQualifiedName;
                 Culture = spec.Output?.Culture;
-                Configuration = spec.Configuration != null ?
-                    new Dictionary<string, object>(spec.Configuration, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                Configuration = spec.Configuration != null
+                    ? new Dictionary<string, object>(spec.Configuration, StringComparer.OrdinalIgnoreCase)
+                    : new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
                 Convention = new ConventionOption(spec.Convention);
             }
         }

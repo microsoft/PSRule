@@ -86,7 +86,9 @@ namespace PSRule.Data
         {
             var type = Type ?? defaultType;
             var file = useRelativePath ? ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), File) : File;
-            return string.IsNullOrEmpty(type) ? string.Concat(file, COLON, Line, COLON, Position) : string.Concat(type, COLONSPACE, file, COLON, Line, COLON, Position);
+            return string.IsNullOrEmpty(type)
+                ? string.Concat(file, COLON, Line, COLON, Position)
+                : string.Concat(type, COLONSPACE, file, COLON, Line, COLON, Position);
         }
 
         public static TargetSourceInfo Create(object o)
