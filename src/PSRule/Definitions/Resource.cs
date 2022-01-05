@@ -71,14 +71,20 @@ namespace PSRule.Definitions
         }
     }
 
+    /// <summary>
+    /// A base resource annotation.
+    /// </summary>
     internal abstract class ResourceAnnotation
     {
 
     }
 
+    /// <summary>
+    /// Annotation used to flag validation issues.
+    /// </summary>
     internal sealed class ValidateResourceAnnotation : ResourceAnnotation
     {
-        public bool ApiVersionNotSet { get; internal set; }
+
     }
 
     public sealed class ResourceObject

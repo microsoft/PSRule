@@ -268,14 +268,6 @@ namespace PSRule.Runtime
             Writer.WriteDebug(PSRuleResources.DebugPropertyObsolete, RuleBlock.RuleName, variableName, propertyName);
         }
 
-        public void WarnMissingApiVersion(ResourceKind kind, string resourceId)
-        {
-            if (Writer == null || !Writer.ShouldWriteWarning())
-                return;
-
-            Writer.WriteWarning(PSRuleResources.MissingApiVersion, kind.ToString(), resourceId);
-        }
-
         public void ErrorInvaildRuleResult()
         {
             if (Writer == null || !Writer.ShouldWriteError())

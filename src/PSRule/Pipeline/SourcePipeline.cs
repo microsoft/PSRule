@@ -11,7 +11,6 @@ using System.Management.Automation;
 using System.Threading;
 using Newtonsoft.Json;
 using PSRule.Configuration;
-using PSRule.Definitions;
 using PSRule.Pipeline.Output;
 using PSRule.Resources;
 using YamlDotNet.Serialization;
@@ -117,9 +116,6 @@ namespace PSRule.Pipeline
                 Name = info.Name;
                 Version = info.Version?.ToString();
                 ProjectUri = info.ProjectUri?.ToString();
-                if (TryPrivateData(info, FIELD_PSRULE, out Hashtable moduleData))
-                    Baseline = moduleData.ContainsKey(FIELD_BASELINE) ? ResourceHelper.GetIdString(Name, moduleData[FIELD_BASELINE] as string) : null;
-
                 if (TryPrivateData(info, FIELD_PSDATA, out Hashtable psData) && psData.ContainsKey(FIELD_PRERELEASE))
                     Version = string.Concat(Version, PRERELEASE_SEPARATOR, psData[FIELD_PRERELEASE].ToString());
             }
