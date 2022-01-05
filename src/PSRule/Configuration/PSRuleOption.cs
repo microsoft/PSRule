@@ -154,10 +154,12 @@ namespace PSRule.Configuration
             return string.IsNullOrEmpty(SourcePath)
                 ? yaml
                 : string.Concat(
-                string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.OptionsSourceComment, SourcePath),
-                Environment.NewLine,
-                yaml
-            );
+                    string.Format(
+                        Thread.CurrentThread.CurrentCulture,
+                        PSRuleResources.OptionsSourceComment,
+                        SourcePath),
+                    Environment.NewLine,
+                    yaml);
         }
 
         public PSRuleOption Clone()
@@ -209,9 +211,10 @@ namespace PSRule.Configuration
             var filePath = GetFilePath(path);
 
             // Fallback to defaults even if file does not exist when silentlyContinue is true
-            return !File.Exists(filePath)
-                ? throw new FileNotFoundException(PSRuleResources.OptionsNotFound, filePath)
-                : FromEnvironment(FromYaml(path: filePath, yaml: File.ReadAllText(filePath)));
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException(PSRuleResources.OptionsNotFound, filePath);
+
+            return FromEnvironment(FromYaml(path: filePath, yaml: File.ReadAllText(filePath)));
         }
 
         /// <summary>
