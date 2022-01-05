@@ -35,7 +35,7 @@ Install and use PSRule with Azure Pipeline by using extension tasks.
 Install the extension from the marketplace, then use the `ps-rule-assert` task in pipeline steps.
 
 ```yaml
-- task: ps-rule-assert@0
+- task: ps-rule-assert@1
   displayName: Analyze Azure template files
   inputs:
     inputType: repository
