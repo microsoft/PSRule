@@ -106,9 +106,6 @@ PrivateData = @{
         # ReleaseNotes of this module
         # ReleaseNotes = ''
     } # End of PSData hashtable
-    PSRule = @{
-        Baseline = 'Module7'
-    }
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module

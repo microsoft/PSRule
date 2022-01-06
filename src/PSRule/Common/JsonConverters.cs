@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -545,12 +545,6 @@ namespace PSRule
                         comment: comment,
                         spec: deserializedSpec
                     );
-
-                    if (string.IsNullOrEmpty(apiVersion))
-                    {
-                        spec.SetApiVersionIssue();
-                    }
-
                     return true;
                 }
             }

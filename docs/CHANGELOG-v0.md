@@ -1,8 +1,8 @@
 # Change log
 
-See [upgrade notes][upgrade-notes] for helpful information when upgrading from previous versions.
+See [upgrade notes][1] for helpful information when upgrading from previous versions.
 
-[upgrade-notes]: upgrade-notes.md
+  [1]: https://microsoft.github.io/PSRule/latest/upgrade-notes/
 
 ## v0.22.0
 
