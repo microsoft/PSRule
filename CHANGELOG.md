@@ -1,13 +1,17 @@
 # Change log
 
-See [upgrade notes][upgrade-notes] for helpful information when upgrading from previous versions.
+See [upgrade notes][1] for helpful information when upgrading from previous versions.
 
-[upgrade-notes]: docs/upgrade-notes.md
+  [1]: https://microsoft.github.io/PSRule/latest/upgrade-notes/
+
+## Next release
+
+- v2 **Comming soon** - Please check out [upgrade notes][1] to get prepared for the next release.
 
 ## Current release
 
-- [v1](docs/CHANGELOG-v1.md)
+- [v1](https://microsoft.github.io/PSRule/latest/CHANGELOG-v1/)
 
 ## Prior releases
 
-- [v0](docs/CHANGELOG-v0.md)
+- [v0](https://microsoft.github.io/PSRule/latest/CHANGELOG-v0/)

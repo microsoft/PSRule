@@ -596,9 +596,6 @@ namespace PSRule
                     return false;
 
                 spec = descriptor.CreateInstance(RunspaceContext.CurrentThread.Source.File, metadata, comment, value);
-                if (string.IsNullOrEmpty(apiVersion))
-                    spec.SetApiVersionIssue();
-
                 return true;
             }
             return false;

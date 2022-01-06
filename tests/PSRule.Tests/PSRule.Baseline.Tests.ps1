@@ -702,14 +702,11 @@ Describe 'Baseline' -Tag 'Baseline' {
             # Not obsolete
             $Null = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline1' -WarningVariable outWarn -WarningAction SilentlyContinue);
             $warnings = @($outWarn);
-            $warnings.Length | Should -Be 1;
-            $warnings | Should -BeLike "The * resource * does not have an apiVersion set.*";
+            $warnings.Length | Should -Be 0;
 
             # Obsolete
             $Null = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline5' -WarningVariable outWarn -WarningAction SilentlyContinue);
-            $warnings = @($outWarn | Where-Object {
-                $_ -notlike "The * resource * does not have an apiVersion set.*"
-            });
+            $warnings = @($outWarn);
             $warnings.Length | Should -Be 1;
             $warnings[0] | Should -BeExactly "The baseline 'TestBaseline5' is obsolete. Consider switching to an alternative baseline.";
         }
@@ -803,8 +800,7 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result.Length | Should -Be 1;
             $result[0].RuleName | Should -Be 'M6.Rule1';
             $warnings = @($outWarn);
-            $warnings.Length | Should -Be 1;
-            $warnings | Should -BeExactly "Update module 'TestModule6' to set the default baseline using a module configuration resource instead. Configuring the default baseline via manifest will be removed in the next major version. See https://aka.ms/ps-rule/module-config.";
+            $warnings.Length | Should -Be 0;
 
             # Module default via manifest
             $Null = Import-Module (Join-Path $here -ChildPath 'TestModule7') -Force;
@@ -813,8 +809,7 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result.Length | Should -Be 1;
             $result[0].RuleName | Should -Be 'M7.Rule2';
             $warnings = @($outWarn);
-            $warnings.Length | Should -Be 1;
-            $warnings | Should -BeExactly "Update module 'TestModule7' to set the default baseline using a module configuration resource instead. Configuring the default baseline via manifest will be removed in the next major version. See https://aka.ms/ps-rule/module-config.";
+            $warnings.Length | Should -Be 0;
         }
     }
 

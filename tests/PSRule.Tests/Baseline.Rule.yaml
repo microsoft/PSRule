@@ -72,6 +72,7 @@ spec:
 
 ---
 # Synopsis: This is an example obsolete baseline
+apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: TestBaseline5

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -31,7 +31,6 @@ namespace PSRule
             Assert.Equal("github.com/microsoft/PSRule/v1", baseline[0].ApiVersion);
             Assert.Equal("value", baseline[0].Metadata.Annotations["key"]);
             Assert.False(baseline[0].Obsolete);
-            Assert.False(baseline[0].GetApiVersionIssue());
 
             var config = baseline[0].Spec.Configuration["key2"] as Array;
             Assert.NotNull(config);
@@ -46,7 +45,6 @@ namespace PSRule
             Assert.Equal("TestBaseline5", baseline[4].Name);
             Assert.Equal("github.com/microsoft/PSRule/v1", baseline[4].ApiVersion);
             Assert.True(baseline[4].Obsolete);
-            Assert.True(baseline[4].GetApiVersionIssue());
         }
 
         [Fact]
@@ -61,7 +59,6 @@ namespace PSRule
             Assert.Equal("github.com/microsoft/PSRule/v1", baseline[0].ApiVersion);
             Assert.Equal("value", baseline[0].Metadata.Annotations["key"]);
             Assert.False(baseline[0].Obsolete);
-            Assert.False(baseline[0].GetApiVersionIssue());
         }
 
         [Fact]

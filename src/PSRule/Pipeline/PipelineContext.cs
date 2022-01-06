@@ -112,8 +112,7 @@ namespace PSRule.Pipeline
 
         internal enum ResourceIssueType
         {
-            Unknown,
-            MissingApiVersion
+            Unknown
         }
 
         internal sealed class ResourceIssue
@@ -161,9 +160,7 @@ namespace PSRule.Pipeline
 
         internal void Import(IResource resource)
         {
-            if (resource.GetApiVersionIssue())
-                _TrackedIssues.Add(new ResourceIssue(resource.Kind, resource.Id, ResourceIssueType.MissingApiVersion));
-
+            TrackIssue(resource);
             if (TryBaseline(resource, out var baseline) && TryBaselineRef(resource.Id, out var baselineRef))
             {
                 _Unresolved.Remove(baselineRef);
@@ -181,6 +178,12 @@ namespace PSRule.Pipeline
                 }
                 Baseline.Add(new OptionContext.ConfigScope(OptionContext.ScopeType.Module, resource.Module, moduleConfig.Spec));
             }
+        }
+
+        private void TrackIssue(IResource resource)
+        {
+            //if (resource.TryValidateResourceAnnotation())
+            //    _TrackedIssues.Add(new ResourceIssue(resource.Kind, resource.Id, ResourceIssueType.MissingApiVersion));
         }
 
         private bool TryBaselineRef(string resourceId, out BaselineRef baselineRef)
@@ -221,12 +224,18 @@ namespace PSRule.Pipeline
 
         internal void Begin(RunspaceContext runspaceContext)
         {
-            for (var i = 0; _TrackedIssues != null && i < _TrackedIssues.Count; i++)
-            {
-                if (_TrackedIssues[i].Issue == ResourceIssueType.MissingApiVersion)
-                    runspaceContext.WarnMissingApiVersion(_TrackedIssues[i].Kind, _TrackedIssues[i].Id);
-            }
+            ReportIssue(runspaceContext);
             Baseline.Init(runspaceContext);
+        }
+
+        /// <summary>
+        /// Report any tracked issues.
+        /// </summary>
+        private void ReportIssue(RunspaceContext runspaceContext)
+        {
+            //for (var i = 0; _TrackedIssues != null && i < _TrackedIssues.Count; i++)
+            //if (_TrackedIssues[i].Issue == ResourceIssueType.MissingApiVersion)
+            //    runspaceContext.WarnMissingApiVersion(_TrackedIssues[i].Kind, _TrackedIssues[i].Id);
         }
 
         #region IBindingContext

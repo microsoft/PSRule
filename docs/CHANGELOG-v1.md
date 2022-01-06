@@ -1,8 +1,8 @@
 # Change log
 
-See [upgrade notes][upgrade-notes] for helpful information when upgrading from previous versions.
+See [upgrade notes][1] for helpful information when upgrading from previous versions.
 
-[upgrade-notes]: upgrade-notes.md
+  [1]: https://microsoft.github.io/PSRule/latest/upgrade-notes/
 
 **Important notes**:
 
@@ -21,6 +21,14 @@ What's changed since v1.11.0:
     - See [about_PSRule_Assert] for details.
   - Improve tracking of suppressed objects. [#794](https://github.com/microsoft/PSRule/issues/794)
     - Added `Execution.SuppressedRuleWarning` option to output warning for suppressed rules.
+- Engineering:
+  - **Breaking change:** Removal of deprecated default baseline from module manifest. [#755](https://github.com/microsoft/PSRule/issues/755)
+    - Set the default module baseline using module configuration.
+    - See [upgrade notes][1] for details.
+  - **Breaking change:** Require `apiVersion` on YAML and JSON to be specified. [#648](https://github.com/microsoft/PSRule/issues/648)
+    - Resources should use `github.com/microsoft/PSRule/v1` as the `apiVersion`.
+    - Resources that do not specify an `apiVersion` will be ignored.
+    - See [upgrade notes][1] for details.
 
 ## v1.11.0
 

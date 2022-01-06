@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using PSRule.Definitions.Baselines;
@@ -16,9 +16,6 @@ namespace PSRule.Definitions
 
         public static string GetFullName(string apiVersion, string name)
         {
-            if (string.IsNullOrEmpty(apiVersion))
-                apiVersion = Specs.V1;
-
             return string.Concat(apiVersion, FullNameSeparator, name);
         }
     }
