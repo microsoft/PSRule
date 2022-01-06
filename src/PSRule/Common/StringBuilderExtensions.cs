@@ -29,7 +29,14 @@ namespace PSRule.Common
 
         private static bool IsEscapableCharacter(char c)
         {
-            return c == Backslash || c == BracketOpen || c == ParenthesesOpen || c == AngleOpen || c == AngleClose || c == Backtick || c == BracketClose || c == ParenthesesClose;
+            return c == Backslash ||
+                c == BracketOpen ||
+                c == ParenthesesOpen ||
+                c == AngleOpen ||
+                c == AngleClose ||
+                c == Backtick ||
+                c == BracketClose ||
+                c == ParenthesesClose;
         }
     }
 }

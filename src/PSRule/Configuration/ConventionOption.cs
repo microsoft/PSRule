@@ -45,7 +45,7 @@ namespace PSRule.Configuration
         {
             unchecked // Overflow is fine
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 23 + (Include != null ? Include.GetHashCode() : 0);
                 return hash;
             }
@@ -65,13 +65,13 @@ namespace PSRule.Configuration
 
         internal void Load(EnvironmentHelper env)
         {
-            if (env.TryStringArray("PSRULE_CONVENTION_INCLUDE", out string[] include))
+            if (env.TryStringArray("PSRULE_CONVENTION_INCLUDE", out var include))
                 Include = include;
         }
 
         internal void Load(Dictionary<string, object> index)
         {
-            if (index.TryPopStringArray("Convention.Include", out string[] include))
+            if (index.TryPopStringArray("Convention.Include", out var include))
                 Include = include;
         }
     }

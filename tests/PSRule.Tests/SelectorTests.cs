@@ -83,7 +83,7 @@ namespace PSRule
             Assert.False(equals.Match(actual4));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameEquals", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameEquals", out var context);
             var actual5 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -142,7 +142,7 @@ namespace PSRule
             Assert.False(notEquals.Match(actual4));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameNotEquals", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameNotEquals", out var context);
             var actual5 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -175,7 +175,7 @@ namespace PSRule
             Assert.True(hasValueFalse.Match(actual3));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameHasValue", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameHasValue", out var context);
             var actual4 = GetObject();
 
             context.EnterTargetObject(new TargetObject(actual4));
@@ -199,7 +199,7 @@ namespace PSRule
             Assert.False(match.Match(actual5));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameMatch", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameMatch", out var context);
             var actual6 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -229,7 +229,7 @@ namespace PSRule
             Assert.True(notMatch.Match(actual4));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameNotMatch", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameNotMatch", out var context);
             var actual6 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -263,7 +263,7 @@ namespace PSRule
             Assert.False(@in.Match(actual6));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameIn", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameIn", out var context);
             var actual7 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -295,7 +295,7 @@ namespace PSRule
             Assert.True(notIn.Match(actual5));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameNotIn", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameNotIn", out var context);
             var actual6 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -408,7 +408,7 @@ namespace PSRule
             Assert.True(less.Match(actual7));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameLess", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameLess", out var context);
             var actual8 = GetObject(
                (name: "Name", value: "ItemTwo")
             );
@@ -444,7 +444,7 @@ namespace PSRule
             Assert.True(lessOrEquals.Match(actual7));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameLessOrEquals", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameLessOrEquals", out var context);
             var actual8 = GetObject(
                (name: "Name", value: "ItemTwo")
             );
@@ -480,7 +480,7 @@ namespace PSRule
             Assert.False(greater.Match(actual7));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameGreater", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameGreater", out var context);
             var actual8 = GetObject(
                (name: "Name", value: "ItemTwo")
             );
@@ -516,7 +516,7 @@ namespace PSRule
             Assert.False(greaterOrEquals.Match(actual7));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameGreaterOrEquals", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameGreaterOrEquals", out var context);
             var actual8 = GetObject(
                (name: "Name", value: "ItemTwo")
             );
@@ -550,7 +550,7 @@ namespace PSRule
             Assert.False(startsWith.Match(actual6));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameStartsWith", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameStartsWith", out var context);
             var actual7 = GetObject(
                (name: "Name", value: "1TargetObject")
             );
@@ -584,7 +584,7 @@ namespace PSRule
             Assert.False(endsWith.Match(actual6));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameEndsWith", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameEndsWith", out var context);
             var actual7 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -618,7 +618,7 @@ namespace PSRule
             Assert.False(contains.Match(actual6));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameContains", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameContains", out var context);
             var actual7 = GetObject(
                (name: "Name", value: "Target.1.Object")
             );
@@ -659,7 +659,7 @@ namespace PSRule
             Assert.False(isStringFalse.Match(actual5));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameIsString", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameIsString", out var context);
             var actual7 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -703,7 +703,7 @@ namespace PSRule
             Assert.False(isLowerTrue.Match(actual6));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameIsLower", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameIsLower", out var context);
             var actual7 = GetObject(
                (name: "Name", value: "targetobject1")
             );
@@ -747,7 +747,7 @@ namespace PSRule
             Assert.False(isUpperFalse.Match(actual6));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameIsUpper", out RunspaceContext context);
+            var withName = GetSelectorVisitor("YamlNameIsUpper", out var context);
             var actual7 = GetObject(
                (name: "Name", value: "TARGETOBJECT1")
             );
@@ -924,7 +924,7 @@ namespace PSRule
         [Fact]
         public void Type()
         {
-            var equals = GetSelectorVisitor("YamlTypeEquals", out RunspaceContext context);
+            var equals = GetSelectorVisitor("YamlTypeEquals", out var context);
             var actual1 = GetObject();
             actual1.TypeNames.Insert(0, "CustomType1");
 
@@ -936,7 +936,7 @@ namespace PSRule
         [Fact]
         public void Name()
         {
-            var equals = GetSelectorVisitor("YamlNameEquals", out RunspaceContext context);
+            var equals = GetSelectorVisitor("YamlNameEquals", out var context);
             var actual1 = GetObject(
                 (name: "Name", value: "TargetObject1")
             );

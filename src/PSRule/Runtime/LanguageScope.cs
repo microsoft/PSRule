@@ -61,10 +61,7 @@ namespace PSRule.Runtime
         public bool TryConfigurationValue(string key, out object value)
         {
             value = null;
-            if (string.IsNullOrEmpty(key))
-                return false;
-
-            return _Configuration.TryGetValue(key, out value);
+            return !string.IsNullOrEmpty(key) && _Configuration.TryGetValue(key, out value);
         }
 
         public void WithFilter(IResourceFilter resourceFilter)
@@ -74,7 +71,7 @@ namespace PSRule.Runtime
 
         public IResourceFilter GetFilter(ResourceKind kind)
         {
-            return _Filter.TryGetValue(kind, out IResourceFilter filter) ? filter : null;
+            return _Filter.TryGetValue(kind, out var filter) ? filter : null;
         }
 
         public void AddService(string name, object service)
@@ -87,7 +84,7 @@ namespace PSRule.Runtime
 
         public object GetService(string name)
         {
-            return _Service.TryGetValue(name, out object service) ? service : null;
+            return _Service.TryGetValue(name, out var service) ? service : null;
         }
 
         private void Dispose(bool disposing)
@@ -152,7 +149,7 @@ namespace PSRule.Runtime
 
         internal void UseScope(string name)
         {
-            if (_Scopes.TryGetValue(GetScopeName(name), out ILanguageScope scope))
+            if (_Scopes.TryGetValue(GetScopeName(name), out var scope))
                 _Current = scope;
         }
 

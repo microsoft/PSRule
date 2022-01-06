@@ -91,7 +91,14 @@ namespace PSRule.Badges
             var w = (int)Math.Round(_LeftWidth + _RightWidth + 2 * _BorderPadding + 2 * _MidPadding);
             var x = (int)Math.Round(_LeftWidth + _BorderPadding + _MidPadding);
 
-            var builder = new SvgBuilder(width: w, height: 20, textScale: 10, midPoint: x, rounding: 2, borderPadding: _BorderPadding, midPadding: _MidPadding);
+            var builder = new SvgBuilder(
+                width: w,
+                height: 20,
+                textScale: 10,
+                midPoint: x,
+                rounding: 2,
+                borderPadding: _BorderPadding,
+                midPadding: _MidPadding);
             builder.Begin(string.Concat(_LeftText, ": ", _RightText));
             builder.Backfill(_Fill);
             builder.TextBlock(_LeftText, _RightText, 110);

@@ -88,7 +88,7 @@ namespace PSRule.Configuration
         {
             unchecked // Overflow is fine
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 23 + (As.HasValue ? As.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Banner.HasValue ? Banner.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Culture != null ? Culture.GetHashCode() : 0);
@@ -189,7 +189,7 @@ namespace PSRule.Configuration
             if (env.TryEnum("PSRULE_OUTPUT_BANNER", out BannerFormat banner))
                 Banner = banner;
 
-            if (env.TryStringArray("PSRULE_OUTPUT_CULTURE", out string[] culture))
+            if (env.TryStringArray("PSRULE_OUTPUT_CULTURE", out var culture))
                 Culture = culture;
 
             if (env.TryEnum("PSRULE_OUTPUT_ENCODING", out OutputEncoding encoding))
@@ -204,13 +204,13 @@ namespace PSRule.Configuration
             if (env.TryEnum("PSRULE_OUTPUT_OUTCOME", out RuleOutcome outcome))
                 Outcome = outcome;
 
-            if (env.TryString("PSRULE_OUTPUT_PATH", out string path))
+            if (env.TryString("PSRULE_OUTPUT_PATH", out var path))
                 Path = path;
 
             if (env.TryEnum("PSRULE_OUTPUT_STYLE", out OutputStyle style))
                 Style = style;
 
-            if (env.TryInt("PSRULE_OUTPUT_JSONINDENT", out int jsonIndent))
+            if (env.TryInt("PSRULE_OUTPUT_JSONINDENT", out var jsonIndent))
                 JsonIndent = jsonIndent;
         }
 
@@ -222,7 +222,7 @@ namespace PSRule.Configuration
             if (index.TryPopEnum("Output.Banner", out BannerFormat banner))
                 Banner = banner;
 
-            if (index.TryPopStringArray("Output.Culture", out string[] culture))
+            if (index.TryPopStringArray("Output.Culture", out var culture))
                 Culture = culture;
 
             if (index.TryPopEnum("Output.Encoding", out OutputEncoding encoding))
@@ -237,13 +237,13 @@ namespace PSRule.Configuration
             if (index.TryPopEnum("Output.Outcome", out RuleOutcome outcome))
                 Outcome = outcome;
 
-            if (index.TryPopString("Output.Path", out string path))
+            if (index.TryPopString("Output.Path", out var path))
                 Path = path;
 
             if (index.TryPopEnum("Output.Style", out OutputStyle style))
                 Style = style;
 
-            if (index.TryPopValue<int>("Output.JsonIndent", out int jsonIndent))
+            if (index.TryPopValue<int>("Output.JsonIndent", out var jsonIndent))
                 JsonIndent = jsonIndent;
         }
     }

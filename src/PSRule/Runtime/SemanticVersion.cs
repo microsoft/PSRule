@@ -251,10 +251,7 @@ namespace PSRule.Runtime
 
             private bool GuardPRID(PR prid)
             {
-                if (_IncludePrerelease)
-                    return false;
-
-                return Stable && !IsStable(prid);
+                return !_IncludePrerelease && Stable && !IsStable(prid);
             }
 
             private bool EQ(int major, int minor, int patch, PR prid)
@@ -288,10 +285,9 @@ namespace PSRule.Runtime
             /// </summary>
             private bool GT(int major, int minor, int patch, PR prid)
             {
-                if (!IsStable(prid) && !_IncludePrerelease)
-                    return EQCore(major, minor, patch) && PR(prid) < 0;
-
-                return GTCore(major, minor, patch) || (EQCore(major, minor, patch) && PR(prid) < 0);
+                return !IsStable(prid) && !_IncludePrerelease
+                    ? EQCore(major, minor, patch) && PR(prid) < 0
+                    : GTCore(major, minor, patch) || (EQCore(major, minor, patch) && PR(prid) < 0);
             }
 
             /// <summary>
@@ -299,10 +295,9 @@ namespace PSRule.Runtime
             /// </summary>
             private bool LT(int major, int minor, int patch, PR prid)
             {
-                if (!IsStable(prid) && !_IncludePrerelease)
-                    return EQCore(major, minor, patch) && PR(prid) > 0;
-
-                return LTCore(major, minor, patch) || (EQCore(major, minor, patch) && PR(prid) > 0);
+                return !IsStable(prid) && !_IncludePrerelease
+                    ? EQCore(major, minor, patch) && PR(prid) > 0
+                    : LTCore(major, minor, patch) || (EQCore(major, minor, patch) && PR(prid) > 0);
             }
 
             /// <summary>
@@ -417,10 +412,10 @@ namespace PSRule.Runtime
                 {
                     var leftNumeric = false;
                     var rightNumeric = false;
-                    if (long.TryParse(left[i], out long l))
+                    if (long.TryParse(left[i], out var l))
                         leftNumeric = true;
 
-                    if (long.TryParse(right[i], out long r))
+                    if (long.TryParse(right[i], out var r))
                         rightNumeric = true;
 
                     if (leftNumeric != rightNumeric)
@@ -548,7 +543,7 @@ namespace PSRule.Runtime
                     if (!IsAllowedChar(_Current))
                         return false;
 
-                    if (TryDigit(out int digit))
+                    if (TryDigit(out var digit))
                         segments[segmentIndex++] = digit;
 
                     if (IsSeparator(_Current))
@@ -580,7 +575,7 @@ namespace PSRule.Runtime
                 if (EOF)
                     return false;
 
-                bool numeric = true;
+                var numeric = true;
                 while (!EOF && IsPrereleaseChar(_Current, ref numeric))
                     Next();
 
@@ -710,17 +705,17 @@ namespace PSRule.Runtime
                 return true;
 
             var stream = new VersionStream(value);
-            stream.Flags(out ConstraintFlags flags);
+            stream.Flags(out var flags);
             if (flags.HasFlag(ConstraintFlags.Prerelease))
                 includePrerelease = true;
 
             while (!stream.EOF)
             {
-                stream.Operator(out ComparisonOperatorFlags comparison);
-                if (!stream.TrySegments(out int[] segments))
+                stream.Operator(out var comparison);
+                if (!stream.TrySegments(out var segments))
                     return false;
 
-                stream.Prerelease(out PR prerelease);
+                stream.Prerelease(out var prerelease);
                 stream.Build(out _);
 
                 c.Join(segments[0], segments[1], segments[2], prerelease, comparison, stream.GetJoin(), includePrerelease);
@@ -735,13 +730,13 @@ namespace PSRule.Runtime
                 return false;
 
             var stream = new VersionStream(value);
-            if (!stream.TrySegments(out int[] segments))
+            if (!stream.TrySegments(out var segments))
                 return false;
 
-            if (!stream.Prerelease(out PR prerelease))
+            if (!stream.Prerelease(out var prerelease))
                 return false;
 
-            stream.Build(out string build);
+            stream.Build(out var build);
             version = new Version(segments[0], segments[1], segments[2], prerelease, build);
             return true;
         }

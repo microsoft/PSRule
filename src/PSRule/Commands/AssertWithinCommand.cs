@@ -63,13 +63,18 @@ namespace PSRule.Commands
                 throw RuleScopeException(LanguageKeywords.Within);
 
             var targetObject = InputObject ?? GetTargetObject();
-            bool expected = !Not;
-            bool match = false;
-            string found = string.Empty;
+            var expected = !Not;
+            var match = false;
+            var found = string.Empty;
 
             // Pass with any match, or (-Not) fail with any match
 
-            if (ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, path: Field, caseSensitive: false, value: out object fieldValue))
+            if (ObjectHelper.GetPath(
+                bindingContext: PipelineContext.CurrentThread,
+                targetObject: targetObject,
+                path: Field,
+                caseSensitive: false,
+                value: out object fieldValue))
             {
                 for (var i = 0; (Value == null || i < Value.Length) && !match; i++)
                 {
@@ -79,7 +84,10 @@ namespace PSRule.Commands
                         if (fieldValue == null && (Value == null || Value[i] == null))
                         {
                             match = true;
-                            RunspaceContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: fieldValue);
+                            RunspaceContext.CurrentThread.VerboseConditionMessage(
+                                condition: RuleLanguageNouns.Within,
+                                message: PSRuleResources.WithinTrue,
+                                args: fieldValue);
                         }
                         else
                         {
@@ -92,7 +100,10 @@ namespace PSRule.Commands
                         if ((_LikePattern == null && _Comparer.Equals(Value[i].BaseObject, strValue)) || (_LikePattern != null && _LikePattern[i].IsMatch(strValue)))
                         {
                             match = true;
-                            RunspaceContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: strValue);
+                            RunspaceContext.CurrentThread.VerboseConditionMessage(
+                                condition: RuleLanguageNouns.Within,
+                                message: PSRuleResources.WithinTrue,
+                                args: strValue);
                             found = Value[i].BaseObject.ToString();
                         }
                     }
@@ -100,7 +111,10 @@ namespace PSRule.Commands
                     else if (Value[i].Equals(fieldValue))
                     {
                         match = true;
-                        RunspaceContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Within, message: PSRuleResources.WithinTrue, args: fieldValue);
+                        RunspaceContext.CurrentThread.VerboseConditionMessage(
+                            condition: RuleLanguageNouns.Within,
+                            message: PSRuleResources.WithinTrue,
+                            args: fieldValue);
                         found = Value[i].ToString();
                     }
                 }
@@ -126,7 +140,7 @@ namespace PSRule.Commands
             _LikePattern = new WildcardPattern[Value.Length];
             for (var i = 0; i < _LikePattern.Length; i++)
             {
-                if (!TryStringValue(Value[i], out string value))
+                if (!TryStringValue(Value[i], out var value))
                 {
                     throw new RuleException(PSRuleResources.WithinLikeNotString);
                 }
@@ -137,7 +151,7 @@ namespace PSRule.Commands
 
         private bool TryExpressionCache()
         {
-            if (!PipelineContext.CurrentThread.ExpressionCache.TryGetValue(MyInvocation.PositionMessage, out object cacheValue))
+            if (!PipelineContext.CurrentThread.ExpressionCache.TryGetValue(MyInvocation.PositionMessage, out var cacheValue))
                 return false;
 
             _LikePattern = (WildcardPattern[])cacheValue;

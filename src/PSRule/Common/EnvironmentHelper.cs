@@ -12,31 +12,28 @@ namespace PSRule
     {
         public static bool IsAzurePipelines(this EnvironmentHelper helper)
         {
-            return helper.TryBool("TF_BUILD", out bool azp) && azp;
+            return helper.TryBool("TF_BUILD", out var azp) && azp;
         }
 
         public static bool IsGitHubActions(this EnvironmentHelper helper)
         {
-            return helper.TryBool("GITHUB_ACTIONS", out bool gh) && gh;
+            return helper.TryBool("GITHUB_ACTIONS", out var gh) && gh;
         }
 
         public static bool IsVisualStudioCode(this EnvironmentHelper helper)
         {
-            return helper.TryString("TERM_PROGRAM", out string term) && term == "vscode";
+            return helper.TryString("TERM_PROGRAM", out var term) && term == "vscode";
         }
 
         public static string GetRunId(this EnvironmentHelper helper)
         {
-            if (helper.TryString("PSRULE_RUN_ID", out string runId))
+            if (helper.TryString("PSRULE_RUN_ID", out var runId))
                 return runId;
 
-            if (helper.TryString("BUILD_REPOSITORY_NAME", out string prefix) && helper.TryString("BUILD_BUILDID", out string suffix))
-                return string.Concat(prefix, "/", suffix);
-
-            if (helper.TryString("GITHUB_REPOSITORY", out prefix) && helper.TryString("GITHUB_RUN_ID", out suffix))
-                return string.Concat(prefix, "/", suffix);
-
-            return null;
+            return helper.TryString("BUILD_REPOSITORY_NAME", out var prefix) && helper.TryString("BUILD_BUILDID", out var suffix) ||
+                helper.TryString("GITHUB_REPOSITORY", out prefix) && helper.TryString("GITHUB_RUN_ID", out suffix)
+                ? string.Concat(prefix, "/", suffix)
+                : null;
         }
     }
 
@@ -54,7 +51,7 @@ namespace PSRule
         internal bool TrySecureString(string key, out SecureString value)
         {
             value = null;
-            if (!TryString(key, out string variable))
+            if (!TryString(key, out var variable))
                 return false;
 
             value = new NetworkCredential("na", variable).SecurePassword;
@@ -64,28 +61,25 @@ namespace PSRule
         internal bool TryInt(string key, out int value)
         {
             value = default;
-            return TryVariable(key, out string variable) && int.TryParse(variable, out value);
+            return TryVariable(key, out var variable) && int.TryParse(variable, out value);
         }
 
         internal bool TryBool(string key, out bool value)
         {
             value = default;
-            return TryVariable(key, out string variable) && TryParseBool(variable, out value);
+            return TryVariable(key, out var variable) && TryParseBool(variable, out value);
         }
 
         internal bool TryEnum<TEnum>(string key, out TEnum value) where TEnum : struct
         {
             value = default;
-            if (!TryVariable(key, out string variable))
-                return false;
-
-            return Enum.TryParse(variable, ignoreCase: true, out value);
+            return TryVariable(key, out var variable) && Enum.TryParse(variable, ignoreCase: true, out value);
         }
 
         internal bool TryStringArray(string key, out string[] value)
         {
             value = default;
-            if (!TryVariable(key, out string variable))
+            if (!TryVariable(key, out var variable))
                 return false;
 
             value = variable.Split(STRINGARRAY_SEPARATOR, options: StringSplitOptions.RemoveEmptyEntries);
@@ -103,7 +97,7 @@ namespace PSRule
             if (bool.TryParse(variable, out value))
                 return true;
 
-            if (int.TryParse(variable, out int ivalue))
+            if (int.TryParse(variable, out var ivalue))
             {
                 value = ivalue > 0;
                 return true;

@@ -23,7 +23,11 @@ namespace PSRule.Commands
             var invokeResult = RuleConditionHelper.Create(Body.Invoke());
             var result = invokeResult.AllOf();
 
-            RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.AllOf, pass: invokeResult.Pass, count: invokeResult.Count, outcome: result);
+            RunspaceContext.CurrentThread.VerboseConditionResult(
+                condition: RuleLanguageNouns.AllOf,
+                pass: invokeResult.Pass,
+                count: invokeResult.Count,
+                outcome: result);
             WriteObject(result);
         }
     }

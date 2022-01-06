@@ -46,7 +46,7 @@ namespace PSRule.Host
 
             public bool Has<TAst>(string parameterName, out TAst parameterValue) where TAst : CommandElementAst
             {
-                var result = Bound.TryGetValue(parameterName, out CommandElementAst value) && value is TAst;
+                var result = Bound.TryGetValue(parameterName, out var value) && value is TAst;
                 parameterValue = result ? value as TAst : null;
                 return result;
             }
@@ -59,7 +59,7 @@ namespace PSRule.Host
                     _Offset++;
                     return true;
                 }
-                int relative = position - _Offset;
+                var relative = position - _Offset;
                 var result = Unbound.Count > relative && Unbound[relative] is TAst;
                 value = result ? Unbound[relative] as TAst : null;
                 return result;
@@ -151,8 +151,8 @@ namespace PSRule.Host
         private static ParameterBindResult BindParameters(CommandAst commandAst)
         {
             var result = new ParameterBindResult();
-            int i = 1;
-            int next = 2;
+            var i = 1;
+            var next = 2;
             for (; i < commandAst.CommandElements.Count; i++, next++)
             {
                 // Is named parameter

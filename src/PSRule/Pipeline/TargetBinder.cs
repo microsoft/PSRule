@@ -241,10 +241,7 @@ namespace PSRule.Pipeline
 
         public ITargetBindingContext Using(string languageScope)
         {
-            if (_BindingContext.TryGetValue(languageScope ?? STANDALONE_SCOPE, out ITargetBindingContext result))
-                return result;
-
-            return null;
+            return _BindingContext.TryGetValue(languageScope ?? STANDALONE_SCOPE, out var result) ? result : null;
         }
 
         /// <summary>

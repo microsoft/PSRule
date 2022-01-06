@@ -22,19 +22,13 @@ namespace PSRule.Data
         {
             get
             {
-                if (_Index == null || !_Index.TryGetValue(type, out TargetSourceInfo value))
-                    return null;
-
-                return value;
+                return _Index == null || !_Index.TryGetValue(type, out var value) ? null : value;
             }
         }
 
         internal TargetSourceInfo[] GetSourceInfo()
         {
-            if (_Items == null)
-                return Array.Empty<TargetSourceInfo>();
-
-            return _Items.ToArray();
+            return _Items == null ? Array.Empty<TargetSourceInfo>() : _Items.ToArray();
         }
 
         internal void AddRange(TargetSourceInfo[] sourceInfo)

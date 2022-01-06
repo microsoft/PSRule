@@ -64,7 +64,7 @@ namespace PSRule.BuildTool
         {
             using var font = new Font("Verdana", 11f, GraphicsUnit.Pixel);
             using var g = Graphics.FromHwnd(IntPtr.Zero);
-            SizeF size = g.MeasureString(s, font);
+            var size = g.MeasureString(s, font);
             return size.Width;
         }
     }

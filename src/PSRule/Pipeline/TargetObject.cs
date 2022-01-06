@@ -57,7 +57,7 @@ namespace PSRule.Pipeline
 
         internal T GetAnnotation<T>() where T : TargetObjectAnnotation, new()
         {
-            if (!_Annotations.TryGetValue(typeof(T), out TargetObjectAnnotation value))
+            if (!_Annotations.TryGetValue(typeof(T), out var value))
             {
                 value = new T();
                 _Annotations.Add(typeof(T), value);
