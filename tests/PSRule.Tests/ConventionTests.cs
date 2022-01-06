@@ -70,10 +70,7 @@ namespace PSRule
 
         private PSRuleOption GetOption(string path = null)
         {
-            if (path == null)
-                return new PSRuleOption();
-
-            return PSRuleOption.FromFile(path);
+            return path == null ? new PSRuleOption() : PSRuleOption.FromFile(path);
         }
 
         private static string GetSourcePath(string fileName)

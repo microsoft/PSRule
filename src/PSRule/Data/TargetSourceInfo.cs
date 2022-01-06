@@ -68,7 +68,7 @@ namespace PSRule.Data
         {
             unchecked // Overflow is fine
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 23 + (File != null ? File.GetHashCode() : 0);
                 hash = hash * 23 + (Line.HasValue ? Line.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Position.HasValue ? Position.Value.GetHashCode() : 0);
@@ -86,15 +86,14 @@ namespace PSRule.Data
         {
             var type = Type ?? defaultType;
             var file = useRelativePath ? ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), File) : File;
-            return string.IsNullOrEmpty(type) ? string.Concat(file, COLON, Line, COLON, Position) : string.Concat(type, COLONSPACE, file, COLON, Line, COLON, Position);
+            return string.IsNullOrEmpty(type)
+                ? string.Concat(file, COLON, Line, COLON, Position)
+                : string.Concat(type, COLONSPACE, file, COLON, Line, COLON, Position);
         }
 
         public static TargetSourceInfo Create(object o)
         {
-            if (o is PSObject pso)
-                return Create(pso);
-
-            return null;
+            return o is PSObject pso ? Create(pso) : null;
         }
 
         public static TargetSourceInfo Create(PSObject o)

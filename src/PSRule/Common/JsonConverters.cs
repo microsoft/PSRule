@@ -234,7 +234,7 @@ namespace PSRule
             }
             if (bindTargetInfo)
             {
-                result.UseTargetInfo(out PSRuleTargetInfo info);
+                result.UseTargetInfo(out var info);
                 info.SetSource(sourceInfo?.File, lineNumber, linePosition);
             }
             return result;
@@ -409,13 +409,13 @@ namespace PSRule
                     var propertyName = reader.Value.ToString();
 
                     // Read apiVersion
-                    if (TryApiVersion(reader: reader, propertyName: propertyName, apiVersion: out string apiVersionValue))
+                    if (TryApiVersion(reader: reader, propertyName: propertyName, apiVersion: out var apiVersionValue))
                     {
                         apiVersion = apiVersionValue;
                     }
 
                     // Read kind
-                    else if (TryKind(reader: reader, propertyName: propertyName, kind: out string kindValue))
+                    else if (TryKind(reader: reader, propertyName: propertyName, kind: out var kindValue))
                     {
                         kind = kindValue;
                     }
@@ -425,7 +425,7 @@ namespace PSRule
                         reader: reader,
                         serializer: serializer,
                         propertyName: propertyName,
-                        metadata: out ResourceMetadata metadataValue))
+                        metadata: out var metadataValue))
                     {
                         metadata = metadataValue;
                     }
@@ -439,7 +439,7 @@ namespace PSRule
                         kind: kind,
                         metadata: metadata,
                         comment: comment,
-                        spec: out IResource specValue))
+                        spec: out var specValue))
                     {
                         result = specValue;
 
@@ -533,7 +533,7 @@ namespace PSRule
             if (propertyName == FIELD_SPEC && _Factory.TryDescriptor(
                 apiVersion: apiVersion,
                 name: kind,
-                descriptor: out ISpecDescriptor descriptor))
+                descriptor: out var descriptor))
             {
                 if (reader.Read() && reader.TokenType == JsonToken.StartObject)
                 {
@@ -702,7 +702,7 @@ namespace PSRule
 
             var properties = new LanguageExpression.PropertyBag();
 
-            MapProperty(properties, reader, out string key);
+            MapProperty(properties, reader, out var key);
 
             if (key != null && TryCondition(key))
             {
@@ -790,7 +790,7 @@ namespace PSRule
         {
             expression = null;
 
-            if (_Factory.TryDescriptor(type, out ILanguageExpresssionDescriptor descriptor))
+            if (_Factory.TryDescriptor(type, out var descriptor))
             {
                 expression = (T)descriptor.CreateInstance(
                     source: RunspaceContext.CurrentThread.Source.File,

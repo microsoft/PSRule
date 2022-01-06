@@ -72,26 +72,19 @@ namespace PSRule.Pipeline
 
         public ActionPreference GetPreferenceVariable(string variableName)
         {
-            if (ExecutionContext == null)
-                return ActionPreference.SilentlyContinue;
-
-            return (ActionPreference)ExecutionContext.SessionState.PSVariable.GetValue(variableName);
+            return ExecutionContext == null
+                ? ActionPreference.SilentlyContinue
+                : (ActionPreference)ExecutionContext.SessionState.PSVariable.GetValue(variableName);
         }
 
         public T GetVariable<T>(string variableName)
         {
-            if (ExecutionContext == null)
-                return default;
-
-            return (T)ExecutionContext.SessionState.PSVariable.GetValue(variableName);
+            return ExecutionContext == null ? default : (T)ExecutionContext.SessionState.PSVariable.GetValue(variableName);
         }
 
         public bool ShouldProcess(string target, string action)
         {
-            if (CmdletContext == null)
-                return true;
-
-            return CmdletContext.ShouldProcess(target, action);
+            return CmdletContext == null || CmdletContext.ShouldProcess(target, action);
         }
     }
 }

@@ -119,7 +119,11 @@ namespace PSRule.Parser
 
             var links = new List<Link>();
             stream.Next();
-            while (stream.IsTokenType(MarkdownTokenType.Link, MarkdownTokenType.LinkReference, MarkdownTokenType.LineBreak, MarkdownTokenType.Text))
+            while (stream.IsTokenType(
+                MarkdownTokenType.Link,
+                MarkdownTokenType.LinkReference,
+                MarkdownTokenType.LineBreak,
+                MarkdownTokenType.Text))
             {
                 if (stream.IsTokenType(MarkdownTokenType.LineBreak) || stream.IsTokenType(MarkdownTokenType.Text))
                 {

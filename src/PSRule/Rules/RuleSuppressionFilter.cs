@@ -71,7 +71,7 @@ namespace PSRule.Rules
                 unchecked
                 {
                     // Get combined hash code for key
-                    uint rol5 = ((uint)h1 << 5) | ((uint)h1 >> 27);
+                    var rol5 = ((uint)h1 << 5) | ((uint)h1 >> 27);
                     return ((int)rol5 + h1) ^ h2;
                 }
             }
@@ -79,10 +79,10 @@ namespace PSRule.Rules
 
         public bool Match(string ruleName, string targetName)
         {
-            if (_IsEmpty || string.IsNullOrEmpty(ruleName) || string.IsNullOrEmpty(targetName))
-                return false;
-
-            return _Index.Contains(new SuppressionKey(ruleName, targetName));
+            return !_IsEmpty &&
+                !string.IsNullOrEmpty(ruleName) &&
+                !string.IsNullOrEmpty(targetName) &&
+                _Index.Contains(new SuppressionKey(ruleName, targetName));
         }
 
         private void Index(SuppressionOption option)

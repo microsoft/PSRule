@@ -34,7 +34,7 @@ namespace PSRule.Runtime
             if (RunspaceContext.CurrentThread.Pipeline.LocalizedDataCache.ContainsKey(path))
                 return RunspaceContext.CurrentThread.Pipeline.LocalizedDataCache[path];
 
-            var ast = System.Management.Automation.Language.Parser.ParseFile(path, out Token[] tokens, out ParseError[] errors);
+            var ast = System.Management.Automation.Language.Parser.ParseFile(path, out var tokens, out var errors);
             var data = ast.Find(a => a is HashtableAst, false);
             if (data != null)
             {

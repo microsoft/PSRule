@@ -52,14 +52,22 @@ namespace PSRule.Commands
             var targetObject = InputObject ?? GetTargetObject();
             var foundFields = new List<string>();
             var notFoundFields = new List<string>();
-            int found = 0;
-            int required = All ? Field.Length : 1;
+            var found = 0;
+            var required = All ? Field.Length : 1;
 
             for (var i = 0; i < Field.Length && found < required; i++)
             {
-                if (ObjectHelper.GetPath(bindingContext: PipelineContext.CurrentThread, targetObject: targetObject, path: Field[i], caseSensitive: CaseSensitive, value: out object _))
+                if (ObjectHelper.GetPath(
+                    bindingContext: PipelineContext.CurrentThread,
+                    targetObject: targetObject,
+                    path: Field[i],
+                    caseSensitive: CaseSensitive,
+                    value: out object _))
                 {
-                    RunspaceContext.CurrentThread.VerboseConditionMessage(condition: RuleLanguageNouns.Exists, message: PSRuleResources.ExistsTrue, args: Field[i]);
+                    RunspaceContext.CurrentThread.VerboseConditionMessage(
+                        condition: RuleLanguageNouns.Exists,
+                        message: PSRuleResources.ExistsTrue,
+                        args: Field[i]);
                     foundFields.Add(Field[i]);
                     found++;
                 }
@@ -71,7 +79,13 @@ namespace PSRule.Commands
             RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Exists, outcome: result);
             if (!(result || TryReason(Reason)))
             {
-                WriteReason(Not ? string.Format(Thread.CurrentThread.CurrentCulture, ReasonStrings.ExistsNot, string.Join(", ", foundFields)) : string.Format(Thread.CurrentThread.CurrentCulture, ReasonStrings.Exists, string.Join(", ", notFoundFields)));
+                WriteReason(Not ? string.Format(
+                    Thread.CurrentThread.CurrentCulture,
+                    ReasonStrings.ExistsNot,
+                    string.Join(", ", foundFields)) : string.Format(
+                        Thread.CurrentThread.CurrentCulture,
+                        ReasonStrings.Exists,
+                        string.Join(", ", notFoundFields)));
             }
             WriteObject(result);
         }

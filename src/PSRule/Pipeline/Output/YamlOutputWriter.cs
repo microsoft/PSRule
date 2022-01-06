@@ -19,12 +19,7 @@ namespace PSRule.Pipeline.Output
 
         protected override string Serialize(object[] o)
         {
-            if (o[0] is IEnumerable<Baseline> baselines)
-            {
-                return ToBaselineYaml(baselines);
-            }
-
-            return ToYaml(o);
+            return o[0] is IEnumerable<Baseline> baselines ? ToBaselineYaml(baselines) : ToYaml(o);
         }
 
         internal static string ToYaml(object[] o)

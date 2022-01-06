@@ -34,18 +34,12 @@ namespace PSRule.Definitions.Conventions
 
         public bool Match(IResource resource)
         {
-            if (_Include == null)
-                return false;
-
-            return _Include.Contains(resource.Name) || _Include.Contains(resource.Id) || MatchWildcard(resource.Name) || MatchWildcard(resource.Id);
+            return _Include != null && (_Include.Contains(resource.Name) || _Include.Contains(resource.Id) || MatchWildcard(resource.Name) || MatchWildcard(resource.Id));
         }
 
         private bool MatchWildcard(string name)
         {
-            if (_WildcardMatch == null)
-                return false;
-
-            return _WildcardMatch.IsMatch(name);
+            return _WildcardMatch != null && _WildcardMatch.IsMatch(name);
         }
     }
 

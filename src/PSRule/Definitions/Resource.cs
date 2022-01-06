@@ -185,7 +185,7 @@ namespace PSRule.Definitions
             if (key == null || value == null || !(key is string k) || !ContainsKey(k))
                 return false;
 
-            if (TryArray(value, out string[] values))
+            if (TryArray(value, out var values))
             {
                 for (var i = 0; i < values.Length; i++)
                 {
@@ -342,7 +342,7 @@ namespace PSRule.Definitions
 
         TAnnotation IAnnotated<ResourceAnnotation>.GetAnnotation<TAnnotation>()
         {
-            return _Annotations.TryGetValue(typeof(TAnnotation), out ResourceAnnotation annotation) ? (TAnnotation)annotation : null;
+            return _Annotations.TryGetValue(typeof(TAnnotation), out var annotation) ? (TAnnotation)annotation : null;
         }
 
         void IAnnotated<ResourceAnnotation>.SetAnnotation<TAnnotation>(TAnnotation annotation)
@@ -419,10 +419,10 @@ namespace PSRule.Definitions
 
         internal static bool IsObsolete(ResourceMetadata metadata)
         {
-            if (metadata == null || metadata.Annotations == null || !metadata.Annotations.TryGetBool(ANNOTATION_OBSOLETE, out bool? obsolete))
-                return false;
-
-            return obsolete.GetValueOrDefault(false);
+            return metadata != null &&
+                metadata.Annotations != null &&
+                metadata.Annotations.TryGetBool(ANNOTATION_OBSOLETE, out var obsolete)
+                && obsolete.GetValueOrDefault(false);
         }
     }
 
@@ -435,10 +435,10 @@ namespace PSRule.Definitions
 
         public override int GetHashCode(string obj)
         {
-            ResourceHelper.ParseIdString(obj, out string scope, out string name);
+            ResourceHelper.ParseIdString(obj, out var scope, out var name);
             unchecked // Overflow is fine
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 23 + (scope != null ? scope.GetHashCode() : 0);
                 hash = hash * 23 + (name != null ? name.GetHashCode() : 0);
                 return hash;
@@ -447,8 +447,8 @@ namespace PSRule.Definitions
 
         public static bool IdEquals(string x, string y)
         {
-            ResourceHelper.ParseIdString(x, out string scope_x, out string name_x);
-            ResourceHelper.ParseIdString(y, out string scope_y, out string name_y);
+            ResourceHelper.ParseIdString(x, out var scope_x, out var name_x);
+            ResourceHelper.ParseIdString(y, out var scope_y, out var name_y);
             return EqualOrNull(scope_x, scope_y) &&
                 EqualOrNull(name_x, name_y);
         }

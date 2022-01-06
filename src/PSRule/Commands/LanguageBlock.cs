@@ -42,10 +42,9 @@ namespace PSRule.Commands
 
         protected ActionPreference? GetBoundPreference(string name)
         {
-            if (MyInvocation.BoundParameters.ContainsKey(name) && Enum.TryParse(MyInvocation.BoundParameters[name].ToString(), out ActionPreference value))
-                return value;
-
-            return null;
+            return MyInvocation.BoundParameters.ContainsKey(name) && Enum.TryParse(MyInvocation.BoundParameters[name].ToString(), out ActionPreference value)
+                ? (ActionPreference?)value
+                : null;
         }
     }
 }

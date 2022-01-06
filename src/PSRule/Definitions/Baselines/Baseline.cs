@@ -80,10 +80,7 @@ namespace PSRule.Definitions.Baselines
 
         private bool MatchWildcard(string name)
         {
-            if (_WildcardMatch == null)
-                return false;
-
-            return _WildcardMatch.IsMatch(name);
+            return _WildcardMatch != null && _WildcardMatch.IsMatch(name);
         }
     }
 

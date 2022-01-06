@@ -203,7 +203,7 @@ namespace PSRule.Pipeline
         protected bool RequireModules()
         {
             var result = true;
-            if (Option.Requires.TryGetValue(ENGINE_MODULE_NAME, out string requiredVersion))
+            if (Option.Requires.TryGetValue(ENGINE_MODULE_NAME, out var requiredVersion))
             {
                 var engineVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
                 if (GuardModuleVersion(ENGINE_MODULE_NAME, engineVersion, requiredVersion))
@@ -247,10 +247,9 @@ namespace PSRule.Pipeline
 
         private static bool TryModuleVersion(string moduleVersion, string requiredVersion)
         {
-            if (!(SemanticVersion.TryParseVersion(moduleVersion, out SemanticVersion.Version version) && SemanticVersion.TryParseConstraint(requiredVersion, out SemanticVersion.IConstraint constraint)))
-                return false;
-
-            return constraint.Equals(version);
+            return SemanticVersion.TryParseVersion(moduleVersion, out var version) &&
+                SemanticVersion.TryParseConstraint(requiredVersion, out var constraint) &&
+                constraint.Equals(version);
         }
 
         protected PipelineContext PrepareContext(BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField)
@@ -288,43 +287,30 @@ namespace PSRule.Pipeline
         protected virtual PipelineWriter PrepareWriter()
         {
             var output = GetOutput();
-            switch (Option.Output.Format)
+            return Option.Output.Format switch
             {
-                case OutputFormat.Csv:
-                    return new CsvOutputWriter(output, Option);
-
-                case OutputFormat.Json:
-                    return new JsonOutputWriter(output, Option);
-
-                case OutputFormat.NUnit3:
-                    return new NUnit3OutputWriter(output, Option);
-
-                case OutputFormat.Yaml:
-                    return new YamlOutputWriter(output, Option);
-
-                case OutputFormat.Markdown:
-                    return new MarkdownOutputWriter(output, Option);
-
-                case OutputFormat.Wide:
-                    return new WideOutputWriter(output, Option);
-            }
-            return output;
+                OutputFormat.Csv => new CsvOutputWriter(output, Option),
+                OutputFormat.Json => new JsonOutputWriter(output, Option),
+                OutputFormat.NUnit3 => new NUnit3OutputWriter(output, Option),
+                OutputFormat.Yaml => new YamlOutputWriter(output, Option),
+                OutputFormat.Markdown => new MarkdownOutputWriter(output, Option),
+                OutputFormat.Wide => new WideOutputWriter(output, Option),
+                _ => output,
+            };
         }
 
         protected PipelineWriter GetOutput()
         {
             // Redirect to file instead
-            if (!string.IsNullOrEmpty(Option.Output.Path))
-            {
-                return new FileOutputWriter(
+            return !string.IsNullOrEmpty(Option.Output.Path)
+                ? new FileOutputWriter(
                     inner: _Output,
                     option: Option,
                     encoding: GetEncoding(Option.Output.Encoding),
                     path: Option.Output.Path,
                     shouldProcess: HostContext.ShouldProcess
-                );
-            }
-            return _Output;
+                )
+                : (PipelineWriter)_Output;
         }
 
         protected static string[] GetCulture(string[] culture)
@@ -352,10 +338,7 @@ namespace PSRule.Pipeline
             if (parent.Count > 0)
                 result.AddRange(parent);
 
-            if (result.Count == 0)
-                return null;
-
-            return result.ToArray();
+            return result.Count == 0 ? null : result.ToArray();
         }
 
         /// <summary>
@@ -365,26 +348,15 @@ namespace PSRule.Pipeline
         /// <returns></returns>
         private static Encoding GetEncoding(OutputEncoding? encoding)
         {
-            switch (encoding)
+            return encoding switch
             {
-                case OutputEncoding.UTF8:
-                    return Encoding.UTF8;
-
-                case OutputEncoding.UTF7:
-                    return Encoding.UTF7;
-
-                case OutputEncoding.Unicode:
-                    return Encoding.Unicode;
-
-                case OutputEncoding.UTF32:
-                    return Encoding.UTF32;
-
-                case OutputEncoding.ASCII:
-                    return Encoding.ASCII;
-
-                default:
-                    return new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
-            }
+                OutputEncoding.UTF8 => Encoding.UTF8,
+                OutputEncoding.UTF7 => Encoding.UTF7,
+                OutputEncoding.Unicode => Encoding.Unicode,
+                OutputEncoding.UTF32 => Encoding.UTF32,
+                OutputEncoding.ASCII => Encoding.ASCII,
+                _ => new UTF8Encoding(encoderShouldEmitUTF8Identifier: false),
+            };
         }
 
         private OptionContext GetOptionContext()

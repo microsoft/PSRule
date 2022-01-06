@@ -55,10 +55,7 @@ namespace PSRule.Badges
         private static double Find(char c)
         {
             var index = Array.BinarySearch(_Char, c);
-            if (index >= 0)
-                return _Width[index];
-
-            return 0d;
+            return index >= 0 ? _Width[index] : 0d;
         }
 
         public static double Measure(string s)
