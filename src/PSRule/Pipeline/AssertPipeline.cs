@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Management.Automation;
 using System.Reflection;
