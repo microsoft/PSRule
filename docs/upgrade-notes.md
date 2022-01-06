@@ -9,7 +9,7 @@ Follow these notes to upgrade to PSRule _v2.0.0_ from previous versions.
 ### Setting default module baseline
 
 When packaging rules in a module, you can set the default baseline.
-The default baseline from the module will be automatically used unless overriden.
+The default baseline from the module will be automatically used unless overridden.
 
 Prior to _v1.9.0_ the default baseline was set by configuring the module manifest `.psd1` file.
 From _v1.9.0_ the default baseline can be configured by within a module configuration.
@@ -36,7 +36,7 @@ A module configuration can be defined in YAML.
 
 When creating YAML and JSON resources you define a resource by specifying the `apiVersion` and `kind`.
 An `apiVersion` was added as a requirement from _v1.2.0_.
-For compability resources without an `apiVersion` were supported however deprecated for removal in _v2.0.0_.
+For compatibility resources without an `apiVersion` were supported however deprecated for removal in _v2.0.0_.
 This has now been removed from _v2.0.0_.
 
 When defining resource specify an `apiVersion`.
