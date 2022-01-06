@@ -50,7 +50,7 @@ namespace PSRule.Runtime.ObjectPath
 
         private PathExpressionFn BuildSelector(ITokenReader reader)
         {
-            if (!reader.Peak(out IPathToken token) || token.Type == PathTokenType.EndFilter || token.Type == PathTokenType.EndGroup)
+            if (!reader.Peak(out var token) || token.Type == PathTokenType.EndFilter || token.Type == PathTokenType.EndGroup)
                 return Return;
 
             reader.Next(out token);
@@ -101,7 +101,7 @@ namespace PSRule.Runtime.ObjectPath
                     if (!filter(context, i))
                         continue;
 
-                    if (!next(context, i, out IEnumerable<object> items))
+                    if (!next(context, i, out var items))
                         continue;
 
                     success++;
@@ -118,10 +118,7 @@ namespace PSRule.Runtime.ObjectPath
             return (IPathExpressionContext context, object input, out IEnumerable<object> value) =>
             {
                 value = null;
-                if (!TryGetIndex(input, index, out object item))
-                    return false;
-
-                return next(context, item, out value);
+                return TryGetIndex(input, index, out var item) && next(context, item, out value);
             };
         }
 
@@ -135,7 +132,7 @@ namespace PSRule.Runtime.ObjectPath
                 var success = 0;
                 foreach (var i in GetAll(input))
                 {
-                    if (!next(context, i, out IEnumerable<object> items))
+                    if (!next(context, i, out var items))
                         continue;
 
                     success++;
@@ -157,10 +154,10 @@ namespace PSRule.Runtime.ObjectPath
             {
                 var result = new List<object>();
                 var currentIndex = start;
-                while ((!end.HasValue || (step > 0 && currentIndex < end) || (step < 0 && currentIndex > end)) && TryGetIndex(input, currentIndex, out object slice))
+                while ((!end.HasValue || (step > 0 && currentIndex < end) || (step < 0 && currentIndex > end)) && TryGetIndex(input, currentIndex, out var slice))
                 {
                     currentIndex += step;
-                    if (!next(context, slice, out IEnumerable<object> items))
+                    if (!next(context, slice, out var items))
                         continue;
 
                     result.AddRange(items);
@@ -178,10 +175,7 @@ namespace PSRule.Runtime.ObjectPath
             {
                 value = null;
                 var caseSensitive = context.CaseSensitive != caseSensitiveFlag;
-                if (!TryGetField(input, memberName, caseSensitive, out object item))
-                    return false;
-
-                return next(context, item, out value);
+                return TryGetField(input, memberName, caseSensitive, out var item) && next(context, item, out value);
             };
         }
 
@@ -200,7 +194,7 @@ namespace PSRule.Runtime.ObjectPath
         private PathExpressionFilterFn BuildExpression(ITokenReader reader, PathTokenType stop)
         {
             var result = new Stack<PathExpressionFilterFn>(4);
-            while (reader.Next(out IPathToken token) && token.Type != stop)
+            while (reader.Next(out var token) && token.Type != stop)
             {
                 if (token.Type == PathTokenType.LogicalOperator && token.As<FilterOperator>() == FilterOperator.Or)
                     continue;
@@ -275,7 +269,7 @@ namespace PSRule.Runtime.ObjectPath
         {
             return (IPathExpressionContext context, object input) =>
             {
-                if (!left(context, input, out IEnumerable<object> leftValue) || !right(context, input, out IEnumerable<object> rightValue))
+                if (!left(context, input, out var leftValue) || !right(context, input, out var rightValue))
                     return false;
 
                 var operand1 = leftValue.FirstOrDefault();
@@ -291,7 +285,7 @@ namespace PSRule.Runtime.ObjectPath
                         return !ExpressionHelpers.Equal(operand1, operand2, context.CaseSensitive);
 
                     case FilterOperator.Less:
-                        return ExpressionHelpers.CompareNumeric(operand1, operand2, convert: false, compare: out int compare, value: out _) && compare < 0;
+                        return ExpressionHelpers.CompareNumeric(operand1, operand2, convert: false, compare: out var compare, value: out _) && compare < 0;
 
                     case FilterOperator.LessOrEqual:
                         return ExpressionHelpers.CompareNumeric(operand1, operand2, convert: false, compare: out compare, value: out _) && compare <= 0;
@@ -334,10 +328,7 @@ namespace PSRule.Runtime.ObjectPath
         private static IEnumerable<object> GetAll(object o)
         {
             var baseObject = GetBaseObject(o);
-            if (baseObject is IEnumerable)
-                return GetAllIndex(baseObject);
-
-            return GetAllField(baseObject);
+            return baseObject is IEnumerable ? GetAllIndex(baseObject) : GetAllField(baseObject);
         }
 
         private static IEnumerable<object> GetAllIndex(object o)
@@ -537,7 +528,7 @@ namespace PSRule.Runtime.ObjectPath
         private static bool TryPropertyValue(JObject targetObject, string propertyName, bool caseSensitive, out object value)
         {
             value = null;
-            if (!targetObject.TryGetValue(propertyName, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase, out JToken result))
+            if (!targetObject.TryGetValue(propertyName, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase, out var result))
                 return false;
 
             value = GetTokenValue(result);

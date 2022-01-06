@@ -89,7 +89,7 @@ namespace PSRule.Parser
                 return;
 
             // Check if the line is just dashes indicating start of yaml header
-            if (!_Stream.PeakLine(Dash, out int count) || count < 2)
+            if (!_Stream.PeakLine(Dash, out var count) || count < 2)
                 return;
 
             _Stream.Skip(count + 1);
@@ -123,10 +123,10 @@ namespace PSRule.Parser
                 return false;
 
             // Check the line is made up of the same characters
-            if (!_Stream.PeakLine(_Stream.Current, out int count))
+            if (!_Stream.PeakLine(_Stream.Current, out var count))
                 return false;
 
-            char currentChar = _Stream.Current;
+            var currentChar = _Stream.Current;
 
             // Remove the previous token and replace with a header
             if (_Output.Current?.Type == MarkdownTokenType.Text)
@@ -327,18 +327,12 @@ namespace PSRule.Parser
 
             var firstChar = clean[0];
 
-            if (firstChar == Dash || firstChar == Asterix)
-                return true;
-
-            return false;
+            return firstChar == Dash || firstChar == Asterix;
         }
 
         private static MarkdownTokens GetEnding(int lineEndings)
         {
-            if (lineEndings == 0)
-                return MarkdownTokens.None;
-
-            return (lineEndings == 1) ? MarkdownTokens.LineEnding : MarkdownTokens.LineBreak;
+            return lineEndings == 0 ? MarkdownTokens.None : (lineEndings == 1) ? MarkdownTokens.LineEnding : MarkdownTokens.LineBreak;
         }
 
         /// <summary>

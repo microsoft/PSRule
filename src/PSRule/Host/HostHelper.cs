@@ -183,7 +183,7 @@ namespace PSRule.Host
                         context.VerboseRuleDiscovery(path: file.Path);
                         context.EnterSourceScope(source: file);
 
-                        var scriptAst = System.Management.Automation.Language.Parser.ParseFile(file.Path, out Token[] tokens, out ParseError[] errors);
+                        var scriptAst = System.Management.Automation.Language.Parser.ParseFile(file.Path, out var tokens, out var errors);
                         var visitor = new RuleLanguageAst(PipelineContext.CurrentThread);
                         scriptAst.Visit(visitor);
 
@@ -662,21 +662,26 @@ namespace PSRule.Host
 
         internal static RuleHelpInfo GetHelpInfo(RunspaceContext context, string name, string defaultSynopsis)
         {
-            if (!TryHelpPath(context, name, out string path) || !TryDocument(path, out RuleDocument document))
-                return new RuleHelpInfo(name, name, context.Source.File.ModuleName)
+            return !TryHelpPath(context, name, out var path) || !TryDocument(path, out var document)
+                ? new RuleHelpInfo(
+                    name: name,
+                    displayName: name,
+                    moduleName: context.Source.File.ModuleName)
                 {
                     Synopsis = defaultSynopsis
+                }
+                : new RuleHelpInfo(
+                    name: name,
+                    displayName: document.Name ?? name,
+                    moduleName: context.Source.File.ModuleName)
+                {
+                    Synopsis = document.Synopsis?.Text ?? defaultSynopsis,
+                    Description = document.Description?.Text,
+                    Recommendation = document.Recommendation?.Text ?? document.Synopsis?.Text ?? defaultSynopsis,
+                    Notes = document.Notes?.Text,
+                    Links = GetLinks(document.Links),
+                    Annotations = document.Annotations?.ToHashtable()
                 };
-
-            return new RuleHelpInfo(name: name, displayName: document.Name ?? name, moduleName: context.Source.File.ModuleName)
-            {
-                Synopsis = document.Synopsis?.Text ?? defaultSynopsis,
-                Description = document.Description?.Text,
-                Recommendation = document.Recommendation?.Text ?? document.Synopsis?.Text ?? defaultSynopsis,
-                Notes = document.Notes?.Text,
-                Links = GetLinks(document.Links),
-                Annotations = document.Annotations?.ToHashtable()
-            };
         }
 
         private static bool TryHelpPath(RunspaceContext context, string name, out string path)

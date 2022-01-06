@@ -72,7 +72,7 @@ namespace PSRule.Pipeline
             if (!IsAcceptedType(targetObject))
                 return new TargetObject[] { targetObject };
 
-            var reader = ReadAsReader(targetObject, out TargetSourceInfo sourceInfo);
+            var reader = ReadAsReader(targetObject, out var sourceInfo);
             try
             {
                 var d = new JsonSerializer(); // Think about caching this.
@@ -101,7 +101,7 @@ namespace PSRule.Pipeline
             if (!IsAcceptedType(targetObject))
                 return new TargetObject[] { targetObject };
 
-            var reader = ReadAsReader(targetObject, out TargetSourceInfo sourceInfo);
+            var reader = ReadAsReader(targetObject, out var sourceInfo);
             var d = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
                 .WithTypeConverter(new PSObjectYamlTypeConverter())
@@ -128,10 +128,7 @@ namespace PSRule.Pipeline
                     result.AddRange(items);
                 }
 
-                if (result.Count == 0)
-                    return EmptyArray;
-
-                return result.ToArray();
+                return result.Count == 0 ? EmptyArray : result.ToArray();
             }
             catch (Exception ex)
             {
@@ -154,7 +151,7 @@ namespace PSRule.Pipeline
             if (!IsAcceptedType(targetObject))
                 return new TargetObject[] { targetObject };
 
-            var markdown = ReadAsString(targetObject, out TargetSourceInfo sourceInfo);
+            var markdown = ReadAsString(targetObject, out var sourceInfo);
             var value = MarkdownConvert.DeserializeObject(markdown);
             return VisitItems(value, sourceInfo, next);
         }
@@ -165,7 +162,7 @@ namespace PSRule.Pipeline
             if (!IsAcceptedType(targetObject))
                 return new TargetObject[] { targetObject };
 
-            var data = ReadAsString(targetObject, out TargetSourceInfo sourceInfo);
+            var data = ReadAsString(targetObject, out var sourceInfo);
             var ast = System.Management.Automation.Language.Parser.ParseInput(data, out _, out _);
             var hashtables = ast.FindAll(item => item is System.Management.Automation.Language.HashtableAst, false);
             if (hashtables == null)
@@ -187,13 +184,18 @@ namespace PSRule.Pipeline
             if (!IsGitHead(targetObject))
                 return new TargetObject[] { targetObject };
 
-            var value = PSObject.AsPSObject(GetRepositoryInfo(targetObject, out TargetSourceInfo sourceInfo));
+            var value = PSObject.AsPSObject(GetRepositoryInfo(targetObject, out var sourceInfo));
             return VisitItems(new PSObject[] { value }, sourceInfo, next);
         }
 
         public static IEnumerable<TargetObject> ReadObjectPath(TargetObject targetObject, VisitTargetObject source, string objectPath, bool caseSensitive)
         {
-            if (!ObjectHelper.GetPath(bindingContext: null, targetObject: targetObject.Value, path: objectPath, caseSensitive: caseSensitive, value: out object nestedObject))
+            if (!ObjectHelper.GetPath(
+                bindingContext: null,
+                targetObject: targetObject.Value,
+                path: objectPath,
+                caseSensitive: caseSensitive,
+                value: out object nestedObject))
                 return EmptyArray;
 
             var nestedType = nestedObject.GetType();
@@ -227,7 +229,10 @@ namespace PSRule.Pipeline
 
         private static bool IsAcceptedType(TargetObject targetObject)
         {
-            return targetObject.Value.BaseObject is string || targetObject.Value.BaseObject is InputFileInfo || targetObject.Value.BaseObject is FileInfo || targetObject.Value.BaseObject is Uri;
+            return targetObject.Value.BaseObject is string ||
+                targetObject.Value.BaseObject is InputFileInfo ||
+                targetObject.Value.BaseObject is FileInfo ||
+                targetObject.Value.BaseObject is Uri;
         }
 
         private static bool IsGitHead(TargetObject targetObject)
@@ -332,7 +337,7 @@ namespace PSRule.Pipeline
             if (value == null || source == null)
                 return;
 
-            value.Value.UseTargetInfo(out PSRuleTargetInfo targetInfo);
+            value.Value.UseTargetInfo(out var targetInfo);
             targetInfo.UpdateSource(source);
             value.Source.AddRange(targetInfo.Source.ToArray());
             value.Issue.AddRange(targetInfo.Issue.ToArray());

@@ -26,7 +26,7 @@ namespace PSRule.Runtime
                     continue;
 
                 var baseObject = GetBaseObject(v);
-                if (!(TryAssertResult(baseObject, out bool result) || TryBoolean(baseObject, out result)))
+                if (!(TryAssertResult(baseObject, out var result) || TryBoolean(baseObject, out result)))
                 {
                     RunspaceContext.CurrentThread.ErrorInvaildRuleResult();
                     hasErrors = true;

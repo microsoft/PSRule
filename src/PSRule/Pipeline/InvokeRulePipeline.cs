@@ -91,10 +91,9 @@ namespace PSRule.Pipeline
 
         public override IPipeline Build(IPipelineWriter writer = null)
         {
-            if (!RequireModules() || !RequireSources())
-                return null;
-
-            return new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, writer ?? PrepareWriter(), Option.Output.Outcome.Value);
+            return !RequireModules() || !RequireSources()
+                ? null
+                : (IPipeline)new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, writer ?? PrepareWriter(), Option.Output.Outcome.Value);
         }
 
         protected override PipelineReader PrepareReader()
@@ -199,7 +198,7 @@ namespace PSRule.Pipeline
             try
             {
                 Reader.Enqueue(sourceObject);
-                while (Reader.TryDequeue(out TargetObject next))
+                while (Reader.TryDequeue(out var next))
                 {
                     var result = ProcessTargetObject(next);
                     _Completed.Add(result);
@@ -315,7 +314,7 @@ namespace PSRule.Pipeline
         /// </summary>
         private void AddToSummary(RuleBlock ruleBlock, RuleOutcome outcome)
         {
-            if (!_Summary.TryGetValue(ruleBlock.RuleId, out RuleSummaryRecord s))
+            if (!_Summary.TryGetValue(ruleBlock.RuleId, out var s))
             {
                 s = new RuleSummaryRecord(
                     ruleId: ruleBlock.RuleId,

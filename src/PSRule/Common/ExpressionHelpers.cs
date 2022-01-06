@@ -32,7 +32,7 @@ namespace PSRule
 
             o = GetBaseObject(o);
             return (o is ICollection c && c.Count == 0) ||
-                (TryString(o, out string s) && string.IsNullOrEmpty(s));
+                (TryString(o, out var s) && string.IsNullOrEmpty(s));
         }
 
         internal static bool Exists(IBindingContext bindingContext, object inputObject, string field, bool caseSensitive)
@@ -42,16 +42,16 @@ namespace PSRule
 
         internal static bool Equal(object expectedValue, object actualValue, bool caseSensitive, bool convertExpected = false, bool convertActual = false)
         {
-            if (TryString(expectedValue, out string s1) && TryString(actualValue, out string s2))
+            if (TryString(expectedValue, out var s1) && TryString(actualValue, out var s2))
                 return StringEqual(s1, s2, caseSensitive);
 
-            if (TryBool(expectedValue, convertExpected, out bool b1) && TryBool(actualValue, convertActual, out bool b2))
+            if (TryBool(expectedValue, convertExpected, out var b1) && TryBool(actualValue, convertActual, out var b2))
                 return b1 == b2;
 
-            if (TryLong(expectedValue, convertExpected, out long l1) && TryLong(actualValue, convertActual, out long l2))
+            if (TryLong(expectedValue, convertExpected, out var l1) && TryLong(actualValue, convertActual, out var l2))
                 return l1 == l2;
 
-            if (TryInt(expectedValue, convertExpected, out int i1) && TryInt(actualValue, convertActual, out int i2))
+            if (TryInt(expectedValue, convertExpected, out var i1) && TryInt(actualValue, convertActual, out var i2))
                 return i1 == i2;
 
             var expectedBase = GetBaseObject(expectedValue);
@@ -61,31 +61,33 @@ namespace PSRule
 
         internal static bool CompareNumeric(object actual, object expected, bool convert, out int compare, out object value)
         {
-            if (TryInt(actual, convert, out int actualInt) && TryInt(expected, convert: true, value: out int expectedInt))
+            if (TryInt(actual, convert, out var actualInt) && TryInt(expected, convert: true, value: out var expectedInt))
             {
                 compare = Comparer<int>.Default.Compare(actualInt, expectedInt);
                 value = actualInt;
                 return true;
             }
-            else if (TryLong(actual, convert, out long actualLong) && TryLong(expected, convert: true, value: out long expectedLong))
+            else if (TryLong(actual, convert, out var actualLong) && TryLong(expected, convert: true, value: out var expectedLong))
             {
                 compare = Comparer<long>.Default.Compare(actualLong, expectedLong);
                 value = actualLong;
                 return true;
             }
-            else if (TryFloat(actual, convert, out float actualFloat) && TryFloat(expected, convert: true, value: out float expectedFloat))
+            else if (TryFloat(actual, convert, out var actualFloat) && TryFloat(expected, convert: true, value: out var expectedFloat))
             {
                 compare = Comparer<float>.Default.Compare(actualFloat, expectedFloat);
                 value = actualFloat;
                 return true;
             }
-            else if (TryDateTime(actual, convert, out DateTime actualDateTime) && TryDateTime(expected, convert: true, value: out DateTime expectedDateTime))
+            else if (TryDateTime(actual, convert, out var actualDateTime) && TryDateTime(expected, convert: true, value: out var expectedDateTime))
             {
                 compare = Comparer<DateTime>.Default.Compare(actualDateTime, expectedDateTime);
                 value = actualDateTime;
                 return true;
             }
-            else if ((TryStringLength(actual, out actualInt) || TryEnumerableLength(actual, out actualInt)) && TryInt(expected, convert: true, value: out expectedInt))
+            else if ((TryStringLength(actual, out actualInt) ||
+                TryEnumerableLength(actual, out actualInt)) &&
+                TryInt(expected, convert: true, value: out expectedInt))
             {
                 compare = Comparer<int>.Default.Compare(actualInt, expectedInt);
                 value = actualInt;
@@ -118,7 +120,7 @@ namespace PSRule
             if (TryString(o, out value))
                 return true;
 
-            if (TryInt(o, false, out int ivalue))
+            if (TryInt(o, false, out var ivalue))
             {
                 value = ivalue.ToString(Thread.CurrentThread.CurrentCulture);
                 return true;
@@ -129,7 +131,7 @@ namespace PSRule
         internal static bool TryConvertStringArray(object[] o, out string[] value)
         {
             value = Array.Empty<string>();
-            if (o == null || o.Length == 0 || !TryConvertString(o[0], out string s))
+            if (o == null || o.Length == 0 || !TryConvertString(o[0], out var s))
                 return false;
 
             value = new string[o.Length];
@@ -163,7 +165,7 @@ namespace PSRule
                 value = token.Value<int>();
                 return true;
             }
-            else if (convert && TryString(o, out string s) && int.TryParse(s, out ivalue))
+            else if (convert && TryString(o, out var s) && int.TryParse(s, out ivalue))
             {
                 value = ivalue;
                 return true;
@@ -185,7 +187,7 @@ namespace PSRule
                 value = token.Value<bool>();
                 return true;
             }
-            else if (convert && TryString(o, out string s) && bool.TryParse(s, out bvalue))
+            else if (convert && TryString(o, out var s) && bool.TryParse(s, out bvalue))
             {
                 value = bvalue;
                 return true;
@@ -207,7 +209,7 @@ namespace PSRule
                 value = token.Value<byte>();
                 return true;
             }
-            else if (convert && TryString(o, out string s) && byte.TryParse(s, out bvalue))
+            else if (convert && TryString(o, out var s) && byte.TryParse(s, out bvalue))
             {
                 value = bvalue;
                 return true;
@@ -239,7 +241,7 @@ namespace PSRule
                 value = token.Value<long>();
                 return true;
             }
-            else if (convert && TryString(o, out string s) && long.TryParse(s, out l))
+            else if (convert && TryString(o, out var s) && long.TryParse(s, out l))
             {
                 value = l;
                 return true;
@@ -329,12 +331,12 @@ namespace PSRule
                 value = token.Value<DateTime>();
                 return true;
             }
-            else if (convert && TryString(o, out string s) && DateTime.TryParse(s, out dvalue))
+            else if (convert && TryString(o, out var s) && DateTime.TryParse(s, out dvalue))
             {
                 value = dvalue;
                 return true;
             }
-            else if (convert && TryInt(o, convert: false, out int daysOffset))
+            else if (convert && TryInt(o, convert: false, out var daysOffset))
             {
                 value = DateTime.Now.AddDays(daysOffset);
                 return true;
@@ -351,7 +353,7 @@ namespace PSRule
 
         internal static bool Match(object pattern, object value, bool caseSensitive)
         {
-            return TryString(pattern, out string patternString) && TryString(value, out string s) && Match(patternString, s, caseSensitive);
+            return TryString(pattern, out var patternString) && TryString(value, out var s) && Match(patternString, s, caseSensitive);
         }
 
         internal static bool AnyValue(object actualValue, object expectedValue, bool caseSensitive, out object foundValue)
@@ -440,7 +442,7 @@ namespace PSRule
 
         private static string NormalizeSchemaUri(string value, bool ignoreScheme)
         {
-            if (!Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out Uri uri))
+            if (!Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var uri))
                 return value;
 
             var result = uri.IsAbsoluteUri ? uri.AbsoluteUri : uri.ToString();
@@ -481,7 +483,7 @@ namespace PSRule
         private static bool TryPipelineCache<T>(string prefix, string key, out T value)
         {
             value = default;
-            if (PipelineContext.CurrentThread.ExpressionCache.TryGetValue(string.Concat(prefix, key), out object ovalue))
+            if (PipelineContext.CurrentThread.ExpressionCache.TryGetValue(string.Concat(prefix, key), out var ovalue))
             {
                 value = (T)ovalue;
                 return true;
@@ -501,36 +503,32 @@ namespace PSRule
 
         private static PSRuleTargetInfo GetTargetInfo(object o)
         {
-            return o is PSObject pso && pso.TryTargetInfo(out PSRuleTargetInfo targetInfo) ? targetInfo : null;
+            return o is PSObject pso && pso.TryTargetInfo(out var targetInfo) ? targetInfo : null;
         }
 
         private static bool StringEqual(string expectedValue, string actualValue, bool caseSensitive)
         {
-            return caseSensitive ? StringComparer.Ordinal.Equals(expectedValue, actualValue) : StringComparer.OrdinalIgnoreCase.Equals(expectedValue, actualValue);
+            return caseSensitive
+                ? StringComparer.Ordinal.Equals(expectedValue, actualValue)
+                : StringComparer.OrdinalIgnoreCase.Equals(expectedValue, actualValue);
         }
 
         internal static bool StartsWith(string actualValue, object expectedValue, bool caseSensitive)
         {
-            if (!TryString(expectedValue, out string expected))
-                return false;
-
-            return actualValue.StartsWith(expected, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+            return TryString(expectedValue, out var expected) &&
+                actualValue.StartsWith(expected, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
         }
 
         internal static bool EndsWith(string actualValue, object expectedValue, bool caseSensitive)
         {
-            if (!TryString(expectedValue, out string expected))
-                return false;
-
-            return actualValue.EndsWith(expected, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+            return TryString(expectedValue, out var expected)
+                && actualValue.EndsWith(expected, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
         }
 
         internal static bool Contains(string actualValue, object expectedValue, bool caseSensitive)
         {
-            if (!TryString(expectedValue, out string expected))
-                return false;
-
-            return actualValue.IndexOf(expected, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) >= 0;
+            return TryString(expectedValue, out var expected)
+                && actualValue.IndexOf(expected, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         internal static bool IsLower(string actualValue, bool requireLetters, out bool notLetter)

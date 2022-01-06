@@ -194,10 +194,9 @@ namespace PSRule.Pipeline
         private static bool GetPreferenceVariable(EngineIntrinsics executionContext, string variableName)
         {
             var preference = (ActionPreference)executionContext.SessionState.PSVariable.GetValue(variableName);
-            if (preference == ActionPreference.Ignore)
-                return false;
-
-            return !(preference == ActionPreference.SilentlyContinue && (variableName == VerbosePreference || variableName == DebugPreference));
+            return preference != ActionPreference.Ignore &&
+                !(preference == ActionPreference.SilentlyContinue &&
+                (variableName == VerbosePreference || variableName == DebugPreference));
         }
 
         #region Internal logging methods

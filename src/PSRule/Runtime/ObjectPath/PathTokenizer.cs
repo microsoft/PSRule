@@ -194,7 +194,7 @@ namespace PSRule.Runtime.ObjectPath
                 if (!IsQuoted(Current(position)))
                     return false;
 
-                if (!UntilQuote(ref position, out string value))
+                if (!UntilQuote(ref position, out var value))
                     return false;
 
                 tokens.Add(new PathToken(PathTokenType.String, value));
@@ -205,7 +205,7 @@ namespace PSRule.Runtime.ObjectPath
             private bool TryConsumeNumberLiteral(ref int position, ITokenWriter tokens)
             {
                 var pos = SkipPadding(position);
-                if (!TryInteger(pos, out int value))
+                if (!TryInteger(pos, out var value))
                     return false;
 
                 tokens.Add(new PathToken(PathTokenType.Integer, value));
@@ -216,7 +216,7 @@ namespace PSRule.Runtime.ObjectPath
             private bool TryConsumeBooleanLiteral(ref int position, ITokenWriter tokens)
             {
                 var pos = SkipPadding(position);
-                if (!TryBoolean(pos, out bool value))
+                if (!TryBoolean(pos, out var value))
                     return false;
 
                 tokens.Add(new PathToken(PathTokenType.Boolean, value));
@@ -398,7 +398,7 @@ namespace PSRule.Runtime.ObjectPath
                 var slice = new int?[] { null, null, null };
                 for (var i = 0; i <= 2 && pos <= Last && Path[pos] != INDEX_CLOSE; i++)
                 {
-                    if (WhileNumeric(pos, out int end) && end > pos)
+                    if (WhileNumeric(pos, out var end) && end > pos)
                     {
                         slice[i] = int.Parse(Substring(pos, end));
                         pos = Current(end, COLON) ? end + 1 : end;
@@ -418,24 +418,21 @@ namespace PSRule.Runtime.ObjectPath
             /// </summary>
             private bool TryConsumeUnionSelector(ref int position, ITokenWriter tokens)
             {
-                if (!AnyUntilIndexClose(position, COMMA))
-                    return false;
-
-                return TryConsumeUnionQuotedMemberSelector(ref position, tokens) ||
-                    TryConsumeUnionIndexSelector(ref position, tokens);
+                return AnyUntilIndexClose(position, COMMA) &&
+                    (TryConsumeUnionQuotedMemberSelector(ref position, tokens) || TryConsumeUnionIndexSelector(ref position, tokens));
             }
 
             private bool TryConsumeUnionIndexSelector(ref int position, ITokenWriter tokens)
             {
                 var pos = SkipPadding(position);
-                if (pos + 2 >= Last || !WhileNumeric(pos, out int end) || end == pos)
+                if (pos + 2 >= Last || !WhileNumeric(pos, out var end) || end == pos)
                     return false;
 
                 var members = new List<int>();
                 while (pos <= Last && Path[pos] != INDEX_CLOSE)
                 {
                     pos = SkipPadding(pos);
-                    if (!WhileNumeric(pos, out end) || !int.TryParse(Substring(pos, end), out int member))
+                    if (!WhileNumeric(pos, out end) || !int.TryParse(Substring(pos, end), out var member))
                         break;
 
                     members.Add(member);
@@ -515,7 +512,7 @@ namespace PSRule.Runtime.ObjectPath
             private bool TryConsumeNumericIndex(ref int position, ITokenWriter tokens)
             {
                 var pos = SkipPadding(position);
-                if (!WhileNumeric(pos, out int end) || !int.TryParse(Substring(pos, end), out int index))
+                if (!WhileNumeric(pos, out var end) || !int.TryParse(Substring(pos, end), out var index))
                     return false;
 
                 pos = SkipPadding(end);
@@ -529,7 +526,7 @@ namespace PSRule.Runtime.ObjectPath
 
             private string CaptureMemberName(ref int position)
             {
-                return UntilQuote(ref position, out string value) || WhileMemberName(ref position, out value) ? value : null;
+                return UntilQuote(ref position, out var value) || WhileMemberName(ref position, out value) ? value : null;
             }
 
             private bool TryBoolean(int position, out bool value)
@@ -551,7 +548,7 @@ namespace PSRule.Runtime.ObjectPath
             private bool TryInteger(int position, out int value)
             {
                 value = default;
-                return WhileNumeric(position, out int end) && int.TryParse(Substring(position, end), out value);
+                return WhileNumeric(position, out var end) && int.TryParse(Substring(position, end), out value);
             }
 
             private bool IsSequence(int position, string sequence)

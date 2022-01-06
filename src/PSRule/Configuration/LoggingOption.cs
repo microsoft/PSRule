@@ -60,7 +60,7 @@ namespace PSRule.Configuration
         {
             unchecked // Overflow is fine
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 23 + (LimitDebug != null ? LimitDebug.GetHashCode() : 0);
                 hash = hash * 23 + (LimitVerbose != null ? LimitVerbose.GetHashCode() : 0);
                 hash = hash * 23 + (RuleFail.HasValue ? RuleFail.Value.GetHashCode() : 0);
@@ -107,10 +107,10 @@ namespace PSRule.Configuration
 
         internal void Load(EnvironmentHelper env)
         {
-            if (env.TryStringArray("PSRULE_LOGGING_LIMITDEBUG", out string[] limitDebug))
+            if (env.TryStringArray("PSRULE_LOGGING_LIMITDEBUG", out var limitDebug))
                 LimitDebug = limitDebug;
 
-            if (env.TryStringArray("PSRULE_LOGGING_LIMITVERBOSE", out string[] limitVerbose))
+            if (env.TryStringArray("PSRULE_LOGGING_LIMITVERBOSE", out var limitVerbose))
                 LimitVerbose = limitVerbose;
 
             if (env.TryEnum("PSRULE_LOGGING_RULEFAIL", out OutcomeLogStream ruleFail))
@@ -122,10 +122,10 @@ namespace PSRule.Configuration
 
         internal void Load(Dictionary<string, object> index)
         {
-            if (index.TryPopStringArray("Logging.LimitDebug", out string[] limitDebug))
+            if (index.TryPopStringArray("Logging.LimitDebug", out var limitDebug))
                 LimitDebug = limitDebug;
 
-            if (index.TryPopStringArray("Logging.LimitVerbose", out string[] limitVerbose))
+            if (index.TryPopStringArray("Logging.LimitVerbose", out var limitVerbose))
                 LimitVerbose = limitVerbose;
 
             if (index.TryPopEnum("Logging.RuleFail", out OutcomeLogStream ruleFail))

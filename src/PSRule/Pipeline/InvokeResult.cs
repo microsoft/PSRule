@@ -46,10 +46,7 @@ namespace PSRule.Pipeline
         {
             get
             {
-                if (_Record == null || _Record.Count == 0)
-                    return null;
-
-                return _Record[0].TargetName;
+                return IsEmptyRecord() ? null : _Record[0].TargetName;
             }
         }
 
@@ -57,11 +54,13 @@ namespace PSRule.Pipeline
         {
             get
             {
-                if (_Record == null || _Record.Count == 0)
-                    return null;
-
-                return _Record[0].TargetType;
+                return IsEmptyRecord() ? null : _Record[0].TargetType;
             }
+        }
+
+        private bool IsEmptyRecord()
+        {
+            return _Record == null || _Record.Count == 0;
         }
 
         /// <summary>

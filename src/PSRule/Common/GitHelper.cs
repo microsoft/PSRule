@@ -10,7 +10,7 @@ namespace PSRule
         public static string GetHeadRef(string path)
         {
             // Try PSRule
-            if (EnvironmentHelper.Default.TryString("PSRULE_GITREF", out string value))
+            if (EnvironmentHelper.Default.TryString("PSRULE_GITREF", out var value))
                 return value;
 
             // Try Azure Pipelines
@@ -22,10 +22,7 @@ namespace PSRule
                 return value;
 
             // Try .git/HEAD
-            if (TryReadHead(path, out value))
-                return value;
-
-            return null;
+            return TryReadHead(path, out value) ? value : null;
         }
 
         private static bool TryReadHead(string path, out string value)
@@ -39,10 +36,7 @@ namespace PSRule
             if (lines == null || lines.Length == 0)
                 return false;
 
-            if (lines[0].StartsWith("ref: ", System.StringComparison.OrdinalIgnoreCase))
-                value = lines[0].Substring(5);
-            else
-                value = lines[0];
+            value = lines[0].StartsWith("ref: ", System.StringComparison.OrdinalIgnoreCase) ? lines[0].Substring(5) : lines[0];
 
             return true;
         }

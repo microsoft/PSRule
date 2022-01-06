@@ -11,7 +11,7 @@ namespace PSRule
         [Fact]
         public void ParseIdString()
         {
-            ResourceHelper.ParseIdString(null, "Module1\\Resource1", out string moduleName, out string name);
+            ResourceHelper.ParseIdString(null, "Module1\\Resource1", out var moduleName, out var name);
             Assert.Equal("Module1", moduleName);
             Assert.Equal("Resource1", name);
 

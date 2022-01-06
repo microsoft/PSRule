@@ -49,10 +49,7 @@ namespace PSRule.Rules
 
         private static Runtime.RuleConditionResult GetResult(Collection<Runtime.RuleConditionResult> value)
         {
-            if (value == null || value.Count == 0)
-                return null;
-
-            return value[0];
+            return value == null || value.Count == 0 ? null : value[0];
         }
     }
 }

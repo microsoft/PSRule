@@ -96,14 +96,7 @@ The latest tag automatically uses imagePullPolicy: Always instead of the default
         {
             var reader = new MarkdownReader(yamlHeaderOnly: false);
             var content = GetMarkdownContent();
-            if (nx)
-            {
-                content = content.Replace("\r\n", "\n");
-            }
-            else
-            {
-                content = content.Replace("\r\n", "\n").Replace("\n", "\r\n");
-            }
+            content = nx ? content.Replace("\r\n", "\n") : content.Replace("\r\n", "\n").Replace("\n", "\r\n");
             return reader.Read(content, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RuleDocument.md"));
         }
 

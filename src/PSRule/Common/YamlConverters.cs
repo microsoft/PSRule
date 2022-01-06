@@ -512,22 +512,22 @@ namespace PSRule
                 while (reader.TryConsume(out Scalar scalar))
                 {
                     // Read apiVersion
-                    if (TryApiVersion(reader, scalar, out string apiVersionValue))
+                    if (TryApiVersion(reader, scalar, out var apiVersionValue))
                     {
                         apiVersion = apiVersionValue;
                     }
                     // Read kind
-                    else if (TryKind(reader, scalar, out string kindValue))
+                    else if (TryKind(reader, scalar, out var kindValue))
                     {
                         kind = kindValue;
                     }
                     // Read metadata
-                    else if (TryMetadata(reader, scalar, nestedObjectDeserializer, out ResourceMetadata metadataValue))
+                    else if (TryMetadata(reader, scalar, nestedObjectDeserializer, out var metadataValue))
                     {
                         metadata = metadataValue;
                     }
                     // Read spec
-                    else if (kind != null && TrySpec(reader, scalar, apiVersion, kind, nestedObjectDeserializer, metadata, comment, out IResource resource))
+                    else if (kind != null && TrySpec(reader, scalar, apiVersion, kind, nestedObjectDeserializer, metadata, comment, out var resource))
                     {
                         result = resource;
                     }
@@ -572,7 +572,7 @@ namespace PSRule
 
             if (reader.Current is MappingStart)
             {
-                if (!_Next.Deserialize(reader, typeof(ResourceMetadata), nestedObjectDeserializer, out object value))
+                if (!_Next.Deserialize(reader, typeof(ResourceMetadata), nestedObjectDeserializer, out var value))
                     return false;
 
                 metadata = (ResourceMetadata)value;
@@ -584,18 +584,15 @@ namespace PSRule
         private bool TrySpec(IParser reader, Scalar scalar, string apiVersion, string kind, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
         {
             spec = null;
-            if (scalar.Value != FIELD_SPEC)
-                return false;
-
-            return TryResource(reader, apiVersion, kind, nestedObjectDeserializer, metadata, comment, out spec);
+            return scalar.Value == FIELD_SPEC && TryResource(reader, apiVersion, kind, nestedObjectDeserializer, metadata, comment, out spec);
         }
 
         private bool TryResource(IParser reader, string apiVersion, string kind, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
         {
             spec = null;
-            if (_Factory.TryDescriptor(apiVersion, kind, out ISpecDescriptor descriptor) && reader.Current is MappingStart)
+            if (_Factory.TryDescriptor(apiVersion, kind, out var descriptor) && reader.Current is MappingStart)
             {
-                if (!_Next.Deserialize(reader, descriptor.SpecType, nestedObjectDeserializer, out object value))
+                if (!_Next.Deserialize(reader, descriptor.SpecType, nestedObjectDeserializer, out var value))
                     return false;
 
                 spec = descriptor.CreateInstance(RunspaceContext.CurrentThread.Source.File, metadata, comment, value);
@@ -676,7 +673,7 @@ namespace PSRule
         {
             LanguageExpression result = null;
             var properties = new LanguageExpression.PropertyBag();
-            MapProperty(properties, reader, nestedObjectDeserializer, out string key);
+            MapProperty(properties, reader, nestedObjectDeserializer, out var key);
             if (key != null && TryCondition(key))
             {
                 result = MapCondition(key, properties, reader, nestedObjectDeserializer);
@@ -697,7 +694,7 @@ namespace PSRule
             name = null;
             while (reader.TryConsume(out Scalar scalar))
             {
-                string key = scalar.Value;
+                var key = scalar.Value;
                 if (TryCondition(key) || TryOperator(key))
                     name = key;
 
@@ -733,7 +730,7 @@ namespace PSRule
         private bool TryExpression<T>(IParser reader, string type, Func<IParser, Type, object> nestedObjectDeserializer, out T expression) where T : LanguageExpression
         {
             expression = null;
-            if (_Factory.TryDescriptor(type, out ILanguageExpresssionDescriptor descriptor))
+            if (_Factory.TryDescriptor(type, out var descriptor))
             {
                 expression = (T)descriptor.CreateInstance(RunspaceContext.CurrentThread.Source.File, null);
                 return expression != null;
@@ -759,12 +756,12 @@ namespace PSRule
         {
             if (expectedType == typeof(PSObject[]) && reader.Current is MappingStart)
             {
-                int lineNumber = reader.Current.Start.Line;
-                int linePosition = reader.Current.Start.Column;
+                var lineNumber = reader.Current.Start.Line;
+                var linePosition = reader.Current.Start.Column;
                 value = _Converter.ReadYaml(reader, typeof(PSObject));
                 if (value is PSObject pso)
                 {
-                    pso.UseTargetInfo(out PSRuleTargetInfo info);
+                    pso.UseTargetInfo(out var info);
                     info.SetSource(_SourceInfo?.File, lineNumber, linePosition);
                     value = new PSObject[] { pso };
                     return true;

@@ -37,10 +37,7 @@ namespace PSRule.Runtime
         {
             get
             {
-                if (Source.Count == 0)
-                    return null;
-
-                return Source[0].File;
+                return Source.Count == 0 ? null : Source[0].File;
             }
         }
 

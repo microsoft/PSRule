@@ -151,16 +151,15 @@ namespace PSRule.Configuration
         public string ToYaml()
         {
             var yaml = GetYaml();
-            if (string.IsNullOrEmpty(SourcePath))
-            {
-                return yaml;
-            }
-
-            return string.Concat(
-                string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.OptionsSourceComment, SourcePath),
-                Environment.NewLine,
-                yaml
-            );
+            return string.IsNullOrEmpty(SourcePath)
+                ? yaml
+                : string.Concat(
+                    string.Format(
+                        Thread.CurrentThread.CurrentCulture,
+                        PSRuleResources.OptionsSourceComment,
+                        SourcePath),
+                    Environment.NewLine,
+                    yaml);
         }
 
         public PSRuleOption Clone()
@@ -232,10 +231,7 @@ namespace PSRule.Configuration
             var filePath = GetFilePath(path);
 
             // Return empty options if file does not exist
-            if (!File.Exists(filePath))
-                return new PSRuleOption();
-
-            return FromEnvironment(FromYaml(path: filePath, yaml: File.ReadAllText(filePath)));
+            return !File.Exists(filePath) ? new PSRuleOption() : FromEnvironment(FromYaml(path: filePath, yaml: File.ReadAllText(filePath)));
         }
 
         /// <summary>
@@ -395,7 +391,7 @@ namespace PSRule.Configuration
         {
             unchecked // Overflow is fine
             {
-                int hash = 17;
+                var hash = 17;
                 hash = hash * 23 + (Binding != null ? Binding.GetHashCode() : 0);
                 hash = hash * 23 + (Configuration != null ? Configuration.GetHashCode() : 0);
                 hash = hash * 23 + (Convention != null ? Convention.GetHashCode() : 0);
@@ -422,7 +418,8 @@ namespace PSRule.Configuration
             if (Path.HasExtension(rootedPath))
             {
                 var ext = Path.GetExtension(rootedPath);
-                if (string.Equals(ext, ".yaml", StringComparison.OrdinalIgnoreCase) || string.Equals(ext, ".yml", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(ext, ".yaml", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(ext, ".yml", StringComparison.OrdinalIgnoreCase))
                 {
                     return rootedPath;
                 }
@@ -452,10 +449,9 @@ namespace PSRule.Configuration
         internal static string GetRootedBasePath(string path)
         {
             var rootedPath = GetRootedPath(path);
-            if (rootedPath.Length > 0 && IsSeparator(rootedPath[rootedPath.Length - 1]))
-                return rootedPath;
-
-            return string.Concat(rootedPath, Path.DirectorySeparatorChar);
+            return rootedPath.Length > 0 && IsSeparator(rootedPath[rootedPath.Length - 1])
+                ? rootedPath
+                : string.Concat(rootedPath, Path.DirectorySeparatorChar);
         }
 
         /// <summary>

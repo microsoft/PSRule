@@ -31,10 +31,7 @@ namespace PSRule.Runtime
 
         internal RunspaceContext GetContext()
         {
-            if (_Context == null)
-                return RunspaceContext.CurrentThread;
-
-            return _Context;
+            return _Context ?? RunspaceContext.CurrentThread;
         }
 
         #endregion Helper methods

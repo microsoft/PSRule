@@ -112,10 +112,7 @@ namespace PSRule.Runtime
         /// <returns></returns>
         public AssertResult ReasonIf(bool condition, string text, params object[] args)
         {
-            if (!condition)
-                return this;
-
-            return Reason(text, args);
+            return !condition ? this : Reason(text, args);
         }
 
         /// <summary>

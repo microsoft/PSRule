@@ -19,23 +19,21 @@ namespace PSRule
 
         public static T PropertyValue<T>(this PSObject o, string propertyName)
         {
-            if (o.BaseObject is Hashtable hashtable)
-                return ConvertValue<T>(hashtable[propertyName]);
-
-            return ConvertValue<T>(o.Properties[propertyName].Value);
+            return o.BaseObject is Hashtable hashtable
+                ? ConvertValue<T>(hashtable[propertyName])
+                : ConvertValue<T>(o.Properties[propertyName].Value);
         }
 
         public static PSObject PropertyValue(this PSObject o, string propertyName)
         {
-            if (o.BaseObject is Hashtable hashtable)
-                return PSObject.AsPSObject(hashtable[propertyName]);
-
-            return PSObject.AsPSObject(o.Properties[propertyName].Value);
+            return o.BaseObject is Hashtable hashtable
+                ? PSObject.AsPSObject(hashtable[propertyName])
+                : PSObject.AsPSObject(o.Properties[propertyName].Value);
         }
 
         public static string ValueAsString(this PSObject o, string propertyName, bool caseSensitive)
         {
-            return ObjectHelper.GetPath(o, propertyName, caseSensitive, out object value) && value != null ? value.ToString() : null;
+            return ObjectHelper.GetPath(o, propertyName, caseSensitive, out var value) && value != null ? value.ToString() : null;
         }
 
         public static bool HasProperty(this PSObject o, string propertyName)
@@ -70,7 +68,13 @@ namespace PSRule
 
         public static string ToJson(this PSObject o)
         {
-            var settings = new JsonSerializerSettings { Formatting = Formatting.None, TypeNameHandling = TypeNameHandling.None, MaxDepth = 1024, Culture = CultureInfo.InvariantCulture };
+            var settings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.None,
+                TypeNameHandling = TypeNameHandling.None,
+                MaxDepth = 1024,
+                Culture = CultureInfo.InvariantCulture
+            };
             settings.Converters.Insert(0, new PSObjectJsonConverter());
             return JsonConvert.SerializeObject(o, settings);
         }
@@ -91,7 +95,7 @@ namespace PSRule
 
         public static void SetTargetInfo(this PSObject o, PSRuleTargetInfo targetInfo)
         {
-            if (TryTargetInfo(o, out PSRuleTargetInfo orginalInfo))
+            if (TryTargetInfo(o, out var orginalInfo))
             {
                 targetInfo.Combine(orginalInfo);
                 o.Members[PSRuleTargetInfo.PropertyName].Value = targetInfo;
@@ -102,18 +106,12 @@ namespace PSRule
 
         public static TargetSourceInfo[] GetSourceInfo(this PSObject o)
         {
-            if (!TryTargetInfo(o, out PSRuleTargetInfo targetInfo))
-                return Array.Empty<TargetSourceInfo>();
-
-            return targetInfo.Source.ToArray();
+            return o.TryTargetInfo(out var targetInfo) ? targetInfo.Source.ToArray() : Array.Empty<TargetSourceInfo>();
         }
 
         public static TargetIssueInfo[] GetIssueInfo(this PSObject o)
         {
-            if (!TryTargetInfo(o, out PSRuleTargetInfo targetInfo))
-                return Array.Empty<TargetIssueInfo>();
-
-            return targetInfo.Issue.ToArray();
+            return o.TryTargetInfo(out var targetInfo) ? targetInfo.Issue.ToArray() : Array.Empty<TargetIssueInfo>();
         }
 
         public static void ConvertTargetInfoProperty(this PSObject o)
@@ -121,7 +119,7 @@ namespace PSRule
             if (o == null || !TryProperty(o, PSRuleTargetInfo.PropertyName, out PSObject value))
                 return;
 
-            UseTargetInfo(o, out PSRuleTargetInfo targetInfo);
+            UseTargetInfo(o, out var targetInfo);
             if (TryProperty(value, PROPERTY_SOURCE, out Array sources))
             {
                 for (var i = 0; i < sources.Length; i++)

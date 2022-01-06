@@ -171,30 +171,28 @@ namespace PSRule.Parser
 
         public static IEnumerable<MarkdownToken> GetSection(this TokenStream stream, string header)
         {
-            if (stream.Count == 0)
-                return Enumerable.Empty<MarkdownToken>();
+            return stream.Count == 0
+                ? Enumerable.Empty<MarkdownToken>()
+                : stream
+                    // Skip until we reach the header
+                    .SkipWhile(token => token.Type != MarkdownTokenType.Header || token.Text != header)
 
-            return stream
-                // Skip until we reach the header
-                .SkipWhile(token => token.Type != MarkdownTokenType.Header || token.Text != header)
-
-                // Get all tokens to the next header
-                .Skip(1)
-                .TakeWhile(token => token.Type != MarkdownTokenType.Header);
+                    // Get all tokens to the next header
+                    .Skip(1)
+                    .TakeWhile(token => token.Type != MarkdownTokenType.Header);
         }
 
         public static IEnumerable<MarkdownToken> GetSections(this TokenStream stream)
         {
-            if (stream.Count == 0)
-                return Enumerable.Empty<MarkdownToken>();
+            return stream.Count == 0
+                ? Enumerable.Empty<MarkdownToken>()
+                : stream
+                    // Skip until we reach the header
+                    .SkipWhile(token => token.Type != MarkdownTokenType.Header)
 
-            return stream
-                // Skip until we reach the header
-                .SkipWhile(token => token.Type != MarkdownTokenType.Header)
-
-                // Get all tokens to the next header
-                .Skip(1)
-                .TakeWhile(token => token.Type != MarkdownTokenType.Header);
+                    // Get all tokens to the next header
+                    .Skip(1)
+                    .TakeWhile(token => token.Type != MarkdownTokenType.Header);
         }
     }
 
@@ -233,13 +231,8 @@ namespace PSRule.Parser
 
         public bool IsTokenType(params MarkdownTokenType[] tokenType)
         {
-            if (Current == null || tokenType == null)
-                return false;
-
-            if (tokenType.Length == 1)
-                return tokenType[0] == Current.Type;
-
-            return tokenType.Contains(Current.Type);
+            return Current != null && tokenType != null &&
+                (tokenType.Length == 1 ? tokenType[0] == Current.Type : tokenType.Contains(Current.Type));
         }
 
         public MarkdownTokenType PeakTokenType(int offset = 1)
@@ -326,10 +319,7 @@ namespace PSRule.Parser
 
         public MarkdownToken ResolveLinkTarget(string name)
         {
-            if (!_LinkTargetIndex.ContainsKey(name))
-                return null;
-
-            return _LinkTargetIndex[name];
+            return !_LinkTargetIndex.ContainsKey(name) ? null : _LinkTargetIndex[name];
         }
 
         public IEnumerator<MarkdownToken> GetEnumerator()
