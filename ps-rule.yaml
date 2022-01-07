@@ -11,10 +11,24 @@ output:
 
 input:
   pathIgnore:
-  - '*.Designer.cs'
+  - '.vscode/'
+  - '.github/workflows/'
+  - '.azure-pipelines/**/*.yaml'
   - '*.md'
+  - '*.Designer.cs'
+  - '*.resx'
   - '*.sln'
-  - 'docs/**/toc.yml'
+  - '*.txt'
+  - '*.html'
+  - '*.ico'
+  - '*.png'
+  - 'ps-docs.yaml'
+  - 'ps-project.yaml'
+  - 'ps-rule.yaml'
+  - 'mkdocs.yml'
+  - '**/.editorconfig'
+  - '.markdownlint.json'
+  - '.github/dependabot.yml'
 
 include:
   path: []
