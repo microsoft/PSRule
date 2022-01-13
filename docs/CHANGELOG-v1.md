@@ -11,6 +11,9 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+- Bug fixes:
+  - Fixes object path handling with dash. [#902](https://github.com/microsoft/PSRule/issues/902)
+
 ## v2.0.0-B2201054 (pre-release)
 
 What's changed since v1.11.0:
