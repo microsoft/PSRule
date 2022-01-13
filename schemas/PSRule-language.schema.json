@@ -24,18 +24,44 @@
                     "type": "string",
                     "title": "Name",
                     "description": "The name of the resource. This must be unique.",
-                    "minLength": 3
+                    "$ref": "#/definitions/resourceName"
                 },
                 "annotations": {
                     "type": "object",
-                    "title": "Annotations"
+                    "title": "Annotations",
+                    "description": "Additional annotations for the resource.",
+                    "properties": {
+                        "obsolete": {
+                            "type": "boolean",
+                            "title": "Obsolete",
+                            "description": "A common annotation that flags the resource as obsolete.",
+                            "default": false
+                        }
+                    },
+                    "additionalProperties": true,
+                    "defaultSnippets": [
+                        {
+                            "label": "Annotation key/ value",
+                            "body": {
+                                "${1:Key}": "${2:Value}"
+                            }
+                        }
+                    ]
                 },
                 "tags": {
                     "type": "object",
                     "title": "Tags",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "defaultSnippets": [
+                        {
+                            "label": "Tag key/ value",
+                            "body": {
+                                "${1:Key}": "${2:Value}"
+                            }
+                        }
+                    ]
                 }
             },
             "required": [
@@ -104,14 +130,22 @@
                             "title": "Include rules",
                             "description": "Rules to include by name in the baseline.",
                             "markdownDescription": "Rules to include by name in the baseline. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#ruleinclude)",
-                            "$ref": "#/definitions/rule-names"
+                            "items": {
+                                "type": "string",
+                                "$ref": "#/definitions/resourceName"
+                            },
+                            "uniqueItems": true
                         },
                         "exclude": {
                             "type": "array",
                             "title": "Exclude rules",
                             "description": "Rules to exclude by name from the baseline.",
                             "markdownDescription": "Rules to exclude by name from the baseline. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#ruleexclude)",
-                            "$ref": "#/definitions/rule-names"
+                            "items": {
+                                "type": "string",
+                                "$ref": "#/definitions/resourceName"
+                            },
+                            "uniqueItems": true
                         },
                         "tag": {
                             "type": "object",
@@ -243,7 +277,7 @@
                             "title": "Baseline",
                             "description": "The name of a baseline to use.",
                             "markdownDescription": "The name of a baseline to use. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#rulebaseline)",
-                            "$ref": "#/definitions/rule-names"
+                            "$ref": "#/definitions/resourceName"
                         }
                     },
                     "additionalProperties": false
@@ -251,15 +285,7 @@
             },
             "additionalProperties": false
         },
-        "rule-names": {
-            "type": "array",
-            "items": {
-                "type": "string",
-                "$ref": "#/definitions/rule-name"
-            },
-            "uniqueItems": true
-        },
-        "rule-name": {
+        "resourceName": {
             "type": "string",
             "minLength": 3
         },
@@ -443,7 +469,7 @@
                 },
                 "metadata": {
                     "type": "object",
-                    "$ref": "#/definitions/resource-metadata"
+                    "$ref": "#/definitions/ruleMetadata"
                 },
                 "spec": {
                     "type": "object",
@@ -489,6 +515,68 @@
                 "condition"
             ],
             "additionalProperties": false
+        },
+        "ruleMetadata": {
+            "type": "object",
+            "title": "Metadata",
+            "description": "Additional information to identify the resource.",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "title": "Name",
+                    "description": "The name of the resource. This must be unique.",
+                    "$ref": "#/definitions/resourceName"
+                },
+                "ref": {
+                    "title": "Reference",
+                    "description": "An optional stable opaque identifier of this resource for lookup. This must be unique if set.",
+                    "$ref": "#/definitions/resourceName"
+                },
+                "annotations": {
+                    "type": "object",
+                    "title": "Annotations",
+                    "description": "Additional annotations for the resource.",
+                    "additionalProperties": true,
+                    "defaultSnippets": [
+                        {
+                            "label": "Annotation key/ value",
+                            "body": {
+                                "${1:Key}": "${2:Value}"
+                            }
+                        }
+                    ]
+                },
+                "alias": {
+                    "type": "array",
+                    "title": "Aliases",
+                    "description": "Alternative names this resource is known by.",
+                    "items": {
+                        "type": "string",
+                        "title": "Alias",
+                        "description": "An alternative name.",
+                        "$ref": "#/definitions/resourceName"
+                    },
+                    "uniqueItems": true
+                },
+                "tags": {
+                    "type": "object",
+                    "title": "Tags",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "defaultSnippets": [
+                        {
+                            "label": "Tag key/ value",
+                            "body": {
+                                "${1:Key}": "${2:Value}"
+                            }
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "name"
+            ]
         },
         "selectorExpression": {
             "type": "object",

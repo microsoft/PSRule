@@ -167,11 +167,17 @@
   <data name="Result_ErrorDetail" xml:space="preserve">
     <value>{0} failed {1} with the error '{2}'.</value>
   </data>
+  <data name="Result_ErrorDetailWithRef" xml:space="preserve">
+    <value>{3}: {0} failed {1} with the error '{2}'.</value>
+  </data>
   <data name="Result_Fail" xml:space="preserve">
     <value>    [FAIL] </value>
   </data>
   <data name="Result_FailDetail" xml:space="preserve">
     <value>{0} failed {1}. {2}</value>
+  </data>
+  <data name="Result_FailDetailWithRef" xml:space="preserve">
+    <value>{3}: {0} failed {1}. {2}</value>
   </data>
   <data name="Result_Pass" xml:space="preserve">
     <value>    [PASS] </value>

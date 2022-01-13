@@ -281,6 +281,16 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
             ($result | Where-Object { $_.TargetName -eq 'TestObject1' }).OutcomeReason | Should -BeIn 'Suppressed';
             ($result | Where-Object { $_.TargetName -eq 'TestObject2' }).OutcomeReason | Should -BeIn 'Processed';
+
+            # With aliases
+            $aliasRuleFilePath = @(
+                (Join-Path -Path $here -ChildPath 'FromFileAlias.Rule.jsonc')
+                (Join-Path -Path $here -ChildPath 'FromFileAlias.Rule.ps1')
+            )
+            $option = New-PSRuleOption -SuppressTargetName @{ 'JSON.AlternativeName' = 'TestObject1'; 'PSRZZ.0003' = 'testobject2'; 'PS.AlternativeName' = 'TestObject1' };
+            $result = $testObject | Invoke-PSRule -Path $aliasRuleFilePath -Option $option -Name 'JSON.AlternativeName','PS.RuleWithAlias1' -Outcome All;
+            ($result | Where-Object { $_.TargetName -eq 'TestObject1' }).OutcomeReason | Should -BeIn 'Suppressed';
+            $result.Count | Should -Be 4;
         }
 
         It 'Processes configuration' {
@@ -1149,9 +1159,9 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages.Length | Should -Be 2;
     
                 $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[0].Message | Should -BeExactly "Rule 'FromFile1' was suppressed for 'TestObject1'.";
+                $warningMessages[0].Message | Should -BeExactly "Rule '.\FromFile1' was suppressed for 'TestObject1'.";
                 $warningMessages[1] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[1].Message | Should -BeExactly "Rule 'FromFile2' was suppressed for 'TestObject1'.";
+                $warningMessages[1].Message | Should -BeExactly "Rule '.\FromFile2' was suppressed for 'TestObject1'.";
             }
 
             It 'No warnings' {
@@ -1632,7 +1642,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
                 $result | Should -Not -BeNullOrEmpty;
                 $result.Length | Should -Be 3;
                 $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
-                ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.Rule';
+                $result | Should -BeOfType 'PSRule.Definitions.Rules.IRuleV1';
             }
             finally {
                 Pop-Location;
@@ -1972,7 +1982,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result = @(Get-PSRule -Path $ruleFilePath -Name 'FromFile4');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
-            $result[0].DependsOn | Should -BeIn 'FromFile3';
+            $result[0].DependsOn | Should -BeIn '.\FromFile3';
 
             # Get a list of rules with dependencies
             $result = @(Get-PSRule -Path $ruleFilePath -Name 'FromFile4' -IncludeDependencies);
@@ -1980,7 +1990,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
             $result.Length | Should -Be 2;
             $result[0].RuleName | Should -Be 'FromFile3';
             $result[1].RuleName | Should -Be 'FromFile4';
-            $result[1].DependsOn | Should -BeIn 'FromFile3';
+            $result[1].DependsOn | Should -BeIn '.\FromFile3';
         }
     }
 
@@ -1988,7 +1998,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         It 'Wide' {
             $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Wide;
             $result | Should -Not -BeNullOrEmpty;
-            ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.Rule+Wide';
+            ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Definitions.Rules.IRuleV1+Wide';
         }
 
         It 'Yaml' {
@@ -2035,31 +2045,31 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
                     Title = '0 space indentation'
                     OptionHashtable = @{'Output.JsonIndent' = 0}
                     YamlPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests9.yml')
-                    ExpectedJson = '"ruleId":"FromFile1","ruleName":"FromFile1"'
+                    ExpectedJson = '"ruleId":"\.\\\\FromFile1","ruleName":"FromFile1"'
                 }
                 @{
                     Title = '1 space indentation'
                     OptionHashtable = @{'Output.JsonIndent' = 1}
                     YamlPath = (Join-Path -Path $here -ChildPath 'PSRule.Tests10.yml')
-                    ExpectedJson = "`"ruleId`": `"FromFile1`",$([Environment]::Newline)  `"ruleName`": `"FromFile1`""
+                    ExpectedJson = "`"ruleId`": `"\.\\\\FromFile1`",$([Environment]::Newline)  `"ruleName`": `"FromFile1`""
                 }
                 @{
                     Title = '2 space indentation'
                     OptionHashtable = @{'Output.JsonIndent' = 2}
                     YamlPath = (Join-Path -Pat $here -ChildPath 'PSRule.Tests11.yml')
-                    ExpectedJson = "`"ruleId`": `"FromFile1`",$([Environment]::Newline)    `"ruleName`": `"FromFile1`""
+                    ExpectedJson = "`"ruleId`": `"\.\\\\FromFile1`",$([Environment]::Newline)    `"ruleName`": `"FromFile1`""
                 }
                 @{
                     Title = '3 space indentation'
                     OptionHashtable = @{'Output.JsonIndent' = 3}
                     YamlPath = (Join-Path -Pat $here -ChildPath 'PSRule.Tests12.yml')
-                    ExpectedJson = "`"ruleId`": `"FromFile1`",$([Environment]::Newline)      `"ruleName`": `"FromFile1`""
+                    ExpectedJson = "`"ruleId`": `"\.\\\\FromFile1`",$([Environment]::Newline)      `"ruleName`": `"FromFile1`""
                 }
                 @{
                     Title = '4 space indentation'
                     OptionHashtable = @{'Output.JsonIndent' = 4}
                     YamlPath = (Join-Path -Pat $here -ChildPath 'PSRule.Tests13.yml')
-                    ExpectedJson = "`"ruleId`": `"FromFile1`",$([Environment]::Newline)        `"ruleName`": `"FromFile1`""
+                    ExpectedJson = "`"ruleId`": `"\.\\\\FromFile1`",$([Environment]::Newline)        `"ruleName`": `"FromFile1`""
                 }
             )
         }
@@ -2116,12 +2126,12 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         Context 'Normalizie range' {
             It 'Normalize to 0 when indentation is less than 0' {
                 $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option @{'Output.JsonIndent' = -1};
-                $result | Should -MatchExactly '"ruleId":"FromFile1","ruleName":"FromFile1"';
+                $result | Should -MatchExactly '"ruleId":"\.\\\\FromFile1","ruleName":"FromFile1"';
             }
 
             It 'Normalize to 4 when indentation is more than 4' {
                 $result = Get-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat 'Json' -Option @{'Output.JsonIndent' = 5};
-                $result | Should -MatchExactly "`"ruleId`": `"FromFile1`",$([Environment]::Newline)        `"ruleName`": `"FromFile1`"";
+                $result | Should -MatchExactly "`"ruleId`": `"\.\\\\FromFile1`",$([Environment]::Newline)        `"ruleName`": `"FromFile1`"";
             }
         }
     }

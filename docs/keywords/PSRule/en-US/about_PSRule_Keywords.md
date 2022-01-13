@@ -44,13 +44,15 @@ Conditions determine if the input object either _Pass_ or _Fail_ the rule.
 Syntax:
 
 ```text
-Rule [-Name] <string> [-Tag <hashtable>] [-When <string[]>] [-Type <string[]>] [-If <scriptBlock>] [-DependsOn <string[]>] [-Configure <hashtable>] [-ErrorAction <ActionPreference>] [-Body] {
+Rule [-Name] <string> [-Ref <string>] [-Alias <string[]>] [-Tag <hashtable>] [-When <string[]>] [-Type <string[]>] [-If <scriptBlock>] [-DependsOn <string[]>] [-Configure <hashtable>] [-ErrorAction <ActionPreference>] [-Body] {
     ...
 }
 ```
 
 - `Name` - The name of the rule definition. Each rule name must be unique.
 When packaging rules within a module, rule names must only be unique within the module.
+- `Ref` - An optional stable and opaque identifier that can be used to reference the rule.
+- `Alias` - A list of alternative names that can be used to reference the rule.
 - `Tag` - A hashtable of key/ value metadata that can be used to filter and identify rules and rule results.
 - `When` - A selector precondition that must evaluate true before the rule is executed.
 - `Type` - A type precondition that must match the _TargetType_ of the pipeline object before the rule is executed.

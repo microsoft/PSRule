@@ -1,0 +1,15 @@
+# These are options for unit tests
+
+suppression:
+  YAML.RuleWithAlias1:
+  - 'TestObject1'
+  PSRZZ.0001:
+  - 'TestObject1'
+  JSON.AlternativeName:
+  - 'TestObject2'
+  YAML.AlternativeName:
+  - 'TestObject2'
+  .\PSRZZ.0003:
+  - 'TestObject3'
+  '.\PS.AlternativeName':
+  - 'TestObject3'

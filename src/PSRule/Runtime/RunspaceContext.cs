@@ -60,7 +60,6 @@ namespace PSRule.Runtime
         private const string SOURCE_OUTCOME_FAIL = "Rule.Outcome.Fail";
         private const string SOURCE_OUTCOME_PASS = "Rule.Outcome.Pass";
         private const string ERRORID_INVALIDRULERESULT = "PSRule.Runtime.InvalidRuleResult";
-        private const string WARN_KEY_PROPERTY = "Property";
         private const string WARN_KEY_SEPARATOR = "_";
 
         [ThreadStatic]
@@ -262,39 +261,6 @@ namespace PSRule.Runtime
             Writer.WriteWarning(PSRuleResources.RuleCountSuppressed, ruleCount, Binding.TargetName);
         }
 
-        public void WarnRuleNotFound()
-        {
-            if (Writer == null || !Writer.ShouldWriteWarning())
-                return;
-
-            Writer.WriteWarning(PSRuleResources.RuleNotFound);
-        }
-
-        public void WarnBaselineObsolete(string baselineId)
-        {
-            if (Writer == null || !Writer.ShouldWriteWarning())
-                return;
-
-            Writer.WriteWarning(PSRuleResources.BaselineObsolete, baselineId);
-        }
-
-        public void WarnPropertyObsolete(string variableName, string propertyName)
-        {
-            DebugPropertyObsolete(variableName, propertyName);
-            if (Writer == null || !Writer.ShouldWriteWarning() || !ShouldWarnOnce(WARN_KEY_PROPERTY, variableName, propertyName))
-                return;
-
-            Writer.WriteWarning(PSRuleResources.PropertyObsolete, variableName, propertyName);
-        }
-
-        private void DebugPropertyObsolete(string variableName, string propertyName)
-        {
-            if (Writer == null || !Writer.ShouldWriteDebug())
-                return;
-
-            Writer.WriteDebug(PSRuleResources.DebugPropertyObsolete, RuleBlock.RuleName, variableName, propertyName);
-        }
-
         public void ErrorInvaildRuleResult()
         {
             if (Writer == null || !Writer.ShouldWriteError())
@@ -304,7 +270,8 @@ namespace PSRule.Runtime
                 exception: new RuleException(message: string.Format(
                     Thread.CurrentThread.CurrentCulture,
                     PSRuleResources.InvalidRuleResult,
-                    RuleBlock.RuleId)),
+                    RuleBlock.Id
+                )),
                 errorId: ERRORID_INVALIDRULERESULT,
                 errorCategory: ErrorCategory.InvalidResult,
                 targetObject: null
@@ -528,7 +495,7 @@ namespace PSRule.Runtime
                     string.Format(
                         Thread.CurrentThread.CurrentCulture,
                         PSRuleResources.RuleStackTrace,
-                        RuleBlock.RuleName,
+                        RuleBlock.Name,
                         RuleBlock.Extent.File,
                         RuleBlock.Extent.StartLineNumber)
                 );
@@ -541,7 +508,7 @@ namespace PSRule.Runtime
                 : string.Concat(
                     record.FullyQualifiedErrorId,
                     ",",
-                    RuleBlock.RuleName
+                    RuleBlock.Name
                 );
         }
 
@@ -658,8 +625,9 @@ namespace PSRule.Runtime
             RuleBlock = ruleBlock;
             RuleRecord = new RuleRecord(
                 runId: Pipeline.RunId,
-                ruleId: ruleBlock.RuleId,
-                ruleName: ruleBlock.RuleName,
+                ruleId: ruleBlock.Id.Value,
+                ruleName: ruleBlock.Name,
+                @ref: ruleBlock.Ref.GetValueOrDefault().Name,
                 targetObject: TargetObject.Value,
                 targetName: Binding.TargetName,
                 targetType: Binding.TargetType,
@@ -671,7 +639,7 @@ namespace PSRule.Runtime
             );
 
             if (Writer != null)
-                Writer.EnterScope(ruleBlock.RuleName);
+                Writer.EnterScope(ruleBlock.Name);
 
             // Starts rule execution timer
             _RuleTimer.Restart();
@@ -831,7 +799,7 @@ namespace PSRule.Runtime
             return null;
         }
 
-        private bool ShouldWarnOnce(params string[] key)
+        internal bool ShouldWarnOnce(params string[] key)
         {
             var combinedKey = string.Join(WARN_KEY_SEPARATOR, key);
             if (_WarnOnce.Contains(combinedKey))

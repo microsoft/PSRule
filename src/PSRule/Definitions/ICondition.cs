@@ -1,7 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
+using System.Management.Automation;
 
 namespace PSRule.Definitions
 {
@@ -17,5 +18,7 @@ namespace PSRule.Definitions
     public interface ICondition : IDisposable
     {
         IConditionResult If();
+
+        ActionPreference ErrorAction { get; }
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections;
@@ -20,11 +20,12 @@ namespace PSRule.Rules
     [JsonObject]
     public sealed class RuleRecord
     {
-        internal RuleRecord(string runId, string ruleId, string ruleName, PSObject targetObject, string targetName, string targetType, ResourceTags tag, RuleHelpInfo info, Hashtable field, Hashtable data, TargetSourceInfo[] source, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
+        internal RuleRecord(string runId, string ruleId, string ruleName, string @ref, PSObject targetObject, string targetName, string targetType, ResourceTags tag, RuleHelpInfo info, Hashtable field, Hashtable data, TargetSourceInfo[] source, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
             RunId = runId;
             RuleId = ruleId;
             RuleName = ruleName;
+            Ref = @ref;
             TargetObject = targetObject;
             TargetName = targetName;
             TargetType = targetType;
@@ -60,6 +61,8 @@ namespace PSRule.Rules
         /// </summary>
         [JsonProperty(PropertyName = "ruleName")]
         public readonly string RuleName;
+
+        public string Ref { get; }
 
         /// <summary>
         /// The outcome after the rule processes an object.

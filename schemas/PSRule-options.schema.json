@@ -142,6 +142,13 @@
                     "description": "Enable or disable warnings for suppressed rules. The default is `true`.",
                     "markdownDescription": "Enable or disable warnings for suppressed rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#executionsuppressedrulewarning)",
                     "default": true
+                },
+                "aliasReferenceWarning": {
+                    "type": "boolean",
+                    "title": "Warn on resource aliases",
+                    "description": "Enable or disable warnings when an alias to a resource is used. The default is true.",
+                    "markdownDescription": "Enable or disable warnings when an alias to a resource is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#executionaliasreferencewarning)",
+                    "default": true
                 }
             },
             "additionalProperties": false
@@ -537,11 +544,7 @@
                 },
                 "execution": {
                     "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/execution-option"
-                        }
-                    ]
+                    "$ref": "#/definitions/execution-option"
                 },
                 "include": {
                     "type": "object",
@@ -549,11 +552,7 @@
                 },
                 "input": {
                     "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/input-option"
-                        }
-                    ]
+                    "$ref": "#/definitions/input-option"
                 },
                 "logging": {
                     "type": "object",
@@ -621,7 +620,11 @@
                     "title": "Include rules",
                     "description": "Optionally filter to rules by name.",
                     "markdownDescription": "Optionally filter to rules by name. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#ruleinclude)",
-                    "$ref": "#/definitions/rule-names"
+                    "items": {
+                        "type": "string",
+                        "$ref": "#/definitions/resourceName"
+                    },
+                    "uniqueItems": true
                 },
                 "includeLocal": {
                     "type": "boolean",
@@ -635,7 +638,11 @@
                     "title": "Exclude rules",
                     "description": "Specifies rules to exclude by name.",
                     "markdownDescription": "Specifies rules to exclude by name. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Options.html#ruleexclude)",
-                    "$ref": "#/definitions/rule-names"
+                    "items": {
+                        "type": "string",
+                        "$ref": "#/definitions/resourceName"
+                    },
+                    "uniqueItems": true
                 },
                 "tag": {
                     "type": "object",
@@ -662,15 +669,7 @@
             },
             "additionalProperties": false
         },
-        "rule-names": {
-            "type": "array",
-            "items": {
-                "type": "string",
-                "$ref": "#/definitions/rule-name"
-            },
-            "uniqueItems": true
-        },
-        "rule-name": {
+        "resourceName": {
             "type": "string",
             "minLength": 3
         }

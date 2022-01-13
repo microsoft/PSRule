@@ -1,0 +1,16 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+# Synopsis: A rule with an alias.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'YAML.RuleWithAlias1'
+  alias:
+  - 'YAML.AlternativeName'
+  ref: PSRZZ.0002
+spec:
+  condition:
+    field: name
+    exists: true

@@ -708,7 +708,7 @@ Describe 'Baseline' -Tag 'Baseline' {
             $Null = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline5' -WarningVariable outWarn -WarningAction SilentlyContinue);
             $warnings = @($outWarn);
             $warnings.Length | Should -Be 1;
-            $warnings[0] | Should -BeExactly "The baseline 'TestBaseline5' is obsolete. Consider switching to an alternative baseline.";
+            $warnings[0] | Should -BeExactly "The Baseline 'TestBaseline5' is obsolete. Consider switching to an alternative Baseline.";
         }
 
         It 'With -Module' {

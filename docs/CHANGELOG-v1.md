@@ -11,6 +11,21 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.0.0-B2201054:
+
+- General improvements:
+  - Added support for rule aliases. [#792](https://github.com/microsoft/PSRule/issues/792)
+    - Aliases allow rules to be references by an alternative name.
+    - When renaming rules, add a rule alias to avoid breaking references to the old rule name.
+    - To specify an alias use the `-Alias` parameter or `alias` metadata property in YAML or JSON.
+  - Added support for stable identifiers with rule refs. [#881](https://github.com/microsoft/PSRule/issues/881)
+    - A rule ref may be optionally be used to reference a rule.
+    - Rule refs should be:
+      stable, not changing between releases;
+      opaque, as opposed to being a human-readable string.
+      Stable and opaque refs ease web lookup and to help to avoid language difficulties.
+    - To specify a rule ref use the `-Ref` parameter or `ref` metadata property in YAML or JSON.
+
 ## v2.0.0-B2201054 (pre-release)
 
 What's changed since v1.11.0:

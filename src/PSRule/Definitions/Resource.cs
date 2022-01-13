@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 using YamlDotNet.Core;
@@ -48,15 +47,50 @@ namespace PSRule.Definitions
         Convention = 5
     }
 
-    internal interface IResource : ILanguageBlock
+    [Flags]
+    public enum ResourceFlags
     {
+        None = 0,
+
+        Obsolete = 1
+    }
+
+    public interface IResource : ILanguageBlock
+    {
+        /// <summary>
+        /// The type of resource.
+        /// </summary>
         ResourceKind Kind { get; }
 
+        /// <summary>
+        /// The API version of the resource.
+        /// </summary>
         string ApiVersion { get; }
 
+        /// <summary>
+        /// The name of the resource.
+        /// </summary>
         string Name { get; }
 
+        /// <summary>
+        /// An optional reference identifer for the resource.
+        /// </summary>
+        ResourceId? Ref { get; }
+
+        /// <summary>
+        /// Any additional aliases for the resource.
+        /// </summary>
+        ResourceId[] Alias { get; }
+
+        /// <summary>
+        /// Any resource tags.
+        /// </summary>
         ResourceTags Tags { get; }
+
+        /// <summary>
+        /// Flags for the resource.
+        /// </summary>
+        ResourceFlags Flags { get; }
     }
 
     internal abstract class ResourceRef
@@ -253,11 +287,24 @@ namespace PSRule.Definitions
             Tags = new ResourceTags();
         }
 
+        /// <summary>
+        /// The name of the resource.
+        /// </summary>
         public string Name { get; set; }
 
+        public string Ref { get; set; }
+
+        public string[] Alias { get; set; }
+
+        /// <summary>
+        /// Any resource annotations.
+        /// </summary>
         [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitEmptyCollections)]
         public ResourceAnnotations Annotations { get; set; }
 
+        /// <summary>
+        /// Any resource tags.
+        /// </summary>
         [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitEmptyCollections)]
         public ResourceTags Tags { get; set; }
     }
@@ -289,14 +336,17 @@ namespace PSRule.Definitions
             Info = info;
             Source = source;
             Spec = spec;
-            Id = ResourceHelper.GetIdString(source.ModuleName, metadata.Name);
             Metadata = metadata;
             Name = metadata.Name;
+            Id = new ResourceId(source.ModuleName, Name, ResourceIdKind.Id);
         }
 
         [YamlIgnore()]
-        public readonly string Id;
+        public ResourceId Id { get; }
 
+        /// <summary>
+        /// The name of the resource.
+        /// </summary>
         [YamlIgnore()]
         public string Name { get; }
 
@@ -309,10 +359,16 @@ namespace PSRule.Definitions
         [YamlIgnore()]
         public readonly ResourceHelpInfo Info;
 
+        /// <summary>
+        /// Resource metadata details.
+        /// </summary>
         public ResourceMetadata Metadata { get; }
 
         public ResourceKind Kind { get; }
 
+        /// <summary>
+        /// The API version of the resource.
+        /// </summary>
         public string ApiVersion { get; }
 
         public TSpec Spec { get; }
@@ -327,12 +383,14 @@ namespace PSRule.Definitions
         {
             _Annotations = new Dictionary<Type, ResourceAnnotation>();
             Obsolete = ResourceHelper.IsObsolete(metadata);
+            Flags |= ResourceHelper.IsObsolete(metadata) ? ResourceFlags.Obsolete : ResourceFlags.None;
         }
 
         [YamlIgnore()]
         internal readonly bool Obsolete;
 
-        string ILanguageBlock.Id => Id;
+        [YamlIgnore()]
+        internal ResourceFlags Flags { get; }
 
         string ILanguageBlock.SourcePath => Source.Path;
 
@@ -344,7 +402,15 @@ namespace PSRule.Definitions
 
         string IResource.Name => Name;
 
+        // Not supported with base resources.
+        ResourceId? IResource.Ref => null;
+
+        // Not supported with base resources.
+        ResourceId[] IResource.Alias => null;
+
         ResourceTags IResource.Tags => Metadata.Tags;
+
+        ResourceFlags IResource.Flags => Flags;
 
         TAnnotation IAnnotated<ResourceAnnotation>.GetAnnotation<TAnnotation>()
         {
@@ -361,14 +427,17 @@ namespace PSRule.Definitions
     {
         private const string ANNOTATION_OBSOLETE = "obsolete";
 
-        private const char ID_SEPARATOR = '\\';
+        private const char SCOPE_SEPARATOR = '\\';
 
         internal static string GetIdString(string scope, string name)
         {
-            if (name.IndexOf(ID_SEPARATOR) >= 0)
-                return name;
-
-            return string.Concat(string.IsNullOrEmpty(scope) ? LanguageScope.STANDALONE_SCOPENAME : scope, ID_SEPARATOR, name);
+            return name.IndexOf(SCOPE_SEPARATOR) >= 0
+                ? name
+                : string.Concat(
+                string.IsNullOrEmpty(scope) ? LanguageScope.STANDALONE_SCOPENAME : scope,
+                SCOPE_SEPARATOR,
+                name
+            );
         }
 
         internal static void ParseIdString(string defaultScope, string id, out string scope, out string name)
@@ -388,9 +457,9 @@ namespace PSRule.Definitions
             if (string.IsNullOrEmpty(id))
                 return;
 
-            var index = id.IndexOf(ID_SEPARATOR);
-            scope = index >= 0 ? id.Substring(0, index) : null;
-            name = id.Substring(index + 1);
+            var scopeSeparator = id.IndexOf(SCOPE_SEPARATOR);
+            scope = scopeSeparator >= 0 ? id.Substring(0, scopeSeparator) : null;
+            name = id.Substring(scopeSeparator + 1);
         }
 
         /// <summary>
@@ -398,29 +467,21 @@ namespace PSRule.Definitions
         /// </summary>
         /// <param name="name">An array of names. Qualified names (RuleIds) supplied are left intact.</param>
         /// <returns>An array of RuleIds.</returns>
-        internal static string[] GetRuleIdStrings(string scope, string[] name)
+        internal static ResourceId[] GetRuleId(string defaultScope, string[] name, ResourceIdKind kind)
         {
             if (name == null)
                 return null;
 
-            var result = new string[name.Length];
-            name.CopyTo(result, 0);
-
+            var result = new ResourceId[name.Length];
             for (var i = 0; i < name.Length; i++)
-            {
-                if (name[i] == null)
-                    continue;
+                result[i] = name[i].IndexOf(SCOPE_SEPARATOR) > 0 ? ResourceId.Parse(name[i], kind) : new ResourceId(defaultScope, name[i], kind);
 
-                // The name is not already qualified
-                if (name[i].IndexOf(ID_SEPARATOR) == -1)
-                    result[i] = GetRuleIdString(scope, name[i]);
-            }
             return (result.Length == 0) ? null : result;
         }
 
-        internal static string GetRuleIdString(string scope, string name)
+        internal static ResourceId? GetIdNullable(string scope, string name, ResourceIdKind kind)
         {
-            return (scope == null) ? name : string.Concat(scope, ID_SEPARATOR, name);
+            return string.IsNullOrEmpty(name) ? null : (ResourceId?)new ResourceId(scope, name, kind);
         }
 
         internal static bool IsObsolete(ResourceMetadata metadata)
@@ -429,39 +490,6 @@ namespace PSRule.Definitions
                 metadata.Annotations != null &&
                 metadata.Annotations.TryGetBool(ANNOTATION_OBSOLETE, out var obsolete)
                 && obsolete.GetValueOrDefault(false);
-        }
-    }
-
-    internal sealed class ResourceIdEqualityComparer : EqualityComparer<string>
-    {
-        public override bool Equals(string x, string y)
-        {
-            return IdEquals(x, y);
-        }
-
-        public override int GetHashCode(string obj)
-        {
-            ResourceHelper.ParseIdString(obj, out var scope, out var name);
-            unchecked // Overflow is fine
-            {
-                var hash = 17;
-                hash = hash * 23 + (scope != null ? scope.GetHashCode() : 0);
-                hash = hash * 23 + (name != null ? name.GetHashCode() : 0);
-                return hash;
-            }
-        }
-
-        public static bool IdEquals(string x, string y)
-        {
-            ResourceHelper.ParseIdString(x, out var scope_x, out var name_x);
-            ResourceHelper.ParseIdString(y, out var scope_y, out var name_y);
-            return EqualOrNull(scope_x, scope_y) &&
-                EqualOrNull(name_x, name_y);
-        }
-
-        private static bool EqualOrNull(string x, string y)
-        {
-            return x == null || y == null || StringComparer.OrdinalIgnoreCase.Equals(x, y);
         }
     }
 }

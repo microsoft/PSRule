@@ -1,9 +1,10 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
 using System.Management.Automation;
 using PSRule.Configuration;
+using PSRule.Definitions.Rules;
 using PSRule.Rules;
 
 namespace PSRule.Pipeline.Output
@@ -17,7 +18,7 @@ namespace PSRule.Pipeline.Output
         {
             if (sendToPipeline is InvokeResult result)
                 WriteWideObject(result.AsRecord());
-            else if (sendToPipeline is IEnumerable<Rule> rules)
+            else if (sendToPipeline is IEnumerable<IRuleV1> rules)
                 WriteWideObject(rules);
             else
                 base.WriteObject(sendToPipeline, enumerateCollection);

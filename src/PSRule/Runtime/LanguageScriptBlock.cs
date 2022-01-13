@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -9,7 +9,8 @@ namespace PSRule.Runtime
     internal sealed class LanguageScriptBlock : IDisposable
     {
         private readonly PowerShell _Block;
-        private bool disposedValue;
+
+        private bool _Disposed;
 
         public LanguageScriptBlock(PowerShell block)
         {
@@ -25,13 +26,13 @@ namespace PSRule.Runtime
 
         private void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_Disposed)
             {
                 if (disposing)
                 {
                     _Block.Dispose();
                 }
-                disposedValue = true;
+                _Disposed = true;
             }
         }
 

@@ -1,8 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.Diagnostics;
+using System.Management.Automation;
 using PSRule.Definitions.Expressions;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -16,6 +17,7 @@ namespace PSRule.Definitions.Rules
 
         public RuleVisitor(string module, string id, IRuleSpec spec)
         {
+            ErrorAction = ActionPreference.Stop;
             Module = module;
             Id = id;
             InstanceId = Guid.NewGuid();
@@ -31,6 +33,8 @@ namespace PSRule.Definitions.Rules
         public string Module { get; }
 
         public string Id { get; }
+
+        public ActionPreference ErrorAction { get; }
 
         public void Dispose()
         {

@@ -3,12 +3,12 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Management.Automation;
 using PSRule.Configuration;
-using PSRule.Definitions;
 using PSRule.Resources;
 
-namespace PSRule.Rules
+namespace PSRule.Definitions.Rules
 {
     /// <summary>
     /// A filter to include or exclude rules from being processed by id or tag.
@@ -48,7 +48,8 @@ namespace PSRule.Rules
 
         internal bool Match(string name, ResourceTags tag)
         {
-            return !IsExcluded(name) && IsIncluded(name, tag);
+            return !IsExcluded(new ResourceId[] { ResourceId.Parse(name) }) &&
+                IsIncluded(new ResourceId[] { ResourceId.Parse(name) }, tag);
         }
 
         /// <summary>
@@ -57,42 +58,56 @@ namespace PSRule.Rules
         /// <returns>Return true if rule is matched, otherwise false.</returns>
         public bool Match(IResource resource)
         {
-            return !IsExcluded(resource.Name) &&
-                (_IncludeLocal && resource.IsLocalScope() ||
-                IsIncluded(resource.Name, resource.Tags));
+            var ids = resource.GetIds();
+            return !IsExcluded(ids) && (_IncludeLocal && resource.IsLocalScope() || IsIncluded(ids, resource.Tags));
         }
 
-        private bool IsExcluded(string name)
+        private bool IsExcluded(IEnumerable<ResourceId> ids)
         {
-            return _Excluded != null && Contains(name, _Excluded);
-        }
+            if (_Excluded == null)
+                return false;
 
-        private bool IsIncluded(string name, ResourceTags tag)
-        {
-            if (_Include == null || Contains(name, _Include) || MatchWildcard(name))
+            foreach (var id in ids)
             {
-                if (_Tag == null)
+                if (Contains(id, _Excluded))
                     return true;
-
-                if (tag == null || _Tag.Count > tag.Count)
-                    return false;
-
-                foreach (DictionaryEntry entry in _Tag)
-                {
-                    if (!tag.Contains(entry.Key, entry.Value))
-                        return false;
-                }
-                return true;
             }
             return false;
         }
 
-        private bool Contains(string name, string[] set)
+        private bool IsIncluded(IEnumerable<ResourceId> ids, ResourceTags tag)
+        {
+            foreach (var id in ids)
+            {
+                if (_Include == null || Contains(id, _Include) || MatchWildcard(id.Name))
+                    return TagEquals(tag);
+            }
+            return false;
+        }
+
+        private bool TagEquals(ResourceTags tag)
+        {
+            if (_Tag == null)
+                return true;
+
+            if (tag == null || _Tag.Count > tag.Count)
+                return false;
+
+            foreach (DictionaryEntry entry in _Tag)
+            {
+                if (!tag.Contains(entry.Key, entry.Value))
+                    return false;
+            }
+            return true;
+        }
+
+        private static bool Contains(ResourceId id, string[] set)
         {
             for (var i = 0; set != null && i < set.Length; i++)
-                if (ResourceIdEqualityComparer.IdEquals(name, set[i]))
+            {
+                if (ResourceIdEqualityComparer.IdEquals(id, set[i]))
                     return true;
-
+            }
             return false;
         }
 

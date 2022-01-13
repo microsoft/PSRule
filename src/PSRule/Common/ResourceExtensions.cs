@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections.Generic;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 
@@ -26,6 +27,16 @@ namespace PSRule
         internal static bool IsLocalScope(this IResource resource)
         {
             return string.IsNullOrEmpty(resource.Module);
+        }
+
+        internal static IEnumerable<ResourceId> GetIds(this IResource resource)
+        {
+            yield return resource.Id;
+            if (resource.Ref.HasValue)
+                yield return resource.Ref.Value;
+
+            for (var i = 0; resource.Alias != null && i < resource.Alias.Length; i++)
+                yield return resource.Alias[i];
         }
     }
 }

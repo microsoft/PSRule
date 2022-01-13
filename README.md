@@ -354,6 +354,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Binding.UseQualifiedName](docs/concepts/PSRule/en-US/about_PSRule_Options.md#bindingusequalifiedname)
   - [Configuration](docs/concepts/PSRule/en-US/about_PSRule_Options.md#configuration)
   - [Convention.Include](docs/concepts/PSRule/en-US/about_PSRule_Options.md#conventioninclude)
+  - [Execution.AliasReferenceWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#executionaliasreferencewarning)
   - [Execution.LanguageMode](docs/concepts/PSRule/en-US/about_PSRule_Options.md#executionlanguagemode)
   - [Execution.InconclusiveWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#executioninconclusivewarning)
   - [Execution.NotProcessedWarning](docs/concepts/PSRule/en-US/about_PSRule_Options.md#executionnotprocessedwarning)

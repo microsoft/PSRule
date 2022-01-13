@@ -123,7 +123,7 @@ Describe 'Scenarios -- fruit' -Tag 'EndToEnd','fruit' {
         It 'Returns rules' {
             $result = @(Get-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/fruit));
             $result.Count | Should -Be 1;
-            $result | Should -BeOfType PSRule.Rules.Rule;
+            $result | Should -BeOfType PSRule.Definitions.Rules.IRuleV1;
         }
     }
 }
