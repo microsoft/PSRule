@@ -18,7 +18,16 @@ namespace PSRule.Definitions.Conventions
 
         private bool _Disposed;
 
-        internal ScriptBlockConvention(SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, LanguageScriptBlock begin, LanguageScriptBlock initialize, LanguageScriptBlock process, LanguageScriptBlock end, ActionPreference errorPreference, ResourceFlags flags)
+        internal ScriptBlockConvention(
+            SourceFile source,
+            ResourceMetadata metadata,
+            ResourceHelpInfo info,
+            LanguageScriptBlock begin,
+            LanguageScriptBlock initialize,
+            LanguageScriptBlock process,
+            LanguageScriptBlock end,
+            ActionPreference errorPreference,
+            ResourceFlags flags)
             : base(source, metadata.Name)
         {
             Info = info;

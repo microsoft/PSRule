@@ -34,7 +34,11 @@ namespace PSRule.Definitions.Conventions
 
         public bool Match(IResource resource)
         {
-            return _Include != null && (_Include.Contains(resource.Name) || _Include.Contains(resource.Id.Value) || MatchWildcard(resource.Name) || MatchWildcard(resource.Id.Value));
+            return _Include != null &&
+                (_Include.Contains(resource.Name) ||
+                 _Include.Contains(resource.Id.Value) ||
+                 MatchWildcard(resource.Name) ||
+                 MatchWildcard(resource.Id.Value));
         }
 
         private bool MatchWildcard(string name)

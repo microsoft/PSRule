@@ -43,7 +43,7 @@ For details on how to migrate to the new default baseline option, continue readi
 
 When creating YAML and JSON resources you define a resource by specifying the `apiVersion` and `kind`.
 To allow new schema versions for resources to be introduced in the future, an `apiVersion` was introduced.
-For backwards compatiblity, resources without an `apiVersion` deprecated but supported.
+For backwards compatibility, resources without an `apiVersion` deprecated but supported.
 From _v2_ resources without an `apiVersion` will be ignored.
 
 For details on how to add an `apiVersion` to a resource, continue reading the [upgrade notes][2].
