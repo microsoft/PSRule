@@ -25,6 +25,8 @@ What's changed since pre-release v2.0.0-B2201054:
       opaque, as opposed to being a human-readable string.
       Stable and opaque refs ease web lookup and to help to avoid language difficulties.
     - To specify a rule ref use the `-Ref` parameter or `ref` metadata property in YAML or JSON.
+- Bug fixes:
+  - Fixes object path handling with dash. [#902](https://github.com/microsoft/PSRule/issues/902)
 
 ## v2.0.0-B2201054 (pre-release)
 

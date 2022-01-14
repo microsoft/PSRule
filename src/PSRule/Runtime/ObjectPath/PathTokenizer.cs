@@ -323,7 +323,7 @@ namespace PSRule.Runtime.ObjectPath
 
             private static bool IsMemberNameCharacter(char c)
             {
-                return char.IsLetterOrDigit(c) || c == UNDERSCORE;
+                return char.IsLetterOrDigit(c) || c == UNDERSCORE || c == DASH;
             }
 
             private static bool IsQuoted(char c)
@@ -589,8 +589,11 @@ namespace PSRule.Runtime.ObjectPath
                     return false;
 
                 var end = Path[position] == ROOTREF ? position + 1 : position;
-                while (end <= Last && IsMemberNameCharacter(Path[end]))
+                while (end <= Last && IsMemberNameCharacter(Path[end]) && (end != position || Path[end] != DASH))
                     end++;
+
+                if (end > position && Current(end - 1) == DASH)
+                    end--;
 
                 if (position == end)
                     return false;

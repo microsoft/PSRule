@@ -123,6 +123,9 @@ Notable differences between object paths and JSONPath are:
   When this is used, the plus selector perform an case-insensitive match.
 - Quoted member names with single or double quotes are supported with dot selector.
   i.e. `Properties.'spaced name'` is valid.
+- Member names with a dash `-` are supported without being quoted.
+  However member names can not start or end with a dash.
+  i.e. `Properties.dashed-name` and `Properties.'-dashed-name'` are valid.
 
 ### Contains
 

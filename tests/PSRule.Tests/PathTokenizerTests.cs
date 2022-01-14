@@ -170,6 +170,28 @@ namespace PSRule
         }
 
         [Fact]
+        public void MemberNameWithDash()
+        {
+            var path = new string[]
+            {
+                "member-name",
+                "-member-name-",
+            };
+
+            // member-name
+            var token = PathTokenizer.Get(path[0]);
+            Assert.Single(token);
+            Assert.Equal(PathTokenType.DotSelector, token[0].Type);
+            Assert.Equal("member-name", token[0].As<string>());
+
+            // -member-name-
+            token = PathTokenizer.Get(path[1]);
+            Assert.Single(token);
+            Assert.Equal(PathTokenType.DotSelector, token[0].Type);
+            Assert.Equal("member-name", token[0].As<string>());
+        }
+
+        [Fact]
         public void MemberNameWithOption()
         {
             var path = new string[]
