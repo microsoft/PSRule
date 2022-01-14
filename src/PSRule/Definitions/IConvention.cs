@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Collections;
-using PSRule.Host;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions

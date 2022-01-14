@@ -375,6 +375,46 @@ namespace PSRule.Pipeline
                     LineBreak();
                 }
 
+                protected static string GetErrorMessage(RuleRecord record)
+                {
+                    return string.IsNullOrEmpty(record.Ref) ?
+                        string.Format(
+                            Thread.CurrentThread.CurrentCulture,
+                            FormatterStrings.Result_ErrorDetail,
+                            record.TargetName,
+                            record.RuleName,
+                            record.Error.Message
+                        ) :
+                        string.Format(
+                            Thread.CurrentThread.CurrentCulture,
+                            FormatterStrings.Result_ErrorDetailWithRef,
+                            record.TargetName,
+                            record.RuleName,
+                            record.Error.Message,
+                            record.Ref
+                        );
+                }
+
+                protected static string GetFailMessage(RuleRecord record)
+                {
+                    return string.IsNullOrEmpty(record.Ref) ?
+                        string.Format(
+                            Thread.CurrentThread.CurrentCulture,
+                            FormatterStrings.Result_FailDetail,
+                            record.TargetName,
+                            record.RuleName,
+                            record.Info.Synopsis
+                        ) :
+                        string.Format(
+                            Thread.CurrentThread.CurrentCulture,
+                            FormatterStrings.Result_FailDetailWithRef,
+                            record.TargetName,
+                            record.RuleName,
+                            record.Info.Synopsis,
+                            record.Ref
+                        );
+                }
+
                 protected override void DoWriteError(ErrorRecord errorRecord)
                 {
                     Error(errorRecord);
@@ -431,7 +471,7 @@ namespace PSRule.Pipeline
                     WriteLineFormat(FormatterStrings.FooterRunInfo, PipelineContext.CurrentThread.RunId, elapsed.ToString("c", Thread.CurrentThread.CurrentCulture));
                 }
 
-                protected void WriteStatus(string status, string statusIndent, ConsoleColor? statusForeground, ConsoleColor? statusBackground, ConsoleColor? messageForeground, ConsoleColor? messageBackground, string message)
+                protected void WriteStatus(string status, string statusIndent, ConsoleColor? statusForeground, ConsoleColor? statusBackground, ConsoleColor? messageForeground, ConsoleColor? messageBackground, string message, string suffix = null)
                 {
                     var output = message;
                     if (statusForeground != null || statusBackground != null)
@@ -445,10 +485,11 @@ namespace PSRule.Pipeline
                             NoNewLine = true
                         });
                         Writer.WriteHost(new HostInformationMessage { Message = " ", NoNewLine = true });
+                        output = string.IsNullOrEmpty(suffix) ? output : string.Concat(output, " (", suffix, ")");
                     }
                     else
                     {
-                        output = string.Concat(status, output);
+                        output = string.IsNullOrEmpty(suffix) ? string.Concat(status, output) : string.Concat(status, output, " (", suffix, ")"); ;
                     }
                     Writer.WriteHost(new HostInformationMessage
                     {
@@ -657,7 +698,8 @@ namespace PSRule.Pipeline
                         statusBackground: GetTerminalSupport().WarningStatusBackgroundColor,
                         messageForeground: GetTerminalSupport().WarningForegroundColor,
                         messageBackground: GetTerminalSupport().WarningBackgroundColor,
-                        message: message);
+                        message: message
+                    );
                     UnbrokenInfo();
                 }
 
@@ -672,7 +714,9 @@ namespace PSRule.Pipeline
                         statusBackground: GetTerminalSupport().PassStatusBackgroundColor,
                         messageForeground: GetTerminalSupport().PassForegroundColor,
                         messageBackground: GetTerminalSupport().PassBackgroundColor,
-                        message: record.RuleName);
+                        message: record.RuleName,
+                        suffix: record.Ref
+                    );
                     UnbrokenContent();
                 }
 
@@ -687,7 +731,9 @@ namespace PSRule.Pipeline
                         statusBackground: GetTerminalSupport().FailStatusBackgroundColor,
                         messageForeground: GetTerminalSupport().FailForegroundColor,
                         messageBackground: GetTerminalSupport().FailBackgroundColor,
-                        message: record.RuleName);
+                        message: record.RuleName,
+                        suffix: record.Ref
+                    );
                     FailDetail(record);
                 }
 
@@ -702,7 +748,9 @@ namespace PSRule.Pipeline
                         statusBackground: GetTerminalSupport().ErrorStatusBackgroundColor,
                         messageForeground: GetTerminalSupport().ErrorForegroundColor,
                         messageBackground: GetTerminalSupport().ErrorBackgroundColor,
-                        message: record.RuleName);
+                        message: record.RuleName,
+                        suffix: record.Ref
+                    );
                     ErrorDetail(record);
                     UnbrokenContent();
                 }
@@ -820,12 +868,7 @@ namespace PSRule.Pipeline
                         return;
 
                     LineBreak();
-                    Error(string.Format(
-                        Thread.CurrentThread.CurrentCulture,
-                        FormatterStrings.Result_ErrorDetail,
-                        record.TargetName,
-                        record.RuleName,
-                        record.Error.Message));
+                    Error(GetErrorMessage(record));
                     LineBreak();
                     WriteLine(record.Error.PositionMessage);
                     LineBreak();
@@ -835,12 +878,7 @@ namespace PSRule.Pipeline
                 protected override void FailDetail(RuleRecord record)
                 {
                     base.FailDetail(record);
-                    Error(string.Format(
-                        Thread.CurrentThread.CurrentCulture,
-                        FormatterStrings.Result_FailDetail,
-                        record.TargetName,
-                        record.RuleName,
-                        record.Info.Synopsis));
+                    Error(GetFailMessage(record));
                     LineBreak();
                 }
             }
@@ -877,12 +915,7 @@ namespace PSRule.Pipeline
                         return;
 
                     LineBreak();
-                    Error(string.Format(
-                        Thread.CurrentThread.CurrentCulture,
-                        FormatterStrings.Result_ErrorDetail,
-                        record.TargetName,
-                        record.RuleName,
-                        record.Error.Message));
+                    Error(GetErrorMessage(record));
                     LineBreak();
                     WriteLine(record.Error.PositionMessage);
                     LineBreak();
@@ -892,12 +925,7 @@ namespace PSRule.Pipeline
                 protected override void FailDetail(RuleRecord record)
                 {
                     base.FailDetail(record);
-                    Error(string.Format(
-                        Thread.CurrentThread.CurrentCulture,
-                        FormatterStrings.Result_FailDetail,
-                        record.TargetName,
-                        record.RuleName,
-                        record.Info.Synopsis));
+                    Error(GetFailMessage(record));
                     LineBreak();
                 }
             }

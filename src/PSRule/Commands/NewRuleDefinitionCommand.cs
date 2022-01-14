@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -30,6 +30,7 @@ namespace PSRule.Commands
         /// </summary>
         [Parameter(Mandatory = true, Position = 0)]
         [ValidateNotNullOrEmpty()]
+        [ValidateLength(3, 128)]
         public string Name { get; set; }
 
         /// <summary>
@@ -75,6 +76,16 @@ namespace PSRule.Commands
         [Parameter(Mandatory = false)]
         public Hashtable Configure { get; set; }
 
+        /// <summary>
+        /// Any aliases for the rule.
+        /// </summary>
+        [Parameter(Mandatory = false)]
+        public string[] Alias { get; set; }
+
+        [Parameter(Mandatory = false)]
+        [ValidateLength(3, 128)]
+        public string Ref { get; set; }
+
         protected override void ProcessRecord()
         {
             if (!IsSourceScope())
@@ -89,28 +100,33 @@ namespace PSRule.Commands
                 file: source.Path,
                 startLineNumber: Body.Ast.Extent.StartLineNumber
             );
+            var flags = ResourceFlags.None;
 
             context.VerboseFoundResource(name: Name, moduleName: source.ModuleName, scriptName: MyInvocation.ScriptName);
 
             CheckDependsOn();
             var ps = GetCondition(context, errorPreference);
-            var helpInfo = PSRule.Host.HostHelper.GetHelpInfo(context, Name, metadata.Synopsis) ?? new RuleHelpInfo(
+            var info = PSRule.Host.HostHelper.GetHelpInfo(context, Name, metadata.Synopsis) ?? new RuleHelpInfo(
                 name: Name,
                 displayName: Name,
                 moduleName: source.ModuleName
             );
 
+            var id = new ResourceId(source.ModuleName, Name, ResourceIdKind.Id);
+
 #pragma warning disable CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
             var block = new RuleBlock(
                 source: source,
-                ruleName: Name,
-                info: helpInfo,
+                id: id,
+                @ref: ResourceHelper.GetIdNullable(source.ModuleName, Ref, ResourceIdKind.Ref),
+                info: info,
                 condition: ps,
                 tag: tag,
-                dependsOn: ResourceHelper.GetRuleIdStrings(source.ModuleName, DependsOn),
+                alias: ResourceHelper.GetRuleId(source.ModuleName, Alias, ResourceIdKind.Alias),
+                dependsOn: ResourceHelper.GetRuleId(source.ModuleName, DependsOn, ResourceIdKind.Unknown),
                 configuration: Configure,
                 extent: extent,
-                errorPreference: errorPreference
+                flags: flags
             );
 #pragma warning restore CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
             WriteObject(block);

@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
-using System.Management.Automation.Language;
+using System.Threading;
 using Newtonsoft.Json;
 using PSRule.Annotations;
 using PSRule.Definitions;
@@ -18,6 +18,7 @@ using PSRule.Definitions.Rules;
 using PSRule.Definitions.Selectors;
 using PSRule.Parser;
 using PSRule.Pipeline;
+using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime;
 using YamlDotNet.Core;
@@ -33,17 +34,17 @@ namespace PSRule.Host
     {
         private const string Markdown_Extension = ".md";
 
-        internal static Rule[] GetRule(Source[] source, RunspaceContext context, bool includeDependencies)
+        internal static IRuleV1[] GetRule(Source[] source, RunspaceContext context, bool includeDependencies)
         {
             var rules = ToRuleV1(GetLanguageBlock(context, source), context);
-            var builder = new DependencyGraphBuilder<Rule>(includeDependencies);
+            var builder = new DependencyGraphBuilder<IRuleV1>(context, includeDependencies, includeDisabled: true);
             builder.Include(rules, filter: (b) => Match(context, b));
             return builder.GetItems();
         }
 
         internal static RuleHelpInfo[] GetRuleHelp(Source[] source, RunspaceContext context)
         {
-            return ToRuleHelp(ToRuleBlockV1(GetLanguageBlock(context, source), context), context);
+            return ToRuleHelp(ToRuleBlockV1(GetLanguageBlock(context, source), context).GetAll(), context);
         }
 
         internal static DependencyGraph<RuleBlock> GetRuleBlockGraph(Source[] source, RunspaceContext context)
@@ -51,22 +52,14 @@ namespace PSRule.Host
             var blocks = GetLanguageBlock(context, source);
             var rules = ToRuleBlockV1(blocks, context);
             Import(GetConventions(blocks, context), context);
-            var builder = new DependencyGraphBuilder<RuleBlock>(includeDependencies: true);
+            var builder = new DependencyGraphBuilder<RuleBlock>(context, includeDependencies: true, includeDisabled: false);
             builder.Include(rules, filter: (b) => Match(context, b));
             return builder.Build();
         }
 
-        /// <summary>
-        /// Read YAML objects and return rules.
-        /// </summary>
-        internal static IEnumerable<Rule> GetRuleYaml(Source[] source, RunspaceContext context)
-        {
-            return ToRuleV1(ReadYamlObjects(source, context), context);
-        }
-
         internal static IEnumerable<RuleBlock> GetRuleYamlBlocks(Source[] source, RunspaceContext context)
         {
-            return ToRuleBlockV1(ReadYamlObjects(source, context), context);
+            return ToRuleBlockV1(GetYamlLanguageBlocks(source, context), context).GetAll();
         }
 
         /// <summary>
@@ -75,10 +68,8 @@ namespace PSRule.Host
         internal static IEnumerable<Baseline> GetBaseline(Source[] source, RunspaceContext context)
         {
             var results = new List<ILanguageBlock>();
-
-            results.AddRange(ReadYamlObjects(source, context));
-            results.AddRange(ReadJsonObjects(source, context));
-
+            results.AddRange(GetYamlLanguageBlocks(source, context));
+            results.AddRange(GetJsonLanguageBlocks(source, context));
             return ToBaselineV1(results, context);
         }
 
@@ -87,7 +78,7 @@ namespace PSRule.Host
         /// </summary>
         internal static IEnumerable<ModuleConfigV1> GetModuleConfigYaml(Source[] source, RunspaceContext context)
         {
-            return ToModuleConfigV1(ReadYamlObjects(source, context), context);
+            return ToModuleConfigV1(GetYamlLanguageBlocks(source, context), context);
         }
 
         /// <summary>
@@ -95,7 +86,7 @@ namespace PSRule.Host
         /// </summary>
         internal static IEnumerable<SelectorV1> GetSelectorYaml(Source[] source, RunspaceContext context)
         {
-            return ToSelectorV1(ReadYamlObjects(source, context), context);
+            return ToSelectorV1(GetYamlLanguageBlocks(source, context), context);
         }
 
         internal static void ImportResource(Source[] source, RunspaceContext context)
@@ -104,10 +95,8 @@ namespace PSRule.Host
                 return;
 
             var results = new List<ILanguageBlock>();
-
-            results.AddRange(ReadYamlObjects(source, context));
-            results.AddRange(ReadJsonObjects(source, context));
-
+            results.AddRange(GetYamlLanguageBlocks(source, context));
+            results.AddRange(GetJsonLanguageBlocks(source, context));
             Import(results.ToArray(), context);
         }
 
@@ -150,20 +139,18 @@ namespace PSRule.Host
         private static ILanguageBlock[] GetLanguageBlock(RunspaceContext context, Source[] sources)
         {
             var results = new List<ILanguageBlock>();
-            results.AddRange(GetPowerShellRule(context, sources));
-            results.AddRange(ReadYamlObjects(sources, context));
-            results.AddRange(ReadJsonObjects(sources, context));
+            results.AddRange(GetPSLanguageBlocks(context, sources));
+            results.AddRange(GetYamlLanguageBlocks(sources, context));
+            results.AddRange(GetJsonLanguageBlocks(sources, context));
             return results.ToArray();
         }
 
         /// <summary>
-        /// Execute one or more PowerShell script files to get language blocks.
+        /// Execute PowerShell script files to get language blocks.
         /// </summary>
-        /// <param name="sources"></param>
-        /// <returns></returns>
-        private static ILanguageBlock[] GetPowerShellRule(RunspaceContext context, Source[] sources)
+        private static ILanguageBlock[] GetPSLanguageBlocks(RunspaceContext context, Source[] sources)
         {
-            var results = new Collection<ILanguageBlock>();
+            var results = new List<ILanguageBlock>();
             var ps = context.GetPowerShell();
 
             try
@@ -229,7 +216,10 @@ namespace PSRule.Host
             return results.ToArray();
         }
 
-        private static ILanguageBlock[] ReadYamlObjects(Source[] sources, RunspaceContext context)
+        /// <summary>
+        /// Get language blocks from YAML source files.
+        /// </summary>
+        private static ILanguageBlock[] GetYamlLanguageBlocks(Source[] sources, RunspaceContext context)
         {
             var result = new Collection<ILanguageBlock>();
             var d = new DeserializerBuilder()
@@ -256,12 +246,13 @@ namespace PSRule.Host
 
                         context.VerboseRuleDiscovery(path: file.Path);
                         context.EnterSourceScope(source: file);
+
                         using var reader = new StreamReader(file.Path);
                         var parser = new YamlDotNet.Core.Parser(reader);
                         parser.TryConsume<StreamStart>(out _);
                         while (parser.Current is DocumentStart)
                         {
-                            var item = d.Deserialize<ResourceObject>(parser: parser);
+                            var item = d.Deserialize<ResourceObject>(parser);
                             if (item == null || item.Block == null)
                                 continue;
 
@@ -279,10 +270,12 @@ namespace PSRule.Host
             return result.Count == 0 ? Array.Empty<ILanguageBlock>() : result.ToArray();
         }
 
-        private static ILanguageBlock[] ReadJsonObjects(Source[] sources, RunspaceContext context)
+        /// <summary>
+        /// Get language blocks from JSON source files.
+        /// </summary>
+        private static ILanguageBlock[] GetJsonLanguageBlocks(Source[] sources, RunspaceContext context)
         {
             var result = new Collection<ILanguageBlock>();
-
             var deserializer = new JsonSerializer();
 
             deserializer.Converters.Add(new ResourceObjectJsonConverter());
@@ -307,26 +300,19 @@ namespace PSRule.Host
 
                             // Consume lines until start of array is found
                             while (reader.TokenType != JsonToken.StartArray)
-                            {
                                 reader.Read();
-                            }
 
                             if (reader.TokenType == JsonToken.StartArray && reader.Read())
                             {
                                 while (reader.TokenType != JsonToken.EndArray)
                                 {
                                     var value = deserializer.Deserialize<ResourceObject>(reader);
-
                                     if (value?.Block != null)
-                                    {
                                         result.Add(value.Block);
-                                    }
 
                                     // Consume all end objects at the end of each resource
                                     while (reader.TokenType == JsonToken.EndObject)
-                                    {
                                         reader.Read();
-                                    }
                                 }
                             }
                         }
@@ -339,7 +325,6 @@ namespace PSRule.Host
                 context.PopScope(RunspaceScope.Resource);
                 context.ExitSourceScope();
             }
-
             return result.Count == 0 ? Array.Empty<ILanguageBlock>() : result.ToArray();
         }
 
@@ -385,95 +370,104 @@ namespace PSRule.Host
             }
         }
 
+        private static RuleException ThrowDuplicateRuleId(IDependencyTarget block)
+        {
+            return new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.DuplicateRuleId, block.Id));
+        }
+
         /// <summary>
         /// Convert matching langauge blocks to rules.
         /// </summary>
-        private static Rule[] ToRuleV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+        private static DependencyTargetCollection<IRuleV1> ToRuleV1(ILanguageBlock[] blocks, RunspaceContext context)
         {
             // Index rules by RuleId
-            var results = new Dictionary<string, Rule>(StringComparer.OrdinalIgnoreCase);
+            var results = new DependencyTargetCollection<IRuleV1>();
             try
             {
                 foreach (var block in blocks.OfType<RuleBlock>())
                 {
-                    if (!results.ContainsKey(block.RuleId))
+                    results.TryAdd(new Rule
                     {
-                        results[block.RuleId] = new Rule
-                        {
-                            RuleId = block.RuleId,
-                            RuleName = block.RuleName,
-                            Source = block.Source,
-                            Tag = block.Tag,
-                            Info = block.Info,
-                            DependsOn = block.DependsOn
-                        };
-                    }
+                        Id = block.Id,
+                        Ref = block.Ref,
+                        Alias = block.Alias,
+                        Source = block.Source,
+                        Tag = block.Tag,
+                        Info = block.Info,
+                        DependsOn = block.DependsOn,
+                        Flags = block.Flags,
+                    });
+                    //throw ThrowDuplicateRuleId(block);
                 }
 
                 foreach (var block in blocks.OfType<RuleV1>())
                 {
-                    if (!results.ContainsKey(block.Id))
+                    context.EnterSourceScope(block.Source);
+                    var info = GetHelpInfo(context, block.Name, block.Synopsis);
+                    results.TryAdd(new Rule
                     {
-                        context.EnterSourceScope(block.Source);
-                        var info = GetHelpInfo(context, block.Name, block.Synopsis);
-                        results[block.Id] = new Rule
-                        {
-                            RuleId = block.Id,
-                            RuleName = block.Name,
-                            Source = block.Source,
-                            Tag = block.Metadata.Tags,
-                            Info = info,
-                            DependsOn = null // TODO: No support for DependsOn yet
-                        };
-                    }
+                        Id = block.Id,
+                        Ref = block.Ref,
+                        Alias = block.Alias,
+                        Source = block.Source,
+                        Tag = block.Metadata.Tags,
+                        Info = info,
+                        DependsOn = null, // TODO: No support for DependsOn yet
+                        Flags = block.Flags,
+                    });
+                    //throw ThrowDuplicateRuleId(block);
                 }
             }
             finally
             {
                 context.ExitSourceScope();
             }
-            return results.Values.ToArray();
+            return results;
         }
 
-        private static RuleBlock[] ToRuleBlockV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+        private static DependencyTargetCollection<RuleBlock> ToRuleBlockV1(ILanguageBlock[] blocks, RunspaceContext context)
         {
             // Index rules by RuleId
-            var results = new Dictionary<string, RuleBlock>(StringComparer.OrdinalIgnoreCase);
+            //var results = new Dictionary<string, RuleBlock>(StringComparer.OrdinalIgnoreCase);
+            var results = new DependencyTargetCollection<RuleBlock>();
             try
             {
-                foreach (var block in blocks)
+                foreach (var block in blocks.OfType<RuleBlock>())
                 {
-                    if (block is RuleBlock script && !results.ContainsKey(script.RuleId))
+                    results.TryAdd(block);
+                    //throw ThrowDuplicateRuleId(block);
+                }
+
+                foreach (var yaml in blocks.OfType<RuleV1>())
+                {
+                    context.EnterSourceScope(yaml.Source);
+                    var info = GetHelpInfo(context, yaml.Name, yaml.Synopsis) ?? new RuleHelpInfo(yaml.Name, yaml.Name, yaml.Source.ModuleName)
                     {
-                        results[script.RuleId] = script;
-                    }
-                    else if (block is RuleV1 yaml && !results.ContainsKey(yaml.Id))
-                    {
-                        context.EnterSourceScope(yaml.Source);
-                        var info = GetHelpInfo(context, yaml.Name, yaml.Synopsis) ?? new RuleHelpInfo(yaml.Name, yaml.Name, yaml.Source.ModuleName)
-                        {
-                            Synopsis = yaml.Synopsis
-                        };
-                        results[yaml.Id] = new RuleBlock
-                        (
-                            source: yaml.Source,
-                            ruleName: yaml.Name,
-                            info: info,
-                            condition: new RuleVisitor(yaml.Source.ModuleName, yaml.Id, yaml.Spec),
-                            tag: yaml.Metadata.Tags,
-                            dependsOn: null,  // TODO: No support for DependsOn yet
-                            configuration: null, // TODO: No support for rule configuration use module or workspace config
-                            extent: null,
-                            errorPreference: ActionPreference.Stop
-                        );
-                    }
+                        Synopsis = yaml.Synopsis
+                    };
+                    var block = new RuleBlock
+                    (
+                        source: yaml.Source,
+                        id: yaml.Id,
+                        @ref: yaml.Ref,
+                        info: info,
+                        condition: new RuleVisitor(yaml.Source.ModuleName, yaml.Id.Value, yaml.Spec),
+                        alias: yaml.Alias,
+                        tag: yaml.Metadata.Tags,
+                        dependsOn: null,  // TODO: No support for DependsOn yet
+                        configuration: null, // TODO: No support for rule configuration use module or workspace config
+                        extent: null,
+                        flags: yaml.Flags
+                    );
+                    results.TryAdd(block);
+                    //throw ThrowDuplicateRuleId(block);
                 }
             }
             finally
             {
                 context.ExitSourceScope();
             }
-            return results.Values.ToArray();
+            return results;
         }
 
         private static RuleHelpInfo[] ToRuleHelp(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
@@ -488,8 +482,8 @@ namespace PSRule.Host
                     if (!Match(context, block))
                         continue;
 
-                    if (!results.ContainsKey(block.RuleId))
-                        results[block.RuleId] = block.Info;
+                    if (!results.ContainsKey(block.Id.Value))
+                        results[block.Id.Value] = block.Info;
                 }
             }
             finally
@@ -563,7 +557,7 @@ namespace PSRule.Host
                     if (!Match(context, block))
                         continue;
 
-                    if (!index.Contains(block.Id))
+                    if (!index.Contains(block.Id.Value))
                         results.Add(block);
                 }
             }
@@ -589,8 +583,8 @@ namespace PSRule.Host
                     if (!Match(context, block))
                         continue;
 
-                    if (!results.ContainsKey(block.Id))
-                        results[block.Id] = block;
+                    if (!results.ContainsKey(block.Id.Value))
+                        results[block.Id.Value] = block;
                 }
             }
             finally
@@ -626,7 +620,7 @@ namespace PSRule.Host
             return filter == null || filter.Match(resource);
         }
 
-        private static bool Match(RunspaceContext context, Rule resource)
+        private static bool Match(RunspaceContext context, IRuleV1 resource)
         {
             context.EnterSourceScope(resource.Source);
             var filter = context.LanguageScope.GetFilter(ResourceKind.Rule);

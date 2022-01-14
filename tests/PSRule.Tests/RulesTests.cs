@@ -24,9 +24,9 @@ namespace PSRule
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), new TestWriter(GetOption()));
             context.Init(GetSource());
             context.Begin();
-            var rule = HostHelper.GetRuleYaml(GetSource(), context).ToArray();
+            var rule = HostHelper.GetRule(GetSource(), context, includeDependencies: false);
             Assert.NotNull(rule);
-            Assert.Equal("BasicRule", rule[0].RuleName);
+            Assert.Equal("BasicRule", rule[0].Name);
 
             var hashtable = rule[0].Tag.ToHashtable();
             Assert.Equal("tag", hashtable["feature"]);
@@ -120,6 +120,8 @@ namespace PSRule
             Assert.True(yamlObjectPath.Condition.If().AllOf());
         }
 
+        #region Helper methods
+
         private static PSRuleOption GetOption()
         {
             return new PSRuleOption();
@@ -149,7 +151,7 @@ namespace PSRule
         private static RuleBlock GetRuleVisitor(RunspaceContext context, string name)
         {
             var block = HostHelper.GetRuleYamlBlocks(GetSource(), context);
-            return block.FirstOrDefault(s => s.RuleName == name);
+            return block.FirstOrDefault(s => s.Name == name);
         }
 
         private static void ImportSelectors(RunspaceContext context)
@@ -163,5 +165,7 @@ namespace PSRule
         {
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
         }
+
+        #endregion Helper methods
     }
 }

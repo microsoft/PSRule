@@ -45,6 +45,7 @@ binding:
 
 # Configure execution options
 execution:
+  aliasReferenceWarning: false
   languageMode: ConstrainedLanguage
   inconclusiveWarning: false
   notProcessedWarning: false

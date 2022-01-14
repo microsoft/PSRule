@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Management.Automation;
@@ -18,6 +18,7 @@ namespace PSRule.Commands
 
         [Parameter(Mandatory = true, Position = 0)]
         [ValidateNotNullOrEmpty()]
+        [ValidateLength(3, 128)]
         public string Name { get; set; }
 
         /// <summary>
@@ -83,7 +84,8 @@ namespace PSRule.Commands
                 begin: ConventionBlock(context, Begin, RunspaceScope.ConventionBegin),
                 process: ConventionBlock(context, Process, RunspaceScope.ConventionProcess),
                 end: ConventionBlock(context, End, RunspaceScope.ConventionEnd),
-                errorPreference: errorPreference
+                errorPreference: errorPreference,
+                flags: ResourceFlags.None
             );
 #pragma warning restore CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
             WriteObject(block);

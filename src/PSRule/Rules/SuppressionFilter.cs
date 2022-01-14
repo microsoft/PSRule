@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -6,25 +6,27 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using PSRule.Configuration;
+using PSRule.Definitions;
+using PSRule.Runtime;
 
 namespace PSRule.Rules
 {
     [DebuggerDisplay("{_Index.Count}")]
-    internal sealed class RuleSuppressionFilter
+    internal sealed class SuppressionFilter
     {
         private readonly HashSet<SuppressionKey> _Index;
         private readonly bool _IsEmpty;
 
-        public RuleSuppressionFilter(SuppressionOption option)
+        public SuppressionFilter(RunspaceContext context, SuppressionOption option, IEnumerable<IResource> rules)
         {
-            if (option == null || option.Count == 0)
+            if (option == null || option.Count == 0 || rules == null)
             {
                 _IsEmpty = true;
             }
             else
             {
-                _Index = new HashSet<SuppressionKey>();
-                Index(option);
+                _Index = Index(context, option, rules);
+                _IsEmpty = _Index.Count == 0;
             }
         }
 
@@ -77,26 +79,36 @@ namespace PSRule.Rules
             }
         }
 
-        public bool Match(string ruleName, string targetName)
+        public bool Match(ResourceId id, string targetName)
         {
             return !_IsEmpty &&
-                !string.IsNullOrEmpty(ruleName) &&
                 !string.IsNullOrEmpty(targetName) &&
-                _Index.Contains(new SuppressionKey(ruleName, targetName));
+                _Index.Contains(new SuppressionKey(id.Value, targetName));
         }
 
-        private void Index(SuppressionOption option)
+        private static HashSet<SuppressionKey> Index(RunspaceContext context, SuppressionOption option, IEnumerable<IResource> rules)
         {
+            var resolver = new ResourceIndex(rules);
+            var index = new HashSet<SuppressionKey>();
+
             // Read suppress rules into index combined key (RuleName + TargetName)
             foreach (var rule in option)
             {
+                // Only add suppresion entries for rules that are loaded
+                if (!resolver.TryFind(rule.Key, out var blockId, out var kind))
+                    continue;
+
+                if (kind == ResourceIdKind.Alias)
+                    context.WarnAliasSuppression(blockId.Value, rule.Key);
+
                 foreach (var targetName in rule.Value.TargetName)
                 {
-                    var key = new SuppressionKey(rule.Key, targetName);
-                    if (!_Index.Contains(key))
-                        _Index.Add(key);
+                    var key = new SuppressionKey(blockId.Value, targetName);
+                    if (!index.Contains(key))
+                        index.Add(key);
                 }
             }
+            return index;
         }
     }
 }

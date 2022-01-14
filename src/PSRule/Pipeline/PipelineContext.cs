@@ -167,7 +167,7 @@ namespace PSRule.Pipeline
                 Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, baseline.BaselineId, resource.Module, baseline.Spec, baseline.Obsolete));
             }
             else if (resource.Kind == ResourceKind.Selector && resource is SelectorV1 selector)
-                Selector[selector.Id] = new SelectorVisitor(resource.Module, selector.Id, selector.Spec.If);
+                Selector[selector.Id.Value] = new SelectorVisitor(resource.Module, selector.Id.Value, selector.Spec.If);
             else if (TryModuleConfig(resource, out var moduleConfig))
             {
                 if (!string.IsNullOrEmpty(moduleConfig?.Spec?.Rule?.Baseline))
@@ -186,10 +186,10 @@ namespace PSRule.Pipeline
             //    _TrackedIssues.Add(new ResourceIssue(resource.Kind, resource.Id, ResourceIssueType.MissingApiVersion));
         }
 
-        private bool TryBaselineRef(string resourceId, out BaselineRef baselineRef)
+        private bool TryBaselineRef(ResourceId resourceId, out BaselineRef baselineRef)
         {
             baselineRef = null;
-            var r = _Unresolved.FirstOrDefault(i => ResourceIdEqualityComparer.IdEquals(i.Id, resourceId));
+            var r = _Unresolved.FirstOrDefault(i => ResourceIdEqualityComparer.IdEquals(i.Id, resourceId.Value));
             if (r == null || !(r is BaselineRef br))
                 return false;
 

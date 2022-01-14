@@ -639,7 +639,7 @@ function Assert-PSRule {
 # .ExternalHelp PSRule-Help.xml
 function Get-PSRule {
     [CmdletBinding()]
-    [OutputType([PSRule.Rules.Rule])]
+    [OutputType([PSRule.Definitions.Rules.IRuleV1])]
     param (
         [Parameter(Mandatory = $False)]
         [Alias('m')]
@@ -1190,6 +1190,11 @@ function New-PSRuleOption {
         [Alias('ExecutionSuppressedRuleWarning')]
         [System.Boolean]$SuppressedRuleWarning = $True,
 
+        # Sets the Execution.AliasReferenceWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionAliasReferenceWarning')]
+        [System.Boolean]$AliasReferenceWarning = $True,
+
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
         [String[]]$IncludeModule,
@@ -1442,6 +1447,11 @@ function Set-PSRuleOption {
         [Alias('ExecutionSuppressedRuleWarning')]
         [System.Boolean]$SuppressedRuleWarning = $True,
 
+        # Sets the Execution.AliasReferenceWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionAliasReferenceWarning')]
+        [System.Boolean]$AliasReferenceWarning = $True,
+
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
         [String[]]$IncludeModule,
@@ -1649,7 +1659,17 @@ function Rule {
     param (
         # The name of the rule
         [Parameter(Position = 0, Mandatory = $True)]
+        [ValidateLength(3, 128)]
+        [ValidateNotNullOrEmpty()]
         [String]$Name,
+
+        # An optional stable opaque identifier of this resource for lookup.
+        [Parameter(Mandatory = $False)]
+        [String]$Ref,
+
+        # Any aliases for the rule.
+        [Parameter(Mandatory = $False)]
+        [String[]]$Alias,
 
         # The body of the rule
         [Parameter(Position = 1, Mandatory = $True)]
@@ -2126,6 +2146,11 @@ function SetOptions {
         [Alias('ExecutionSuppressedRuleWarning')]
         [System.Boolean]$SuppressedRuleWarning = $True,
 
+        # Sets the Execution.AliasReferenceWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionAliasReferenceWarning')]
+        [System.Boolean]$AliasReferenceWarning = $True,
+
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
         [String[]]$IncludeModule,
@@ -2287,6 +2312,11 @@ function SetOptions {
         # Sets option Execution.SuppressedRuleWarning
         if ($PSBoundParameters.ContainsKey('SuppressedRuleWarning')) {
             $Option.Execution.SuppressedRuleWarning = $SuppressedRuleWarning;
+        }
+
+        # Sets option Execution.AliasReferenceWarning
+        if ($PSBoundParameters.ContainsKey('AliasReferenceWarning')) {
+            $Option.Execution.AliasReferenceWarning = $AliasReferenceWarning;
         }
 
         # Sets option Include.Module

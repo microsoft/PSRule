@@ -18,7 +18,16 @@ namespace PSRule.Definitions.Conventions
 
         private bool _Disposed;
 
-        internal ScriptBlockConvention(SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, LanguageScriptBlock begin, LanguageScriptBlock initialize, LanguageScriptBlock process, LanguageScriptBlock end, ActionPreference errorPreference)
+        internal ScriptBlockConvention(
+            SourceFile source,
+            ResourceMetadata metadata,
+            ResourceHelpInfo info,
+            LanguageScriptBlock begin,
+            LanguageScriptBlock initialize,
+            LanguageScriptBlock process,
+            LanguageScriptBlock end,
+            ActionPreference errorPreference,
+            ResourceFlags flags)
             : base(source, metadata.Name)
         {
             Info = info;
@@ -26,16 +35,24 @@ namespace PSRule.Definitions.Conventions
             _Begin = begin;
             _Process = process;
             _End = end;
+            Flags = flags;
         }
 
         public ResourceHelpInfo Info { get; }
+
+        public ResourceFlags Flags { get; }
 
         ResourceKind IResource.Kind => ResourceKind.Convention;
 
         string IResource.ApiVersion => Specs.V1;
 
-        string IResource.Name => Name;
+        // Not supported with conventions.
+        ResourceId? IResource.Ref => null;
 
+        // Not supported with conventions.
+        ResourceId[] IResource.Alias => null;
+
+        // Not supported with conventions.
         ResourceTags IResource.Tags => null;
 
         public override void Initialize(RunspaceContext context, IEnumerable input)
