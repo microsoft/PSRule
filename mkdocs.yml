@@ -59,7 +59,7 @@ nav:
         - v1: 'CHANGELOG-v1.md'
         - v0: 'CHANGELOG-v0.md'
       - Upgrade notes: upgrade-notes.md
-      # - Deprecations: deprecations.md
+      - Deprecations: deprecations.md
     - Support: support.md
   # - Setup:
   #   - Configuring options: setup/configuring-options.md

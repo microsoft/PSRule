@@ -1,16 +1,27 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using Newtonsoft.Json;
 using PSRule.Definitions.Expressions;
-using PSRule.Host;
 using PSRule.Pipeline;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Definitions.Rules
 {
-    public interface IRule
+    public interface IRuleV1 : IResource, IDependencyTarget
     {
+        [Obsolete("Use Name instead.")]
+        string RuleName { get; }
+
+        string Synopsis { get; }
+
+        [Obsolete("Use Synopsis instead.")]
+        string Description { get; }
+
+        ResourceTags Tag { get; }
+
+        SourceFile Source { get; }
     }
 
     internal interface IRuleSpec
@@ -23,10 +34,22 @@ namespace PSRule.Definitions.Rules
     }
 
     [Spec(Specs.V1, Specs.Rule)]
-    internal sealed class RuleV1 : InternalResource<RuleV1Spec>, IResource
+    internal sealed class RuleV1 : InternalResource<RuleV1Spec>, IResource, IRuleV1
     {
         public RuleV1(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, RuleV1Spec spec)
-            : base(ResourceKind.Rule, apiVersion, source, metadata, info, spec) { }
+            : base(ResourceKind.Rule, apiVersion, source, metadata, info, spec)
+        {
+            Ref = ResourceHelper.GetIdNullable(source.ModuleName, metadata.Ref, ResourceIdKind.Ref);
+            Alias = ResourceHelper.GetRuleId(source.ModuleName, metadata.Alias, ResourceIdKind.Alias);
+        }
+
+        [JsonIgnore]
+        [YamlIgnore]
+        public ResourceId? Ref { get; }
+
+        [JsonIgnore]
+        [YamlIgnore]
+        public ResourceId[] Alias { get; }
 
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
@@ -35,7 +58,26 @@ namespace PSRule.Definitions.Rules
         [YamlIgnore]
         public string Synopsis => Info.Synopsis;
 
-        string ILanguageBlock.Id => Name;
+        ResourceId? IDependencyTarget.Ref => Ref;
+
+        ResourceId[] IDependencyTarget.Alias => Alias;
+
+        // Not supported with resource rules.
+        ResourceId[] IDependencyTarget.DependsOn => Array.Empty<ResourceId>();
+
+        bool IDependencyTarget.Dependency => Source.IsDependency();
+
+        ResourceId? IResource.Ref => Ref;
+
+        ResourceId[] IResource.Alias => Alias;
+
+        string IRuleV1.RuleName => Name;
+
+        ResourceTags IRuleV1.Tag => Metadata.Tags;
+
+        SourceFile IRuleV1.Source => Source;
+
+        string IRuleV1.Description => Info.Synopsis;
     }
 
     internal sealed class RuleV1Spec : Spec, IRuleSpec

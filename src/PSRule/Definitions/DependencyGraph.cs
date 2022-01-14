@@ -1,10 +1,10 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.Collections.Generic;
 
-namespace PSRule.Host
+namespace PSRule.Definitions
 {
     internal sealed class DependencyGraph<T> : IDisposable where T : IDependencyTarget
     {
@@ -86,7 +86,7 @@ namespace PSRule.Host
                     // Process each dependency
                     for (var d = 0; d < target.Value.DependsOn.Length; d++)
                     {
-                        var dTarget = _Index[target.Value.DependsOn[d]];
+                        var dTarget = _Index[target.Value.DependsOn[d].Value];
 
                         // Check if dependency was already completed
                         if (dTarget.Passed)
@@ -105,12 +105,18 @@ namespace PSRule.Host
             }
         }
 
+        public IEnumerable<T> GetAll()
+        {
+            for (var i = 0; i < _Targets.Length; i++)
+                yield return _Targets[i].Value;
+        }
+
         private void Prepare(T[] targets)
         {
             for (var i = 0; i < targets.Length; i++)
             {
                 _Targets[i] = new DependencyTarget(this, targets[i]);
-                _Index.Add(targets[i].RuleId, _Targets[i]);
+                _Index.Add(targets[i].Id.Value, _Targets[i]);
             }
         }
 

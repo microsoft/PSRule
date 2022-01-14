@@ -1,9 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections;
 using PSRule.Definitions;
-using PSRule.Rules;
+using PSRule.Definitions.Rules;
 using Xunit;
 
 namespace PSRule

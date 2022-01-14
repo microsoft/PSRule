@@ -7,6 +7,7 @@ using System.Linq;
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Data;
+using PSRule.Definitions;
 using PSRule.Host;
 using PSRule.Rules;
 
@@ -170,7 +171,7 @@ namespace PSRule.Pipeline
         private readonly Dictionary<string, RuleSummaryRecord> _Summary;
 
         private readonly ResultFormat _ResultFormat;
-        private readonly RuleSuppressionFilter _SuppressionFilter;
+        private readonly SuppressionFilter _SuppressionFilter;
         private readonly List<InvokeResult> _Completed;
 
         // Track whether Dispose has been called.
@@ -187,7 +188,7 @@ namespace PSRule.Pipeline
             _Outcome = outcome;
             _Summary = new Dictionary<string, RuleSummaryRecord>();
             _ResultFormat = context.Option.Output.As.Value;
-            _SuppressionFilter = new RuleSuppressionFilter(context.Option.Suppression);
+            _SuppressionFilter = new SuppressionFilter(Context, context.Option.Suppression, _RuleGraph.GetAll());
             _Completed = new List<InvokeResult>();
         }
 
@@ -254,7 +255,7 @@ namespace PSRule.Pipeline
                             ruleRecord.OutcomeReason = RuleOutcomeReason.DependencyFail;
                         }
                         // Check for suppression
-                        else if (_SuppressionFilter.Match(ruleName: ruleRecord.RuleName, targetName: ruleRecord.TargetName))
+                        else if (_SuppressionFilter.Match(id: ruleBlockTarget.Value.Id, targetName: ruleRecord.TargetName))
                         {
                             ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
                             suppressedRuleCounter++;
@@ -314,15 +315,15 @@ namespace PSRule.Pipeline
         /// </summary>
         private void AddToSummary(RuleBlock ruleBlock, RuleOutcome outcome)
         {
-            if (!_Summary.TryGetValue(ruleBlock.RuleId, out var s))
+            if (!_Summary.TryGetValue(ruleBlock.Id.Value, out var s))
             {
                 s = new RuleSummaryRecord(
-                    ruleId: ruleBlock.RuleId,
-                    ruleName: ruleBlock.RuleName,
+                    ruleId: ruleBlock.Id.Value,
+                    ruleName: ruleBlock.Name,
                     tag: ruleBlock.Tag,
                     info: ruleBlock.Info
                 );
-                _Summary.Add(ruleBlock.RuleId, s);
+                _Summary.Add(ruleBlock.Id.Value, s);
             }
 
             if (outcome == RuleOutcome.Pass)

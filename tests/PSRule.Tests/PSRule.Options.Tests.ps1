@@ -741,6 +741,45 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Execution.AliasReferenceWarning' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.AliasReferenceWarning | Should -Be $True;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.AliasReferenceWarning' = $False };
+            $option.Execution.AliasReferenceWarning | Should -Be $False;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.AliasReferenceWarning | Should -Be $False;
+        }
+
+        It 'from Environment' {
+            try {
+                # With bool
+                $Env:PSRULE_EXECUTION_ALIASREFERENCEWARNING = 'false';
+                $option = New-PSRuleOption;
+                $option.Execution.AliasReferenceWarning | Should -Be $False;
+
+                # With int
+                $Env:PSRULE_EXECUTION_ALIASREFERENCEWARNING = '0';
+                $option = New-PSRuleOption;
+                $option.Execution.AliasReferenceWarning | Should -Be $False;
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_ALIASREFERENCEWARNING' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -AliasReferenceWarning $False -Path $emptyOptionsFilePath;
+            $option.Execution.AliasReferenceWarning | Should -Be $False;
+        }
+    }
+
     Context 'Read Include.Path' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -1704,6 +1743,20 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -NotProcessedWarning $False @optionParams;
             $option.Execution.NotProcessedWarning | Should -Be $False;
+        }
+    }
+
+    Context 'Read Execution.SuppressedRuleWarning' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -SuppressedRuleWarning $False @optionParams;
+            $option.Execution.SuppressedRuleWarning | Should -Be $False;
+        }
+    }
+
+    Context 'Read Execution.AliasReferenceWarning' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -AliasReferenceWarning $False @optionParams;
+            $option.Execution.AliasReferenceWarning | Should -Be $False;
         }
     }
 

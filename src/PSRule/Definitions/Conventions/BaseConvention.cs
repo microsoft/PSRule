@@ -34,7 +34,11 @@ namespace PSRule.Definitions.Conventions
 
         public bool Match(IResource resource)
         {
-            return _Include != null && (_Include.Contains(resource.Name) || _Include.Contains(resource.Id) || MatchWildcard(resource.Name) || MatchWildcard(resource.Id));
+            return _Include != null &&
+                (_Include.Contains(resource.Name) ||
+                 _Include.Contains(resource.Id.Value) ||
+                 MatchWildcard(resource.Name) ||
+                 MatchWildcard(resource.Id.Value));
         }
 
         private bool MatchWildcard(string name)
@@ -50,13 +54,16 @@ namespace PSRule.Definitions.Conventions
         {
             Source = source;
             Name = name;
-            Id = ResourceHelper.GetIdString(Source.ModuleName, name);
+            Id = new ResourceId(Source.ModuleName, name, ResourceIdKind.Id);
         }
 
         public SourceFile Source { get; }
 
-        public string Id { get; }
+        public ResourceId Id { get; }
 
+        /// <summary>
+        /// The name of the convetion.
+        /// </summary>
         public string Name { get; }
 
         public string SourcePath => Source.Path;

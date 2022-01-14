@@ -9,7 +9,7 @@ using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Definitions.Conventions;
 using PSRule.Definitions.ModuleConfigs;
-using PSRule.Rules;
+using PSRule.Definitions.Rules;
 using PSRule.Runtime;
 
 namespace PSRule.Pipeline
@@ -332,10 +332,10 @@ namespace PSRule.Pipeline
             foreach (var baseline in _ModuleBaselineScope.Values)
             {
                 if (baseline.Obsolete)
-                    context.WarnBaselineObsolete(baseline.Id);
+                    context.WarnResourceObsolete(ResourceKind.Baseline, baseline.Id);
             }
             if (_Explicit != null && _Explicit.Obsolete)
-                context.WarnBaselineObsolete(_Explicit.Id);
+                context.WarnResourceObsolete(ResourceKind.Baseline, _Explicit.Id);
         }
 
         internal void Add(BaselineScope scope)
@@ -378,7 +378,7 @@ namespace PSRule.Pipeline
 
         internal int GetConventionOrder(IConvention convention)
         {
-            var index = _ConventionOrder.IndexOf(convention.Id);
+            var index = _ConventionOrder.IndexOf(convention.Id.Value);
             if (index == -1)
                 index = _ConventionOrder.IndexOf(convention.Name);
 

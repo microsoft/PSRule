@@ -61,11 +61,20 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The baseline &apos;{0}&apos; is obsolete. Consider switching to an alternative baseline..
+        ///   Looks up a localized string similar to The {0} resource &apos;{1}&apos; is currently referencing &apos;{2}&apos; using the alias &apos;{3}&apos;. Consider updating the reference to use name or id directly..
         /// </summary>
-        internal static string BaselineObsolete {
+        internal static string AliasReference {
             get {
-                return ResourceManager.GetString("BaselineObsolete", resourceCulture);
+                return ResourceManager.GetString("AliasReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suppression for the rule &apos;{0}&apos; was configured using the alias &apos;{1}&apos;. Consider updating the suppression to use the name or id directly..
+        /// </summary>
+        internal static string AliasSuppression {
+            get {
+                return ResourceManager.GetString("AliasSuppression", resourceCulture);
             }
         }
         
@@ -390,6 +399,15 @@ namespace PSRule.Resources {
         internal static string RequiredVersionMismatch {
             get {
                 return ResourceManager.GetString("RequiredVersionMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} &apos;{1}&apos; is obsolete. Consider switching to an alternative {0}..
+        /// </summary>
+        internal static string ResourceObsolete {
+            get {
+                return ResourceManager.GetString("ResourceObsolete", resourceCulture);
             }
         }
         

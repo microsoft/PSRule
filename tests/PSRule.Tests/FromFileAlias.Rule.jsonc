@@ -1,0 +1,20 @@
+[
+    {
+        // Synopsis: A rule with an alias.
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Rule",
+        "metadata": {
+            "name": "JSON.RuleWithAlias1",
+            "alias": [
+                "JSON.AlternativeName"
+            ],
+            "ref": "PSRZZ.0003"
+        },
+        "spec": {
+            "condition": {
+                "field": "name",
+                "exists": true
+            }
+        }
+    }
+]

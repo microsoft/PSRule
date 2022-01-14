@@ -286,7 +286,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### PSRule.Rules.Rule
+### PSRule.Definitions.Rules.IRuleV1
 
 ## NOTES
 

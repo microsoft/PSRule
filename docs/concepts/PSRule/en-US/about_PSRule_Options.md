@@ -14,6 +14,7 @@ This topic describes what options are available, when to and how to use them.
 The following workspace options are available for use:
 
 - [Convention.Include](#conventioninclude)
+- [Execution.AliasReferenceWarning](#executionaliasreferencewarning)
 - [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InconclusiveWarning](#executioninconclusivewarning)
 - [Execution.NotProcessedWarning](#executionnotprocessedwarning)
@@ -660,6 +661,58 @@ env:
 variables:
 - name: PSRULE_CONVENTION_INCLUDE
   value: 'Convention1;Convention2'
+```
+
+### Execution.AliasReferenceWarning
+
+Rules may define one or more aliases.
+These aliases are alternative names to identify the rule.
+An alias may be used to reference the rule anywhere a rule name is used.
+The primary purpose of an alias is to provide a non-breaking method to change the rule name.
+Alises can be removed at a later revision once the rule is no longer referenced by the alias.
+
+A warning is logged by default to help identify when an alias is used.
+We recommend taking action to update your usage of the alis to use the rule name or ref instead.
+
+Alternatively, the alias reference warning can be disabled by using:
+
+```powershell
+# PowerShell: Using the AliasReferenceWarning parameter
+$option = New-PSRuleOption -AliasReferenceWarning $False;
+```
+
+```powershell
+# PowerShell: Using the Execution.AliasReferenceWarning hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.AliasReferenceWarning' = $False };
+```
+
+```powershell
+# PowerShell: Using the AliasReferenceWarning parameter to set YAML
+Set-PSRuleOption -AliasReferenceWarning $False;
+```
+
+```yaml
+# YAML: Using the execution/aliasReferenceWarning property
+execution:
+  aliasReferenceWarning: false
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_ALIASREFERENCEWARNING=false
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_ALIASREFERENCEWARNING: false
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_ALIASREFERENCEWARNING
+  value: false
 ```
 
 ### Execution.LanguageMode
@@ -2378,9 +2431,11 @@ convention:
 
 # Configure execution options
 execution:
+  aliasReferenceWarning: false
   languageMode: ConstrainedLanguage
   inconclusiveWarning: false
   notProcessedWarning: false
+  suppressedRuleWarning: false
 
 # Configure include options
 include:
@@ -2480,9 +2535,11 @@ convention:
 
 # Configure execution options
 execution:
+  aliasReferenceWarning: true
   languageMode: FullLanguage
   inconclusiveWarning: true
   notProcessedWarning: true
+  suppressedRuleWarning: true
 
 # Configure include options
 include:

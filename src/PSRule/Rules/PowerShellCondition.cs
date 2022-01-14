@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
@@ -12,15 +12,16 @@ namespace PSRule.Rules
         private const string ERROR_ACTION_PREFERENCE = "ErrorActionPreference";
 
         private readonly PowerShell _Condition;
-        private readonly ActionPreference _ErrorAction;
 
         private bool _Disposed;
 
         internal PowerShellCondition(PowerShell condition, ActionPreference errorAction)
         {
             _Condition = condition;
-            _ErrorAction = errorAction;
+            ErrorAction = errorAction;
         }
+
+        public ActionPreference ErrorAction { get; }
 
         private void Dispose(bool disposing)
         {
@@ -43,7 +44,7 @@ namespace PSRule.Rules
         public IConditionResult If()
         {
             _Condition.Streams.ClearStreams();
-            _Condition.Runspace.SessionStateProxy.SetVariable(ERROR_ACTION_PREFERENCE, _ErrorAction);
+            _Condition.Runspace.SessionStateProxy.SetVariable(ERROR_ACTION_PREFERENCE, ErrorAction);
             return GetResult(_Condition.Invoke<Runtime.RuleConditionResult>());
         }
 
