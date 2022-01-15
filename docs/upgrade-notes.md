@@ -2,9 +2,86 @@
 
 This document contains notes to help upgrade from previous versions of PSRule.
 
+## Upgrading to v2.0.0
+
+PSRule v2.0.0 is a planned future release.
+It's not yet available, but you can take these steps to proactively prepare for the release.
+
+### Setting default module baseline
+
+When packaging rules in a module, you can set the default baseline.
+The default baseline from the module will be automatically used unless overridden.
+
+Prior to _v1.9.0_ the default baseline was set by configuring the module manifest `.psd1` file.
+From _v1.9.0_ the default baseline can be configured by within a module configuration.
+Using module configuration is the recommended method.
+Setting the default baseline from module manifest and has been removed from _v2.0.0_.
+
+A module configuration can be defined in YAML.
+
+!!! Example
+
+    ```yaml hl_lines="8-9"
+    ---
+    # Synopsis: Example module configuration for Enterprise.Rules module.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: ModuleConfig
+    metadata:
+      name: Enterprise.Rules
+    spec:
+      rule:
+        baseline: Enterprise.Default
+    ```
+
+### Setting resource API version
+
+When creating YAML and JSON resources you define a resource by specifying the `apiVersion` and `kind`.
+An `apiVersion` was added as a requirement from _v1.2.0_.
+For compatibility resources without an `apiVersion` were supported however deprecated for removal in _v2.0.0_.
+This has now been removed from _v2.0.0_.
+
+When defining resource specify an `apiVersion`.
+Currently this must be set to `github.com/microsoft/PSRule/v1`.
+
+=== "YAML"
+
+    ```yaml hl_lines="3-4"
+    ---
+    # Synopsis: An example rule to require TLS.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: Rule
+    metadata:
+      name: 'Local.YAML.RequireTLS'
+    spec:
+      condition:
+        field: 'configure.supportsHttpsTrafficOnly'
+        equals: true
+    ```
+
+=== "JSON"
+
+    ```json hl_lines="4-5"
+    [
+        {
+            // Synopsis: An example rule to require TLS.
+            "apiVersion": "github.com/microsoft/PSRule/v1",
+            "kind": "Rule",
+            "metadata": {
+                "name": "Local.JSON.RequireTLS"
+            },
+            "spec": {
+                "condition": {
+                    "field": "configure.supportsHttpsTrafficOnly",
+                    "equals": true
+                }
+            }
+        }
+    ]
+    ```
+
 ## Upgrading to v1.4.0
 
-Follow these notes to upgrade from PSRule version _v1.3.0_ to _v1.4.0_.
+Follow these notes to upgrade to PSRule _v1.4.0_ from previous versions.
 
 ### Change in default output styles
 
@@ -53,7 +130,7 @@ variables:
 
 ## Upgrading to v1.0.0
 
-Follow these notes to upgrade from PSRule version _v0.22.0_ to _v1.0.0_.
+Follow these notes to upgrade to PSRule _v1.0.0_ from previous versions.
 
 ### Replaced $Rule target properties
 

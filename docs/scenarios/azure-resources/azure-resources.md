@@ -3,14 +3,14 @@
 PSRule makes it easy to validate Infrastructure as Code (IaC) such as Azure resources.
 For example, Azure resources can be validated to match and internal standard or baseline.
 
-> [!NOTE]
-> A pre-built module to validate Azure resources already exists.
-> This scenario demonstrates the process and features of PSRule for illustration purposes.
->
-> Consider using or contributing these pre-built rule modules instead:
->
-> - [PSRule.Rules.Azure]
-> - [PSRule.Rules.CAF]
+!!! Note
+    A pre-built module to validate Azure resources already exists.
+    This scenario demonstrates the process and features of PSRule for illustration purposes.
+
+    Consider using or contributing these pre-built rule modules instead:
+
+    - [PSRule.Rules.Azure]
+    - [PSRule.Rules.CAF]
 
 This scenario covers the following:
 
@@ -63,7 +63,8 @@ Rule 'storageAccounts.UseHttps' {
 
 Conditions can be any valid PowerShell expression that results in a `$True` or `$False`, just like an `If` statement, but without specifically requiring the `If` keyword to be used.
 
-> Several PSRule keywords such as `Exists` and `AllOf` can supplement PowerShell to quickly build out rules that are easy to read.
+!!! Note
+    Several PSRule keywords such as `Exists` and `AllOf` can supplement PowerShell to quickly build out rules that are easy to read.
 
 In `resources.json` one of our example storage accounts has a property `Properties.supportsHttpsTrafficOnly` as shown below, which will be how our rule will pass `$True` or fail `$False` Azure resources that we throw at it.
 
