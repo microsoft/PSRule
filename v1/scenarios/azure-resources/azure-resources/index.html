@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://microsoft.github.io/PSRule/v1/scenarios/azure-resources/azure-resources/">
       
       <link rel="icon" href="../../../assets/ms_icon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.6">
     
     
       
@@ -23,7 +23,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.bb3983ee.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.cd566b2a.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -52,35 +52,6 @@
 
     
     
-
-  <!-- Determine title -->
-  
-  
-    
-  
-
-  <!-- The image needs to have an absolute URL -->
-  
-
-  <!-- Open graph meta tags -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="PSRule - Validate Azure resource configuration" />
-  <meta property="og:description" content="Validate infrastructure as code (IaC) and objects using PowerShell rules." />
-  <meta property="og:url" content="https://microsoft.github.io/PSRule/v1/scenarios/azure-resources/azure-resources/" />
-  <meta property="og:image" content="https://repository-images.githubusercontent.com/125832556/d6685d9f-ba70-44a1-b11f-6534831143d1" />
-  <meta property="og:image:type" content="image/png" />
-  <meta property="og:image:width" content="1280" />
-  <meta property="og:image:height" content="640" />
-  <meta property="og:image:alt" content="Validate infrastructure as code (IaC) and objects using PowerShell rules." />
-
-  <!-- Twitter meta tags -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@github" />
-  <meta name="twitter:title" content="PSRule - Validate Azure resource configuration" />
-  <meta name="twitter:description" content="Validate infrastructure as code (IaC) and objects using PowerShell rules." />
-  <meta name="twitter:image" content="https://repository-images.githubusercontent.com/125832556/d6685d9f-ba70-44a1-b11f-6534831143d1" />
-
-
   </head>
   
   
@@ -639,6 +610,8 @@
         
           
         
+          
+        
       
       
         <label class="md-nav__link" for="__nav_2_5">
@@ -727,7 +700,21 @@
   
     <li class="md-nav__item">
       <a href="../../../upgrade-notes/" class="md-nav__link">
-        Upgrade guide
+        Upgrade notes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../deprecations/" class="md-nav__link">
+        Deprecations
       </a>
     </li>
   
@@ -1271,16 +1258,16 @@
 <h1 id="validate-azure-resource-configuration">Validate Azure resource configuration<a class="headerlink" href="#validate-azure-resource-configuration" title="Permanent link">#</a></h1>
 <p>PSRule makes it easy to validate Infrastructure as Code (IaC) such as Azure resources.
 For example, Azure resources can be validated to match and internal standard or baseline.</p>
-<blockquote>
-<p>[!NOTE]
-A pre-built module to validate Azure resources already exists.
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A pre-built module to validate Azure resources already exists.
 This scenario demonstrates the process and features of PSRule for illustration purposes.</p>
 <p>Consider using or contributing these pre-built rule modules instead:</p>
 <ul>
 <li><a href="https://github.com/Microsoft/PSRule.Rules.Azure">PSRule.Rules.Azure</a></li>
 <li><a href="https://github.com/Microsoft/PSRule.Rules.CAF">PSRule.Rules.CAF</a></li>
 </ul>
-</blockquote>
+</div>
 <p>This scenario covers the following:</p>
 <ul>
 <li>Defining a basic rule.</li>
@@ -1319,9 +1306,10 @@ Each rule must be named uniquely.</li>
 </code></pre></div>
 <h3 id="set-rule-condition">Set rule condition<a class="headerlink" href="#set-rule-condition" title="Permanent link">#</a></h3>
 <p>Conditions can be any valid PowerShell expression that results in a <code>$True</code> or <code>$False</code>, just like an <code>If</code> statement, but without specifically requiring the <code>If</code> keyword to be used.</p>
-<blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>Several PSRule keywords such as <code>Exists</code> and <code>AllOf</code> can supplement PowerShell to quickly build out rules that are easy to read.</p>
-</blockquote>
+</div>
 <p>In <code>resources.json</code> one of our example storage accounts has a property <code>Properties.supportsHttpsTrafficOnly</code> as shown below, which will be how our rule will pass <code>$True</code> or fail <code>$False</code> Azure resources that we throw at it.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;storage&quot;</span><span class="p">,</span><span class="w"></span>
@@ -1456,7 +1444,7 @@ This function will be used by preconditions to check the type of Azure resource.
   <small>
     
       Last update:
-      2021-05-11
+      2022-01-15
     
   </small>
 </div>
@@ -1538,10 +1526,10 @@ This function will be used by preconditions to check the type of Azure resource.
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.indexes", {"navigation.sections": {"level": 1}}, "navigation.tabs", "content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.361d90f1.min.js", "version": {"provider": "mike", "default": "stable"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.indexes", {"navigation.sections": {"level": 1}}, "navigation.tabs", "content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js", "version": {"provider": "mike", "default": "stable"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.289a2a4b.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.1514a9a0.min.js"></script>
       
     
   </body>
