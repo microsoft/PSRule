@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -17,15 +17,26 @@ namespace PSRule
 {
     public sealed class RulesTests
     {
+        #region Yaml rules
+
         [Fact]
         public void ReadYamlRule()
         {
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), new TestWriter(GetOption()));
             context.Init(GetSource());
             context.Begin();
-            var rule = HostHelper.GetRuleYaml(GetSource(), context).ToArray();
+
+            // From current path
+            var rule = HostHelper.GetRule(GetSource(), context, includeDependencies: true).ToArray();
             Assert.NotNull(rule);
             Assert.Equal("BasicRule", rule[0].RuleName);
+            Assert.Equal(PSRuleOption.GetRootedPath(""), rule[0].Source.HelpPath);
+
+            // From relative path
+            rule = HostHelper.GetRule(GetSource("../../../FromFile.Rule.yaml"), context, includeDependencies: true).ToArray();
+            Assert.NotNull(rule);
+            Assert.Equal("BasicRule", rule[0].RuleName);
+            Assert.Equal(PSRuleOption.GetRootedPath("../../.."), rule[0].Source.HelpPath);
 
             var hashtable = rule[0].Tag.ToHashtable();
             Assert.Equal("tag", hashtable["feature"]);
@@ -94,15 +105,46 @@ namespace PSRule
             Assert.Null(withSelector.Condition.If());
         }
 
+        #endregion Yaml rules
+
+        #region Json rules
+
+        [Fact]
+        public void ReadJsonRule()
+        {
+            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), new TestWriter(GetOption()));
+            context.Init(GetSource());
+            context.Begin();
+
+            // From current path
+            var rule = HostHelper.GetRule(GetSource("FromFile.Rule.jsonc"), context, includeDependencies: false).ToArray();
+            Assert.NotNull(rule);
+            Assert.Equal("BasicRule", rule[0].RuleName);
+            Assert.Equal(PSRuleOption.GetRootedPath(""), rule[0].Source.HelpPath);
+
+            // From relative path
+            rule = HostHelper.GetRule(GetSource("../../../FromFile.Rule.jsonc"), context, includeDependencies: false).ToArray();
+            Assert.NotNull(rule);
+            Assert.Equal("BasicRule", rule[0].RuleName);
+            Assert.Equal(PSRuleOption.GetRootedPath("../../.."), rule[0].Source.HelpPath);
+
+            var hashtable = rule[0].Tag.ToHashtable();
+            Assert.Equal("tag", hashtable["feature"]);
+        }
+
+        #endregion Json rules
+
+        #region Helper methods
+
         private static PSRuleOption GetOption()
         {
             return new PSRuleOption();
         }
 
-        private static Source[] GetSource()
+        private static Source[] GetSource(string path = "FromFile.Rule.yaml")
         {
             var builder = new SourcePipelineBuilder(null, null);
-            builder.Directory(GetSourcePath("FromFile.Rule.yaml"));
+            builder.Directory(GetSourcePath(path));
             return builder.Build();
         }
 
@@ -128,9 +170,11 @@ namespace PSRule
                 context.Pipeline.Import(selector);
         }
 
-        private static string GetSourcePath(string fileName)
+        private static string GetSourcePath(string path)
         {
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+            return Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path));
         }
+
+        #endregion Helper methods
     }
 }
