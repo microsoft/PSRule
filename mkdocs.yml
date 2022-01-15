@@ -1,0 +1,122 @@
+site_name: PSRule
+site_url: https://microsoft.github.io/PSRule
+site_description: Validate infrastructure as code (IaC) and objects using PowerShell rules.
+site_author: Microsoft
+
+repo_url: https://github.com/microsoft/PSRule
+edit_uri: blob/main/docs/
+
+extra_css:
+- assets/stylesheets/extra.css
+
+theme:
+  language: en
+  name: material
+  font:
+    text: Roboto
+  palette:
+    primary: black
+    accent: blue
+  logo: assets/ms_icon.png
+  favicon: assets/ms_icon.png
+  icon:
+    repo: fontawesome/brands/github
+  features:
+  - navigation.instant
+  - navigation.indexes
+  - navigation.sections:
+      level: 1
+  - navigation.tabs
+  - content.code.annotate
+
+nav:
+  - Home: index.md
+  - Getting started:
+    - Getting started: scenarios/index.md
+    - Features: features.md
+    - Scenarios:
+      - Validate Azure resource configuration: scenarios/azure-resources/azure-resources.md
+      - Validate Azure resources tags: scenarios/azure-tags/azure-tags.md
+      - Validate Kubernetes resources: scenarios/kubernetes-resources/kubernetes-resources.md
+      - Using within continuous integration: scenarios/validation-pipeline/validation-pipeline.md
+      - Packaging rules in a module: scenarios/rule-module/rule-module.md
+      - Writing rule help: scenarios/rule-docs/rule-docs.md
+    - License and contributing: license-contributing.md
+    - Releases:
+      - Change log:
+        - v1: 'CHANGELOG-v1.md'
+        - v0: 'CHANGELOG-v0.md'
+      - Upgrade notes: upgrade-notes.md
+      - Deprecations: deprecations.md
+    - Support: support.md
+  - Reference:
+    - Commands:
+      - Assert-PSRule: commands/PSRule/en-US/Assert-PSRule.md
+      - Export-PSRuleBaseline: commands/PSRule/en-US/Export-PSRuleBaseline.md
+      - Get-PSRule: commands/PSRule/en-US/Get-PSRule.md
+      - Get-PSRuleBaseline: commands/PSRule/en-US/Get-PSRuleBaseline.md
+      - Get-PSRuleHelp: commands/PSRule/en-US/Get-PSRuleHelp.md
+      - Get-PSRuleTarget: commands/PSRule/en-US/Get-PSRuleTarget.md
+      - Invoke-PSRule: commands/PSRule/en-US/Invoke-PSRule.md
+      - New-PSRuleOption: commands/PSRule/en-US/New-PSRuleOption.md
+      - Set-PSRuleOption: commands/PSRule/en-US/Set-PSRuleOption.md
+      - Test-PSRuleTarget: commands/PSRule/en-US/Test-PSRuleTarget.md
+    - Assert: concepts/PSRule/en-US/about_PSRule_Assert.md
+    - Baseline: concepts/PSRule/en-US/about_PSRule_Baseline.md
+    - Badges: concepts/PSRule/en-US/about_PSRule_Badges.md
+    - Conventions: concepts/PSRule/en-US/about_PSRule_Conventions.md
+    - Documentation: concepts/PSRule/en-US/about_PSRule_Docs.md
+    - Expressions: concepts/PSRule/en-US/about_PSRule_Expressions.md
+    - Keywords: keywords/PSRule/en-US/about_PSRule_Keywords.md
+    - Options: concepts/PSRule/en-US/about_PSRule_Options.md
+    - Rules: concepts/PSRule/en-US/about_PSRule_Rules.md
+    - Selectors: concepts/PSRule/en-US/about_PSRule_Selectors.md
+    - Variables: concepts/PSRule/en-US/about_PSRule_Variables.md
+
+
+markdown_extensions:
+  - admonition
+  - abbr
+  - attr_list
+  - def_list
+  - footnotes
+  - meta
+  - md_in_html
+  - pymdownx.snippets
+  - pymdownx.highlight:
+      auto_title: false
+      anchor_linenums: false
+  - pymdownx.superfences
+  - pymdownx.pathconverter
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - mdx_truly_sane_lists
+  - pymdownx.tasklist
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - toc:
+      permalink: '#'
+      separator: '-'
+
+plugins:
+- mkdocs-simple-hooks:
+    hooks:
+      on_page_markdown: "docs.hooks:replace_maml"
+- search
+- git-revision-date
+
+extra:
+  version:
+    provider: mike
+    default: stable
+
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/microsoft/PSRule/
+
+  local:
+    social_preview: https://repository-images.githubusercontent.com/125832556/d6685d9f-ba70-44a1-b11f-6534831143d1
+    repo_issue: https://github.com/microsoft/PSRule/issues
+    repo_discussion: https://github.com/microsoft/PSRule/discussions

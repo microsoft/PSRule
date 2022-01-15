@@ -1,4 +1,4 @@
-
+**/__pycache__/
 **/.vs/
 **/bin/
 **/obj/
@@ -6,6 +6,7 @@ artifacts/
 build/
 reports/
 out/
+site/
 *.user
 src/**/*-help.xml
 src/**/*.help.txt

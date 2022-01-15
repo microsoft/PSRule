@@ -25,6 +25,15 @@
             "/docs/scenarios/*/*.Rule.yaml"
         ]
     },
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "/tests/PSRule.Tests/**.Rule.jsonc",
+                "/tests/PSRule.Tests/**/**.Rule.jsonc",
+            ],
+            "url": "./schemas/PSRule-resources.schema.json"
+        }
+    ],
     "[yaml]": {
         "editor.tabSize": 2
     },

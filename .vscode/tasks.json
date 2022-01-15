@@ -7,7 +7,7 @@
             "label": "Test",
             "detail": "Build and run unit tests.",
             "type": "shell",
-            "command": "Invoke-Build Test -AssertStyle Client",
+            "command": "Invoke-Build Test -AssertStyle Detect",
             "group": {
                 "kind": "test",
                 "isDefault": true
@@ -24,7 +24,7 @@
             "label": "Run Pester test group",
             "detail": "Runs a specific group for Pester tests.",
             "type": "shell",
-            "command": "Invoke-Build Test -AssertStyle Client -TestGroup '${input:pesterTestGroup}'",
+            "command": "Invoke-Build Test -AssertStyle Detect -TestGroup '${input:pesterTestGroup}'",
             "group": "test",
             "problemMatcher": [
                 "$pester"
@@ -38,7 +38,7 @@
             "label": "Analyze repository",
             "detail": "Run repository analysis.",
             "type": "shell",
-            "command": "Invoke-Build AnalyzeRepository -AssertStyle Client",
+            "command": "Invoke-Build AnalyzeRepository -AssertStyle Detect",
             "problemMatcher": [],
             "presentation": {
                 "clear": true,
@@ -108,6 +108,17 @@
             "label": "build-site",
             "type": "shell",
             "command": "Invoke-Build BuildSite",
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true,
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Serve docs",
+            "detail": "Build and run documentation site locally.",
+            "type": "shell",
+            "command": "mkdocs serve",
             "problemMatcher": [],
             "presentation": {
                 "clear": true,
