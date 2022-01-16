@@ -24,7 +24,8 @@ namespace PSRule
             context.Init(GetSource());
             context.Begin();
             var rules = HostHelper.GetRule(GetSource(), context, includeDependencies: false);
-            var filter = new SuppressionFilter(context, option.Suppression, rules);
+            var resourceIndex = new ResourceIndex(rules);
+            var filter = new SuppressionFilter(context, option.Suppression, resourceIndex);
 
             Assert.True(filter.Match(new ResourceId(".", "YAML.RuleWithAlias1", ResourceIdKind.Unknown), "TestObject1"));
             Assert.False(filter.Match(new ResourceId(".", "JSON.RuleWithAlias1", ResourceIdKind.Unknown), "TestObject1"));
