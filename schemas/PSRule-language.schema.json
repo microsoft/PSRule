@@ -452,7 +452,7 @@
             "type": "object",
             "title": "SuppressionGroup",
             "description": "A PSRule Suppression Group",
-            "markdownDescription": "A PSRule Suppression Group. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_SuppressionGroups.html)",
+            "markdownDescription": "A PSRule Suppression Group. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_SuppressionGroups/)",
             "properties": {
                 "apiVersion": {
                     "type": "string",
