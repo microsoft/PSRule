@@ -11,20 +11,23 @@ namespace PSRule.Definitions.SuppressionGroups
     {
         private readonly LanguageExpressionOuterFn _Fn;
 
-        public Guid InstanceId { get; }
-
         public string Module { get; }
 
         public string Id { get; }
+
+        public Guid InstanceId { get; }
+
+        public string[] Rule { get; }
 
         public SuppressionGroupVisitor(string module, string id, ISuppressionGroupSpec spec)
         {
             Module = module;
             Id = id;
             InstanceId = Guid.NewGuid();
+            Rule = spec.Rule;
             var builder = new LanguageExpressionBuilder();
             _Fn = builder
-                .WithRule(spec.Rule)
+                .WithRule(Rule)
                 .Build(spec.If);
         }
 

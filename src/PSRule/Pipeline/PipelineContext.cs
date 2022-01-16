@@ -50,7 +50,7 @@ namespace PSRule.Pipeline
         internal readonly Dictionary<string, object> ExpressionCache;
         internal readonly Dictionary<string, PSObject[]> ContentCache;
         internal readonly Dictionary<string, SelectorVisitor> Selector;
-        internal readonly Dictionary<string, SuppressionGroupVisitor> SuppressionGroup;
+        internal readonly List<SuppressionGroupVisitor> SuppressionGroup;
         internal readonly OptionContext Baseline;
         internal readonly HostContext HostContext;
         internal readonly PipelineReader Reader;
@@ -86,7 +86,7 @@ namespace PSRule.Pipeline
             ExpressionCache = new Dictionary<string, object>();
             ContentCache = new Dictionary<string, PSObject[]>();
             Selector = new Dictionary<string, SelectorVisitor>();
-            SuppressionGroup = new Dictionary<string, SuppressionGroupVisitor>();
+            SuppressionGroup = new List<SuppressionGroupVisitor>();
             Baseline = baseline;
             _Unresolved = unresolved ?? new List<ResourceRef>();
             _TrackedIssues = new List<ResourceIssue>();
@@ -183,11 +183,12 @@ namespace PSRule.Pipeline
             }
             else if (resource.Kind == ResourceKind.SuppressionGroup && resource is SuppressionGroupV1 suppressionGroup)
             {
-                SuppressionGroup[suppressionGroup.Id.Value] = new SuppressionGroupVisitor(
+                var suppressionGroupVisitor = new SuppressionGroupVisitor(
                     module: resource.Module,
                     id: suppressionGroup.Id.Value,
                     spec: suppressionGroup.Spec
                 );
+                SuppressionGroup.Add(suppressionGroupVisitor);
             }
         }
 

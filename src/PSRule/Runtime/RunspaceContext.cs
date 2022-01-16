@@ -634,23 +634,6 @@ namespace PSRule.Runtime
             return result;
         }
 
-        public bool MatchSuppressionGroup(out string suppressionGroupId)
-        {
-            suppressionGroupId = string.Empty;
-            foreach (var keyValuePair in Pipeline.SuppressionGroup)
-            {
-                var groupId = keyValuePair.Key;
-                var visitor = keyValuePair.Value;
-
-                if (visitor.Match(TargetObject.Value))
-                {
-                    suppressionGroupId = groupId;
-                    return true;
-                }
-            }
-            return false;
-        }
-
         /// <summary>
         /// Enter the rule block scope.
         /// </summary>

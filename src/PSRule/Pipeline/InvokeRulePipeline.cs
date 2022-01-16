@@ -172,6 +172,7 @@ namespace PSRule.Pipeline
 
         private readonly ResultFormat _ResultFormat;
         private readonly SuppressionFilter _SuppressionFilter;
+        private readonly SuppressionFilter _SuppressionGroupFilter;
         private readonly List<InvokeResult> _Completed;
 
         // Track whether Dispose has been called.
@@ -188,7 +189,12 @@ namespace PSRule.Pipeline
             _Outcome = outcome;
             _Summary = new Dictionary<string, RuleSummaryRecord>();
             _ResultFormat = context.Option.Output.As.Value;
-            _SuppressionFilter = new SuppressionFilter(Context, context.Option.Suppression, _RuleGraph.GetAll());
+
+            var allRuleBlocks = _RuleGraph.GetAll();
+            var resourceIndex = new ResourceIndex(allRuleBlocks);
+            _SuppressionFilter = new SuppressionFilter(Context, context.Option.Suppression, resourceIndex);
+            _SuppressionGroupFilter = new SuppressionFilter(Pipeline.SuppressionGroup, resourceIndex);
+
             _Completed = new List<InvokeResult>();
         }
 
@@ -265,7 +271,7 @@ namespace PSRule.Pipeline
                                 Context.WarnRuleSuppressed(ruleId: ruleRecord.RuleId);
                         }
                         // Check for suppression group
-                        else if (Context.MatchSuppressionGroup(out var suppressionGroupId))
+                        else if (_SuppressionGroupFilter.TrySuppressionGroup(ruleId: ruleRecord.RuleId, targetObject, out var suppressionGroupId))
                         {
                             ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
 
