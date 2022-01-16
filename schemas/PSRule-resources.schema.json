@@ -16,6 +16,9 @@
             },
             {
                 "$ref": "https://raw.githubusercontent.com/microsoft/PSRule/main/schemas/PSRule-language.schema.json#/definitions/selector-v1"
+            },
+            {
+                "$ref": "https://raw.githubusercontent.com/microsoft/PSRule/main/schemas/PSRule-language.schema.json#/definitions/suppressionGroup-v1"
             }
         ]
     }

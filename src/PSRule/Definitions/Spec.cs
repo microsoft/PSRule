@@ -5,6 +5,7 @@ using PSRule.Definitions.Baselines;
 using PSRule.Definitions.ModuleConfigs;
 using PSRule.Definitions.Rules;
 using PSRule.Definitions.Selectors;
+using PSRule.Definitions.SuppressionGroups;
 
 namespace PSRule.Definitions
 {
@@ -28,6 +29,7 @@ namespace PSRule.Definitions
         internal const string Baseline = "Baseline";
         internal const string ModuleConfig = "ModuleConfig";
         internal const string Selector = "Selector";
+        internal const string SuppressionGroup = "SuppressionGroup";
 
         public readonly static ISpecDescriptor[] BuiltinTypes = new ISpecDescriptor[]
         {
@@ -35,6 +37,7 @@ namespace PSRule.Definitions
             new SpecDescriptor<Baseline, BaselineSpec>(V1, Baseline),
             new SpecDescriptor<ModuleConfigV1, ModuleConfigV1Spec>(V1, ModuleConfig),
             new SpecDescriptor<SelectorV1, SelectorV1Spec>(V1, Selector),
+            new SpecDescriptor<SuppressionGroupV1, SuppressionGroupV1Spec>(V1, SuppressionGroup)
         };
     }
 }

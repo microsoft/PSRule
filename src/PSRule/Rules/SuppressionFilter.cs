@@ -4,9 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.SuppressionGroups;
+using PSRule.Pipeline;
 using PSRule.Runtime;
 
 namespace PSRule.Rules
@@ -17,17 +20,29 @@ namespace PSRule.Rules
         private readonly HashSet<SuppressionKey> _Index;
         private readonly bool _IsEmpty;
 
-        public SuppressionFilter(RunspaceContext context, SuppressionOption option, IEnumerable<IResource> rules)
+        private readonly ResourceIndex _ResourceIndex;
+
+        private readonly Dictionary<string, List<SuppressionGroupVisitor>> _RuleSuppressionGroupIndex;
+
+        public SuppressionFilter(RunspaceContext context, SuppressionOption option, ResourceIndex resourceIndex)
         {
-            if (option == null || option.Count == 0 || rules == null)
+            if (option == null || option.Count == 0 || resourceIndex.IsEmpty())
             {
                 _IsEmpty = true;
             }
             else
             {
-                _Index = Index(context, option, rules);
+                _ResourceIndex = resourceIndex;
+                _Index = Index(context, option);
                 _IsEmpty = _Index.Count == 0;
             }
+        }
+
+        public SuppressionFilter(IEnumerable<SuppressionGroupVisitor> suppressionGroups, ResourceIndex resourceIndex)
+        {
+            _ResourceIndex = resourceIndex;
+            _RuleSuppressionGroupIndex = new Dictionary<string, List<SuppressionGroupVisitor>>();
+            IndexSuppressionGroups(suppressionGroups);
         }
 
         [DebuggerDisplay("{HashCode}, RuleName = {RuleName}, TargetName = {TargetName}")]
@@ -86,16 +101,15 @@ namespace PSRule.Rules
                 _Index.Contains(new SuppressionKey(id.Value, targetName));
         }
 
-        private static HashSet<SuppressionKey> Index(RunspaceContext context, SuppressionOption option, IEnumerable<IResource> rules)
+        private HashSet<SuppressionKey> Index(RunspaceContext context, SuppressionOption option)
         {
-            var resolver = new ResourceIndex(rules);
             var index = new HashSet<SuppressionKey>();
 
             // Read suppress rules into index combined key (RuleName + TargetName)
             foreach (var rule in option)
             {
                 // Only add suppresion entries for rules that are loaded
-                if (!resolver.TryFind(rule.Key, out var blockId, out var kind))
+                if (!_ResourceIndex.TryFind(rule.Key, out var blockId, out var kind))
                     continue;
 
                 if (kind == ResourceIdKind.Alias)
@@ -109,6 +123,53 @@ namespace PSRule.Rules
                 }
             }
             return index;
+        }
+
+        /// <summary>
+        /// Attempts to fetch suppression group from rule suppression group index
+        /// </summary>
+        /// <param name="ruleId">The key rule id which indexes suppression groups</param>
+        /// <param name="targetObject">Th target object we are invoking</param>
+        /// <param name="suppressionGroupId">The Id of the matched suppression group</param>
+        /// <returns>Boolean indicating if suppression group has been found</returns>
+        public bool TrySuppressionGroup(string ruleId, TargetObject targetObject, out string suppressionGroupId)
+        {
+            suppressionGroupId = string.Empty;
+            if (_RuleSuppressionGroupIndex.TryGetValue(ruleId, out var suppressionGroupVisitors))
+            {
+                var found = suppressionGroupVisitors.FirstOrDefault(visitor => visitor.Match(targetObject.Value));
+
+                if (found != null)
+                {
+                    suppressionGroupId = found.Id;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Index suppression groups by rule
+        /// </summary>
+        /// <param name="suppressionGroups">The suppression group collection</param>
+        private void IndexSuppressionGroups(IEnumerable<SuppressionGroupVisitor> suppressionGroups)
+        {
+            foreach (var group in suppressionGroups)
+            {
+                foreach (var rule in group.Rule)
+                {
+                    // Only add suppresion entries for rules that are loaded
+                    if (!_ResourceIndex.TryFind(rule, out var blockId, out _))
+                        continue;
+
+                    var ruleId = blockId.Value;
+
+                    if (!_RuleSuppressionGroupIndex.ContainsKey(rule))
+                        _RuleSuppressionGroupIndex.Add(ruleId, new List<SuppressionGroupVisitor>());
+
+                    _RuleSuppressionGroupIndex[ruleId].Add(group);
+                }
+            }
         }
     }
 }

@@ -148,7 +148,7 @@ namespace PSRule.Definitions
     }
 
     /// <summary>
-    /// Compares to resource identifiers to determine if they are equal.
+    /// Compares two resource identifiers to determine if they are equal.
     /// </summary>
     internal sealed class ResourceIdEqualityComparer : IEqualityComparer<ResourceId>, IEqualityComparer<string>
     {
