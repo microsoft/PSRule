@@ -251,9 +251,7 @@ namespace PSRule.Definitions.Expressions
         private static bool AcceptsRule(string[] rule)
         {
             if (rule == null || rule.Length == 0)
-            {
                 return true;
-            }
 
             var comparer = RunspaceContext.CurrentThread.Pipeline.Baseline.GetTargetBinding().IgnoreCase
                 ? StringComparer.OrdinalIgnoreCase
@@ -263,9 +261,7 @@ namespace PSRule.Definitions.Expressions
             for (var i = 0; i < rule.Length; i++)
             {
                 if (comparer.Equals(ruleName, rule[i]))
-                {
                     return true;
-                }
             }
             return false;
         }
