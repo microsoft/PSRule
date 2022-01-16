@@ -14,7 +14,7 @@ When an evaluating an object from input, PSRule can use suppression groups to su
 ## Defining suppression groups
 
 Suppression groups can be defined with either YAML or JSON format, and can be included with a module or a standalone `.Rule.yaml` or `.Rule.jsonc` file.
-In either case, define a selector within a file ending with the `.Rule.yaml` or `.Rule.jsonc` extension.
+In either case, define a suppression group within a file ending with the `.Rule.yaml` or `.Rule.jsonc` extension.
 A suppression group can be defined side-by-side with other resources such as rules, baselines or module configurations.
 
 Suppression groups can also be defined within `.json` files.
@@ -52,7 +52,9 @@ spec:
 ```
 
 Within the `rule` array, one or more rule names can be used.
+If no rules are specified, suppression will occur for all rules.
 Within the `if` object, one or more conditions or logical operators can be used.
+When the `if` condition is `true` the object will be suppressed for the current rule.
 
 ## EXAMPLES
 

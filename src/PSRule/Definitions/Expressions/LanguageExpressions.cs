@@ -253,14 +253,21 @@ namespace PSRule.Definitions.Expressions
             if (rule == null || rule.Length == 0)
                 return true;
 
-            var comparer = RunspaceContext.CurrentThread.Pipeline.Baseline.GetTargetBinding().IgnoreCase
+            var context = RunspaceContext.CurrentThread;
+
+            var stringComparer = context.Pipeline.Baseline.GetTargetBinding().IgnoreCase
                 ? StringComparer.OrdinalIgnoreCase
                 : StringComparer.Ordinal;
 
-            var ruleName = RunspaceContext.CurrentThread.RuleRecord.RuleName;
+            var resourceIdComparer = new ResourceIdEqualityComparer();
+
+            var ruleRecord = context.RuleRecord;
+            var ruleName = ruleRecord.RuleName;
+            var ruleId = ruleRecord.RuleId;
+
             for (var i = 0; i < rule.Length; i++)
             {
-                if (comparer.Equals(ruleName, rule[i]))
+                if (stringComparer.Equals(ruleName, rule[i]) || resourceIdComparer.Equals(ruleId, rule[i]))
                     return true;
             }
             return false;

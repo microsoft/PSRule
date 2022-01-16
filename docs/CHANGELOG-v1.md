@@ -13,7 +13,7 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v2.0.0-B2201075:
 
-- General improvements:
+- New features:
   - Add support for suppression groups. [#793](https://github.com/microsoft/PSRule/issues/793)
     - New `SuppressionGroup` resource has been included.
     - See [about_PSRule_SuppressionGroups] for details.

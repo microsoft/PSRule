@@ -32,3 +32,19 @@ spec:
   if:
     type: '.'
     equals: 'TestType'
+
+---
+# Synopsis: Suppress with non-production 
+apiVersion: github.com/microsoft/PSRule/v1
+kind: SuppressionGroup
+metadata:
+  name: SuppressWithNonProdTag
+spec:
+  rule:
+  - '.\WithTag2'
+  - '.\WithTag3'
+  if:
+    field: 'tags.env'
+    in:
+    - 'dev'
+    - 'test'
