@@ -34,7 +34,7 @@ spec:
     equals: 'TestType'
 
 ---
-# Synopsis: Suppress with non-production 
+# Synopsis: Suppress with non-production tag
 apiVersion: github.com/microsoft/PSRule/v1
 kind: SuppressionGroup
 metadata:
