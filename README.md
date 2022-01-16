@@ -390,6 +390,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Suppression](docs/concepts/PSRule/en-US/about_PSRule_Options.md#suppression)
 - [Rules](docs/concepts/PSRule/en-US/about_PSRule_Rules.md)
 - [Selectors](docs/concepts/PSRule/en-US/about_PSRule_Selectors.md)
+- [Suppression Groups](docs/concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md)
 - [Variables](docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
   - [$Assert](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#assert)
   - [$Configuration](docs/concepts/PSRule/en-US/about_PSRule_Variables.md#configuration)

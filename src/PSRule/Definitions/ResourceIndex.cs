@@ -53,5 +53,10 @@ namespace PSRule.Definitions
             }
             return results.ToArray();
         }
+
+        public bool IsEmpty()
+        {
+            return _Items == null || _Items.Length == 0;
+        }
     }
 }
