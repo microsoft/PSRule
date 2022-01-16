@@ -44,7 +44,12 @@ namespace PSRule.Definitions
         /// <summary>
         /// A convention.
         /// </summary>
-        Convention = 5
+        Convention = 5,
+
+        /// <summary>
+        /// A suppression group.
+        /// </summary>
+        SuppressionGroup = 6
     }
 
     [Flags]

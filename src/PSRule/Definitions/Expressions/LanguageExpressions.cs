@@ -73,6 +73,7 @@ namespace PSRule.Definitions.Expressions
 
         private string[] _With;
         private string[] _Type;
+        private string[] _Rule;
 
         public LanguageExpressionBuilder(bool debugger = true)
         {
@@ -97,12 +98,21 @@ namespace PSRule.Definitions.Expressions
             return this;
         }
 
-        public LanguageExpressionOuterFn Build(LanguageIf selectorIf)
+        public LanguageExpressionBuilder WithRule(string[] rule)
         {
-            return Precondition(Expression(string.Empty, selectorIf.Expression), _With, _Type);
+            if (rule == null || rule.Length == 0)
+                return this;
+
+            _Rule = rule;
+            return this;
         }
 
-        private static LanguageExpressionOuterFn Precondition(LanguageExpressionOuterFn expression, string[] with, string[] type)
+        public LanguageExpressionOuterFn Build(LanguageIf selectorIf)
+        {
+            return Precondition(Expression(string.Empty, selectorIf.Expression), _With, _Type, _Rule);
+        }
+
+        private static LanguageExpressionOuterFn Precondition(LanguageExpressionOuterFn expression, string[] with, string[] type, string[] rule)
         {
             var fn = expression;
             if (type != null)
@@ -111,7 +121,24 @@ namespace PSRule.Definitions.Expressions
             if (with != null)
                 fn = PreconditionSelector(with, fn);
 
+            if (rule != null)
+                fn = PreconditionRule(rule, fn);
+
             return fn;
+        }
+
+        private static LanguageExpressionOuterFn PreconditionRule(string[] rule, LanguageExpressionOuterFn fn)
+        {
+            return (context, o) =>
+            {
+                // Evaluate selector rule pre-condition
+                if (!AcceptsRule(rule))
+                {
+                    context.Debug(PSRuleResources.DebugTargetRuleMismatch);
+                    return null;
+                }
+                return fn(context, o);
+            };
         }
 
         private static LanguageExpressionOuterFn PreconditionSelector(string[] with, LanguageExpressionOuterFn fn)
@@ -216,6 +243,31 @@ namespace PSRule.Definitions.Expressions
             for (var i = 0; i < with.Length; i++)
             {
                 if (RunspaceContext.CurrentThread.TrySelector(with[i]))
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool AcceptsRule(string[] rule)
+        {
+            if (rule == null || rule.Length == 0)
+                return true;
+
+            var context = RunspaceContext.CurrentThread;
+
+            var stringComparer = context.Pipeline.Baseline.GetTargetBinding().IgnoreCase
+                ? StringComparer.OrdinalIgnoreCase
+                : StringComparer.Ordinal;
+
+            var resourceIdComparer = new ResourceIdEqualityComparer();
+
+            var ruleRecord = context.RuleRecord;
+            var ruleName = ruleRecord.RuleName;
+            var ruleId = ruleRecord.RuleId;
+
+            for (var i = 0; i < rule.Length; i++)
+            {
+                if (stringComparer.Equals(ruleName, rule[i]) || resourceIdComparer.Equals(ruleId, rule[i]))
                     return true;
             }
             return false;

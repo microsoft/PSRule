@@ -16,6 +16,7 @@ using PSRule.Definitions.Conventions;
 using PSRule.Definitions.ModuleConfigs;
 using PSRule.Definitions.Rules;
 using PSRule.Definitions.Selectors;
+using PSRule.Definitions.SuppressionGroups;
 using PSRule.Parser;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -87,6 +88,11 @@ namespace PSRule.Host
         internal static IEnumerable<SelectorV1> GetSelectorYaml(Source[] source, RunspaceContext context)
         {
             return ToSelectorV1(GetYamlLanguageBlocks(source, context), context);
+        }
+
+        internal static IEnumerable<SuppressionGroupV1> GetSuppressionGroupYaml(Source[] source, RunspaceContext context)
+        {
+            return ToSuppressionGroupV1(GetYamlLanguageBlocks(source, context), context);
         }
 
         internal static void ImportResource(Source[] source, RunspaceContext context)
@@ -519,6 +525,33 @@ namespace PSRule.Host
             return results.Values.ToArray();
         }
 
+        private static SuppressionGroupV1[] ToSuppressionGroupV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+        {
+            if (blocks == null)
+                return Array.Empty<SuppressionGroupV1>();
+
+            // Index suppression groups by Id
+            var results = new Dictionary<string, SuppressionGroupV1>(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+                foreach (var block in blocks.OfType<SuppressionGroupV1>().ToArray())
+                {
+                    // Ignore suppression groups that don't match
+                    if (!Match(context, block))
+                        continue;
+
+                    if (!results.ContainsKey(block.Id.Value))
+                        results[block.Id.Value] = block;
+                }
+            }
+            finally
+            {
+                context.ExitSourceScope();
+            }
+
+            return results.Values.ToArray();
+        }
+
         private static ModuleConfigV1[] ToModuleConfigV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
         {
             if (blocks == null)
@@ -646,6 +679,13 @@ namespace PSRule.Host
             context.EnterSourceScope(source: resource.Source);
             var filter = context.LanguageScope.GetFilter(ResourceKind.Selector);
             return filter == null || filter.Match(resource);
+        }
+
+        private static bool Match(RunspaceContext context, SuppressionGroupV1 suppressionGroup)
+        {
+            context.EnterSourceScope(source: suppressionGroup.Source);
+            var filter = context.LanguageScope.GetFilter(ResourceKind.SuppressionGroup);
+            return filter == null || filter.Match(suppressionGroup);
         }
 
         private static IConvention[] Sort(RunspaceContext context, IConvention[] conventions)

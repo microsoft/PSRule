@@ -133,6 +133,9 @@
   <data name="DebugTargetTypeMismatch" xml:space="preserve">
     <value>Target failed Type precondition</value>
   </data>
+  <data name="DebugTargetRuleMismatch" xml:space="preserve">
+    <value>Target failed Rule precondition</value>
+  </data>
   <data name="DependencyCircularReference" xml:space="preserve">
     <value>A circular rule dependency was detected. The rule '{0}' depends on '{1}' which also depend on '{0}'.</value>
     <comment>Occurs when rules interdepend on each other.</comment>
@@ -248,6 +251,12 @@
   </data>
   <data name="RuleCountSuppressed" xml:space="preserve">
     <value>{0} rule/s were suppressed for '{1}'.</value>
+  </data>
+  <data name="RuleSuppressionGroup" xml:space="preserve">
+    <value>Rule '{0}' was suppressed by suppression group '{1}' for '{2}'.</value>
+  </data>
+  <data name="RuleSuppressionGroupCount" xml:space="preserve">
+    <value>{0} rule/s were suppressed by suppression group '{1}' for '{2}'.</value>
   </data>
   <data name="RuleNotFound" xml:space="preserve">
     <value>Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.</value>

@@ -6,7 +6,7 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Next release
 
-- v2 **Comming soon** - Please check out [upgrade notes][1] to get prepared for the next release.
+- v2 **Coming soon** - Please check out [upgrade notes][1] to get prepared for the next release.
 
 ## Current release
 
