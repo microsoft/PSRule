@@ -23,9 +23,10 @@ namespace PSRule
             context.Begin();
             var suppressionGroup = HostHelper.GetSuppressionGroupYaml(GetSource(), context).ToArray();
             Assert.NotNull(suppressionGroup);
-            Assert.Equal(2, suppressionGroup.Length);
+            Assert.Equal(3, suppressionGroup.Length);
             Assert.Equal("SuppressWithTargetName", suppressionGroup[0].Name);
             Assert.Equal("SuppressWithTestType", suppressionGroup[1].Name);
+            Assert.Equal("SuppressWithNonProdTag", suppressionGroup[2].Name);
         }
 
         #region Helper methods
