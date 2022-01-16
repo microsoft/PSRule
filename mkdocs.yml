@@ -76,6 +76,7 @@ nav:
     - Options: concepts/PSRule/en-US/about_PSRule_Options.md
     - Rules: concepts/PSRule/en-US/about_PSRule_Rules.md
     - Selectors: concepts/PSRule/en-US/about_PSRule_Selectors.md
+    - Suppression Groups: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md
     - Variables: concepts/PSRule/en-US/about_PSRule_Variables.md
   - Addons:
     - Additional modules: addon-modules.md

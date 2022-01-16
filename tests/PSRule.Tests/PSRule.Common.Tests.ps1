@@ -1201,6 +1201,87 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
         }
     }
+
+    Context 'Suppression Group output warnings' {
+        BeforeAll {
+            $testObject = @(
+                [PSCustomObject]@{
+                    Name = "TestObject1"
+                }
+                [PSCustomObject]@{
+                    Name = "TestObject2"
+                }
+            )
+            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-AU');
+
+            $testObject[0].PSObject.TypeNames.Insert(0, 'TestType');
+            $testObject[1].PSObject.TypeNames.Insert(0, 'TestType');
+
+            $suppressionGroupPath = Join-Path -Path $here -ChildPath 'SuppressionGroups.Rule.yaml';
+
+            $invokeParams = @{
+                Path = $ruleFilePath, $suppressionGroupPath
+            }
+        }
+
+        Context 'Detail' {
+            It 'Show warnings' {
+                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Detail;
+
+                $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
+
+                $warningMessages = $outwarnings.ToArray();
+                $warningMessages.Length | Should -Be 4;
+
+                $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[0].Message | Should -BeExactly "Rule '.\FromFile1' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject1'.";
+                $warningMessages[1] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[1].Message | Should -BeExactly "Rule '.\FromFile2' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject1'.";
+                $warningMessages[2] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[2].Message | Should -BeExactly "Rule '.\FromFile1' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject2'.";
+                $warningMessages[3] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[3].Message | Should -BeExactly "Rule '.\FromFile2' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject2'.";
+            }
+
+            It 'No warnings' {
+                $option = New-PSRuleOption -SuppressedRuleWarning $False -OutputAs Detail;
+
+                $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
+
+                $warningMessages = $outwarnings.ToArray();
+                $warningMessages.Length | Should -Be 0;
+            }
+        }
+
+        Context 'Summary' {
+            It 'Show warnings' {
+                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Summary;
+
+                $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile3', 'FromFile5' -WarningVariable outWarnings -WarningAction SilentlyContinue;
+
+                $warningMessages = $outwarnings.ToArray();
+                $warningMessages.Length | Should -Be 2;
+
+                $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[0].Message | Should -BeExactly "2 rule/s were suppressed by suppression group '.\SuppressWithTestType' for 'TestObject1'.";
+                $warningMessages[1] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[1].Message | Should -BeExactly "2 rule/s were suppressed by suppression group '.\SuppressWithTestType' for 'TestObject2'.";
+            }
+
+            It 'No warnings' {
+                $option = New-PSRuleOption -SuppressedRuleWarning $False -OutputAs Summary;
+
+                $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile3', 'FromFile5' -WarningVariable outWarnings -WarningAction SilentlyContinue;
+
+                $warningMessages = $outwarnings.ToArray();
+                $warningMessages.Length | Should -Be 0;
+            }
+        }
+
+        AfterAll {
+            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
+        }
+    }
 }
 
 #endregion Invoke-PSRule

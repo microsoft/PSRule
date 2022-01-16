@@ -12,6 +12,9 @@
         },
         {
             "$ref": "#/definitions/selector-v1"
+        },
+        {
+            "$ref": "#/definitions/suppressionGroup-v1"
         }
     ],
     "definitions": {
@@ -435,6 +438,68 @@
             "title": "Spec",
             "description": "PSRule selector specification.",
             "properties": {
+                "if": {
+                    "type": "object",
+                    "$ref": "#/definitions/selectorExpression"
+                }
+            },
+            "required": [
+                "if"
+            ],
+            "additionalProperties": false
+        },
+        "suppressionGroup-v1": {
+            "type": "object",
+            "title": "SuppressionGroup",
+            "description": "A PSRule Suppression Group",
+            "markdownDescription": "A PSRule Suppression Group. [See help](https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_SuppressionGroups.html)",
+            "properties": {
+                "apiVersion": {
+                    "type": "string",
+                    "title": "API Version",
+                    "description": "The API Version for the PSRule resources.",
+                    "enum": [
+                        "github.com/microsoft/PSRule/v1"
+                    ]
+                },
+                "kind": {
+                    "type": "string",
+                    "title": "Kind",
+                    "description": "A PSRule SuppressionGroup resource.",
+                    "enum": [
+                        "SuppressionGroup"
+                    ]
+                },
+                "metadata": {
+                    "type": "object",
+                    "$ref": "#/definitions/resource-metadata"
+                },
+                "spec": {
+                    "type": "object",
+                    "$ref": "#/definitions/suppressionGroupSpec"
+                }
+            },
+            "required": [
+                "apiVersion",
+                "kind",
+                "metadata",
+                "spec"
+            ]
+        },
+        "suppressionGroupSpec": {
+            "type": "object",
+            "title": "Spec",
+            "description": "PSRule Suppression Group specification.",
+            "properties": {
+                "rule": {
+                    "type": "array",
+                    "title": "Rule pre-condition",
+                    "description": "This only applies to rules that match the specified rule names",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
                 "if": {
                     "type": "object",
                     "$ref": "#/definitions/selectorExpression"

@@ -261,6 +261,26 @@ namespace PSRule.Runtime
             Writer.WriteWarning(PSRuleResources.RuleCountSuppressed, ruleCount, Binding.TargetName);
         }
 
+        public void WarnRuleSuppressionGroup(string ruleId, string suppressionGroupId)
+        {
+            if (Writer == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
+            {
+                return;
+            }
+
+            Writer.WriteWarning(PSRuleResources.RuleSuppressionGroup, ruleId, suppressionGroupId, Binding.TargetName);
+        }
+
+        public void WarnRuleSuppressionGroupCount(int ruleCount, string suppressionGroupId)
+        {
+            if (Writer == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
+            {
+                return;
+            }
+
+            Writer.WriteWarning(PSRuleResources.RuleSuppressionGroupCount, ruleCount, suppressionGroupId, Binding.TargetName);
+        }
+
         public void ErrorInvaildRuleResult()
         {
             if (Writer == null || !Writer.ShouldWriteError())
@@ -612,6 +632,23 @@ namespace PSRule.Runtime
             result = selector.Match(TargetObject.Value);
             annotation.SetSelectorResult(selector, result);
             return result;
+        }
+
+        public bool MatchSuppressionGroup(out string suppressionGroupId)
+        {
+            suppressionGroupId = string.Empty;
+            foreach (var keyValuePair in Pipeline.SuppressionGroup)
+            {
+                var groupId = keyValuePair.Key;
+                var visitor = keyValuePair.Value;
+
+                if (visitor.Match(TargetObject.Value))
+                {
+                    suppressionGroupId = groupId;
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
