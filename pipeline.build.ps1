@@ -141,7 +141,7 @@ task CopyModule {
 task BuildModule BuildDotNet, CopyModule
 
 # Synopsis: Build help
-task BuildHelp BuildModule, PlatyPS, {
+task BuildHelp BuildModule, Dependencies, {
     if (!(Test-Path out/modules/PSRule/en-US/)) {
         $Null = New-Item -Path out/modules/PSRule/en-US/ -ItemType Directory -Force;
     }
@@ -241,31 +241,13 @@ task NuGet {
     }
 }
 
-# Synopsis: Install Pester module
-task Pester NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name Pester -RequiredVersion 5.3.0 -ErrorAction Ignore)) {
-        Install-Module -Name Pester -RequiredVersion 5.3.0 -Scope CurrentUser -Force -SkipPublisherCheck;
-    }
-    Import-Module -Name Pester -RequiredVersion 5.3.0 -Verbose:$False;
-}
-
-# Synopsis: Install PSScriptAnalyzer module
-task PSScriptAnalyzer NuGet, {
-    if ($Null -eq (Get-InstalledModule -Name PSScriptAnalyzer -MinimumVersion 1.18.3 -ErrorAction Ignore)) {
-        Install-Module -Name PSScriptAnalyzer -MinimumVersion 1.18.3 -Scope CurrentUser -Force;
-    }
-    Import-Module -Name PSScriptAnalyzer -Verbose:$False;
-}
-
-# Synopsis: Install PlatyPS module
-task platyPS {
-    if ($Null -eq (Get-InstalledModule -Name PlatyPS -MinimumVersion 0.14.0 -ErrorAction Ignore)) {
-        Install-Module -Name PlatyPS -Scope CurrentUser -MinimumVersion 0.14.0 -Force;
-    }
+task Dependencies NuGet, {
+    Import-Module $PWD/scripts/dependencies.psm1;
+    Install-Dependencies -Path $PWD/modules.json;
 }
 
 # Synopsis: Test the module
-task TestModule Pester, PSScriptAnalyzer, {
+task TestModule Dependencies, {
     # Run Pester tests
     $pesterOptions = @{
         Run = @{
@@ -344,37 +326,8 @@ task AttachChangeLog {
 }
 
 # Synopsis: Run script analyzer
-task Analyze Build, PSScriptAnalyzer, {
+task Analyze Build, Dependencies, {
     Invoke-ScriptAnalyzer -Path out/modules/PSRule;
-}
-
-task CleanSite {
-    git branch -D gh-pages;
-    Remove-Item -Path out/site -Recurse -Force -ErrorAction Ignore;
-}
-
-# Synopsis: Build project site
-task BuildSite CleanSite, {
-    docfx build --force docs/docfx.json;
-}
-
-# Synopsis: Publish project site to gh-pages
-task PublishSite CleanSite, {
-    git worktree add -b gh-pages -f out/site upstream/gh-pages;
-    docfx build --force docs/docfx.json;
-
-    try {
-        Push-Location -Path out/site;
-        git add *;
-        git commit -m 'Update documentation';
-        git push;
-    }
-    finally {
-        Pop-Location;
-    }
-
-    git worktree remove out/site
-    git worktree prune
 }
 
 # Synopsis: Build and test.
