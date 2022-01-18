@@ -1,0 +1,47 @@
+#
+# Automated dependency updates
+#
+
+# NOTES:
+# This automatically bumps PowerShell dependency versions.
+
+name: Dependencies
+on:
+  schedule:
+    - cron:  '30 1 * * 1' # At 01:30 AM, on Monday each week
+  workflow_dispatch:
+
+env:
+  WORKING_BRANCH: dependencies/powershell-bump
+
+jobs:
+  dependencies:
+    name: Bump dependencies
+    runs-on: ubuntu-latest
+    if: github.repository == 'microsoft/PSRule'
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+        with:
+          fetch-depth: 0
+
+      - name: Configure
+        run: |
+          git config user.name github-actions
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+      - name: Get working branch
+        run: |
+          git checkout -B ${{ env.WORKING_BRANCH }} --force
+
+      - name: Check dependencies
+        run: |
+          Import-Module ./scripts/dependencies.psm1;
+          Update-Dependencies -Path ./modules.json;
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
