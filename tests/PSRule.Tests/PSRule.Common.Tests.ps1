@@ -1841,28 +1841,28 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
                 $result = @(Get-PSRule)
                 $result.Length | Should -Be 4;
 
-                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/' })
+                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/'; 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 1;
 
-                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/', 'extra/' })
+                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/', 'extra/'; 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 2;
 
-                $result = @(Get-PSRule -Option @{ 'Include.Path' = '.' })
+                $result = @(Get-PSRule -Option @{ 'Include.Path' = '.'; 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 4;
 
-                $result = @(Get-PSRule -Path 'main/')
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 2;
 
-                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = @() })
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = @(); 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 1;
 
-                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/' })
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/'; 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 2;
 
-                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/', '.ps-rule/' })
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/', '.ps-rule/'; 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 3;
 
-                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'main/' })
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'main/'; 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 1;
             }
             finally {
@@ -2259,12 +2259,13 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
         BeforeAll {
             # Get a list of rules
             $searchPath = Join-Path -Path $here -ChildPath 'TestModule';
+            $option = New-PSRuleOption -Option @{ 'Execution.InvariantCultureWarning' = $False }
         }
 
         It 'Docs from imported module' {
             try {
                 Push-Location $searchPath;
-                $result = @(Get-PSRuleHelp);
+                $result = @(Get-PSRuleHelp -Option $option);
                 $result.Length | Should -Be 6;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
@@ -2282,7 +2283,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
         It 'Using wildcard in name' {
             try {
                 Push-Location $searchPath;
-                $result = @(Get-PSRuleHelp -Name M1.*);
+                $result = @(Get-PSRuleHelp -Name M1.* -Option $option);
                 $result.Length | Should -Be 6;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
@@ -2304,7 +2305,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
                     Module = 'TestModule'
                     Name = 'M1.Rule1'
                 }
-                $result = @(Get-PSRuleHelp @getParams -Full);
+                $result = @(Get-PSRuleHelp @getParams -Full -Option $option);
                 $result | Should -Not -BeNullOrEmpty;
                 ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.RuleHelpInfo+Full';
             }

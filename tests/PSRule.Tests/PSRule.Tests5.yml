@@ -2,3 +2,4 @@
 # Options for processing with some rules
 execution:
   inconclusiveWarning: false
+  invariantCultureWarning: false

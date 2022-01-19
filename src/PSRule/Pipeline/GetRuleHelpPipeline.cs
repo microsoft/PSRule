@@ -33,6 +33,7 @@ namespace PSRule.Pipeline
                 return this;
 
             Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
+            Option.Execution.InvariantCultureWarning = option.Execution.InvariantCultureWarning ?? ExecutionOption.Default.InvariantCultureWarning;
             Option.Output.Culture = GetCulture(option.Output.Culture);
 
             if (option.Rule != null)

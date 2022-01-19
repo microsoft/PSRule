@@ -3,3 +3,6 @@
 # Configure output options
 output:
   jsonIndent: 0
+
+execution:
+  invariantCultureWarning: false
