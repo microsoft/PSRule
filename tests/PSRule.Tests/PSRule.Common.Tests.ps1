@@ -2259,13 +2259,12 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
         BeforeAll {
             # Get a list of rules
             $searchPath = Join-Path -Path $here -ChildPath 'TestModule';
-            $option = New-PSRuleOption -Option @{ 'Execution.InvariantCultureWarning' = $False }
         }
 
         It 'Docs from imported module' {
             try {
                 Push-Location $searchPath;
-                $result = @(Get-PSRuleHelp -Option $option);
+                $result = @(Get-PSRuleHelp);
                 $result.Length | Should -Be 6;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
@@ -2283,7 +2282,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
         It 'Using wildcard in name' {
             try {
                 Push-Location $searchPath;
-                $result = @(Get-PSRuleHelp -Name M1.* -Option $option);
+                $result = @(Get-PSRuleHelp -Name M1.*);
                 $result.Length | Should -Be 6;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
@@ -2305,7 +2304,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
                     Module = 'TestModule'
                     Name = 'M1.Rule1'
                 }
-                $result = @(Get-PSRuleHelp @getParams -Full -Option $option);
+                $result = @(Get-PSRuleHelp @getParams -Full);
                 $result | Should -Not -BeNullOrEmpty;
                 ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.RuleHelpInfo+Full';
             }
