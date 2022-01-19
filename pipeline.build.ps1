@@ -254,6 +254,9 @@ task TestModule Dependencies, {
             Path = $PWD;
             PassThru = $True;
         }
+        Output = @{
+            Verbosity = 'Detailed'
+        }
         TestResult = @{
             Enabled = $True;
             OutputFormat = 'NUnitXml';
