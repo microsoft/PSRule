@@ -919,7 +919,7 @@ variables:
 
 ### Execution.InvariantCultureWarning
 
-When evaluating rules inside a Linux CI host, if invariant culture is used, a warning is shown by default.
+When evaluating rules inside a CI host, if invariant culture is used, a warning is shown by default.
 You can suppress this warning if you set the culture with `-Culture` or the `Output.Culture` option.
 
 This warning can also be suppressed by using:

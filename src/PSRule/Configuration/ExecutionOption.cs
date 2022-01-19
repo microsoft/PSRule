@@ -128,7 +128,7 @@ namespace PSRule.Configuration
         public bool? SuppressedRuleWarning { get; set; }
 
         /// <summary>
-        /// Determines if warning is raised when invariant culture us used.
+        /// Determines if warning is raised when invariant culture is used.
         /// </summary>
         [DefaultValue(null)]
         public bool? InvariantCultureWarning { get; set; }
