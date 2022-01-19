@@ -1723,7 +1723,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         It 'Returns rules in current path' {
             try {
                 Push-Location -Path $searchPath;
-                $result = @(Get-PSRule)
+                $result = @(Get-PSRule -Option @{ 'Execution.InvariantCultureWarning' = $False })
                 $result | Should -Not -BeNullOrEmpty;
                 $result.Length | Should -Be 3;
                 $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
@@ -1838,7 +1838,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         It 'Uses rules with include option' {
             Push-Location -Path (Join-Path -Path $here -ChildPath 'rules/')
             try {
-                $result = @(Get-PSRule)
+                $result = @(Get-PSRule -Option @{ 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 4;
 
                 $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/'; 'Execution.InvariantCultureWarning' = $False })
