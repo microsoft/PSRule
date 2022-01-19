@@ -1146,7 +1146,6 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                     Name = "TestObject2"
                 }
             )
-            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-AU');
         }
 
         Context 'Detail' {
@@ -1196,10 +1195,6 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages.Length | Should -Be 0;
             }
         }
-
-        AfterAll {
-            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
-        }
     }
 
     Context 'Suppression Group output warnings' {
@@ -1218,7 +1213,6 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                     }
                 }
             )
-            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-AU');
 
             $testObject[0].PSObject.TypeNames.Insert(0, 'TestType');
             $testObject[1].PSObject.TypeNames.Insert(0, 'TestType');
@@ -1290,10 +1284,6 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages = $outwarnings.ToArray();
                 $warningMessages.Length | Should -Be 0;
             }
-        }
-
-        AfterAll {
-            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
         }
     }
 }
