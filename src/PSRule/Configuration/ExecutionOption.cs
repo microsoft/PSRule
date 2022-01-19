@@ -17,6 +17,7 @@ namespace PSRule.Configuration
         private const bool DEFAULT_NOTPROCESSEDWARNING = true;
         private const bool DEFAULT_SUPPRESSEDRULEWARNING = true;
         private const bool DEFAULT_ALIASREFERENCEWARNING = true;
+        private const bool DEFAULT_INVARIANTCULTUREWARNING = true;
 
         internal static readonly ExecutionOption Default = new ExecutionOption
         {
@@ -24,7 +25,8 @@ namespace PSRule.Configuration
             LanguageMode = DEFAULT_LANGUAGEMODE,
             InconclusiveWarning = DEFAULT_INCONCLUSIVEWARNING,
             NotProcessedWarning = DEFAULT_NOTPROCESSEDWARNING,
-            SuppressedRuleWarning = DEFAULT_SUPPRESSEDRULEWARNING
+            SuppressedRuleWarning = DEFAULT_SUPPRESSEDRULEWARNING,
+            InvariantCultureWarning = DEFAULT_INVARIANTCULTUREWARNING
         };
 
         public ExecutionOption()
@@ -34,6 +36,7 @@ namespace PSRule.Configuration
             InconclusiveWarning = null;
             NotProcessedWarning = null;
             SuppressedRuleWarning = null;
+            InvariantCultureWarning = null;
         }
 
         public ExecutionOption(ExecutionOption option)
@@ -46,6 +49,7 @@ namespace PSRule.Configuration
             InconclusiveWarning = option.InconclusiveWarning;
             NotProcessedWarning = option.NotProcessedWarning;
             SuppressedRuleWarning = option.SuppressedRuleWarning;
+            InvariantCultureWarning = option.InvariantCultureWarning;
         }
 
         public override bool Equals(object obj)
@@ -60,7 +64,8 @@ namespace PSRule.Configuration
                 LanguageMode == other.LanguageMode &&
                 InconclusiveWarning == other.InconclusiveWarning &&
                 NotProcessedWarning == other.NotProcessedWarning &&
-                SuppressedRuleWarning == other.NotProcessedWarning;
+                SuppressedRuleWarning == other.NotProcessedWarning &&
+                InvariantCultureWarning == other.InvariantCultureWarning;
         }
 
         public override int GetHashCode()
@@ -73,6 +78,7 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (InconclusiveWarning.HasValue ? InconclusiveWarning.Value.GetHashCode() : 0);
                 hash = hash * 23 + (NotProcessedWarning.HasValue ? NotProcessedWarning.Value.GetHashCode() : 0);
                 hash = hash * 23 + (SuppressedRuleWarning.HasValue ? SuppressedRuleWarning.Value.GetHashCode() : 0);
+                hash = hash * 23 + (InvariantCultureWarning.HasValue ? InvariantCultureWarning.Value.GetHashCode() : 0);
                 return hash;
             }
         }
@@ -86,6 +92,7 @@ namespace PSRule.Configuration
                 InconclusiveWarning = o1.InconclusiveWarning ?? o2.InconclusiveWarning,
                 NotProcessedWarning = o1.NotProcessedWarning ?? o2.NotProcessedWarning,
                 SuppressedRuleWarning = o1.SuppressedRuleWarning ?? o2.SuppressedRuleWarning,
+                InvariantCultureWarning = o1.InvariantCultureWarning ?? o2.InvariantCultureWarning
             };
             return result;
         }
@@ -120,6 +127,12 @@ namespace PSRule.Configuration
         [DefaultValue(null)]
         public bool? SuppressedRuleWarning { get; set; }
 
+        /// <summary>
+        /// Determines if warning is raised when invariant culture us used.
+        /// </summary>
+        [DefaultValue(null)]
+        public bool? InvariantCultureWarning { get; set; }
+
         internal void Load(EnvironmentHelper env)
         {
             if (env.TryBool("PSRULE_EXECUTION_ALIASREFERENCEWARNING", out var bvalue))
@@ -136,6 +149,9 @@ namespace PSRule.Configuration
 
             if (env.TryBool("PSRULE_EXECUTION_SUPPRESSEDRULEWARNING", out bvalue))
                 SuppressedRuleWarning = bvalue;
+
+            if (env.TryBool("PSRULE_EXECUTION_INVARIANTCULTUREWARNING", out bvalue))
+                InvariantCultureWarning = bvalue;
         }
 
         internal void Load(Dictionary<string, object> index)
@@ -154,6 +170,9 @@ namespace PSRule.Configuration
 
             if (index.TryPopBool("Execution.SuppressedRuleWarning", out bvalue))
                 SuppressedRuleWarning = bvalue;
+
+            if (index.TryPopBool("Execution.InvariantCultureWarning", out bvalue))
+                InvariantCultureWarning = bvalue;
         }
     }
 }

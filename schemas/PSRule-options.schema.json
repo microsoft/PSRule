@@ -149,6 +149,13 @@
                     "description": "Enable or disable warnings when an alias to a resource is used. The default is true.",
                     "markdownDescription": "Enable or disable warnings when an alias to a resource is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionaliasreferencewarning)",
                     "default": true
+                },
+                "invariantCultureWarning": {
+                    "type": "boolean",
+                    "title": "Warn on invariant culture",
+                    "description": "Enable or disable warning when invariant culture is used. The default is `true`.",
+                    "markdownDescription": "Enable or disable warning when invariant culture is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninvariantculturewarning)",
+                    "default": true
                 }
             },
             "additionalProperties": false

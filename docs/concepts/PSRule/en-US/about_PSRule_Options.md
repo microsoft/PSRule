@@ -19,6 +19,7 @@ The following workspace options are available for use:
 - [Execution.InconclusiveWarning](#executioninconclusivewarning)
 - [Execution.NotProcessedWarning](#executionnotprocessedwarning)
 - [Execution.SuppressedRuleWarning](#executionsuppressedrulewarning)
+- [Execution.InvariantCultureWarning](#executioninvariantculturewarning)
 - [Include.Module](#includemodule)
 - [Include.Path](#includepath)
 - [Input.Format](#inputformat)
@@ -913,6 +914,52 @@ env:
 # Azure Pipelines: Using environment variable
 variables:
 - name: PSRULE_EXECUTION_SUPPRESSEDRULEWARNING
+  value: false
+```
+
+### Execution.InvariantCultureWarning
+
+When evaluating rules inside a Linux CI host, if invariant culture is used, a warning is shown by default.
+You can suppress this warning if you set the culture with `-Culture` or the `Output.Culture` option.
+
+This warning can also be suppressed by using:
+
+```powershell
+# PowerShell: Using the InvariantCultureWarning parameter
+$option = New-PSRuleOption -InvariantCultureWarning $False;
+```
+
+```powershell
+# PowerShell: Using the Execution.InvariantCultureWarning hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.InvariantCultureWarning' = $False };
+```
+
+```powershell
+# PowerShell: Using the InvariantCultureWarning parameter to set YAML
+Set-PSRuleOption -InvariantCultureWarning $False;
+```
+
+```yaml
+# YAML: Using the execution/invariantCultureWarning property
+execution:
+  invariantCultureWarning: false
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_INVARIANTCULTUREWARNING=false
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_INVARIANTCULTUREWARNING: false
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_INVARIANTCULTUREWARNING
   value: false
 ```
 

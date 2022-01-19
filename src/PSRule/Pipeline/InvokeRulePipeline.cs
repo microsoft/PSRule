@@ -63,6 +63,7 @@ namespace PSRule.Pipeline
             Option.Execution.InconclusiveWarning = option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning;
             Option.Execution.NotProcessedWarning = option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning;
             Option.Execution.SuppressedRuleWarning = option.Execution.SuppressedRuleWarning ?? ExecutionOption.Default.SuppressedRuleWarning;
+            Option.Execution.InvariantCultureWarning = option.Execution.InvariantCultureWarning ?? ExecutionOption.Default.InvariantCultureWarning;
 
             Option.Logging.RuleFail = option.Logging.RuleFail ?? LoggingOption.Default.RuleFail;
             Option.Logging.RulePass = option.Logging.RulePass ?? LoggingOption.Default.RulePass;
