@@ -76,6 +76,7 @@ namespace PSRule.Runtime
         private readonly bool _InconclusiveWarning;
         private readonly bool _NotProcessedWarning;
         private readonly bool _SuppressedRuleWarning;
+        private readonly bool _InvariantCultureWarning;
         private readonly OutcomeLogStream _FailStream;
         private readonly OutcomeLogStream _PassStream;
         private readonly Stack<RunspaceScope> _Scope;
@@ -109,6 +110,7 @@ namespace PSRule.Runtime
             _InconclusiveWarning = Pipeline.Option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning.Value;
             _NotProcessedWarning = Pipeline.Option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning.Value;
             _SuppressedRuleWarning = Pipeline.Option.Execution.SuppressedRuleWarning ?? ExecutionOption.Default.SuppressedRuleWarning.Value;
+            _InvariantCultureWarning = Pipeline.Option.Execution.InvariantCultureWarning ?? ExecutionOption.Default.InvariantCultureWarning.Value;
             _FailStream = Pipeline.Option.Logging.RuleFail ?? LoggingOption.Default.RuleFail.Value;
             _PassStream = Pipeline.Option.Logging.RulePass ?? LoggingOption.Default.RulePass.Value;
             _WarnOnce = new HashSet<string>();
@@ -803,7 +805,9 @@ namespace PSRule.Runtime
                 return null;
 
             var culture = Pipeline.Baseline.GetCulture();
-            if (!_RaisedUsingInvariantCulture && (culture == null || culture.Length == 0))
+            if (!_RaisedUsingInvariantCulture &&
+                (culture == null || culture.Length == 0) &&
+                _InvariantCultureWarning)
             {
                 Writer.WarnUsingInvariantCulture();
                 _RaisedUsingInvariantCulture = true;

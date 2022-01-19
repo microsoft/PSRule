@@ -72,6 +72,28 @@ namespace PSRule
         }
 
         [Fact]
+        public void PipelineWithInvariantCultureDisabled()
+        {
+            PSRuleOption.UseCurrentCulture(CultureInfo.InvariantCulture);
+            var option = new PSRuleOption();
+            option.Execution.InvariantCultureWarning = false;
+            var context = PipelineContext.New(option, null, null, null, null, null, new OptionContext(), null);
+            var writer = new TestWriter(option);
+            var pipeline = new GetRulePipeline(context, GetSource(), new PipelineReader(null, null), writer, false);
+            try
+            {
+                pipeline.Begin();
+                pipeline.Process(null);
+                pipeline.End();
+                Assert.DoesNotContain(writer.Warnings, (string s) => { return s == PSRuleResources.UsingInvariantCulture; });
+            }
+            finally
+            {
+                PSRuleOption.UseCurrentCulture();
+            }
+        }
+
+        [Fact]
         public void PipelineWithOptions()
         {
             var option = GetOption(GetSourcePath("PSRule.Tests.yml"));

@@ -261,6 +261,11 @@ task TestModule Dependencies, {
         };
     }
 
+    # Use Detailed output in CI(AzDO or Github Actions)
+    if ($env:TF_BUILD -eq 'true' -or $env:GITHUB_ACTIONS -eq 'true') {
+        $pesterOptions.Add('Output', @{ Verbosity = 'Detailed' });
+    }
+
     if ($CodeCoverage) {
         $codeCoverageOptions = @{
             Enabled = $True;

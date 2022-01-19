@@ -50,6 +50,7 @@ execution:
   inconclusiveWarning: false
   notProcessedWarning: false
   suppressedRuleWarning: false
+  invariantCultureWarning: false
 
 # Configure input options
 input:

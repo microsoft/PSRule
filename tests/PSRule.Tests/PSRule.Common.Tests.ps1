@@ -1146,12 +1146,11 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                     Name = "TestObject2"
                 }
             )
-            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-AU');
         }
 
         Context 'Detail' {
             It 'Show Warnings' {
-                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $True -OutputAs Detail;
+                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $True -OutputAs Detail -InvariantCultureWarning $False;
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
@@ -1165,7 +1164,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $False -OutputAs Detail;
+                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $False -OutputAs Detail -InvariantCultureWarning $False;
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
@@ -1176,7 +1175,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Summary' {
             It 'Show warnings' {
-                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $True -OutputAs Summary;
+                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $True -OutputAs Summary -InvariantCultureWarning $False;
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
@@ -1188,17 +1187,13 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $False -OutputAs Summary;
+                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $False -OutputAs Summary -InvariantCultureWarning $False;
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
                 $warningMessages = $outwarnings.ToArray();
                 $warningMessages.Length | Should -Be 0;
             }
-        }
-
-        AfterAll {
-            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
         }
     }
 
@@ -1218,7 +1213,6 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                     }
                 }
             )
-            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture('en-AU');
 
             $testObject[0].PSObject.TypeNames.Insert(0, 'TestType');
             $testObject[1].PSObject.TypeNames.Insert(0, 'TestType');
@@ -1232,7 +1226,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Detail' {
             It 'Show warnings' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Detail;
+                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Detail -InvariantCultureWarning $False;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile1', 'FromFile2', 'WithTag2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1254,7 +1248,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $False -OutputAs Detail;
+                $option = New-PSRuleOption -SuppressedRuleWarning $False -OutputAs Detail -InvariantCultureWarning $False;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile1', 'FromFile2', 'WithTag2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1265,7 +1259,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Summary' {
             It 'Show warnings' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Summary;
+                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Summary -InvariantCultureWarning $False;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile3', 'FromFile5', 'WithTag3' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1283,17 +1277,13 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $False -OutputAs Summary;
+                $option = New-PSRuleOption -SuppressedRuleWarning $False -OutputAs Summary -InvariantCultureWarning $False;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile3', 'FromFile5', 'WithTag3' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
                 $warningMessages = $outwarnings.ToArray();
                 $warningMessages.Length | Should -Be 0;
             }
-        }
-
-        AfterAll {
-            [PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
         }
     }
 }
@@ -1733,7 +1723,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         It 'Returns rules in current path' {
             try {
                 Push-Location -Path $searchPath;
-                $result = @(Get-PSRule)
+                $result = @(Get-PSRule -Option @{ 'Execution.InvariantCultureWarning' = $False })
                 $result | Should -Not -BeNullOrEmpty;
                 $result.Length | Should -Be 3;
                 $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
@@ -1848,31 +1838,31 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         It 'Uses rules with include option' {
             Push-Location -Path (Join-Path -Path $here -ChildPath 'rules/')
             try {
-                $result = @(Get-PSRule)
+                $result = @(Get-PSRule -Option @{ 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 4;
 
-                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/' })
+                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/'; 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 1;
 
-                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/', 'extra/' })
+                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/', 'extra/'; 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 2;
 
-                $result = @(Get-PSRule -Option @{ 'Include.Path' = '.' })
+                $result = @(Get-PSRule -Option @{ 'Include.Path' = '.'; 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 4;
 
-                $result = @(Get-PSRule -Path 'main/')
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 2;
 
-                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = @() })
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = @(); 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 1;
 
-                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/' })
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/'; 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 2;
 
-                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/', '.ps-rule/' })
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/', '.ps-rule/'; 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 3;
 
-                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'main/' })
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'main/'; 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 1;
             }
             finally {

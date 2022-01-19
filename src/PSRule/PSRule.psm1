@@ -1195,6 +1195,11 @@ function New-PSRuleOption {
         [Alias('ExecutionAliasReferenceWarning')]
         [System.Boolean]$AliasReferenceWarning = $True,
 
+        # Sets the Execution.InvariantCultureWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInvariantCultureWarning')]
+        [System.Boolean]$InvariantCultureWarning = $True,
+
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
         [String[]]$IncludeModule,
@@ -1451,6 +1456,11 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionAliasReferenceWarning')]
         [System.Boolean]$AliasReferenceWarning = $True,
+
+        # Sets the Execution.InvariantCultureWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInvariantCultureWarning')]
+        [System.Boolean]$InvariantCultureWarning = $True,
 
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
@@ -2151,6 +2161,11 @@ function SetOptions {
         [Alias('ExecutionAliasReferenceWarning')]
         [System.Boolean]$AliasReferenceWarning = $True,
 
+        # Sets the Execution.InvariantCultureWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInvariantCultureWarning')]
+        [System.Boolean]$InvariantCultureWarning = $True,
+
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
         [String[]]$IncludeModule,
@@ -2317,6 +2332,11 @@ function SetOptions {
         # Sets option Execution.AliasReferenceWarning
         if ($PSBoundParameters.ContainsKey('AliasReferenceWarning')) {
             $Option.Execution.AliasReferenceWarning = $AliasReferenceWarning;
+        }
+
+        # Sets option Execution.InvariantCultureWarning
+        if ($PSBoundParameters.ContainsKey('InvariantCultureWarning')) {
+            $Option.Execution.InvariantCultureWarning = $InvariantCultureWarning;
         }
 
         # Sets option Include.Module

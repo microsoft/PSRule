@@ -780,6 +780,45 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Execution.InvariantCultureWarning' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.InvariantCultureWarning | Should -Be $True;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.InvariantCultureWarning' = $False };
+            $option.Execution.InvariantCultureWarning | Should -Be $False;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.InvariantCultureWarning | Should -Be $False;
+        }
+
+        It 'from Environment' {
+            try {
+                # With bool
+                $Env:PSRULE_EXECUTION_INVARIANTCULTUREWARNING = 'false';
+                $option = New-PSRuleOption;
+                $option.Execution.InvariantCultureWarning | Should -Be $False;
+
+                # With int
+                $Env:PSRULE_EXECUTION_INVARIANTCULTUREWARNING = '0';
+                $option = New-PSRuleOption;
+                $option.Execution.InvariantCultureWarning | Should -Be $False;
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_INVARIANTCULTUREWARNING' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -InvariantCultureWarning $False -Path $emptyOptionsFilePath;
+            $option.Execution.InvariantCultureWarning | Should -Be $False;
+        }
+    }
+
     Context 'Read Include.Path' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
