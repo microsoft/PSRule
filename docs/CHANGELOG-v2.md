@@ -66,3 +66,14 @@ What's changed since v1.11.0:
     - Resources should use `github.com/microsoft/PSRule/v1` as the `apiVersion`.
     - Resources that do not specify an `apiVersion` will be ignored.
     - See [upgrade notes][1] for details.
+
+[Assert-PSRule]: commands/PSRule/en-US/Assert-PSRule.md
+[about_PSRule_Assert]: concepts/PSRule/en-US/about_PSRule_Assert.md
+[about_PSRule_Options]: concepts/PSRule/en-US/about_PSRule_Options.md
+[about_PSRule_Variables]: concepts/PSRule/en-US/about_PSRule_Variables.md
+[about_PSRule_Conventions]: concepts/PSRule/en-US/about_PSRule_Conventions.md
+[about_PSRule_Selectors]: concepts/PSRule/en-US/about_PSRule_Selectors.md
+[about_PSRule_Rules]: concepts/PSRule/en-US/about_PSRule_Rules.md
+[about_PSRule_Badges]: concepts/PSRule/en-US/about_PSRule_Badges.md
+[about_PSRule_Expressions]: concepts/PSRule/en-US/about_PSRule_Expressions.md
+[about_PSRule_SuppressionGroups]: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md
