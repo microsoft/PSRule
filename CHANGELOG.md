@@ -6,7 +6,7 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Next release
 
-- v2 **Coming soon** - Please check out [upgrade notes][1] to get prepared for the next release.
+- [v2](https://microsoft.github.io/PSRule/latest/CHANGELOG-v2/) _(preview)_ - Please check out our [upgrade notes][1] to get prepared for the next release.
 
 ## Current release
 
