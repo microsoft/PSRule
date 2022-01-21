@@ -4,6 +4,10 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
   [1]: https://microsoft.github.io/PSRule/latest/upgrade-notes/
 
+!!! Attention
+    PSRule v0 is a prior release.
+    Please upgrade to the latest version.
+
 ## v0.22.0
 
 What's changed since v0.21.0:

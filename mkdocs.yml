@@ -56,6 +56,7 @@ nav:
     - License and contributing: license-contributing.md
     - Releases:
       - Change log:
+        - v2 (preview): 'CHANGELOG-v2.md'
         - v1: 'CHANGELOG-v1.md'
         - v0: 'CHANGELOG-v0.md'
       - Upgrade notes: upgrade-notes.md

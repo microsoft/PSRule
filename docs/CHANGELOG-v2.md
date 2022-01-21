@@ -1,0 +1,79 @@
+# Change log
+
+See [upgrade notes][1] for helpful information when upgrading from previous versions.
+
+  [1]: https://microsoft.github.io/PSRule/latest/upgrade-notes/
+
+**Important notes**:
+
+- YAML resources will require an `apiVersion` from PSRule v2. [#648](https://github.com/microsoft/PSRule/issues/648)
+- Setting the default module baseline requires a module configuration from PSRule v2. [#809](https://github.com/microsoft/PSRule/issues/809)
+
+## Unreleased
+
+What's changed since pre-release v2.0.0-B2201093:
+
+- New features:
+  - Add option to disable invariant culture warning. [#899](https://github.com/microsoft/PSRule/issues/899)
+    - Added `Execution.InvariantCultureWarning` option.
+    - See [about_PSRule_Options] for details.
+
+## v2.0.0-B2201093 (pre-release)
+
+What's changed since pre-release v2.0.0-B2201075:
+
+- New features:
+  - Add support for suppression groups. [#793](https://github.com/microsoft/PSRule/issues/793)
+    - New `SuppressionGroup` resource has been included.
+    - See [about_PSRule_SuppressionGroups] for details.
+
+## v2.0.0-B2201075 (pre-release)
+
+What's changed since pre-release v2.0.0-B2201054:
+
+- General improvements:
+  - Added support for rule aliases. [#792](https://github.com/microsoft/PSRule/issues/792)
+    - Aliases allow rules to be references by an alternative name.
+    - When renaming rules, add a rule alias to avoid breaking references to the old rule name.
+    - To specify an alias use the `-Alias` parameter or `alias` metadata property in YAML or JSON.
+  - Added support for stable identifiers with rule refs. [#881](https://github.com/microsoft/PSRule/issues/881)
+    - A rule ref may be optionally be used to reference a rule.
+    - Rule refs should be:
+      stable, not changing between releases;
+      opaque, as opposed to being a human-readable string.
+      Stable and opaque refs ease web lookup and to help to avoid language difficulties.
+    - To specify a rule ref use the `-Ref` parameter or `ref` metadata property in YAML or JSON.
+- Bug fixes:
+  - Fixes object path handling with dash. [#902](https://github.com/microsoft/PSRule/issues/902)
+
+## v2.0.0-B2201054 (pre-release)
+
+What's changed since v1.11.0:
+
+- General improvements:
+  - Added support for object path expressions. [#808](https://github.com/microsoft/PSRule/issues/808) [#693](https://github.com/microsoft/PSRule/issues/693)
+    - Inspired by JSONPath, object path expressions can be used to access nested objects.
+    - Array members can be filtered and enumerated using object path expressions.
+    - Object path expressions can be used in YAML, JSON, and PowerShell rules and selectors.
+    - See [about_PSRule_Assert] for details.
+  - Improve tracking of suppressed objects. [#794](https://github.com/microsoft/PSRule/issues/794)
+    - Added `Execution.SuppressedRuleWarning` option to output warning for suppressed rules.
+- Engineering:
+  - **Breaking change:** Removal of deprecated default baseline from module manifest. [#755](https://github.com/microsoft/PSRule/issues/755)
+    - Set the default module baseline using module configuration.
+    - See [upgrade notes][1] for details.
+  - **Breaking change:** Require `apiVersion` on YAML and JSON to be specified. [#648](https://github.com/microsoft/PSRule/issues/648)
+    - Resources should use `github.com/microsoft/PSRule/v1` as the `apiVersion`.
+    - Resources that do not specify an `apiVersion` will be ignored.
+    - See [upgrade notes][1] for details.
+
+[Assert-PSRule]: commands/PSRule/en-US/Assert-PSRule.md
+[about_PSRule_Assert]: concepts/PSRule/en-US/about_PSRule_Assert.md
+[about_PSRule_Options]: concepts/PSRule/en-US/about_PSRule_Options.md
+[about_PSRule_Variables]: concepts/PSRule/en-US/about_PSRule_Variables.md
+[about_PSRule_Conventions]: concepts/PSRule/en-US/about_PSRule_Conventions.md
+[about_PSRule_Selectors]: concepts/PSRule/en-US/about_PSRule_Selectors.md
+[about_PSRule_Rules]: concepts/PSRule/en-US/about_PSRule_Rules.md
+[about_PSRule_Badges]: concepts/PSRule/en-US/about_PSRule_Badges.md
+[about_PSRule_Expressions]: concepts/PSRule/en-US/about_PSRule_Expressions.md
+[about_PSRule_SuppressionGroups]: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md
