@@ -439,7 +439,7 @@ namespace PSRule.Host
 
             // Keep track of rule names and ids that have been added
             var seenRuleNames = new HashSet<string>();
-            var seenRuleIds = new HashSet<ResourceId>(new ResourceIdEqualityComparer());
+            var seenRuleIds = new HashSet<ResourceId>();
 
             try
             {
