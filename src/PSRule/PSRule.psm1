@@ -1966,9 +1966,7 @@ function GetSource {
     )
     process {
         $builder = [PSRule.Pipeline.PipelineBuilder]::RuleSource($Option, $PSCmdlet, $ExecutionContext);
-        if ($UsePWD) {
-            $builder.UsePWD();
-        }
+
         if ($PSBoundParameters.ContainsKey('Path')) {
             try {
                 $builder.Directory($Path);
@@ -2013,6 +2011,12 @@ function GetSource {
             $modules = @(GetRuleModule @moduleParams);
             $builder.Module($modules);
         }
+
+        # Ensure module files are discovered before loose files in PWD
+        if ($UsePWD) {
+            $builder.UsePWD();
+        }
+
         $builder.Build();
     }
 }

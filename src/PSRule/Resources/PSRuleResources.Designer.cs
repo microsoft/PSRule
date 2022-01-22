@@ -166,13 +166,24 @@ namespace PSRule.Resources
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to A rule with the same name &apos;{0}&apos; already exists..
+        ///   Looks up a localized string similar to A rule with the same id &apos;{0}&apos; already exists..
         /// </summary>
         internal static string DuplicateRuleId
         {
             get
             {
                 return ResourceManager.GetString("DuplicateRuleId", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        /// Looks up a localized string similar to A rule with the same name &apos;{0}&apos; already exists..
+        /// </summary>
+        internal static string DuplicateRuleName
+        {
+            get
+            {
+                return ResourceManager.GetString("DuplicateRuleName", resourceCulture);
             }
         }
 

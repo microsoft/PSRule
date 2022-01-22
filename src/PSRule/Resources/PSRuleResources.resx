@@ -145,6 +145,10 @@
     <comment>Occurs when a rule dependency is not discovered.</comment>
   </data>
   <data name="DuplicateRuleId" xml:space="preserve">
+    <value>A rule with the same id '{0}' already exists.</value>
+    <comment>Occurs when the same rule id is used.</comment>
+  </data>
+  <data name="DuplicateRuleName" xml:space="preserve">
     <value>A rule with the same name '{0}' already exists.</value>
     <comment>Occurs when the same rule name is used.</comment>
   </data>

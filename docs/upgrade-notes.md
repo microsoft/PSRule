@@ -79,6 +79,37 @@ Currently this must be set to `github.com/microsoft/PSRule/v1`.
     ]
     ```
 
+### Change in source file discovery for Get-PSRuleHelp
+
+Previously in PSRule _v1.11.0_ and prior versions, rules would show up twice when running `Get-PSRuleHelp` in the context of a module and in the same working directory of the module.
+This behavior has no been removed from _v2.0.0_.
+
+Module files are now preferred over loose files, and rules are only shown once in the output.
+Any duplicate rule names from loose files are outputted as a warning instead.
+
+The old behavior:
+
+```powershell
+Name                                ModuleName               Synopsis
+----                                ----------               --------
+M1.Rule1                                                     This is the default
+M1.Rule2                                                     This is the default
+M1.Rule1                            TestModule               Synopsis en-AU.
+M1.Rule2                            TestModule               This is the default
+```
+
+The new behavior:
+
+```powershell
+WARNING: A rule with the same name 'M1.Rule1' already exists.
+WARNING: A rule with the same name 'M1.Rule2' already exists.
+
+Name                                ModuleName               Synopsis
+----                                ----------               --------
+M1.Rule1                            TestModule               Synopsis en-AU.
+M1.Rule2                            TestModule               This is the default
+```
+
 ## Upgrading to v1.4.0
 
 Follow these notes to upgrade to PSRule _v1.4.0_ from previous versions.
