@@ -17,6 +17,7 @@ What's changed since pre-release v2.0.0-B2201117:
   - **Breaking change:** Prefer module sources over loose files. [#610](https://github.com/microsoft/PSRule/issues/610)
     - Module sources are discovered before loose files.
     - Warning is shown for duplicate rule names, and exception is thrown for duplicate rule Ids.
+    - See [upgrade notes][1] for details.
 
 ## v2.0.0-B2201117 (pre-release)
 
