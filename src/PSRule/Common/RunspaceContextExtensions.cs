@@ -39,6 +39,14 @@ namespace PSRule
             context.Writer.WriteWarning(PSRuleResources.RuleNotFound);
         }
 
+        public static void WarnDuplicateRuleName(this RunspaceContext context, string ruleName)
+        {
+            if (context.Writer == null || !context.Writer.ShouldWriteWarning())
+                return;
+
+            context.Writer.WriteWarning(PSRuleResources.DuplicateRuleName, ruleName);
+        }
+
         public static void DebugPropertyObsolete(this RunspaceContext context, string variableName, string propertyName)
         {
             if (context.Writer == null || !context.Writer.ShouldWriteDebug())

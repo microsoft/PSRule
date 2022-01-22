@@ -2264,15 +2264,22 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
         It 'Docs from imported module' {
             try {
                 Push-Location $searchPath;
-                $result = @(Get-PSRuleHelp);
-                $result.Length | Should -Be 6;
+                $result = @(Get-PSRuleHelp -WarningVariable outWarnings -WarningAction SilentlyContinue);
+                $result.Length | Should -Be 3;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
-                $result[2].Name | Should -Be 'M1.Rule1';
-                $result[3].Name | Should -Be 'M1.Rule2';
-                $result[4].Name | Should -Be 'M1.YamlTestName';
-                $result[5].Name | Should -Be 'M1.YamlTestName';
+                $result[2].Name | Should -Be 'M1.YamlTestName';
                 ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.RuleHelpInfo+Collection';
+
+                $warningMessages = $outwarnings.ToArray();
+                $warningMessages.Length | Should -Be 3;
+
+                $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[0].Message | Should -BeExactly "A rule with the same name 'M1.Rule1' already exists.";
+                $warningMessages[1] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[1].Message | Should -BeExactly "A rule with the same name 'M1.Rule2' already exists.";
+                $warningMessages[2] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[2].Message | Should -BeExactly "A rule with the same name 'M1.YamlTestName' already exists.";
             }
             finally {
                 Pop-Location;
@@ -2282,18 +2289,41 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
         It 'Using wildcard in name' {
             try {
                 Push-Location $searchPath;
-                $result = @(Get-PSRuleHelp -Name M1.*);
-                $result.Length | Should -Be 6;
+                $result = @(Get-PSRuleHelp -Name M1.* -WarningVariable outWarnings -WarningAction SilentlyContinue);
+                $result.Length | Should -Be 3;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
-                $result[2].Name | Should -Be 'M1.Rule1';
-                $result[3].Name | Should -Be 'M1.Rule2';
-                $result[4].Name | Should -Be 'M1.YamlTestName';
-                $result[5].Name | Should -Be 'M1.YamlTestName';
+                $result[2].Name | Should -Be 'M1.YamlTestName';
                 ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.RuleHelpInfo+Collection';
+
+                $warningMessages = $outwarnings.ToArray();
+                $warningMessages.Length | Should -Be 3;
+
+                $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[0].Message | Should -BeExactly "A rule with the same name 'M1.Rule1' already exists.";
+                $warningMessages[1] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[1].Message | Should -BeExactly "A rule with the same name 'M1.Rule2' already exists.";
+                $warningMessages[2] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[2].Message | Should -BeExactly "A rule with the same name 'M1.YamlTestName' already exists.";
             }
             finally {
                 Pop-Location;
+            }
+        }
+
+        It 'Exception is thrown for duplicate ID' {
+            Remove-Module TestModule
+            $searchPath = Join-Path -Path $here -ChildPath 'TestModule8';
+            $Null = Import-Module $searchPath -Force;
+
+            try {
+                Push-Location $searchPath;
+                { Get-PSRuleHelp } | Should -Throw "A rule with the same id '.\M1.Rule2' already exists.";
+            }
+            finally {
+                Pop-Location;
+                Remove-Module TestModule8
+                $Null = Import-Module (Join-Path $here -ChildPath 'TestModule') -Force;
             }
         }
 

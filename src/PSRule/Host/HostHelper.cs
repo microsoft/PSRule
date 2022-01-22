@@ -378,7 +378,7 @@ namespace PSRule.Host
 
         private static RuleException ThrowDuplicateRuleId(IDependencyTarget block)
         {
-            return new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.DuplicateRuleId, block.Id));
+            return new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.DuplicateRuleId, block.Id.Value));
         }
 
         /// <summary>
@@ -436,37 +436,68 @@ namespace PSRule.Host
             // Index rules by RuleId
             //var results = new Dictionary<string, RuleBlock>(StringComparer.OrdinalIgnoreCase);
             var results = new DependencyTargetCollection<RuleBlock>();
+
+            // Keep track of rule names and ids that have been added
+            var seenRuleNames = new HashSet<string>();
+            var seenRuleIds = new HashSet<ResourceId>(new ResourceIdEqualityComparer());
+
             try
             {
                 foreach (var block in blocks.OfType<RuleBlock>())
                 {
-                    results.TryAdd(block);
-                    //throw ThrowDuplicateRuleId(block);
+                    var ruleName = block.Name;
+                    var ruleId = block.Id;
+
+                    if (seenRuleIds.Contains(ruleId))
+                        throw ThrowDuplicateRuleId(block);
+
+                    else if (seenRuleNames.Contains(ruleName))
+                        context.WarnDuplicateRuleName(ruleName);
+
+                    else
+                    {
+                        results.TryAdd(block);
+                        seenRuleNames.Add(ruleName);
+                        seenRuleIds.Add(ruleId);
+                    }
                 }
 
                 foreach (var yaml in blocks.OfType<RuleV1>())
                 {
-                    context.EnterSourceScope(yaml.Source);
-                    var info = GetHelpInfo(context, yaml.Name, yaml.Synopsis) ?? new RuleHelpInfo(yaml.Name, yaml.Name, yaml.Source.ModuleName)
+                    var ruleName = yaml.Name;
+                    var ruleId = yaml.Id;
+
+                    if (seenRuleIds.Contains(ruleId))
+                        throw ThrowDuplicateRuleId(yaml);
+
+                    else if (seenRuleNames.Contains(ruleName))
+                        context.WarnDuplicateRuleName(ruleName);
+
+                    else
                     {
-                        Synopsis = yaml.Synopsis
-                    };
-                    var block = new RuleBlock
-                    (
-                        source: yaml.Source,
-                        id: yaml.Id,
-                        @ref: yaml.Ref,
-                        info: info,
-                        condition: new RuleVisitor(yaml.Source.ModuleName, yaml.Id.Value, yaml.Spec),
-                        alias: yaml.Alias,
-                        tag: yaml.Metadata.Tags,
-                        dependsOn: null,  // TODO: No support for DependsOn yet
-                        configuration: null, // TODO: No support for rule configuration use module or workspace config
-                        extent: null,
-                        flags: yaml.Flags
-                    );
-                    results.TryAdd(block);
-                    //throw ThrowDuplicateRuleId(block);
+                        context.EnterSourceScope(yaml.Source);
+                        var info = GetHelpInfo(context, ruleName, yaml.Synopsis) ?? new RuleHelpInfo(ruleName, ruleName, yaml.Source.ModuleName)
+                        {
+                            Synopsis = yaml.Synopsis
+                        };
+                        var block = new RuleBlock
+                        (
+                            source: yaml.Source,
+                            id: ruleId,
+                            @ref: yaml.Ref,
+                            info: info,
+                            condition: new RuleVisitor(yaml.Source.ModuleName, ruleId.Value, yaml.Spec),
+                            alias: yaml.Alias,
+                            tag: yaml.Metadata.Tags,
+                            dependsOn: null,  // TODO: No support for DependsOn yet
+                            configuration: null, // TODO: No support for rule configuration use module or workspace config
+                            extent: null,
+                            flags: yaml.Flags
+                        );
+                        results.TryAdd(block);
+                        seenRuleNames.Add(ruleName);
+                        seenRuleIds.Add(ruleId);
+                    }
                 }
             }
             finally
