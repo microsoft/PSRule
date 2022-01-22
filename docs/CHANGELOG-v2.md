@@ -11,9 +11,11 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.0.0-B2201117 (pre-release)
+
 What's changed since pre-release v2.0.0-B2201093:
 
-- New features:
+- General improvements:
   - Add option to disable invariant culture warning. [#899](https://github.com/microsoft/PSRule/issues/899)
     - Added `Execution.InvariantCultureWarning` option.
     - See [about_PSRule_Options] for details.
