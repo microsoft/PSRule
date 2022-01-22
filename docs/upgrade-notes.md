@@ -81,11 +81,11 @@ Currently this must be set to `github.com/microsoft/PSRule/v1`.
 
 ### Change in source file discovery for Get-PSRuleHelp
 
-Previously in PSRule _v.1.11.0_ and prior versions, rules would show up twice when running `Get-PSRuleHelp` in the context of a module and in the same working directory of the module.
+Previously in PSRule _v1.11.0_ and prior versions, rules would show up twice when running `Get-PSRuleHelp` in the context of a module and in the same working directory of the module.
 This behavior has no been removed from _v2.0.0_.
 
 Module files are now preferred over loose files, and rules are only shown once in the output.
-Any duplicate rule names that are from loose files are now outputted as a warning instead.
+Any duplicate rule names from loose files are outputted as a warning instead.
 
 The old behavior:
 
