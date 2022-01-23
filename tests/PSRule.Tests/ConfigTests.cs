@@ -15,11 +15,13 @@ namespace PSRule
 {
     public sealed class ConfigTests
     {
-        [Fact]
-        public void ReadModuleConfig()
+        [Theory]
+        [InlineData("ModuleConfig.Rule.yaml")]
+        [InlineData("ModuleConfig.Rule.jsonc")]
+        public void ReadModuleConfig(string path)
         {
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
-            var configuration = HostHelper.GetModuleConfigYaml(GetSource(), context).ToArray();
+            var configuration = HostHelper.GetModuleConfig(GetSource(path), context).ToArray();
             Assert.NotNull(configuration);
             Assert.Equal("Configuration1", configuration[0].Name);
         }
@@ -29,10 +31,10 @@ namespace PSRule
             return new PSRuleOption();
         }
 
-        private Source[] GetSource()
+        private Source[] GetSource(string path)
         {
             var builder = new SourcePipelineBuilder(null, null);
-            builder.Directory(GetSourcePath("ModuleConfig.Rule.yaml"));
+            builder.Directory(GetSourcePath(path));
             return builder.Build();
         }
 

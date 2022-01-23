@@ -29,20 +29,12 @@
         "apiVersion": "github.com/microsoft/PSRule/v1",
         "kind": "Selector",
         "metadata": {
-            "name": "BasicSelector"
+            "name": "SelectJsonSchema"
         },
         "spec": {
             "if": {
-                "allOf": [
-                    {
-                        "field": "Name",
-                        "equals": "TargetObject1"
-                    },
-                    {
-                        "field": "Value",
-                        "equals": "value1"
-                    }
-                ]
+                "field": "$schema",
+                "match": "^(https{0,1}://schema\\.management\\.azure\\.com/schemas/.*/deploymentTemplate\\.json)$"
             }
         }
     },
@@ -56,7 +48,7 @@
         "spec": {
             "if": {
                 "field": "CustomValue",
-                "exists": "true'"
+                "exists": true
             }
         }
     },
@@ -602,6 +594,143 @@
             "if": {
                 "field": "Value",
                 "count": 2
+            }
+        }
+    },
+    {
+        // Synopsis: Test hasSchema
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonHasSchema"
+        },
+        "spec": {
+            "if": {
+                "field": ".",
+                "hasSchema": [
+                    "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+                    "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#"
+                ]
+            }
+        }
+    },
+    {
+        // Synopsis: Test hasSchema ignoring scheme
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonHasSchemaIgnoreScheme"
+        },
+        "spec": {
+            "if": {
+                "field": ".",
+                "hasSchema": [
+                    "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+                    "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#"
+                ],
+                "ignoreScheme": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test hasSchema with case sensitivity
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonHasSchemaCaseSensitive"
+        },
+        "spec": {
+            "if": {
+                "field": ".",
+                "hasSchema": [
+                    "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+                    "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#"
+                ],
+                "caseSensitive": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test hasSchema matching any schema
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonHasAnySchema"
+        },
+        "spec": {
+            "if": {
+                "field": ".",
+                "hasSchema": []
+            }
+        }
+    },
+    {
+        // Synopsis: Test version
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonVersion"
+        },
+        "spec": {
+            "if": {
+                "field": "version",
+                "version": "^1.2.3"
+            }
+        }
+    },
+    {
+        // Synopsis: Test version with prerelease
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonVersionWithPrerelease"
+        },
+        "spec": {
+            "if": {
+                "field": "version",
+                "version": "^1.2.3",
+                "includePrerelease": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test any valid version
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonVersionAnyVersion"
+        },
+        "spec": {
+            "if": {
+                "field": "version",
+                "version": ""
+            }
+        }
+    },
+    {
+        // Synopsis: Test hasDefault
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonHasDefault"
+        },
+        "spec": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "integerValue",
+                        "hasDefault": 100
+                    },
+                    {
+                        "field": "boolValue",
+                        "hasDefault": true
+                    },
+                    {
+                        "field": "stringValue",
+                        "hasDefault": "testValue",
+                        "caseSensitive": true
+                    }
+                ]
             }
         }
     },

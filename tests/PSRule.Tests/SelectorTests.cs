@@ -18,27 +18,34 @@ namespace PSRule
 {
     public sealed class SelectorTests
     {
-        [Fact]
-        public void ReadSelector()
+        private const string SelectorYamlFileName = "Selectors.Rule.yaml";
+        private const string SelectorJsonFileName = "Selectors.Rule.jsonc";
+
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void ReadSelector(string type, string path)
         {
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
-            context.Init(GetSource());
+            context.Init(GetSource(path));
             context.Begin();
-            var selector = HostHelper.GetSelectorYaml(GetSource(), context).ToArray();
+            var selector = HostHelper.GetSelector(GetSource(path), context).ToArray();
             Assert.NotNull(selector);
             Assert.Equal(59, selector.Length);
 
             Assert.Equal("BasicSelector", selector[0].Name);
-            Assert.Equal("YamlAllOf", selector[4].Name);
+            Assert.Equal($"{type}AllOf", selector[4].Name);
         }
 
         #region Conditions
 
-        [Fact]
-        public void ExistsExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void ExistsExpression(string type, string path)
         {
-            var existsTrue = GetSelectorVisitor("YamlExistsTrue", out _);
-            var existsFalse = GetSelectorVisitor("YamlExistsFalse", out _);
+            var existsTrue = GetSelectorVisitor($"{type}ExistsTrue", GetSource(path), out _);
+            var existsFalse = GetSelectorVisitor($"{type}ExistsFalse", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "notValue", value: 3));
             var actual3 = GetObject((name: "value", value: null));
@@ -52,10 +59,12 @@ namespace PSRule
             Assert.False(existsFalse.Match(actual3));
         }
 
-        [Fact]
-        public void EqualsExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void EqualsExpression(string type, string path)
         {
-            var equals = GetSelectorVisitor("YamlEquals", out _);
+            var equals = GetSelectorVisitor($"{type}Equals", GetSource(path), out _);
             var actual1 = GetObject(
                 (name: "ValueString", value: "abc"),
                 (name: "ValueInt", value: 123),
@@ -83,7 +92,7 @@ namespace PSRule
             Assert.False(equals.Match(actual4));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameEquals", out var context);
+            var withName = GetSelectorVisitor($"{type}NameEquals", GetSource(path), out var context);
             var actual5 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -98,7 +107,7 @@ namespace PSRule
             Assert.False(withName.Match(actual6));
 
             // With type
-            var withType = GetSelectorVisitor("YamlTypeEquals", out context);
+            var withType = GetSelectorVisitor($"{type}TypeEquals", GetSource(path), out context);
             var actual7 = GetObject();
             actual7.TypeNames.Insert(0, "CustomType1");
             var actual8 = GetObject();
@@ -111,10 +120,12 @@ namespace PSRule
             Assert.False(withType.Match(actual8));
         }
 
-        [Fact]
-        public void NotEqualsExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void NotEqualsExpression(string type, string path)
         {
-            var notEquals = GetSelectorVisitor("YamlNotEquals", out _);
+            var notEquals = GetSelectorVisitor($"{type}NotEquals", GetSource(path), out _);
             var actual1 = GetObject(
                 (name: "ValueString", value: "efg"),
                 (name: "ValueInt", value: 456),
@@ -142,7 +153,7 @@ namespace PSRule
             Assert.False(notEquals.Match(actual4));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameNotEquals", out var context);
+            var withName = GetSelectorVisitor($"{type}NameNotEquals", GetSource(path), out var context);
             var actual5 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -157,11 +168,13 @@ namespace PSRule
             Assert.True(withName.Match(actual6));
         }
 
-        [Fact]
-        public void HasValueExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void HasValueExpression(string type, string path)
         {
-            var hasValueTrue = GetSelectorVisitor("YamlHasValueTrue", out _);
-            var hasValueFalse = GetSelectorVisitor("YamlHasValueFalse", out _);
+            var hasValueTrue = GetSelectorVisitor($"{type}HasValueTrue", GetSource(path), out _);
+            var hasValueFalse = GetSelectorVisitor($"{type}HasValueFalse", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "notValue", value: 3));
             var actual3 = GetObject((name: "value", value: null));
@@ -175,17 +188,19 @@ namespace PSRule
             Assert.True(hasValueFalse.Match(actual3));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameHasValue", out var context);
+            var withName = GetSelectorVisitor($"{type}NameHasValue", GetSource(path), out var context);
             var actual4 = GetObject();
 
             context.EnterTargetObject(new TargetObject(actual4));
             Assert.True(withName.Match(actual4));
         }
 
-        [Fact]
-        public void MatchExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void MatchExpression(string type, string path)
         {
-            var match = GetSelectorVisitor("YamlMatch", out _);
+            var match = GetSelectorVisitor($"{type}Match", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
@@ -199,7 +214,7 @@ namespace PSRule
             Assert.False(match.Match(actual5));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameMatch", out var context);
+            var withName = GetSelectorVisitor($"{type}NameMatch", GetSource(path), out var context);
             var actual6 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -214,10 +229,12 @@ namespace PSRule
             Assert.False(withName.Match(actual7));
         }
 
-        [Fact]
-        public void NotMatchExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void NotMatchExpression(string type, string path)
         {
-            var notMatch = GetSelectorVisitor("YamlNotMatch", out _);
+            var notMatch = GetSelectorVisitor($"{type}NotMatch", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
@@ -229,7 +246,7 @@ namespace PSRule
             Assert.True(notMatch.Match(actual4));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameNotMatch", out var context);
+            var withName = GetSelectorVisitor($"{type}NameNotMatch", GetSource(path), out var context);
             var actual6 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -244,10 +261,12 @@ namespace PSRule
             Assert.True(withName.Match(actual7));
         }
 
-        [Fact]
-        public void InExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void InExpression(string type, string path)
         {
-            var @in = GetSelectorVisitor("YamlIn", out _);
+            var @in = GetSelectorVisitor($"{type}In", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: new string[] { "Value1" }));
             var actual2 = GetObject((name: "value", value: new string[] { "Value2" }));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
@@ -263,7 +282,7 @@ namespace PSRule
             Assert.False(@in.Match(actual6));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameIn", out var context);
+            var withName = GetSelectorVisitor($"{type}NameIn", GetSource(path), out var context);
             var actual7 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -278,10 +297,12 @@ namespace PSRule
             Assert.False(withName.Match(actual8));
         }
 
-        [Fact]
-        public void NotInExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void NotInExpression(string type, string path)
         {
-            var notIn = GetSelectorVisitor("YamlNotIn", out _);
+            var notIn = GetSelectorVisitor($"{type}NotIn", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: new string[] { "Value1" }));
             var actual2 = GetObject((name: "value", value: new string[] { "Value2" }));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
@@ -295,7 +316,7 @@ namespace PSRule
             Assert.True(notIn.Match(actual5));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameNotIn", out var context);
+            var withName = GetSelectorVisitor($"{type}NameNotIn", GetSource(path), out var context);
             var actual6 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -310,10 +331,12 @@ namespace PSRule
             Assert.True(withName.Match(actual7));
         }
 
-        [Fact]
-        public void SetOfExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void SetOfExpression(string type, string path)
         {
-            var setOf = GetSelectorVisitor("YamlSetOf", out _);
+            var setOf = GetSelectorVisitor($"{type}SetOf", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-apiserver", "kube-scheduler" }));
             var actual2 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler" }));
             var actual3 = GetObject((name: "value", value: new string[] { "cluster-autoscaler" }));
@@ -337,10 +360,12 @@ namespace PSRule
             Assert.False(setOf.Match(actual10));
         }
 
-        [Fact]
-        public void SubsetExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void SubsetExpression(string type, string path)
         {
-            var subset = GetSelectorVisitor("YamlSubset", out _);
+            var subset = GetSelectorVisitor($"{type}Subset", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-apiserver", "kube-scheduler" }));
             var actual2 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler" }));
             var actual3 = GetObject((name: "value", value: new string[] { "cluster-autoscaler" }));
@@ -364,10 +389,12 @@ namespace PSRule
             Assert.False(subset.Match(actual10));
         }
 
-        [Fact]
-        public void CountExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void CountExpression(string type, string path)
         {
-            var count = GetSelectorVisitor("YamlCount", out _);
+            var count = GetSelectorVisitor($"{type}Count", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
             var actual2 = GetObject((name: "value", value: new string[] { "2", "1" }));
             var actual3 = GetObject((name: "value", value: new string[] { "1" }));
@@ -387,10 +414,12 @@ namespace PSRule
             Assert.False(count.Match(actual8));
         }
 
-        [Fact]
-        public void LessExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void LessExpression(string type, string path)
         {
-            var less = GetSelectorVisitor("YamlLess", out _);
+            var less = GetSelectorVisitor($"{type}Less", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
@@ -408,7 +437,7 @@ namespace PSRule
             Assert.True(less.Match(actual7));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameLess", out var context);
+            var withName = GetSelectorVisitor($"{type}NameLess", GetSource(path), out var context);
             var actual8 = GetObject(
                (name: "Name", value: "ItemTwo")
             );
@@ -423,10 +452,12 @@ namespace PSRule
             Assert.False(withName.Match(actual9));
         }
 
-        [Fact]
-        public void LessOrEqualsExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void LessOrEqualsExpression(string type, string path)
         {
-            var lessOrEquals = GetSelectorVisitor("YamlLessOrEquals", out _);
+            var lessOrEquals = GetSelectorVisitor($"{type}LessOrEquals", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
@@ -444,7 +475,7 @@ namespace PSRule
             Assert.True(lessOrEquals.Match(actual7));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameLessOrEquals", out var context);
+            var withName = GetSelectorVisitor($"{type}NameLessOrEquals", GetSource(path), out var context);
             var actual8 = GetObject(
                (name: "Name", value: "ItemTwo")
             );
@@ -459,10 +490,12 @@ namespace PSRule
             Assert.False(withName.Match(actual9));
         }
 
-        [Fact]
-        public void GreaterExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void GreaterExpression(string type, string path)
         {
-            var greater = GetSelectorVisitor("YamlGreater", out _);
+            var greater = GetSelectorVisitor($"{type}Greater", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
@@ -480,7 +513,7 @@ namespace PSRule
             Assert.False(greater.Match(actual7));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameGreater", out var context);
+            var withName = GetSelectorVisitor($"{type}NameGreater", GetSource(path), out var context);
             var actual8 = GetObject(
                (name: "Name", value: "ItemTwo")
             );
@@ -495,10 +528,12 @@ namespace PSRule
             Assert.True(withName.Match(actual9));
         }
 
-        [Fact]
-        public void GreaterOrEqualsExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void GreaterOrEqualsExpression(string type, string path)
         {
-            var greaterOrEquals = GetSelectorVisitor("YamlGreaterOrEquals", out _);
+            var greaterOrEquals = GetSelectorVisitor($"{type}GreaterOrEquals", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
@@ -516,7 +551,7 @@ namespace PSRule
             Assert.False(greaterOrEquals.Match(actual7));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameGreaterOrEquals", out var context);
+            var withName = GetSelectorVisitor($"{type}NameGreaterOrEquals", GetSource(path), out var context);
             var actual8 = GetObject(
                (name: "Name", value: "ItemTwo")
             );
@@ -531,10 +566,12 @@ namespace PSRule
             Assert.True(withName.Match(actual9));
         }
 
-        [Fact]
-        public void StartsWithExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void StartsWithExpression(string type, string path)
         {
-            var startsWith = GetSelectorVisitor("YamlStartsWith", out _);
+            var startsWith = GetSelectorVisitor($"{type}StartsWith", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
@@ -550,7 +587,7 @@ namespace PSRule
             Assert.False(startsWith.Match(actual6));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameStartsWith", out var context);
+            var withName = GetSelectorVisitor($"{type}NameStartsWith", GetSource(path), out var context);
             var actual7 = GetObject(
                (name: "Name", value: "1TargetObject")
             );
@@ -565,10 +602,12 @@ namespace PSRule
             Assert.False(withName.Match(actual8));
         }
 
-        [Fact]
-        public void EndsWithExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void EndsWithExpression(string type, string path)
         {
-            var endsWith = GetSelectorVisitor("YamlEndsWith", out _);
+            var endsWith = GetSelectorVisitor($"{type}EndsWith", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
@@ -584,7 +623,7 @@ namespace PSRule
             Assert.False(endsWith.Match(actual6));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameEndsWith", out var context);
+            var withName = GetSelectorVisitor($"{type}NameEndsWith", GetSource(path), out var context);
             var actual7 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -599,10 +638,12 @@ namespace PSRule
             Assert.False(withName.Match(actual8));
         }
 
-        [Fact]
-        public void ContainsExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void ContainsExpression(string type, string path)
         {
-            var contains = GetSelectorVisitor("YamlContains", out _);
+            var contains = GetSelectorVisitor($"{type}Contains", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "bcd"));
             var actual3 = GetObject((name: "value", value: "hij"));
@@ -618,7 +659,7 @@ namespace PSRule
             Assert.False(contains.Match(actual6));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameContains", out var context);
+            var withName = GetSelectorVisitor($"{type}NameContains", GetSource(path), out var context);
             var actual7 = GetObject(
                (name: "Name", value: "Target.1.Object")
             );
@@ -633,11 +674,13 @@ namespace PSRule
             Assert.False(withName.Match(actual8));
         }
 
-        [Fact]
-        public void IsStringExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void IsStringExpression(string type, string path)
         {
-            var isStringTrue = GetSelectorVisitor("YamlIsStringTrue", out _);
-            var isStringFalse = GetSelectorVisitor("YamlIsStringFalse", out _);
+            var isStringTrue = GetSelectorVisitor($"{type}IsStringTrue", GetSource(path), out _);
+            var isStringFalse = GetSelectorVisitor($"{type}IsStringFalse", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { }));
@@ -659,7 +702,7 @@ namespace PSRule
             Assert.False(isStringFalse.Match(actual5));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameIsString", out var context);
+            var withName = GetSelectorVisitor($"{type}NameIsString", GetSource(path), out var context);
             var actual7 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
@@ -674,11 +717,13 @@ namespace PSRule
             Assert.True(withName.Match(actual8));
         }
 
-        [Fact]
-        public void IsLowerExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void IsLowerExpression(string type, string path)
         {
-            var isLowerTrue = GetSelectorVisitor("YamlIsLowerTrue", out _);
-            var isLowerFalse = GetSelectorVisitor("YamlIsLowerFalse", out _);
+            var isLowerTrue = GetSelectorVisitor($"{type}IsLowerTrue", GetSource(path), out _);
+            var isLowerFalse = GetSelectorVisitor($"{type}IsLowerFalse", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "aBc"));
             var actual3 = GetObject((name: "value", value: "a-b-c"));
@@ -703,7 +748,7 @@ namespace PSRule
             Assert.False(isLowerTrue.Match(actual6));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameIsLower", out var context);
+            var withName = GetSelectorVisitor($"{type}NameIsLower", GetSource(path), out var context);
             var actual7 = GetObject(
                (name: "Name", value: "targetobject1")
             );
@@ -718,11 +763,13 @@ namespace PSRule
             Assert.False(withName.Match(actual8));
         }
 
-        [Fact]
-        public void IsUpperExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void IsUpperExpression(string type, string path)
         {
-            var isUpperTrue = GetSelectorVisitor("YamlIsUpperTrue", out _);
-            var isUpperFalse = GetSelectorVisitor("YamlIsUpperFalse", out _);
+            var isUpperTrue = GetSelectorVisitor($"{type}IsUpperTrue", GetSource(path), out _);
+            var isUpperFalse = GetSelectorVisitor($"{type}IsUpperFalse", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: "ABC"));
             var actual2 = GetObject((name: "value", value: "aBc"));
             var actual3 = GetObject((name: "value", value: "A-B-C"));
@@ -747,7 +794,7 @@ namespace PSRule
             Assert.False(isUpperFalse.Match(actual6));
 
             // With name
-            var withName = GetSelectorVisitor("YamlNameIsUpper", out var context);
+            var withName = GetSelectorVisitor($"{type}NameIsUpper", GetSource(path), out var context);
             var actual7 = GetObject(
                (name: "Name", value: "TARGETOBJECT1")
             );
@@ -763,10 +810,12 @@ namespace PSRule
         }
 
 
-        [Fact]
-        public void HasSchemaExpression()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void HasSchemaExpression(string type, string path)
         {
-            var hasSchema = GetSelectorVisitor("YamlHasSchema", out _);
+            var hasSchema = GetSelectorVisitor($"{type}HasSchema", GetSource(path), out _);
             var actual1 = GetObject((name: "key", value: "value"), (name: "$schema", value: "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#"));
             var actual2 = GetObject((name: "key", value: "value"), (name: "$schema", value: "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json"));
             var actual3 = GetObject((name: "key", value: "value"), (name: "$schema", value: "http://schema.management.azure.com/schemas/2019-04-01/DeploymentParameters.json#"));
@@ -781,7 +830,7 @@ namespace PSRule
             Assert.False(hasSchema.Match(actual5));
             Assert.False(hasSchema.Match(actual6));
 
-            hasSchema = GetSelectorVisitor("YamlHasSchemaIgnoreScheme", out _);
+            hasSchema = GetSelectorVisitor($"{type}HasSchemaIgnoreScheme", GetSource(path), out _);
             Assert.True(hasSchema.Match(actual1));
             Assert.True(hasSchema.Match(actual2));
             Assert.True(hasSchema.Match(actual3));
@@ -789,7 +838,7 @@ namespace PSRule
             Assert.False(hasSchema.Match(actual5));
             Assert.False(hasSchema.Match(actual6));
 
-            hasSchema = GetSelectorVisitor("YamlHasSchemaCaseSensitive", out _);
+            hasSchema = GetSelectorVisitor($"{type}HasSchemaCaseSensitive", GetSource(path), out _);
             Assert.True(hasSchema.Match(actual1));
             Assert.True(hasSchema.Match(actual2));
             Assert.False(hasSchema.Match(actual3));
@@ -797,7 +846,7 @@ namespace PSRule
             Assert.False(hasSchema.Match(actual5));
             Assert.False(hasSchema.Match(actual6));
 
-            hasSchema = GetSelectorVisitor("YamlHasAnySchema", out _);
+            hasSchema = GetSelectorVisitor($"{type}HasAnySchema", GetSource(path), out _);
             Assert.True(hasSchema.Match(actual1));
             Assert.True(hasSchema.Match(actual2));
             Assert.True(hasSchema.Match(actual3));
@@ -806,8 +855,10 @@ namespace PSRule
             Assert.False(hasSchema.Match(actual6));
         }
 
-        [Fact]
-        public void Version()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void Version(string type, string path)
         {
             var actual1 = GetObject((name: "version", value: "1.2.3"));
             var actual2 = GetObject((name: "version", value: "0.2.3"));
@@ -817,7 +868,7 @@ namespace PSRule
             var actual6 = GetObject();
             var actual7 = GetObject((name: "version", value: "a.b.c"));
 
-            var version = GetSelectorVisitor("YamlVersion", out _);
+            var version = GetSelectorVisitor($"{type}Version", GetSource(path), out _);
             Assert.True(version.Match(actual1));
             Assert.False(version.Match(actual2));
             Assert.False(version.Match(actual3));
@@ -826,7 +877,7 @@ namespace PSRule
             Assert.False(version.Match(actual6));
             Assert.False(version.Match(actual7));
 
-            version = GetSelectorVisitor("YamlVersionWithPrerelease", out _);
+            version = GetSelectorVisitor($"{type}VersionWithPrerelease", GetSource(path), out _);
             Assert.True(version.Match(actual1));
             Assert.False(version.Match(actual2));
             Assert.False(version.Match(actual3));
@@ -835,7 +886,7 @@ namespace PSRule
             Assert.False(version.Match(actual6));
             Assert.False(version.Match(actual7));
 
-            version = GetSelectorVisitor("YamlVersionAnyVersion", out _);
+            version = GetSelectorVisitor($"{type}VersionAnyVersion", GetSource(path), out _);
             Assert.True(version.Match(actual1));
             Assert.True(version.Match(actual2));
             Assert.True(version.Match(actual3));
@@ -845,8 +896,10 @@ namespace PSRule
             Assert.False(version.Match(actual7));
         }
 
-        [Fact]
-        public void HasDefault()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void HasDefault(string type, string path)
         {
             var actual1 = GetObject((name: "integerValue", value: 100), (name: "boolValue", value: true), (name: "stringValue", value: "testValue"));
             var actual2 = GetObject((name: "integerValue", value: 1));
@@ -857,7 +910,7 @@ namespace PSRule
             var actual7 = GetObject((name: "boolValue", value: new JValue(true)));
             var actual8 = GetObject((name: "stringValue", value: new JValue("testValue")));
 
-            var hasDefault = GetSelectorVisitor("YamlHasDefault", out _);
+            var hasDefault = GetSelectorVisitor($"{type}HasDefault", GetSource(path), out _);
             Assert.True(hasDefault.Match(actual1));
             Assert.False(hasDefault.Match(actual2));
             Assert.False(hasDefault.Match(actual3));
@@ -872,10 +925,12 @@ namespace PSRule
 
         #region Operators
 
-        [Fact]
-        public void AllOf()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void AllOf(string type, string path)
         {
-            var allOf = GetSelectorVisitor("YamlAllOf", out _);
+            var allOf = GetSelectorVisitor($"{type}AllOf", GetSource(path), out _);
             var actual1 = GetObject((name: "Name", value: "Name1"));
             var actual2 = GetObject((name: "AlternateName", value: "Name2"));
             var actual3 = GetObject((name: "Name", value: "Name1"), (name: "AlternateName", value: "Name2"));
@@ -887,10 +942,12 @@ namespace PSRule
             Assert.False(allOf.Match(actual4));
         }
 
-        [Fact]
-        public void AnyOf()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void AnyOf(string type, string path)
         {
-            var allOf = GetSelectorVisitor("YamlAnyOf", out _);
+            var allOf = GetSelectorVisitor($"{type}AnyOf", GetSource(path), out _);
             var actual1 = GetObject((name: "Name", value: "Name1"));
             var actual2 = GetObject((name: "AlternateName", value: "Name2"));
             var actual3 = GetObject((name: "Name", value: "Name1"), (name: "AlternateName", value: "Name2"));
@@ -902,10 +959,12 @@ namespace PSRule
             Assert.False(allOf.Match(actual4));
         }
 
-        [Fact]
-        public void Not()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void Not(string type, string path)
         {
-            var allOf = GetSelectorVisitor("YamlNot", out _);
+            var allOf = GetSelectorVisitor($"{type}Not", GetSource(path), out _);
             var actual1 = GetObject((name: "Name", value: "Name1"));
             var actual2 = GetObject((name: "AlternateName", value: "Name2"));
             var actual3 = GetObject((name: "Name", value: "Name1"), (name: "AlternateName", value: "Name2"));
@@ -921,10 +980,12 @@ namespace PSRule
 
         #region Properties
 
-        [Fact]
-        public void Type()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void Type(string type, string path)
         {
-            var equals = GetSelectorVisitor("YamlTypeEquals", out var context);
+            var equals = GetSelectorVisitor($"{type}TypeEquals", GetSource(path), out var context);
             var actual1 = GetObject();
             actual1.TypeNames.Insert(0, "CustomType1");
 
@@ -933,10 +994,12 @@ namespace PSRule
             Assert.True(equals.Match(actual1));
         }
 
-        [Fact]
-        public void Name()
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void Name(string type, string path)
         {
-            var equals = GetSelectorVisitor("YamlNameEquals", out var context);
+            var equals = GetSelectorVisitor($"{type}NameEquals", GetSource(path), out var context);
             var actual1 = GetObject(
                 (name: "Name", value: "TargetObject1")
             );
@@ -955,10 +1018,10 @@ namespace PSRule
             return new PSRuleOption();
         }
 
-        private static Source[] GetSource()
+        private static Source[] GetSource(string path)
         {
             var builder = new SourcePipelineBuilder(null, null);
-            builder.Directory(GetSourcePath("Selectors.Rule.yaml"));
+            builder.Directory(GetSourcePath(path));
             return builder.Build();
         }
 
@@ -971,12 +1034,12 @@ namespace PSRule
             return result;
         }
 
-        private static SelectorVisitor GetSelectorVisitor(string name, out RunspaceContext context)
+        private static SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
         {
             context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContext(), null), null);
-            context.Init(GetSource());
+            context.Init(source);
             context.Begin();
-            var selector = HostHelper.GetSelectorYaml(GetSource(), context).ToArray();
+            var selector = HostHelper.GetSelector(source, context).ToArray();
             return new SelectorVisitor(null, name, selector.FirstOrDefault(s => s.Name == name).Spec.If);
         }
 

@@ -63,36 +63,44 @@ namespace PSRule.Host
             return ToRuleBlockV1(GetYamlLanguageBlocks(source, context), context).GetAll();
         }
 
+        private static IEnumerable<ILanguageBlock> GetYamlJsonLanguageBlocks(Source[] source, RunspaceContext context)
+        {
+            var results = new List<ILanguageBlock>();
+            results.AddRange(GetYamlLanguageBlocks(source, context));
+            results.AddRange(GetJsonLanguageBlocks(source, context));
+            return results;
+        }
+
         /// <summary>
         /// Read YAML/JSON objects and return baselines.
         /// </summary>
         internal static IEnumerable<Baseline> GetBaseline(Source[] source, RunspaceContext context)
         {
-            var results = new List<ILanguageBlock>();
-            results.AddRange(GetYamlLanguageBlocks(source, context));
-            results.AddRange(GetJsonLanguageBlocks(source, context));
-            return ToBaselineV1(results, context);
+            return ToBaselineV1(GetYamlJsonLanguageBlocks(source, context), context);
         }
 
         /// <summary>
-        /// Read YAML objects and return module configurations.
+        /// Read YAML/JSON objects and return module configurations.
         /// </summary>
-        internal static IEnumerable<ModuleConfigV1> GetModuleConfigYaml(Source[] source, RunspaceContext context)
+        internal static IEnumerable<ModuleConfigV1> GetModuleConfig(Source[] source, RunspaceContext context)
         {
-            return ToModuleConfigV1(GetYamlLanguageBlocks(source, context), context);
+            return ToModuleConfigV1(GetYamlJsonLanguageBlocks(source, context), context);
         }
 
         /// <summary>
-        /// Read YAML objects and return selectors.
+        /// Read YAML/JSON objects and return selectors.
         /// </summary>
-        internal static IEnumerable<SelectorV1> GetSelectorYaml(Source[] source, RunspaceContext context)
+        internal static IEnumerable<SelectorV1> GetSelector(Source[] source, RunspaceContext context)
         {
-            return ToSelectorV1(GetYamlLanguageBlocks(source, context), context);
+            return ToSelectorV1(GetYamlJsonLanguageBlocks(source, context), context);
         }
 
-        internal static IEnumerable<SuppressionGroupV1> GetSuppressionGroupYaml(Source[] source, RunspaceContext context)
+        /// <summary>
+        /// Read YAML/JSON objects and return suppression groups.
+        /// </summary>
+        internal static IEnumerable<SuppressionGroupV1> GetSuppressionGroup(Source[] source, RunspaceContext context)
         {
-            return ToSuppressionGroupV1(GetYamlLanguageBlocks(source, context), context);
+            return ToSuppressionGroupV1(GetYamlJsonLanguageBlocks(source, context), context);
         }
 
         internal static void ImportResource(Source[] source, RunspaceContext context)
@@ -100,9 +108,7 @@ namespace PSRule.Host
             if (source == null || source.Length == 0)
                 return;
 
-            var results = new List<ILanguageBlock>();
-            results.AddRange(GetYamlLanguageBlocks(source, context));
-            results.AddRange(GetJsonLanguageBlocks(source, context));
+            var results = GetYamlJsonLanguageBlocks(source, context);
             Import(results.ToArray(), context);
         }
 
@@ -146,8 +152,7 @@ namespace PSRule.Host
         {
             var results = new List<ILanguageBlock>();
             results.AddRange(GetPSLanguageBlocks(context, sources));
-            results.AddRange(GetYamlLanguageBlocks(sources, context));
-            results.AddRange(GetJsonLanguageBlocks(sources, context));
+            results.AddRange(GetYamlJsonLanguageBlocks(sources, context));
             return results.ToArray();
         }
 
