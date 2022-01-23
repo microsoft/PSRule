@@ -15,13 +15,15 @@ namespace PSRule
 {
     public sealed class SuppressionGroupTests
     {
-        [Fact]
-        public void ReadSuppressionGroup()
+        [Theory]
+        [InlineData("SuppressionGroups.Rule.yaml")]
+        [InlineData("SuppressionGroups.Rule.jsonc")]
+        public void ReadSuppressionGroup(string path)
         {
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
-            context.Init(GetSource());
+            context.Init(GetSource(path));
             context.Begin();
-            var suppressionGroup = HostHelper.GetSuppressionGroupYaml(GetSource(), context).ToArray();
+            var suppressionGroup = HostHelper.GetSuppressionGroup(GetSource(path), context).ToArray();
             Assert.NotNull(suppressionGroup);
             Assert.Equal(3, suppressionGroup.Length);
             Assert.Equal("SuppressWithTargetName", suppressionGroup[0].Name);
@@ -36,7 +38,7 @@ namespace PSRule
             return new PSRuleOption();
         }
 
-        private static Source[] GetSource(string path = "SuppressionGroups.Rule.yaml")
+        private static Source[] GetSource(string path)
         {
             var builder = new SourcePipelineBuilder(null, null);
             builder.Directory(GetSourcePath(path));

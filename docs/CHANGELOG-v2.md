@@ -18,6 +18,7 @@ What's changed since pre-release v2.0.0-B2201117:
     - Module sources are discovered before loose files.
     - Warning is shown for duplicate rule names, and exception is thrown for duplicate rule Ids.
     - See [upgrade notes][1] for details.
+  - Added more tests for JSON resources. [#929](https://github.com/microsoft/PSRule/issues/929)
 
 ## v2.0.0-B2201117 (pre-release)
 

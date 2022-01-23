@@ -196,7 +196,7 @@ namespace PSRule
 
         private static void ImportSelectors(RunspaceContext context)
         {
-            var selectors = HostHelper.GetSelectorYaml(GetSource(), context).ToArray();
+            var selectors = HostHelper.GetSelector(GetSource(), context).ToArray();
             foreach (var selector in selectors)
                 context.Pipeline.Import(selector);
         }

@@ -16,6 +16,11 @@ namespace PSRule.Pipeline.Output
 
         protected override string Serialize(object[] o)
         {
+            return ToJson(o, Option.Output.JsonIndent);
+        }
+
+        internal static string ToJson(object[] o, int? jsonIndent)
+        {
             using var stringWriter = new StringWriter();
             using var jsonTextWriter = new JsonCommentWriter(stringWriter);
 
@@ -24,7 +29,7 @@ namespace PSRule.Pipeline.Output
                 NullValueHandling = NullValueHandling.Ignore
             };
 
-            var outputJsonIndent = Option.Output.JsonIndent ?? 0;
+            var outputJsonIndent = jsonIndent ?? 0;
 
             if (outputJsonIndent > 0)
             {

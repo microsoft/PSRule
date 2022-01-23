@@ -342,6 +342,15 @@ namespace PSRule
     /// </summary>
     internal sealed class OrderedPropertiesContractResolver : DefaultContractResolver
     {
+        public OrderedPropertiesContractResolver() : base()
+        {
+            NamingStrategy = new CamelCaseNamingStrategy
+            {
+                ProcessDictionaryKeys = true,
+                OverrideSpecifiedNames = true
+            };
+        }
+
         protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
         {
             return base
