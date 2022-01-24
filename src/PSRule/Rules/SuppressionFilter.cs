@@ -137,12 +137,13 @@ namespace PSRule.Rules
             suppressionGroupId = string.Empty;
             if (_RuleSuppressionGroupIndex.TryGetValue(ruleId, out var suppressionGroupVisitors))
             {
-                var found = suppressionGroupVisitors.FirstOrDefault(visitor => visitor.Match(targetObject.Value));
-
-                if (found != null)
+                foreach (var visitor in suppressionGroupVisitors)
                 {
-                    suppressionGroupId = found.Id;
-                    return true;
+                    if (visitor.Match(targetObject.Value))
+                    {
+                        suppressionGroupId = visitor.Id;
+                        return true;
+                    }
                 }
             }
             return false;
@@ -156,20 +157,39 @@ namespace PSRule.Rules
         {
             foreach (var group in suppressionGroups)
             {
-                foreach (var rule in group.Rule)
+                var rules = group.Rule;
+
+                // If no rules are set, Add visitors to every rule
+                if (rules == null || rules.Length == 0)
                 {
-                    // Only add suppresion entries for rules that are loaded
-                    if (!_ResourceIndex.TryFind(rule, out var blockId, out _))
-                        continue;
+                    foreach (var resource in _ResourceIndex.GetItems())
+                        AddSuppressionGroup(ruleId: resource.Id.Value, visitor: group);
+                }
 
-                    var ruleId = blockId.Value;
+                // Otherwise only add rules specified
+                else
+                {
+                    foreach (var rule in rules)
+                    {
+                        // Only add suppresion entries for rules that are loaded
+                        if (!_ResourceIndex.TryFind(rule, out var blockId, out _))
+                            continue;
 
-                    if (!_RuleSuppressionGroupIndex.ContainsKey(rule))
-                        _RuleSuppressionGroupIndex.Add(ruleId, new List<SuppressionGroupVisitor>());
-
-                    _RuleSuppressionGroupIndex[ruleId].Add(group);
+                        AddSuppressionGroup(ruleId: blockId.Value, visitor: group);
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// Add suppression group visitor to index
+        /// </summary>
+        private void AddSuppressionGroup(string ruleId, SuppressionGroupVisitor visitor)
+        {
+            if (!_RuleSuppressionGroupIndex.ContainsKey(ruleId))
+                _RuleSuppressionGroupIndex.Add(ruleId, new List<SuppressionGroupVisitor>());
+
+            _RuleSuppressionGroupIndex[ruleId].Add(visitor);
         }
     }
 }

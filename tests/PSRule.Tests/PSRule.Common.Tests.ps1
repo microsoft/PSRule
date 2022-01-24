@@ -1218,9 +1218,14 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $testObject[1].PSObject.TypeNames.Insert(0, 'TestType');
 
             $suppressionGroupPath = Join-Path -Path $here -ChildPath 'SuppressionGroups.Rule.yaml';
+            $suppressionGroupPath2 = Join-Path -Path $here -ChildPath 'SuppressionGroups2.Rule.yaml';
 
             $invokeParams = @{
                 Path = $ruleFilePath, $suppressionGroupPath
+            }
+
+            $invokeParams2 = @{
+                Path = $ruleFilePath, $suppressionGroupPath2
             }
         }
 
@@ -1245,6 +1250,18 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages[4].Message | Should -BeExactly "Rule '.\FromFile2' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject2'.";
                 $warningMessages[5] | Should -BeOfType [System.Management.Automation.WarningRecord];
                 $warningMessages[5].Message | Should -BeExactly "Rule '.\WithTag2' was suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject2'.";
+            }
+
+            It 'Show warnings for all rules when rule property is null or empty' {
+                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Detail -InvariantCultureWarning $False;
+
+                $Null = $testObject | Invoke-PSRule @invokeParams2 -Option $option -WarningVariable outWarnings -WarningAction SilentlyContinue;
+
+                $warningMessages = $outwarnings.ToArray();
+                $warningMessages.Length | Should -Be 146;
+
+                $warningMessages | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages.Message | Should -MatchExactly "Rule '.\\[a-zA-Z0-9]+' was suppressed by suppression group '.\\SuppressWithTargetNameAnd(Null|Empty)Rule' for 'TestObject[1-2]'."
             }
 
             It 'No warnings' {
@@ -1274,6 +1291,20 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages[2].Message | Should -BeExactly "2 rule/s were suppressed by suppression group '.\SuppressWithTestType' for 'TestObject2'.";
                 $warningMessages[3] | Should -BeOfType [System.Management.Automation.WarningRecord];
                 $warningMessages[3].Message | Should -BeExactly "1 rule/s were suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject2'.";
+            }
+
+            It 'Show warnings for all rules when rule property is null or empty' {
+                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Summary -InvariantCultureWarning $False;
+
+                $Null = $testObject | Invoke-PSRule @invokeParams2 -Option $option -WarningVariable outWarnings -WarningAction SilentlyContinue;
+
+                $warningMessages = $outwarnings.ToArray();
+                $warningMessages.Length | Should -Be 2;
+
+                $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[0].Message | Should -BeExactly "73 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndNullRule' for 'TestObject1'."
+                $warningMessages[1] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[1].Message | Should -BeExactly "73 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndEmptyRule' for 'TestObject2'."
             }
 
             It 'No warnings' {
