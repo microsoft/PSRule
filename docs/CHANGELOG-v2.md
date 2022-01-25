@@ -11,6 +11,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.0.0-B2201135 (pre-release)
+
 What's changed since pre-release v2.0.0-B2201117:
 
 - Engineering:
@@ -20,8 +22,8 @@ What's changed since pre-release v2.0.0-B2201117:
     - See [upgrade notes][1] for details.
   - Added more tests for JSON resources. [#929](https://github.com/microsoft/PSRule/issues/929)
 - Bug fixes:
-  - Empty suppression group rules property applies to no rules. [#931](https://github.com/microsoft/PSRule/issues/931)
-  - Object reference for suppression group will rule not defined. [#932](https://github.com/microsoft/PSRule/issues/932)
+  - Fixed empty suppression group rules property applies to no rules. [#931](https://github.com/microsoft/PSRule/issues/931)
+  - Fixed object reference for suppression group will rule not defined. [#932](https://github.com/microsoft/PSRule/issues/932)
 
 ## v2.0.0-B2201117 (pre-release)
 
@@ -58,7 +60,7 @@ What's changed since pre-release v2.0.0-B2201054:
       Stable and opaque refs ease web lookup and to help to avoid language difficulties.
     - To specify a rule ref use the `-Ref` parameter or `ref` metadata property in YAML or JSON.
 - Bug fixes:
-  - Fixes object path handling with dash. [#902](https://github.com/microsoft/PSRule/issues/902)
+  - Fixed object path handling with dash. [#902](https://github.com/microsoft/PSRule/issues/902)
 
 ## v2.0.0-B2201054 (pre-release)
 
