@@ -1,0 +1,27 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+# Suppression groups for unit testing
+
+---
+# Synopsis: Suppress with target name for all(null) rules
+apiVersion: github.com/microsoft/PSRule/v1
+kind: SuppressionGroup
+metadata:
+  name: SuppressWithTargetNameAndNullRule
+spec:
+  if:
+    name: '.'
+    equals: 'TestObject1'
+
+---
+# Synopsis: Suppress with target name for all(empty) rules
+apiVersion: github.com/microsoft/PSRule/v1
+kind: SuppressionGroup
+metadata:
+  name: SuppressWithTargetNameAndEmptyRule
+spec:
+  rule: []
+  if:
+    name: '.'
+    equals: 'TestObject2'

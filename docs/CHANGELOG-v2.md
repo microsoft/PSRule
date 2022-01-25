@@ -19,6 +19,9 @@ What's changed since pre-release v2.0.0-B2201117:
     - Warning is shown for duplicate rule names, and exception is thrown for duplicate rule Ids.
     - See [upgrade notes][1] for details.
   - Added more tests for JSON resources. [#929](https://github.com/microsoft/PSRule/issues/929)
+- Bug fixes:
+  - Empty suppression group rules property applies to no rules. [#931](https://github.com/microsoft/PSRule/issues/931)
+  - Object reference for suppression group will rule not defined. [#932](https://github.com/microsoft/PSRule/issues/932)
 
 ## v2.0.0-B2201117 (pre-release)
 

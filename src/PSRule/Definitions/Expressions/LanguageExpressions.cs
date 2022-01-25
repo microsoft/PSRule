@@ -259,7 +259,7 @@ namespace PSRule.Definitions.Expressions
                 ? StringComparer.OrdinalIgnoreCase
                 : StringComparer.Ordinal;
 
-            var resourceIdComparer = new ResourceIdEqualityComparer();
+            var resourceIdComparer = ResourceIdEqualityComparer.Default;
 
             var ruleRecord = context.RuleRecord;
             var ruleName = ruleRecord.RuleName;

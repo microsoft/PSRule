@@ -14,7 +14,7 @@ namespace PSRule.Definitions
             _Items = Load(items);
         }
 
-        private sealed class IndexEntry
+        internal sealed class IndexEntry
         {
             public readonly ResourceId Id;
             public readonly ResourceId Target;
@@ -57,6 +57,11 @@ namespace PSRule.Definitions
         public bool IsEmpty()
         {
             return _Items == null || _Items.Length == 0;
+        }
+
+        public IndexEntry[] GetItems()
+        {
+            return _Items;
         }
     }
 }
