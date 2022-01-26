@@ -67,7 +67,7 @@ function Invoke-PSRule {
         # A list of paths to check for rule definitions
         [Parameter(Mandatory = $False, Position = 0)]
         [Alias('p')]
-        [String[]]$Path = $PWD,
+        [String[]]$Path,
 
         # Filter to rules with the following names
         [Parameter(Mandatory = $False)]
@@ -117,9 +117,7 @@ function Invoke-PSRule {
         if ($PSBoundParameters.ContainsKey('Module')) {
             $sourceParams['Module'] = $Module;
         }
-        if ($sourceParams.Count -eq 0) {
-            $sourceParams['UsePWD'] = $True;
-        }
+
         $sourceParams['Option'] = $Option;
         [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
@@ -226,7 +224,7 @@ function Test-PSRuleTarget {
         # A list of paths to check for rule definitions
         [Parameter(Mandatory = $False, Position = 0)]
         [Alias('p')]
-        [String[]]$Path = $PWD,
+        [String[]]$Path,
 
         # Filter to rules with the following names
         [Parameter(Mandatory = $False)]
@@ -276,9 +274,7 @@ function Test-PSRuleTarget {
         if ($PSBoundParameters.ContainsKey('Module')) {
             $sourceParams['Module'] = $Module;
         }
-        if ($sourceParams.Count -eq 0) {
-            $sourceParams['UsePWD'] = $True;
-        }
+
         $sourceParams['Option'] = $Option;
         [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
@@ -489,7 +485,7 @@ function Assert-PSRule {
         # A list of paths to check for rule definitions
         [Parameter(Mandatory = $False, Position = 0)]
         [Alias('p')]
-        [String[]]$Path = $PWD,
+        [String[]]$Path,
 
         # Filter to rules with the following names
         [Parameter(Mandatory = $False)]
@@ -549,9 +545,7 @@ function Assert-PSRule {
         if ($PSBoundParameters.ContainsKey('Module')) {
             $sourceParams['Module'] = $Module;
         }
-        if ($sourceParams.Count -eq 0) {
-            $sourceParams['UsePWD'] = $True;
-        }
+
         $sourceParams['Option'] = $Option;
         [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
@@ -659,7 +653,7 @@ function Get-PSRule {
         # A list of paths to check for rule definitions
         [Parameter(Mandatory = $False, Position = 0)]
         [Alias('p')]
-        [String[]]$Path = $PWD,
+        [String[]]$Path,
 
         # Filter to rules with the following names
         [Parameter(Mandatory = $False)]
@@ -704,9 +698,7 @@ function Get-PSRule {
         if ($PSBoundParameters.ContainsKey('ListAvailable')) {
             $sourceParams['ListAvailable'] = $ListAvailable;
         }
-        if ($sourceParams.Count -eq 0) {
-            $sourceParams['UsePWD'] = $True;
-        }
+
         $sourceParams['Option'] = $Option;
         [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
@@ -781,7 +773,7 @@ function Get-PSRuleBaseline {
 
         [Parameter(Mandatory = $False, Position = 0)]
         [Alias('p')]
-        [String[]]$Path = $PWD,
+        [String[]]$Path,
 
         [Parameter(Mandatory = $False)]
         [Alias('n')]
@@ -825,9 +817,7 @@ function Get-PSRuleBaseline {
         if ($PSBoundParameters.ContainsKey('ListAvailable')) {
             $sourceParams['ListAvailable'] = $ListAvailable;
         }
-        if ($sourceParams.Count -eq 0) {
-            $sourceParams['UsePWD'] = $True;
-        }
+
         $sourceParams['Option'] = $Option;
         [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
@@ -883,7 +873,7 @@ function Export-PSRuleBaseline {
 
         [Parameter(Mandatory = $False, Position = 0)]
         [Alias('p')]
-        [String[]]$Path = $PWD,
+        [String[]]$Path,
 
         [Parameter(Mandatory = $False)]
         [Alias('n')]
@@ -931,10 +921,6 @@ function Export-PSRuleBaseline {
 
         if ($PSBoundParameters.ContainsKey('Module')) {
             $sourceParams['Module'] = $Module;
-        }
-
-        if ($sourceParams.Count -eq 0) {
-            $sourceParams['UsePWD'] = $True;
         }
 
         $sourceParams['Option'] = $Option;
@@ -1008,7 +994,7 @@ function Get-PSRuleHelp {
         # A path to check documentation for.
         [Parameter(Mandatory = $False)]
         [Alias('p')]
-        [String]$Path = $PWD,
+        [String]$Path,
 
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option,
@@ -1034,22 +1020,17 @@ function Get-PSRuleHelp {
         # Discover scripts in the specified paths
         $sourceParams = @{ };
         $sourceParams['PreferModule'] = $True;
-        $sourceParams['PreferPath'] = $True;
 
         if ($PSBoundParameters.ContainsKey('Path')) {
             $sourceParams['Path'] = $Path;
-            $sourceParams['PreferModule'] = $False;
         }
         if ($PSBoundParameters.ContainsKey('Module')) {
             $sourceParams['Module'] = $Module;
-            $sourceParams['PreferPath'] = $False;
         }
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $sourceParams['Culture'] = $Culture;
         }
-        if ($sourceParams['PreferPath']) {
-            $sourceParams['UsePWD'] = $True;
-        }
+
         $sourceParams['Option'] = $Option;
         [PSRule.Pipeline.Source[]]$sourceFiles = GetSource @sourceParams -Verbose:$VerbosePreference;
 
@@ -1117,7 +1098,7 @@ function New-PSRuleOption {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in memory object only')]
     param (
         [Parameter(Position = 0, Mandatory = $False, ParameterSetName = 'FromPath')]
-        [String]$Path = $PWD,
+        [String]$Path,
 
         [Parameter(Mandatory = $True, ParameterSetName = 'FromOption')]
         [PSRule.Configuration.PSRuleOption]$Option,
@@ -1384,7 +1365,7 @@ function Set-PSRuleOption {
     param (
         # The path to a YAML file where options will be set
         [Parameter(Position = 0, Mandatory = $False)]
-        [String]$Path = $PWD,
+        [String]$Path,
 
         [Parameter(Mandatory = $False, ValueFromPipeline = $True)]
         [PSRule.Configuration.PSRuleOption]$Option,
@@ -1953,28 +1934,13 @@ function GetSource {
         [String]$Culture,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$PreferPath = $False,
-
-        [Parameter(Mandatory = $False)]
         [Switch]$PreferModule = $False,
 
         [Parameter(Mandatory = $True)]
-        [PSRule.Configuration.PSRuleOption]$Option,
-
-        [Parameter(Mandatory = $False)]
-        [Switch]$UsePWD
+        [PSRule.Configuration.PSRuleOption]$Option
     )
     process {
         $builder = [PSRule.Pipeline.PipelineBuilder]::RuleSource($Option, $PSCmdlet, $ExecutionContext);
-
-        if ($PSBoundParameters.ContainsKey('Path')) {
-            try {
-                $builder.Directory($Path);
-            }
-            catch {
-                throw $_.Exception.GetBaseException();
-            }
-        }
 
         $moduleParams = @{};
         if ($PSBoundParameters.ContainsKey('Module')) {
@@ -2012,9 +1978,14 @@ function GetSource {
             $builder.Module($modules);
         }
 
-        # Ensure module files are discovered before loose files in PWD
-        if ($UsePWD) {
-            $builder.UsePWD();
+        # Ensure module files are discovered before loose files in Path
+        if ($PSBoundParameters.ContainsKey('Path')) {
+            try {
+                $builder.Directory($Path);
+            }
+            catch {
+                throw $_.Exception.GetBaseException();
+            }
         }
 
         $builder.Build();

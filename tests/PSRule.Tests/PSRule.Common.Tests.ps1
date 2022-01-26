@@ -1754,7 +1754,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         It 'Returns rules in current path' {
             try {
                 Push-Location -Path $searchPath;
-                $result = @(Get-PSRule -Option @{ 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule  -Path $PWD -Option @{ 'Execution.InvariantCultureWarning' = $False })
                 $result | Should -Not -BeNullOrEmpty;
                 $result.Length | Should -Be 3;
                 $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
@@ -1869,7 +1869,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         It 'Uses rules with include option' {
             Push-Location -Path (Join-Path -Path $here -ChildPath 'rules/')
             try {
-                $result = @(Get-PSRule -Option @{ 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule -Path $PWD -Option @{ 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 4;
 
                 $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/'; 'Execution.InvariantCultureWarning' = $False })
@@ -2296,7 +2296,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
         It 'Docs from imported module' {
             try {
                 Push-Location $searchPath;
-                $result = @(Get-PSRuleHelp -Option $options -WarningVariable outWarnings -WarningAction SilentlyContinue);
+                $result = @(Get-PSRuleHelp -Path $PWD -Option $options -WarningVariable outWarnings -WarningAction SilentlyContinue);
                 $result.Length | Should -Be 3;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
@@ -2321,7 +2321,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
         It 'Using wildcard in name' {
             try {
                 Push-Location $searchPath;
-                $result = @(Get-PSRuleHelp -Name M1.* -Option $options -WarningVariable outWarnings -WarningAction SilentlyContinue);
+                $result = @(Get-PSRuleHelp -Path $PWD -Name M1.* -Option $options -WarningVariable outWarnings -WarningAction SilentlyContinue);
                 $result.Length | Should -Be 3;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
@@ -2350,7 +2350,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
 
             try {
                 Push-Location $searchPath;
-                { Get-PSRuleHelp } | Should -Throw "A rule with the same id '.\M1.Rule2' already exists.";
+                { Get-PSRuleHelp -Path $PWD } | Should -Throw "A rule with the same id '.\M1.Rule2' already exists.";
             }
             finally {
                 Pop-Location;

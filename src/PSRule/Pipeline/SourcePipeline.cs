@@ -168,7 +168,6 @@ namespace PSRule.Pipeline
         private readonly HostContext _HostContext;
         private readonly HostPipelineWriter _Writer;
         private readonly bool _UseDefaultPath;
-        private readonly bool _NoSourcesConfigured;
 
         internal SourcePipelineBuilder(HostContext hostContext, PSRuleOption option)
         {
@@ -177,7 +176,6 @@ namespace PSRule.Pipeline
             _Writer = new HostPipelineWriter(hostContext, option);
             _Writer.EnterScope("[Discovery.Source]");
             _UseDefaultPath = option == null || option.Include == null || option.Include.Path == null;
-            _NoSourcesConfigured = option == null || option.Include == null || (option.Include.Path == null && option.Include.Module == null);
 
             // Include paths from options
             if (!_UseDefaultPath)
@@ -208,14 +206,6 @@ namespace PSRule.Pipeline
                 return;
 
             _Writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ScanModule, moduleName));
-        }
-
-        public void UsePWD()
-        {
-            if (!_NoSourcesConfigured)
-                return;
-
-            Directory(PSRuleOption.GetWorkingPath());
         }
 
         /// <summary>

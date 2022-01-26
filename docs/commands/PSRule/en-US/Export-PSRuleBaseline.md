@@ -55,7 +55,6 @@ Accept wildcard characters: False
 ### -Path
 
 One or more paths to search for baselines within.
-If no sources are specified by `-Path`, `-Module`, or options, the current working directory is used.
 
 ```yaml
 Type: String[]
@@ -64,7 +63,7 @@ Aliases: p
 
 Required: False
 Position: 1
-Default value: $PWD
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

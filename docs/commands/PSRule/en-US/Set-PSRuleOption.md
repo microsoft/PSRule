@@ -59,7 +59,7 @@ If the file does not exist, a new file is created.
 
 ### -Path
 
-The path to a YAML file where options will be set. By default the current working path (`$PWD`) is used.
+The path to a YAML file where options will be set.
 
 Either a directory or file path can be specified.
 When a directory is used, `ps-rule.yaml` will be used as the file name.
@@ -77,7 +77,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: $PWD
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
