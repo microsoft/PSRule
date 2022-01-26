@@ -179,7 +179,7 @@ namespace PSRule.Pipeline
 
             // Include paths from options
             if (!_UseDefaultPath)
-                Directory(option.Include.Path, excludeDefaultRulePath: false);
+                Directory(option.Include.Path);
         }
 
         public bool ShouldLoadModule => _HostContext.GetAutoLoadingPreference() == PSModuleAutoLoadingPreference.All;
@@ -212,7 +212,7 @@ namespace PSRule.Pipeline
         /// Add loose files as a source.
         /// </summary>
         /// <param name="path">A file or directory path containing one or more rule files.</param>
-        public void Directory(string[] path, bool excludeDefaultRulePath = true)
+        public void Directory(string[] path, bool excludeDefaultRulePath = false)
         {
             if (path == null || path.Length == 0)
                 return;
@@ -221,7 +221,7 @@ namespace PSRule.Pipeline
                 Directory(path[i], excludeDefaultRulePath);
         }
 
-        public void Directory(string path, bool excludeDefaultRulePath)
+        public void Directory(string path, bool excludeDefaultRulePath = false)
         {
             if (string.IsNullOrEmpty(path))
                 return;
@@ -291,7 +291,7 @@ namespace PSRule.Pipeline
         private void Default()
         {
             if (_UseDefaultPath)
-                Directory(DefaultRulePath, excludeDefaultRulePath: false);
+                Directory(DefaultRulePath);
         }
 
         private void Source(Source source)

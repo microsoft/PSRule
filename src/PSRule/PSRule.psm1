@@ -1981,7 +1981,7 @@ function GetSource {
         # Ensure module files are discovered before loose files in Path
         if ($PSBoundParameters.ContainsKey('Path')) {
             try {
-                $builder.Directory($Path);
+                $builder.Directory($Path, $True);
             }
             catch {
                 throw $_.Exception.GetBaseException();
