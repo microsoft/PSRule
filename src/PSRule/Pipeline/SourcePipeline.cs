@@ -344,21 +344,20 @@ namespace PSRule.Pipeline
 
         private static SourceFile[] IncludePath(string path, string helpPath, string moduleName, bool excludeDefaultRulePath)
         {
-            if (excludeDefaultRulePath)
+            if (!excludeDefaultRulePath)
             {
-                var filteredFiles = FilterFiles(
-                    path,
-                    directoryFilter: dir => !dir.Contains(
-                        DefaultRulePath.TrimEnd(Path.AltDirectorySeparatorChar),
-                        StringComparison.OrdinalIgnoreCase),
-                    filePattern: "*.Rule.*");
-
-                return GetSourceFiles(filteredFiles, helpPath, moduleName);
+                var allFiles = System.IO.Directory.EnumerateFiles(path, "*.Rule.*", SearchOption.AllDirectories);
+                return GetSourceFiles(allFiles, helpPath, moduleName);
             }
 
-            var allFiles = System.IO.Directory.EnumerateFiles(path, "*.Rule.*", SearchOption.AllDirectories);
+            var filteredFiles = FilterFiles(
+                path,
+                directoryFilter: dir => !dir.Contains(
+                    DefaultRulePath.TrimEnd(Path.AltDirectorySeparatorChar),
+                    StringComparison.OrdinalIgnoreCase),
+                filePattern: "*.Rule.*");
 
-            return GetSourceFiles(allFiles, helpPath, moduleName);
+            return GetSourceFiles(filteredFiles, helpPath, moduleName);
         }
 
         private static SourceFile[] GetSourceFiles(IEnumerable<string> files, string helpPath, string moduleName)
