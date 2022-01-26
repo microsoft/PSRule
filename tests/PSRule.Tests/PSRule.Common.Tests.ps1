@@ -2448,6 +2448,60 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
             { $Null = Get-PSRuleHelp -Path (Join-Path -Path $here -ChildPath 'UnconstrainedFile.Rule.ps1') -Name 'UnconstrainedFile1' -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
         }
     }
+
+    Context 'With current working directory' {
+        BeforeAll {
+            Remove-Module TestModule*
+            $searchPath = Join-Path -Path $here -ChildPath rules/
+        }
+
+        It 'Rules returned if -Path is not specified but child .ps-rule/ directory exists' {
+            try {
+                Push-Location $searchPath;
+                $result = @(Get-PSRuleHelp);
+                $result.Length | Should -Be 1;
+                $result[0].Name | Should -BeExactly 'Local.Common.1';
+            }
+            finally {
+                Pop-Location;
+            }
+        }
+
+        It 'No rules returned if -Path is not specified and no .ps-rule/ directory exists' {
+            try {
+                Push-Location (Join-Path -Path $searchPath -ChildPath main/);
+                $result = @(Get-PSRuleHelp);
+                $result.Length | Should -Be 0;
+            }
+            finally {
+                Pop-Location;
+            }
+        }
+
+        It 'Rules returned if -Path $PWD is specified and no child .ps-rule/ directory exists' {
+            try {
+                Push-Location (Join-Path -Path $searchPath -ChildPath main/);
+                $result = @(Get-PSRuleHelp -Path $PWD);
+                $result.Length | Should -Be 1;
+                $result[0].Name | Should -BeExactly 'Local.Main.1';
+            }
+            finally {
+                Pop-Location;
+            }
+        }
+
+        It 'Rules returned if -Path $PWD is specified and child ps-rule/ directory exists' {
+            try {
+                Push-Location $searchPath
+                $result = @(Get-PSRuleHelp -Path $PWD);
+                $result.Length | Should -Be 4;
+                $result.Name | Should -BeIn 'Local.Common.1', 'Local.Test.1', 'Local.Extra.1', 'Local.Main.1';
+            }
+            finally {
+                Pop-Location;
+            }
+        }
+    }
 }
 
 #endregion Get-PSRuleHelp
