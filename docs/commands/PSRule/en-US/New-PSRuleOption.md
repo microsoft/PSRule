@@ -145,7 +145,6 @@ Accept wildcard characters: False
 ### -Path
 
 The path to a YAML file containing options.
-By default the current working path (`$PWD`) is used.
 
 Either a directory or file path can be specified.
 When a directory is used, `ps-rule.yaml` will be used as the file name.
@@ -159,7 +158,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: $PWD
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

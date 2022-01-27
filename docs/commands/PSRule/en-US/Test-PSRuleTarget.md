@@ -62,8 +62,6 @@ Evaluate a simple hashtable on the pipeline against rules loaded from the curren
 
 One or more paths to search for rule definitions within.
 
-If this parameter is not specified the current working path will be used, unless the `-Module` parameter is used.
-
 If the `-Module` parameter is used, rule definitions from the currently working path will not be included by default.
 
 ```yaml
@@ -73,7 +71,7 @@ Aliases: p
 
 Required: False
 Position: 1
-Default value: $PWD
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

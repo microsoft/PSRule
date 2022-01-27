@@ -11,6 +11,15 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.0.0-B2201135:
+
+- Engineering:
+  - **Breaking change:** Require rule sources from current working directory to be explicitly included. [#760](https://github.com/microsoft/PSRule/issues/760)
+    - From v2 onwards, `$PWD` is not included by default unless `-Path .` or `-Path $PWD` is explicitly specified.
+    - See [upgrade notes][1] for details.
+- Bug fixes:
+  - Fixed rule source loading twice from `$PWD` and `.ps-rule/`. [#939](https://github.com/microsoft/PSRule/issues/939)
+
 ## v2.0.0-B2201135 (pre-release)
 
 What's changed since pre-release v2.0.0-B2201117:

@@ -168,7 +168,6 @@ namespace PSRule.Pipeline
         private readonly HostContext _HostContext;
         private readonly HostPipelineWriter _Writer;
         private readonly bool _UseDefaultPath;
-        private readonly bool _NoSourcesConfigured;
 
         internal SourcePipelineBuilder(HostContext hostContext, PSRuleOption option)
         {
@@ -177,7 +176,6 @@ namespace PSRule.Pipeline
             _Writer = new HostPipelineWriter(hostContext, option);
             _Writer.EnterScope("[Discovery.Source]");
             _UseDefaultPath = option == null || option.Include == null || option.Include.Path == null;
-            _NoSourcesConfigured = option == null || option.Include == null || (option.Include.Path == null && option.Include.Module == null);
 
             // Include paths from options
             if (!_UseDefaultPath)
@@ -210,35 +208,27 @@ namespace PSRule.Pipeline
             _Writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ScanModule, moduleName));
         }
 
-        public void UsePWD()
-        {
-            if (!_NoSourcesConfigured)
-                return;
-
-            Directory(PSRuleOption.GetWorkingPath());
-        }
-
         /// <summary>
         /// Add loose files as a source.
         /// </summary>
         /// <param name="path">A file or directory path containing one or more rule files.</param>
-        public void Directory(string[] path)
+        public void Directory(string[] path, bool excludeDefaultRulePath = false)
         {
             if (path == null || path.Length == 0)
                 return;
 
             for (var i = 0; i < path.Length; i++)
-                Directory(path[i]);
+                Directory(path[i], excludeDefaultRulePath);
         }
 
-        public void Directory(string path)
+        public void Directory(string path, bool excludeDefaultRulePath = false)
         {
             if (string.IsNullOrEmpty(path))
                 return;
 
             VerboseScanSource(path);
             path = PSRuleOption.GetRootedPath(path);
-            var files = GetFiles(path, null);
+            var files = GetFiles(path, null, excludeDefaultRulePath);
             if (files == null || files.Length == 0)
                 return;
 
@@ -269,7 +259,7 @@ namespace PSRule.Pipeline
                 return;
 
             VerboseScanModule(module.Name);
-            var files = GetFiles(module.ModuleBase, module.ModuleBase, module.Name);
+            var files = GetFiles(module.ModuleBase, module.ModuleBase, excludeDefaultRulePath: false, module.Name);
             if (files == null || files.Length == 0)
                 return;
 
@@ -317,7 +307,7 @@ namespace PSRule.Pipeline
             _Source[key] = source;
         }
 
-        private static SourceFile[] GetFiles(string path, string helpPath, string moduleName = null)
+        private static SourceFile[] GetFiles(string path, string helpPath, bool excludeDefaultRulePath, string moduleName = null)
         {
             var rootedPath = PSRuleOption.GetRootedPath(path);
             var extension = Path.GetExtension(rootedPath);
@@ -327,7 +317,7 @@ namespace PSRule.Pipeline
             }
             else if (System.IO.Directory.Exists(rootedPath))
             {
-                return IncludePath(rootedPath, helpPath, moduleName);
+                return IncludePath(rootedPath, helpPath, moduleName, excludeDefaultRulePath);
             }
             return null;
         }
@@ -352,10 +342,27 @@ namespace PSRule.Pipeline
             return new SourceFile[] { new SourceFile(path, null, GetSourceType(path), helpPath) };
         }
 
-        private static SourceFile[] IncludePath(string path, string helpPath, string moduleName)
+        private static SourceFile[] IncludePath(string path, string helpPath, string moduleName, bool excludeDefaultRulePath)
+        {
+            if (!excludeDefaultRulePath)
+            {
+                var allFiles = System.IO.Directory.EnumerateFiles(path, "*.Rule.*", SearchOption.AllDirectories);
+                return GetSourceFiles(allFiles, helpPath, moduleName);
+            }
+
+            var filteredFiles = FilterFiles(path, "*.Rule.*", dir => !PathContainsDefaultRulePath(dir));
+            return GetSourceFiles(filteredFiles, helpPath, moduleName);
+        }
+
+        private static bool PathContainsDefaultRulePath(string path)
+        {
+            return path.Contains(DefaultRulePath.TrimEnd(Path.AltDirectorySeparatorChar), StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static SourceFile[] GetSourceFiles(IEnumerable<string> files, string helpPath, string moduleName)
         {
             var result = new List<SourceFile>();
-            var files = System.IO.Directory.EnumerateFiles(path, "*.Rule.*", SearchOption.AllDirectories);
+
             foreach (var file in files)
             {
                 if (ShouldInclude(file))
@@ -367,6 +374,22 @@ namespace PSRule.Pipeline
                 }
             }
             return result.ToArray();
+        }
+
+        private static IEnumerable<string> FilterFiles(string path, string filePattern, Func<string, bool> directoryFilter)
+        {
+            foreach (var file in System.IO.Directory.GetFiles(path, filePattern, SearchOption.TopDirectoryOnly))
+                yield return file;
+
+            var filteredDirectories = System.IO.Directory
+                .GetDirectories(path, "*.*", SearchOption.TopDirectoryOnly)
+                .Where(directoryFilter);
+
+            foreach (var directory in filteredDirectories)
+            {
+                foreach (var file in FilterFiles(directory, filePattern, directoryFilter))
+                    yield return file;
+            }
         }
 
         private static SourceType GetSourceType(string path)

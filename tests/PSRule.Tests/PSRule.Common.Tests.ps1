@@ -1754,7 +1754,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         It 'Returns rules in current path' {
             try {
                 Push-Location -Path $searchPath;
-                $result = @(Get-PSRule -Option @{ 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule  -Path $PWD -Option @{ 'Execution.InvariantCultureWarning' = $False })
                 $result | Should -Not -BeNullOrEmpty;
                 $result.Length | Should -Be 3;
                 $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
@@ -1869,7 +1869,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         It 'Uses rules with include option' {
             Push-Location -Path (Join-Path -Path $here -ChildPath 'rules/')
             try {
-                $result = @(Get-PSRule -Option @{ 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule -Path $PWD -Option @{ 'Execution.InvariantCultureWarning' = $False })
                 $result.Length | Should -Be 4;
 
                 $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/'; 'Execution.InvariantCultureWarning' = $False })
@@ -2296,7 +2296,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
         It 'Docs from imported module' {
             try {
                 Push-Location $searchPath;
-                $result = @(Get-PSRuleHelp -Option $options -WarningVariable outWarnings -WarningAction SilentlyContinue);
+                $result = @(Get-PSRuleHelp -Path $PWD -Option $options -WarningVariable outWarnings -WarningAction SilentlyContinue);
                 $result.Length | Should -Be 3;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
@@ -2321,7 +2321,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
         It 'Using wildcard in name' {
             try {
                 Push-Location $searchPath;
-                $result = @(Get-PSRuleHelp -Name M1.* -Option $options -WarningVariable outWarnings -WarningAction SilentlyContinue);
+                $result = @(Get-PSRuleHelp -Path $PWD -Name M1.* -Option $options -WarningVariable outWarnings -WarningAction SilentlyContinue);
                 $result.Length | Should -Be 3;
                 $result[0].Name | Should -Be 'M1.Rule1';
                 $result[1].Name | Should -Be 'M1.Rule2';
@@ -2350,7 +2350,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
 
             try {
                 Push-Location $searchPath;
-                { Get-PSRuleHelp } | Should -Throw "A rule with the same id '.\M1.Rule2' already exists.";
+                { Get-PSRuleHelp -Path $PWD } | Should -Throw "A rule with the same id '.\M1.Rule2' already exists.";
             }
             finally {
                 Pop-Location;
@@ -2446,6 +2446,60 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
         # Check that '[Console]::WriteLine('Should fail')' is not executed
         It 'Should fail to execute blocked code' {
             { $Null = Get-PSRuleHelp -Path (Join-Path -Path $here -ChildPath 'UnconstrainedFile.Rule.ps1') -Name 'UnconstrainedFile1' -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
+        }
+    }
+
+    Context 'With current working directory' {
+        BeforeAll {
+            Remove-Module TestModule*
+            $searchPath = Join-Path -Path $here -ChildPath rules/
+        }
+
+        It 'Rules returned if -Path is not specified but child .ps-rule/ directory exists' {
+            try {
+                Push-Location $searchPath;
+                $result = @(Get-PSRuleHelp);
+                $result.Length | Should -Be 1;
+                $result[0].Name | Should -BeExactly 'Local.Common.1';
+            }
+            finally {
+                Pop-Location;
+            }
+        }
+
+        It 'No rules returned if -Path is not specified and no .ps-rule/ directory exists' {
+            try {
+                Push-Location (Join-Path -Path $searchPath -ChildPath main/);
+                $result = @(Get-PSRuleHelp);
+                $result.Length | Should -Be 0;
+            }
+            finally {
+                Pop-Location;
+            }
+        }
+
+        It 'Rules returned if -Path $PWD is specified and no child .ps-rule/ directory exists' {
+            try {
+                Push-Location (Join-Path -Path $searchPath -ChildPath main/);
+                $result = @(Get-PSRuleHelp -Path $PWD);
+                $result.Length | Should -Be 1;
+                $result[0].Name | Should -BeExactly 'Local.Main.1';
+            }
+            finally {
+                Pop-Location;
+            }
+        }
+
+        It 'Rules returned if -Path $PWD is specified and child ps-rule/ directory exists' {
+            try {
+                Push-Location $searchPath
+                $result = @(Get-PSRuleHelp -Path $PWD);
+                $result.Length | Should -Be 4;
+                $result.Name | Should -BeIn 'Local.Common.1', 'Local.Test.1', 'Local.Extra.1', 'Local.Main.1';
+            }
+            finally {
+                Pop-Location;
+            }
         }
     }
 }

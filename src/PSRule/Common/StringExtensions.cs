@@ -73,5 +73,10 @@ namespace PSRule
         {
             return !string.IsNullOrEmpty(str) ? char.ToLowerInvariant(str[0]) + str.Substring(1) : string.Empty;
         }
+
+        public static bool Contains(this string source, string value, StringComparison comparison)
+        {
+            return source?.IndexOf(value, comparison) >= 0;
+        }
     }
 }
