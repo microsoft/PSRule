@@ -350,14 +350,13 @@ namespace PSRule.Pipeline
                 return GetSourceFiles(allFiles, helpPath, moduleName);
             }
 
-            var filteredFiles = FilterFiles(
-                path,
-                directoryFilter: dir => !dir.Contains(
-                    DefaultRulePath.TrimEnd(Path.AltDirectorySeparatorChar),
-                    StringComparison.OrdinalIgnoreCase),
-                filePattern: "*.Rule.*");
-
+            var filteredFiles = FilterFiles(path, "*.Rule.*", dir => !PathContainsDefaultRulePath(dir));
             return GetSourceFiles(filteredFiles, helpPath, moduleName);
+        }
+
+        private static bool PathContainsDefaultRulePath(string path)
+        {
+            return path.Contains(DefaultRulePath.TrimEnd(Path.AltDirectorySeparatorChar), StringComparison.OrdinalIgnoreCase);
         }
 
         private static SourceFile[] GetSourceFiles(IEnumerable<string> files, string helpPath, string moduleName)
@@ -377,7 +376,7 @@ namespace PSRule.Pipeline
             return result.ToArray();
         }
 
-        private static IEnumerable<string> FilterFiles(string path, Func<string, bool> directoryFilter, string filePattern)
+        private static IEnumerable<string> FilterFiles(string path, string filePattern, Func<string, bool> directoryFilter)
         {
             foreach (var file in System.IO.Directory.GetFiles(path, filePattern, SearchOption.TopDirectoryOnly))
                 yield return file;
@@ -388,7 +387,7 @@ namespace PSRule.Pipeline
 
             foreach (var directory in filteredDirectories)
             {
-                foreach (var file in FilterFiles(directory, directoryFilter, filePattern))
+                foreach (var file in FilterFiles(directory, filePattern, directoryFilter))
                     yield return file;
             }
         }
