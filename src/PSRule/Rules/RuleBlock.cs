@@ -23,7 +23,7 @@ namespace PSRule.Rules
     [DebuggerDisplay("{Id} @{Source.Path}")]
     internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable, IResource, IRuleV1
     {
-        internal RuleBlock(SourceFile source, ResourceId id, ResourceId? @ref, RuleHelpInfo info, ICondition condition, ResourceTags tag, ResourceId[] alias, ResourceId[] dependsOn, Hashtable configuration, RuleExtent extent, ResourceFlags flags)
+        internal RuleBlock(SourceFile source, ResourceId id, ResourceId? @ref, SeverityLevel level, RuleHelpInfo info, ICondition condition, ResourceTags tag, ResourceId[] alias, ResourceId[] dependsOn, Hashtable configuration, RuleExtent extent, ResourceFlags flags)
         {
             Source = source;
             Name = id.Name;
@@ -33,6 +33,7 @@ namespace PSRule.Rules
             Ref = @ref;
             Alias = alias;
 
+            Level = level;
             Info = info;
             Condition = condition;
             Tag = tag;
@@ -50,6 +51,11 @@ namespace PSRule.Rules
         public ResourceId? Ref { get; }
 
         public ResourceId[] Alias { get; }
+
+        /// <summary>
+        /// If the rule fails, how serious is the result.
+        /// </summary>
+        public SeverityLevel Level { get; }
 
         /// <summary>
         /// The name of the rule.

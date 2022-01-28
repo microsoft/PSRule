@@ -327,7 +327,42 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result[1].Reason | Should -BeExactly 'Field Name: Is set to ''TestObject1''.';
             $result[2].Reason | Should -BeExactly 'The field ''Name'' is set to ''TestObject2''.';
             $result[3].Reason | Should -BeExactly 'Field Name: Is set to ''TestObject2''.';
+        }
 
+        It 'Returns severity level' {
+            $testObject = @(
+                [PSCustomObject]@{
+                    Name = "TestObject1"
+                }
+                [PSCustomObject]@{
+                    Name = "TestObject2"
+                }
+            )
+
+            $result = $testObject | Invoke-PSRule -Path $ruleFilePath, $yamlFilePath, $jsonFilePath -Tag @{ test = 'Level' } -Outcome Fail;
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Count | Should -Be 9;
+
+            # Error
+            $filteredResult = @($result | Where-Object {
+                $_.Level -eq 'Error'
+            })
+            $filteredResult.Count | Should -Be 3;
+            $filteredResult.RuleName | Should -BeIn 'PS1RuleErrorLevel', 'YamlRuleErrorLevel', 'JsonRuleErrorLevel'
+
+            # Warning
+            $filteredResult = @($result | Where-Object {
+                $_.Level -eq 'Warning'
+            })
+            $filteredResult.Count | Should -Be 3;
+            $filteredResult.RuleName | Should -BeIn 'PS1RuleWarningLevel', 'YamlRuleWarningLevel', 'JsonRuleWarningLevel'
+
+            # Information
+            $filteredResult = @($result | Where-Object {
+                $_.Level -eq 'Information'
+            })
+            $filteredResult.Count | Should -Be 3;
+            $filteredResult.RuleName | Should -BeIn 'PS1RuleInfoLevel', 'YamlRuleInfoLevel', 'JsonRuleInfoLevel'
         }
     }
 
@@ -1258,7 +1293,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $Null = $testObject | Invoke-PSRule @invokeParams2 -Option $option -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
                 $warningMessages = $outwarnings.ToArray();
-                $warningMessages.Length | Should -Be 146;
+                $warningMessages.Length | Should -Be 152;
 
                 $warningMessages | Should -BeOfType [System.Management.Automation.WarningRecord];
                 $warningMessages.Message | Should -MatchExactly "Rule '.\\[a-zA-Z0-9]+' was suppressed by suppression group '.\\SuppressWithTargetNameAnd(Null|Empty)Rule' for 'TestObject[1-2]'."
@@ -1302,9 +1337,9 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages.Length | Should -Be 2;
 
                 $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[0].Message | Should -BeExactly "73 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndNullRule' for 'TestObject1'."
+                $warningMessages[0].Message | Should -BeExactly "76 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndNullRule' for 'TestObject1'."
                 $warningMessages[1] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[1].Message | Should -BeExactly "73 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndEmptyRule' for 'TestObject2'."
+                $warningMessages[1].Message | Should -BeExactly "76 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndEmptyRule' for 'TestObject2'."
             }
 
             It 'No warnings' {

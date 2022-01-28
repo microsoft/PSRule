@@ -31,6 +31,12 @@ namespace PSRule.Rules
         public string Name => Id.Name;
 
         /// <summary>
+        /// If the rule fails, how serious is the result.
+        /// </summary>
+        [JsonProperty(PropertyName = "level")]
+        public SeverityLevel Level { get; set; }
+
+        /// <summary>
         /// Legacy. A unique identifier for the rule.
         /// </summary>
         [JsonProperty(PropertyName = "ruleId", Required = Required.Always)]

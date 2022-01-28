@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using PSRule.Definitions.Rules;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 using YamlDotNet.Core;
@@ -495,6 +496,11 @@ namespace PSRule.Definitions
                 metadata.Annotations != null &&
                 metadata.Annotations.TryGetBool(ANNOTATION_OBSOLETE, out var obsolete)
                 && obsolete.GetValueOrDefault(false);
+        }
+
+        internal static SeverityLevel GetLevel(SeverityLevel? level)
+        {
+            return !level.HasValue || level.Value == SeverityLevel.None ? RuleV1.DEFAULT_LEVEL : level.Value;
         }
     }
 }

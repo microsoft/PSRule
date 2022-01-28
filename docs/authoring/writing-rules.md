@@ -206,9 +206,91 @@ In the example a `minTLSVersion` configuration setting does not exist and is not
     1.  An additional, `$Assert.HasFieldValue` assertion helper method can be called.
         The rule will pass if all of the conditions return true.
 
-## Testing the rule
+## Testing
 
+### Testing manually
+
+To test the rule manually, run the following command.
 
 ```powershell
 Assert-PSRule -f ./settings.json
 ```
+
+## Advanced usage
+
+### Severity level
+
+When defining a rule, you can specify a severity level.
+The severity level is used if the rule fails.
+By default, the severity level for a rule is `Error`.
+
+- `Error` - A serious problem that must be addressed before going forward.
+- `Warning` - A problem that should be addressed.
+- `Information` - A minor problem or an opportunity to improve the code.
+
+In a continious integration (CI) pipeline, severity level is particularly important.
+If any rule fails with a severity level of `Error` the pipeline will fail.
+This helps prevent serious problems from being introduced into the code base or deployed.
+
+The following example shows how to set the severity level to `Warning`.
+
+=== "YAML"
+
+    ```yaml hl_lines="8"
+    ---
+    # Synopsis: An example rule to require TLS.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: Rule
+    metadata:
+      name: 'Local.YAML.RequireTLS'
+    spec:
+      level: Warning
+      condition:
+        allOf:
+        - field: 'configure.supportsHttpsTrafficOnly'
+          equals: true
+        - field: 'configure.minTLSVersion'
+          equals: '1.2'
+    ```
+
+=== "JSON"
+
+    ```json hl_lines="10"
+    [
+        {
+            // Synopsis: An example rule to require TLS.
+            "apiVersion": "github.com/microsoft/PSRule/v1",
+            "kind": "Rule",
+            "metadata": {
+                "name": "Local.JSON.RequireTLS"
+            },
+            "spec": {
+                "level": "Warning",
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "configure.supportsHttpsTrafficOnly",
+                            "equals": true
+                        },
+                        {
+                            "field": "configure.minTLSVersion",
+                            "equals": "1.2"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+    ```
+
+=== "PowerShell"
+
+    Update `.ps-rule/Local.Rule.ps1` in your repository with the following contents.
+
+    ```powershell hl_lines="2"
+    # Synopsis: An example rule to require TLS.
+    Rule 'Local.PS.RequireTLS' -Level Warning {
+        $Assert.HasFieldValue($TargetObject, 'configure.supportsHttpsTrafficOnly', $True)
+        $Assert.HasFieldValue($TargetObject, 'configure.minTLSVersion', '1.2')
+    }
+    ```

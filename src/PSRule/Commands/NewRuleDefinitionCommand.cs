@@ -6,6 +6,7 @@ using System.Collections;
 using System.Management.Automation;
 using System.Threading;
 using PSRule.Definitions;
+using PSRule.Definitions.Rules;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
@@ -32,6 +33,12 @@ namespace PSRule.Commands
         [ValidateNotNullOrEmpty()]
         [ValidateLength(3, 128)]
         public string Name { get; set; }
+
+        /// <summary>
+        /// If the rule fails, how serious is the result.
+        /// </summary>
+        [Parameter(Mandatory = false)]
+        public SeverityLevel? Level { get; set; }
 
         /// <summary>
         /// The definition of the deployment.
@@ -94,6 +101,7 @@ namespace PSRule.Commands
             var context = RunspaceContext.CurrentThread;
             var errorPreference = GetErrorActionPreference();
             var metadata = GetCommentMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
+            var level = ResourceHelper.GetLevel(Level);
             var tag = GetTag(Tag);
             var source = context.Source.File;
             var extent = new RuleExtent(
@@ -119,6 +127,7 @@ namespace PSRule.Commands
                 source: source,
                 id: id,
                 @ref: ResourceHelper.GetIdNullable(source.ModuleName, Ref, ResourceIdKind.Ref),
+                level: level,
                 info: info,
                 condition: ps,
                 tag: tag,
