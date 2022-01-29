@@ -404,6 +404,7 @@ namespace PSRule.Host
                         Alias = block.Alias,
                         Source = block.Source,
                         Tag = block.Tag,
+                        Level = block.Level,
                         Info = block.Info,
                         DependsOn = block.DependsOn,
                         Flags = block.Flags,
@@ -422,6 +423,7 @@ namespace PSRule.Host
                         Alias = block.Alias,
                         Source = block.Source,
                         Tag = block.Metadata.Tags,
+                        Level = block.Level,
                         Info = info,
                         DependsOn = null, // TODO: No support for DependsOn yet
                         Flags = block.Flags,
@@ -439,7 +441,6 @@ namespace PSRule.Host
         private static DependencyTargetCollection<RuleBlock> ToRuleBlockV1(ILanguageBlock[] blocks, RunspaceContext context)
         {
             // Index rules by RuleId
-            //var results = new Dictionary<string, RuleBlock>(StringComparer.OrdinalIgnoreCase);
             var results = new DependencyTargetCollection<RuleBlock>();
 
             // Keep track of rule names and ids that have been added
@@ -488,10 +489,11 @@ namespace PSRule.Host
                         var block = new RuleBlock
                         (
                             source: yaml.Source,
-                            id: ruleId,
+                            id: yaml.Id,
                             @ref: yaml.Ref,
+                            level: yaml.Level,
                             info: info,
-                            condition: new RuleVisitor(yaml.Source.ModuleName, ruleId.Value, yaml.Spec),
+                            condition: new RuleVisitor(yaml.Source.ModuleName, yaml.Id.Value, yaml.Spec),
                             alias: yaml.Alias,
                             tag: yaml.Metadata.Tags,
                             dependsOn: null,  // TODO: No support for DependsOn yet

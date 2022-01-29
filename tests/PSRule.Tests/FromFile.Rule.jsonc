@@ -4,14 +4,13 @@
 //
 // YAML-based rules for unit testing
 //
-
 [
     {
         // Synopsis: A YAML rule for testing.
         "apiVersion": "github.com/microsoft/PSRule/v1",
         "kind": "Rule",
         "metadata": {
-            "name": "BasicRule",
+            "name": "JsonBasicRule",
             "tags": {
                 "feature": "tag"
             }
@@ -73,7 +72,7 @@
         "apiVersion": "github.com/microsoft/PSRule/v1",
         "kind": "Rule",
         "metadata": {
-            "name": "RuleWithCustomType",
+            "name": "RuleJsonWithCustomType",
             "tags": {
                 "release": "GA"
             }
@@ -93,7 +92,7 @@
         "apiVersion": "github.com/microsoft/PSRule/v1",
         "kind": "Rule",
         "metadata": {
-            "name": "RuleWithSelector",
+            "name": "RuleJsonWithSelector",
             "tags": {
                 "release": "GA"
             }
@@ -136,6 +135,60 @@
             "condition": {
                 "field": "Name",
                 "equals": "TestValue"
+            }
+        }
+    },
+    {
+        // Synopsis: Rule for unit testing of rule error level.
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Rule",
+        "metadata": {
+            "name": "JsonRuleErrorLevel",
+            "tags": {
+                "test": "Level"
+            }
+        },
+        "spec": {
+            "level": "Error",
+            "condition": {
+                "field": "name",
+                "equals": "TestObject1"
+            }
+        }
+    },
+    {
+        // Synopsis: Rule for unit testing of rule warning level.
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Rule",
+        "metadata": {
+            "name": "JsonRuleWarningLevel",
+            "tags": {
+                "test": "Level"
+            }
+        },
+        "spec": {
+            "level": "Warning",
+            "condition": {
+                "field": "name",
+                "equals": "TestObject1"
+            }
+        }
+    },
+    {
+        // Synopsis: Rule for unit testing of rule information level.
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Rule",
+        "metadata": {
+            "name": "JsonRuleInfoLevel",
+            "tags": {
+                "test": "Level"
+            }
+        },
+        "spec": {
+            "level": "Information",
+            "condition": {
+                "field": "name",
+                "equals": "TestObject1"
             }
         }
     }

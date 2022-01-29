@@ -570,6 +570,18 @@
                     "markdownDescription": "A condition is made up of one or more [expressions](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/) that will determine if the rule passes or fails. [See help](https://microsoft.github.io/PSRule/v2/authoring/writing-rules/)",
                     "$ref": "#/definitions/selectorExpression"
                 },
+                "level": {
+                    "type": "string",
+                    "title": "Level",
+                    "description": "If the rule fails, how serious is the result. By default this is set to Error.",
+                    "markdownDescription": "If the rule fails, how serious is the result. By default this is set to `Error`. [See help](https://microsoft.github.io/PSRule/v2/authoring/writing-rules/)",
+                    "enum": [
+                        "Error",
+                        "Warning",
+                        "Information"
+                    ],
+                    "default": "Error"
+                },
                 "type": {
                     "type": "array",
                     "title": "Type pre-condition",

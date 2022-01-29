@@ -30,13 +30,13 @@ namespace PSRule
             // From current path
             var rule = HostHelper.GetRule(GetSource(), context, includeDependencies: false);
             Assert.NotNull(rule);
-            Assert.Equal("BasicRule", rule[0].Name);
+            Assert.Equal("YamlBasicRule", rule[0].Name);
             Assert.Equal(PSRuleOption.GetRootedPath(""), rule[0].Source.HelpPath);
 
             // From relative path
             rule = HostHelper.GetRule(GetSource("../../../FromFile.Rule.yaml"), context, includeDependencies: false);
             Assert.NotNull(rule);
-            Assert.Equal("BasicRule", rule[0].Name);
+            Assert.Equal("YamlBasicRule", rule[0].Name);
             Assert.Equal(PSRuleOption.GetRootedPath("../../.."), rule[0].Source.HelpPath);
 
             var hashtable = rule[0].Tag.ToHashtable();
@@ -52,8 +52,8 @@ namespace PSRule
             ImportSelectors(context);
             var yamlTrue = GetRuleVisitor(context, "RuleYamlTrue");
             var yamlFalse = GetRuleVisitor(context, "RuleYamlFalse");
-            var customType = GetRuleVisitor(context, "RuleWithCustomType");
-            var withSelector = GetRuleVisitor(context, "RuleWithSelector");
+            var customType = GetRuleVisitor(context, "RuleYamlWithCustomType");
+            var withSelector = GetRuleVisitor(context, "RuleYamlWithSelector");
             context.EnterSourceScope(yamlTrue.Source);
 
             var actual1 = GetObject((name: "value", value: 3));
@@ -145,13 +145,13 @@ namespace PSRule
             // From current path
             var rule = HostHelper.GetRule(GetSource("FromFile.Rule.jsonc"), context, includeDependencies: false);
             Assert.NotNull(rule);
-            Assert.Equal("BasicRule", rule[0].Name);
+            Assert.Equal("JsonBasicRule", rule[0].Name);
             Assert.Equal(PSRuleOption.GetRootedPath(""), rule[0].Source.HelpPath);
 
             // From relative path
             rule = HostHelper.GetRule(GetSource("../../../FromFile.Rule.jsonc"), context, includeDependencies: false);
             Assert.NotNull(rule);
-            Assert.Equal("BasicRule", rule[0].Name);
+            Assert.Equal("JsonBasicRule", rule[0].Name);
             Assert.Equal(PSRuleOption.GetRootedPath("../../.."), rule[0].Source.HelpPath);
 
             var hashtable = rule[0].Tag.ToHashtable();

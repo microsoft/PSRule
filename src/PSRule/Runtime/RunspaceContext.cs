@@ -647,8 +647,7 @@ namespace PSRule.Runtime
             RuleBlock = ruleBlock;
             RuleRecord = new RuleRecord(
                 runId: Pipeline.RunId,
-                ruleId: ruleBlock.Id.Value,
-                ruleName: ruleBlock.Name,
+                ruleId: ruleBlock.Id,
                 @ref: ruleBlock.Ref.GetValueOrDefault().Name,
                 targetObject: TargetObject.Value,
                 targetName: Binding.TargetName,
@@ -657,7 +656,8 @@ namespace PSRule.Runtime
                 info: ruleBlock.Info,
                 field: Binding.Field,
                 data: Data,
-                source: TargetObject.Source.GetSourceInfo()
+                source: TargetObject.Source.GetSourceInfo(),
+                level: ruleBlock.Level
             );
 
             if (Writer != null)
