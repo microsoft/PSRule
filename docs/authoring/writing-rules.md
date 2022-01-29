@@ -228,7 +228,7 @@ By default, the severity level for a rule is `Error`.
 - `Warning` - A problem that should be addressed.
 - `Information` - A minor problem or an opportunity to improve the code.
 
-In a continious integration (CI) pipeline, severity level is particularly important.
+In a continuous integration (CI) pipeline, severity level is particularly important.
 If any rule fails with a severity level of `Error` the pipeline will fail.
 This helps prevent serious problems from being introduced into the code base or deployed.
 
