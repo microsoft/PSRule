@@ -475,7 +475,8 @@
                         "Markdown",
                         "NUnit3",
                         "Csv",
-                        "Wide"
+                        "Wide",
+                        "Sarif"
                     ],
                     "default": "None"
                 },

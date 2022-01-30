@@ -54,7 +54,7 @@ function Invoke-PSRule {
         [String]$OutputPath,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide', 'Sarif')]
         [Alias('o')]
         [PSRule.Configuration.OutputFormat]$OutputFormat = [PSRule.Configuration.OutputFormat]::None,
 
@@ -499,7 +499,7 @@ function Assert-PSRule {
         [String]$OutputPath,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Sarif')]
         [Alias('o')]
         [PSRule.Configuration.OutputFormat]$OutputFormat,
 
@@ -1258,7 +1258,7 @@ function New-PSRuleOption {
 
         # Sets the Output.Format option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide', 'Sarif')]
         [PSRule.Configuration.OutputFormat]$OutputFormat = 'None',
 
         # Sets the Output.Outcome option
@@ -1520,7 +1520,7 @@ function Set-PSRuleOption {
 
         # Sets the Output.Format option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide', 'Sarif')]
         [PSRule.Configuration.OutputFormat]$OutputFormat = 'None',
 
         # Sets the Output.Outcome option
@@ -2222,7 +2222,7 @@ function SetOptions {
 
         # Sets the Output.Format option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide')]
+        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide', 'Sarif')]
         [PSRule.Configuration.OutputFormat]$OutputFormat = 'None',
 
         # Sets the Output.Outcome option

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -85,10 +85,15 @@ namespace PSRule.Data
         public string ToString(string defaultType, bool useRelativePath)
         {
             var type = Type ?? defaultType;
-            var file = useRelativePath ? ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), File) : File;
+            var file = GetPath(useRelativePath);
             return string.IsNullOrEmpty(type)
                 ? string.Concat(file, COLON, Line, COLON, Position)
                 : string.Concat(type, COLONSPACE, file, COLON, Line, COLON, Position);
+        }
+
+        internal string GetPath(bool useRelativePath)
+        {
+            return useRelativePath ? ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), File) : File;
         }
 
         public static TargetSourceInfo Create(object o)

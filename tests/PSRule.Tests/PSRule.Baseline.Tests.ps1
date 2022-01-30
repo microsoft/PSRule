@@ -584,7 +584,7 @@ Describe 'Export-PSRuleBaseline' -Tag 'Baseline','Export-PSRuleBaseline' {
 
             It '<_>' -Foreach @('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII') {
                 Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Yaml -OutputPath $tempPath -OutputEncoding $_;
-                $fileContents = Get-Content -Path $tempPath -Raw -Encoding $_;
+                $fileContents = Get-Content -Path $tempPath -Raw -Encoding $_ -WarningAction SilentlyContinue;
                 $fileContents | Should -MatchExactly $allYamlBaselines;
             }
         }
@@ -655,7 +655,7 @@ Describe 'Export-PSRuleBaseline' -Tag 'Baseline','Export-PSRuleBaseline' {
 
             It '<_>' -Foreach @('Default', 'UTF8', 'UTF7', 'Unicode', 'UTF32', 'ASCII') {
                 Export-PSRuleBaseline -Module 'TestModule4' -OutputFormat Json -OutputPath $tempPath -OutputEncoding $_;
-                $fileContents = Get-Content -Path $tempPath -Raw -Encoding $_;
+                $fileContents = Get-Content -Path $tempPath -Raw -Encoding $_ -WarningAction SilentlyContinue;
                 Compare-Object -ReferenceObject ($allZeroSpaceJsonBaslines -split '\r?\n') -DifferenceObject ($fileContents -split '\r?\n') | Should -BeNullOrEmpty;
             }
         }

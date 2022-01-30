@@ -27,6 +27,9 @@ What's changed since pre-release v2.0.0-B2201146:
       - `IsDateTime`
       - `IsInteger`
       - `IsNumeric`
+  - Added support for formatting results as SARIF. [#878](https://github.com/microsoft/PSRule/issues/878)
+    - Set `Output.Format` to `Sarif` to output results in the SARIF format.
+    - See [about_PSRule_Options] for details.
 
 ## v2.0.0-B2201146 (pre-release)
 
