@@ -123,12 +123,7 @@ namespace PSRule.Pipeline.Output
             var result = new List<Invocation>(1);
             var invocation = new Invocation
             {
-                //Machine = Environment.MachineName,
-                //ProcessId = Process.GetCurrentProcess().Id,
-                //WorkingDirectory = new ArtifactLocation
-                //{
-                //    Uri = new Uri(PSRuleOption.GetWorkingPath())
-                //}
+
             };
             result.Add(invocation);
             return result;
