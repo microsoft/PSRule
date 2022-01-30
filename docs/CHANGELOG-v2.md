@@ -20,6 +20,13 @@ What's changed since pre-release v2.0.0-B2201146:
     - Rules with the `Warning` severity level will be reported as warnings.
     - Rules with the `Information` severity level will be reported as informational messages.
     - By default, the severity level for a rule is `Error`.
+  - Added expression support for type based assertions. [#908](https://github.com/microsoft/PSRule/issues/908)
+    - Included the following expressions:
+      - `IsArray`
+      - `IsBoolean`
+      - `IsDateTime`
+      - `IsInteger`
+      - `IsNumeric`
 
 ## v2.0.0-B2201146 (pre-release)
 
