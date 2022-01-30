@@ -769,7 +769,7 @@ namespace PSRule
             var isBooleanTrue = GetSelectorVisitor($"{type}IsBooleanTrue", GetSource(path), out _);
             var isBooleanFalse = GetSelectorVisitor($"{type}IsBooleanFalse", GetSource(path), out _);
 
-            // isArray: true
+            // isBoolean: true
             Assert.True(isBooleanTrue.Match(actual1));
             Assert.True(isBooleanTrue.Match(actual2));
             Assert.False(isBooleanTrue.Match(actual3));
@@ -779,7 +779,7 @@ namespace PSRule
             Assert.False(isBooleanTrue.Match(actual7));
             Assert.False(isBooleanTrue.Match(actual8));
 
-            // isArray: false
+            // isBoolean: false
             Assert.False(isBooleanFalse.Match(actual1));
             Assert.False(isBooleanFalse.Match(actual2));
             Assert.True(isBooleanFalse.Match(actual3));
@@ -793,7 +793,7 @@ namespace PSRule
             var isBooleanConvertTrue = GetSelectorVisitor($"{type}IsBooleanTrueWithConversion", GetSource(path), out _);
             var isBooleanConvertFalse = GetSelectorVisitor($"{type}IsBooleanFalseWithConversion", GetSource(path), out _);
 
-            // isArray: true
+            // isBoolean: true
             Assert.True(isBooleanConvertTrue.Match(actual1));
             Assert.True(isBooleanConvertTrue.Match(actual2));
             Assert.True(isBooleanConvertTrue.Match(actual3));
@@ -803,7 +803,7 @@ namespace PSRule
             Assert.False(isBooleanConvertTrue.Match(actual7));
             Assert.False(isBooleanConvertTrue.Match(actual8));
 
-            // isArray: false
+            // isBoolean: false
             Assert.False(isBooleanConvertFalse.Match(actual1));
             Assert.False(isBooleanConvertFalse.Match(actual2));
             Assert.False(isBooleanConvertFalse.Match(actual3));
@@ -833,7 +833,7 @@ namespace PSRule
             var isDateTimeTrue = GetSelectorVisitor($"{type}IsDateTimeTrue", GetSource(path), out _);
             var isDateTimeFalse = GetSelectorVisitor($"{type}IsDateTimeFalse", GetSource(path), out _);
 
-            // isArray: true
+            // isDateTime: true
             Assert.True(isDateTimeTrue.Match(actual1));
             Assert.False(isDateTimeTrue.Match(actual2));
             Assert.False(isDateTimeTrue.Match(actual3));
@@ -844,7 +844,7 @@ namespace PSRule
             Assert.False(isDateTimeTrue.Match(actual8));
             Assert.False(isDateTimeTrue.Match(actual9));
 
-            // isArray: false
+            // isDateTime: false
             Assert.False(isDateTimeFalse.Match(actual1));
             Assert.True(isDateTimeFalse.Match(actual2));
             Assert.True(isDateTimeFalse.Match(actual3));
@@ -859,7 +859,7 @@ namespace PSRule
             var isDateTimeConvertTrue = GetSelectorVisitor($"{type}IsDateTimeTrueWithConversion", GetSource(path), out _);
             var isDateTimeConvertFalse = GetSelectorVisitor($"{type}IsDateTimeFalseWithConversion", GetSource(path), out _);
 
-            // isArray: true
+            // isDateTime: true
             Assert.True(isDateTimeConvertTrue.Match(actual1));
             Assert.True(isDateTimeConvertTrue.Match(actual2));
             Assert.True(isDateTimeConvertTrue.Match(actual3));
@@ -870,7 +870,7 @@ namespace PSRule
             Assert.False(isDateTimeConvertTrue.Match(actual8));
             Assert.False(isDateTimeConvertTrue.Match(actual9));
 
-            // isArray: false
+            // isDateTime: false
             Assert.False(isDateTimeConvertFalse.Match(actual1));
             Assert.False(isDateTimeConvertFalse.Match(actual2));
             Assert.False(isDateTimeConvertFalse.Match(actual3));
