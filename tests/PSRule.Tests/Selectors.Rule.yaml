@@ -343,6 +343,212 @@ spec:
     isString: false
 
 ---
+# Synopsis: Test isArray
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsArrayTrue
+spec:
+  if:
+    field: 'Value'
+    isArray: true
+
+---
+# Synopsis: Test isArray
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsArrayFalse
+spec:
+  if:
+    field: 'Value'
+    isArray: false
+
+---
+# Synopsis: Test isBoolean
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsBooleanTrue
+spec:
+  if:
+    field: 'Value'
+    isBoolean: true
+
+---
+# Synopsis: Test isBoolean with conversion
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsBooleanTrueWithConversion
+spec:
+  if:
+    field: 'Value'
+    isBoolean: true
+    convert: true
+
+---
+# Synopsis: Test isBoolean
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsBooleanFalse
+spec:
+  if:
+    field: 'Value'
+    isBoolean: false
+
+---
+# Synopsis: Test isBoolean with conversion
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsBooleanFalseWithConversion
+spec:
+  if:
+    field: 'Value'
+    isBoolean: false
+    convert: true
+
+---
+# Synopsis: Test isDateTime
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsDateTimeTrue
+spec:
+  if:
+    field: 'Value'
+    isDateTime: true
+
+---
+# Synopsis: Test isDateTime with conversion
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsDateTimeTrueWithConversion
+spec:
+  if:
+    field: 'Value'
+    isDateTime: true
+    convert: true
+
+---
+# Synopsis: Test isDateTime
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsDateTimeFalse
+spec:
+  if:
+    field: 'Value'
+    isDateTime: false
+
+---
+# Synopsis: Test isDateTime with conversion
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsDateTimeFalseWithConversion
+spec:
+  if:
+    field: 'Value'
+    isDateTime: false
+    convert: true
+
+---
+# Synopsis: Test IsInteger
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsIntegerTrue
+spec:
+  if:
+    field: 'Value'
+    isInteger: true
+
+---
+# Synopsis: Test IsInteger with conversion
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsIntegerTrueWithConversion
+spec:
+  if:
+    field: 'Value'
+    isInteger: true
+    convert: true
+
+---
+# Synopsis: Test IsInteger
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsIntegerFalse
+spec:
+  if:
+    field: 'Value'
+    isInteger: false
+
+---
+# Synopsis: Test IsInteger with conversion
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsIntegerFalseWithConversion
+spec:
+  if:
+    field: 'Value'
+    isInteger: false
+    convert: true
+
+---
+# Synopsis: Test IsNumeric
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsNumericTrue
+spec:
+  if:
+    field: 'Value'
+    isNumeric: true
+
+---
+# Synopsis: Test IsNumeric with conversion
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsNumericTrueWithConversion
+spec:
+  if:
+    field: 'Value'
+    isNumeric: true
+    convert: true
+
+---
+# Synopsis: Test IsNumeric
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsNumericFalse
+spec:
+  if:
+    field: 'Value'
+    isNumeric: false
+
+---
+# Synopsis: Test IsNumeric with conversion
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlIsNumericFalseWithConversion
+spec:
+  if:
+    field: 'Value'
+    isNumeric: false
+    convert: true
+
+---
 # Synopsis: Test isLower
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Selector

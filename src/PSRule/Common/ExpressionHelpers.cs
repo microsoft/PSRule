@@ -115,6 +115,18 @@ namespace PSRule
             return false;
         }
 
+        internal static bool TryArray(object o, out Array value)
+        {
+            o = GetBaseObject(o);
+            if (o is Array a)
+            {
+                value = a;
+                return true;
+            }
+            value = null;
+            return false;
+        }
+
         internal static bool TryConvertString(object o, out string value)
         {
             if (TryString(o, out value))

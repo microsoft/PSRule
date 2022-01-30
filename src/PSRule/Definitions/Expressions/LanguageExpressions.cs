@@ -298,6 +298,11 @@ namespace PSRule.Definitions.Expressions
         private const string ENDSWITH = "endsWith";
         private const string CONTAINS = "contains";
         private const string ISSTRING = "isString";
+        private const string ISARRAY = "isArray";
+        private const string ISBOOLEAN = "isBoolean";
+        private const string ISDATETIME = "isDateTime";
+        private const string ISINTEGER = "isInteger";
+        private const string ISNUMERIC = "IsNumeric";
         private const string ISLOWER = "isLower";
         private const string ISUPPER = "isUpper";
         private const string SETOF = "setOf";
@@ -317,6 +322,7 @@ namespace PSRule.Definitions.Expressions
         private const string NAME = "name";
         private const string CASESENSITIVE = "caseSensitive";
         private const string UNIQUE = "unique";
+        private const string CONVERT = "convert";
         private const string IGNORESCHEME = "ignoreScheme";
         private const string INCLUDEPRERELEASE = "includePrerelease";
         private const string PROPERTY_SCHEMA = "$schema";
@@ -353,6 +359,11 @@ namespace PSRule.Definitions.Expressions
             new LanguageExpresssionDescriptor(ENDSWITH, LanguageExpressionType.Condition, EndsWith),
             new LanguageExpresssionDescriptor(CONTAINS, LanguageExpressionType.Condition, Contains),
             new LanguageExpresssionDescriptor(ISSTRING, LanguageExpressionType.Condition, IsString),
+            new LanguageExpresssionDescriptor(ISARRAY, LanguageExpressionType.Condition, IsArray),
+            new LanguageExpresssionDescriptor(ISBOOLEAN, LanguageExpressionType.Condition, IsBoolean),
+            new LanguageExpresssionDescriptor(ISDATETIME, LanguageExpressionType.Condition, IsDateTime),
+            new LanguageExpresssionDescriptor(ISINTEGER, LanguageExpressionType.Condition, IsInteger),
+            new LanguageExpresssionDescriptor(ISNUMERIC, LanguageExpressionType.Condition, IsNumeric),
             new LanguageExpresssionDescriptor(ISLOWER, LanguageExpressionType.Condition, IsLower),
             new LanguageExpresssionDescriptor(ISUPPER, LanguageExpressionType.Condition, IsUpper),
             new LanguageExpresssionDescriptor(SETOF, LanguageExpressionType.Condition, SetOf),
@@ -890,6 +901,106 @@ namespace PSRule.Definitions.Expressions
             return false;
         }
 
+        internal static bool IsArray(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyBool(properties, ISARRAY, out var propertyValue) &&
+                TryOperand(context, ISARRAY, o, properties, out var operand))
+            {
+                context.ExpressionTrace(ISARRAY, operand.Value, propertyValue);
+                return Condition(
+                    context,
+                    propertyValue == ExpressionHelpers.TryArray(operand.Value, out _),
+                    operand,
+                    ReasonStrings.Assert_NotArray,
+                    operand.Value
+                );
+            }
+            return false;
+        }
+
+        internal static bool IsBoolean(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyBool(properties, ISBOOLEAN, out var propertyValue) &&
+                TryOperand(context, ISBOOLEAN, o, properties, out var operand) &&
+                GetConvert(properties, out var convert))
+            {
+                context.ExpressionTrace(ISBOOLEAN, operand.Value, propertyValue);
+                return Condition(
+                    context,
+                    propertyValue == ExpressionHelpers.TryBool(operand.Value, convert, out _),
+                    operand,
+                    ReasonStrings.Assert_NotBoolean,
+                    operand.Value
+                );
+            }
+            return false;
+        }
+
+        internal static bool IsDateTime(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyBool(properties, ISDATETIME, out var propertyValue) &&
+                TryOperand(context, ISDATETIME, o, properties, out var operand) &&
+                GetConvert(properties, out var convert))
+            {
+                context.ExpressionTrace(ISDATETIME, operand.Value, propertyValue);
+                return Condition(
+                    context,
+                    propertyValue == ExpressionHelpers.TryDateTime(operand.Value, convert, out _),
+                    operand,
+                    ReasonStrings.Assert_NotDateTime,
+                    operand.Value
+                );
+            }
+            return false;
+        }
+
+        internal static bool IsInteger(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyBool(properties, ISINTEGER, out var propertyValue) &&
+                TryOperand(context, ISINTEGER, o, properties, out var operand) &&
+                GetConvert(properties, out var convert))
+            {
+                context.ExpressionTrace(ISINTEGER, operand.Value, propertyValue);
+                return Condition(
+                    context,
+                    propertyValue == (ExpressionHelpers.TryInt(operand.Value, convert, out _) ||
+                                    ExpressionHelpers.TryLong(operand.Value, convert, out _) ||
+                                    ExpressionHelpers.TryByte(operand.Value, convert, out _)),
+                    operand,
+                    ReasonStrings.Assert_NotInteger,
+                    operand.Value
+                );
+            }
+            return false;
+        }
+
+        internal static bool IsNumeric(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyBool(properties, ISNUMERIC, out var propertyValue) &&
+                TryOperand(context, ISNUMERIC, o, properties, out var operand) &&
+                GetConvert(properties, out var convert))
+            {
+                context.ExpressionTrace(ISNUMERIC, operand.Value, propertyValue);
+                return Condition(
+                    context,
+                    propertyValue == (ExpressionHelpers.TryInt(operand.Value, convert, out _) ||
+                                    ExpressionHelpers.TryLong(operand.Value, convert, out _) ||
+                                    ExpressionHelpers.TryFloat(operand.Value, convert, out _) ||
+                                    ExpressionHelpers.TryByte(operand.Value, convert, out _) ||
+                                    ExpressionHelpers.TryDouble(operand.Value, convert, out _)),
+                    operand,
+                    ReasonStrings.Assert_NotInteger,
+                    operand.Value
+                );
+            }
+            return false;
+        }
+
         internal static bool IsLower(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
@@ -1159,6 +1270,11 @@ namespace PSRule.Definitions.Expressions
         private static bool GetUnique(LanguageExpression.PropertyBag properties, out bool unique, bool defaultValue = false)
         {
             return TryPropertyBoolOrDefault(properties, UNIQUE, out unique, defaultValue);
+        }
+
+        private static bool GetConvert(LanguageExpression.PropertyBag properties, out bool convert, bool defaultValue = false)
+        {
+            return TryPropertyBoolOrDefault(properties, CONVERT, out convert, defaultValue);
         }
 
         /// <summary>

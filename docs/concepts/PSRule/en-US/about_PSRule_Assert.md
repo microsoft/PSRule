@@ -652,7 +652,7 @@ Rule 'IsBoolean' {
 
 ### IsDateTime
 
-The `IsBoolean` assertion method checks the field value is a DateTime type.
+The `IsDateTime` assertion method checks the field value is a DateTime type.
 
 The following parameters are accepted:
 
@@ -673,7 +673,7 @@ Reasons include:
 Examples:
 
 ```powershell
-Rule 'IsBoolean' {
+Rule 'IsDateTime' {
     # Require Value1 to be a DateTime
     $Assert.IsDateTime($TargetObject, 'Value1')
 

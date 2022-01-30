@@ -26,6 +26,11 @@ The following conditions are available:
 - [In](#in)
 - [IsLower](#islower)
 - [IsString](#isstring)
+- [IsArray](#isarray)
+- [IsBoolean](#isboolean)
+- [IsDateTime](#isdatetime)
+- [IsInteger](#isinteger)
+- [IsNumeric](#isnumeric)
 - [IsUpper](#isupper)
 - [Less](#less)
 - [LessOrEquals](#lessorequals)
@@ -712,6 +717,213 @@ spec:
   if:
     field: 'Name'
     isString: true
+```
+
+### IsArray
+
+The `isArray` condition determines if the operand is an array or other type.
+
+Syntax:
+
+```yaml
+isArray: <bool>
+```
+
+- When `isArray: true`, _isArray_ will return `true` if the operand is an array.
+- When `isArray: false`, _isArray_ will return `true` if the operand is not an array or null.
+- If the operand is a field, and the field does not exist, _isArray_ always returns `false`.
+
+For example:
+
+```yaml
+---
+# Synopsis: Using isArray
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: IsArrayExample
+spec:
+  if:
+    field: 'Value'
+    isArray: true
+```
+
+### IsBoolean
+
+The `isBoolean` condition determines if the operand is a boolean or other type.
+
+- `convert` - Optionally, types can be converted to boolean type.
+  E.g. `'true'` can be converted to `true`.
+  By default `convert` is `false`.
+
+```yaml
+isBoolean: <bool>
+convert: <bool>
+```
+
+- When `isBoolean: true`, _isBoolean_ will return `true` if the operand is a boolean.
+- When `isBoolean: false`, _isBoolean_ will return `false` if the operand is not a boolean or null.
+- When `convert: true`, types will be converted to boolean before condition is evaluated.
+
+For example:
+
+```yaml
+---
+# Synopsis: Using isBoolean
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: IsBooleanExample
+spec:
+  if:
+    field: 'Value'
+    isBoolean: true
+
+---
+# Synopsis: Using isBoolean with conversion
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: IsBooleanExampleWithConversion
+spec:
+  if:
+    field: 'Value'
+    isBoolean: true
+    convert: true
+```
+
+### IsDateTime
+
+The `isDateTime` condition determines if the operand is a datetime or other type.
+
+- `convert` - Optionally, types can be converted to datetime type.
+  E.g. `'2021-04-03T15:00:00.00+10:00'` can be converted to a datetime.
+  By default `convert` is `false`.
+
+```yaml
+isDateTime: <bool>
+convert: <bool>
+```
+
+- When `isDateTime: true`, _isDateTime_ will return `true` if the operand is a datetime.
+- When `isDateTime: false`, _isDateTime_ will return `false` if the operand is not a datetime or null.
+- When `convert: true`, types will be converted to datetime before condition is evaluated.
+
+For example:
+
+```yaml
+---
+# Synopsis: Using isDateTime
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: IsDateTimeExample
+spec:
+  if:
+    field: 'Value'
+    isDateTime: true
+
+---
+# Synopsis: Using isDateTime with conversion
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: IsDateTimeExampleWithConversion
+spec:
+  if:
+    field: 'Value'
+    isDateTime: true
+    convert: true
+```
+
+### IsInteger
+
+The `isInteger` condition determines if the operand is a an integer or other type.
+The following types are considered integer types `int`, `long`, `byte`.
+
+- `convert` - Optionally, types can be converted to integer type.
+  E.g. `'123'` can be converted to `123`.
+  By default `convert` is `false`.
+
+```yaml
+isInteger: <bool>
+convert: <bool>
+```
+
+- When `isInteger: true`, _isInteger_ will return `true` if the operand is an integer.
+- When `isInteger: false`, _isInteger_ will return `false` if the operand is not an integer or null.
+- When `convert: true`, types will be converted to integer before condition is evaluated.
+
+For example:
+
+```yaml
+---
+# Synopsis: Using isInteger
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: IsIntegerExample
+spec:
+  if:
+    field: 'Value'
+    isInteger: true
+
+---
+# Synopsis: Using isInteger with conversion
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: IsIntegerExampleWithConversion
+spec:
+  if:
+    field: 'Value'
+    isInteger: true
+    convert: true
+```
+
+### IsNumeric
+
+The `isNumeric` condition determines if the operand is a a numeric or other type.
+The following types are considered numeric types `int`, `long`, `float`, `byte`, `double`.
+
+- `convert` - Optionally, types can be converted to numeric type.
+  E.g. `'123'` can be converted to `123`.
+  By default `convert` is `false`.
+
+```yaml
+isNumeric: <bool>
+convert: <bool>
+```
+
+- When `isNumeric: true`, _isNumeric_ will return `true` if the operand is a numeric.
+- When `isNumeric: false`, _isNumeric_ will return `false` if the operand is not a numeric or null.
+- When `convert: true`, types will be converted to numeric before condition is evaluated.
+
+For example:
+
+```yaml
+---
+# Synopsis: Using isNumeric
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: IsNumericExample
+spec:
+  if:
+    field: 'Value'
+    isNumeric: true
+
+---
+# Synopsis: Using isNumeric with conversion
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: IsNumercExampleWithConversion
+spec:
+  if:
+    field: 'Value'
+    isNumeric: true
+    convert: true
 ```
 
 ### IsUpper

@@ -551,8 +551,9 @@ namespace PSRule.Runtime
                 GuardNullFieldValue(field, fieldValue, out result))
                 return result;
 
-            var o = GetBaseObject(fieldValue);
-            return o is Array ? Pass() : Fail(ReasonStrings.Type, TYPENAME_ARRAY, GetTypeName(fieldValue), fieldValue);
+            return ExpressionHelpers.TryArray(fieldValue, out _)
+                ? Pass()
+                : Fail(ReasonStrings.Type, TYPENAME_ARRAY, GetTypeName(fieldValue), fieldValue);
         }
 
         /// <summary>

@@ -733,6 +733,21 @@
                     "$ref": "#/definitions/selectorConditionIsLower"
                 },
                 {
+                    "$ref": "#/definitions/selectorConditionIsArray"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionIsBoolean"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionIsDateTime"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionIsInteger"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionIsNumeric"
+                },
+                {
                     "$ref": "#/definitions/selectorConditionIsUpper"
                 },
                 {
@@ -1237,6 +1252,129 @@
             },
             "required": [
                 "isString"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorPropertiesString"
+                }
+            ]
+        },
+        "selectorConditionIsArray": {
+            "type": "object",
+            "properties": {
+                "isArray": {
+                    "type": "boolean",
+                    "title": "Is array",
+                    "description": "Must be an array type.",
+                    "markdownDescription": "Must be an array type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isarray)"
+                }
+            },
+            "required": [
+                "isArray"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorPropertiesString"
+                }
+            ]
+        },
+        "selectorConditionIsBoolean": {
+            "type": "object",
+            "properties": {
+                "isBoolean": {
+                    "type": "boolean",
+                    "title": "Is boolean",
+                    "description": "Must be a boolean type.",
+                    "markdownDescription": "Must be a boolean type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isboolean)"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type to boolean.",
+                    "markdownDescription": "Convert type to boolean. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isboolean)",
+                    "default": false
+                }
+            },
+            "required": [
+                "isBoolean"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorPropertiesString"
+                }
+            ]
+        },
+        "selectorConditionIsDateTime": {
+            "type": "object",
+            "properties": {
+                "isDateTime": {
+                    "type": "boolean",
+                    "title": "Is datetime",
+                    "description": "Must be a datetime type.",
+                    "markdownDescription": "Must be a datetime type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isdatetime)"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type to datetime.",
+                    "markdownDescription": "Convert type to datetime. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isdatetime)",
+                    "default": false
+                }
+            },
+            "required": [
+                "isDateTime"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorPropertiesString"
+                }
+            ]
+        },
+        "selectorConditionIsInteger": {
+            "type": "object",
+            "properties": {
+                "isInteger": {
+                    "type": "boolean",
+                    "title": "Is integer",
+                    "description": "Must be an integer type.",
+                    "markdownDescription": "Must be an integer type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isinteger)"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type to integer.",
+                    "markdownDescription": "Convert type to integer. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isinteger)",
+                    "default": false
+                }
+            },
+            "required": [
+                "isInteger"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorPropertiesString"
+                }
+            ]
+        },
+        "selectorConditionIsNumeric": {
+            "type": "object",
+            "properties": {
+                "isNumeric": {
+                    "type": "boolean",
+                    "title": "Is numeric",
+                    "description": "Must be a numeric type.",
+                    "markdownDescription": "Must be a numeric type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isnumeric)"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type to numeric.",
+                    "markdownDescription": "Convert type to numeric. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isnumeric)",
+                    "default": false
+                }
+            },
+            "required": [
+                "isNumeric"
             ],
             "oneOf": [
                 {
