@@ -156,6 +156,21 @@
   <data name="Assert_NotString" xml:space="preserve">
     <value>The value '{0}' is not a string.</value>
   </data>
+  <data name="Assert_NotArray" xml:space="preserve">
+    <value>The value '{0}' is not an array.</value>
+  </data>
+  <data name="Assert_NotBoolean" xml:space="preserve">
+    <value>The value '{0}' is not a boolean.</value>
+  </data>
+  <data name="Assert_NotDateTime" xml:space="preserve">
+    <value>The value '{0}' is not a date.</value>
+  </data>
+  <data name="Assert_NotInteger" xml:space="preserve">
+    <value>The value '{0}' is not an integer.</value>
+  </data>
+  <data name="Assert_NotNumeric" xml:space="preserve">
+    <value>The value '{0}' is not numeric.</value>
+  </data>
   <data name="Compare" xml:space="preserve">
     <value>The field value '{0}' can not be compared with '{1}'.</value>
   </data>

@@ -31,7 +31,7 @@ namespace PSRule
             context.Begin();
             var selector = HostHelper.GetSelector(GetSource(path), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(59, selector.Length);
+            Assert.Equal(77, selector.Length);
 
             Assert.Equal("BasicSelector", selector[0].Name);
             Assert.Equal($"{type}AllOf", selector[4].Name);
@@ -715,6 +715,302 @@ namespace PSRule
 
             context.EnterTargetObject(new TargetObject(actual8));
             Assert.True(withName.Match(actual8));
+        }
+
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void IsArrayExpression(string type, string path)
+        {
+            var isArrayTrue = GetSelectorVisitor($"{type}IsArrayTrue", GetSource(path), out _);
+            var isArrayFalse = GetSelectorVisitor($"{type}IsArrayFalse", GetSource(path), out _);
+            var actual1 = GetObject((name: "value", value: new string[] { "abc" }));
+            var actual2 = GetObject((name: "value", value: 4));
+            var actual3 = GetObject((name: "value", value: PSObject.AsPSObject(new int[] { 1 })));
+            var actual4 = GetObject((name: "value", value: null));
+            var actual5 = GetObject((name: "value", value: "abc"));
+            var actual6 = GetObject((name: "value", value: new int[] { 1 }));
+            var actual7 = GetObject();
+
+            // isArray: true
+            Assert.True(isArrayTrue.Match(actual1));
+            Assert.False(isArrayTrue.Match(actual2));
+            Assert.True(isArrayTrue.Match(actual3));
+            Assert.False(isArrayTrue.Match(actual4));
+            Assert.False(isArrayTrue.Match(actual5));
+            Assert.True(isArrayTrue.Match(actual6));
+            Assert.False(isArrayFalse.Match(actual7));
+
+            // isArray: false
+            Assert.False(isArrayFalse.Match(actual1));
+            Assert.True(isArrayFalse.Match(actual2));
+            Assert.False(isArrayFalse.Match(actual3));
+            Assert.True(isArrayFalse.Match(actual4));
+            Assert.True(isArrayFalse.Match(actual5));
+            Assert.False(isArrayFalse.Match(actual6));
+            Assert.False(isArrayFalse.Match(actual7));
+        }
+
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void IsBooleanExpression(string type, string path)
+        {
+            var actual1 = GetObject((name: "value", value: true));
+            var actual2 = GetObject((name: "value", value: false));
+            var actual3 = GetObject((name: "value", value: "true"));
+            var actual4 = GetObject((name: "value", value: "false"));
+            var actual5 = GetObject((name: "value", value: null));
+            var actual6 = GetObject((name: "value", value: PSObject.AsPSObject(true)));
+            var actual7 = GetObject((name: "value", value: new bool[] { }));
+            var actual8 = GetObject();
+
+            // Without conversion
+            var isBooleanTrue = GetSelectorVisitor($"{type}IsBooleanTrue", GetSource(path), out _);
+            var isBooleanFalse = GetSelectorVisitor($"{type}IsBooleanFalse", GetSource(path), out _);
+
+            // isBoolean: true
+            Assert.True(isBooleanTrue.Match(actual1));
+            Assert.True(isBooleanTrue.Match(actual2));
+            Assert.False(isBooleanTrue.Match(actual3));
+            Assert.False(isBooleanTrue.Match(actual4));
+            Assert.False(isBooleanTrue.Match(actual5));
+            Assert.True(isBooleanTrue.Match(actual6));
+            Assert.False(isBooleanTrue.Match(actual7));
+            Assert.False(isBooleanTrue.Match(actual8));
+
+            // isBoolean: false
+            Assert.False(isBooleanFalse.Match(actual1));
+            Assert.False(isBooleanFalse.Match(actual2));
+            Assert.True(isBooleanFalse.Match(actual3));
+            Assert.True(isBooleanFalse.Match(actual4));
+            Assert.True(isBooleanFalse.Match(actual5));
+            Assert.False(isBooleanFalse.Match(actual6));
+            Assert.True(isBooleanFalse.Match(actual7));
+            Assert.False(isBooleanFalse.Match(actual8));
+
+            // With conversion
+            var isBooleanConvertTrue = GetSelectorVisitor($"{type}IsBooleanTrueWithConversion", GetSource(path), out _);
+            var isBooleanConvertFalse = GetSelectorVisitor($"{type}IsBooleanFalseWithConversion", GetSource(path), out _);
+
+            // isBoolean: true
+            Assert.True(isBooleanConvertTrue.Match(actual1));
+            Assert.True(isBooleanConvertTrue.Match(actual2));
+            Assert.True(isBooleanConvertTrue.Match(actual3));
+            Assert.True(isBooleanConvertTrue.Match(actual4));
+            Assert.False(isBooleanConvertTrue.Match(actual5));
+            Assert.True(isBooleanConvertTrue.Match(actual6));
+            Assert.False(isBooleanConvertTrue.Match(actual7));
+            Assert.False(isBooleanConvertTrue.Match(actual8));
+
+            // isBoolean: false
+            Assert.False(isBooleanConvertFalse.Match(actual1));
+            Assert.False(isBooleanConvertFalse.Match(actual2));
+            Assert.False(isBooleanConvertFalse.Match(actual3));
+            Assert.False(isBooleanConvertFalse.Match(actual4));
+            Assert.True(isBooleanConvertFalse.Match(actual5));
+            Assert.False(isBooleanConvertFalse.Match(actual6));
+            Assert.True(isBooleanConvertFalse.Match(actual7));
+            Assert.False(isBooleanConvertFalse.Match(actual8));
+        }
+
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void IsDateTimeExpression(string type, string path)
+        {
+            var actual1 = GetObject((name: "value", value: DateTime.Now));
+            var actual2 = GetObject((name: "value", value: 1));
+            var actual3 = GetObject((name: "value", value: "2021-04-03T15:00:00.00+10:00"));
+            var actual4 = GetObject((name: "value", value: new JValue(DateTime.Now)));
+            var actual5 = GetObject((name: "value", value: null));
+            var actual6 = GetObject((name: "value", value: PSObject.AsPSObject(DateTime.Now)));
+            var actual7 = GetObject((name: "value", value: new JValue("2021-04-03T15:00:00.00+10:00")));
+            var actual8 = GetObject((name: "value", value: long.MaxValue));
+            var actual9 = GetObject();
+
+            // Without conversion
+            var isDateTimeTrue = GetSelectorVisitor($"{type}IsDateTimeTrue", GetSource(path), out _);
+            var isDateTimeFalse = GetSelectorVisitor($"{type}IsDateTimeFalse", GetSource(path), out _);
+
+            // isDateTime: true
+            Assert.True(isDateTimeTrue.Match(actual1));
+            Assert.False(isDateTimeTrue.Match(actual2));
+            Assert.False(isDateTimeTrue.Match(actual3));
+            Assert.True(isDateTimeTrue.Match(actual4));
+            Assert.False(isDateTimeTrue.Match(actual5));
+            Assert.True(isDateTimeTrue.Match(actual6));
+            Assert.False(isDateTimeTrue.Match(actual7));
+            Assert.False(isDateTimeTrue.Match(actual8));
+            Assert.False(isDateTimeTrue.Match(actual9));
+
+            // isDateTime: false
+            Assert.False(isDateTimeFalse.Match(actual1));
+            Assert.True(isDateTimeFalse.Match(actual2));
+            Assert.True(isDateTimeFalse.Match(actual3));
+            Assert.False(isDateTimeFalse.Match(actual4));
+            Assert.True(isDateTimeFalse.Match(actual5));
+            Assert.False(isDateTimeFalse.Match(actual6));
+            Assert.True(isDateTimeFalse.Match(actual7));
+            Assert.True(isDateTimeFalse.Match(actual8));
+            Assert.False(isDateTimeFalse.Match(actual9));
+
+            // With conversion
+            var isDateTimeConvertTrue = GetSelectorVisitor($"{type}IsDateTimeTrueWithConversion", GetSource(path), out _);
+            var isDateTimeConvertFalse = GetSelectorVisitor($"{type}IsDateTimeFalseWithConversion", GetSource(path), out _);
+
+            // isDateTime: true
+            Assert.True(isDateTimeConvertTrue.Match(actual1));
+            Assert.True(isDateTimeConvertTrue.Match(actual2));
+            Assert.True(isDateTimeConvertTrue.Match(actual3));
+            Assert.True(isDateTimeConvertTrue.Match(actual4));
+            Assert.False(isDateTimeConvertTrue.Match(actual5));
+            Assert.True(isDateTimeConvertTrue.Match(actual6));
+            Assert.True(isDateTimeConvertTrue.Match(actual7));
+            Assert.False(isDateTimeConvertTrue.Match(actual8));
+            Assert.False(isDateTimeConvertTrue.Match(actual9));
+
+            // isDateTime: false
+            Assert.False(isDateTimeConvertFalse.Match(actual1));
+            Assert.False(isDateTimeConvertFalse.Match(actual2));
+            Assert.False(isDateTimeConvertFalse.Match(actual3));
+            Assert.False(isDateTimeConvertFalse.Match(actual4));
+            Assert.True(isDateTimeConvertFalse.Match(actual5));
+            Assert.False(isDateTimeConvertFalse.Match(actual6));
+            Assert.False(isDateTimeConvertFalse.Match(actual7));
+            Assert.True(isDateTimeConvertFalse.Match(actual8));
+            Assert.False(isDateTimeConvertFalse.Match(actual9));
+        }
+
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void IsIntegerExpression(string type, string path)
+        {
+            var actual1 = GetObject((name: "value", value: 123));
+            var actual2 = GetObject((name: "value", value: 1.0f));
+            var actual3 = GetObject((name: "value", value: long.MaxValue));
+            var actual4 = GetObject((name: "value", value: "123"));
+            var actual5 = GetObject((name: "value", value: null));
+            var actual6 = GetObject((name: "value", value: PSObject.AsPSObject(123)));
+            var actual7 = GetObject((name: "value", value: byte.MaxValue));
+            var actual8 = GetObject();
+
+            // Without conversion
+            var isIntegerTrue = GetSelectorVisitor($"{type}IsIntegerTrue", GetSource(path), out _);
+            var isIntegerFalse = GetSelectorVisitor($"{type}IsIntegerFalse", GetSource(path), out _);
+
+            // isInteger: true
+            Assert.True(isIntegerTrue.Match(actual1));
+            Assert.False(isIntegerTrue.Match(actual2));
+            Assert.True(isIntegerTrue.Match(actual3));
+            Assert.False(isIntegerTrue.Match(actual4));
+            Assert.False(isIntegerTrue.Match(actual5));
+            Assert.True(isIntegerTrue.Match(actual6));
+            Assert.True(isIntegerTrue.Match(actual7));
+            Assert.False(isIntegerTrue.Match(actual8));
+
+            // isInteger: false
+            Assert.False(isIntegerFalse.Match(actual1));
+            Assert.True(isIntegerFalse.Match(actual2));
+            Assert.False(isIntegerFalse.Match(actual3));
+            Assert.True(isIntegerFalse.Match(actual4));
+            Assert.True(isIntegerFalse.Match(actual5));
+            Assert.False(isIntegerFalse.Match(actual6));
+            Assert.False(isIntegerFalse.Match(actual7));
+            Assert.False(isIntegerFalse.Match(actual8));
+
+            // With conversion
+            var isIntegerConvertTrue = GetSelectorVisitor($"{type}IsIntegerTrueWithConversion", GetSource(path), out _);
+            var isIntegerConvertFalse = GetSelectorVisitor($"{type}IsIntegerFalseWithConversion", GetSource(path), out _);
+
+            // isInteger: true
+            Assert.True(isIntegerConvertTrue.Match(actual1));
+            Assert.False(isIntegerConvertTrue.Match(actual2));
+            Assert.True(isIntegerConvertTrue.Match(actual3));
+            Assert.True(isIntegerConvertTrue.Match(actual4));
+            Assert.False(isIntegerConvertTrue.Match(actual5));
+            Assert.True(isIntegerConvertTrue.Match(actual6));
+            Assert.True(isIntegerConvertTrue.Match(actual7));
+            Assert.False(isIntegerConvertTrue.Match(actual8));
+
+            // isInteger: false
+            Assert.False(isIntegerConvertFalse.Match(actual1));
+            Assert.True(isIntegerConvertFalse.Match(actual2));
+            Assert.False(isIntegerConvertFalse.Match(actual3));
+            Assert.False(isIntegerConvertFalse.Match(actual4));
+            Assert.True(isIntegerConvertFalse.Match(actual5));
+            Assert.False(isIntegerConvertFalse.Match(actual6));
+            Assert.False(isIntegerConvertFalse.Match(actual7));
+            Assert.False(isIntegerConvertFalse.Match(actual8));
+        }
+
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void IsNumericExpression(string type, string path)
+        {
+            var actual1 = GetObject((name: "value", value: 123));
+            var actual2 = GetObject((name: "value", value: 1.0f));
+            var actual3 = GetObject((name: "value", value: long.MaxValue));
+            var actual4 = GetObject((name: "value", value: "123"));
+            var actual5 = GetObject((name: "value", value: null));
+            var actual6 = GetObject((name: "value", value: PSObject.AsPSObject(123)));
+            var actual7 = GetObject((name: "value", value: byte.MaxValue));
+            var actual8 = GetObject((name: "value", value: double.MaxValue));
+            var actual9 = GetObject();
+
+            // Without conversion
+            var isNumericTrue = GetSelectorVisitor($"{type}IsNumericTrue", GetSource(path), out _);
+            var isNumericFalse = GetSelectorVisitor($"{type}IsNumericFalse", GetSource(path), out _);
+
+            // isNumeric: true
+            Assert.True(isNumericTrue.Match(actual1));
+            Assert.True(isNumericTrue.Match(actual2));
+            Assert.True(isNumericTrue.Match(actual3));
+            Assert.False(isNumericTrue.Match(actual4));
+            Assert.False(isNumericTrue.Match(actual5));
+            Assert.True(isNumericTrue.Match(actual6));
+            Assert.True(isNumericTrue.Match(actual7));
+            Assert.True(isNumericTrue.Match(actual8));
+            Assert.False(isNumericTrue.Match(actual9));
+
+            // isNumeric: false
+            Assert.False(isNumericFalse.Match(actual1));
+            Assert.False(isNumericFalse.Match(actual2));
+            Assert.False(isNumericFalse.Match(actual3));
+            Assert.True(isNumericFalse.Match(actual4));
+            Assert.True(isNumericFalse.Match(actual5));
+            Assert.False(isNumericFalse.Match(actual6));
+            Assert.False(isNumericFalse.Match(actual7));
+            Assert.False(isNumericFalse.Match(actual8));
+            Assert.False(isNumericFalse.Match(actual9));
+
+            // With conversion
+            var isNumericConvertTrue = GetSelectorVisitor($"{type}IsNumericTrueWithConversion", GetSource(path), out _);
+            var isNumericConvertFalse = GetSelectorVisitor($"{type}IsNumericFalseWithConversion", GetSource(path), out _);
+
+            // isNumeric: true
+            Assert.True(isNumericConvertTrue.Match(actual1));
+            Assert.True(isNumericConvertTrue.Match(actual2));
+            Assert.True(isNumericConvertTrue.Match(actual3));
+            Assert.True(isNumericConvertTrue.Match(actual4));
+            Assert.False(isNumericConvertTrue.Match(actual5));
+            Assert.True(isNumericConvertTrue.Match(actual6));
+            Assert.True(isNumericConvertTrue.Match(actual7));
+            Assert.True(isNumericConvertTrue.Match(actual8));
+            Assert.False(isNumericConvertTrue.Match(actual9));
+
+            // isNumeric: false
+            Assert.False(isNumericConvertFalse.Match(actual1));
+            Assert.False(isNumericConvertFalse.Match(actual2));
+            Assert.False(isNumericConvertFalse.Match(actual3));
+            Assert.False(isNumericConvertFalse.Match(actual4));
+            Assert.True(isNumericConvertFalse.Match(actual5));
+            Assert.False(isNumericConvertFalse.Match(actual6));
+            Assert.False(isNumericConvertFalse.Match(actual7));
+            Assert.False(isNumericConvertFalse.Match(actual8));
+            Assert.False(isNumericConvertFalse.Match(actual9));
         }
 
         [Theory]

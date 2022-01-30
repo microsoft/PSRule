@@ -491,6 +491,266 @@
         }
     },
     {
+        // Synopsis: Test isArray
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsArrayTrue"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isArray": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test isArray
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsArrayFalse"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isArray": false
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsBoolean
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsBooleanTrue"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isBoolean": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsBoolean with conversion
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsBooleanTrueWithConversion"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isBoolean": true,
+                "convert": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsBoolean
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsBooleanFalse"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isBoolean": false
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsBoolean with conversion
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsBooleanFalseWithConversion"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isBoolean": false,
+                "convert": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsDateTime
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsDateTimeTrue"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isDateTime": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsDateTime with conversion
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsDateTimeTrueWithConversion"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isDateTime": true,
+                "convert": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsDateTime
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsDateTimeFalse"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isDateTime": false
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsDateTime with conversion
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsDateTimeFalseWithConversion"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isDateTime": false,
+                "convert": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsInteger
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsIntegerTrue"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isInteger": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsInteger with conversion
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsIntegerTrueWithConversion"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isInteger": true,
+                "convert": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsInteger
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsIntegerFalse"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isInteger": false
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsInteger with conversion
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsIntegerFalseWithConversion"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isInteger": false,
+                "convert": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsNumeric
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsNumericTrue"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isNumeric": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsNumeric
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsNumericTrueWithConversion"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isNumeric": true,
+                "convert": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsNumeric
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsNumericFalse"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isNumeric": false
+            }
+        }
+    },
+    {
+        // Synopsis: Test IsNumeric
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonIsNumericFalseWithConversion"
+        },
+        "spec": {
+            "if": {
+                "field": "Value",
+                "isNumeric": false,
+                "convert": true
+            }
+        }
+    },
+    {
         // Synopsis: Test isLower
         "apiVersion": "github.com/microsoft/PSRule/v1",
         "kind": "Selector",
