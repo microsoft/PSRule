@@ -1,7 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
+using PSRule.Definitions.Rules;
 using PSRule.Rules;
 
 namespace PSRule.Pipeline
@@ -13,6 +14,7 @@ namespace PSRule.Pipeline
     {
         private readonly List<RuleRecord> _Record;
         private RuleOutcome _Outcome;
+        private SeverityLevel _Level;
         private long _Time;
         private int _Total;
         private int _Error;
@@ -41,6 +43,8 @@ namespace PSRule.Pipeline
         internal int Pass => _Total - _Error - _Fail;
 
         public RuleOutcome Outcome => _Outcome;
+
+        public SeverityLevel Level => _Level;
 
         internal string TargetName
         {
@@ -100,8 +104,10 @@ namespace PSRule.Pipeline
                 _Error++;
 
             if (ruleRecord.Outcome == RuleOutcome.Fail)
+            {
                 _Fail++;
-
+                _Level = _Level.GetWorstCase(ruleRecord.Level);
+            }
             _Record.Add(ruleRecord);
         }
     }

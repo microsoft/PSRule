@@ -1662,6 +1662,10 @@ function Rule {
         [Parameter(Mandatory = $False)]
         [String[]]$Alias,
 
+        # If the rule fails, how serious is the result.
+        [Parameter(Mandatory = $False)]
+        [PSRule.Definitions.Rules.SeverityLevel]$Level,
+
         # The body of the rule
         [Parameter(Position = 1, Mandatory = $True)]
         [ScriptBlock]$Body,

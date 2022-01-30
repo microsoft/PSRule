@@ -241,6 +241,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to     [INFO] .
+        /// </summary>
+        internal static string Result_Information {
+            get {
+                return ResourceManager.GetString("Result_Information", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to     [PASS] .
         /// </summary>
         internal static string Result_Pass {

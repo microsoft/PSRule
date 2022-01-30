@@ -11,6 +11,18 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.0.0-B2201146:
+
+- New features:
+  - Added support for rule severity level. [#880](https://github.com/microsoft/PSRule/issues/880)
+    - Rules can be configured to be `Error`, `Warning`, or `Information`.
+    - Failing rules with the `Error` severity level will cause the pipeline to fail.
+    - Rules with the `Warning` severity level will be reported as warnings.
+    - Rules with the `Information` severity level will be reported as informational messages.
+    - By default, the severity level for a rule is `Error`.
+
+## v2.0.0-B2201146 (pre-release)
+
 What's changed since pre-release v2.0.0-B2201135:
 
 - Engineering:

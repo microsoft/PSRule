@@ -9,10 +9,29 @@ using YamlDotNet.Serialization;
 
 namespace PSRule.Definitions.Rules
 {
+    /// <summary>
+    /// If the rule fails, how serious is the result.
+    /// </summary>
+    public enum SeverityLevel
+    {
+        None = 0,
+
+        Error = 1,
+
+        Warning = 2,
+
+        Information = 3
+    }
+
     public interface IRuleV1 : IResource, IDependencyTarget
     {
         [Obsolete("Use Name instead.")]
         string RuleName { get; }
+
+        /// <summary>
+        /// If the rule fails, how serious is the result.
+        /// </summary>
+        SeverityLevel Level { get; }
 
         string Synopsis { get; }
 
@@ -28,6 +47,11 @@ namespace PSRule.Definitions.Rules
     {
         LanguageIf Condition { get; }
 
+        /// <summary>
+        /// If the rule fails, how serious is the result.
+        /// </summary>
+        SeverityLevel? Level { get; }
+
         string[] Type { get; }
 
         string[] With { get; }
@@ -36,11 +60,14 @@ namespace PSRule.Definitions.Rules
     [Spec(Specs.V1, Specs.Rule)]
     internal sealed class RuleV1 : InternalResource<RuleV1Spec>, IResource, IRuleV1
     {
+        internal const SeverityLevel DEFAULT_LEVEL = SeverityLevel.Error;
+
         public RuleV1(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, RuleV1Spec spec)
             : base(ResourceKind.Rule, apiVersion, source, metadata, info, spec)
         {
             Ref = ResourceHelper.GetIdNullable(source.ModuleName, metadata.Ref, ResourceIdKind.Ref);
             Alias = ResourceHelper.GetRuleId(source.ModuleName, metadata.Alias, ResourceIdKind.Alias);
+            Level = ResourceHelper.GetLevel(spec.Level);
         }
 
         [JsonIgnore]
@@ -50,6 +77,13 @@ namespace PSRule.Definitions.Rules
         [JsonIgnore]
         [YamlIgnore]
         public ResourceId[] Alias { get; }
+
+        /// <summary>
+        /// If the rule fails, how serious is the result.
+        /// </summary>
+        [JsonIgnore]
+        [YamlIgnore]
+        public SeverityLevel Level { get; }
 
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
@@ -83,6 +117,11 @@ namespace PSRule.Definitions.Rules
     internal sealed class RuleV1Spec : Spec, IRuleSpec
     {
         public LanguageIf Condition { get; set; }
+
+        /// <summary>
+        /// If the rule fails, how serious is the result.
+        /// </summary>
+        public SeverityLevel? Level { get; set; }
 
         /// <summary>
         /// An optional type precondition before the rule is evaluated.

@@ -9,6 +9,7 @@ using System.Text;
 using Newtonsoft.Json;
 using PSRule.Data;
 using PSRule.Definitions;
+using PSRule.Definitions.Rules;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Rules
@@ -18,13 +19,13 @@ namespace PSRule.Rules
     /// </summary>
     [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
     [JsonObject]
-    public sealed class RuleRecord
+    public sealed class RuleRecord : IRuleResult
     {
-        internal RuleRecord(string runId, string ruleId, string ruleName, string @ref, PSObject targetObject, string targetName, string targetType, ResourceTags tag, RuleHelpInfo info, Hashtable field, Hashtable data, TargetSourceInfo[] source, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
+        internal RuleRecord(string runId, ResourceId ruleId, string @ref, PSObject targetObject, string targetName, string targetType, ResourceTags tag, RuleHelpInfo info, Hashtable field, Hashtable data, TargetSourceInfo[] source, SeverityLevel level, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
             RunId = runId;
-            RuleId = ruleId;
-            RuleName = ruleName;
+            RuleId = ruleId.Value;
+            RuleName = ruleId.Name;
             Ref = @ref;
             TargetObject = targetObject;
             TargetName = targetName;
@@ -33,6 +34,7 @@ namespace PSRule.Rules
             OutcomeReason = reason;
             Info = info;
             Source = source;
+            Level = level;
             if (tag != null)
                 Tag = tag.ToHashtable();
 
@@ -63,6 +65,12 @@ namespace PSRule.Rules
         public readonly string RuleName;
 
         public string Ref { get; }
+
+        /// <summary>
+        /// If the rule fails, how serious is the result.
+        /// </summary>
+        [JsonProperty(PropertyName = "level")]
+        public SeverityLevel Level { get; }
 
         /// <summary>
         /// The outcome after the rule processes an object.
@@ -166,6 +174,11 @@ namespace PSRule.Rules
                 sb.AppendLine(Reason[i]);
 
             return sb.ToString();
+        }
+
+        internal bool HasSource()
+        {
+            return Source != null && Source.Length > 0;
         }
     }
 }

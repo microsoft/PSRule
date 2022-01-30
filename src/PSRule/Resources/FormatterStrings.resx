@@ -179,6 +179,9 @@
   <data name="Result_FailDetailWithRef" xml:space="preserve">
     <value>{3}: {0} failed {1}. {2}</value>
   </data>
+  <data name="Result_Information" xml:space="preserve">
+    <value>    [INFO] </value>
+  </data>
   <data name="Result_Pass" xml:space="preserve">
     <value>    [PASS] </value>
   </data>

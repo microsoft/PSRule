@@ -457,3 +457,18 @@ Rule 'IssueGetTest' {
 Rule 'IssueReportTest' {
     $Assert.Create($PSRule.Issue.Get('Downstream.Issue'));
 }
+
+# Synopsis: Rule for unit testing of rule error level.
+Rule 'PS1RuleErrorLevel' -Level 'Error' -Tag @{ test = 'Level' } {
+    $Assert.HasFieldValue($TargetObject, 'name', 'TestObject1');
+}
+
+# Synopsis: Rule for unit testing of rule warning level.
+Rule 'PS1RuleWarningLevel' -Level 'Warning' -Tag @{ test = 'Level' } {
+    $Assert.HasFieldValue($TargetObject, 'name', 'TestObject1');
+}
+
+# Synopsis: Rule for unit testing of rule information level.
+Rule 'PS1RuleInfoLevel' -Level 'Information' -Tag @{ test = 'Level' } {
+    $Assert.HasFieldValue($TargetObject, 'name', 'TestObject1');
+}
