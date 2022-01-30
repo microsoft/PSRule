@@ -680,7 +680,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 Option = (New-PSRuleOption -OutputEncoding UTF7)
             }
             $Null = Invoke-PSRule @testOptions -OutputFormat Json -OutputPath $testOutputPath;
-            $result = @(Get-Content -Path $testOutputPath -Encoding utf7 -Raw -WarningAction SilentlyContinue | ConvertFrom-Json);
+            $result = @((Get-Content -Path $testOutputPath -Encoding utf7 -Raw -WarningAction SilentlyContinue | ConvertFrom-Json));
             $result.Length | Should -Be 2;
             $result.RuleName | Should -BeIn 'WithFormat';
             $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
@@ -695,7 +695,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 InputPath = $testInputPath
             }
             $Null = Invoke-PSRule @testOptions -OutputFormat Sarif -OutputPath $testOutputPath;
-            $result = @(Get-Content -Path $testOutputPath -Encoding UTF8 -Raw -WarningAction SilentlyContinue | ConvertFrom-Json);
+            $result = Get-Content -Path $testOutputPath -Encoding UTF8 -Raw -WarningAction SilentlyContinue | ConvertFrom-Json;
             $result.version | Should -Be '2.1.0';
             $result.runs[0].tool.driver.name | Should -Be 'PSRule';
             $result.runs[0].results | Should -HaveCount 2;
