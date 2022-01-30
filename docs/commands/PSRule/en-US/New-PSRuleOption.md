@@ -753,7 +753,7 @@ See about_PSRule_Options for more information.
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json, Markdown, NUnit3, Csv, Wide
+Accepted values: None, Yaml, Json, Markdown, NUnit3, Csv, Wide, Sarif
 
 Required: False
 Position: Named

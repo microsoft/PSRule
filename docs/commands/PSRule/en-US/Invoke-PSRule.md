@@ -454,12 +454,13 @@ This is the default.
 - NUnit3 - Output is serialized as NUnit3 (XML).
 - Csv - Output is serialized as a comma separated values (CSV).
 - Wide - Output is presented using the wide table format, which includes reason and wraps columns.
+- Sarif - Output is serialized as SARIF.
 
 ```yaml
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases: o
-Accepted values: None, Yaml, Json, Markdown, NUnit3, Csv, Wide
+Accepted values: None, Yaml, Json, Markdown, NUnit3, Csv, Wide, Sarif
 
 Required: False
 Position: Named
