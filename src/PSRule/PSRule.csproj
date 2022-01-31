@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
@@ -13,8 +13,10 @@
     <Authors>Bernie White</Authors>
     <AssemblyTitle>PSRule</AssemblyTitle>
     <RepositoryUrl>https://github.com/Microsoft/PSRule</RepositoryUrl>
+    <PackageProjectUrl>https://aka.ms/ps-rule</PackageProjectUrl>
     <PackageLicenseExpression>https://github.com/Microsoft/PSRule/blob/main/LICENSE</PackageLicenseExpression>
     <Version>0.0.1</Version>
+    <Company>Microsoft Corporation</Company>
     <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
     <Description>Validate infrastructure as code (IaC) and objects using PowerShell rules.
 
@@ -45,6 +47,7 @@ This project uses GitHub Issues to track bugs and feature requests. See GitHub p
     </PackageReference>
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.0" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Sarif.Sdk" Version="2.4.12" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
 

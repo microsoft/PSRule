@@ -98,9 +98,7 @@ namespace PSRule.Pipeline
 
         internal sealed class ModuleInfo
         {
-            private const string FIELD_BASELINE = "Baseline";
             private const string FIELD_PRERELEASE = "Prerelease";
-            private const string FIELD_PSRULE = "PSRule";
             private const string FIELD_PSDATA = "PSData";
             private const string PRERELEASE_SEPARATOR = "-";
 

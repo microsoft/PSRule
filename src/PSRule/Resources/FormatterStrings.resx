@@ -133,7 +133,7 @@
     <value>Contribute and find source: https://github.com/microsoft/PSRule</value>
   </data>
   <data name="HelpDocs" xml:space="preserve">
-    <value>Explore documentation: https://microsoft.github.io/PSRule/</value>
+    <value>Explore documentation: https://aka.ms/ps-rule</value>
   </data>
   <data name="HelpIssues" xml:space="preserve">
     <value>Report issues: https://github.com/microsoft/PSRule/issues</value>

@@ -8,7 +8,6 @@ using System.Globalization;
 using System.Linq;
 using System.Management.Automation;
 using System.Reflection;
-using System.Text;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
@@ -295,6 +294,7 @@ namespace PSRule.Pipeline
                 OutputFormat.Yaml => new YamlOutputWriter(output, Option),
                 OutputFormat.Markdown => new MarkdownOutputWriter(output, Option),
                 OutputFormat.Wide => new WideOutputWriter(output, Option),
+                OutputFormat.Sarif => new SarifOutputWriter(Source, output, Option),
                 _ => output,
             };
         }
@@ -306,7 +306,7 @@ namespace PSRule.Pipeline
                 ? new FileOutputWriter(
                     inner: _Output,
                     option: Option,
-                    encoding: GetEncoding(Option.Output.Encoding),
+                    encoding: Option.Output.GetEncoding(),
                     path: Option.Output.Path,
                     shouldProcess: HostContext.ShouldProcess
                 )
@@ -339,24 +339,6 @@ namespace PSRule.Pipeline
                 result.AddRange(parent);
 
             return result.Count == 0 ? null : result.ToArray();
-        }
-
-        /// <summary>
-        /// Get the character encoding for the specified output encoding.
-        /// </summary>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        private static Encoding GetEncoding(OutputEncoding? encoding)
-        {
-            return encoding switch
-            {
-                OutputEncoding.UTF8 => Encoding.UTF8,
-                OutputEncoding.UTF7 => Encoding.UTF7,
-                OutputEncoding.Unicode => Encoding.Unicode,
-                OutputEncoding.UTF32 => Encoding.UTF32,
-                OutputEncoding.ASCII => Encoding.ASCII,
-                _ => new UTF8Encoding(encoderShouldEmitUTF8Identifier: false),
-            };
         }
 
         private OptionContext GetOptionContext()

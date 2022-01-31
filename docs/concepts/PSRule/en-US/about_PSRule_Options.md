@@ -1887,8 +1887,10 @@ RuleName, TargetName, TargetType, Outcome, OutcomeReason, Synopsis, Recommendati
   - The following columns are included for `Summary` output:
 RuleName, Pass, Fail, Outcome, Synopsis, Recommendation
 - Wide -  Output is presented using the wide table format, which includes reason and wraps columns.
+- Sarif - Output is serialized as SARIF.
 
-The Wide format is ignored by `Assert-PSRule`. `Get-PSRule` only accepts `None`, `Wide`, `Yaml` and `Json`.
+The Wide format is ignored by `Assert-PSRule`.
+`Get-PSRule` only accepts `None`, `Wide`, `Yaml` and `Json`.
 Usage of other formats are treated as `None`.
 
 The `Get-PSRuleBaseline` cmdlet only accepts `None` or `Yaml`.

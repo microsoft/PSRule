@@ -144,4 +144,7 @@
   <data name="NUnit_ReportedReasons" xml:space="preserve">
     <value>The following reasons were reported:</value>
   </data>
+  <data name="SARIF_REPOROOT_Description" xml:space="preserve">
+    <value>The directory into which the repo was cloned.</value>
+  </data>
 </root>

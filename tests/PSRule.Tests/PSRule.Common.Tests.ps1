@@ -656,6 +656,16 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $resultCsv[2].Synopsis | Should -Be 'This is "a" synopsis.';
             ($resultCsv[2].Recommendation -replace "`r`n", "`n") | Should -Be "This is an extended recommendation.`n`n- That includes line breaks`n- And lists";
         }
+
+        It 'Sarif' {
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Sarif);
+            $result | Should -Not -BeNullOrEmpty;
+            $result | Should -BeOfType System.String;
+            $result = $result | ConvertFrom-Json;
+            $result.version | Should -Be '2.1.0';
+            $result.runs[0].tool.driver.name | Should -Be 'PSRule';
+            $result.runs[0].results | Should -HaveCount 1;
+        }
     }
 
     Context 'Using -OutputPath' {
@@ -670,10 +680,25 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 Option = (New-PSRuleOption -OutputEncoding UTF7)
             }
             $Null = Invoke-PSRule @testOptions -OutputFormat Json -OutputPath $testOutputPath;
-            $result = @((Get-Content -Path $testOutputPath -Encoding utf7 -Raw | ConvertFrom-Json));
+            $result = @((Get-Content -Path $testOutputPath -Encoding utf7 -Raw -WarningAction SilentlyContinue | ConvertFrom-Json));
             $result.Length | Should -Be 2;
             $result.RuleName | Should -BeIn 'WithFormat';
             $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
+        }
+
+        It 'Sarif' {
+            $testInputPath = (Join-Path -Path $here -ChildPath 'ObjectFromFile.yaml');
+            $testOutputPath = (Join-Path -Path $outputPath -ChildPath 'newPath/outputPath.results.sarif');
+            $testOptions = @{
+                Path = $ruleFilePath
+                Name = 'WithFormat'
+                InputPath = $testInputPath
+            }
+            $Null = Invoke-PSRule @testOptions -OutputFormat Sarif -OutputPath $testOutputPath;
+            $result = Get-Content -Path $testOutputPath -Encoding UTF8 -Raw -WarningAction SilentlyContinue | ConvertFrom-Json;
+            $result.version | Should -Be '2.1.0';
+            $result.runs[0].tool.driver.name | Should -Be 'PSRule';
+            $result.runs[0].results | Should -HaveCount 2;
         }
     }
 

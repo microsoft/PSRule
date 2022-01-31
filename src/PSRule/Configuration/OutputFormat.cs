@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
@@ -24,6 +24,8 @@ namespace PSRule.Configuration
 
         Wide = 5,
 
-        Markdown = 6
+        Markdown = 6,
+
+        Sarif = 7
     }
 }

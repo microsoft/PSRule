@@ -9,6 +9,7 @@
     <RepositoryUrl>https://github.com/Microsoft/PSRule</RepositoryUrl>
     <PackageLicenseExpression>https://github.com/Microsoft/PSRule/blob/main/LICENSE</PackageLicenseExpression>
     <Version>0.0.1</Version>
+    <Company>Microsoft Corporation</Company>
     <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
     <Description>Tools for building PSRule.
 

@@ -106,7 +106,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Explore documentation: https://microsoft.github.io/PSRule/.
+        ///   Looks up a localized string similar to Explore documentation: https://aka.ms/ps-rule.
         /// </summary>
         internal static string HelpDocs {
             get {

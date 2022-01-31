@@ -336,6 +336,7 @@ This is the default.
 - Markdown - Output is serialized as Markdown.
 - NUnit3 - Output is serialized as NUnit3 (XML).
 - Csv - Output is serialized as a comma separated values (CSV).
+- Sarif - Output is serialized as SARIF.
 
 The `Wide` format is not applicable to `Assert-PSRule`.
 
@@ -343,7 +344,7 @@ The `Wide` format is not applicable to `Assert-PSRule`.
 Type: OutputFormat
 Parameter Sets: (All)
 Aliases: o
-Accepted values: None, Yaml, Json, Markdown, NUnit3, Csv
+Accepted values: None, Yaml, Json, Markdown, NUnit3, Csv, Sarif
 
 Required: False
 Position: Named
