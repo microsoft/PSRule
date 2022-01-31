@@ -1,6 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Badges;
 using Xunit;
 
 namespace PSRule
@@ -10,8 +11,8 @@ namespace PSRule
         [Fact]
         public void TestResources()
         {
-            var width = PSRule.Badges.BadgeResources.Measure("PSRule");
-
+            var width = BadgeResources.Measure("PSRule");
+            Assert.True(width > 0);
         }
     }
 }

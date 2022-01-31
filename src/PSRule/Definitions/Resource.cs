@@ -183,6 +183,8 @@ namespace PSRule.Definitions
 
     public sealed class ResourceTags : Dictionary<string, string>
     {
+        private Hashtable _Hashtable;
+
         public ResourceTags() : base(StringComparer.OrdinalIgnoreCase) { }
 
         /// <summary>
@@ -220,7 +222,10 @@ namespace PSRule.Definitions
         /// </summary>
         public Hashtable ToHashtable()
         {
-            return new Hashtable(this, StringComparer.OrdinalIgnoreCase);
+            if (_Hashtable == null)
+                _Hashtable = new ReadOnlyHashtable(this, StringComparer.OrdinalIgnoreCase);
+
+            return _Hashtable;
         }
 
         /// <summary>

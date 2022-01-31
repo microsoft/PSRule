@@ -95,32 +95,32 @@ namespace PSRule.Rules
         /// A name to identify the target object.
         /// </summary>
         [JsonProperty(PropertyName = "targetName")]
-        public string TargetName { get; internal set; }
+        public string TargetName { get; }
 
         /// <summary>
         /// The type of the target object.
         /// </summary>
         [JsonProperty(PropertyName = "targetType")]
-        public string TargetType { get; internal set; }
+        public string TargetType { get; }
 
         /// <summary>
         /// The current target object.
         /// </summary>
         [JsonIgnore]
         [YamlIgnore]
-        public PSObject TargetObject { get; internal set; }
+        public PSObject TargetObject { get; }
 
         /// <summary>
         /// Custom data set by the rule for this target object.
         /// </summary>
         [JsonProperty(PropertyName = "data")]
-        public Hashtable Data { get; private set; }
+        public Hashtable Data { get; }
 
         /// <summary>
         /// A set of custom fields bound for the target object.
         /// </summary>
         [JsonProperty(PropertyName = "field")]
-        public Hashtable Field { get; internal set; }
+        public Hashtable Field { get; }
 
         /// <summary>
         /// Tags set for the current rule.

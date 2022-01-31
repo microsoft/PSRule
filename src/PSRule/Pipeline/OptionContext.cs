@@ -340,17 +340,20 @@ namespace PSRule.Pipeline
 
         internal void Add(BaselineScope scope)
         {
-            var conventions = scope?.Convention?.Include;
+            if (scope == null)
+                return;
+
+            var conventions = scope.Convention?.Include;
             if (scope.Type == ScopeType.Module && !string.IsNullOrEmpty(scope.ModuleName) && !_ModuleBaselineScope.ContainsKey(scope.ModuleName))
             {
                 _ModuleBaselineScope.Add(scope.ModuleName, scope);
-                conventions = GetConventions(scope.ModuleName, scope?.Convention?.Include);
+                conventions = GetConventions(scope.ModuleName, scope.Convention?.Include);
             }
             else if (scope.Type == ScopeType.Explicit)
             {
                 _Explicit = scope;
                 if (scope.ModuleName != null)
-                    conventions = GetConventions(scope.ModuleName, scope?.Convention?.Include);
+                    conventions = GetConventions(scope.ModuleName, scope.Convention?.Include);
             }
             else if (scope.Type == ScopeType.Workspace)
                 _WorkspaceBaseline = scope;
@@ -363,11 +366,14 @@ namespace PSRule.Pipeline
 
         internal void Add(ConfigScope scope)
         {
-            var conventions = scope?.Convention?.Include;
+            if (scope == null)
+                return;
+
+            var conventions = scope.Convention?.Include;
             if (scope.Type == ScopeType.Module && !string.IsNullOrEmpty(scope.ModuleName))
             {
                 _ModuleConfigScope.Add(scope.ModuleName, scope);
-                conventions = GetConventions(scope.ModuleName, scope?.Convention?.Include);
+                conventions = GetConventions(scope.ModuleName, scope.Convention?.Include);
             }
             else if (scope.Type == ScopeType.Workspace)
                 _WorkspaceConfig = scope;
