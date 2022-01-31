@@ -44,12 +44,16 @@ namespace PSRule.Pipeline.Output
 
         private IDictionary<string, ArtifactLocation> GetBaseIds()
         {
-            var result = new Dictionary<string, ArtifactLocation>(1);
-            result.Add(LOCATION_ID_REPOROOT, new ArtifactLocation
+            return new Dictionary<string, ArtifactLocation>(1)
             {
-                Description = GetMessage(ReportStrings.SARIF_REPOROOT_Description),
-            });
-            return result;
+                {
+                    LOCATION_ID_REPOROOT,
+                    new ArtifactLocation
+                    {
+                        Description = GetMessage(ReportStrings.SARIF_REPOROOT_Description),
+                    }
+                }
+            };
         }
 
         public SarifLog Build()
@@ -147,12 +151,16 @@ namespace PSRule.Pipeline.Output
 
         private static IDictionary<string, MultiformatMessageString> GetMessageStrings(RuleRecord record)
         {
-            var strings = new Dictionary<string, MultiformatMessageString>(1);
-            strings.Add(RECOMMENDATION_MESSAGE_ID, new MultiformatMessageString
+            return new Dictionary<string, MultiformatMessageString>(1)
             {
-                Text = record.Recommendation
-            });
-            return strings;
+                {
+                    RECOMMENDATION_MESSAGE_ID,
+                    new MultiformatMessageString
+                    {
+                        Text = record.Recommendation
+                    }
+                }
+            };
         }
 
         private static IList<Location> GetLocations(RuleRecord record)
