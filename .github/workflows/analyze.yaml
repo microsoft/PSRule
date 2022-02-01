@@ -25,16 +25,24 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      security-events: write
     steps:
 
     - name: Checkout
       uses: actions/checkout@v2.4.0
 
     - name: Run PSRule analysis
-      uses: Microsoft/ps-rule@main
+      uses: Microsoft/ps-rule@dev
       with:
         modules: PSRule.Rules.MSFT.OSS
         prerelease: true
+        outputFormat: Sarif
+        outputPath: reports/ps-rule-results.sarif
+
+    - name: Upload results to security tab
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: reports/ps-rule-results.sarif
 
   devskim:
     name: Analyze with DevSkim
