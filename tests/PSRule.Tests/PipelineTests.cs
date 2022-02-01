@@ -35,12 +35,12 @@ namespace PSRule
             option.Rule.Include = new string[] { "FromFile1" };
             var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
             var pipeline = builder.Build();
-            pipeline.Begin();
 
+            Assert.NotNull(pipeline);
+            pipeline.Begin();
             for (var i = 0; i < 100; i++)
-            {
                 pipeline.Process(PSObject.AsPSObject(testObject1));
-            }
+
             pipeline.End();
         }
 

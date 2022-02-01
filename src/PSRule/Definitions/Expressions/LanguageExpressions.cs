@@ -1235,7 +1235,7 @@ namespace PSRule.Definitions.Expressions
                     return Invalid(context, svalue);
 
                 var binding = context.GetContext()?.TargetBinder?.Using(context.LanguageScope);
-                var name = binding.TargetName;
+                var name = binding?.TargetName;
                 if (string.IsNullOrEmpty(name))
                     return Invalid(context, svalue);
 
@@ -1253,7 +1253,7 @@ namespace PSRule.Definitions.Expressions
                     return Invalid(context, svalue);
 
                 var binding = context.GetContext()?.TargetBinder?.Using(context.LanguageScope);
-                var type = binding.TargetType;
+                var type = binding?.TargetType;
                 if (string.IsNullOrEmpty(type))
                     return Invalid(context, svalue);
 

@@ -22,6 +22,8 @@ namespace PSRule
             option.Convention.Include = new string[] { "Convention1" };
             var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
             var pipeline = builder.Build();
+
+            Assert.NotNull(pipeline);
             pipeline.Begin();
             pipeline.Process(PSObject.AsPSObject(testObject1));
             pipeline.End();

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -22,7 +22,7 @@ namespace PSRule.Runtime
         /// <summary>
         /// Try to get a specific configuration value by name.
         /// </summary>
-        bool TryConfigurationValue(string name, out object result);
+        bool TryConfigurationValue(string key, out object value);
 
         void WithFilter(IResourceFilter resourceFilter);
 

@@ -60,8 +60,8 @@ namespace PSRule
         public void JsonPath()
         {
             var testObject = GetTestObject();
-
-            ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, "$.Value2[*]", caseSensitive: true, value: out object actual1);
+            Assert.True(ObjectHelper.GetPath(bindingContext: null, targetObject: testObject, "$.Value2[*]", caseSensitive: true, value: out object actual1));
+            Assert.NotNull(actual1);
         }
 
         private static TestObject1 GetTestObject()
