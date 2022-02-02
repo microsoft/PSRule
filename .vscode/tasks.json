@@ -124,6 +124,22 @@
                 "clear": true,
                 "panel": "dedicated"
             }
+        },
+        {
+            "type": "PSRule",
+            "problemMatcher": [
+                "$PSRule"
+            ],
+            "modules": [
+                "PSRule.Rules.MSFT.OSS"
+            ],
+            "label": "PSRule: Run analysis",
+            "options": {
+                "env": {
+                    "PSRULE_OUTPUT_FORMAT": "Sarif",
+                    "PSRULE_OUTPUT_PATH": "reports/ps-rule-results.sarif"
+                }
+            }
         }
     ],
     "inputs": [
