@@ -107,6 +107,8 @@ namespace PSRule.Pipeline
             public readonly string Baseline;
             public readonly string Version;
             public readonly string ProjectUri;
+            public readonly string Guid;
+            public readonly string CompanyName;
 
             public ModuleInfo(PSModuleInfo info)
             {
@@ -114,6 +116,8 @@ namespace PSRule.Pipeline
                 Name = info.Name;
                 Version = info.Version?.ToString();
                 ProjectUri = info.ProjectUri?.ToString();
+                Guid = info.Guid.ToString();
+                CompanyName = info.CompanyName;
                 if (TryPrivateData(info, FIELD_PSDATA, out var psData) && psData.ContainsKey(FIELD_PRERELEASE))
                     Version = string.Concat(Version, PRERELEASE_SEPARATOR, psData[FIELD_PRERELEASE].ToString());
             }

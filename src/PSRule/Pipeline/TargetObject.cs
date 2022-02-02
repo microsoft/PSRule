@@ -68,6 +68,9 @@ namespace PSRule.Pipeline
         private TargetSourceCollection ReadSourceInfo(TargetSourceCollection source)
         {
             var result = source ?? new TargetSourceCollection();
+            if (ExpressionHelpers.GetBaseObject(Value) is ITargetInfo targetInfo)
+                result.Add(targetInfo.Source);
+
             Value.ConvertTargetInfoProperty();
             result.AddRange(Value.GetSourceInfo());
             return result;

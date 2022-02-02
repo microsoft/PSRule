@@ -4,6 +4,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Pipeline;
@@ -109,6 +110,9 @@ namespace PSRule
             Assert.Null(builder.Build());
         }
 
+        /// <summary>
+        /// An Invoke pipeline reading from an input file.
+        /// </summary>
         [Fact]
         public void PipelineWithSource()
         {
@@ -116,10 +120,40 @@ namespace PSRule
             option.Rule.Include = new string[] { "FromFile1" };
             var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
             builder.InputPath(new string[] { "./**/ObjectFromFile.json" });
-            var pipeline = builder.Build();
+            var writer = new TestWriter(option);
+            var pipeline = builder.Build(writer);
             Assert.NotNull(pipeline);
             pipeline.Begin();
+            pipeline.Process(null);
             pipeline.End();
+
+            var items = writer.Output.OfType<InvokeResult>().SelectMany(i => i.AsRecord()).ToArray();
+            Assert.Equal(2, items.Length);
+            Assert.True(items[0].HasSource());
+            Assert.True(items[1].HasSource());
+        }
+
+        /// <summary>
+        /// An Invoke pipeline reading from an input file with File format.
+        /// </summary>
+        [Fact]
+        public void PipelineWithFileFormat()
+        {
+            var option = GetOption();
+            option.Input.Format = InputFormat.File;
+            option.Rule.Include = new string[] { "FromFile1" };
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            builder.InputPath(new string[] { "./**/ObjectFromFile.json" });
+            var writer = new TestWriter(option);
+            var pipeline = builder.Build(writer);
+            Assert.NotNull(pipeline);
+            pipeline.Begin();
+            pipeline.Process(null);
+            pipeline.End();
+
+            var items = writer.Output.OfType<InvokeResult>().SelectMany(i => i.AsRecord()).ToArray();
+            Assert.Single(items);
+            Assert.True(items[0].HasSource());
         }
 
         #region Helper methods

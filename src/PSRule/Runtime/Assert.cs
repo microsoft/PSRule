@@ -606,7 +606,7 @@ namespace PSRule.Runtime
             result = Fail();
             for (var i = 0; type != null && i < type.Length; i++)
             {
-                var o = GetBaseObject(fieldValue);
+                var o = ExpressionHelpers.GetBaseObject(fieldValue);
                 if (type[i].IsAssignableFrom(fieldValue.GetType()) ||
                     type[i].IsAssignableFrom(o.GetType()) ||
                     TryTypeName(fieldValue, type[i].FullName))
@@ -633,7 +633,7 @@ namespace PSRule.Runtime
             result = Fail();
             for (var i = 0; type != null && i < type.Length; i++)
             {
-                var o = GetBaseObject(fieldValue);
+                var o = ExpressionHelpers.GetBaseObject(fieldValue);
                 if (StringComparer.OrdinalIgnoreCase.Equals(fieldValue.GetType().FullName, type[i]) ||
                     StringComparer.OrdinalIgnoreCase.Equals(o.GetType().FullName, type[i]) ||
                     TryTypeName(fieldValue, type[i]))
@@ -978,14 +978,6 @@ namespace PSRule.Runtime
         }
 
         #region Helper methods
-
-        /// <summary>
-        /// Get the base object.
-        /// </summary>
-        private static object GetBaseObject(object o)
-        {
-            return o is PSObject pso && pso.BaseObject != null ? pso.BaseObject : o;
-        }
 
         /// <summary>
         /// Fails if the value is null.

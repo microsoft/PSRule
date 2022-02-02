@@ -327,7 +327,7 @@ namespace PSRule.Runtime.ObjectPath
 
         private static IEnumerable<object> GetAll(object o)
         {
-            var baseObject = GetBaseObject(o);
+            var baseObject = ExpressionHelpers.GetBaseObject(o);
             return baseObject is IEnumerable ? GetAllIndex(baseObject) : GetAllField(baseObject);
         }
 
@@ -340,7 +340,7 @@ namespace PSRule.Runtime.ObjectPath
 
         private static IEnumerable<object> GetAllField(object o)
         {
-            var baseObject = GetBaseObject(o);
+            var baseObject = ExpressionHelpers.GetBaseObject(o);
             if (baseObject == null)
                 yield break;
 
@@ -382,7 +382,7 @@ namespace PSRule.Runtime.ObjectPath
         private static bool TryGetField(object o, string fieldName, bool caseSensitive, out object value)
         {
             value = null;
-            var baseObject = GetBaseObject(o);
+            var baseObject = ExpressionHelpers.GetBaseObject(o);
             if (baseObject == null || (baseObject is JValue jValue && jValue.Type == JTokenType.Null))
                 return false;
 
@@ -416,7 +416,7 @@ namespace PSRule.Runtime.ObjectPath
         private static bool TryGetIndex(object o, int index, out object value)
         {
             value = null;
-            var baseObject = GetBaseObject(o);
+            var baseObject = ExpressionHelpers.GetBaseObject(o);
             if (baseObject == null)
                 return false;
 
@@ -632,11 +632,6 @@ namespace PSRule.Runtime.ObjectPath
                         yield return property;
                 }
             }
-        }
-
-        private static object GetBaseObject(object value)
-        {
-            return value is PSObject ovalue && ovalue.BaseObject != null && !(ovalue.BaseObject is PSCustomObject) ? ovalue.BaseObject : value;
         }
     }
 }

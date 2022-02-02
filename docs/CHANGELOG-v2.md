@@ -11,6 +11,14 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.0.0-B2201161:
+
+- General improvements:
+  - Added new properties for module lookup to SARIF results. [#951](https://github.com/microsoft/PSRule/issues/951)
+- Bug fixes:
+  - Fixed rule references in SARIF format for extensions need a toolComponent reference. [#949](https://github.com/microsoft/PSRule/issues/949)
+  - Fixed file objects processed with file input format have no source location. [#950](https://github.com/microsoft/PSRule/issues/950)
+
 ## v2.0.0-B2201161 (pre-release)
 
 What's changed since pre-release v2.0.0-B2201146:

@@ -108,6 +108,8 @@ namespace PSRule.Rules
 
         string ITargetInfo.TargetType => typeof(Rule).FullName;
 
+        TargetSourceInfo ITargetInfo.Source => new TargetSourceInfo { File = Source.Path };
+
         bool IDependencyTarget.Dependency => Source.IsDependency();
 
         ResourceKind IResource.Kind => ResourceKind.Rule;

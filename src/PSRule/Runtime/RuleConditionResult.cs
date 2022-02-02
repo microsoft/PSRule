@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
-using System.Management.Automation;
 using PSRule.Definitions;
 
 namespace PSRule.Runtime
@@ -25,7 +24,7 @@ namespace PSRule.Runtime
                 if (v == null)
                     continue;
 
-                var baseObject = GetBaseObject(v);
+                var baseObject = ExpressionHelpers.GetBaseObject(v);
                 if (!(TryAssertResult(baseObject, out var result) || TryBoolean(baseObject, out result)))
                 {
                     RunspaceContext.CurrentThread.ErrorInvaildRuleResult();
@@ -37,11 +36,6 @@ namespace PSRule.Runtime
                 }
             }
             return new RuleConditionResult(pass, count, hasErrors);
-        }
-
-        private static object GetBaseObject(object o)
-        {
-            return o is PSObject pso ? pso.BaseObject : o;
         }
 
         private static bool TryBoolean(object o, out bool result)
