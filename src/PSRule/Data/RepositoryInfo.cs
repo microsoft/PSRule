@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 namespace PSRule.Data
@@ -21,5 +21,7 @@ namespace PSRule.Data
         string ITargetInfo.TargetName => DisplayName;
 
         string ITargetInfo.TargetType => typeof(RepositoryInfo).FullName;
+
+        TargetSourceInfo ITargetInfo.Source => null;
     }
 }

@@ -508,7 +508,10 @@ namespace PSRule
             PipelineContext.CurrentThread.ExpressionCache[string.Concat(prefix, key)] = value;
         }
 
-        private static object GetBaseObject(object o)
+        /// <summary>
+        /// Get the base object.
+        /// </summary>
+        internal static object GetBaseObject(object o)
         {
             return o is PSObject pso && pso.BaseObject != null && !(pso.BaseObject is PSCustomObject) ? pso.BaseObject : o;
         }

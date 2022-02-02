@@ -37,7 +37,7 @@ namespace PSRule.Commands
             }
 
             var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
-            var baseObject = GetBaseObject(targetObject);
+            var baseObject = ExpressionHelpers.GetBaseObject(targetObject);
             var baseType = baseObject.GetType();
 
             // Handle dictionaries and hashtables
@@ -78,20 +78,6 @@ namespace PSRule.Commands
                 }
             }
             return false;
-        }
-
-        protected static object GetBaseObject(object value)
-        {
-            if (value == null)
-                return null;
-
-            if (value is PSObject pso)
-            {
-                var baseObject = pso.BaseObject;
-                if (baseObject != null)
-                    return baseObject;
-            }
-            return value;
         }
 
         protected static void WriteReason(string text)

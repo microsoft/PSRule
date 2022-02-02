@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -37,7 +37,7 @@ namespace PSRule.Data
                 Add(sourceInfo[i]);
         }
 
-        private void Add(TargetSourceInfo sourceInfo)
+        internal void Add(TargetSourceInfo sourceInfo)
         {
             if (sourceInfo == null)
                 return;

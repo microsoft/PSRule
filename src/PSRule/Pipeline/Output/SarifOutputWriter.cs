@@ -20,17 +20,18 @@ namespace PSRule.Pipeline.Output
     {
         private const string TOOL_NAME = "PSRule";
         private const string TOOL_ORG = "Microsoft Corporation";
+        private const string TOOL_GUID = "0130215d-58eb-4887-b6fa-31ed02500569";
         private const string RECOMMENDATION_MESSAGE_ID = "recommendation";
         private const string LOCATION_KIND_OBJECT = "object";
         private const string LOCATION_ID_REPOROOT = "REPOROOT";
 
         private readonly Run _Run;
-        private readonly Dictionary<string, ReportingDescriptor> _Rules;
+        private readonly Dictionary<string, ReportingDescriptorReference> _Rules;
         private readonly Dictionary<string, ToolComponent> _Extensions;
 
         public SarifBuilder(Source[] source)
         {
-            _Rules = new Dictionary<string, ReportingDescriptor>();
+            _Rules = new Dictionary<string, ReportingDescriptorReference>();
             _Extensions = new Dictionary<string, ToolComponent>();
             _Run = new Run
             {
@@ -74,7 +75,7 @@ namespace PSRule.Pipeline.Output
             var rule = GetRule(record);
             var result = new Result
             {
-                RuleId = rule.Id,
+                Rule = rule,
                 Kind = GetKind(record),
                 Level = GetLevel(record),
                 Message = new Message { Id = RECOMMENDATION_MESSAGE_ID },
@@ -83,18 +84,21 @@ namespace PSRule.Pipeline.Output
             _Run.Results.Add(result);
         }
 
-        private ReportingDescriptor GetRule(RuleRecord record)
+        private ReportingDescriptorReference GetRule(RuleRecord record)
         {
             var id = record.Ref ?? record.RuleId;
-            if (!_Rules.TryGetValue(id, out var descriptor))
-            {
-                descriptor = AddRule(record, id);
-            }
-            return descriptor;
+            if (!_Rules.TryGetValue(id, out var descriptorReference))
+                descriptorReference = AddRule(record, id);
+
+            return descriptorReference;
         }
 
-        private ReportingDescriptor AddRule(RuleRecord record, string id)
+        private ReportingDescriptorReference AddRule(RuleRecord record, string id)
         {
+            if (string.IsNullOrEmpty(record.Info.ModuleName) || !_Extensions.TryGetValue(record.Info.ModuleName, out var toolComponent))
+                toolComponent = _Run.Tool.Driver;
+
+            // Add the rule to the component
             var descriptor = new ReportingDescriptor
             {
                 Id = id,
@@ -104,14 +108,21 @@ namespace PSRule.Pipeline.Output
                 FullDescription = GetMessageString(record.Info.Description),
                 MessageStrings = GetMessageStrings(record)
             };
-            _Rules.Add(id, descriptor);
-
-            // Add to module extensions or PSRule
-            if (string.IsNullOrEmpty(record.Info.ModuleName) || !_Extensions.TryGetValue(record.Info.ModuleName, out var toolComponent))
-                toolComponent = _Run.Tool.Driver;
-
             toolComponent.Rules.Add(descriptor);
-            return descriptor;
+
+            // Create a reference to the rule
+            var descriptorReference = new ReportingDescriptorReference
+            {
+                Id = descriptor.Id,
+                ToolComponent = new ToolComponentReference
+                {
+                    Guid = toolComponent.Guid,
+                    Name = toolComponent.Name,
+                    Index = _Run.Tool.Extensions == null ? -1 : _Run.Tool.Extensions.IndexOf(toolComponent),
+                }
+            };
+            _Rules.Add(id, descriptorReference);
+            return descriptorReference;
         }
 
         private static RunAutomationDetails GetAutomationDetails()
@@ -187,25 +198,20 @@ namespace PSRule.Pipeline.Output
 
         private static PhysicalLocation GetPhysicalLocation(TargetSourceInfo info)
         {
+            var region = new Region
+            {
+                StartLine = info.Line.HasValue ? info.Line.Value : 1,
+                StartColumn = info.Position.HasValue ? info.Position.Value : 0,
+            };
             var location = new PhysicalLocation
             {
                 ArtifactLocation = new ArtifactLocation
                 {
                     Uri = new Uri(info.GetPath(useRelativePath: true), UriKind.Relative),
                     UriBaseId = LOCATION_ID_REPOROOT,
-                }
+                },
+                Region = region,
             };
-            var region = new Region();
-            if (info.Line.HasValue)
-            {
-                region.StartLine = info.Line.Value;
-                location.Region = region;
-            }
-            if (info.Position.HasValue)
-            {
-                region.StartColumn = info.Position.Value;
-                location.Region = region;
-            }
             return location;
         }
 
@@ -244,6 +250,7 @@ namespace PSRule.Pipeline.Output
                     Name = TOOL_NAME,
                     SemanticVersion = version,
                     Organization = TOOL_ORG,
+                    Guid = TOOL_GUID,
                     Rules = new List<ReportingDescriptor>(),
                     InformationUri = new Uri("https://aka.ms/ps-rule", UriKind.Absolute),
                 },
@@ -265,6 +272,13 @@ namespace PSRule.Pipeline.Output
                     {
                         Name = source[i].Module.Name,
                         Version = source[i].Module.Version,
+                        Guid = source[i].Module.Guid,
+                        AssociatedComponent = new ToolComponentReference
+                        {
+                            Name = TOOL_NAME,
+                        },
+                        InformationUri = new Uri(source[i].Module.ProjectUri, UriKind.Absolute),
+                        Organization = source[i].Module.CompanyName,
                         Rules = new List<ReportingDescriptor>(),
                     };
                     _Extensions.Add(extension.Name, extension);
