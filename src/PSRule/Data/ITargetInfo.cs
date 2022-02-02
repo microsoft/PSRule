@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 namespace PSRule.Data
@@ -8,5 +8,7 @@ namespace PSRule.Data
         string TargetName { get; }
 
         string TargetType { get; }
+
+        TargetSourceInfo Source { get; }
     }
 }

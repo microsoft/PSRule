@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.IO;
@@ -8,12 +8,14 @@ namespace PSRule.Data
     public sealed class InputFileInfo : ITargetInfo
     {
         private readonly string _TargetType;
+        private readonly TargetSourceInfo _Source;
 
         internal readonly bool IsUrl;
 
         internal InputFileInfo(string basePath, string path)
         {
             FullName = path;
+            _Source = new TargetSourceInfo(this);
             if (path.IsUri())
             {
                 IsUrl = true;
@@ -45,6 +47,8 @@ namespace PSRule.Data
         string ITargetInfo.TargetName => DisplayName;
 
         string ITargetInfo.TargetType => _TargetType;
+
+        TargetSourceInfo ITargetInfo.Source => _Source;
 
         /// <summary>
         /// Convert to string.

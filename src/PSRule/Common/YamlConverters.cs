@@ -224,7 +224,7 @@ namespace PSRule
             if (value == null)
                 return;
 
-            value = GetBaseObject(value);
+            value = ExpressionHelpers.GetBaseObject(value);
             if (value is string s)
             {
                 emitter.Emit(new Scalar(s));
@@ -258,7 +258,7 @@ namespace PSRule
 
         private static IEnumerable<KeyValuePair<string, object>> GetKV(object value)
         {
-            var o = GetBaseObject(value);
+            var o = ExpressionHelpers.GetBaseObject(value);
             if (o is IDictionary d)
                 foreach (DictionaryEntry kv in d)
                     yield return new KeyValuePair<string, object>(kv.Key.ToString(), kv.Value);
@@ -266,11 +266,6 @@ namespace PSRule
             if (o is PSObject psObject)
                 foreach (var p in psObject.Properties)
                     yield return new KeyValuePair<string, object>(p.Name, p.Value);
-        }
-
-        private static object GetBaseObject(object value)
-        {
-            return value is PSObject psObject && psObject.BaseObject != null && !(psObject.BaseObject is PSCustomObject) ? psObject.BaseObject : value;
         }
     }
 
