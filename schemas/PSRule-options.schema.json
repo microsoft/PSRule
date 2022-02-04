@@ -517,13 +517,20 @@
                     "default": "Detect"
                 },
                 "jsonIndent": {
-                    "type": "number",
+                    "type": "integer",
                     "title": "Output Json Indent",
                     "description": "The indentation level for JSON output. The default is 0.",
                     "markdownDescription": "The indentation level for JSON output. The default is `0`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputjsonindent)",
                     "minimum": 0,
                     "maximum": 4,
                     "default": 0
+                },
+                "sarifProblemsOnly": {
+                    "type": "boolean",
+                    "title": "SARIF Problems Only",
+                    "description": "Determines if SARIF output only includes rules with fail or error outcomes. The default is true.",
+                    "markdownDescription": "Determines if SARIF output only includes rules with fail or error outcomes. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputsarifproblemsonly)",
+                    "default": true
                 }
             },
             "additionalProperties": false

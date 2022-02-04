@@ -658,7 +658,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         It 'Sarif' {
-            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Sarif);
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -OutputFormat Sarif -Option @{ 'Output.SarifProblemsOnly' = $False });
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
             $result = $result | ConvertFrom-Json;
@@ -693,6 +693,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 Path = $ruleFilePath
                 Name = 'WithFormat'
                 InputPath = $testInputPath
+                Option = (New-PSRuleOption -OutputSarifProblemsOnly $False)
             }
             $Null = Invoke-PSRule @testOptions -OutputFormat Sarif -OutputPath $testOutputPath;
             $result = Get-Content -Path $testOutputPath -Encoding UTF8 -Raw -WarningAction SilentlyContinue | ConvertFrom-Json;

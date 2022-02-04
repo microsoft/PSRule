@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -41,6 +41,11 @@ namespace PSRule.Rules
         /// This flag is used to filter outcomes with Invoke-PSRule.
         /// </remarks>
         Processed = Pass | Fail | Error,
+
+        /// <summary>
+        /// Any outcome that is considered a problem that should be addressed.
+        /// </summary>
+        Problem = Fail | Error,
 
         /// <summary>
         /// Any outcome.
