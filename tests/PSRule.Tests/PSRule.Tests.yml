@@ -82,6 +82,7 @@ output:
   format: Json
   outcome: Pass
   path: 'out/OutputPath.txt'
+  sarifProblemsOnly: false
   style: GitHubActions
 
 # Configure rule suppression

@@ -1271,6 +1271,10 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [String]$OutputPath = '',
 
+        # Sets the Output.SarifProblemsOnly option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$OutputSarifProblemsOnly = $True,
+
         # Sets the Output.Style option
         [Parameter(Mandatory = $False)]
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
@@ -1532,6 +1536,10 @@ function Set-PSRuleOption {
         # Sets the Output.Path option
         [Parameter(Mandatory = $False)]
         [String]$OutputPath = '',
+
+        # Sets the Output.SarifProblemsOnly option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$OutputSarifProblemsOnly = $True,
 
         # Sets the Output.Style option
         [Parameter(Mandatory = $False)]
@@ -2235,6 +2243,10 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [String]$OutputPath = '',
 
+        # Sets the Output.SarifProblemsOnly option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$OutputSarifProblemsOnly = $True,
+
         # Sets the Output.Style option
         [Parameter(Mandatory = $False)]
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
@@ -2408,6 +2420,11 @@ function SetOptions {
             $Option.Output.Format = $OutputFormat;
         }
 
+        # Sets option Output.JsonIndent
+        if ($PSBoundParameters.ContainsKey('OutputJsonIndent')) {
+            $Option.Output.JsonIndent = $OutputJsonIndent;
+        }
+
         # Sets option Output.Outcome
         if ($PSBoundParameters.ContainsKey('OutputOutcome')) {
             $Option.Output.Outcome = $OutputOutcome;
@@ -2418,14 +2435,14 @@ function SetOptions {
             $Option.Output.Path = $OutputPath;
         }
 
+        # Sets option Output.SarifProblemsOnly
+        if ($PSBoundParameters.ContainsKey('OutputSarifProblemsOnly')) {
+            $Option.Output.SarifProblemsOnly = $OutputSarifProblemsOnly;
+        }
+
         # Sets option Output.Style
         if ($PSBoundParameters.ContainsKey('OutputStyle')) {
             $Option.Output.Style = $OutputStyle;
-        }
-
-        # Sets option Output.JsonIndent
-        if ($PSBoundParameters.ContainsKey('OutputJsonIndent')) {
-            $Option.Output.JsonIndent = $OutputJsonIndent;
         }
 
         # Sets option Rule.IncludeLocal
