@@ -1,7 +1,7 @@
 # Validate Azure resource configuration
 
 PSRule makes it easy to validate Infrastructure as Code (IaC) such as Azure resources.
-For example, Azure resources can be validated to match and internal standard or baseline.
+For example, Azure resources can be validated to match an internal standard or baseline.
 
 !!! Note
     A pre-built module to validate Azure resources already exists.
