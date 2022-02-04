@@ -133,7 +133,7 @@
             "modules": [
                 "PSRule.Rules.MSFT.OSS"
             ],
-            "label": "PSRule: Run analysis",
+            "label": "PSRule: Run analysis for repository",
             "options": {
                 "env": {
                     "PSRULE_OUTPUT_FORMAT": "Sarif",

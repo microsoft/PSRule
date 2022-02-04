@@ -11,6 +11,16 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.0.0-B2202017 (pre-release)
+
+What's changed since pre-release v2.0.0-B2202006:
+
+- Bug fixes:
+  - Fixed GitHub code scanning alerts treats pass as problems. [#955](https://github.com/microsoft/PSRule/issues/955)
+    - By default, SARIF output will only include fail or error outcomes.
+    - Added `Output.SarifProblemsOnly` option to include pass outcomes.
+  - Fixed SARIF output includes rule property for default tool component. [#956](https://github.com/microsoft/PSRule/issues/956)
+
 ## v2.0.0-B2202006 (pre-release)
 
 What's changed since pre-release v2.0.0-B2201161:

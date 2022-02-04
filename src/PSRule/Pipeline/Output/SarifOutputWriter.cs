@@ -78,9 +78,16 @@ namespace PSRule.Pipeline.Output
                 Rule = rule,
                 Kind = GetKind(record),
                 Level = GetLevel(record),
-                Message = new Message { Id = RECOMMENDATION_MESSAGE_ID },
+                Message = new Message { Text = record.Recommendation },
                 Locations = GetLocations(record),
             };
+
+            // SARIF2004: Use the RuleId property instead of Rule for standalone rules.
+            if (rule.ToolComponent.Guid == TOOL_GUID)
+            {
+                result.RuleId = rule.Id;
+                result.Rule = null;
+            }
             _Run.Results.Add(result);
         }
 
@@ -106,7 +113,12 @@ namespace PSRule.Pipeline.Output
                 ShortDescription = GetMessageString(record.Info.Synopsis),
                 HelpUri = record.Info.GetOnlineHelpUri(),
                 FullDescription = GetMessageString(record.Info.Description),
-                MessageStrings = GetMessageStrings(record)
+                MessageStrings = GetMessageStrings(record),
+                DefaultConfiguration = new ReportingConfiguration
+                {
+                    Enabled = true,
+                    Level = GetLevel(record),
+                }
             };
             toolComponent.Rules.Add(descriptor);
 
@@ -293,12 +305,14 @@ namespace PSRule.Pipeline.Output
     {
         private readonly SarifBuilder _Builder;
         private readonly Encoding _Encoding;
+        private readonly bool _ReportAll;
 
         internal SarifOutputWriter(Source[] source, PipelineWriter inner, PSRuleOption option)
             : base(inner, option)
         {
             _Builder = new SarifBuilder(source);
             _Encoding = option.Output.GetEncoding();
+            _ReportAll = !option.Output.SarifProblemsOnly.GetValueOrDefault(OutputOption.Default.SarifProblemsOnly.Value);
         }
 
         public override void WriteObject(object sendToPipeline, bool enumerateCollection)
@@ -315,7 +329,8 @@ namespace PSRule.Pipeline.Output
             {
                 var records = o[i].AsRecord();
                 for (var j = 0; j < records.Length; j++)
-                    _Builder.Add(records[j]);
+                    if (ShouldReport(records[j]))
+                        _Builder.Add(records[j]);
             }
             var log = _Builder.Build();
             using var stream = new MemoryStream();
@@ -324,6 +339,12 @@ namespace PSRule.Pipeline.Output
             stream.Seek(0, SeekOrigin.Begin);
             using var reader = new StreamReader(stream);
             return reader.ReadToEnd();
+        }
+
+        private bool ShouldReport(RuleRecord record)
+        {
+            return _ReportAll ||
+                (record.Outcome & RuleOutcome.Problem) != RuleOutcome.None;
         }
     }
 }

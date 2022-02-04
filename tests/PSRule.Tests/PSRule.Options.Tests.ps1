@@ -1456,6 +1456,47 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Output.JsonIndent' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Output.JsonIndent | Should -Be 0;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Output.JsonIndent' = 2 };
+            $option.Output.JsonIndent | Should -Be 2;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests13.yml');
+            $option.Output.JsonIndent | Should -Be 4;
+        }
+
+        It 'from Environment' {
+            try {
+                $env:PSRULE_OUTPUT_JSONINDENT = 2;
+                $option = New-PSRuleOption;
+                $option.Output.JsonIndent | Should -Be 2;
+            }
+            finally {
+                Remove-Item 'env:PSRULE_OUTPUT_JSONINDENT' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -OutputJsonIndent 4 -Path $emptyOptionsFilePath;
+            $option.Output.JsonIndent | Should -Be 4;
+        }
+
+        It 'from invalid range using -OutputJsonIndent' {
+            { New-PSRuleOption -OutputJsonIndent -1 } | Should -Throw;
+            { New-PSRuleOption -OutputJsonIndent 5 } | Should -Throw;
+
+            { Set-PSRuleOption -OutputJsonIndent -1 } | Should -Throw;
+            { Set-PSRuleOption -OutputJsonIndent 5 } | Should -Throw;
+        }
+    }
+
     Context 'Read Output.Outcome' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -1522,6 +1563,39 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Output.SarifProblemsOnly' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Output.SarifProblemsOnly | Should -Be $True;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Output.SarifProblemsOnly' = $False };
+            $option.Output.SarifProblemsOnly | Should -Be $False;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Output.SarifProblemsOnly | Should -Be $False;
+        }
+
+        It 'from Environment' {
+            try {
+                $env:PSRULE_OUTPUT_SARIFPROBLEMSONLY = 'false';
+                $option = New-PSRuleOption;
+                $option.Output.SarifProblemsOnly | Should -Be $False;
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_OUTPUT_SARIFPROBLEMSONLY' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -OutputSarifProblemsOnly $False -Path $emptyOptionsFilePath;
+            $option.Output.SarifProblemsOnly | Should -Be $False;
+        }
+    }
+
     Context 'Read Output.Style' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -1552,47 +1626,6 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         It 'from parameter' {
             $option = New-PSRuleOption -OutputStyle 'AzurePipelines' -Path $emptyOptionsFilePath;
             $option.Output.Style | Should -Be 'AzurePipelines';
-        }
-    }
-
-    Context 'Output.JsonIndent' {
-        It 'from default' {
-            $option = New-PSRuleOption -Default;
-            $option.Output.JsonIndent | Should -Be 0;
-        }
-
-        It 'from Hashtable' {
-            $option = New-PSRuleOption -Option @{ 'Output.JsonIndent' = 2 };
-            $option.Output.JsonIndent | Should -Be 2;
-        }
-
-        It 'from YAML' {
-            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests13.yml');
-            $option.Output.JsonIndent | Should -Be 4;
-        }
-
-        It 'from Environment' {
-            try {
-                $env:PSRULE_OUTPUT_JSONINDENT = 2;
-                $option = New-PSRuleOption;
-                $option.Output.JsonIndent | Should -Be 2;
-            }
-            finally {
-                Remove-Item 'env:PSRULE_OUTPUT_JSONINDENT' -Force;
-            }
-        }
-
-        It 'from parameter' {
-            $option = New-PSRuleOption -OutputJsonIndent 4 -Path $emptyOptionsFilePath;
-            $option.Output.JsonIndent | Should -Be 4;
-        }
-
-        It 'from invalid range using -OutputJsonIndent' {
-            { New-PSRuleOption -OutputJsonIndent -1 } | Should -Throw;
-            { New-PSRuleOption -OutputJsonIndent 5 } | Should -Throw;
-
-            { Set-PSRuleOption -OutputJsonIndent -1 } | Should -Throw;
-            { Set-PSRuleOption -OutputJsonIndent 5 } | Should -Throw;
         }
     }
 
@@ -1911,6 +1944,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         }
     }
 
+    Context 'Read Output.JsonIndent' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -OutputJsonIndent 4 @optionParams;
+            $option.Output.JsonIndent | Should -Be 4;
+        }
+    }
+
     Context 'Read Output.Outcome' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputOutcome Fail @optionParams;
@@ -1925,17 +1965,17 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         }
     }
 
+    Context 'Read Output.SarifProblemsOnly' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -OutputSarifProblemsOnly $False @optionParams;
+            $option.Output.SarifProblemsOnly | Should -Be $False;
+        }
+    }
+
     Context 'Read Output.Style' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputStyle 'AzurePipelines' @optionParams;
             $option.Output.Style | Should -Be 'AzurePipelines';
-        }
-    }
-
-    Context 'Read Output.JsonIndent' {
-        It 'from parameter' {
-            $option = Set-PSRuleOption -OutputJsonIndent 4 @optionParams;
-            $option.Output.JsonIndent | Should -Be 4;
         }
     }
 

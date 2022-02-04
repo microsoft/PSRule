@@ -38,10 +38,11 @@ The following workspace options are available for use:
 - [Output.Encoding](#outputencoding)
 - [Output.Footer](#outputfooter)
 - [Output.Format](#outputformat)
+- [Output.JsonIndent](#outputjsonindent)
 - [Output.Outcome](#outputoutcome)
 - [Output.Path](#outputpath)
+- [Output.SarifProblemsOnly](#outputsarifproblemsonly)
 - [Output.Style](#outputstyle)
-- [Output.JsonIndent](#outputjsonindent)
 - [Requires](#requires)
 - [Suppression](#suppression)
 
@@ -2000,6 +2001,20 @@ This option only applies to `Invoke-PSRule`.
 `Invoke-PSRule` also includes a parameter `-OutputPath` to set this option at runtime.
 If specified, the `-OutputPath` parameter take precedence, over this option.
 
+Syntax:
+
+```yaml
+output:
+  path: string
+```
+
+Default:
+
+```yaml
+output:
+  path: null
+```
+
 This option can be specified using:
 
 ```powershell
@@ -2041,6 +2056,68 @@ variables:
   value: out/results.yaml
 ```
 
+### Output.SarifProblemsOnly
+
+Determines if SARIF output only includes rules with fail or error outcomes.
+By default, only rules with fail or error outcomes are included for compatibility with external tools.
+To include rules with pass outcomes, set this option to `false`.
+This option only applies when the output format is `Sarif`.
+
+Syntax:
+
+```yaml
+output:
+  sarifProblemsOnly: boolean
+```
+
+Default:
+
+```yaml
+output:
+  sarifProblemsOnly: true
+```
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the OutputSarifProblemsOnly parameter
+$option = New-PSRuleOption -OutputSarifProblemsOnly $False;
+```
+
+```powershell
+# PowerShell: Using the Output.SarifProblemsOnly hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.SarifProblemsOnly' = $False };
+```
+
+```powershell
+# PowerShell: Using the OutputSarifProblemsOnly parameter to set YAML
+Set-PSRuleOption -OutputSarifProblemsOnly $False;
+```
+
+```yaml
+# YAML: Using the output/sarifProblemsOnly property
+output:
+  sarifProblemsOnly: false
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_OUTPUT_SARIFPROBLEMSONLY=false
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_OUTPUT_SARIFPROBLEMSONLY: false
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_OUTPUT_SARIFPROBLEMSONLY
+  value: false
+```
+
 ### Output.Style
 
 Configures the style that results will be presented in.
@@ -2066,6 +2143,20 @@ Detect uses the following logic:
 2. If the `GITHUB_ACTIONS` environment variable is set to `true`, `GitHubActions` will be used.
 3. If the `TERM_PROGRAM` environment variable is set to `vscode`, `VisualStudioCode` will be used.
 4. Use `Client`.
+
+Syntax:
+
+```yaml
+output:
+  style: string
+```
+
+Default:
+
+```yaml
+output:
+  style: Detect
+```
 
 This option can be specified using:
 
@@ -2523,6 +2614,7 @@ output:
   footer: RuleCount
   format: Json
   outcome: Fail
+  sarifProblemsOnly: false
   style: GitHubActions
 
 # Configure rule suppression
@@ -2619,6 +2711,7 @@ output:
   footer: Default
   format: None
   outcome: Processed
+  sarifProblemsOnly: true
   style: Detect
 
 # Configure rule suppression
