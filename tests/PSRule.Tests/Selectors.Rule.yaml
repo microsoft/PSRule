@@ -944,4 +944,109 @@ spec:
     name: '.'
     isUpper: true
 
+---
+# Synopsis: Test withinPath with source
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlSourceWithinPath
+spec:
+  if:
+    source: 'Template'
+    withinPath:
+      - "deployments/path/"
+
+---
+# Synopsis: Test withinPath with field
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlFieldWithinPath
+spec:
+  if:
+    field: 'FullName'
+    withinPath:
+      - "policy/"
+      - "security/"
+
+---
+# Synopsis: Test withinPath with source and case sensitive
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlSourceWithinPathCaseSensitive
+spec:
+  if:
+    source: 'Template'
+    withinPath:
+      - "Deployments/Path/"
+    caseSensitive: true
+
+---
+# Synopsis: Test withinPath with field and case sensitive
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlFieldWithinPathCaseSensitive
+spec:
+  if:
+    field: 'FullName'
+    withinPath:
+      - "POLICY/"
+      - "SECURITY/"
+    caseSensitive: true
+
+---
+# Synopsis: Test notWithinPath with source
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlSourceNotWithinPath
+spec:
+  if:
+    source: 'Template'
+    notWithinPath:
+      - "deployments/path/"
+
+---
+# Synopsis: Test notWithinPath with field
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlFieldNotWithinPath
+spec:
+  if:
+    field: 'FullName'
+    notWithinPath:
+      - "policy/"
+      - "security/"
+
+---
+# Synopsis: Test notWithinPath with source and case sensitive
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlSourceNotWithinPathCaseSensitive
+spec:
+  if:
+    source: 'Template'
+    notWithinPath:
+      - "Deployments/Path/"
+    caseSensitive: true
+
+---
+# Synopsis: Test notWithinPath with field and case sensitive
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlFieldNotWithinPathCaseSensitive
+spec:
+  if:
+    field: 'FullName'
+    notWithinPath:
+      - "POLICY/"
+      - "SECURITY/"
+    caseSensitive: true
+
+
 #endregion With name tests

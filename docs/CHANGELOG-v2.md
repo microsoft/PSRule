@@ -11,6 +11,15 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.0.0-B2202017:
+
+- New features:
+  - Added source expression property. [#933](https://github.com/microsoft/PSRule/issues/933)
+    - Included the following expressions:
+      - `source`
+      - `withinPath`
+      - `notWithinPath`
+
 ## v2.0.0-B2202017 (pre-release)
 
 What's changed since pre-release v2.0.0-B2202006:

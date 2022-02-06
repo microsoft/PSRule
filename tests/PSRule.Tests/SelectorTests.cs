@@ -31,7 +31,7 @@ namespace PSRule
             context.Begin();
             var selector = HostHelper.GetSelector(GetSource(path), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(77, selector.Length);
+            Assert.Equal(85, selector.Length);
 
             Assert.Equal("BasicSelector", selector[0].Name);
             Assert.Equal($"{type}AllOf", selector[4].Name);
@@ -259,6 +259,104 @@ namespace PSRule
 
             context.EnterTargetObject(new TargetObject(actual7));
             Assert.True(withName.Match(actual7));
+        }
+
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void WithinPathExpression(string type, string path)
+        {
+            // Source Case insensitive
+            var sourceWithinPath = GetSelectorVisitor($"{type}SourceWithinPath", GetSource(path), out var context);
+
+            var source = new PSObject();
+            source.Properties.Add(new PSNoteProperty("file", "deployments/path/template.json"));
+            source.Properties.Add(new PSNoteProperty("line", 100));
+            source.Properties.Add(new PSNoteProperty("position", 1000));
+            source.Properties.Add(new PSNoteProperty("Type", "Template"));
+            var info = new PSObject();
+            info.Properties.Add(new PSNoteProperty("source", new PSObject[] { source }));
+            var actual1 = new PSObject();
+            actual1.Properties.Add(new PSNoteProperty("Name", "TestObject1"));
+            actual1.Properties.Add(new PSNoteProperty("Value", 1));
+            actual1.Properties.Add(new PSNoteProperty("_PSRule", info));
+
+            context.EnterTargetObject(new TargetObject(actual1));
+
+            Assert.True(sourceWithinPath.Match(actual1));
+
+            // Source Case sensitive
+            var sourceWithinPathCaseSensitive = GetSelectorVisitor($"{type}SourceWithinPathCaseSensitive", GetSource(path), out context);
+
+            context.EnterTargetObject(new TargetObject(actual1));
+
+            Assert.False(sourceWithinPathCaseSensitive.Match(actual1));
+
+            // Field Case insensitive
+            var fieldWithinPath = GetSelectorVisitor($"{type}FieldWithinPath", GetSource(path), out context);
+
+            var actual2 = new PSObject();
+            actual2.Properties.Add(new PSNoteProperty("FullName", "policy/policy.json"));
+
+            context.EnterTargetObject(new TargetObject(actual2));
+
+            Assert.True(fieldWithinPath.Match(actual2));
+
+            // Field Case sensitive
+            var fieldWithinPathCaseSensitive = GetSelectorVisitor($"{type}FieldWithinPathCaseSensitive", GetSource(path), out context);
+
+            context.EnterTargetObject(new TargetObject(actual2));
+
+            Assert.False(fieldWithinPathCaseSensitive.Match(actual2));
+        }
+
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void NotWithinPathExpression(string type, string path)
+        {
+            // Source Case insensitive
+            var notWithinPath = GetSelectorVisitor($"{type}SourceNotWithinPath", GetSource(path), out var context);
+
+            var source = new PSObject();
+            source.Properties.Add(new PSNoteProperty("file", "deployments/path/template.json"));
+            source.Properties.Add(new PSNoteProperty("line", 100));
+            source.Properties.Add(new PSNoteProperty("position", 1000));
+            source.Properties.Add(new PSNoteProperty("Type", "Template"));
+            var info = new PSObject();
+            info.Properties.Add(new PSNoteProperty("source", new PSObject[] { source }));
+            var actual1 = new PSObject();
+            actual1.Properties.Add(new PSNoteProperty("Name", "TestObject1"));
+            actual1.Properties.Add(new PSNoteProperty("Value", 1));
+            actual1.Properties.Add(new PSNoteProperty("_PSRule", info));
+
+            context.EnterTargetObject(new TargetObject(actual1));
+
+            Assert.False(notWithinPath.Match(actual1));
+
+            // Source Case sensitive
+            var notWithinPathCaseSensitive = GetSelectorVisitor($"{type}SourceNotWithinPathCaseSensitive", GetSource(path), out context);
+
+            context.EnterTargetObject(new TargetObject(actual1));
+
+            Assert.True(notWithinPathCaseSensitive.Match(actual1));
+
+            // Field Case insensitive
+            var fieldNotWithinPath = GetSelectorVisitor($"{type}FieldNotWithinPath", GetSource(path), out context);
+
+            var actual2 = new PSObject();
+            actual2.Properties.Add(new PSNoteProperty("FullName", "policy/policy.json"));
+
+            context.EnterTargetObject(new TargetObject(actual2));
+
+            Assert.False(fieldNotWithinPath.Match(actual2));
+
+            // Field Case sensitive
+            var fieldNotWithinPathCaseSensitive = GetSelectorVisitor($"{type}FieldNotWithinPathCaseSensitive", GetSource(path), out context);
+
+            context.EnterTargetObject(new TargetObject(actual2));
+
+            Assert.True(fieldNotWithinPathCaseSensitive.Match(actual2));
         }
 
         [Theory]
