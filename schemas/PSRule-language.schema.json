@@ -770,6 +770,12 @@
                 },
                 {
                     "$ref": "#/definitions/selectorConditionHasDefault"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionWithinPath"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionNotWithinPath"
                 }
             ]
         },
@@ -790,6 +796,9 @@
                 },
                 {
                     "$ref": "#/definitions/selectorPropertyName"
+                },
+                {
+                    "$ref": "#/definitions/selectorPropertySource"
                 }
             ]
         },
@@ -833,6 +842,19 @@
             },
             "required": [
                 "name"
+            ]
+        },
+        "selectorPropertySource": {
+            "properties": {
+                "source": {
+                    "type": "string",
+                    "title": "Source",
+                    "description": "The source of the object currently being processed by the pipeline.",
+                    "markdownDescription": "The source of the object currently being processed by the pipeline. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#source)"
+                }
+            },
+            "required": [
+                "source"
             ]
         },
         "selectorOperatorAllOf": {
@@ -1524,6 +1546,68 @@
             "oneOf": [
                 {
                     "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionWithinPath": {
+            "type": "object",
+            "properties": {
+                "withinPath": {
+                    "type": "array",
+                    "title": "Within Path",
+                    "description": "The file path must exist within the required paths.",
+                    "markdownDescription": "The file path must exist within the required paths. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#withinpath)",
+                    "default": [],
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines if comparing values is case-sensitive.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#withinpath)",
+                    "default": false
+                }
+            },
+            "required": [
+                "withinPath"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorPropertiesString"
+                }
+            ]
+        },
+        "selectorConditionNotWithinPath": {
+            "type": "object",
+            "properties": {
+                "notWithinPath": {
+                    "type": "array",
+                    "title": "Not Within Path",
+                    "description": "The file path must not exist within the required paths.",
+                    "markdownDescription": "The file path must not exist within the required paths. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notwithinpath)",
+                    "default": [],
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines if comparing values is case-sensitive.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notwithinpath)",
+                    "default": false
+                }
+            },
+            "required": [
+                "notWithinPath"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorPropertiesString"
                 }
             ]
         },

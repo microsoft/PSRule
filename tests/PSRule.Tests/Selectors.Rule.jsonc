@@ -1255,5 +1255,141 @@
                 "isUpper": true
             }
         }
+    },
+    {
+        // Synopsis: Test withinPath with source
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonSourceWithinPath"
+        },
+        "spec": {
+            "if": {
+                "source": "Template",
+                "withinPath": [
+                    "deployments/path/"
+                ]
+            }
+        }
+    },
+    {
+        // Synopsis: Test withinPath with field
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonFieldWithinPath"
+        },
+        "spec": {
+            "if": {
+                "field": "FullName",
+                "withinPath": [
+                    "policy/",
+                    "security/"
+                ]
+            }
+        }
+    },
+    {
+        // Synopsis: Test withinPath with source and case sensitive
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonSourceWithinPathCaseSensitive"
+        },
+        "spec": {
+            "if": {
+                "source": "Template",
+                "withinPath": [
+                    "Deployments/Path/"
+                ],
+                "caseSensitive": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test withinPath with field and case sensitive
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonFieldWithinPathCaseSensitive"
+        },
+        "spec": {
+            "if": {
+                "field": "FullName",
+                "withinPath": [
+                    "POLICY/",
+                    "SECURITY/"
+                ],
+                "caseSensitive": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test notWithinPath with source
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonSourceNotWithinPath"
+        },
+        "spec": {
+            "if": {
+                "source": "Template",
+                "notWithinPath": [
+                    "deployments/path/"
+                ]
+            }
+        }
+    },
+    {
+        // Synopsis: Test notWithinPath with field
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonFieldNotWithinPath"
+        },
+        "spec": {
+            "if": {
+                "field": "FullName",
+                "notWithinPath": [
+                    "policy/",
+                    "security/"
+                ]
+            }
+        }
+    },
+    {
+        // Synopsis: Test notWithinPath with source and case sensitive
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonSourceNotWithinPathCaseSensitive"
+        },
+        "spec": {
+            "if": {
+                "source": "Template",
+                "notWithinPath": [
+                    "Deployments/Path/"
+                ],
+                "caseSensitive": true
+            }
+        }
+    },
+    {
+        // Synopsis: Test notWithinPath with field and case sensitive
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Selector",
+        "metadata": {
+            "name": "JsonFieldNotWithinPathCaseSensitive"
+        },
+        "spec": {
+            "if": {
+                "field": "FullName",
+                "notWithinPath": [
+                    "POLICY/",
+                    "SECURITY/"
+                ],
+                "caseSensitive": true
+            }
+        }
     }
 ]

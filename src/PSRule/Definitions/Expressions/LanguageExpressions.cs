@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using PSRule.Configuration;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -309,6 +311,8 @@ namespace PSRule.Definitions.Expressions
         private const string SUBSET = "subset";
         private const string COUNT = "count";
         private const string VERSION = "version";
+        private const string WITHINPATH = "withinPath";
+        private const string NOTWITHINPATH = "notWithinPath";
 
         // Operators
         private const string IF = "if";
@@ -326,6 +330,7 @@ namespace PSRule.Definitions.Expressions
         private const string IGNORESCHEME = "ignoreScheme";
         private const string INCLUDEPRERELEASE = "includePrerelease";
         private const string PROPERTY_SCHEMA = "$schema";
+        private const string SOURCE = "source";
 
         // Comparisons
         private const string LESS_THAN = "<";
@@ -372,6 +377,8 @@ namespace PSRule.Definitions.Expressions
             new LanguageExpresssionDescriptor(HASSCHEMA, LanguageExpressionType.Condition, HasSchema),
             new LanguageExpresssionDescriptor(VERSION, LanguageExpressionType.Condition, Version),
             new LanguageExpresssionDescriptor(HASDEFAULT, LanguageExpressionType.Condition, HasDefault),
+            new LanguageExpresssionDescriptor(WITHINPATH, LanguageExpressionType.Condition, WithinPath),
+            new LanguageExpresssionDescriptor(NOTWITHINPATH, LanguageExpressionType.Condition, NotWithinPath),
         };
 
         #region Operators
@@ -1001,6 +1008,62 @@ namespace PSRule.Definitions.Expressions
             return false;
         }
 
+        internal static bool WithinPath(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryOperand(context, WITHINPATH, o, properties, out var operand) &&
+                TryPropertyStringArray(properties, WITHINPATH, out var path) &&
+                GetCaseSensitive(properties, out var caseSensitive))
+            {
+                context.ExpressionTrace(WITHINPATH, operand.Value, path);
+
+                var originPath = ExpressionHelpers.GetObjectOriginPath(operand.Value);
+
+                for (var i = 0; path != null && i < path.Length; i++)
+                {
+                    if (ExpressionHelpers.WithinPath(originPath, path[i], caseSensitive))
+                        return Pass();
+                }
+
+                return Fail(
+                    context,
+                    ReasonStrings.WithinPath,
+                    ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), originPath),
+                    StringJoinNormalizedPath(path)
+                );
+            }
+
+            return Invalid(context, WITHINPATH);
+        }
+
+        internal static bool NotWithinPath(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryOperand(context, WITHINPATH, o, properties, out var operand) &&
+                TryPropertyStringArray(properties, NOTWITHINPATH, out var path) &&
+                GetCaseSensitive(properties, out var caseSensitive))
+            {
+                context.ExpressionTrace(WITHINPATH, operand.Value, path);
+
+                var originPath = ExpressionHelpers.GetObjectOriginPath(operand.Value);
+
+                for (var i = 0; path != null && i < path.Length; i++)
+                {
+                    if (ExpressionHelpers.WithinPath(originPath, path[i], caseSensitive))
+                        return Fail(
+                            context,
+                            ReasonStrings.NotWithinPath,
+                            ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), originPath),
+                            ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), path[i])
+                        );
+                }
+
+                return Pass();
+            }
+
+            return Invalid(context, NOTWITHINPATH);
+        }
+
         internal static bool IsLower(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
@@ -1058,7 +1121,8 @@ namespace PSRule.Definitions.Expressions
         internal static bool HasSchema(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (TryPropertyArray(properties, HASSCHEMA, out var expectedValue) && TryField(properties, out var field) &&
+            if (TryPropertyArray(properties, HASSCHEMA, out var expectedValue) &&
+                TryField(properties, out var field) &&
                 TryPropertyBoolOrDefault(properties, IGNORESCHEME, out var ignoreScheme, false))
             {
                 context.ExpressionTrace(HASSCHEMA, field, expectedValue);
@@ -1262,6 +1326,21 @@ namespace PSRule.Definitions.Expressions
             return operand != null;
         }
 
+        private static bool TrySource(IExpressionContext context, LanguageExpression.PropertyBag properties, out IOperand operand)
+        {
+            operand = null;
+            if (properties.TryGetString(SOURCE, out var sourceValue))
+            {
+                var source = context?.GetContext()?.TargetObject?.Source[sourceValue];
+
+                if (source == null)
+                    return Invalid(context, sourceValue);
+
+                operand = Operand.FromSource(source);
+            }
+            return operand != null;
+        }
+
         private static bool GetCaseSensitive(LanguageExpression.PropertyBag properties, out bool caseSensitive, bool defaultValue = false)
         {
             return TryPropertyBoolOrDefault(properties, CASESENSITIVE, out caseSensitive, defaultValue);
@@ -1290,6 +1369,7 @@ namespace PSRule.Definitions.Expressions
             return TryField(context, properties, o, out operand) ||
                 TryType(context, properties, out operand) ||
                 TryName(context, properties, out operand) ||
+                TrySource(context, properties, out operand) ||
                 Invalid(context, name);
         }
 
@@ -1332,6 +1412,12 @@ namespace PSRule.Definitions.Expressions
         private static string StringJoin(Array propertyValue)
         {
             return string.Concat("'", string.Join("', '", propertyValue), "'");
+        }
+
+        private static string StringJoinNormalizedPath(string[] path)
+        {
+            var normalizedPath = path.Select(p => ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), p));
+            return StringJoin(normalizedPath.ToArray());
         }
 
         #endregion Helper methods
