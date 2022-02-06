@@ -1015,8 +1015,9 @@ namespace PSRule.Definitions.Expressions
                 TryPropertyStringArray(properties, WITHINPATH, out var path) &&
                 GetCaseSensitive(properties, out var caseSensitive))
             {
-                var originPath = ExpressionHelpers.GetObjectOriginPath(operand.Value);
+                context.ExpressionTrace(WITHINPATH, operand.Value, path);
 
+                var originPath = ExpressionHelpers.GetObjectOriginPath(operand.Value);
 
                 for (var i = 0; path != null && i < path.Length; i++)
                 {
@@ -1042,6 +1043,8 @@ namespace PSRule.Definitions.Expressions
                 TryPropertyStringArray(properties, NOTWITHINPATH, out var path) &&
                 GetCaseSensitive(properties, out var caseSensitive))
             {
+                context.ExpressionTrace(WITHINPATH, operand.Value, path);
+
                 var originPath = ExpressionHelpers.GetObjectOriginPath(operand.Value);
 
                 for (var i = 0; path != null && i < path.Length; i++)
