@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -18,9 +18,10 @@ namespace PSRule.Configuration
         private const OutputEncoding DEFAULT_ENCODING = OutputEncoding.Default;
         private const FooterFormat DEFAULT_FOOTER = FooterFormat.Default;
         private const OutputFormat DEFAULT_FORMAT = OutputFormat.None;
-        private const RuleOutcome DEFAULT_OUTCOME = RuleOutcome.Processed;
-        private const OutputStyle DEFAULT_STYLE = OutputStyle.Detect;
         private const int DEFAULT_JSON_INDENT = 0;
+        private const RuleOutcome DEFAULT_OUTCOME = RuleOutcome.Processed;
+        private const bool DEFAULT_SARIF_PROBLEMS_ONLY = true;
+        private const OutputStyle DEFAULT_STYLE = OutputStyle.Detect;
 
         internal static readonly OutputOption Default = new OutputOption
         {
@@ -29,9 +30,10 @@ namespace PSRule.Configuration
             Encoding = DEFAULT_ENCODING,
             Footer = DEFAULT_FOOTER,
             Format = DEFAULT_FORMAT,
+            JsonIndent = DEFAULT_JSON_INDENT,
             Outcome = DEFAULT_OUTCOME,
+            SarifProblemsOnly = DEFAULT_SARIF_PROBLEMS_ONLY,
             Style = DEFAULT_STYLE,
-            JsonIndent = DEFAULT_JSON_INDENT
         };
 
         public OutputOption()
@@ -42,9 +44,10 @@ namespace PSRule.Configuration
             Encoding = null;
             Footer = null;
             Format = null;
-            Path = null;
-            Style = null;
             JsonIndent = null;
+            Path = null;
+            SarifProblemsOnly = null;
+            Style = null;
         }
 
         public OutputOption(OutputOption option)
@@ -58,10 +61,11 @@ namespace PSRule.Configuration
             Encoding = option.Encoding;
             Footer = option.Footer;
             Format = option.Format;
+            JsonIndent = option.JsonIndent;
             Outcome = option.Outcome;
             Path = option.Path;
+            SarifProblemsOnly = option.SarifProblemsOnly;
             Style = option.Style;
-            JsonIndent = option.JsonIndent;
         }
 
         public override bool Equals(object obj)
@@ -78,10 +82,11 @@ namespace PSRule.Configuration
                 Encoding == other.Encoding &&
                 Footer == other.Footer &&
                 Format == other.Format &&
+                JsonIndent == other.JsonIndent &&
                 Outcome == other.Outcome &&
                 Path == other.Path &&
-                Style == other.Style &&
-                JsonIndent == other.JsonIndent;
+                SarifProblemsOnly == other.SarifProblemsOnly &&
+                Style == other.Style;
         }
 
         public override int GetHashCode()
@@ -95,10 +100,11 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (Encoding.HasValue ? Encoding.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Footer.HasValue ? Footer.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Format.HasValue ? Format.Value.GetHashCode() : 0);
+                hash = hash * 23 + (JsonIndent.HasValue ? JsonIndent.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Outcome.HasValue ? Outcome.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Path != null ? Path.GetHashCode() : 0);
+                hash = hash * 23 + (SarifProblemsOnly.HasValue ? SarifProblemsOnly.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Style.HasValue ? Style.Value.GetHashCode() : 0);
-                hash = hash * 23 + (JsonIndent.HasValue ? JsonIndent.Value.GetHashCode() : 0);
                 return hash;
             }
         }
@@ -113,10 +119,11 @@ namespace PSRule.Configuration
                 Encoding = o1.Encoding ?? o2.Encoding,
                 Footer = o1.Footer ?? o2.Footer,
                 Format = o1.Format ?? o2.Format,
+                JsonIndent = o1.JsonIndent ?? o2.JsonIndent,
                 Outcome = o1.Outcome ?? o2.Outcome,
                 Path = o1.Path ?? o2.Path,
+                SarifProblemsOnly = o1.SarifProblemsOnly ?? o2.SarifProblemsOnly,
                 Style = o1.Style ?? o2.Style,
-                JsonIndent = o1.JsonIndent ?? o2.JsonIndent
             };
             return result;
         }
@@ -181,6 +188,12 @@ namespace PSRule.Configuration
         [DefaultValue(null)]
         public int? JsonIndent { get; set; }
 
+        /// <summary>
+        /// Determines if SARIF output only includes rules with fail or error outcomes.
+        /// </summary>
+        [DefaultValue(null)]
+        public bool? SarifProblemsOnly { get; set; }
+
         internal void Load(EnvironmentHelper env)
         {
             if (env.TryEnum("PSRULE_OUTPUT_AS", out ResultFormat value))
@@ -212,6 +225,9 @@ namespace PSRule.Configuration
 
             if (env.TryInt("PSRULE_OUTPUT_JSONINDENT", out var jsonIndent))
                 JsonIndent = jsonIndent;
+
+            if (env.TryBool("PSRULE_OUTPUT_SARIFPROBLEMSONLY", out var sarifProblemsOnly))
+                SarifProblemsOnly = sarifProblemsOnly;
         }
 
         internal void Load(Dictionary<string, object> index)
@@ -245,6 +261,9 @@ namespace PSRule.Configuration
 
             if (index.TryPopValue<int>("Output.JsonIndent", out var jsonIndent))
                 JsonIndent = jsonIndent;
+
+            if (index.TryPopBool("Output.SarifProblemsOnly", out var sarifProblemsOnly))
+                SarifProblemsOnly = sarifProblemsOnly;
         }
     }
 }
