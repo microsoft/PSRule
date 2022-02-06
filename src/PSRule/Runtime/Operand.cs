@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using PSRule.Data;
 
 namespace PSRule.Runtime
 {
@@ -13,7 +14,9 @@ namespace PSRule.Runtime
 
         Type = 2,
 
-        Name = 3
+        Name = 3,
+
+        Source = 4
     }
 
     internal interface IOperand
@@ -58,6 +61,11 @@ namespace PSRule.Runtime
         internal static IOperand FromField(string field, object value)
         {
             return new Operand(OperandKind.Field, field, value);
+        }
+
+        internal static IOperand FromSource(TargetSourceInfo source)
+        {
+            return new Operand(OperandKind.Source, source);
         }
 
         public override string ToString()

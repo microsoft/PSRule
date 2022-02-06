@@ -41,6 +41,8 @@ The following conditions are available:
 - [SetOf](#setof)
 - [StartsWith](#startswith)
 - [Subset](#subset)
+- [WithinPath](#withinpath)
+- [NotWithinPath](#notwithinpath)
 - [Version](#version)
 
 The following operators are available:
@@ -53,6 +55,7 @@ The following comparison properties are available:
 
 - [Field](#field)
 - [Name](#name)
+- [Source](#source)
 - [Type](#type)
 
 ### AllOf
@@ -1449,6 +1452,32 @@ spec:
     - 'Microsoft.Storage/storageAccounts/blobServices'
 ```
 
+### Source
+
+The comparison property `source` is used with a condition to expose the source path for the resource.
+The `source` property can be set to any value.
+The default is `file` when objects loaded from a file don't identify a source.
+
+Syntax:
+
+```yaml
+source: 'file'
+```
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: IgnoreTestFiles
+spec:
+  if:
+    source: 'file'
+    withinPath: 'tests/PSRule.Tests/'
+```
+
 ### Version
 
 The `version` condition determines if the operand is a valid semantic version.
@@ -1495,6 +1524,88 @@ spec:
     field: 'engine.version'
     version: '>=1.5.0'
     includePrerelease: true
+```
+
+### WithinPath
+
+The `withinPath` condition determines if a file path is within a required path.
+
+If the path is within the required path, the condition will return `true`.
+If the path is not within the required path, the condition will return `false`.
+
+The following properties are accepted:
+
+- `caseSensitive` - Optionally, a case-sensitive comparison can be performed for string values.
+  By default, case-insensitive comparison is performed.
+
+For example:
+
+```yaml
+---
+# Synopsis: Test withinPath with source
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlSourceWithinPath
+spec:
+  if:
+    source: 'Template'
+    withinPath:
+      - "deployments/path/"
+
+---
+# Synopsis: Test withinPath with source and case sensitive
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlSourceWithinPathCaseSensitive
+spec:
+  if:
+    source: 'Template'
+    withinPath:
+      - "Deployments/Path/"
+    caseSensitive: true
+```
+
+### NotWithinPath
+
+The `notWithinPath` condition determines if a file path is not within a required path.
+
+If the path is not within the required path, the condition will return `true`.
+If the path is within the required path, the condition will return `false`.
+
+The following properties are accepted:
+
+- `caseSensitive` - Optionally, a case-sensitive comparison can be performed for string values.
+  By default, case-insensitive comparison is performed.
+
+For example:
+
+```yaml
+---
+# Synopsis: Test notWithinPath with source
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlSourceNotWithinPath
+spec:
+  if:
+    source: 'Template'
+    notWithinPath:
+      - "deployments/path/"
+
+---
+# Synopsis: Test notWithinPath with source and case sensitive
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlSourceNotWithinPathCaseSensitive
+spec:
+  if:
+    source: 'Template'
+    notWithinPath:
+      - "Deployments/Path/"
+    caseSensitive: true
 ```
 
 ## NOTE
