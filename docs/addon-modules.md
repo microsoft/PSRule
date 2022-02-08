@@ -1,5 +1,13 @@
 # Additional modules
 
+## Integrations
+
+### Azure Monitor
+
+You can send rule results to Azure Monitor using `PSRule.Monitor`.
+
+![[PSRule.Monitor](https://github.com/microsoft/PSRule.Monitor)](https://img.shields.io/powershellgallery/v/PSRule.Monitor.svg?label=PowerShell%20Gallery&color=brightgreen)
+
 ## Pre-built rules
 
 The following modules contain pre-built rules that can be plugged into your pipeline.
