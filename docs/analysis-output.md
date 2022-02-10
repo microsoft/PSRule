@@ -149,7 +149,7 @@ By default, no indentation is used.
 
 ## Formatting as CSV
 
-The output from analysis can be formatted as commma-separated values (CSV).
+The output from analysis can be formatted as comma-separated values (CSV).
 Formatting as CSV may be useful when manipulating output results by hand.
 Output of CSV format varies depending on if detailed or summary output is used.
 
