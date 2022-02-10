@@ -309,9 +309,12 @@ namespace PSRule.Host
 
                             using var reader = new JsonTextReader(new StreamReader(file.Path));
 
-                            // Consume lines until start of array is found
-                            while (reader.TokenType != JsonToken.StartArray)
-                                reader.Read();
+                            // Consume lines until start of array
+                            while (reader.TokenType == JsonToken.None || reader.TokenType == JsonToken.Comment)
+                            {
+                                if (!reader.Read())
+                                    break;
+                            }
 
                             if (reader.TokenType == JsonToken.StartArray && reader.Read())
                             {
