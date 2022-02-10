@@ -14,6 +14,11 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.0.0-B2202024:
+
+- Bug fixes:
+  - Fixed Invoke-PSRule hanging if JSON rule file is empty. [#969](https://github.com/microsoft/PSRule/issues/969)
+
 ## v2.0.0-B2202024 (pre-release)
 
 What's changed since pre-release v2.0.0-B2202017:

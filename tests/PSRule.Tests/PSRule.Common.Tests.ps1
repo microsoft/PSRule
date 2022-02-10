@@ -1425,6 +1425,18 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
             $result = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'NotARule' -WarningVariable outWarnings -WarningAction SilentlyContinue;
             $result | Should -BeNullOrEmpty;
             $outWarnings | Should -Be 'Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.';
+
+            # Json
+            $jsonRuleFilePath = Join-Path -Path $here -ChildPath 'FromFileEmpty.Rule.jsonc'
+            $result = $testObject | Invoke-PSRule -Path $jsonRuleFilePath -WarningVariable outWarning -WarningAction SilentlyContinue
+            $result | Should -BeNullOrEmpty;
+            $outWarnings | Should -Be 'Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.';
+
+            # Yaml
+            $yamlRuleFilePath = Join-Path -Path $here -ChildPath 'FromFileEmpty.Rule.yaml'
+            $result = $testObject | Invoke-PSRule -Path $yamlRuleFilePath -WarningVariable outWarning -WarningAction SilentlyContinue
+            $result | Should -BeNullOrEmpty;
+            $outWarnings | Should -Be 'Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.';
         }
 
         It 'Returns warning with empty path' {
