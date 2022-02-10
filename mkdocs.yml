@@ -43,8 +43,10 @@ nav:
       - Storing and naming rules: authoring/storing-rules.md
       - Packaging rules in a module: authoring/packaging-rules.md
       - Writing rule help: authoring/writing-rule-help.md
-    - Creating your pipeline: creating-your-pipeline.md
-    - Validating locally: validating-locally.md
+    - Running rules:
+      - Creating your pipeline: creating-your-pipeline.md
+      - Validating locally: validating-locally.md
+      - Analysis output: analysis-output.md
     - Tutorials:
       - Validate Azure resource configuration: scenarios/azure-resources/azure-resources.md
       - Azure resource tagging example: scenarios/azure-tags/azure-tags.md
@@ -52,7 +54,6 @@ nav:
     - Concepts:
       - Using within continuous integration: scenarios/validation-pipeline/validation-pipeline.md
     # - Troubleshooting: troubleshooting.md
-    # - Data privacy: data-privacy.md
     - License and contributing: license-contributing.md
     - Releases:
       - Change log:
