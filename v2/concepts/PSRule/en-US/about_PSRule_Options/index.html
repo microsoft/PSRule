@@ -367,8 +367,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_2">
@@ -584,6 +582,40 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" type="checkbox" id="__nav_2_4" >
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2_4">
+          Running rules
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Running rules" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          Running rules
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../../../creating-your-pipeline/" class="md-nav__link">
         Creating your pipeline
@@ -612,11 +644,32 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../../../analysis-output/" class="md-nav__link">
+        Analysis output
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
     
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_6" type="checkbox" id="__nav_2_6" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" >
       
       
       
@@ -629,13 +682,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_2_6">
+        <label class="md-nav__link" for="__nav_2_5">
           Tutorials
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Tutorials" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_6">
+        <label class="md-nav__title" for="__nav_2_5">
           <span class="md-nav__icon md-icon"></span>
           Tutorials
         </label>
@@ -699,7 +752,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_7" type="checkbox" id="__nav_2_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_6" type="checkbox" id="__nav_2_6" >
       
       
       
@@ -708,13 +761,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_2_7">
+        <label class="md-nav__link" for="__nav_2_6">
           Concepts
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Concepts" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_7">
+        <label class="md-nav__title" for="__nav_2_6">
           <span class="md-nav__icon md-icon"></span>
           Concepts
         </label>
@@ -764,7 +817,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_9" type="checkbox" id="__nav_2_9" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_8" type="checkbox" id="__nav_2_8" >
       
       
       
@@ -777,13 +830,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_2_9">
+        <label class="md-nav__link" for="__nav_2_8">
           Releases
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Releases" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_9">
+        <label class="md-nav__title" for="__nav_2_8">
           <span class="md-nav__icon md-icon"></span>
           Releases
         </label>
@@ -798,7 +851,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_9_1" type="checkbox" id="__nav_2_9_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_8_1" type="checkbox" id="__nav_2_8_1" >
       
       
       
@@ -811,13 +864,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_2_9_1">
+        <label class="md-nav__link" for="__nav_2_8_1">
           Change log
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Change log" data-md-level="3">
-        <label class="md-nav__title" for="__nav_2_9_1">
+        <label class="md-nav__title" for="__nav_2_8_1">
           <span class="md-nav__icon md-icon"></span>
           Change log
         </label>
@@ -3328,12 +3381,13 @@ This option applies to <code>Invoke-PSRule</code>, <code>Assert-PSRule</code>, <
 This options is ignored by other cmdlets.</p>
 <p>The following format options are available:</p>
 <ul>
-<li>None - Output is presented as an object using PowerShell defaults. This is the default.</li>
+<li>None - Output is presented as an object using PowerShell defaults.
+  This is the default.</li>
 <li>Yaml - Output is serialized as YAML.</li>
 <li>Json - Output is serialized as JSON.</li>
 <li>Markdown - Output is serialized as Markdown.</li>
 <li>NUnit3 - Output is serialized as NUnit3 (XML).</li>
-<li>Csv - Output is serialized as a comma separated values (CSV).<ul>
+<li>Csv - Output is serialized as a comma-separated values (CSV).<ul>
 <li>The following columns are included for <code>Detail</code> output:
 RuleName, TargetName, TargetType, Outcome, OutcomeReason, Synopsis, Recommendation</li>
 <li>The following columns are included for <code>Summary</code> output:
@@ -3549,7 +3603,8 @@ This is the default.</li>
 <span class="w">  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AzurePipelines</span><span class="w"></span>
 </code></pre></div>
 <h3 id="outputjsonindent">Output.JsonIndent<a class="headerlink" href="#outputjsonindent" title="Permanent link">#</a></h3>
-<p>Configures the indentation level for JSON output.</p>
+<p>Configures the number of spaces to indent JSON properties and elements.
+The default number of spaces is 0.</p>
 <p>This option applies to output generated from <code>-OutputFormat Json</code> for <code>Get-PSRule</code> and <code>Invoke-PSRule</code>.
 This option also applies to output generated from <code>-OutputPath</code> for <code>Assert-PSRule</code>.</p>
 <p>The range of indentation accepts a minimum of 0(machine first) spaces and a maximum of 4 spaces.</p>
@@ -3978,7 +4033,7 @@ Objects that are suppressed are not processed by the rule at all but will contin
   <small>
     
       Last update:
-      2022-02-05
+      2022-02-11
     
   </small>
 </div>
