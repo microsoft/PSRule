@@ -1877,12 +1877,13 @@ This options is ignored by other cmdlets.
 
 The following format options are available:
 
-- None - Output is presented as an object using PowerShell defaults. This is the default.
+- None - Output is presented as an object using PowerShell defaults.
+  This is the default.
 - Yaml - Output is serialized as YAML.
 - Json - Output is serialized as JSON.
 - Markdown - Output is serialized as Markdown.
 - NUnit3 - Output is serialized as NUnit3 (XML).
-- Csv - Output is serialized as a comma separated values (CSV).
+- Csv - Output is serialized as a comma-separated values (CSV).
   - The following columns are included for `Detail` output:
 RuleName, TargetName, TargetType, Outcome, OutcomeReason, Synopsis, Recommendation
   - The following columns are included for `Summary` output:
@@ -2201,7 +2202,8 @@ variables:
 
 ### Output.JsonIndent
 
-Configures the indentation level for JSON output.
+Configures the number of spaces to indent JSON properties and elements.
+The default number of spaces is 0.
 
 This option applies to output generated from `-OutputFormat Json` for `Get-PSRule` and `Invoke-PSRule`.
 This option also applies to output generated from `-OutputPath` for `Assert-PSRule`.
