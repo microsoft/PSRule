@@ -64,6 +64,11 @@ namespace PSRule.Data
                 Type == other.Type;
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is TargetSourceInfo info && Equals(info);
+        }
+
         public override int GetHashCode()
         {
             unchecked // Overflow is fine

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -109,9 +109,9 @@ namespace PSRule.Pipeline.Output
 
             WriteColumn(record.RuleName);
             _Builder.Append(COMMA);
-            _Builder.Append(record.Pass.ToString());
+            _Builder.Append(record.Pass);
             _Builder.Append(COMMA);
-            _Builder.Append(record.Fail.ToString());
+            _Builder.Append(record.Fail);
             _Builder.Append(COMMA);
             WriteColumn(record.Outcome.ToString());
             _Builder.Append(COMMA);

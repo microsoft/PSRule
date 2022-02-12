@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -124,8 +123,6 @@ namespace PSRule.Runtime
         }
 
         internal bool HadErrors => _RuleErrors > 0;
-
-        internal Hashtable Data { get; private set; }
 
         internal IEnumerable<InvokeResult> Output { get; private set; }
 
@@ -604,7 +601,6 @@ namespace PSRule.Runtime
         {
             _ObjectNumber++;
             TargetObject = targetObject;
-            Data = new Hashtable();
             TargetBinder.Bind(TargetObject);
             if (Pipeline.ContentCache.Count > 0)
                 Pipeline.ContentCache.Clear();
@@ -616,9 +612,7 @@ namespace PSRule.Runtime
         public void ExitTargetObject()
         {
             RunConventionProcess();
-
             TargetObject = null;
-            Data = null;
         }
 
         public bool TrySelector(string name)
@@ -649,14 +643,12 @@ namespace PSRule.Runtime
                 runId: Pipeline.RunId,
                 ruleId: ruleBlock.Id,
                 @ref: ruleBlock.Ref.GetValueOrDefault().Name,
-                targetObject: TargetObject.Value,
+                targetObject: TargetObject,
                 targetName: Binding.TargetName,
                 targetType: Binding.TargetType,
                 tag: ruleBlock.Tag,
                 info: ruleBlock.Info,
                 field: Binding.Field,
-                data: Data,
-                source: TargetObject.Source.GetSourceInfo(),
                 level: ruleBlock.Level
             );
 
@@ -814,7 +806,7 @@ namespace PSRule.Runtime
                 return null;
             }
 
-            for (var i = 0; i < culture.Length; i++)
+            for (var i = 0; culture != null && i < culture.Length; i++)
             {
                 var path = Path.Combine(Source.File.HelpPath, culture[i], file);
                 if (File.Exists(path))

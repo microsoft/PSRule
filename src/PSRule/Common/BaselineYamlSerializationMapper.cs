@@ -15,11 +15,12 @@ namespace PSRule
 {
     internal static class BaselineYamlSerializationMapper
     {
+        private const string SYNOPSIS_COMMENT = "Synopsis: ";
+
         internal static void MapBaseline(IEmitter emitter, Baseline baseline)
         {
             emitter.Emit(new MappingStart());
-
-            emitter.Emit(new Comment($"Synopsis: {baseline.Synopsis}", isInline: false));
+            emitter.Emit(new Comment(string.Concat(SYNOPSIS_COMMENT, baseline.Synopsis), isInline: false));
 
             if (baseline?.ApiVersion != null)
             {

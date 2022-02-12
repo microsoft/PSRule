@@ -43,7 +43,7 @@ namespace PSRule.Pipeline.Output
             };
         }
 
-        private IDictionary<string, ArtifactLocation> GetBaseIds()
+        private static IDictionary<string, ArtifactLocation> GetBaseIds()
         {
             return new Dictionary<string, ArtifactLocation>(1)
             {
@@ -212,8 +212,8 @@ namespace PSRule.Pipeline.Output
         {
             var region = new Region
             {
-                StartLine = info.Line.HasValue ? info.Line.Value : 1,
-                StartColumn = info.Position.HasValue ? info.Position.Value : 0,
+                StartLine = info.Line ?? 1,
+                StartColumn = info.Position ?? 0,
             };
             var location = new PhysicalLocation
             {

@@ -34,6 +34,11 @@ namespace PSRule.Data
                 Message == other.Message;
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is TargetIssueInfo info && Equals(info);
+        }
+
         public override int GetHashCode()
         {
             unchecked // Overflow is fine

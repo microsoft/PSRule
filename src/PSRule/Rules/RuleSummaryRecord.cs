@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections;
@@ -68,7 +68,6 @@ namespace PSRule.Rules
                 {
                     return RuleOutcome.Pass;
                 }
-
                 return RuleOutcome.None;
             }
         }
@@ -84,6 +83,16 @@ namespace PSRule.Rules
         public bool IsSuccess()
         {
             return Outcome == RuleOutcome.Pass || Outcome == RuleOutcome.None;
+        }
+
+        internal void Add(RuleOutcome outcome)
+        {
+            if (outcome == RuleOutcome.Pass)
+                Pass++;
+            else if (outcome == RuleOutcome.Fail)
+                Fail++;
+            else if (outcome == RuleOutcome.Error)
+                Error++;
         }
     }
 }

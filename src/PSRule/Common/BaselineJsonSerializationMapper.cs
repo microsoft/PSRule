@@ -14,36 +14,46 @@ namespace PSRule
 {
     internal static class BaselineJsonSerializationMapper
     {
+        private const string SYNOPSIS_COMMENT = "Synopsis: ";
+
         internal static void MapBaseline(JsonWriter writer, JsonSerializer serializer, Baseline baseline)
         {
             writer.WriteStartObject();
-            writer.WriteComment($"Synopsis: {baseline.Synopsis}");
-
-            if (baseline?.ApiVersion != null)
+            writer.WriteComment(string.Concat(SYNOPSIS_COMMENT, baseline.Synopsis));
+            if (baseline != null)
             {
-                MapPropertyName(writer, nameof(baseline.ApiVersion));
-                writer.WriteValue(baseline.ApiVersion);
+                MapProperty(writer, nameof(baseline.ApiVersion), baseline.ApiVersion);
+                MapProperty(writer, nameof(baseline.Kind), baseline.Kind);
+                MapResourceMetadata(writer, serializer, nameof(baseline.Metadata), baseline.Metadata);
+                MapBaselineSpec(writer, serializer, nameof(baseline.Spec), baseline.Spec);
             }
+            writer.WriteEndObject();
+        }
 
-            if (baseline?.Kind != null)
-            {
-                MapPropertyName(writer, nameof(baseline.Kind));
-                var kind = Enum.GetName(typeof(ResourceKind), baseline.Kind);
-                writer.WriteValue(kind);
-            }
+        private static void MapResourceMetadata(JsonWriter writer, JsonSerializer serializer, string propertyName, ResourceMetadata resourceMetadata)
+        {
+            if (resourceMetadata == null)
+                return;
 
-            if (baseline?.Metadata != null)
-            {
-                MapPropertyName(writer, nameof(baseline.Metadata));
-                MapResourceMetadata(writer, serializer, baseline.Metadata);
-            }
+            MapPropertyName(writer, propertyName);
+            writer.WriteStartObject();
+            MapProperty(writer, serializer, nameof(resourceMetadata.Annotations), resourceMetadata.Annotations);
+            MapProperty(writer, nameof(resourceMetadata.Name), resourceMetadata.Name);
+            MapProperty(writer, serializer, nameof(resourceMetadata.Tags), resourceMetadata.Tags);
+            writer.WriteEndObject();
+        }
 
-            if (baseline?.Spec != null)
-            {
-                MapPropertyName(writer, nameof(baseline.Spec));
-                MapBaselineSpec(writer, serializer, baseline.Spec);
-            }
+        private static void MapBaselineSpec(JsonWriter writer, JsonSerializer serializer, string propertyName, BaselineSpec baselineSpec)
+        {
+            if (baselineSpec == null)
+                return;
 
+            MapPropertyName(writer, propertyName);
+            writer.WriteStartObject();
+            MapProperty(writer, serializer, nameof(baselineSpec.Binding), baselineSpec.Binding);
+            MapProperty(writer, serializer, nameof(baselineSpec.Configuration), baselineSpec.Configuration);
+            MapProperty(writer, nameof(baselineSpec.Convention), baselineSpec.Convention);
+            MapProperty(writer, serializer, nameof(baselineSpec.Rule), baselineSpec.Rule);
             writer.WriteEndObject();
         }
 
@@ -52,197 +62,149 @@ namespace PSRule
             writer.WritePropertyName(propertyName.ToCamelCase());
         }
 
-        private static void MapResourceMetadata(JsonWriter writer, JsonSerializer serializer, ResourceMetadata resourceMetadata)
+        /// <summary>
+        /// Map a dictionary property.
+        /// </summary>
+        private static void MapProperty<T>(JsonWriter writer, JsonSerializer serializer, string propertyName, IDictionary<string, T> value)
         {
+            if (value.NullOrEmpty())
+                return;
+
+            MapPropertyName(writer, propertyName);
+            MapDictionary(writer, serializer, value);
+        }
+
+        /// <summary>
+        /// Map a nullable boolean property.
+        /// </summary>
+        private static void MapProperty(JsonWriter writer, JsonSerializer serializer, string propertyName, bool? value)
+        {
+            if (!value.HasValue)
+                return;
+
+            MapPropertyName(writer, propertyName);
+            serializer.Serialize(writer, value);
+        }
+
+        /// <summary>
+        /// Map an enum property.
+        /// </summary>
+        private static void MapProperty<T>(JsonWriter writer, string propertyName, T value) where T : Enum
+        {
+            if (value == null)
+                return;
+
+            MapPropertyName(writer, propertyName);
+            writer.WriteValue(Enum.GetName(typeof(T), value));
+        }
+
+        /// <summary>
+        /// Map a string array property.
+        /// </summary>
+        private static void MapProperty(JsonWriter writer, string propertyName, string[] value)
+        {
+            if (value == null)
+                return;
+
+            MapPropertyName(writer, propertyName);
+            MapStringArraySequence(writer, value);
+        }
+
+        /// <summary>
+        /// Map a string property.
+        /// </summary>
+        private static void MapProperty(JsonWriter writer, string propertyName, string value)
+        {
+            if (value == null)
+                return;
+
+            MapPropertyName(writer, propertyName);
+            writer.WriteValue(value);
+        }
+
+        /// <summary>
+        /// Map a BindingOption property.
+        /// </summary>
+        private static void MapProperty(JsonWriter writer, JsonSerializer serializer, string propertyName, BindingOption value)
+        {
+            if (value == null)
+                return;
+
+            MapPropertyName(writer, propertyName);
             writer.WriteStartObject();
-
-            if (!(resourceMetadata?.Annotations).NullOrEmpty())
-            {
-                MapPropertyName(writer, nameof(resourceMetadata.Annotations));
-                MapDictionary(writer, serializer, resourceMetadata.Annotations);
-            }
-
-            if (resourceMetadata?.Name != null)
-            {
-                MapPropertyName(writer, nameof(resourceMetadata.Name));
-                writer.WriteValue(resourceMetadata.Name);
-            }
-
-            if (!(resourceMetadata?.Tags).NullOrEmpty())
-            {
-                MapPropertyName(writer, nameof(resourceMetadata.Tags));
-                MapDictionary(writer, serializer, resourceMetadata.Tags);
-            }
-
+            MapProperty(writer, serializer, nameof(value.Field), value.Field?.GetFieldMap);
+            MapProperty(writer, serializer, nameof(value.IgnoreCase), value.IgnoreCase);
+            MapProperty(writer, nameof(value.NameSeparator), value.NameSeparator);
+            MapProperty(writer, serializer, nameof(value.PreferTargetInfo), value.PreferTargetInfo);
+            MapProperty(writer, nameof(value.TargetName), value.TargetName);
+            MapProperty(writer, nameof(value.TargetType), value.TargetType);
+            MapProperty(writer, serializer, nameof(value.UseQualifiedName), value.UseQualifiedName);
             writer.WriteEndObject();
         }
 
-        private static void MapBaselineSpec(JsonWriter writer, JsonSerializer serializer, BaselineSpec baselineSpec)
+        /// <summary>
+        /// Map a ConventionOption property.
+        /// </summary>
+        private static void MapProperty(JsonWriter writer, string propertyName, ConventionOption value)
         {
+            if (value == null)
+                return;
+
+            MapPropertyName(writer, propertyName);
             writer.WriteStartObject();
-
-            if (baselineSpec?.Binding != null)
-            {
-                MapPropertyName(writer, nameof(baselineSpec.Binding));
-                MapBindingOption(writer, serializer, baselineSpec.Binding);
-            }
-
-            if (baselineSpec?.Configuration != null)
-            {
-                MapPropertyName(writer, nameof(baselineSpec.Configuration));
-                MapDictionary(writer, serializer, baselineSpec.Configuration);
-            }
-
-            if (baselineSpec?.Convention != null)
-            {
-                MapPropertyName(writer, nameof(baselineSpec.Convention));
-                MapConventionOption(writer, baselineSpec.Convention);
-            }
-
-            if (baselineSpec?.Rule != null)
-            {
-                MapPropertyName(writer, nameof(baselineSpec.Rule));
-                MapRuleOption(writer, serializer, baselineSpec.Rule);
-            }
-
+            MapProperty(writer, nameof(value.Include), value.Include);
             writer.WriteEndObject();
         }
 
-        private static void MapBindingOption(JsonWriter writer, JsonSerializer serializer, BindingOption bindingOption)
+        /// <summary>
+        /// Map a RuleOption property.
+        /// </summary>
+        private static void MapProperty(JsonWriter writer, JsonSerializer serializer, string propertyName, RuleOption value)
         {
+            if (value == null)
+                return;
+
+            MapPropertyName(writer, propertyName);
             writer.WriteStartObject();
-
-            if (bindingOption?.Field != null)
-            {
-                MapPropertyName(writer, nameof(bindingOption.Field));
-                MapDictionary(writer, serializer, bindingOption.Field.GetFieldMap);
-            }
-
-            if ((bindingOption?.IgnoreCase).HasValue)
-            {
-                MapPropertyName(writer, nameof(bindingOption.IgnoreCase));
-                serializer.Serialize(writer, bindingOption.IgnoreCase);
-            }
-
-            if (bindingOption?.NameSeparator != null)
-            {
-                MapPropertyName(writer, nameof(bindingOption.NameSeparator));
-                writer.WriteValue(bindingOption.NameSeparator);
-            }
-
-            if ((bindingOption?.PreferTargetInfo).HasValue)
-            {
-                MapPropertyName(writer, nameof(bindingOption.PreferTargetInfo));
-                serializer.Serialize(writer, bindingOption.PreferTargetInfo);
-            }
-
-            if (bindingOption?.TargetName != null)
-            {
-                MapPropertyName(writer, nameof(bindingOption.TargetName));
-                MapStringArraySequence(writer, bindingOption.TargetName);
-            }
-
-            if (bindingOption?.TargetType != null)
-            {
-                MapPropertyName(writer, nameof(bindingOption.TargetType));
-                MapStringArraySequence(writer, bindingOption.TargetType);
-            }
-
-            if ((bindingOption?.UseQualifiedName).HasValue)
-            {
-                MapPropertyName(writer, nameof(bindingOption.UseQualifiedName));
-                serializer.Serialize(writer, bindingOption.UseQualifiedName);
-            }
-
-            writer.WriteEndObject();
-        }
-
-        private static void MapConventionOption(JsonWriter writer, ConventionOption conventionOption)
-        {
-            writer.WriteStartObject();
-
-            if (conventionOption?.Include != null)
-            {
-                MapPropertyName(writer, nameof(conventionOption.Include));
-                MapStringArraySequence(writer, conventionOption.Include);
-            }
-
-            writer.WriteEndObject();
-        }
-
-        private static void MapRuleOption(JsonWriter writer, JsonSerializer serializer, RuleOption ruleOption)
-        {
-            writer.WriteStartObject();
-
-            if (ruleOption?.Exclude != null)
-            {
-                MapPropertyName(writer, nameof(ruleOption.Exclude));
-                MapStringArraySequence(writer, ruleOption.Exclude);
-            }
-
-            if (ruleOption?.Include != null)
-            {
-                MapPropertyName(writer, nameof(ruleOption.Include));
-                MapStringArraySequence(writer, ruleOption.Include);
-            }
-
-            if ((ruleOption?.IncludeLocal).HasValue)
-            {
-                MapPropertyName(writer, nameof(ruleOption.IncludeLocal));
-                serializer.Serialize(writer, ruleOption.IncludeLocal);
-            }
-
-            if (ruleOption?.Tag != null)
-            {
-                MapPropertyName(writer, nameof(ruleOption.Tag));
-                MapDictionary(writer, serializer, ruleOption.Tag.ToDictionary());
-            }
-
+            MapProperty(writer, nameof(value.Exclude), value.Exclude);
+            MapProperty(writer, nameof(value.Include), value.Include);
+            MapProperty(writer, serializer, nameof(value.IncludeLocal), value.IncludeLocal);
+            MapProperty(writer, serializer, nameof(value.Tag), value.Tag?.ToDictionary());
             writer.WriteEndObject();
         }
 
         private static void MapDictionary<T>(JsonWriter writer, JsonSerializer serializer, IDictionary<string, T> dictionary)
         {
             writer.WriteStartObject();
-
             foreach (var kvp in dictionary.ToSortedDictionary())
             {
                 MapPropertyName(writer, kvp.Key);
-
                 if (kvp.Value is string stringValue)
                 {
                     writer.WriteValue(stringValue);
                 }
-
                 else if (kvp.Value is string[] stringValues)
                 {
                     MapStringArraySequence(writer, stringValues);
                 }
-
                 else if (kvp.Value is PSObject[] psObjects)
                 {
                     MapPSObjectArraySequence(writer, serializer, psObjects);
                 }
-
                 else
                 {
                     serializer.Serialize(writer, kvp.Value);
                 }
             }
-
             writer.WriteEndObject();
         }
 
         private static void MapStringArraySequence(JsonWriter writer, string[] sequence)
         {
             writer.WriteStartArray();
-
             var sortedSequence = sequence.OrderBy(item => item);
-
             foreach (var item in sortedSequence)
-            {
                 writer.WriteValue(item);
-            }
 
             writer.WriteEndArray();
         }
@@ -250,21 +212,17 @@ namespace PSRule
         private static void MapPSObjectArraySequence(JsonWriter writer, JsonSerializer serializer, PSObject[] sequence)
         {
             writer.WriteStartArray();
-
             foreach (var obj in sequence)
             {
                 if (obj.BaseObject == null || obj.HasNoteProperty())
                 {
                     writer.WriteStartObject();
-
                     var sortedProperties = obj.Properties.OrderBy(prop => prop.Name);
-
                     foreach (var propertyInfo in sortedProperties)
                     {
                         MapPropertyName(writer, propertyInfo.Name);
                         serializer.Serialize(writer, propertyInfo.Value);
                     }
-
                     writer.WriteEndObject();
                 }
                 else
@@ -272,7 +230,6 @@ namespace PSRule
                     serializer.Serialize(writer, obj.BaseObject);
                 }
             }
-
             writer.WriteEndArray();
         }
     }

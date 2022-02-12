@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
+using PSRule.Pipeline;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Rules
@@ -21,28 +22,28 @@ namespace PSRule.Rules
     [JsonObject]
     public sealed class RuleRecord : IRuleResult
     {
-        internal RuleRecord(string runId, ResourceId ruleId, string @ref, PSObject targetObject, string targetName, string targetType, ResourceTags tag, RuleHelpInfo info, Hashtable field, Hashtable data, TargetSourceInfo[] source, SeverityLevel level, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
+        private readonly TargetObject _TargetObject;
+
+        internal RuleRecord(string runId, ResourceId ruleId, string @ref, TargetObject targetObject, string targetName, string targetType, ResourceTags tag, RuleHelpInfo info, Hashtable field, SeverityLevel level, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
+            _TargetObject = targetObject;
             RunId = runId;
             RuleId = ruleId.Value;
             RuleName = ruleId.Name;
             Ref = @ref;
-            TargetObject = targetObject;
+            TargetObject = targetObject.Value;
             TargetName = targetName;
             TargetType = targetType;
             Outcome = outcome;
             OutcomeReason = reason;
             Info = info;
-            Source = source;
+            Source = targetObject.Source.GetSourceInfo();
             Level = level;
             if (tag != null)
                 Tag = tag.ToHashtable();
 
             if (field != null && field.Count > 0)
                 Field = field;
-
-            // Limit allocations for most scenarios. Runtime calls GetData().
-            Data = data;
         }
 
         /// <summary>
@@ -114,7 +115,7 @@ namespace PSRule.Rules
         /// Custom data set by the rule for this target object.
         /// </summary>
         [JsonProperty(PropertyName = "data")]
-        public Hashtable Data { get; }
+        public Hashtable Data => _TargetObject.GetData();
 
         /// <summary>
         /// A set of custom fields bound for the target object.

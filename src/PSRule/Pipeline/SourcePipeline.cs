@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using PSRule.Configuration;
 using PSRule.Pipeline.Output;
 using PSRule.Resources;
+using PSRule.Runtime;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Pipeline
@@ -142,7 +143,7 @@ namespace PSRule.Pipeline
         {
             get
             {
-                return Module?.Name ?? Runtime.LanguageScope.STANDALONE_SCOPENAME;
+                return LanguageScope.Normalize(Module?.Name);
             }
         }
 
