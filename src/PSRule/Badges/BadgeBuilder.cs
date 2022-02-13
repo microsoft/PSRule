@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -162,10 +162,7 @@ namespace PSRule.Badges
             if (outcome == RuleOutcome.Fail)
                 return BADGE_FILL_RED;
 
-            if (outcome == RuleOutcome.Error)
-                return BADGE_FILL_RED;
-
-            return BADGE_FILL_GREY;
+            return outcome == RuleOutcome.Error ? BADGE_FILL_RED : BADGE_FILL_GREY;
         }
 
         private static string GetOutcomeLabel(RuleOutcome outcome)

@@ -27,7 +27,6 @@ namespace PSRule.Runtime
         internal PSRule(RunspaceContext context)
             : base(context) { }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "Exposed as helper for PowerShell.")]
         private sealed class PSRuleSource : ScopedItem, ITargetSourceCollection
         {
             internal PSRuleSource(RunspaceContext context)
@@ -42,7 +41,6 @@ namespace PSRule.Runtime
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "Exposed as helper for PowerShell.")]
         private sealed class PSRuleIssue : ScopedItem, ITargetIssueCollection
         {
             internal PSRuleIssue(RunspaceContext context)
@@ -82,7 +80,7 @@ namespace PSRule.Runtime
             get
             {
                 RequireScope(RunspaceScope.Rule | RunspaceScope.Precondition | RunspaceScope.ConventionBegin | RunspaceScope.ConventionProcess);
-                return GetContext().Data;
+                return GetContext().TargetObject.RequireData();
             }
         }
 

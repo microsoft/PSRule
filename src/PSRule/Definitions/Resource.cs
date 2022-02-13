@@ -222,9 +222,7 @@ namespace PSRule.Definitions
         /// </summary>
         public Hashtable ToHashtable()
         {
-            if (_Hashtable == null)
-                _Hashtable = new ReadOnlyHashtable(this, StringComparer.OrdinalIgnoreCase);
-
+            _Hashtable ??= new ReadOnlyHashtable(this, StringComparer.OrdinalIgnoreCase);
             return _Hashtable;
         }
 
@@ -389,7 +387,7 @@ namespace PSRule.Definitions
     {
         private readonly Dictionary<Type, ResourceAnnotation> _Annotations;
 
-        internal InternalResource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, TSpec spec)
+        private protected InternalResource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, TSpec spec)
             : base(kind, apiVersion, source, metadata, info, spec)
         {
             _Annotations = new Dictionary<Type, ResourceAnnotation>();
@@ -445,7 +443,7 @@ namespace PSRule.Definitions
             return name.IndexOf(SCOPE_SEPARATOR) >= 0
                 ? name
                 : string.Concat(
-                string.IsNullOrEmpty(scope) ? LanguageScope.STANDALONE_SCOPENAME : scope,
+                LanguageScope.Normalize(scope),
                 SCOPE_SEPARATOR,
                 name
             );
@@ -453,12 +451,8 @@ namespace PSRule.Definitions
 
         internal static void ParseIdString(string defaultScope, string id, out string scope, out string name)
         {
-            if (string.IsNullOrEmpty(defaultScope))
-                defaultScope = LanguageScope.STANDALONE_SCOPENAME;
-
             ParseIdString(id, out scope, out name);
-            if (scope == null)
-                scope = defaultScope;
+            scope ??= LanguageScope.Normalize(defaultScope);
         }
 
         internal static void ParseIdString(string id, out string scope, out string name)

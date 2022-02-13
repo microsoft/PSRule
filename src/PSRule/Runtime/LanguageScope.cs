@@ -35,17 +35,17 @@ namespace PSRule.Runtime
 
     internal sealed class LanguageScope : ILanguageScope
     {
-        internal const string STANDALONE_SCOPENAME = ".";
+        private const string STANDALONE_SCOPENAME = ".";
 
         private readonly Dictionary<string, object> _Configuration;
         private readonly Dictionary<string, object> _Service;
-
         private readonly Dictionary<ResourceKind, IResourceFilter> _Filter;
+
         private bool _Disposed;
 
         public LanguageScope(string name)
         {
-            Name = name ?? STANDALONE_SCOPENAME;
+            Name = Normalize(name);
             _Configuration = new Dictionary<string, object>();
             _Filter = new Dictionary<ResourceKind, IResourceFilter>();
             _Service = new Dictionary<string, object>();
@@ -85,6 +85,11 @@ namespace PSRule.Runtime
         public object GetService(string name)
         {
             return _Service.TryGetValue(name, out var service) ? service : null;
+        }
+
+        internal static string Normalize(string scope)
+        {
+            return string.IsNullOrEmpty(scope) ? STANDALONE_SCOPENAME : scope;
         }
 
         private void Dispose(bool disposing)
@@ -170,7 +175,7 @@ namespace PSRule.Runtime
 
         private static string GetScopeName(string name)
         {
-            return name ?? LanguageScope.STANDALONE_SCOPENAME;
+            return LanguageScope.Normalize(name);
         }
 
         private void Dispose(bool disposing)

@@ -179,7 +179,7 @@ namespace PSRule.Pipeline
                     if (!Baseline.ContainsBaseline(baselineId))
                         _Unresolved.Add(new BaselineRef(baselineId, OptionContext.ScopeType.Module));
                 }
-                Baseline.Add(new OptionContext.ConfigScope(OptionContext.ScopeType.Module, resource.Module, moduleConfig.Spec));
+                Baseline.Add(new OptionContext.ConfigScope(OptionContext.ScopeType.Module, resource.Module, moduleConfig?.Spec));
             }
             else if (resource.Kind == ResourceKind.SuppressionGroup && resource is SuppressionGroupV1 suppressionGroup)
             {
@@ -202,7 +202,7 @@ namespace PSRule.Pipeline
         {
             baselineRef = null;
             var r = _Unresolved.FirstOrDefault(i => ResourceIdEqualityComparer.IdEquals(i.Id, resourceId.Value));
-            if (r == null || !(r is BaselineRef br))
+            if (!(r is BaselineRef br))
                 return false;
 
             baselineRef = br;

@@ -391,7 +391,7 @@ namespace PSRule.Pipeline
             return index > -1 ? index : int.MaxValue;
         }
 
-        private string[] GetConventions(string scope, string[] include)
+        private static string[] GetConventions(string scope, string[] include)
         {
             if (include == null || include.Length == 0)
                 return null;

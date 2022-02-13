@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Management.Automation;
 using PSRule.Data;
@@ -38,6 +39,8 @@ namespace PSRule.Pipeline
     {
         private readonly Dictionary<Type, TargetObjectAnnotation> _Annotations;
 
+        private Hashtable _Data;
+
         internal TargetObject(PSObject o)
             : this(o, null) { }
 
@@ -54,6 +57,17 @@ namespace PSRule.Pipeline
         internal TargetSourceCollection Source { get; private set; }
 
         internal TargetIssueCollection Issue { get; private set; }
+
+        internal Hashtable GetData()
+        {
+            return _Data == null || _Data.Count == 0 ? null : _Data;
+        }
+
+        internal Hashtable RequireData()
+        {
+            _Data ??= new Hashtable();
+            return _Data;
+        }
 
         internal T GetAnnotation<T>() where T : TargetObjectAnnotation, new()
         {

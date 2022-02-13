@@ -171,7 +171,7 @@ namespace PSRule.Pipeline
         // A per rule summary of rules that have been processed and the outcome
         private readonly Dictionary<string, RuleSummaryRecord> _Summary;
 
-        private readonly ResultFormat _ResultFormat;
+        private readonly bool _IsSummary;
         private readonly SuppressionFilter _SuppressionFilter;
         private readonly SuppressionFilter _SuppressionGroupFilter;
         private readonly List<InvokeResult> _Completed;
@@ -188,9 +188,8 @@ namespace PSRule.Pipeline
                 Context.WarnRuleNotFound();
 
             _Outcome = outcome;
-            _Summary = new Dictionary<string, RuleSummaryRecord>();
-            _ResultFormat = context.Option.Output.As.Value;
-
+            _IsSummary = context.Option.Output.As.Value == ResultFormat.Summary;
+            _Summary = _IsSummary ? new Dictionary<string, RuleSummaryRecord>() : null;
             var allRuleBlocks = _RuleGraph.GetAll();
             var resourceIndex = new ResourceIndex(allRuleBlocks);
             _SuppressionFilter = new SuppressionFilter(Context, context.Option.Suppression, resourceIndex);
@@ -229,7 +228,7 @@ namespace PSRule.Pipeline
                 Context.End(completed);
             }
 
-            if (_ResultFormat == ResultFormat.Summary)
+            if (_IsSummary)
                 Writer.WriteObject(_Summary.Values.Where(r => _Outcome == RuleOutcome.All || (r.Outcome & _Outcome) > 0).ToArray(), true);
 
             Writer.End();
@@ -268,18 +267,16 @@ namespace PSRule.Pipeline
                             ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
                             suppressedRuleCounter++;
 
-                            if (_ResultFormat == ResultFormat.Detail)
+                            if (!_IsSummary)
                                 Context.WarnRuleSuppressed(ruleId: ruleRecord.RuleId);
                         }
                         // Check for suppression group
                         else if (_SuppressionGroupFilter.TrySuppressionGroup(ruleId: ruleRecord.RuleId, targetObject, out var suppressionGroupId))
                         {
                             ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
-
-                            if (_ResultFormat == ResultFormat.Detail)
+                            if (!_IsSummary)
                                 Context.WarnRuleSuppressionGroup(ruleId: ruleRecord.RuleId, suppressionGroupId);
-
-                            else if (_ResultFormat == ResultFormat.Summary)
+                            else
                                 suppressionGroupCounter[suppressionGroupId] = suppressionGroupCounter.TryGetValue(suppressionGroupId, out var count) ? ++count : 1;
                         }
                         else
@@ -291,8 +288,16 @@ namespace PSRule.Pipeline
 
                         // Report outcome to dependency graph
                         if (ruleRecord.Outcome == RuleOutcome.Pass)
+                        {
                             ruleBlockTarget.Pass();
-                        else if (ruleRecord.Outcome == RuleOutcome.Fail || ruleRecord.Outcome == RuleOutcome.Error)
+                            Context.Pass();
+                        }
+                        else if (ruleRecord.Outcome == RuleOutcome.Fail)
+                        {
+                            ruleBlockTarget.Fail();
+                            Context.Fail();
+                        }
+                        else if (ruleRecord.Outcome == RuleOutcome.Error)
                             ruleBlockTarget.Fail();
 
                         AddToSummary(ruleBlock: ruleBlockTarget.Value, outcome: ruleRecord.Outcome);
@@ -309,7 +314,7 @@ namespace PSRule.Pipeline
                 if (ruleCounter == 0)
                     Context.WarnObjectNotProcessed();
 
-                if (_ResultFormat == ResultFormat.Summary)
+                if (_IsSummary)
                 {
                     if (suppressedRuleCounter > 0)
                         Context.WarnRuleCountSuppressed(ruleCount: suppressedRuleCounter);
@@ -317,7 +322,6 @@ namespace PSRule.Pipeline
                     foreach (var keyValuePair in suppressionGroupCounter)
                         Context.WarnRuleSuppressionGroupCount(ruleCount: keyValuePair.Value, suppressionGroupId: keyValuePair.Key);
                 }
-
                 return result;
             }
             finally
@@ -336,6 +340,9 @@ namespace PSRule.Pipeline
         /// </summary>
         private void AddToSummary(RuleBlock ruleBlock, RuleOutcome outcome)
         {
+            if (!_IsSummary)
+                return;
+
             if (!_Summary.TryGetValue(ruleBlock.Id.Value, out var s))
             {
                 s = new RuleSummaryRecord(
@@ -346,19 +353,7 @@ namespace PSRule.Pipeline
                 );
                 _Summary.Add(ruleBlock.Id.Value, s);
             }
-
-            if (outcome == RuleOutcome.Pass)
-            {
-                s.Pass++;
-                Context.Pass();
-            }
-            else if (outcome == RuleOutcome.Fail)
-            {
-                s.Fail++;
-                Context.Fail();
-            }
-            else if (outcome == RuleOutcome.Error)
-                s.Error++;
+            s.Add(outcome);
         }
 
         protected override void Dispose(bool disposing)

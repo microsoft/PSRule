@@ -15,37 +15,48 @@ namespace PSRule
 {
     internal static class BaselineYamlSerializationMapper
     {
+        private const string SYNOPSIS_COMMENT = "Synopsis: ";
+
         internal static void MapBaseline(IEmitter emitter, Baseline baseline)
         {
             emitter.Emit(new MappingStart());
+            emitter.Emit(new Comment(string.Concat(SYNOPSIS_COMMENT, baseline.Synopsis), isInline: false));
 
-            emitter.Emit(new Comment($"Synopsis: {baseline.Synopsis}", isInline: false));
-
-            if (baseline?.ApiVersion != null)
+            if (baseline != null)
             {
-                MapPropertyName(emitter, nameof(baseline.ApiVersion));
-                emitter.Emit(new Scalar(baseline.ApiVersion));
+                MapProperty(emitter, nameof(baseline.ApiVersion), baseline.ApiVersion);
+                MapProperty(emitter, nameof(baseline.Kind), baseline.Kind);
+                MapResourceMetadata(emitter, nameof(baseline.Metadata), baseline.Metadata);
+                MapBaselineSpec(emitter, nameof(baseline.Spec), baseline.Spec);
             }
 
-            if (baseline?.Kind != null)
-            {
-                MapPropertyName(emitter, nameof(baseline.Kind));
-                var kind = Enum.GetName(typeof(ResourceKind), baseline.Kind);
-                emitter.Emit(new Scalar(kind));
-            }
+            emitter.Emit(new MappingEnd());
+        }
 
-            if (baseline?.Metadata != null)
-            {
-                MapPropertyName(emitter, nameof(baseline.Metadata));
-                MapResourceMetadata(emitter, baseline.Metadata);
-            }
+        private static void MapResourceMetadata(IEmitter emitter, string propertyName, ResourceMetadata resourceMetadata)
+        {
+            if (resourceMetadata == null)
+                return;
 
-            if (baseline?.Spec != null)
-            {
-                MapPropertyName(emitter, nameof(baseline.Spec));
-                MapBaselineSpec(emitter, baseline.Spec);
-            }
+            MapPropertyName(emitter, propertyName);
+            emitter.Emit(new MappingStart());
+            MapProperty(emitter, nameof(resourceMetadata.Annotations), resourceMetadata.Annotations);
+            MapProperty(emitter, nameof(resourceMetadata.Name), resourceMetadata.Name);
+            MapProperty(emitter, nameof(resourceMetadata.Tags), resourceMetadata.Tags);
+            emitter.Emit(new MappingEnd());
+        }
 
+        private static void MapBaselineSpec(IEmitter emitter, string propertyName, BaselineSpec baselineSpec)
+        {
+            if (baselineSpec == null)
+                return;
+
+            MapPropertyName(emitter, propertyName);
+            emitter.Emit(new MappingStart());
+            MapProperty(emitter, nameof(baselineSpec.Binding), baselineSpec.Binding);
+            MapProperty(emitter, nameof(baselineSpec.Configuration), baselineSpec.Configuration);
+            MapProperty(emitter, nameof(baselineSpec.Convention), baselineSpec.Convention);
+            MapProperty(emitter, nameof(baselineSpec.Rule), baselineSpec.Rule);
             emitter.Emit(new MappingEnd());
         }
 
@@ -54,197 +65,141 @@ namespace PSRule
             emitter.Emit(new Scalar(propertyName.ToCamelCase()));
         }
 
-        private static void MapResourceMetadata(IEmitter emitter, ResourceMetadata resourceMetadata)
+        /// <summary>
+        /// Map a dictionary property.
+        /// </summary>
+        private static void MapProperty<T>(IEmitter emitter, string propertyName, IDictionary<string, T> value)
         {
+            if (value.NullOrEmpty())
+                return;
+
+            MapPropertyName(emitter, propertyName);
+            MapDictionary(emitter, value);
+        }
+
+        /// <summary>
+        /// Map a nullable boolean property.
+        /// </summary>
+        private static void MapProperty(IEmitter emitter, string propertyName, bool? value)
+        {
+            if (!value.HasValue)
+                return;
+
+            MapPropertyName(emitter, propertyName);
+            emitter.Emit(new Scalar(value.ToString()));
+        }
+
+        /// <summary>
+        /// Map an enum property.
+        /// </summary>
+        private static void MapProperty<T>(IEmitter emitter, string propertyName, T value) where T : Enum
+        {
+            if (value == null)
+                return;
+
+            MapPropertyName(emitter, propertyName);
+            emitter.Emit(new Scalar(Enum.GetName(typeof(T), value)));
+        }
+
+        /// <summary>
+        /// Map a string array property.
+        /// </summary>
+        private static void MapProperty(IEmitter emitter, string propertyName, string[] value)
+        {
+            if (value == null)
+                return;
+
+            MapPropertyName(emitter, propertyName);
+            MapStringArraySequence(emitter, value);
+        }
+
+        /// <summary>
+        /// Map a string property.
+        /// </summary>
+        private static void MapProperty(IEmitter emitter, string propertyName, string value)
+        {
+            if (value == null)
+                return;
+
+            MapPropertyName(emitter, propertyName);
+            emitter.Emit(new Scalar(value));
+        }
+
+        /// <summary>
+        /// Map a BindingOption property.
+        /// </summary>
+        private static void MapProperty(IEmitter emitter, string propertyName, BindingOption value)
+        {
+            if (value == null)
+                return;
+
+            MapPropertyName(emitter, propertyName);
             emitter.Emit(new MappingStart());
-
-            if (!(resourceMetadata?.Annotations).NullOrEmpty())
-            {
-                MapPropertyName(emitter, nameof(resourceMetadata.Annotations));
-                MapDictionary(emitter, resourceMetadata.Annotations);
-            }
-
-            if (resourceMetadata?.Name != null)
-            {
-                MapPropertyName(emitter, nameof(resourceMetadata.Name));
-                emitter.Emit(new Scalar(resourceMetadata.Name));
-            }
-
-            if (!(resourceMetadata?.Tags).NullOrEmpty())
-            {
-                MapPropertyName(emitter, nameof(resourceMetadata.Tags));
-                MapDictionary(emitter, resourceMetadata.Tags);
-            }
-
+            MapProperty(emitter, nameof(value.Field), value.Field?.GetFieldMap);
+            MapProperty(emitter, nameof(value.IgnoreCase), value.IgnoreCase);
+            MapProperty(emitter, nameof(value.NameSeparator), value.NameSeparator);
+            MapProperty(emitter, nameof(value.PreferTargetInfo), value.PreferTargetInfo);
+            MapProperty(emitter, nameof(value.TargetName), value.TargetName);
+            MapProperty(emitter, nameof(value.TargetType), value.TargetType);
+            MapProperty(emitter, nameof(value.UseQualifiedName), value.UseQualifiedName);
             emitter.Emit(new MappingEnd());
         }
 
-        private static void MapBaselineSpec(IEmitter emitter, BaselineSpec baselineSpec)
+        /// <summary>
+        /// Map a ConventionOption property.
+        /// </summary>
+        private static void MapProperty(IEmitter emitter, string propertyName, ConventionOption value)
         {
+            if (value == null)
+                return;
+
+            MapPropertyName(emitter, propertyName);
             emitter.Emit(new MappingStart());
-
-            if (baselineSpec?.Binding != null)
-            {
-                MapPropertyName(emitter, nameof(baselineSpec.Binding));
-                MapBindingOption(emitter, baselineSpec.Binding);
-            }
-
-            if (baselineSpec?.Configuration != null)
-            {
-                MapPropertyName(emitter, nameof(baselineSpec.Configuration));
-                MapDictionary(emitter, baselineSpec.Configuration);
-            }
-
-            if (baselineSpec?.Convention != null)
-            {
-                MapPropertyName(emitter, nameof(baselineSpec.Convention));
-                MapConventionOption(emitter, baselineSpec.Convention);
-            }
-
-            if (baselineSpec?.Rule != null)
-            {
-                MapPropertyName(emitter, nameof(baselineSpec.Rule));
-                MapRuleOption(emitter, baselineSpec.Rule);
-            }
-
+            MapProperty(emitter, propertyName, value.Include);
             emitter.Emit(new MappingEnd());
         }
 
-        private static void MapBindingOption(IEmitter emitter, BindingOption bindingOption)
+        /// <summary>
+        /// Map a RuleOption property.
+        /// </summary>
+        private static void MapProperty(IEmitter emitter, string propertyName, RuleOption value)
         {
+            if (value == null)
+                return;
+
+            MapPropertyName(emitter, propertyName);
             emitter.Emit(new MappingStart());
-
-            if (bindingOption?.Field != null)
-            {
-                MapPropertyName(emitter, nameof(bindingOption.Field));
-                MapDictionary(emitter, bindingOption.Field.GetFieldMap);
-            }
-
-            if ((bindingOption?.IgnoreCase).HasValue)
-            {
-                MapPropertyName(emitter, nameof(bindingOption.IgnoreCase));
-                emitter.Emit(new Scalar(bindingOption.IgnoreCase.ToString()));
-            }
-
-            if (bindingOption?.NameSeparator != null)
-            {
-                MapPropertyName(emitter, nameof(bindingOption.NameSeparator));
-                emitter.Emit(new Scalar(bindingOption.NameSeparator));
-            }
-
-            if ((bindingOption?.PreferTargetInfo).HasValue)
-            {
-                MapPropertyName(emitter, nameof(bindingOption.PreferTargetInfo));
-                emitter.Emit(new Scalar(bindingOption.PreferTargetInfo.ToString()));
-            }
-
-            if (bindingOption?.TargetName != null)
-            {
-                MapPropertyName(emitter, nameof(bindingOption.TargetName));
-                MapStringArraySequence(emitter, bindingOption.TargetName);
-            }
-
-            if (bindingOption?.TargetType != null)
-            {
-                MapPropertyName(emitter, nameof(bindingOption.TargetType));
-                MapStringArraySequence(emitter, bindingOption.TargetType);
-            }
-
-            if ((bindingOption?.UseQualifiedName).HasValue)
-            {
-                MapPropertyName(emitter, nameof(bindingOption.UseQualifiedName));
-                emitter.Emit(new Scalar(bindingOption.UseQualifiedName.ToString()));
-            }
-
-            emitter.Emit(new MappingEnd());
-        }
-
-        private static void MapConventionOption(IEmitter emitter, ConventionOption conventionOption)
-        {
-            emitter.Emit(new MappingStart());
-
-            if (conventionOption?.Include != null)
-            {
-                MapPropertyName(emitter, nameof(conventionOption.Include));
-                MapStringArraySequence(emitter, conventionOption.Include);
-            }
-
-            emitter.Emit(new MappingEnd());
-        }
-
-        private static void MapRuleOption(IEmitter emitter, RuleOption ruleOption)
-        {
-            emitter.Emit(new MappingStart());
-
-            if (ruleOption?.Exclude != null)
-            {
-                MapPropertyName(emitter, nameof(ruleOption.Exclude));
-                MapStringArraySequence(emitter, ruleOption.Exclude);
-            }
-
-            if (ruleOption?.Include != null)
-            {
-                MapPropertyName(emitter, nameof(ruleOption.Include));
-                MapStringArraySequence(emitter, ruleOption.Include);
-            }
-
-            if ((ruleOption?.IncludeLocal).HasValue)
-            {
-                MapPropertyName(emitter, nameof(ruleOption.IncludeLocal));
-                emitter.Emit(new Scalar(ruleOption.IncludeLocal.ToString()));
-            }
-
-            if (ruleOption?.Tag != null)
-            {
-                MapPropertyName(emitter, nameof(ruleOption.Tag));
-                MapDictionary(emitter, ruleOption.Tag.ToDictionary());
-            }
-
+            MapProperty(emitter, nameof(value.Exclude), value.Exclude);
+            MapProperty(emitter, nameof(value.Include), value.Include);
+            MapProperty(emitter, nameof(value.IncludeLocal), value.IncludeLocal);
+            MapProperty(emitter, nameof(value.Tag), value.Tag?.ToDictionary());
             emitter.Emit(new MappingEnd());
         }
 
         private static void MapDictionary<T>(IEmitter emitter, IDictionary<string, T> dictionary)
         {
             emitter.Emit(new MappingStart());
-
             foreach (var kvp in dictionary.ToSortedDictionary())
             {
                 MapPropertyName(emitter, kvp.Key);
-
                 if (kvp.Value is string stringValue)
-                {
                     emitter.Emit(new Scalar(stringValue));
-                }
-
                 else if (kvp.Value is string[] stringValues)
-                {
                     MapStringArraySequence(emitter, stringValues);
-                }
-
                 else if (kvp.Value is PSObject[] psObjects)
-                {
                     MapPSObjectArraySequence(emitter, psObjects);
-                }
-
                 else
-                {
                     emitter.Emit(new Scalar(kvp.Value.ToString()));
-                }
             }
-
             emitter.Emit(new MappingEnd());
         }
 
         private static void MapStringArraySequence(IEmitter emitter, string[] sequence)
         {
             emitter.Emit(new SequenceStart(anchor: null, tag: null, isImplicit: false, style: SequenceStyle.Block));
-
             var sortedSequence = sequence.OrderBy(item => item);
-
             foreach (var item in sortedSequence)
-            {
                 emitter.Emit(new Scalar(item));
-            }
 
             emitter.Emit(new SequenceEnd());
         }
@@ -252,29 +207,22 @@ namespace PSRule
         private static void MapPSObjectArraySequence(IEmitter emitter, PSObject[] sequence)
         {
             emitter.Emit(new SequenceStart(anchor: null, tag: null, isImplicit: false, style: SequenceStyle.Block));
-
             foreach (var obj in sequence)
             {
                 if (obj.BaseObject == null || obj.HasNoteProperty())
                 {
                     emitter.Emit(new MappingStart());
-
                     var sortedProperties = obj.Properties.OrderBy(prop => prop.Name);
-
                     foreach (var propertyInfo in sortedProperties)
                     {
                         MapPropertyName(emitter, propertyInfo.Name);
                         emitter.Emit(new Scalar(propertyInfo.Value.ToString()));
                     }
-
                     emitter.Emit(new MappingEnd());
                 }
                 else
-                {
                     emitter.Emit(new Scalar(obj.BaseObject.ToString()));
-                }
             }
-
             emitter.Emit(new SequenceEnd());
         }
     }

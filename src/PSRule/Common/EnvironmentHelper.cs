@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -86,7 +86,7 @@ namespace PSRule
             return value != null;
         }
 
-        private bool TryVariable(string key, out string variable)
+        private static bool TryVariable(string key, out string variable)
         {
             variable = Environment.GetEnvironmentVariable(key);
             return variable != null;

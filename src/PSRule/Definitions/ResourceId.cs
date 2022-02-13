@@ -44,7 +44,7 @@ namespace PSRule.Definitions
         }
 
         internal ResourceId(string scope, string name, ResourceIdKind kind)
-            : this(GetIdString(scope, name), NormalScope(scope), name, kind) { }
+            : this(GetIdString(scope, name), LanguageScope.Normalize(scope), name, kind) { }
 
         public string Value { get; }
 
@@ -107,7 +107,7 @@ namespace PSRule.Definitions
         private static string GetIdString(string scope, string name)
         {
             return string.Concat(
-                NormalScope(scope),
+                LanguageScope.Normalize(scope),
                 SCOPE_SEPARATOR,
                 name
             );
@@ -139,11 +139,6 @@ namespace PSRule.Definitions
             scope = scopeSeparatorIndex >= 0 ? id.Substring(0, scopeSeparatorIndex) : null;
             name = id.Substring(scopeSeparatorIndex + 1);
             return true;
-        }
-
-        private static string NormalScope(string scope)
-        {
-            return string.IsNullOrEmpty(scope) ? LanguageScope.STANDALONE_SCOPENAME : scope;
         }
     }
 
