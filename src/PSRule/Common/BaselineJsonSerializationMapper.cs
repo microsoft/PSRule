@@ -218,9 +218,7 @@ namespace PSRule
                     writer.WriteEndObject();
                 }
                 else
-                {
                     serializer.Serialize(writer, obj.BaseObject);
-                }
             }
             writer.WriteEndArray();
         }

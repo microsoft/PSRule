@@ -207,45 +207,27 @@ namespace PSRule
         private static void MapDictionary<T>(IEmitter emitter, IDictionary<string, T> dictionary)
         {
             emitter.Emit(new MappingStart());
-
             foreach (var kvp in dictionary.ToSortedDictionary())
             {
                 MapPropertyName(emitter, kvp.Key);
-
                 if (kvp.Value is string stringValue)
-                {
                     emitter.Emit(new Scalar(stringValue));
-                }
-
                 else if (kvp.Value is string[] stringValues)
-                {
                     MapStringArraySequence(emitter, stringValues);
-                }
-
                 else if (kvp.Value is PSObject[] psObjects)
-                {
                     MapPSObjectArraySequence(emitter, psObjects);
-                }
-
                 else
-                {
                     emitter.Emit(new Scalar(kvp.Value.ToString()));
-                }
             }
-
             emitter.Emit(new MappingEnd());
         }
 
         private static void MapStringArraySequence(IEmitter emitter, string[] sequence)
         {
             emitter.Emit(new SequenceStart(anchor: null, tag: null, isImplicit: false, style: SequenceStyle.Block));
-
             var sortedSequence = sequence.OrderBy(item => item);
-
             foreach (var item in sortedSequence)
-            {
                 emitter.Emit(new Scalar(item));
-            }
 
             emitter.Emit(new SequenceEnd());
         }
@@ -253,29 +235,22 @@ namespace PSRule
         private static void MapPSObjectArraySequence(IEmitter emitter, PSObject[] sequence)
         {
             emitter.Emit(new SequenceStart(anchor: null, tag: null, isImplicit: false, style: SequenceStyle.Block));
-
             foreach (var obj in sequence)
             {
                 if (obj.BaseObject == null || obj.HasNoteProperty())
                 {
                     emitter.Emit(new MappingStart());
-
                     var sortedProperties = obj.Properties.OrderBy(prop => prop.Name);
-
                     foreach (var propertyInfo in sortedProperties)
                     {
                         MapPropertyName(emitter, propertyInfo.Name);
                         emitter.Emit(new Scalar(propertyInfo.Value.ToString()));
                     }
-
                     emitter.Emit(new MappingEnd());
                 }
                 else
-                {
                     emitter.Emit(new Scalar(obj.BaseObject.ToString()));
-                }
             }
-
             emitter.Emit(new SequenceEnd());
         }
     }
