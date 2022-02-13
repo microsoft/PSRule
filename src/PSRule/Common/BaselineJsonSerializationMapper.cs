@@ -180,21 +180,13 @@ namespace PSRule
             {
                 MapPropertyName(writer, kvp.Key);
                 if (kvp.Value is string stringValue)
-                {
                     writer.WriteValue(stringValue);
-                }
                 else if (kvp.Value is string[] stringValues)
-                {
                     MapStringArraySequence(writer, stringValues);
-                }
                 else if (kvp.Value is PSObject[] psObjects)
-                {
                     MapPSObjectArraySequence(writer, serializer, psObjects);
-                }
                 else
-                {
                     serializer.Serialize(writer, kvp.Value);
-                }
             }
             writer.WriteEndObject();
         }
