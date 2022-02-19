@@ -68,6 +68,17 @@ nav:
   #   - Configuring rule defaults: setup/configuring-rules.md
   #   - Configuring expansion: setup/configuring-expansion.md
   - Reference:
+    - Commands:
+      - Assert-PSRule: commands/PSRule/en-US/Assert-PSRule.md
+      - Export-PSRuleBaseline: commands/PSRule/en-US/Export-PSRuleBaseline.md
+      - Get-PSRule: commands/PSRule/en-US/Get-PSRule.md
+      - Get-PSRuleBaseline: commands/PSRule/en-US/Get-PSRuleBaseline.md
+      - Get-PSRuleHelp: commands/PSRule/en-US/Get-PSRuleHelp.md
+      - Get-PSRuleTarget: commands/PSRule/en-US/Get-PSRuleTarget.md
+      - Invoke-PSRule: commands/PSRule/en-US/Invoke-PSRule.md
+      - New-PSRuleOption: commands/PSRule/en-US/New-PSRuleOption.md
+      - Set-PSRuleOption: commands/PSRule/en-US/Set-PSRuleOption.md
+      - Test-PSRuleTarget: commands/PSRule/en-US/Test-PSRuleTarget.md
     - Assertion helpers: concepts/PSRule/en-US/about_PSRule_Assert.md
     - Baselines: concepts/PSRule/en-US/about_PSRule_Baseline.md
     - Badges: concepts/PSRule/en-US/about_PSRule_Badges.md

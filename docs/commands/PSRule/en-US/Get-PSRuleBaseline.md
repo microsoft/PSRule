@@ -1,7 +1,7 @@
 ---
 external help file: PSRule-help.xml
 Module Name: PSRule
-online version: https://microsoft.github.io/PSRule/commands/PSRule/en-US/Get-PSRuleBaseline.html
+online version: https://microsoft.github.io/PSRule/v2/commands/PSRule/en-US/Get-PSRuleBaseline/
 schema: 2.0.0
 ---
 

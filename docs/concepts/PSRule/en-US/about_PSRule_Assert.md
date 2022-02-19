@@ -1568,11 +1568,11 @@ Rule 'Assert.HasFieldValue' {
 
 ## NOTE
 
-An online version of this document is available at https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Assert.md.
+An online version of this document is available at https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Assert/.
 
 ## SEE ALSO
 
-- [about_PSRule_Variables](https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Variables.md)
+- [about_PSRule_Variables](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Variables/)
 
 ## KEYWORDS
 
