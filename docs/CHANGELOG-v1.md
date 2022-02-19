@@ -16,6 +16,13 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
   [2]: https://microsoft.github.io/PSRule/latest/CHANGELOG-v2/
 
+## v1.11.1
+
+What's changed since v1.11.1:
+
+- Bug fixes:
+  - Fixed broken documentation links. [#980](https://github.com/microsoft/PSRule/issues/980)
+
 ## v1.11.0
 
 What's changed since v1.10.0:
@@ -800,4 +807,3 @@ What's changed since v0.22.0:
 [about_PSRule_Rules]: concepts/PSRule/en-US/about_PSRule_Rules.md
 [about_PSRule_Badges]: concepts/PSRule/en-US/about_PSRule_Badges.md
 [about_PSRule_Expressions]: concepts/PSRule/en-US/about_PSRule_Expressions.md
-[about_PSRule_SuppressionGroups]: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md

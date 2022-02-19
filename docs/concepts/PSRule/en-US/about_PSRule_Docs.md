@@ -110,11 +110,11 @@ Additional sections such as `EXAMPLES` can be included although are not exposed 
 
 ## NOTE
 
-An online version of this document is available at https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Docs.md.
+An online version of this document is available at https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Docs/.
 
 ## SEE ALSO
 
-- [Get-PSRuleHelp](https://github.com/Microsoft/PSRule/blob/main/docs/commands/PSRule/en-US/Get-PSRuleHelp.md)
+- [Get-PSRuleHelp](https://microsoft.github.io/PSRule/v2/commands/PSRule/en-US/Get-PSRuleHelp/)
 
 ## KEYWORDS
 

@@ -2743,13 +2743,13 @@ rule:
 
 ## NOTE
 
-An online version of this document is available at https://github.com/Microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Options.md.
+An online version of this document is available at https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/.
 
 ## SEE ALSO
 
-- [Invoke-PSRule](https://github.com/Microsoft/PSRule/blob/main/docs/commands/PSRule/en-US/Invoke-PSRule.md)
-- [New-PSRuleOption](https://github.com/Microsoft/PSRule/blob/main/docs/commands/PSRule/en-US/New-PSRuleOption.md)
-- [Set-PSRuleOption](https://github.com/Microsoft/PSRule/blob/main/docs/commands/PSRule/en-US/Set-PSRuleOption.md)
+- [Invoke-PSRule](https://microsoft.github.io/PSRule/v2/commands/PSRule/en-US/Invoke-PSRule/)
+- [New-PSRuleOption](https://microsoft.github.io/PSRule/v2/commands/PSRule/en-US/New-PSRuleOption/)
+- [Set-PSRuleOption](https://microsoft.github.io/PSRule/v2/commands/PSRule/en-US/Set-PSRuleOption/)
 
 ## KEYWORDS
 

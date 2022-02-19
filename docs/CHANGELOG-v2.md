@@ -14,6 +14,11 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.0.0-B2202056:
+
+- Bug fixes:
+  - Fixed broken documentation links. [#980](https://github.com/microsoft/PSRule/issues/980)
+
 ## v2.0.0-B2202056 (pre-release)
 
 What's changed since pre-release v2.0.0-B2202024:

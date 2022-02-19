@@ -143,7 +143,7 @@ spec:
 
 ## NOTE
 
-An online version of this document is available at https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md.
+An online version of this document is available at https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_SuppressionGroups/.
 
 ## SEE ALSO
 
