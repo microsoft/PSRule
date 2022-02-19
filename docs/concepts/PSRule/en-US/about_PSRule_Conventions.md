@@ -155,11 +155,11 @@ When conventions are specified from multiple locations PSRule orders conventions
 
 ## NOTE
 
-An online version of this document is available at https://microsoft.github.io/PSRule/concepts/PSRule/en-US/about_PSRule_Conventions.md.
+An online version of this document is available at https://microsoft.github.io/PSRule/v1/concepts/PSRule/en-US/about_PSRule_Conventions/.
 
 ## SEE ALSO
 
-- [Invoke-PSRule](https://microsoft.github.io/PSRule/commands/PSRule/en-US/Invoke-PSRule.html)
+- [Invoke-PSRule](https://microsoft.github.io/PSRule/v1/commands/PSRule/en-US/Invoke-PSRule/)
 
 ## KEYWORDS
 

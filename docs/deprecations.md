@@ -4,6 +4,27 @@ author: BernieWhite
 
 # Deprecations
 
+## Deprecations for v3
+
+### Rule output object
+
+Several properties of the rule object have been renamed to improve consistency with other objects.
+Previously rules returned by `Get-PSRule` returned a rule object which included the following properties:
+
+- `RuleId`
+- `RuleName`
+- `Description`
+
+These have been replaced with the following properties:
+
+- `Id` instead of `RuleId`.
+- `Name` instead of `RuleName`.
+- `Synopsis` instead of `Description`.
+
+From _v3_ these properties will be removed.
+These changes do not affect normal usage of PSRule.
+Supporting scripts that directly use the old names may not work correctly until you update these names.
+
 ## Deprecations for v2
 
 ### Default baseline by module manifest
