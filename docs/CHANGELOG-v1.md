@@ -1,15 +1,20 @@
 # Change log
 
-See [upgrade notes][upgrade-notes] for helpful information when upgrading from previous versions.
+See [upgrade notes][1] for helpful information when upgrading from previous versions.
 
-[upgrade-notes]: upgrade-notes.md
+  [1]: https://microsoft.github.io/PSRule/latest/upgrade-notes/
 
 **Important notes**:
 
 - YAML resources will require an `apiVersion` from PSRule v2. [#648](https://github.com/microsoft/PSRule/issues/648)
 - Setting the default module baseline requires a module configuration from PSRule v2. [#809](https://github.com/microsoft/PSRule/issues/809)
 
-## Unreleased
+!!! Info
+    The next release of PSRule is currently in preview.
+    For more information see [v2][2] release notes.
+    Please check out our [upgrade notes][1] to get prepared for the next release.
+
+  [2]: https://microsoft.github.io/PSRule/latest/CHANGELOG-v2/
 
 ## v1.11.0
 
