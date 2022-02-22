@@ -55,6 +55,7 @@ nav:
       - Using within continuous integration: scenarios/validation-pipeline/validation-pipeline.md
     # - Troubleshooting: troubleshooting.md
     - License and contributing: license-contributing.md
+    - Related projects: related-projects.md
     - Releases:
       - Change log:
         - v2 (preview): 'CHANGELOG-v2.md'

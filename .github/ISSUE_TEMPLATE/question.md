@@ -1,10 +1,11 @@
 ---
 name: Question
-about: If you have a question, please check out Discussions
+about: If you have a question, please use Discussions
 labels: 'question'
 ---
 
-We use Issues as an issue tracker; for help, discussion, and support questions, please use Discussions.
+Have a question or looking for help? Rather than opening an issue, please ask a question in discussions.
+Your well-worded question will serve as a resource to others searching for help.
 
 Thanks! 😁.
 
