@@ -14,8 +14,8 @@ Exports a list of baselines.
 ## SYNTAX
 
 ```text
-Export-PSRuleBaseline [[-Path] <string[]>] -OutputPath <string> [-Module <string[]>] [-Name <string[]>]
- [-Option <PSRuleOption>] [-Culture <string>] [-OutputFormat <OutputFormat>] [-OutputEncoding <OutputEncoding>]
+Export-PSRuleBaseline [-Module <String[]>] [[-Path] <String[]>] [-Name <String[]>] [-Option <PSRuleOption>]
+ [-Culture <String>] [-OutputFormat <OutputFormat>] -OutputPath <String> [-OutputEncoding <OutputEncoding>]
  [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
@@ -216,6 +216,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS

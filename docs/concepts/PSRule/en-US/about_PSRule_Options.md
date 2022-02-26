@@ -43,6 +43,7 @@ The following workspace options are available for use:
 - [Output.Path](#outputpath)
 - [Output.SarifProblemsOnly](#outputsarifproblemsonly)
 - [Output.Style](#outputstyle)
+- [Repository.Url](#repositoryurl)
 - [Requires](#requires)
 - [Suppression](#suppression)
 
@@ -1650,10 +1651,11 @@ The following information can be shown or hidden by configuring this option.
 - `Title` (1) - Shows the PSRule title ASCII text.
 - `Source` (2) - Shows rules module versions used in this run.
 - `SupportLinks` (4) - Shows supporting links for PSRule and rules modules.
+- `RepositoryInfo` (8) - Show information about the repository where PSRule is being run from.
 
 Additionally the following rollup options exist:
 
-- `Default` - Shows `Title`, `Source`, and `SupportLinks`.
+- `Default` - Shows `Title`, `Source`, `SupportLinks`, `RepositoryInfo`.
 This is the default option.
 - `Minimal` - Shows `Source`.
 
@@ -2208,7 +2210,7 @@ The default number of spaces is 0.
 This option applies to output generated from `-OutputFormat Json` for `Get-PSRule` and `Invoke-PSRule`.
 This option also applies to output generated from `-OutputPath` for `Assert-PSRule`.
 
-The range of indentation accepts a minimum of 0(machine first) spaces and a maximum of 4 spaces.
+The range of indentation accepts a minimum of 0 (machine first) spaces and a maximum of 4 spaces.
 
 This option can be specified using:
 
@@ -2254,6 +2256,47 @@ env:
 variables:
 - name: PSRULE_OUTPUT_JSONINDENT
   value: 2
+```
+
+### Repository.Url
+
+This option can be configured to set the repository URL reported in output.
+By default, the repository URL is detected from environment variables set by the build system.
+
+- In GitHub Actions, the repository URL is detected from the `GITHUB_REPOSITORY` environment variable.
+- In Azure Pipelines, the repository URL is detected from the `BUILD_REPOSITORY_URI` environment variable.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the RepositoryUrl parameter
+$option = New-PSRuleOption -RepositoryUrl 'https://github.com/microsoft/PSRule';
+```
+
+```powershell
+# PowerShell: Using the Repository.Url hashtable key
+$option = New-PSRuleOption -Option @{ 'Repository.Url' = 'https://github.com/microsoft/PSRule' };
+```
+
+```powershell
+# PowerShell: Using the RepositoryUrl parameter to set YAML
+Set-PSRuleOption -RepositoryUrl 'https://github.com/microsoft/PSRule';
+```
+
+```yaml
+# YAML: Using the repository/url property
+repository:
+  url: 'https://github.com/microsoft/PSRule'
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_REPOSITORY_URL='https://github.com/microsoft/PSRule'
+```
+
+```powershell
+# PowerShell: Using environment variable
+$env:PSRULE_REPOSITORY_URL = 'https://github.com/microsoft/PSRule';
 ```
 
 ### Requires

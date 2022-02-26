@@ -1239,7 +1239,7 @@ function New-PSRuleOption {
 
         # Sets the Output.Banner option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('Default', 'Minimal', 'None', 'Title', 'Source', 'SupportLinks')]
+        [ValidateSet('Default', 'Minimal', 'None', 'Title', 'Source', 'SupportLinks', 'RepositoryInfo')]
         [PSRule.Configuration.BannerFormat]$OutputBanner = 'Default',
 
         # Sets the Output.Culture option
@@ -1285,6 +1285,10 @@ function New-PSRuleOption {
         [ValidateRange(0, 4)]
         [Alias('JsonIndent')]
         [int]$OutputJsonIndent = 0,
+
+        # Sets the Repository.Url option
+        [Parameter(Mandatory = $False)]
+        [String]$RepositoryUrl,
 
         # Sets the Rule.IncludeLocal option
         [Parameter(Mandatory = $False)]
@@ -1505,7 +1509,7 @@ function Set-PSRuleOption {
 
         # Sets the Output.Banner option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('Default', 'Minimal', 'None', 'Title', 'Source', 'SupportLinks')]
+        [ValidateSet('Default', 'Minimal', 'None', 'Title', 'Source', 'SupportLinks', 'RepositoryInfo')]
         [PSRule.Configuration.BannerFormat]$OutputBanner = 'Default',
 
         # Sets the Output.Culture option
@@ -1551,6 +1555,10 @@ function Set-PSRuleOption {
         [ValidateRange(0, 4)]
         [Alias('JsonIndent')]
         [Int]$OutputJsonIndent = 0,
+
+        # Sets the Repository.Url option
+        [Parameter(Mandatory = $False)]
+        [String]$RepositoryUrl,
 
         # Sets the Rule.IncludeLocal option
         [Parameter(Mandatory = $False)]
@@ -2211,7 +2219,7 @@ function SetOptions {
 
         # Sets the Output.Banner option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('Default', 'Minimal', 'None', 'Title', 'Source', 'SupportLinks')]
+        [ValidateSet('Default', 'Minimal', 'None', 'Title', 'Source', 'SupportLinks', 'RepositoryInfo')]
         [PSRule.Configuration.BannerFormat]$OutputBanner = 'Default',
 
         # Sets the Output.Culture option
@@ -2257,6 +2265,10 @@ function SetOptions {
         [ValidateRange(0, 4)]
         [Alias('JsonIndent')]
         [Int]$OutputJsonIndent = 0,
+
+        # Sets the Repository.Url option
+        [Parameter(Mandatory = $False)]
+        [String]$RepositoryUrl,
 
         # Sets the Rule.IncludeLocal option
         [Parameter(Mandatory = $False)]
@@ -2443,6 +2455,11 @@ function SetOptions {
         # Sets option Output.Style
         if ($PSBoundParameters.ContainsKey('OutputStyle')) {
             $Option.Output.Style = $OutputStyle;
+        }
+
+        # Sets option Repository.Url
+        if ($PSBoundParameters.ContainsKey('RepositoryUrl')) {
+            $Option.Repository.Url = $RepositoryUrl;
         }
 
         # Sets option Rule.IncludeLocal

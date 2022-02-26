@@ -1,5 +1,8 @@
 # These are options for unit tests
 
+repository:
+  url: 'https://github.com/microsoft/PSRule.UnitTest'
+
 # Configure baseline
 rule:
   include:

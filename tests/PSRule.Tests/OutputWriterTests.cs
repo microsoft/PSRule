@@ -23,6 +23,7 @@ namespace PSRule
         {
             var option = GetOption();
             option.Output.SarifProblemsOnly = false;
+            option.Repository.Url = "https://github.com/microsoft/PSRule.UnitTest";
             var output = new TestWriter(option);
             var result = new InvokeResult();
             result.Add(GetPass());
@@ -38,6 +39,7 @@ namespace PSRule
             Assert.NotNull(actual);
             Assert.Equal("PSRule", actual["runs"][0]["tool"]["driver"]["name"]);
             Assert.Equal("0.0.1", actual["runs"][0]["tool"]["driver"]["semanticVersion"].Value<string>().Split('+')[0]);
+            Assert.Equal("https://github.com/microsoft/PSRule.UnitTest", actual["runs"][0]["versionControlProvenance"][0]["repositoryUri"].Value<string>());
 
             // Pass
             Assert.Equal("TestModule\\rule-001", actual["runs"][0]["results"][0]["ruleId"]);
