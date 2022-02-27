@@ -376,8 +376,8 @@
                 },
                 "banner": {
                     "title": "Banner format",
-                    "description": "The information displayed for Assert-PSRule banner. The default is Default which includes Title, Source, and SupportLinks.",
-                    "markdownDescription": "The information displayed for Assert-PSRule banner. The default is `Default` which includes `Title`, `Source`, and `SupportLinks`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputbanner)",
+                    "description": "The information displayed for Assert-PSRule banner. The default is Default which includes Title, Source, SupportLinks, and RepositoryInfo.",
+                    "markdownDescription": "The information displayed for Assert-PSRule banner. The default is `Default` which includes `Title`, `Source`, `SupportLinks`, and `RepositoryInfo`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputbanner)",
                     "oneOf": [
                         {
                             "type": "string",
@@ -386,6 +386,7 @@
                                 "Title",
                                 "Source",
                                 "SupportLinks",
+                                "RepositoryInfo",
                                 "Default",
                                 "Minimal"
                             ]
@@ -581,6 +582,10 @@
                     "type": "object",
                     "$ref": "#/definitions/output-option"
                 },
+                "repository": {
+                    "type": "object",
+                    "$ref": "#/definitions/repository-option"
+                },
                 "requires": {
                     "type": "object",
                     "$ref": "#/definitions/requires"
@@ -600,6 +605,21 @@
                             "$ref": "#/definitions/suppression-option"
                         }
                     ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "repository-option": {
+            "type": "object",
+            "title": "Repository",
+            "description": "Configures repository options.",
+            "markdownDescription": "Configures repository options.",
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "title": "Repository URL",
+                    "description": "The URL to the repository.",
+                    "markdownDescription": "The URL to the repository."
                 }
             },
             "additionalProperties": false

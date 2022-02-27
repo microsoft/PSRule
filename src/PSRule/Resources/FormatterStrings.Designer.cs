@@ -19,7 +19,7 @@ namespace PSRule.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class FormatterStrings {
@@ -183,6 +183,33 @@ namespace PSRule.Resources {
         internal static string Recommend {
             get {
                 return ResourceManager.GetString("Recommend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   on : {0}.
+        /// </summary>
+        internal static string Repository_Branch {
+            get {
+                return ResourceManager.GetString("Repository_Branch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   at : {0}.
+        /// </summary>
+        internal static string Repository_Revision {
+            get {
+                return ResourceManager.GetString("Repository_Revision", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From repository: {0}.
+        /// </summary>
+        internal static string Repository_Url {
+            get {
+                return ResourceManager.GetString("Repository_Url", resourceCulture);
             }
         }
         

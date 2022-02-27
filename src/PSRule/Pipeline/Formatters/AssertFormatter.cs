@@ -145,6 +145,7 @@ namespace PSRule.Pipeline.Formatters
             Banner();
             Source(source);
             SupportLinks(source);
+            RepositoryInfo();
         }
 
         #region IAssertFormatter
@@ -401,6 +402,25 @@ namespace PSRule.Pipeline.Formatters
             }
             WriteLine(OUTPUT_SEPARATOR_BAR);
             LineBreak();
+        }
+
+        private void RepositoryInfo()
+        {
+            if (!Option.Output.Banner.GetValueOrDefault(BannerFormat.Default).HasFlag(BannerFormat.RepositoryInfo))
+                return;
+
+            if (!GitHelper.TryRepository(out var repository))
+                return;
+
+            WriteLineFormat(FormatterStrings.Repository_Url, repository);
+            if (GitHelper.TryHeadBranch(out var branch))
+                WriteLineFormat(FormatterStrings.Repository_Branch, branch);
+
+            if (GitHelper.TryRevision(out var revision))
+                WriteLineFormat(FormatterStrings.Repository_Revision, revision);
+
+            if (!string.IsNullOrEmpty(repository) || !string.IsNullOrEmpty(branch) || !string.IsNullOrEmpty(revision))
+                LineBreak();
         }
 
         protected static string GetErrorMessage(RuleRecord record)

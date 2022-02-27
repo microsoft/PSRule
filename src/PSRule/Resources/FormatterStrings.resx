@@ -161,6 +161,15 @@
     <value>    | RECOMMEND:</value>
     <comment>Recommendation output header</comment>
   </data>
+  <data name="Repository_Branch" xml:space="preserve">
+    <value>  on : {0}</value>
+  </data>
+  <data name="Repository_Revision" xml:space="preserve">
+    <value>  at : {0}</value>
+  </data>
+  <data name="Repository_Url" xml:space="preserve">
+    <value>From repository: {0}</value>
+  </data>
   <data name="Result_Error" xml:space="preserve">
     <value>    [ERROR] </value>
   </data>

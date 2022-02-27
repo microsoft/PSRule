@@ -6,9 +6,7 @@
 #
 
 [CmdletBinding()]
-param (
-
-)
+param ()
 
 BeforeAll {
     # Setup error handling
@@ -1629,6 +1627,34 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Repository.Url' {
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Repository.Url' = 'https://github.com/microsoft/PSRule.UnitTest' };
+            $option.Repository.Url | Should -Be 'https://github.com/microsoft/PSRule.UnitTest';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Repository.Url | Should -Be 'https://github.com/microsoft/PSRule.UnitTest';
+        }
+
+        It 'from Environment' {
+            try {
+                $Env:PSRULE_REPOSITORY_URL = 'https://github.com/microsoft/PSRule.UnitTest';
+                $option = New-PSRuleOption;
+                $option.Repository.Url | Should -Be 'https://github.com/microsoft/PSRule.UnitTest';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_REPOSITORY_URL' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -RepositoryUrl 'https://github.com/microsoft/PSRule.UnitTest' -Path $emptyOptionsFilePath;
+            $option.Repository.Url | Should -Be 'https://github.com/microsoft/PSRule.UnitTest';
+        }
+    }
+
     Context 'Read Requires' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -1976,6 +2002,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputStyle 'AzurePipelines' @optionParams;
             $option.Output.Style | Should -Be 'AzurePipelines';
+        }
+    }
+
+    Context 'Read Repository.Url' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -RepositoryUrl 'https://github.com/microsoft/PSRule.UnitTest' @optionParams;
+            $option.Repository.Url | Should -Be 'https://github.com/microsoft/PSRule.UnitTest';
         }
     }
 

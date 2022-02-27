@@ -22,14 +22,15 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
- [-IncludeModule <String[]>] [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
+ [-AliasReferenceWarning <Boolean>] [-InvariantCultureWarning <Boolean>] [-IncludeModule <String[]>]
+ [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
  [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
  [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
  [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-OutputJsonIndent <Int>]
- [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>]
+ [-OutputJsonIndent <Int32>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ### FromOption
@@ -40,15 +41,16 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
  [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
- [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>] [-IncludeModule <String[]>]
+ [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
+ [-AliasReferenceWarning <Boolean>] [-InvariantCultureWarning <Boolean>] [-IncludeModule <String[]>]
  [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
  [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
  [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
  [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-OutputJsonIndent <Int>]
- [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>]
+ [-OutputJsonIndent <Int32>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ### FromDefault
@@ -58,15 +60,16 @@ New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTar
  [-BindTargetName <BindTargetName[]>] [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>]
  [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
- [-Convention <String[]>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
+ [-Convention <String[]>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
+ [-SuppressedRuleWarning <Boolean>] [-AliasReferenceWarning <Boolean>] [-InvariantCultureWarning <Boolean>]
  [-IncludeModule <String[]>] [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
  [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
  [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
  [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputStyle <OutputStyle>] [-OutputJsonIndent <Int>]
- [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>]
+ [-OutputJsonIndent <Int32>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -762,6 +765,26 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -OutputJsonIndent
+
+Sets the option `Output.JsonIndent`.
+The `Output.JsonIndent` option configures indentation for JSON output.
+
+This option only applies to `Get-PSRule`, `Invoke-PSRule` and `Assert-PSRule` cmdlets.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases: JsonIndent
+Accepted values: 0, 1, 2, 3, 4
+
+Required: False
+Position: Named
+Default value: 0
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -OutputOutcome
 
 Sets the `Output.Outcome` option.
@@ -797,6 +820,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -OutputSarifProblemsOnly
+
+Sets the option `Option.SarifProblemsOnly`.
+The `Output.SarifProblemsOnly` option determines if SARIF output only includes fail and error outcomes.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: True
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -OutputStyle
 
 Sets the option `Option.Style`.
@@ -817,22 +857,19 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -OutputJsonIndent
+### -RepositoryUrl
 
-Sets the option `Output.JsonIndent`.
-The `Output.JsonIndent` option configures indentation for JSON output.
-
-This option only applies to `Get-PSRule`, `Invoke-PSRule` and `Assert-PSRule` cmdlets.
+Sets the option `Repository.Url`.
+The `Repository.Url` option sets the repository URL reported in output.
 
 ```yaml
-Type: Int
+Type: String
 Parameter Sets: (All)
-Aliases: JsonIndent
-Accepted values: 0, 1, 2, 3, 4
+Aliases:
 
 Required: False
 Position: Named
-Default value: 0
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -851,6 +888,40 @@ Aliases:
 Required: False
 Position: Named
 Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -AliasReferenceWarning
+
+Sets the option `Execution.AliasReferenceWarning`.
+The `Execution.AliasReferenceWarning` option determines if a warning is logged when alises are referenced.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases: ExecutionAliasReferenceWarning
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InvariantCultureWarning
+
+Sets the option `Execution.InvariantCultureWarning`.
+The `Execution.InvariantCultureWarning` option set if a warning is logged when invarient culture is detected.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases: ExecutionInvariantCultureWarning
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

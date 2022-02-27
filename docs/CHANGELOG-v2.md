@@ -14,6 +14,17 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.0.0-B2202065:
+
+- General improvements:
+  - Capture and output repository info in Assert-PSRule runs. [#978](https://github.com/microsoft/PSRule/issues/978)
+    - Added `Repository.Url` option set repository URL reported in output.
+    - Repository URL is detected automatically for GitHub Actions and Azure Pipelines.
+    - Added `RepositoryInfo` to `Output.Banner` option.
+    - Repository info is shown by default.
+- Bug fixes:
+  - Fixed SARIF should report base branch. [#964](https://github.com/microsoft/PSRule/issues/964)
+
 ## v2.0.0-B2202065 (pre-release)
 
 What's changed since pre-release v2.0.0-B2202056:

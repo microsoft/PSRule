@@ -65,6 +65,7 @@ namespace PSRule.Configuration
             Logging = new LoggingOption();
             Output = new OutputOption();
             Pipeline = new PipelineHook();
+            Repository = new RepositoryOption();
             Requires = new RequiresOption();
             Rule = new RuleOption();
             Suppression = new SuppressionOption();
@@ -84,6 +85,7 @@ namespace PSRule.Configuration
             Logging = new LoggingOption(option?.Logging);
             Output = new OutputOption(option?.Output);
             Pipeline = new PipelineHook(option?.Pipeline);
+            Repository = new RepositoryOption(option?.Repository);
             Requires = new RequiresOption(option?.Requires);
             Rule = new RuleOption(option?.Rule);
             Suppression = new SuppressionOption(option?.Suppression);
@@ -129,6 +131,8 @@ namespace PSRule.Configuration
         [YamlIgnore]
         [JsonIgnore]
         public PipelineHook Pipeline { get; set; }
+
+        public RepositoryOption Repository { get; set; }
 
         /// <summary>
         /// Specifies the required version of a module to use.
@@ -177,6 +181,7 @@ namespace PSRule.Configuration
             result.Include = IncludeOption.Combine(result.Include, o2?.Include);
             result.Input = InputOption.Combine(result.Input, o2?.Input);
             result.Logging = LoggingOption.Combine(result.Logging, o2?.Logging);
+            result.Repository = RepositoryOption.Combine(result.Repository, o2?.Repository);
             result.Output = OutputOption.Combine(result.Output, o2?.Output);
             return result;
         }
@@ -280,6 +285,7 @@ namespace PSRule.Configuration
             option.Input.Load(env);
             option.Logging.Load(env);
             option.Output.Load(env);
+            option.Repository.Load(env);
             option.Requires.Load(env);
             BaselineOption.Load(option, env);
             return option;
@@ -299,6 +305,7 @@ namespace PSRule.Configuration
             option.Input.Load(index);
             option.Logging.Load(index);
             option.Output.Load(index);
+            option.Repository.Load(index);
             option.Requires.Load(index);
             BaselineOption.Load(option, index);
             return option;
@@ -384,6 +391,7 @@ namespace PSRule.Configuration
                 Output == other.Output &&
                 Suppression == other.Suppression &&
                 Pipeline == other.Pipeline &&
+                Repository == other.Repository &&
                 Rule == other.Rule;
         }
 
@@ -402,6 +410,7 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (Output != null ? Output.GetHashCode() : 0);
                 hash = hash * 23 + (Suppression != null ? Suppression.GetHashCode() : 0);
                 hash = hash * 23 + (Pipeline != null ? Pipeline.GetHashCode() : 0);
+                hash = hash * 23 + (Repository != null ? Repository.GetHashCode() : 0);
                 hash = hash * 23 + (Rule != null ? Rule.GetHashCode() : 0);
                 return hash;
             }

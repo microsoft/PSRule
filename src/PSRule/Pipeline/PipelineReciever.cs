@@ -247,7 +247,7 @@ namespace PSRule.Pipeline
                 return null;
 
             sourceInfo = new TargetSourceInfo(inputFileInfo);
-            var headRef = GitHelper.GetHeadRef(inputFileInfo.DirectoryName);
+            GitHelper.TryHeadRef(out var headRef, inputFileInfo.DirectoryName);
             return new RepositoryInfo(inputFileInfo.BasePath, headRef);
         }
 

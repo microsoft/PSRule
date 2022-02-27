@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -34,7 +34,12 @@ namespace PSRule.Configuration
         /// </summary>
         SupportLinks = 4,
 
-        Default = Title | Source | SupportLinks,
+        /// <summary>
+        /// Information about the repository where PSRule is being run from.
+        /// </summary>
+        RepositoryInfo = 8,
+
+        Default = Title | Source | SupportLinks | RepositoryInfo,
         Minimal = Source
     }
 }

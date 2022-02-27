@@ -29,7 +29,7 @@ namespace PSRule.Pipeline.Output
         private readonly Dictionary<string, ReportingDescriptorReference> _Rules;
         private readonly Dictionary<string, ToolComponent> _Extensions;
 
-        public SarifBuilder(Source[] source)
+        public SarifBuilder(Source[] source, PSRuleOption option)
         {
             _Rules = new Dictionary<string, ReportingDescriptorReference>();
             _Extensions = new Dictionary<string, ToolComponent>();
@@ -40,6 +40,31 @@ namespace PSRule.Pipeline.Output
                 Invocations = GetInvocation(),
                 AutomationDetails = GetAutomationDetails(),
                 OriginalUriBaseIds = GetBaseIds(),
+                VersionControlProvenance = GetVersionControl(option.Repository),
+            };
+        }
+
+        /// <summary>
+        /// Get information from version control system.
+        /// </summary>
+        /// <remarks>
+        /// https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317497
+        /// </remarks>
+        private static IList<VersionControlDetails> GetVersionControl(RepositoryOption option)
+        {
+            var repository = option.Url ?? (GitHelper.TryRepository(out var url) ? url : null);
+            return new List<VersionControlDetails>()
+            {
+                new VersionControlDetails
+                {
+                    RepositoryUri = !string.IsNullOrEmpty(repository) ? new Uri(repository) : null,
+                    RevisionId = !string.IsNullOrEmpty(repository) && GitHelper.TryRevision(out var revision) ? revision : null,
+                    Branch = !string.IsNullOrEmpty(repository) && GitHelper.TryHeadBranch(out var branch) ? branch : null,
+                    MappedTo = new ArtifactLocation
+                    {
+                        UriBaseId = LOCATION_ID_REPOROOT
+                    },
+                }
             };
         }
 
@@ -310,7 +335,7 @@ namespace PSRule.Pipeline.Output
         internal SarifOutputWriter(Source[] source, PipelineWriter inner, PSRuleOption option)
             : base(inner, option)
         {
-            _Builder = new SarifBuilder(source);
+            _Builder = new SarifBuilder(source, option);
             _Encoding = option.Output.GetEncoding();
             _ReportAll = !option.Output.SarifProblemsOnly.GetValueOrDefault(OutputOption.Default.SarifProblemsOnly.Value);
         }
