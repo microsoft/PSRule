@@ -156,10 +156,17 @@ spec:
 The `contains` condition can be used to determine if the operand contains a specified sub-string.
 One or more strings to compare can be specified.
 
+- `caseSensitive` - Optionally, a case sensitive-comparison can be performed.
+  By default, case-insensitive comparison is performed.
+- `convert` - Optionally, types can be converted to string type.
+  By default `convert` is `false`.
+
 Syntax:
 
 ```yaml
 contains: <string | array>
+caseSensitive: <boolean>
+convert: <boolean>
 ```
 
 - If the operand is a field, and the field does not exist, _contains_ always returns `false`.
@@ -236,10 +243,18 @@ spec:
 
 The `equals` condition can be used to compare if the operand is equal to a supplied value.
 
+- `caseSensitive` - Optionally, a case sensitive-comparison can be performed.
+  This only applies to string comparisons.
+  By default, case-insensitive comparison is performed.
+- `convert` - Optionally, perform type conversion on operand type.
+  By default `convert` is `false`.
+
 Syntax:
 
 ```yaml
 equals: <string | int | bool>
+caseSensitive: <boolean>
+convert: <boolean>
 ```
 
 For example:
@@ -271,10 +286,17 @@ spec:
 The `endsWith` condition can be used to determine if the operand ends with a specified string.
 One or more strings to compare can be specified.
 
+- `caseSensitive` - Optionally, a case sensitive-comparison can be performed.
+  By default, case-insensitive comparison is performed.
+- `convert` - Optionally, types can be converted to string type.
+  By default `convert` is `false`.
+
 Syntax:
 
 ```yaml
 endsWith: <string | array>
+caseSensitive: <boolean>
+convert: <boolean>
 ```
 
 - If the operand is a field, and the field does not exist, _endsWith_ always returns `false`.
@@ -1171,10 +1193,18 @@ spec:
 
 The `notEquals` condition can be used to compare if a field is equal to a supplied value.
 
+- `caseSensitive` - Optionally, a case sensitive-comparison can be performed.
+  This only applies to string comparisons.
+  By default, case-insensitive comparison is performed.
+- `convert` - Optionally, perform type conversion on operand type.
+  By default `convert` is `false`.
+
 Syntax:
 
 ```yaml
 notEquals: <string | int | bool>
+caseSensitive: <boolean>
+convert: <boolean>
 ```
 
 For example:
@@ -1392,10 +1422,17 @@ spec:
 The `startsWith` condition can be used to determine if the operand starts with a specified string.
 One or more strings to compare can be specified.
 
+- `caseSensitive` - Optionally, a case sensitive-comparison can be performed.
+  By default, case-insensitive comparison is performed.
+- `convert` - Optionally, types can be converted to string type.
+  By default `convert` is `false`.
+
 Syntax:
 
 ```yaml
 startsWith: <string | array>
+caseSensitive: <boolean>
+convert: <boolean>
 ```
 
 - If the operand is a field, and the field does not exist, _startsWith_ always returns `false`.

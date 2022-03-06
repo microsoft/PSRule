@@ -128,10 +128,17 @@ spec:
     allOf:
     - field: 'ValueString'
       equals: 'abc'
+      caseSensitive: true
     - field: 'ValueInt'
       equals: 123
     - field: 'ValueBool'
       equals: true
+    - anyOf:
+      - field: 'ValueEnum'
+        exists: false
+      - field: 'ValueEnum'
+        equals: 'All'
+        convert: true
 
 ---
 # Synopsis: Test notEquals
@@ -144,10 +151,17 @@ spec:
     allOf:
     - field: 'ValueString'
       notEquals: 'abc'
+      caseSensitive: true
     - field: 'ValueInt'
       notEquals: 123
     - field: 'ValueBool'
       notEquals: true
+    - anyOf:
+      - field: 'ValueEnum'
+        exists: false
+      - field: 'ValueEnum'
+        notEquals: 'All'
+        convert: true
 
 ---
 # Synopsis: Test hasValue true
@@ -277,10 +291,17 @@ spec:
         startsWith: 'a'
       - field: 'Value'
         startsWith: 'e'
+        caseSensitive: true
     - field: 'Value'
       startsWith:
       - 'a'
       - 'e'
+    - anyOf:
+      - field: 'OtherValue'
+        exists: false
+      - field: 'OtherValue'
+        startsWith: 'a'
+        convert: true
 
 ---
 # Synopsis: Test endsWith
@@ -296,10 +317,17 @@ spec:
         endsWith: 'c'
       - field: 'Value'
         endsWith: 'g'
+        caseSensitive: true
     - field: 'Value'
       endsWith:
       - 'c'
       - 'g'
+    - anyOf:
+      - field: 'OtherValue'
+        exists: false
+      - field: 'OtherValue'
+        endsWith: 'l'
+        convert: true
 
 ---
 # Synopsis: Test contains
@@ -315,10 +343,17 @@ spec:
         contains: 'ab'
       - field: 'Value'
         contains: 'bc'
+        caseSensitive: true
     - field: 'Value'
       contains:
       - 'ab'
       - 'bc'
+    - anyOf:
+      - field: 'OtherValue'
+        exists: false
+      - field: 'OtherValue'
+        contains: 'l'
+        convert: true
 
 ---
 # Synopsis: Test isString
