@@ -9,8 +9,11 @@ For example, Azure resources can be validated to match an internal standard or b
 
     Consider using or contributing these pre-built rule modules instead:
 
-    - [PSRule.Rules.Azure]
-    - [PSRule.Rules.CAF]
+    - [PSRule.Rules.Azure][1]
+    - [PSRule.Rules.CAF][2]
+
+  [1]: https://github.com/Azure/PSRule.Rules.Azure
+  [2]: https://github.com/microsoft/PSRule.Rules.CAF
 
 This scenario covers the following:
 
@@ -238,5 +241,3 @@ Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAcc
 - [common.Rule.ps1](common.Rule.ps1) - ResourceType helper function.
 
 [azure-docs-secure-transfer]: https://docs.microsoft.com/azure/storage/common/storage-require-secure-transfer
-[PSRule.Rules.Azure]: https://github.com/Microsoft/PSRule.Rules.Azure
-[PSRule.Rules.CAF]: https://github.com/Microsoft/PSRule.Rules.CAF

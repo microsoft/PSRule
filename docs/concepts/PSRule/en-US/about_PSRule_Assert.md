@@ -1,3 +1,8 @@
+---
+tags:
+- language
+---
+
 # PSRule_Assert
 
 ## about_PSRule_Assert

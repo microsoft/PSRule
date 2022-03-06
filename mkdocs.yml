@@ -38,8 +38,11 @@ nav:
       - Features: features.md
       - FAQ: faq.md
     - Installation: install-instructions.md
+    - Quickstarts:
+      - Create a standalone rule: quickstart/standalone-rule.md
     - Authoring rules:
-      - Writing rules: authoring/writing-rules.md
+      - Testing infrastructure: authoring/testing-infrastructure.md
+      - Using expressions: authoring/using-expressions.md
       - Storing and naming rules: authoring/storing-rules.md
       - Packaging rules in a module: authoring/packaging-rules.md
       - Writing rule help: authoring/writing-rule-help.md
@@ -80,7 +83,7 @@ nav:
       - New-PSRuleOption: commands/PSRule/en-US/New-PSRuleOption.md
       - Set-PSRuleOption: commands/PSRule/en-US/Set-PSRuleOption.md
       - Test-PSRuleTarget: commands/PSRule/en-US/Test-PSRuleTarget.md
-    - Assertion helpers: concepts/PSRule/en-US/about_PSRule_Assert.md
+    - Assertion methods: concepts/PSRule/en-US/about_PSRule_Assert.md
     - Baselines: concepts/PSRule/en-US/about_PSRule_Baseline.md
     - Badges: concepts/PSRule/en-US/about_PSRule_Badges.md
     - Conventions: concepts/PSRule/en-US/about_PSRule_Conventions.md
@@ -128,6 +131,9 @@ plugins:
       # on_nav: "docs.hooks:build_reference_nav"
 - search
 - git-revision-date
+- redirects:
+    redirect_maps:
+      'authoring/writing-rules.md': 'authoring/testing-infrastructure.md'
 
 extra:
   version:
