@@ -14,6 +14,14 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.0.0-B2202072:
+
+- General improvements:
+  - Added `convert` and `caseSensitive` to string comparison expressions. [#1001](https://github.com/microsoft/PSRule/issues/1001)
+    - The following expressions support type convertion and case-sensitive comparison.
+      - `startsWith`, `contains`, and `endsWith`.
+      - `equals` and `notEquals`.
+
 ## v2.0.0-B2202072 (pre-release)
 
 What's changed since pre-release v2.0.0-B2202065:

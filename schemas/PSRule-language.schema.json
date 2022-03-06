@@ -937,6 +937,20 @@
                     "description": "Must have the specified value.",
                     "markdownDescription": "Must have the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#equals)",
                     "$ref": "#/definitions/selectorExpressionValue"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type of compared operand.",
+                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#equals)",
+                    "default": false
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines if comparing values is case-sensitive. Only applies to string values.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. Only applies to string values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#equals)",
+                    "default": false
                 }
             },
             "required": [
@@ -956,6 +970,20 @@
                     "description": "Must not have the specified value.",
                     "markdownDescription": "Must not have the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
                     "$ref": "#/definitions/selectorExpressionValue"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type of compared operand.",
+                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
+                    "default": false
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines if comparing values is case-sensitive. Only applies to string values.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. Only applies to string values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
+                    "default": false
                 }
             },
             "required": [
@@ -1225,6 +1253,20 @@
                     "description": "Must start with one of the specified values.",
                     "markdownDescription": "Must start with one of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#startswith)",
                     "$ref": "#/definitions/selectorExpressionValueMultiString"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type to string.",
+                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#startswith)",
+                    "default": false
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines if comparing values is case-sensitive.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#startswith)",
+                    "default": false
                 }
             },
             "required": [
@@ -1244,6 +1286,20 @@
                     "description": "Must end with one of the specified values.",
                     "markdownDescription": "Must end with one of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#endswith)",
                     "$ref": "#/definitions/selectorExpressionValueMultiString"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type to string.",
+                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#endswith)",
+                    "default": false
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines if comparing values is case-sensitive.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#endswith)",
+                    "default": false
                 }
             },
             "required": [
@@ -1263,6 +1319,20 @@
                     "description": "Must contain one of the specified values.",
                     "markdownDescription": "Must contain one of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#contains)",
                     "$ref": "#/definitions/selectorExpressionValueMultiString"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type to string.",
+                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#contains)",
+                    "default": false
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines if comparing values is case-sensitive.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#contains)",
+                    "default": false
                 }
             },
             "required": [

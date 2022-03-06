@@ -42,7 +42,7 @@ namespace PSRule
 
         internal static bool Equal(object expectedValue, object actualValue, bool caseSensitive, bool convertExpected = false, bool convertActual = false)
         {
-            if (TryString(expectedValue, out var s1) && TryString(actualValue, out var s2))
+            if (TryString(expectedValue, out var s1) && TryString(actualValue, convertActual, out var s2))
                 return StringEqual(s1, s2, caseSensitive);
 
             if (TryBool(expectedValue, convertExpected, out var b1) && TryBool(actualValue, convertActual, out var b2))
@@ -115,6 +115,24 @@ namespace PSRule
             return false;
         }
 
+        internal static bool TryString(object o, bool convert, out string value)
+        {
+            if (TryString(o, out value))
+                return true;
+
+            if (convert && o is Enum evalue)
+            {
+                value = evalue.ToString();
+                return true;
+            }
+            else if (convert && TryInt(o, false, out var ivalue))
+            {
+                value = ivalue.ToString(Thread.CurrentThread.CurrentCulture);
+                return true;
+            }
+            return false;
+        }
+
         internal static bool TryArray(object o, out Array value)
         {
             o = GetBaseObject(o);
@@ -127,30 +145,17 @@ namespace PSRule
             return false;
         }
 
-        internal static bool TryConvertString(object o, out string value)
-        {
-            if (TryString(o, out value))
-                return true;
-
-            if (TryInt(o, false, out var ivalue))
-            {
-                value = ivalue.ToString(Thread.CurrentThread.CurrentCulture);
-                return true;
-            }
-            return false;
-        }
-
         internal static bool TryConvertStringArray(object[] o, out string[] value)
         {
             value = Array.Empty<string>();
-            if (o == null || o.Length == 0 || !TryConvertString(o[0], out var s))
+            if (o == null || o.Length == 0 || !TryString(o[0], convert: true, value: out var s))
                 return false;
 
             value = new string[o.Length];
             value[0] = s;
             for (var i = 1; i < o.Length; i++)
             {
-                if (TryConvertString(o[i], out s))
+                if (TryString(o[i], convert: true, value: out s))
                     value[i] = s;
             }
             return true;
