@@ -20,7 +20,7 @@ Install and use PSRule with GitHub Actions by referencing the `Microsoft/ps-rule
 
 ```yaml
 - name: Analyze Azure template files
-  uses: Microsoft/ps-rule@v1.10.0
+  uses: Microsoft/ps-rule@v1.12.0
 ```
 
 This will automatically install compatible versions of all dependencies.
@@ -83,6 +83,8 @@ Use the following command line examples from a PowerShell terminal to install or
     ```
 
 === "For all users"
+    Open PowerShell with _Run as administrator_ on Windows or `sudo pwsh` on Linux.
+
     To install PSRule for all users (requires admin/ root permissions) use:
 
     ```powershell

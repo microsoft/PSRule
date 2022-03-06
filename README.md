@@ -3,14 +3,18 @@
 A cross-platform module to validate infrastructure as code (IaC) and objects using PowerShell rules.
 PSRule works great and integrates with popular continuous integration (CI) systems.
 
-[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/microsoft/PSRule)
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)][1]
 
 Features of PSRule include:
 
-- [Extensible](docs/features.md#extensible) - Use PowerShell, a flexible scripting language.
-- [Cross-platform](docs/features.md#cross-platform) - Run on MacOS, Linux, and Windows.
-- [Reusable](docs/features.md#reusable) - Share rules across teams or organizations.
-- [Recommendations](docs/features.md#recommendations) - Include detailed instructions to remediate issues.
+- [DevOps][2] - Built to support DevOps culture and tools.
+- [Extensible][3] - Define tests using YAML, JSON, or PowerShell format.
+- [Reusable][4] - Reuse and share rules across teams or organizations.
+
+  [1]: https://open.vscode.dev/microsoft/PSRule
+  [2]: https://microsoft.github.io/PSRule/latest/features/#devops
+  [3]: https://microsoft.github.io/PSRule/latest/features/#extensible
+  [4]: https://microsoft.github.io/PSRule/latest/features/#reusable
 
 ## Project objectives
 
@@ -31,17 +35,22 @@ For continuous integration (CI) systems that do not support PowerShell, run in a
    - Any reusable validation will have exceptions.
 Rules must be able to be disabled where they are not applicable.
 
-Continue reading the [PSRule design specification][spec].
+Continue reading the [PSRule design specification][5].
+
+  [5]: docs/specs/design-spec.md
 
 ## Support
 
 This project uses GitHub Issues to track bugs and feature requests.
 Please search the existing issues before filing new issues to avoid duplicates.
 
-- For new issues, file your bug or feature request as a new [issue].
-- For help, discussion, and support questions about using this project, join or start a [discussion].
+- For new issues, file your bug or feature request as a new [issue][6].
+- For help, discussion, and support questions about using this project, join or start a [discussion][7].
 
 Support for this project/ product is limited to the resources listed above.
+
+  [6]: https://github.com/Microsoft/PSRule/issues
+  [7]: https://github.com/microsoft/PSRule/discussions
 
 ## Getting the module
 
@@ -65,151 +74,10 @@ Visual Studio Code | Visual Studio Code extension for PSRule. | [latest][extensi
 
 ## Getting started
 
-The following example shows basic PSRule usage for validating PowerShell objects.
+For an quickstart example of using PSRule see [Create a standalone rule](https://microsoft.github.io/PSRule/v2/quickstart/standalone-rule/).
 For specific use cases see [scenarios](#scenarios).
 
 For frequently asked questions, see the [FAQ](https://microsoft.github.io/PSRule/v2/faq/).
-
-### Define a rule
-
-To define a rule, use a `Rule` block saved to a file with the `.Rule.ps1` extension.
-
-```powershell
-Rule 'NameOfRule' {
-    # Rule conditions
-}
-```
-
-Within the body of the rule provide one or more conditions.
-A condition is valid PowerShell that results in `$True` or `$False`.
-
-For example:
-
-```powershell
-Rule 'isFruit' {
-    # Condition to determine if the object is fruit
-    $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
-}
-```
-
-An optional result message can be added to by using the `Recommend` keyword.
-
-```powershell
-Rule 'isFruit' {
-    # An recommendation to display in output
-    Recommend 'Fruit is only Apple, Orange and Pear'
-
-    # Condition to determine if the object is fruit
-    $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
-}
-```
-
-The rule is saved to a file named [`isFruit.Rule.ps1`](docs/scenarios/fruit/isFruit.Rule.ps1) file.
-One or more rules can be defined within a single file.
-
-### Execute a rule
-
-To execute the rule use `Invoke-PSRule`.
-
-For example:
-
-```powershell
-# Define objects to validate
-$items = @();
-$items += [PSCustomObject]@{ Name = 'Fridge' };
-$items += [PSCustomObject]@{ Name = 'Apple' };
-
-# Validate each item using rules saved in current working path
-$items | Invoke-PSRule;
-```
-
-The output of this example is:
-
-```text
-   TargetName: Fridge
-
-RuleName                            Outcome    Recommendation
---------                            -------    --------------
-isFruit                             Fail       Fruit is only Apple, Orange and Pear
-
-
-   TargetName: Apple
-
-RuleName                            Outcome    Recommendation
---------                            -------    --------------
-isFruit                             Pass       Fruit is only Apple, Orange and Pear
-```
-
-### Additional options
-
-To filter results to only non-fruit results, use `Invoke-PSRule -Outcome Fail`.
-Passed, failed and error results are shown by default.
-
-```powershell
-# Only show non-fruit results
-$items | Invoke-PSRule -Outcome Fail;
-```
-
-For a summary of results for each rule use `Invoke-PSRule -As Summary`.
-
-For example:
-
-```powershell
-# Show rule summary
-$items | Invoke-PSRule -As Summary;
-```
-
-The output of this example is:
-
-```text
-RuleName                            Pass  Fail  Outcome
---------                            ----  ----  -------
-isFruit                             1     1     Fail
-```
-
-An optional failure reason can be added to the rule block by using the `Reason` keyword.
-
-```powershell
-Rule 'isFruit' {
-    # An recommendation to display in output
-    Recommend 'Fruit is only Apple, Orange and Pear'
-
-    # An failure reason to display for non-fruit
-    Reason "$($PSRule.TargetName) is not fruit."
-
-    # Condition to determine if the object is fruit
-    $TargetObject.Name -in 'Apple', 'Orange', 'Pear'
-}
-```
-
-To include the reason with output use `Invoke-PSRule -OutputFormat Wide`.
-
-For example:
-
-```powershell
-# Show failure reason for failing results
-$items | Invoke-PSRule -OutputFormat Wide;
-```
-
-The output of this example is:
-
-```text
-
-   TargetName: Fridge
-
-RuleName                            Outcome    Reason                              Recommendation
---------                            -------    ------                              --------------
-isFruit                             Fail       Fridge is not fruit.                Fruit is only Apple, Orange and Pear
-
-
-   TargetName: Apple
-
-RuleName                            Outcome    Reason                              Recommendation
---------                            -------    ------                              --------------
-isFruit                             Pass                                           Fruit is only Apple, Orange and Pear
-```
-
-The final rule is saved to [`isFruit.Rule.ps1`](docs/scenarios/fruit/isFruit.Rule.ps1).
 
 ### Scenarios
 
@@ -419,19 +287,7 @@ PSRule uses the following schemas:
 
 ## Related projects
 
-The following projects use or integrate with PSRule.
-
-Name                      | Description
-----                      | -----------
-[PSRule.Rules.Azure]      | A suite of rules to validate Azure resources and infrastructure as code (IaC) using PSRule.
-[PSRule.Rules.Kubernetes] | A suite of rules to validate Kubernetes resources using PSRule.
-[PSRule.Rules.CAF]        | A suite of rules to validate Azure resources against the Cloud Adoption Framework (CAF) using PSRule.
-[PSRule.Rules.GitHub]     | A suite of rules to validate GitHub repositories using PSRule.
-[PSRule.Rules.MSFT.OSS]   | A suite of rules to validate repositories against Microsoft Open Source Software (OSS) requirements.
-[PSRule.Monitor]          | Send and query PSRule analysis results in Azure Monitor.
-[PSRule-pipelines]        | Validate infrastructure as code (IaC) and DevOps repositories using Azure Pipelines.
-[ps-rule]                 | Validate infrastructure as code (IaC) and DevOps repositories using GitHub Actions.
-[PSRule-vscode]           | Visual Studio Code extension for PSRule.
+For a list of projects and integrations see [Related projects](https://microsoft.github.io/PSRule/v2/related-projects/).
 
 ## Changes and versioning
 
@@ -462,20 +318,8 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 
 This project is [licensed under the MIT License](LICENSE).
 
-[issue]: https://github.com/Microsoft/PSRule/issues
-[discussion]: https://github.com/microsoft/PSRule/discussions
 [install]: https://microsoft.github.io/PSRule/v2/install-instructions/
 [module-psrule]: https://www.powershellgallery.com/packages/PSRule
 [extension-vscode]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode
 [extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
 [extension-actions]: https://github.com/marketplace/actions/psrule
-[PSRule.Rules.Azure]: https://github.com/microsoft/PSRule.Rules.Azure
-[PSRule.Rules.Kubernetes]: https://github.com/microsoft/PSRule.Rules.Kubernetes
-[PSRule.Rules.CAF]: https://github.com/microsoft/PSRule.Rules.CAF
-[PSRule.Rules.GitHub]: https://github.com/microsoft/PSRule.Rules.GitHub
-[PSRule.Rules.MSFT.OSS]: https://github.com/microsoft/PSRule.Rules.MSFT.OSS
-[PSRule.Monitor]: https://github.com/microsoft/PSRule.Monitor
-[PSRule-pipelines]: https://github.com/microsoft/PSRule-pipelines
-[ps-rule]: https://github.com/microsoft/ps-rule
-[PSRule-vscode]: https://github.com/microsoft/PSRule-vscode
-[spec]: docs/specs/design-spec.md

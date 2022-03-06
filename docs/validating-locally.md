@@ -4,7 +4,6 @@ author: BernieWhite
 
 # Validating locally
 
-While preparing infrastructure code artifacts, Azure resources can be validated locally.
 PSRule can be installed locally on MacOS, Linux, and Windows for local validation.
 
 !!! Tip
@@ -16,7 +15,7 @@ PSRule can be installed locally on MacOS, Linux, and Windows for local validatio
 
 [:octicons-download-24: Extension][2]
 
-An extension for Visual Studio Code is available for an integrated experience using PSRule for Azure.
+An extension for Visual Studio Code is available for an integrated experience using PSRule.
 The Visual Studio Code extension includes a built-in `PSRule: Run analysis` task.
 
 <p align="center">

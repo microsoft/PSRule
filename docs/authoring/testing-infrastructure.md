@@ -2,7 +2,7 @@
 author: BernieWhite
 ---
 
-# Writing rules
+# Testing infrastructure
 
 You can use PSRule to create tests for Infrastructure as Code (IaC).
 Each test is called a _rule_.
@@ -70,7 +70,7 @@ In this section the same rule will be authored using YAML, JSON, and PowerShell.
     1.  Use a short `Synopsis: ` to describe your rule in a line comment above your rule.
         For this to be interpreted by PSRule, only a single line is allowed.
     2.  Name your rule with a unique name.
-    3.  The `condition` block determines the checks PSRule will use to test `settings.json`.
+    3.  The `condition` property determines the checks PSRule will use to test `settings.json`.
         Specifically, the object path `configures.supportsHttpsTrafficOnly` must exist and be set to `true`.
 
 === "JSON"
@@ -99,7 +99,7 @@ In this section the same rule will be authored using YAML, JSON, and PowerShell.
     1.  Use a short `Synopsis: ` to describe your rule in a line comment above your rule.
         For this to be interpreted by PSRule, only a single line is allowed.
     2.  Name your rule with a unique name.
-    3.  The `condition` block determines the checks PSRule will use to test `settings.json`.
+    3.  The `condition` propert determines the checks PSRule will use to test `settings.json`.
         Specifically, the object path `configures.supportsHttpsTrafficOnly` must exist and be set to `true`.
 
 === "PowerShell"
