@@ -177,7 +177,8 @@
                 "allOf": [
                     {
                         "field": "ValueString",
-                        "equals": "abc"
+                        "equals": "abc",
+                        "caseSensitive": true
                     },
                     {
                         "field": "ValueInt",
@@ -186,6 +187,19 @@
                     {
                         "field": "ValueBool",
                         "equals": true
+                    },
+                    {
+                        "anyOf": [
+                            {
+                                "field": "ValueEnum",
+                                "exists": false
+                            },
+                            {
+                                "field": "ValueEnum",
+                                "equals": "All",
+                                "convert": true
+                            }
+                        ]
                     }
                 ]
             }
@@ -203,7 +217,8 @@
                 "allOf": [
                     {
                         "field": "ValueString",
-                        "notEquals": "abc"
+                        "notEquals": "abc",
+                        "caseSensitive": true
                     },
                     {
                         "field": "ValueInt",
@@ -212,6 +227,19 @@
                     {
                         "field": "ValueBool",
                         "notEquals": true
+                    },
+                    {
+                        "anyOf": [
+                            {
+                                "field": "ValueEnum",
+                                "exists": false
+                            },
+                            {
+                                "field": "ValueEnum",
+                                "notEquals": "All",
+                                "convert": true
+                            }
+                        ]
                     }
                 ]
             }
@@ -381,7 +409,8 @@
                             },
                             {
                                 "field": "Value",
-                                "startsWith": "e"
+                                "startsWith": "e",
+                                "caseSensitive": true
                             }
                         ]
                     },
@@ -390,6 +419,19 @@
                         "startsWith": [
                             "a",
                             "e"
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            {
+                                "field": "OtherValue",
+                                "exists": false
+                            },
+                            {
+                                "field": "OtherValue",
+                                "startsWith": "a",
+                                "convert": true
+                            }
                         ]
                     }
                 ]
@@ -414,7 +456,8 @@
                             },
                             {
                                 "field": "Value",
-                                "endsWith": "g"
+                                "endsWith": "g",
+                                "caseSensitive": true
                             }
                         ]
                     },
@@ -423,6 +466,19 @@
                         "endsWith": [
                             "c",
                             "g"
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            {
+                                "field": "OtherValue",
+                                "exists": false
+                            },
+                            {
+                                "field": "OtherValue",
+                                "endsWith": "l",
+                                "convert": true
+                            }
                         ]
                     }
                 ]
@@ -447,7 +503,8 @@
                             },
                             {
                                 "field": "Value",
-                                "contains": "bc"
+                                "contains": "bc",
+                                "caseSensitive": true
                             }
                         ]
                     },
@@ -456,6 +513,19 @@
                         "contains": [
                             "ab",
                             "bc"
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            {
+                                "field": "OtherValue",
+                                "exists": false
+                            },
+                            {
+                                "field": "OtherValue",
+                                "contains": "l",
+                                "convert": true
+                            }
                         ]
                     }
                 ]

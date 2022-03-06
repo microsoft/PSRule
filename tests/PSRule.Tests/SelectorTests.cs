@@ -16,6 +16,13 @@ using Assert = Xunit.Assert;
 
 namespace PSRule
 {
+    internal enum TestEnumValue
+    {
+        None = 0,
+
+        All = 1
+    }
+
     public sealed class SelectorTests
     {
         private const string SelectorYamlFileName = "Selectors.Rule.yaml";
@@ -68,7 +75,8 @@ namespace PSRule
             var actual1 = GetObject(
                 (name: "ValueString", value: "abc"),
                 (name: "ValueInt", value: 123),
-                (name: "ValueBool", value: true)
+                (name: "ValueBool", value: true),
+                (name: "ValueEnum", value: TestEnumValue.All)
             );
             var actual2 = GetObject(
                 (name: "ValueString", value: "efg"),
@@ -85,26 +93,39 @@ namespace PSRule
                 (name: "ValueInt", value: 123),
                 (name: "ValueBool", value: false)
             );
+            var actual5 = GetObject(
+                (name: "ValueString", value: "abc"),
+                (name: "ValueInt", value: 123),
+                (name: "ValueBool", value: true),
+                (name: "ValueEnum", value: TestEnumValue.None)
+            );
+            var actual6 = GetObject(
+                (name: "ValueString", value: "ABC"),
+                (name: "ValueInt", value: 123),
+                (name: "ValueBool", value: true)
+            );
 
             Assert.True(equals.Match(actual1));
             Assert.False(equals.Match(actual2));
             Assert.False(equals.Match(actual3));
             Assert.False(equals.Match(actual4));
+            Assert.False(equals.Match(actual5));
+            Assert.False(equals.Match(actual6));
 
             // With name
             var withName = GetSelectorVisitor($"{type}NameEquals", GetSource(path), out var context);
-            var actual5 = GetObject(
+            actual1 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
-            var actual6 = GetObject(
+            actual2 = GetObject(
                (name: "Name", value: "TargetObject2")
             );
 
-            context.EnterTargetObject(new TargetObject(actual5));
-            Assert.True(withName.Match(actual5));
+            context.EnterTargetObject(new TargetObject(actual1));
+            Assert.True(withName.Match(actual1));
 
-            context.EnterTargetObject(new TargetObject(actual6));
-            Assert.False(withName.Match(actual6));
+            context.EnterTargetObject(new TargetObject(actual2));
+            Assert.False(withName.Match(actual2));
 
             // With type
             var withType = GetSelectorVisitor($"{type}TypeEquals", GetSource(path), out context);
@@ -129,7 +150,8 @@ namespace PSRule
             var actual1 = GetObject(
                 (name: "ValueString", value: "efg"),
                 (name: "ValueInt", value: 456),
-                (name: "ValueBool", value: false)
+                (name: "ValueBool", value: false),
+                (name: "ValueEnum", value: TestEnumValue.None)
             );
             var actual2 = GetObject(
                 (name: "ValueString", value: "abc"),
@@ -146,26 +168,39 @@ namespace PSRule
                 (name: "ValueInt", value: 456),
                 (name: "ValueBool", value: true)
             );
+            var actual5 = GetObject(
+                (name: "ValueString", value: "efg"),
+                (name: "ValueInt", value: 456),
+                (name: "ValueBool", value: false),
+                (name: "ValueEnum", value: TestEnumValue.All)
+            );
+            var actual6 = GetObject(
+                (name: "ValueString", value: "ABC"),
+                (name: "ValueInt", value: 456),
+                (name: "ValueBool", value: false)
+            );
 
             Assert.True(notEquals.Match(actual1));
             Assert.False(notEquals.Match(actual2));
             Assert.False(notEquals.Match(actual3));
             Assert.False(notEquals.Match(actual4));
+            Assert.False(notEquals.Match(actual5));
+            Assert.True(notEquals.Match(actual6));
 
             // With name
             var withName = GetSelectorVisitor($"{type}NameNotEquals", GetSource(path), out var context);
-            var actual5 = GetObject(
+            actual1 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
-            var actual6 = GetObject(
+            actual2 = GetObject(
                (name: "Name", value: "TargetObject2")
             );
 
-            context.EnterTargetObject(new TargetObject(actual5));
-            Assert.False(withName.Match(actual5));
+            context.EnterTargetObject(new TargetObject(actual1));
+            Assert.False(withName.Match(actual1));
 
-            context.EnterTargetObject(new TargetObject(actual6));
-            Assert.True(withName.Match(actual6));
+            context.EnterTargetObject(new TargetObject(actual2));
+            Assert.True(withName.Match(actual2));
         }
 
         [Theory]
@@ -676,6 +711,9 @@ namespace PSRule
             var actual4 = GetObject((name: "value", value: new string[] { }));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject();
+            var actual7 = GetObject((name: "value", value: "EFG"));
+            var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
+            var actual9 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.None));
 
             Assert.True(startsWith.Match(actual1));
             Assert.True(startsWith.Match(actual2));
@@ -683,21 +721,24 @@ namespace PSRule
             Assert.False(startsWith.Match(actual4));
             Assert.False(startsWith.Match(actual5));
             Assert.False(startsWith.Match(actual6));
+            Assert.False(startsWith.Match(actual7));
+            Assert.True(startsWith.Match(actual8));
+            Assert.False(startsWith.Match(actual9));
 
             // With name
             var withName = GetSelectorVisitor($"{type}NameStartsWith", GetSource(path), out var context);
-            var actual7 = GetObject(
+            actual1 = GetObject(
                (name: "Name", value: "1TargetObject")
             );
-            var actual8 = GetObject(
+            actual2 = GetObject(
                (name: "Name", value: "2TargetObject")
             );
 
-            context.EnterTargetObject(new TargetObject(actual7));
-            Assert.True(withName.Match(actual7));
+            context.EnterTargetObject(new TargetObject(actual1));
+            Assert.True(withName.Match(actual1));
 
-            context.EnterTargetObject(new TargetObject(actual8));
-            Assert.False(withName.Match(actual8));
+            context.EnterTargetObject(new TargetObject(actual2));
+            Assert.False(withName.Match(actual2));
         }
 
         [Theory]
@@ -712,6 +753,9 @@ namespace PSRule
             var actual4 = GetObject((name: "value", value: new string[] { }));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject();
+            var actual7 = GetObject((name: "value", value: "EFG"));
+            var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
+            var actual9 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.None));
 
             Assert.True(endsWith.Match(actual1));
             Assert.True(endsWith.Match(actual2));
@@ -719,21 +763,24 @@ namespace PSRule
             Assert.False(endsWith.Match(actual4));
             Assert.False(endsWith.Match(actual5));
             Assert.False(endsWith.Match(actual6));
+            Assert.False(endsWith.Match(actual7));
+            Assert.True(endsWith.Match(actual8));
+            Assert.False(endsWith.Match(actual9));
 
             // With name
             var withName = GetSelectorVisitor($"{type}NameEndsWith", GetSource(path), out var context);
-            var actual7 = GetObject(
+            actual1 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
-            var actual8 = GetObject(
+            actual2 = GetObject(
                (name: "Name", value: "TargetObject2")
             );
 
-            context.EnterTargetObject(new TargetObject(actual7));
-            Assert.True(withName.Match(actual7));
+            context.EnterTargetObject(new TargetObject(actual1));
+            Assert.True(withName.Match(actual1));
 
-            context.EnterTargetObject(new TargetObject(actual8));
-            Assert.False(withName.Match(actual8));
+            context.EnterTargetObject(new TargetObject(actual2));
+            Assert.False(withName.Match(actual2));
         }
 
         [Theory]
@@ -748,6 +795,9 @@ namespace PSRule
             var actual4 = GetObject((name: "value", value: new string[] { }));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject();
+            var actual7 = GetObject((name: "value", value: "BCD"));
+            var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
+            var actual9 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.None));
 
             Assert.True(contains.Match(actual1));
             Assert.True(contains.Match(actual2));
@@ -755,21 +805,24 @@ namespace PSRule
             Assert.False(contains.Match(actual4));
             Assert.False(contains.Match(actual5));
             Assert.False(contains.Match(actual6));
+            Assert.False(contains.Match(actual7));
+            Assert.True(contains.Match(actual8));
+            Assert.False(contains.Match(actual9));
 
             // With name
             var withName = GetSelectorVisitor($"{type}NameContains", GetSource(path), out var context);
-            var actual7 = GetObject(
+            actual1 = GetObject(
                (name: "Name", value: "Target.1.Object")
             );
-            var actual8 = GetObject(
+            actual2 = GetObject(
                (name: "Name", value: "Target.2.Object")
             );
 
-            context.EnterTargetObject(new TargetObject(actual7));
-            Assert.True(withName.Match(actual7));
+            context.EnterTargetObject(new TargetObject(actual1));
+            Assert.True(withName.Match(actual1));
 
-            context.EnterTargetObject(new TargetObject(actual8));
-            Assert.False(withName.Match(actual8));
+            context.EnterTargetObject(new TargetObject(actual2));
+            Assert.False(withName.Match(actual2));
         }
 
         [Theory]
