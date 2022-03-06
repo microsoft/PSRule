@@ -96,12 +96,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://microsoft.github.io/PSRule/v2/authoring/writing-rule-help/</loc>
+         <loc>https://microsoft.github.io/PSRule/v2/authoring/testing-infrastructure/</loc>
          <lastmod>2022-03-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://microsoft.github.io/PSRule/v2/authoring/writing-rules/</loc>
+         <loc>https://microsoft.github.io/PSRule/v2/authoring/using-expressions/</loc>
+         <lastmod>2022-03-06</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://microsoft.github.io/PSRule/v2/authoring/writing-rule-help/</loc>
          <lastmod>2022-03-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -232,6 +237,11 @@
     </url>
     <url>
          <loc>https://microsoft.github.io/PSRule/v2/keywords/PSRule/en-US/about_PSRule_Keywords/</loc>
+         <lastmod>2022-03-06</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://microsoft.github.io/PSRule/v2/quickstart/standalone-rule/</loc>
          <lastmod>2022-03-06</lastmod>
          <changefreq>daily</changefreq>
     </url>
