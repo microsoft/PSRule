@@ -9,8 +9,8 @@ namespace PSRule.Definitions.SuppressionGroups
     [Spec(Specs.V1, Specs.SuppressionGroup)]
     internal sealed class SuppressionGroupV1 : InternalResource<SuppressionGroupV1Spec>
     {
-        public SuppressionGroupV1(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, SuppressionGroupV1Spec spec)
-            : base(ResourceKind.SuppressionGroup, apiVersion, source, metadata, info, spec) { }
+        public SuppressionGroupV1(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ISourceExtent extent, SuppressionGroupV1Spec spec)
+            : base(ResourceKind.SuppressionGroup, apiVersion, source, metadata, info, extent, spec) { }
     }
 
     internal interface ISuppressionGroupSpec

@@ -389,6 +389,7 @@ namespace PSRule
                 info: new RuleHelpInfo("Test", "Test rule", null),
                 field: null,
                 level: SeverityLevel.Error,
+                extent: null,
                 outcome: RuleOutcome.Pass,
                 reason: RuleOutcomeReason.Processed
             ));
@@ -410,6 +411,7 @@ namespace PSRule
                 info: new RuleHelpInfo("Test1", "Test rule", null),
                 field: null,
                 level: level,
+                extent: null,
                 outcome: RuleOutcome.Fail,
                 reason: RuleOutcomeReason.Processed
             ));
@@ -425,6 +427,7 @@ namespace PSRule
                 info: new RuleHelpInfo("Test2", "Test rule", null),
                 field: null,
                 level: level,
+                extent: null,
                 outcome: RuleOutcome.Fail,
                 reason: RuleOutcomeReason.Processed
             ));

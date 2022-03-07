@@ -411,6 +411,7 @@ namespace PSRule.Host
                         Info = block.Info,
                         DependsOn = block.DependsOn,
                         Flags = block.Flags,
+                        Extent = block.Extent,
                     });
                     //throw ThrowDuplicateRuleId(block);
                 }
@@ -430,6 +431,7 @@ namespace PSRule.Host
                         Info = info,
                         DependsOn = null, // TODO: No support for DependsOn yet
                         Flags = block.Flags,
+                        Extent = block.Extent,
                     });
                     //throw ThrowDuplicateRuleId(block);
                 }

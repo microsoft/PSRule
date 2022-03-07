@@ -104,6 +104,10 @@ namespace PSRule.Rules
         [YamlIgnore]
         public ResourceFlags Flags { get; set; }
 
+        [JsonIgnore]
+        [YamlIgnore]
+        public ISourceExtent Extent { get; set; }
+
         string ITargetInfo.TargetName => Name;
 
         string ITargetInfo.TargetType => typeof(Rule).FullName;

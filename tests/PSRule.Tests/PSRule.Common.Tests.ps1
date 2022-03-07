@@ -1832,6 +1832,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
                 $result.Length | Should -Be 3;
                 $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
                 $result | Should -BeOfType 'PSRule.Definitions.Rules.IRuleV1';
+                $result[0].Extent.Line | Should -Be 9
             }
             finally {
                 Pop-Location;

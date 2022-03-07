@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -73,10 +73,10 @@ namespace PSRule.Definitions
 
         public Type SpecType => typeof(TSpec);
 
-        public IResource CreateInstance(SourceFile source, ResourceMetadata metadata, CommentMetadata comment, object spec)
+        public IResource CreateInstance(SourceFile source, ResourceMetadata metadata, CommentMetadata comment, ISourceExtent extent, object spec)
         {
             var info = new ResourceHelpInfo(comment.Synopsis);
-            return (IResource)Activator.CreateInstance(typeof(T), ApiVersion, source, metadata, info, spec);
+            return (IResource)Activator.CreateInstance(typeof(T), ApiVersion, source, metadata, info, extent, spec);
         }
     }
 
@@ -90,6 +90,6 @@ namespace PSRule.Definitions
 
         Type SpecType { get; }
 
-        IResource CreateInstance(SourceFile source, ResourceMetadata metadata, CommentMetadata comment, object spec);
+        IResource CreateInstance(SourceFile source, ResourceMetadata metadata, CommentMetadata comment, ISourceExtent extent, object spec);
     }
 }

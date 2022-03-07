@@ -14,6 +14,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.0.0-B2203019:
+
+- General improvements:
+  - Added `Extent` property on rules reported by `Get-PSRule`. [#990](https://github.com/microsoft/PSRule/issues/990)
+    - Extent provides the line and position of the rule in the source code.
+
 ## v2.0.0-B2203019 (pre-release)
 
 What's changed since pre-release v2.0.0-B2202072:

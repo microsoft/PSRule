@@ -24,7 +24,7 @@ namespace PSRule.Rules
     {
         private readonly TargetObject _TargetObject;
 
-        internal RuleRecord(string runId, ResourceId ruleId, string @ref, TargetObject targetObject, string targetName, string targetType, ResourceTags tag, RuleHelpInfo info, Hashtable field, SeverityLevel level, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
+        internal RuleRecord(string runId, ResourceId ruleId, string @ref, TargetObject targetObject, string targetName, string targetType, ResourceTags tag, RuleHelpInfo info, Hashtable field, SeverityLevel level, ISourceExtent extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
             _TargetObject = targetObject;
             RunId = runId;
@@ -39,6 +39,7 @@ namespace PSRule.Rules
             Info = info;
             Source = targetObject.Source.GetSourceInfo();
             Level = level;
+            Extent = extent;
             if (tag != null)
                 Tag = tag.ToHashtable();
 
@@ -72,6 +73,10 @@ namespace PSRule.Rules
         /// </summary>
         [JsonProperty(PropertyName = "level")]
         public SeverityLevel Level { get; }
+
+        [JsonIgnore]
+        [YamlIgnore]
+        public ISourceExtent Extent { get; }
 
         /// <summary>
         /// The outcome after the rule processes an object.

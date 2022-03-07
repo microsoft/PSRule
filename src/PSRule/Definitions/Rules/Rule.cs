@@ -62,8 +62,8 @@ namespace PSRule.Definitions.Rules
     {
         internal const SeverityLevel DEFAULT_LEVEL = SeverityLevel.Error;
 
-        public RuleV1(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, RuleV1Spec spec)
-            : base(ResourceKind.Rule, apiVersion, source, metadata, info, spec)
+        public RuleV1(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ISourceExtent extent, RuleV1Spec spec)
+            : base(ResourceKind.Rule, apiVersion, source, metadata, info, extent, spec)
         {
             Ref = ResourceHelper.GetIdNullable(source.ModuleName, metadata.Ref, ResourceIdKind.Ref);
             Alias = ResourceHelper.GetRuleId(source.ModuleName, metadata.Alias, ResourceIdKind.Alias);

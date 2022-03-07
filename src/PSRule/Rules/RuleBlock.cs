@@ -23,7 +23,7 @@ namespace PSRule.Rules
     [DebuggerDisplay("{Id} @{Source.Path}")]
     internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable, IResource, IRuleV1
     {
-        internal RuleBlock(SourceFile source, ResourceId id, ResourceId? @ref, SeverityLevel level, RuleHelpInfo info, ICondition condition, ResourceTags tag, ResourceId[] alias, ResourceId[] dependsOn, Hashtable configuration, RuleExtent extent, ResourceFlags flags)
+        internal RuleBlock(SourceFile source, ResourceId id, ResourceId? @ref, SeverityLevel level, RuleHelpInfo info, ICondition condition, ResourceTags tag, ResourceId[] alias, ResourceId[] dependsOn, Hashtable configuration, ISourceExtent extent, ResourceFlags flags)
         {
             Source = source;
             Name = id.Name;
@@ -91,7 +91,7 @@ namespace PSRule.Rules
 
         public readonly SourceFile Source;
 
-        internal readonly RuleExtent Extent;
+        public ISourceExtent Extent { get; }
 
         [JsonIgnore]
         [YamlIgnore]
