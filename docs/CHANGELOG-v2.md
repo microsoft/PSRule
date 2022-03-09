@@ -14,11 +14,16 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.0.0-B2203033 (pre-release)
+
 What's changed since pre-release v2.0.0-B2203019:
 
 - General improvements:
   - Added `Extent` property on rules reported by `Get-PSRule`. [#990](https://github.com/microsoft/PSRule/issues/990)
     - Extent provides the line and position of the rule in the source code.
+- Engineering:
+  - Bump Sarif.Sdk to 2.4.13. [#1007](https://github.com/microsoft/PSRule/pull/1007)
+  - Bump PowerShellStandard.Library to 5.1.1. [#999](https://github.com/microsoft/PSRule/pull/999)
 
 ## v2.0.0-B2203019 (pre-release)
 
