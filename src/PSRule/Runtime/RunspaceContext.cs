@@ -516,7 +516,7 @@ namespace PSRule.Runtime
                         PSRuleResources.RuleStackTrace,
                         RuleBlock.Name,
                         RuleBlock.Extent.File,
-                        RuleBlock.Extent.StartLineNumber)
+                        RuleBlock.Extent.Line)
                 );
         }
 
@@ -649,7 +649,8 @@ namespace PSRule.Runtime
                 tag: ruleBlock.Tag,
                 info: ruleBlock.Info,
                 field: Binding.Field,
-                level: ruleBlock.Level
+                level: ruleBlock.Level,
+                extent: ruleBlock.Extent
             );
 
             if (Writer != null)

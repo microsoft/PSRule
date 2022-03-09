@@ -110,6 +110,7 @@ namespace PSRule
                 },
                 field: new Hashtable(),
                 level: SeverityLevel.Error,
+                extent: null,
                 outcome: RuleOutcome.Pass,
                 reason: RuleOutcomeReason.Processed
             );
@@ -132,6 +133,7 @@ namespace PSRule
                 },
                 field: new Hashtable(),
                 level: level,
+                extent: null,
                 outcome: RuleOutcome.Fail,
                 reason: RuleOutcomeReason.Processed
             );

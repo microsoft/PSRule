@@ -68,6 +68,11 @@ namespace PSRule.Commands
             {
                 Name = Name
             };
+            var extent = new SourceExtent(
+                file: source.Path,
+                line: MyInvocation.ScriptLineNumber,
+                position: MyInvocation.OffsetInLine
+            );
 
             context.VerboseFoundResource(name: Name, moduleName: source.ModuleName, scriptName: MyInvocation.ScriptName);
 
@@ -85,7 +90,8 @@ namespace PSRule.Commands
                 process: ConventionBlock(context, Process, RunspaceScope.ConventionProcess),
                 end: ConventionBlock(context, End, RunspaceScope.ConventionEnd),
                 errorPreference: errorPreference,
-                flags: ResourceFlags.None
+                flags: ResourceFlags.None,
+                extent: extent
             );
 #pragma warning restore CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
             WriteObject(block);

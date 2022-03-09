@@ -97,6 +97,11 @@ namespace PSRule.Definitions
         /// Flags for the resource.
         /// </summary>
         ResourceFlags Flags { get; }
+
+        /// <summary>
+        /// The source location of the resource.
+        /// </summary>
+        ISourceExtent Extent { get; }
     }
 
     internal abstract class ResourceRef
@@ -338,12 +343,13 @@ namespace PSRule.Definitions
     [DebuggerDisplay("Kind = {Kind}, Id = {Id}")]
     public abstract class Resource<TSpec> where TSpec : Spec, new()
     {
-        protected Resource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, TSpec spec)
+        protected Resource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ISourceExtent extent, TSpec spec)
         {
             Kind = kind;
             ApiVersion = apiVersion;
             Info = info;
             Source = source;
+            Extent = extent;
             Spec = spec;
             Metadata = metadata;
             Name = metadata.Name;
@@ -373,6 +379,9 @@ namespace PSRule.Definitions
         /// </summary>
         public ResourceMetadata Metadata { get; }
 
+        /// <summary>
+        /// The type of resource.
+        /// </summary>
         public ResourceKind Kind { get; }
 
         /// <summary>
@@ -380,15 +389,23 @@ namespace PSRule.Definitions
         /// </summary>
         public string ApiVersion { get; }
 
+        /// <summary>
+        /// The child specification of the resource.
+        /// </summary>
         public TSpec Spec { get; }
+
+        /// <summary>
+        /// The source location of the resource.
+        /// </summary>
+        public ISourceExtent Extent { get; }
     }
 
     public abstract class InternalResource<TSpec> : Resource<TSpec>, IResource, IAnnotated<ResourceAnnotation> where TSpec : Spec, new()
     {
         private readonly Dictionary<Type, ResourceAnnotation> _Annotations;
 
-        private protected InternalResource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, TSpec spec)
-            : base(kind, apiVersion, source, metadata, info, spec)
+        private protected InternalResource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ISourceExtent extent, TSpec spec)
+            : base(kind, apiVersion, source, metadata, info, extent, spec)
         {
             _Annotations = new Dictionary<Type, ResourceAnnotation>();
             Obsolete = ResourceHelper.IsObsolete(metadata);

@@ -27,7 +27,8 @@ namespace PSRule.Definitions.Conventions
             LanguageScriptBlock process,
             LanguageScriptBlock end,
             ActionPreference errorPreference,
-            ResourceFlags flags)
+            ResourceFlags flags,
+            ISourceExtent extent)
             : base(source, metadata.Name)
         {
             Info = info;
@@ -36,11 +37,14 @@ namespace PSRule.Definitions.Conventions
             _Process = process;
             _End = end;
             Flags = flags;
+            Extent = extent;
         }
 
         public ResourceHelpInfo Info { get; }
 
         public ResourceFlags Flags { get; }
+
+        public ISourceExtent Extent { get; }
 
         ResourceKind IResource.Kind => ResourceKind.Convention;
 

@@ -400,10 +400,9 @@ namespace PSRule
 
         private IResource MapResource(JsonReader reader, JsonSerializer serializer)
         {
+            reader.GetSourceExtent(RunspaceContext.CurrentThread.Source.File.Path, out var extent);
             if (reader.TokenType != JsonToken.StartObject || !reader.Read())
-            {
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
-            }
 
             IResource result = null;
             string apiVersion = null;
@@ -418,13 +417,13 @@ namespace PSRule
                     var propertyName = reader.Value.ToString();
 
                     // Read apiVersion
-                    if (TryApiVersion(reader: reader, propertyName: propertyName, apiVersion: out var apiVersionValue))
+                    if (TryApiVersion(reader, propertyName, apiVersion: out var apiVersionValue))
                     {
                         apiVersion = apiVersionValue;
                     }
 
                     // Read kind
-                    else if (TryKind(reader: reader, propertyName: propertyName, kind: out var kindValue))
+                    else if (TryKind(reader, propertyName, kind: out var kindValue))
                     {
                         kind = kindValue;
                     }
@@ -448,6 +447,7 @@ namespace PSRule
                         kind: kind,
                         metadata: metadata,
                         comment: comment,
+                        extent: extent,
                         spec: out var specValue))
                     {
                         result = specValue;
@@ -455,11 +455,8 @@ namespace PSRule
                         // Break out of loop if result is populated
                         // Needed so we don't read more than we have to
                         if (result != null && reader.TokenType == JsonToken.EndObject)
-                        {
                             break;
-                        }
                     }
-
                     else
                     {
                         reader.Skip();
@@ -469,7 +466,6 @@ namespace PSRule
                 else if (reader.TokenType == JsonToken.Comment)
                 {
                     var commentLine = reader.Value.ToString().TrimStart();
-
                     if (commentLine.Length > FIELD_SYNOPSIS.Length && commentLine.StartsWith(FIELD_SYNOPSIS))
                     {
                         comment = new CommentMetadata
@@ -478,36 +474,30 @@ namespace PSRule
                         };
                     }
                 }
-
                 reader.Read();
             }
-
             return result;
         }
 
         private static bool TryApiVersion(JsonReader reader, string propertyName, out string apiVersion)
         {
             apiVersion = null;
-
             if (propertyName == FIELD_APIVERSION)
             {
                 apiVersion = reader.ReadAsString();
                 return true;
             }
-
             return false;
         }
 
         private static bool TryKind(JsonReader reader, string propertyName, out string kind)
         {
             kind = null;
-
             if (propertyName == FIELD_KIND)
             {
                 kind = reader.ReadAsString();
                 return true;
             }
-
             return false;
         }
 
@@ -535,6 +525,7 @@ namespace PSRule
             string kind,
             ResourceMetadata metadata,
             CommentMetadata comment,
+            ISourceExtent extent,
             out IResource spec)
         {
             spec = null;
@@ -552,6 +543,7 @@ namespace PSRule
                         source: RunspaceContext.CurrentThread.Source.File,
                         metadata: metadata,
                         comment: comment,
+                        extent: extent,
                         spec: deserializedSpec
                     );
                     return true;

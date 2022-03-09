@@ -14,8 +14,8 @@ namespace PSRule.Definitions.ModuleConfigs
     [Spec(Specs.V1, Specs.ModuleConfig)]
     internal sealed class ModuleConfigV1 : InternalResource<ModuleConfigV1Spec>
     {
-        public ModuleConfigV1(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ModuleConfigV1Spec spec)
-            : base(ResourceKind.ModuleConfig, apiVersion, source, metadata, info, spec) { }
+        public ModuleConfigV1(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ISourceExtent extent, ModuleConfigV1Spec spec)
+            : base(ResourceKind.ModuleConfig, apiVersion, source, metadata, info, extent, spec) { }
 
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the module config.

@@ -502,8 +502,9 @@ namespace PSRule
             string apiVersion = null;
             string kind = null;
             ResourceMetadata metadata = null;
-            if (reader.TryConsume<MappingStart>(out _))
+            if (reader.TryConsume<MappingStart>(out var mappingStart))
             {
+                var extent = new SourceExtent(RunspaceContext.CurrentThread.Source.File.Path, mappingStart.Start.Line, mappingStart.Start.Column);
                 while (reader.TryConsume(out Scalar scalar))
                 {
                     // Read apiVersion
@@ -522,7 +523,7 @@ namespace PSRule
                         metadata = metadataValue;
                     }
                     // Read spec
-                    else if (kind != null && TrySpec(reader, scalar, apiVersion, kind, nestedObjectDeserializer, metadata, comment, out var resource))
+                    else if (kind != null && TrySpec(reader, scalar, apiVersion, kind, nestedObjectDeserializer, metadata, comment, extent, out var resource))
                     {
                         result = resource;
                     }
@@ -576,13 +577,13 @@ namespace PSRule
             return false;
         }
 
-        private bool TrySpec(IParser reader, Scalar scalar, string apiVersion, string kind, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
+        private bool TrySpec(IParser reader, Scalar scalar, string apiVersion, string kind, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, ISourceExtent extent, out IResource spec)
         {
             spec = null;
-            return scalar.Value == FIELD_SPEC && TryResource(reader, apiVersion, kind, nestedObjectDeserializer, metadata, comment, out spec);
+            return scalar.Value == FIELD_SPEC && TryResource(reader, apiVersion, kind, nestedObjectDeserializer, metadata, comment, extent, out spec);
         }
 
-        private bool TryResource(IParser reader, string apiVersion, string kind, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, out IResource spec)
+        private bool TryResource(IParser reader, string apiVersion, string kind, Func<IParser, Type, object> nestedObjectDeserializer, ResourceMetadata metadata, CommentMetadata comment, ISourceExtent extent, out IResource spec)
         {
             spec = null;
             if (_Factory.TryDescriptor(apiVersion, kind, out var descriptor) && reader.Current is MappingStart)
@@ -590,7 +591,7 @@ namespace PSRule
                 if (!_Next.Deserialize(reader, descriptor.SpecType, nestedObjectDeserializer, out var value))
                     return false;
 
-                spec = descriptor.CreateInstance(RunspaceContext.CurrentThread.Source.File, metadata, comment, value);
+                spec = descriptor.CreateInstance(RunspaceContext.CurrentThread.Source.File, metadata, comment, extent, value);
                 return true;
             }
             return false;

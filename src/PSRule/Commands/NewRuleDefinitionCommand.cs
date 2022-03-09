@@ -104,9 +104,10 @@ namespace PSRule.Commands
             var level = ResourceHelper.GetLevel(Level);
             var tag = GetTag(Tag);
             var source = context.Source.File;
-            var extent = new RuleExtent(
+            var extent = new SourceExtent(
                 file: source.Path,
-                startLineNumber: Body.Ast.Extent.StartLineNumber
+                line: MyInvocation.ScriptLineNumber,
+                position: MyInvocation.OffsetInLine
             );
             var flags = ResourceFlags.None;
 
