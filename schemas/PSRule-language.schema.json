@@ -1177,6 +1177,13 @@
                     "title": "Less",
                     "description": "Must be less then the specified value.",
                     "markdownDescription": "Must be less then the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type of compared operand.",
+                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                    "default": false
                 }
             },
             "required": [
@@ -1196,6 +1203,13 @@
                     "title": "Less or Equal to",
                     "description": "Must be less or equal to the specified value.",
                     "markdownDescription": "Must be less or equal to the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#lessorequals)"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type of compared operand.",
+                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                    "default": false
                 }
             },
             "required": [
@@ -1215,6 +1229,13 @@
                     "title": "Greater",
                     "description": "Must be greater then the specified value.",
                     "markdownDescription": "Must be greater then the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greater)"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type of compared operand.",
+                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                    "default": false
                 }
             },
             "required": [
@@ -1234,6 +1255,13 @@
                     "title": "Greater or Equal to",
                     "description": "Must be greater or equal to the specified value.",
                     "markdownDescription": "Must be greater or equal to the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greaterorequals)"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type of compared operand.",
+                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                    "default": false
                 }
             },
             "required": [
