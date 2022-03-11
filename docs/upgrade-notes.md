@@ -37,7 +37,7 @@ A module configuration can be defined in YAML.
 
 When creating YAML and JSON resources you define a resource by specifying the `apiVersion` and `kind`.
 An `apiVersion` was added as a requirement from _v1.2.0_.
-For compatibility resources without an `apiVersion` were supported however deprecated for removal in _v2.0.0_.
+For compatibility, resources without an `apiVersion` were supported however deprecated for removal.
 This has now been removed from _v2.0.0_.
 
 When defining resource specify an `apiVersion`.
@@ -82,7 +82,7 @@ Currently this must be set to `github.com/microsoft/PSRule/v1`.
 ### Change in source file discovery for Get-PSRuleHelp
 
 Previously in PSRule _v1.11.0_ and prior versions, rules would show up twice when running `Get-PSRuleHelp` in the context of a module and in the same working directory of the module.
-This behavior has no been removed from _v2.0.0_.
+This behavior has now been removed from _v2.0.0_.
 
 Module files are now preferred over loose files, and rules are only shown once in the output.
 Any duplicate rule names from loose files are outputted as a warning instead.
@@ -113,7 +113,7 @@ M1.Rule2                            TestModule               This is the default
 ### Require source discovery from current working directory to be explicitly included
 
 Previously in PSRule _v1.11.0_ and prior versions, rule sources from the current working directory without the `-Path` and `-Module` parameters were automatically included.
-This behavior has no been removed from _v2.0.0_.
+This behavior has now been removed from _v2.0.0_.
 
 Rules sources in the current working directory are only included if `-Path .` or `-Path $PWD` is specified.
 
