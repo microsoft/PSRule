@@ -14,6 +14,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.0.0-B2203033:
+
+- General improvements:
+  - Added `convert` to numeric comparison expressions. [#943](https://github.com/microsoft/PSRule/issues/943)
+    - Type conversion is now supported for `less`, `lessOrEquals`, `greater`, and `greaterOrEquals`.
+
 ## v2.0.0-B2203033 (pre-release)
 
 What's changed since pre-release v2.0.0-B2203019:

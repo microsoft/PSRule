@@ -241,8 +241,12 @@ metadata:
   name: YamlLess
 spec:
   if:
-    field: 'Value'
-    less: 3
+    anyOf:
+    - field: 'Value'
+      less: 3
+    - field: 'ValueStr'
+      less: 0
+      convert: true
 
 ---
 # Synopsis: Test lessOrEquals
@@ -252,8 +256,12 @@ metadata:
   name: YamlLessOrEquals
 spec:
   if:
-    field: 'Value'
-    lessOrEquals: 3
+    anyOf:
+    - field: 'Value'
+      lessOrEquals: 3
+    - field: 'ValueStr'
+      lessOrEquals: 0
+      convert: true
 
 ---
 # Synopsis: Test greater
@@ -263,8 +271,12 @@ metadata:
   name: YamlGreater
 spec:
   if:
-    field: 'Value'
-    greater: 3
+    anyOf:
+    - field: 'Value'
+      greater: 3
+    - field: 'ValueStr'
+      greater: -1
+      convert: true
 
 ---
 # Synopsis: Test greaterOrEquals
@@ -274,8 +286,12 @@ metadata:
   name: YamlGreaterOrEquals
 spec:
   if:
-    field: 'Value'
-    greaterOrEquals: 3
+    anyOf:
+    - field: 'Value'
+      greaterOrEquals: 3
+    - field: 'ValueStr'
+      greaterOrEquals: -1
+      convert: true
 
 ---
 # Synopsis: Test startsWith
