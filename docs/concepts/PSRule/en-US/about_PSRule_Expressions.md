@@ -416,17 +416,23 @@ spec:
 
 The `greater` condition determines if the operand is greater than a supplied value.
 The field value can either be an integer, float, array, or string.
+
+- `convert` - Optionally, perform type conversion on operand type.
+  By default `convert` is `false`.
+
 When the field value is:
 
 - An integer or float, a numerical comparison is used.
 - An array, the number of elements is compared.
 - A string, the length of the string is compared.
+  If `convert` is `true`, the string is converted a number instead.
 - A DateTime, the number of days from the current time is compared.
 
 Syntax:
 
 ```yaml
 greater: <int>
+convert: <boolean>
 ```
 
 For example:
@@ -457,17 +463,23 @@ spec:
 
 The `greaterOrEquals` condition determines if the operand is greater or equal to the supplied value.
 The field value can either be an integer, float, array, or string.
+
+- `convert` - Optionally, perform type conversion on operand type.
+  By default `convert` is `false`.
+
 When the field value is:
 
 - An integer or float, a numerical comparison is used.
 - An array, the number of elements is compared.
 - A string, the length of the string is compared.
+  If `convert` is `true`, the string is converted a number instead.
 - A DateTime, the number of days from the current time is compared.
 
 Syntax:
 
 ```yaml
 greaterOrEquals: <int>
+convert: <boolean>
 ```
 
 For example:
@@ -999,17 +1011,23 @@ spec:
 
 The `less` condition determines if the operand is less than a supplied value.
 The field value can either be an integer, float, array, or string.
+
+- `convert` - Optionally, perform type conversion on operand type.
+  By default `convert` is `false`.
+
 When the field value is:
 
 - An integer or float, a numerical comparison is used.
 - An array, the number of elements is compared.
 - A string, the length of the string is compared.
+  If `convert` is `true`, the string is converted a number instead.
 - A DateTime, the number of days from the current time is compared.
 
 Syntax:
 
 ```yaml
 less: <int>
+convert: <boolean>
 ```
 
 For example:
@@ -1040,17 +1058,23 @@ spec:
 
 The `lessOrEquals` condition determines if the operand is less or equal to the supplied value.
 The field value can either be an integer, float, array, or string.
+
+- `convert` - Optionally, perform type conversion on operand type.
+  By default `convert` is `false`.
+
 When the field value is:
 
 - An integer or float, a numerical comparison is used.
 - An array, the number of elements is compared.
 - A string, the length of the string is compared.
+  If `convert` is `true`, the string is converted a number instead.
 - A DateTime, the number of days from the current time is compared.
 
 Syntax:
 
 ```yaml
 lessOrEquals: <int>
+convert: <boolean>
 ```
 
 For example:

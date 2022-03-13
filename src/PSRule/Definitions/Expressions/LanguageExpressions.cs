@@ -684,7 +684,8 @@ namespace PSRule.Definitions.Expressions
         {
             var properties = GetProperties(args);
             if (!TryPropertyLong(properties, LESS, out var propertyValue) ||
-                !TryOperand(context, LESS, o, properties, out var operand))
+                !TryOperand(context, LESS, o, properties, out var operand) ||
+                !GetConvert(properties, out var convert))
                 return Invalid(context, LESS);
 
             if (operand.Value == null)
@@ -698,7 +699,7 @@ namespace PSRule.Definitions.Expressions
             if (!ExpressionHelpers.CompareNumeric(
                 operand.Value,
                 propertyValue,
-                convert: false,
+                convert,
                 compare: out var compare,
                 value: out _))
                 return Invalid(context, LESS);
@@ -719,7 +720,8 @@ namespace PSRule.Definitions.Expressions
         {
             var properties = GetProperties(args);
             if (!TryPropertyLong(properties, LESSOREQUALS, out var propertyValue) ||
-                !TryOperand(context, LESSOREQUALS, o, properties, out var operand))
+                !TryOperand(context, LESSOREQUALS, o, properties, out var operand) ||
+                !GetConvert(properties, out var convert))
                 return Invalid(context, LESSOREQUALS);
 
             if (operand.Value == null)
@@ -733,7 +735,7 @@ namespace PSRule.Definitions.Expressions
             if (!ExpressionHelpers.CompareNumeric(
                 operand.Value,
                 propertyValue,
-                convert: false,
+                convert,
                 compare: out var compare,
                 value: out _))
                 return Invalid(context, LESSOREQUALS);
@@ -754,7 +756,8 @@ namespace PSRule.Definitions.Expressions
         {
             var properties = GetProperties(args);
             if (!TryPropertyLong(properties, GREATER, out var propertyValue) ||
-                !TryOperand(context, GREATER, o, properties, out var operand))
+                !TryOperand(context, GREATER, o, properties, out var operand) ||
+                !GetConvert(properties, out var convert))
                 return Invalid(context, GREATER);
 
             if (operand.Value == null)
@@ -768,7 +771,7 @@ namespace PSRule.Definitions.Expressions
             if (!ExpressionHelpers.CompareNumeric(
                 operand.Value,
                 propertyValue,
-                convert: false,
+                convert,
                 compare: out var compare,
                 value: out _))
                 return Invalid(context, GREATER);
@@ -789,7 +792,8 @@ namespace PSRule.Definitions.Expressions
         {
             var properties = GetProperties(args);
             if (!TryPropertyLong(properties, GREATEROREQUALS, out var propertyValue) ||
-                !TryOperand(context, GREATEROREQUALS, o, properties, out var operand))
+                !TryOperand(context, GREATEROREQUALS, o, properties, out var operand) ||
+                !GetConvert(properties, out var convert))
                 return Invalid(context, GREATEROREQUALS);
 
             if (operand.Value == null)
@@ -803,7 +807,7 @@ namespace PSRule.Definitions.Expressions
             if (!ExpressionHelpers.CompareNumeric(
                 operand.Value,
                 propertyValue,
-                convert: false,
+                convert,
                 compare: out var compare,
                 value: out _))
                 return Invalid(context, GREATEROREQUALS);
