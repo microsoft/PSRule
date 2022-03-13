@@ -1,0 +1,16 @@
+[
+    {
+        // Synopsis: An example rule for unit testing.
+        "apiVersion": "github.com/microsoft/PSRule/v1",
+        "kind": "Rule",
+        "metadata": {
+            "name": "JsonRule_"
+        },
+        "spec": {
+            "condition": {
+                "field": "Name",
+                "exists": true
+            }
+        }
+    }
+]

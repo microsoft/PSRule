@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Management.Automation;
 using System.Management.Automation.Language;
 using System.Threading;
+using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Resources;
 
@@ -20,6 +21,7 @@ namespace PSRule.Host
         private const string ERRORID_PARAMETERNOTFOUND = "PSRule.Parse.RuleParameterNotFound";
         private const string ERRORID_INVALIDRULENESTING = "PSRule.Parse.InvalidRuleNesting";
         private const string ERRORID_INVALIDERRORACTION = "PSRule.Parse.InvalidErrorAction";
+        private const string ERRORID_INVALIDRESOURCENAME = "PSRule.Parse.InvalidResourceName";
 
         private readonly StringComparer _Comparer;
 
@@ -68,21 +70,23 @@ namespace PSRule.Host
 
         public override AstVisitAction VisitCommand(CommandAst commandAst)
         {
-            if (IsRule(commandAst))
-            {
-                var valid = NotNested(commandAst) &&
-                    HasValidErrorAction(commandAst) &&
-                    HasRequiredParameters(commandAst);
+            return IsRule(commandAst) ? VisitRule(commandAst) : base.VisitCommand(commandAst);
+        }
 
-                return valid ? base.VisitCommand(commandAst) : AstVisitAction.SkipChildren;
-            }
-            return base.VisitCommand(commandAst);
+        /// <summary>
+        /// Visit a rule.
+        /// </summary>
+        private AstVisitAction VisitRule(CommandAst commandAst)
+        {
+            return NotNested(commandAst) &&
+                VisitErrorAction(commandAst) &&
+                VisitRequiredParameters(commandAst) ? base.VisitCommand(commandAst) : AstVisitAction.SkipChildren;
         }
 
         /// <summary>
         /// Determines if the rule has a Body parameter.
         /// </summary>
-        private bool HasBodyParameter(CommandAst commandAst, ParameterBindResult bindResult)
+        private bool VisitBodyParameter(CommandAst commandAst, ParameterBindResult bindResult)
         {
             if (bindResult.Has(PARAMETER_BODY, 1, out ScriptBlockExpressionAst _))
                 return true;
@@ -94,12 +98,24 @@ namespace PSRule.Host
         /// <summary>
         /// Determines if the rule has a Name parameter.
         /// </summary>
-        private bool HasNameParameter(CommandAst commandAst, ParameterBindResult bindResult)
+        private bool VisitNameParameter(CommandAst commandAst, ParameterBindResult bindResult)
         {
-            if (bindResult.Has(PARAMETER_NAME, 0, out StringConstantExpressionAst value) && !string.IsNullOrEmpty(value.Value))
-                return true;
+            if (bindResult.Has(PARAMETER_NAME, 0, out StringConstantExpressionAst value))
+                return IsNameValid(value);
 
             ReportError(ERRORID_PARAMETERNOTFOUND, PSRuleResources.RuleParameterNotFound, PARAMETER_NAME, ReportExtent(commandAst.Extent));
+            return false;
+        }
+
+        /// <summary>
+        /// Determines if the rule name is valid.
+        /// </summary>
+        private bool IsNameValid(StringConstantExpressionAst name)
+        {
+            if (ResourceValidator.IsNameValid(name.Value))
+                return true;
+
+            ReportError(ERRORID_INVALIDRESOURCENAME, PSRuleResources.InvalidResourceName, name.Value, ReportExtent(name.Extent));
             return false;
         }
 
@@ -118,16 +134,16 @@ namespace PSRule.Host
         /// <summary>
         /// Determines if the rule has required parameters.
         /// </summary>
-        private bool HasRequiredParameters(CommandAst commandAst)
+        private bool VisitRequiredParameters(CommandAst commandAst)
         {
             var bindResult = BindParameters(commandAst);
-            return HasNameParameter(commandAst, bindResult) && HasBodyParameter(commandAst, bindResult);
+            return VisitNameParameter(commandAst, bindResult) && VisitBodyParameter(commandAst, bindResult);
         }
 
         /// <summary>
         /// Determine if the rule has allowed ErrorAction options.
         /// </summary>
-        private bool HasValidErrorAction(CommandAst commandAst)
+        private bool VisitErrorAction(CommandAst commandAst)
         {
             var bindResult = BindParameters(commandAst);
             if (!bindResult.Has(PARAMETER_ERRORACTION, 0, out StringConstantExpressionAst value))
@@ -181,9 +197,7 @@ namespace PSRule.Host
         private void ReportError(Pipeline.ParseException exception)
         {
             if (Errors == null)
-            {
                 Errors = new List<ErrorRecord>();
-            }
 
             Errors.Add(new ErrorRecord(
                 exception: exception,

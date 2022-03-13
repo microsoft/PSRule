@@ -47,7 +47,17 @@ For example, [PSRule for Azure][1] uses the name prefix of `Azure.` for rules in
     - `Azure.AKS.AuthorizedIPs`
     - `Azure.SQL.MinTLS`
 
-When naming custom rules we recommend that you:
+In addition, names for rules and other resources must meet the following requirements:
+
+- **Use between 3 and 128 characters** &mdash; This is the minimum and maximum length of a resource name.
+- **Use only letters, numbers, hyphens, dots, and underscores** &mdash; These are the only allowed characters.
+  However, only letters and numbers are allows at the beginning and end of the name.
+
+```text title="Regular expression for valid resource names"
+^[a-zA-Z0-9][a-zA-Z0-9._-]{1,126}[a-zA-Z0-9]$
+```
+
+When naming rules we recommend that you:
 
 - **Use a standard prefix** &mdash; You can use the `Local.` or `Org.` prefix for standalone rules.
   - Alternatively choose a short prefix that identifies your organization.

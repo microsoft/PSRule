@@ -2611,11 +2611,10 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
 
         It 'Error on missing parameter' {
             $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.RuleParameterNotFound' });
-            $filteredResult.Length | Should -Be 3;
+            $filteredResult.Length | Should -Be 2;
             $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.ParseException;
             $filteredResult[0].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Name'' on rule at * line *';
-            $filteredResult[1].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Name'' on rule at * line *';
-            $filteredResult[2].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Body'' on rule at * line *';
+            $filteredResult[1].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Body'' on rule at * line *';
         }
 
         It 'Error on invalid ErrorAction' {
@@ -2623,6 +2622,13 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
             $filteredResult.Length | Should -Be 1;
             $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.ParseException;
             $filteredResult[0].Exception.Message | Should -BeLike 'An invalid ErrorAction (*) was specified for rule at *';
+        }
+
+        It 'Error on invalid name' {
+            $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidResourceName' });
+            $filteredResult.Length | Should -Be 1;
+            $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.ParseException;
+            $filteredResult[0].Exception.Message | Should -BeLike "The resource name '' is not valid at * line 16. Each resource name must be between 3-128 characters in length, must start and end with a letter or number, and only contain letters, numbers, hyphens, dots, or underscores. See https://aka.ms/ps-rule/naming for more information.";
         }
     }
 

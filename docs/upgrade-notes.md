@@ -7,6 +7,24 @@ This document contains notes to help upgrade from previous versions of PSRule.
 PSRule v2.0.0 is a planned future release.
 It's not yet available, but you can take these steps to proactively prepare for the release.
 
+### Resources naming restrictions
+
+When naming resources such as rules or selectors, the following restrictions apply:
+
+- **Use between 3 and 128 characters** &mdash; This is the minimum and maximum length of a resource name.
+- **Use only letters, numbers, hyphens, dots, and underscores** &mdash; These are the only allowed characters.
+  However, only letters and numbers are allows at the beginning and end of the name.
+
+Prior to _v2.0.0_, there was no specific naming restriction for resources.
+However functionally PSRule and downstream components could not support all resource names.
+To avoid confusion, we have decided to restrict resource names to a specific set of characters.
+
+From _v2.0.0_, resource names that do not meet the naming restrictions will generate an error.
+
+```text title="Regular expression for valid resource names"
+^[a-zA-Z0-9][a-zA-Z0-9._-]{1,126}[a-zA-Z0-9]$
+```
+
 ### Setting default module baseline
 
 When packaging rules in a module, you can set the default baseline.
