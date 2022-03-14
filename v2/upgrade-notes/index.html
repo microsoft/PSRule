@@ -1823,7 +1823,7 @@ Setting the default baseline from module manifest and has been removed from <em>
 <h3 id="setting-resource-api-version">Setting resource API version<a class="headerlink" href="#setting-resource-api-version" title="Permanent link">#</a></h3>
 <p>When creating YAML and JSON resources you define a resource by specifying the <code>apiVersion</code> and <code>kind</code>.
 An <code>apiVersion</code> was added as a requirement from <em>v1.2.0</em>.
-For compatibility resources without an <code>apiVersion</code> were supported however deprecated for removal in <em>v2.0.0</em>.
+For compatibility, resources without an <code>apiVersion</code> were supported however deprecated for removal.
 This has now been removed from <em>v2.0.0</em>.</p>
 <p>When defining resource specify an <code>apiVersion</code>.
 Currently this must be set to <code>github.com/microsoft/PSRule/v1</code>.</p>
@@ -1865,7 +1865,7 @@ Currently this must be set to <code>github.com/microsoft/PSRule/v1</code>.</p>
 </div>
 <h3 id="change-in-source-file-discovery-for-get-psrulehelp">Change in source file discovery for Get-PSRuleHelp<a class="headerlink" href="#change-in-source-file-discovery-for-get-psrulehelp" title="Permanent link">#</a></h3>
 <p>Previously in PSRule <em>v1.11.0</em> and prior versions, rules would show up twice when running <code>Get-PSRuleHelp</code> in the context of a module and in the same working directory of the module.
-This behavior has no been removed from <em>v2.0.0</em>.</p>
+This behavior has now been removed from <em>v2.0.0</em>.</p>
 <p>Module files are now preferred over loose files, and rules are only shown once in the output.
 Any duplicate rule names from loose files are outputted as a warning instead.</p>
 <p>The old behavior:</p>
@@ -1887,7 +1887,7 @@ Any duplicate rule names from loose files are outputted as a warning instead.</p
 </code></pre></div>
 <h3 id="require-source-discovery-from-current-working-directory-to-be-explicitly-included">Require source discovery from current working directory to be explicitly included<a class="headerlink" href="#require-source-discovery-from-current-working-directory-to-be-explicitly-included" title="Permanent link">#</a></h3>
 <p>Previously in PSRule <em>v1.11.0</em> and prior versions, rule sources from the current working directory without the <code>-Path</code> and <code>-Module</code> parameters were automatically included.
-This behavior has no been removed from <em>v2.0.0</em>.</p>
+This behavior has now been removed from <em>v2.0.0</em>.</p>
 <p>Rules sources in the current working directory are only included if <code>-Path .</code> or <code>-Path $PWD</code> is specified.</p>
 <p>The old behavior:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">Set-Location</span> <span class="n">docs</span><span class="p">\</span><span class="n">scenarios</span><span class="p">\</span><span class="n">azure-resources</span>
@@ -1987,7 +1987,7 @@ Rules referencing the deprecated properties of <code>$Rule</code> must be update
   <small>
     
       Last update:
-      2022-01-27
+      2022-03-14
     
   </small>
 </div>
