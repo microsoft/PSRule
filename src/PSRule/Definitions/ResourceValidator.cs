@@ -21,7 +21,7 @@ namespace PSRule.Definitions
     {
         private const string ERRORID_INVALIDRESOURCENAME = "PSRule.Parse.InvalidResourceName";
 
-        private static readonly Regex ValidName = new Regex("^[a-zA-Z0-9][a-zA-Z0-9._-]{1,126}[a-zA-Z0-9]$", RegexOptions.Compiled);
+        private static readonly Regex ValidName = new Regex("^[^<>:/\\\\|?*\"'`+@._\\-\x00-\x1F][^<>:/\\\\|?*\"'`+@\x00-\x1F]{1,126}[^<>:/\\\\|?*\"'`+@._\\-\x00-\x1F]$", RegexOptions.Compiled);
 
         private readonly RunspaceContext _Context;
 
@@ -37,16 +37,35 @@ namespace PSRule.Definitions
 
         public bool Visit(IResource resource)
         {
-            return VisitName(resource);
+            return VisitName(resource, resource.Name) &&
+                VisitName(resource, resource.Ref) &&
+                VisitName(resource, resource.Alias);
         }
 
-        private bool VisitName(IResource resource)
+        private bool VisitName(IResource resource, string name)
         {
-            if (IsNameValid(resource.Name))
+            if (IsNameValid(name))
                 return true;
 
-            ReportError(ERRORID_INVALIDRESOURCENAME, PSRuleResources.InvalidResourceName, resource.Name, ReportExtent(resource.Extent));
+            ReportError(ERRORID_INVALIDRESOURCENAME, PSRuleResources.InvalidResourceName, name, ReportExtent(resource.Extent));
             return false;
+        }
+
+        private bool VisitName(IResource resource, ResourceId? name)
+        {
+            return !name.HasValue || VisitName(resource, name.Value.Name);
+        }
+
+        private bool VisitName(IResource resource, ResourceId[] name)
+        {
+            if (name == null || name.Length == 0)
+                return true;
+
+            for (var i = 0; i < name.Length; i++)
+                if (!VisitName(resource, name[i].Name))
+                    return false;
+
+            return true;
         }
 
         private static string ReportExtent(ISourceExtent extent)

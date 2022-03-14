@@ -50,11 +50,28 @@ For example, [PSRule for Azure][1] uses the name prefix of `Azure.` for rules in
 In addition, names for rules and other resources must meet the following requirements:
 
 - **Use between 3 and 128 characters** &mdash; This is the minimum and maximum length of a resource name.
-- **Use only letters, numbers, hyphens, dots, and underscores** &mdash; These are the only allowed characters.
-  However, only letters and numbers are allows at the beginning and end of the name.
+- **Only use allowed characters** &mdash;
+  To preserve consistency between file systems, some characters are not permitted.
+  Dots, hyphens, and underscores are not permitted at the start and end of the name.
+  Additionally some characters are restricted for future use.
+  - `<` (less than)
+  - `>` (greater than)
+  - `:` (colon)
+  - `/` (forward slash)
+  - `\` (backslash)
+  - `|` (vertical bar or pipe)
+  - `?` (question mark)
+  - `*` (asterisk)
+  - `"` (double quote)
+  - `'` (single quote)
+  - `` ` `` (backtick)
+  - `+` (plus)
+  - `@` (at sign)
+  - Integer value zero, sometimes referred to as the ASCII NUL character.
+  - Characters whose integer representations are in the range from 1 through 31.
 
 ```text title="Regular expression for valid resource names"
-^[a-zA-Z0-9][a-zA-Z0-9._-]{1,126}[a-zA-Z0-9]$
+^[^<>:/\\|?*"'`+@._\-\x00-\x1F][^<>:/\\|?*"'`+@\x00-\x1F]{1,126}[^<>:/\\|?*"'`+@._\-\x00-\x1F]$
 ```
 
 When naming rules we recommend that you:
@@ -62,7 +79,10 @@ When naming rules we recommend that you:
 - **Use a standard prefix** &mdash; You can use the `Local.` or `Org.` prefix for standalone rules.
   - Alternatively choose a short prefix that identifies your organization.
 - **Use dotted notation** &mdash; Use dots to separate rule name.
-- **Use a maximum length of 35 characters** &mdash; The default view of `Invoke-PSRule` truncates longer names.
+- **Use a maximum length of 35 characters** &mdash;
+  The default view of `Invoke-PSRule` truncates longer names.
   PSRule supports longer rule names however if `Invoke-PSRule` is called directly consider using `Format-List`.
+- **Avoid using special characters and puntuation** &mdash;
+  Although these characters can be used in many cases, they may not be easy to use with all PSRule features.
 
   [1]: https://aka.ms/ps-rule-azure

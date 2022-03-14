@@ -12,8 +12,25 @@ It's not yet available, but you can take these steps to proactively prepare for 
 When naming resources such as rules or selectors, the following restrictions apply:
 
 - **Use between 3 and 128 characters** &mdash; This is the minimum and maximum length of a resource name.
-- **Use only letters, numbers, hyphens, dots, and underscores** &mdash; These are the only allowed characters.
-  However, only letters and numbers are allows at the beginning and end of the name.
+- **Only use allowed characters** &mdash;
+  To preserve consistency between file systems, some characters are not permitted.
+  Dots, hyphens, and underscores are not permitted at the start and end of the name.
+  Additionally some characters are restricted for future use.
+  - `<` (less than)
+  - `>` (greater than)
+  - `:` (colon)
+  - `/` (forward slash)
+  - `\` (backslash)
+  - `|` (vertical bar or pipe)
+  - `?` (question mark)
+  - `*` (asterisk)
+  - `"` (double quote)
+  - `'` (single quote)
+  - `` ` `` (backtick)
+  - `+` (plus)
+  - `@` (at sign)
+  - Integer value zero, sometimes referred to as the ASCII NUL character.
+  - Characters whose integer representations are in the range from 1 through 31.
 
 Prior to _v2.0.0_, there was no specific naming restriction for resources.
 However functionally PSRule and downstream components could not support all resource names.
@@ -22,7 +39,7 @@ To avoid confusion, we have decided to restrict resource names to a specific set
 From _v2.0.0_, resource names that do not meet the naming restrictions will generate an error.
 
 ```text title="Regular expression for valid resource names"
-^[a-zA-Z0-9][a-zA-Z0-9._-]{1,126}[a-zA-Z0-9]$
+^[^<>:/\\|?*"'`+@._\-\x00-\x1F][^<>:/\\|?*"'`+@\x00-\x1F]{1,126}[^<>:/\\|?*"'`+@._\-\x00-\x1F]$
 ```
 
 ### Setting default module baseline
