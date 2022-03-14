@@ -16,6 +16,7 @@ When naming resources such as rules or selectors, the following restrictions app
   To preserve consistency between file systems, some characters are not permitted.
   Dots, hyphens, and underscores are not permitted at the start and end of the name.
   Additionally some characters are restricted for future use.
+  The following characters are not permitted:
   - `<` (less than)
   - `>` (greater than)
   - `:` (colon)

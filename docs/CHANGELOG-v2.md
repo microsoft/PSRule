@@ -21,8 +21,8 @@ What's changed since pre-release v2.0.0-B2203033:
   - Added `convert` to numeric comparison expressions. [#943](https://github.com/microsoft/PSRule/issues/943)
     - Type conversion is now supported for `less`, `lessOrEquals`, `greater`, and `greaterOrEquals`.
   - **Breaking change:** Added validation of resource names. [#1012](https://github.com/microsoft/PSRule/issues/1012)
-    - Resource names must now match `^[a-zA-Z0-9][a-zA-Z0-9._-]{1,126}[a-zA-Z0-9]$` to be valid.
     - Invalid rules names will now produce a specific error.
+    - See [upgrade notes][1] for more information.
 - Bug fixes:
   - Fixed unclear error message on invalid rule names. [#1012](https://github.com/microsoft/PSRule/issues/1012)
 
