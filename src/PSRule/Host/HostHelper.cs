@@ -233,6 +233,7 @@ namespace PSRule.Host
         private static ILanguageBlock[] GetYamlLanguageBlocks(Source[] sources, RunspaceContext context)
         {
             var result = new Collection<ILanguageBlock>();
+            var visitor = new ResourceValidator(context);
             var d = new DeserializerBuilder()
                 .IgnoreUnmatchedProperties()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
@@ -267,7 +268,8 @@ namespace PSRule.Host
                             if (item == null || item.Block == null)
                                 continue;
 
-                            result.Add(item.Block);
+                            if (item.Visit(visitor))
+                                result.Add(item.Block);
                         }
                     }
                 }
@@ -287,8 +289,8 @@ namespace PSRule.Host
         private static ILanguageBlock[] GetJsonLanguageBlocks(Source[] sources, RunspaceContext context)
         {
             var result = new Collection<ILanguageBlock>();
+            var visitor = new ResourceValidator(context);
             var deserializer = new JsonSerializer();
-
             deserializer.Converters.Add(new ResourceObjectJsonConverter());
             deserializer.Converters.Add(new FieldMapJsonConverter());
             deserializer.Converters.Add(new LanguageExpressionJsonConverter());
@@ -321,7 +323,7 @@ namespace PSRule.Host
                                 while (reader.TokenType != JsonToken.EndArray)
                                 {
                                     var value = deserializer.Deserialize<ResourceObject>(reader);
-                                    if (value?.Block != null)
+                                    if (value?.Block != null && value.Visit(visitor))
                                         result.Add(value.Block);
 
                                     // Consume all end objects at the end of each resource

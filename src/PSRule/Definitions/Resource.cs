@@ -104,6 +104,11 @@ namespace PSRule.Definitions
         ISourceExtent Extent { get; }
     }
 
+    internal interface IResourceVisitor
+    {
+        bool Visit(IResource resource);
+    }
+
     internal abstract class ResourceRef
     {
         public readonly string Id;
@@ -140,6 +145,11 @@ namespace PSRule.Definitions
         }
 
         internal IResource Block { get; }
+
+        internal bool Visit(IResourceVisitor visitor)
+        {
+            return Block != null && visitor != null && visitor.Visit(Block);
+        }
     }
 
     internal sealed class ResourceBuilder

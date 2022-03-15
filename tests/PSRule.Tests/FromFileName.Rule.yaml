@@ -1,0 +1,17 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+#
+# Rules for unit testing of rule names
+#
+
+---
+# Synopsis: An example rule for unit testing.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'Yaml+Rule'
+spec:
+  condition:
+    field: 'Name'
+    exists: true

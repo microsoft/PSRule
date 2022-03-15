@@ -8,6 +8,7 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 - YAML resources will require an `apiVersion` from PSRule v2. [#648](https://github.com/microsoft/PSRule/issues/648)
 - Setting the default module baseline requires a module configuration from PSRule v2. [#809](https://github.com/microsoft/PSRule/issues/809)
+- Resource names have naming restrictions introduced from PSRule v2. [#1012](https://github.com/microsoft/PSRule/issues/1012)
 
 !!! Info
     You can discuss v2 pre-releases on the [GitHub discussions page](https://github.com/microsoft/PSRule/discussions/966).
@@ -19,6 +20,11 @@ What's changed since pre-release v2.0.0-B2203033:
 - General improvements:
   - Added `convert` to numeric comparison expressions. [#943](https://github.com/microsoft/PSRule/issues/943)
     - Type conversion is now supported for `less`, `lessOrEquals`, `greater`, and `greaterOrEquals`.
+  - **Breaking change:** Added validation of resource names. [#1012](https://github.com/microsoft/PSRule/issues/1012)
+    - Invalid rules names will now produce a specific error.
+    - See [upgrade notes][1] for more information.
+- Bug fixes:
+  - Fixed unclear error message on invalid rule names. [#1012](https://github.com/microsoft/PSRule/issues/1012)
 
 ## v2.0.0-B2203033 (pre-release)
 

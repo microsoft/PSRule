@@ -1672,6 +1672,8 @@ function Rule {
 
         # An optional stable opaque identifier of this resource for lookup.
         [Parameter(Mandatory = $False)]
+        [ValidateLength(3, 128)]
+        [ValidateNotNullOrEmpty()]
         [String]$Ref,
 
         # Any aliases for the rule.

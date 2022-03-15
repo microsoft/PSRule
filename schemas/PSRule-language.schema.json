@@ -123,7 +123,7 @@
                             "markdownDescription": "Rules to include by name in the baseline. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#ruleinclude)",
                             "items": {
                                 "type": "string",
-                                "$ref": "#/definitions/resourceName"
+                                "$ref": "#/definitions/resourceNameReference"
                             },
                             "uniqueItems": true
                         },
@@ -134,7 +134,7 @@
                             "markdownDescription": "Rules to exclude by name from the baseline. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#ruleexclude)",
                             "items": {
                                 "type": "string",
-                                "$ref": "#/definitions/resourceName"
+                                "$ref": "#/definitions/resourceNameReference"
                             },
                             "uniqueItems": true
                         },
@@ -268,7 +268,7 @@
                             "title": "Baseline",
                             "description": "The name of a baseline to use.",
                             "markdownDescription": "The name of a baseline to use. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#rulebaseline)",
-                            "$ref": "#/definitions/resourceName"
+                            "$ref": "#/definitions/resourceNameReference"
                         }
                     },
                     "additionalProperties": false
@@ -278,7 +278,14 @@
         },
         "resourceName": {
             "type": "string",
-            "minLength": 3
+            "minLength": 3,
+            "maxLength": 128,
+            "pattern": "^[^<>:/\\\\|?*\"'`+@._\\-\\x00-\\x1F][^<>:/\\\\|?*\"'`+@\\x00-\\x1F]{1,126}[^<>:/\\\\|?*\"'`+@._\\-\\x00-\\x1F]$"
+        },
+        "resourceNameReference": {
+            "type": "string",
+            "minLength": 3,
+            "pattern": "^.*\\[^<>:/\\\\|?*\"'`+@._\\-\\x00-\\x1F][^<>:/\\\\|?*\"'`+@\\x00-\\x1F]{1,126}[^<>:/\\\\|?*\"'`+@._\\-\\x00-\\x1F]$"
         },
         "resourceTags": {
             "type": "object",
