@@ -83,7 +83,7 @@ When naming rules we recommend that you:
 - **Use a maximum length of 35 characters** &mdash;
   The default view of `Invoke-PSRule` truncates longer names.
   PSRule supports longer rule names however if `Invoke-PSRule` is called directly consider using `Format-List`.
-- **Avoid using special characters and puntuation** &mdash;
+- **Avoid using special characters and punctuation** &mdash;
   Although these characters can be used in many cases, they may not be easy to use with all PSRule features.
 
   [1]: https://aka.ms/ps-rule-azure
