@@ -7,6 +7,42 @@ This document contains notes to help upgrade from previous versions of PSRule.
 PSRule v2.0.0 is a planned future release.
 It's not yet available, but you can take these steps to proactively prepare for the release.
 
+### Resources naming restrictions
+
+When naming resources such as rules or selectors, the following restrictions apply:
+
+- **Use between 3 and 128 characters** &mdash; This is the minimum and maximum length of a resource name.
+- **Only use allowed characters** &mdash;
+  To preserve consistency between file systems, some characters are not permitted.
+  Dots, hyphens, and underscores are not permitted at the start and end of the name.
+  Additionally some characters are restricted for future use.
+  The following characters are not permitted:
+  - `<` (less than)
+  - `>` (greater than)
+  - `:` (colon)
+  - `/` (forward slash)
+  - `\` (backslash)
+  - `|` (vertical bar or pipe)
+  - `?` (question mark)
+  - `*` (asterisk)
+  - `"` (double quote)
+  - `'` (single quote)
+  - `` ` `` (backtick)
+  - `+` (plus)
+  - `@` (at sign)
+  - Integer value zero, sometimes referred to as the ASCII NUL character.
+  - Characters whose integer representations are in the range from 1 through 31.
+
+Prior to _v2.0.0_, there was no specific naming restriction for resources.
+However functionally PSRule and downstream components could not support all resource names.
+To avoid confusion, we have decided to restrict resource names to a specific set of characters.
+
+From _v2.0.0_, resource names that do not meet the naming restrictions will generate an error.
+
+```text title="Regular expression for valid resource names"
+^[^<>:/\\|?*"'`+@._\-\x00-\x1F][^<>:/\\|?*"'`+@\x00-\x1F]{1,126}[^<>:/\\|?*"'`+@._\-\x00-\x1F]$
+```
+
 ### Setting default module baseline
 
 When packaging rules in a module, you can set the default baseline.
@@ -37,7 +73,7 @@ A module configuration can be defined in YAML.
 
 When creating YAML and JSON resources you define a resource by specifying the `apiVersion` and `kind`.
 An `apiVersion` was added as a requirement from _v1.2.0_.
-For compatibility resources without an `apiVersion` were supported however deprecated for removal in _v2.0.0_.
+For compatibility, resources without an `apiVersion` were supported however deprecated for removal.
 This has now been removed from _v2.0.0_.
 
 When defining resource specify an `apiVersion`.
@@ -82,7 +118,7 @@ Currently this must be set to `github.com/microsoft/PSRule/v1`.
 ### Change in source file discovery for Get-PSRuleHelp
 
 Previously in PSRule _v1.11.0_ and prior versions, rules would show up twice when running `Get-PSRuleHelp` in the context of a module and in the same working directory of the module.
-This behavior has no been removed from _v2.0.0_.
+This behavior has now been removed from _v2.0.0_.
 
 Module files are now preferred over loose files, and rules are only shown once in the output.
 Any duplicate rule names from loose files are outputted as a warning instead.
@@ -113,7 +149,7 @@ M1.Rule2                            TestModule               This is the default
 ### Require source discovery from current working directory to be explicitly included
 
 Previously in PSRule _v1.11.0_ and prior versions, rule sources from the current working directory without the `-Path` and `-Module` parameters were automatically included.
-This behavior has no been removed from _v2.0.0_.
+This behavior has now been removed from _v2.0.0_.
 
 Rules sources in the current working directory are only included if `-Path .` or `-Path $PWD` is specified.
 
