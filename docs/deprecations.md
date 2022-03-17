@@ -21,6 +21,7 @@ These have been replaced with the following properties:
 - `Name` instead of `RuleName`.
 - `Synopsis` instead of `Description`.
 
+The changes apply from _v2_, however the old properties are still available for backwards compatibility.
 From _v3_ these properties will be removed.
 These changes do not affect normal usage of PSRule.
 Supporting scripts that directly use the old names may not work correctly until you update these names.

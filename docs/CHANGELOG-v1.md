@@ -8,6 +8,7 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 - YAML resources will require an `apiVersion` from PSRule v2. [#648](https://github.com/microsoft/PSRule/issues/648)
 - Setting the default module baseline requires a module configuration from PSRule v2. [#809](https://github.com/microsoft/PSRule/issues/809)
+- Resource names have naming restrictions introduced from PSRule v2. [#1012](https://github.com/microsoft/PSRule/issues/1012)
 
 !!! Info
     The next release of PSRule is currently in preview.
