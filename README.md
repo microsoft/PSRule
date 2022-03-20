@@ -291,7 +291,7 @@ For a list of projects and integrations see [Related projects](https://microsoft
 
 ## Changes and versioning
 
-Modules in this repository use [semantic versioning](http://semver.org/) to declare breaking changes.
+Modules in this repository use [semantic versioning](https://semver.org/) to declare breaking changes.
 For a list of module changes please see the [change log](CHANGELOG.md).
 
 > Pre-release module versions are created on major commits and can be installed from the PowerShell Gallery.
