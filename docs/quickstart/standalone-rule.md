@@ -1,4 +1,5 @@
 ---
+reviewed: 2022-03-21
 author: BernieWhite
 ---
 
@@ -215,7 +216,7 @@ Yaml.FileType                       Fail       Image files are not permitted.
 
 In our quickstart scenario, we have been tasked to:
 
-- Find any services that are set to start automatically with `StartType` begining with `Automatic`.
+- Find any services that are set to start automatically with `StartType` beginning with `Automatic`.
 - Fail for any service with a `Status` other than `Running`.
 
 We will be using the following PowerShell code to get a list of local services.
@@ -233,7 +234,7 @@ $services = Get-Service
 ### Define a selector
 
 A _selector_ can be used to filter a list of all services to only services that are set to start automatically.
-Selectors use YAML or JSON expressions are are similar to rules in many ways.
+Selectors use YAML or JSON expressions and are similar to rules in many ways.
 A selector determines _if_ the rule will be run or skipped.
 
 - If the selector is `true` then the rule will be run and either pass or fail.
@@ -419,7 +420,7 @@ For example:
 ```powershell title="PowerShell"
 $services = Get-Service
 
-# The directoy path to the rule file. Update this to the location of your saved file.
+# The directory path to the rule file. Update this to the location of your saved file.
 $rulePath = 'C:\temp\'
 
 # Test the rule
@@ -455,6 +456,6 @@ WARNING: Target object 'TermService' has not been processed because no matching 
 
 !!! Tip
     You can disable the warning by setting [Execution.NotProcessedWarning][5] option.
-    Alternatively you can ignore the warning by using the `-WarningAction SilentlyContinue` parameter.
+    Alternatively you can ignore all warnings by using the `-WarningAction SilentlyContinue` parameter.
 
   [5]: ../concepts/PSRule/en-US/about_PSRule_Options.md#executionnotprocessedwarning
