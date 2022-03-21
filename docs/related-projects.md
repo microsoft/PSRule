@@ -9,8 +9,8 @@ You can find out more by visiting each repository.
 
 Name                         | Description
 ----                         | -----------
-[ps-rule][1]                 | GitHub continious integration using GitHub Actions.
-[PSRule-pipelines][2]        | Azure DevOps continious integration using Azure Pipelines.
+[ps-rule][1]                 | GitHub continuous integration using GitHub Actions.
+[PSRule-pipelines][2]        | Azure DevOps continuous integration using Azure Pipelines.
 [PSRule-vscode][3]           | Support for running and authoring rules within Visual Studio Code.
 [PSRule.Monitor][4]          | Support for logging PSRule analysis results to Azure Monitor.
 [PSRule.Rules.Azure][5]      | Rules to validate Azure resources and infrastructure as code (IaC) using PSRule.

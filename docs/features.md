@@ -12,7 +12,7 @@ PSRule allows you to quickly plug-in Infrastructure as Code (IaC) controls into 
 - **Quality gates** &mdash; Implement quality gates between environments such as dev, test, and prod.
 - **Monitor continuously** &mdash; Perform ongoing checks for configuration optimization opportunities.
 
-Run on MacOS, Linux, and Windows or anywere PowerShell is supported.
+Run on MacOS, Linux, and Windows or anywhere PowerShell is supported.
 Native support for popular continuous integration (CI) systems includes:
 
 - **GitHub Actions** - Trigger tests for GitHub repositories using workflows.
@@ -28,7 +28,7 @@ Regardless of the format you choose, any combination of YAML, JSON, or PowerShel
 - **JSON** &mdash; Is ubiquitous used by many tools.
   While this format is typically harder to read then YAML it is easy to automate.
   You may prefer to use this format if you are generating rules with automation.
-- **PowerShell** &mdash; Is a flexiable scripting language.
+- **PowerShell** &mdash; Is a flexible scripting language.
   If you or your team already can write a basic PowerShell script, you can already define a rule.
   PowerShell allows you to tap into a large world-wide community of PowerShell users.
   Use existing cmdlets to help you build out rules quickly.
@@ -40,7 +40,7 @@ Use the extension to quickly author rules or run tests locally before you commit
 
 Typically unit tests in traditional testing frameworks are written for a specific case.
 This makes it hard invest in tests that are not easily reusable between projects.
-Several features of PSRule make it eaiser to reuse and share rules across teams or organizations.
+Several features of PSRule make it easier to reuse and share rules across teams or organizations.
 
 The following built-in features improve portability:
 

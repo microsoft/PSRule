@@ -12,7 +12,7 @@ Regardless of the format you choose, any combination of YAML, JSON, or PowerShel
 
 !!! Abstract
     This topic covers how to create a rule using YAML, JSON, and PowerShell by example.
-    This example, while fictious is indicative of common testing and validation scenarios for IaC.
+    This example, while fictitious is indicative of common testing and validation scenarios for IaC.
 
 ## Sample data
 
@@ -99,7 +99,7 @@ In this section the same rule will be authored using YAML, JSON, and PowerShell.
     1.  Use a short `Synopsis: ` to describe your rule in a line comment above your rule.
         For this to be interpreted by PSRule, only a single line is allowed.
     2.  Name your rule with a unique name.
-    3.  The `condition` propert determines the checks PSRule will use to test `settings.json`.
+    3.  The `condition` property determines the checks PSRule will use to test `settings.json`.
         Specifically, the object path `configures.supportsHttpsTrafficOnly` must exist and be set to `true`.
 
 === "PowerShell"
