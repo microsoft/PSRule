@@ -1793,7 +1793,7 @@ Linux, and Windows worker nodes.</p>
 <p><a href="https://github.com/marketplace/actions/psrule"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M1 3a2 2 0 0 1 2-2h6.5a2 2 0 0 1 2 2v6.5a2 2 0 0 1-2 2H7v4.063C7 16.355 7.644 17 8.438 17H12.5v-2.5a2 2 0 0 1 2-2H21a2 2 0 0 1 2 2V21a2 2 0 0 1-2 2h-6.5a2 2 0 0 1-2-2v-2.5H8.437A2.938 2.938 0 0 1 5.5 15.562V11.5H3a2 2 0 0 1-2-2V3zm2-.5a.5.5 0 0 0-.5.5v6.5a.5.5 0 0 0 .5.5h6.5a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5H3zM14.5 14a.5.5 0 0 0-.5.5V21a.5.5 0 0 0 .5.5H21a.5.5 0 0 0 .5-.5v-6.5a.5.5 0 0 0-.5-.5h-6.5z"/></svg></span> GitHub Action</a></p>
 <p>Install and use PSRule with GitHub Actions by referencing the <code>Microsoft/ps-rule</code> action.</p>
 <div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Analyze Azure template files</span><span class="w"></span>
-<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Microsoft/ps-rule@v1.12.0</span><span class="w"></span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">microsoft/ps-rule@v2.0.0</span><span class="w"></span>
 </code></pre></div>
 <p>This will automatically install compatible versions of all dependencies.</p>
 <h2 id="with-azure-pipelines">With Azure Pipelines<a class="headerlink" href="#with-azure-pipelines" title="Permanent link">#</a></h2>
@@ -1828,7 +1828,7 @@ Use the following command line examples from a PowerShell terminal to install or
 <div class="highlight"><pre><span></span><code><span class="nb">Install-Module</span> <span class="n">-Name</span> <span class="s1">&#39;PSRule&#39;</span> <span class="n">-Repository</span> <span class="n">PSGallery</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span>
 </code></pre></div>
 <p>To update PSRule for the current user use:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">Update-Module</span> <span class="n">-Name</span> <span class="s1">&#39;PSRule&#39;</span> <span class="n">-Repository</span> <span class="n">PSGallery</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span>
+<div class="highlight"><pre><span></span><code><span class="nb">Update-Module</span> <span class="n">-Name</span> <span class="s1">&#39;PSRule&#39;</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -1837,7 +1837,7 @@ Use the following command line examples from a PowerShell terminal to install or
 <div class="highlight"><pre><span></span><code><span class="nb">Install-Module</span> <span class="n">-Name</span> <span class="s1">&#39;PSRule&#39;</span> <span class="n">-Repository</span> <span class="n">PSGallery</span> <span class="n">-Scope</span> <span class="n">AllUsers</span>
 </code></pre></div>
 <p>To update PSRule for all users (requires admin/ root permissions) use:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">Update-Module</span> <span class="n">-Name</span> <span class="s1">&#39;PSRule&#39;</span> <span class="n">-Repository</span> <span class="n">PSGallery</span> <span class="n">-Scope</span> <span class="n">AllUsers</span>
+<div class="highlight"><pre><span></span><code><span class="nb">Update-Module</span> <span class="n">-Name</span> <span class="s1">&#39;PSRule&#39;</span> <span class="n">-Scope</span> <span class="n">AllUsers</span>
 </code></pre></div>
 </div>
 </div>
@@ -1905,7 +1905,7 @@ After downloading the modules, copy the module directories to devices with restr
   <small>
     
       Last update:
-      2022-03-07
+      2022-03-25
     
   </small>
 </div>
