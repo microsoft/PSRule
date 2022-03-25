@@ -11,7 +11,7 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 - Resource names have naming restrictions introduced from PSRule v2. [#1012](https://github.com/microsoft/PSRule/issues/1012)
 
 !!! Info
-    The next release of PSRule is currently in preview.
+    The next release of PSRule is available.
     For more information see [v2][2] release notes.
     Please check out our [upgrade notes][1] to get prepared for the next release.
 

@@ -10,10 +10,112 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 - Setting the default module baseline requires a module configuration from PSRule v2. [#809](https://github.com/microsoft/PSRule/issues/809)
 - Resource names have naming restrictions introduced from PSRule v2. [#1012](https://github.com/microsoft/PSRule/issues/1012)
 
-!!! Info
-    You can discuss v2 pre-releases on the [GitHub discussions page](https://github.com/microsoft/PSRule/discussions/966).
-
 ## Unreleased
+
+## v2.0.0
+
+What's changed since v1.11.1:
+
+- New features:
+  - Add support for suppression groups. [#793](https://github.com/microsoft/PSRule/issues/793)
+    - New `SuppressionGroup` resource has been included.
+    - See [about_PSRule_SuppressionGroups] for details.
+  - Added source expression property. [#933](https://github.com/microsoft/PSRule/issues/933)
+    - Included the following expressions:
+      - `source`
+      - `withinPath`
+      - `notWithinPath`
+  - Added support for rule severity level. [#880](https://github.com/microsoft/PSRule/issues/880)
+    - Rules can be configured to be `Error`, `Warning`, or `Information`.
+    - Failing rules with the `Error` severity level will cause the pipeline to fail.
+    - Rules with the `Warning` severity level will be reported as warnings.
+    - Rules with the `Information` severity level will be reported as informational messages.
+    - By default, the severity level for a rule is `Error`.
+  - Added expression support for type based assertions. [#908](https://github.com/microsoft/PSRule/issues/908)
+    - Included the following expressions:
+      - `IsArray`
+      - `IsBoolean`
+      - `IsDateTime`
+      - `IsInteger`
+      - `IsNumeric`
+  - Added support for formatting results as SARIF. [#878](https://github.com/microsoft/PSRule/issues/878)
+    - Set `Output.Format` to `Sarif` to output results in the SARIF format.
+    - See [about_PSRule_Options] for details.
+- General improvements:
+  - Add option to disable invariant culture warning. [#899](https://github.com/microsoft/PSRule/issues/899)
+    - Added `Execution.InvariantCultureWarning` option.
+    - See [about_PSRule_Options] for details.
+  - Added support for object path expressions. [#808](https://github.com/microsoft/PSRule/issues/808) [#693](https://github.com/microsoft/PSRule/issues/693)
+    - Inspired by JSONPath, object path expressions can be used to access nested objects.
+    - Array members can be filtered and enumerated using object path expressions.
+    - Object path expressions can be used in YAML, JSON, and PowerShell rules and selectors.
+    - See [about_PSRule_Assert] for details.
+  - Improve tracking of suppressed objects. [#794](https://github.com/microsoft/PSRule/issues/794)
+    - Added `Execution.SuppressedRuleWarning` option to output warning for suppressed rules.
+  - Added support for rule aliases. [#792](https://github.com/microsoft/PSRule/issues/792)
+    - Aliases allow rules to be references by an alternative name.
+    - When renaming rules, add a rule alias to avoid breaking references to the old rule name.
+    - To specify an alias use the `-Alias` parameter or `alias` metadata property in YAML or JSON.
+  - Added support for stable identifiers with rule refs. [#881](https://github.com/microsoft/PSRule/issues/881)
+    - A rule ref may be optionally be used to reference a rule.
+    - Rule refs should be:
+      stable, not changing between releases;
+      opaque, as opposed to being a human-readable string.
+      Stable and opaque refs ease web lookup and to help to avoid language difficulties.
+    - To specify a rule ref use the `-Ref` parameter or `ref` metadata property in YAML or JSON.
+  - Added new properties for module lookup to SARIF results. [#951](https://github.com/microsoft/PSRule/issues/951)
+  - Capture and output repository info in Assert-PSRule runs. [#978](https://github.com/microsoft/PSRule/issues/978)
+    - Added `Repository.Url` option set repository URL reported in output.
+    - Repository URL is detected automatically for GitHub Actions and Azure Pipelines.
+    - Added `RepositoryInfo` to `Output.Banner` option.
+    - Repository info is shown by default.
+  - Added `convert` and `caseSensitive` to string comparison expressions. [#1001](https://github.com/microsoft/PSRule/issues/1001)
+    - The following expressions support type conversion and case-sensitive comparison.
+      - `startsWith`, `contains`, and `endsWith`.
+      - `equals` and `notEquals`.
+  - Added `convert` to numeric comparison expressions. [#943](https://github.com/microsoft/PSRule/issues/943)
+    - Type conversion is now supported for `less`, `lessOrEquals`, `greater`, and `greaterOrEquals`.
+  - Added `Extent` property on rules reported by `Get-PSRule`. [#990](https://github.com/microsoft/PSRule/issues/990)
+    - Extent provides the line and position of the rule in the source code.
+  - **Breaking change:** Added validation of resource names. [#1012](https://github.com/microsoft/PSRule/issues/1012)
+    - Invalid rules names will now produce a specific error.
+    - See [upgrade notes][1] for more information.
+- Engineering:
+  - **Breaking change:** Removal of deprecated default baseline from module manifest. [#755](https://github.com/microsoft/PSRule/issues/755)
+    - Set the default module baseline using module configuration.
+    - See [upgrade notes][1] for details.
+  - **Breaking change:** Require `apiVersion` on YAML and JSON to be specified. [#648](https://github.com/microsoft/PSRule/issues/648)
+    - Resources should use `github.com/microsoft/PSRule/v1` as the `apiVersion`.
+    - Resources that do not specify an `apiVersion` will be ignored.
+    - See [upgrade notes][1] for details.
+  - **Breaking change:** Prefer module sources over loose files. [#610](https://github.com/microsoft/PSRule/issues/610)
+    - Module sources are discovered before loose files.
+    - Warning is shown for duplicate rule names, and exception is thrown for duplicate rule Ids.
+    - See [upgrade notes][1] for details.
+  - **Breaking change:** Require rule sources from current working directory to be explicitly included. [#760](https://github.com/microsoft/PSRule/issues/760)
+    - From v2 onwards, `$PWD` is not included by default unless `-Path .` or `-Path $PWD` is explicitly specified.
+    - See [upgrade notes][1] for details.
+  - Added more tests for JSON resources. [#929](https://github.com/microsoft/PSRule/issues/929)
+  - Bump Sarif.Sdk to 2.4.13. [#1007](https://github.com/microsoft/PSRule/pull/1007)
+  - Bump PowerShellStandard.Library to 5.1.1. [#999](https://github.com/microsoft/PSRule/pull/999)
+- Bug fixes:
+  - Fixed object path handling with dash. [#902](https://github.com/microsoft/PSRule/issues/902)
+  - Fixed empty suppression group rules property applies to no rules. [#931](https://github.com/microsoft/PSRule/issues/931)
+  - Fixed object reference for suppression group will rule not defined. [#932](https://github.com/microsoft/PSRule/issues/932)
+  - Fixed rule source loading twice from `$PWD` and `.ps-rule/`. [#939](https://github.com/microsoft/PSRule/issues/939)
+  - Fixed rule references in SARIF format for extensions need a toolComponent reference. [#949](https://github.com/microsoft/PSRule/issues/949)
+  - Fixed file objects processed with file input format have no source location. [#950](https://github.com/microsoft/PSRule/issues/950)
+  - Fixed GitHub code scanning alerts treats pass as problems. [#955](https://github.com/microsoft/PSRule/issues/955)
+    - By default, SARIF output will only include fail or error outcomes.
+    - Added `Output.SarifProblemsOnly` option to include pass outcomes.
+  - Fixed SARIF output includes rule property for default tool component. [#956](https://github.com/microsoft/PSRule/issues/956)
+  - Fixed Invoke-PSRule hanging if JSON rule file is empty. [#969](https://github.com/microsoft/PSRule/issues/969)
+  - Fixed SARIF should report base branch. [#964](https://github.com/microsoft/PSRule/issues/964)
+  - Fixed unclear error message on invalid rule names. [#1012](https://github.com/microsoft/PSRule/issues/1012)
+
+What's changed since pre-release v2.0.0-B2203045:
+
+- No additional changes.
 
 ## v2.0.0-B2203045 (pre-release)
 
@@ -45,7 +147,7 @@ What's changed since pre-release v2.0.0-B2202072:
 
 - General improvements:
   - Added `convert` and `caseSensitive` to string comparison expressions. [#1001](https://github.com/microsoft/PSRule/issues/1001)
-    - The following expressions support type convertion and case-sensitive comparison.
+    - The following expressions support type conversion and case-sensitive comparison.
       - `startsWith`, `contains`, and `endsWith`.
       - `equals` and `notEquals`.
 

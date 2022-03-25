@@ -4,9 +4,6 @@ This document contains notes to help upgrade from previous versions of PSRule.
 
 ## Upgrading to v2.0.0
 
-PSRule v2.0.0 is a planned future release.
-It's not yet available, but you can take these steps to proactively prepare for the release.
-
 ### Resources naming restrictions
 
 When naming resources such as rules or selectors, the following restrictions apply:
