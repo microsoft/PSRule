@@ -61,7 +61,7 @@ nav:
     - Related projects: related-projects.md
     - Releases:
       - Change log:
-        - v2 (preview): 'CHANGELOG-v2.md'
+        - v2: 'CHANGELOG-v2.md'
         - v1: 'CHANGELOG-v1.md'
         - v0: 'CHANGELOG-v0.md'
       - Upgrade notes: upgrade-notes.md

@@ -2,12 +2,12 @@
 # CI pipeline for PSRule
 
 variables:
-  version: '2.0.0'
+  version: '2.1.0'
   buildConfiguration: 'Release'
   disable.coverage.autogenerate: 'true'
   imageName: 'ubuntu-20.04'
 
- # Use build number format, i.e. 2.0.0-B2201001
+ # Use build number format, i.e. 2.1.0-B2203001
 name: $(version)-B$(date:yyMM)$(rev:rrr)
 
 trigger:
@@ -179,7 +179,7 @@ stages:
       name: ps_7_2_ubuntu_20_04
       displayName: 'PowerShell 7.2 - ubuntu-20.04'
       imageName: mcr.microsoft.com/powershell
-      imageTag: 7.2.1-ubuntu-20.04
+      imageTag: 7.2.2-ubuntu-20.04
 
 # Release pipeline
 - stage: Release
