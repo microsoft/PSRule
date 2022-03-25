@@ -70,6 +70,7 @@
         "quickstart",
         "runspace",
         "runspaces",
+        "SARIF",
         "unencrypted"
     ],
     "[csharp]": {
