@@ -23,11 +23,11 @@ Within the root directory of your IaC repository:
         runs-on: ubuntu-latest
         steps:
         - name: Checkout
-          uses: actions/checkout@v2
+          uses: actions/checkout@v3
 
         # Analyze Azure resources using PSRule for Azure
         - name: Analyze Azure template files
-          uses: Microsoft/ps-rule@v1.12.0
+          uses: microsoft/ps-rule@v2.0.0
           with:
             modules: 'PSRule.Rules.Azure'
     ```
