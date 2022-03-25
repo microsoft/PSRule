@@ -42,4 +42,4 @@ jobs:
           python3 -m pip install -r requirements-docs.txt
 
       - name: Deploy site
-        run: mike deploy --push --update-aliases v2 latest --title 'v2 (preview)'
+        run: mike deploy --push --update-aliases v2 latest stable --title 'v2'
