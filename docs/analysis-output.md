@@ -29,7 +29,7 @@ The output format can be configuring by setting the `Output.Format` option to on
     ```yaml hl_lines="5-6"
     # Analyze and save results
     - name: Analyze repository
-      uses: Microsoft/ps-rule@v1.12.0
+      uses: microsoft/ps-rule@v2.0.0
       with:
         outputFormat: Sarif
         outputPath: reports/ps-rule-results.sarif
@@ -232,10 +232,10 @@ To configure GitHub Actions, perform the following steps:
         steps:
 
         - name: Checkout
-          uses: actions/checkout@v2.4.0
+          uses: actions/checkout@v3
 
         - name: Run PSRule analysis
-          uses: Microsoft/ps-rule@1.12.0
+          uses: microsoft/ps-rule@v2.0.0
           with:
             outputFormat: Sarif
             outputPath: reports/ps-rule-results.sarif
