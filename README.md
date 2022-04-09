@@ -3,7 +3,7 @@
 A cross-platform module to validate infrastructure as code (IaC) and objects using PowerShell rules.
 PSRule works great and integrates with popular continuous integration (CI) systems.
 
-[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)][1]
+[![Open in vscode.dev](https://img.shields.io/badge/Open%20in-vscode.dev-blue)][1]
 
 Features of PSRule include:
 
@@ -11,7 +11,7 @@ Features of PSRule include:
 - [Extensible][3] - Define tests using YAML, JSON, or PowerShell format.
 - [Reusable][4] - Reuse and share rules across teams or organizations.
 
-  [1]: https://open.vscode.dev/microsoft/PSRule
+  [1]: https://vscode.dev/github/microsoft/PSRule
   [2]: https://microsoft.github.io/PSRule/latest/features/#devops
   [3]: https://microsoft.github.io/PSRule/latest/features/#extensible
   [4]: https://microsoft.github.io/PSRule/latest/features/#reusable
