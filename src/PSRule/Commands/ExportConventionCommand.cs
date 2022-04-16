@@ -74,7 +74,7 @@ namespace PSRule.Commands
                 position: MyInvocation.OffsetInLine
             );
 
-            context.VerboseFoundResource(name: Name, moduleName: source.ModuleName, scriptName: MyInvocation.ScriptName);
+            context.VerboseFoundResource(name: Name, moduleName: source.Module, scriptName: MyInvocation.ScriptName);
 
             var helpInfo = new ResourceHelpInfo(
                 synopsis: commentMetadata.Synopsis

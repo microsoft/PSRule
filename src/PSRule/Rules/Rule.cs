@@ -55,6 +55,7 @@ namespace PSRule.Rules
         /// </summary>
         [JsonIgnore]
         [YamlIgnore]
+        [Obsolete("Use Source property instead.")]
         public string SourcePath => Source.Path;
 
         /// <summary>
@@ -62,7 +63,8 @@ namespace PSRule.Rules
         /// </summary>
         [JsonIgnore]
         [YamlIgnore]
-        public string ModuleName => Source.ModuleName;
+        [Obsolete("Use Source property instead.")]
+        public string ModuleName => Source.Module;
 
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
@@ -124,9 +126,11 @@ namespace PSRule.Rules
 
         ResourceTags IResource.Tags => Tag;
 
+        [Obsolete("Use Source property instead.")]
         string ILanguageBlock.SourcePath => Source.Path;
 
-        string ILanguageBlock.Module => Source.ModuleName;
+        [Obsolete("Use Source property instead.")]
+        string ILanguageBlock.Module => Source.Module;
 
         [JsonIgnore]
         [YamlIgnore]

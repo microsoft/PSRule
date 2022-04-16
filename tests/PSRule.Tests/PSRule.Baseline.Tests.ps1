@@ -698,19 +698,6 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result[0].Field.kind | Should -Be 'TestObjectType';
         }
 
-        It 'With obsolete' {
-            # Not obsolete
-            $Null = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline1' -WarningVariable outWarn -WarningAction SilentlyContinue);
-            $warnings = @($outWarn);
-            $warnings.Length | Should -Be 0;
-
-            # Obsolete
-            $Null = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline5' -WarningVariable outWarn -WarningAction SilentlyContinue);
-            $warnings = @($outWarn);
-            $warnings.Length | Should -Be 1;
-            $warnings[0] | Should -BeExactly "The Baseline 'TestBaseline5' is obsolete. Consider switching to an alternative Baseline.";
-        }
-
         It 'With -Module' {
             $Null = Import-Module (Join-Path $here -ChildPath 'TestModule4') -Force;
 
@@ -810,6 +797,46 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result[0].RuleName | Should -Be 'M7.Rule2';
             $warnings = @($outWarn);
             $warnings.Length | Should -Be 0;
+        }
+
+        It 'With obsolete' {
+            # Not obsolete
+            $Null = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline1' -WarningVariable outWarn -WarningAction SilentlyContinue);
+            $warnings = @($outWarn);
+            $warnings.Length | Should -Be 0;
+
+            # Obsolete
+            $Null = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline5' -WarningVariable outWarn -WarningAction SilentlyContinue);
+            $warnings = @($outWarn);
+            $warnings.Length | Should -Be 1;
+            $warnings[0] | Should -BeExactly "The Baseline 'TestBaseline5' is obsolete. Consider switching to an alternative Baseline.";
+        }
+
+        It 'With scoped configuration' {
+            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule9a') -Force;
+            $Null = Import-Module (Join-Path $here -ChildPath 'TestModule9b') -Force;
+
+            # Each module
+            $result = @($testObject | Invoke-PSRule -Module TestModule9a, TestModule9b);
+            $result.Length | Should -Be 4;
+            $result.Outcome | Should -BeIn 'Pass';
+
+            # Each module reverse
+            $result = @($testObject | Invoke-PSRule -Module TestModule9b, TestModule9a);
+            $result.Length | Should -Be 4;
+            $result.Outcome | Should -BeIn 'Pass';
+
+            # From options
+            $option = New-PSRuleOption;
+            $option.Include.Module = @('TestModule9a', 'TestModule9b')
+            $result = @($testObject | Invoke-PSRule -Option $option);
+            $result.Length | Should -Be 4;
+            $result.Outcome | Should -BeIn 'Pass';
+
+            # With dependency chain
+            $result = @($testObject | Invoke-PSRule -Module TestModule9b);
+            $result.Length | Should -Be 2;
+            $result.Outcome | Should -BeIn 'Pass';
         }
     }
 

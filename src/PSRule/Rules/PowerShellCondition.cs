@@ -1,9 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.ObjectModel;
 using System.Management.Automation;
 using PSRule.Definitions;
+using PSRule.Pipeline;
 
 namespace PSRule.Rules
 {
@@ -15,13 +17,25 @@ namespace PSRule.Rules
 
         private bool _Disposed;
 
-        internal PowerShellCondition(PowerShell condition, ActionPreference errorAction)
+        internal PowerShellCondition(ResourceId id, SourceFile source, PowerShell condition, ActionPreference errorAction)
         {
             _Condition = condition;
+            Id = id;
+            Source = source;
             ErrorAction = errorAction;
         }
 
+        public ResourceId Id { get; }
+
+        public SourceFile Source { get; }
+
         public ActionPreference ErrorAction { get; }
+
+        [Obsolete("Use Source property instead.")]
+        string ILanguageBlock.SourcePath => Source.Path;
+
+        [Obsolete("Use Source property instead.")]
+        string ILanguageBlock.Module => Source.Module;
 
         private void Dispose(bool disposing)
         {

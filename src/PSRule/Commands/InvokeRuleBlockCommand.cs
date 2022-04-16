@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -25,6 +25,9 @@ namespace PSRule.Commands
 
         [Parameter()]
         public ScriptBlock Body;
+
+        [Parameter()]
+        public SourceFile Source;
 
         protected override void ProcessRecord()
         {
@@ -54,6 +57,7 @@ namespace PSRule.Commands
                     try
                     {
                         context.PushScope(RunspaceScope.Precondition);
+                        context.EnterSourceScope(Source);
                         var ifResult = RuleConditionHelper.Create(If.Invoke());
                         if (!ifResult.AllOf())
                         {
@@ -71,6 +75,7 @@ namespace PSRule.Commands
                 {
                     // Evaluate script block
                     context.PushScope(RunspaceScope.Rule);
+                    context.EnterSourceScope(Source);
                     var invokeResult = RuleConditionHelper.Create(Body.Invoke());
                     WriteObject(invokeResult);
                 }

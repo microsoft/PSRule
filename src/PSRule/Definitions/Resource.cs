@@ -363,7 +363,7 @@ namespace PSRule.Definitions
             Spec = spec;
             Metadata = metadata;
             Name = metadata.Name;
-            Id = new ResourceId(source.ModuleName, Name, ResourceIdKind.Id);
+            Id = new ResourceId(source.Module, Name, ResourceIdKind.Id);
         }
 
         [YamlIgnore()]
@@ -379,7 +379,7 @@ namespace PSRule.Definitions
         /// The file path where the resource is defined.
         /// </summary>
         [YamlIgnore()]
-        public readonly SourceFile Source;
+        public SourceFile Source { get; }
 
         [YamlIgnore()]
         public readonly ResourceHelpInfo Info;
@@ -430,7 +430,7 @@ namespace PSRule.Definitions
 
         string ILanguageBlock.SourcePath => Source.Path;
 
-        string ILanguageBlock.Module => Source.ModuleName;
+        string ILanguageBlock.Module => Source.Module;
 
         ResourceKind IResource.Kind => Kind;
 

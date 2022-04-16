@@ -25,6 +25,7 @@ namespace PSRule.Commands
         private const string Cmdlet_IfParameter = "If";
         private const string Cmdlet_WithParameter = "With";
         private const string Cmdlet_BodyParameter = "Body";
+        private const string Cmdlet_SourceParameter = "Source";
 
         /// <summary>
         /// The name of the rule.
@@ -110,30 +111,29 @@ namespace PSRule.Commands
                 position: MyInvocation.OffsetInLine
             );
             var flags = ResourceFlags.None;
+            var id = new ResourceId(source.Module, Name, ResourceIdKind.Id);
 
-            context.VerboseFoundResource(name: Name, moduleName: source.ModuleName, scriptName: MyInvocation.ScriptName);
+            context.VerboseFoundResource(name: Name, moduleName: source.Module, scriptName: MyInvocation.ScriptName);
 
             CheckDependsOn();
-            var ps = GetCondition(context, errorPreference);
+            var ps = GetCondition(context, id, source, errorPreference);
             var info = PSRule.Host.HostHelper.GetHelpInfo(context, Name, metadata.Synopsis) ?? new RuleHelpInfo(
                 name: Name,
                 displayName: Name,
-                moduleName: source.ModuleName
+                moduleName: source.Module
             );
-
-            var id = new ResourceId(source.ModuleName, Name, ResourceIdKind.Id);
 
 #pragma warning disable CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
             var block = new RuleBlock(
                 source: source,
                 id: id,
-                @ref: ResourceHelper.GetIdNullable(source.ModuleName, Ref, ResourceIdKind.Ref),
+                @ref: ResourceHelper.GetIdNullable(source.Module, Ref, ResourceIdKind.Ref),
                 level: level,
                 info: info,
                 condition: ps,
                 tag: tag,
-                alias: ResourceHelper.GetRuleId(source.ModuleName, Alias, ResourceIdKind.Alias),
-                dependsOn: ResourceHelper.GetRuleId(source.ModuleName, DependsOn, ResourceIdKind.Unknown),
+                alias: ResourceHelper.GetRuleId(source.Module, Alias, ResourceIdKind.Alias),
+                dependsOn: ResourceHelper.GetRuleId(source.Module, DependsOn, ResourceIdKind.Unknown),
                 configuration: Configure,
                 extent: extent,
                 flags: flags
@@ -142,7 +142,7 @@ namespace PSRule.Commands
             WriteObject(block);
         }
 
-        private PowerShellCondition GetCondition(RunspaceContext context, ActionPreference errorAction)
+        private PowerShellCondition GetCondition(RunspaceContext context, ResourceId id, SourceFile source, ActionPreference errorAction)
         {
             var result = context.GetPowerShell();
             result.AddCommand(new CmdletInfo(CmdletName, typeof(InvokeRuleBlockCommand)));
@@ -150,7 +150,8 @@ namespace PSRule.Commands
             result.AddParameter(Cmdlet_WithParameter, With);
             result.AddParameter(Cmdlet_IfParameter, If);
             result.AddParameter(Cmdlet_BodyParameter, Body);
-            return new PowerShellCondition(result, errorAction);
+            result.AddParameter(Cmdlet_SourceParameter, source);
+            return new PowerShellCondition(id, source, result, errorAction);
         }
 
         private void CheckDependsOn()

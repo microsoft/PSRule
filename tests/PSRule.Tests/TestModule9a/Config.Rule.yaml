@@ -1,0 +1,21 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: ModuleConfig
+metadata:
+  name: TestModule9a
+spec:
+  rule:
+    baseline: Default
+
+---
+# Synopsis: The default baseline for TestModule9a.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  name: Default
+spec:
+  configuration:
+    ConfigA: 'ValueA'

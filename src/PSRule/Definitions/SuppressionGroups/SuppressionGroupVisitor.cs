@@ -3,6 +3,7 @@
 
 using System;
 using PSRule.Definitions.Expressions;
+using PSRule.Pipeline;
 using PSRule.Resources;
 
 namespace PSRule.Definitions.SuppressionGroups
@@ -11,18 +12,18 @@ namespace PSRule.Definitions.SuppressionGroups
     {
         private readonly LanguageExpressionOuterFn _Fn;
 
-        public string Module { get; }
+        public ResourceId Id { get; }
 
-        public string Id { get; }
+        public SourceFile Source { get; }
 
         public Guid InstanceId { get; }
 
         public string[] Rule { get; }
 
-        public SuppressionGroupVisitor(string module, string id, ISuppressionGroupSpec spec)
+        public SuppressionGroupVisitor(ResourceId id, SourceFile source, ISuppressionGroupSpec spec)
         {
-            Module = module;
             Id = id;
+            Source = source;
             InstanceId = Guid.NewGuid();
             Rule = spec.Rule;
             var builder = new LanguageExpressionBuilder();
@@ -33,7 +34,7 @@ namespace PSRule.Definitions.SuppressionGroups
 
         public bool Match(object o)
         {
-            var context = new ExpressionContext(Module);
+            var context = new ExpressionContext(Source);
             context.Debug(PSRuleResources.SelectorMatchTrace, Id);
             return _Fn(context, o).GetValueOrDefault(false);
         }
