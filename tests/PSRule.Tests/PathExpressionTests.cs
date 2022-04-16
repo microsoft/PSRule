@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PSRule.Runtime.ObjectPath;
 using Xunit;
 
@@ -213,8 +214,14 @@ namespace PSRule
 
         private object GetJsonContent()
         {
+            var settings = new JsonLoadSettings
+            {
+                CommentHandling = CommentHandling.Ignore
+            };
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ObjectFromFile.json");
-            return JsonConvert.DeserializeObject<object>(File.ReadAllText(path));
+            using var stream = new StreamReader(path);
+            using var reader = new JsonTextReader(stream);
+            return JToken.Load(reader, settings);
         }
 
         #endregion Helper methods

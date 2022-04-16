@@ -473,7 +473,7 @@ namespace PSRule.Pipeline.Formatters
 
         private void FooterRunInfo()
         {
-            if (!Option.Output.Footer.GetValueOrDefault(FooterFormat.Default).HasFlag(FooterFormat.RunInfo))
+            if (PipelineContext.CurrentThread == null || !Option.Output.Footer.GetValueOrDefault(FooterFormat.Default).HasFlag(FooterFormat.RunInfo))
                 return;
 
             var elapsed = PipelineContext.CurrentThread.RunTime.Elapsed;
