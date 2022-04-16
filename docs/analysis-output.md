@@ -109,6 +109,8 @@ By default, no indentation is used.
 
 ### Configuring JSON indentation
 
+:octicons-milestone-24: v1.8.0
+
 The number of spaces used to indent properties and elements is configurable between `0` to `4` spaces.
 By default, no indentation is used.
 
