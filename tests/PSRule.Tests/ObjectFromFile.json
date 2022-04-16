@@ -1,7 +1,13 @@
+// Some comments
 [
+    // Some comments
     {
+        // Some comments
         "TargetName": "TestObject1",
-        "Spec": {
+        "Spec": { // Some comments
+            "": {
+                "Key": "value"
+            },
             "Properties": {
                 "Value1": 1,
                 "Kind": "Test",
@@ -29,7 +35,7 @@
                     ]
                 ]
             }
-        },
+        }, // Some comments
         "_PSRule": {
             "source": [
                 {

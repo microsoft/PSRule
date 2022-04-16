@@ -63,6 +63,7 @@ namespace PSRule
 
         private void ReadObject(PSObject value, JsonReader reader)
         {
+            SkipComments(reader);
             if (reader.TokenType != JsonToken.StartObject)
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
 
@@ -76,12 +77,15 @@ namespace PSRule
                 {
                     case JsonToken.PropertyName:
                         name = reader.Value.ToString();
+                        if (string.IsNullOrEmpty(name))
+                            reader.Skip();
+
                         break;
 
                     case JsonToken.StartObject:
                         var child = new PSObject();
                         ReadObject(value: child, reader: reader);
-                        value.Properties.Add(new PSNoteProperty(name: name, value: child));
+                        value.Properties.Add(new PSNoteProperty(name, value: child));
                         break;
 
                     case JsonToken.StartArray:
@@ -91,6 +95,9 @@ namespace PSRule
 
                         while (reader.TokenType != JsonToken.EndArray)
                         {
+                            if (SkipComments(reader))
+                                continue;
+
                             ReadObject(value: item, reader: reader);
                             items.Add(item);
                             reader.Read();
@@ -108,6 +115,18 @@ namespace PSRule
                 }
                 reader.Read();
             }
+        }
+
+        /// <summary>
+        /// Skip JSON comments.
+        /// </summary>
+        private static bool SkipComments(JsonReader reader)
+        {
+            var hasComments = false;
+            while (reader.TokenType == JsonToken.Comment && reader.Read())
+                hasComments = true;
+
+            return hasComments;
         }
 
         /// <summary>
@@ -161,6 +180,7 @@ namespace PSRule
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            SkipComments(reader);
             if (reader.TokenType != JsonToken.StartObject && reader.TokenType != JsonToken.StartArray)
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
 
@@ -172,6 +192,9 @@ namespace PSRule
 
             while (reader.TokenType != JsonToken.None && (!isArray || (isArray && reader.TokenType != JsonToken.EndArray)))
             {
+                if (SkipComments(reader))
+                    continue;
+
                 var value = ReadObject(reader, bindTargetInfo: true, _SourceInfo);
                 result.Add(value);
 
@@ -181,8 +204,21 @@ namespace PSRule
             return result.ToArray();
         }
 
+        /// <summary>
+        /// Skip JSON comments.
+        /// </summary>
+        private static bool SkipComments(JsonReader reader)
+        {
+            var hasComments = false;
+            while (reader.TokenType == JsonToken.Comment && reader.Read())
+                hasComments = true;
+
+            return hasComments;
+        }
+
         private static PSObject ReadObject(JsonReader reader, bool bindTargetInfo, TargetSourceInfo sourceInfo)
         {
+            SkipComments(reader);
             if (reader.TokenType != JsonToken.StartObject || !reader.Read())
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
 
@@ -204,7 +240,11 @@ namespace PSRule
                 {
                     case JsonToken.PropertyName:
                         name = reader.Value.ToString();
-                        if (name == PSRuleTargetInfo.PropertyName)
+                        if (string.IsNullOrEmpty(name))
+                        {
+                            reader.Skip();
+                        }
+                        else if (name == PSRuleTargetInfo.PropertyName)
                         {
                             var targetInfo = ReadInfo(reader);
                             if (targetInfo != null)
@@ -251,6 +291,7 @@ namespace PSRule
 
         private static PSObject[] ReadArray(JsonReader reader)
         {
+            SkipComments(reader);
             if (reader.TokenType != JsonToken.StartArray || !reader.Read())
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
 
@@ -604,8 +645,10 @@ namespace PSRule
 
                     while (reader.TokenType != JsonToken.EndArray)
                     {
-                        var item = reader.ReadAsString();
+                        if (SkipComments(reader))
+                            continue;
 
+                        var item = reader.ReadAsString();
                         if (!string.IsNullOrEmpty(item))
                         {
                             items.Add(item);
@@ -617,6 +660,18 @@ namespace PSRule
 
                 reader.Read();
             }
+        }
+
+        /// <summary>
+        /// Skip JSON comments.
+        /// </summary>
+        private static bool SkipComments(JsonReader reader)
+        {
+            var hasComments = false;
+            while (reader.TokenType == JsonToken.Comment && reader.Read())
+                hasComments = true;
+
+            return hasComments;
         }
     }
 
@@ -654,6 +709,18 @@ namespace PSRule
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Skip JSON comments.
+        /// </summary>
+        private static bool SkipComments(JsonReader reader)
+        {
+            var hasComments = false;
+            while (reader.TokenType == JsonToken.Comment && reader.Read())
+                hasComments = true;
+
+            return hasComments;
+        }
+
         private LanguageExpression MapOperator(string type, JsonReader reader)
         {
             if (TryExpression(type, out LanguageOperator result))
@@ -668,6 +735,9 @@ namespace PSRule
                 {
                     while (reader.TokenType != JsonToken.EndArray)
                     {
+                        if (SkipComments(reader))
+                            continue;
+
                         result.Add(MapExpression(reader));
                         reader.Read();
                     }
@@ -735,29 +805,23 @@ namespace PSRule
                 if (reader.Read())
                 {
                     if (reader.TokenType == JsonToken.StartObject)
-                    {
                         break;
-                    }
 
                     else if (reader.TokenType == JsonToken.StartArray)
                     {
                         if (!TryCondition(key))
-                        {
                             break;
-                        }
 
                         var objects = new List<string>();
-
                         while (reader.TokenType != JsonToken.EndArray)
                         {
+                            if (SkipComments(reader))
+                                continue;
+
                             var value = reader.ReadAsString();
-
                             if (!string.IsNullOrEmpty(value))
-                            {
                                 objects.Add(value);
-                            }
                         }
-
                         properties.Add(key, objects.ToArray());
                     }
 

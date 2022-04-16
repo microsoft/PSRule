@@ -12,6 +12,13 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since v2.0.0:
+
+- Bug fixes:
+  - Fixed read JSON failed with comments. [#1051](https://github.com/microsoft/PSRule/issues/1051)
+  - Fixed null reference on elapsed time when required module check fails. [#1054](https://github.com/microsoft/PSRule/issues/1054)
+  - Fixed failed to read JSON objects with a empty property name. [#1052](https://github.com/microsoft/PSRule/issues/1052)
+
 ## v2.0.0
 
 What's changed since v1.11.1:
