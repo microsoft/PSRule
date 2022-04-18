@@ -71,6 +71,7 @@
         "runspace",
         "runspaces",
         "SARIF",
+        "SBOM",
         "unencrypted"
     ],
     "[csharp]": {

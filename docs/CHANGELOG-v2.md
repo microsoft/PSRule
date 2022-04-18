@@ -12,6 +12,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since v2.0.1:
+
+- Engineering:
+  - Added code signing of module. [#1049](https://github.com/microsoft/PSRule/issues/1049)
+  - Added SBOM manifests to module. [#1050](https://github.com/microsoft/PSRule/issues/1050)
+
 ## v2.0.1
 
 What's changed since v2.0.0:
