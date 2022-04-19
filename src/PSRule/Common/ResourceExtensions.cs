@@ -26,7 +26,7 @@ namespace PSRule
 
         internal static bool IsLocalScope(this IResource resource)
         {
-            return string.IsNullOrEmpty(resource.Module);
+            return string.IsNullOrEmpty(resource.Source.Module);
         }
 
         internal static IEnumerable<ResourceId> GetIds(this IResource resource)

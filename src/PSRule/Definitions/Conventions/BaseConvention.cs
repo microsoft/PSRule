@@ -54,7 +54,7 @@ namespace PSRule.Definitions.Conventions
         {
             Source = source;
             Name = name;
-            Id = new ResourceId(Source.ModuleName, name, ResourceIdKind.Id);
+            Id = new ResourceId(Source.Module, name, ResourceIdKind.Id);
         }
 
         public SourceFile Source { get; }
@@ -68,7 +68,7 @@ namespace PSRule.Definitions.Conventions
 
         public string SourcePath => Source.Path;
 
-        public string Module => Source.ModuleName;
+        public string Module => Source.Module;
 
         public virtual void Initialize(RunspaceContext context, IEnumerable input)
         {

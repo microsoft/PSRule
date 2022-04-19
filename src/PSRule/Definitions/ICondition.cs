@@ -15,7 +15,7 @@ namespace PSRule.Definitions
         int Pass { get; }
     }
 
-    public interface ICondition : IDisposable
+    public interface ICondition : ILanguageBlock, IDisposable
     {
         IConditionResult If();
 

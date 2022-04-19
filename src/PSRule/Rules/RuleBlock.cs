@@ -89,7 +89,7 @@ namespace PSRule.Rules
 
         public readonly RuleHelpInfo Info;
 
-        public readonly SourceFile Source;
+        public SourceFile Source { get; }
 
         public ISourceExtent Extent { get; }
 
@@ -97,9 +97,11 @@ namespace PSRule.Rules
         [YamlIgnore]
         public ResourceFlags Flags { get; }
 
+        [Obsolete("Use Source property instead.")]
         string ILanguageBlock.SourcePath => Source.Path;
 
-        string ILanguageBlock.Module => Source.ModuleName;
+        [Obsolete("Use Source property instead.")]
+        string ILanguageBlock.Module => Source.Module;
 
         ResourceId[] IDependencyTarget.DependsOn => DependsOn;
 
@@ -120,8 +122,6 @@ namespace PSRule.Rules
         string IRuleV1.Synopsis => Info.Synopsis;
 
         string IRuleV1.Description => Info.Synopsis;
-
-        SourceFile IRuleV1.Source => Source;
 
         #region IDisposable
 

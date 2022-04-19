@@ -167,25 +167,25 @@ namespace PSRule.Pipeline
             if (TryBaseline(resource, out var baseline) && TryBaselineRef(resource.Id, out var baselineRef))
             {
                 _Unresolved.Remove(baselineRef);
-                Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, baseline.BaselineId, resource.Module, baseline.Spec, baseline.Obsolete));
+                Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, baseline.BaselineId, resource.Source.Module, baseline.Spec, baseline.Obsolete));
             }
             else if (resource.Kind == ResourceKind.Selector && resource is SelectorV1 selector)
-                Selector[selector.Id.Value] = new SelectorVisitor(resource.Module, selector.Id.Value, selector.Spec.If);
+                Selector[selector.Id.Value] = new SelectorVisitor(selector.Id, selector.Source, selector.Spec.If);
             else if (TryModuleConfig(resource, out var moduleConfig))
             {
                 if (!string.IsNullOrEmpty(moduleConfig?.Spec?.Rule?.Baseline))
                 {
-                    var baselineId = ResourceHelper.GetIdString(moduleConfig.Source.ModuleName, moduleConfig.Spec.Rule.Baseline);
+                    var baselineId = ResourceHelper.GetIdString(moduleConfig.Source.Module, moduleConfig.Spec.Rule.Baseline);
                     if (!Baseline.ContainsBaseline(baselineId))
                         _Unresolved.Add(new BaselineRef(baselineId, OptionContext.ScopeType.Module));
                 }
-                Baseline.Add(new OptionContext.ConfigScope(OptionContext.ScopeType.Module, resource.Module, moduleConfig?.Spec));
+                Baseline.Add(new OptionContext.ConfigScope(OptionContext.ScopeType.Module, resource.Source.Module, moduleConfig?.Spec));
             }
             else if (resource.Kind == ResourceKind.SuppressionGroup && resource is SuppressionGroupV1 suppressionGroup)
             {
                 var suppressionGroupVisitor = new SuppressionGroupVisitor(
-                    module: resource.Module,
-                    id: suppressionGroup.Id.Value,
+                    id: suppressionGroup.Id,
+                    source: suppressionGroup.Source,
                     spec: suppressionGroup.Spec
                 );
                 SuppressionGroup.Add(suppressionGroupVisitor);
@@ -224,8 +224,8 @@ namespace PSRule.Pipeline
         {
             moduleConfig = null;
             if (resource.Kind == ResourceKind.ModuleConfig &&
-                !string.IsNullOrEmpty(resource.Module) &&
-                StringComparer.OrdinalIgnoreCase.Equals(resource.Module, resource.Name) &&
+                !string.IsNullOrEmpty(resource.Source.Module) &&
+                StringComparer.OrdinalIgnoreCase.Equals(resource.Source.Module, resource.Name) &&
                 resource is ModuleConfigV1 result)
             {
                 moduleConfig = result;

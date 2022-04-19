@@ -14,14 +14,35 @@ Previously rules returned by `Get-PSRule` returned a rule object which included 
 - `RuleId`
 - `RuleName`
 - `Description`
+- `ModuleName`
+- `SourcePath`
 
 These have been replaced with the following properties:
 
 - `Id` instead of `RuleId`.
 - `Name` instead of `RuleName`.
 - `Synopsis` instead of `Description`.
+- `Source.Module` instead of `ModuleName`.
+- `Source.Path` instead of `SourcePath`.
 
-The changes apply from _v2_, however the old properties are still available for backwards compatibility.
+The changes apply from _v2.1.0_, however the old properties are still available for backwards compatibility.
+From _v3_ these properties will be removed.
+These changes do not affect normal usage of PSRule.
+Supporting scripts that directly use the old names may not work correctly until you update these names.
+
+### Language block interface
+
+Several properties of Baselines and Selectors have been renamed to improve consistency.
+
+- `ModuleName`
+- `SourcePath`
+
+These have been replaced with the following properties:
+
+- `Source.Module` instead of `ModuleName`.
+- `Source.Path` instead of `SourcePath`.
+
+The changes apply from _v2.1.0_, however the old properties are still available for backwards compatibility.
 From _v3_ these properties will be removed.
 These changes do not affect normal usage of PSRule.
 Supporting scripts that directly use the old names may not work correctly until you update these names.

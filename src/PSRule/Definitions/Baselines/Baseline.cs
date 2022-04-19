@@ -38,8 +38,6 @@ namespace PSRule.Definitions.Baselines
         [JsonIgnore]
         [YamlIgnore]
         public string Synopsis => Info.Synopsis;
-
-        //string ILanguageBlock.Id => Name;
     }
 
     public sealed class BaselineSpec : Spec, IBaselineSpec

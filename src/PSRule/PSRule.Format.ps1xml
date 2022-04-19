@@ -203,7 +203,7 @@
               <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>ModuleName</PropertyName>
+                <PropertyName>Source.Module</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Synopsis</PropertyName>
@@ -243,7 +243,7 @@
                 <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>ModuleName</PropertyName>
+                <PropertyName>Source.Module</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Synopsis</PropertyName>
@@ -578,7 +578,7 @@
               <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Module</PropertyName>
+                <PropertyName>Source.Module</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Synopsis</PropertyName>

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using PSRule.Pipeline;
 using PSRule.Runtime;
 using PSRule.Runtime.ObjectPath;
 
@@ -27,11 +28,14 @@ namespace PSRule.Definitions.Expressions
 
         private List<string> _Reason;
 
-        internal ExpressionContext(string languageScope)
+        internal ExpressionContext(SourceFile source)
         {
-            LanguageScope = languageScope;
+            Source = source;
+            LanguageScope = source.Module;
             _NameTokenCache = new Dictionary<string, PathExpression>();
         }
+
+        public SourceFile Source { get; }
 
         public string LanguageScope { get; }
 
@@ -58,6 +62,7 @@ namespace PSRule.Definitions.Expressions
         internal void PushScope(RunspaceScope scope)
         {
             RunspaceContext.CurrentThread.PushScope(scope);
+            RunspaceContext.CurrentThread.EnterSourceScope(Source);
         }
 
         internal void PopScope(RunspaceScope scope)

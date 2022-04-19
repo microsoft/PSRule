@@ -581,10 +581,10 @@ namespace PSRule.Runtime
             if (Source != null && Source.File == source)
                 return Source;
 
-            _LanguageScopes.UseScope(source.ModuleName);
+            _LanguageScopes.UseScope(source.Module);
 
             // Change scope
-            Pipeline.Baseline.UseScope(moduleName: source.ModuleName);
+            Pipeline.Baseline.UseScope(moduleName: source.Module);
             Source = new SourceScope(source, File.ReadAllLines(source.Path, Encoding.UTF8));
             return Source;
         }
@@ -617,7 +617,7 @@ namespace PSRule.Runtime
 
         public bool TrySelector(string name)
         {
-            name = ResourceHelper.GetIdString(Source.File.ModuleName, name);
+            name = ResourceHelper.GetIdString(Source.File.Module, name);
             if (TargetObject == null || Pipeline == null || !Pipeline.Selector.TryGetValue(name, out var selector))
                 return false;
 

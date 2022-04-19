@@ -6,11 +6,20 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 **Important notes**:
 
-- YAML resources will require an `apiVersion` from PSRule v2. [#648](https://github.com/microsoft/PSRule/issues/648)
-- Setting the default module baseline requires a module configuration from PSRule v2. [#809](https://github.com/microsoft/PSRule/issues/809)
-- Resource names have naming restrictions introduced from PSRule v2. [#1012](https://github.com/microsoft/PSRule/issues/1012)
+- Several properties of rule and language block elements will be removed from v3.
+  See [deprecations][2] for details.
+
+  [2]: https://microsoft.github.io/PSRule/latest/deprecations/#deprecations-for-v3
 
 ## Unreleased
+
+What's changed since pre-release v2.1.0-B0015:
+
+- Bug fixes:
+  - **Important change:** Fixed source scope not updated in multi-module runs. [#1053](https://github.com/microsoft/PSRule/issues/1053)
+    - Several properties of rule and language block elements have been renamed to improve consistency.
+    - From _v3_ custom scripts may not work correctly until you update these names.
+    - For details on the updated property names see [deprecations][2].
 
 ## v2.1.0-B0015 (pre-release)
 

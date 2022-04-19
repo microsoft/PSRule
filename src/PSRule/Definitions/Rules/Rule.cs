@@ -39,8 +39,6 @@ namespace PSRule.Definitions.Rules
         string Description { get; }
 
         ResourceTags Tag { get; }
-
-        SourceFile Source { get; }
     }
 
     internal interface IRuleSpec
@@ -65,8 +63,8 @@ namespace PSRule.Definitions.Rules
         public RuleV1(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ISourceExtent extent, RuleV1Spec spec)
             : base(ResourceKind.Rule, apiVersion, source, metadata, info, extent, spec)
         {
-            Ref = ResourceHelper.GetIdNullable(source.ModuleName, metadata.Ref, ResourceIdKind.Ref);
-            Alias = ResourceHelper.GetRuleId(source.ModuleName, metadata.Alias, ResourceIdKind.Alias);
+            Ref = ResourceHelper.GetIdNullable(source.Module, metadata.Ref, ResourceIdKind.Ref);
+            Alias = ResourceHelper.GetRuleId(source.Module, metadata.Alias, ResourceIdKind.Alias);
             Level = ResourceHelper.GetLevel(spec.Level);
         }
 
@@ -108,8 +106,6 @@ namespace PSRule.Definitions.Rules
         string IRuleV1.RuleName => Name;
 
         ResourceTags IRuleV1.Tag => Metadata.Tags;
-
-        SourceFile IRuleV1.Source => Source;
 
         string IRuleV1.Description => Info.Synopsis;
     }

@@ -175,11 +175,22 @@ namespace PSRule.Definitions.Expressions
         {
             path = Path(path, expression);
             if (expression is LanguageOperator selectorOperator)
-                return Debugger(Operator(path, selectorOperator), path);
+                return Scope(Debugger(Operator(path, selectorOperator), path));
             else if (expression is LanguageCondition selectorCondition)
-                return Debugger(Condition(path, selectorCondition), path);
+                return Scope(Debugger(Condition(path, selectorCondition), path));
 
             throw new InvalidOperationException();
+        }
+
+        private static LanguageExpressionOuterFn Scope(LanguageExpressionOuterFn fn)
+        {
+            return (context, o) =>
+            {
+                if (RunspaceContext.CurrentThread != null)
+                    RunspaceContext.CurrentThread.EnterSourceScope(context.Source);
+
+                return fn(context, o);
+            };
         }
 
         private static LanguageExpressionOuterFn Condition(string path, LanguageCondition expression)

@@ -140,7 +140,7 @@ namespace PSRule.Rules
                 {
                     if (visitor.Match(targetObject.Value))
                     {
-                        suppressionGroupId = visitor.Id;
+                        suppressionGroupId = visitor.Id.Value;
                         return true;
                     }
                 }

@@ -489,7 +489,7 @@ namespace PSRule.Host
                     else
                     {
                         context.EnterSourceScope(yaml.Source);
-                        var info = GetHelpInfo(context, ruleName, yaml.Synopsis) ?? new RuleHelpInfo(ruleName, ruleName, yaml.Source.ModuleName)
+                        var info = GetHelpInfo(context, ruleName, yaml.Synopsis) ?? new RuleHelpInfo(ruleName, ruleName, yaml.Source.Module)
                         {
                             Synopsis = yaml.Synopsis
                         };
@@ -500,7 +500,7 @@ namespace PSRule.Host
                             @ref: yaml.Ref,
                             level: yaml.Level,
                             info: info,
-                            condition: new RuleVisitor(yaml.Source.ModuleName, yaml.Id.Value, yaml.Spec),
+                            condition: new RuleVisitor(yaml.Id, yaml.Source, yaml.Spec),
                             alias: yaml.Alias,
                             tag: yaml.Metadata.Tags,
                             dependsOn: null,  // TODO: No support for DependsOn yet
@@ -745,14 +745,14 @@ namespace PSRule.Host
                 ? new RuleHelpInfo(
                     name: name,
                     displayName: name,
-                    moduleName: context.Source.File.ModuleName)
+                    moduleName: context.Source.File.Module)
                 {
                     Synopsis = defaultSynopsis
                 }
                 : new RuleHelpInfo(
                     name: name,
                     displayName: document.Name ?? name,
-                    moduleName: context.Source.File.ModuleName)
+                    moduleName: context.Source.File.Module)
                 {
                     Synopsis = document.Synopsis?.Text ?? defaultSynopsis,
                     Description = document.Description?.Text,

@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Management.Automation;
 using PSRule.Definitions.Expressions;
+using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
 
@@ -15,11 +16,11 @@ namespace PSRule.Definitions.Rules
     {
         private readonly LanguageExpressionOuterFn _Condition;
 
-        public RuleVisitor(string module, string id, IRuleSpec spec)
+        public RuleVisitor(ResourceId id, SourceFile source, IRuleSpec spec)
         {
             ErrorAction = ActionPreference.Stop;
-            Module = module;
             Id = id;
+            Source = source;
             InstanceId = Guid.NewGuid();
             var builder = new LanguageExpressionBuilder();
             _Condition = builder
@@ -30,11 +31,17 @@ namespace PSRule.Definitions.Rules
 
         public Guid InstanceId { get; }
 
-        public string Module { get; }
+        public SourceFile Source { get; }
 
-        public string Id { get; }
+        public ResourceId Id { get; }
 
         public ActionPreference ErrorAction { get; }
+
+        [Obsolete("Use Source property instead.")]
+        string ILanguageBlock.SourcePath => Source.Path;
+
+        [Obsolete("Use Source property instead.")]
+        string ILanguageBlock.Module => Source.Module;
 
         public void Dispose()
         {
@@ -43,7 +50,7 @@ namespace PSRule.Definitions.Rules
 
         public IConditionResult If()
         {
-            var context = new ExpressionContext(Module);
+            var context = new ExpressionContext(Source);
             context.Debug(PSRuleResources.SelectorMatchTrace, Id);
             context.PushScope(RunspaceScope.Rule);
             try
