@@ -13,13 +13,21 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
-What's changed since v2.0.1:
+What's changed since pre-release v2.1.0-B0015:
 
 - Bug fixes:
   - **Important change:** Fixed source scope not updated in multi-module runs. [#1053](https://github.com/microsoft/PSRule/issues/1053)
     - Several properties of rule and language block elements have been renamed to improve consistency.
     - From _v3_ custom scripts may not work correctly until you update these names.
     - For details on the updated property names see [deprecations][2].
+
+## v2.1.0-B0015 (pre-release)
+
+What's changed since v2.0.1:
+
+- Engineering:
+  - Added code signing of module. [#1049](https://github.com/microsoft/PSRule/issues/1049)
+  - Added SBOM manifests to module. [#1050](https://github.com/microsoft/PSRule/issues/1050)
 
 ## v2.0.1
 

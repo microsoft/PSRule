@@ -15,10 +15,10 @@ trigger:
     include:
     - 'main'
     - 'release/*'
-  tags:
-    include:
-    - 'v1.*'
-    - 'v2.*'
+  # tags:
+  #   include:
+  #   - 'v1.*'
+  #   - 'v2.*'
 
 pr:
   branches:
@@ -182,44 +182,44 @@ stages:
       imageTag: 7.2.2-ubuntu-20.04
 
 # Release pipeline
-- stage: Release
-  displayName: Release
-  dependsOn: [ 'Test', 'Analysis' ]
-  condition: and(succeeded(), or(startsWith(variables['Build.SourceBranch'], 'refs/tags/v1.'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v2.')))
-  jobs:
-  - job:
-    displayName: Live
-    pool:
-      vmImage: $(imageName)
-    variables:
-      isPreRelease: $[contains(variables['Build.SourceBranchName'], '-B')]
-    steps:
+# - stage: Release
+#   displayName: Release
+#   dependsOn: [ 'Test', 'Analysis' ]
+#   condition: and(succeeded(), or(startsWith(variables['Build.SourceBranch'], 'refs/tags/v1.'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v2.')))
+#   jobs:
+#   - job:
+#     displayName: Live
+#     pool:
+#       vmImage: $(imageName)
+#     variables:
+#       isPreRelease: $[contains(variables['Build.SourceBranchName'], '-B')]
+#     steps:
 
-    # Download module from build
-    - task: DownloadPipelineArtifact@2
-      displayName: 'Download module'
-      inputs:
-        artifact: PSRule
-        path: $(Build.SourcesDirectory)/out/modules/PSRule
+#     # Download module from build
+#     - task: DownloadPipelineArtifact@2
+#       displayName: 'Download module'
+#       inputs:
+#         artifact: PSRule
+#         path: $(Build.SourcesDirectory)/out/modules/PSRule
 
-    # Install pipeline dependencies
-    - powershell: ./.azure-pipelines/pipeline-deps.ps1
-      displayName: 'Install dependencies'
+#     # Install pipeline dependencies
+#     - powershell: ./.azure-pipelines/pipeline-deps.ps1
+#       displayName: 'Install dependencies'
 
-    # Install pipeline dependencies and build module
-    - powershell: Invoke-Build Release -ApiKey $(apiKey)
-      displayName: 'Publish module'
+#     # Install pipeline dependencies and build module
+#     - powershell: Invoke-Build Release -ApiKey $(apiKey)
+#       displayName: 'Publish module'
 
-    # Update GitHub release
-    - task: GitHubRelease@1
-      displayName: 'GitHub release'
-      inputs:
-        gitHubConnection: 'AzureDevOps-PSRule'
-        repositoryName: '$(Build.Repository.Name)'
-        action: edit
-        tag: '$(Build.SourceBranchName)'
-        releaseNotesSource: inline
-        releaseNotesInline: 'See [change log](https://github.com/Microsoft/PSRule/blob/main/CHANGELOG.md)'
-        assetUploadMode: replace
-        addChangeLog: false
-        isPreRelease: $(isPreRelease)
+#     # Update GitHub release
+#     - task: GitHubRelease@1
+#       displayName: 'GitHub release'
+#       inputs:
+#         gitHubConnection: 'AzureDevOps-PSRule'
+#         repositoryName: '$(Build.Repository.Name)'
+#         action: edit
+#         tag: '$(Build.SourceBranchName)'
+#         releaseNotesSource: inline
+#         releaseNotesInline: 'See [change log](https://github.com/Microsoft/PSRule/blob/main/CHANGELOG.md)'
+#         assetUploadMode: replace
+#         addChangeLog: false
+#         isPreRelease: $(isPreRelease)

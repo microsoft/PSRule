@@ -1,0 +1,24 @@
+#
+# Configure GitVersion
+#
+
+next-version: 2.0.0
+branches:
+  main:
+    regex: ^main$
+    tag: 'B'
+    increment: Minor
+    is-mainline: true
+  feature:
+    regex: ^feature/
+    source-branches: [ 'main' ]
+    increment: Inherit
+    tag: B
+  release:
+    regex: ^release/
+ignore:
+  sha: []
+merge-message-formats: {}
+tag-prefix: v
+mode: ContinuousDeployment
+increment: Inherit

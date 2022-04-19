@@ -212,7 +212,7 @@ Yaml.FileType                       Fail       Image files are not permitted.
 
 ## Scenario - Test for service status
 
-[:octicons-beaker-24:{ .experimental } Pre-release][v2]{ .experimental } · :octicons-milestone-24: v2.0.0
+:octicons-milestone-24: v2.0.0
 
 In our quickstart scenario, we have been tasked to:
 

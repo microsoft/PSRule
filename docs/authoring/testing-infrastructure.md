@@ -220,6 +220,8 @@ Assert-PSRule -f ./settings.json
 
 ### Severity level
 
+:octicons-milestone-24: v2.0.0
+
 When defining a rule, you can specify a severity level.
 The severity level is used if the rule fails.
 By default, the severity level for a rule is `Error`.
