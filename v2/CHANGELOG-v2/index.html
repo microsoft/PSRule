@@ -1918,11 +1918,24 @@
 <p>See <a href="https://microsoft.github.io/PSRule/latest/upgrade-notes/">upgrade notes</a> for helpful information when upgrading from previous versions.</p>
 <p><strong>Important notes</strong>:</p>
 <ul>
-<li>YAML resources will require an <code>apiVersion</code> from PSRule v2. <a href="https://github.com/microsoft/PSRule/issues/648">#648</a></li>
-<li>Setting the default module baseline requires a module configuration from PSRule v2. <a href="https://github.com/microsoft/PSRule/issues/809">#809</a></li>
-<li>Resource names have naming restrictions introduced from PSRule v2. <a href="https://github.com/microsoft/PSRule/issues/1012">#1012</a></li>
+<li>
+<p>Several properties of rule and language block elements will be removed from v3.
+  See <a href="https://microsoft.github.io/PSRule/latest/deprecations/#deprecations-for-v3">deprecations</a> for details.</p>
+</li>
 </ul>
 <h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">#</a></h2>
+<p>What's changed since pre-release v2.1.0-B0015:</p>
+<ul>
+<li>Bug fixes:<ul>
+<li><strong>Important change:</strong> Fixed source scope not updated in multi-module runs. <a href="https://github.com/microsoft/PSRule/issues/1053">#1053</a><ul>
+<li>Several properties of rule and language block elements have been renamed to improve consistency.</li>
+<li>From <em>v3</em> custom scripts may not work correctly until you update these names.</li>
+<li>For details on the updated property names see <a href="https://microsoft.github.io/PSRule/latest/deprecations/#deprecations-for-v3">deprecations</a>.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <h2 id="v210-b0015-pre-release">v2.1.0-B0015 (pre-release)<a class="headerlink" href="#v210-b0015-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v2.0.1:</p>
 <ul>

@@ -1090,6 +1090,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#language-block-interface" class="md-nav__link">
+    Language block interface
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1676,6 +1683,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#language-block-interface" class="md-nav__link">
+    Language block interface
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1735,14 +1749,33 @@ Previously rules returned by <code>Get-PSRule</code> returned a rule object whic
 <li><code>RuleId</code></li>
 <li><code>RuleName</code></li>
 <li><code>Description</code></li>
+<li><code>ModuleName</code></li>
+<li><code>SourcePath</code></li>
 </ul>
 <p>These have been replaced with the following properties:</p>
 <ul>
 <li><code>Id</code> instead of <code>RuleId</code>.</li>
 <li><code>Name</code> instead of <code>RuleName</code>.</li>
 <li><code>Synopsis</code> instead of <code>Description</code>.</li>
+<li><code>Source.Module</code> instead of <code>ModuleName</code>.</li>
+<li><code>Source.Path</code> instead of <code>SourcePath</code>.</li>
 </ul>
-<p>The changes apply from <em>v2</em>, however the old properties are still available for backwards compatibility.
+<p>The changes apply from <em>v2.1.0</em>, however the old properties are still available for backwards compatibility.
+From <em>v3</em> these properties will be removed.
+These changes do not affect normal usage of PSRule.
+Supporting scripts that directly use the old names may not work correctly until you update these names.</p>
+<h3 id="language-block-interface">Language block interface<a class="headerlink" href="#language-block-interface" title="Permanent link">#</a></h3>
+<p>Several properties of Baselines and Selectors have been renamed to improve consistency.</p>
+<ul>
+<li><code>ModuleName</code></li>
+<li><code>SourcePath</code></li>
+</ul>
+<p>These have been replaced with the following properties:</p>
+<ul>
+<li><code>Source.Module</code> instead of <code>ModuleName</code>.</li>
+<li><code>Source.Path</code> instead of <code>SourcePath</code>.</li>
+</ul>
+<p>The changes apply from <em>v2.1.0</em>, however the old properties are still available for backwards compatibility.
 From <em>v3</em> these properties will be removed.
 These changes do not affect normal usage of PSRule.
 Supporting scripts that directly use the old names may not work correctly until you update these names.</p>
@@ -1765,7 +1798,7 @@ From <em>v2</em> resources without an <code>apiVersion</code> will be ignored.</
   <small>
     
       Last update:
-      2022-03-14
+      2022-04-19
     
   </small>
 </div>
