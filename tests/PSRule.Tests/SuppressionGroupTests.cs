@@ -42,7 +42,7 @@ namespace PSRule
         private static PSRuleOption GetOption()
         {
             var option = new PSRuleOption();
-            option.Output.Culture = new string[] { "en-US" };
+            option.Output.Culture = new string[] { "en-US", "en" };
             return option;
         }
 
