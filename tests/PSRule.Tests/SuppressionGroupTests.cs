@@ -41,7 +41,9 @@ namespace PSRule
 
         private static PSRuleOption GetOption()
         {
-            return new PSRuleOption();
+            var option = new PSRuleOption();
+            option.Output.Culture = new string[] { "en-US" };
+            return option;
         }
 
         private static Source[] GetSource(string path)
