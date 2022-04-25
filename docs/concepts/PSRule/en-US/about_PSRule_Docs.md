@@ -8,8 +8,11 @@ Describes usage of documentation within PSRule.
 
 ## LONG DESCRIPTION
 
-PSRule includes a built-in documentation system that provide culture specific help and metadata for rules.
-Rule documentation is composed of markdown files that can be optionally shipped with a module.
+PSRule includes a built-in documentation system that provide culture specific help and metadata for resources.
+Documentation is composed of markdown files that can be optionally shipped with a module.
+
+When markdown documentation is defined, this content will be used instead of inline synopsis comments.
+Markdown documentation is supported for rules and suppression groups.
 
 ### Getting documentation
 
@@ -43,7 +46,7 @@ For example:
 Get-PSRuleHelp <rule-name> -Online
 ```
 
-### Creating documentation
+### Creating documentation for rules
 
 Rule documentation is composed of markdown files, one per rule.
 When creating rules for more then one culture, a separate markdown file is created per rule per culture.
@@ -63,14 +66,6 @@ Rule 'storageAccounts.UseHttps' -If { ResourceType 'Microsoft.Storage/storageAcc
     $TargetObject.Properties.supportsHttpsTrafficOnly
 }
 ```
-
-This directory PSRule will look for these markdown files depends on how the rules are packaged:
-
-- If the rules are loose (not part of a module), PSRule will search for documentation in the `.\<culture>\` subdirectory relative to where the rule script _.ps1_ file is located.
-- When the rules are shipped as part of a module, PSRule will search for documentation in the `.\<culture>\` subdirectory relative to where the module manifest _.psd1_ file is located.
-
-The `<culture>` subdirectory will be the current culture that PowerShell is executed under (the same as `(Get-Culture).Name`).
-Alternatively, the culture can set by using the `-Culture` parameter of PSRule cmdlets.
 
 The markdown of each file uses following structure.
 
@@ -107,6 +102,40 @@ Optionally, one or more annotations formatted as YAML key value pairs can be inc
 i.e. `severity: Critical`
 
 Additional sections such as `EXAMPLES` can be included although are not exposed with `Get-PSRuleHelp`.
+
+### Creating documentation for suppression groups
+
+Suppression groups support documentation similar to rules that allows a synopsis to be defined.
+Other sections can be added to the markdown content, but are ignored.
+Set the synopsis in markdown to allow a culture specific message to be displayed.
+
+The markdown of each file uses following structure.
+
+```text
+---
+{{ Annotations }}
+---
+
+# {{ Name of suppression group }}
+
+## SYNOPSIS
+
+{{ A brief summary of the suppression group }}
+
+```
+
+### Storing markdown files
+
+The location PSRule uses to find markdown documentation depends on how the rules/ resources are packaged.
+In each case, documentation will be in a culture `/<culture>/`specific subdirectory.
+Resources can be either shipped as part of a module, or standalone.
+
+- When resources are standalone, the culture subdirectory is relative to the `*.Rule.*` file.
+- When packaged in a module, the culture subdirectory is relative to the module manifest `.psd1` file.
+
+The `<culture>` subdirectory will be the current culture that PowerShell is executed under.
+To determine the current culture use `(Get-Culture).Name`.
+Alternatively, the culture can set by using the `-Culture` parameter of PSRule cmdlets.
 
 ## NOTE
 

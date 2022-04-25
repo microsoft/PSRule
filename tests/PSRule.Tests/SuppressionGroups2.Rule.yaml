@@ -4,7 +4,7 @@
 # Suppression groups for unit testing
 
 ---
-# Synopsis: Suppress with target name for all(null) rules
+# Synopsis: Ignore test objects for all (null) rules.
 apiVersion: github.com/microsoft/PSRule/v1
 kind: SuppressionGroup
 metadata:
@@ -15,7 +15,7 @@ spec:
     equals: 'TestObject1'
 
 ---
-# Synopsis: Suppress with target name for all(empty) rules
+# Synopsis: Ignore test objects for all (empty) rules.
 apiVersion: github.com/microsoft/PSRule/v1
 kind: SuppressionGroup
 metadata:

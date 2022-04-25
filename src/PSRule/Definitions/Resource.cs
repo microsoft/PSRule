@@ -102,6 +102,11 @@ namespace PSRule.Definitions
         /// The source location of the resource.
         /// </summary>
         ISourceExtent Extent { get; }
+
+        /// <summary>
+        /// Additional information about the resource.
+        /// </summary>
+        IResourceHelpInfo Info { get; }
     }
 
     internal interface IResourceVisitor
@@ -340,20 +345,10 @@ namespace PSRule.Definitions
         public string Module { get; set; }
     }
 
-    public sealed class ResourceHelpInfo
-    {
-        internal ResourceHelpInfo(string synopsis)
-        {
-            Synopsis = synopsis;
-        }
-
-        public string Synopsis { get; private set; }
-    }
-
     [DebuggerDisplay("Kind = {Kind}, Id = {Id}")]
     public abstract class Resource<TSpec> where TSpec : Spec, new()
     {
-        protected Resource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ISourceExtent extent, TSpec spec)
+        protected Resource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, TSpec spec)
         {
             Kind = kind;
             ApiVersion = apiVersion;
@@ -382,7 +377,7 @@ namespace PSRule.Definitions
         public SourceFile Source { get; }
 
         [YamlIgnore()]
-        public readonly ResourceHelpInfo Info;
+        public IResourceHelpInfo Info { get; }
 
         /// <summary>
         /// Resource metadata details.
@@ -414,7 +409,7 @@ namespace PSRule.Definitions
     {
         private readonly Dictionary<Type, ResourceAnnotation> _Annotations;
 
-        private protected InternalResource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ISourceExtent extent, TSpec spec)
+        private protected InternalResource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, TSpec spec)
             : base(kind, apiVersion, source, metadata, info, extent, spec)
         {
             _Annotations = new Dictionary<Type, ResourceAnnotation>();

@@ -18,9 +18,7 @@ namespace PSRule.Rules
     {
         private readonly HashSet<SuppressionKey> _Index;
         private readonly bool _IsEmpty;
-
         private readonly ResourceIndex _ResourceIndex;
-
         private readonly Dictionary<string, List<SuppressionGroupVisitor>> _RuleSuppressionGroupIndex;
 
         public SuppressionFilter(RunspaceContext context, SuppressionOption option, ResourceIndex resourceIndex)
@@ -125,24 +123,21 @@ namespace PSRule.Rules
         }
 
         /// <summary>
-        /// Attempts to fetch suppression group from rule suppression group index
+        /// Attempts to fetch suppression group from rule suppression group index.
         /// </summary>
         /// <param name="ruleId">The key rule id which indexes suppression groups</param>
         /// <param name="targetObject">Th target object we are invoking</param>
         /// <param name="suppressionGroupId">The Id of the matched suppression group</param>
         /// <returns>Boolean indicating if suppression group has been found</returns>
-        public bool TrySuppressionGroup(string ruleId, TargetObject targetObject, out string suppressionGroupId)
+        public bool TrySuppressionGroup(string ruleId, TargetObject targetObject, out ISuppressionInfo suppression)
         {
-            suppressionGroupId = string.Empty;
+            suppression = null;
             if (_RuleSuppressionGroupIndex.TryGetValue(ruleId, out var suppressionGroupVisitors))
             {
                 foreach (var visitor in suppressionGroupVisitors)
                 {
-                    if (visitor.Match(targetObject.Value))
-                    {
-                        suppressionGroupId = visitor.Id.Value;
+                    if (visitor.TryMatch(targetObject.Value, out suppression))
                         return true;
-                    }
                 }
             }
             return false;

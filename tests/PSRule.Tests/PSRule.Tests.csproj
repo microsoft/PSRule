@@ -37,6 +37,9 @@
     <None Update="Dockerfile">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="en\SuppressWithNonProdTag.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="FromFile.Rule.jsonc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

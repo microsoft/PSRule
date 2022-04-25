@@ -117,7 +117,7 @@ namespace PSRule.Commands
 
             CheckDependsOn();
             var ps = GetCondition(context, id, source, errorPreference);
-            var info = PSRule.Host.HostHelper.GetHelpInfo(context, Name, metadata.Synopsis) ?? new RuleHelpInfo(
+            var info = PSRule.Host.HostHelper.GetRuleHelpInfo(context, Name, metadata.Synopsis) ?? new RuleHelpInfo(
                 name: Name,
                 displayName: Name,
                 moduleName: source.Module

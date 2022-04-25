@@ -1292,7 +1292,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Detail' {
             It 'Show warnings' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Detail -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Detail -InvariantCultureWarning $False -OutputCulture 'en-US';
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile1', 'FromFile2', 'WithTag2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1300,17 +1300,17 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages.Length | Should -Be 6;
 
                 $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[0].Message | Should -BeExactly "Rule '.\FromFile1' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject1'.";
+                $warningMessages[0].Message | Should -BeExactly "Rule '.\FromFile1' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject1'. Ignore test objects by name.";
                 $warningMessages[1] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[1].Message | Should -BeExactly "Rule '.\FromFile2' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject1'.";
+                $warningMessages[1].Message | Should -BeExactly "Rule '.\FromFile2' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject1'. Ignore test objects by name.";
                 $warningMessages[2] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[2].Message | Should -BeExactly "Rule '.\WithTag2' was suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject1'.";
+                $warningMessages[2].Message | Should -BeExactly "Rule '.\WithTag2' was suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject1'. Ignore objects with non-production tag.";
                 $warningMessages[3] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[3].Message | Should -BeExactly "Rule '.\FromFile1' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject2'.";
+                $warningMessages[3].Message | Should -BeExactly "Rule '.\FromFile1' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject2'. Ignore test objects by name.";
                 $warningMessages[4] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[4].Message | Should -BeExactly "Rule '.\FromFile2' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject2'.";
+                $warningMessages[4].Message | Should -BeExactly "Rule '.\FromFile2' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject2'. Ignore test objects by name.";
                 $warningMessages[5] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[5].Message | Should -BeExactly "Rule '.\WithTag2' was suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject2'.";
+                $warningMessages[5].Message | Should -BeExactly "Rule '.\WithTag2' was suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject2'. Ignore objects with non-production tag.";
             }
 
             It 'Show warnings for all rules when rule property is null or empty' {
@@ -1322,7 +1322,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages.Length | Should -Be 152;
 
                 $warningMessages | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages.Message | Should -MatchExactly "Rule '.\\[a-zA-Z0-9]+' was suppressed by suppression group '.\\SuppressWithTargetNameAnd(Null|Empty)Rule' for 'TestObject[1-2]'."
+                $warningMessages.Message | Should -MatchExactly "Rule '.\\[a-zA-Z0-9]+' was suppressed by suppression group '.\\SuppressWithTargetNameAnd(Null|Empty)Rule' for 'TestObject[1-2]'. Ignore test objects for all \((null|empty)\) rules."
             }
 
             It 'No warnings' {
@@ -1337,7 +1337,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Summary' {
             It 'Show warnings' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Summary -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Summary -InvariantCultureWarning $False -OutputCulture 'en-US';
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile3', 'FromFile5', 'WithTag3' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1345,13 +1345,13 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages.Length | Should -Be 4;
 
                 $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[0].Message | Should -BeExactly "2 rule/s were suppressed by suppression group '.\SuppressWithTestType' for 'TestObject1'.";
+                $warningMessages[0].Message | Should -BeExactly "2 rule/s were suppressed by suppression group '.\SuppressWithTestType' for 'TestObject1'. Ignore test objects by type.";
                 $warningMessages[1] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[1].Message | Should -BeExactly "1 rule/s were suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject1'.";
+                $warningMessages[1].Message | Should -BeExactly "1 rule/s were suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject1'. Ignore objects with non-production tag.";
                 $warningMessages[2] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[2].Message | Should -BeExactly "2 rule/s were suppressed by suppression group '.\SuppressWithTestType' for 'TestObject2'.";
+                $warningMessages[2].Message | Should -BeExactly "2 rule/s were suppressed by suppression group '.\SuppressWithTestType' for 'TestObject2'. Ignore test objects by type.";
                 $warningMessages[3] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[3].Message | Should -BeExactly "1 rule/s were suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject2'.";
+                $warningMessages[3].Message | Should -BeExactly "1 rule/s were suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject2'. Ignore objects with non-production tag.";
             }
 
             It 'Show warnings for all rules when rule property is null or empty' {
@@ -1363,9 +1363,9 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages.Length | Should -Be 2;
 
                 $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[0].Message | Should -BeExactly "76 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndNullRule' for 'TestObject1'."
+                $warningMessages[0].Message | Should -BeExactly "76 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndNullRule' for 'TestObject1'. Ignore test objects for all (null) rules."
                 $warningMessages[1] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[1].Message | Should -BeExactly "76 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndEmptyRule' for 'TestObject2'."
+                $warningMessages[1].Message | Should -BeExactly "76 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndEmptyRule' for 'TestObject2'. Ignore test objects for all (empty) rules."
             }
 
             It 'No warnings' {

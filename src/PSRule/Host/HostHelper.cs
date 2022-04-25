@@ -17,7 +17,7 @@ using PSRule.Definitions.ModuleConfigs;
 using PSRule.Definitions.Rules;
 using PSRule.Definitions.Selectors;
 using PSRule.Definitions.SuppressionGroups;
-using PSRule.Parser;
+using PSRule.Help;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
@@ -269,7 +269,10 @@ namespace PSRule.Host
                                 continue;
 
                             if (item.Visit(visitor))
+                            {
+                                UpdateHelpInfo(context, item.Block);
                                 result.Add(item.Block);
+                            }
                         }
                     }
                 }
@@ -324,7 +327,10 @@ namespace PSRule.Host
                                 {
                                     var value = deserializer.Deserialize<ResourceObject>(reader);
                                     if (value?.Block != null && value.Visit(visitor))
+                                    {
+                                        UpdateHelpInfo(context, value.Block);
                                         result.Add(value.Block);
+                                    }
 
                                     // Consume all end objects at the end of each resource
                                     while (reader.TokenType == JsonToken.EndObject)
@@ -421,7 +427,7 @@ namespace PSRule.Host
                 foreach (var block in blocks.OfType<RuleV1>())
                 {
                     context.EnterSourceScope(block.Source);
-                    var info = GetHelpInfo(context, block.Name, block.Synopsis);
+                    var info = GetRuleHelpInfo(context, block.Name, block.Synopsis);
                     results.TryAdd(new Rule
                     {
                         Id = block.Id,
@@ -489,7 +495,7 @@ namespace PSRule.Host
                     else
                     {
                         context.EnterSourceScope(yaml.Source);
-                        var info = GetHelpInfo(context, ruleName, yaml.Synopsis) ?? new RuleHelpInfo(ruleName, ruleName, yaml.Source.Module)
+                        var info = GetRuleHelpInfo(context, ruleName, yaml.Synopsis) ?? new RuleHelpInfo(ruleName, ruleName, yaml.Source.Module)
                         {
                             Synopsis = yaml.Synopsis
                         };
@@ -739,7 +745,7 @@ namespace PSRule.Host
             return conventions;
         }
 
-        internal static RuleHelpInfo GetHelpInfo(RunspaceContext context, string name, string defaultSynopsis)
+        internal static RuleHelpInfo GetRuleHelpInfo(RunspaceContext context, string name, string defaultSynopsis)
         {
             return !TryHelpPath(context, name, out var path) || !TryDocument(path, out var document)
                 ? new RuleHelpInfo(
@@ -763,6 +769,14 @@ namespace PSRule.Host
                 };
         }
 
+        internal static void UpdateHelpInfo(RunspaceContext context, IResource resource)
+        {
+            if (resource == null || !TryHelpPath(context, resource.Name, out var path) || !TryHelpInfo(path, out var info))
+                return;
+
+            resource.Info.Update(info);
+        }
+
         private static bool TryHelpPath(RunspaceContext context, string name, out string path)
         {
             path = null;
@@ -783,9 +797,23 @@ namespace PSRule.Host
 
             var reader = new MarkdownReader(yamlHeaderOnly: false);
             var stream = reader.Read(markdown, path);
-            var lexer = new RuleLexer();
+            var lexer = new RuleHelpLexer();
             document = lexer.Process(stream);
             return document != null;
+        }
+
+        private static bool TryHelpInfo(string path, out IResourceHelpInfo info)
+        {
+            info = null;
+            var markdown = File.ReadAllText(path);
+            if (string.IsNullOrEmpty(markdown))
+                return false;
+
+            var reader = new MarkdownReader(yamlHeaderOnly: false);
+            var stream = reader.Read(markdown, path);
+            var lexer = new ResourceHelpLexer();
+            info = lexer.Process(stream).ToInfo();
+            return info != null;
         }
 
         private static RuleHelpInfo.Link[] GetLinks(Link[] links)

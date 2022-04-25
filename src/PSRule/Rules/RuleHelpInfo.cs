@@ -1,10 +1,11 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.Collections;
 using System.Text;
 using Newtonsoft.Json;
+using PSRule.Definitions;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Rules
@@ -12,7 +13,7 @@ namespace PSRule.Rules
     /// <summary>
     /// Output view helper class for rule help.
     /// </summary>
-    public sealed class RuleHelpInfo
+    public sealed class RuleHelpInfo : IResourceHelpInfo
     {
         private const string ONLINE_HELP_LINK_ANNOTATION = "online version";
 
@@ -92,6 +93,12 @@ namespace PSRule.Rules
         /// </summary>
         [JsonProperty(PropertyName = "annotations")]
         public Hashtable Annotations { get; internal set; }
+
+        [JsonIgnore, YamlIgnore]
+        InfoString IResourceHelpInfo.Synopsis { get; set; }
+
+        [JsonIgnore, YamlIgnore]
+        InfoString IResourceHelpInfo.Description { set; get; }
 
         /// <summary>
         /// Get the URI for the online version of the documentation.

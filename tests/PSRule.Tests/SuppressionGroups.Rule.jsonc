@@ -3,7 +3,7 @@
 // Suppression groups for unit testing
 [
     {
-        // Synopsis: Suppress with target name
+        // Synopsis: Ignore test objects by name.
         "apiVersion": "github.com/microsoft/PSRule/v1",
         "kind": "SuppressionGroup",
         "metadata": {
@@ -24,7 +24,7 @@
         }
     },
     {
-        // Synopsis: Suppress with target type
+        // Synopsis: Ignore test objects by type.
         "apiVersion": "github.com/microsoft/PSRule/v1",
         "kind": "SuppressionGroup",
         "metadata": {
