@@ -29,6 +29,9 @@ namespace PSRule.Configuration
     {
         private const string DEFAULT_FILENAME = "ps-rule.yaml";
 
+        private const char Backslash = '\\';
+        private const char Slash = '/';
+
         private string SourcePath;
 
         private static readonly PSRuleOption Default = new PSRuleOption
@@ -447,20 +450,22 @@ namespace PSRule.Configuration
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        internal static string GetRootedPath(string path)
+        internal static string GetRootedPath(string path, bool normalize = false)
         {
-            return Path.IsPathRooted(path) ? Path.GetFullPath(path) : Path.GetFullPath(Path.Combine(GetWorkingPath(), path));
+            var rootedPath = Path.IsPathRooted(path) ? Path.GetFullPath(path) : Path.GetFullPath(Path.Combine(GetWorkingPath(), path));
+            return normalize ? rootedPath.Replace(Backslash, Slash) : rootedPath;
         }
 
         /// <summary>
         /// Get a full path instead of a relative path that may be passed from PowerShell.
         /// </summary>
-        internal static string GetRootedBasePath(string path)
+        internal static string GetRootedBasePath(string path, bool normalize = false)
         {
             var rootedPath = GetRootedPath(path);
-            return rootedPath.Length > 0 && IsSeparator(rootedPath[rootedPath.Length - 1])
+            var basePath = rootedPath.Length > 0 && IsSeparator(rootedPath[rootedPath.Length - 1])
                 ? rootedPath
                 : string.Concat(rootedPath, Path.DirectorySeparatorChar);
+            return normalize ? basePath.Replace(Backslash, Slash) : basePath;
         }
 
         /// <summary>

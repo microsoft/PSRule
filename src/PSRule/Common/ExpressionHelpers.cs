@@ -418,8 +418,8 @@ namespace PSRule
 
         internal static bool WithinPath(string actualPath, string expectedPath, bool caseSensitive)
         {
-            var expected = PSRuleOption.GetRootedBasePath(expectedPath).Replace(Backslash, Slash);
-            var actual = PSRuleOption.GetRootedPath(actualPath).Replace(Backslash, Slash);
+            var expected = PSRuleOption.GetRootedBasePath(expectedPath, normalize: true);
+            var actual = PSRuleOption.GetRootedPath(actualPath, normalize: true);
             return actual.StartsWith(expected, ignoreCase: !caseSensitive, Thread.CurrentThread.CurrentCulture);
         }
 
@@ -436,23 +436,23 @@ namespace PSRule
             var targetInfo = GetTargetInfo(o);
             if (baseObject is InputFileInfo inputFileInfo)
             {
-                return PSRuleOption.GetRootedPath(inputFileInfo.FullName);
+                return PSRuleOption.GetRootedPath(inputFileInfo.FullName, normalize: true);
             }
             else if (baseObject is FileInfo fileInfo)
             {
-                return PSRuleOption.GetRootedPath(fileInfo.FullName);
+                return PSRuleOption.GetRootedPath(fileInfo.FullName, normalize: true);
             }
             else if (baseObject is TargetSourceInfo sourceInfo && !string.IsNullOrEmpty(sourceInfo.File))
             {
-                return PSRuleOption.GetRootedPath(sourceInfo.File);
+                return PSRuleOption.GetRootedPath(sourceInfo.File, normalize: true);
             }
             else if (targetInfo != null)
             {
-                return PSRuleOption.GetRootedPath(targetInfo.Path);
+                return PSRuleOption.GetRootedPath(targetInfo.Path, normalize: true);
             }
             else if (baseObject is string s)
             {
-                return PSRuleOption.GetRootedPath(s);
+                return PSRuleOption.GetRootedPath(s, normalize: true);
             }
             return null;
         }

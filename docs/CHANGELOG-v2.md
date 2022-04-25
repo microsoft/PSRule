@@ -15,6 +15,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v2.1.0-B0015:
 
+- General improvements:
+  - Added source support for string conditions. [#1068](https://github.com/microsoft/PSRule/issues/1068)
 - Bug fixes:
   - **Important change:** Fixed source scope not updated in multi-module runs. [#1053](https://github.com/microsoft/PSRule/issues/1053)
     - Several properties of rule and language block elements have been renamed to improve consistency.
