@@ -1,7 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace PSRule.Parser
+namespace PSRule.Help
 {
     internal static class MarkdownTokenExtensions
     {

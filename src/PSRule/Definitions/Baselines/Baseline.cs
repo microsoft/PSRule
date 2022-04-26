@@ -26,7 +26,7 @@ namespace PSRule.Definitions.Baselines
     [Spec(Specs.V1, Specs.Baseline)]
     public sealed class Baseline : InternalResource<BaselineSpec>, IResource
     {
-        public Baseline(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ISourceExtent extent, BaselineSpec spec)
+        public Baseline(string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, BaselineSpec spec)
             : base(ResourceKind.Baseline, apiVersion, source, metadata, info, extent, spec) { }
 
         [YamlIgnore()]
@@ -37,7 +37,7 @@ namespace PSRule.Definitions.Baselines
         /// </summary>
         [JsonIgnore]
         [YamlIgnore]
-        public string Synopsis => Info.Synopsis;
+        public string Synopsis => Info.Synopsis.Text;
     }
 
     public sealed class BaselineSpec : Spec, IBaselineSpec

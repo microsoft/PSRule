@@ -330,4 +330,10 @@
   <data name="InvalidResourceName" xml:space="preserve">
     <value>The resource name '{0}' is not valid at {1}. Each resource name must be between 3-128 characters in length, must start and end with a letter or number, and only contain letters, numbers, hyphens, dots, or underscores. See https://aka.ms/ps-rule/naming for more information.</value>
   </data>
+  <data name="RuleSuppressionGroupExtended" xml:space="preserve">
+    <value>Rule '{0}' was suppressed by suppression group '{1}' for '{2}'. {3}</value>
+  </data>
+  <data name="RuleSuppressionGroupExtendedCount" xml:space="preserve">
+    <value>{0} rule/s were suppressed by suppression group '{1}' for '{2}'. {3}</value>
+  </data>
 </root>

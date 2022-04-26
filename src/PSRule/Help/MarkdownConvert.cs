@@ -1,9 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Management.Automation;
 
-namespace PSRule.Parser
+namespace PSRule.Help
 {
     internal static class MarkdownConvert
     {

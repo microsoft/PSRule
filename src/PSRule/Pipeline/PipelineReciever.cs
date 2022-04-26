@@ -9,7 +9,7 @@ using System.Management.Automation;
 using System.Net;
 using Newtonsoft.Json;
 using PSRule.Data;
-using PSRule.Parser;
+using PSRule.Help;
 using PSRule.Runtime;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;

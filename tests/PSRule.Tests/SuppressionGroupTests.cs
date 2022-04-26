@@ -20,22 +20,35 @@ namespace PSRule
         [InlineData("SuppressionGroups.Rule.jsonc")]
         public void ReadSuppressionGroup(string path)
         {
-            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
+            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, GetOptionContext(), null), null);
             context.Init(GetSource(path));
             context.Begin();
             var suppressionGroup = HostHelper.GetSuppressionGroup(GetSource(path), context).ToArray();
             Assert.NotNull(suppressionGroup);
             Assert.Equal(3, suppressionGroup.Length);
+
             Assert.Equal("SuppressWithTargetName", suppressionGroup[0].Name);
+            Assert.Equal("Ignore test objects by name.", suppressionGroup[0].Info.Synopsis.Text);
+
             Assert.Equal("SuppressWithTestType", suppressionGroup[1].Name);
+            Assert.Equal("Ignore test objects by type.", suppressionGroup[1].Info.Synopsis.Text);
+
             Assert.Equal("SuppressWithNonProdTag", suppressionGroup[2].Name);
+            Assert.Equal("Ignore objects with non-production tag.", suppressionGroup[2].Info.Synopsis.Text);
         }
 
         #region Helper methods
 
         private static PSRuleOption GetOption()
         {
-            return new PSRuleOption();
+            var option = new PSRuleOption();
+            option.Output.Culture = new string[] { "en-US", "en" };
+            return option;
+        }
+
+        private static OptionContext GetOptionContext()
+        {
+            return new OptionContextBuilder(GetOption(), null, null, null).Build();
         }
 
         private static Source[] GetSource(string path)

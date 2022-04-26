@@ -14,7 +14,7 @@ namespace PSRule.Definitions.ModuleConfigs
     [Spec(Specs.V1, Specs.ModuleConfig)]
     internal sealed class ModuleConfigV1 : InternalResource<ModuleConfigV1Spec>
     {
-        public ModuleConfigV1(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ISourceExtent extent, ModuleConfigV1Spec spec)
+        public ModuleConfigV1(string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, ModuleConfigV1Spec spec)
             : base(ResourceKind.ModuleConfig, apiVersion, source, metadata, info, extent, spec) { }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace PSRule.Definitions.ModuleConfigs
         /// </summary>
         [JsonIgnore]
         [YamlIgnore]
-        public string Synopsis => Info.Synopsis;
+        public string Synopsis => Info.Synopsis.Text;
     }
 
     /// <summary>

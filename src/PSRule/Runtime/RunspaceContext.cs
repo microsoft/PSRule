@@ -253,31 +253,31 @@ namespace PSRule.Runtime
         public void WarnRuleCountSuppressed(int ruleCount)
         {
             if (Writer == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
-            {
                 return;
-            }
 
             Writer.WriteWarning(PSRuleResources.RuleCountSuppressed, ruleCount, Binding.TargetName);
         }
 
-        public void WarnRuleSuppressionGroup(string ruleId, string suppressionGroupId)
+        public void WarnRuleSuppressionGroup(string ruleId, ISuppressionInfo suppression)
         {
-            if (Writer == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
-            {
+            if (Writer == null || suppression == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
                 return;
-            }
 
-            Writer.WriteWarning(PSRuleResources.RuleSuppressionGroup, ruleId, suppressionGroupId, Binding.TargetName);
+            if (suppression.Synopsis != null && suppression.Synopsis.HasValue)
+                Writer.WriteWarning(PSRuleResources.RuleSuppressionGroupExtended, ruleId, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
+            else
+                Writer.WriteWarning(PSRuleResources.RuleSuppressionGroup, ruleId, suppression.Id, Binding.TargetName);
         }
 
-        public void WarnRuleSuppressionGroupCount(int ruleCount, string suppressionGroupId)
+        public void WarnRuleSuppressionGroupCount(ISuppressionInfo suppression, int count)
         {
-            if (Writer == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
-            {
+            if (Writer == null || suppression == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
                 return;
-            }
 
-            Writer.WriteWarning(PSRuleResources.RuleSuppressionGroupCount, ruleCount, suppressionGroupId, Binding.TargetName);
+            if (suppression.Synopsis != null && suppression.Synopsis.HasValue)
+                Writer.WriteWarning(PSRuleResources.RuleSuppressionGroupExtendedCount, count, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
+            else
+                Writer.WriteWarning(PSRuleResources.RuleSuppressionGroupCount, count, suppression.Id, Binding.TargetName);
         }
 
         public void ErrorInvaildRuleResult()

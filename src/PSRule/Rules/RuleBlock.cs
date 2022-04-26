@@ -115,6 +115,8 @@ namespace PSRule.Rules
 
         ResourceTags IResource.Tags => Tag;
 
+        IResourceHelpInfo IResource.Info => Info;
+
         string IRuleV1.RuleName => Name;
 
         ResourceTags IRuleV1.Tag => Tag;
