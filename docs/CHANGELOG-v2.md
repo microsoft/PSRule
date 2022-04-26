@@ -26,6 +26,7 @@ What's changed since pre-release v2.1.0-B0015:
   - Added source support for string conditions. [#1068](https://github.com/microsoft/PSRule/issues/1068)
 - Engineering:
   - Bump Sarif.Sdk to 2.4.14. [#1064](https://github.com/microsoft/PSRule/pull/1064)
+  - Bump Pester to 5.3.2. [#1062](https://github.com/microsoft/PSRule/pull/1062)
 - Bug fixes:
   - **Important change:** Fixed source scope not updated in multi-module runs. [#1053](https://github.com/microsoft/PSRule/issues/1053)
     - Several properties of rule and language block elements have been renamed to improve consistency.
