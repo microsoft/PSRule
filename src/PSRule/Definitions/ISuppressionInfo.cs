@@ -21,10 +21,7 @@ namespace PSRule.Definitions
     {
         public bool Equals(ISuppressionInfo x, ISuppressionInfo y)
         {
-            if (object.Equals(x, null) || object.Equals(y, null))
-                return object.Equals(x, y);
-
-            return x.Equals(y);
+            return object.Equals(x, null) || object.Equals(y, null) ? object.Equals(x, y) : x.Equals(y);
         }
 
         public int GetHashCode(ISuppressionInfo obj)
