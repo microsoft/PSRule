@@ -23,6 +23,7 @@ What's changed since pre-release v2.1.0-B0015:
     - Use markdown to set a culture specific synopsis.
     - Custom suppression messages are not supported when suppressing individual rules using `ps-rule.yaml`.
     - See [about_PSRule_SuppressionGroups] for details.
+  - Added source support for string conditions. [#1068](https://github.com/microsoft/PSRule/issues/1068)
 - Engineering:
   - Bump Sarif.Sdk to 2.4.14. [#1064](https://github.com/microsoft/PSRule/pull/1064)
 - Bug fixes:
