@@ -9,13 +9,15 @@ Describes PSRule Suppression Groups including how to use and author them.
 ## LONG DESCRIPTION
 
 PSRule executes rules to validate an object from input.
-When an evaluating an object from input, PSRule can use suppression groups to suppress rules based on a [Selector](about_PSRule_Selectors.md).
+When an evaluating each object, PSRule can use suppression groups to suppress rules based on a condition.
+Suppression groups use a [Selector](about_PSRule_Selectors.md) to determine if the rule is suppressed.
 
-## Defining suppression groups
+### Defining suppression groups
 
-Suppression groups can be defined with either YAML or JSON format, and can be included with a module or a standalone `.Rule.yaml` or `.Rule.jsonc` file.
-In either case, define a suppression group within a file ending with the `.Rule.yaml` or `.Rule.jsonc` extension.
-A suppression group can be defined side-by-side with other resources such as rules, baselines or module configurations.
+Suppression groups can be defined using either YAML or JSON format.
+A suppression group can be in a standalone file or included in a module.
+Define suppression groups in `.Rule.yaml` or `.Rule.jsonc` files.
+Each suppression group may be defined individually or side-by-side with resources such as rules or baselines.
 
 Suppression groups can also be defined within `.json` files.
 We recommend using `.jsonc` to view [JSON with Comments](https://code.visualstudio.com/docs/languages/json#_json-with-comments) in Visual Studio Code.
@@ -51,10 +53,27 @@ spec:
 ]
 ```
 
+Set the `synopsis` to describe the justification for the suppression.
 Within the `rule` array, one or more rule names can be used.
 If no rules are specified, suppression will occur for all rules.
 Within the `if` object, one or more conditions or logical operators can be used.
 When the `if` condition is `true` the object will be suppressed for the current rule.
+
+### Documentation
+
+Suppression groups can be configured with a synopsis.
+When set, the synopsis will be included in output for any suppression warnings that are shown.
+The synopsis helps provide justification for the suppression, in a short single line message.
+To set the synopsis, include a comment above the suppression group `apiVersion` property.
+
+Alternatively, a localized synopsis can be provided in a separate markdown file.
+See [about_PSRule_Docs](about_PSRule_Docs.md) for details.
+
+Some examples of a suppression group synopsis include:
+
+- _Ignore test objects by name._
+- _Ignore test objects by type._
+- _Ignore objects with non-production tag._
 
 ## EXAMPLES
 
@@ -64,7 +83,7 @@ When the `if` condition is `true` the object will be suppressed for the current 
 # Example SuppressionGroups.Rule.yaml
 
 ---
-# Synopsis: Suppress with target name
+# Synopsis: Ignore test objects by name.
 apiVersion: github.com/microsoft/PSRule/v1
 kind: SuppressionGroup
 metadata:
@@ -80,7 +99,7 @@ spec:
     - 'TestObject2'
 
 ---
-# Synopsis: Suppress with target type
+# Synopsis: Ignore test objects by type.
 apiVersion: github.com/microsoft/PSRule/v1
 kind: SuppressionGroup
 metadata:
@@ -100,7 +119,7 @@ spec:
 // Example SuppressionGroups.Rule.jsonc
 [
   {
-    // Synopsis: Suppress with target name
+    // Synopsis: Ignore test objects by name.
     "apiVersion": "github.com/microsoft/PSRule/v1",
     "kind": "SuppressionGroup",
     "metadata": {
@@ -121,7 +140,7 @@ spec:
     }
   },
   {
-    // Synopsis: Suppress with target type
+    // Synopsis: Ignore test objects by type.
     "apiVersion": "github.com/microsoft/PSRule/v1",
     "kind": "SuppressionGroup",
     "metadata": {

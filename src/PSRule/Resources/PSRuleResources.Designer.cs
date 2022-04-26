@@ -538,6 +538,24 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rule &apos;{0}&apos; was suppressed by suppression group &apos;{1}&apos; for &apos;{2}&apos;. {3}.
+        /// </summary>
+        internal static string RuleSuppressionGroupExtended {
+            get {
+                return ResourceManager.GetString("RuleSuppressionGroupExtended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} rule/s were suppressed by suppression group &apos;{1}&apos; for &apos;{2}&apos;. {3}.
+        /// </summary>
+        internal static string RuleSuppressionGroupExtendedCount {
+            get {
+                return ResourceManager.GetString("RuleSuppressionGroupExtendedCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [PSRule][D] -- Scanning for source files in module: {0}.
         /// </summary>
         internal static string ScanModule {

@@ -1,9 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
 
-namespace PSRule.Parser
+namespace PSRule.Help
 {
     internal sealed class MetadataLexer : MarkdownLexer
     {

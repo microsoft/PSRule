@@ -57,35 +57,64 @@ Configuration options for PSRule are set within the `ps-rule.yaml` file.
 
 To prevent a rule executing you can either:
 
-- **Exclude** &mdash; The rule is not executed for any resource.
-- **Suppress** &mdash; The rule is not executed for a specific resource by name.
+- **Exclude rules by name** &mdash; The rule is not executed for any object.
+- **Suppress rules by name** &mdash; The rule is not executed for a specific object by name.
+- **Suppress rules by condition** &mdash; The rule is not executed for matching objects.
 
-To exclude a rule, set `Rule.Exclude` option within the `ps-rule.yaml` file.
+=== "Exclude by name"
 
-[:octicons-book-24: Docs][3]
+    To exclude a rule, set `Rule.Exclude` option within the `ps-rule.yaml` file.
 
-```yaml
-rule:
-  exclude:
-  # Ignore the following rules for all resources
-  - Azure.VM.UseHybridUseBenefit
-  - Azure.VM.Standalone
-```
+    [:octicons-book-24: Docs][3]
 
-To suppress a rule, set `Suppression` option within the `ps-rule.yaml` file.
+    ```yaml
+    rule:
+      exclude:
+      # Ignore the following rules for all objects
+      - Azure.VM.UseHybridUseBenefit
+      - Azure.VM.Standalone
+    ```
 
-[:octicons-book-24: Docs][4]
+=== "Suppression by name"
 
-```yaml
-suppression:
-  Azure.AKS.AuthorizedIPs:
-  # Exclude the following externally managed AKS clusters
-  - aks-cluster-prod-eus-001
-  Azure.Storage.SoftDelete:
-  # Exclude the following non-production storage accounts
-  - storagedeveus6jo36t
-  - storagedeveus1df278
-```
+    To suppress an individual rule, set `Suppression` option within the `ps-rule.yaml` file.
+
+    [:octicons-book-24: Docs][4]
+
+    ```yaml
+    suppression:
+      Azure.AKS.AuthorizedIPs:
+      # Exclude the following externally managed AKS clusters
+      - aks-cluster-prod-eus-001
+      Azure.Storage.SoftDelete:
+      # Exclude the following non-production storage accounts
+      - storagedeveus6jo36t
+      - storagedeveus1df278
+    ```
+
+=== "Suppression by condition"
+
+    To suppress an rules by condition, create a suppression group.
+
+    [:octicons-book-24: Docs][5]
+
+    ```yaml
+    ---
+    # Synopsis: Ignore test objects by name.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: SuppressionGroup
+    metadata:
+      name: SuppressWithTargetName
+    spec:
+      rule:
+      - 'FromFile1'
+      - 'FromFile2'
+      if:
+        name: '.'
+        in:
+        - 'TestObject1'
+        - 'TestObject2'
+    ```
 
 !!! tip
     Use comments within `ps-rule.yaml` to describe the reason why rules are excluded or suppressed.
@@ -94,3 +123,4 @@ suppression:
 
   [3]: concepts/PSRule/en-US/about_PSRule_Options.md#ruleexclude
   [4]: concepts/PSRule/en-US/about_PSRule_Options.md#suppression
+  [5]: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md

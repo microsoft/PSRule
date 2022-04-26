@@ -9,7 +9,7 @@ namespace PSRule.Definitions.Selectors
     [Spec(Specs.V1, Specs.Selector)]
     internal sealed class SelectorV1 : InternalResource<SelectorV1Spec>
     {
-        public SelectorV1(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ISourceExtent extent, SelectorV1Spec spec)
+        public SelectorV1(string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, SelectorV1Spec spec)
             : base(ResourceKind.Selector, apiVersion, source, metadata, info, extent, spec) { }
     }
 

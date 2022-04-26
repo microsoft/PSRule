@@ -15,6 +15,15 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v2.1.0-B0015:
 
+- General improvements:
+  - Added custom suppression message during PSRule runs. [#1046](https://github.com/microsoft/PSRule/issues/1046)
+    - When a rule is suppressed using a suppression group the synopsis is shown in the suppression warning.
+    - Configure the suppression group synopsis to display a custom message.
+    - Suppression groups synopsis can be localized using markdown documentation.
+    - Use markdown to set a culture specific synopsis.
+    - Custom suppression messages are not supported when suppressing individual rules using `ps-rule.yaml`.
+    - See [about_PSRule_SuppressionGroups] for details.
+  - Added source support for string conditions. [#1068](https://github.com/microsoft/PSRule/issues/1068)
 - Engineering:
   - Bump Sarif.Sdk to 2.4.14. [#1064](https://github.com/microsoft/PSRule/pull/1064)
   - Bump Pester to 5.3.2. [#1062](https://github.com/microsoft/PSRule/pull/1062)

@@ -183,12 +183,12 @@ namespace PSRule.Pipeline
             }
             else if (resource.Kind == ResourceKind.SuppressionGroup && resource is SuppressionGroupV1 suppressionGroup)
             {
-                var suppressionGroupVisitor = new SuppressionGroupVisitor(
+                SuppressionGroup.Add(new SuppressionGroupVisitor(
                     id: suppressionGroup.Id,
                     source: suppressionGroup.Source,
-                    spec: suppressionGroup.Spec
-                );
-                SuppressionGroup.Add(suppressionGroupVisitor);
+                    spec: suppressionGroup.Spec,
+                    info: suppressionGroup.Info
+                ));
             }
         }
 

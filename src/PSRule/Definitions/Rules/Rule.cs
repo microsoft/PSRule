@@ -60,7 +60,7 @@ namespace PSRule.Definitions.Rules
     {
         internal const SeverityLevel DEFAULT_LEVEL = SeverityLevel.Error;
 
-        public RuleV1(string apiVersion, SourceFile source, ResourceMetadata metadata, ResourceHelpInfo info, ISourceExtent extent, RuleV1Spec spec)
+        public RuleV1(string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, RuleV1Spec spec)
             : base(ResourceKind.Rule, apiVersion, source, metadata, info, extent, spec)
         {
             Ref = ResourceHelper.GetIdNullable(source.Module, metadata.Ref, ResourceIdKind.Ref);
@@ -88,7 +88,7 @@ namespace PSRule.Definitions.Rules
         /// </summary>
         [JsonIgnore]
         [YamlIgnore]
-        public string Synopsis => Info.Synopsis;
+        public string Synopsis => Info.Synopsis.Text;
 
         ResourceId? IDependencyTarget.Ref => Ref;
 
@@ -107,7 +107,7 @@ namespace PSRule.Definitions.Rules
 
         ResourceTags IRuleV1.Tag => Metadata.Tags;
 
-        string IRuleV1.Description => Info.Synopsis;
+        string IRuleV1.Description => Info.Synopsis.Text;
     }
 
     internal sealed class RuleV1Spec : Spec, IRuleSpec

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -8,64 +8,24 @@ using System.Threading;
 using PSRule.Definitions;
 using PSRule.Resources;
 
-namespace PSRule.Parser
+namespace PSRule.Help
 {
-    /// <summary>
-    /// A lexer that interprets markdown as a rule.
-    /// </summary>
-    internal sealed class RuleLexer : MarkdownLexer
+    internal abstract class HelpLexer : MarkdownLexer
     {
-        private const int RULE_NAME_HEADING_LEVEL = 1;
-        private const int RULE_ENTRIES_HEADING_LEVEL = 2;
+        protected const int RULE_NAME_HEADING_LEVEL = 1;
+        protected const int RULE_ENTRIES_HEADING_LEVEL = 2;
 
         private const string Space = " ";
-
-        public RuleLexer() { }
-
-        public RuleDocument Process(TokenStream stream)
-        {
-            // Look for yaml header
-            stream.MoveTo(0);
-            var metadata = YamlHeader(stream);
-            RuleDocument doc = null;
-
-            // Process sections
-            while (!stream.EOF)
-            {
-                if (IsHeading(stream.Current, RULE_NAME_HEADING_LEVEL))
-                {
-                    doc = new RuleDocument(stream.Current.Text)
-                    {
-                        Annotations = ResourceTags.FromDictionary(metadata)
-                    };
-                }
-                else if (doc != null && IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL))
-                {
-                    var matching = Synopsis(stream, doc) ||
-                        Description(stream, doc) ||
-                        Recommendation(stream, doc) ||
-                        Notes(stream, doc) ||
-                        Links(stream, doc);
-
-                    if (matching)
-                        continue;
-                }
-
-                // Skip the current token
-                stream.Next();
-            }
-            return doc;
-        }
 
         /// <summary>
         /// Read synopsis.
         /// </summary>
-        private static bool Synopsis(TokenStream stream, RuleDocument doc)
+        protected static bool Synopsis(TokenStream stream, IHelpDocument doc)
         {
             if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Synopsis))
                 return false;
 
-            doc.Synopsis = TextBlock(stream);
+            doc.Synopsis = InfoString(stream);
             stream.SkipUntilHeader();
             return true;
         }
@@ -73,38 +33,12 @@ namespace PSRule.Parser
         /// <summary>
         /// Read description.
         /// </summary>
-        private static bool Description(TokenStream stream, RuleDocument doc)
+        protected static bool Description(TokenStream stream, IHelpDocument doc)
         {
             if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Description))
                 return false;
 
-            doc.Description = TextBlock(stream, includeNonYamlFencedBlocks: true);
-            stream.SkipUntilHeader();
-            return true;
-        }
-
-        /// <summary>
-        /// Read recommendation.
-        /// </summary>
-        private static bool Recommendation(TokenStream stream, RuleDocument doc)
-        {
-            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Recommendation))
-                return false;
-
-            doc.Recommendation = TextBlock(stream);
-            stream.SkipUntilHeader();
-            return true;
-        }
-
-        /// <summary>
-        /// Read notes.
-        /// </summary>
-        private static bool Notes(TokenStream stream, RuleDocument doc)
-        {
-            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Notes))
-                return false;
-
-            doc.Notes = TextBlock(stream, includeNonYamlFencedBlocks: true);
+            doc.Description = InfoString(stream, includeNonYamlFencedBlocks: true);
             stream.SkipUntilHeader();
             return true;
         }
@@ -112,7 +46,7 @@ namespace PSRule.Parser
         /// <summary>
         /// Read links.
         /// </summary>
-        private static bool Links(TokenStream stream, RuleDocument doc)
+        protected static bool Links(TokenStream stream, IHelpDocument doc)
         {
             if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Links))
                 return false;
@@ -151,7 +85,14 @@ namespace PSRule.Parser
             return true;
         }
 
-        private static TextBlock TextBlock(TokenStream stream, bool includeNonYamlFencedBlocks = false)
+        protected static InfoString InfoString(TokenStream stream, bool includeNonYamlFencedBlocks = false)
+        {
+            stream.Next();
+            var text = ReadText(stream, includeNonYamlFencedBlocks);
+            return new InfoString(text, null);
+        }
+
+        protected static TextBlock TextBlock(TokenStream stream, bool includeNonYamlFencedBlocks = false)
         {
             var useBreak = stream.Current.IsDoubleLineEnding();
             stream.Next();

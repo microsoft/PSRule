@@ -996,6 +996,17 @@ spec:
     isUpper: true
 
 ---
+# Synopsis: Test endsWith with source
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlEndsWithSource
+spec:
+  if:
+    source: 'Template'
+    endsWith: '/template.json'
+
+---
 # Synopsis: Test withinPath with source
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Selector

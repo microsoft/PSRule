@@ -124,6 +124,8 @@ namespace PSRule.Rules
 
         string IResource.Name => Name;
 
+        IResourceHelpInfo IResource.Info => Info;
+
         ResourceTags IResource.Tags => Tag;
 
         [Obsolete("Use Source property instead.")]

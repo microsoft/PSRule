@@ -1,10 +1,10 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using PSRule.Definitions;
 
-namespace PSRule.Parser
+namespace PSRule.Help
 {
     /// <summary>
     /// Define options that determine how markdown will be rendered.
@@ -57,25 +57,60 @@ namespace PSRule.Parser
         public string Uri;
     }
 
-    internal sealed class RuleDocument
+    internal interface IHelpDocument
+    {
+        string Name { get; }
+
+        InfoString Synopsis { get; set; }
+
+        InfoString Description { get; set; }
+
+        Link[] Links { get; set; }
+    }
+
+    internal sealed class RuleDocument : IHelpDocument
     {
         public RuleDocument(string name)
         {
             Name = name;
         }
 
-        public readonly string Name;
+        public string Name { get; }
 
-        public TextBlock Synopsis;
+        public InfoString Synopsis { get; set; }
 
-        public TextBlock Description;
+        public InfoString Description { get; set; }
 
-        public TextBlock Notes;
+        public TextBlock Notes { get; set; }
 
-        public TextBlock Recommendation;
+        public TextBlock Recommendation { get; set; }
 
-        public Link[] Links;
+        public Link[] Links { get; set; }
 
-        public ResourceTags Annotations;
+        public ResourceTags Annotations { get; set; }
+    }
+
+    internal sealed class ResourceHelpDocument : IHelpDocument
+    {
+        public ResourceHelpDocument(string name)
+        {
+            Name = name;
+        }
+
+        public string Name { get; }
+
+        public InfoString Synopsis { get; set; }
+
+        public InfoString Description { get; set; }
+
+        public Link[] Links { get; set; }
+
+        internal IResourceHelpInfo ToInfo()
+        {
+            return new ResourceHelpInfo(Name)
+            {
+                Synopsis = Synopsis
+            };
+        }
     }
 }

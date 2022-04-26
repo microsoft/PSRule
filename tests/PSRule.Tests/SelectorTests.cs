@@ -38,7 +38,7 @@ namespace PSRule
             context.Begin();
             var selector = HostHelper.GetSelector(GetSource(path), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(85, selector.Length);
+            Assert.Equal(86, selector.Length);
 
             Assert.Equal("BasicSelector", selector[0].Name);
             Assert.Equal($"{type}AllOf", selector[4].Name);
@@ -797,6 +797,23 @@ namespace PSRule
 
             context.EnterTargetObject(new TargetObject(actual2));
             Assert.False(withName.Match(actual2));
+
+            // With source
+            var withSource = GetSelectorVisitor($"{type}EndsWithSource", GetSource(path), out context);
+            var source = new PSObject();
+            source.Properties.Add(new PSNoteProperty("file", "deployments/path/template.json"));
+            source.Properties.Add(new PSNoteProperty("line", 100));
+            source.Properties.Add(new PSNoteProperty("position", 1000));
+            source.Properties.Add(new PSNoteProperty("Type", "Template"));
+            var info = new PSObject();
+            info.Properties.Add(new PSNoteProperty("source", new PSObject[] { source }));
+            actual1 = new PSObject();
+            actual1.Properties.Add(new PSNoteProperty("Name", "TestObject1"));
+            actual1.Properties.Add(new PSNoteProperty("Value", 1));
+            actual1.Properties.Add(new PSNoteProperty("_PSRule", info));
+
+            context.EnterTargetObject(new TargetObject(actual1));
+            Assert.True(withSource.Match(actual1));
         }
 
         [Theory]

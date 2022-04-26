@@ -40,7 +40,7 @@ namespace PSRule.Definitions.Conventions
             Extent = extent;
         }
 
-        public ResourceHelpInfo Info { get; }
+        public IResourceHelpInfo Info { get; }
 
         public ResourceFlags Flags { get; }
 
