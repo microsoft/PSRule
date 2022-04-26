@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -63,7 +63,7 @@ namespace PSRule.Runtime
             return new Operand(OperandKind.Field, field, value);
         }
 
-        internal static IOperand FromSource(TargetSourceInfo source)
+        internal static IOperand FromSource(string source)
         {
             return new Operand(OperandKind.Source, source);
         }

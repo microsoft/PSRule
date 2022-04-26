@@ -15,6 +15,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v2.1.0-B0015:
 
+- General improvements:
+  - Added source support for string conditions. [#1068](https://github.com/microsoft/PSRule/issues/1068)
 - Engineering:
   - Bump Sarif.Sdk to 2.4.14. [#1064](https://github.com/microsoft/PSRule/pull/1064)
 - Bug fixes:

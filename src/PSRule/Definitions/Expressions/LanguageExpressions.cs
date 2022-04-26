@@ -1043,18 +1043,18 @@ namespace PSRule.Definitions.Expressions
             {
                 context.ExpressionTrace(WITHINPATH, operand.Value, path);
 
-                var originPath = ExpressionHelpers.GetObjectOriginPath(operand.Value);
-
-                for (var i = 0; path != null && i < path.Length; i++)
+                if (ExpressionHelpers.TryString(operand.Value, out var source))
                 {
-                    if (ExpressionHelpers.WithinPath(originPath, path[i], caseSensitive))
-                        return Pass();
+                    for (var i = 0; path != null && i < path.Length; i++)
+                    {
+                        if (ExpressionHelpers.WithinPath(source, path[i], caseSensitive))
+                            return Pass();
+                    }
                 }
-
                 return Fail(
                     context,
                     ReasonStrings.WithinPath,
-                    ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), originPath),
+                    ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), source),
                     StringJoinNormalizedPath(path)
                 );
             }
@@ -1071,19 +1071,19 @@ namespace PSRule.Definitions.Expressions
             {
                 context.ExpressionTrace(WITHINPATH, operand.Value, path);
 
-                var originPath = ExpressionHelpers.GetObjectOriginPath(operand.Value);
-
-                for (var i = 0; path != null && i < path.Length; i++)
+                if (ExpressionHelpers.TryString(operand.Value, out var source))
                 {
-                    if (ExpressionHelpers.WithinPath(originPath, path[i], caseSensitive))
-                        return Fail(
-                            context,
-                            ReasonStrings.NotWithinPath,
-                            ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), originPath),
-                            ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), path[i])
-                        );
+                    for (var i = 0; path != null && i < path.Length; i++)
+                    {
+                        if (ExpressionHelpers.WithinPath(source, path[i], caseSensitive))
+                            return Fail(
+                                context,
+                                ReasonStrings.NotWithinPath,
+                                ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), source),
+                                ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), path[i])
+                            );
+                    }
                 }
-
                 return Pass();
             }
 
@@ -1358,11 +1358,10 @@ namespace PSRule.Definitions.Expressions
             if (properties.TryGetString(SOURCE, out var sourceValue))
             {
                 var source = context?.GetContext()?.TargetObject?.Source[sourceValue];
-
                 if (source == null)
                     return Invalid(context, sourceValue);
 
-                operand = Operand.FromSource(source);
+                operand = Operand.FromSource(ExpressionHelpers.GetObjectOriginPath(source));
             }
             return operand != null;
         }
