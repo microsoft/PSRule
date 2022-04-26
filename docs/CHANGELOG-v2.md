@@ -13,6 +13,11 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.1.0-B0040:
+
+- General improvements:
+  - Added additional repository paths to ignore by default. [#1043](https://github.com/microsoft/PSRule/issues/1043)
+
 ## v2.1.0-B0040 (pre-release)
 
 What's changed since pre-release v2.1.0-B0015:

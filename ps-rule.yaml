@@ -13,7 +13,6 @@ input:
   pathIgnore:
   - '.vscode/'
   - '.github/workflows/'
-  - '.azure-pipelines/**/*.yaml'
   - '*.md'
   - '*.Designer.cs'
   - '*.resx'

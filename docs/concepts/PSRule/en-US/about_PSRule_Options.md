@@ -1227,8 +1227,14 @@ PSRule will ignore the following files by default:
 - `SECURITY.md`
 - `SUPPORT.md`
 - `.vscode/*.json`
+- `.vscode/*.code-snippets`
 - `.github/**/*.md`
 - `.github/CODEOWNERS`
+- `.pipelines/**/*.yml`
+- `.pipelines/**/*.yaml`
+- `.azure-pipelines/**/*.yml`
+- `.azure-pipelines/**/*.yaml`
+- `.azuredevops/*.md`
 
 To include these files, set this option to `$False`.
 This option can be specified using:
