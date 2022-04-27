@@ -13,6 +13,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.1.0-B0040:
+
+- General improvements:
+  - Added `notStartsWith`, `notEndsWith`, and `notContains`. [#1047](https://github.com/microsoft/PSRule/issues/1047)
+    - Expressions and assertion helpers.
+
 ## v2.1.0-B0040 (pre-release)
 
 What's changed since pre-release v2.1.0-B0015:

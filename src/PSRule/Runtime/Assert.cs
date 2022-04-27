@@ -372,7 +372,7 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
-        /// The object field value should start with the any of the specified prefixes. Only applies to strings.
+        /// The value should start with the any of the specified prefixes. Only applies to strings.
         /// </summary>
         public AssertResult StartsWith(PSObject inputObject, string field, string[] prefix, bool caseSensitive = false)
         {
@@ -397,7 +397,38 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
-        /// The object field value should end with the any of the specified suffix. Only applies to strings.
+        /// The value should not start with the any of the specified prefixes. Only applies to strings.
+        /// </summary>
+        /// <remarks>
+        /// The parameter 'inputObject' is null.
+        /// The parameter 'field' is null or empty.
+        /// The parameter 'prefix' is null.
+        /// The field '{0}' does not exist.
+        /// The value '{0}' starts with '{1}'.
+        /// </remarks>
+        public AssertResult NotStartsWith(PSObject inputObject, string field, string[] prefix, bool caseSensitive = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullParam(prefix, nameof(prefix), out result) ||
+                GuardField(inputObject, field, false, out var fieldValue, out result))
+                return result;
+
+            if (prefix == null || prefix.Length == 0 || GuardString(fieldValue, out var value, out _))
+                return Pass();
+
+            // Assert
+            for (var i = 0; i < prefix.Length; i++)
+            {
+                if (ExpressionHelpers.StartsWith(value, prefix[i], caseSensitive))
+                    return Fail(ReasonStrings.Assert_StartsWith, value, prefix[i]);
+            }
+            return Pass();
+        }
+
+        /// <summary>
+        /// The value should end with the any of the specified suffix. Only applies to strings.
         /// </summary>
         public AssertResult EndsWith(PSObject inputObject, string field, string[] suffix, bool caseSensitive = false)
         {
@@ -422,7 +453,38 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
-        /// The object field value should contain with the any of the specified text. Only applies to strings.
+        /// The value should not end with the any of the specified suffix. Only applies to strings.
+        /// </summary>
+        /// <remarks>
+        /// The parameter 'inputObject' is null.
+        /// The parameter 'field' is null or empty.
+        /// The parameter 'prefix' is null.
+        /// The field '{0}' does not exist.
+        /// The value '{0}' ends with '{1}'.
+        /// </remarks>
+        public AssertResult NotEndsWith(PSObject inputObject, string field, string[] suffix, bool caseSensitive = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullParam(suffix, nameof(suffix), out result) ||
+                GuardField(inputObject, field, false, out var fieldValue, out result))
+                return result;
+
+            if (suffix == null || suffix.Length == 0 || GuardString(fieldValue, out var value, out _))
+                return Pass();
+
+            // Assert
+            for (var i = 0; i < suffix.Length; i++)
+            {
+                if (ExpressionHelpers.EndsWith(value, suffix[i], caseSensitive))
+                    return Fail(ReasonStrings.Assert_EndsWith, value, suffix);
+            }
+            return Pass();
+        }
+
+        /// <summary>
+        /// The value should contain with the any of the specified text. Only applies to strings.
         /// </summary>
         public AssertResult Contains(PSObject inputObject, string field, string[] text, bool caseSensitive = false)
         {
@@ -444,6 +506,37 @@ namespace PSRule.Runtime
                     return Pass();
             }
             return Fail(ReasonStrings.Contains, field, FormatArray(text));
+        }
+
+        /// <summary>
+        /// The value should not contain with the any of the specified text. Only applies to strings.
+        /// </summary>
+        /// <remarks>
+        /// The parameter 'inputObject' is null.
+        /// The parameter 'field' is null or empty.
+        /// The parameter 'prefix' is null.
+        /// The field '{0}' does not exist.
+        /// The value '{0}' contains '{1}'.
+        /// </remarks>
+        public AssertResult NotContains(PSObject inputObject, string field, string[] text, bool caseSensitive = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardNullParam(text, nameof(text), out result) ||
+                GuardField(inputObject, field, false, out var fieldValue, out result))
+                return result;
+
+            if (text == null || text.Length == 0 || GuardString(fieldValue, out var value, out _))
+                return Pass();
+
+            // Assert
+            for (var i = 0; i < text.Length; i++)
+            {
+                if (ExpressionHelpers.Contains(value, text[i], caseSensitive))
+                    return Fail(ReasonStrings.Assert_Contains, value, text);
+            }
+            return Pass();
         }
 
         /// <summary>

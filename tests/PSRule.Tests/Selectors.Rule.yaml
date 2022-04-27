@@ -320,6 +320,32 @@ spec:
         convert: true
 
 ---
+# Synopsis: Test notStartsWith
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNotStartsWith
+spec:
+  if:
+    allOf:
+    - anyOf:
+      - field: 'Value'
+        notStartsWith: 'a'
+      - field: 'Value'
+        notStartsWith: 'e'
+        caseSensitive: true
+    - field: 'Value'
+      notStartsWith:
+      - 'a'
+      - 'e'
+    - anyOf:
+      - field: 'OtherValue'
+        exists: false
+      - field: 'OtherValue'
+        notStartsWith: 'a'
+        convert: true
+
+---
 # Synopsis: Test endsWith
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Selector
@@ -346,6 +372,32 @@ spec:
         convert: true
 
 ---
+# Synopsis: Test notEndsWith
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNotEndsWith
+spec:
+  if:
+    allOf:
+    - anyOf:
+      - field: 'Value'
+        notEndsWith: 'c'
+      - field: 'Value'
+        notEndsWith: 'g'
+        caseSensitive: true
+    - field: 'Value'
+      notEndsWith:
+      - 'c'
+      - 'g'
+    - anyOf:
+      - field: 'OtherValue'
+        exists: false
+      - field: 'OtherValue'
+        notEndsWith: 'l'
+        convert: true
+
+---
 # Synopsis: Test contains
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Selector
@@ -369,6 +421,32 @@ spec:
         exists: false
       - field: 'OtherValue'
         contains: 'l'
+        convert: true
+
+---
+# Synopsis: Test notContains
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNotContains
+spec:
+  if:
+    allOf:
+    - anyOf:
+      - field: 'Value'
+        notContains: 'ab'
+      - field: 'Value'
+        notContains: 'bc'
+        caseSensitive: true
+    - field: 'Value'
+      notContains:
+      - 'ab'
+      - 'bc'
+    - anyOf:
+      - field: 'OtherValue'
+        exists: false
+      - field: 'OtherValue'
+        notContains: 'l'
         convert: true
 
 ---

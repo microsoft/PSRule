@@ -181,6 +181,7 @@ namespace PSRule
             var assert = GetAssertionHelper();
             var value = GetObject((name: "name", value: "abcdefg"), (name: "value", value: 123));
 
+            // String
             Assert.True(assert.StartsWith(value, "name", new string[] { "123", "ab" }).Result);
             Assert.True(assert.StartsWith(value, "name", new string[] { "123", "ab" }, caseSensitive: true).Result);
             Assert.True(assert.StartsWith(value, "name", new string[] { "ABC" }).Result);
@@ -189,6 +190,30 @@ namespace PSRule
             Assert.False(assert.StartsWith(value, "name", new string[] { "abcdefgh" }).Result);
             Assert.False(assert.StartsWith(value, "name", new string[] { "ABC" }, caseSensitive: true).Result);
             Assert.False(assert.StartsWith(value, "name", new string[] { "123", "cd" }).Result);
+
+            // Integer
+            Assert.False(assert.StartsWith(value, "value", new string[] { "123" }).Result);
+        }
+
+        [Fact]
+        public void NotStartsWith()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject((name: "name", value: "abcdefg"), (name: "value", value: 123));
+
+            // String
+            Assert.False(assert.NotStartsWith(value, "name", new string[] { "123", "ab" }).Result);
+            Assert.False(assert.NotStartsWith(value, "name", new string[] { "123", "ab" }, caseSensitive: true).Result);
+            Assert.False(assert.NotStartsWith(value, "name", new string[] { "ABC" }).Result);
+            Assert.True(assert.NotStartsWith(value, "name", new string[] { "123", "cd" }).Result);
+            Assert.True(assert.NotStartsWith(value, "name", new string[] { "123", "fg" }).Result);
+            Assert.True(assert.NotStartsWith(value, "name", new string[] { "abcdefgh" }).Result);
+            Assert.True(assert.NotStartsWith(value, "name", new string[] { "ABC" }, caseSensitive: true).Result);
+            Assert.True(assert.NotStartsWith(value, "name", new string[] { "123", "cd" }).Result);
+
+            // Integer
+            Assert.True(assert.NotStartsWith(value, "value", new string[] { "123" }).Result);
         }
 
         [Fact]
@@ -198,6 +223,7 @@ namespace PSRule
             var assert = GetAssertionHelper();
             var value = GetObject((name: "name", value: "abcdefg"), (name: "value", value: 123));
 
+            // String
             Assert.True(assert.EndsWith(value, "name", new string[] { "123", "fg" }).Result);
             Assert.True(assert.EndsWith(value, "name", new string[] { "123", "fg" }, caseSensitive: true).Result);
             Assert.True(assert.EndsWith(value, "name", new string[] { "EFG" }).Result);
@@ -206,6 +232,30 @@ namespace PSRule
             Assert.False(assert.EndsWith(value, "name", new string[] { "abcdefgh" }).Result);
             Assert.False(assert.EndsWith(value, "name", new string[] { "EFG" }, caseSensitive: true).Result);
             Assert.False(assert.EndsWith(value, "name", new string[] { "123", "cd" }).Result);
+
+            // Integer
+            Assert.False(assert.EndsWith(value, "value", new string[] { "123" }).Result);
+        }
+
+        [Fact]
+        public void NotEndsWith()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject((name: "name", value: "abcdefg"), (name: "value", value: 123));
+
+            // String
+            Assert.False(assert.NotEndsWith(value, "name", new string[] { "123", "fg" }).Result);
+            Assert.False(assert.NotEndsWith(value, "name", new string[] { "123", "fg" }, caseSensitive: true).Result);
+            Assert.False(assert.NotEndsWith(value, "name", new string[] { "EFG" }).Result);
+            Assert.True(assert.NotEndsWith(value, "name", new string[] { "123", "cd" }).Result);
+            Assert.True(assert.NotEndsWith(value, "name", new string[] { "123", "ab" }).Result);
+            Assert.True(assert.NotEndsWith(value, "name", new string[] { "abcdefgh" }).Result);
+            Assert.True(assert.NotEndsWith(value, "name", new string[] { "EFG" }, caseSensitive: true).Result);
+            Assert.True(assert.NotEndsWith(value, "name", new string[] { "123", "cd" }).Result);
+
+            // Integer
+            Assert.True(assert.NotEndsWith(value, "value", new string[] { "123" }).Result);
         }
 
         [Fact]
@@ -215,6 +265,7 @@ namespace PSRule
             var assert = GetAssertionHelper();
             var value = GetObject((name: "name", value: "abcdefg"), (name: "value", value: 123));
 
+            // String
             Assert.True(assert.Contains(value, "name", new string[] { "123", "ab" }).Result);
             Assert.True(assert.Contains(value, "name", new string[] { "123", "ab" }, caseSensitive: true).Result);
             Assert.True(assert.Contains(value, "name", new string[] { "ABC" }).Result);
@@ -223,6 +274,30 @@ namespace PSRule
             Assert.False(assert.Contains(value, "name", new string[] { "abcdefgh" }).Result);
             Assert.False(assert.Contains(value, "name", new string[] { "ABC" }, caseSensitive: true).Result);
             Assert.True(assert.Contains(value, "name", new string[] { "123", "cd" }).Result);
+
+            // Integer
+            Assert.False(assert.Contains(value, "value", new string[] { "123" }).Result);
+        }
+
+        [Fact]
+        public void NotContains()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject((name: "name", value: "abcdefg"), (name: "value", value: 123));
+
+            // String
+            Assert.False(assert.NotContains(value, "name", new string[] { "123", "ab" }).Result);
+            Assert.False(assert.NotContains(value, "name", new string[] { "123", "ab" }, caseSensitive: true).Result);
+            Assert.False(assert.NotContains(value, "name", new string[] { "ABC" }).Result);
+            Assert.False(assert.NotContains(value, "name", new string[] { "123", "cd" }).Result);
+            Assert.False(assert.NotContains(value, "name", new string[] { "123", "fg" }).Result);
+            Assert.True(assert.NotContains(value, "name", new string[] { "abcdefgh" }).Result);
+            Assert.True(assert.NotContains(value, "name", new string[] { "ABC" }, caseSensitive: true).Result);
+            Assert.False(assert.NotContains(value, "name", new string[] { "123", "cd" }).Result);
+
+            // Integer
+            Assert.True(assert.NotContains(value, "value", new string[] { "123" }).Result);
         }
 
         [Fact]

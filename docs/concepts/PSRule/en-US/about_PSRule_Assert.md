@@ -45,10 +45,13 @@ The following built-in assertion methods are provided:
 - [Less](#less) - The field value must be less.
 - [LessOrEqual](#lessorequal) - The field value must be less or equal to.
 - [Match](#match) - The field value matches a regular expression pattern.
+- [NotContains](#notcontains) - The value must not contain any of the specified strings.
+- [NotEndsWith](#notendswith) - The value must not end with any of the specified strings.
 - [NotHasField](#nothasfield) - The object must not have any of the specified fields.
 - [NotIn](#notin) - The field value must not be included in the set.
 - [NotMatch](#notmatch) - The field value does not match a regular expression pattern.
 - [NotNull](#notnull) - The field value must not be null.
+- [NotStartsWith](#notstartswith) - The value must not start with any of the specified strings.
 - [NotWithinPath](#notwithinpath) - The field must not be within the specified path.
 - [Null](#null) - The field value must not exist or be null.
 - [NullOrEmpty](#nullorempty) - The object must not have the specified field or it must be empty.
@@ -945,6 +948,72 @@ Rule 'Match' {
 }
 ```
 
+### NotContains
+
+The `NotContains` assertion method checks the field value contains the specified string.
+This condition fails when any of the specified sub-strings are found.
+Optionally a case-sensitive compare can be used, however case is ignored by default.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `text` - A string or an array of strings to compare the field value with.
+When an empty array of strings is specified or text is an empty string, `NotContains` always passes.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The parameter 'text' is null._
+- _The field '{0}' does not exist._
+- _The value '{0}' contains '{1}'._
+
+Examples:
+
+```powershell
+Rule 'NotContains' {
+    $Assert.NotContains($TargetObject, 'ResourceGroupName', 'prod')
+    $Assert.NotContains($TargetObject, 'Name', @('prod', 'test'), $True)
+}
+```
+
+### NotEndsWith
+
+The `NotEndsWith` assertion method checks the field value ends with the specified suffix.
+This condition fails when any of the specified sub-strings are found at the end of the operand.
+Optionally a case-sensitive compare can be used, however case is ignored by default.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `suffix` - A suffix or an array of suffixes to compare the field value with.
+When an empty array of suffixes is specified or suffix is an empty string, `NotEndsWith` always passes.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The parameter 'suffix' is null._
+- _The field '{0}' does not exist._
+- _The value '{0}' ends with '{1}'._
+
+Examples:
+
+```powershell
+Rule 'NotEndsWith' {
+    $Assert.NotEndsWith($TargetObject, 'ResourceGroupName', 'eus')
+    $Assert.NotEndsWith($TargetObject, 'Name', @('db', 'web'), $True)
+}
+```
+
 ### NotHasField
 
 The `NotHasField` assertion method checks the object does not have any of the specified fields.
@@ -1059,6 +1128,39 @@ Examples:
 Rule 'NotNull' {
     $Assert.NotNull($TargetObject, 'Name')
     $Assert.NotNull($TargetObject, 'tag.Environment')
+}
+```
+
+### NotStartsWith
+
+The `NotStartsWith` assertion method checks the field value starts with the specified prefix.
+This condition fails when any of the specified sub-strings are found at the start of the operand.
+Optionally a case-sensitive compare can be used, however case is ignored by default.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `prefix` - A prefix or an array of prefixes to compare the field value with.
+When an empty array of prefixes is specified or prefix is an empty string, `NotStartsWith` always passes.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The parameter 'prefix' is null._
+- _The field '{0}' does not exist._
+- _The value '{0}' starts with '{1}'._
+
+Examples:
+
+```powershell
+Rule 'NotStartsWith' {
+    $Assert.NotStartsWith($TargetObject, 'ResourceGroupName', 'rg-')
+    $Assert.NotStartsWith($TargetObject, 'Name', @('st', 'diag'), $True)
 }
 ```
 
