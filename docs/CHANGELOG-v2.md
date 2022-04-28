@@ -18,6 +18,8 @@ What's changed since pre-release v2.1.0-B0040:
 - General improvements:
   - Added `notStartsWith`, `notEndsWith`, and `notContains` expressions and assertion helpers. [#1047](https://github.com/microsoft/PSRule/issues/1047)
   - Added `like`, `notLike` expressions and assertion helpers. [#1048](https://github.com/microsoft/PSRule/issues/1048)
+- Engineering:
+  - Bump Sarif.Sdk to 2.4.15. [#1075](https://github.com/microsoft/PSRule/pull/1075)
 
 ## v2.1.0-B0040 (pre-release)
 
