@@ -327,6 +327,12 @@
   <data name="Assert_EndsWith" xml:space="preserve">
     <value>The value '{0}' ends with '{1}'.</value>
   </data>
+  <data name="Assert_Like" xml:space="preserve">
+    <value>The value '{0}' is like '{1}'.</value>
+  </data>
+  <data name="Assert_NotLike" xml:space="preserve">
+    <value>The value '{0}' is not like '{1}'.</value>
+  </data>
   <data name="Assert_StartsWith" xml:space="preserve">
     <value>The value '{0}' starts with '{1}'.</value>
   </data>

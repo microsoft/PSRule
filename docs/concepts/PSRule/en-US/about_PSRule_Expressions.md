@@ -39,11 +39,13 @@ The following conditions are available:
 - [IsUpper](#isupper)
 - [Less](#less)
 - [LessOrEquals](#lessorequals)
+- [Like](#like)
 - [Match](#match)
 - [NotContains](#notcontains)
 - [NotEndsWith](#notendswith)
 - [NotEquals](#notequals)
 - [NotIn](#notin)
+- [NotLike](#notlike)
 - [NotMatch](#notmatch)
 - [NotStartsWith](#notstartswith)
 - [NotWithinPath](#notwithinpath)
@@ -1104,6 +1106,60 @@ spec:
     lessOrEquals: 3
 ```
 
+### Like
+
+The `like` condition can be used to determine if the operand matches a wildcard pattern.
+One or more patterns to compare can be specified.
+
+- `caseSensitive` - Optionally, a case sensitive-comparison can be performed.
+  By default, case-insensitive comparison is performed.
+- `convert` - Optionally, types can be converted to string type.
+  By default `convert` is `false`.
+
+Syntax:
+
+```yaml
+like: <string | array>
+caseSensitive: <boolean>
+convert: <boolean>
+```
+
+- If the operand is a field, and the field does not exist, _like_ always returns `false`.
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleLike'
+spec:
+  condition:
+    anyOf:
+    - field: 'url'
+      like: 'http://*'
+    - field: 'url'
+      like:
+      - 'http://*'
+      - 'https://*'
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleLike'
+spec:
+  if:
+    anyOf:
+    - field: 'url'
+      like: 'http://*'
+    - field: 'url'
+      like:
+      - 'http://*'
+      - 'https://*'
+```
+
 ### Match
 
 The `match` condition can be used to compare if a field matches a supplied regular expression.
@@ -1404,6 +1460,61 @@ spec:
     notIn:
     - 'Value1'
     - 'Value2'
+```
+
+### NotLike
+
+The `notLike` condition can be used to determine if the operand matches a wildcard pattern.
+This condition fails when any of the specified patterns match the operand.
+One or more patterns to compare can be specified.
+
+- `caseSensitive` - Optionally, a case sensitive-comparison can be performed.
+  By default, case-insensitive comparison is performed.
+- `convert` - Optionally, types can be converted to string type.
+  By default `convert` is `false`.
+
+Syntax:
+
+```yaml
+notLike: <string | array>
+caseSensitive: <boolean>
+convert: <boolean>
+```
+
+- If the operand is a field, and the field does not exist, _notLike_ always returns `false`.
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleNotLike'
+spec:
+  condition:
+    anyOf:
+    - field: 'url'
+      notLike: 'http://*'
+    - field: 'url'
+      notLike:
+      - 'http://'
+      - 'https://'
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleNotLike'
+spec:
+  if:
+    anyOf:
+    - field: 'url'
+      notLike: 'http://*'
+    - field: 'url'
+      notLike:
+      - 'http://'
+      - 'https://'
 ```
 
 ### NotMatch

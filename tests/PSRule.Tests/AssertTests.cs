@@ -1188,6 +1188,48 @@ namespace PSRule
             Assert.True(assert.NotWithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true).Result);
         }
 
+        [Fact]
+        public void Like()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject((name: "name", value: "abcdefg"), (name: "value", value: 123));
+
+            // String
+            Assert.True(assert.Like(value, "name", new string[] { "123*", "ab*" }).Result);
+            Assert.True(assert.Like(value, "name", new string[] { "123*", "ab*" }, caseSensitive: true).Result);
+            Assert.True(assert.Like(value, "name", new string[] { "AB*" }).Result);
+            Assert.True(assert.Like(value, "name", new string[] { "*cd*" }).Result);
+            Assert.True(assert.Like(value, "name", new string[] { "*fg*" }).Result);
+            Assert.False(assert.Like(value, "name", new string[] { "abcdefgh" }).Result);
+            Assert.False(assert.Like(value, "name", new string[] { "AB*" }, caseSensitive: true).Result);
+            Assert.False(assert.Like(value, "name", new string[] { "cd" }).Result);
+
+            // Integer
+            Assert.False(assert.Like(value, "value", new string[] { "12*" }).Result);
+        }
+
+        [Fact]
+        public void NotLike()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject((name: "name", value: "abcdefg"), (name: "value", value: 123));
+
+            // String
+            Assert.False(assert.NotLike(value, "name", new string[] { "123*", "ab*" }).Result);
+            Assert.False(assert.NotLike(value, "name", new string[] { "123*", "ab*" }, caseSensitive: true).Result);
+            Assert.False(assert.NotLike(value, "name", new string[] { "AB*" }).Result);
+            Assert.False(assert.NotLike(value, "name", new string[] { "*cd*" }).Result);
+            Assert.False(assert.NotLike(value, "name", new string[] { "*fg*" }).Result);
+            Assert.True(assert.NotLike(value, "name", new string[] { "abcdefgh" }).Result);
+            Assert.True(assert.NotLike(value, "name", new string[] { "AB*" }, caseSensitive: true).Result);
+            Assert.True(assert.NotLike(value, "name", new string[] { "cd" }).Result);
+
+            // Integer
+            Assert.True(assert.NotLike(value, "value", new string[] { "12*" }).Result);
+        }
+
         #region Helper methods
 
         private static void SetContext()

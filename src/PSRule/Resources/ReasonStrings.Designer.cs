@@ -124,6 +124,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is like &apos;{1}&apos;..
+        /// </summary>
+        internal static string Assert_Like {
+            get {
+                return ResourceManager.GetString("Assert_Like", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The value &apos;{0}&apos; matches the expression &apos;{1}&apos;..
         /// </summary>
         internal static string Assert_Matches {
@@ -201,6 +210,15 @@ namespace PSRule.Resources {
         internal static string Assert_NotInteger {
             get {
                 return ResourceManager.GetString("Assert_NotInteger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is not like &apos;{1}&apos;..
+        /// </summary>
+        internal static string Assert_NotLike {
+            get {
+                return ResourceManager.GetString("Assert_NotLike", resourceCulture);
             }
         }
         

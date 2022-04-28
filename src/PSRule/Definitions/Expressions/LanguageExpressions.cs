@@ -327,6 +327,8 @@ namespace PSRule.Definitions.Expressions
         private const string VERSION = "version";
         private const string WITHINPATH = "withinPath";
         private const string NOTWITHINPATH = "notWithinPath";
+        private const string LIKE = "like";
+        private const string NOTLIKE = "notLike";
 
         // Operators
         private const string IF = "if";
@@ -396,6 +398,8 @@ namespace PSRule.Definitions.Expressions
             new LanguageExpresssionDescriptor(HASDEFAULT, LanguageExpressionType.Condition, HasDefault),
             new LanguageExpresssionDescriptor(WITHINPATH, LanguageExpressionType.Condition, WithinPath),
             new LanguageExpresssionDescriptor(NOTWITHINPATH, LanguageExpressionType.Condition, NotWithinPath),
+            new LanguageExpresssionDescriptor(LIKE, LanguageExpressionType.Condition, Like),
+            new LanguageExpresssionDescriptor(NOTLIKE, LanguageExpressionType.Condition, NotLike),
         };
 
         #region Operators
@@ -1178,6 +1182,61 @@ namespace PSRule.Definitions.Expressions
             }
 
             return Invalid(context, NOTWITHINPATH);
+        }
+
+        internal static bool Like(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyStringArray(properties, LIKE, out var propertyValue) &&
+                TryOperand(context, LIKE, o, properties, out var operand) &&
+                GetConvert(properties, out var convert) &&
+                GetCaseSensitive(properties, out var caseSensitive))
+            {
+                context.ExpressionTrace(LIKE, operand.Value, propertyValue);
+                if (!ExpressionHelpers.TryString(operand.Value, convert, out var value))
+                    return NotString(context, operand);
+
+                for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
+                    if (ExpressionHelpers.Like(value, propertyValue[i], caseSensitive))
+                        return Pass();
+
+                return Fail(
+                    context,
+                    operand,
+                    ReasonStrings.Assert_NotLike,
+                    value,
+                    StringJoin(propertyValue)
+                );
+            }
+            return Invalid(context, LIKE);
+        }
+
+        internal static bool NotLike(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyStringArray(properties, NOTLIKE, out var propertyValue) &&
+                TryOperand(context, NOTLIKE, o, properties, out var operand) &&
+                GetConvert(properties, out var convert) &&
+                GetCaseSensitive(properties, out var caseSensitive))
+            {
+                context.ExpressionTrace(NOTLIKE, operand.Value, propertyValue);
+                if (ExpressionHelpers.TryString(operand.Value, convert, out var value))
+                {
+                    for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
+                    {
+                        if (ExpressionHelpers.Like(value, propertyValue[i], caseSensitive))
+                            return Fail(
+                                context,
+                                operand,
+                                ReasonStrings.Assert_Like,
+                                value,
+                                propertyValue[i]
+                            );
+                    }
+                }
+                return Pass();
+            }
+            return Invalid(context, NOTLIKE);
         }
 
         internal static bool IsLower(ExpressionContext context, ExpressionInfo info, object[] args, object o)

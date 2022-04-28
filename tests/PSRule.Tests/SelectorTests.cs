@@ -38,7 +38,7 @@ namespace PSRule
             context.Begin();
             var selector = HostHelper.GetSelector(GetSource(path), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(89, selector.Length);
+            Assert.Equal(91, selector.Length);
 
             Assert.Equal("BasicSelector", selector[0].Name);
             Assert.Equal($"{type}AllOf", selector[4].Name);
@@ -937,6 +937,60 @@ namespace PSRule
             Assert.False(notContains.Match(actual7));
             Assert.False(notContains.Match(actual8));
             Assert.True(notContains.Match(actual9));
+        }
+
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void LikeExpression(string type, string path)
+        {
+            var like = GetSelectorVisitor($"{type}Like", GetSource(path), out _);
+            var actual1 = GetObject((name: "value", value: "abc"));
+            var actual2 = GetObject((name: "value", value: "efg"));
+            var actual3 = GetObject((name: "value", value: "hij"));
+            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual5 = GetObject((name: "value", value: null));
+            var actual6 = GetObject();
+            var actual7 = GetObject((name: "value", value: "EFG"));
+            var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: "123"));
+            var actual9 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: 123));
+
+            Assert.True(like.Match(actual1));
+            Assert.True(like.Match(actual2));
+            Assert.False(like.Match(actual3));
+            Assert.False(like.Match(actual4));
+            Assert.False(like.Match(actual5));
+            Assert.False(like.Match(actual6));
+            Assert.False(like.Match(actual7));
+            Assert.True(like.Match(actual8));
+            Assert.True(like.Match(actual9));
+        }
+
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void NotLikeExpression(string type, string path)
+        {
+            var notLike = GetSelectorVisitor($"{type}NotLike", GetSource(path), out _);
+            var actual1 = GetObject((name: "value", value: "abc"));
+            var actual2 = GetObject((name: "value", value: "efg"));
+            var actual3 = GetObject((name: "value", value: "hij"));
+            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual5 = GetObject((name: "value", value: null));
+            var actual6 = GetObject();
+            var actual7 = GetObject((name: "value", value: "EFG"));
+            var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: "123"));
+            var actual9 = GetObject((name: "value", value: "hij"), (name: "OtherValue", value: 123));
+
+            Assert.False(notLike.Match(actual1));
+            Assert.False(notLike.Match(actual2));
+            Assert.True(notLike.Match(actual3));
+            Assert.True(notLike.Match(actual4));
+            Assert.True(notLike.Match(actual5));
+            Assert.False(notLike.Match(actual6));
+            Assert.False(notLike.Match(actual7));
+            Assert.False(notLike.Match(actual8));
+            Assert.False(notLike.Match(actual9));
         }
 
         [Theory]

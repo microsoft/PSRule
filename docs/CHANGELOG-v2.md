@@ -16,8 +16,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 What's changed since pre-release v2.1.0-B0040:
 
 - General improvements:
-  - Added `notStartsWith`, `notEndsWith`, and `notContains`. [#1047](https://github.com/microsoft/PSRule/issues/1047)
-    - Expressions and assertion helpers.
+  - Added `notStartsWith`, `notEndsWith`, and `notContains` expressions and assertion helpers. [#1047](https://github.com/microsoft/PSRule/issues/1047)
+  - Added `like`, `notLike` expressions and assertion helpers. [#1048](https://github.com/microsoft/PSRule/issues/1048)
 
 ## v2.1.0-B0040 (pre-release)
 

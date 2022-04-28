@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System;
-using PSRule.Data;
 
 namespace PSRule.Runtime
 {

@@ -450,6 +450,58 @@ spec:
         convert: true
 
 ---
+# Synopsis: Test like
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlLike
+spec:
+  if:
+    allOf:
+    - anyOf:
+      - field: 'Value'
+        like: 'ab*'
+      - field: 'Value'
+        like: '*f*'
+        caseSensitive: true
+    - field: 'Value'
+      like:
+      - 'ab*'
+      - '*f*'
+    - anyOf:
+      - field: 'OtherValue'
+        exists: false
+      - field: 'OtherValue'
+        like: '12*'
+        convert: true
+
+---
+# Synopsis: Test notLike
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNotLike
+spec:
+  if:
+    allOf:
+    - anyOf:
+      - field: 'Value'
+        notLike: 'ab*'
+      - field: 'Value'
+        notLike: '*f*'
+        caseSensitive: true
+    - field: 'Value'
+      notLike:
+      - 'ab*'
+      - '*f*'
+    - anyOf:
+      - field: 'OtherValue'
+        exists: false
+      - field: 'OtherValue'
+        notLike: '12*'
+        convert: true
+
+---
 # Synopsis: Test isString
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Selector
