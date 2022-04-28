@@ -17,6 +17,8 @@ What's changed since pre-release v2.1.0-B0040:
 
 - General improvements:
   - Added additional repository paths to ignore by default. [#1043](https://github.com/microsoft/PSRule/issues/1043)
+- Engineering:
+  - Bump Sarif.Sdk to 2.4.15. [#1075](https://github.com/microsoft/PSRule/pull/1075)
 
 ## v2.1.0-B0040 (pre-release)
 
