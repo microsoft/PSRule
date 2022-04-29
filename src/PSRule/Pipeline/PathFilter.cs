@@ -26,8 +26,14 @@ namespace PSRule.Pipeline
             "SECURITY.md",
             "SUPPORT.md",
             ".vscode/*.json",
+            ".vscode/*.code-snippets",
             ".github/**/*.md",
-            ".github/CODEOWNERS"
+            ".github/CODEOWNERS",
+            ".pipelines/**/*.yml",
+            ".pipelines/**/*.yaml",
+            ".azure-pipelines/**/*.yml",
+            ".azure-pipelines/**/*.yaml",
+            ".azuredevops/*.md"
         };
 
         private readonly string _BasePath;
