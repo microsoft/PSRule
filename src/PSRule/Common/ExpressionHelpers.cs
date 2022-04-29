@@ -582,5 +582,12 @@ namespace PSRule
             }
             return true;
         }
+
+        internal static bool Like(string actualValue, string pattern, bool caseSensitive)
+        {
+            var options = caseSensitive ? WildcardOptions.CultureInvariant : WildcardOptions.CultureInvariant | WildcardOptions.IgnoreCase;
+            var p = WildcardPattern.Get(pattern, options);
+            return p.IsMatch(actualValue);
+        }
     }
 }

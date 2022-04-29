@@ -740,10 +740,19 @@
                     "$ref": "#/definitions/selectorConditionStartsWith"
                 },
                 {
+                    "$ref": "#/definitions/selectorConditionNotStartsWith"
+                },
+                {
                     "$ref": "#/definitions/selectorConditionEndsWith"
                 },
                 {
+                    "$ref": "#/definitions/selectorConditionNotEndsWith"
+                },
+                {
                     "$ref": "#/definitions/selectorConditionContains"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionNotContains"
                 },
                 {
                     "$ref": "#/definitions/selectorConditionIsString"
@@ -783,6 +792,12 @@
                 },
                 {
                     "$ref": "#/definitions/selectorConditionNotWithinPath"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionLike"
+                },
+                {
+                    "$ref": "#/definitions/selectorConditionNotLike"
                 }
             ]
         },
@@ -1313,6 +1328,39 @@
                 }
             ]
         },
+        "selectorConditionNotStartsWith": {
+            "type": "object",
+            "properties": {
+                "notStartsWith": {
+                    "title": "Not starts with",
+                    "description": "Must not start with any of the specified values.",
+                    "markdownDescription": "Must not start with any of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notstartswith)",
+                    "$ref": "#/definitions/selectorExpressionValueMultiString"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type to string.",
+                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notstartswith)",
+                    "default": false
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines if comparing values is case-sensitive.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notstartswith)",
+                    "default": false
+                }
+            },
+            "required": [
+                "notStartsWith"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorPropertiesString"
+                }
+            ]
+        },
         "selectorConditionEndsWith": {
             "type": "object",
             "properties": {
@@ -1346,6 +1394,39 @@
                 }
             ]
         },
+        "selectorConditionNotEndsWith": {
+            "type": "object",
+            "properties": {
+                "notEndsWith": {
+                    "title": "Not Ends with",
+                    "description": "Must not end with any of the specified values.",
+                    "markdownDescription": "Must not end with any of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notendswith)",
+                    "$ref": "#/definitions/selectorExpressionValueMultiString"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type to string.",
+                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notendswith)",
+                    "default": false
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines if comparing values is case-sensitive.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notendswith)",
+                    "default": false
+                }
+            },
+            "required": [
+                "notEndsWith"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorPropertiesString"
+                }
+            ]
+        },
         "selectorConditionContains": {
             "type": "object",
             "properties": {
@@ -1372,6 +1453,39 @@
             },
             "required": [
                 "contains"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorPropertiesString"
+                }
+            ]
+        },
+        "selectorConditionNotContains": {
+            "type": "object",
+            "properties": {
+                "notContains": {
+                    "title": "Not Contains",
+                    "description": "Must not contain any of the specified values.",
+                    "markdownDescription": "Must not contain any of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcontains)",
+                    "$ref": "#/definitions/selectorExpressionValueMultiString"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type to string.",
+                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcontains)",
+                    "default": false
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines if comparing values is case-sensitive.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcontains)",
+                    "default": false
+                }
+            },
+            "required": [
+                "notContains"
             ],
             "oneOf": [
                 {
@@ -1709,6 +1823,72 @@
             },
             "required": [
                 "notWithinPath"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorPropertiesString"
+                }
+            ]
+        },
+        "selectorConditionLike": {
+            "type": "object",
+            "properties": {
+                "like": {
+                    "title": "Like",
+                    "description": "Must match any of the specified wildcard patterns.",
+                    "markdownDescription": "Must match any of the specified wildcard patterns. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#like)",
+                    "$ref": "#/definitions/selectorExpressionValueMultiString"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type to string.",
+                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#like)",
+                    "default": false
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines if comparing values is case-sensitive.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#like)",
+                    "default": false
+                }
+            },
+            "required": [
+                "like"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorPropertiesString"
+                }
+            ]
+        },
+        "selectorConditionNotLike": {
+            "type": "object",
+            "properties": {
+                "notLike": {
+                    "title": "Not like",
+                    "description": "Must not match any of the specified wildcard patterns.",
+                    "markdownDescription": "Must not match any of the specified wildcard patterns. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notlike)",
+                    "$ref": "#/definitions/selectorExpressionValueMultiString"
+                },
+                "convert": {
+                    "type": "boolean",
+                    "title": "Type conversion",
+                    "description": "Convert type to string.",
+                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notlike)",
+                    "default": false
+                },
+                "caseSensitive": {
+                    "type": "boolean",
+                    "title": "Case sensitive",
+                    "description": "Determines if comparing values is case-sensitive.",
+                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notlike)",
+                    "default": false
+                }
+            },
+            "required": [
+                "notLike"
             ],
             "oneOf": [
                 {

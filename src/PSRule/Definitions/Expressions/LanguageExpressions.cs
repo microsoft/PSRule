@@ -308,8 +308,11 @@ namespace PSRule.Definitions.Expressions
         private const string GREATER = "greater";
         private const string GREATEROREQUALS = "greaterOrEquals";
         private const string STARTSWITH = "startsWith";
+        private const string NOTSTARTSWITH = "notStartsWith";
         private const string ENDSWITH = "endsWith";
+        private const string NOTENDSWITH = "notEndsWith";
         private const string CONTAINS = "contains";
+        private const string NOTCONTAINS = "notContains";
         private const string ISSTRING = "isString";
         private const string ISARRAY = "isArray";
         private const string ISBOOLEAN = "isBoolean";
@@ -324,6 +327,8 @@ namespace PSRule.Definitions.Expressions
         private const string VERSION = "version";
         private const string WITHINPATH = "withinPath";
         private const string NOTWITHINPATH = "notWithinPath";
+        private const string LIKE = "like";
+        private const string NOTLIKE = "notLike";
 
         // Operators
         private const string IF = "if";
@@ -372,8 +377,11 @@ namespace PSRule.Definitions.Expressions
             new LanguageExpresssionDescriptor(GREATER, LanguageExpressionType.Condition, Greater),
             new LanguageExpresssionDescriptor(GREATEROREQUALS, LanguageExpressionType.Condition, GreaterOrEquals),
             new LanguageExpresssionDescriptor(STARTSWITH, LanguageExpressionType.Condition, StartsWith),
+            new LanguageExpresssionDescriptor(NOTSTARTSWITH, LanguageExpressionType.Condition, NotStartsWith),
             new LanguageExpresssionDescriptor(ENDSWITH, LanguageExpressionType.Condition, EndsWith),
+            new LanguageExpresssionDescriptor(NOTENDSWITH, LanguageExpressionType.Condition, NotEndsWith),
             new LanguageExpresssionDescriptor(CONTAINS, LanguageExpressionType.Condition, Contains),
+            new LanguageExpresssionDescriptor(NOTCONTAINS, LanguageExpressionType.Condition, NotContains),
             new LanguageExpresssionDescriptor(ISSTRING, LanguageExpressionType.Condition, IsString),
             new LanguageExpresssionDescriptor(ISARRAY, LanguageExpressionType.Condition, IsArray),
             new LanguageExpresssionDescriptor(ISBOOLEAN, LanguageExpressionType.Condition, IsBoolean),
@@ -390,6 +398,8 @@ namespace PSRule.Definitions.Expressions
             new LanguageExpresssionDescriptor(HASDEFAULT, LanguageExpressionType.Condition, HasDefault),
             new LanguageExpresssionDescriptor(WITHINPATH, LanguageExpressionType.Condition, WithinPath),
             new LanguageExpresssionDescriptor(NOTWITHINPATH, LanguageExpressionType.Condition, NotWithinPath),
+            new LanguageExpresssionDescriptor(LIKE, LanguageExpressionType.Condition, Like),
+            new LanguageExpresssionDescriptor(NOTLIKE, LanguageExpressionType.Condition, NotLike),
         };
 
         #region Operators
@@ -859,7 +869,35 @@ namespace PSRule.Definitions.Expressions
                     StringJoin(propertyValue)
                 );
             }
-            return false;
+            return Invalid(context, STARTSWITH);
+        }
+
+        internal static bool NotStartsWith(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyStringArray(properties, NOTSTARTSWITH, out var propertyValue) &&
+                TryOperand(context, NOTSTARTSWITH, o, properties, out var operand) &&
+                GetConvert(properties, out var convert) &&
+                GetCaseSensitive(properties, out var caseSensitive))
+            {
+                context.ExpressionTrace(NOTSTARTSWITH, operand.Value, propertyValue);
+                if (ExpressionHelpers.TryString(operand.Value, convert, out var value))
+                {
+                    for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
+                    {
+                        if (ExpressionHelpers.StartsWith(value, propertyValue[i], caseSensitive))
+                            return Fail(
+                                context,
+                                operand,
+                                ReasonStrings.Assert_StartsWith,
+                                value,
+                                propertyValue[i]
+                            );
+                    }
+                }
+                return Pass();
+            }
+            return Invalid(context, NOTSTARTSWITH);
         }
 
         internal static bool EndsWith(ExpressionContext context, ExpressionInfo info, object[] args, object o)
@@ -886,7 +924,35 @@ namespace PSRule.Definitions.Expressions
                     StringJoin(propertyValue)
                 );
             }
-            return false;
+            return Invalid(context, ENDSWITH);
+        }
+
+        internal static bool NotEndsWith(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyStringArray(properties, NOTENDSWITH, out var propertyValue) &&
+                TryOperand(context, NOTENDSWITH, o, properties, out var operand) &&
+                GetConvert(properties, out var convert) &&
+                GetCaseSensitive(properties, out var caseSensitive))
+            {
+                context.ExpressionTrace(NOTENDSWITH, operand.Value, propertyValue);
+                if (ExpressionHelpers.TryString(operand.Value, convert, out var value))
+                {
+                    for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
+                    {
+                        if (ExpressionHelpers.EndsWith(value, propertyValue[i], caseSensitive))
+                            return Fail(
+                                context,
+                                operand,
+                                ReasonStrings.Assert_EndsWith,
+                                value,
+                                propertyValue[i]
+                            );
+                    }
+                }
+                return Pass();
+            }
+            return Invalid(context, NOTENDSWITH);
         }
 
         internal static bool Contains(ExpressionContext context, ExpressionInfo info, object[] args, object o)
@@ -913,7 +979,35 @@ namespace PSRule.Definitions.Expressions
                     StringJoin(propertyValue)
                 );
             }
-            return false;
+            return Invalid(context, CONTAINS);
+        }
+
+        internal static bool NotContains(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyStringArray(properties, NOTCONTAINS, out var propertyValue) &&
+                TryOperand(context, NOTCONTAINS, o, properties, out var operand) &&
+                GetConvert(properties, out var convert) &&
+                GetCaseSensitive(properties, out var caseSensitive))
+            {
+                context.ExpressionTrace(NOTCONTAINS, operand.Value, propertyValue);
+                if (ExpressionHelpers.TryString(operand.Value, convert, out var value))
+                {
+                    for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
+                    {
+                        if (ExpressionHelpers.Contains(value, propertyValue[i], caseSensitive))
+                            return Fail(
+                                context,
+                                operand,
+                                ReasonStrings.Assert_Contains,
+                                value,
+                                propertyValue[i]
+                            );
+                    }
+                }
+                return Pass();
+            }
+            return Invalid(context, NOTCONTAINS);
         }
 
         internal static bool IsString(ExpressionContext context, ExpressionInfo info, object[] args, object o)
@@ -1065,11 +1159,11 @@ namespace PSRule.Definitions.Expressions
         internal static bool NotWithinPath(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (TryOperand(context, WITHINPATH, o, properties, out var operand) &&
+            if (TryOperand(context, NOTWITHINPATH, o, properties, out var operand) &&
                 TryPropertyStringArray(properties, NOTWITHINPATH, out var path) &&
                 GetCaseSensitive(properties, out var caseSensitive))
             {
-                context.ExpressionTrace(WITHINPATH, operand.Value, path);
+                context.ExpressionTrace(NOTWITHINPATH, operand.Value, path);
 
                 if (ExpressionHelpers.TryString(operand.Value, out var source))
                 {
@@ -1088,6 +1182,61 @@ namespace PSRule.Definitions.Expressions
             }
 
             return Invalid(context, NOTWITHINPATH);
+        }
+
+        internal static bool Like(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyStringArray(properties, LIKE, out var propertyValue) &&
+                TryOperand(context, LIKE, o, properties, out var operand) &&
+                GetConvert(properties, out var convert) &&
+                GetCaseSensitive(properties, out var caseSensitive))
+            {
+                context.ExpressionTrace(LIKE, operand.Value, propertyValue);
+                if (!ExpressionHelpers.TryString(operand.Value, convert, out var value))
+                    return NotString(context, operand);
+
+                for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
+                    if (ExpressionHelpers.Like(value, propertyValue[i], caseSensitive))
+                        return Pass();
+
+                return Fail(
+                    context,
+                    operand,
+                    ReasonStrings.Assert_NotLike,
+                    value,
+                    StringJoin(propertyValue)
+                );
+            }
+            return Invalid(context, LIKE);
+        }
+
+        internal static bool NotLike(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyStringArray(properties, NOTLIKE, out var propertyValue) &&
+                TryOperand(context, NOTLIKE, o, properties, out var operand) &&
+                GetConvert(properties, out var convert) &&
+                GetCaseSensitive(properties, out var caseSensitive))
+            {
+                context.ExpressionTrace(NOTLIKE, operand.Value, propertyValue);
+                if (ExpressionHelpers.TryString(operand.Value, convert, out var value))
+                {
+                    for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
+                    {
+                        if (ExpressionHelpers.Like(value, propertyValue[i], caseSensitive))
+                            return Fail(
+                                context,
+                                operand,
+                                ReasonStrings.Assert_Like,
+                                value,
+                                propertyValue[i]
+                            );
+                    }
+                }
+                return Pass();
+            }
+            return Invalid(context, NOTLIKE);
         }
 
         internal static bool IsLower(ExpressionContext context, ExpressionInfo info, object[] args, object o)

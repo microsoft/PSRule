@@ -44,11 +44,16 @@ The following built-in assertion methods are provided:
 - [JsonSchema](#jsonschema) - The object must validate successfully against a JSON schema.
 - [Less](#less) - The field value must be less.
 - [LessOrEqual](#lessorequal) - The field value must be less or equal to.
+- [Like](#like) - The value must match any of the specified wildcard values.
 - [Match](#match) - The field value matches a regular expression pattern.
+- [NotContains](#notcontains) - The value must not contain any of the specified strings.
+- [NotEndsWith](#notendswith) - The value must not end with any of the specified strings.
 - [NotHasField](#nothasfield) - The object must not have any of the specified fields.
 - [NotIn](#notin) - The field value must not be included in the set.
+- [NotLike](#notlike) - The value must not match any of the specified wildcard values.
 - [NotMatch](#notmatch) - The field value does not match a regular expression pattern.
 - [NotNull](#notnull) - The field value must not be null.
+- [NotStartsWith](#notstartswith) - The value must not start with any of the specified strings.
 - [NotWithinPath](#notwithinpath) - The field must not be within the specified path.
 - [Null](#null) - The field value must not exist or be null.
 - [NullOrEmpty](#nullorempty) - The object must not have the specified field or it must be empty.
@@ -916,6 +921,40 @@ Rule 'LessOrEqual' {
 }
 ```
 
+### Like
+
+The `Like` assertion method checks the field value matches a specified pattern.
+Optionally a case-sensitive compare can be used, however case is ignored by default.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `pattern` - A pattern or an array of patterns to compare the field value with.
+Only one pattern must match.
+When an empty array of patterns is specified, `Like` always passes.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The parameter 'prefix' is null._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is not a string._
+- _The value '{0}' is not like '{1}'._
+
+Examples:
+
+```powershell
+Rule 'Like' {
+    $Assert.Like($TargetObject, 'ResourceGroupName', 'rg-*')
+    $Assert.Like($TargetObject, 'Name', @('st*', 'diag*'), $True)
+}
+```
+
 ### Match
 
 The `Match` assertion method checks the field value matches a regular expression pattern.
@@ -942,6 +981,72 @@ Examples:
 Rule 'Match' {
     $Assert.Match($TargetObject, 'value', '^[a-z]*$')
     $Assert.Match($TargetObject, 'value', '^[a-z]*$', $True)
+}
+```
+
+### NotContains
+
+The `NotContains` assertion method checks the field value contains the specified string.
+This condition fails when any of the specified sub-strings are found.
+Optionally a case-sensitive compare can be used, however case is ignored by default.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `text` - A string or an array of strings to compare the field value with.
+When an empty array of strings is specified or text is an empty string, `NotContains` always passes.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The parameter 'text' is null._
+- _The field '{0}' does not exist._
+- _The value '{0}' contains '{1}'._
+
+Examples:
+
+```powershell
+Rule 'NotContains' {
+    $Assert.NotContains($TargetObject, 'ResourceGroupName', 'prod')
+    $Assert.NotContains($TargetObject, 'Name', @('prod', 'test'), $True)
+}
+```
+
+### NotEndsWith
+
+The `NotEndsWith` assertion method checks the field value ends with the specified suffix.
+This condition fails when any of the specified sub-strings are found at the end of the operand.
+Optionally a case-sensitive compare can be used, however case is ignored by default.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `suffix` - A suffix or an array of suffixes to compare the field value with.
+When an empty array of suffixes is specified or suffix is an empty string, `NotEndsWith` always passes.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The parameter 'suffix' is null._
+- _The field '{0}' does not exist._
+- _The value '{0}' ends with '{1}'._
+
+Examples:
+
+```powershell
+Rule 'NotEndsWith' {
+    $Assert.NotEndsWith($TargetObject, 'ResourceGroupName', 'eus')
+    $Assert.NotEndsWith($TargetObject, 'Name', @('db', 'web'), $True)
 }
 ```
 
@@ -1006,6 +1111,39 @@ Rule 'In' {
 }
 ```
 
+### NotLike
+
+The `NotLike` assertion method checks the field value matches a specified pattern.
+This condition fails when any of the specified patterns match the field value.
+Optionally a case-sensitive compare can be used, however case is ignored by default.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `pattern` - A pattern or an array of patterns to compare the field value with.
+When an empty array of pattens is specified, `NotLike` always passes.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The parameter 'prefix' is null._
+- _The field '{0}' does not exist._
+- _The value '{0}' is like '{1}'_
+
+Examples:
+
+```powershell
+Rule 'NotLike' {
+    $Assert.NotLike($TargetObject, 'ResourceGroupName', 'rg-*')
+    $Assert.NotLike($TargetObject, 'Name', @('st*', 'diag*'), $True)
+}
+```
+
 ### NotMatch
 
 The `NotMatch` assertion method checks the field value does not match a regular expression pattern.
@@ -1059,6 +1197,39 @@ Examples:
 Rule 'NotNull' {
     $Assert.NotNull($TargetObject, 'Name')
     $Assert.NotNull($TargetObject, 'tag.Environment')
+}
+```
+
+### NotStartsWith
+
+The `NotStartsWith` assertion method checks the field value starts with the specified prefix.
+This condition fails when any of the specified sub-strings are found at the start of the operand.
+Optionally a case-sensitive compare can be used, however case is ignored by default.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+This is a case insensitive compare.
+- `prefix` - A prefix or an array of prefixes to compare the field value with.
+When an empty array of prefixes is specified or prefix is an empty string, `NotStartsWith` always passes.
+- `caseSensitive` (optional) - Use a case sensitive compare of the field value.
+Case is ignored by default.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The parameter 'prefix' is null._
+- _The field '{0}' does not exist._
+- _The value '{0}' starts with '{1}'._
+
+Examples:
+
+```powershell
+Rule 'NotStartsWith' {
+    $Assert.NotStartsWith($TargetObject, 'ResourceGroupName', 'rg-')
+    $Assert.NotStartsWith($TargetObject, 'Name', @('st', 'diag'), $True)
 }
 ```
 
