@@ -13,6 +13,37 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.1.0
+
+What's changed since v2.0.1:
+
+- General improvements:
+  - Added `notStartsWith`, `notEndsWith`, and `notContains` expressions and assertion helpers. [#1047](https://github.com/microsoft/PSRule/issues/1047)
+  - Added `like`, `notLike` expressions and assertion helpers. [#1048](https://github.com/microsoft/PSRule/issues/1048)
+  - Added additional repository paths to ignore by default. [#1043](https://github.com/microsoft/PSRule/issues/1043)
+  - Added custom suppression message during PSRule runs. [#1046](https://github.com/microsoft/PSRule/issues/1046)
+    - When a rule is suppressed using a suppression group the synopsis is shown in the suppression warning.
+    - Configure the suppression group synopsis to display a custom message.
+    - Suppression groups synopsis can be localized using markdown documentation.
+    - Use markdown to set a culture specific synopsis.
+    - Custom suppression messages are not supported when suppressing individual rules using `ps-rule.yaml`.
+    - See [about_PSRule_SuppressionGroups] for details.
+  - Added source support for string conditions. [#1068](https://github.com/microsoft/PSRule/issues/1068)
+- Engineering:
+  - Added code signing of module. [#1049](https://github.com/microsoft/PSRule/issues/1049)
+  - Added SBOM manifests to module. [#1050](https://github.com/microsoft/PSRule/issues/1050)
+  - Bump Sarif.Sdk to 2.4.15. [#1075](https://github.com/microsoft/PSRule/pull/1075)
+  - Bump Pester to 5.3.2. [#1062](https://github.com/microsoft/PSRule/pull/1062)
+- Bug fixes:
+  - **Important change:** Fixed source scope not updated in multi-module runs. [#1053](https://github.com/microsoft/PSRule/issues/1053)
+    - Several properties of rule and language block elements have been renamed to improve consistency.
+    - From _v3_ custom scripts may not work correctly until you update these names.
+    - For details on the updated property names see [deprecations][2].
+
+What's changed since pre-release v2.1.0-B0069:
+
+- No additional changes.
+
 ## v2.1.0-B0069 (pre-release)
 
 What's changed since pre-release v2.1.0-B0040:
