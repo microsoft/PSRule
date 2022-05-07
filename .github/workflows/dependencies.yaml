@@ -8,7 +8,7 @@
 name: Dependencies
 on:
   schedule:
-    - cron:  '30 1 * * 1' # At 01:30 AM, on Monday each week
+  - cron:  '30 1 * * 1' # At 01:30 AM, on Monday each week
   workflow_dispatch:
 
 env:
