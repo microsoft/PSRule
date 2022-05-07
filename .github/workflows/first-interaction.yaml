@@ -1,0 +1,25 @@
+#
+# Stale item management
+#
+
+# NOTES:
+# This workflow greets a person for their a first issue or PR.
+
+name: First interaction
+
+on: [pull_request_target, issues]
+
+jobs:
+  greeting:
+    name: Greeting
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-message: 'Thanks for raising your first issue, the team appreciates the time you have taken 😉'
+        pr-message: 'Thank you for your contribution, one of the team will evaluate shortly.'
