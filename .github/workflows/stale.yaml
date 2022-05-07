@@ -1,14 +1,17 @@
 #
-# Stale issues
+# Stale item management
 #
-name: 'Close stale issues'
+name: 'Stale maintenance'
 on:
   schedule:
   - cron: '30 1 * * *'
 
 jobs:
-  stale:
+  issue:
+    name: 'Close stale issues'
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - uses: actions/stale@v5
         with:
