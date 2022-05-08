@@ -13,6 +13,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since v2.1.0:
+
+- Engineering:
+  - Bump xunit.runner.visualstudio 2.4.5. [#1084](https://github.com/microsoft/PSRule/pull/1084)
+  - Bump Pester to 5.3.3. [#1079](https://github.com/microsoft/PSRule/pull/1079)
+
 ## v2.1.0
 
 What's changed since v2.0.1:
