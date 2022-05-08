@@ -54,8 +54,8 @@ if ($Null -eq (Get-InstalledModule -Name PowerShellGet -MinimumVersion '2.2.1' -
 ```
 
 ```powershell
-if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.12.0' -ErrorAction SilentlyContinue)) {
-    Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.12.0' -Force;
+if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '2.1.0' -ErrorAction SilentlyContinue)) {
+    Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '2.1.0' -Force;
 }
 ```
 
@@ -207,8 +207,8 @@ if ($Null -eq (Get-InstalledModule -Name PowerShellGet -MinimumVersion '2.2.1' -
 
 ```powershell
 # Install PSRule module
-if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.12.0' -ErrorAction SilentlyContinue)) {
-    Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.12.0' -Force;
+if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '2.1.0' -ErrorAction SilentlyContinue)) {
+    Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '2.1.0' -Force;
 }
 
 # Validate files
@@ -259,8 +259,8 @@ The following example shows an example of using PSRule with Invoke-Build tasks.
 ```powershell
 # Synopsis: Install PSRule
 task PSRule {
-    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '0.12.0' -ErrorAction SilentlyContinue)) {
-        Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '0.12.0' -Force;
+    if ($Null -eq (Get-InstalledModule -Name PSRule -MinimumVersion '2.1.0' -ErrorAction SilentlyContinue)) {
+        Install-Module -Name PSRule -Scope CurrentUser -MinimumVersion '2.1.0' -Force;
     }
 }
 

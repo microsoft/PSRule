@@ -22,15 +22,18 @@ Within the root directory of your IaC repository:
         name: Analyze templates
         runs-on: ubuntu-latest
         steps:
+
         - name: Checkout
           uses: actions/checkout@v3
 
         # Analyze Azure resources using PSRule for Azure
         - name: Analyze Azure template files
-          uses: microsoft/ps-rule@v2.0.0
+          uses: microsoft/ps-rule@v2.1.0
           with:
             modules: 'PSRule.Rules.Azure'
     ```
+
+    This will automatically install compatible versions of all dependencies.
 
 === "Azure Pipelines"
 
@@ -47,7 +50,20 @@ Within the root directory of your IaC repository:
         modules: 'PSRule.Rules.Azure'
     ```
 
-This will automatically install compatible versions of all dependencies.
+    This will automatically install compatible versions of all dependencies.
+
+=== "Generic with PowerShell"
+
+    Create a pipeline in any CI environment by using PowerShell.
+
+    ```powershell
+    Install-Module -Name 'PSRule.Rules.Azure' -Scope CurrentUser -Force -ErrorAction Stop;
+    Assert-PSRule -InputPath '.' -Module 'PSRule.Rules.Azure' -Format File -ErrorAction Stop;
+    ```
+
+!!! Tip
+    This example demonstrates using PSRule for Azure, a populate module for testing Azure IaC.
+    Instead, you can [write your own module][7] or use one of our [pre-built modules][6].
 
 ## Configuration
 
@@ -124,3 +140,5 @@ To prevent a rule executing you can either:
   [3]: concepts/PSRule/en-US/about_PSRule_Options.md#ruleexclude
   [4]: concepts/PSRule/en-US/about_PSRule_Options.md#suppression
   [5]: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md
+  [6]: addon-modules.md
+  [7]: authoring/packaging-rules.md
