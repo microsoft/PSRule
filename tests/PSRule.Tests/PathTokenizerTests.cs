@@ -14,7 +14,7 @@ namespace PSRule
         [Fact]
         public void Get()
         {
-            var token = PathTokenizer.Get("$[*].Properties.logs[?(@.enabled==true)].category");
+            var token = PathTokenizer.Get("$[*].Properties.logs[?@.enabled==true].category");
 
             Assert.Equal(11, token.Length);
             Assert.Equal(PathTokenType.RootRef, token[0].Type);
@@ -264,17 +264,19 @@ namespace PSRule
 
             // $[?(@.enabled==true)]
             var actual = PathTokenizer.Get(path[0]);
-            Assert.Equal(7, actual.Length);
+            Assert.Equal(9, actual.Length);
             Assert.Equal(PathTokenType.RootRef, actual[0].Type);
             Assert.Equal(PathTokenType.StartFilter, actual[1].Type);
-            Assert.Equal(PathTokenType.CurrentRef, actual[2].Type);
-            Assert.Equal(PathTokenType.DotSelector, actual[3].Type);
-            Assert.Equal("enabled", actual[3].As<string>());
-            Assert.Equal(PathTokenType.ComparisonOperator, actual[4].Type);
-            Assert.Equal(FilterOperator.Equal, actual[4].As<FilterOperator>());
-            Assert.Equal(PathTokenType.Boolean, actual[5].Type);
-            Assert.True(actual[5].As<bool>());
-            Assert.Equal(PathTokenType.EndFilter, actual[6].Type);
+            Assert.Equal(PathTokenType.StartGroup, actual[2].Type);
+            Assert.Equal(PathTokenType.CurrentRef, actual[3].Type);
+            Assert.Equal(PathTokenType.DotSelector, actual[4].Type);
+            Assert.Equal("enabled", actual[4].As<string>());
+            Assert.Equal(PathTokenType.ComparisonOperator, actual[5].Type);
+            Assert.Equal(FilterOperator.Equal, actual[5].As<FilterOperator>());
+            Assert.Equal(PathTokenType.Boolean, actual[6].Type);
+            Assert.True(actual[6].As<bool>());
+            Assert.Equal(PathTokenType.EndGroup, actual[7].Type);
+            Assert.Equal(PathTokenType.EndFilter, actual[8].Type);
 
             // $[?(@.enabled==false)]
             actual = PathTokenizer.Get(path[1]);
@@ -296,8 +298,8 @@ namespace PSRule
         {
             var path = new string[]
             {
-                "$[?(@.price<10)]",
-                "$[?(@.price < 10)]",
+                "$[?@.price<10]",
+                "$[?@.price < 10]",
             };
 
             // $[?(@.price<10)]
@@ -334,8 +336,8 @@ namespace PSRule
         {
             var path = new string[]
             {
-                "$[?(@.id=='1')]",
-                "$[?(@.id == \"1\")]",
+                "$[?@.id=='1']",
+                "$[?@.id == \"1\"]",
             };
 
             // $[?(@.id=='1')]
@@ -403,14 +405,16 @@ namespace PSRule
 
             // $[?(!@.enabled)]
             var actual = PathTokenizer.Get(path[0]);
-            Assert.Equal(6, actual.Length);
+            Assert.Equal(8, actual.Length);
             Assert.Equal(PathTokenType.RootRef, actual[0].Type);
             Assert.Equal(PathTokenType.StartFilter, actual[1].Type);
-            Assert.Equal(PathTokenType.NotOperator, actual[2].Type);
-            Assert.Equal(PathTokenType.CurrentRef, actual[3].Type);
-            Assert.Equal(PathTokenType.DotSelector, actual[4].Type);
-            Assert.Equal("enabled", actual[4].As<string>());
-            Assert.Equal(PathTokenType.EndFilter, actual[5].Type);
+            Assert.Equal(PathTokenType.StartGroup, actual[2].Type);
+            Assert.Equal(PathTokenType.NotOperator, actual[3].Type);
+            Assert.Equal(PathTokenType.CurrentRef, actual[4].Type);
+            Assert.Equal(PathTokenType.DotSelector, actual[5].Type);
+            Assert.Equal("enabled", actual[5].As<string>());
+            Assert.Equal(PathTokenType.EndGroup, actual[6].Type);
+            Assert.Equal(PathTokenType.EndFilter, actual[7].Type);
 
             // $[?!@.enabled]
             actual = PathTokenizer.Get(path[1]);
@@ -429,11 +433,12 @@ namespace PSRule
         {
             var path = new string[]
             {
-                "$[?(@.on == true || @.enabled == true)]",
+                "$[?@.on == true || @.enabled == true]",
                 "$[?(@.on || @.enabled == true)]",
+                "$[?(@.disabled == false || @.enabled == true) && @.on]",
             };
 
-            // $[?(@.on == true || @.enabled == true)]
+            // $[?@.on == true || @.enabled == true]
             var actual = PathTokenizer.Get(path[0]);
             Assert.Equal(12, actual.Length);
             Assert.Equal(PathTokenType.RootRef, actual[0].Type);
@@ -457,7 +462,67 @@ namespace PSRule
             Assert.Equal(PathTokenType.Boolean, actual[10].Type);
             Assert.True(actual[10].As<bool>());
 
+            //Assert.Equal(PathTokenType.EndFilter, actual[11].Type);
+
+            // $[?(@.on || @.enabled == true)]
+            actual = PathTokenizer.Get(path[1]);
+            Assert.Equal(12, actual.Length);
+            Assert.Equal(PathTokenType.RootRef, actual[0].Type);
+            Assert.Equal(PathTokenType.StartFilter, actual[1].Type);
+            Assert.Equal(PathTokenType.StartGroup, actual[2].Type);
+
+            Assert.Equal(PathTokenType.CurrentRef, actual[3].Type);
+            Assert.Equal(PathTokenType.DotSelector, actual[4].Type);
+            Assert.Equal("on", actual[4].As<string>());
+
+            Assert.Equal(PathTokenType.LogicalOperator, actual[5].Type);
+            Assert.Equal(FilterOperator.Or, actual[5].As<FilterOperator>());
+
+            Assert.Equal(PathTokenType.CurrentRef, actual[6].Type);
+            Assert.Equal(PathTokenType.DotSelector, actual[7].Type);
+            Assert.Equal("enabled", actual[7].As<string>());
+            Assert.Equal(FilterOperator.Equal, actual[8].As<FilterOperator>());
+            Assert.Equal(PathTokenType.Boolean, actual[9].Type);
+            Assert.True(actual[9].As<bool>());
+
+            Assert.Equal(PathTokenType.EndGroup, actual[10].Type);
             Assert.Equal(PathTokenType.EndFilter, actual[11].Type);
+
+            // $[?(@.disabled == false || @.enabled == true) && @.on]
+            actual = PathTokenizer.Get(path[2]);
+            Assert.Equal(17, actual.Length);
+            Assert.Equal(PathTokenType.RootRef, actual[0].Type);
+            Assert.Equal(PathTokenType.StartFilter, actual[1].Type);
+            Assert.Equal(PathTokenType.StartGroup, actual[2].Type);
+
+            Assert.Equal(PathTokenType.CurrentRef, actual[3].Type);
+            Assert.Equal(PathTokenType.DotSelector, actual[4].Type);
+            Assert.Equal("disabled", actual[4].As<string>());
+            Assert.Equal(PathTokenType.ComparisonOperator, actual[5].Type);
+            Assert.Equal(FilterOperator.Equal, actual[5].As<FilterOperator>());
+            Assert.Equal(PathTokenType.Boolean, actual[6].Type);
+            Assert.False(actual[6].As<bool>());
+
+            Assert.Equal(PathTokenType.LogicalOperator, actual[7].Type);
+            Assert.Equal(FilterOperator.Or, actual[7].As<FilterOperator>());
+
+            Assert.Equal(PathTokenType.CurrentRef, actual[8].Type);
+            Assert.Equal(PathTokenType.DotSelector, actual[9].Type);
+            Assert.Equal("enabled", actual[9].As<string>());
+            Assert.Equal(FilterOperator.Equal, actual[10].As<FilterOperator>());
+            Assert.Equal(PathTokenType.Boolean, actual[11].Type);
+            Assert.True(actual[11].As<bool>());
+
+            Assert.Equal(PathTokenType.EndGroup, actual[12].Type);
+
+            Assert.Equal(PathTokenType.LogicalOperator, actual[13].Type);
+            Assert.Equal(FilterOperator.And, actual[13].As<FilterOperator>());
+
+            Assert.Equal(PathTokenType.CurrentRef, actual[14].Type);
+            Assert.Equal(PathTokenType.DotSelector, actual[15].Type);
+            Assert.Equal("on", actual[15].As<string>());
+
+            Assert.Equal(PathTokenType.EndFilter, actual[16].Type);
         }
 
         [Fact]
@@ -613,8 +678,8 @@ namespace PSRule
                 "$..book[-1:]",
                 "$..book[0,1]",
                 "$..book[:2]",
-                "$..book[?(@.isbn)]",
-                "$..book[?(@.price<10)]",
+                "$..book[?@.isbn]",
+                "$..book[?@.price<10]",
                 "$..*"
             };
 

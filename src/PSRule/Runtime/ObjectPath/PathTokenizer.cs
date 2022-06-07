@@ -141,9 +141,12 @@ namespace PSRule.Runtime.ObjectPath
                 var groupOpen = Path[position + 2] == GROUP_OPEN;
                 var pos = groupOpen ? position + 3 : position + 2;
                 tokens.Add(new PathToken(PathTokenType.StartFilter));
+                if (groupOpen)
+                    tokens.Add(new PathToken(PathTokenType.StartGroup));
+
                 while (!EOF(pos) && Current(pos) != INDEX_CLOSE)
                 {
-                    if (!TryConsumeBooleanExpression(ref pos, tokens))
+                    if (!TryConsumeBooleanExpression(ref pos, tokens) && !TryConsumeGroup(ref pos, tokens))
                         Next(ref pos);
 
                     pos = SkipPadding(pos);
@@ -154,6 +157,17 @@ namespace PSRule.Runtime.ObjectPath
 
                 tokens.Add(new PathToken(PathTokenType.EndFilter));
                 position = SkipPadding(pos);
+                return true;
+            }
+
+            private bool TryConsumeGroup(ref int position, ITokenWriter tokens)
+            {
+                if (Current(position) != GROUP_OPEN && Current(position) != GROUP_CLOSE)
+                    return false;
+
+                tokens.Add(new PathToken(Current(position) == GROUP_OPEN ? PathTokenType.StartGroup : PathTokenType.EndGroup));
+                position++;
+                TryConsumeLogicalOperator(ref position, tokens);
                 return true;
             }
 

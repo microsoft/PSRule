@@ -139,6 +139,31 @@ namespace PSRule
         }
 
         [Fact]
+        public void WithCombinedFilter()
+        {
+            var testObject = GetJsonContent();
+
+            var expression = PathExpression.Create("$[?(@Spec.Properties.Kind == 'Test' || @Spec.Properties.Kind == 'Test2') && @Spec.Properties.Value1].TargetName");
+            Assert.True(expression.TryGet(testObject, false, out object[] actual));
+            Assert.NotNull(actual);
+            Assert.Single(actual);
+            Assert.Equal("TestObject1", actual[0]);
+
+            expression = PathExpression.Create("$[?((@Spec.Properties.Kind == 'Test' || @Spec.Properties.Kind == 'Test2') && @Spec.Properties.Value2)].TargetName");
+            Assert.True(expression.TryGet(testObject, false, out actual));
+            Assert.NotNull(actual);
+            Assert.Single(actual);
+            Assert.Equal("TestObject2", actual[0]);
+
+            expression = PathExpression.Create("$[?(@Spec.Properties.Kind == 'Test' || @Spec.Properties.Kind == 'Test2') && (@Spec.Properties.Value1 || @Spec.Properties.Value2)].TargetName");
+            Assert.True(expression.TryGet(testObject, false, out actual));
+            Assert.NotNull(actual);
+            Assert.Equal(2, actual.Length);
+            Assert.Equal("TestObject1", actual[0]);
+            Assert.Equal("TestObject2", actual[1]);
+        }
+
+        [Fact]
         public void WithExistsFilter()
         {
             var testObject = GetJsonContent();
