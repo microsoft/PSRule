@@ -22,6 +22,8 @@ What's changed since v2.1.0:
     [#1079](https://github.com/microsoft/PSRule/pull/1079)
   - Bump Microsoft.NET.Test.Sdk to 17.2.0.
     [#1089](https://github.com/microsoft/PSRule/pull/1089)
+  - Updated NuGet packaging metadata by @BernieWhite.
+    [#1093](https://github.com/microsoft/PSRule/issues/1093)
 - Bug fixes:
   - Fixed grouping of logical operators in object path by @BernieWhite.
     [#1101](https://github.com/microsoft/PSRule/issues/1101)

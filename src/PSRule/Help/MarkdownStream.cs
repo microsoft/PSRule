@@ -10,7 +10,7 @@ namespace PSRule.Help
     internal delegate bool CharacterMatchDelegate(char c);
 
     [DebuggerDisplay("StartPos = (L: {Start}, C: {Column}), EndPos = (L: {End}, C: {Column.End}), Text = {Text}")]
-    public sealed class SourceExtent
+    internal sealed class SourceExtent
     {
         private readonly string _Source;
 

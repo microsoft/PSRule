@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -13,12 +13,12 @@ namespace PSRule
     {
         private readonly Dictionary<string, TValue> _Map;
 
-        protected KeyMapDictionary()
+        internal protected KeyMapDictionary()
         {
             _Map = new Dictionary<string, TValue>(StringComparer.OrdinalIgnoreCase);
         }
 
-        protected KeyMapDictionary(KeyMapDictionary<TValue> map)
+        internal protected KeyMapDictionary(KeyMapDictionary<TValue> map)
         {
             if (map == null)
                 throw new ArgumentNullException(nameof(map));
@@ -26,14 +26,14 @@ namespace PSRule
             _Map = new Dictionary<string, TValue>(map._Map, StringComparer.OrdinalIgnoreCase);
         }
 
-        protected KeyMapDictionary(IDictionary<string, TValue> dictionary)
+        internal protected KeyMapDictionary(IDictionary<string, TValue> dictionary)
         {
             _Map = dictionary == null ?
                 new Dictionary<string, TValue>(StringComparer.OrdinalIgnoreCase) :
                 new Dictionary<string, TValue>(dictionary, StringComparer.OrdinalIgnoreCase);
         }
 
-        protected KeyMapDictionary(Hashtable hashtable)
+        internal protected KeyMapDictionary(Hashtable hashtable)
             : this()
         {
             Load(hashtable);

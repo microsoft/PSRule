@@ -31,6 +31,14 @@ namespace PSRule.Pipeline
 
         internal Source Source;
 
+        public SourceFile(string path, string module, SourceType type, string helpPath)
+        {
+            Path = path;
+            Module = module;
+            Type = type;
+            HelpPath = helpPath;
+        }
+
         [JsonProperty(PropertyName = "path")]
         public string Path { get; }
 
@@ -48,14 +56,6 @@ namespace PSRule.Pipeline
         [YamlIgnore]
         [JsonIgnore]
         public string HelpPath { get; }
-
-        public SourceFile(string path, string module, SourceType type, string helpPath)
-        {
-            Path = path;
-            Module = module;
-            Type = type;
-            HelpPath = helpPath;
-        }
 
         internal bool Exists()
         {
