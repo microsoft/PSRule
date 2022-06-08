@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace PSRule.Help
 {
-    public enum MarkdownTokenType
+    internal enum MarkdownTokenType
     {
         None = 0,
 
@@ -32,7 +32,7 @@ namespace PSRule.Help
     }
 
     [Flags()]
-    public enum MarkdownTokens
+    internal enum MarkdownTokens
     {
         None = 0,
 
@@ -52,7 +52,7 @@ namespace PSRule.Help
         PreserveLineEnding = 40
     }
 
-    public static class MarkdownTokenFlagExtensions
+    internal static class MarkdownTokenFlagExtensions
     {
         public static bool IsEnding(this MarkdownTokens flags)
         {
@@ -71,7 +71,7 @@ namespace PSRule.Help
     }
 
     [DebuggerDisplay("Type = {Type}, Text = {Text}")]
-    public sealed class MarkdownToken
+    internal sealed class MarkdownToken
     {
         public SourceExtent Extent { get; set; }
 

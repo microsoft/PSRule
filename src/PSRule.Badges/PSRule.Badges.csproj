@@ -1,19 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <AssemblyName>Microsoft.PSRule.Badges</AssemblyName>
+    <RootNamespace>PSRule.Badges</RootNamespace>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>8.0</LangVersion>
+    <OutputType>Library</OutputType>
+    <ProjectGuid>{309bed8b-4e60-4c42-a2b4-37a2e7ebef3f}</ProjectGuid>
+    <DebugType>portable</DebugType>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Authors>Bernie White</Authors>
     <AssemblyTitle>PSRule.Badges</AssemblyTitle>
-    <RepositoryUrl>https://github.com/Microsoft/PSRule</RepositoryUrl>
-    <PackageLicenseExpression>https://github.com/Microsoft/PSRule/blob/main/LICENSE</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/microsoft/PSRule</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://aka.ms/ps-rule</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageId>Microsoft.PSRule.Badges</PackageId>
+    <PackageTags>PSRule;</PackageTags>
+    <EnableNuget>true</EnableNuget>
     <Version>0.0.1</Version>
     <Company>Microsoft Corporation</Company>
     <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
     <Description>Contains resources for PSRule to work with badges.
 
 This project uses GitHub Issues to track bugs and feature requests. See GitHub project for more information.</Description>
+    <PackageReleaseNotes>For a list of changes see https://aka.ms/ps-rule/changelog.</PackageReleaseNotes>
+    <PackageIcon>package_icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
@@ -27,6 +40,17 @@ This project uses GitHub Issues to track bugs and feature requests. See GitHub p
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\assets\package_icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />

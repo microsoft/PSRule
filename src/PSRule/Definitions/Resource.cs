@@ -348,7 +348,7 @@ namespace PSRule.Definitions
     [DebuggerDisplay("Kind = {Kind}, Id = {Id}")]
     public abstract class Resource<TSpec> where TSpec : Spec, new()
     {
-        protected Resource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, TSpec spec)
+        internal protected Resource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, TSpec spec)
         {
             Kind = kind;
             ApiVersion = apiVersion;

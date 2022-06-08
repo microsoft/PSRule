@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -6,6 +6,9 @@ using System.Text;
 
 namespace PSRule.Badges
 {
+    /// <summary>
+    /// Generate SVG badges.
+    /// </summary>
     internal sealed class SvgBuilder
     {
         private readonly int _Width;

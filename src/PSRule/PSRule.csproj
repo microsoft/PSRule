@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <AssemblyName>Microsoft.PSRule</AssemblyName>
+    <RootNamespace>PSRule</RootNamespace>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>8.0</LangVersion>
     <OutputType>Library</OutputType>
     <ProjectGuid>{0130215d-58eb-4887-b6fa-31ed02500569}</ProjectGuid>
@@ -12,15 +14,22 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <Authors>Bernie White</Authors>
     <AssemblyTitle>PSRule</AssemblyTitle>
-    <RepositoryUrl>https://github.com/Microsoft/PSRule</RepositoryUrl>
+    <RepositoryUrl>https://github.com/microsoft/PSRule</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://aka.ms/ps-rule</PackageProjectUrl>
-    <PackageLicenseExpression>https://github.com/Microsoft/PSRule/blob/main/LICENSE</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageId>Microsoft.PSRule</PackageId>
+    <PackageTags>PSRule;</PackageTags>
+    <EnableNuget>true</EnableNuget>
     <Version>0.0.1</Version>
     <Company>Microsoft Corporation</Company>
     <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
     <Description>Validate infrastructure as code (IaC) and objects using PowerShell rules.
 
 This project uses GitHub Issues to track bugs and feature requests. See GitHub project for more information.</Description>
+    <PackageReleaseNotes>For a list of changes see https://aka.ms/ps-rule/changelog.</PackageReleaseNotes>
+    <PackageIcon>package_icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
@@ -34,6 +43,17 @@ This project uses GitHub Issues to track bugs and feature requests. See GitHub p
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\assets\package_icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
