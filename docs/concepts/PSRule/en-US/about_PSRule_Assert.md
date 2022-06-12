@@ -47,6 +47,7 @@ The following built-in assertion methods are provided:
 - [Like](#like) - The value must match any of the specified wildcard values.
 - [Match](#match) - The field value matches a regular expression pattern.
 - [NotContains](#notcontains) - The value must not contain any of the specified strings.
+- [NotCount](#notcount) - The field value must not contain the specified number of items.
 - [NotEndsWith](#notendswith) - The value must not end with any of the specified strings.
 - [NotHasField](#nothasfield) - The object must not have any of the specified fields.
 - [NotIn](#notin) - The field value must not be included in the set.
@@ -1014,6 +1015,33 @@ Examples:
 Rule 'NotContains' {
     $Assert.NotContains($TargetObject, 'ResourceGroupName', 'prod')
     $Assert.NotContains($TargetObject, 'Name', @('prod', 'test'), $True)
+}
+```
+
+### NotCount
+
+The `NotCount` assertion method checks the field value does not contain the specified number of items.
+The field value must be an array or collection.
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check. This is a case insensitive compare.
+- `count` - The number of items that the field value must contain.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field '{0}' is not enumerable._
+- _The field '{0}' has '{1}' items instead of '{2}'._
+
+Examples:
+
+```powershell
+Rule 'NotCount' {
+    $Assert.NotCount($TargetObject, 'items', 2)
 }
 ```
 

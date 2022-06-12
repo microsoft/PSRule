@@ -550,6 +550,31 @@ namespace PSRule
         [Theory]
         [InlineData("Yaml", SelectorYamlFileName)]
         [InlineData("Json", SelectorJsonFileName)]
+        public void NotCountExpression(string type, string path)
+        {
+            var count = GetSelectorVisitor($"{type}NotCount", GetSource(path), out _);
+            var actual1 = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
+            var actual2 = GetObject((name: "value", value: new string[] { "2", "1" }));
+            var actual3 = GetObject((name: "value", value: new string[] { "1" }));
+            var actual4 = GetObject((name: "value", value: new int[] { 2, 3 }));
+            var actual5 = GetObject((name: "value", value: new int[] { 3 }));
+            var actual6 = GetObject((name: "value", value: new string[] { }));
+            var actual7 = GetObject((name: "value", value: null));
+            var actual8 = GetObject();
+
+            Assert.True(count.Match(actual1));
+            Assert.False(count.Match(actual2));
+            Assert.True(count.Match(actual3));
+            Assert.False(count.Match(actual4));
+            Assert.True(count.Match(actual5));
+            Assert.True(count.Match(actual6));
+            Assert.False(count.Match(actual7));
+            Assert.False(count.Match(actual8));
+        }
+
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
         public void LessExpression(string type, string path)
         {
             var less = GetSelectorVisitor($"{type}Less", GetSource(path), out _);

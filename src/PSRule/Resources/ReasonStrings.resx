@@ -336,4 +336,7 @@
   <data name="Assert_StartsWith" xml:space="preserve">
     <value>The value '{0}' starts with '{1}'.</value>
   </data>
+  <data name="NotCount" xml:space="preserve">
+    <value>The field '{0}' has '{1}' items instead of not '{2}'.</value>
+  </data>
 </root>

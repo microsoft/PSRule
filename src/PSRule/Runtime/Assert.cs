@@ -927,6 +927,21 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
+        /// The field value must not contain the specified number of items.
+        /// </summary>
+        public AssertResult NotCount(PSObject inputObject, string field, int count)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out var fieldValue, out result) ||
+                GuardFieldEnumerable(fieldValue, field, out var actual, out result))
+                return result;
+
+            return actual != count ? Pass() : Fail(ReasonStrings.NotCount, field, actual, count);
+        }
+
+        /// <summary>
         /// The object field value must match the regular expression.
         /// </summary>
         public AssertResult Match(PSObject inputObject, string field, string pattern, bool caseSensitive = false)

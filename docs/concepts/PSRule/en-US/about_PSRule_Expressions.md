@@ -42,6 +42,7 @@ The following conditions are available:
 - [Like](#like)
 - [Match](#match)
 - [NotContains](#notcontains)
+- [NotCount](#notcount)
 - [NotEndsWith](#notendswith)
 - [NotEquals](#notequals)
 - [NotIn](#notin)
@@ -1325,6 +1326,40 @@ spec:
       notContains:
       - 'github.io'
       - 'github.com'
+```
+
+### NotCount
+
+The `notCount` condition is used to determine if the operand does not contain a specified number of items.
+
+Syntax:
+
+```yaml
+notCount: <int>
+```
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleNotCount'
+spec:
+  condition:
+    field: 'items'
+    notCount: 2
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleNotCount'
+spec:
+  if:
+    field: 'items'
+    notCount: 2
 ```
 
 ### NotEndsWith
