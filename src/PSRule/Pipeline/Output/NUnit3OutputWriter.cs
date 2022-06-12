@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using PSRule.Common;
 using PSRule.Configuration;
 using PSRule.Resources;
 

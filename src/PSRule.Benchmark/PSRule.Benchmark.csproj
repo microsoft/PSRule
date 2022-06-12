@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,8 +6,11 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ProjectGuid>{3ec0912f-bfc7-4b53-a1a1-0ba993c6282e}</ProjectGuid>
     <Authors>Bernie White</Authors>
-    <RepositoryUrl>https://github.com/Microsoft/PSRule</RepositoryUrl>
-    <PackageLicenseExpression>https://github.com/Microsoft/PSRule/blob/main/LICENSE</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/microsoft/PSRule</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://aka.ms/ps-rule</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IsPackable>false</IsPackable>
     <Company>Microsoft Corporation</Company>
     <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
   </PropertyGroup>

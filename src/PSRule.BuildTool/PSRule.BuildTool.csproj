@@ -6,8 +6,11 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <Authors>Bernie White</Authors>
     <AssemblyTitle>PSRule.BuildTool</AssemblyTitle>
-    <RepositoryUrl>https://github.com/Microsoft/PSRule</RepositoryUrl>
-    <PackageLicenseExpression>https://github.com/Microsoft/PSRule/blob/main/LICENSE</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/microsoft/PSRule</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://aka.ms/ps-rule</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IsPackable>false</IsPackable>
     <Version>0.0.1</Version>
     <Company>Microsoft Corporation</Company>
     <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>

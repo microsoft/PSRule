@@ -16,8 +16,17 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 What's changed since v2.1.0:
 
 - Engineering:
-  - Bump xunit.runner.visualstudio 2.4.5. [#1084](https://github.com/microsoft/PSRule/pull/1084)
-  - Bump Pester to 5.3.3. [#1079](https://github.com/microsoft/PSRule/pull/1079)
+  - Bump xunit.runner.visualstudio to 2.4.5.
+    [#1084](https://github.com/microsoft/PSRule/pull/1084)
+  - Bump Pester to 5.3.3.
+    [#1079](https://github.com/microsoft/PSRule/pull/1079)
+  - Bump Microsoft.NET.Test.Sdk to 17.2.0.
+    [#1089](https://github.com/microsoft/PSRule/pull/1089)
+  - Updated NuGet packaging metadata by @BernieWhite.
+    [#1093](https://github.com/microsoft/PSRule/issues/1093)
+- Bug fixes:
+  - Fixed grouping of logical operators in object path by @BernieWhite.
+    [#1101](https://github.com/microsoft/PSRule/issues/1101)
 
 ## v2.1.0
 
