@@ -38,7 +38,7 @@ namespace PSRule
             context.Begin();
             var selector = HostHelper.GetSelector(GetSource(path), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(91, selector.Length);
+            Assert.Equal(92, selector.Length);
 
             Assert.Equal("BasicSelector", selector[0].Name);
             Assert.Equal($"{type}AllOf", selector[4].Name);
