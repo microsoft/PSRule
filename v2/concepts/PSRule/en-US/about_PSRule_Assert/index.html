@@ -1578,6 +1578,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#notcount" class="md-nav__link">
+    NotCount
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#notendswith" class="md-nav__link">
     NotEndsWith
   </a>
@@ -2188,6 +2195,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#notcount" class="md-nav__link">
+    NotCount
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#notendswith" class="md-nav__link">
     NotEndsWith
   </a>
@@ -2392,6 +2406,7 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 <li><a href="#like">Like</a> - The value must match any of the specified wildcard values.</li>
 <li><a href="#match">Match</a> - The field value matches a regular expression pattern.</li>
 <li><a href="#notcontains">NotContains</a> - The value must not contain any of the specified strings.</li>
+<li><a href="#notcount">NotCount</a> - The field value must not contain the specified number of items.</li>
 <li><a href="#notendswith">NotEndsWith</a> - The value must not end with any of the specified strings.</li>
 <li><a href="#nothasfield">NotHasField</a> - The object must not have any of the specified fields.</li>
 <li><a href="#notin">NotIn</a> - The field value must not be included in the set.</li>
@@ -3221,6 +3236,28 @@ Case is ignored by default.</li>
     <span class="nv">$Assert</span><span class="p">.</span><span class="n">NotContains</span><span class="p">(</span><span class="nv">$TargetObject</span><span class="p">,</span> <span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="p">@(</span><span class="s1">&#39;prod&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">),</span> <span class="nv">$True</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
+<h3 id="notcount">NotCount<a class="headerlink" href="#notcount" title="Permanent link">#</a></h3>
+<p>The <code>NotCount</code> assertion method checks the field value does not contain the specified number of items.
+The field value must be an array or collection.</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check. This is a case insensitive compare.</li>
+<li><code>count</code> - The number of items that the field value must contain.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field '{0}' is not enumerable.</em></li>
+<li><em>The field '{0}' has '{1}' items instead of '{2}'.</em></li>
+</ul>
+<p>Examples:</p>
+<div class="highlight"><pre><span></span><code><span class="n">Rule</span> <span class="s1">&#39;NotCount&#39;</span> <span class="p">{</span>
+    <span class="nv">$Assert</span><span class="p">.</span><span class="n">NotCount</span><span class="p">(</span><span class="nv">$TargetObject</span><span class="p">,</span> <span class="s1">&#39;items&#39;</span><span class="p">,</span> <span class="n">2</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
 <h3 id="notendswith">NotEndsWith<a class="headerlink" href="#notendswith" title="Permanent link">#</a></h3>
 <p>The <code>NotEndsWith</code> assertion method checks the field value ends with the specified suffix.
 This condition fails when any of the specified sub-strings are found at the end of the operand.
@@ -3883,7 +3920,7 @@ If a <code>_PSRule</code> property exists with <code>issue</code> sub-property P
   <small>
     
       Last update:
-      2022-04-30
+      2022-06-13
     
   </small>
 </div>

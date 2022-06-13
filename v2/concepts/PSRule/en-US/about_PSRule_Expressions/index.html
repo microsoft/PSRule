@@ -1648,6 +1648,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#notcount" class="md-nav__link">
+    NotCount
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#notendswith" class="md-nav__link">
     NotEndsWith
   </a>
@@ -2146,6 +2153,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#notcount" class="md-nav__link">
+    NotCount
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#notendswith" class="md-nav__link">
     NotEndsWith
   </a>
@@ -2304,6 +2318,7 @@ Expressions are comprised of nested conditions, operators, and comparison proper
 <li><a href="#like">Like</a></li>
 <li><a href="#match">Match</a></li>
 <li><a href="#notcontains">NotContains</a></li>
+<li><a href="#notcount">NotCount</a></li>
 <li><a href="#notendswith">NotEndsWith</a></li>
 <li><a href="#notequals">NotEquals</a></li>
 <li><a href="#notin">NotIn</a></li>
@@ -3390,6 +3405,32 @@ One or more strings to compare can be specified.</p>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;github.io&#39;</span><span class="w"></span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;github.com&#39;</span><span class="w"></span>
 </code></pre></div>
+<h3 id="notcount">NotCount<a class="headerlink" href="#notcount" title="Permanent link">#</a></h3>
+<p>The <code>notCount</code> condition is used to determine if the operand does not contain a specified number of items.</p>
+<p>Syntax:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">notCount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;int&gt;</span><span class="w"></span>
+</code></pre></div>
+<p>For example:</p>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span><span class="w"></span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.com/microsoft/PSRule/v1</span><span class="w"></span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Rule</span><span class="w"></span>
+<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ExampleNotCount&#39;</span><span class="w"></span>
+<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">condition</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;items&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">notCount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
+
+<span class="nn">---</span><span class="w"></span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.com/microsoft/PSRule/v1</span><span class="w"></span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Selector</span><span class="w"></span>
+<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ExampleNotCount&#39;</span><span class="w"></span>
+<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;items&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">notCount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
+</code></pre></div>
 <h3 id="notendswith">NotEndsWith<a class="headerlink" href="#notendswith" title="Permanent link">#</a></h3>
 <p>The <code>notEndsWith</code> condition can be used to determine if the operand ends with a specified string.
 This condition fails when any of the specified sub-strings are found at the end of the operand.
@@ -3929,7 +3970,7 @@ If the path is not within the required path, the condition will return <code>fal
   <small>
     
       Last update:
-      2022-04-30
+      2022-06-13
     
   </small>
 </div>
