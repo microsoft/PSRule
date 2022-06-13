@@ -1011,6 +1011,21 @@ namespace PSRule
         }
 
         [Fact]
+        public void NotCount()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            // Array
+            var value = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
+            Assert.True(assert.NotCount(value, "value", 2).Result);
+            Assert.False(assert.NotCount(value, "value", 3).Result);
+            Assert.True(assert.NotCount(value, "value", 4).Result);
+            Assert.True(assert.NotCount(value, "value", 0).Result);
+            Assert.True(assert.NotCount(value, "value", -1).Result);
+        }
+
+        [Fact]
         public void Match()
         {
             SetContext();

@@ -466,6 +466,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The field &apos;{0}&apos; has &apos;{1}&apos; items instead of not &apos;{2}&apos;..
+        /// </summary>
+        internal static string NotCount {
+            get {
+                return ResourceManager.GetString("NotCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The field &apos;{0}&apos; is not enumerable..
         /// </summary>
         internal static string NotEnumerable {

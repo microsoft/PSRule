@@ -324,6 +324,7 @@ namespace PSRule.Definitions.Expressions
         private const string SETOF = "setOf";
         private const string SUBSET = "subset";
         private const string COUNT = "count";
+        private const string NOTCOUNT = "notCount";
         private const string VERSION = "version";
         private const string WITHINPATH = "withinPath";
         private const string NOTWITHINPATH = "notWithinPath";
@@ -393,6 +394,7 @@ namespace PSRule.Definitions.Expressions
             new LanguageExpresssionDescriptor(SETOF, LanguageExpressionType.Condition, SetOf),
             new LanguageExpresssionDescriptor(SUBSET, LanguageExpressionType.Condition, Subset),
             new LanguageExpresssionDescriptor(COUNT, LanguageExpressionType.Condition, Count),
+            new LanguageExpresssionDescriptor(NOTCOUNT, LanguageExpressionType.Condition, NotCount),
             new LanguageExpresssionDescriptor(HASSCHEMA, LanguageExpressionType.Condition, HasSchema),
             new LanguageExpresssionDescriptor(VERSION, LanguageExpressionType.Condition, Version),
             new LanguageExpresssionDescriptor(HASDEFAULT, LanguageExpressionType.Condition, HasDefault),
@@ -699,6 +701,31 @@ namespace PSRule.Definitions.Expressions
                     );
             }
             return Invalid(context, COUNT);
+        }
+
+        internal static bool NotCount(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyLong(properties, NOTCOUNT, out var expectedValue) && TryField(properties, out var field))
+            {
+                context.ExpressionTrace(NOTCOUNT, field, expectedValue);
+                if (!ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object value))
+                    return NotHasField(context, field);
+
+                if (value == null)
+                    return Fail(context, ReasonStrings.Null, field);
+
+                if (ExpressionHelpers.TryEnumerableLength(value, value: out var actualValue))
+                    return Condition(
+                        context,
+                        actualValue != expectedValue,
+                        ReasonStrings.NotCount,
+                        field,
+                        actualValue,
+                        expectedValue
+                    );
+            }
+            return Invalid(context, NOTCOUNT);
         }
 
         internal static bool Less(ExpressionContext context, ExpressionInfo info, object[] args, object o)

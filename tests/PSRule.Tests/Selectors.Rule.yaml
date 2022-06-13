@@ -814,6 +814,17 @@ spec:
     count: 2
 
 ---
+# Synopsis: Test notCount
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNotCount
+spec:
+  if:
+    field: 'Value'
+    notCount: 2
+
+---
 # Synopsis: Test hasSchema
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Selector

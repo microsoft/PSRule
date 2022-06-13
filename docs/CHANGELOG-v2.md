@@ -27,6 +27,9 @@ What's changed since v2.1.0:
 - Bug fixes:
   - Fixed grouping of logical operators in object path by @BernieWhite.
     [#1101](https://github.com/microsoft/PSRule/issues/1101)
+- New features:
+  - Added `notCount` expression and assertion helper by @ArmaanMcleod.
+    [#1091](https://github.com/microsoft/PSRule/issues/1091)
 
 ## v2.1.0
 

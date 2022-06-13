@@ -725,6 +725,9 @@
                     "$ref": "#/definitions/selectorConditionCount"
                 },
                 {
+                    "$ref": "#/definitions/selectorConditionNotCount"
+                },
+                {
                     "$ref": "#/definitions/selectorConditionLess"
                 },
                 {
@@ -1184,6 +1187,26 @@
             },
             "required": [
                 "count"
+            ],
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/selectorProperties"
+                }
+            ]
+        },
+        "selectorConditionNotCount": {
+            "type": "object",
+            "properties": {
+                "notCount": {
+                    "type": "integer",
+                    "title": "NotCount",
+                    "description": "Determines if operand does not have number of items.",
+                    "markdownDescription": "Determines if operand does not have number of items. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcount)",
+                    "minimum": 0
+                }
+            },
+            "required": [
+                "notCount"
             ],
             "oneOf": [
                 {
