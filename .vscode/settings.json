@@ -73,7 +73,8 @@
         "runspaces",
         "SARIF",
         "SBOM",
-        "unencrypted"
+        "unencrypted",
+        "xunit"
     ],
     "[csharp]": {
         "editor.formatOnSave": true
@@ -81,5 +82,8 @@
     "omnisharp.enableImportCompletion": true,
     "omnisharp.organizeImportsOnFormat": true,
     "omnisharp.enableEditorConfigSupport": true,
-    "omnisharp.enableRoslynAnalyzers": true
+    "omnisharp.enableRoslynAnalyzers": true,
+    "git.branchProtection": [
+        "main"
+    ]
 }
