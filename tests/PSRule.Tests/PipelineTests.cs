@@ -58,7 +58,7 @@ namespace PSRule
             PSRuleOption.UseCurrentCulture(CultureInfo.InvariantCulture);
             var context = PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null);
             var writer = new TestWriter(GetOption());
-            var pipeline = new GetRulePipeline(context, GetSource(), new PipelineReader(null, null), writer, false);
+            var pipeline = new GetRulePipeline(context, GetSource(), new PipelineReader(null, null, null), writer, false);
             try
             {
                 pipeline.Begin();
@@ -80,7 +80,7 @@ namespace PSRule
             option.Execution.InvariantCultureWarning = false;
             var context = PipelineContext.New(option, null, null, null, null, null, new OptionContext(), null);
             var writer = new TestWriter(option);
-            var pipeline = new GetRulePipeline(context, GetSource(), new PipelineReader(null, null), writer, false);
+            var pipeline = new GetRulePipeline(context, GetSource(), new PipelineReader(null, null, null), writer, false);
             try
             {
                 pipeline.Begin();
@@ -118,16 +118,44 @@ namespace PSRule
         {
             var option = GetOption();
             option.Rule.Include = new string[] { "FromFile1" };
-            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
-            builder.InputPath(new string[] { "./**/ObjectFromFile.json" });
+            option.Input.PathIgnore = new string[]
+            {
+                "**/ObjectFromFile*.json",
+                "!**/ObjectFromFile.json"
+            };
+
+            // Default
             var writer = new TestWriter(option);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            builder.InputPath(new string[] { "./**/ObjectFromFile*.json" });
             var pipeline = builder.Build(writer);
             Assert.NotNull(pipeline);
             pipeline.Begin();
-            pipeline.Process(null);
+            pipeline.Process(GetTestObject());
+            pipeline.Process(GetFileObject());
             pipeline.End();
 
             var items = writer.Output.OfType<InvokeResult>().SelectMany(i => i.AsRecord()).ToArray();
+            Assert.Equal(4, items.Length);
+            Assert.True(items[0].HasSource());
+            Assert.True(items[1].HasSource());
+            Assert.True(items[2].HasSource());
+            Assert.True(items[3].HasSource());
+
+            // With IgnoreObjectSource
+            option.Input.IgnoreObjectSource = true;
+            writer = new TestWriter(option);
+            builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            PipelineBuilder.Invoke(GetSource(), option, null, null);
+            builder.InputPath(new string[] { "./**/ObjectFromFile*.json" });
+            pipeline = builder.Build(writer);
+            Assert.NotNull(pipeline);
+            pipeline.Begin();
+            pipeline.Process(GetTestObject());
+            pipeline.Process(GetFileObject());
+            pipeline.End();
+
+            items = writer.Output.OfType<InvokeResult>().SelectMany(i => i.AsRecord()).ToArray();
             Assert.Equal(2, items.Length);
             Assert.True(items[0].HasSource());
             Assert.True(items[1].HasSource());
@@ -173,6 +201,25 @@ namespace PSRule
         private static string GetSourcePath(string fileName)
         {
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+        }
+
+        private static PSObject GetTestObject()
+        {
+            var info = new PSObject();
+            var source = new PSObject();
+            source.Properties.Add(new PSNoteProperty("file", PSRuleOption.GetRootedPath("./ObjectFromFileNotFile.json")));
+            source.Properties.Add(new PSNoteProperty("type", "example"));
+            info.Properties.Add(new PSNoteProperty("source", new PSObject[] { source }));
+            var o = new PSObject();
+            o.Properties.Add(new PSNoteProperty("name", "FromObjectTest"));
+            o.Properties.Add(new PSNoteProperty("_PSRule", info));
+            return o;
+        }
+
+        private static PSObject GetFileObject()
+        {
+            var info = new FileInfo(PSRuleOption.GetRootedPath("./ObjectFromFileSingle.json"));
+            return new PSObject(info);
         }
 
         #endregion Helper methods

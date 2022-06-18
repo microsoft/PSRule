@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Globalization;
+using System.IO;
 using System.Management.Automation;
 using System.Threading;
 using Newtonsoft.Json;
@@ -135,6 +136,21 @@ namespace PSRule
                     var issue = TargetIssueInfo.Create(issues.GetValue(i));
                     targetInfo.WithIssue(issue);
                 }
+            }
+        }
+
+        public static void ConvertTargetInfoType(this PSObject o)
+        {
+            var info = o?.BaseObject;
+            if (info is FileInfo fileInfo)
+            {
+                UseTargetInfo(o, out var targetInfo);
+                targetInfo.WithSource(new TargetSourceInfo(fileInfo));
+            }
+            if (info is InputFileInfo inputFileInfo)
+            {
+                UseTargetInfo(o, out var targetInfo);
+                targetInfo.WithSource(new TargetSourceInfo(inputFileInfo));
             }
         }
 

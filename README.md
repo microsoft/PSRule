@@ -252,6 +252,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Include.Path](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#includepath)
   - [Input.Format](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputformat)
   - [Input.IgnoreGitPath](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignoregitpath)
+  - [Input.IgnoreObjectSource](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignoreobjectsource)
   - [Input.IgnoreRepositoryCommon](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignorerepositorycommon)
   - [Input.ObjectPath](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputobjectpath)
   - [Input.PathIgnore](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputpathignore)

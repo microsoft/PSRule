@@ -18,6 +18,8 @@ What's changed since pre-release v2.2.0-B0021:
 - Bug fixes:
   - Fixed output of reason with wide format by @BernieWhite.
     [#1117](https://github.com/microsoft/PSRule/issues/1117)
+  - Fixed piped input does not respect excluded paths by @BernieWhite.
+    [#1114](https://github.com/microsoft/PSRule/issues/1114)
 
 ## v2.2.0-B0021 (pre-release)
 

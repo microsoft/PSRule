@@ -198,6 +198,7 @@
             "type": "object",
             "title": "Input options",
             "description": "Options that affect how input types are processed.",
+            "markdownDescription": "Options that affect how input types are processed.",
             "properties": {
                 "format": {
                     "type": "string",
@@ -218,16 +219,23 @@
                 "ignoreGitPath": {
                     "type": "boolean",
                     "title": "Ignore .git path",
-                    "description": "Determine if files within the .git path are ignored when the -InputPath parameter is used.",
-                    "markdownDescription": "Determine if files within the `.git` path are ignored when the `-InputPath` parameter is used. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignoregitpath)",
+                    "description": "Determine if files within the .git path are ignored when the -InputPath parameter is used. This is enabled by default.",
+                    "markdownDescription": "Determine if files within the `.git` path are ignored when the `-InputPath` parameter is used. This is enabled by default. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignoregitpath)",
                     "default": true
                 },
                 "ignoreRepositoryCommon": {
                     "type": "boolean",
                     "title": "Ignore common files",
-                    "description": "Determine if common repository files are ignored when the -InputPath parameter is used.",
-                    "markdownDescription": "Determine if common repository files are ignored when the `-InputPath` parameter is used. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignorerepositorycommon)",
+                    "description": "Determine if common repository files are ignored when the -InputPath parameter is used. This is enabled by default.",
+                    "markdownDescription": "Determine if common repository files are ignored when the `-InputPath` parameter is used. This is enabled by default. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignorerepositorycommon)",
                     "default": true
+                },
+                "ignoreObjectSource": {
+                    "type": "boolean",
+                    "title": "Ignore object source",
+                    "description": "Determines if objects are ignore based on their file source path. When set, objects from the pipeline or read from files will be exclude based on their source path and the configuration of pathIgnore, ignoreGitPath, and ignoreRepositoryCommon options.",
+                    "markdownDescription": "Determines if objects are ignore based on their file source path. When set, objects from the pipeline or read from files will be exclude based on their source path and the configuration of `pathIgnore`, `ignoreGitPath`, and `ignoreRepositoryCommon` options. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignoreobjectsource)",
+                    "default": false
                 },
                 "objectPath": {
                     "type": "string",
@@ -238,8 +246,8 @@
                 "pathIgnore": {
                     "type": "array",
                     "title": "Path ignore",
-                    "description": "Ignores input files that match the path spec.",
-                    "markdownDescription": "Ignores input files that match the path spec. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputpathignore)",
+                    "description": "Exclude input files that match the path spec. To exclude a file specify the path prefix or file name. To re-include previously excluded paths use ! at the start of the entry. Wildcards are supported.",
+                    "markdownDescription": "Exclude input files that match the path spec. To exclude a file specify the path prefix or file name. To re-include previously excluded paths use `!` at the start of the entry. Wildcards are supported. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputpathignore)",
                     "items": {
                         "type": "string"
                     },

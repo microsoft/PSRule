@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -39,7 +39,9 @@ namespace PSRule
                 "**/obj/",
                 "",
                 "# Add reports/bin",
-                "!reports/bin/"
+                "!reports/bin/",
+                "**/ObjectFromFile*.json",
+                "!**/ObjectFromFile.json"
             };
             filter = PathFilter.Create(GetWorkingPath(), expressions, true);
             Assert.True(filter.Match("out/example.parameters.json"));
@@ -48,6 +50,8 @@ namespace PSRule
             Assert.True(filter.Match("src/bin/pwsh.exe"));
             Assert.True(filter.Match("src/obj/example.parameters.json"));
             Assert.False(filter.Match("reports/bin/other.json"));
+            Assert.False(filter.Match("ObjectFromFile.json"));
+            Assert.True(filter.Match("ObjectFromFileSingle.json"));
 
             // Exclude
             filter = PathFilter.Create(GetWorkingPath(), expressions, false);
@@ -87,9 +91,13 @@ namespace PSRule
             Assert.True(actual3.Match(".github/dependabot.yml"));
         }
 
+        #region Helper methods
+
         private static string GetWorkingPath()
         {
             return AppDomain.CurrentDomain.BaseDirectory;
         }
+
+        #endregion Helper methods
     }
 }

@@ -59,6 +59,7 @@ execution:
 input:
   format: Yaml
   ignoreGitPath: false
+  ignoreObjectSource: true
   ignoreRepositoryCommon: false
   objectPath: items
   pathIgnore:

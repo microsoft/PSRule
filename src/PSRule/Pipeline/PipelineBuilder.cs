@@ -124,6 +124,7 @@ namespace PSRule.Pipeline
         private Hashtable _Tag;
         private BaselineOption _Baseline;
         private string[] _Convention;
+        private PathFilter _InputFilter;
 
         private readonly HostPipelineWriter _Output;
 
@@ -280,7 +281,7 @@ namespace PSRule.Pipeline
 
         protected virtual PipelineReader PrepareReader()
         {
-            return new PipelineReader(null, null);
+            return new PipelineReader(null, null, GetInputObjectSourceFilter());
         }
 
         protected virtual PipelineWriter PrepareWriter()
@@ -339,6 +340,27 @@ namespace PSRule.Pipeline
                 result.AddRange(parent);
 
             return result.Count == 0 ? null : result.ToArray();
+        }
+
+        protected PathFilter GetInputObjectSourceFilter()
+        {
+            return Option.Input.IgnoreObjectSource.GetValueOrDefault(InputOption.Default.IgnoreObjectSource.Value) ? GetInputFilter() : null;
+        }
+
+        protected PathFilter GetInputFilter()
+        {
+            if (_InputFilter == null)
+            {
+                var basePath = PSRuleOption.GetWorkingPath();
+                var ignoreGitPath = Option.Input.IgnoreGitPath ?? InputOption.Default.IgnoreGitPath.Value;
+                var ignoreRepositoryCommon = Option.Input.IgnoreRepositoryCommon ?? InputOption.Default.IgnoreRepositoryCommon.Value;
+                var builder = PathFilterBuilder.Create(basePath, Option.Input.PathIgnore, ignoreGitPath, ignoreRepositoryCommon);
+                if (Option.Input.Format == InputFormat.File)
+                    builder.UseGitIgnore();
+
+                _InputFilter = builder.Build();
+            }
+            return _InputFilter;
         }
 
         private OptionContext GetOptionContext()

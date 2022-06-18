@@ -24,6 +24,7 @@ The following workspace options are available for use:
 - [Include.Path](#includepath)
 - [Input.Format](#inputformat)
 - [Input.IgnoreGitPath](#inputignoregitpath)
+- [Input.IgnoreObjectSource](#inputignoreobjectsource)
 - [Input.IgnoreRepositoryCommon](#inputignorerepositorycommon)
 - [Input.ObjectPath](#inputobjectpath)
 - [Input.PathIgnore](#inputpathignore)
@@ -1206,6 +1207,55 @@ env:
 variables:
 - name: PSRULE_INPUT_IGNOREGITPATH
   value: false
+```
+
+### Input.IgnoreObjectSource
+
+By default, objects read from file using `inputPath` will be skipped if the file path has been ignored.
+When set to true, additionally objects with a source path that has been ignored will be skipped.
+This will include `FileInfo` objects, and objects with a source set using the `_PSRule.source` property.
+
+File paths to ignore are set by `Input.PathIgnore`, `Input.IgnoreGitPath`, and `Input.IgnoreRepositoryCommon`.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the InputIgnoreObjectSource parameter
+$option = New-PSRuleOption -InputIgnoreObjectSource $True;
+```
+
+```powershell
+# PowerShell: Using the Input.IgnoreObjectSource hashtable key
+$option = New-PSRuleOption -Option @{ 'Input.IgnoreObjectSource' = $True };
+```
+
+```powershell
+# PowerShell: Using the InputIgnoreObjectSource parameter to set YAML
+Set-PSRuleOption -InputIgnoreObjectSource $True;
+```
+
+```yaml
+# YAML: Using the input/ignoreObjectSource property
+input:
+  ignoreObjectSource: true
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_INPUT_IGNOREOBJECTSOURCE=true
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_INPUT_IGNOREOBJECTSOURCE: true
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_INPUT_IGNOREOBJECTSOURCE
+  value: true
 ```
 
 ### Input.IgnoreRepositoryCommon
@@ -2638,6 +2688,8 @@ include:
 input:
   format: Yaml
   ignoreGitPath: false
+  ignoreObjectSource: true
+  ignoreRepositoryCommon: false
   objectPath: items
   pathIgnore:
   - '*.Designer.cs'
@@ -2743,6 +2795,8 @@ include:
 input:
   format: Detect
   ignoreGitPath: true
+  ignoreObjectSource: false
+  ignoreRepositoryCommon: true
   objectPath: null
   pathIgnore: [ ]
   targetType: [ ]

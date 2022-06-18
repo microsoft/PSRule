@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -12,8 +12,9 @@ namespace PSRule.Configuration
     /// </summary>
     public sealed class InputOption : IEquatable<InputOption>
     {
-        private const InputFormat DEFAULT_FORMAT = PSRule.Configuration.InputFormat.Detect;
+        private const InputFormat DEFAULT_FORMAT = InputFormat.Detect;
         private const bool DEFAULT_IGNOREGITPATH = true;
+        private const bool DEFAULT_IGNOREOBJECTSOURCE = false;
         private const bool DEFAULT_IGNOREREPOSITORYCOMMON = true;
         private const string DEFAULT_OBJECTPATH = null;
         private const string[] DEFAULT_PATHIGNORE = null;
@@ -23,6 +24,7 @@ namespace PSRule.Configuration
         {
             Format = DEFAULT_FORMAT,
             IgnoreGitPath = DEFAULT_IGNOREGITPATH,
+            IgnoreObjectSource = DEFAULT_IGNOREOBJECTSOURCE,
             IgnoreRepositoryCommon = DEFAULT_IGNOREREPOSITORYCOMMON,
             ObjectPath = DEFAULT_OBJECTPATH,
             PathIgnore = DEFAULT_PATHIGNORE,
@@ -33,6 +35,7 @@ namespace PSRule.Configuration
         {
             Format = null;
             IgnoreGitPath = null;
+            IgnoreObjectSource = null;
             IgnoreRepositoryCommon = null;
             ObjectPath = null;
             PathIgnore = null;
@@ -46,6 +49,7 @@ namespace PSRule.Configuration
 
             Format = option.Format;
             IgnoreGitPath = option.IgnoreGitPath;
+            IgnoreObjectSource = option.IgnoreObjectSource;
             IgnoreRepositoryCommon = option.IgnoreRepositoryCommon;
             ObjectPath = option.ObjectPath;
             PathIgnore = option.PathIgnore;
@@ -62,6 +66,7 @@ namespace PSRule.Configuration
             return other != null &&
                 Format == other.Format &&
                 IgnoreGitPath == other.IgnoreGitPath &&
+                IgnoreObjectSource == other.IgnoreObjectSource &&
                 IgnoreRepositoryCommon == other.IgnoreRepositoryCommon &&
                 ObjectPath == other.ObjectPath &&
                 PathIgnore == other.PathIgnore &&
@@ -75,6 +80,7 @@ namespace PSRule.Configuration
                 var hash = 17;
                 hash = hash * 23 + (Format.HasValue ? Format.Value.GetHashCode() : 0);
                 hash = hash * 23 + (IgnoreGitPath.HasValue ? IgnoreGitPath.Value.GetHashCode() : 0);
+                hash = hash * 23 + (IgnoreObjectSource.HasValue ? IgnoreObjectSource.Value.GetHashCode() : 0);
                 hash = hash * 23 + (IgnoreRepositoryCommon.HasValue ? IgnoreRepositoryCommon.Value.GetHashCode() : 0);
                 hash = hash * 23 + (ObjectPath != null ? ObjectPath.GetHashCode() : 0);
                 hash = hash * 23 + (PathIgnore != null ? PathIgnore.GetHashCode() : 0);
@@ -89,6 +95,7 @@ namespace PSRule.Configuration
             {
                 Format = o1.Format ?? o2.Format,
                 IgnoreGitPath = o1.IgnoreGitPath ?? o2.IgnoreGitPath,
+                IgnoreObjectSource = o1.IgnoreObjectSource ?? o2.IgnoreObjectSource,
                 IgnoreRepositoryCommon = o1.IgnoreRepositoryCommon ?? o2.IgnoreRepositoryCommon,
                 ObjectPath = o1.ObjectPath ?? o2.ObjectPath,
                 PathIgnore = o1.PathIgnore ?? o2.PathIgnore,
@@ -108,6 +115,12 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public bool? IgnoreGitPath { get; set; }
+
+        /// <summary>
+        /// Determines if objects are ignore based on their file source path.
+        /// </summary>
+        [DefaultValue(null)]
+        public bool? IgnoreObjectSource { get; set; }
 
         /// <summary>
         /// Determine if common repository files are ignored.
@@ -141,6 +154,9 @@ namespace PSRule.Configuration
             if (env.TryBool("PSRULE_INPUT_IGNOREGITPATH", out var ignoreGitPath))
                 IgnoreGitPath = ignoreGitPath;
 
+            if (env.TryBool("PSRULE_INPUT_IGNOREOBJECTSOURCE", out var ignoreObjectSource))
+                IgnoreObjectSource = ignoreObjectSource;
+
             if (env.TryBool("PSRULE_INPUT_IGNOREREPOSITORYCOMMON", out var ignoreRepositoryCommon))
                 IgnoreRepositoryCommon = ignoreRepositoryCommon;
 
@@ -161,6 +177,9 @@ namespace PSRule.Configuration
 
             if (index.TryPopBool("Input.IgnoreGitPath", out var ignoreGitPath))
                 IgnoreGitPath = ignoreGitPath;
+
+            if (index.TryPopBool("Input.IgnoreObjectSource", out var ignoreObjectSource))
+                IgnoreObjectSource = ignoreObjectSource;
 
             if (index.TryPopBool("Input.IgnoreRepositoryCommon", out var ignoreRepositoryCommon))
                 IgnoreRepositoryCommon = ignoreRepositoryCommon;
