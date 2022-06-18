@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\PSRule.Common.props" />
+  <PropertyGroup>
+    <AssemblyName>Microsoft.PSRule.SDK</AssemblyName>
+    <PackageId>Microsoft.PSRule.SDK</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PSRule\PSRule.csproj" />
+  </ItemGroup>
+
+</Project>
