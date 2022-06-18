@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Management.Automation;
-using System.Text;
 using Newtonsoft.Json;
 using PSRule.Data;
 using PSRule.Definitions;
@@ -172,14 +172,7 @@ namespace PSRule.Rules
 
         public string GetReasonViewString()
         {
-            if (Reason != null || Reason.Length == 0)
-                return string.Empty;
-
-            var sb = new StringBuilder();
-            for (var i = 0; i < Reason.Length; i++)
-                sb.AppendLine(Reason[i]);
-
-            return sb.ToString();
+            return Reason == null || Reason.Length == 0 ? string.Empty : string.Join(Environment.NewLine, Reason);
         }
 
         internal bool HasSource()
