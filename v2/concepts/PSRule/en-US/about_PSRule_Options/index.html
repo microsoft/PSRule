@@ -1606,6 +1606,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#inputignoreobjectsource" class="md-nav__link">
+    Input.IgnoreObjectSource
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#inputignorerepositorycommon" class="md-nav__link">
     Input.IgnoreRepositoryCommon
   </a>
@@ -2124,6 +2131,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#inputignoreobjectsource" class="md-nav__link">
+    Input.IgnoreObjectSource
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#inputignorerepositorycommon" class="md-nav__link">
     Input.IgnoreRepositoryCommon
   </a>
@@ -2387,6 +2401,7 @@ This topic describes what options are available, when to and how to use them.</p
 <li><a href="#includepath">Include.Path</a></li>
 <li><a href="#inputformat">Input.Format</a></li>
 <li><a href="#inputignoregitpath">Input.IgnoreGitPath</a></li>
+<li><a href="#inputignoreobjectsource">Input.IgnoreObjectSource</a></li>
 <li><a href="#inputignorerepositorycommon">Input.IgnoreRepositoryCommon</a></li>
 <li><a href="#inputobjectpath">Input.ObjectPath</a></li>
 <li><a href="#inputpathignore">Input.PathIgnore</a></li>
@@ -3235,6 +3250,37 @@ To read files stored within the <code>.git</code> path, set this option to <code
 <span class="nt">variables</span><span class="p">:</span><span class="w"></span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PSRULE_INPUT_IGNOREGITPATH</span><span class="w"></span>
 <span class="w">  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+</code></pre></div>
+<h3 id="inputignoreobjectsource">Input.IgnoreObjectSource<a class="headerlink" href="#inputignoreobjectsource" title="Permanent link">#</a></h3>
+<p>By default, objects read from file using <code>inputPath</code> will be skipped if the file path has been ignored.
+When set to true, additionally objects with a source path that has been ignored will be skipped.
+This will include <code>FileInfo</code> objects, and objects with a source set using the <code>_PSRule.source</code> property.</p>
+<p>File paths to ignore are set by <code>Input.PathIgnore</code>, <code>Input.IgnoreGitPath</code>, and <code>Input.IgnoreRepositoryCommon</code>.</p>
+<p>This option can be specified using:</p>
+<div class="highlight"><pre><span></span><code><span class="c"># PowerShell: Using the InputIgnoreObjectSource parameter</span>
+<span class="nv">$option</span> <span class="p">=</span> <span class="nb">New-PSRuleOption</span> <span class="n">-InputIgnoreObjectSource</span> <span class="nv">$True</span><span class="p">;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c"># PowerShell: Using the Input.IgnoreObjectSource hashtable key</span>
+<span class="nv">$option</span> <span class="p">=</span> <span class="nb">New-PSRuleOption</span> <span class="n">-Option</span> <span class="p">@{</span> <span class="s1">&#39;Input.IgnoreObjectSource&#39;</span> <span class="p">=</span> <span class="nv">$True</span> <span class="p">};</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c"># PowerShell: Using the InputIgnoreObjectSource parameter to set YAML</span>
+<span class="nb">Set-PSRuleOption</span> <span class="n">-InputIgnoreObjectSource</span> <span class="nv">$True</span><span class="p">;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># YAML: Using the input/ignoreObjectSource property</span><span class="w"></span>
+<span class="nt">input</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">ignoreObjectSource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># Bash: Using environment variable</span>
+<span class="nb">export</span> <span class="nv">PSRULE_INPUT_IGNOREOBJECTSOURCE</span><span class="o">=</span><span class="nb">true</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># GitHub Actions: Using environment variable</span><span class="w"></span>
+<span class="nt">env</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">PSRULE_INPUT_IGNOREOBJECTSOURCE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># Azure Pipelines: Using environment variable</span><span class="w"></span>
+<span class="nt">variables</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PSRULE_INPUT_IGNOREOBJECTSOURCE</span><span class="w"></span>
+<span class="w">  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
 </code></pre></div>
 <h3 id="inputignorerepositorycommon">Input.IgnoreRepositoryCommon<a class="headerlink" href="#inputignorerepositorycommon" title="Permanent link">#</a></h3>
 <p>When reading files from an input path, files are discovered recursively.
@@ -4214,6 +4260,8 @@ Objects that are suppressed are not processed by the rule at all but will contin
 <span class="nt">input</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Yaml</span><span class="w"></span>
 <span class="w">  </span><span class="nt">ignoreGitPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">  </span><span class="nt">ignoreObjectSource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">  </span><span class="nt">ignoreRepositoryCommon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
 <span class="w">  </span><span class="nt">objectPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">items</span><span class="w"></span>
 <span class="w">  </span><span class="nt">pathIgnore</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;*.Designer.cs&#39;</span><span class="w"></span>
@@ -4316,6 +4364,8 @@ Objects that are suppressed are not processed by the rule at all but will contin
 <span class="nt">input</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Detect</span><span class="w"></span>
 <span class="w">  </span><span class="nt">ignoreGitPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">  </span><span class="nt">ignoreObjectSource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">  </span><span class="nt">ignoreRepositoryCommon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
 <span class="w">  </span><span class="nt">objectPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"></span>
 <span class="w">  </span><span class="nt">pathIgnore</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="w">  </span><span class="nt">targetType</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"></span>
@@ -4374,7 +4424,7 @@ Objects that are suppressed are not processed by the rule at all but will contin
   <small>
     
       Last update:
-      2022-04-29
+      2022-06-19
     
   </small>
 </div>
