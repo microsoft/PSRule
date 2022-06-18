@@ -33,6 +33,10 @@
             "url": "./schemas/PSRule-resources.schema.json"
         }
     ],
+    "[xml]": {
+        "editor.tabSize": 2,
+        "editor.formatOnSave": true
+    },
     "[yaml]": {
         "editor.tabSize": 2
     },

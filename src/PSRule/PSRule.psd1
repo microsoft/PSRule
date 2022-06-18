@@ -56,7 +56,7 @@ DotNetFrameworkVersion = '4.7.2'
 
 # Assemblies that must be loaded prior to importing this module
 RequiredAssemblies = @(
-    'Microsoft.PSRule.dll'
+    'Microsoft.PSRule.Core.dll'
 )
 
 # Script files (.ps1) that are run in the caller's environment prior to importing this module.
@@ -128,16 +128,16 @@ PrivateData = @{
         Tags = @('PSRule', 'Rule', 'Test')
 
         # A URL to the license for this module.
-        LicenseUri = 'https://github.com/Microsoft/PSRule/blob/main/LICENSE'
+        LicenseUri = 'https://github.com/microsoft/PSRule/blob/main/LICENSE'
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/Microsoft/PSRule'
+        ProjectUri = 'https://github.com/microsoft/PSRule'
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'https://raw.githubusercontent.com/microsoft/PSRule/main/docs/assets/package_icon.png'
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'https://github.com/Microsoft/PSRule/blob/main/CHANGELOG.md'
+        ReleaseNotes = 'https://aka.ms/ps-rule/changelog'
 
     } # End of PSData hashtable
 
