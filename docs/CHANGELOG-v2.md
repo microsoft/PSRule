@@ -13,6 +13,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.2.0-B0021:
+
+- Bug fixes:
+  - Fixed output of reason with wide format by @BernieWhite.
+    [#1117](https://github.com/microsoft/PSRule/issues/1117)
+
 ## v2.2.0-B0021 (pre-release)
 
 What's changed since v2.1.0:
