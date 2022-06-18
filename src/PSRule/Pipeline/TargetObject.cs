@@ -86,6 +86,7 @@ namespace PSRule.Pipeline
                 result.Add(targetInfo.Source);
 
             Value.ConvertTargetInfoProperty();
+            Value.ConvertTargetInfoType();
             result.AddRange(Value.GetSourceInfo());
             return result;
         }

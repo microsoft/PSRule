@@ -967,6 +967,45 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Input.IgnoreObjectSource' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Input.IgnoreObjectSource | Should -Be $False;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Input.IgnoreObjectSource' = $True };
+            $option.Input.IgnoreObjectSource | Should -Be $True;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Input.IgnoreObjectSource | Should -Be $True;
+        }
+
+        It 'from Environment' {
+            try {
+                # With bool
+                $Env:PSRULE_INPUT_IGNOREOBJECTSOURCE = 'true';
+                $option = New-PSRuleOption;
+                $option.Input.IgnoreObjectSource | Should -Be $True;
+
+                # With int
+                $Env:PSRULE_INPUT_IGNOREOBJECTSOURCE = '1';
+                $option = New-PSRuleOption;
+                $option.Input.IgnoreObjectSource | Should -Be $True;
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_INPUT_IGNOREOBJECTSOURCE' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -InputIgnoreObjectSource $True -Path $emptyOptionsFilePath;
+            $option.Input.IgnoreObjectSource | Should -Be $True;
+        }
+    }
+
     Context 'Read Input.IgnoreRepositoryCommon' {
         It 'from default' {
             $option = New-PSRuleOption -Default;

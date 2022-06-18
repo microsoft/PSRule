@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -12,12 +12,14 @@ namespace PSRule.Pipeline
     {
         private readonly VisitTargetObject _Input;
         private readonly InputFileInfo[] _InputPath;
+        private readonly PathFilter _InputFilter;
         private readonly ConcurrentQueue<TargetObject> _Queue;
 
-        public PipelineReader(VisitTargetObject input, InputFileInfo[] inputPath)
+        public PipelineReader(VisitTargetObject input, InputFileInfo[] inputPath, PathFilter inputFilter)
         {
             _Input = input;
             _InputPath = inputPath;
+            _InputFilter = inputFilter;
             _Queue = new ConcurrentQueue<TargetObject>();
         }
 
@@ -33,8 +35,7 @@ namespace PSRule.Pipeline
             var targetObject = new TargetObject(sourceObject);
             if (_Input == null || skipExpansion)
             {
-                targetObject.Value.ConvertTargetInfoProperty();
-                _Queue.Enqueue(targetObject);
+                EnqueueInternal(targetObject);
                 return;
             }
 
@@ -44,10 +45,7 @@ namespace PSRule.Pipeline
                 return;
 
             foreach (var item in input)
-            {
-                targetObject.Value.ConvertTargetInfoProperty();
-                _Queue.Enqueue(item);
-            }
+                EnqueueInternal(item);
         }
 
         public bool TryDequeue(out TargetObject sourceObject)
@@ -72,6 +70,23 @@ namespace PSRule.Pipeline
                     Enqueue(PSObject.AsPSObject(_InputPath[i]));
                 }
             }
+        }
+
+        private void EnqueueInternal(TargetObject targetObject)
+        {
+            if (ShouldQueue(targetObject))
+                _Queue.Enqueue(targetObject);
+        }
+
+        private bool ShouldQueue(TargetObject targetObject)
+        {
+            if (_InputFilter != null && targetObject.Source != null && targetObject.Source.Count > 0)
+            {
+                foreach (var source in targetObject.Source.GetSourceInfo())
+                    if (!_InputFilter.Match(source.File))
+                        return false;
+            }
+            return true;
         }
     }
 }

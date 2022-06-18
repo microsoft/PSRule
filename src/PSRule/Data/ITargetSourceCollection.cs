@@ -18,6 +18,8 @@ namespace PSRule.Data
 
         internal TargetSourceCollection() { }
 
+        public int Count => _Items == null ? 0 : _Items.Count;
+
         public TargetSourceInfo this[string type]
         {
             get
