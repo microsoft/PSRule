@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\PSRule.Common.props" />
   <PropertyGroup>
-    <AssemblyName>Microsoft.PSRule</AssemblyName>
+    <AssemblyName>Microsoft.PSRule.Core</AssemblyName>
     <RootNamespace>PSRule</RootNamespace>
-    <PackageId>Microsoft.PSRule</PackageId>
+    <PackageId>Microsoft.PSRule.Core</PackageId>
     <OutputType>Library</OutputType>
     <ProjectGuid>{0130215d-58eb-4887-b6fa-31ed02500569}</ProjectGuid>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
