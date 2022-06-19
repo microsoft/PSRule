@@ -181,6 +181,11 @@ namespace PSRule.Pipeline
             return GetWriter();
         }
 
+        protected override PipelineWriter GetOutput(bool writeHost = false)
+        {
+            return base.GetOutput(writeHost: true);
+        }
+
         private AssertWriter GetWriter()
         {
             if (_Writer == null)
@@ -189,7 +194,7 @@ namespace PSRule.Pipeline
                 _Writer = new AssertWriter(
                     option: Option,
                     source: Source,
-                    inner: GetOutput(),
+                    inner: GetOutput(writeHost: true),
                     next: next,
                     style: Option.Output.Style ?? OutputOption.Default.Style.Value,
                     resultVariableName: _ResultVariableName,

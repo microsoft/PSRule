@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -29,6 +29,14 @@ namespace PSRule.Configuration
         /// </summary>
         RunInfo = 2,
 
-        Default = RuleCount | RunInfo
+        /// <summary>
+        /// Information about the output file if an output path is set.
+        /// </summary>
+        OutputFile = 4,
+
+        /// <summary>
+        /// The default footer output.
+        /// </summary>
+        Default = RuleCount | RunInfo | OutputFile
     }
 }

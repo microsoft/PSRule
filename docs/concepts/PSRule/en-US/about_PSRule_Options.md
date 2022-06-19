@@ -1876,10 +1876,11 @@ The following information can be shown or hidden by configuring this option.
 
 - `RuleCount` (1) - Shows a summary of rules processed.
 - `RunInfo` (2) - Shows information about the run.
+- `OutputFile` (4) - Shows information about the output file if an output path is set.
 
 Additionally the following rollup options exist:
 
-- `Default` - Shows `RuleCount`, and `RunInfo`.
+- `Default` - Shows `RuleCount`, `RunInfo`, and `OutputFile`.
 This is the default option.
 
 This option can be configured using one of the named values described above.

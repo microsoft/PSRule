@@ -300,7 +300,7 @@ namespace PSRule.Pipeline
             };
         }
 
-        protected PipelineWriter GetOutput()
+        protected virtual PipelineWriter GetOutput(bool writeHost = false)
         {
             // Redirect to file instead
             return !string.IsNullOrEmpty(Option.Output.Path)
@@ -309,7 +309,8 @@ namespace PSRule.Pipeline
                     option: Option,
                     encoding: Option.Output.GetEncoding(),
                     path: Option.Output.Path,
-                    shouldProcess: HostContext.ShouldProcess
+                    shouldProcess: HostContext.ShouldProcess,
+                    writeHost: writeHost
                 )
                 : (PipelineWriter)_Output;
         }

@@ -15,14 +15,19 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v2.2.0-B0021:
 
+- General improvements:
+  - Added informational message when output has been written to disk by @BernieWhite.
+    [#1074](https://github.com/microsoft/PSRule/issues/1074)
+    - The `Output.Footer` option now supports `OutputFile` which reports the output file path.
+      This is enabled by default.
+- Engineering:
+  - Added more object path tests by @ArmaanMcleod.
+    [#1110](https://github.com/microsoft/PSRule/issues/1110)
 - Bug fixes:
   - Fixed output of reason with wide format by @BernieWhite.
     [#1117](https://github.com/microsoft/PSRule/issues/1117)
   - Fixed piped input does not respect excluded paths by @BernieWhite.
     [#1114](https://github.com/microsoft/PSRule/issues/1114)
-- Engineering:
-  - Added more object path tests by @ArmaanMcleod.
-    [#1110](https://github.com/microsoft/PSRule/issues/1110)
 
 ## v2.2.0-B0021 (pre-release)
 
