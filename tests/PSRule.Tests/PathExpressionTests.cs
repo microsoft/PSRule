@@ -119,6 +119,18 @@ namespace PSRule
             Assert.Equal("2", actual[1]);
             Assert.Equal("1", actual[2]);
             Assert.Equal("2", actual[3]);
+
+            expression = PathExpression.Create("$[*].Spec.Properties.array2[?(@ == '1' || @ == '2' || @ == '3')]");
+            Assert.True(expression.IsArray);
+            Assert.True(expression.TryGet(testObject, false, out actual));
+            Assert.NotNull(actual);
+            Assert.Equal(6, actual.Length);
+            Assert.Equal("1", actual[0]);
+            Assert.Equal("2", actual[1]);
+            Assert.Equal("3", actual[2]);
+            Assert.Equal("1", actual[3]);
+            Assert.Equal("2", actual[4]);
+            Assert.Equal("3", actual[5]);
         }
 
         [Fact]
@@ -131,6 +143,18 @@ namespace PSRule
             Assert.Null(actual);
 
             expression = PathExpression.Create("$[*].Spec.Properties.array[?(@.id=='1' && @.id=='1')].id");
+            Assert.True(expression.TryGet(testObject, false, out actual));
+            Assert.NotNull(actual);
+            Assert.Equal(2, actual.Length);
+            Assert.Equal("1", actual[0]);
+            Assert.Equal("1", actual[1]);
+
+            expression = PathExpression.Create("$[*].Spec.Properties.array2[?(@ == '1' && @ == '2')]");
+            Assert.False(expression.TryGet(testObject, false, out actual));
+            Assert.Null(actual);
+
+            expression = PathExpression.Create("$[*].Spec.Properties.array2[?(@ == '1' && @ == '1')]");
+            Assert.True(expression.IsArray);
             Assert.True(expression.TryGet(testObject, false, out actual));
             Assert.NotNull(actual);
             Assert.Equal(2, actual.Length);

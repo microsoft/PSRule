@@ -20,6 +20,9 @@ What's changed since pre-release v2.2.0-B0021:
     [#1117](https://github.com/microsoft/PSRule/issues/1117)
   - Fixed piped input does not respect excluded paths by @BernieWhite.
     [#1114](https://github.com/microsoft/PSRule/issues/1114)
+- Engineering:
+  - Added more object path tests by @ArmaanMcleod.
+    [#1110](https://github.com/microsoft/PSRule/issues/1110)
 
 ## v2.2.0-B0021 (pre-release)
 
