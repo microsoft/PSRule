@@ -24,7 +24,7 @@
     <EnableNuget>true</EnableNuget>
     <Version>0.0.1</Version>
     <Company>Microsoft Corporation</Company>
-    <Copyright>Copyright (c) Microsoft Corporation. Licensed under the MIT License.</Copyright>
+    <Copyright>&#169; Microsoft Corporation. All rights reserved.</Copyright>
     <Description>Validate infrastructure as code (IaC) and objects using PowerShell rules.
 
 This project uses GitHub Issues to track bugs and feature requests. See GitHub project for more information.</Description>
