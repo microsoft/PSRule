@@ -1983,16 +1983,25 @@
 <h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v2.2.0-B0021:</p>
 <ul>
-<li>Bug fixes:<ul>
-<li>Fixed output of reason with wide format by @BernieWhite.
-  <a href="https://github.com/microsoft/PSRule/issues/1117">#1117</a></li>
-<li>Fixed piped input does not respect excluded paths by @BernieWhite.
-  <a href="https://github.com/microsoft/PSRule/issues/1114">#1114</a></li>
+<li>General improvements:<ul>
+<li>Added informational message when output has been written to disk by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1074">#1074</a><ul>
+<li>The <code>Output.Footer</code> option now supports <code>OutputFile</code> which reports the output file path.
+  This is enabled by default.</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>Engineering:<ul>
 <li>Added more object path tests by @ArmaanMcleod.
   <a href="https://github.com/microsoft/PSRule/issues/1110">#1110</a></li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
+<li>Fixed output of reason with wide format by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1117">#1117</a></li>
+<li>Fixed piped input does not respect excluded paths by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1114">#1114</a></li>
 </ul>
 </li>
 </ul>
