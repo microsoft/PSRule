@@ -336,4 +336,7 @@
   <data name="RuleSuppressionGroupExtendedCount" xml:space="preserve">
     <value>{0} rule/s were suppressed by suppression group '{1}' for '{2}'. {3}</value>
   </data>
+  <data name="InfoOutputPath" xml:space="preserve">
+    <value>Output written to the following file: '{0}'</value>
+  </data>
 </root>

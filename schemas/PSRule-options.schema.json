@@ -454,8 +454,8 @@
                 },
                 "footer": {
                     "title": "Footer format",
-                    "description": "The information displayed for Assert-PSRule footer. The default is Default which includes RuleCount, and RunInfo.",
-                    "markdownDescription": "The information displayed for Assert-PSRule footer. The default is `Default` which includes `RuleCount`, and `RunInfo`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputfooter)",
+                    "description": "The information displayed for Assert-PSRule footer. The default is Default which includes RuleCount, RunInfo, and OutputFile.",
+                    "markdownDescription": "The information displayed for Assert-PSRule footer. The default is `Default` which includes `RuleCount`, `RunInfo`, and `OutputFile`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputfooter)",
                     "oneOf": [
                         {
                             "type": "string",
@@ -463,11 +463,13 @@
                                 "None",
                                 "RuleCount",
                                 "RunInfo",
+                                "OutputFile",
                                 "Default"
                             ]
                         },
                         {
-                            "type": "integer"
+                            "type": "integer",
+                            "minimum": 0
                         }
                     ],
                     "default": "Default"
