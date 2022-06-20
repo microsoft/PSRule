@@ -1,10 +1,11 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.Collections;
 using System.Management.Automation;
 using System.Threading;
+using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
@@ -80,17 +81,17 @@ namespace PSRule.Commands
             return false;
         }
 
-        protected static void WriteReason(string text)
+        protected static void WriteReason(string path, string text, params object[] args)
         {
-            RunspaceContext.CurrentThread.WriteReason(text);
+            RunspaceContext.CurrentThread.WriteReason(new ResultReason(Operand.FromPath(path), text, args));
         }
 
-        protected static bool TryReason(string text)
+        protected static bool TryReason(string path, string text, object[] args)
         {
             if (string.IsNullOrEmpty(text))
                 return false;
 
-            WriteReason(text);
+            WriteReason(path, text, args);
             return true;
         }
 

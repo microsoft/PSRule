@@ -1,9 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Management.Automation;
 using System.Text.RegularExpressions;
-using System.Threading;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -91,15 +90,13 @@ namespace PSRule.Commands
 
             var result = expected == match;
             RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Match, outcome: result);
-            if (!(result || TryReason(Reason)))
+            if (!(result || TryReason(null, Reason, null)))
             {
-                WriteReason(Not ? string.Format(
-                    Thread.CurrentThread.CurrentCulture,
-                    ReasonStrings.MatchNot,
-                    found) : string.Format(
-                        Thread.CurrentThread.CurrentCulture,
-                        ReasonStrings.Match,
-                        string.Join(", ", Expression)));
+                WriteReason(
+                    path: null,
+                    text: Not ? ReasonStrings.MatchNot : ReasonStrings.Match,
+                    args: Not ? found : string.Join(", ", Expression)
+                );
             }
             WriteObject(result);
         }

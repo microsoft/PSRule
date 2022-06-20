@@ -435,7 +435,7 @@ Reasons include:
 
 - _The parameter 'inputObject' is null._
 - _The parameter 'field' is null or empty._
-- _The field '{0}' does not exist._
+- _Does not exist._
 
 Examples:
 
@@ -498,9 +498,9 @@ Reasons include:
 
 - _The parameter 'inputObject' is null._
 - _The parameter 'field' is null or empty._
-- _The field '{0}' does not exist._
-- _The value of '{0}' is null or empty._
-- _The field '{0}' is set to '{1}'._
+- _Does not exist._
+- _Is null or empty._
+- _Is set to '{0}'._
 
 Examples:
 
@@ -647,7 +647,7 @@ Reasons include:
 - _The parameter 'field' is null or empty._
 - _The field '{0}' does not exist._
 - _The field value '{0}' is null._
-- _The field value '{1}' of type {0} is not \[bool\]._
+- _The value '{0}' is not a boolean._
 
 Examples:
 
@@ -679,7 +679,7 @@ Reasons include:
 - _The parameter 'field' is null or empty._
 - _The field '{0}' does not exist._
 - _The field value '{0}' is null._
-- _The field value '{1}' of type {0} is not \[DateTime\]._
+- _The value '{0}' is not a date._
 
 Examples:
 
@@ -712,7 +712,7 @@ Reasons include:
 - _The parameter 'field' is null or empty._
 - _The field '{0}' does not exist._
 - _The field value '{0}' is null._
-- _The field value '{1}' of type {0} is not an integer._
+- _The value '{0}' is not an integer._
 
 Examples:
 
@@ -778,7 +778,7 @@ Reasons include:
 - _The parameter 'field' is null or empty._
 - _The field '{0}' does not exist._
 - _The field value '{0}' is null._
-- _The field value '{1}' of type {0} is not numeric._
+- _The value '{0}' is not numeric._
 
 Examples:
 
@@ -808,7 +808,7 @@ Reasons include:
 - _The parameter 'field' is null or empty._
 - _The field '{0}' does not exist._
 - _The field value '{0}' is null._
-- _The field value '{1}' of type {0} is not \[string\]._
+- _The value '{0}' is not a string._
 
 Examples:
 
@@ -1655,8 +1655,14 @@ The following methods are available:
 - `Reason(<string> text, params <object[]> args)` - Replaces the reason on the results with a formatted string.
   This method can be chained.
   For usage see examples below.
+- `ReasonFrom(<string> path, <string> text, params <object[]> args)` - Replaces the reason on the results with a formatted string.
+  Path specifies the object path that affected the reason.
+  This method can be chained.
+  For usage see examples below.
 - `ReasonIf(<bool> condition, <string> text, params <object[]> args)` - Replaces the reason if the condition is true.
   This method can be chained, similar to `Reason`.
+- `ReasonIf(<string> path, <bool> condition, <string> text, params <object[]> args)` - Replaces the reason if the condition is true.
+  This method can be chained, similar to `ReasonFrom`.
 - `GetReason()` - Gets any reasons currently associated with the failed result.
 - `Complete()` - Returns `$True` (Pass) or `$False` (Fail) to the rule record.
   If the assertion failed, any reasons are automatically added to the rule record.

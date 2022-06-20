@@ -75,10 +75,7 @@ namespace PSRule.Definitions
 
         public IResource CreateInstance(SourceFile source, ResourceMetadata metadata, CommentMetadata comment, ISourceExtent extent, object spec)
         {
-            var info = new ResourceHelpInfo(metadata.Name)
-            {
-                Synopsis = new InfoString(comment.Synopsis, null)
-            };
+            var info = new ResourceHelpInfo(metadata.Name, metadata.Name, new InfoString(comment.Synopsis), new InfoString());
             return (IResource)Activator.CreateInstance(typeof(T), ApiVersion, source, metadata, info, extent, spec);
         }
     }

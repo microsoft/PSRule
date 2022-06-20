@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Management.Automation;
@@ -22,10 +22,8 @@ namespace PSRule.Commands
 
             var result = GetResult();
 
-            if (MyInvocation.BoundParameters.ContainsKey(nameof(Text)) && string.IsNullOrEmpty(result.Info.Recommendation))
-            {
-                result.Info.Recommendation = Text;
-            }
+            if (MyInvocation.BoundParameters.ContainsKey(nameof(Text)) && string.IsNullOrEmpty(result.Info.Recommendation?.Text))
+                result.Info.Recommendation.Text = Text;
         }
     }
 }

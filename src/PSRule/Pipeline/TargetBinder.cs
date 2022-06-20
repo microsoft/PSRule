@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -31,10 +31,14 @@ namespace PSRule.Pipeline
         /// </summary>
         string TargetName { get; }
 
+        string TargetNamePath { get; }
+
         /// <summary>
         /// The bound TargetType of the target object.
         /// </summary>
         string TargetType { get; }
+
+        string TargetTypePath { get; }
 
         /// <summary>
         /// Additional bound fields of the target object.
@@ -179,10 +183,14 @@ namespace PSRule.Pipeline
             /// </summary>
             public string TargetName { get; private set; }
 
+            public string TargetNamePath { get; private set; }
+
             /// <summary>
             /// The bound TargetType of the target object.
             /// </summary>
             public string TargetType { get; private set; }
+
+            public string TargetTypePath { get; private set; }
 
             /// <summary>
             /// Additional bound fields of the target object.
@@ -196,10 +204,10 @@ namespace PSRule.Pipeline
 
             public void Bind(TargetObject targetObject, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, HashSet<string> typeFilter)
             {
-                //_BindingOption.
-
-                TargetName = bindTargetName(_BindingOption.TargetName, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, targetObject.Value);
-                TargetType = bindTargetType(_BindingOption.TargetType, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, targetObject.Value);
+                TargetName = bindTargetName(_BindingOption.TargetName, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, targetObject.Value, out var targetNamePath);
+                TargetNamePath = targetNamePath;
+                TargetType = bindTargetType(_BindingOption.TargetType, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, targetObject.Value, out var targetTypePath);
+                TargetTypePath = targetTypePath;
                 ShouldFilter = !(typeFilter == null || typeFilter.Contains(TargetType));
 
                 // Use qualified name
@@ -211,24 +219,7 @@ namespace PSRule.Pipeline
             }
         }
 
-
         public bool ShouldFilter { get; private set; }
-
-
-        //public void Bind(OptionContext baseline, TargetObject targetObject)
-        //{
-        //    var binding = baseline.GetTargetBinding();
-        //    TargetName = _BindTargetName(binding.TargetName, !binding.IgnoreCase, binding.PreferTargetInfo, targetObject.Value);
-        //    TargetType = _BindTargetType(binding.TargetType, !binding.IgnoreCase, binding.PreferTargetInfo, targetObject.Value);
-        //    ShouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(TargetType));
-
-        //    // Use qualified name
-        //    if (binding.UseQualifiedName)
-        //        TargetName = string.Concat(TargetType, binding.NameSeparator, TargetName);
-
-        //    // Bind custom fields
-        //    BindField(binding.Field, !binding.IgnoreCase, targetObject.Value);
-        //}
 
         /// <summary>
         /// Bind target object based on the supplied baseline.
@@ -263,7 +254,7 @@ namespace PSRule.Pipeline
                     if (hashtable.ContainsKey(field.Key))
                         continue;
 
-                    hashtable.Add(field.Key, bindField(field.Value, caseSensitive, false, targetObject));
+                    hashtable.Add(field.Key, bindField(field.Value, caseSensitive, false, targetObject, out _));
                 }
             }
             hashtable.Protect();

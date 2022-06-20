@@ -8,6 +8,7 @@ using System.Management.Automation;
 using System.Reflection;
 using System.Threading;
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Resources;
 using PSRule.Rules;
 
@@ -430,14 +431,14 @@ namespace PSRule.Pipeline.Formatters
                     Thread.CurrentThread.CurrentCulture,
                     FormatterStrings.Result_ErrorDetail,
                     record.TargetName,
-                    record.RuleName,
+                    record.Info.Name,
                     record.Error.Message
                 ) :
                 string.Format(
                     Thread.CurrentThread.CurrentCulture,
                     FormatterStrings.Result_ErrorDetailWithRef,
                     record.TargetName,
-                    record.RuleName,
+                    record.Info.Name,
                     record.Error.Message,
                     record.Ref
                 );
@@ -450,15 +451,15 @@ namespace PSRule.Pipeline.Formatters
                     Thread.CurrentThread.CurrentCulture,
                     FormatterStrings.Result_FailDetail,
                     record.TargetName,
-                    record.RuleName,
-                    record.Info.Synopsis
+                    record.Info.Name,
+                    record.Info.Synopsis.Text
                 ) :
                 string.Format(
                     Thread.CurrentThread.CurrentCulture,
                     FormatterStrings.Result_FailDetailWithRef,
                     record.TargetName,
-                    record.RuleName,
-                    record.Info.Synopsis,
+                    record.Info.Name,
+                    record.Info.Synopsis.Text,
                     record.Ref
                 );
         }
@@ -616,35 +617,35 @@ namespace PSRule.Pipeline.Formatters
             }
         }
 
-        protected void WriteSynopsis(RuleRecord record, bool shouldBreak = true)
+        protected void WriteSynopsis(IDetailedRuleResultV2 record, bool shouldBreak = true)
         {
-            if (!string.IsNullOrEmpty(record.Info.Synopsis))
-            {
-                if (shouldBreak)
-                    LineBreak();
+            if (!record.Info.Synopsis.HasValue)
+                return;
 
-                WriteIndentedLine(
-                    message: record.Info.Synopsis,
-                    indent: GetTerminalSupport().BodyIndent,
-                    prefix: GetTerminalSupport().SynopsisPrefix,
-                    forgroundColor: GetTerminalSupport().SynopsisForegroundColor
-                );
-            }
+            if (shouldBreak)
+                LineBreak();
+
+            WriteIndentedLine(
+                message: record.Info.Synopsis.Text,
+                indent: GetTerminalSupport().BodyIndent,
+                prefix: GetTerminalSupport().SynopsisPrefix,
+                forgroundColor: GetTerminalSupport().SynopsisForegroundColor
+            );
         }
 
-        protected void WriteRecommendation(RuleRecord record)
+        protected void WriteRecommendation(IDetailedRuleResultV2 record)
         {
-            if (!string.IsNullOrEmpty(record.Recommendation))
-            {
-                LineBreak();
-                WriteLine(GetTerminalSupport().RecommendationHeading, forgroundColor: GetTerminalSupport().BodyForegroundColor);
-                WriteIndentedLines(
-                    message: record.Recommendation,
-                    indent: GetTerminalSupport().BodyIndent,
-                    prefix: GetTerminalSupport().RecommendationPrefix,
-                    forgroundColor: GetTerminalSupport().BodyForegroundColor
-                );
-            }
+            if (!record.Info.Recommendation.HasValue)
+                return;
+
+            LineBreak();
+            WriteLine(GetTerminalSupport().RecommendationHeading, forgroundColor: GetTerminalSupport().BodyForegroundColor);
+            WriteIndentedLines(
+                message: record.Info.Recommendation.Text,
+                indent: GetTerminalSupport().BodyIndent,
+                prefix: GetTerminalSupport().RecommendationPrefix,
+                forgroundColor: GetTerminalSupport().BodyForegroundColor
+            );
         }
 
         protected void WriteReason(RuleRecord record)
@@ -665,7 +666,7 @@ namespace PSRule.Pipeline.Formatters
             }
         }
 
-        protected void WriteHelp(RuleRecord record)
+        protected void WriteHelp(IDetailedRuleResultV2 record)
         {
             var link = record.Info?.GetOnlineHelpUri()?.ToString();
             if (!string.IsNullOrEmpty(link))

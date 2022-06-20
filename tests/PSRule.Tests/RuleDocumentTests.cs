@@ -21,6 +21,7 @@ namespace PSRule
 
             Assert.Equal(expected.Name, document.Name);
             Assert.Equal(expected.Synopsis.Text, document.Synopsis.Text);
+            Assert.Equal(expected.Description.Text, document.Description.Text);
             Assert.Equal(expected.Recommendation.Text, document.Recommendation.Text);
             Assert.Equal(expected.Notes.Text, document.Notes.Text);
             Assert.Equal(expected.Annotations["severity"], document.Annotations["severity"]);
@@ -40,6 +41,7 @@ namespace PSRule
 
             Assert.Equal(expected.Name, document.Name);
             Assert.Equal(expected.Synopsis.Text, document.Synopsis.Text);
+            Assert.Equal(expected.Description.Text, document.Description.Text);
             Assert.Equal(expected.Recommendation.Text, document.Recommendation.Text);
             Assert.Equal(expected.Notes.Text, document.Notes.Text);
             Assert.Equal(expected.Annotations["severity"], document.Annotations["severity"]);
@@ -67,9 +69,12 @@ namespace PSRule
 
             var result = new RuleDocument(name: "Use specific tags")
             {
-                Synopsis = new InfoString("Containers should use specific tags instead of latest.", null),
+                Synopsis = new InfoString("Containers should use specific tags instead of latest."),
+                Description = new InfoString(@"Containers should use specific tags instead of latest. This is because:
+
+- Latest can be updated."),
                 Annotations = ResourceTags.FromHashtable(annotations),
-                Recommendation = new TextBlock(text: @"Deployments or pods should identify a specific tag to use for container images instead of latest. When latest is used it may be hard to determine which version of the image is running.
+                Recommendation = new InfoString(@"Deployments or pods should identify a specific tag to use for container images instead of latest. When latest is used it may be hard to determine which version of the image is running.
 When using variable tags such as v1.0 (which may refer to v1.0.0 or v1.0.1) consider using imagePullPolicy: Always to ensure that the an out-of-date cached image is not used.
 The latest tag automatically uses imagePullPolicy: Always instead of the default imagePullPolicy: IfNotPresent."),
                 Notes = new TextBlock(@"Test that [isIgnored].

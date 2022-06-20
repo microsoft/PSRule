@@ -4,6 +4,7 @@
 using System;
 using System.Text;
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Resources;
 using PSRule.Rules;
 
@@ -128,6 +129,16 @@ namespace PSRule.Pipeline.Output
 
             _Builder.Append(QUOTE);
             _Builder.Append(value.Replace("\"", "\"\""));
+            _Builder.Append(QUOTE);
+        }
+
+        private void WriteColumn(InfoString value)
+        {
+            if (!value.HasValue)
+                return;
+
+            _Builder.Append(QUOTE);
+            _Builder.Append(value.Text.Replace("\"", "\"\""));
             _Builder.Append(QUOTE);
         }
     }

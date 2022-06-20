@@ -315,19 +315,19 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath, $yamlFilePath -Tag @{ test = 'Reason' };
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 4;
-            $result[0].Reason | Should -BeExactly 'The field ''Name'' is set to ''TestObject1''.';
-            $result[1].Reason | Should -BeExactly 'Field Name: Is set to ''TestObject1''.';
-            $result[2].Reason | Should -BeExactly 'The field ''Name'' is set to ''TestObject2''.';
-            $result[3].Reason | Should -BeExactly 'Field Name: Is set to ''TestObject2''.';
+            $result[0].Reason | Should -BeExactly 'Path Name: Is set to ''TestObject1''.';
+            $result[1].Reason | Should -BeExactly 'Path Name: Is set to ''TestObject1''.';
+            $result[2].Reason | Should -BeExactly 'Path Name: Is set to ''TestObject2''.';
+            $result[3].Reason | Should -BeExactly 'Path Name: Is set to ''TestObject2''.';
 
             # With Json path
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath, $jsonFilePath -Tag @{ test = 'Reason' };
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 4;
-            $result[0].Reason | Should -BeExactly 'The field ''Name'' is set to ''TestObject1''.';
-            $result[1].Reason | Should -BeExactly 'Field Name: Is set to ''TestObject1''.';
-            $result[2].Reason | Should -BeExactly 'The field ''Name'' is set to ''TestObject2''.';
-            $result[3].Reason | Should -BeExactly 'Field Name: Is set to ''TestObject2''.';
+            $result[0].Reason | Should -BeExactly 'Path Name: Is set to ''TestObject1''.';
+            $result[1].Reason | Should -BeExactly 'Path Name: Is set to ''TestObject1''.';
+            $result[2].Reason | Should -BeExactly 'Path Name: Is set to ''TestObject2''.';
+            $result[3].Reason | Should -BeExactly 'Path Name: Is set to ''TestObject2''.';
         }
 
         It 'Returns severity level' {

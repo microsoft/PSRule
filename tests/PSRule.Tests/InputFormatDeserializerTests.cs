@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -22,7 +22,8 @@ namespace PSRule
             Assert.Equal("Test", actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
             Assert.Equal(2, actual[1].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value2"));
             Assert.Equal(2, actual[1].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
-            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value));
+            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out string path));
+            Assert.Null(path);
 
             // Array item
             actual = PipelineReceiverActions.ConvertFromYaml(GetYamlContent("3"), PipelineReceiverActions.PassThru).ToArray();
@@ -43,7 +44,8 @@ namespace PSRule
             Assert.Equal("Test", actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
             Assert.Equal(2, actual[1].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value2"));
             Assert.Equal(3, actual[1].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
-            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value));
+            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out string path));
+            Assert.Null(path);
             actual[0].Value.TryTargetInfo(out var info1);
             actual[1].Value.TryTargetInfo(out var info2);
             Assert.Equal("some-file.json", info1.Source[0].File);
@@ -70,7 +72,8 @@ namespace PSRule
             Assert.Equal("Test", actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
             Assert.Equal(1, actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value1"));
             Assert.Equal(2, actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
-            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value));
+            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out string path));
+            Assert.Null(path);
         }
 
         [Fact]
@@ -83,7 +86,8 @@ namespace PSRule
             Assert.Equal("Test", actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
             Assert.Equal(1, actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value1"));
             Assert.Equal(2, actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<Array>("array").Length);
-            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value));
+            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out string path));
+            Assert.Null(path);
         }
 
         #region Helper methods

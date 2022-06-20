@@ -10,6 +10,7 @@ namespace PSRule.Data
     {
         private const string PROPERTY_TYPE = "type";
         private const string PROPERTY_NAME = "name";
+        private const string PROPERTY_PATH = "path";
         private const string PROPERTY_MESSAGE = "message";
 
         public TargetIssueInfo()
@@ -23,6 +24,9 @@ namespace PSRule.Data
         [JsonProperty(PropertyName = PROPERTY_NAME)]
         public string Name { get; internal set; }
 
+        [JsonProperty(PropertyName = PROPERTY_PATH)]
+        public string Path { get; internal set; }
+
         [JsonProperty(PropertyName = PROPERTY_MESSAGE)]
         public string Message { get; internal set; }
 
@@ -31,6 +35,7 @@ namespace PSRule.Data
             return other != null &&
                 Type == other.Type &&
                 Name == other.Name &&
+                Path == other.Path &&
                 Message == other.Message;
         }
 
@@ -46,6 +51,7 @@ namespace PSRule.Data
                 var hash = 17;
                 hash = hash * 23 + (Type != null ? Type.GetHashCode() : 0);
                 hash = hash * 23 + (Name != null ? Name.GetHashCode() : 0);
+                hash = hash * 23 + (Path != null ? Path.GetHashCode() : 0);
                 hash = hash * 23 + (Message != null ? Message.GetHashCode() : 0);
                 return hash;
             }
@@ -64,6 +70,9 @@ namespace PSRule.Data
 
             if (o.TryProperty(PROPERTY_NAME, out string name))
                 result.Name = name;
+
+            if (o.TryProperty(PROPERTY_PATH, out string path))
+                result.Path = path;
 
             if (o.TryProperty(PROPERTY_MESSAGE, out string message))
                 result.Message = message;

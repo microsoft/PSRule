@@ -270,7 +270,7 @@ namespace PSRule.Benchmark
         public void DefaultTargetNameBinding()
         {
             for (var i = 0; i < _TargetObject.Length; i++)
-                PipelineHookActions.BindTargetName(null, false, false, _TargetObject[i]);
+                PipelineHookActions.BindTargetName(null, false, false, _TargetObject[i], out _);
         }
 
         [Benchmark]
@@ -281,7 +281,8 @@ namespace PSRule.Benchmark
                     propertyNames: new string[] { "TargetName", "Name" },
                     caseSensitive: true,
                     preferTargetInfo: false,
-                    targetObject: _TargetObject[i]
+                    targetObject: _TargetObject[i],
+                    path: out _
                 );
         }
 
@@ -293,7 +294,8 @@ namespace PSRule.Benchmark
                     propertyNames: new string[] { "TargetName", "Name" },
                     caseSensitive: true,
                     preferTargetInfo: false,
-                    targetObject: _TargetObject[i]
+                    targetObject: _TargetObject[i],
+                    path: out _
                 );
         }
 

@@ -93,7 +93,7 @@ namespace PSRule.Runtime
         private int _RuleErrors;
 
         private readonly Stopwatch _RuleTimer;
-        private readonly List<string> _Reason;
+        private readonly List<ResultReason> _Reason;
         private readonly List<IConvention> _Conventions;
         private readonly LanguageScopeSet _LanguageScopes;
 
@@ -116,7 +116,7 @@ namespace PSRule.Runtime
 
             _ObjectNumber = -1;
             _RuleTimer = new Stopwatch();
-            _Reason = new List<string>();
+            _Reason = new List<ResultReason>();
             _Conventions = new List<IConvention>();
             _LanguageScopes = new LanguageScopeSet();
             _Scope = new Stack<RunspaceScope>();
@@ -671,7 +671,8 @@ namespace PSRule.Runtime
             RuleRecord.Time = _RuleTimer.ElapsedMilliseconds;
 
             if (!RuleRecord.IsSuccess())
-                RuleRecord.Reason = _Reason.ToArray();
+                for (var i = 0; i < _Reason.Count; i++)
+                    RuleRecord._Detail.Add(_Reason[i]);
 
             if (Writer != null)
                 Writer.ExitScope();
@@ -744,12 +745,18 @@ namespace PSRule.Runtime
             return _Conventions == null || _Conventions.Count == 0;
         }
 
-        public void WriteReason(string text)
+        internal void WriteReason(ResultReason[] reason)
         {
-            if (string.IsNullOrEmpty(text) || !IsScope(RunspaceScope.Rule))
+            for (var i = 0; reason != null && i < reason.Length; i++)
+                WriteReason(reason[i]);
+        }
+
+        internal void WriteReason(ResultReason reason)
+        {
+            if (reason == null || string.IsNullOrEmpty(reason.Text) || !IsScope(RunspaceScope.Rule))
                 return;
 
-            _Reason.Add(text);
+            _Reason.Add(reason);
         }
 
         public void Init(Source[] source)

@@ -83,7 +83,7 @@ namespace PSRule.Help
 
         public TextBlock Notes { get; set; }
 
-        public TextBlock Recommendation { get; set; }
+        public InfoString Recommendation { get; set; }
 
         public Link[] Links { get; set; }
 
@@ -107,10 +107,7 @@ namespace PSRule.Help
 
         internal IResourceHelpInfo ToInfo()
         {
-            return new ResourceHelpInfo(Name)
-            {
-                Synopsis = Synopsis
-            };
+            return new ResourceHelpInfo(Name, Name, Synopsis, Description);
         }
     }
 }

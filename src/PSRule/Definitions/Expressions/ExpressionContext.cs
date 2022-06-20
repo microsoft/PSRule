@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 using PSRule.Runtime.ObjectPath;
@@ -17,8 +16,6 @@ namespace PSRule.Definitions.Expressions
 
         void Reason(IOperand operand, string text, params object[] args);
 
-        void Reason(string text, params object[] args);
-
         RunspaceContext GetContext();
     }
 
@@ -26,7 +23,7 @@ namespace PSRule.Definitions.Expressions
     {
         private readonly Dictionary<string, PathExpression> _NameTokenCache;
 
-        private List<string> _Reason;
+        private List<ResultReason> _Reason;
 
         internal ExpressionContext(SourceFile source)
         {
@@ -75,13 +72,8 @@ namespace PSRule.Definitions.Expressions
             if (string.IsNullOrEmpty(text))
                 return;
 
-            if (_Reason == null)
-                _Reason = new List<string>();
-
-            if (args == null || args.Length == 0)
-                _Reason.Add(string.Concat(operand.ToString(), ": ", text));
-            else
-                _Reason.Add(string.Concat(operand.ToString(), ": ", string.Format(Thread.CurrentThread.CurrentCulture, text, args)));
+            _Reason ??= new List<ResultReason>();
+            _Reason.Add(new ResultReason(operand, text, args));
         }
 
         public void Reason(string text, params object[] args)
@@ -89,18 +81,13 @@ namespace PSRule.Definitions.Expressions
             if (string.IsNullOrEmpty(text))
                 return;
 
-            if (_Reason == null)
-                _Reason = new List<string>();
-
-            if (args == null || args.Length == 0)
-                _Reason.Add(text);
-            else
-                _Reason.Add(string.Format(Thread.CurrentThread.CurrentCulture, text, args));
+            _Reason ??= new List<ResultReason>();
+            _Reason.Add(new ResultReason(null, text, args));
         }
 
-        internal string[] GetReasons()
+        internal ResultReason[] GetReasons()
         {
-            return _Reason == null || _Reason.Count == 0 ? Array.Empty<string>() : _Reason.ToArray();
+            return _Reason == null || _Reason.Count == 0 ? Array.Empty<ResultReason>() : _Reason.ToArray();
         }
 
         public RunspaceContext GetContext()
