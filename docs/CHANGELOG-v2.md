@@ -38,6 +38,8 @@ What's changed since pre-release v2.2.0-B0021:
     [#1117](https://github.com/microsoft/PSRule/issues/1117)
   - Fixed piped input does not respect excluded paths by @BernieWhite.
     [#1114](https://github.com/microsoft/PSRule/issues/1114)
+    - By default, objects are not excluded by source.
+    - To exclude piped input based on source configure the `Input.IgnoreObjectSource` option.
 
 ## v2.2.0-B0021 (pre-release)
 
