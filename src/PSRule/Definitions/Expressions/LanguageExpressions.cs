@@ -452,6 +452,7 @@ namespace PSRule.Definitions.Expressions
                 context.ExpressionTrace(EXISTS, field, propertyValue);
                 return Condition(
                     context,
+                    field,
                     propertyValue == ExpressionHelpers.Exists(context, o, field, caseSensitive: false),
                     ReasonStrings.Exists,
                     field
@@ -472,8 +473,8 @@ namespace PSRule.Definitions.Expressions
             // int, string, bool
             return Condition(
                 context,
-                ExpressionHelpers.Equal(propertyValue, operand.Value, caseSensitive, convertExpected: true, convertActual: convert),
                 operand,
+                ExpressionHelpers.Equal(propertyValue, operand.Value, caseSensitive, convertExpected: true, convertActual: convert),
                 ReasonStrings.Assert_IsSetTo,
                 operand.Value
             );
@@ -496,8 +497,8 @@ namespace PSRule.Definitions.Expressions
             // int, string, bool
             return Condition(
                 context,
-                !ExpressionHelpers.Equal(propertyValue, operand.Value, caseSensitive, convertExpected: true, convertActual: convert),
                 operand,
+                !ExpressionHelpers.Equal(propertyValue, operand.Value, caseSensitive, convertExpected: true, convertActual: convert),
                 ReasonStrings.Assert_IsSetTo,
                 operand.Value
             );
@@ -518,8 +519,8 @@ namespace PSRule.Definitions.Expressions
 
             return Condition(
                 context,
-                ExpressionHelpers.Equal(propertyValue, operand.Value, caseSensitive, convertExpected: true),
                 operand,
+                ExpressionHelpers.Equal(propertyValue, operand.Value, caseSensitive, convertExpected: true),
                 ReasonStrings.Assert_IsSetTo,
                 operand.Value
             );
@@ -539,8 +540,8 @@ namespace PSRule.Definitions.Expressions
 
             return Condition(
                 context,
-                !propertyValue.Value == ExpressionHelpers.NullOrEmpty(operand.Value),
                 operand,
+                !propertyValue.Value == ExpressionHelpers.NullOrEmpty(operand.Value),
                 ReasonStrings.Assert_IsSetTo,
                 operand.Value
             );
@@ -553,8 +554,8 @@ namespace PSRule.Definitions.Expressions
                 ? Invalid(context, MATCH)
                 : Condition(
                     context,
-                    ExpressionHelpers.Match(propertyValue, operand.Value, caseSensitive: false),
                     operand,
+                    ExpressionHelpers.Match(propertyValue, operand.Value, caseSensitive: false),
                     ReasonStrings.Assert_DoesNotMatch,
                     operand.Value,
                     propertyValue
@@ -575,8 +576,8 @@ namespace PSRule.Definitions.Expressions
 
             return Condition(
                 context,
-                !ExpressionHelpers.Match(propertyValue, operand.Value, caseSensitive: false),
                 operand,
+                !ExpressionHelpers.Match(propertyValue, operand.Value, caseSensitive: false),
                 ReasonStrings.Assert_Matches,
                 operand.Value,
                 propertyValue
@@ -638,15 +639,15 @@ namespace PSRule.Definitions.Expressions
                     return NotHasField(context, field);
 
                 if (!ExpressionHelpers.TryEnumerableLength(actualValue, out var count))
-                    return Fail(context, ReasonStrings.NotEnumerable, field);
+                    return Fail(context, field, ReasonStrings.NotEnumerable, field);
 
                 if (count != expectedValue.Length)
-                    return Fail(context, ReasonStrings.Count, field, count, expectedValue.Length);
+                    return Fail(context, field, ReasonStrings.Count, field, count, expectedValue.Length);
 
                 for (var i = 0; expectedValue != null && i < expectedValue.Length; i++)
                 {
                     if (!ExpressionHelpers.AnyValue(actualValue, expectedValue.GetValue(i), caseSensitive, out _))
-                        return Fail(context, ReasonStrings.Subset, field, expectedValue.GetValue(i));
+                        return Fail(context, field, ReasonStrings.Subset, field, expectedValue.GetValue(i));
                 }
                 return Pass();
             }
@@ -664,14 +665,14 @@ namespace PSRule.Definitions.Expressions
                     return NotHasField(context, field);
 
                 if (!ExpressionHelpers.TryEnumerableLength(actualValue, out _))
-                    return Fail(context, ReasonStrings.NotEnumerable, field);
+                    return Fail(context, field, ReasonStrings.NotEnumerable, field);
 
                 for (var i = 0; expectedValue != null && i < expectedValue.Length; i++)
                 {
                     if (!ExpressionHelpers.CountValue(actualValue, expectedValue.GetValue(i), caseSensitive, out var count) || (count > 1 && unique))
                         return count == 0
-                            ? Fail(context, ReasonStrings.Subset, field, expectedValue.GetValue(i))
-                            : Fail(context, ReasonStrings.SubsetDuplicate, field, expectedValue.GetValue(i));
+                            ? Fail(context, field, ReasonStrings.Subset, field, expectedValue.GetValue(i))
+                            : Fail(context, field, ReasonStrings.SubsetDuplicate, field, expectedValue.GetValue(i));
                 }
                 return Pass();
             }
@@ -688,11 +689,12 @@ namespace PSRule.Definitions.Expressions
                     return NotHasField(context, field);
 
                 if (value == null)
-                    return Fail(context, ReasonStrings.Null, field);
+                    return Fail(context, field, ReasonStrings.Null, field);
 
                 if (ExpressionHelpers.TryEnumerableLength(value, value: out var actualValue))
                     return Condition(
                         context,
+                        field,
                         actualValue == expectedValue,
                         ReasonStrings.Count,
                         field,
@@ -713,11 +715,12 @@ namespace PSRule.Definitions.Expressions
                     return NotHasField(context, field);
 
                 if (value == null)
-                    return Fail(context, ReasonStrings.Null, field);
+                    return Fail(context, field, ReasonStrings.Null, field);
 
                 if (ExpressionHelpers.TryEnumerableLength(value, value: out var actualValue))
                     return Condition(
                         context,
+                        field,
                         actualValue != expectedValue,
                         ReasonStrings.NotCount,
                         field,
@@ -739,8 +742,8 @@ namespace PSRule.Definitions.Expressions
             if (operand.Value == null)
                 return Condition(
                     context,
-                    0 < propertyValue,
                     operand,
+                    0 < propertyValue,
                     ReasonStrings.Assert_IsNullOrEmpty
                 );
 
@@ -755,8 +758,8 @@ namespace PSRule.Definitions.Expressions
             // int, string, bool
             return Condition(
                 context,
-                compare < 0,
                 operand,
+                compare < 0,
                 ReasonStrings.Assert_NotComparedTo,
                 operand.Value,
                 LESS_THAN,
@@ -775,8 +778,8 @@ namespace PSRule.Definitions.Expressions
             if (operand.Value == null)
                 return Condition(
                     context,
-                    0 <= propertyValue,
                     operand,
+                    0 <= propertyValue,
                     ReasonStrings.Assert_IsNullOrEmpty
                 );
 
@@ -791,8 +794,8 @@ namespace PSRule.Definitions.Expressions
             // int, string, bool
             return Condition(
                 context,
-                compare <= 0,
                 operand,
+                compare <= 0,
                 ReasonStrings.Assert_NotComparedTo,
                 operand.Value,
                 LESS_THAN_EQUALS,
@@ -811,8 +814,8 @@ namespace PSRule.Definitions.Expressions
             if (operand.Value == null)
                 return Condition(
                     context,
-                    0 > propertyValue,
                     operand,
+                    0 > propertyValue,
                     ReasonStrings.Assert_IsNullOrEmpty
                 );
 
@@ -827,8 +830,8 @@ namespace PSRule.Definitions.Expressions
             // int, string, bool
             return Condition(
                 context,
-                compare > 0,
                 operand,
+                compare > 0,
                 ReasonStrings.Assert_NotComparedTo,
                 operand.Value,
                 GREATER_THAN,
@@ -847,8 +850,8 @@ namespace PSRule.Definitions.Expressions
             if (operand.Value == null)
                 return Condition(
                     context,
-                    0 >= propertyValue,
                     operand,
+                    0 >= propertyValue,
                     ReasonStrings.Assert_IsNullOrEmpty
                 );
 
@@ -863,8 +866,8 @@ namespace PSRule.Definitions.Expressions
             // int, string, bool
             return Condition(
                 context,
-                compare >= 0,
                 operand,
+                compare >= 0,
                 ReasonStrings.Assert_NotComparedTo,
                 operand.Value,
                 GREATER_THAN_EQUALS,
@@ -1046,8 +1049,8 @@ namespace PSRule.Definitions.Expressions
                 context.ExpressionTrace(ISSTRING, operand.Value, propertyValue);
                 return Condition(
                     context,
-                    propertyValue == ExpressionHelpers.TryString(operand.Value, out _),
                     operand,
+                    propertyValue == ExpressionHelpers.TryString(operand.Value, out _),
                     ReasonStrings.Assert_NotString,
                     operand.Value
                 );
@@ -1064,8 +1067,8 @@ namespace PSRule.Definitions.Expressions
                 context.ExpressionTrace(ISARRAY, operand.Value, propertyValue);
                 return Condition(
                     context,
-                    propertyValue == ExpressionHelpers.TryArray(operand.Value, out _),
                     operand,
+                    propertyValue == ExpressionHelpers.TryArray(operand.Value, out _),
                     ReasonStrings.Assert_NotArray,
                     operand.Value
                 );
@@ -1083,8 +1086,8 @@ namespace PSRule.Definitions.Expressions
                 context.ExpressionTrace(ISBOOLEAN, operand.Value, propertyValue);
                 return Condition(
                     context,
-                    propertyValue == ExpressionHelpers.TryBool(operand.Value, convert, out _),
                     operand,
+                    propertyValue == ExpressionHelpers.TryBool(operand.Value, convert, out _),
                     ReasonStrings.Assert_NotBoolean,
                     operand.Value
                 );
@@ -1102,8 +1105,8 @@ namespace PSRule.Definitions.Expressions
                 context.ExpressionTrace(ISDATETIME, operand.Value, propertyValue);
                 return Condition(
                     context,
-                    propertyValue == ExpressionHelpers.TryDateTime(operand.Value, convert, out _),
                     operand,
+                    propertyValue == ExpressionHelpers.TryDateTime(operand.Value, convert, out _),
                     ReasonStrings.Assert_NotDateTime,
                     operand.Value
                 );
@@ -1121,10 +1124,10 @@ namespace PSRule.Definitions.Expressions
                 context.ExpressionTrace(ISINTEGER, operand.Value, propertyValue);
                 return Condition(
                     context,
+                    operand,
                     propertyValue == (ExpressionHelpers.TryInt(operand.Value, convert, out _) ||
                                     ExpressionHelpers.TryLong(operand.Value, convert, out _) ||
                                     ExpressionHelpers.TryByte(operand.Value, convert, out _)),
-                    operand,
                     ReasonStrings.Assert_NotInteger,
                     operand.Value
                 );
@@ -1142,12 +1145,12 @@ namespace PSRule.Definitions.Expressions
                 context.ExpressionTrace(ISNUMERIC, operand.Value, propertyValue);
                 return Condition(
                     context,
+                    operand,
                     propertyValue == (ExpressionHelpers.TryInt(operand.Value, convert, out _) ||
                                     ExpressionHelpers.TryLong(operand.Value, convert, out _) ||
                                     ExpressionHelpers.TryFloat(operand.Value, convert, out _) ||
                                     ExpressionHelpers.TryByte(operand.Value, convert, out _) ||
                                     ExpressionHelpers.TryDouble(operand.Value, convert, out _)),
-                    operand,
                     ReasonStrings.Assert_NotInteger,
                     operand.Value
                 );
@@ -1174,6 +1177,7 @@ namespace PSRule.Definitions.Expressions
                 }
                 return Fail(
                     context,
+                    operand,
                     ReasonStrings.WithinPath,
                     ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), source),
                     StringJoinNormalizedPath(path)
@@ -1199,6 +1203,7 @@ namespace PSRule.Definitions.Expressions
                         if (ExpressionHelpers.WithinPath(source, path[i], caseSensitive))
                             return Fail(
                                 context,
+                                operand,
                                 ReasonStrings.NotWithinPath,
                                 ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), source),
                                 ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), path[i])
@@ -1275,8 +1280,8 @@ namespace PSRule.Definitions.Expressions
                 if (!ExpressionHelpers.TryString(operand.Value, out var value))
                     return Condition(
                         context,
-                        !propertyValue.Value,
                         operand,
+                        !propertyValue.Value,
                         ReasonStrings.Assert_NotString,
                         operand.Value
                     );
@@ -1284,8 +1289,8 @@ namespace PSRule.Definitions.Expressions
                 context.ExpressionTrace(ISLOWER, operand.Value, propertyValue);
                 return Condition(
                     context,
-                    propertyValue == ExpressionHelpers.IsLower(value, requireLetters: false, notLetter: out _),
                     operand,
+                    propertyValue == ExpressionHelpers.IsLower(value, requireLetters: false, notLetter: out _),
                     ReasonStrings.Assert_IsLower,
                     operand.Value
                 );
@@ -1302,8 +1307,8 @@ namespace PSRule.Definitions.Expressions
                 if (!ExpressionHelpers.TryString(operand.Value, out var value))
                     return Condition(
                         context,
-                        !propertyValue.Value,
                         operand,
+                        !propertyValue.Value,
                         ReasonStrings.Assert_NotString,
                         operand.Value
                     );
@@ -1311,8 +1316,8 @@ namespace PSRule.Definitions.Expressions
                 context.ExpressionTrace(ISUPPER, operand.Value, propertyValue);
                 return Condition(
                     context,
-                    propertyValue == ExpressionHelpers.IsUpper(value, requireLetters: false, notLetter: out _),
                     operand,
+                    propertyValue == ExpressionHelpers.IsUpper(value, requireLetters: false, notLetter: out _),
                     ReasonStrings.Assert_IsUpper,
                     operand.Value
                 );
@@ -1335,10 +1340,10 @@ namespace PSRule.Definitions.Expressions
                     return NotHasField(context, PROPERTY_SCHEMA);
 
                 if (!ExpressionHelpers.TryString(schemaValue, out var actualSchema))
-                    return NotString(context, Operand.FromField(PROPERTY_SCHEMA, schemaValue));
+                    return NotString(context, Operand.FromPath(PROPERTY_SCHEMA, schemaValue));
 
                 if (string.IsNullOrEmpty(actualSchema))
-                    return NullOrEmpty(context, Operand.FromField(PROPERTY_SCHEMA, schemaValue));
+                    return NullOrEmpty(context, Operand.FromPath(PROPERTY_SCHEMA, schemaValue));
 
                 if (expectedValue == null || expectedValue.Length == 0)
                     return Pass();
@@ -1348,6 +1353,7 @@ namespace PSRule.Definitions.Expressions
 
                 return Fail(
                     context,
+                    field,
                     ReasonStrings.Assert_NotSpecifiedSchema,
                     actualSchema
                 );
@@ -1384,16 +1390,16 @@ namespace PSRule.Definitions.Expressions
 
         #region Helper methods
 
-        private static bool Condition(IExpressionContext context, bool condition, string text, params object[] args)
+        private static bool Condition(IExpressionContext context, string path, bool condition, string text, params object[] args)
         {
             if (condition)
                 return true;
 
-            context.Reason(text, args);
+            context.Reason(Operand.FromPath(path, null), text, args);
             return false;
         }
 
-        private static bool Condition(IExpressionContext context, bool condition, IOperand operand, string text, params object[] args)
+        private static bool Condition(IExpressionContext context, IOperand operand, bool condition, string text, params object[] args)
         {
             if (condition)
                 return true;
@@ -1402,14 +1408,14 @@ namespace PSRule.Definitions.Expressions
             return false;
         }
 
-        private static bool Fail(IExpressionContext context, string text, params object[] args)
+        private static bool Fail(IExpressionContext context, string path, string text, params object[] args)
         {
-            return Condition(context, false, text, args);
+            return Condition(context, Operand.FromPath(path, null), false, text, args);
         }
 
         private static bool Fail(IExpressionContext context, IOperand operand, string text, params object[] args)
         {
-            return Condition(context, false, operand, text, args);
+            return Condition(context, operand, false, text, args);
         }
 
         private static bool Pass()
@@ -1425,9 +1431,9 @@ namespace PSRule.Definitions.Expressions
         /// <summary>
         /// Reason: The field '{0}' does not exist.
         /// </summary>
-        private static bool NotHasField(IExpressionContext context, string field)
+        private static bool NotHasField(IExpressionContext context, string path)
         {
-            return Fail(context, ReasonStrings.NotHasField, field);
+            return Fail(context, path, ReasonStrings.NotHasField, path);
         }
 
         /// <summary>
@@ -1487,7 +1493,7 @@ namespace PSRule.Definitions.Expressions
                 return false;
 
             if (ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object value))
-                operand = Operand.FromField(field, value);
+                operand = Operand.FromPath(field, value);
 
             return operand != null || NotHasField(context, field);
         }
@@ -1505,7 +1511,7 @@ namespace PSRule.Definitions.Expressions
                 if (string.IsNullOrEmpty(name))
                     return Invalid(context, svalue);
 
-                operand = Operand.FromName(name);
+                operand = Operand.FromName(name, binding.TargetNamePath);
             }
             return operand != null;
         }
@@ -1523,7 +1529,8 @@ namespace PSRule.Definitions.Expressions
                 if (string.IsNullOrEmpty(type))
                     return Invalid(context, svalue);
 
-                operand = Operand.FromType(type);
+
+                operand = Operand.FromType(type, binding.TargetTypePath);
             }
             return operand != null;
         }

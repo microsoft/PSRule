@@ -495,10 +495,13 @@ namespace PSRule.Host
                     else
                     {
                         context.EnterSourceScope(yaml.Source);
-                        var info = GetRuleHelpInfo(context, ruleName, yaml.Synopsis) ?? new RuleHelpInfo(ruleName, ruleName, yaml.Source.Module)
-                        {
-                            Synopsis = yaml.Synopsis
-                        };
+                        var info = GetRuleHelpInfo(context, ruleName, yaml.Synopsis) ?? new RuleHelpInfo(
+                            ruleName,
+                            ruleName,
+                            yaml.Source.Module,
+                            synopsis: new InfoString(yaml.Synopsis)
+                        );
+
                         var block = new RuleBlock
                         (
                             source: yaml.Source,
@@ -751,18 +754,18 @@ namespace PSRule.Host
                 ? new RuleHelpInfo(
                     name: name,
                     displayName: name,
-                    moduleName: context.Source.File.Module)
-                {
-                    Synopsis = defaultSynopsis
-                }
+                    moduleName: context.Source.File.Module,
+                    synopsis: new InfoString(defaultSynopsis)
+                )
                 : new RuleHelpInfo(
                     name: name,
                     displayName: document.Name ?? name,
-                    moduleName: context.Source.File.Module)
+                    moduleName: context.Source.File.Module,
+                    synopsis: document.Synopsis ?? new InfoString(defaultSynopsis),
+                    description: document.Description,
+                    recommendation: document.Recommendation ?? document.Synopsis ?? new InfoString(defaultSynopsis)
+                )
                 {
-                    Synopsis = document.Synopsis?.Text ?? defaultSynopsis,
-                    Description = document.Description?.Text,
-                    Recommendation = document.Recommendation?.Text ?? document.Synopsis?.Text ?? defaultSynopsis,
                     Notes = document.Notes?.Text,
                     Links = GetLinks(document.Links),
                     Annotations = document.Annotations?.ToHashtable()
@@ -816,14 +819,14 @@ namespace PSRule.Host
             return info != null;
         }
 
-        private static RuleHelpInfo.Link[] GetLinks(Link[] links)
+        private static Rules.Link[] GetLinks(Help.Link[] links)
         {
             if (links == null || links.Length == 0)
                 return null;
 
-            var result = new RuleHelpInfo.Link[links.Length];
+            var result = new Rules.Link[links.Length];
             for (var i = 0; i < links.Length; i++)
-                result[i] = new RuleHelpInfo.Link(links[i].Name, links[i].Uri);
+                result[i] = new Rules.Link(links[i].Name, links[i].Uri);
 
             return result;
         }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
@@ -30,6 +30,7 @@ namespace PSRule.Pipeline.Output
                 .WithTypeInspector(inspector => new OrderedPropertiesTypeInspector(inspector))
                 .WithTypeConverter(new PSObjectYamlTypeConverter())
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
+                .WithTypeConverter(new InfoStringYamlTypeConverter())
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
                 .Build();

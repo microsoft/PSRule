@@ -2,23 +2,26 @@
 // Licensed under the MIT License.
 
 using System;
+using Microsoft.CodeAnalysis.Sarif;
 
 namespace PSRule.Runtime
 {
-    internal enum OperandKind
+    public enum OperandKind
     {
         None = 0,
 
-        Field = 1,
+        Path = 1,
 
         Type = 2,
 
         Name = 3,
 
-        Source = 4
+        Source = 4,
+
+        Target = 5
     }
 
-    internal interface IOperand
+    public interface IOperand
     {
         object Value { get; }
 
@@ -47,19 +50,19 @@ namespace PSRule.Runtime
 
         public OperandKind Kind { get; }
 
-        internal static IOperand FromName(string name)
+        internal static IOperand FromName(string name, string path)
         {
-            return new Operand(OperandKind.Name, name);
+            return new Operand(OperandKind.Name, path, name);
         }
 
-        internal static IOperand FromType(string type)
+        internal static IOperand FromType(string type, string path)
         {
-            return new Operand(OperandKind.Type, type);
+            return new Operand(OperandKind.Type, path, type);
         }
 
-        internal static IOperand FromField(string field, object value)
+        internal static IOperand FromPath(string path, object value = null)
         {
-            return new Operand(OperandKind.Field, field, value);
+            return new Operand(OperandKind.Path, path, value);
         }
 
         internal static IOperand FromSource(string source)
@@ -67,9 +70,14 @@ namespace PSRule.Runtime
             return new Operand(OperandKind.Source, source);
         }
 
+        internal static IOperand FromTarget()
+        {
+            return new Operand(OperandKind.Target, null, null);
+        }
+
         public override string ToString()
         {
-            return string.Concat(Enum.GetName(typeof(OperandKind), Kind), " ", Path);
+            return string.IsNullOrEmpty(Path) || Kind == OperandKind.Target ? null : string.Concat(Enum.GetName(typeof(OperandKind), Kind), " ", Path, ": ");
         }
     }
 }

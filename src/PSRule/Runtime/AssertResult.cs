@@ -1,9 +1,10 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Resources;
 
@@ -12,16 +13,16 @@ namespace PSRule.Runtime
     public sealed class AssertResult : IEquatable<bool>
     {
         private readonly Assert _Assert;
-        private readonly List<string> _Reason;
+        private readonly List<ResultReason> _Reason;
 
-        internal AssertResult(Assert assert, bool value, string reason, object[] args)
+        internal AssertResult(Assert assert, IOperand operand, bool value, string reason, object[] args)
         {
             _Assert = assert;
             Result = value;
             if (!Result)
             {
-                _Reason = new List<string>();
-                AddReason(reason, args);
+                _Reason = new List<ResultReason>();
+                AddReason(operand, reason, args);
             }
         }
 
@@ -41,11 +42,7 @@ namespace PSRule.Runtime
         /// <param name="text">The text of a reason to add. This text should already be localized for the currently culture.</param>
         public void AddReason(string text)
         {
-            // Ignore reasons if this is a pass.
-            if (Result || string.IsNullOrEmpty(text))
-                return;
-
-            _Reason.Add(text);
+            AddReason(null, text, null);
         }
 
         /// <summary>
@@ -63,16 +60,13 @@ namespace PSRule.Runtime
         /// Add a reason.
         /// </summary>
         /// <param name="text">The text of a reason to add. This text should already be localized for the currently culture.</param>
-        internal void AddReason(string text, params object[] args)
+        internal void AddReason(IOperand operand, string text, params object[] args)
         {
             // Ignore reasons if this is a pass.
             if (Result || string.IsNullOrEmpty(text))
                 return;
 
-            if (args == null || args.Length == 0)
-                _Reason.Add(text);
-            else
-                _Reason.Add(string.Format(Thread.CurrentThread.CurrentCulture, text, args));
+            _Reason.Add(new ResultReason(operand, text, args));
         }
 
         /// <summary>
@@ -99,7 +93,22 @@ namespace PSRule.Runtime
             if (_Reason != null)
                 _Reason.Clear();
 
-            AddReason(text, args);
+            AddReason(Operand.FromTarget(), text, args);
+            return this;
+        }
+
+        /// <summary>
+        /// Replace the existing reason with the supplied format string.
+        /// </summary>
+        /// <param name="path">The object path that affected the reason.</param>
+        /// <param name="text">The text of a reason to use. This text should already be localized for the currently culture.</param>
+        /// <param name="args">Replacement arguments for the format string.</param>
+        public AssertResult ReasonFrom(string path, string text, params object[] args)
+        {
+            if (_Reason != null)
+                _Reason.Clear();
+
+            AddReason(Operand.FromPath(path), text, args);
             return this;
         }
 
@@ -109,10 +118,21 @@ namespace PSRule.Runtime
         /// <param name="condition">When true the reason will be used. When false the existing reason will be used.</param>
         /// <param name="text">The text of a reason to use. This text should already be localized for the currently culture.</param>
         /// <param name="args">Replacement arguments for the format string.</param>
-        /// <returns></returns>
         public AssertResult ReasonIf(bool condition, string text, params object[] args)
         {
             return !condition ? this : Reason(text, args);
+        }
+
+        /// <summary>
+        /// Replace the existing reason with the supplied format string if the condition is true.
+        /// </summary>
+        /// <param name="path">The object path that affected the reason.</param>
+        /// <param name="condition">When true the reason will be used. When false the existing reason will be used.</param>
+        /// <param name="text">The text of a reason to use. This text should already be localized for the currently culture.</param>
+        /// <param name="args">Replacement arguments for the format string.</param>
+        public AssertResult ReasonIf(string path, bool condition, string text, params object[] args)
+        {
+            return !condition ? this : ReasonFrom(path, text, args);
         }
 
         /// <summary>
@@ -121,7 +141,7 @@ namespace PSRule.Runtime
         /// <returns>Returns an array of reasons. This will always return null when the Value is true.</returns>
         public string[] GetReason()
         {
-            return (Result || IsNullOrEmptyReason()) ? Array.Empty<string>() : _Reason.ToArray();
+            return (Result || IsNullOrEmptyReason()) ? Array.Empty<string>() : _Reason.GetStrings();
         }
 
         /// <summary>
@@ -153,12 +173,17 @@ namespace PSRule.Runtime
 
         public override string ToString()
         {
-            return IsNullOrEmptyReason() ? string.Empty : string.Join(" ", _Reason.ToArray());
+            return IsNullOrEmptyReason() ? string.Empty : string.Join(" ", _Reason.GetStrings());
         }
 
         public bool ToBoolean()
         {
             return Result;
+        }
+
+        internal IResultReasonV2[] ToResultReason()
+        {
+            return _Reason == null || _Reason.Count == 0 ? Array.Empty<IResultReasonV2>() : _Reason.ToArray();
         }
 
         private bool IsNullOrEmptyReason()

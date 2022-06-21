@@ -88,6 +88,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Does not exist..
+        /// </summary>
+        internal static string Assert_Exists {
+            get {
+                return ResourceManager.GetString("Assert_Exists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The value &apos;{0}&apos; does not contain only lowercase characters..
         /// </summary>
         internal static string Assert_IsLower {
@@ -192,6 +201,15 @@ namespace PSRule.Resources {
         internal static string Assert_NotEndsWith {
             get {
                 return ResourceManager.GetString("Assert_NotEndsWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exists..
+        /// </summary>
+        internal static string Assert_NotExists {
+            get {
+                return ResourceManager.GetString("Assert_NotExists", resourceCulture);
             }
         }
         

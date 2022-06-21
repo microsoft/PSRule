@@ -1,9 +1,10 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using PSRule.Configuration;
 using PSRule.Definitions.Baselines;
 
@@ -30,7 +31,6 @@ namespace PSRule.Pipeline.Output
             };
 
             var outputJsonIndent = jsonIndent ?? 0;
-
             if (outputJsonIndent > 0)
             {
                 jsonSerializer.Formatting = Formatting.Indented;
@@ -38,9 +38,9 @@ namespace PSRule.Pipeline.Output
             }
 
             jsonSerializer.ContractResolver = new OrderedPropertiesContractResolver();
-
             jsonSerializer.Converters.Add(new ErrorCategoryJsonConverter());
             jsonSerializer.Converters.Add(new PSObjectJsonConverter());
+            jsonSerializer.Converters.Add(new StringEnumConverter());
 
             // To avoid writing baselines with an extra outer array
             // We can serialize the first object which has all the baselines

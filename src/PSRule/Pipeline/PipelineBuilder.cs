@@ -397,15 +397,19 @@ namespace PSRule.Pipeline
         {
             // Nest the previous write action in the new supplied action
             // Execution chain will be: action -> previous -> previous..n
-            return (propertyNames, caseSensitive, preferTargetInfo, targetObject) => action(propertyNames, caseSensitive, preferTargetInfo, targetObject, previous);
+            return (string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, out string path) =>
+            {
+                return action(propertyNames, caseSensitive, preferTargetInfo, targetObject, previous, out path);
+            };
         }
 
         private static BindTargetMethod AddBindTargetAction(BindTargetName action, BindTargetMethod previous)
         {
-            return AddBindTargetAction((parameterNames, caseSensitive, preferTargetInfo, targetObject, next) =>
+            return AddBindTargetAction((string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, BindTargetMethod next, out string path) =>
             {
+                path = null;
                 var targetType = action(targetObject);
-                return string.IsNullOrEmpty(targetType) ? next(parameterNames, caseSensitive, preferTargetInfo, targetObject) : targetType;
+                return string.IsNullOrEmpty(targetType) ? next(propertyNames, caseSensitive, preferTargetInfo, targetObject, out path) : targetType;
             }, previous);
         }
 

@@ -339,4 +339,10 @@
   <data name="NotCount" xml:space="preserve">
     <value>The field '{0}' has '{1}' items instead of not '{2}'.</value>
   </data>
+  <data name="Assert_Exists" xml:space="preserve">
+    <value>Does not exist.</value>
+  </data>
+  <data name="Assert_NotExists" xml:space="preserve">
+    <value>Exists.</value>
+  </data>
 </root>

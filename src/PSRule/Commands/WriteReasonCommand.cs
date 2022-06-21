@@ -1,8 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Management.Automation;
-using PSRule.Runtime;
 
 namespace PSRule.Commands
 {
@@ -20,9 +19,11 @@ namespace PSRule.Commands
             if (!IsConditionScope())
                 throw ConditionScopeException(LanguageKeywords.Reason);
 
-
             if (MyInvocation.BoundParameters.ContainsKey(nameof(Text)))
-                RunspaceContext.CurrentThread.WriteReason(text: Text);
+                WriteReason(
+                    path: null,
+                    text: Text
+                );
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Linq;
 using System.Text;
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Resources;
 using PSRule.Rules;
 
@@ -87,14 +88,14 @@ namespace PSRule.Pipeline.Output
                 AppendLine("- [ ] ", text);
         }
 
-        private void RuleSummary(RuleRecord[] records)
+        private void RuleSummary(IDetailedRuleResultV2[] records)
         {
             if (records.Length == 0)
                 return;
 
             Section(2, records[0].Info.DisplayName);
             LineBreak();
-            AppendLine("> ", records[0].RuleName);
+            AppendLine("> ", records[0].Info.Name);
             LineBreak();
             AppendLine(records[0].Info.Synopsis);
             LineBreak();
@@ -116,7 +117,7 @@ namespace PSRule.Pipeline.Output
             // Add recommendation
             AppendLine("**", ReportStrings.Markdown_Recommendation, "**:");
             LineBreak();
-            AppendLine(records[0].Recommendation);
+            AppendLine(records[0].Info.Recommendation);
             LineBreak();
 
             // Add links
@@ -166,7 +167,7 @@ namespace PSRule.Pipeline.Output
             }
         }
 
-        private void Link(RuleHelpInfo.Link link)
+        private void Link(Link link)
         {
             AppendLine("- [", link.Name, "](", link.Uri, ")");
         }
@@ -220,6 +221,11 @@ namespace PSRule.Pipeline.Output
             Append(c, count);
             if (count < width)
                 _Builder.Append(padding, width - count);
+        }
+
+        private void AppendLine(InfoString text)
+        {
+            AppendLine(text.Text);
         }
 
         private void AppendLine(params string[] text)

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
@@ -11,8 +11,8 @@ namespace PSRule.Configuration
     /// </summary>
     public delegate string BindTargetName(PSObject targetObject);
 
-    internal delegate string BindTargetMethod(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject);
-    internal delegate string BindTargetFunc(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, BindTargetMethod next);
+    internal delegate string BindTargetMethod(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, out string path);
+    internal delegate string BindTargetFunc(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, BindTargetMethod next, out string path);
 
     /// <summary>
     /// Hooks that provide customize pipeline execution.

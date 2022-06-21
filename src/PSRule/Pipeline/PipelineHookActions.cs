@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Globalization;
@@ -19,38 +19,41 @@ namespace PSRule.Pipeline
         private const string Property_TargetName = "TargetName";
         private const string Property_Name = "Name";
 
-        public static string BindTargetName(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject)
+        public static string BindTargetName(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, out string path)
         {
+            path = null;
             if (preferTargetInfo && TryGetInfoTargetName(targetObject, out var targetName))
                 return targetName;
 
             if (propertyNames != null)
                 return propertyNames.Any(n => n.Contains('.'))
-                    ? NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding)
-                    : CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding);
+                    ? NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding, out path)
+                    : CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding, out path);
 
             return DefaultTargetNameBinding(targetObject);
         }
 
-        public static string BindTargetType(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject)
+        public static string BindTargetType(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, out string path)
         {
+            path = null;
             if (preferTargetInfo && TryGetInfoTargetType(targetObject, out var targetType))
                 return targetType;
 
             if (propertyNames != null)
                 return propertyNames.Any(n => n.Contains('.'))
-                    ? NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetTypeBinding)
-                    : CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetTypeBinding);
+                    ? NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetTypeBinding, out path)
+                    : CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetTypeBinding, out path);
 
             return DefaultTargetTypeBinding(targetObject);
         }
 
-        public static string BindField(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject)
+        public static string BindField(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, out string path)
         {
+            path = null;
             if (propertyNames != null)
                 return propertyNames.Any(n => n.Contains('.'))
-                    ? NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultFieldBinding)
-                    : CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultFieldBinding);
+                    ? NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultFieldBinding, out path)
+                    : CustomTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultFieldBinding, out path);
 
             return DefaultFieldBinding(targetObject);
         }
@@ -76,12 +79,15 @@ namespace PSRule.Pipeline
         /// <param name="targetObject">A PSObject to bind.</param>
         /// <param name="next">The next delegate function to check if all of the property names can not be found.</param>
         /// <returns>The TargetName of the object.</returns>
-        private static string CustomTargetPropertyBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next)
+        private static string CustomTargetPropertyBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next, out string path)
         {
+            path = null;
             string targetName = null;
             for (var i = 0; i < propertyNames.Length && targetName == null; i++)
             {
                 targetName = targetObject.ValueAsString(propertyName: propertyNames[i], caseSensitive: caseSensitive);
+                if (targetName != null)
+                    path = propertyNames[i];
             }
             // If TargetName is found return, otherwise continue to next delegate
             return targetName ?? next(targetObject);
@@ -94,8 +100,9 @@ namespace PSRule.Pipeline
         /// <param name="targetObject">A PSObject to bind.</param>
         /// <param name="next">The next delegate function to check if all of the property names can not be found.</param>
         /// <returns>The TargetName of the object.</returns>
-        private static string NestedTargetPropertyBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next)
+        private static string NestedTargetPropertyBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next, out string path)
         {
+            path = null;
             string targetName = null;
             var score = int.MaxValue;
             for (var i = 0; i < propertyNames.Length && score > propertyNames.Length; i++)
@@ -107,6 +114,7 @@ namespace PSRule.Pipeline
                     caseSensitive: caseSensitive,
                     value: out object value))
                 {
+                    path = propertyNames[i];
                     targetName = value.ToString();
                     score = i;
                 }

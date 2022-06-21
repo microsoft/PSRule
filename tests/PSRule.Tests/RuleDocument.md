@@ -13,6 +13,9 @@ Containers should use specific tags instead of `latest`.
 ## DESCRIPTION
 
 Containers should use specific tags instead of `latest`.
+This is because:
+
+- Latest can be updated.
 
 ## RECOMMENDATION
 

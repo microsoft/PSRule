@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using Newtonsoft.Json.Linq;
 using PSRule.Data;
@@ -34,6 +35,8 @@ namespace PSRule
             var assert = GetAssertionHelper();
             var actual1 = assert.Create(false, "Test reason");
             var actual2 = assert.Create(true, "Test reason");
+            var actual3 = assert.Fail("Fail reason");
+            var actual4 = assert.Create("Name", false, "Test reason");
             Assert.Equal("Test reason", actual1.ToString());
             Assert.Equal("Test reason", actual1.GetReason()[0]);
             Assert.False(actual1.Result);
@@ -55,16 +58,26 @@ namespace PSRule
             actual1.ReasonIf(false, "Not a reason");
             Assert.Equal("New New Reason", actual1.ToString());
             Assert.Equal("New New Reason", actual1.GetReason()[0]);
-            actual1.ReasonIf(true, "New New New Reason");
-            Assert.Equal("New New New Reason", actual1.ToString());
-            Assert.Equal("New New New Reason", actual1.GetReason()[0]);
+            actual1.ReasonIf("valueX", true, "New New New Reason");
+            Assert.Equal("Path valueX: New New New Reason", actual1.ToString());
+            Assert.Equal("Path valueX: New New New Reason", actual1.GetReason()[0]);
 
-            var actual3 = assert.Fail("Fail reason");
             Assert.Equal("Fail reason", actual3.ToString());
             Assert.Equal("Fail reason", actual3.GetReason()[0]);
             actual3 = assert.Fail("Fail {0}", "reason");
             Assert.Equal("Fail reason", actual3.ToString());
             Assert.Equal("Fail reason", actual3.GetReason()[0]);
+
+            var actual4Reasons = actual4.ToResultReason();
+            Assert.Equal("Name", actual4Reasons[0].Path);
+            Assert.Equal("Test reason", actual4Reasons[0].Message);
+            Assert.Equal("Path Name: Test reason", actual4Reasons[0].Format());
+
+            // ReasonFrom
+            actual1.ReasonFrom("value", "New {0}", "Reason");
+            actual1.ReasonFrom("value2", "New New Reason");
+            Assert.Equal("Path value2: New New Reason", actual1.ToString());
+            Assert.Equal("Path value2: New New Reason", actual1.GetReason()[0]);
 
             // Aggregate results
             Assert.True(assert.AnyOf(actual2, actual3).Result);
@@ -78,8 +91,8 @@ namespace PSRule
             Assert.Equal("Fail reason", test1.GetReason()[0]);
 
             var test2 = assert.AllOf(actual1, actual2, actual3);
-            Assert.Equal("New New New Reason Fail reason", test2.ToString());
-            Assert.Equal(new string[] { "New New New Reason", "Fail reason" }, test2.GetReason());
+            Assert.Equal("Path value2: New New Reason Fail reason", test2.ToString());
+            Assert.Equal(new string[] { "Path value2: New New Reason", "Fail reason" }, test2.GetReason());
             Assert.True(assert.AllOf(actual2, actual2).Result);
             Assert.True(assert.AllOf(actual2).Result);
             Assert.False(assert.AllOf().Result);
@@ -90,13 +103,40 @@ namespace PSRule
         {
             SetContext();
             var assert = GetAssertionHelper();
-            var actual1 = PSRule.Runtime.RuleConditionHelper.Create(new object[] { PSObject.AsPSObject(assert.Create(true, "Test reason")), PSObject.AsPSObject(assert.Create(false, "Test reason")) });
+            var actual1 = RuleConditionHelper.Create(new object[] { PSObject.AsPSObject(assert.Create(true, "Test reason")), PSObject.AsPSObject(assert.Create(false, "Test reason")) });
             Assert.True(actual1.AnyOf());
             Assert.False(actual1.AllOf());
 
-            var actual2 = PSRule.Runtime.RuleConditionHelper.Create(new object[] { assert.Create(true, "Test reason"), assert.Create(false, "Test reason") });
+            var actual2 = RuleConditionHelper.Create(new object[] { assert.Create(true, "Test reason"), assert.Create(false, "Test reason") });
             Assert.True(actual2.AnyOf());
             Assert.False(actual2.AllOf());
+        }
+
+        [Fact]
+        public void HasFieldValue()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+
+            var value = GetObject(
+                (name: "value", value: "Value1"),
+                (name: "value2", value: null),
+                (name: "value3", value: ""),
+                (name: "Value4", value: 0),
+                (name: "value5", value: GetObject((name: "value", value: 0)))
+            );
+
+            Assert.False(assert.HasFieldValue(null, null).Result);
+            Assert.True(assert.HasFieldValue(value, "value").Result);
+            Assert.False(assert.HasFieldValue(value, "value2").Result);
+            Assert.False(assert.HasFieldValue(value, "value3").Result);
+            Assert.True(assert.HasFieldValue(value, "Value4").Result);
+            Assert.True(assert.HasFieldValue(value, "value5").Result);
+            Assert.True(assert.HasFieldValue(value, "value5.value").Result);
+
+            Assert.Empty(assert.HasFieldValue(value, "value").ToResultReason());
+            Assert.Equal("value6", assert.HasFieldValue(value, "value6").ToResultReason().FirstOrDefault().Path);
+            Assert.Equal("value7.value", assert.HasFieldValue(value, "value7.value").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -125,6 +165,10 @@ namespace PSRule
             Assert.True(assert.HasField(value, new string[] { "value5.value" }).Result);
             Assert.False(assert.HasField(value, new string[] { "Value5.value" }, true).Result);
             Assert.False(assert.HasField(value, new string[] { "value5.Value" }, true).Result);
+
+            Assert.Empty(assert.HasField(value, new string[] { "value" }).ToResultReason());
+            Assert.Equal("value6", assert.HasField(value, new string[] { "value6" }).ToResultReason().FirstOrDefault().Path);
+            Assert.Equal("value7.value", assert.HasField(value, new string[] { "value7.value" }).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -149,6 +193,10 @@ namespace PSRule
             Assert.False(assert.NotHasField(value, new string[] { "value3" }).Result);
             Assert.True(assert.NotHasField(value, new string[] { "Value3" }, true).Result);
             Assert.False(assert.NotHasField(value, new string[] { "Value3", "Value4" }, true).Result);
+
+            Assert.Empty(assert.NotHasField(value, new string[] { "notValue", "Value" }, true).ToResultReason());
+            Assert.Equal("value2", assert.NotHasField(value, new string[] { "value2" }).ToResultReason().FirstOrDefault().Path);
+            Assert.Equal("Value4", assert.NotHasField(value, new string[] { "Value3", "Value4" }, true).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -172,6 +220,8 @@ namespace PSRule
             Assert.True(assert.HasJsonSchema(actual3, new string[] { "https://json-schema.org/draft-07/schema#", "http://json-schema.org/draft-07/schema#" }).Result);
             Assert.False(assert.HasJsonSchema(actual4, new string[] { "https://json-schema.org/draft-07/schema#" }, true).Result);
             Assert.False(assert.HasJsonSchema(actual5, null).Result);
+
+            Assert.Equal("$schema", assert.HasJsonSchema(actual2, new string[] { "abc" }).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -190,6 +240,8 @@ namespace PSRule
             Assert.False(assert.StartsWith(value, "name", new string[] { "abcdefgh" }).Result);
             Assert.False(assert.StartsWith(value, "name", new string[] { "ABC" }, caseSensitive: true).Result);
             Assert.False(assert.StartsWith(value, "name", new string[] { "123", "cd" }).Result);
+
+            Assert.Equal("name", assert.StartsWith(value, "name", new string[] { "abcdefgh" }).ToResultReason().FirstOrDefault().Path);
 
             // Integer
             Assert.False(assert.StartsWith(value, "value", new string[] { "123" }).Result);
@@ -212,6 +264,8 @@ namespace PSRule
             Assert.True(assert.NotStartsWith(value, "name", new string[] { "ABC" }, caseSensitive: true).Result);
             Assert.True(assert.NotStartsWith(value, "name", new string[] { "123", "cd" }).Result);
 
+            Assert.Equal("name", assert.NotStartsWith(value, "name", new string[] { "ABC" }).ToResultReason().FirstOrDefault().Path);
+
             // Integer
             Assert.True(assert.NotStartsWith(value, "value", new string[] { "123" }).Result);
         }
@@ -232,6 +286,8 @@ namespace PSRule
             Assert.False(assert.EndsWith(value, "name", new string[] { "abcdefgh" }).Result);
             Assert.False(assert.EndsWith(value, "name", new string[] { "EFG" }, caseSensitive: true).Result);
             Assert.False(assert.EndsWith(value, "name", new string[] { "123", "cd" }).Result);
+
+            Assert.Equal("name", assert.EndsWith(value, "name", new string[] { "abcdefgh" }).ToResultReason().FirstOrDefault().Path);
 
             // Integer
             Assert.False(assert.EndsWith(value, "value", new string[] { "123" }).Result);
@@ -254,6 +310,8 @@ namespace PSRule
             Assert.True(assert.NotEndsWith(value, "name", new string[] { "EFG" }, caseSensitive: true).Result);
             Assert.True(assert.NotEndsWith(value, "name", new string[] { "123", "cd" }).Result);
 
+            Assert.Equal("name", assert.NotEndsWith(value, "name", new string[] { "EFG" }).ToResultReason().FirstOrDefault().Path);
+
             // Integer
             Assert.True(assert.NotEndsWith(value, "value", new string[] { "123" }).Result);
         }
@@ -274,6 +332,8 @@ namespace PSRule
             Assert.False(assert.Contains(value, "name", new string[] { "abcdefgh" }).Result);
             Assert.False(assert.Contains(value, "name", new string[] { "ABC" }, caseSensitive: true).Result);
             Assert.True(assert.Contains(value, "name", new string[] { "123", "cd" }).Result);
+
+            Assert.Equal("name", assert.Contains(value, "name", new string[] { "abcdefgh" }).ToResultReason().FirstOrDefault().Path);
 
             // Integer
             Assert.False(assert.Contains(value, "value", new string[] { "123" }).Result);
@@ -296,6 +356,8 @@ namespace PSRule
             Assert.True(assert.NotContains(value, "name", new string[] { "ABC" }, caseSensitive: true).Result);
             Assert.False(assert.NotContains(value, "name", new string[] { "123", "cd" }).Result);
 
+            Assert.Equal("name", assert.NotContains(value, "name", new string[] { "ABC" }).ToResultReason().FirstOrDefault().Path);
+
             // Integer
             Assert.True(assert.NotContains(value, "value", new string[] { "123" }).Result);
         }
@@ -317,6 +379,10 @@ namespace PSRule
             Assert.True(assert.IsLower(value, "name3").Result);
             Assert.False(assert.IsLower(value, "name3", requireLetters: true).Result);
             Assert.False(assert.IsLower(value, "name4").Result);
+
+            Assert.Equal("name2", assert.IsLower(value, "name2").ToResultReason().FirstOrDefault().Path);
+            Assert.Equal("name3", assert.IsLower(value, "name3", requireLetters: true).ToResultReason().FirstOrDefault().Path);
+            Assert.Equal("name4", assert.IsLower(value, "name4").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -336,6 +402,10 @@ namespace PSRule
             Assert.True(assert.IsUpper(value, "name3").Result);
             Assert.False(assert.IsUpper(value, "name3", requireLetters: true).Result);
             Assert.False(assert.IsUpper(value, "name4").Result);
+
+            Assert.Equal("name2", assert.IsUpper(value, "name2").ToResultReason().FirstOrDefault().Path);
+            Assert.Equal("name3", assert.IsUpper(value, "name3", requireLetters: true).ToResultReason().FirstOrDefault().Path);
+            Assert.Equal("name4", assert.IsUpper(value, "name4").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -363,6 +433,9 @@ namespace PSRule
             Assert.True(assert.IsNumeric(value, "value6").Result);
             Assert.True(assert.IsNumeric(value, "value7").Result);
             Assert.True(assert.IsNumeric(value, "value8").Result);
+
+            Assert.Equal("value4", assert.IsNumeric(value, "value4").ToResultReason().FirstOrDefault().Path);
+            Assert.Equal("value5", assert.IsNumeric(value, "value5").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -388,6 +461,10 @@ namespace PSRule
             Assert.False(assert.IsInteger(value, "value5").Result);
             Assert.True(assert.IsInteger(value, "value6").Result);
             Assert.True(assert.IsInteger(value, "value7").Result);
+
+            Assert.Equal("value2", assert.IsInteger(value, "value2").ToResultReason().FirstOrDefault().Path);
+            Assert.Equal("value4", assert.IsInteger(value, "value4").ToResultReason().FirstOrDefault().Path);
+            Assert.Equal("value5", assert.IsInteger(value, "value5").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -411,6 +488,8 @@ namespace PSRule
             Assert.True(assert.IsBoolean(value, "value4", convert: true).Result);
             Assert.False(assert.IsBoolean(value, "value5").Result);
             Assert.True(assert.IsBoolean(value, "value6").Result);
+
+            Assert.Equal("value2", assert.IsBoolean(value, "value2").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -431,6 +510,8 @@ namespace PSRule
             Assert.True(assert.IsArray(value, "value3").Result);
             Assert.False(assert.IsArray(value, "value4").Result);
             Assert.False(assert.IsArray(value, "value5").Result);
+
+            Assert.Equal("value4", assert.IsArray(value, "value4").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -449,6 +530,8 @@ namespace PSRule
             Assert.True(assert.IsString(value, "value2").Result);
             Assert.False(assert.IsString(value, "value3").Result);
             Assert.False(assert.IsString(value, "value4").Result);
+
+            Assert.Equal("value4", assert.IsString(value, "value4").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -476,6 +559,9 @@ namespace PSRule
             Assert.True(assert.IsDateTime(value, "value6").Result);
             Assert.True(assert.IsDateTime(value, "value7").Result);
             Assert.True(assert.IsDateTime(value, "value8", convert: true).Result);
+
+            Assert.Equal("value2", assert.IsDateTime(value, "value2").ToResultReason().FirstOrDefault().Path);
+            Assert.Equal("value5", assert.IsDateTime(value, "value5").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -502,11 +588,16 @@ namespace PSRule
             Assert.False(assert.TypeOf(value, "value3", new Type[] { typeof(string) }).Result);
             Assert.False(assert.TypeOf(value, "value4", new Type[] { typeof(string) }).Result);
 
+            Assert.Equal("value3", assert.TypeOf(value, "value3", new Type[] { typeof(bool) }).ToResultReason().FirstOrDefault().Path);
+
             // By type name
             Assert.True(assert.TypeOf(value, "value1", new string[] { "System.String" }).Result);
             Assert.True(assert.TypeOf(value, "value2", new string[] { "System.String" }).Result);
             Assert.True(assert.TypeOf(value, "value3", new string[] { "System.Int32" }).Result);
+            Assert.False(assert.TypeOf(value, "value4", new string[] { "System.Int32" }).Result);
             Assert.True(assert.TypeOf(value, "value5", new string[] { "CustomTypeObject" }).Result);
+
+            Assert.Equal("value4", assert.TypeOf(value, "value4", new string[] { "System.Int32" }).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -612,6 +703,9 @@ namespace PSRule
             Assert.False(assert.Version(value, "notversion", null).Result);
             Assert.Throws<RuleException>(() => assert.Version(value, "version", "2.0.0<").Result);
             Assert.Throws<RuleException>(() => assert.Version(value, "version", "z2.0.0").Result);
+
+            Assert.Equal("version", assert.Version(value, "version", "<=0.2.3").ToResultReason().FirstOrDefault().Path);
+            Assert.Equal("notversion", assert.Version(value, "notversion", null).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -629,6 +723,9 @@ namespace PSRule
             Assert.True(assert.Greater(value, "value", -1).Result);
             Assert.False(assert.Greater(value, "jvalue", 4).Result);
 
+            Assert.Equal("value", assert.Greater(value, "value", 3).ToResultReason().FirstOrDefault().Path);
+            Assert.Equal("jvalue", assert.Greater(value, "jvalue", 4).ToResultReason().FirstOrDefault().Path);
+
             // String
             value = GetObject((name: "value", value: "abc"));
             Assert.True(assert.Greater(value, "value", 2).Result);
@@ -636,6 +733,8 @@ namespace PSRule
             Assert.False(assert.Greater(value, "value", 4).Result);
             Assert.True(assert.Greater(value, "value", 0).Result);
             Assert.True(assert.Greater(value, "value", -1).Result);
+
+            Assert.Equal("value", assert.Greater(value, "value", 3).ToResultReason().FirstOrDefault().Path);
 
             // Array
             value = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
@@ -663,6 +762,8 @@ namespace PSRule
             value = GetObject((name: "value", value: "4.5"));
             Assert.True(assert.Greater(value, "value", 2, convert: true).Result);
             Assert.False(assert.Greater(value, "value", 4, convert: false).Result);
+
+            Assert.Equal("value", assert.Greater(value, "value", 4, convert: false).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -680,6 +781,8 @@ namespace PSRule
             Assert.True(assert.GreaterOrEqual(value, "value", -1).Result);
             Assert.False(assert.GreaterOrEqual(value, "jvalue", 4).Result);
 
+            Assert.Equal("jvalue", assert.GreaterOrEqual(value, "jvalue", 4).ToResultReason().FirstOrDefault().Path);
+
             // String
             value = GetObject((name: "value", value: "abc"));
             Assert.True(assert.GreaterOrEqual(value, "value", 2).Result);
@@ -687,6 +790,8 @@ namespace PSRule
             Assert.False(assert.GreaterOrEqual(value, "value", 4).Result);
             Assert.True(assert.GreaterOrEqual(value, "value", 0).Result);
             Assert.True(assert.GreaterOrEqual(value, "value", -1).Result);
+
+            Assert.Equal("value", assert.GreaterOrEqual(value, "value", 4).ToResultReason().FirstOrDefault().Path);
 
             // Array
             value = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
@@ -714,6 +819,8 @@ namespace PSRule
             value = GetObject((name: "value", value: "4.5"));
             Assert.True(assert.GreaterOrEqual(value, "value", 2, convert: true).Result);
             Assert.False(assert.GreaterOrEqual(value, "value", 4, convert: false).Result);
+
+            Assert.Equal("value", assert.GreaterOrEqual(value, "value", 4, convert: false).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -731,6 +838,8 @@ namespace PSRule
             Assert.False(assert.Less(value, "value", -1).Result);
             Assert.True(assert.Less(value, "jvalue", 4).Result);
 
+            Assert.Equal("value", assert.Less(value, "value", -1).ToResultReason().FirstOrDefault().Path);
+
             // String
             value = GetObject((name: "value", value: "abc"));
             Assert.False(assert.Less(value, "value", 2).Result);
@@ -738,6 +847,8 @@ namespace PSRule
             Assert.True(assert.Less(value, "value", 4).Result);
             Assert.False(assert.Less(value, "value", 0).Result);
             Assert.False(assert.Less(value, "value", -1).Result);
+
+            Assert.Equal("value", assert.Less(value, "value", -1).ToResultReason().FirstOrDefault().Path);
 
             // Array
             value = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
@@ -765,6 +876,8 @@ namespace PSRule
             value = GetObject((name: "value", value: "4.5"));
             Assert.False(assert.Less(value, "value", 4, convert: true).Result);
             Assert.True(assert.Less(value, "value", 4, convert: false).Result);
+
+            Assert.Equal("value", assert.Less(value, "value", 4, convert: true).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -782,6 +895,8 @@ namespace PSRule
             Assert.False(assert.LessOrEqual(value, "value", -1).Result);
             Assert.True(assert.LessOrEqual(value, "jvalue", 4).Result);
 
+            Assert.Equal("value", assert.LessOrEqual(value, "value", 0).ToResultReason().FirstOrDefault().Path);
+
             // String
             value = GetObject((name: "value", value: "abc"));
             Assert.False(assert.LessOrEqual(value, "value", 2).Result);
@@ -789,6 +904,8 @@ namespace PSRule
             Assert.True(assert.LessOrEqual(value, "value", 4).Result);
             Assert.False(assert.LessOrEqual(value, "value", 0).Result);
             Assert.False(assert.LessOrEqual(value, "value", -1).Result);
+
+            Assert.Equal("value", assert.LessOrEqual(value, "value", 0).ToResultReason().FirstOrDefault().Path);
 
             // Array
             value = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
@@ -816,6 +933,8 @@ namespace PSRule
             value = GetObject((name: "value", value: "4.5"));
             Assert.False(assert.LessOrEqual(value, "value", 4, convert: true).Result);
             Assert.True(assert.LessOrEqual(value, "value", 4, convert: false).Result);
+
+            Assert.Equal("value", assert.LessOrEqual(value, "value", 4, convert: true).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -866,6 +985,8 @@ namespace PSRule
             Assert.True(assert.In(value, "values", new string[] { "Value3", "Value5" }).Result);
             Assert.False(assert.In(value, "values", new string[] { "Value1", "Value3" }).Result);
             Assert.False(assert.In(value, "values", new string[] { "VALUE1", "VALUE2", "VALUE3" }, true).Result);
+
+            Assert.Equal("value", assert.In(value, "value", new string[] { "Value3" }).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -917,6 +1038,8 @@ namespace PSRule
             Assert.True(assert.NotIn(value, "values", new string[] { "Value1", "Value3" }).Result);
             Assert.True(assert.NotIn(value, "values", new string[] { "VALUE1", "VALUE2", "VALUE3" }, true).Result);
 
+            Assert.Equal("values", assert.NotIn(value, "values", new string[] { "Value2" }).ToResultReason().FirstOrDefault().Path);
+
             // Empty
             value = GetObject((name: "null", value: null), (name: "empty", value: new string[] { }));
             Assert.True(assert.NotIn(value, "null", new string[] { "Value1", "Value3" }).Result);
@@ -955,6 +1078,8 @@ namespace PSRule
             Assert.False(assert.SetOf(value, "values", new string[] { "Value3", "Value5" }).Result);
             Assert.False(assert.SetOf(value, "values", new string[] { "Value2", "Value5" }, true).Result);
             Assert.True(assert.SetOf(value, "values", new string[] { "value2", "value5" }, true).Result);
+
+            Assert.Equal("values", assert.SetOf(value, "values", new string[] { "Value2", "Value5" }, true).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -993,6 +1118,8 @@ namespace PSRule
             Assert.False(assert.Subset(value, "values", new string[] { "VALUE1", "VALUE2", "VALUE3" }).Result);
             Assert.False(assert.Subset(value, "values", new string[] { "Value3", "Value5" }).Result);
             Assert.False(assert.Subset(value, "values", new string[] { "Value2", "Value5" }, true).Result);
+
+            Assert.Equal("values", assert.Subset(value, "values", new string[] { "Value5", "Value2" }, false, true).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -1008,6 +1135,8 @@ namespace PSRule
             Assert.False(assert.Count(value, "value", 4).Result);
             Assert.False(assert.Count(value, "value", 0).Result);
             Assert.False(assert.Count(value, "value", -1).Result);
+
+            Assert.Equal("value", assert.Count(value, "value", 2).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -1023,6 +1152,8 @@ namespace PSRule
             Assert.True(assert.NotCount(value, "value", 4).Result);
             Assert.True(assert.NotCount(value, "value", 0).Result);
             Assert.True(assert.NotCount(value, "value", -1).Result);
+
+            Assert.Equal("value", assert.NotCount(value, "value", 3).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -1038,6 +1169,8 @@ namespace PSRule
             Assert.False(assert.Match(value, "value", "value2").Result);
             Assert.False(assert.Match(value, "value", "value1", true).Result);
             Assert.True(assert.Match(value, "value", "\\w*1").Result);
+
+            Assert.Equal("value", assert.Match(value, "value", "value2").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -1054,6 +1187,8 @@ namespace PSRule
             Assert.True(assert.NotMatch(value, "value", "value2", true).Result);
             Assert.False(assert.NotMatch(value, "value", "\\w*2").Result);
             Assert.True(assert.NotMatch(value, "notValue", "\\w*2").Result);
+
+            Assert.Equal("value", assert.NotMatch(value, "value", "Value[0-9]").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -1073,6 +1208,8 @@ namespace PSRule
             Assert.True(assert.Null(value, "value2").Result);
             Assert.False(assert.Null(value, "value3").Result);
             Assert.False(assert.Null(value, "value4").Result);
+
+            Assert.Equal("value", assert.Null(value, "value").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -1092,6 +1229,8 @@ namespace PSRule
             Assert.True(assert.NotNull(value, "value3").Result);
             Assert.True(assert.NotNull(value, "value4").Result);
             Assert.False(assert.NotNull(value, "notValue").Result);
+
+            Assert.Equal("value2", assert.NotNull(value, "value2").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -1113,6 +1252,8 @@ namespace PSRule
             Assert.False(assert.NullOrEmpty(value, "value4").Result);
             Assert.True(assert.NullOrEmpty(value, "value5").Result);
             Assert.True(assert.NullOrEmpty(value, "notValue").Result);
+
+            Assert.Equal("value", assert.NullOrEmpty(value, "value").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -1130,6 +1271,8 @@ namespace PSRule
             value = GetObject((name: "FullName", value: GetSourcePath("Baseline.Rule.yaml")));
             Assert.False(assert.FileHeader(value, "FullName", header).Result);
 
+            Assert.Equal("FullName", assert.FileHeader(value, "FullName", header).ToResultReason().FirstOrDefault().Path);
+
             // Dockerfile
             value = GetObject((name: "FullName", value: GetSourcePath("Dockerfile")));
             Assert.True(assert.FileHeader(value, "FullName", header).Result);
@@ -1145,6 +1288,8 @@ namespace PSRule
             Assert.True(assert.FilePath(value, "FullName").Result);
             value = GetObject((name: "FullName", value: GetSourcePath("README.zz")));
             Assert.False(assert.FilePath(value, "FullName").Result);
+
+            Assert.Equal("FullName", assert.FilePath(value, "FullName").ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -1173,6 +1318,8 @@ namespace PSRule
             Assert.True(assert.WithinPath(value, "FullName", new string[] { "deployments\\path\\" }).Result);
             Assert.False(assert.WithinPath(value, "FullName", new string[] { "deployments/other/" }).Result);
             Assert.False(assert.WithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true).Result);
+
+            Assert.Equal("FullName", assert.WithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -1201,6 +1348,8 @@ namespace PSRule
             Assert.False(assert.NotWithinPath(value, "FullName", new string[] { "deployments\\path\\" }).Result);
             Assert.True(assert.NotWithinPath(value, "FullName", new string[] { "deployments/other/" }).Result);
             Assert.True(assert.NotWithinPath(value, "FullName", new string[] { "deployments/Path/" }, caseSensitive: true).Result);
+
+            Assert.Equal("FullName", assert.NotWithinPath(value, "FullName", new string[] { "deployments/path/" }).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -1222,6 +1371,8 @@ namespace PSRule
 
             // Integer
             Assert.False(assert.Like(value, "value", new string[] { "12*" }).Result);
+
+            Assert.Equal("value", assert.Like(value, "value", new string[] { "12*" }).ToResultReason().FirstOrDefault().Path);
         }
 
         [Fact]
@@ -1243,6 +1394,8 @@ namespace PSRule
 
             // Integer
             Assert.True(assert.NotLike(value, "value", new string[] { "12*" }).Result);
+
+            Assert.Equal("name", assert.NotLike(value, "name", new string[] { "123*", "ab*" }).ToResultReason().FirstOrDefault().Path);
         }
 
         #region Helper methods

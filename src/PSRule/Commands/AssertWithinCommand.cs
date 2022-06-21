@@ -1,9 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.Management.Automation;
-using System.Threading;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -122,9 +121,13 @@ namespace PSRule.Commands
 
             var result = expected == match;
             RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Within, outcome: result);
-            if (!(result || TryReason(Reason)))
+            if (!(result || TryReason(null, Reason, null)))
             {
-                WriteReason(Not ? string.Format(Thread.CurrentThread.CurrentCulture, ReasonStrings.WithinNot, found) : ReasonStrings.Within);
+                WriteReason(
+                    path: null,
+                    text: Not ? ReasonStrings.WithinNot : ReasonStrings.Within,
+                    args: Not ? found : null
+                );
             }
             WriteObject(result);
         }

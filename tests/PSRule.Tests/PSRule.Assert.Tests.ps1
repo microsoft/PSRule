@@ -164,7 +164,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
-            $result[1].Reason | Should -Be 'The field ''Type'' does not exist.';
+            $result[1].Reason | Should -Be 'Path Type: Does not exist.';
         }
 
         It 'Fail' {
@@ -203,7 +203,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
-            $result[1].Reason | Should -BeLike "The field '*' does not exist.";
+            $result[1].Reason | Should -BeLike "Path *: Does not exist.";
         }
 
         It 'Count' {
@@ -219,7 +219,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
-            $result[1].Reason | Should -BeLike "The field 'CompareArray' has '0' items instead of '3'.";
+            $result[1].Reason | Should -BeLike "Path CompareArray: The field 'CompareArray' has '0' items instead of '3'.";
         }
 
         It 'EndsWith' {
@@ -235,7 +235,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
-            $result[1].Reason | Should -BeLike "The field '*' does not end with '*'.";
+            $result[1].Reason | Should -BeLike "Path *: The field '*' does not end with '*'.";
         }
 
         It 'FileHeader' {
@@ -251,7 +251,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
-            $result[1].Reason | Should -Be "The field 'Path' does not exist.";
+            $result[1].Reason | Should -Be "Path Path: Does not exist.";
         }
 
         It 'FilePath' {
@@ -267,8 +267,8 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 2;
-            $result[1].Reason[0] | Should -Be "The field 'Path' does not exist.";
-            $result[1].Reason[1] | Should -BeLike "The file '*' does not exist.";
+            $result[1].Reason[0] | Should -Be "Path Path: Does not exist.";
+            $result[1].Reason[1] | Should -BeLike "Path ParentPath: The file '*' does not exist.";
         }
 
         It 'Greater' {
@@ -284,7 +284,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 4;
-            $result[1].Reason | Should -BeLike "The value '*' was not > '*'.";
+            $result[1].Reason | Should -BeLike "Path *: The value '*' was not > '*'.";
         }
 
         It 'GreaterOrEqual' {
@@ -300,7 +300,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 4;
-            $result[1].Reason | Should -BeLike "The value '*' was not >= '*'.";
+            $result[1].Reason | Should -BeLike "Path *: The value '*' was not >= '*'.";
         }
 
         It 'HasField' {
@@ -316,9 +316,9 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 3;
-            $result[1].Reason[0] | Should -Be "The field 'Type' does not exist.";
-            $result[1].Reason[1] | Should -Be "The field 'Not' does not exist.";
-            $result[1].Reason[2] | Should -Be "The field 'Type' does not exist.";
+            $result[1].Reason[0] | Should -Be "Path Type: Does not exist.";
+            $result[1].Reason[1] | Should -Be "Path Not: Does not exist.";
+            $result[1].Reason[2] | Should -Be "Path Type: Does not exist.";
         }
 
         It 'HasFields' {
@@ -334,8 +334,8 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 2;
-            $result[1].Reason[0] | Should -Be "The field 'Type' does not exist.";
-            $result[1].Reason[1] | Should -Be "The field 'Type' does not exist.";
+            $result[1].Reason[0] | Should -Be "Path Type: Does not exist.";
+            $result[1].Reason[1] | Should -Be "Path Type: Does not exist.";
         }
 
         It 'HasFieldValue' {
@@ -351,9 +351,9 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 7;
-            $result[1].Reason[0] | Should -BeLike "The field '*' does not exist.";
-            $result[1].Reason[1..3] | Should -BeLike "The value of '*' is null or empty.";
-            $result[1].Reason[4..6] | Should -BeLike "The field '*' is set to '*'.";
+            $result[1].Reason[0] | Should -BeLike "Path Type: Does not exist.";
+            $result[1].Reason[1..3] | Should -BeLike "Path *: Is null or empty.";
+            $result[1].Reason[4..6] | Should -BeLike "Path *: Is set to '*'.";
         }
 
         It 'HasDefaultValue' {
@@ -381,7 +381,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 3;
-            $result[0].Reason | Should -BeIn 'The field ''$schema'' does not exist.';
+            $result[0].Reason | Should -BeIn 'Path $schema: Does not exist.';
 
             # Negative case
             $result[1].IsSuccess() | Should -Be $True;
@@ -413,7 +413,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 5;
-            $result[0].Reason[0] | Should -Be "The field value 'TestObject1' was not included in the set.";
+            $result[0].Reason[0] | Should -Be "Path Name: The field value 'TestObject1' was not included in the set.";
 
             # Positive case
             $result[1].IsSuccess() | Should -Be $True;
@@ -429,8 +429,8 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 2;
-            $result[1].Reason[0] | Should -BeLike "The value '*' does not contain only lowercase characters.";
-            $result[1].Reason[1] | Should -BeLike "The value '*' does not contain only letters.";
+            $result[1].Reason[0] | Should -BeLike "Path Lower: The value '*' does not contain only lowercase characters.";
+            $result[1].Reason[1] | Should -BeLike "Path LetterLower: The value '*' does not contain only letters.";
 
             # Positive case
             $result[0].IsSuccess() | Should -Be $True;
@@ -446,8 +446,8 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 2;
-            $result[1].Reason[0] | Should -BeLike "The value '*' does not contain only uppercase characters.";
-            $result[1].Reason[1] | Should -BeLike "The value '*' does not contain only letters.";
+            $result[1].Reason[0] | Should -BeLike "Path Upper: The value '*' does not contain only uppercase characters.";
+            $result[1].Reason[1] | Should -BeLike "Path LetterUpper: The value '*' does not contain only letters.";
 
             # Positive case
             $result[0].IsSuccess() | Should -Be $True;
@@ -463,7 +463,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
-            $result[1].Reason[0] | Should -BeLike "The field value '*' of type String is not numeric.";
+            $result[1].Reason[0] | Should -BeLike "Path IsInteger: The value '1' is not numeric.";
 
             # Positive case
             $result[0].IsSuccess() | Should -Be $True;
@@ -479,7 +479,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
-            $result[1].Reason[0] | Should -Be "The field value '1' of type String is not an integer.";
+            $result[1].Reason[0] | Should -Be "Path IsInteger: The value '1' is not an integer.";
 
             # Positive case
             $result[0].IsSuccess() | Should -Be $True;
@@ -495,7 +495,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
-            $result[1].Reason[0] | Should -Be "The field value 'true' of type String is not [bool].";
+            $result[1].Reason[0] | Should -Be "Path IsBoolean: The value 'true' is not a boolean.";
 
             # Positive case
             $result[0].IsSuccess() | Should -Be $True;
@@ -511,7 +511,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
-            $result[1].Reason[0] | Should -Be "The field value '123' of type String is not [array].";
+            $result[1].Reason[0] | Should -Be "Path IsArray: The value '123' is not an array.";
 
             # Positive case
             $result[0].IsSuccess() | Should -Be $True;
@@ -527,7 +527,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 1;
-            $result[0].Reason[0] | Should -Be "The field value '1' of type Int32 is not [string].";
+            $result[0].Reason[0] | Should -Be "Path IsInteger: The value '1' is not a string.";
 
             # Positive case
             $result[1].IsSuccess() | Should -Be $True;
@@ -543,7 +543,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
-            $result[1].Reason[0] | Should -Be "The field value '$($testObject[1].IsDateTime)' of type String is not [DateTime].";
+            $result[1].Reason[0] | Should -Be "Path IsDateTime: The value '$($testObject[1].IsDateTime)' is not a date.";
 
             # Positive case
             $result[0].IsSuccess() | Should -Be $True;
@@ -559,7 +559,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 4;
-            $result[1].Reason | Should -BeLike "The field value '*' of type * is not *.";
+            $result[1].Reason | Should -BeLike "Path *: The field value '*' of type * is not *.";
 
             # Positive case
             $result[0].IsSuccess() | Should -Be $True;
@@ -579,7 +579,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 4;
-            $result[0].Reason | Should -BeLike "The value '*' was not < '*'.";
+            $result[0].Reason | Should -BeLike "Path *: The value '*' was not < '*'.";
         }
 
         It 'LessOrEqual' {
@@ -595,7 +595,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 4;
-            $result[0].Reason | Should -BeLike "The value '*' was not <= '*'.";
+            $result[0].Reason | Should -BeLike "Path *: The value '*' was not <= '*'.";
         }
 
         It 'Match' {
@@ -607,7 +607,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 2;
-            $result[0].Reason[0] | Should -BeLike "The field value 'TestObject1' does not match the pattern '*'.";
+            $result[0].Reason[0] | Should -BeLike "Path *: The field value 'TestObject1' does not match the pattern '*'.";
 
             # Positive case
             $result[1].IsSuccess() | Should -Be $True;
@@ -623,7 +623,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 1;
-            $result[0].Reason[0] | Should -BeLike "The field 'OtherField' exists.";
+            $result[0].Reason[0] | Should -BeLike "Path OtherField: Exists.";
 
             # Positive case
             $result[1].IsSuccess() | Should -Be $True;
@@ -639,7 +639,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 3;
-            $result[0].Reason[0] | Should -Be "The field value 'TestObject1' was in the set.";
+            $result[0].Reason[0] | Should -Be "Path Name: The field value 'TestObject1' was in the set.";
 
             # Positive case
             $result[1].IsSuccess() | Should -Be $True;
@@ -655,7 +655,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 2;
-            $result[0].Reason[0] | Should -BeLike "The field value 'TestObject1' matches the pattern '*'.";
+            $result[0].Reason[0] | Should -BeLike "Path Name: The field value 'TestObject1' matches the pattern '*'.";
 
             # Positive case
             $result[1].IsSuccess() | Should -Be $True;
@@ -675,8 +675,8 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 2;
-            $result[1].Reason[0] | Should -BeLike "The field 'Type' does not exist.";
-            $result[1].Reason[1] | Should -BeLike "The field value 'Value' is null.";
+            $result[1].Reason[0] | Should -BeLike "Path Type: Does not exist.";
+            $result[1].Reason[1] | Should -BeLike "Path Value: The field value 'Value' is null.";
         }
 
         It 'NotWithinPath' {
@@ -692,7 +692,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
-            $result[1].Reason[0] | Should -BeLike "The file '*' is within the path 'tests/PSRule.Tests/notapath/'.";
+            $result[1].Reason[0] | Should -BeLike "Path ParentPath: The file '*' is within the path 'tests/PSRule.Tests/notapath/'.";
         }
 
         It 'Null' {
@@ -708,8 +708,8 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 2;
-            $result[0].Reason[0] | Should -BeLike "The field value 'Type' is not null.";
-            $result[0].Reason[1] | Should -BeLike "The field value 'Value' is not null.";
+            $result[0].Reason[0] | Should -BeLike "Path Type: The field value 'Type' is not null.";
+            $result[0].Reason[1] | Should -BeLike "Path Value: The field value 'Value' is not null.";
         }
 
         It 'NullOrEmpty' {
@@ -725,7 +725,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 4;
-            $result[0].Reason | Should -BeLike "The field '*' is not empty.";
+            $result[0].Reason | Should -BeLike "Path *: The field '*' is not empty.";
         }
 
         It 'SetOf' {
@@ -736,7 +736,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             # Negative case
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
-            $result[1].Reason[0] | Should -Be "The field 'InArray' did not contain 'Item3'.";
+            $result[1].Reason[0] | Should -Be "Path InArray: The field 'InArray' did not contain 'Item3'.";
 
             # Positive case
             $result[0].IsSuccess() | Should -Be $True;
@@ -756,7 +756,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
-            $result[1].Reason | Should -BeLike "The field '*' does not start with '*'.";
+            $result[1].Reason | Should -BeLike "Path Version: The field '*' does not start with '*'.";
         }
 
         It 'Subset' {
@@ -767,7 +767,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             # Negative case
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
-            $result[1].Reason[0] | Should -Be "The field 'Array' did not contain 'Item2'.";
+            $result[1].Reason[0] | Should -Be "Path Array: The field 'Array' did not contain 'Item2'.";
 
             # Positive case
             $result[0].IsSuccess() | Should -Be $True;
@@ -787,7 +787,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[1].IsSuccess() | Should -Be $False;
             $result[1].TargetName | Should -Be 'TestObject2';
             $result[1].Reason.Length | Should -Be 1;
-            $result[1].Reason | Should -BeLike "The version '*' does not match the constraint '*'.";
+            $result[1].Reason | Should -BeLike "Path Version: The version '*' does not match the constraint '*'.";
         }
 
         It 'WithinPath' {
@@ -799,7 +799,7 @@ Describe 'PSRule assertions' -Tag 'Assert' {
             $result[0].IsSuccess() | Should -Be $False;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].Reason.Length | Should -Be 1;
-            $result[0].Reason[0] | Should -BeLike "The file '*' is not within the path 'tests/PSRule.Tests/notapath/'.";
+            $result[0].Reason[0] | Should -BeLike "Path ParentPath: The file '*' is not within the path 'tests/PSRule.Tests/notapath/'.";
 
             # Positive case
             $result[1].IsSuccess() | Should -Be $True;

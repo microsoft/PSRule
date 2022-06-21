@@ -76,10 +76,7 @@ namespace PSRule.Commands
 
             context.VerboseFoundResource(name: Name, moduleName: source.Module, scriptName: MyInvocation.ScriptName);
 
-            var helpInfo = new ResourceHelpInfo(Name)
-            {
-                Synopsis = new InfoString(commentMetadata.Synopsis, null)
-            };
+            var helpInfo = new ResourceHelpInfo(Name, Name, new InfoString(commentMetadata.Synopsis), new InfoString());
 
 #pragma warning disable CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
             var block = new ScriptBlockConvention(

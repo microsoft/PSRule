@@ -10,7 +10,7 @@ namespace PSRule.Definitions
 
         internal InfoString() { }
 
-        internal InfoString(string text, string markdown)
+        internal InfoString(string text, string markdown = null)
         {
             Text = text;
             Markdown = markdown ?? text;
