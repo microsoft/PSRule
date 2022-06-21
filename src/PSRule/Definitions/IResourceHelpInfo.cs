@@ -7,22 +7,35 @@ namespace PSRule.Definitions
 {
     public interface IResourceHelpInfo
     {
-        InfoString Synopsis { get; set; }
+        string Name { get; }
 
-        InfoString Description { get; set; }
+        string DisplayName { get; }
+
+        InfoString Synopsis { get; }
+
+        InfoString Description { get; }
     }
 
     internal sealed class ResourceHelpInfo : IResourceHelpInfo
     {
-        internal ResourceHelpInfo(string name)
+        internal ResourceHelpInfo(string name, string displayName, InfoString synopsis, InfoString description)
         {
-            //Synopsis = synopsis;
+            Name = name;
+            DisplayName = displayName;
+            Synopsis = synopsis;
+            Description = description;
         }
 
-        [JsonProperty(PropertyName = "synopsis")]
-        public InfoString Synopsis { get; set; }
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; }
+
+        [JsonProperty(PropertyName = "displayName")]
+        public string DisplayName { get; }
 
         [JsonProperty(PropertyName = "synopsis")]
-        public InfoString Description { get; set; }
+        public InfoString Synopsis { get; }
+
+        [JsonProperty(PropertyName = "synopsis")]
+        public InfoString Description { get; }
     }
 }

@@ -57,11 +57,8 @@ namespace PSRule.Definitions.Rules
             {
                 var result = _Condition(context, RunspaceContext.CurrentThread.TargetObject.Value);
                 if (result.HasValue && !result.Value)
-                {
-                    var reasons = context.GetReasons();
-                    foreach (var reason in reasons)
-                        RunspaceContext.CurrentThread.WriteReason(reason);
-                }
+                    RunspaceContext.CurrentThread.WriteReason(context.GetReasons());
+
                 return result.HasValue ? new RuleConditionResult(result.Value ? 1 : 0, 1, false) : null;
             }
             finally

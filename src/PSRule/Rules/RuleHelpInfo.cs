@@ -10,31 +10,67 @@ using YamlDotNet.Serialization;
 
 namespace PSRule.Rules
 {
-    /// <summary>
-    /// Output view helper class for rule help.
-    /// </summary>
-    public sealed class RuleHelpInfo : IResourceHelpInfo
+    public interface IRuleHelpInfoV2 : IResourceHelpInfo
+    {
+        InfoString Recommendation { get; }
+
+        Hashtable Annotations { get; }
+
+        string ModuleName { get; }
+
+        Link[] Links { get; }
+    }
+
+    internal static class RuleHelpInfoExtensions
     {
         private const string ONLINE_HELP_LINK_ANNOTATION = "online version";
 
-        internal RuleHelpInfo(string name, string displayName, string moduleName)
+        /// <summary>
+        /// Get the URI for the online version of the documentation.
+        /// </summary>
+        /// <returns>A URI when a valid link is set. Otherwise null is returned.</returns>
+        public static Uri GetOnlineHelpUri(this IRuleHelpInfoV2 info)
+        {
+            if (info.Annotations == null || !info.Annotations.ContainsKey(ONLINE_HELP_LINK_ANNOTATION))
+                return null;
+
+            if (Uri.TryCreate(info.Annotations[ONLINE_HELP_LINK_ANNOTATION].ToString(), UriKind.Absolute, out var result))
+                return result;
+
+            return null;
+        }
+    }
+
+    public sealed class Link
+    {
+        internal Link(string name, string uri)
+        {
+            Name = name;
+            Uri = uri;
+        }
+
+        public string Name { get; }
+
+        public string Uri { get; }
+    }
+
+    /// <summary>
+    /// Output view helper class for rule help.
+    /// </summary>
+    public sealed class RuleHelpInfo : IRuleHelpInfoV2
+    {
+        private readonly InfoString _Synopsis;
+        private readonly InfoString _Description;
+        private readonly InfoString _Recommendation;
+
+        internal RuleHelpInfo(string name, string displayName, string moduleName, InfoString synopsis = null, InfoString description = null, InfoString recommendation = null)
         {
             Name = name;
             DisplayName = displayName;
             ModuleName = moduleName;
-        }
-
-        public sealed class Link
-        {
-            internal Link(string name, string uri)
-            {
-                Name = name;
-                Uri = uri;
-            }
-
-            public string Name { get; private set; }
-
-            public string Uri { get; private set; }
+            _Synopsis = synopsis ?? new InfoString();
+            _Description = description ?? new InfoString();
+            _Recommendation = recommendation ?? new InfoString();
         }
 
         /// <summary>
@@ -62,19 +98,19 @@ namespace PSRule.Rules
         /// The synopsis of the rule.
         /// </summary>
         [JsonProperty(PropertyName = "synopsis")]
-        public string Synopsis { get; internal set; }
+        public string Synopsis => _Synopsis.Text;
 
         /// <summary>
         /// An extended description of the rule.
         /// </summary>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; internal set; }
+        public string Description => _Description.Text;
 
         /// <summary>
         /// The recommendation for the rule.
         /// </summary>
         [JsonProperty(PropertyName = "recommendation")]
-        public string Recommendation { get; internal set; }
+        public string Recommendation => _Recommendation.Text;
 
         /// <summary>
         /// Additional notes for the rule.
@@ -86,7 +122,7 @@ namespace PSRule.Rules
         /// Reference links for the rule.
         /// </summary>
         [JsonIgnore, YamlIgnore]
-        public Link[] Links { get; internal set; }
+        public Rules.Link[] Links { get; internal set; }
 
         /// <summary>
         /// Metadata annotations for the rule.
@@ -95,25 +131,13 @@ namespace PSRule.Rules
         public Hashtable Annotations { get; internal set; }
 
         [JsonIgnore, YamlIgnore]
-        InfoString IResourceHelpInfo.Synopsis { get; set; }
+        InfoString IRuleHelpInfoV2.Recommendation => _Recommendation;
 
         [JsonIgnore, YamlIgnore]
-        InfoString IResourceHelpInfo.Description { set; get; }
+        InfoString IResourceHelpInfo.Synopsis => _Synopsis;
 
-        /// <summary>
-        /// Get the URI for the online version of the documentation.
-        /// </summary>
-        /// <returns>A URI when a valid link is set. Otherwise null is returned.</returns>
-        public Uri GetOnlineHelpUri()
-        {
-            if (Annotations == null || !Annotations.ContainsKey(ONLINE_HELP_LINK_ANNOTATION))
-                return null;
-
-            if (Uri.TryCreate(Annotations[ONLINE_HELP_LINK_ANNOTATION].ToString(), UriKind.Absolute, out var result))
-                return result;
-
-            return null;
-        }
+        [JsonIgnore, YamlIgnore]
+        InfoString IResourceHelpInfo.Description => _Description;
 
         /// <summary>
         /// Get a view link string for display in rule help.

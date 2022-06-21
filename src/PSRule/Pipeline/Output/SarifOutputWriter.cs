@@ -10,6 +10,7 @@ using System.Text;
 using Microsoft.CodeAnalysis.Sarif;
 using PSRule.Configuration;
 using PSRule.Data;
+using PSRule.Definitions;
 using PSRule.Definitions.Rules;
 using PSRule.Resources;
 using PSRule.Rules;
@@ -186,6 +187,14 @@ namespace PSRule.Pipeline.Output
             return new Message
             {
                 Text = text
+            };
+        }
+
+        private static MultiformatMessageString GetMessageString(InfoString text)
+        {
+            return new MultiformatMessageString
+            {
+                Text = text.Text
             };
         }
 

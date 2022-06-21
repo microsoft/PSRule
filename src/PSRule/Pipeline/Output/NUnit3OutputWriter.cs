@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using PSRule.Configuration;
 using PSRule.Resources;
+using PSRule.Rules;
 
 namespace PSRule.Pipeline.Output
 {
@@ -49,7 +50,7 @@ namespace PSRule.Pipeline.Output
                 var testCases = records
                     .Select(r => new TestCase(
                         name: string.Concat(r.TargetName, " -- ", r.RuleName),
-                        description: r.Info.Synopsis,
+                        description: r.Info.Synopsis.Text,
                         success: r.IsSuccess(),
                         executed: r.IsProcessed(),
                         time: r.Time,

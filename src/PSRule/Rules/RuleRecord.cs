@@ -20,9 +20,11 @@ namespace PSRule.Rules
     /// </summary>
     [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
     [JsonObject]
-    public sealed class RuleRecord : IRuleResult
+    public sealed class RuleRecord : IDetailedRuleResultV2
     {
         private readonly TargetObject _TargetObject;
+
+        internal readonly ResultDetail _Detail;
 
         internal RuleRecord(string runId, ResourceId ruleId, string @ref, TargetObject targetObject, string targetName, string targetType, ResourceTags tag, RuleHelpInfo info, Hashtable field, SeverityLevel level, ISourceExtent extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
         {
@@ -40,6 +42,7 @@ namespace PSRule.Rules
             Source = targetObject.Source.GetSourceInfo();
             Level = level;
             Extent = extent;
+            _Detail = new ResultDetail();
             if (tag != null)
                 Tag = tag.ToHashtable();
 
@@ -89,13 +92,14 @@ namespace PSRule.Rules
 
         [JsonIgnore]
         [YamlIgnore]
-        public string Recommendation => Info.Recommendation ?? Info.Synopsis;
+        public string Recommendation => Info.Recommendation?.Text ?? Info.Synopsis?.Text;
 
         /// <summary>
         /// The reason for the failed condition.
         /// </summary>
+        [DefaultValue(null)]
         [JsonProperty(PropertyName = "reason")]
-        public string[] Reason { get; internal set; }
+        public string[] Reason => _Detail.Count > 0 ? _Detail.GetReasonStrings() : null;
 
         /// <summary>
         /// A name to identify the target object.
@@ -129,18 +133,18 @@ namespace PSRule.Rules
         public Hashtable Field { get; }
 
         /// <summary>
-        /// Tags set for the current rule.
+        /// Tags set for the rule.
         /// </summary>
         [DefaultValue(null)]
         [JsonProperty(PropertyName = "tag")]
         public Hashtable Tag { get; }
 
         /// <summary>
-        /// Help info for the current rule.
+        /// Help info for the rule.
         /// </summary>
         [DefaultValue(null)]
         [JsonProperty(PropertyName = "info")]
-        public RuleHelpInfo Info { get; }
+        public IRuleHelpInfoV2 Info { get; }
 
         /// <summary>
         /// The execution time of the rule in millisecond.
@@ -159,6 +163,14 @@ namespace PSRule.Rules
         [DefaultValue(null)]
         [JsonProperty(PropertyName = "source")]
         public TargetSourceInfo[] Source { get; }
+
+        /// <summary>
+        /// Rule reason details.
+        /// </summary>
+        [DefaultValue(null)]
+        [JsonProperty(PropertyName = "detail")]
+        [YamlMember()]
+        public IResultDetailV2 Detail => _Detail;
 
         public bool IsSuccess()
         {

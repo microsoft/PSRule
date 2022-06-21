@@ -56,7 +56,7 @@ namespace PSRule.Help
             if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Recommendation))
                 return false;
 
-            doc.Recommendation = TextBlock(stream);
+            doc.Recommendation = InfoString(stream);
             stream.SkipUntilHeader();
             return true;
         }

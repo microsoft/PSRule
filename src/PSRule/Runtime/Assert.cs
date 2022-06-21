@@ -34,15 +34,25 @@ namespace PSRule.Runtime
 
         public AssertResult Create(bool condition, string reason = null)
         {
-            return Create(condition: condition, reason: reason, args: null);
+            return Create(condition, reason, args: null);
         }
 
         public AssertResult Create(bool condition, string reason, params object[] args)
         {
+            return Create(Operand.FromTarget(), condition, reason, args);
+        }
+
+        public AssertResult Create(string path, bool condition, string reason, params object[] args)
+        {
+            return Create(string.IsNullOrEmpty(path) ? Operand.FromTarget() : Operand.FromPath(path), condition, reason, args);
+        }
+
+        internal AssertResult Create(IOperand operand, bool condition, string reason, params object[] args)
+        {
             if (!(RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule) || RunspaceContext.CurrentThread.IsScope(RunspaceScope.Precondition)))
                 throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VariableConditionScope, VARIABLE_NAME));
 
-            return new AssertResult(this, condition, reason, args);
+            return new AssertResult(this, operand, condition, reason, args);
         }
 
         public AssertResult Create(TargetIssueInfo[] issue)
@@ -52,7 +62,7 @@ namespace PSRule.Runtime
 
             var result = Fail();
             for (var i = 0; i < issue.Length; i++)
-                result.AddReason(issue[i].Message);
+                result.AddReason(string.IsNullOrEmpty(issue[i].Path) ? Operand.FromTarget() : Operand.FromPath(issue[i].Path), issue[i].Message);
 
             return result;
         }
@@ -81,6 +91,11 @@ namespace PSRule.Runtime
         public AssertResult Fail(string reason, params object[] args)
         {
             return Create(condition: false, reason: reason, args: args);
+        }
+
+        public AssertResult Fail(IOperand operand, string reason, params object[] args)
+        {
+            return Create(operand, condition: false, reason: reason, args: args);
         }
 
         #endregion Authoring
@@ -166,11 +181,11 @@ namespace PSRule.Runtime
             result = Fail();
 
             if (!string.IsNullOrEmpty(schemaResults.ErrorMessage))
-                result.AddReason(ReasonStrings.JsonSchemaInvalid, schemaResults.InstanceLocation.ToString(), schemaResults.ErrorMessage);
+                result.AddReason(Operand.FromTarget(), ReasonStrings.JsonSchemaInvalid, schemaResults.InstanceLocation.ToString(), schemaResults.ErrorMessage);
 
             foreach (var r in schemaResults.NestedResults)
                 if (!string.IsNullOrEmpty(r.ErrorMessage))
-                    result.AddReason(ReasonStrings.JsonSchemaInvalid, r.InstanceLocation.ToString(), r.ErrorMessage);
+                    result.AddReason(Operand.FromTarget(), ReasonStrings.JsonSchemaInvalid, r.InstanceLocation.ToString(), r.ErrorMessage);
 
             return result;
         }
@@ -190,20 +205,25 @@ namespace PSRule.Runtime
             // Guard parameters
             if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
                 GuardField(inputObject, PROPERTY_SCHEMA, false, out var fieldValue, out result) ||
-                GuardString(fieldValue, out var actualSchema, out result))
+                GuardString(Operand.FromPath(PROPERTY_SCHEMA), fieldValue, out var actualSchema, out result))
                 return result;
 
             if (string.IsNullOrEmpty(actualSchema))
-                return Fail(ReasonStrings.NotHasFieldValue, PROPERTY_SCHEMA);
+                return Fail(Operand.FromPath(PROPERTY_SCHEMA), ReasonStrings.NotHasFieldValue, PROPERTY_SCHEMA);
 
             return uri == null || uri.Length == 0 || ExpressionHelpers.AnySchema(actualSchema, uri, ignoreScheme, false)
                 ? Pass()
-                : Fail(ReasonStrings.Assert_NotSpecifiedSchema, actualSchema);
+                : Fail(Operand.FromPath(PROPERTY_SCHEMA), ReasonStrings.Assert_NotSpecifiedSchema, actualSchema);
         }
 
         /// <summary>
         /// The object must have any of the specified fields.
         /// </summary>
+        /// <remarks>
+        /// The parameter 'inputObject' is null.
+        /// The parameter 'field' is null or empty.
+        /// Does not exist.
+        /// </remarks>
         public AssertResult HasField(PSObject inputObject, string[] field, bool caseSensitive = false)
         {
             // Guard parameters
@@ -217,7 +237,7 @@ namespace PSRule.Runtime
                 if (ExpressionHelpers.Exists(PipelineContext.CurrentThread, inputObject, field[i], caseSensitive))
                     return Pass();
 
-                result.AddReason(ReasonStrings.NotHasField, field[i]);
+                result.AddReason(Operand.FromPath(field[i]), ReasonStrings.Assert_Exists);
             }
             return result;
         }
@@ -245,7 +265,7 @@ namespace PSRule.Runtime
                     if (result.Result)
                         result = Fail();
 
-                    result.AddReason(ReasonStrings.HasField, field[i]);
+                    result.AddReason(Operand.FromPath(field[i]), ReasonStrings.Assert_NotExists);
                 }
             }
             return result;
@@ -272,7 +292,7 @@ namespace PSRule.Runtime
                     caseSensitive: caseSensitive,
                     value: out object _))
                 {
-                    result.AddReason(ReasonStrings.NotHasField, field[i]);
+                    result.AddReason(Operand.FromPath(field[i]), ReasonStrings.Assert_Exists);
                     missing++;
                 }
             }
@@ -282,6 +302,11 @@ namespace PSRule.Runtime
         /// <summary>
         /// The object should have a specific field with a value set.
         /// </summary>
+        /// <remarks>
+        /// Does not exist.
+        /// Is null or empty.
+        /// Is set to '{0}'.
+        /// </remarks>
         public AssertResult HasFieldValue(PSObject inputObject, string field, object expectedValue = null)
         {
             // Guard parameters
@@ -296,11 +321,11 @@ namespace PSRule.Runtime
                 path: field,
                 caseSensitive: false,
                 value: out object fieldValue))
-                return Fail(ReasonStrings.NotHasField, field);
+                return Fail(Operand.FromPath(field), ReasonStrings.Assert_Exists);
             else if (ExpressionHelpers.NullOrEmpty(fieldValue))
-                return Fail(ReasonStrings.NotHasFieldValue, field);
+                return Fail(Operand.FromPath(field), ReasonStrings.Assert_IsNullOrEmpty);
             else if (expectedValue != null && !ExpressionHelpers.Equal(expectedValue, fieldValue, caseSensitive: false))
-                return Fail(ReasonStrings.HasExpectedFieldValue, field, fieldValue);
+                return Fail(Operand.FromPath(field), ReasonStrings.Assert_IsSetTo, fieldValue);
 
             return Pass();
         }
@@ -343,7 +368,7 @@ namespace PSRule.Runtime
                 path: field,
                 caseSensitive: false,
                 value: out object fieldValue);
-            return fieldValue == null ? Pass() : Fail(ReasonStrings.NotNull, field);
+            return fieldValue == null ? Pass() : Fail(Operand.FromPath(field), ReasonStrings.NotNull, field);
         }
 
         /// <summary>
@@ -357,7 +382,7 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out var fieldValue, out result))
                 return result;
 
-            return fieldValue == null ? Fail(ReasonStrings.Null, field) : Pass();
+            return fieldValue == null ? Fail(Operand.FromPath(field), ReasonStrings.Null, field) : Pass();
         }
 
         /// <summary>
@@ -377,7 +402,7 @@ namespace PSRule.Runtime
                 path: field,
                 caseSensitive: false,
                 value: out object fieldValue) && !ExpressionHelpers.NullOrEmpty(fieldValue)
-                ? Fail(ReasonStrings.NullOrEmpty, field)
+                ? Fail(Operand.FromPath(field), ReasonStrings.NullOrEmpty, field)
                 : Pass();
         }
 
@@ -391,7 +416,7 @@ namespace PSRule.Runtime
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
                 GuardNullParam(prefix, nameof(prefix), out result) ||
                 GuardField(inputObject, field, false, out var fieldValue, out result) ||
-                GuardString(fieldValue, out var value, out result))
+                GuardString(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
             if (prefix == null || prefix.Length == 0)
@@ -403,7 +428,7 @@ namespace PSRule.Runtime
                 if (ExpressionHelpers.StartsWith(value, prefix[i], caseSensitive))
                     return Pass();
             }
-            return Fail(ReasonStrings.StartsWith, field, FormatArray(prefix));
+            return Fail(Operand.FromPath(field), ReasonStrings.StartsWith, field, FormatArray(prefix));
         }
 
         /// <summary>
@@ -425,14 +450,14 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out var fieldValue, out result))
                 return result;
 
-            if (prefix == null || prefix.Length == 0 || GuardString(fieldValue, out var value, out _))
+            if (prefix == null || prefix.Length == 0 || GuardString(Operand.FromPath(field), fieldValue, out var value, out _))
                 return Pass();
 
             // Assert
             for (var i = 0; i < prefix.Length; i++)
             {
                 if (ExpressionHelpers.StartsWith(value, prefix[i], caseSensitive))
-                    return Fail(ReasonStrings.Assert_StartsWith, value, prefix[i]);
+                    return Fail(Operand.FromPath(field), ReasonStrings.Assert_StartsWith, value, prefix[i]);
             }
             return Pass();
         }
@@ -447,7 +472,7 @@ namespace PSRule.Runtime
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
                 GuardNullParam(suffix, nameof(suffix), out result) ||
                 GuardField(inputObject, field, false, out var fieldValue, out result) ||
-                GuardString(fieldValue, out var value, out result))
+                GuardString(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
             if (suffix == null || suffix.Length == 0)
@@ -459,7 +484,7 @@ namespace PSRule.Runtime
                 if (ExpressionHelpers.EndsWith(value, suffix[i], caseSensitive))
                     return Pass();
             }
-            return Fail(ReasonStrings.EndsWith, field, FormatArray(suffix));
+            return Fail(Operand.FromPath(field), ReasonStrings.EndsWith, field, FormatArray(suffix));
         }
 
         /// <summary>
@@ -481,14 +506,14 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out var fieldValue, out result))
                 return result;
 
-            if (suffix == null || suffix.Length == 0 || GuardString(fieldValue, out var value, out _))
+            if (suffix == null || suffix.Length == 0 || GuardString(Operand.FromPath(field), fieldValue, out var value, out _))
                 return Pass();
 
             // Assert
             for (var i = 0; i < suffix.Length; i++)
             {
                 if (ExpressionHelpers.EndsWith(value, suffix[i], caseSensitive))
-                    return Fail(ReasonStrings.Assert_EndsWith, value, suffix);
+                    return Fail(Operand.FromPath(field), ReasonStrings.Assert_EndsWith, value, suffix);
             }
             return Pass();
         }
@@ -503,7 +528,7 @@ namespace PSRule.Runtime
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
                 GuardNullParam(text, nameof(text), out result) ||
                 GuardField(inputObject, field, false, out var fieldValue, out result) ||
-                GuardString(fieldValue, out var value, out result))
+                GuardString(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
             if (text == null || text.Length == 0)
@@ -515,7 +540,7 @@ namespace PSRule.Runtime
                 if (ExpressionHelpers.Contains(value, text[i], caseSensitive))
                     return Pass();
             }
-            return Fail(ReasonStrings.Contains, field, FormatArray(text));
+            return Fail(Operand.FromPath(field), ReasonStrings.Contains, field, FormatArray(text));
         }
 
         /// <summary>
@@ -537,14 +562,14 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out var fieldValue, out result))
                 return result;
 
-            if (text == null || text.Length == 0 || GuardString(fieldValue, out var value, out _))
+            if (text == null || text.Length == 0 || GuardString(Operand.FromPath(field), fieldValue, out var value, out _))
                 return Pass();
 
             // Assert
             for (var i = 0; i < text.Length; i++)
             {
                 if (ExpressionHelpers.Contains(value, text[i], caseSensitive))
-                    return Fail(ReasonStrings.Assert_Contains, value, text);
+                    return Fail(Operand.FromPath(field), ReasonStrings.Assert_Contains, value, text);
             }
             return Pass();
         }
@@ -558,11 +583,11 @@ namespace PSRule.Runtime
             if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
                 GuardField(inputObject, field, false, out var fieldValue, out result) ||
-                GuardString(fieldValue, out var value, out result))
+                GuardString(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
             if (!ExpressionHelpers.IsLower(value, requireLetters, out var notLetters))
-                return Fail(notLetters ? ReasonStrings.IsLetter : ReasonStrings.Assert_IsLower, value);
+                return Fail(Operand.FromPath(field), notLetters ? ReasonStrings.IsLetter : ReasonStrings.Assert_IsLower, value);
 
             return Pass();
         }
@@ -576,11 +601,11 @@ namespace PSRule.Runtime
             if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
                 GuardField(inputObject, field, false, out var fieldValue, out result) ||
-                GuardString(fieldValue, out var value, out result))
+                GuardString(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
             if (!ExpressionHelpers.IsUpper(value, requireLetters, out var notLetters))
-                return Fail(notLetters ? ReasonStrings.IsLetter : ReasonStrings.Assert_IsUpper, value);
+                return Fail(Operand.FromPath(field), notLetters ? ReasonStrings.IsLetter : ReasonStrings.Assert_IsUpper, value);
 
             return Pass();
         }
@@ -588,6 +613,9 @@ namespace PSRule.Runtime
         /// <summary>
         /// The object field value should be a numeric type.
         /// </summary>
+        /// <remarks>
+        /// The value '{0}' is not numeric.
+        /// </remarks>
         public AssertResult IsNumeric(PSObject inputObject, string field, bool convert = false)
         {
             // Guard parameters
@@ -603,12 +631,15 @@ namespace PSRule.Runtime
                 ExpressionHelpers.TryByte(fieldValue, convert, out _) ||
                 ExpressionHelpers.TryDouble(fieldValue, convert, out _)
                 ? Pass()
-                : Fail(ReasonStrings.TypeNumeric, GetTypeName(fieldValue), fieldValue);
+                : Fail(Operand.FromPath(field), ReasonStrings.Assert_NotNumeric, fieldValue);
         }
 
         /// <summary>
         /// The object field value should be an integer type.
         /// </summary>
+        /// <remarks>
+        /// The value '{0}' is not an integer.
+        /// </remarks>
         public AssertResult IsInteger(PSObject inputObject, string field, bool convert = false)
         {
             // Guard parameters
@@ -622,12 +653,15 @@ namespace PSRule.Runtime
                 ExpressionHelpers.TryLong(fieldValue, convert, out _) ||
                 ExpressionHelpers.TryByte(fieldValue, convert, out _)
                 ? Pass()
-                : Fail(ReasonStrings.TypeInteger, GetTypeName(fieldValue), fieldValue);
+                : Fail(Operand.FromPath(field), ReasonStrings.Assert_NotInteger, fieldValue);
         }
 
         /// <summary>
         /// The object field value should be a boolean.
         /// </summary>
+        /// <remarks>
+        /// The value '{0}' is not a boolean.
+        /// </remarks>
         public AssertResult IsBoolean(PSObject inputObject, string field, bool convert = false)
         {
             // Guard parameters
@@ -639,12 +673,15 @@ namespace PSRule.Runtime
 
             return ExpressionHelpers.TryBool(fieldValue, convert, out _)
                 ? Pass()
-                : Fail(ReasonStrings.Type, TYPENAME_BOOL, GetTypeName(fieldValue), fieldValue);
+                : Fail(Operand.FromPath(field), ReasonStrings.Assert_NotBoolean, fieldValue);
         }
 
         /// <summary>
         /// The object field value should be an array.
         /// </summary>
+        /// <remarks>
+        /// The value '{0}' is not an array
+        /// </remarks>
         public AssertResult IsArray(PSObject inputObject, string field)
         {
             // Guard parameters
@@ -656,12 +693,15 @@ namespace PSRule.Runtime
 
             return ExpressionHelpers.TryArray(fieldValue, out _)
                 ? Pass()
-                : Fail(ReasonStrings.Type, TYPENAME_ARRAY, GetTypeName(fieldValue), fieldValue);
+                : Fail(Operand.FromPath(field), ReasonStrings.Assert_NotArray, fieldValue);
         }
 
         /// <summary>
         /// The object field value should be a string.
         /// </summary>
+        /// <remarks>
+        /// The value '{0}' is not a string.
+        /// </remarks>
         public AssertResult IsString(PSObject inputObject, string field)
         {
             // Guard parameters
@@ -673,12 +713,15 @@ namespace PSRule.Runtime
 
             return ExpressionHelpers.TryString(fieldValue, out _)
                 ? Pass()
-                : Fail(ReasonStrings.Type, TYPENAME_STRING, GetTypeName(fieldValue), fieldValue);
+                : Fail(Operand.FromPath(field), ReasonStrings.Assert_NotString, fieldValue);
         }
 
         /// <summary>
         /// The object field value should be a DateTime.
         /// </summary>
+        /// <remarks>
+        /// The value '{0}' is not a date.
+        /// </remarks>
         public AssertResult IsDateTime(PSObject inputObject, string field, bool convert = false)
         {
             // Guard parameters
@@ -690,7 +733,7 @@ namespace PSRule.Runtime
 
             return ExpressionHelpers.TryDateTime(fieldValue, convert, out _)
                 ? Pass()
-                : Fail(ReasonStrings.Type, TYPENAME_DATETIME, GetTypeName(fieldValue), fieldValue);
+                : Fail(Operand.FromPath(field), ReasonStrings.Assert_NotDateTime, fieldValue);
         }
 
         /// <summary>
@@ -715,7 +758,7 @@ namespace PSRule.Runtime
                     TryTypeName(fieldValue, type[i].FullName))
                     return Pass();
 
-                result.AddReason(ReasonStrings.Type, type[i].Name, GetTypeName(fieldValue), fieldValue);
+                result.AddReason(Operand.FromPath(field), ReasonStrings.Type, type[i].Name, GetTypeName(fieldValue), fieldValue);
             }
             return result;
         }
@@ -742,7 +785,7 @@ namespace PSRule.Runtime
                     TryTypeName(fieldValue, type[i]))
                     return Pass();
 
-                result.AddReason(ReasonStrings.Type, type[i], GetTypeName(fieldValue), fieldValue);
+                result.AddReason(Operand.FromPath(field), ReasonStrings.Type, type[i], GetTypeName(fieldValue), fieldValue);
             }
             return result;
         }
@@ -756,14 +799,14 @@ namespace PSRule.Runtime
             if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
                 GuardField(inputObject, field, false, out var fieldValue, out result) ||
-                GuardSemanticVersion(fieldValue, out var value, out result))
+                GuardSemanticVersion(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
             if (!SemanticVersion.TryParseConstraint(constraint, out var c, includePrerelease))
                 throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VersionConstraintInvalid, value));
 
             // Assert
-            return c != null && !c.Equals(value) ? Fail(ReasonStrings.VersionContraint, value, constraint) : Pass();
+            return c != null && !c.Equals(value) ? Fail(Operand.FromPath(field), ReasonStrings.VersionContraint, value, constraint) : Pass();
         }
 
         public AssertResult Greater(PSObject inputObject, string field, int value, bool convert = false)
@@ -775,9 +818,9 @@ namespace PSRule.Runtime
                 return result;
 
             if (ExpressionHelpers.CompareNumeric(fieldValue, value, convert, out var compare, out var actual))
-                return compare > 0 ? Pass() : Fail(ReasonStrings.Greater, actual, value);
+                return compare > 0 ? Pass() : Fail(Operand.FromPath(field), ReasonStrings.Greater, actual, value);
 
-            return Fail(ReasonStrings.Compare, fieldValue, value);
+            return Fail(Operand.FromPath(field), ReasonStrings.Compare, fieldValue, value);
         }
 
         public AssertResult GreaterOrEqual(PSObject inputObject, string field, int value, bool convert = false)
@@ -789,9 +832,9 @@ namespace PSRule.Runtime
                 return result;
 
             if (ExpressionHelpers.CompareNumeric(fieldValue, value, convert, out var compare, out var actual))
-                return compare >= 0 ? Pass() : Fail(ReasonStrings.GreaterOrEqual, actual, value);
+                return compare >= 0 ? Pass() : Fail(Operand.FromPath(field), ReasonStrings.GreaterOrEqual, actual, value);
 
-            return Fail(ReasonStrings.Compare, fieldValue, value);
+            return Fail(Operand.FromPath(field), ReasonStrings.Compare, fieldValue, value);
         }
 
         public AssertResult Less(PSObject inputObject, string field, int value, bool convert = false)
@@ -803,9 +846,9 @@ namespace PSRule.Runtime
                 return result;
 
             if (ExpressionHelpers.CompareNumeric(fieldValue, value, convert, out var compare, out var actual))
-                return compare < 0 ? Pass() : Fail(ReasonStrings.Less, actual, value);
+                return compare < 0 ? Pass() : Fail(Operand.FromPath(field), ReasonStrings.Less, actual, value);
 
-            return Fail(ReasonStrings.Compare, fieldValue, value);
+            return Fail(Operand.FromPath(field), ReasonStrings.Compare, fieldValue, value);
         }
 
         public AssertResult LessOrEqual(PSObject inputObject, string field, int value, bool convert = false)
@@ -817,9 +860,9 @@ namespace PSRule.Runtime
                 return result;
 
             if (ExpressionHelpers.CompareNumeric(fieldValue, value, convert, out var compare, out var actual))
-                return compare <= 0 ? Pass() : Fail(ReasonStrings.LessOrEqual, actual, value);
+                return compare <= 0 ? Pass() : Fail(Operand.FromPath(field), ReasonStrings.LessOrEqual, actual, value);
 
-            return Fail(ReasonStrings.Compare, fieldValue, value);
+            return Fail(Operand.FromPath(field), ReasonStrings.Compare, fieldValue, value);
         }
 
         /// <summary>
@@ -839,7 +882,7 @@ namespace PSRule.Runtime
                 if (ExpressionHelpers.AnyValue(fieldValue, values.GetValue(i), caseSensitive, out var _))
                     return Pass();
             }
-            return Fail(ReasonStrings.In, fieldValue);
+            return Fail(Operand.FromPath(field), ReasonStrings.In, fieldValue);
         }
 
         /// <summary>
@@ -864,7 +907,7 @@ namespace PSRule.Runtime
             for (var i = 0; values != null && i < values.Length; i++)
             {
                 if (ExpressionHelpers.AnyValue(fieldValue, values.GetValue(i), caseSensitive, out var foundValue))
-                    return Fail(ReasonStrings.NotIn, foundValue);
+                    return Fail(Operand.FromPath(field), ReasonStrings.NotIn, foundValue);
             }
             return Pass();
         }
@@ -885,7 +928,7 @@ namespace PSRule.Runtime
             for (var i = 0; values != null && i < values.Length; i++)
             {
                 if (!ExpressionHelpers.CountValue(fieldValue, values.GetValue(i), caseSensitive, out var count) || (count > 1 && unique))
-                    return count == 0 ? Fail(ReasonStrings.Subset, field, values.GetValue(i)) : Fail(ReasonStrings.SubsetDuplicate, field, values.GetValue(i));
+                    return count == 0 ? Fail(Operand.FromPath(field), ReasonStrings.Subset, field, values.GetValue(i)) : Fail(Operand.FromPath(field), ReasonStrings.SubsetDuplicate, field, values.GetValue(i));
             }
             return Pass();
         }
@@ -901,12 +944,12 @@ namespace PSRule.Runtime
                 return result;
 
             if (count != values.Length)
-                return Fail(ReasonStrings.Count, field, count, values.Length);
+                return Fail(Operand.FromPath(field), ReasonStrings.Count, field, count, values.Length);
 
             for (var i = 0; values != null && i < values.Length; i++)
             {
                 if (!ExpressionHelpers.AnyValue(fieldValue, values.GetValue(i), caseSensitive, out _))
-                    return Fail(ReasonStrings.Subset, field, values.GetValue(i));
+                    return Fail(Operand.FromPath(field), ReasonStrings.Subset, field, values.GetValue(i));
             }
             return Pass();
         }
@@ -923,7 +966,7 @@ namespace PSRule.Runtime
                 GuardFieldEnumerable(fieldValue, field, out var actual, out result))
                 return result;
 
-            return actual == count ? Pass() : Fail(ReasonStrings.Count, field, actual, count);
+            return actual == count ? Pass() : Fail(Operand.FromPath(field), ReasonStrings.Count, field, actual, count);
         }
 
         /// <summary>
@@ -938,7 +981,7 @@ namespace PSRule.Runtime
                 GuardFieldEnumerable(fieldValue, field, out var actual, out result))
                 return result;
 
-            return actual != count ? Pass() : Fail(ReasonStrings.NotCount, field, actual, count);
+            return actual != count ? Pass() : Fail(Operand.FromPath(field), ReasonStrings.NotCount, field, actual, count);
         }
 
         /// <summary>
@@ -950,10 +993,10 @@ namespace PSRule.Runtime
             if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
                 GuardField(inputObject, field, false, out var fieldValue, out result) ||
-                GuardString(fieldValue, out var value, out result))
+                GuardString(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
-            return ExpressionHelpers.Match(pattern, value, caseSensitive) ? Pass() : Fail(ReasonStrings.MatchPattern, value, pattern);
+            return ExpressionHelpers.Match(pattern, value, caseSensitive) ? Pass() : Fail(Operand.FromPath(field), ReasonStrings.MatchPattern, value, pattern);
         }
 
         /// <summary>
@@ -974,13 +1017,13 @@ namespace PSRule.Runtime
                 value: out object fieldValue))
                 return Pass();
 
-            if (GuardString(fieldValue, out var value, out result))
+            if (GuardString(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
             if (!ExpressionHelpers.Match(pattern, value, caseSensitive))
                 return Pass();
 
-            return Fail(ReasonStrings.NotMatchPattern, value, pattern);
+            return Fail(Operand.FromPath(field), ReasonStrings.NotMatchPattern, value, pattern);
         }
 
         public AssertResult FilePath(PSObject inputObject, string field, string[] suffix = null)
@@ -989,19 +1032,19 @@ namespace PSRule.Runtime
             if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
                 GuardField(inputObject, field, false, out var fieldValue, out result) ||
-                GuardString(fieldValue, out var value, out result))
+                GuardString(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
             if (suffix == null || suffix.Length == 0)
             {
-                return !TryFilePath(value, out _) ? Fail(ReasonStrings.FilePath, value) : Pass();
+                return !TryFilePath(value, out _) ? Fail(Operand.FromPath(field), ReasonStrings.FilePath, value) : Pass();
             }
 
             var reason = Fail();
             for (var i = 0; i < suffix.Length; i++)
             {
                 if (!TryFilePath(Path.Combine(value, suffix[i]), out _))
-                    reason.AddReason(ReasonStrings.FilePath, suffix[i]);
+                    reason.AddReason(Operand.FromPath(field), ReasonStrings.FilePath, suffix[i]);
                 else
                     return Pass();
             }
@@ -1014,12 +1057,12 @@ namespace PSRule.Runtime
             if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
                 GuardField(inputObject, field, false, out var fieldValue, out result) ||
-                GuardString(fieldValue, out var value, out result))
+                GuardString(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
             // File does not exist
             if (!TryFilePath(value, out _))
-                return Fail(ReasonStrings.FilePath, value);
+                return Fail(Operand.FromPath(field), ReasonStrings.FilePath, value);
 
             // No header
             if (header == null || header.Length == 0)
@@ -1035,13 +1078,13 @@ namespace PSRule.Runtime
                     break;
 
                 if (content != string.Concat(prefix, header[lineNo]))
-                    return Fail(ReasonStrings.FileHeader);
+                    return Fail(Operand.FromPath(field), ReasonStrings.FileHeader);
 
                 lineNo++;
             }
 
             // Catch file has less lines than header
-            return lineNo < header.Length ? Fail(ReasonStrings.FileHeader) : Pass();
+            return lineNo < header.Length ? Fail(Operand.FromPath(field), ReasonStrings.FileHeader) : Pass();
         }
 
         /// <summary>
@@ -1063,7 +1106,7 @@ namespace PSRule.Runtime
                 if (ExpressionHelpers.WithinPath(fieldValuePath, path[i], caseSensitive.GetValueOrDefault(PSRuleOption.IsCaseSentitive())))
                     return Pass();
 
-                result.AddReason(ReasonStrings.WithinPath,
+                result.AddReason(Operand.FromPath(field), ReasonStrings.WithinPath,
                     ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), fieldValuePath),
                     ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), path[i])
                 );
@@ -1087,7 +1130,7 @@ namespace PSRule.Runtime
             for (var i = 0; path != null && i < path.Length; i++)
             {
                 if (ExpressionHelpers.WithinPath(fieldValuePath, path[i], caseSensitive.GetValueOrDefault(PSRuleOption.IsCaseSentitive())))
-                    return Fail(ReasonStrings.NotWithinPath,
+                    return Fail(Operand.FromPath(field), ReasonStrings.NotWithinPath,
                         ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), fieldValuePath),
                         ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), path[i])
                     );
@@ -1112,7 +1155,7 @@ namespace PSRule.Runtime
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
                 GuardNullParam(pattern, nameof(pattern), out result) ||
                 GuardField(inputObject, field, false, out var fieldValue, out result) ||
-                GuardString(fieldValue, out var value, out result))
+                GuardString(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
             if (pattern == null || pattern.Length == 0)
@@ -1124,7 +1167,7 @@ namespace PSRule.Runtime
                 if (ExpressionHelpers.Like(value, pattern[i], caseSensitive))
                     return Pass();
             }
-            return Fail(ReasonStrings.Assert_NotLike, field, FormatArray(pattern));
+            return Fail(Operand.FromPath(field), ReasonStrings.Assert_NotLike, field, FormatArray(pattern));
         }
 
         /// <summary>
@@ -1146,14 +1189,14 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out var fieldValue, out result))
                 return result;
 
-            if (pattern == null || pattern.Length == 0 || GuardString(fieldValue, out var value, out _))
+            if (pattern == null || pattern.Length == 0 || GuardString(Operand.FromPath(field), fieldValue, out var value, out _))
                 return Pass();
 
             // Assert
             for (var i = 0; i < pattern.Length; i++)
             {
                 if (ExpressionHelpers.Like(value, pattern[i], caseSensitive))
-                    return Fail(ReasonStrings.Assert_Like, value, pattern[i]);
+                    return Fail(Operand.FromPath(field), ReasonStrings.Assert_Like, value, pattern[i]);
             }
             return Pass();
         }
@@ -1218,18 +1261,18 @@ namespace PSRule.Runtime
                 value: out fieldValue))
                 return false;
 
-            result = Fail(ReasonStrings.NotHasField, field);
+            result = Fail(Operand.FromPath(field), ReasonStrings.Assert_Exists, field);
             return true;
         }
 
-        private bool GuardSemanticVersion(object fieldValue, out SemanticVersion.Version value, out AssertResult result)
+        private bool GuardSemanticVersion(IOperand operand, object fieldValue, out SemanticVersion.Version value, out AssertResult result)
         {
             result = null;
             value = null;
             if (ExpressionHelpers.TryString(fieldValue, out var sversion) && Runtime.SemanticVersion.TryParseVersion(sversion, out value))
                 return false;
 
-            result = Fail(ReasonStrings.Version, fieldValue);
+            result = Fail(operand, ReasonStrings.Version, fieldValue);
             return true;
         }
 
@@ -1246,7 +1289,7 @@ namespace PSRule.Runtime
             if (ExpressionHelpers.TryEnumerableLength(fieldValue, out count))
                 return false;
 
-            result = Fail(ReasonStrings.NotEnumerable, field);
+            result = Fail(Operand.FromPath(field), ReasonStrings.NotEnumerable, field);
             return true;
         }
 
@@ -1257,13 +1300,13 @@ namespace PSRule.Runtime
         /// <remarks>
         /// Reason: The field value '{0}' is not a string.
         /// </remarks>
-        private bool GuardString(object fieldValue, out string value, out AssertResult result)
+        private bool GuardString(IOperand operand, object fieldValue, out string value, out AssertResult result)
         {
             result = null;
             if (ExpressionHelpers.TryString(fieldValue, out value))
                 return false;
 
-            result = Fail(ReasonStrings.Type, TYPENAME_STRING, GetTypeName(fieldValue), fieldValue);
+            result = Fail(operand, ReasonStrings.Type, TYPENAME_STRING, GetTypeName(fieldValue), fieldValue);
             return true;
         }
 
@@ -1280,7 +1323,7 @@ namespace PSRule.Runtime
             if (fieldValue != null)
                 return false;
 
-            result = Fail(ReasonStrings.Null, field);
+            result = Fail(Operand.FromPath(field), ReasonStrings.Null, field);
             return true;
         }
 

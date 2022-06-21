@@ -770,4 +770,24 @@ namespace PSRule
             }
         }
     }
+
+    internal sealed class InfoStringYamlTypeConverter : IYamlTypeConverter
+    {
+        public bool Accepts(Type type)
+        {
+            return type == typeof(InfoString);
+        }
+
+        public object ReadYaml(IParser parser, Type type)
+        {
+            return parser.TryConsume<Scalar>(out var scalar) &&
+                !string.IsNullOrEmpty(scalar.Value) ? new InfoString(scalar.Value) : new InfoString();
+        }
+
+        public void WriteYaml(IEmitter emitter, object value, Type type)
+        {
+            if (value is InfoString info && info.HasValue)
+                emitter.Emit(new Scalar(info.Text));
+        }
+    }
 }

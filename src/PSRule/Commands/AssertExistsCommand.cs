@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Management.Automation;
-using System.Threading;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -77,15 +76,13 @@ namespace PSRule.Commands
 
             var result = Not ? found < required : found == required;
             RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Exists, outcome: result);
-            if (!(result || TryReason(Reason)))
+            if (!(result || TryReason(null, Reason, null)))
             {
-                WriteReason(Not ? string.Format(
-                    Thread.CurrentThread.CurrentCulture,
-                    ReasonStrings.ExistsNot,
-                    string.Join(", ", foundFields)) : string.Format(
-                        Thread.CurrentThread.CurrentCulture,
-                        ReasonStrings.Exists,
-                        string.Join(", ", notFoundFields)));
+                WriteReason(
+                    path: null,
+                    text: Not ? ReasonStrings.ExistsNot : ReasonStrings.Exists,
+                    args: Not ? string.Join(", ", foundFields) : string.Join(", ", notFoundFields)
+                );
             }
             WriteObject(result);
         }

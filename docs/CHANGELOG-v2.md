@@ -13,6 +13,14 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.2.0-B0052:
+
+- General improvements:
+  - Improved reporting of the object path that caused rule failures by @BernieWhite.
+    [#1092](https://github.com/microsoft/PSRule/issues/1092)
+    - Output include a new `Detail` property with details of the reason and the object path.
+    - Custom methods `ReasonFrom` and `ReasonIf` accept a `path` parameter to specify the object path.
+
 ## v2.2.0-B0052 (pre-release)
 
 What's changed since pre-release v2.2.0-B0021:
