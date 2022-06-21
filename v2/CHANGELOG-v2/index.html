@@ -2028,7 +2028,11 @@
 <li>Fixed output of reason with wide format by @BernieWhite.
   <a href="https://github.com/microsoft/PSRule/issues/1117">#1117</a></li>
 <li>Fixed piped input does not respect excluded paths by @BernieWhite.
-  <a href="https://github.com/microsoft/PSRule/issues/1114">#1114</a></li>
+  <a href="https://github.com/microsoft/PSRule/issues/1114">#1114</a><ul>
+<li>By default, objects are not excluded by source.</li>
+<li>To exclude piped input based on source configure the <code>Input.IgnoreObjectSource</code> option.</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
