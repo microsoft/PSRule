@@ -2744,7 +2744,7 @@ If more than one field is specified, only one must exist.</li>
 <ul>
 <li><em>The parameter 'inputObject' is null.</em></li>
 <li><em>The parameter 'field' is null or empty.</em></li>
-<li><em>The field '{0}' does not exist.</em></li>
+<li><em>Does not exist.</em></li>
 </ul>
 <p>Examples:</p>
 <div class="highlight"><pre><span></span><code><span class="n">Rule</span> <span class="s1">&#39;HasField&#39;</span> <span class="p">{</span>
@@ -2797,9 +2797,9 @@ If <code>expectedValue</code> is <code>$Null</code> the field value will not be 
 <ul>
 <li><em>The parameter 'inputObject' is null.</em></li>
 <li><em>The parameter 'field' is null or empty.</em></li>
-<li><em>The field '{0}' does not exist.</em></li>
-<li><em>The value of '{0}' is null or empty.</em></li>
-<li><em>The field '{0}' is set to '{1}'.</em></li>
+<li><em>Does not exist.</em></li>
+<li><em>Is null or empty.</em></li>
+<li><em>Is set to '{0}'.</em></li>
 </ul>
 <p>Examples:</p>
 <div class="highlight"><pre><span></span><code><span class="n">Rule</span> <span class="s1">&#39;HasFieldValue&#39;</span> <span class="p">{</span>
@@ -2921,7 +2921,7 @@ By default strings are not converted.</li>
 <li><em>The parameter 'field' is null or empty.</em></li>
 <li><em>The field '{0}' does not exist.</em></li>
 <li><em>The field value '{0}' is null.</em></li>
-<li><em>The field value '{1}' of type {0} is not [bool].</em></li>
+<li><em>The value '{0}' is not a boolean.</em></li>
 </ul>
 <p>Examples:</p>
 <div class="highlight"><pre><span></span><code><span class="n">Rule</span> <span class="s1">&#39;IsBoolean&#39;</span> <span class="p">{</span>
@@ -2948,7 +2948,7 @@ By default strings are not converted.</li>
 <li><em>The parameter 'field' is null or empty.</em></li>
 <li><em>The field '{0}' does not exist.</em></li>
 <li><em>The field value '{0}' is null.</em></li>
-<li><em>The field value '{1}' of type {0} is not [DateTime].</em></li>
+<li><em>The value '{0}' is not a date.</em></li>
 </ul>
 <p>Examples:</p>
 <div class="highlight"><pre><span></span><code><span class="n">Rule</span> <span class="s1">&#39;IsDateTime&#39;</span> <span class="p">{</span>
@@ -2976,7 +2976,7 @@ By default strings are not converted.</li>
 <li><em>The parameter 'field' is null or empty.</em></li>
 <li><em>The field '{0}' does not exist.</em></li>
 <li><em>The field value '{0}' is null.</em></li>
-<li><em>The field value '{1}' of type {0} is not an integer.</em></li>
+<li><em>The value '{0}' is not an integer.</em></li>
 </ul>
 <p>Examples:</p>
 <div class="highlight"><pre><span></span><code><span class="n">Rule</span> <span class="s1">&#39;IsInteger&#39;</span> <span class="p">{</span>
@@ -3032,7 +3032,7 @@ By default strings are not converted.</li>
 <li><em>The parameter 'field' is null or empty.</em></li>
 <li><em>The field '{0}' does not exist.</em></li>
 <li><em>The field value '{0}' is null.</em></li>
-<li><em>The field value '{1}' of type {0} is not numeric.</em></li>
+<li><em>The value '{0}' is not numeric.</em></li>
 </ul>
 <p>Examples:</p>
 <div class="highlight"><pre><span></span><code><span class="n">Rule</span> <span class="s1">&#39;IsNumeric&#39;</span> <span class="p">{</span>
@@ -3057,7 +3057,7 @@ This is a case insensitive compare.</li>
 <li><em>The parameter 'field' is null or empty.</em></li>
 <li><em>The field '{0}' does not exist.</em></li>
 <li><em>The field value '{0}' is null.</em></li>
-<li><em>The field value '{1}' of type {0} is not [string].</em></li>
+<li><em>The value '{0}' is not a string.</em></li>
 </ul>
 <p>Examples:</p>
 <div class="highlight"><pre><span></span><code><span class="n">Rule</span> <span class="s1">&#39;IsString&#39;</span> <span class="p">{</span>
@@ -3816,8 +3816,14 @@ When not set or <code>$Null</code>, the case-sensitivity rules of the working pa
 <li><code>Reason(&lt;string&gt; text, params &lt;object[]&gt; args)</code> - Replaces the reason on the results with a formatted string.
   This method can be chained.
   For usage see examples below.</li>
+<li><code>ReasonFrom(&lt;string&gt; path, &lt;string&gt; text, params &lt;object[]&gt; args)</code> - Replaces the reason on the results with a formatted string.
+  Path specifies the object path that affected the reason.
+  This method can be chained.
+  For usage see examples below.</li>
 <li><code>ReasonIf(&lt;bool&gt; condition, &lt;string&gt; text, params &lt;object[]&gt; args)</code> - Replaces the reason if the condition is true.
   This method can be chained, similar to <code>Reason</code>.</li>
+<li><code>ReasonIf(&lt;string&gt; path, &lt;bool&gt; condition, &lt;string&gt; text, params &lt;object[]&gt; args)</code> - Replaces the reason if the condition is true.
+  This method can be chained, similar to <code>ReasonFrom</code>.</li>
 <li><code>GetReason()</code> - Gets any reasons currently associated with the failed result.</li>
 <li><code>Complete()</code> - Returns <code>$True</code> (Pass) or <code>$False</code> (Fail) to the rule record.
   If the assertion failed, any reasons are automatically added to the rule record.
@@ -3920,7 +3926,7 @@ If a <code>_PSRule</code> property exists with <code>issue</code> sub-property P
   <small>
     
       Last update:
-      2022-06-13
+      2022-06-22
     
   </small>
 </div>
