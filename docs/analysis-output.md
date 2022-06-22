@@ -39,7 +39,7 @@ The output format can be configuring by setting the `Output.Format` option to on
 
     ```yaml hl_lines="6-7"
     # Analyze and save results
-    - task: ps-rule-assert@1
+    - task: ps-rule-assert@2
       displayName: Analyze repository
       inputs:
         inputType: repository
@@ -243,7 +243,7 @@ To configure GitHub Actions, perform the following steps:
             outputPath: reports/ps-rule-results.sarif
 
         - name: Upload results to security tab
-          uses: github/codeql-action/upload-sarif@v1
+          uses: github/codeql-action/upload-sarif@v2
           with:
             sarif_file: reports/ps-rule-results.sarif
     ```

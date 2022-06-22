@@ -43,7 +43,7 @@ Within the root directory of your IaC repository:
     steps:
 
     # Analyze Azure resources using PSRule for Azure
-    - task: ps-rule-assert@1
+    - task: ps-rule-assert@2
       displayName: Analyze Azure template files
       inputs:
         inputType: repository
