@@ -35,7 +35,7 @@ Install and use PSRule with Azure Pipeline by using extension tasks.
 Install the extension from the marketplace, then use the `ps-rule-assert` task in pipeline steps.
 
 ```yaml
-- task: ps-rule-assert@1
+- task: ps-rule-assert@2
   displayName: Analyze Azure template files
   inputs:
     inputType: repository
@@ -53,12 +53,12 @@ You can also use this option to install on CI workers that are not natively supp
 The following platforms are supported:
 
 - Windows PowerShell 5.1 with .NET Framework 4.7.2 or greater.
-- PowerShell 7.1 or greater on MacOS, Linux, and Windows.
+- PowerShell 7.2 or greater on MacOS, Linux, and Windows.
 
 ### Installing PowerShell
 
 PowerShell 7.x can be installed on MacOS, Linux, and Windows but is not installed by default.
-For a list of platforms that PowerShell 7.1 is supported on and install instructions see [Get PowerShell][3].
+For a list of platforms that PowerShell 7.2 is supported on and install instructions see [Get PowerShell][3].
 
   [3]: https://github.com/PowerShell/PowerShell#get-powershell
 
@@ -102,12 +102,30 @@ Use the following command line examples from a PowerShell terminal to install or
 To use a pre-release version of PSRule add the `-AllowPrerelease` switch when calling `Install-Module`,
 `Update-Module`, or `Save-Module` cmdlets.
 
-!!! tip
+!!! Tip
     To install pre-release module versions, the latest version of _PowerShellGet_ may be required.
 
     ```powershell
     # Install the latest PowerShellGet version
     Install-Module -Name PowerShellGet -Repository PSGallery -Scope CurrentUser -Force
+    ```
+
+=== "For the current user"
+    To install PSRule for the current user use:
+
+    ```powershell
+    Install-Module -Name PowerShellGet -Repository PSGallery -Scope CurrentUser -Force
+    Install-Module -Name 'PSRule' -Repository PSGallery -Scope CurrentUser -AllowPrerelease
+    ```
+
+=== "For all users"
+    Open PowerShell with _Run as administrator_ on Windows or `sudo pwsh` on Linux.
+
+    To install PSRule for all users (requires admin/ root permissions) use:
+
+    ```powershell
+    Install-Module -Name PowerShellGet -Repository PSGallery -Scope CurrentUser -Force
+    Install-Module -Name 'PSRule' -Repository PSGallery -Scope AllUsers -AllowPrerelease
     ```
 
 ### Building from source
