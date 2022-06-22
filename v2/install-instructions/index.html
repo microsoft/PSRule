@@ -1801,7 +1801,7 @@ Linux, and Windows worker nodes.</p>
 <p><a href="https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M1 3a2 2 0 0 1 2-2h6.5a2 2 0 0 1 2 2v6.5a2 2 0 0 1-2 2H7v4.063C7 16.355 7.644 17 8.438 17H12.5v-2.5a2 2 0 0 1 2-2H21a2 2 0 0 1 2 2V21a2 2 0 0 1-2 2h-6.5a2 2 0 0 1-2-2v-2.5H8.437A2.938 2.938 0 0 1 5.5 15.562V11.5H3a2 2 0 0 1-2-2V3zm2-.5a.5.5 0 0 0-.5.5v6.5a.5.5 0 0 0 .5.5h6.5a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5H3zM14.5 14a.5.5 0 0 0-.5.5V21a.5.5 0 0 0 .5.5H21a.5.5 0 0 0 .5-.5v-6.5a.5.5 0 0 0-.5-.5h-6.5z"/></svg></span> Extension</a></p>
 <p>Install and use PSRule with Azure Pipeline by using extension tasks.
 Install the extension from the marketplace, then use the <code>ps-rule-assert</code> task in pipeline steps.</p>
-<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ps-rule-assert@1</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ps-rule-assert@2</span><span class="w"></span>
 <span class="w">  </span><span class="nt">displayName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Analyze Azure template files</span><span class="w"></span>
 <span class="w">  </span><span class="nt">inputs</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">inputType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">repository</span><span class="w"></span>
@@ -1813,11 +1813,11 @@ You can also use this option to install on <abbr title="continuous integration">
 <p>The following platforms are supported:</p>
 <ul>
 <li>Windows PowerShell 5.1 with .NET Framework 4.7.2 or greater.</li>
-<li>PowerShell 7.1 or greater on MacOS, Linux, and Windows.</li>
+<li>PowerShell 7.2 or greater on MacOS, Linux, and Windows.</li>
 </ul>
 <h3 id="installing-powershell">Installing PowerShell<a class="headerlink" href="#installing-powershell" title="Permanent link">#</a></h3>
 <p>PowerShell 7.x can be installed on MacOS, Linux, and Windows but is not installed by default.
-For a list of platforms that PowerShell 7.1 is supported on and install instructions see <a href="https://github.com/PowerShell/PowerShell#get-powershell">Get PowerShell</a>.</p>
+For a list of platforms that PowerShell 7.2 is supported on and install instructions see <a href="https://github.com/PowerShell/PowerShell#get-powershell">Get PowerShell</a>.</p>
 <h3 id="getting-the-modules">Getting the modules<a class="headerlink" href="#getting-the-modules" title="Permanent link">#</a></h3>
 <p><a href="https://www.powershellgallery.com/packages/PSRule"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4.97 11.03a.75.75 0 1 1 1.06-1.06L11 14.94V2.75a.75.75 0 0 1 1.5 0v12.19l4.97-4.97a.75.75 0 1 1 1.06 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0l-6.25-6.25zm-.22 9.47a.75.75 0 0 0 0 1.5h14.5a.75.75 0 0 0 0-1.5H4.75z"/></svg></span> Module</a></p>
 <p>PSRule can be installed or updated from the PowerShell Gallery.
@@ -1853,6 +1853,23 @@ Use the following command line examples from a PowerShell terminal to install or
 <span class="nb">Install-Module</span> <span class="n">-Name</span> <span class="n">PowerShellGet</span> <span class="n">-Repository</span> <span class="n">PSGallery</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span> <span class="n">-Force</span>
 </code></pre></div>
 </div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">For the current user</label><label for="__tabbed_2_2">For all users</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>To install PSRule for the current user use:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">Install-Module</span> <span class="n">-Name</span> <span class="n">PowerShellGet</span> <span class="n">-Repository</span> <span class="n">PSGallery</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span> <span class="n">-Force</span>
+<span class="nb">Install-Module</span> <span class="n">-Name</span> <span class="s1">&#39;PSRule&#39;</span> <span class="n">-Repository</span> <span class="n">PSGallery</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span> <span class="n">-AllowPrerelease</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>Open PowerShell with <em>Run as administrator</em> on Windows or <code>sudo pwsh</code> on Linux.</p>
+<p>To install PSRule for all users (requires admin/ root permissions) use:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">Install-Module</span> <span class="n">-Name</span> <span class="n">PowerShellGet</span> <span class="n">-Repository</span> <span class="n">PSGallery</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span> <span class="n">-Force</span>
+<span class="nb">Install-Module</span> <span class="n">-Name</span> <span class="s1">&#39;PSRule&#39;</span> <span class="n">-Repository</span> <span class="n">PSGallery</span> <span class="n">-Scope</span> <span class="n">AllUsers</span> <span class="n">-AllowPrerelease</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <h3 id="building-from-source">Building from source<a class="headerlink" href="#building-from-source" title="Permanent link">#</a></h3>
 <p><a href="https://github.com/microsoft/PSRule.git"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M3 3a2 2 0 0 1 2-2h9.982a2 2 0 0 1 1.414.586l4.018 4.018A2 2 0 0 1 21 7.018V21a2 2 0 0 1-2 2H4.75a.75.75 0 0 1 0-1.5H19a.5.5 0 0 0 .5-.5V8.5h-4a2 2 0 0 1-2-2v-4H5a.5.5 0 0 0-.5.5v6.25a.75.75 0 0 1-1.5 0V3zm12-.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0-.146-.336l-4.018-4.018A.5.5 0 0 0 15 2.5z"/><path d="M4.53 12.24a.75.75 0 0 1-.039 1.06l-2.639 2.45 2.64 2.45a.75.75 0 1 1-1.022 1.1l-3.23-3a.75.75 0 0 1 0-1.1l3.23-3a.75.75 0 0 1 1.06.04zm3.979 1.06a.75.75 0 1 1 1.02-1.1l3.231 3a.75.75 0 0 1 0 1.1l-3.23 3a.75.75 0 1 1-1.021-1.1l2.639-2.45-2.64-2.45z"/></svg></span> Source</a></p>
 <p>PSRule is provided as open source on GitHub.
@@ -1882,7 +1899,7 @@ download the required PowerShell modules on an alternative device that has acces
 PowerShell provides the <code>Save-Module</code> cmdlet that can be run from a PowerShell terminal to do this.</p>
 <p>The following command lines can be used to download the required modules using a PowerShell terminal.
 After downloading the modules, copy the module directories to devices with restricted Internet access.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Runtime modules</label><label for="__tabbed_2_2">Development modules</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Runtime modules</label><label for="__tabbed_3_2">Development modules</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>To save PSRule for offline use:</p>
@@ -1906,7 +1923,7 @@ After downloading the modules, copy the module directories to devices with restr
   <small>
     
       Last update:
-      2022-05-08
+      2022-06-22
     
   </small>
 </div>
