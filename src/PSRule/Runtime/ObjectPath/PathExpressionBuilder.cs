@@ -59,6 +59,9 @@ namespace PSRule.Runtime.ObjectPath
                 case PathTokenType.DotSelector:
                     return DotSelector(reader, token.As<string>(), token.Option);
 
+                case PathTokenType.DescendantSelector:
+                    return DescendantSelector(reader, token.As<string>(), token.Option);
+
                 case PathTokenType.RootRef:
                     return RootRef(reader);
 
@@ -176,6 +179,28 @@ namespace PSRule.Runtime.ObjectPath
                 value = null;
                 var caseSensitive = context.CaseSensitive != caseSensitiveFlag;
                 return TryGetField(input, memberName, caseSensitive, out var item) && next(context, item, out value);
+            };
+        }
+
+        private PathExpressionFn DescendantSelector(ITokenReader reader, string memberName, PathTokenOption option)
+        {
+            var caseSensitiveFlag = option == PathTokenOption.CaseSensitive;
+            var next = BuildSelector(reader);
+            return (IPathExpressionContext context, object input, out IEnumerable<object> value) =>
+            {
+                var caseSensitive = context.CaseSensitive != caseSensitiveFlag;
+                var result = new List<object>();
+                var success = 0;
+                foreach (var i in GetAllRecurse(input, memberName, caseSensitive))
+                {
+                    if (!next(context, i, out var items))
+                        continue;
+
+                    success++;
+                    result.AddRange(items);
+                }
+                value = success > 0 ? result.ToArray() : null;
+                return success > 0;
             };
         }
 
@@ -329,6 +354,22 @@ namespace PSRule.Runtime.ObjectPath
         {
             var baseObject = ExpressionHelpers.GetBaseObject(o);
             return baseObject is IEnumerable ? GetAllIndex(baseObject) : GetAllField(baseObject);
+        }
+
+        private static IEnumerable<object> GetAllRecurse(object o, string fieldName, bool caseSensitive)
+        {
+            foreach (var i in GetAll(o))
+            {
+                if (TryGetField(i, fieldName, caseSensitive, out var value))
+                {
+                    yield return value;
+                }
+                else
+                {
+                    foreach (var c in GetAllRecurse(i, fieldName, caseSensitive))
+                        yield return c;
+                }
+            }
         }
 
         private static IEnumerable<object> GetAllIndex(object o)
@@ -617,15 +658,15 @@ namespace PSRule.Runtime.ObjectPath
         private static IEnumerable<PropertyInfo> GetIndexerProperties(Type baseType)
         {
             var attribute = baseType.GetCustomAttribute<DefaultMemberAttribute>();
-            if (attribute != null)
+            var properties = baseType.GetProperties();
+            foreach (var property in properties)
             {
-                var property = baseType.GetProperty(attribute.MemberName);
-                yield return property;
-            }
-            else
-            {
-                var properties = baseType.GetProperties();
-                foreach (var property in properties)
+                if (attribute != null)
+                {
+                    if (property.Name == attribute.MemberName)
+                        yield return property;
+                }
+                else
                 {
                     var parameters = property.GetIndexParameters();
                     if (parameters.Length > 0)
