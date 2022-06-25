@@ -2011,6 +2011,14 @@
 <h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v2.2.0-B0089:</p>
 <ul>
+<li>General improvements:<ul>
+<li>Added descendant selector to object path syntax.
+  <a href="https://github.com/microsoft/PSRule/issues/1133">#1133</a><ul>
+<li>Use <code>..</code> to traverse into child objects, for example <code>$..name</code> finds names for all nested objects.</li>
+</ul>
+</li>
+</ul>
+</li>
 <li>Engineering:<ul>
 <li>Bump Newtonsoft.Json to 13.0.1.
   <a href="https://github.com/microsoft/PSRule/pull/1137">#1137</a></li>
