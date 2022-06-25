@@ -173,12 +173,13 @@ namespace PSRule.Runtime.ObjectPath
 
             private bool TryConsumeBooleanExpression(ref int position, ITokenWriter tokens)
             {
-                if (!TryConsumeRef(ref position, tokens) && !TryConsumeDotSelector(ref position, tokens) && !TryConsumeNot(ref position, tokens))
+                if (!TryConsumeRef(ref position, tokens) && !TryConsumeDescendantSelector(ref position, tokens) && !TryConsumeDotSelector(ref position, tokens) && !TryConsumeNot(ref position, tokens))
                     return false;
 
                 if (tokens.Last.Type == PathTokenType.NotOperator)
                     TryConsumeRef(ref position, tokens);
 
+                TryConsumeDescendantSelector(ref position, tokens);
                 TryConsumeDotSelector(ref position, tokens);
                 TryConsumeComparisonOperator(ref position, tokens);
                 TryConsumePrimitive(ref position, tokens);

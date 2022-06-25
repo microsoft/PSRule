@@ -375,6 +375,7 @@ namespace PSRule
             var path = new string[]
             {
                 "$[?@.Spec.Properties.Kind].TargetName",
+                "$[?@..Value2].TargetName",
             };
 
             // $[?@.Spec.Properties.Kind].TargetName
@@ -392,6 +393,18 @@ namespace PSRule
             Assert.Equal(PathTokenType.EndFilter, actual[6].Type);
             Assert.Equal(PathTokenType.DotSelector, actual[7].Type);
             Assert.Equal("TargetName", actual[7].As<string>());
+
+            // $[?@.Spec.Properties.Kind].TargetName
+            actual = PathTokenizer.Get(path[1]);
+            Assert.Equal(6, actual.Length);
+            Assert.Equal(PathTokenType.RootRef, actual[0].Type);
+            Assert.Equal(PathTokenType.StartFilter, actual[1].Type);
+            Assert.Equal(PathTokenType.CurrentRef, actual[2].Type);
+            Assert.Equal(PathTokenType.DescendantSelector, actual[3].Type);
+            Assert.Equal("Value2", actual[3].As<string>());
+            Assert.Equal(PathTokenType.EndFilter, actual[4].Type);
+            Assert.Equal(PathTokenType.DotSelector, actual[5].Type);
+            Assert.Equal("TargetName", actual[5].As<string>());
         }
 
         [Fact]

@@ -259,6 +259,36 @@ namespace PSRule
             Assert.Equal("3", actual[0]);
         }
 
+        [Fact]
+        public void WithDescendant()
+        {
+            var testObject = GetJsonContent();
+
+            var expression = PathExpression.Create("$[*]..Value2");
+            Assert.True(expression.IsArray);
+            Assert.True(expression.TryGet(testObject, true, out object[] actual));
+            Assert.NotNull(actual);
+            Assert.Single(actual);
+            Assert.Equal(2L, actual[0]);
+
+            expression = PathExpression.Create("$[*]..id");
+            Assert.True(expression.IsArray);
+            Assert.True(expression.TryGet(testObject, true, out actual));
+            Assert.NotNull(actual);
+            Assert.Equal(4, actual.Length);
+            Assert.Equal("1", actual[0]);
+            Assert.Equal("2", actual[1]);
+            Assert.Equal("1", actual[2]);
+            Assert.Equal("2", actual[3]);
+
+            expression = PathExpression.Create("$[?@..Value2].TargetName");
+            Assert.True(expression.IsArray);
+            Assert.True(expression.TryGet(testObject, true, out actual));
+            Assert.NotNull(actual);
+            Assert.Single(actual);
+            Assert.Equal("TestObject2", actual[0]);
+        }
+
         #region Helper methods
 
         private object GetJsonContent()

@@ -15,6 +15,10 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v2.2.0-B0089:
 
+- General improvements:
+  - Added descendant selector to object path syntax.
+    [#1133](https://github.com/microsoft/PSRule/issues/1133)
+    - Use `..` to traverse into child objects, for example `$..name` finds names for all nested objects.
 - Engineering:
   - Bump Newtonsoft.Json to 13.0.1.
     [#1137](https://github.com/microsoft/PSRule/pull/1137)
