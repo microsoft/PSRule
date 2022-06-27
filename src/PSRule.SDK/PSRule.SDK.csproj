@@ -17,6 +17,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Compile Remove="PSRule.psd1;" />
   </ItemGroup>
 
 </Project>
