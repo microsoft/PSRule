@@ -29,7 +29,7 @@ What's changed since v2.1.0:
     [#1074](https://github.com/microsoft/PSRule/issues/1074)
     - The `Output.Footer` option now supports `OutputFile` which reports the output file path.
       This is enabled by default.
-  - Added descendant selector to object path syntax.
+  - Added descendant selector to object path syntax by @BernieWhite.
     [#1133](https://github.com/microsoft/PSRule/issues/1133)
     - Use `..` to traverse into child objects, for example `$..name` finds names for all nested objects.
 - Engineering:
@@ -76,7 +76,7 @@ What's changed since pre-release v2.2.0-B0131:
 What's changed since pre-release v2.2.0-B0089:
 
 - General improvements:
-  - Added descendant selector to object path syntax.
+  - Added descendant selector to object path syntax by @BernieWhite.
     [#1133](https://github.com/microsoft/PSRule/issues/1133)
     - Use `..` to traverse into child objects, for example `$..name` finds names for all nested objects.
 - Engineering:
