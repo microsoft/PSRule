@@ -13,12 +13,62 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.2.0
+
+What's changed since v2.1.0:
+
+- New features:
+  - Added `notCount` expression and assertion helper by @ArmaanMcleod.
+    [#1091](https://github.com/microsoft/PSRule/issues/1091)
+- General improvements:
+  - Improved reporting of the object path that caused rule failures by @BernieWhite.
+    [#1092](https://github.com/microsoft/PSRule/issues/1092)
+    - Output include a new `Detail` property with details of the reason and the object path.
+    - Custom methods `ReasonFrom` and `ReasonIf` accept a `path` parameter to specify the object path.
+  - Added informational message when output has been written to disk by @BernieWhite.
+    [#1074](https://github.com/microsoft/PSRule/issues/1074)
+    - The `Output.Footer` option now supports `OutputFile` which reports the output file path.
+      This is enabled by default.
+  - Added descendant selector to object path syntax by @BernieWhite.
+    [#1133](https://github.com/microsoft/PSRule/issues/1133)
+    - Use `..` to traverse into child objects, for example `$..name` finds names for all nested objects.
+- Engineering:
+  - Bump Newtonsoft.Json to 13.0.1.
+    [#1137](https://github.com/microsoft/PSRule/pull/1137)
+  - Added more object path tests by @ArmaanMcleod.
+    [#1110](https://github.com/microsoft/PSRule/issues/1110)
+  - Bump xunit.runner.visualstudio to 2.4.5.
+    [#1084](https://github.com/microsoft/PSRule/pull/1084)
+  - Bump Pester to 5.3.3.
+    [#1079](https://github.com/microsoft/PSRule/pull/1079)
+  - Bump Microsoft.NET.Test.Sdk to 17.2.0.
+    [#1089](https://github.com/microsoft/PSRule/pull/1089)
+  - Added NuGet packaging publishing by @BernieWhite.
+    [#1093](https://github.com/microsoft/PSRule/issues/1093)
+  - Updated NuGet packaging metadata by @BernieWhite.
+    [#1093](https://github.com/microsoft/PSRule/issues/1093)
+- Bug fixes:
+  - Fixed output of reason with wide format by @BernieWhite.
+    [#1117](https://github.com/microsoft/PSRule/issues/1117)
+  - Fixed piped input does not respect excluded paths by @BernieWhite.
+    [#1114](https://github.com/microsoft/PSRule/issues/1114)
+    - By default, objects are not excluded by source.
+    - To exclude piped input based on source configure the `Input.IgnoreObjectSource` option.
+  - Fixed issue building a PSRule project by removing PSRule.psd1 from compile target by @BernieWhite.
+    [#1140](https://github.com/microsoft/PSRule/issues/1140)
+  - Fixed grouping of logical operators in object path by @BernieWhite.
+    [#1101](https://github.com/microsoft/PSRule/issues/1101)
+
+What's changed since pre-release v2.2.0-B0175:
+
+- No additional changes.
+
 ## v2.2.0-B0175 (pre-release)
 
 What's changed since pre-release v2.2.0-B0131:
 
 - Bug fixes:
-  - Fixed issue building a PSRule project by removing PSRule.psd1 from compile target.
+  - Fixed issue building a PSRule project by removing PSRule.psd1 from compile target by @BernieWhite.
     [#1140](https://github.com/microsoft/PSRule/issues/1140)
 
 ## v2.2.0-B0131 (pre-release)
@@ -26,7 +76,7 @@ What's changed since pre-release v2.2.0-B0131:
 What's changed since pre-release v2.2.0-B0089:
 
 - General improvements:
-  - Added descendant selector to object path syntax.
+  - Added descendant selector to object path syntax by @BernieWhite.
     [#1133](https://github.com/microsoft/PSRule/issues/1133)
     - Use `..` to traverse into child objects, for example `$..name` finds names for all nested objects.
 - Engineering:
