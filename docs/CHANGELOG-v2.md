@@ -13,6 +13,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.3.0-B0001 (pre-release)
+
 What's changed since v2.2.0:
 
 - Bug fixes:
