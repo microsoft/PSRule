@@ -13,6 +13,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since v2.2.0:
+
+- Bug fixes:
+  - Fixed path within SDK package causes `psd1` to compile by @BernieWhite.
+    [#1146](https://github.com/microsoft/PSRule/issues/1146)
+
 ## v2.2.0
 
 What's changed since v2.1.0:
