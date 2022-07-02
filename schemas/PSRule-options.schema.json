@@ -9,9 +9,157 @@
             "title": "Configuration values",
             "description": "A set of key/ value configuration options for rules.",
             "markdownDescription": "A set of key/ value configuration options for rules. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#configuration)",
+            "properties": {
+                "AZURE_PARAMETER_FILE_EXPANSION": {
+                    "type": "boolean",
+                    "title": "Parameter file expansion",
+                    "description": "Determines if Azure template parameter files will automatically be expanded. By default, parameter files will not be automatically expanded. When enabled, PSRule will discover and expand JSON parameter files for Azure templates or Bicep modules.",
+                    "markdownDescription": "Determines if Azure template parameter files will automatically be expanded. By default, parameter files will not be automatically expanded. When enabled, PSRule will discover and expand JSON parameter files for Azure templates or Bicep modules. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#parameterfileexpansion)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+                    "default": false
+                },
+                "AZURE_BICEP_FILE_EXPANSION": {
+                    "type": "boolean",
+                    "title": "Bicep source expansion",
+                    "description": "This configuration option determines if Azure Bicep source files will automatically be expanded. By default, Bicep files will not be automatically expanded.",
+                    "markdownDescription": "This configuration option determines if Azure Bicep source files will automatically be expanded. By default, Bicep files will not be automatically expanded. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#bicepsourceexpansion)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+                    "default": false
+                },
+                "AZURE_BICEP_FILE_EXPANSION_TIMEOUT": {
+                    "type": "integer",
+                    "title": "Bicep compilation timeout",
+                    "description": "This configuration option determines the maximum time to spend building a single Bicep source file. The timeout is configured in seconds.",
+                    "markdownDescription": "This configuration option determines the maximum time to spend building a single Bicep source file. The timeout is configured in seconds. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#bicepcompilationtimeout)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+                    "default": 5,
+                    "minimum": 1,
+                    "maximum": 120
+                },
+                "AZURE_PARAMETER_FILE_METADATA_LINK": {
+                    "type": "boolean",
+                    "title": "Bicep source expansion",
+                    "description": "This configuration option determines if Azure Bicep source files will automatically be expanded. By default, Bicep files will not be automatically expanded.",
+                    "markdownDescription": "This configuration option determines if Azure Bicep source files will automatically be expanded. By default, Bicep files will not be automatically expanded. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#bicepsourceexpansion)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+                    "default": false
+                },
+                "AZURE_DEPLOYMENT": {
+                    "type": "object",
+                    "title": "Deployment properties",
+                    "description": "This configuration option sets the deployment object use by the deployment() function. Configure this option to change the details of the deployment when exporting templates for analysis. Provided properties will override the default.",
+                    "markdownDescription": "This configuration option sets the deployment object use by the `deployment()` function. Configure this option to change the details of the deployment when exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymentproperties)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "default": "ps-rule-test-deployment"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "AZURE_RESOURCE_GROUP": {
+                    "type": "object",
+                    "title": "Deployment resource group",
+                    "description": "This configuration option sets the resource group object used by the resourceGroup() function. Configure this option to change the resource group object when using exporting templates for analysis. Provided properties will override the default.",
+                    "markdownDescription": "This configuration option sets the resource group object used by the `resourceGroup()` function. Configure this option to change the resource group object when using exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymentresourcegroup)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "default": "ps-rule-test-rg"
+                        },
+                        "location": {
+                            "type": "string",
+                            "default": "eastus"
+                        },
+                        "tags": {
+                            "type": "object",
+                            "default": {}
+                        },
+                        "properties": {
+                            "type": "object",
+                            "properties": {
+                                "provisioningState": {
+                                    "type": "string",
+                                    "default": "Succeeded"
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "AZURE_SUBSCRIPTION": {
+                    "type": "object",
+                    "title": "Deployment subscription",
+                    "description": "This configuration option sets the subscription object used by the subscription() function. Configure this option to change the subscription object when using exporting templates for analysis. Provided properties will override the default.",
+                    "markdownDescription": "This configuration option sets the subscription object used by the `subscription()` function. Configure this option to change the subscription object when using exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymentsubscription)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+                    "properties": {
+                        "subscriptionId": {
+                            "type": "string",
+                            "default": "ffffffff-ffff-ffff-ffff-ffffffffffff"
+                        },
+                        "displayName": {
+                            "type": "string",
+                            "default": "PSRule Test Subscription"
+                        },
+                        "state": {
+                            "type": "string",
+                            "default": "NotDefined"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "AZURE_TENANT": {
+                    "type": "object",
+                    "title": "Deployment tenant",
+                    "description": "This configuration option sets the tenant object used by the tenant() function. Configure this option to change the tenant object when using exporting templates for analysis. Provided properties will override the default.",
+                    "markdownDescription": "This configuration option sets the tenant object used by the `tenant()` function. Configure this option to change the tenant object when using exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymenttenant)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+                    "properties": {
+                        "countryCode": {
+                            "type": "string",
+                            "default": "US"
+                        },
+                        "tenantId": {
+                            "type": "string",
+                            "default": "ffffffff-ffff-ffff-ffff-ffffffffffff"
+                        },
+                        "displayName": {
+                            "type": "string",
+                            "default": "PSRule"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "AZURE_MANAGEMENT_GROUP": {
+                    "type": "object",
+                    "title": "Deployment management group",
+                    "description": "This configuration option sets the management group object used by the managementGroup() function. Configure this option to change the management group object when using exporting templates for analysis. Provided properties will override the default.",
+                    "markdownDescription": "This configuration option sets the management group object used by the `managementGroup()` function. Configure this option to change the management group object when using exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymentmanagementgroup)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "default": "psrule-test"
+                        },
+                        "properties": {
+                            "type": "object",
+                            "properties": {
+                                "displayName": {
+                                    "type": "string",
+                                    "default": "PSRule Test Management Group"
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "AZURE_PARAMETER_DEFAULTS": {
+                    "type": "object",
+                    "title": "Required parameter defaults",
+                    "description": "This configuration option allows a fallback value to be configured for required parameters. When a parameter value is not provided and a default is not set, the fallback value will be used.",
+                    "markdownDescription": "This configuration option allows a fallback value to be configured for required parameters. When a parameter value is not provided and a default is not set, the fallback value will be used. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#requiredparameterdefaults)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)"
+                }
+            },
+            "additionalProperties": true,
             "defaultSnippets": [
                 {
-                    "label": "Configuration value",
+                    "label": "Custom configuration value",
                     "body": {
                         "${1:Key}": "${2:Value}"
                     }
