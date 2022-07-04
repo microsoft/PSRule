@@ -13,6 +13,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.3.0-B0001:
+
+- General improvements:
+  - Added PSRule for Azure expansion configuration to options schema by @BernieWhite.
+    [#1149](https://github.com/microsoft/PSRule/issues/1149)
+
 ## v2.3.0-B0001 (pre-release)
 
 What's changed since v2.2.0:
