@@ -18,7 +18,7 @@ namespace PSRule.Pipeline
     {
         private AssertWriter _Writer;
 
-        internal AssertPipelineBuilder(Source[] source, HostContext hostContext)
+        internal AssertPipelineBuilder(Source[] source, IHostContext hostContext)
             : base(source, hostContext) { }
 
         /// <summary>
@@ -29,8 +29,7 @@ namespace PSRule.Pipeline
             internal readonly IAssertFormatter _Formatter;
             private readonly PipelineWriter _InnerWriter;
             private readonly string _ResultVariableName;
-            private readonly PSCmdlet _CmdletContext;
-            private readonly EngineIntrinsics _ExecutionContext;
+            private readonly IHostContext _HostContext;
             private readonly List<RuleRecord> _Results;
             private int _ErrorCount;
             private int _FailCount;
@@ -38,13 +37,12 @@ namespace PSRule.Pipeline
             private bool _PSError;
             private SeverityLevel _Level;
 
-            internal AssertWriter(PSRuleOption option, Source[] source, PipelineWriter inner, PipelineWriter next, OutputStyle style, string resultVariableName, PSCmdlet cmdletContext, EngineIntrinsics executionContext)
+            internal AssertWriter(PSRuleOption option, Source[] source, PipelineWriter inner, PipelineWriter next, OutputStyle style, string resultVariableName, IHostContext hostContext)
                 : base(inner, option)
             {
                 _InnerWriter = next;
                 _ResultVariableName = resultVariableName;
-                _CmdletContext = cmdletContext;
-                _ExecutionContext = executionContext;
+                _HostContext = hostContext;
                 if (!string.IsNullOrEmpty(resultVariableName))
                     _Results = new List<RuleRecord>();
 
@@ -95,7 +93,7 @@ namespace PSRule.Pipeline
 
             public override void WriteWarning(string message)
             {
-                var warningPreference = GetPreferenceVariable(_ExecutionContext.SessionState, WarningPreference);
+                var warningPreference = _HostContext.GetPreferenceVariable(WarningPreference);
                 if (warningPreference == ActionPreference.Ignore || warningPreference == ActionPreference.SilentlyContinue)
                     return;
 
@@ -104,7 +102,7 @@ namespace PSRule.Pipeline
 
             public override void WriteError(ErrorRecord errorRecord)
             {
-                var errorPreference = GetPreferenceVariable(_ExecutionContext.SessionState, ErrorPreference);
+                var errorPreference = _HostContext.GetPreferenceVariable(ErrorPreference);
                 if (errorPreference == ActionPreference.Ignore || errorPreference == ActionPreference.SilentlyContinue)
                     return;
 
@@ -154,8 +152,8 @@ namespace PSRule.Pipeline
                     if (_FailCount > 0 && _Level == SeverityLevel.Information)
                         base.WriteHost(new HostInformationMessage() { Message = PSRuleResources.RuleFailPipelineException });
 
-                    if (_Results != null && _CmdletContext != null)
-                        _CmdletContext.SessionState.PSVariable.Set(_ResultVariableName, _Results.ToArray());
+                    if (_Results != null && _HostContext != null)
+                        _HostContext.SetVariable(_ResultVariableName, _Results.ToArray());
                 }
                 finally
                 {
@@ -198,8 +196,7 @@ namespace PSRule.Pipeline
                     next: next,
                     style: Option.Output.Style ?? OutputOption.Default.Style.Value,
                     resultVariableName: _ResultVariableName,
-                    cmdletContext: HostContext.CmdletContext,
-                    executionContext: HostContext.ExecutionContext
+                    hostContext: HostContext
                 );
             }
             return _Writer;

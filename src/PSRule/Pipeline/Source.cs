@@ -121,6 +121,18 @@ namespace PSRule.Pipeline
                     Version = string.Concat(Version, PRERELEASE_SEPARATOR, psData[FIELD_PRERELEASE].ToString());
             }
 
+            public ModuleInfo(string path, string name, string version, string projectUri, string guid, string companyName, string prerelease)
+            {
+                Path = path;
+                Name = name;
+                Version = version;
+                ProjectUri = projectUri;
+                Guid = guid;
+                CompanyName = companyName;
+                if (!string.IsNullOrEmpty(prerelease))
+                    Version = string.Concat(version, PRERELEASE_SEPARATOR, prerelease);
+            }
+
             private static bool TryPrivateData(PSModuleInfo info, string propertyName, out Hashtable value)
             {
                 value = null;

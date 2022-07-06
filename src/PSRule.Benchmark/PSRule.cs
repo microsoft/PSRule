@@ -75,7 +75,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "Benchmark" };
-            var builder = PipelineBuilder.Get(GetSource(), option, null, null);
+            var builder = PipelineBuilder.Get(GetSource(), option, null);
             _GetPipeline = builder.Build();
         }
 
@@ -84,7 +84,7 @@ namespace PSRule.Benchmark
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkHelp" };
             option.Output.Culture = new string[] { "en-ZZ" };
-            var builder = PipelineBuilder.GetHelp(GetSource(), option, null, null);
+            var builder = PipelineBuilder.GetHelp(GetSource(), option, null);
             _GetHelpPipeline = builder.Build();
         }
 
@@ -92,7 +92,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "Benchmark" };
-            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null);
             _InvokePipeline = builder.Build();
         }
 
@@ -100,7 +100,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkIf" };
-            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null);
             _InvokeIfPipeline = builder.Build();
         }
 
@@ -108,7 +108,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkType" };
-            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null);
             _InvokeTypePipeline = builder.Build();
         }
 
@@ -117,7 +117,7 @@ namespace PSRule.Benchmark
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "Benchmark" };
             option.Output.As = ResultFormat.Summary;
-            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null);
             _InvokeSummaryPipeline = builder.Build();
         }
 
@@ -125,7 +125,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "Benchmark" };
-            var builder = PipelineBuilder.Assert(GetSource(), option, null, null);
+            var builder = PipelineBuilder.Assert(GetSource(), option, null);
             _AssertPipeline = builder.Build();
         }
 
@@ -133,7 +133,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkWithin" };
-            var builder = PipelineBuilder.Invoke(GetWithinSource(), option, null, null);
+            var builder = PipelineBuilder.Invoke(GetWithinSource(), option, null);
             _InvokeWithinPipeline = builder.Build();
         }
 
@@ -141,7 +141,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkWithinBulk" };
-            var builder = PipelineBuilder.Invoke(GetWithinSource(), option, null, null);
+            var builder = PipelineBuilder.Invoke(GetWithinSource(), option, null);
             _InvokeWithinBulkPipeline = builder.Build();
         }
 
@@ -149,7 +149,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "BenchmarkWithinLike" };
-            var builder = PipelineBuilder.Invoke(GetWithinSource(), option, null, null);
+            var builder = PipelineBuilder.Invoke(GetWithinSource(), option, null);
             _InvokeWithinLikePipeline = builder.Build();
         }
 
@@ -157,7 +157,7 @@ namespace PSRule.Benchmark
         {
             var option = new PSRuleOption();
             option.Rule.Include = new string[] { "Assert.HasFieldValue" };
-            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null);
             _AssertHasFieldValuePipeline = builder.Build();
         }
 

@@ -24,7 +24,7 @@ namespace PSRule
         public void BuildInvokePipeline()
         {
             var option = GetOption();
-            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null);
             Assert.NotNull(builder.Build());
         }
 
@@ -34,7 +34,7 @@ namespace PSRule
             var testObject1 = new TestObject { Name = "TestObject1" };
             var option = GetOption();
             option.Rule.Include = new string[] { "FromFile1" };
-            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null);
             var pipeline = builder.Build();
 
             Assert.NotNull(pipeline);
@@ -48,7 +48,7 @@ namespace PSRule
         [Fact]
         public void BuildGetPipeline()
         {
-            var builder = PipelineBuilder.Get(GetSource(), GetOption(), null, null);
+            var builder = PipelineBuilder.Get(GetSource(), GetOption(), null);
             Assert.NotNull(builder.Build());
         }
 
@@ -98,7 +98,7 @@ namespace PSRule
         public void PipelineWithOptions()
         {
             var option = GetOption(GetSourcePath("PSRule.Tests.yml"));
-            var builder = PipelineBuilder.Get(GetSource(), option, null, null);
+            var builder = PipelineBuilder.Get(GetSource(), option, null);
             Assert.NotNull(builder.Build());
         }
 
@@ -106,7 +106,7 @@ namespace PSRule
         public void PipelineWithRequires()
         {
             var option = GetOption(GetSourcePath("PSRule.Tests6.yml"));
-            var builder = PipelineBuilder.Get(GetSource(), option, null, null);
+            var builder = PipelineBuilder.Get(GetSource(), option, null);
             Assert.Null(builder.Build());
         }
 
@@ -126,7 +126,7 @@ namespace PSRule
 
             // Default
             var writer = new TestWriter(option);
-            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null);
             builder.InputPath(new string[] { "./**/ObjectFromFile*.json" });
             var pipeline = builder.Build(writer);
             Assert.NotNull(pipeline);
@@ -145,8 +145,8 @@ namespace PSRule
             // With IgnoreObjectSource
             option.Input.IgnoreObjectSource = true;
             writer = new TestWriter(option);
-            builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
-            PipelineBuilder.Invoke(GetSource(), option, null, null);
+            builder = PipelineBuilder.Invoke(GetSource(), option, null);
+            PipelineBuilder.Invoke(GetSource(), option, null);
             builder.InputPath(new string[] { "./**/ObjectFromFile*.json" });
             pipeline = builder.Build(writer);
             Assert.NotNull(pipeline);
@@ -170,7 +170,7 @@ namespace PSRule
             var option = GetOption();
             option.Input.Format = InputFormat.File;
             option.Rule.Include = new string[] { "FromFile1" };
-            var builder = PipelineBuilder.Invoke(GetSource(), option, null, null);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null);
             builder.InputPath(new string[] { "./**/ObjectFromFile.json" });
             var writer = new TestWriter(option);
             var pipeline = builder.Build(writer);

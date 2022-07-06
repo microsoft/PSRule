@@ -10,7 +10,7 @@ namespace PSRule.Pipeline
     {
         private string[] _Name;
 
-        internal GetBaselinePipelineBuilder(Source[] source, HostContext hostContext)
+        internal GetBaselinePipelineBuilder(Source[] source, IHostContext hostContext)
             : base(source, hostContext) { }
 
         /// <summary>

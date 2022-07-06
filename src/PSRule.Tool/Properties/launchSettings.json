@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "PSRule.Tool": {
+      "commandName": "Project",
+      "commandLineArgs": "analyze",
+      "workingDirectory": "C:\\Dev\\Workspace\\AzureDevOps-bewhite"
+    }
+  }
+}

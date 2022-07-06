@@ -23,6 +23,9 @@ What's changed since pre-release v2.3.0-B0001:
 
 What's changed since v2.2.0:
 
+- Engineering:
+  - Refactoring and updates to interfaces to allow use outside of PowerShell.
+    [#1152](https://github.com/microsoft/PSRule/issues/1152)
 - Bug fixes:
   - Fixed path within SDK package causes `psd1` to compile by @BernieWhite.
     [#1146](https://github.com/microsoft/PSRule/issues/1146)

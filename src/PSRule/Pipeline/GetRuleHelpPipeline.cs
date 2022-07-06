@@ -24,7 +24,7 @@ namespace PSRule.Pipeline
         private bool _Full;
         private bool _Online;
 
-        internal GetRuleHelpPipelineBuilder(Source[] source, HostContext hostContext)
+        internal GetRuleHelpPipelineBuilder(Source[] source, IHostContext hostContext)
             : base(source, hostContext) { }
 
         public override IPipelineBuilder Configure(PSRuleOption option)

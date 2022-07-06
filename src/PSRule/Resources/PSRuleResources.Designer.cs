@@ -322,6 +322,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not valid module can be found with that name..
+        /// </summary>
+        internal static string ModuleNotFound {
+            get {
+                return ResourceManager.GetString("ModuleNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Target object &apos;{0}&apos; has not been processed because no matching rules were found..
         /// </summary>
         internal static string ObjectNotProcessed {

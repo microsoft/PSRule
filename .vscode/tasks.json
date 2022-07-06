@@ -46,8 +46,8 @@
             }
         },
         {
-            "label": "Build",
-            "detail": "Build module.",
+            "label": "Build module",
+            "detail": "Build PSRule PowerShell module.",
             "type": "shell",
             "command": "Invoke-Build Build",
             "group": {
@@ -139,6 +139,21 @@
                     "PSRULE_OUTPUT_FORMAT": "Sarif",
                     "PSRULE_OUTPUT_PATH": "reports/ps-rule-results.sarif"
                 }
+            }
+        },
+        {
+            "label": "Build CLI",
+            "detail": "Builds PSRule CLI.",
+            "type": "shell",
+            "command": "Invoke-Build BuildCLI",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true,
+                "panel": "dedicated"
             }
         }
     ],

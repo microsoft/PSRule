@@ -1,15 +1,34 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Management.Automation;
+using PSRule.Definitions;
 
 namespace PSRule.Pipeline
 {
     public interface IHostContext
     {
+        bool InSession { get; }
+
         ActionPreference GetPreferenceVariable(string variableName);
 
         T GetVariable<T>(string variableName);
+
+        void SetVariable<T>(string variableName, T value);
+
+        void Error(ErrorRecord errorRecord);
+
+        void Warning(string text);
+
+        void Information(InformationRecord informationRecord);
+
+        void Verbose(string text);
+
+        void Debug(string text);
+
+        void Object(object sendToPipeline, bool enumerateCollection);
+
+        bool ShouldProcess(string target, string action);
     }
 
     internal static class HostContextExtensions
@@ -52,17 +71,81 @@ namespace PSRule.Pipeline
         }
     }
 
-    internal sealed class HostContext : IHostContext
+    public abstract class HostContext : IHostContext
+    {
+        private const string ErrorPreference = "ErrorActionPreference";
+        private const string WarningPreference = "WarningPreference";
+
+        public virtual bool InSession => false;
+
+        public virtual void Debug(string text)
+        {
+
+        }
+
+        public virtual void Error(ErrorRecord errorRecord)
+        {
+
+        }
+
+        public virtual ActionPreference GetPreferenceVariable(string variableName)
+        {
+            return variableName == ErrorPreference ||
+                variableName == WarningPreference ? ActionPreference.Continue : ActionPreference.Ignore;
+        }
+
+        public virtual T GetVariable<T>(string variableName)
+        {
+            return default;
+        }
+
+        public virtual void Information(InformationRecord informationRecord)
+        {
+
+        }
+
+        public virtual void Object(object sendToPipeline, bool enumerateCollection)
+        {
+            if (sendToPipeline is IResultRecord record)
+                Record(record);
+            //else if (enumerateCollection)
+            //    foreach (var item in record)
+        }
+
+        public virtual void SetVariable<T>(string variableName, T value)
+        {
+
+        }
+
+        public abstract bool ShouldProcess(string target, string action);
+
+        public virtual void Verbose(string text)
+        {
+
+        }
+
+        public virtual void Warning(string text)
+        {
+
+        }
+
+        public virtual void Record(IResultRecord record)
+        {
+
+        }
+    }
+
+    public sealed class PSHostContext : IHostContext
     {
         internal readonly PSCmdlet CmdletContext;
         internal readonly EngineIntrinsics ExecutionContext;
 
         /// <summary>
-        /// Determine if running is remote session.
+        /// Determine if running in a remote session.
         /// </summary>
-        internal bool InSession;
+        public bool InSession { get; }
 
-        public HostContext(PSCmdlet commandRuntime, EngineIntrinsics executionContext)
+        public PSHostContext(PSCmdlet commandRuntime, EngineIntrinsics executionContext)
         {
             InSession = false;
             CmdletContext = commandRuntime;
@@ -82,9 +165,44 @@ namespace PSRule.Pipeline
             return ExecutionContext == null ? default : (T)ExecutionContext.SessionState.PSVariable.GetValue(variableName);
         }
 
+        public void SetVariable<T>(string variableName, T value)
+        {
+            CmdletContext.SessionState.PSVariable.Set(variableName, value);
+        }
+
         public bool ShouldProcess(string target, string action)
         {
             return CmdletContext == null || CmdletContext.ShouldProcess(target, action);
+        }
+
+        public void Error(ErrorRecord errorRecord)
+        {
+            CmdletContext.WriteError(errorRecord);
+        }
+
+        public void Warning(string text)
+        {
+            CmdletContext.WriteWarning(text);
+        }
+
+        public void Information(InformationRecord informationRecord)
+        {
+            CmdletContext.WriteInformation(informationRecord);
+        }
+
+        public void Verbose(string text)
+        {
+            CmdletContext.WriteVerbose(text);
+        }
+
+        public void Debug(string text)
+        {
+            CmdletContext.WriteDebug(text);
+        }
+
+        public void Object(object sendToPipeline, bool enumerateCollection)
+        {
+            CmdletContext.WriteObject(sendToPipeline, enumerateCollection);
         }
     }
 }

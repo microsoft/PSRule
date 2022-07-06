@@ -35,13 +35,13 @@ namespace PSRule.Pipeline.Output
 
         private string _ScopeName;
 
-        internal HostPipelineWriter(HostContext hostContext, PSRuleOption option)
+        internal HostPipelineWriter(IHostContext hostContext, PSRuleOption option)
             : base(null, option)
         {
             if (hostContext != null)
             {
-                UseCommandRuntime(hostContext.CmdletContext);
-                UseExecutionContext(hostContext.ExecutionContext);
+                UseCommandRuntime(hostContext);
+                UseExecutionContext(hostContext);
             }
         }
 
@@ -54,34 +54,34 @@ namespace PSRule.Pipeline.Output
                 _DebugFilter = new HashSet<string>(Option.Logging.LimitDebug);
         }
 
-        private void UseCommandRuntime(PSCmdlet commandRuntime)
+        private void UseCommandRuntime(IHostContext hostContext)
         {
-            if (commandRuntime == null)
+            if (hostContext == null)
                 return;
 
-            OnWriteVerbose = commandRuntime.WriteVerbose;
-            OnWriteWarning = commandRuntime.WriteWarning;
-            OnWriteError = commandRuntime.WriteError;
-            OnWriteInformation = commandRuntime.WriteInformation;
-            OnWriteDebug = commandRuntime.WriteDebug;
-            OnWriteObject = commandRuntime.WriteObject;
+            OnWriteVerbose = hostContext.Verbose;
+            OnWriteWarning = hostContext.Warning;
+            OnWriteError = hostContext.Error;
+            OnWriteInformation = hostContext.Information;
+            OnWriteDebug = hostContext.Debug;
+            OnWriteObject = hostContext.Object;
         }
 
-        private void UseExecutionContext(EngineIntrinsics executionContext)
+        private void UseExecutionContext(IHostContext hostContext)
         {
-            if (executionContext == null)
+            if (hostContext == null)
                 return;
 
-            _LogError = GetPreferenceVariable(executionContext, ErrorPreference);
-            _LogWarning = GetPreferenceVariable(executionContext, WarningPreference);
-            _LogVerbose = GetPreferenceVariable(executionContext, VerbosePreference);
-            _LogInformation = GetPreferenceVariable(executionContext, InformationPreference);
-            _LogDebug = GetPreferenceVariable(executionContext, DebugPreference);
+            _LogError = GetPreferenceVariable(hostContext, ErrorPreference);
+            _LogWarning = GetPreferenceVariable(hostContext, WarningPreference);
+            _LogVerbose = GetPreferenceVariable(hostContext, VerbosePreference);
+            _LogInformation = GetPreferenceVariable(hostContext, InformationPreference);
+            _LogDebug = GetPreferenceVariable(hostContext, DebugPreference);
         }
 
-        private static bool GetPreferenceVariable(EngineIntrinsics executionContext, string variableName)
+        private static bool GetPreferenceVariable(IHostContext hostContext, string variableName)
         {
-            var preference = GetPreferenceVariable(executionContext.SessionState, variableName);
+            var preference = hostContext.GetPreferenceVariable(variableName);
             return preference != ActionPreference.Ignore && !(preference == ActionPreference.SilentlyContinue && (
                 variableName == VerbosePreference ||
                 variableName == DebugPreference)
