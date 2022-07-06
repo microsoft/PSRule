@@ -13,19 +13,21 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.3.0-B0006 (pre-release)
+
 What's changed since pre-release v2.3.0-B0001:
 
 - General improvements:
   - Added PSRule for Azure expansion configuration to options schema by @BernieWhite.
     [#1149](https://github.com/microsoft/PSRule/issues/1149)
+- Engineering:
+  - Refactoring and updates to interfaces to allow use outside of PowerShell by @BernieWhite.
+    [#1152](https://github.com/microsoft/PSRule/issues/1152)
 
 ## v2.3.0-B0001 (pre-release)
 
 What's changed since v2.2.0:
 
-- Engineering:
-  - Refactoring and updates to interfaces to allow use outside of PowerShell.
-    [#1152](https://github.com/microsoft/PSRule/issues/1152)
 - Bug fixes:
   - Fixed path within SDK package causes `psd1` to compile by @BernieWhite.
     [#1146](https://github.com/microsoft/PSRule/issues/1146)
