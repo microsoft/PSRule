@@ -2,10 +2,12 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using System.Reflection;
 using System.Threading;
 using PSRule.Configuration;
 using PSRule.Pipeline.Output;
@@ -13,10 +15,40 @@ using PSRule.Resources;
 
 namespace PSRule.Pipeline
 {
+    public interface ISourcePipelineBuilder
+    {
+        bool ShouldLoadModule { get; }
+
+        void VerboseScanSource(string path);
+
+        void VerboseFoundModules(int count);
+
+        void VerboseScanModule(string moduleName);
+
+        void Directory(string[] path, bool excludeDefaultRulePath = false);
+
+        void Directory(string path, bool excludeDefaultRulePath = false);
+
+        void Module(PSModuleInfo[] module);
+
+        Source[] Build();
+    }
+
+    public interface ISourceCommandlineBuilder
+    {
+        void Directory(string[] path, bool excludeDefaultRulePath = false);
+
+        void Directory(string path, bool excludeDefaultRulePath = false);
+
+        void ModuleByName(string name);
+
+        Source[] Build();
+    }
+
     /// <summary>
     /// A helper to build a list of rule sources for discovery.
     /// </summary>
-    public sealed class SourcePipelineBuilder
+    public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceCommandlineBuilder
     {
         private const string SourceFileExtension_YAML = ".yaml";
         private const string SourceFileExtension_YML = ".yml";
@@ -27,17 +59,19 @@ namespace PSRule.Pipeline
         private const string DefaultRulePath = ".ps-rule/";
 
         private readonly Dictionary<string, Source> _Source;
-        private readonly HostContext _HostContext;
+        private readonly IHostContext _HostContext;
         private readonly HostPipelineWriter _Writer;
         private readonly bool _UseDefaultPath;
+        private readonly string _LocalPath;
 
-        internal SourcePipelineBuilder(HostContext hostContext, PSRuleOption option)
+        internal SourcePipelineBuilder(IHostContext hostContext, PSRuleOption option)
         {
             _Source = new Dictionary<string, Source>(StringComparer.OrdinalIgnoreCase);
             _HostContext = hostContext;
             _Writer = new HostPipelineWriter(hostContext, option);
             _Writer.EnterScope("[Discovery.Source]");
             _UseDefaultPath = option == null || option.Include == null || option.Include.Path == null;
+            _LocalPath = PSRuleOption.GetRootedBasePath(Path.GetDirectoryName(typeof(SourcePipelineBuilder).Assembly.Location));
 
             // Include paths from options
             if (!_UseDefaultPath)
@@ -108,6 +142,64 @@ namespace PSRule.Pipeline
 
             for (var i = 0; i < module.Length; i++)
                 Module(module[i], dependency: false);
+        }
+
+        /// <summary>
+        /// Add a module source.
+        /// </summary>
+        /// <param name="name">The name of the module.</param>
+        public void ModuleByName(string name)
+        {
+            var basePath = FindModule(name);
+            var info = LoadManifest(basePath);
+            if (info == null)
+                throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
+
+            VerboseScanModule(info.Name);
+            var files = GetFiles(basePath, basePath, excludeDefaultRulePath: false, info.Name);
+            if (files == null || files.Length == 0)
+                return;
+
+            Source(new Source(info, files, dependency: false));
+
+            // Import dependencies
+            //for (var i = 0; module.RequiredModules != null && i < module.RequiredModules.Count; i++)
+            //    Module(module.RequiredModules[i], dependency: true);
+        }
+
+        private string FindModule(string name)
+        {
+            return PSRuleOption.GetRootedBasePath(Path.Combine(_LocalPath, "Modules", name));
+        }
+
+        private static Source.ModuleInfo LoadManifest(string basePath)
+        {
+            var name = Path.GetFileName(Path.GetDirectoryName(basePath));
+            var path = Path.Combine(basePath, string.Concat(name, ".psd1"));
+            if (!File.Exists(path))
+                return null;
+
+            var reader = new StreamReader(path);
+            var data = reader.ReadToEnd();
+            var ast = System.Management.Automation.Language.Parser.ParseInput(data, out _, out _);
+            var hashtable = ast.FindAll(item => item is System.Management.Automation.Language.HashtableAst, false).FirstOrDefault();
+            var manifest = hashtable.SafeGetValue() as Hashtable;
+            if (manifest == null)
+                return null;
+
+            var version = manifest["ModuleVersion"] as string;
+            var guid = manifest["GUID"] as string;
+            var companyName = manifest["CompanyName"] as string;
+            var privateData = manifest["PrivateData"] as Hashtable;
+            var psData = privateData["PSData"] as Hashtable;
+            var projectUri = psData["ProjectUri"] as string;
+            var prerelease = psData["Prerelease"] as string;
+            var requiredAssemblies = manifest["RequiredAssemblies"] as Array;
+
+            foreach (var a in requiredAssemblies.OfType<string>())
+                Assembly.LoadFile(Path.Combine(basePath, a));
+
+            return new Source.ModuleInfo(basePath, name, version, projectUri, guid, companyName, prerelease);
         }
 
         /// <summary>

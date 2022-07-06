@@ -8,11 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PSRule.Resources
-{
+namespace PSRule.Resources {
     using System;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -20,139 +19,115 @@ namespace PSRule.Resources
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class DocumentStrings
-    {
-
+    internal class DocumentStrings {
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal DocumentStrings()
-        {
+        internal DocumentStrings() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager
-        {
-            get
-            {
-                if (object.ReferenceEquals(resourceMan, null))
-                {
+        internal static global::System.Resources.ResourceManager ResourceManager {
+            get {
+                if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PSRule.Resources.DocumentStrings", typeof(DocumentStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture
-        {
-            get
-            {
+        internal static global::System.Globalization.CultureInfo Culture {
+            get {
                 return resourceCulture;
             }
-            set
-            {
+            set {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to DESCRIPTION.
         /// </summary>
-        internal static string Description
-        {
-            get
-            {
+        internal static string Description {
+            get {
                 return ResourceManager.GetString("Description", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to DISPLAY NAME.
         /// </summary>
-        internal static string DisplayName
-        {
-            get
-            {
+        internal static string DisplayName {
+            get {
                 return ResourceManager.GetString("DisplayName", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to LINKS.
         /// </summary>
-        internal static string Links
-        {
-            get
-            {
+        internal static string Links {
+            get {
                 return ResourceManager.GetString("Links", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to MODULE NAME.
         /// </summary>
-        internal static string ModuleName
-        {
-            get
-            {
+        internal static string ModuleName {
+            get {
                 return ResourceManager.GetString("ModuleName", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to NAME.
         /// </summary>
-        internal static string Name
-        {
-            get
-            {
+        internal static string Name {
+            get {
                 return ResourceManager.GetString("Name", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to NOTES.
         /// </summary>
-        internal static string Notes
-        {
-            get
-            {
+        internal static string Notes {
+            get {
                 return ResourceManager.GetString("Notes", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to RECOMMENDATION.
         /// </summary>
-        internal static string Recommendation
-        {
-            get
-            {
+        internal static string Recommendation {
+            get {
                 return ResourceManager.GetString("Recommendation", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to SYNOPSIS.
         /// </summary>
-        internal static string Synopsis
-        {
-            get
-            {
+        internal static string Synopsis {
+            get {
                 return ResourceManager.GetString("Synopsis", resourceCulture);
             }
         }

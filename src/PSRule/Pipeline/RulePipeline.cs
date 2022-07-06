@@ -7,7 +7,7 @@ using PSRule.Runtime;
 
 namespace PSRule.Pipeline
 {
-    internal abstract class RulePipeline : IDisposable, IPipeline
+    internal abstract class RulePipeline : IPipeline
     {
         protected readonly PipelineContext Pipeline;
         protected readonly RunspaceContext Context;

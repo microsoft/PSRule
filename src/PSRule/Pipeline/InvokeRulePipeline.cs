@@ -25,7 +25,7 @@ namespace PSRule.Pipeline
         protected InputFileInfo[] _InputPath;
         protected string _ResultVariableName;
 
-        protected InvokePipelineBuilderBase(Source[] source, HostContext hostContext)
+        protected InvokePipelineBuilderBase(Source[] source, IHostContext hostContext)
             : base(source, hostContext)
         {
             _InputPath = null;
@@ -152,7 +152,7 @@ namespace PSRule.Pipeline
     /// </summary>
     internal sealed class InvokeRulePipelineBuilder : InvokePipelineBuilderBase
     {
-        internal InvokeRulePipelineBuilder(Source[] source, HostContext hostContext)
+        internal InvokeRulePipelineBuilder(Source[] source, IHostContext hostContext)
             : base(source, hostContext) { }
     }
 

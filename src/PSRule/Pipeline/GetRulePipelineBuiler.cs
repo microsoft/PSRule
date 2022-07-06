@@ -17,7 +17,7 @@ namespace PSRule.Pipeline
     {
         private bool _IncludeDependencies;
 
-        internal GetRulePipelineBuilder(Source[] source, HostContext hostContext)
+        internal GetRulePipelineBuilder(Source[] source, IHostContext hostContext)
             : base(source, hostContext) { }
 
         public override IPipelineBuilder Configure(PSRuleOption option)

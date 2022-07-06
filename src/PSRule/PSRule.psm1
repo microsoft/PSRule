@@ -152,7 +152,8 @@ function Invoke-PSRule {
             $Option.Output.Culture = $Culture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);
+        $hostContext = [PSRule.Pipeline.PSHostContext]::new($PSCmdlet, $ExecutionContext);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Invoke($sourceFiles, $Option, $hostContext);
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.Convention($Convention);
@@ -300,7 +301,8 @@ function Test-PSRuleTarget {
             $Option.Output.Culture = $Culture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Test($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);
+        $hostContext = [PSRule.Pipeline.PSHostContext]::new($PSCmdlet, $ExecutionContext);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Test($sourceFiles, $Option, $hostContext);
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.Convention($Convention);
@@ -405,7 +407,8 @@ function Get-PSRuleTarget {
             $Option.Output.Path = $OutputPath;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::GetTarget($Option, $PSCmdlet, $ExecutionContext);
+        $hostContext = [PSRule.Pipeline.PSHostContext]::new($PSCmdlet, $ExecutionContext);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::GetTarget($Option, $hostContext);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $builder.InputPath($InputPath);
@@ -583,7 +586,8 @@ function Assert-PSRule {
             $Option.Output.Culture = $Culture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Assert($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);;
+        $hostContext = [PSRule.Pipeline.PSHostContext]::new($PSCmdlet, $ExecutionContext);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Assert($sourceFiles, $Option, $hostContext);;
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.Convention($Convention);
@@ -723,7 +727,8 @@ function Get-PSRule {
             $Option.Output.Culture = $Culture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::Get($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);
+        $hostContext = [PSRule.Pipeline.PSHostContext]::new($PSCmdlet, $ExecutionContext);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::Get($sourceFiles, $Option, $hostContext);
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.UseBaseline($Baseline);
@@ -835,7 +840,8 @@ function Get-PSRuleBaseline {
             $Option.Output.Format = $OutputFormat;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::GetBaseline($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);;
+        $hostContext = [PSRule.Pipeline.PSHostContext]::new($PSCmdlet, $ExecutionContext);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::GetBaseline($sourceFiles, $Option, $hostContext);;
         $builder.Name($Name);
         try {
             $pipeline = $builder.Build();
@@ -944,7 +950,8 @@ function Export-PSRuleBaseline {
             $Option.Output.Encoding = $OutputEncoding;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::ExportBaseline($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);;
+        $hostContext = [PSRule.Pipeline.PSHostContext]::new($PSCmdlet, $ExecutionContext);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::ExportBaseline($sourceFiles, $Option, $hostContext);;
         $builder.Name($Name);
         try {
             $pipeline = $builder.Build();
@@ -1055,7 +1062,8 @@ function Get-PSRuleHelp {
             $Option.Output.Culture = $Culture;
         }
 
-        $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp($sourceFiles, $Option, $PSCmdlet, $ExecutionContext);;
+        $hostContext = [PSRule.Pipeline.PSHostContext]::new($PSCmdlet, $ExecutionContext);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp($sourceFiles, $Option, $hostContext);;
 
         if ($Online) {
             $builder.Online();
@@ -1970,7 +1978,8 @@ function GetSource {
         [PSRule.Configuration.PSRuleOption]$Option
     )
     process {
-        $builder = [PSRule.Pipeline.PipelineBuilder]::RuleSource($Option, $PSCmdlet, $ExecutionContext);
+        $hostContext = [PSRule.Pipeline.PSHostContext]::new($PSCmdlet, $ExecutionContext);
+        $builder = [PSRule.Pipeline.PipelineBuilder]::RuleSource($Option, $hostContext);
 
         $moduleParams = @{};
         if ($PSBoundParameters.ContainsKey('Module')) {

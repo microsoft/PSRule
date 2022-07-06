@@ -15,6 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.BuildTool", "src\PSR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.SDK", "src\PSRule.SDK\PSRule.SDK.csproj", "{6B21D558-BFC3-4BC6-963E-83B65353196F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Tool", "src\PSRule.Tool\PSRule.Tool.csproj", "{F6CFCA60-72D5-474E-8B8B-1AB973434569}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F5173A23-CCEA-4C39-AB8D-EF6E86C11BD7}"
+	ProjectSection(SolutionItems) = preProject
+		src\PSRule.Common.props = src\PSRule.Common.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +52,10 @@ Global
 		{6B21D558-BFC3-4BC6-963E-83B65353196F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B21D558-BFC3-4BC6-963E-83B65353196F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B21D558-BFC3-4BC6-963E-83B65353196F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6CFCA60-72D5-474E-8B8B-1AB973434569}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6CFCA60-72D5-474E-8B8B-1AB973434569}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6CFCA60-72D5-474E-8B8B-1AB973434569}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6CFCA60-72D5-474E-8B8B-1AB973434569}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

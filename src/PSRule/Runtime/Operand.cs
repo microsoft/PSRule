@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System;
-using Microsoft.CodeAnalysis.Sarif;
 
 namespace PSRule.Runtime
 {

@@ -52,7 +52,7 @@ namespace PSRule.Pipeline
         internal readonly Dictionary<string, SelectorVisitor> Selector;
         internal readonly List<SuppressionGroupVisitor> SuppressionGroup;
         internal readonly OptionContext Baseline;
-        internal readonly HostContext HostContext;
+        internal readonly IHostContext HostContext;
         internal readonly PipelineReader Reader;
         internal readonly BindTargetMethod BindTargetName;
         internal readonly BindTargetMethod BindTargetType;
@@ -72,7 +72,7 @@ namespace PSRule.Pipeline
             }
         }
 
-        private PipelineContext(PSRuleOption option, HostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IList<ResourceRef> unresolved)
+        private PipelineContext(PSRuleOption option, IHostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IList<ResourceRef> unresolved)
         {
             Option = option;
             HostContext = hostContext;
@@ -94,7 +94,7 @@ namespace PSRule.Pipeline
             RunTime = Stopwatch.StartNew();
         }
 
-        public static PipelineContext New(PSRuleOption option, HostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IList<ResourceRef> unresolved)
+        public static PipelineContext New(PSRuleOption option, IHostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IList<ResourceRef> unresolved)
         {
             var context = new PipelineContext(option, hostContext, reader, bindTargetName, bindTargetType, bindField, baseline, unresolved);
             CurrentThread = context;

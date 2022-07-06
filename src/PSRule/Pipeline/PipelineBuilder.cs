@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,72 +20,63 @@ namespace PSRule.Pipeline
 {
     public static class PipelineBuilder
     {
-        public static IInvokePipelineBuilder Assert(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
+        public static IInvokePipelineBuilder Assert(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
-            var hostContext = new HostContext(commandRuntime, executionContext);
             var pipeline = new AssertPipelineBuilder(source, hostContext);
             pipeline.Configure(option);
             return pipeline;
         }
 
-        public static IInvokePipelineBuilder Invoke(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
+        public static IInvokePipelineBuilder Invoke(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
-            var hostContext = new HostContext(commandRuntime, executionContext);
             var pipeline = new InvokeRulePipelineBuilder(source, hostContext);
             pipeline.Configure(option);
             return pipeline;
         }
 
-        public static IInvokePipelineBuilder Test(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
+        public static IInvokePipelineBuilder Test(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
-            var hostContext = new HostContext(commandRuntime, executionContext);
             var pipeline = new TestPipelineBuilder(source, hostContext);
             pipeline.Configure(option);
             return pipeline;
         }
 
-        public static IGetPipelineBuilder Get(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
+        public static IGetPipelineBuilder Get(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
-            var hostContext = new HostContext(commandRuntime, executionContext);
             var pipeline = new GetRulePipelineBuilder(source, hostContext);
             pipeline.Configure(option);
             return pipeline;
         }
 
-        public static IHelpPipelineBuilder GetHelp(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
+        public static IHelpPipelineBuilder GetHelp(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
-            var hostContext = new HostContext(commandRuntime, executionContext);
             var pipeline = new GetRuleHelpPipelineBuilder(source, hostContext);
             pipeline.Configure(option);
             return pipeline;
         }
 
-        public static SourcePipelineBuilder RuleSource(PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
+        public static ISourcePipelineBuilder RuleSource(PSRuleOption option, IHostContext hostContext)
         {
-            var hostContext = new HostContext(commandRuntime, executionContext);
             var pipeline = new SourcePipelineBuilder(hostContext, option);
             return pipeline;
         }
 
-        public static IPipelineBuilder GetBaseline(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
+        public static IPipelineBuilder GetBaseline(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
-            var hostContext = new HostContext(commandRuntime, executionContext);
             var pipeline = new GetBaselinePipelineBuilder(source, hostContext);
             pipeline.Configure(option);
             return pipeline;
         }
 
-        public static IPipelineBuilder ExportBaseline(Source[] source, PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
+        public static IPipelineBuilder ExportBaseline(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
-            var hostContext = new HostContext(commandRuntime, executionContext);
             var pipeline = new ExportBaselinePipelineBuilder(source, hostContext);
             pipeline.Configure(option);
             return pipeline;
         }
 
-        public static IGetTargetPipelineBuilder GetTarget(PSRuleOption option, PSCmdlet commandRuntime, EngineIntrinsics executionContext)
+        public static IGetTargetPipelineBuilder GetTarget(PSRuleOption option, IHostContext hostContext)
         {
-            var hostContext = new HostContext(commandRuntime, executionContext);
             var pipeline = new GetTargetPipelineBuilder(null, hostContext);
             pipeline.Configure(option);
             return pipeline;
@@ -98,7 +90,7 @@ namespace PSRule.Pipeline
         IPipeline Build(IPipelineWriter writer = null);
     }
 
-    public interface IPipeline
+    public interface IPipeline : IDisposable
     {
         void Begin();
 
@@ -114,7 +106,7 @@ namespace PSRule.Pipeline
 
         protected readonly PSRuleOption Option;
         protected readonly Source[] Source;
-        protected readonly HostContext HostContext;
+        protected readonly IHostContext HostContext;
         protected BindTargetMethod BindTargetNameHook;
         protected BindTargetMethod BindTargetTypeHook;
         protected BindTargetMethod BindFieldHook;
@@ -131,7 +123,7 @@ namespace PSRule.Pipeline
         private const int MIN_JSON_INDENT = 0;
         private const int MAX_JSON_INDENT = 4;
 
-        protected PipelineBuilderBase(Source[] source, HostContext hostContext)
+        protected PipelineBuilderBase(Source[] source, IHostContext hostContext)
         {
             Option = new PSRuleOption();
             Source = source;

@@ -20,7 +20,7 @@ namespace PSRule.Pipeline
     {
         private InputFileInfo[] _InputPath;
 
-        internal GetTargetPipelineBuilder(Source[] source, HostContext hostContext)
+        internal GetTargetPipelineBuilder(Source[] source, IHostContext hostContext)
             : base(source, hostContext)
         {
             _InputPath = null;

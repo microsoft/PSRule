@@ -125,6 +125,16 @@ task TestDotNet {
     }
 }
 
+task BuildCLI BuildModule, {
+    exec {
+        # Build library
+        dotnet publish src/PSRule.Tool -c $Configuration --no-self-contained -r win-x64 -o ./out/cli/win-x64/ -p:version=$Build
+        # dotnet publish --self-contained true -p:PublishTrimmed=true -p:PublishSingleFile=true -r win-x64 .\src\PSRule.Tool\PSRule.Tool.csproj -o .\out\cli
+    }
+
+    Copy-Item -Path out/modules/PSRule/ -Destination out/cli/win-x64/modules/ -Recurse -Force;
+}
+
 task CopyModule {
     CopyModuleFiles -Path src/PSRule -DestinationPath out/modules/PSRule;
 

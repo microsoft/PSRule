@@ -339,4 +339,7 @@
   <data name="InfoOutputPath" xml:space="preserve">
     <value>Output written to the following file: '{0}'</value>
   </data>
+  <data name="ModuleNotFound" xml:space="preserve">
+    <value>Not valid module can be found with that name.</value>
+  </data>
 </root>

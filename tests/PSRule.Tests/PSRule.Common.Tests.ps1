@@ -1033,7 +1033,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             $option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -BindTargetName $bindFn;
-            { $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop } | Should -Throw 'Exception calling "Invoke" with "4" argument(s): "Binding functions are not supported in this language mode."';
+            { $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop } | Should -Throw 'Exception calling "Invoke" with "3" argument(s): "Binding functions are not supported in this language mode."';
         }
     }
 
@@ -1546,7 +1546,7 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
             }
 
             $option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -BindTargetName $bindFn;
-            { $Null = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop } | Should -Throw 'Exception calling "Test" with "4" argument(s): "Binding functions are not supported in this language mode."';
+            { $Null = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop } | Should -Throw 'Exception calling "Test" with "3" argument(s): "Binding functions are not supported in this language mode."';
         }
     }
 }
@@ -1804,7 +1804,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             }
 
             $option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -BindTargetName $bindFn;
-            { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop 6>&1 } | Should -Throw 'Exception calling "Assert" with "4" argument(s): "Binding functions are not supported in this language mode."';
+            { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop 6>&1 } | Should -Throw 'Exception calling "Assert" with "3" argument(s): "Binding functions are not supported in this language mode."';
         }
     }
 }

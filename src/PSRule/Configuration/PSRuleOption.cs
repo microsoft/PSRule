@@ -245,6 +245,18 @@ namespace PSRule.Configuration
         /// <summary>
         /// Load a YAML formatted PSRuleOption object from disk.
         /// </summary>
+        /// <returns>An options object.</returns>
+        /// <remarks>
+        /// This method is called from PowerShell.
+        /// </remarks>
+        public static PSRuleOption FromFileOrEmpty()
+        {
+            return FromFileOrEmpty(GetWorkingPath());
+        }
+
+        /// <summary>
+        /// Load a YAML formatted PSRuleOption object from disk.
+        /// </summary>
         /// <param name="option"></param>
         /// <param name="path">A file or directory to read options from.</param>
         /// <returns>An options object.</returns>

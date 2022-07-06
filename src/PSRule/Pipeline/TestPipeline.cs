@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using PSRule.Rules;
@@ -7,7 +7,7 @@ namespace PSRule.Pipeline
 {
     internal sealed class TestPipelineBuilder : InvokePipelineBuilderBase
     {
-        internal TestPipelineBuilder(Source[] source, HostContext hostContext)
+        internal TestPipelineBuilder(Source[] source, IHostContext hostContext)
             : base(source, hostContext) { }
 
         private sealed class BooleanWriter : PipelineWriter
