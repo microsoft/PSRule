@@ -13,6 +13,14 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.3.0-B0006:
+
+- Bug fixes:
+  - Fixed null object reference for object equity comparison by @BernieWhite.
+    [#1157](https://github.com/microsoft/PSRule/issues/1157)
+  - Fixed expression evaluation not logging debug output when using the `-Debug` switch by @BernieWhite.
+    [#1158](https://github.com/microsoft/PSRule/issues/1158)
+
 ## v2.3.0-B0006 (pre-release)
 
 What's changed since pre-release v2.3.0-B0001:

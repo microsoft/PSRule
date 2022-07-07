@@ -77,7 +77,7 @@ namespace PSRule.Definitions.SuppressionGroups
         public bool TryMatch(object o, out ISuppressionInfo suppression)
         {
             suppression = null;
-            var context = new ExpressionContext(Source);
+            var context = new ExpressionContext(Source, ResourceKind.SuppressionGroup);
             context.Debug(PSRuleResources.SelectorMatchTrace, Id);
             if (_Fn(context, o).GetValueOrDefault(false))
             {

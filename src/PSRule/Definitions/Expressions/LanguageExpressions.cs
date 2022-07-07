@@ -226,7 +226,8 @@ namespace PSRule.Definitions.Expressions
         private static bool? DebuggerFn(ExpressionContext context, string path, LanguageExpressionOuterFn expression, object o)
         {
             var result = expression(context, o);
-            context.Debug(PSRuleResources.SelectorTrace, path, result);
+            var type = context.Kind == ResourceKind.Rule ? 'R' : 'S';
+            context.Debug(PSRuleResources.LanguageExpressionTraceP2, type, path, result);
             return result;
         }
 
@@ -487,7 +488,7 @@ namespace PSRule.Definitions.Expressions
                 return Invalid(context, NOTEQUALS);
 
             if (TryFieldNotExists(context, o, properties))
-                return Pass();
+                return PassPathNotFound(context, NOTEQUALS);
 
             if (!TryOperand(context, NOTEQUALS, o, properties, out var operand) ||
                 !GetConvert(properties, out var convert) ||
@@ -512,7 +513,7 @@ namespace PSRule.Definitions.Expressions
 
             GetCaseSensitive(properties, out var caseSensitive);
             if (TryFieldNotExists(context, o, properties))
-                return Pass();
+                return PassPathNotFound(context, HASDEFAULT);
 
             if (!TryOperand(context, HASDEFAULT, o, properties, out var operand))
                 return Invalid(context, HASDEFAULT);
@@ -533,7 +534,7 @@ namespace PSRule.Definitions.Expressions
                 return Invalid(context, HASVALUE);
 
             if (TryFieldNotExists(context, o, properties) && !propertyValue.Value)
-                return Pass();
+                return PassPathNotFound(context, HASVALUE);
 
             if (!TryOperand(context, HASVALUE, o, properties, out var operand))
                 return Invalid(context, HASVALUE);
@@ -569,7 +570,7 @@ namespace PSRule.Definitions.Expressions
                 return Invalid(context, NOTMATCH);
 
             if (TryFieldNotExists(context, o, properties))
-                return Pass();
+                return PassPathNotFound(context, NOTMATCH);
 
             if (!TryOperand(context, NOTMATCH, o, properties, out var operand))
                 return Invalid(context, NOTMATCH);
@@ -610,7 +611,7 @@ namespace PSRule.Definitions.Expressions
                 return Invalid(context, NOTIN);
 
             if (TryFieldNotExists(context, o, properties))
-                return Pass();
+                return PassPathNotFound(context, NOTIN);
 
             if (!TryOperand(context, NOTIN, o, properties, out var operand))
                 return Invalid(context, NOTIN);
@@ -1418,6 +1419,12 @@ namespace PSRule.Definitions.Expressions
             return Condition(context, operand, false, text, args);
         }
 
+        private static bool PassPathNotFound(ExpressionContext context, string name)
+        {
+            context.ExpressionTrace(name, PSRuleResources.ObjectPathNotFound);
+            return true;
+        }
+
         private static bool Pass()
         {
             return true;
@@ -1569,7 +1576,8 @@ namespace PSRule.Definitions.Expressions
         /// </summary>
         private static bool TryFieldNotExists(ExpressionContext context, object o, LanguageExpression.PropertyBag properties)
         {
-            return properties.TryGetString(FIELD, out var field) && !ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object _);
+            return properties.TryGetString(FIELD, out var field) &&
+                !ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object _);
         }
 
         private static bool TryOperand(ExpressionContext context, string name, object o, LanguageExpression.PropertyBag properties, out IOperand operand)

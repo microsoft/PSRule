@@ -277,11 +277,20 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [PSRule][S][Trace] -- {0}: {1} {0} {2}.
+        ///   Looks up a localized string similar to [PSRule][{0}][Trace] -- {1}: {2}.
         /// </summary>
-        internal static string LanguageExpressionTrace {
+        internal static string LanguageExpressionTraceP2 {
             get {
-                return ResourceManager.GetString("LanguageExpressionTrace", resourceCulture);
+                return ResourceManager.GetString("LanguageExpressionTraceP2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [PSRule][{0}][Trace] -- {1}: {2} {1} {3}.
+        /// </summary>
+        internal static string LanguageExpressionTraceP3 {
+            get {
+                return ResourceManager.GetString("LanguageExpressionTraceP3", resourceCulture);
             }
         }
         
@@ -336,6 +345,15 @@ namespace PSRule.Resources {
         internal static string ObjectNotProcessed {
             get {
                 return ResourceManager.GetString("ObjectNotProcessed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object path not found..
+        /// </summary>
+        internal static string ObjectPathNotFound {
+            get {
+                return ResourceManager.GetString("ObjectPathNotFound", resourceCulture);
             }
         }
         
@@ -493,6 +511,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [PSRule][R][Trace] -- {0}.
+        /// </summary>
+        internal static string RuleMatchTrace {
+            get {
+                return ResourceManager.GetString("RuleMatchTrace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not find a matching rule. Please check that Path, Name and Tag parameters are correct..
         /// </summary>
         internal static string RuleNotFound {
@@ -606,15 +633,6 @@ namespace PSRule.Resources {
         internal static string SelectorMatchTrace {
             get {
                 return ResourceManager.GetString("SelectorMatchTrace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [PSRule][S][Trace] -- {0}: {1}.
-        /// </summary>
-        internal static string SelectorTrace {
-            get {
-                return ResourceManager.GetString("SelectorTrace", resourceCulture);
             }
         }
         
