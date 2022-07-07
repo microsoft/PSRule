@@ -25,16 +25,19 @@ namespace PSRule.Definitions.Expressions
 
         private List<ResultReason> _Reason;
 
-        internal ExpressionContext(SourceFile source)
+        internal ExpressionContext(SourceFile source, ResourceKind kind)
         {
             Source = source;
             LanguageScope = source.Module;
+            Kind = kind;
             _NameTokenCache = new Dictionary<string, PathExpression>();
         }
 
         public SourceFile Source { get; }
 
         public string LanguageScope { get; }
+
+        public ResourceKind Kind { get; }
 
         [DebuggerStepThrough]
         void IBindingContext.CachePathExpression(string path, PathExpression expression)

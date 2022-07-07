@@ -186,8 +186,8 @@
   <data name="KeywordSourceScope" xml:space="preserve">
     <value>The keyword '{0}' can not be nested in a Rule block.</value>
   </data>
-  <data name="LanguageExpressionTrace" xml:space="preserve">
-    <value>[PSRule][S][Trace] -- {0}: {1} {0} {2}</value>
+  <data name="LanguageExpressionTraceP3" xml:space="preserve">
+    <value>[PSRule][{0}][Trace] -- {1}: {2} {1} {3}</value>
   </data>
   <data name="LaunchBrowser" xml:space="preserve">
     <value>Please open your browser to the following location: {0}</value>
@@ -288,8 +288,8 @@
   <data name="SelectorMatchTrace" xml:space="preserve">
     <value>[PSRule][S][Trace] -- {0}</value>
   </data>
-  <data name="SelectorTrace" xml:space="preserve">
-    <value>[PSRule][S][Trace] -- {0}: {1}</value>
+  <data name="LanguageExpressionTraceP2" xml:space="preserve">
+    <value>[PSRule][{0}][Trace] -- {1}: {2}</value>
   </data>
   <data name="SerializeNullPSObject" xml:space="preserve">
     <value>Can not serialize a null PSObject.</value>
@@ -341,5 +341,11 @@
   </data>
   <data name="ModuleNotFound" xml:space="preserve">
     <value>Not valid module can be found with that name.</value>
+  </data>
+  <data name="RuleMatchTrace" xml:space="preserve">
+    <value>[PSRule][R][Trace] -- {0}</value>
+  </data>
+  <data name="ObjectPathNotFound" xml:space="preserve">
+    <value>Object path not found.</value>
   </data>
 </root>

@@ -34,8 +34,6 @@ namespace PSRule.Pipeline
 
         bool ShouldWriteInformation();
 
-        void WriteDebug(DebugRecord debugRecord);
-
         void WriteDebug(string text, params object[] args);
 
         bool ShouldWriteDebug();
@@ -59,11 +57,11 @@ namespace PSRule.Pipeline
         protected const string InformationPreference = "InformationPreference";
         protected const string DebugPreference = "DebugPreference";
 
-        private readonly PipelineWriter _Writer;
+        private readonly IPipelineWriter _Writer;
 
         protected readonly PSRuleOption Option;
 
-        protected PipelineWriter(PipelineWriter inner, PSRuleOption option)
+        protected PipelineWriter(IPipelineWriter inner, PSRuleOption option)
         {
             _Writer = inner;
             Option = option;
@@ -153,21 +151,13 @@ namespace PSRule.Pipeline
             return _Writer != null && _Writer.ShouldWriteInformation();
         }
 
-        public virtual void WriteDebug(DebugRecord debugRecord)
-        {
-            if (_Writer == null || debugRecord == null)
-                return;
-
-            _Writer.WriteDebug(debugRecord);
-        }
-
-        public void WriteDebug(string text, params object[] args)
+        public virtual void WriteDebug(string text, params object[] args)
         {
             if (_Writer == null || string.IsNullOrEmpty(text) || !ShouldWriteDebug())
                 return;
 
             text = args == null || args.Length == 0 ? text : string.Format(Thread.CurrentThread.CurrentCulture, text, args);
-            _Writer.WriteDebug(new DebugRecord(text));
+            _Writer.WriteDebug(text);
         }
 
         public virtual bool ShouldWriteDebug()

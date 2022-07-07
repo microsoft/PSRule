@@ -852,7 +852,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result[0].Source[0].File | Should -Be 'some-file.json';
             $result[0].Source[0].Line | Should -Be 1;
             $result[1].Source[0].File.Split([char[]]@('\', '/'))[-1] | Should -Be 'ObjectFromFile.json';
-            $result[1].Source[0].Line | Should -Be 57;
+            $result[1].Source[0].Line | Should -Be 58;
 
             # Multiple file
             $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles);

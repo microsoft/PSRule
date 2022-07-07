@@ -42,6 +42,9 @@ namespace PSRule
 
         internal static bool Equal(object expectedValue, object actualValue, bool caseSensitive, bool convertExpected = false, bool convertActual = false)
         {
+            if (expectedValue == null && actualValue == null)
+                return true;
+
             if (TryString(expectedValue, out var s1) && TryString(actualValue, convertActual, out var s2))
                 return StringEqual(s1, s2, caseSensitive);
 
@@ -56,6 +59,9 @@ namespace PSRule
 
             var expectedBase = GetBaseObject(expectedValue);
             var actualBase = GetBaseObject(actualValue);
+            if (expectedBase == null || actualBase == null)
+                return expectedBase == null && actualBase == null;
+
             return expectedBase.Equals(actualBase) || expectedValue.Equals(actualValue);
         }
 

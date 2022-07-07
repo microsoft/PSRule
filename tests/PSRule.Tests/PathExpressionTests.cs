@@ -188,6 +188,18 @@ namespace PSRule
         }
 
         [Fact]
+        public void WithNullValue()
+        {
+            var testObject = GetJsonContent();
+
+            var expression = PathExpression.Create("$[?@.spec.properties.from == 'abc'].TargetName");
+            Assert.True(expression.TryGet(testObject, false, out object[] actual));
+            Assert.NotNull(actual);
+            Assert.Single(actual);
+            Assert.Equal("TestObject2", actual[0]);
+        }
+
+        [Fact]
         public void WithExistsFilter()
         {
             var testObject = GetJsonContent();

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Management.Automation;
+using System.Threading;
 using PSRule.Configuration;
 using PSRule.Rules;
 
@@ -140,12 +141,13 @@ namespace PSRule.Pipeline.Output
         /// <summary>
         /// Core method to hand off debug messages to logger.
         /// </summary>
-        public override void WriteDebug(DebugRecord debugRecord)
+        public override void WriteDebug(string text, params object[] args)
         {
-            if (OnWriteDebug == null || !ShouldWriteDebug())
+            if (OnWriteDebug == null || string.IsNullOrEmpty(text) || !ShouldWriteDebug())
                 return;
 
-            OnWriteDebug(debugRecord.Message);
+            text = args == null || args.Length == 0 ? text : string.Format(Thread.CurrentThread.CurrentCulture, text, args);
+            OnWriteDebug(text);
         }
 
         public override void WriteObject(object sendToPipeline, bool enumerateCollection)
