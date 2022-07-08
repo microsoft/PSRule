@@ -462,9 +462,10 @@ namespace PSRule.Configuration
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        internal static string GetRootedPath(string path, bool normalize = false)
+        internal static string GetRootedPath(string path, bool normalize = false, string basePath = null)
         {
-            var rootedPath = Path.IsPathRooted(path) ? Path.GetFullPath(path) : Path.GetFullPath(Path.Combine(GetWorkingPath(), path));
+            basePath ??= GetWorkingPath();
+            var rootedPath = Path.IsPathRooted(path) ? Path.GetFullPath(path) : Path.GetFullPath(Path.Combine(basePath, path));
             return normalize ? rootedPath.Replace(Backslash, Slash) : rootedPath;
         }
 

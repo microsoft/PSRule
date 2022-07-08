@@ -20,6 +20,8 @@ What's changed since pre-release v2.3.0-B0006:
     [#1157](https://github.com/microsoft/PSRule/issues/1157)
   - Fixed expression evaluation not logging debug output when using the `-Debug` switch by @BernieWhite.
     [#1158](https://github.com/microsoft/PSRule/issues/1158)
+  - Fixed startIndex cannot be larger than length of string by @BernieWhite.
+    [#1160](https://github.com/microsoft/PSRule/issues/1160)
 
 ## v2.3.0-B0006 (pre-release)
 

@@ -429,11 +429,12 @@ namespace PSRule
             return actual.StartsWith(expected, ignoreCase: !caseSensitive, Thread.CurrentThread.CurrentCulture);
         }
 
-        internal static string NormalizePath(string basePath, string path)
+        internal static string NormalizePath(string basePath, string path, bool caseSensitive = true)
         {
-            path = Path.IsPathRooted(path) ? Path.GetFullPath(path) : Path.GetFullPath(Path.Combine(basePath, path));
-            basePath = PSRuleOption.GetRootedBasePath(basePath);
-            return path.Substring(basePath.Length).Replace(Backslash, Slash);
+            path = PSRuleOption.GetRootedPath(path, normalize: true, basePath: basePath);
+            basePath = PSRuleOption.GetRootedBasePath(basePath, normalize: true);
+            return path.Length >= basePath.Length &&
+                path.StartsWith(basePath, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) ? path.Substring(basePath.Length).Replace(Backslash, Slash) : path;
         }
 
         internal static string GetObjectOriginPath(object o)
