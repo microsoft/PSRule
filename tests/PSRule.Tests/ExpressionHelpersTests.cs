@@ -17,7 +17,7 @@ namespace PSRule
         [Fact]
         public void NormalizePath()
         {
-            Assert.Equal("C:/temp.json", ExpressionHelpers.NormalizePath("C:\\longer\\directory\\name\\", "C:\\temp.json"));
+            Assert.Equal("C:/temp.json", ExpressionHelpers.NormalizePath("C:\\longer\\directory\\name\\", "C:\\temp.json").Replace("/C:/", "C:/"));
         }
     }
 }
