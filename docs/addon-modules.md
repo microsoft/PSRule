@@ -19,6 +19,7 @@ Module                    | Description | Version / downloads
 [PSRule.Rules.CAF]        | A suite of rules to validate Azure resources against the Cloud Adoption Framework (CAF) using PSRule. | [![rules-caf-version-badge]][rules-caf-version-module] [![rules-caf-downloads-badge]][rules-caf-version-module]
 [PSRule.Rules.GitHub]     | A suite of rules to validate GitHub repositories using PSRule. | [![rules-github-version-badge]][rules-github-version-module] [![rules-github-downloads-badge]][rules-github-version-module]
 [PSRule.Rules.MSFT.OSS]   | A suite of rules to validate repositories against Microsoft Open Source Software (OSS) requirements. | [![rules-msft-oss-version-badge]][rules-msft-oss-version-module] [![rules-msft-oss-downloads-badge]][rules-msft-oss-version-module]
+[PSRule.Monitor]   | Log PSRule analysis results to Azure Monitor. | [![rules-monitor-version-badge]][rules-monitor-version-module] [![rules-monitor-downloads-badge]][rules-msft-oss-version-module]
 
 [rules-azure-version-badge]: https://img.shields.io/powershellgallery/v/PSRule.Rules.Azure.svg?label=PowerShell%20Gallery&color=brightgreen
 [rules-azure-downloads-badge]: https://img.shields.io/powershellgallery/dt/PSRule.Rules.Azure.svg?color=brightgreen
@@ -35,8 +36,12 @@ Module                    | Description | Version / downloads
 [rules-msft-oss-version-badge]: https://img.shields.io/powershellgallery/v/PSRule.Rules.MSFT.OSS.svg?label=PowerShell%20Gallery&color=brightgreen
 [rules-msft-oss-downloads-badge]: https://img.shields.io/powershellgallery/dt/PSRule.Rules.MSFT.OSS.svg?color=brightgreen
 [rules-msft-oss-version-module]: https://www.powershellgallery.com/packages/PSRule.Rules.MSFT.OSS
+[rules-monitor-version-badge]: https://img.shields.io/powershellgallery/v/PSRule.Monitor.svg?label=PowerShell%20Gallery&color=brightgreen
+[rules-monitor-downloads-badge]: https://img.shields.io/powershellgallery/dt/PSRule.Monitor.svg?color=brightgreen
+[rules-monitor-version-module]: https://www.powershellgallery.com/packages/PSRule.Monitor
 [PSRule.Rules.Azure]: https://aka.ms/ps-rule-azure
 [PSRule.Rules.Kubernetes]: https://github.com/microsoft/PSRule.Rules.Kubernetes
 [PSRule.Rules.CAF]: https://github.com/microsoft/PSRule.Rules.CAF
 [PSRule.Rules.GitHub]: https://github.com/microsoft/PSRule.Rules.GitHub
 [PSRule.Rules.MSFT.OSS]: https://github.com/microsoft/PSRule.Rules.MSFT.OSS
+[PSRule.Monitor]: https://github.com/microsoft/PSRule.Monitor
