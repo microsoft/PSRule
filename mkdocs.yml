@@ -115,7 +115,6 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.details
-  - mdx_truly_sane_lists
   - pymdownx.tasklist
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
