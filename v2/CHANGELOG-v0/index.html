@@ -2877,23 +2877,17 @@ Please upgrade to the latest version.</p>
 <h2 id="v0220">v0.22.0<a class="headerlink" href="#v0220" title="Permanent link">#</a></h2>
 <p>What's changed since v0.21.0:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added <code>HasFields</code> assertion helper to check all fields exist. <a href="https://github.com/microsoft/PSRule/issues/578">#578</a></li>
 <li>Updated <code>HasField</code> to check if any of the specified fields exist. <a href="https://github.com/microsoft/PSRule/issues/578">#578</a></li>
-</ul>
-</li>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Input format detection now includes <code>.jsonc</code> and <code>.markdown</code> file extensions. <a href="https://github.com/microsoft/PSRule/issues/575">#575</a></li>
 <li>Improved support for cross module rule dependencies. <a href="https://github.com/microsoft/PSRule/issues/248">#248</a><ul>
 <li>Rule dependencies are now automatically imported.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed handling for null or empty arrays with <code>StartsWith</code>, <code>Contains</code>, <code>EndsWith</code>, <code>In</code>, and <code>NotIn</code>. <a href="https://github.com/microsoft/PSRule/issues/579">#579</a></li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.22.0-B2010014:</p>
 <ul>
@@ -2902,28 +2896,22 @@ Please upgrade to the latest version.</p>
 <h2 id="v0220-b2010014-pre-release">v0.22.0-B2010014 (pre-release)<a class="headerlink" href="#v0220-b2010014-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v0.21.0:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added <code>HasFields</code> assertion helper to check all fields exist. <a href="https://github.com/microsoft/PSRule/issues/578">#578</a></li>
 <li>Updated <code>HasField</code> to check if any of the specified fields exist. <a href="https://github.com/microsoft/PSRule/issues/578">#578</a></li>
-</ul>
-</li>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Input format detection now includes <code>.jsonc</code> and <code>.markdown</code> file extensions. <a href="https://github.com/microsoft/PSRule/issues/575">#575</a></li>
 <li>Improved support for cross module rule dependencies. <a href="https://github.com/microsoft/PSRule/issues/248">#248</a><ul>
 <li>Rule dependencies are now automatically imported.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed handling for null or empty arrays with <code>StartsWith</code>, <code>Contains</code>, <code>EndsWith</code>, <code>In</code>, and <code>NotIn</code>. <a href="https://github.com/microsoft/PSRule/issues/579">#579</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0210">v0.21.0<a class="headerlink" href="#v0210" title="Permanent link">#</a></h2>
 <p>What's changed since v0.20.0:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added support for formatting results as markdown. <a href="https://github.com/microsoft/PSRule/issues/474">#474</a><ul>
 <li>Use <code>-OutputFormat Markdown</code> or configure <code>Output.Format</code> to output markdown.</li>
 <li>To format as either detail or summary, use the <code>-As</code> parameter or configure <code>Output.As</code>.</li>
@@ -2934,28 +2922,20 @@ Please upgrade to the latest version.</p>
 <li><code>IsUpper</code> checks that all letters in a field value are uppercase.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Numerical strings can be converted with numeric assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/550">#550</a></li>
 <li>Added outcome <code>Output.Outcome</code> as a configurable option. <a href="https://github.com/microsoft/PSRule/issues/552">#552</a></li>
 <li>Added help links and default snippets to schemas. <a href="https://github.com/microsoft/PSRule/issues/561">#561</a></li>
 <li>Improved rule error reporting by including rule and source location. <a href="https://github.com/microsoft/PSRule/issues/565">#565</a></li>
-</ul>
-</li>
-<li>Engineering:<ul>
+<li>Engineering:</li>
 <li>Bump Manatee.Json from 13.0.2 to 13.0.3. <a href="https://github.com/microsoft/PSRule/pull/563">#563</a></li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed NUnit report reasons should be escaped in markdown. <a href="https://github.com/microsoft/PSRule/issues/471">#471</a></li>
 <li>Fixed reporting of error when rule error is handled. <a href="https://github.com/microsoft/PSRule/issues/564">#564</a><ul>
 <li>Additionally rules can use <code>-ErrorAction Ignore</code> to ignore non-exception errors.</li>
 </ul>
 </li>
 <li>Fixed first exception stops other rules from being processed. <a href="https://github.com/microsoft/PSRule/issues/566">#566</a></li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.21.0-B2010010:</p>
 <ul>
@@ -2964,68 +2944,52 @@ Please upgrade to the latest version.</p>
 <h2 id="v0210-b2010010-pre-release">v0.21.0-B2010010 (pre-release)<a class="headerlink" href="#v0210-b2010010-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v0.21.0-B2010003:</p>
 <ul>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Improved rule error reporting by including rule and source location. <a href="https://github.com/microsoft/PSRule/issues/565">#565</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0210-b2010003-pre-release">v0.21.0-B2010003 (pre-release)<a class="headerlink" href="#v0210-b2010003-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v0.21.0-B2009016:</p>
 <ul>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Added help links and default snippets to schemas. <a href="https://github.com/microsoft/PSRule/issues/561">#561</a></li>
-</ul>
-</li>
-<li>Engineering:<ul>
+<li>Engineering:</li>
 <li>Bump Manatee.Json from 13.0.2 to 13.0.3. <a href="https://github.com/microsoft/PSRule/pull/563">#563</a></li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed reporting of error when rule error is handled. <a href="https://github.com/microsoft/PSRule/issues/564">#564</a><ul>
 <li>Additionally rules can use <code>-ErrorAction Ignore</code> to ignore non-exception errors.</li>
 </ul>
 </li>
 <li>Fixed first exception stops other rules from being processed. <a href="https://github.com/microsoft/PSRule/issues/566">#566</a></li>
 </ul>
-</li>
-</ul>
 <h2 id="v0210-b2009016-pre-release">v0.21.0-B2009016 (pre-release)<a class="headerlink" href="#v0210-b2009016-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v0.21.0-B2009006:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added character case assertion helpers <code>IsLower</code>, and <code>IsUpper</code>. <a href="https://github.com/microsoft/PSRule/issues/555">#555</a><ul>
 <li><code>IsLower</code> checks that all letters in a field value are lowercase.</li>
 <li><code>IsUpper</code> checks that all letters in a field value are uppercase.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed NUnit report reasons should be escaped in markdown. <a href="https://github.com/microsoft/PSRule/issues/471">#471</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0210-b2009006-pre-release">v0.21.0-B2009006 (pre-release)<a class="headerlink" href="#v0210-b2009006-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v0.20.0:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added support for formatting results as markdown. <a href="https://github.com/microsoft/PSRule/issues/474">#474</a><ul>
 <li>Use <code>-OutputFormat Markdown</code> or configure <code>Output.Format</code> to output markdown.</li>
 <li>To format as either detail or summary, use the <code>-As</code> parameter or configure <code>Output.As</code>.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Numerical strings can be converted with numeric assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/550">#550</a></li>
 <li>Added outcome <code>Output.Outcome</code> as a configurable option. <a href="https://github.com/microsoft/PSRule/issues/552">#552</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0200">v0.20.0<a class="headerlink" href="#v0200" title="Permanent link">#</a></h2>
 <p>What's changed since v0.19.0:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added support for scanning repository files. <a href="https://github.com/microsoft/PSRule/issues/524">#524</a><ul>
 <li>Added <code>File</code> input type (<code>-InputType File</code>) to scan for files without deserializing them.</li>
 <li>Added <code>Input.PathIgnore</code> option to ignore files.</li>
@@ -3046,86 +3010,62 @@ Please upgrade to the latest version.</p>
 <li><code>FilePath</code> checks that a file path (optionally with suffixes) exist.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Added automatic binding for Rule object. <a href="https://github.com/microsoft/PSRule/issues/542">#542</a></li>
-</ul>
-</li>
-<li>Engineering:<ul>
+<li>Engineering:</li>
 <li>Warn when deprecated <code>$Rule</code> properties are used. <a href="https://github.com/microsoft/PSRule/issues/536">#536</a> <a href="https://github.com/microsoft/PSRule/issues/545">#545</a><ul>
 <li>First usage of deprecated property generates a warning.</li>
 <li>Rule using deprecated property is flagged in debug output.</li>
 </ul>
 </li>
 <li>Bump YamlDotNet dependency to v8.1.2. <a href="https://github.com/microsoft/PSRule/issues/439">#439</a></li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed out of bounds exception when empty markdown documentation is used. <a href="https://github.com/microsoft/PSRule/issues/516">#516</a></li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.20.0-B2009013:</p>
 <ul>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed excessive obsolete property warnings. <a href="https://github.com/microsoft/PSRule/issues/545">#545</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0200-b2009013-pre-release">v0.20.0-B2009013 (pre-release)<a class="headerlink" href="#v0200-b2009013-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v0.20.0-B2009007:</p>
 <ul>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Added automatic binding for Rule object. <a href="https://github.com/microsoft/PSRule/issues/542">#542</a></li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed <code>InputFileInfo</code> <code>Type</code> property causes downstream binding issues. <a href="https://github.com/microsoft/PSRule/issues/541">#541</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0200-b2009007-pre-release">v0.20.0-B2009007 (pre-release)<a class="headerlink" href="#v0200-b2009007-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v0.20.0-B2008010:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added file assertion helpers <code>FileHeader</code>, and <code>FilePath</code>. <a href="https://github.com/microsoft/PSRule/issues/534">#534</a><ul>
 <li><code>FileHeader</code> checks for a comment header in the file.</li>
 <li><code>FilePath</code> checks that a file path (optionally with suffixes) exist.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>Engineering:<ul>
+<li>Engineering:</li>
 <li>Warn when deprecated <code>$Rule</code> properties are used. <a href="https://github.com/microsoft/PSRule/issues/536">#536</a></li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed out of bounds exception when empty markdown documentation is used. <a href="https://github.com/microsoft/PSRule/issues/516">#516</a></li>
 <li>Fixed lines breaks in <code>RepositoryInfo</code> target name with git ref. <a href="https://github.com/microsoft/PSRule/issues/538">#538</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0200-b2008010-pre-release">v0.20.0-B2008010 (pre-release)<a class="headerlink" href="#v0200-b2008010-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v0.20.0-B2008002:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Baselines can now be flagged as obsolete. <a href="https://github.com/microsoft/PSRule/issues/499">#499</a><ul>
 <li>Set the <code>metadata.annotations.obsolete</code> property to <code>true</code> to flag a baseline as obsolete.</li>
 <li>When an obsolete baseline is used, a warning will be generated.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>Engineering:<ul>
+<li>Engineering:</li>
 <li>Bump YamlDotNet dependency to v8.1.2. <a href="https://github.com/microsoft/PSRule/issues/439">#439</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0200-b2008002-pre-release">v0.20.0-B2008002 (pre-release)<a class="headerlink" href="#v0200-b2008002-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v0.19.0:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added support for scanning repository files. <a href="https://github.com/microsoft/PSRule/issues/524">#524</a><ul>
 <li>Added <code>File</code> input type (<code>-InputType File</code>) to scan for files without deserializing them.</li>
 <li>Added <code>Input.PathIgnore</code> option to ignore files.</li>
@@ -3137,12 +3077,10 @@ Please upgrade to the latest version.</p>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
 <h2 id="v0190">v0.19.0<a class="headerlink" href="#v0190" title="Permanent link">#</a></h2>
 <p>What's changed since v0.18.1:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added <code>Reason</code> method to assertion results. <a href="https://github.com/microsoft/PSRule/issues/500">#500</a><ul>
 <li>This new method, streamlines setting custom reasons particularly with formatted strings.</li>
 <li>The <code>Reason</code> method replaces any previously set reasons with a custom string.</li>
@@ -3158,13 +3096,9 @@ Please upgrade to the latest version.</p>
 <li>The module versions that PSRule uses can be constrained.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed styling for no rule files warning with <code>Assert-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/484">#484</a></li>
 <li>Fixed actual value in reason for numeric comparison assertion method. <a href="https://github.com/microsoft/PSRule/issues/505">#505</a></li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.19.0-B2007030:</p>
 <ul>
@@ -3172,14 +3106,12 @@ Please upgrade to the latest version.</p>
 </ul>
 <h2 id="v0190-b2007030-pre-release">v0.19.0-B2007030 (pre-release)<a class="headerlink" href="#v0190-b2007030-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed <code>Assert.In</code> unable to compare PSObject wrapped array items. <a href="https://github.com/microsoft/PSRule/issues/512">#512</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0190-b2007023-pre-release">v0.19.0-B2007023 (pre-release)<a class="headerlink" href="#v0190-b2007023-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added <code>Reason</code> method to assertion results. <a href="https://github.com/microsoft/PSRule/issues/500">#500</a><ul>
 <li>This new method, streamlines setting custom reasons particularly with formatted strings.</li>
 <li>The <code>Reason</code> method replaces any previously set reasons with a custom string.</li>
@@ -3195,55 +3127,41 @@ Please upgrade to the latest version.</p>
 <li>The module versions that PSRule uses can be constrained.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed styling for no rule files warning with <code>Assert-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/484">#484</a></li>
 <li>Fixed actual value in reason for numeric comparison assertion method. <a href="https://github.com/microsoft/PSRule/issues/505">#505</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0181">v0.18.1<a class="headerlink" href="#v0181" title="Permanent link">#</a></h2>
 <p>What's changed since v0.18.0:</p>
 <ul>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed unable to read properties for .NET <code>DynamicObject</code>. <a href="https://github.com/Microsoft/PSRule/issues/491">#491</a></li>
 <li>Fixed read of JSON input format with null array item. <a href="https://github.com/Microsoft/PSRule/issues/490">#490</a></li>
 <li>Fixed <code>Csv</code> output format with summary for <code>Invoke-PSRule</code>. <a href="https://github.com/Microsoft/PSRule/issues/486">#486</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0190-b2006027-pre-release">v0.19.0-B2006027 (pre-release)<a class="headerlink" href="#v0190-b2006027-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed unable to read properties for .NET <code>DynamicObject</code>. <a href="https://github.com/Microsoft/PSRule/issues/491">#491</a></li>
 <li>Fixed read of JSON input format with null array item. <a href="https://github.com/Microsoft/PSRule/issues/490">#490</a></li>
 </ul>
-</li>
-</ul>
 <h2 id="v0190-b2006018-pre-release">v0.19.0-B2006018 (pre-release)<a class="headerlink" href="#v0190-b2006018-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed <code>Csv</code> output format with summary for <code>Invoke-PSRule</code>. <a href="https://github.com/Microsoft/PSRule/issues/486">#486</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0180">v0.18.0<a class="headerlink" href="#v0180" title="Permanent link">#</a></h2>
 <p>What's changed since v0.17.0:</p>
 <ul>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Improved <code>Assert-PSRule</code> output formatting. <a href="https://github.com/Microsoft/PSRule/issues/472">#472</a><ul>
 <li>Added recommendation and reasons for <code>AzurePipelines</code> and <code>GitHubActions</code> styles.</li>
 <li>Summary line is has been updated to include synopsis instead of reasons.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed binding with <code>ModuleConfig</code>. <a href="https://github.com/Microsoft/PSRule/issues/468">#468</a></li>
 <li>Fixed recommendation output with client style. <a href="https://github.com/Microsoft/PSRule/issues/467">#467</a></li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.18.0-B2005015:</p>
 <ul>
@@ -3251,24 +3169,20 @@ Please upgrade to the latest version.</p>
 </ul>
 <h2 id="v0180-b2005015-pre-release">v0.18.0-B2005015 (pre-release)<a class="headerlink" href="#v0180-b2005015-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Improved <code>Assert-PSRule</code> output formatting. <a href="https://github.com/Microsoft/PSRule/issues/472">#472</a><ul>
 <li>Added recommendation and reasons for <code>AzurePipelines</code> and <code>GitHubActions</code> styles.</li>
 <li>Summary line is has been updated to include synopsis instead of reasons.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed binding with <code>ModuleConfig</code>. <a href="https://github.com/Microsoft/PSRule/issues/468">#468</a></li>
 <li>Fixed recommendation output with client style. <a href="https://github.com/Microsoft/PSRule/issues/467">#467</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0170">v0.17.0<a class="headerlink" href="#v0170" title="Permanent link">#</a></h2>
 <p>What's changed since v0.16.0:</p>
 <ul>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Improved <code>Assert-PSRule</code> output formatting.<ul>
 <li>Added recommendation and reasons for <code>Client</code> and <code>Plain</code> styles. <a href="https://github.com/Microsoft/PSRule/issues/456">#456</a></li>
 </ul>
@@ -3279,12 +3193,8 @@ Please upgrade to the latest version.</p>
 </ul>
 </li>
 <li>Added support for module fallback culture. <a href="https://github.com/Microsoft/PSRule/issues/441">#441</a></li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed resource schema to include <code>useQualifiedName</code> and <code>nameSeparator</code> option. <a href="https://github.com/Microsoft/PSRule/issues/458">#458</a></li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.17.0-B2005010:</p>
 <ul>
@@ -3292,7 +3202,7 @@ Please upgrade to the latest version.</p>
 </ul>
 <h2 id="v0170-b2005010-pre-release">v0.17.0-B2005010 (pre-release)<a class="headerlink" href="#v0170-b2005010-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Improved <code>Assert-PSRule</code> output formatting.<ul>
 <li>Added recommendation and reasons for <code>Client</code> and <code>Plain</code> styles. <a href="https://github.com/Microsoft/PSRule/issues/456">#456</a></li>
 </ul>
@@ -3303,26 +3213,18 @@ Please upgrade to the latest version.</p>
 </ul>
 </li>
 <li>Added support for module fallback culture. <a href="https://github.com/Microsoft/PSRule/issues/441">#441</a></li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed resource schema to include <code>useQualifiedName</code> and <code>nameSeparator</code> option. <a href="https://github.com/Microsoft/PSRule/issues/458">#458</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0160">v0.16.0<a class="headerlink" href="#v0160" title="Permanent link">#</a></h2>
 <p>What's changed since v0.15.0:</p>
 <ul>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Added configuration option <code>Output.Culture</code> for setting culture. <a href="https://github.com/Microsoft/PSRule/issues/442">#442</a></li>
 <li>Improved handling of fields to allow the input object to be referenced with <code>.</code>. <a href="https://github.com/Microsoft/PSRule/issues/437">#437</a></li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed numeric comparison assertion with non-int types. <a href="https://github.com/Microsoft/PSRule/issues/436">#436</a></li>
 <li>Fixed output culture option ignored. <a href="https://github.com/Microsoft/PSRule/issues/449">#449</a></li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.16.0-B2003027:</p>
 <ul>
@@ -3330,42 +3232,30 @@ Please upgrade to the latest version.</p>
 </ul>
 <h2 id="v0160-b2003027-pre-release">v0.16.0-B2003027 (pre-release)<a class="headerlink" href="#v0160-b2003027-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed output culture option ignored. <a href="https://github.com/Microsoft/PSRule/issues/449">#449</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0160-b2003022-pre-release">v0.16.0-B2003022 (pre-release)<a class="headerlink" href="#v0160-b2003022-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Added configuration option <code>Output.Culture</code> for setting culture. <a href="https://github.com/Microsoft/PSRule/issues/442">#442</a></li>
 <li>Improved handling of fields to allow the input object to be referenced with <code>.</code>. <a href="https://github.com/Microsoft/PSRule/issues/437">#437</a></li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed numeric comparison assertion with non-int types. <a href="https://github.com/Microsoft/PSRule/issues/436">#436</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v0150">v0.15.0<a class="headerlink" href="#v0150" title="Permanent link">#</a></h2>
 <p>What's changed since v0.14.0:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added <code>-ResultVariable</code> to store results from Assert-PSRule into a variable. <a href="https://github.com/Microsoft/PSRule/issues/412">#412</a></li>
-</ul>
-</li>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Added recommendation to failure message of NUnit results. <a href="https://github.com/Microsoft/PSRule/issues/421">#421</a></li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed handling of <code>v</code> in field value with <code>$Assert.Version</code>. <a href="https://github.com/Microsoft/PSRule/issues/429">#429</a></li>
 <li>Fixed handling of warning action preference with <code>Assert-PSRule</code>. <a href="https://github.com/Microsoft/PSRule/issues/428">#428</a></li>
 <li>Fixed parent culture unwind with POSIX. <a href="https://github.com/Microsoft/PSRule/issues/414">#414</a></li>
 <li>Fixed output of warning with <code>Assert-PSRule</code>. <a href="https://github.com/Microsoft/PSRule/issues/417">#417</a></li>
 <li>Fixed NUnit report to include a failure element when reason is not specified. <a href="https://github.com/Microsoft/PSRule/issues/420">#420</a></li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.15.0-B2002031:</p>
 <ul>
@@ -3393,7 +3283,7 @@ Please upgrade to the latest version.</p>
 <h2 id="v0140">v0.14.0<a class="headerlink" href="#v0140" title="Permanent link">#</a></h2>
 <p>What's changed since v0.13.0:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added support for qualified target names. <a href="https://github.com/Microsoft/PSRule/issues/395">#395</a><ul>
 <li>Added options <code>Binding.UseQualifiedName</code> and <code>Binding.NameSeparator</code>.</li>
 <li>See <code>about_PSRule_Options</code> for details.</li>
@@ -3408,20 +3298,14 @@ Please upgrade to the latest version.</p>
 <li>See <code>about_PSRule_Variables</code> for usage details.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Improved reporting on runtime errors in rule blocks. <a href="https://github.com/Microsoft/PSRule/issues/239">#239</a></li>
 <li>Improved NUnit results to include a failure message based on reported reasons. <a href="https://github.com/Microsoft/PSRule/issues/404">#404</a></li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed wide formatting of rules with <code>Get-PSRule</code>. <a href="https://github.com/Microsoft/PSRule/issues/407">#407</a></li>
 <li>Fixed TargetName hash serialization for base types. <a href="https://github.com/Microsoft/PSRule/issues/406">#406</a></li>
 <li>Fixed output not generated with Assert-PSRule and Stop. <a href="https://github.com/Microsoft/PSRule/issues/405">#405</a></li>
 <li>Fixed NUnit results incorrectly reporting that the test had not executed. <a href="https://github.com/Microsoft/PSRule/issues/403">#403</a></li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.14.0-B2002003:</p>
 <ul>
@@ -3438,25 +3322,19 @@ Please upgrade to the latest version.</p>
 </ul>
 <h2 id="v0140-b2001020-pre-release">v0.14.0-B2001020 (pre-release)<a class="headerlink" href="#v0140-b2001020-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Added support for qualified target names. <a href="https://github.com/Microsoft/PSRule/issues/395">#395</a><ul>
+<li>Added support for qualified target names. <a href="https://github.com/Microsoft/PSRule/issues/395">#395</a></li>
 <li>Added options <code>Binding.UseQualifiedName</code> and <code>Binding.NameSeparator</code>.</li>
 <li>See <code>about_PSRule_Options</code> for details.</li>
-</ul>
-</li>
-<li>Added assertion method <code>HasJsonSchema</code> to check if a JSON schema is referenced. <a href="https://github.com/Microsoft/PSRule/issues/398">#398</a><ul>
+<li>Added assertion method <code>HasJsonSchema</code> to check if a JSON schema is referenced. <a href="https://github.com/Microsoft/PSRule/issues/398">#398</a></li>
 <li>See <code>about_PSRule_Assert</code> for usage details.</li>
-</ul>
-</li>
-<li>Added file content helper for reading objects from files. <a href="https://github.com/Microsoft/PSRule/issues/399">#399</a><ul>
+<li>Added file content helper for reading objects from files. <a href="https://github.com/Microsoft/PSRule/issues/399">#399</a></li>
 <li>The method <code>GetContent</code> of <code>$PSRule</code> can be used to read files as objects.</li>
 <li>See <code>about_PSRule_Variables</code> for usage details.</li>
-</ul>
-</li>
 </ul>
 <h2 id="v0130">v0.13.0<a class="headerlink" href="#v0130" title="Permanent link">#</a></h2>
 <p>What's changed since v0.12.0:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Improvements to rule help and documentation. <a href="https://github.com/Microsoft/PSRule/issues/382">#382</a> <a href="https://github.com/Microsoft/PSRule/issues/316">#316</a><ul>
 <li>Added links and notes sections to help.</li>
 <li>Added <code>-Full</code> switch to <code>Get-PSRuleHelp</code> to display links and notes sections.</li>
@@ -3488,19 +3366,13 @@ Please upgrade to the latest version.</p>
 <li>Added rule success summary.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Added aliases for <code>-OutputFormat</code> (<code>-o</code>) and <code>-Module</code> (<code>-m</code>) parameters. <a href="https://github.com/Microsoft/PSRule/issues/384">#384</a></li>
 <li>Added <code>WithReason</code> to append/ replace reasons from assertion result. <a href="https://github.com/Microsoft/PSRule/issues/354">#354</a></li>
 <li>Added configuration helper for strings arrays. <a href="https://github.com/Microsoft/PSRule/issues/363">#363</a></li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed JSON de-serialization fails with single object. <a href="https://github.com/Microsoft/PSRule/issues/379">#379</a></li>
 <li>Fixed stack overflow when parsing malformed JSON. <a href="https://github.com/Microsoft/PSRule/issues/380">#380</a></li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.13.0-B2001013:</p>
 <ul>
@@ -3510,94 +3382,70 @@ Please upgrade to the latest version.</p>
 <ul>
 <li>Fixed JSON de-serialization fails with single object. <a href="https://github.com/Microsoft/PSRule/issues/379">#379</a></li>
 <li>Fixed stack overflow when parsing malformed JSON. <a href="https://github.com/Microsoft/PSRule/issues/380">#380</a></li>
-<li>Added rule documentation links and notes to help. <a href="https://github.com/Microsoft/PSRule/issues/382">#382</a><ul>
+<li>Added rule documentation links and notes to help. <a href="https://github.com/Microsoft/PSRule/issues/382">#382</a></li>
 <li>Added <code>-Full</code> switch to <code>Get-PSRuleHelp</code> to display links and notes sections.</li>
-</ul>
-</li>
 <li>Added aliases for <code>-OutputFormat</code> (<code>-o</code>) and <code>-Module</code> (<code>-m</code>) parameters. <a href="https://github.com/Microsoft/PSRule/issues/384">#384</a></li>
-<li>Improved numeric comparison assertion helpers to support strings. <a href="https://github.com/Microsoft/PSRule/issues/387">#387</a><ul>
+<li>Improved numeric comparison assertion helpers to support strings. <a href="https://github.com/Microsoft/PSRule/issues/387">#387</a></li>
 <li>Methods <code>Greater</code>, <code>GreaterOrEqual</code>, <code>Less</code> and <code>LessOrEqual</code> now also check string length.</li>
-</ul>
-</li>
 <li>Added support for assertion methods to be used within script pre-conditions. <a href="https://github.com/Microsoft/PSRule/issues/386">#386</a></li>
 </ul>
 <h2 id="v0130-b1912043-pre-release">v0.13.0-B1912043 (pre-release)<a class="headerlink" href="#v0130-b1912043-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Added input format for reading PowerShell data <code>.psd1</code> files. <a href="https://github.com/Microsoft/PSRule/issues/368">#368</a><ul>
+<li>Added input format for reading PowerShell data <code>.psd1</code> files. <a href="https://github.com/Microsoft/PSRule/issues/368">#368</a></li>
 <li><code>PowerShellData</code> has been added to <code>Input.Format</code>.</li>
 <li>See <code>about_PSRule_Options</code> for details.</li>
-</ul>
-</li>
-<li>Added numeric comparison assertion helpers. <a href="https://github.com/Microsoft/PSRule/issues/374">#374</a><ul>
+<li>Added numeric comparison assertion helpers. <a href="https://github.com/Microsoft/PSRule/issues/374">#374</a></li>
 <li>Added methods <code>Greater</code>, <code>GreaterOrEqual</code>, <code>Less</code> and <code>LessOrEqual</code>.</li>
 <li>See <code>about_PSRule_Assert</code> for usage details.</li>
-</ul>
-</li>
 </ul>
 <h2 id="v0130-b1912027-pre-release">v0.13.0-B1912027 (pre-release)<a class="headerlink" href="#v0130-b1912027-pre-release" title="Permanent link">#</a></h2>
 <ul>
 <li>Added configuration helper for strings arrays. <a href="https://github.com/Microsoft/PSRule/issues/363">#363</a></li>
-<li>Added support for using a parent culture in rule help. <a href="https://github.com/Microsoft/PSRule/issues/316">#316</a><ul>
+<li>Added support for using a parent culture in rule help. <a href="https://github.com/Microsoft/PSRule/issues/316">#316</a></li>
 <li>Rule help will use parent culture when a more specific culture is not available.</li>
-</ul>
-</li>
-<li>Added custom rule data to results. <a href="https://github.com/Microsoft/PSRule/issues/322">#322</a><ul>
+<li>Added custom rule data to results. <a href="https://github.com/Microsoft/PSRule/issues/322">#322</a></li>
 <li><code>$PSRule.Data</code> can be used to set custom data during rule execution that is included in output.</li>
 <li>See <code>about_PSRule_Variables</code> for usage details.</li>
 </ul>
-</li>
-</ul>
 <h2 id="v0130-b1912012-pre-release">v0.13.0-B1912012 (pre-release)<a class="headerlink" href="#v0130-b1912012-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Improves output logging and formatting for Assert-PSRule. <a href="https://github.com/Microsoft/PSRule/issues/357">#357</a><ul>
+<li>Improves output logging and formatting for Assert-PSRule. <a href="https://github.com/Microsoft/PSRule/issues/357">#357</a></li>
 <li>Formatting now includes errors and warnings using style.</li>
 <li>Added PSRule banner with module information.</li>
 <li>Added rule success summary.</li>
 </ul>
-</li>
-</ul>
 <h2 id="v0130-b1912005-pre-release">v0.13.0-B1912005 (pre-release)<a class="headerlink" href="#v0130-b1912005-pre-release" title="Permanent link">#</a></h2>
 <ul>
 <li>Added semantic version assertion helper <code>Version</code>. <a href="https://github.com/Microsoft/PSRule/issues/344">#344</a></li>
-<li>Added string affix assertion helpers. <a href="https://github.com/Microsoft/PSRule/issues/353">#353</a><ul>
+<li>Added string affix assertion helpers. <a href="https://github.com/Microsoft/PSRule/issues/353">#353</a></li>
 <li>Added methods <code>StartsWith</code>, <code>EndsWith</code> and <code>Contains</code>. See <code>about_PSRule_Assert</code> for usage details.</li>
-</ul>
-</li>
 <li>Added <code>WithReason</code> to append/ replace reasons from assertion result. <a href="https://github.com/Microsoft/PSRule/issues/354">#354</a></li>
 </ul>
 <h2 id="v0120">v0.12.0<a class="headerlink" href="#v0120" title="Permanent link">#</a></h2>
 <p>What's changed since v0.11.0:</p>
 <ul>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added <code>-All</code> option to <code>Exists</code> keyword. <a href="https://github.com/Microsoft/PSRule/issues/331">#331</a></li>
 <li>Added custom field binding. <a href="https://github.com/Microsoft/PSRule/issues/321">#321</a><ul>
 <li>Added new option <code>Binding.Field</code> available in baselines to configure binding.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Added filtering for rules against a baseline with <code>Get-PSRule</code>. <a href="https://github.com/Microsoft/PSRule/issues/345">#345</a></li>
 <li>Added parameter alias <code>-f</code> for <code>-InputPath</code>. <a href="https://github.com/Microsoft/PSRule/issues/340">#340</a><ul>
 <li><code>-f</code> was added to <code>Invoke-PSRule</code>, <code>Assert-PSRule</code> and <code>Test-PSRuleTarget</code> cmdlets.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li><strong>Important change</strong>: Added <code>$PSRule</code> generic context variable. <a href="https://github.com/Microsoft/PSRule/issues/341">#341</a><ul>
+<li><strong>Important change</strong>: Added <code>$PSRule</code> generic context variable. <a href="https://github.com/Microsoft/PSRule/issues/341">#341</a></li>
 <li>Deprecated <code>TargetName</code>, <code>TargetType</code> and <code>TargetObject</code> properties on <code>$Rule</code>.</li>
 <li>Use <code>TargetName</code>, <code>TargetType</code> and <code>TargetObject</code> on <code>$PSRule</code> instead.</li>
 <li>Properties <code>TargetName</code>, <code>TargetType</code> and <code>TargetObject</code> on <code>$Rule</code> will be removed in the future.</li>
 <li>Going forward <code>$Rule</code> will only contain properties that relate to the current rule context.</li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed key has already been added for default baseline. <a href="https://github.com/Microsoft/PSRule/issues/349">#349</a></li>
 <li>Fixed multiple value tag filtering. <a href="https://github.com/Microsoft/PSRule/issues/346">#346</a></li>
 <li>Fixed TargetType fall back to type name. <a href="https://github.com/Microsoft/PSRule/issues/339">#339</a></li>
 <li>Fixed NUnit serialization issue for unprocessed rules. <a href="https://github.com/Microsoft/PSRule/issues/332">#332</a></li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.12.0-B1912007:</p>
 <ul>
@@ -3611,21 +3459,15 @@ Please upgrade to the latest version.</p>
 <h2 id="v0120-b1912002-pre-release">v0.12.0-B1912002 (pre-release)<a class="headerlink" href="#v0120-b1912002-pre-release" title="Permanent link">#</a></h2>
 <ul>
 <li>Fixed TargetType fall back to type name. <a href="https://github.com/Microsoft/PSRule/issues/339">#339</a></li>
-<li>Added custom field binding. <a href="https://github.com/Microsoft/PSRule/issues/321">#321</a><ul>
+<li>Added custom field binding. <a href="https://github.com/Microsoft/PSRule/issues/321">#321</a></li>
 <li>Added new option <code>Binding.Field</code> available in baselines to configure binding.</li>
-</ul>
-</li>
-<li>Added parameter alias <code>-f</code> for <code>-InputPath</code>. <a href="https://github.com/Microsoft/PSRule/issues/340">#340</a><ul>
+<li>Added parameter alias <code>-f</code> for <code>-InputPath</code>. <a href="https://github.com/Microsoft/PSRule/issues/340">#340</a></li>
 <li><code>-f</code> was added to <code>Invoke-PSRule</code>, <code>Assert-PSRule</code> and <code>Test-PSRuleTarget</code> cmdlets.</li>
-</ul>
-</li>
-<li><strong>Important change</strong>: Added <code>$PSRule</code> generic context variable. <a href="https://github.com/Microsoft/PSRule/issues/341">#341</a><ul>
+<li><strong>Important change</strong>: Added <code>$PSRule</code> generic context variable. <a href="https://github.com/Microsoft/PSRule/issues/341">#341</a></li>
 <li>Deprecated <code>TargetName</code>, <code>TargetType</code> and <code>TargetObject</code> properties on <code>$Rule</code>.</li>
 <li>Use <code>TargetName</code>, <code>TargetType</code> and <code>TargetObject</code> on <code>$PSRule</code> instead.</li>
 <li>Properties <code>TargetName</code>, <code>TargetType</code> and <code>TargetObject</code> on <code>$Rule</code> will be removed in the future.</li>
 <li>Going forward <code>$Rule</code> will only contain properties that relate to the current rule context.</li>
-</ul>
-</li>
 </ul>
 <h2 id="v0120-b1911013-pre-release">v0.12.0-B1911013 (pre-release)<a class="headerlink" href="#v0120-b1911013-pre-release" title="Permanent link">#</a></h2>
 <ul>
@@ -3635,23 +3477,17 @@ Please upgrade to the latest version.</p>
 <h2 id="v0110">v0.11.0<a class="headerlink" href="#v0110" title="Permanent link">#</a></h2>
 <p>What's changed since v0.10.0:</p>
 <ul>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Added <code>-TargetType</code> parameter to filter input objects by target type. <a href="https://github.com/Microsoft/PSRule/issues/176">#176</a><ul>
 <li>This parameter applies to <code>Invoke-PSRule</code>, <code>Assert-PSRule</code> and <code>Test-PSRuleTarget</code>.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fixed null reference exception when bound property is null. <a href="https://github.com/Microsoft/PSRule/issues/323">#323</a></li>
 <li>Fixed missing <code>Markdown</code> input format in options schema. <a href="https://github.com/Microsoft/PSRule/issues/315">#315</a></li>
-</ul>
-</li>
-<li><strong>Breaking change</strong>: Unprocessed object results are not returned from <code>Test-PSRuleTarget</code> by default. <a href="https://github.com/Microsoft/PSRule/issues/318">#318</a><ul>
+<li><strong>Breaking change</strong>: Unprocessed object results are not returned from <code>Test-PSRuleTarget</code> by default. <a href="https://github.com/Microsoft/PSRule/issues/318">#318</a></li>
 <li>Previously unprocessed objects returned <code>$True</code>, now unprocessed objects return no result.</li>
 <li>Use <code>-Outcome All</code> to return <code>$True</code> for unprocessed objects the same as &lt;= v0.10.0.</li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.11.0-B1911002:</p>
 <ul>
@@ -3664,24 +3500,18 @@ Please upgrade to the latest version.</p>
 <h2 id="v0110-b1910014-pre-release">v0.11.0-B1910014 (pre-release)<a class="headerlink" href="#v0110-b1910014-pre-release" title="Permanent link">#</a></h2>
 <ul>
 <li>Fixed missing <code>Markdown</code> input format in options schema. <a href="https://github.com/Microsoft/PSRule/issues/315">#315</a></li>
-<li>Added <code>-TargetType</code> parameter to filter input objects by target type. <a href="https://github.com/Microsoft/PSRule/issues/176">#176</a><ul>
+<li>Added <code>-TargetType</code> parameter to filter input objects by target type. <a href="https://github.com/Microsoft/PSRule/issues/176">#176</a></li>
 <li>This parameter applies to <code>Invoke-PSRule</code>, <code>Assert-PSRule</code> and <code>Test-PSRuleTarget</code>.</li>
-</ul>
-</li>
-<li><strong>Breaking change</strong>: Unprocessed object results are not returned from <code>Test-PSRuleTarget</code> by default. <a href="https://github.com/Microsoft/PSRule/issues/318">#318</a><ul>
+<li><strong>Breaking change</strong>: Unprocessed object results are not returned from <code>Test-PSRuleTarget</code> by default. <a href="https://github.com/Microsoft/PSRule/issues/318">#318</a></li>
 <li>Previously unprocessed objects returned <code>$True</code>, now unprocessed objects return no result.</li>
 <li>Use <code>-Outcome All</code> to return <code>$True</code> for unprocessed objects the same as &lt;= v0.10.0.</li>
-</ul>
-</li>
 </ul>
 <h2 id="v0100">v0.10.0<a class="headerlink" href="#v0100" title="Permanent link">#</a></h2>
 <p>What's changed since v0.9.0:</p>
 <ul>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Added source note properties to input objects read from disk with <code>-InputPath</code>. <a href="https://github.com/Microsoft/PSRule/issues/302">#302</a></li>
-</ul>
-</li>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added assertion helper for checking field default value. <a href="https://github.com/Microsoft/PSRule/issues/289">#289</a></li>
 <li>Added dependency <code>DependsOn</code> information to results from <code>Get-PSRule</code>. <a href="https://github.com/Microsoft/PSRule/issues/210">#210</a><ul>
 <li>To include dependencies that would normally be filtered out use <code>-IncludeDependencies</code>.</li>
@@ -3692,24 +3522,16 @@ Please upgrade to the latest version.</p>
 </ul>
 </li>
 <li>Added <code>Assert-PSRule</code> cmdlet to improve integration into CI processes. <a href="https://github.com/Microsoft/PSRule/issues/290">#290</a><ul>
-<li>Added <code>Output.Style</code> option to support output in the following styles:<ul>
+<li>Added <code>Output.Style</code> option to support output in the following styles:</li>
 <li>Client/ Plain - Output returns easy to read log of rule pass/ fail.</li>
 <li>Azure Pipelines - Report rule failures as errors collected by Azure Pipelines.</li>
 <li>GitHub Actions - Reports rule failures as errors collected by GitHub Actions.</li>
 </ul>
 </li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fix <code>Get-PSRuleHelp</code> -Online in constrained language mode. <a href="https://github.com/Microsoft/PSRule/issues/296">#296</a></li>
-</ul>
-</li>
-<li><strong>Breaking change</strong>: Removed previously deprecated alias <code>Hint</code> for <code>Recommend</code>. <a href="https://github.com/Microsoft/PSRule/issues/165">#165</a><ul>
+<li><strong>Breaking change</strong>: Removed previously deprecated alias <code>Hint</code> for <code>Recommend</code>. <a href="https://github.com/Microsoft/PSRule/issues/165">#165</a></li>
 <li>Use the <code>Recommend</code> keyword instead.</li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.10.0-B1910036:</p>
 <ul>
@@ -3717,30 +3539,22 @@ Please upgrade to the latest version.</p>
 </ul>
 <h2 id="v0100-b1910036-pre-release">v0.10.0-B1910036 (pre-release)<a class="headerlink" href="#v0100-b1910036-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Added dependency <code>DependsOn</code> information to results from <code>Get-PSRule</code>. <a href="https://github.com/Microsoft/PSRule/issues/210">#210</a><ul>
+<li>Added dependency <code>DependsOn</code> information to results from <code>Get-PSRule</code>. <a href="https://github.com/Microsoft/PSRule/issues/210">#210</a></li>
 <li>To include dependencies that would normally be filtered out use <code>-IncludeDependencies</code>.</li>
-</ul>
-</li>
-<li>Added input format for reading markdown front matter. <a href="https://github.com/Microsoft/PSRule/issues/301">#301</a><ul>
+<li>Added input format for reading markdown front matter. <a href="https://github.com/Microsoft/PSRule/issues/301">#301</a></li>
 <li>Markdown front matter is deserialized and evaluated as an object.</li>
-</ul>
-</li>
 <li>Added source note properties to input objects read from disk with <code>-InputPath</code>. <a href="https://github.com/Microsoft/PSRule/issues/302">#302</a></li>
-<li><strong>Breaking change</strong>: Removed previously deprecated alias <code>Hint</code> for <code>Recommend</code>. <a href="https://github.com/Microsoft/PSRule/issues/165">#165</a><ul>
+<li><strong>Breaking change</strong>: Removed previously deprecated alias <code>Hint</code> for <code>Recommend</code>. <a href="https://github.com/Microsoft/PSRule/issues/165">#165</a></li>
 <li>Use the <code>Recommend</code> keyword instead.</li>
-</ul>
-</li>
 </ul>
 <h2 id="v0100-b1910025-pre-release">v0.10.0-B1910025 (pre-release)<a class="headerlink" href="#v0100-b1910025-pre-release" title="Permanent link">#</a></h2>
 <ul>
 <li>Fix <code>Get-PSRuleHelp</code> -Online in constrained language mode. <a href="https://github.com/Microsoft/PSRule/issues/296">#296</a></li>
-<li>Added <code>Assert-PSRule</code> cmdlet to improve integration into CI processes. <a href="https://github.com/Microsoft/PSRule/issues/290">#290</a><ul>
+<li>Added <code>Assert-PSRule</code> cmdlet to improve integration into CI processes. <a href="https://github.com/Microsoft/PSRule/issues/290">#290</a></li>
 <li>Added <code>Output.Style</code> option to support output in the following styles:<ul>
 <li>Client/ Plain - Output returns easy to read log of rule pass/ fail.</li>
 <li>Azure Pipelines - Report rule failures as errors collected by Azure Pipelines.</li>
 <li>GitHub Actions - Reports rule failures as errors collected by GitHub Actions.</li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -3751,12 +3565,10 @@ Please upgrade to the latest version.</p>
 <h2 id="v090">v0.9.0<a class="headerlink" href="#v090" title="Permanent link">#</a></h2>
 <p>What's changed since v0.8.0:</p>
 <ul>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>Improve feedback of parsing errors. <a href="https://github.com/Microsoft/PSRule/issues/185">#185</a></li>
 <li>Updated <code>Get-PSRuleHelp</code> to include help within the current path by default. <a href="https://github.com/Microsoft/PSRule/issues/197">#197</a></li>
-</ul>
-</li>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added support for a wildcard match using the <code>Within</code> keyword. <a href="https://github.com/Microsoft/PSRule/issues/272">#272</a></li>
 <li>Added rule info display name. <a href="https://github.com/Microsoft/PSRule/issues/276">#276</a></li>
 <li>Added support for matching an array of tag values. <a href="https://github.com/Microsoft/PSRule/issues/282">#282</a></li>
@@ -3767,20 +3579,14 @@ Please upgrade to the latest version.</p>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Baseline/">about_PSRule_Baseline</a> for more information.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fix can not serialize nested System.IO.DirectoryInfo property. <a href="https://github.com/Microsoft/PSRule/issues/281">#281</a></li>
 <li>Fix ModuleName not displayed in Get-PSRuleHelp list. <a href="https://github.com/Microsoft/PSRule/issues/275">#275</a></li>
 <li>Fix outcome reported when error or exception is raised. <a href="https://github.com/Microsoft/PSRule/issues/211">#211</a></li>
-</ul>
-</li>
-<li><strong>Breaking change</strong>: Baseline improvements, fundamentally changes how baselines work. <a href="https://github.com/Microsoft/PSRule/issues/274">#274</a><ul>
+<li><strong>Breaking change</strong>: Baseline improvements, fundamentally changes how baselines work. <a href="https://github.com/Microsoft/PSRule/issues/274">#274</a></li>
 <li>Previously, baselines were specified as workspace options.</li>
 <li>The previous <code>baseline</code> options property has been renamed to <code>rule</code>.</li>
 <li>The previous <code>configuration</code> property is now a top level option.</li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.9.0-B190905:</p>
 <ul>
@@ -3792,7 +3598,7 @@ Please upgrade to the latest version.</p>
 <li>Updated <code>Get-PSRuleHelp</code> to include help within the current path by default. <a href="https://github.com/Microsoft/PSRule/issues/197">#197</a></li>
 <li>Fix can not serialize nested System.IO.DirectoryInfo property. <a href="https://github.com/Microsoft/PSRule/issues/281">#281</a></li>
 <li>Fix export of <code>Like</code> parameter for <code>Within</code> keyword. <a href="https://github.com/Microsoft/PSRule/issues/279">#279</a></li>
-<li><strong>Breaking change</strong>: Added named baselines. This changes how baselines work. <a href="https://github.com/Microsoft/PSRule/issues/274">#274</a><ul>
+<li><strong>Breaking change</strong>: Added named baselines. This changes how baselines work. <a href="https://github.com/Microsoft/PSRule/issues/274">#274</a></li>
 <li>Previously, baselines were specified as workspace options.</li>
 <li>Now, baselines are a separate resource that can be individually used. Additionally:<ul>
 <li>Baselines can be packaged within module.</li>
@@ -3803,8 +3609,6 @@ Please upgrade to the latest version.</p>
 <li>The previous <code>baseline</code> options property has been renamed to <code>rule</code>.</li>
 <li>The previous <code>configuration</code> property is now a top level option.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Baseline/">about_PSRule_Baseline</a> for more information.</li>
-</ul>
-</li>
 </ul>
 <h2 id="v090-b190819-pre-release">v0.9.0-B190819 (pre-release)<a class="headerlink" href="#v090-b190819-pre-release" title="Permanent link">#</a></h2>
 <ul>
@@ -3820,27 +3624,21 @@ Please upgrade to the latest version.</p>
 <h2 id="v080">v0.8.0<a class="headerlink" href="#v080" title="Permanent link">#</a></h2>
 <p>What's changed since v0.7.0:</p>
 <ul>
-<li>General improvements:<ul>
+<li>General improvements:</li>
 <li>PSRule options are now displayed as YAML instead of a complex object. <a href="https://github.com/Microsoft/PSRule/issues/233">#233</a></li>
 <li>Add detection for improper keyword use. <a href="https://github.com/Microsoft/PSRule/issues/203">#203</a></li>
 <li>Automatically load rule modules. <a href="https://github.com/Microsoft/PSRule/issues/218">#218</a></li>
 <li>Added support for debug messages and <code>Write-Debug</code> in rule definitions. <a href="https://github.com/Microsoft/PSRule/issues/146">#146</a></li>
 <li>Added <code>Logging.LimitDebug</code> and <code>Logging.LimitVerbose</code> options to limit logging to named scopes. <a href="https://github.com/Microsoft/PSRule/issues/235">#235</a></li>
-</ul>
-</li>
-<li>Engine features:<ul>
+<li>Engine features:</li>
 <li>Added per object reason for failing rules. <a href="https://github.com/Microsoft/PSRule/issues/200">#200</a><ul>
 <li>Keywords <code>Exists</code>, <code>Match</code>, <code>Within</code> and <code>TypeOf</code> automatically add a reason when they fail.</li>
 <li>Custom reason can be set for keywords <code>Exists</code>, <code>Match</code>, <code>Within</code> and <code>TypeOf</code> with <code>-Reason</code>.</li>
 <li>Added <code>Reason</code> keyword to add to reason for custom logic.</li>
-<li>Added wide output display for <code>Invoke-PSRule</code> which include the reason why rule failed.<ul>
+<li>Added wide output display for <code>Invoke-PSRule</code> which include the reason why rule failed.</li>
 <li>To use wide output use the <code>-OutputFormat Wide</code> parameter.</li>
-</ul>
-</li>
-<li>Renamed <code>-Message</code> parameter to <code>-Text</code> on the <code>Recommend</code> keyword.<ul>
+<li>Renamed <code>-Message</code> parameter to <code>-Text</code> on the <code>Recommend</code> keyword.</li>
 <li>The <code>-Message</code> is an alias of <code>-Text</code> and will be deprecated in the future.</li>
-</ul>
-</li>
 </ul>
 </li>
 <li>Added assertion helper <code>$Assert</code> for extensibility. <a href="https://github.com/Microsoft/PSRule/issues/250">#250</a><ul>
@@ -3848,15 +3646,11 @@ Please upgrade to the latest version.</p>
 <li>Add JSON schema assertion method <code>JsonSchema</code>. <a href="https://github.com/Microsoft/PSRule/issues/42">#42</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li>Bug fixes:<ul>
+<li>Bug fixes:</li>
 <li>Fix rule synopsis comment capture. <a href="https://github.com/Microsoft/PSRule/issues/214">#214</a></li>
 <li>Fix YAML options file discovery issue in dotted directory. <a href="https://github.com/Microsoft/PSRule/issues/232">#232</a></li>
 <li>Fix comparison of wrapped types and null with <code>Within</code>. <a href="https://github.com/Microsoft/PSRule/issues/237">#237</a></li>
-</ul>
-</li>
-<li><strong>Breaking change</strong>: Use rule references consistent with cmdlet fully qualified syntax. <a href="https://github.com/Microsoft/PSRule/issues/217">#217</a><ul>
+<li><strong>Breaking change</strong>: Use rule references consistent with cmdlet fully qualified syntax. <a href="https://github.com/Microsoft/PSRule/issues/217">#217</a></li>
 <li>Rule names have to be unique within the current execution path or within a module.<ul>
 <li>Previously rule names only had to be unique within a single file.</li>
 </ul>
@@ -3866,8 +3660,6 @@ Please upgrade to the latest version.</p>
 </ul>
 </li>
 <li>You can reference a rule from a loaded module by using the syntax <code>ModuleName\RuleName</code>.</li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.8.0-B190806:</p>
 <ul>
@@ -3884,12 +3676,10 @@ Please upgrade to the latest version.</p>
 <li>Fix inconsistent handling of <code>$PWD</code>. <a href="https://github.com/Microsoft/PSRule/issues/249">#249</a></li>
 <li>Add detection for improper keyword use. <a href="https://github.com/Microsoft/PSRule/issues/203">#203</a></li>
 <li>Automatically load rule modules. <a href="https://github.com/Microsoft/PSRule/issues/218">#218</a></li>
-<li>Added assertion helper <code>$Assert</code> for extensibility. <a href="https://github.com/Microsoft/PSRule/issues/250">#250</a><ul>
+<li>Added assertion helper <code>$Assert</code> for extensibility. <a href="https://github.com/Microsoft/PSRule/issues/250">#250</a></li>
 <li>Add built-in assertions for <code>HasField</code>, <code>HasFieldValue</code> and <code>NullOrEmpty</code>.</li>
 <li>Add JSON schema assertion method <code>JsonSchema</code>. <a href="https://github.com/Microsoft/PSRule/issues/42">#42</a></li>
-</ul>
-</li>
-<li><strong>Breaking change</strong>: Use rule references consistent with cmdlet fully qualified syntax. <a href="https://github.com/Microsoft/PSRule/issues/217">#217</a><ul>
+<li><strong>Breaking change</strong>: Use rule references consistent with cmdlet fully qualified syntax. <a href="https://github.com/Microsoft/PSRule/issues/217">#217</a></li>
 <li>Rule names have to be unique within the current execution path or within a module.<ul>
 <li>Previously rule names only had to be unique within a single file.</li>
 </ul>
@@ -3900,11 +3690,9 @@ Please upgrade to the latest version.</p>
 </li>
 <li>You can reference a rule from a loaded module by using the syntax <code>ModuleName\RuleName</code>.</li>
 </ul>
-</li>
-</ul>
 <h2 id="v080-b190716-pre-release">v0.8.0-B190716 (pre-release)<a class="headerlink" href="#v080-b190716-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Added per object reason for failing rules. <a href="https://github.com/Microsoft/PSRule/issues/200">#200</a><ul>
+<li>Added per object reason for failing rules. <a href="https://github.com/Microsoft/PSRule/issues/200">#200</a></li>
 <li>The keywords <code>Exists</code>, <code>Match</code>, <code>Within</code> and <code>TypeOf</code> automatically add a reason when they fail.</li>
 <li>Added <code>-Reason</code> parameter to <code>Exists</code>, <code>Match</code>, <code>Within</code> and <code>TypeOf</code> keywords to allow a custom reason to be set.</li>
 <li>Added <code>Reason</code> keyword to add to reason for custom logic.</li>
@@ -3914,8 +3702,6 @@ Please upgrade to the latest version.</p>
 </li>
 <li>Renamed <code>-Message</code> parameter to <code>-Text</code> on the <code>Recommend</code> keyword.<ul>
 <li>The <code>-Message</code> is an alias of <code>-Text</code> and will be deprecated in the future.</li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -3937,35 +3723,23 @@ Please upgrade to the latest version.</p>
 <li>Fix error message when attempting to use the rule keyword in a rule definition. <a href="https://github.com/Microsoft/PSRule/issues/189">#189</a></li>
 <li>Fix TargetName binding when TargetName or Name property is null. <a href="https://github.com/Microsoft/PSRule/issues/202">#202</a></li>
 <li>Fix handling of non-boolean results in rules. Rule is failed with more specific error message. <a href="https://github.com/Microsoft/PSRule/issues/187">#187</a> <a href="https://github.com/Microsoft/PSRule/issues/224">#224</a></li>
-<li>Include .ps1 files that are specified directly with <code>-Path</code>, instead of only .Rule.ps1 files. <a href="https://github.com/Microsoft/PSRule/issues/182">#182</a><ul>
+<li>Include .ps1 files that are specified directly with <code>-Path</code>, instead of only .Rule.ps1 files. <a href="https://github.com/Microsoft/PSRule/issues/182">#182</a></li>
 <li>Improved warning message displayed when no Rule.ps1 files are founds.</li>
-</ul>
-</li>
-<li>Added support for <code>Invoke-PSRule</code> to return CSV formatted results. <a href="https://github.com/Microsoft/PSRule/issues/169">#169</a><ul>
+<li>Added support for <code>Invoke-PSRule</code> to return CSV formatted results. <a href="https://github.com/Microsoft/PSRule/issues/169">#169</a></li>
 <li>To generate CSV results use the <code>-OutputFormat Csv</code> parameter.</li>
 <li>Added <code>Output.Path</code> option to allow output to be saved directly to file.</li>
 <li>Added <code>Output.Encoding</code> option configure encoding used to write to file.</li>
 <li>By default, UTF-8 encoding without BOM is used.</li>
 <li><code>Invoke-PSRule</code> cmdlet also provides a parameter <code>-OutputPath</code> to write results to file.</li>
-</ul>
-</li>
-<li>Reordered cmdlet parameters to improve usage of frequently used parameters. <a href="https://github.com/Microsoft/PSRule/issues/175">#175</a><ul>
+<li>Reordered cmdlet parameters to improve usage of frequently used parameters. <a href="https://github.com/Microsoft/PSRule/issues/175">#175</a></li>
 <li><code>-Module</code> parameter will tab-complete with imported rule modules.</li>
-</ul>
-</li>
-<li>Added culture support for PowerShell informational messages. <a href="https://github.com/Microsoft/PSRule/issues/158">#158</a><ul>
+<li>Added culture support for PowerShell informational messages. <a href="https://github.com/Microsoft/PSRule/issues/158">#158</a></li>
 <li>A new <code>$LocalizedData</code> variable can be used within rule definitions.</li>
-</ul>
-</li>
 <li>Added <code>-Not</code> switch to <code>Within</code> and <code>Match</code> keywords to allow negative comparison. <a href="https://github.com/Microsoft/PSRule/issues/208">#208</a></li>
-<li>Improve discovery of rule tags. <a href="https://github.com/Microsoft/PSRule/issues/209">#209</a><ul>
+<li>Improve discovery of rule tags. <a href="https://github.com/Microsoft/PSRule/issues/209">#209</a></li>
 <li>Add wide format <code>-OutputFormat Wide</code> to <code>Get-PSRule</code> to allow output of rule tags.</li>
-</ul>
-</li>
-<li><strong>Breaking change</strong>: Changed rule filtering by tag to be case-insensitive. <a href="https://github.com/Microsoft/PSRule/issues/204">#204</a><ul>
+<li><strong>Breaking change</strong>: Changed rule filtering by tag to be case-insensitive. <a href="https://github.com/Microsoft/PSRule/issues/204">#204</a></li>
 <li>Previously tag value was case-sensitive, however this is confusing since PowerShell is case-insensitive by default.</li>
-</ul>
-</li>
 <li><strong>Breaking change</strong>: Rule time is recorded in milliseconds instead of seconds. <a href="https://github.com/Microsoft/PSRule/issues/192">#192</a></li>
 </ul>
 <p>What's changed since pre-release v0.7.0-B190664:</p>
@@ -3981,19 +3755,13 @@ Please upgrade to the latest version.</p>
 <h2 id="v070-b190652-pre-release">v0.7.0-B190652 (pre-release)<a class="headerlink" href="#v070-b190652-pre-release" title="Permanent link">#</a></h2>
 <ul>
 <li>Fix TargetName binding when TargetName or Name property is null. <a href="https://github.com/Microsoft/PSRule/issues/202">#202</a></li>
-<li>Add culture support for PowerShell informational messages. <a href="https://github.com/Microsoft/PSRule/issues/158">#158</a><ul>
+<li>Add culture support for PowerShell informational messages. <a href="https://github.com/Microsoft/PSRule/issues/158">#158</a></li>
 <li>A new <code>$LocalizedData</code> variable can be used within rule definitions.</li>
-</ul>
-</li>
 <li>Add <code>-Not</code> switch to <code>Within</code> and <code>Match</code> keywords to allow negative comparison. <a href="https://github.com/Microsoft/PSRule/issues/208">#208</a></li>
-<li>Improve discovery of rule tags. <a href="https://github.com/Microsoft/PSRule/issues/209">#209</a><ul>
+<li>Improve discovery of rule tags. <a href="https://github.com/Microsoft/PSRule/issues/209">#209</a></li>
 <li>Add wide format <code>-OutputFormat Wide</code> to <code>Get-PSRule</code> to allow output of rule tags.</li>
-</ul>
-</li>
-<li><strong>Breaking change</strong>: Change rule filtering by tag to be case-insensitive. <a href="https://github.com/Microsoft/PSRule/issues/204">#204</a><ul>
+<li><strong>Breaking change</strong>: Change rule filtering by tag to be case-insensitive. <a href="https://github.com/Microsoft/PSRule/issues/204">#204</a></li>
 <li>Previously tag value was case-sensitive, however this is confusing since PowerShell is case-insensitive by default.</li>
-</ul>
-</li>
 </ul>
 <h2 id="v070-b190633-pre-release">v0.7.0-B190633 (pre-release)<a class="headerlink" href="#v070-b190633-pre-release" title="Permanent link">#</a></h2>
 <ul>
@@ -4005,25 +3773,19 @@ Please upgrade to the latest version.</p>
 <h2 id="v070-b190624-pre-release">v0.7.0-B190624 (pre-release)<a class="headerlink" href="#v070-b190624-pre-release" title="Permanent link">#</a></h2>
 <ul>
 <li>Fix handling of non-boolean results in rules. Rule is failed with more specific error message. <a href="https://github.com/Microsoft/PSRule/issues/187">#187</a></li>
-<li>Include .ps1 files that are specified directly with <code>-Path</code>, instead of only .rule.ps1 files. <a href="https://github.com/Microsoft/PSRule/issues/182">#182</a><ul>
+<li>Include .ps1 files that are specified directly with <code>-Path</code>, instead of only .rule.ps1 files. <a href="https://github.com/Microsoft/PSRule/issues/182">#182</a></li>
 <li>Improved warning message displayed when no Rule.ps1 files are founds.</li>
-</ul>
-</li>
 </ul>
 <h2 id="v070-b190613-pre-release">v0.7.0-B190613 (pre-release)<a class="headerlink" href="#v070-b190613-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Added support for <code>Invoke-PSRule</code> to return CSV formatted results. <a href="https://github.com/Microsoft/PSRule/issues/169">#169</a><ul>
+<li>Added support for <code>Invoke-PSRule</code> to return CSV formatted results. <a href="https://github.com/Microsoft/PSRule/issues/169">#169</a></li>
 <li>To generate CSV results use the <code>-OutputFormat Csv</code> parameter.</li>
 <li>Added <code>Output.Path</code> option to allow output to be saved directly to file.</li>
 <li>Added <code>Output.Encoding</code> option configure encoding used to write to file.</li>
 <li>By default, UTF-8 encoding without BOM is used.</li>
 <li><code>Invoke-PSRule</code> cmdlet also provides a parameter <code>-OutputPath</code> to write results to file.</li>
-</ul>
-</li>
-<li>Reordered cmdlet parameters to improve usage of frequently used parameters. <a href="https://github.com/Microsoft/PSRule/issues/175">#175</a><ul>
+<li>Reordered cmdlet parameters to improve usage of frequently used parameters. <a href="https://github.com/Microsoft/PSRule/issues/175">#175</a></li>
 <li><code>-Module</code> parameter will tab-complete with imported rule modules.</li>
-</ul>
-</li>
 </ul>
 <h2 id="v060">v0.6.0<a class="headerlink" href="#v060" title="Permanent link">#</a></h2>
 <p>What's changed since v0.5.0:</p>
@@ -4031,25 +3793,17 @@ Please upgrade to the latest version.</p>
 <li>Fix operation is not supported on this platform failure. <a href="https://github.com/Microsoft/PSRule/issues/152">#152</a></li>
 <li>Fix FullName cannot be found on this object error. <a href="https://github.com/Microsoft/PSRule/issues/149">#149</a></li>
 <li>Fix discovery of rules within paths that contain spaces fails. <a href="https://github.com/Microsoft/PSRule/issues/168">#168</a></li>
-<li>Added rule documentation, which allows additional rule information to be stored in markdown files. <a href="https://github.com/Microsoft/PSRule/issues/157">#157</a><ul>
+<li>Added rule documentation, which allows additional rule information to be stored in markdown files. <a href="https://github.com/Microsoft/PSRule/issues/157">#157</a></li>
 <li>Rule documentation also adds culture support. <a href="https://github.com/Microsoft/PSRule/issues/18">#18</a></li>
 <li>Rule documentation can be accessed like help with the <code>Get-PSRuleHelp</code> cmdlet.</li>
-</ul>
-</li>
-<li>Added annotations, which are non-indexed metadata stored in rule documentation. <a href="https://github.com/Microsoft/PSRule/issues/148">#148</a><ul>
+<li>Added annotations, which are non-indexed metadata stored in rule documentation. <a href="https://github.com/Microsoft/PSRule/issues/148">#148</a></li>
 <li>Annotations can contain a link to online version of the documentation. <a href="https://github.com/Microsoft/PSRule/issues/147">#147</a></li>
-</ul>
-</li>
-<li><strong>Important change</strong>: Changed <code>Hint</code> keyword to <code>Recommend</code> to align with rule documentation. <a href="https://github.com/Microsoft/PSRule/issues/165">#165</a><ul>
+<li><strong>Important change</strong>: Changed <code>Hint</code> keyword to <code>Recommend</code> to align with rule documentation. <a href="https://github.com/Microsoft/PSRule/issues/165">#165</a></li>
 <li>Use of <code>Hint</code> keyword is deprecated and will be removed in a future release. Currently <code>Hint</code> is aliased to <code>Recommend</code> for compatibility.</li>
-</ul>
-</li>
-<li><strong>Breaking change</strong>: Changed rule properties to align with rule documentation. <a href="https://github.com/Microsoft/PSRule/issues/164">#164</a><ul>
+<li><strong>Breaking change</strong>: Changed rule properties to align with rule documentation. <a href="https://github.com/Microsoft/PSRule/issues/164">#164</a></li>
 <li>Rule <code>Synopsis</code>, is a brief summary of the rule and <code>Description</code> is a detailed purpose of the rule.</li>
 <li><code>Description:</code> metadata keyword used in comment help is now <code>Synopsis:</code>, use of <code>Description:</code> will set synopsis. Description metadata keyword is deprecated and will be removed in a future update.</li>
 <li>Output property <code>Message</code> on rule results is now <code>Recommendation</code>.</li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.6.0-B190627:</p>
 <ul>
@@ -4058,28 +3812,20 @@ Please upgrade to the latest version.</p>
 </ul>
 <h2 id="v060-b190627-pre-release">v0.6.0-B190627 (pre-release)<a class="headerlink" href="#v060-b190627-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li><strong>Important change</strong>: Changed <code>Hint</code> keyword to <code>Recommend</code> to align with rule documentation. <a href="https://github.com/Microsoft/PSRule/issues/165">#165</a><ul>
+<li><strong>Important change</strong>: Changed <code>Hint</code> keyword to <code>Recommend</code> to align with rule documentation. <a href="https://github.com/Microsoft/PSRule/issues/165">#165</a></li>
 <li>Use of <code>Hint</code> keyword is deprecated and will be removed in a future release. Currently <code>Hint</code> is aliased to <code>Recommend</code> for compatibility.</li>
-</ul>
-</li>
-<li><strong>Breaking change</strong>: Changed rule properties to align with rule documentation. <a href="https://github.com/Microsoft/PSRule/issues/164">#164</a><ul>
+<li><strong>Breaking change</strong>: Changed rule properties to align with rule documentation. <a href="https://github.com/Microsoft/PSRule/issues/164">#164</a></li>
 <li>Rule <code>Synopsis</code>, is a brief summary of the rule and <code>Description</code> is a detailed purpose of the rule.</li>
 <li><code>Description:</code> metadata keyword used in comment help is now <code>Synopsis:</code>, use of <code>Description:</code> will set synopsis. Description metadata keyword is deprecated and will be removed in a future update.</li>
 <li>Output property <code>Message</code> on rule results is now <code>Recommendation</code>.</li>
 </ul>
-</li>
-</ul>
 <h2 id="v060-b190614-pre-release">v0.6.0-B190614 (pre-release)<a class="headerlink" href="#v060-b190614-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Added rule documentation, which allows additional rule information to be stored in markdown files. <a href="https://github.com/Microsoft/PSRule/issues/157">#157</a><ul>
+<li>Added rule documentation, which allows additional rule information to be stored in markdown files. <a href="https://github.com/Microsoft/PSRule/issues/157">#157</a></li>
 <li>Rule documentation also adds culture support. <a href="https://github.com/Microsoft/PSRule/issues/18">#18</a></li>
 <li>Rule documentation can be accessed like help with the <code>Get-PSRuleHelp</code> cmdlet.</li>
-</ul>
-</li>
-<li>Added annotations, which are non-indexed metadata stored in rule documentation. <a href="https://github.com/Microsoft/PSRule/issues/148">#148</a><ul>
+<li>Added annotations, which are non-indexed metadata stored in rule documentation. <a href="https://github.com/Microsoft/PSRule/issues/148">#148</a></li>
 <li>Annotations can contain a link to online version of the documentation. <a href="https://github.com/Microsoft/PSRule/issues/147">#147</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="v060-b190514-pre-release">v0.6.0-B190514 (pre-release)<a class="headerlink" href="#v060-b190514-pre-release" title="Permanent link">#</a></h2>
 <ul>
@@ -4093,15 +3839,11 @@ Please upgrade to the latest version.</p>
 <li>Fix null reference exception when traversing null field. <a href="https://github.com/Microsoft/PSRule/issues/123">#123</a></li>
 <li>Fix missing help topics for options and variables. <a href="https://github.com/Microsoft/PSRule/issues/125">#125</a></li>
 <li>Improved handling of default YAML options file. <a href="https://github.com/Microsoft/PSRule/issues/137">#137</a></li>
-<li>Added support for <code>Invoke-PSRule</code> to return NUnit3 formatted results. <a href="https://github.com/Microsoft/PSRule/issues/129">#129</a><ul>
+<li>Added support for <code>Invoke-PSRule</code> to return NUnit3 formatted results. <a href="https://github.com/Microsoft/PSRule/issues/129">#129</a></li>
 <li>To generate NUnit3 results use the <code>-OutputFormat NUnit3</code> parameter.</li>
-</ul>
-</li>
 <li>Added <code>Set-PSRuleOption</code> cmdlet to configure YAML options file. <a href="https://github.com/Microsoft/PSRule/issues/135">#135</a></li>
-<li>Added parameters to New-PSRuleOption to configure common options. <a href="https://github.com/Microsoft/PSRule/issues/134">#134</a><ul>
+<li>Added parameters to New-PSRuleOption to configure common options. <a href="https://github.com/Microsoft/PSRule/issues/134">#134</a></li>
 <li>Additional parameters are an alternative to using a <code>-Option</code> hashtable.</li>
-</ul>
-</li>
 </ul>
 <p>What's changed since pre-release v0.5.0-B190423:</p>
 <ul>
@@ -4110,15 +3852,11 @@ Please upgrade to the latest version.</p>
 </ul>
 <h2 id="v050-b190423-pre-release">v0.5.0-B190423 (pre-release)<a class="headerlink" href="#v050-b190423-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Added support for <code>Invoke-PSRule</code> to return NUnit3 formatted results. <a href="https://github.com/Microsoft/PSRule/issues/129">#129</a><ul>
+<li>Added support for <code>Invoke-PSRule</code> to return NUnit3 formatted results. <a href="https://github.com/Microsoft/PSRule/issues/129">#129</a></li>
 <li>To generate NUnit3 results use the <code>-OutputFormat NUnit3</code> parameter.</li>
-</ul>
-</li>
 <li>Added <code>Set-PSRuleOption</code> cmdlet to configure YAML options file. <a href="https://github.com/Microsoft/PSRule/issues/135">#135</a></li>
-<li>Added parameters to New-PSRuleOption to configure common options. <a href="https://github.com/Microsoft/PSRule/issues/134">#134</a><ul>
+<li>Added parameters to New-PSRuleOption to configure common options. <a href="https://github.com/Microsoft/PSRule/issues/134">#134</a></li>
 <li>Additional parameters are an alternative to using a <code>-Option</code> hashtable.</li>
-</ul>
-</li>
 <li>Improved handling of default YAML options file. <a href="https://github.com/Microsoft/PSRule/issues/137">#137</a></li>
 </ul>
 <h2 id="v050-b190405-pre-release">v0.5.0-B190405 (pre-release)<a class="headerlink" href="#v050-b190405-pre-release" title="Permanent link">#</a></h2>
@@ -4130,10 +3868,8 @@ Please upgrade to the latest version.</p>
 <p>What's changed since v0.3.0:</p>
 <ul>
 <li>Fix incorrect JSON de-serialization. <a href="https://github.com/Microsoft/PSRule/issues/109">#109</a> <a href="https://github.com/Microsoft/PSRule/issues/111">#111</a></li>
-<li>Added support for using <code>-InputPath</code> instead of using <code>-InputObject</code> to handle serialized objects. <a href="https://github.com/Microsoft/PSRule/issues/106">#106</a><ul>
+<li>Added support for using <code>-InputPath</code> instead of using <code>-InputObject</code> to handle serialized objects. <a href="https://github.com/Microsoft/PSRule/issues/106">#106</a></li>
 <li><code>-Format</code> is automatically detected for <code>.yaml</code>, <code>.yml</code> and <code>.json</code> file extensions.</li>
-</ul>
-</li>
 <li>Added <code>-OutputFormat</code> parameter to serialize output from <code>Invoke-PSRule</code> as YAML or JSON. <a href="https://github.com/Microsoft/PSRule/issues/29">#29</a></li>
 <li>Added support for logging pass or fail outcomes to a data stream such as Error, Warning or Information. <a href="https://github.com/Microsoft/PSRule/issues/97">#97</a></li>
 <li><strong>Breaking change</strong>: Deprecated usage of the <code>-TargetName</code> parameter on the <code>Hint</code> keyword has been removed. <a href="https://github.com/Microsoft/PSRule/issues/81">#81</a></li>
@@ -4155,10 +3891,8 @@ Please upgrade to the latest version.</p>
 </ul>
 <h2 id="v040-b190311-pre-release">v0.4.0-B190311 (pre-release)<a class="headerlink" href="#v040-b190311-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>Added support for using <code>-InputPath</code> instead of using <code>-InputObject</code> to handle serialized objects. <a href="https://github.com/Microsoft/PSRule/issues/106">#106</a><ul>
+<li>Added support for using <code>-InputPath</code> instead of using <code>-InputObject</code> to handle serialized objects. <a href="https://github.com/Microsoft/PSRule/issues/106">#106</a></li>
 <li><code>-Format</code> is automatically detected for <code>.yaml</code>, <code>.yml</code> and <code>.json</code> file extensions.</li>
-</ul>
-</li>
 <li>Added <code>-OutputFormat</code> parameter to serialize output from <code>Invoke-PSRule</code>. <a href="https://github.com/Microsoft/PSRule/issues/29">#29</a></li>
 <li>Added support for logging pass or fail outcomes to a data stream such as Error, Warning or Information. <a href="https://github.com/Microsoft/PSRule/issues/97">#97</a></li>
 <li><strong>Breaking change</strong>: Deprecated usage of the <code>-TargetName</code> parameter on the <code>Hint</code> keyword has been removed. <a href="https://github.com/Microsoft/PSRule/issues/81">#81</a></li>
@@ -4168,13 +3902,11 @@ Please upgrade to the latest version.</p>
 <ul>
 <li>Added support for pipelining with <code>Exists</code>, <code>Within</code>, <code>Match</code> and <code>TypeOf</code> keywords <a href="https://github.com/Microsoft/PSRule/issues/90">#90</a></li>
 <li>Added support for packaging rules in modules <a href="https://github.com/Microsoft/PSRule/issues/16">#16</a></li>
-<li>Import objects from YAML or JSON format <a href="https://github.com/Microsoft/PSRule/issues/75">#75</a><ul>
+<li>Import objects from YAML or JSON format <a href="https://github.com/Microsoft/PSRule/issues/75">#75</a></li>
 <li>Added support for input de-serialization from FileInfo objects <a href="https://github.com/Microsoft/PSRule/issues/95">#95</a></li>
-</ul>
-</li>
 <li>Support nested TargetObjects <a href="https://github.com/Microsoft/PSRule/issues/77">#77</a></li>
 <li>Export variables to improve authoring experience <a href="https://github.com/Microsoft/PSRule/issues/83">#83</a></li>
-<li>Binding improvements:<ul>
+<li>Binding improvements:</li>
 <li>Added object type binding and dynamic filtering for rules <a href="https://github.com/Microsoft/PSRule/issues/82">#82</a></li>
 <li>Added support for indexed and quoted field names <a href="https://github.com/Microsoft/PSRule/issues/86">#86</a></li>
 <li>Added support for case-sensitive binding operations <a href="https://github.com/Microsoft/PSRule/issues/87">#87</a><ul>
@@ -4182,15 +3914,11 @@ Please upgrade to the latest version.</p>
 </ul>
 </li>
 <li>Support TargetName binding of nested properties <a href="https://github.com/Microsoft/PSRule/issues/71">#71</a></li>
-</ul>
-</li>
 <li>Added online help links to keywords <a href="https://github.com/Microsoft/PSRule/issues/72">#72</a></li>
 <li>Added schema for PSRule options <a href="https://github.com/Microsoft/PSRule/issues/74">#74</a></li>
-<li><strong>Important change</strong>: The <code>-TargetName</code> parameter of the <code>Hint</code> keyword has been deprecated <a href="https://github.com/Microsoft/PSRule/issues/81">#81</a><ul>
+<li><strong>Important change</strong>: The <code>-TargetName</code> parameter of the <code>Hint</code> keyword has been deprecated <a href="https://github.com/Microsoft/PSRule/issues/81">#81</a></li>
 <li><code>-TargetName</code> parameter not longer sets the pipeline object <em>TargetName</em> and generates a warning instead.</li>
 <li>The <code>-TargetName</code> will be completely removed in <strong>v0.4.0</strong>, at which time using the parameter will generate an error.</li>
-</ul>
-</li>
 <li><strong>Breaking change</strong>: Changed parameter alias for <code>-Path</code> from <code>-f</code> to <code>-p</code> <a href="https://github.com/Microsoft/PSRule/issues/99">#99</a></li>
 </ul>
 <p>What's changed since pre-release v0.3.0-B190231:</p>
@@ -4209,15 +3937,11 @@ Please upgrade to the latest version.</p>
 <li>Added support for packaging rules in modules <a href="https://github.com/Microsoft/PSRule/issues/16">#16</a></li>
 <li>Added support for indexed and quoted field names <a href="https://github.com/Microsoft/PSRule/issues/86">#86</a></li>
 <li>Added object type binding and dynamic filtering for rules <a href="https://github.com/Microsoft/PSRule/issues/82">#82</a></li>
-<li>Added support for case-sensitive binding operations <a href="https://github.com/Microsoft/PSRule/issues/87">#87</a><ul>
+<li>Added support for case-sensitive binding operations <a href="https://github.com/Microsoft/PSRule/issues/87">#87</a></li>
 <li>Binding ignores case by default. Set option <code>Binding.CaseSensitive</code> to <code>true</code> to enable case-sensitivity.</li>
-</ul>
-</li>
-<li><strong>Important change</strong>: The <code>-TargetName</code> parameter of the <code>Hint</code> keyword has been deprecated <a href="https://github.com/Microsoft/PSRule/issues/81">#81</a><ul>
+<li><strong>Important change</strong>: The <code>-TargetName</code> parameter of the <code>Hint</code> keyword has been deprecated <a href="https://github.com/Microsoft/PSRule/issues/81">#81</a></li>
 <li><code>-TargetName</code> parameter not longer sets the pipeline object <em>TargetName</em> and generates a warning instead.</li>
 <li>The <code>-TargetName</code> will be completely removed in <strong>v0.4.0</strong>, at which time using the parameter will generate an error.</li>
-</ul>
-</li>
 </ul>
 <h2 id="v030-b190208-pre-release">v0.3.0-B190208 (pre-release)<a class="headerlink" href="#v030-b190208-pre-release" title="Permanent link">#</a></h2>
 <ul>
@@ -4239,10 +3963,8 @@ Please upgrade to the latest version.</p>
 <li>Custom functions can be used to bind <em>TargetName</em> <a href="https://github.com/Microsoft/PSRule/issues/44">#44</a></li>
 <li>Objects that are unable to bind a <em>TargetName</em> will use a SHA1 object hash for <em>TargetName</em> <a href="https://github.com/Microsoft/PSRule/issues/44">#44</a></li>
 <li>Added <code>Test-PSRuleTarget</code> command to return an overall <code>$True</code> or <code>$False</code> after evaluating rules for an object <a href="https://github.com/Microsoft/PSRule/issues/30">#30</a></li>
-<li>Improve reporting of inconclusive results and objects that are not processed by any rule <a href="https://github.com/Microsoft/PSRule/issues/46">#46</a><ul>
+<li>Improve reporting of inconclusive results and objects that are not processed by any rule <a href="https://github.com/Microsoft/PSRule/issues/46">#46</a></li>
 <li>Inconclusive results and objects not processed will return a warning by default.</li>
-</ul>
-</li>
 <li>Fix propagation of informational messages to host from rule scripts and definitions <a href="https://github.com/Microsoft/PSRule/issues/48">#48</a></li>
 <li>Fix Get-PSRule generates exception when no .rule.ps1 scripts exist in path <a href="https://github.com/Microsoft/PSRule/issues/53">#53</a></li>
 <li>Fix LocalizedData.PathNotFound warning when no .rule.ps1 scripts exist in path <a href="https://github.com/Microsoft/PSRule/issues/54">#54</a></li>
@@ -4270,10 +3992,8 @@ Please upgrade to the latest version.</p>
 <li>Custom functions can be used to bind <em>TargetName</em> <a href="https://github.com/Microsoft/PSRule/issues/44">#44</a></li>
 <li>Objects that are unable to bind a <em>TargetName</em> will use a SHA1 object hash for <em>TargetName</em> <a href="https://github.com/Microsoft/PSRule/issues/44">#44</a></li>
 <li>Added <code>Test-PSRule</code> command to return an overall <code>$True</code> or <code>$False</code> after evaluating rules for an object <a href="https://github.com/Microsoft/PSRule/issues/30">#30</a></li>
-<li>Improve reporting of inconclusive results and objects that are not processed by any rule <a href="https://github.com/Microsoft/PSRule/issues/46">#46</a><ul>
+<li>Improve reporting of inconclusive results and objects that are not processed by any rule <a href="https://github.com/Microsoft/PSRule/issues/46">#46</a></li>
 <li>Inconclusive results and objects not processed will return a warning by default.</li>
-</ul>
-</li>
 <li>Fix propagation of informational messages to host from rule scripts and definitions <a href="https://github.com/Microsoft/PSRule/issues/48">#48</a></li>
 <li>Added support for cross-platform environments (Windows, Linux and macOS) <a href="https://github.com/Microsoft/PSRule/issues/49">#49</a></li>
 </ul>
@@ -4289,17 +4009,13 @@ Please upgrade to the latest version.</p>
 </ul>
 <h2 id="v010-b181235-pre-release">v0.1.0-B181235 (pre-release)<a class="headerlink" href="#v010-b181235-pre-release" title="Permanent link">#</a></h2>
 <ul>
-<li>RuleId and RuleName are now independent. Rules are created with a name, and the RuleId is generated based on rule name and file name<ul>
+<li>RuleId and RuleName are now independent. Rules are created with a name, and the RuleId is generated based on rule name and file name</li>
 <li>Rules with the same name can exist and be cross linked with DependsOn, as long a the script file name is different</li>
-</ul>
-</li>
 <li>Added <code>-Not</code> to <code>Exists</code> keyword</li>
 <li>Improved verbose logging of <code>Exists</code>, <code>AllOf</code>, <code>AnyOf</code> keywords and core engine</li>
-<li><strong>Breaking change</strong>: Renamed outcome filtering parameters to align to type name and increase clarity<ul>
+<li><strong>Breaking change</strong>: Renamed outcome filtering parameters to align to type name and increase clarity</li>
 <li><code>Invoke-PSRule</code> has a <code>-Outcome</code> parameter instead of <code>-Status</code></li>
 <li><code>-Outcome</code> supports values of <code>Pass</code>, <code>Fail</code>, <code>Error</code>, <code>None</code>, <code>Processed</code> and <code>All</code></li>
-</ul>
-</li>
 </ul>
 <h2 id="v010-b181222-pre-release">v0.1.0-B181222 (pre-release)<a class="headerlink" href="#v010-b181222-pre-release" title="Permanent link">#</a></h2>
 <ul>

@@ -1771,12 +1771,10 @@
 <ul>
 <li>Tag names should be easy to read and understand.</li>
 <li>Tag names will use lower-camel/ pascal casing.</li>
-<li>The following mandatory tags will be used:<ul>
+<li>The following mandatory tags will be used:</li>
 <li>environment: An operational environment for systems and services. Valid environments are <em>production</em>, <em>testing</em> and <em>development</em>.</li>
 <li>costCentre: A allocation account within financial systems used for charging costs to a business unit. A cost centre is a number with 5 digits and can't start with a 0.</li>
 <li>businessUnit: The name of the organizational unit or team that owns the application/ solution.</li>
-</ul>
-</li>
 </ul>
 <p>To start we are going to define an <code>environmentTag</code> rule, which will ensure that the <em>environment</em> tag exists and that the value only uses allowed values.</p>
 <p>In the example below:</p>
@@ -1809,11 +1807,9 @@
 <ul>
 <li>We use the <code>Exists</code> keyword to check if the <em>environment</em> tag exists.</li>
 <li>The <code>-CaseSensitive</code> switch is also used to ensure that the tag name uses lowercase.</li>
-<li>The condition will return <code>$True</code> or <code>$False</code> back to the pipeline, where:<ul>
+<li>The condition will return <code>$True</code> or <code>$False</code> back to the pipeline, where:</li>
 <li><code>$True</code> - the <em>environment</em> tag exists.</li>
 <li><code>$False</code> - the <em>environment</em> tag does not exist.</li>
-</ul>
-</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="c"># Synopsis: Resource must have environment tag</span>
 <span class="n">Rule</span> <span class="s1">&#39;environmentTag&#39;</span> <span class="p">{</span>
@@ -1826,11 +1822,9 @@
 <ul>
 <li>We use the <code>Within</code> keyword to check if the <em>environment</em> tag uses any of the allowed values.</li>
 <li>The <code>-CaseSensitive</code> switch is also used to ensure that the tag value is only a lowercase environment name.</li>
-<li>The condition will return <code>$True</code> or <code>$False</code> back to the pipeline, where:<ul>
+<li>The condition will return <code>$True</code> or <code>$False</code> back to the pipeline, where:</li>
 <li><code>$True</code> - an allowed environment is used.</li>
 <li><code>$False</code> - the <em>environment</em> tag does not use one of the allowed values.</li>
-</ul>
-</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="c"># Synopsis: Resource must have environment tag</span>
 <span class="n">Rule</span> <span class="s1">&#39;environmentTag&#39;</span> <span class="p">{</span>
@@ -1844,11 +1838,9 @@
 <li><code>$TargetObject</code> automatic variable is used to get the pipeline object being evaluated.</li>
 <li>We use the <code>-cin</code> operator to check the <em>environment</em> tag only uses allowed values.</li>
 <li>The <code>-cin</code> operator performs a cases sensitive match on <em>production</em>, <em>test</em> and <em>development</em>.</li>
-<li>The condition will return <code>$True</code> or <code>$False</code> back to the pipeline, where:<ul>
+<li>The condition will return <code>$True</code> or <code>$False</code> back to the pipeline, where:</li>
 <li><code>$True</code> - an allowed environment is used.</li>
 <li><code>$False</code> - the <em>environment</em> tag does not use one of the allowed values.</li>
-</ul>
-</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="c"># Synopsis: Resource must have environment tag</span>
 <span class="n">Rule</span> <span class="s1">&#39;environmentTag&#39;</span> <span class="p">{</span>
@@ -1861,11 +1853,9 @@
 <p>In the example below:</p>
 <ul>
 <li>We use the <code>Match</code> keyword to check if the <em>costCentre</em> tag uses a numeric only value with 5 digits, not starting with 0.</li>
-<li>The condition will return <code>$True</code> or <code>$False</code> back to the pipeline, where:<ul>
+<li>The condition will return <code>$True</code> or <code>$False</code> back to the pipeline, where:</li>
 <li><code>$True</code> - the <em>costCentre</em> tag value matches the regular expression.</li>
 <li><code>$False</code> - the <em>costCentre</em> tag value does not use match the regular expression.</li>
-</ul>
-</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="c"># Synopsis: Resource must have costCentre tag</span>
 <span class="n">Rule</span> <span class="s1">&#39;costCentreTag&#39;</span> <span class="p">{</span>
@@ -1878,11 +1868,9 @@
 <ul>
 <li><code>$TargetObject</code> automatic variable is used to get the pipeline object being evaluated.</li>
 <li>We use the <code>-match</code> operator to check the <em>costCentre</em> tag value matches the regular expression.</li>
-<li>The condition will return <code>$True</code> or <code>$False</code> back to the pipeline, where:<ul>
+<li>The condition will return <code>$True</code> or <code>$False</code> back to the pipeline, where:</li>
 <li><code>$True</code> - the <em>costCentre</em> tag value matches the regular expression.</li>
 <li><code>$False</code> - the <em>costCentre</em> tag value does not use match the regular expression.</li>
-</ul>
-</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="c"># Synopsis: Resource must have costCentre tag</span>
 <span class="n">Rule</span> <span class="s1">&#39;costCentreTag&#39;</span> <span class="p">{</span>

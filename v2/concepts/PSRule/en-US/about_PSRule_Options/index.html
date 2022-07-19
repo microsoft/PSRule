@@ -2521,15 +2521,13 @@ Custom fields are available to rules and included in output.</p>
 <p>PSRule uses the following logic to determine which property should be used for binding:</p>
 <ul>
 <li>By default PSRule will not extract any custom fields.</li>
-<li>If custom fields are configured, PSRule will attempt to bind the field.<ul>
+<li>If custom fields are configured, PSRule will attempt to bind the field.</li>
 <li>If <strong>none</strong> of the configured property names exist, the field will be skipped.</li>
 <li>If more then one property name is configured, the order they are specified in the configuration determines precedence.<ul>
 <li>i.e. The first configured property name will take precedence over the second property name.</li>
 </ul>
 </li>
 <li>By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the <a href="#bindingignorecase">Binding.IgnoreCase</a> option.</li>
-</ul>
-</li>
 </ul>
 <p>Custom field bindings can be specified using:</p>
 <div class="highlight"><pre><span></span><code><span class="c"># PowerShell: Using the BindingField parameter</span>
@@ -2555,11 +2553,9 @@ The properties that PSRule uses for binding can be customized by providing a ord
 See <a href="#bindingtargetname"><code>Binding.TargetName</code></a> and <a href="#bindingtargettype"><code>Binding.TargetType</code></a> for these options.</p>
 <ul>
 <li>By default, custom property binding finds the first matching property by name regardless of case. i.e. <code>Binding.IgnoreCase</code> is <code>true</code>.</li>
-<li>To make custom bindings case sensitive, set the <code>Binding.IgnoreCase</code> option to <code>false</code>.<ul>
+<li>To make custom bindings case sensitive, set the <code>Binding.IgnoreCase</code> option to <code>false</code>.</li>
 <li>Changing this option will affect custom property bindings for both <em>TargetName</em> and <em>TargetType</em>.</li>
 <li>Setting this option has no affect on binding defaults or custom scripts.</li>
-</ul>
-</li>
 </ul>
 <p>This option can be specified using:</p>
 <div class="highlight"><pre><span></span><code><span class="c"># PowerShell: Using the BindingIgnoreCase parameter</span>
@@ -2662,27 +2658,21 @@ Many objects could be passed down the pipeline at the same time, so using a <em>
 <em>TargetName</em> is also used for advanced features such as rule suppression.</p>
 <p>The value that PSRule uses for <em>TargetName</em> is configurable. PSRule uses the following logic to determine what <em>TargetName</em> should be used:</p>
 <ul>
-<li>By default PSRule will:<ul>
+<li>By default PSRule will:</li>
 <li>Use <code>TargetName</code> or <code>Name</code> properties on the object. These property names are case insensitive.</li>
 <li>If both <code>TargetName</code> and <code>Name</code> properties exist, <code>TargetName</code> will take precedence over <code>Name</code>.</li>
 <li>If neither <code>TargetName</code> or <code>Name</code> properties exist, a SHA1 hash of the object will be used as <em>TargetName</em>.</li>
-</ul>
-</li>
-<li>If custom <em>TargetName</em> binding properties are configured, the property names specified will override the defaults.<ul>
+<li>If custom <em>TargetName</em> binding properties are configured, the property names specified will override the defaults.</li>
 <li>If <strong>none</strong> of the configured property names exist, PSRule will revert back to <code>TargetName</code> then <code>Name</code>.</li>
 <li>If more then one property name is configured, the order they are specified in the configuration determines precedence.<ul>
 <li>i.e. The first configured property name will take precedence over the second property name.</li>
 </ul>
 </li>
 <li>By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the <a href="#bindingignorecase">Binding.IgnoreCase</a> option.</li>
-</ul>
-</li>
-<li>If a custom <em>TargetName</em> binding function is specified, the function will be evaluated first before any other option.<ul>
+<li>If a custom <em>TargetName</em> binding function is specified, the function will be evaluated first before any other option.</li>
 <li>If the function returns <code>$Null</code> then custom properties, <code>TargetName</code> and <code>Name</code> properties will be used.</li>
 <li>The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.</li>
 <li>Custom binding functions are blocked in constrained language mode is used. See <a href="#executionlanguagemode">language mode</a> for more information.</li>
-</ul>
-</li>
 </ul>
 <p>Custom property names to use for binding can be specified using:</p>
 <div class="highlight"><pre><span></span><code><span class="c"># PowerShell: Using the TargetName parameter</span>
@@ -2731,25 +2721,19 @@ Many objects could be passed down the pipeline at the same time, so using a <em>
 <p>The value that PSRule uses for <em>TargetType</em> is configurable.
 PSRule uses the following logic to determine what <em>TargetType</em> should be used:</p>
 <ul>
-<li>By default PSRule will:<ul>
+<li>By default PSRule will:</li>
 <li>Use the default type presented by PowerShell from <code>TypeNames</code>. i.e. <code>.PSObject.TypeNames[0]</code></li>
-</ul>
-</li>
-<li>If custom <em>TargetType</em> binding properties are configured, the property names specified will override the defaults.<ul>
+<li>If custom <em>TargetType</em> binding properties are configured, the property names specified will override the defaults.</li>
 <li>If <strong>none</strong> of the configured property names exist, PSRule will revert back to the type presented by PowerShell.</li>
 <li>If more then one property name is configured, the order they are specified in the configuration determines precedence.<ul>
 <li>i.e. The first configured property name will take precedence over the second property name.</li>
 </ul>
 </li>
 <li>By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the <a href="#bindingignorecase"><code>Binding.IgnoreCase</code></a> option.</li>
-</ul>
-</li>
-<li>If a custom <em>TargetType</em> binding function is specified, the function will be evaluated first before any other option.<ul>
+<li>If a custom <em>TargetType</em> binding function is specified, the function will be evaluated first before any other option.</li>
 <li>If the function returns <code>$Null</code> then custom properties, or the type presented by PowerShell will be used in order instead.</li>
 <li>The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.</li>
 <li>Custom binding functions are blocked in constrained language mode is used. See <a href="#executionlanguagemode">language mode</a> for more information.</li>
-</ul>
-</li>
 </ul>
 <p>Custom property names to use for binding can be specified using:</p>
 <div class="highlight"><pre><span></span><code><span class="c"># PowerShell: Using the TargetType parameter</span>
@@ -3748,13 +3732,11 @@ This options is ignored by other cmdlets.</p>
 <li>Json - Output is serialized as JSON.</li>
 <li>Markdown - Output is serialized as Markdown.</li>
 <li>NUnit3 - Output is serialized as NUnit3 (XML).</li>
-<li>Csv - Output is serialized as a comma-separated values (CSV).<ul>
+<li>Csv - Output is serialized as a comma-separated values (CSV).</li>
 <li>The following columns are included for <code>Detail</code> output:
 RuleName, TargetName, TargetType, Outcome, OutcomeReason, Synopsis, Recommendation</li>
 <li>The following columns are included for <code>Summary</code> output:
 RuleName, Pass, Fail, Outcome, Synopsis, Recommendation</li>
-</ul>
-</li>
 <li>Wide -  Output is presented using the wide table format, which includes reason and wraps columns.</li>
 <li>Sarif - Output is serialized as SARIF.</li>
 </ul>

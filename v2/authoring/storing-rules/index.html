@@ -1682,12 +1682,10 @@ To reuse rules across multiple projects consider packaging these as a module.</p
   Use all lower-case in the sub-directory name.
   Put any custom rules within this sub-directory.</li>
 <li><strong>Use files ending with .Rule.*</strong> &mdash; PSRule uses a file naming convention to discover rules.
-  Use one of the following depending on the file format you are using:<ul>
+  Use one of the following depending on the file format you are using:</li>
 <li>YAML - <code>.Rule.yaml</code>.</li>
 <li>JSON - <code>.Rule.jsonc</code> or <code>.Rule.json</code>.</li>
 <li>PowerShell - <code>.Rule.ps1</code>.</li>
-</ul>
-</li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1713,7 +1711,7 @@ For example, <a href="https://aka.ms/ps-rule-azure">PSRule for Azure</a> uses th
   To preserve consistency between file systems, some characters are not permitted.
   Dots, hyphens, and underscores are not permitted at the start and end of the name.
   Additionally some characters are restricted for future use.
-  The following characters are not permitted:<ul>
+  The following characters are not permitted:</li>
 <li><code>&lt;</code> (less than)</li>
 <li><code>&gt;</code> (greater than)</li>
 <li><code>:</code> (colon)</li>
@@ -1730,24 +1728,18 @@ For example, <a href="https://aka.ms/ps-rule-azure">PSRule for Azure</a> uses th
 <li>Integer value zero, sometimes referred to as the ASCII NUL character.</li>
 <li>Characters whose integer representations are in the range from 1 through 31.</li>
 </ul>
-</li>
-</ul>
 <div class="highlight"><span class="filename">Regular expression for valid resource names</span><pre><span></span><code>^[^&lt;&gt;:/\\|?*&quot;&#39;`+@._\-\x00-\x1F][^&lt;&gt;:/\\|?*&quot;&#39;`+@\x00-\x1F]{1,126}[^&lt;&gt;:/\\|?*&quot;&#39;`+@._\-\x00-\x1F]$
 </code></pre></div>
 <p>When naming rules we recommend that you:</p>
 <ul>
-<li><strong>Use a standard prefix</strong> &mdash; You can use the <code>Local.</code> or <code>Org.</code> prefix for standalone rules.<ul>
+<li><strong>Use a standard prefix</strong> &mdash; You can use the <code>Local.</code> or <code>Org.</code> prefix for standalone rules.</li>
 <li>Alternatively choose a short prefix that identifies your organization.</li>
-</ul>
-</li>
 <li><strong>Use dotted notation</strong> &mdash; Use dots to separate rule name.</li>
 <li><strong>Use a maximum length of 35 characters</strong> &mdash;
   The default view of <code>Invoke-PSRule</code> truncates longer names.
   PSRule supports longer rule names however if <code>Invoke-PSRule</code> is called directly consider using <code>Format-List</code>.</li>
-<li>
-<p><strong>Avoid using special characters and punctuation</strong> &mdash;
-  Although these characters can be used in many cases, they may not be easy to use with all PSRule features.</p>
-</li>
+<li><strong>Avoid using special characters and punctuation</strong> &mdash;
+  Although these characters can be used in many cases, they may not be easy to use with all PSRule features.</li>
 </ul>
 
   <hr>
