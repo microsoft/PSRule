@@ -38,6 +38,7 @@
             }
         }, // Some comments
         "_PSRule": {
+            "path": "master.items[0]",
             "source": [
                 {
                     "file": "some-file.json",

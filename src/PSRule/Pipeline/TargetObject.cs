@@ -47,8 +47,11 @@ namespace PSRule.Pipeline
         internal TargetObject(PSObject o, TargetSourceCollection source)
         {
             Value = o;
+            Value.ConvertTargetInfoProperty();
+            Value.ConvertTargetInfoType();
             Source = ReadSourceInfo(source);
             Issue = ReadIssueInfo(null);
+            Path = ReadPath();
             _Annotations = new Dictionary<Type, TargetObjectAnnotation>();
         }
 
@@ -57,6 +60,8 @@ namespace PSRule.Pipeline
         internal TargetSourceCollection Source { get; private set; }
 
         internal TargetIssueCollection Issue { get; private set; }
+
+        internal string Path { get; }
 
         internal Hashtable GetData()
         {
@@ -79,14 +84,17 @@ namespace PSRule.Pipeline
             return (T)value;
         }
 
+        private string ReadPath()
+        {
+            return Value.GetTargetPath();
+        }
+
         private TargetSourceCollection ReadSourceInfo(TargetSourceCollection source)
         {
             var result = source ?? new TargetSourceCollection();
             if (ExpressionHelpers.GetBaseObject(Value) is ITargetInfo targetInfo)
                 result.Add(targetInfo.Source);
 
-            Value.ConvertTargetInfoProperty();
-            Value.ConvertTargetInfoType();
             result.AddRange(Value.GetSourceInfo());
             return result;
         }
@@ -94,7 +102,6 @@ namespace PSRule.Pipeline
         private TargetIssueCollection ReadIssueInfo(TargetIssueCollection issue)
         {
             var result = issue ?? new TargetIssueCollection();
-            Value.ConvertTargetInfoProperty();
             result.AddRange(Value.GetIssueInfo());
             return result;
         }

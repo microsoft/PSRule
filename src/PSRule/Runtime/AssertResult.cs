@@ -66,7 +66,7 @@ namespace PSRule.Runtime
             if (Result || string.IsNullOrEmpty(text))
                 return;
 
-            _Reason.Add(new ResultReason(operand, text, args));
+            _Reason.Add(new ResultReason(RunspaceContext.CurrentThread?.TargetObject?.Path, operand, text, args));
         }
 
         /// <summary>

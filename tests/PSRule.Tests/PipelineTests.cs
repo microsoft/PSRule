@@ -142,7 +142,28 @@ namespace PSRule
             Assert.True(items[2].HasSource());
             Assert.True(items[3].HasSource());
 
+            // With reason full path
+            option.Rule.Include = new string[] { "ScriptReasonTest" };
+            writer = new TestWriter(option);
+            builder = PipelineBuilder.Invoke(GetSource(), option, null);
+            PipelineBuilder.Invoke(GetSource(), option, null);
+            builder.InputPath(new string[] { "./**/ObjectFromFile*.json" });
+            pipeline = builder.Build(writer);
+            Assert.NotNull(pipeline);
+            pipeline.Begin();
+            pipeline.Process(GetTestObject());
+            pipeline.Process(GetFileObject());
+            pipeline.End();
+
+            items = writer.Output.OfType<InvokeResult>().SelectMany(i => i.AsRecord()).ToArray();
+            Assert.Equal(4, items.Length);
+            Assert.Equal("master.items[0].Name", items[0].Detail.Reason.First().FullPath);
+            Assert.Equal("Name", items[1].Detail.Reason.First().FullPath);
+            Assert.Equal("resources[0].Name", items[2].Detail.Reason.First().FullPath);
+            Assert.Equal("Name", items[3].Detail.Reason.First().FullPath);
+
             // With IgnoreObjectSource
+            option.Rule.Include = new string[] { "FromFile1" };
             option.Input.IgnoreObjectSource = true;
             writer = new TestWriter(option);
             builder = PipelineBuilder.Invoke(GetSource(), option, null);
@@ -206,6 +227,7 @@ namespace PSRule
         private static PSObject GetTestObject()
         {
             var info = new PSObject();
+            info.Properties.Add(new PSNoteProperty("path", "resources[0]"));
             var source = new PSObject();
             source.Properties.Add(new PSNoteProperty("file", PSRuleOption.GetRootedPath("./ObjectFromFileNotFile.json")));
             source.Properties.Add(new PSNoteProperty("type", "example"));

@@ -17,6 +17,7 @@ namespace PSRule
     {
         private const string PROPERTY_SOURCE = "source";
         private const string PROPERTY_ISSUE = "issue";
+        private const string PROPERTY_PATH = "path";
 
         public static T PropertyValue<T>(this PSObject o, string propertyName)
         {
@@ -90,8 +91,8 @@ namespace PSRule
             if (TryTargetInfo(o, out targetInfo))
                 return;
 
-            targetInfo = new PSRuleTargetInfo();
-            o.Members.Add(targetInfo);
+            o.Members.Add(new PSRuleTargetInfo());
+            TryTargetInfo(o, out targetInfo);
         }
 
         public static void SetTargetInfo(this PSObject o, PSRuleTargetInfo targetInfo)
@@ -115,12 +116,21 @@ namespace PSRule
             return o.TryTargetInfo(out var targetInfo) ? targetInfo.Issue.ToArray() : Array.Empty<TargetIssueInfo>();
         }
 
+        public static string GetTargetPath(this PSObject o)
+        {
+            return o.TryTargetInfo(out var targetInfo) ? targetInfo.Path : string.Empty;
+        }
+
         public static void ConvertTargetInfoProperty(this PSObject o)
         {
             if (o == null || !TryProperty(o, PSRuleTargetInfo.PropertyName, out PSObject value))
                 return;
 
             UseTargetInfo(o, out var targetInfo);
+            if (TryProperty(value, PROPERTY_PATH, out string path) && targetInfo.Path == null)
+            {
+                targetInfo.Path = path;
+            }
             if (TryProperty(value, PROPERTY_SOURCE, out Array sources))
             {
                 for (var i = 0; i < sources.Length; i++)

@@ -87,6 +87,11 @@ namespace PSRule.Definitions
         /// </summary>
         string Path { get; }
 
+        /// <summary>
+        /// The object path including the path of the parent object.
+        /// </summary>
+        string FullPath { get; }
+
         string Message { get; }
 
         string Format();
