@@ -49,5 +49,18 @@ namespace PSRule
             Assert.Equal("Issue.1", actual[0].Name);
             Assert.Equal("Some issue", actual[0].Message);
         }
+
+        [Fact]
+        public void TargetPath()
+        {
+            var info = new PSObject();
+            info.Properties.Add(new PSNoteProperty("path", "resources[0]"));
+            var o = new PSObject();
+            o.Properties.Add(new PSNoteProperty("_PSRule", info));
+            o.ConvertTargetInfoProperty();
+
+            var actual = o.GetTargetPath();
+            Assert.Equal("resources[0]", actual);
+        }
     }
 }

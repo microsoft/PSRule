@@ -13,6 +13,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.3.0-B0015:
+
+- General improvements
+  - Improved reporting of full object path from pre-processed results by @BernieWhite.
+    [#1169](https://github.com/microsoft/PSRule/issues/1169)
+
 ## v2.3.0-B0015 (pre-release)
 
 What's changed since pre-release v2.3.0-B0006:

@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Management.Automation;
 using Newtonsoft.Json;
 using PSRule.Data;
@@ -9,9 +11,12 @@ using PSRule.Resources;
 
 namespace PSRule.Runtime
 {
+    [DebuggerDisplay("Instance = {_Instance}")]
     internal sealed class PSRuleTargetInfo : PSMemberInfo
     {
         internal const string PropertyName = "_PSRule";
+
+        private readonly string _Instance = Guid.NewGuid().ToString();
 
         public PSRuleTargetInfo()
         {
@@ -29,17 +34,21 @@ namespace PSRule.Runtime
             if (targetInfo == null)
                 return;
 
+            Path = targetInfo.Path;
             Source = targetInfo.Source;
             Issue = targetInfo.Issue;
         }
 
-        public string Path
+        public string File
         {
             get
             {
                 return Source.Count == 0 ? null : Source[0].File;
             }
         }
+
+        [JsonProperty(PropertyName = "path")]
+        public string Path { get; set; }
 
         [JsonProperty(PropertyName = "source")]
         public List<TargetSourceInfo> Source { get; internal set; }
@@ -70,7 +79,9 @@ namespace PSRule.Runtime
             if (targetInfo == null)
                 return;
 
+            Path = targetInfo.Path;
             Source.AddUnique(targetInfo?.Source);
+            Issue.AddUnique(targetInfo?.Issue);
         }
 
         internal void WithSource(TargetSourceInfo source)

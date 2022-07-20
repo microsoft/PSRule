@@ -117,7 +117,7 @@ namespace PSRule.Configuration
         public bool? IgnoreGitPath { get; set; }
 
         /// <summary>
-        /// Determines if objects are ignore based on their file source path.
+        /// Determines if objects are ignored based on their file source path.
         /// </summary>
         [DefaultValue(null)]
         public bool? IgnoreObjectSource { get; set; }

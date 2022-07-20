@@ -83,7 +83,7 @@ namespace PSRule.Commands
 
         protected static void WriteReason(string path, string text, params object[] args)
         {
-            RunspaceContext.CurrentThread.WriteReason(new ResultReason(Operand.FromPath(path), text, args));
+            RunspaceContext.CurrentThread.WriteReason(new ResultReason(RunspaceContext.CurrentThread.TargetObject.Path, Operand.FromPath(path), text, args));
         }
 
         protected static bool TryReason(string path, string text, object[] args)

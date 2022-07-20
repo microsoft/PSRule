@@ -76,7 +76,7 @@ namespace PSRule.Definitions.Expressions
                 return;
 
             _Reason ??= new List<ResultReason>();
-            _Reason.Add(new ResultReason(operand, text, args));
+            _Reason.Add(new ResultReason(RunspaceContext.CurrentThread?.TargetObject?.Path, operand, text, args));
         }
 
         public void Reason(string text, params object[] args)
@@ -85,7 +85,7 @@ namespace PSRule.Definitions.Expressions
                 return;
 
             _Reason ??= new List<ResultReason>();
-            _Reason.Add(new ResultReason(null, text, args));
+            _Reason.Add(new ResultReason(RunspaceContext.CurrentThread?.TargetObject?.Path, null, text, args));
         }
 
         internal ResultReason[] GetReasons()
