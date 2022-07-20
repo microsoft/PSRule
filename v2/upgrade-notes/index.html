@@ -1820,7 +1820,7 @@
   To preserve consistency between file systems, some characters are not permitted.
   Dots, hyphens, and underscores are not permitted at the start and end of the name.
   Additionally some characters are restricted for future use.
-  The following characters are not permitted:</li>
+  The following characters are not permitted:<ul>
 <li><code>&lt;</code> (less than)</li>
 <li><code>&gt;</code> (greater than)</li>
 <li><code>:</code> (colon)</li>
@@ -1836,6 +1836,8 @@
 <li><code>@</code> (at sign)</li>
 <li>Integer value zero, sometimes referred to as the ASCII NUL character.</li>
 <li>Characters whose integer representations are in the range from 1 through 31.</li>
+</ul>
+</li>
 </ul>
 <p>Prior to <em>v2.0.0</em>, there was no specific naming restriction for resources.
 However functionally PSRule and downstream components could not support all resource names.

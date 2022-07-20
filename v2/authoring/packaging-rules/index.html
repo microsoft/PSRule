@@ -1848,7 +1848,7 @@ Such as in the root directory of the module or in a nested sub-directory.</p>
 <p>By convention, consider including rules and baselines within a <code>rules</code> sub-directory within the module.</p>
 <p>For example:</p>
 <ul>
-<li>Enterprise.Rules/</li>
+<li>Enterprise.Rules/<ul>
 <li>rules/<ul>
 <li>Baseline.Rule.yaml</li>
 <li>Config.Rule.yaml</li>
@@ -1856,6 +1856,8 @@ Such as in the root directory of the module or in a nested sub-directory.</p>
 </ul>
 </li>
 <li>Enterprise.Rules.psd1</li>
+</ul>
+</li>
 </ul>
 <h3 id="file-names">File names<a class="headerlink" href="#file-names" title="Permanent link">#</a></h3>
 <p>For PSRule to find rules included in a module, rule file names must end with the <code>.Rule.ps1</code> suffix.
@@ -1957,7 +1959,7 @@ This is because some file systems are case-sensitive.
 For example on Linux <code>en-us</code> would not match.</p>
 <p>For example:</p>
 <ul>
-<li>Enterprise.Rules/</li>
+<li>Enterprise.Rules/<ul>
 <li>en/<ul>
 <li>Org.Az.Storage.UseHttps.md</li>
 <li>Org.Az.Resource.Tagging.md</li>
@@ -1978,6 +1980,8 @@ For example on Linux <code>en-us</code> would not match.</p>
 </ul>
 </li>
 <li>Enterprise.Rules.psd1</li>
+</ul>
+</li>
 </ul>
 <h2 id="more-information">More information<a class="headerlink" href="#more-information" title="Permanent link">#</a></h2>
 <ul>

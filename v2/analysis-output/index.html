@@ -2001,10 +2001,14 @@ For more information, see <a href="https://docs.github.com/get-started/learning-
 <p>To configure GitHub Actions, perform the following steps:</p>
 <ul>
 <li>Create a GitHub Actions workflow.</li>
-<li>Add a step using the <code>microsoft/ps-rule</code> action.</li>
+<li>Add a step using the <code>microsoft/ps-rule</code> action.<ul>
 <li>Configure the <code>outputFormat</code> and <code>outputPath</code> parameters.</li>
-<li>Add a step using the <code>github/codeql-action/upload-sarif</code> action.</li>
+</ul>
+</li>
+<li>Add a step using the <code>github/codeql-action/upload-sarif</code> action.<ul>
 <li>Configure the <code>sarif_file</code> parameter to the same file path specified in <code>outputPath</code>.</li>
+</ul>
+</li>
 </ul>
 <div class="admonition example">
 <p class="admonition-title">Example <code>.github/workflows/analyze.yaml</code></p>

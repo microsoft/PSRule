@@ -1813,9 +1813,11 @@ Each rule must be named uniquely.</li>
 <p>In the example below:</p>
 <ul>
 <li>We use the <code>$TargetObject</code> variable to get the object on the pipeline and access it's properties.</li>
-<li>The condition will return <code>$True</code> or <code>$False</code> back to the pipeline, where:</li>
+<li>The condition will return <code>$True</code> or <code>$False</code> back to the pipeline, where:<ul>
 <li><code>$True</code> - the object passed the validation check</li>
 <li><code>$False</code> - the object failed the validation check</li>
+</ul>
+</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="c"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB</span>
 <span class="n">Rule</span> <span class="s1">&#39;storageAccounts.UseHttps&#39;</span> <span class="p">{</span>

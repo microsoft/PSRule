@@ -2450,13 +2450,15 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <h2 id="v1111">v1.11.1<a class="headerlink" href="#v1111" title="Permanent link">#</a></h2>
 <p>What's changed since v1.11.1:</p>
 <ul>
-<li>Bug fixes:</li>
+<li>Bug fixes:<ul>
 <li>Fixed broken documentation links. <a href="https://github.com/microsoft/PSRule/issues/980">#980</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v1110">v1.11.0<a class="headerlink" href="#v1110" title="Permanent link">#</a></h2>
 <p>What's changed since v1.10.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added <code>version</code> expression to check semantic version constraints. <a href="https://github.com/microsoft/PSRule/issues/861">#861</a><ul>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Expressions/">about_PSRule_Expressions</a> for details.</li>
 </ul>
@@ -2465,8 +2467,12 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Expressions/">about_PSRule_Expressions</a> for details.</li>
 </ul>
 </li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed <code>GetReason()</code> not returning results for a failed assertion. <a href="https://github.com/microsoft/PSRule/issues/874">#874</a></li>
+</ul>
+</li>
 </ul>
 <p>What's changed since pre-release v1.11.0-B2112016:</p>
 <ul>
@@ -2475,7 +2481,7 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <h2 id="v1110-b2112016-pre-release">v1.11.0-B2112016 (pre-release)<a class="headerlink" href="#v1110-b2112016-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v1.10.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added <code>version</code> expression to check semantic version constraints. <a href="https://github.com/microsoft/PSRule/issues/861">#861</a><ul>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Expressions/">about_PSRule_Expressions</a> for details.</li>
 </ul>
@@ -2484,23 +2490,33 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Expressions/">about_PSRule_Expressions</a> for details.</li>
 </ul>
 </li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed <code>GetReason()</code> not returning results for a failed assertion. <a href="https://github.com/microsoft/PSRule/issues/874">#874</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v1100">v1.10.0<a class="headerlink" href="#v1100" title="Permanent link">#</a></h2>
 <p>What's changed since v1.9.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added JSON support for reading rules and selectors from pipeline. <a href="https://github.com/microsoft/PSRule/issues/857">#857</a></li>
 <li>Added <code>HasSchema</code> expression to check the schema of an object. <a href="https://github.com/microsoft/PSRule/issues/860">#860</a><ul>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Expressions/">about_PSRule_Expressions</a> for details.</li>
 </ul>
 </li>
-<li>Engineering:</li>
+</ul>
+</li>
+<li>Engineering:<ul>
 <li>Bump Microsoft.SourceLink.GitHub to 1.1.1. <a href="https://github.com/microsoft/PSRule/pull/856">#856</a></li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed <code>$Assert.HasJsonSchema</code> accepts empty value. <a href="https://github.com/microsoft/PSRule/issues/859">#859</a></li>
 <li>Fixed module configuration is not loaded when case does not match. <a href="https://github.com/microsoft/PSRule/issues/864">#864</a></li>
+</ul>
+</li>
 </ul>
 <p>What's changed since pre-release v1.10.0-B2112002:</p>
 <ul>
@@ -2509,27 +2525,35 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <h2 id="v1100-b2112002-pre-release">v1.10.0-B2112002 (pre-release)<a class="headerlink" href="#v1100-b2112002-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.10.0-B2111024:</p>
 <ul>
-<li>Bug fixes:</li>
+<li>Bug fixes:<ul>
 <li>Fixed module configuration is not loaded when case does not match. <a href="https://github.com/microsoft/PSRule/issues/864">#864</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v1100-b2111024-pre-release">v1.10.0-B2111024 (pre-release)<a class="headerlink" href="#v1100-b2111024-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v1.9.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added JSON support for reading rules and selectors from pipeline. <a href="https://github.com/microsoft/PSRule/issues/857">#857</a></li>
 <li>Added <code>HasSchema</code> expression to check the schema of an object. <a href="https://github.com/microsoft/PSRule/issues/860">#860</a><ul>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Expressions/">about_PSRule_Expressions</a> for details.</li>
 </ul>
 </li>
-<li>Engineering:</li>
+</ul>
+</li>
+<li>Engineering:<ul>
 <li>Bump Microsoft.SourceLink.GitHub to 1.1.1. <a href="https://github.com/microsoft/PSRule/pull/856">#856</a></li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed <code>$Assert.HasJsonSchema</code> accepts empty value. <a href="https://github.com/microsoft/PSRule/issues/859">#859</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v190">v1.9.0<a class="headerlink" href="#v190" title="Permanent link">#</a></h2>
 <p>What's changed since v1.8.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added improvements to YAML output for <code>Get-PSRuleBaseline</code>. <a href="https://github.com/microsoft/PSRule/issues/829">#829</a></li>
 <li>Added <code>-Initialize</code> convention block. <a href="https://github.com/microsoft/PSRule/issues/826">#826</a><ul>
 <li>Use this block to perform any initialization that is required before any rules are run.</li>
@@ -2559,20 +2583,28 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 <li>Added JSON support to read baselines from pipeline. <a href="https://github.com/microsoft/PSRule/issues/845">#845</a></li>
-<li>Engineering:</li>
+</ul>
+</li>
+<li>Engineering:<ul>
 <li>Bump System.Drawing.Common dependency to v6.0.0. <a href="https://github.com/microsoft/PSRule/pull/848">#848</a></li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed convention execution is out of order. <a href="https://github.com/microsoft/PSRule/issues/835">#835</a></li>
+</ul>
+</li>
 </ul>
 <p>What's changed since pre-release v1.9.0-B2111024:</p>
 <ul>
-<li>Engineering:</li>
+<li>Engineering:<ul>
 <li>Bump Microsoft.CodeAnalysis.NetAnalyzers to v6.0.0. <a href="https://github.com/microsoft/PSRule/pull/851">#851</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v190-b2111024-pre-release">v1.9.0-B2111024 (pre-release)<a class="headerlink" href="#v190-b2111024-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.9.0-B2111009:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Allow downstream issues to be consumed. <a href="https://github.com/microsoft/PSRule/issues/843">#843</a><ul>
 <li>Objects can be flagged with issues that have been generated externally.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Assert/">about_PSRule_Assert</a> for details.</li>
@@ -2586,27 +2618,37 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 <li>Added JSON support to read baselines from pipeline. <a href="https://github.com/microsoft/PSRule/issues/845">#845</a></li>
-<li>Engineering:</li>
+</ul>
+</li>
+<li>Engineering:<ul>
 <li>Bump System.Drawing.Common dependency to v6.0.0. <a href="https://github.com/microsoft/PSRule/pull/848">#848</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v190-b2111009-pre-release">v1.9.0-B2111009 (pre-release)<a class="headerlink" href="#v190-b2111009-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.9.0-B2110027:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added JSON output format for Baseline cmdlets. <a href="https://github.com/microsoft/PSRule/issues/839">#839</a></li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed convention execution is out of order. <a href="https://github.com/microsoft/PSRule/issues/835">#835</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v190-b2110027-pre-release">v1.9.0-B2110027 (pre-release)<a class="headerlink" href="#v190-b2110027-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.9.0-B2110015:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added <code>Export-PSRuleBaseline</code> cmdlet to export baseline. <a href="https://github.com/microsoft/PSRule/issues/622">#622</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v190-b2110015-pre-release">v1.9.0-B2110015 (pre-release)<a class="headerlink" href="#v190-b2110015-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v1.8.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added improvements to YAML output for <code>Get-PSRuleBaseline</code>. <a href="https://github.com/microsoft/PSRule/issues/829">#829</a></li>
 <li>Added <code>-Initialize</code> convention block. <a href="https://github.com/microsoft/PSRule/issues/826">#826</a><ul>
 <li>Use this block to perform any initialization that is required before any rules are run.</li>
@@ -2619,13 +2661,15 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <li>Services allows a singleton instance to be used and shared across multiple rules.</li>
 <li>PSRule will automatically dispose the service when all rules have run.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Variables/">about_PSRule_Variables</a> for details.</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <h2 id="v180">v1.8.0<a class="headerlink" href="#v180" title="Permanent link">#</a></h2>
 <p>What's changed since v1.7.2:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added YAML output format support for <code>Get-PSRuleBaseline</code>. <a href="https://github.com/microsoft/PSRule/issues/326">#326</a></li>
 <li>Added YAML/JSON output format support for <code>Get-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/128">#128</a></li>
 <li>Added <code>Output.JsonIndent</code> option for JSON output format. <a href="https://github.com/microsoft/PSRule/issues/817">#817</a></li>
@@ -2646,8 +2690,12 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Expressions/">about_PSRule_Expressions</a> for details.</li>
 </ul>
 </li>
-<li>Engineering:</li>
+</ul>
+</li>
+<li>Engineering:<ul>
 <li>Migration of Pester v4 tests to Pester v5. <a href="https://github.com/microsoft/PSRule/issues/478">#478</a></li>
+</ul>
+</li>
 </ul>
 <p>What's changed since pre-release v1.8.0-B2110030:</p>
 <ul>
@@ -2656,27 +2704,35 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <h2 id="v180-b2110030-pre-release">v1.8.0-B2110030 (pre-release)<a class="headerlink" href="#v180-b2110030-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.8.0-B2110020:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added <code>Output.JsonIndent</code> option for JSON output format. <a href="https://github.com/microsoft/PSRule/issues/817">#817</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v180-b2110020-pre-release">v1.8.0-B2110020 (pre-release)<a class="headerlink" href="#v180-b2110020-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.8.0-B2110006:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added YAML/JSON output format support for <code>Get-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/128">#128</a></li>
-<li>Engineering:</li>
+</ul>
+</li>
+<li>Engineering:<ul>
 <li>Migration of Pester v4 tests to Pester v5. <a href="https://github.com/microsoft/PSRule/issues/478">#478</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v180-b2110006-pre-release">v1.8.0-B2110006 (pre-release)<a class="headerlink" href="#v180-b2110006-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.8.0-B2109022:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added YAML output format support for <code>Get-PSRuleBaseline</code>. <a href="https://github.com/microsoft/PSRule/issues/326">#326</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v180-b2109022-pre-release">v1.8.0-B2109022 (pre-release)<a class="headerlink" href="#v180-b2109022-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.8.0-B2109015:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added support for conditional reason messages with <code>ReasonIf</code>. <a href="https://github.com/microsoft/PSRule/issues/804">#804</a><ul>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Assert/">about_PSRule_Assert</a> for details.</li>
 </ul>
@@ -2688,10 +2744,12 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v180-b2109015-pre-release">v1.8.0-B2109015 (pre-release)<a class="headerlink" href="#v180-b2109015-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v1.7.2:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added assertion helpers and expressions for improving intersection checks. <a href="https://github.com/microsoft/PSRule/issues/795">#795</a><ul>
 <li>Added <code>Count</code> to determine of the field has a specific number of elements.</li>
 <li>Added <code>SetOf</code> to determine if a collection is another collection.</li>
@@ -2700,28 +2758,36 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v172">v1.7.2<a class="headerlink" href="#v172" title="Permanent link">#</a></h2>
 <p>What's changed since v1.7.1:</p>
 <ul>
-<li>Bug fixes:</li>
+<li>Bug fixes:<ul>
 <li>Fixed <code>Get-PSRuleBaseline</code> does not return any results from module. <a href="https://github.com/microsoft/PSRule/issues/801">#801</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v171">v1.7.1<a class="headerlink" href="#v171" title="Permanent link">#</a></h2>
 <p>What's changed since v1.7.0:</p>
 <ul>
-<li>Bug fixes:</li>
+<li>Bug fixes:<ul>
 <li>Fixed ResourceTags does not contain a method named ToHashtable. <a href="https://github.com/microsoft/PSRule/issues/798">#798</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v170">v1.7.0<a class="headerlink" href="#v170" title="Permanent link">#</a></h2>
 <p>What's changed since v1.6.0:</p>
 <ul>
-<li>Engine features:</li>
+<li>Engine features:<ul>
 <li>Added support for generating badges from rule results. <a href="https://github.com/microsoft/PSRule/issues/623">#623</a><ul>
 <li>Standard or custom badges can be generated using a convention and the badge API.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Badges/">about_PSRule_Badges</a> for details.</li>
 </ul>
 </li>
-<li>General improvements:</li>
+</ul>
+</li>
+<li>General improvements:<ul>
 <li>Rule results now include a run ID or each run. <a href="https://github.com/microsoft/PSRule/issues/774">#774</a><ul>
 <li>Run ID is returned in <code>Assert-PSRule</code> output at the end of each run by default.</li>
 <li>By default a unique <code>runId</code> is generated when the rule is run.</li>
@@ -2744,8 +2810,12 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Options/">about_PSRule_Options</a> for details.</li>
 </ul>
 </li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed configuration array deserializes as dictionary from YAML options. <a href="https://github.com/microsoft/PSRule/issues/779">#779</a></li>
+</ul>
+</li>
 </ul>
 <p>What's changed since pre-release v1.7.0-B2109002:</p>
 <ul>
@@ -2754,7 +2824,7 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <h2 id="v170-b2109002-pre-release">v1.7.0-B2109002 (pre-release)<a class="headerlink" href="#v170-b2109002-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.7.0-B2108032:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Allow baselines to include local rules. <a href="https://github.com/microsoft/PSRule/issues/756">#756</a><ul>
 <li>The <code>Rule.IncludeLocal</code>option was automatically include local/ standalone rules not in a module.</li>
 <li>This option is useful when you want to include local rules not included in a baseline.</li>
@@ -2762,16 +2832,20 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v170-b2108032-pre-release">v1.7.0-B2108032 (pre-release)<a class="headerlink" href="#v170-b2108032-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.7.0-B2108021:</p>
 <ul>
-<li>Engine features:</li>
+<li>Engine features:<ul>
 <li>Added support for generating badges from rule results. <a href="https://github.com/microsoft/PSRule/issues/623">#623</a><ul>
 <li>Standard or custom badges can be generated using a convention and the badge API.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Badges/">about_PSRule_Badges</a> for details.</li>
 </ul>
 </li>
-<li>General improvements:</li>
+</ul>
+</li>
+<li>General improvements:<ul>
 <li>Rule results now include a run ID or each run. <a href="https://github.com/microsoft/PSRule/issues/774">#774</a><ul>
 <li>Run ID is returned in <code>Assert-PSRule</code> output at the end of each run by default.</li>
 <li>By default a unique <code>runId</code> is generated when the rule is run.</li>
@@ -2780,16 +2854,20 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v170-b2108021-pre-release">v1.7.0-B2108021 (pre-release)<a class="headerlink" href="#v170-b2108021-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.7.0-B2108016:</p>
 <ul>
-<li>Bug fixes:</li>
+<li>Bug fixes:<ul>
 <li>Fixed configuration array deserializes as dictionary from YAML options. <a href="https://github.com/microsoft/PSRule/issues/779">#779</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v170-b2108016-pre-release">v1.7.0-B2108016 (pre-release)<a class="headerlink" href="#v170-b2108016-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v1.6.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Automatically exclude common repository files from input files. <a href="https://github.com/microsoft/PSRule/issues/721">#721</a><ul>
 <li>Added <code>Input.IgnoreRepositoryCommon</code> option to change default behavior.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Options/">about_PSRule_Options</a> for details.</li>
@@ -2800,16 +2878,20 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v161">v1.6.1<a class="headerlink" href="#v161" title="Permanent link">#</a></h2>
 <p>What's changed since v1.6.0:</p>
 <ul>
-<li>Bug fixes:</li>
+<li>Bug fixes:<ul>
 <li>Fixed configuration array deserializes as dictionary from YAML options. <a href="https://github.com/microsoft/PSRule/issues/779">#779</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v160">v1.6.0<a class="headerlink" href="#v160" title="Permanent link">#</a></h2>
 <p>What's changed since v1.5.0:</p>
 <ul>
-<li>Engine features:</li>
+<li>Engine features:<ul>
 <li>Added support for YAML rules. <a href="https://github.com/microsoft/PSRule/issues/603">#603</a><ul>
 <li>YAML rules evaluate an expression tree and return a result for each object.</li>
 <li>YAML provides an additional option for defining rules in addition to PowerShell script rules.</li>
@@ -2817,15 +2899,21 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Rules/">about_PSRule_Rules</a> for details.</li>
 </ul>
 </li>
-<li>General improvements:</li>
+</ul>
+</li>
+<li>General improvements:<ul>
 <li>Added support for object source location in validation. <a href="https://github.com/microsoft/PSRule/issues/757">#757</a></li>
 <li>Default rule source location <code>.ps-rule/</code> is automatically included. <a href="https://github.com/microsoft/PSRule/issues/742">#742</a><ul>
 <li>Added <code>Include.Path</code> and <code>Include.Module</code> options to automatically include rule sources.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Options/">about_PSRule_Options</a> for details.</li>
 </ul>
 </li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed target binding across multiple scopes. <a href="https://github.com/microsoft/PSRule/issues/762">#762</a></li>
+</ul>
+</li>
 </ul>
 <p>What's changed since pre-release v1.6.0-B2108009:</p>
 <ul>
@@ -2834,7 +2922,7 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <h2 id="v160-b2108009-pre-release">v1.6.0-B2108009 (pre-release)<a class="headerlink" href="#v160-b2108009-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.6.0-B2108003:</p>
 <ul>
-<li>Engine features:</li>
+<li>Engine features:<ul>
 <li>Added support for YAML rules. <a href="https://github.com/microsoft/PSRule/issues/603">#603</a><ul>
 <li>YAML rules evaluate an expression tree and return a result for each object.</li>
 <li>YAML provides an additional option for defining rules in addition to PowerShell script rules.</li>
@@ -2843,16 +2931,20 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v160-b2108003-pre-release">v1.6.0-B2108003 (pre-release)<a class="headerlink" href="#v160-b2108003-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.6.0-B2107008:</p>
 <ul>
-<li>Bug fixes:</li>
+<li>Bug fixes:<ul>
 <li>Fixed target binding across multiple scopes. <a href="https://github.com/microsoft/PSRule/issues/762">#762</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v160-b2107008-pre-release">v1.6.0-B2107008 (pre-release)<a class="headerlink" href="#v160-b2107008-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v1.5.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added support for object source location in validation. <a href="https://github.com/microsoft/PSRule/issues/757">#757</a></li>
 <li>Default rule source location <code>.ps-rule/</code> is automatically included. <a href="https://github.com/microsoft/PSRule/issues/742">#742</a><ul>
 <li>Added <code>Include.Path</code> and <code>Include.Module</code> options to automatically include rule sources.</li>
@@ -2860,21 +2952,29 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v150">v1.5.0<a class="headerlink" href="#v150" title="Permanent link">#</a></h2>
 <p>What's changed since v1.4.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added string selector conditions. <a href="https://github.com/microsoft/PSRule/issues/747">#747</a><ul>
 <li>Use <code>startWith</code>, <code>contains</code>, and <code>endsWith</code> to check for a sub-string.</li>
 <li>Use <code>isString</code>, <code>isLower</code>, and <code>isUpper</code> to check for string type and casing.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Selectors/">about_PSRule_Selectors</a> for details.</li>
 </ul>
 </li>
-<li>Engineering:</li>
+</ul>
+</li>
+<li>Engineering:<ul>
 <li>Bump YamlDotNet dependency to 11.2.1. <a href="https://github.com/microsoft/PSRule/pull/740">#740</a></li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed options schema should allow spacing after <code>@pre</code>. <a href="https://github.com/microsoft/PSRule/issues/743">#743</a></li>
 <li>Fixed match selector expression passing on missing field. <a href="https://github.com/microsoft/PSRule/issues/745">#745</a></li>
+</ul>
+</li>
 </ul>
 <p>What's changed since pre-release v1.5.0-B2107009:</p>
 <ul>
@@ -2883,29 +2983,37 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <h2 id="v150-b2107009-pre-release">v1.5.0-B2107009 (pre-release)<a class="headerlink" href="#v150-b2107009-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.5.0-B2106006:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added string selector conditions. <a href="https://github.com/microsoft/PSRule/issues/747">#747</a><ul>
 <li>Use <code>startWith</code>, <code>contains</code>, and <code>endsWith</code> to check for a sub-string.</li>
 <li>Use <code>isString</code>, <code>isLower</code>, and <code>isUpper</code> to check for string type and casing.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Selectors/">about_PSRule_Selectors</a> for details.</li>
 </ul>
 </li>
-<li>Engineering:</li>
+</ul>
+</li>
+<li>Engineering:<ul>
 <li>Bump YamlDotNet dependency to 11.2.1. <a href="https://github.com/microsoft/PSRule/pull/740">#740</a></li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed options schema should allow spacing after <code>@pre</code>. <a href="https://github.com/microsoft/PSRule/issues/743">#743</a></li>
 <li>Fixed match selector expression passing on missing field. <a href="https://github.com/microsoft/PSRule/issues/745">#745</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v150-b2106006-pre-release">v1.5.0-B2106006 (pre-release)<a class="headerlink" href="#v150-b2106006-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v1.4.0:</p>
 <ul>
-<li>Engineering:</li>
+<li>Engineering:<ul>
 <li>Bump YamlDotNet dependency to 11.2.0. <a href="https://github.com/microsoft/PSRule/pull/736">#736</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v140">v1.4.0<a class="headerlink" href="#v140" title="Permanent link">#</a></h2>
 <p>What's changed since v1.3.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>PSRule banner can be configured in output when using <code>Assert-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/708">#708</a></li>
 <li>Input source location of objects are included in results.<ul>
 <li>Input source location of objects from JSON and YAML input files are read automatically. <a href="https://github.com/microsoft/PSRule/issues/624">#624</a></li>
@@ -2913,10 +3021,14 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 <li>Assert output improvements:<ul>
-<li>Added support for Visual Studio Code with <code>VisualStudioCode</code> style. <a href="https://github.com/microsoft/PSRule/issues/731">#731</a></li>
+<li>Added support for Visual Studio Code with <code>VisualStudioCode</code> style. <a href="https://github.com/microsoft/PSRule/issues/731">#731</a><ul>
 <li>Updated output format provides support for problem matchers in task output.</li>
-<li>Automatically detect output style from environment variables. <a href="https://github.com/microsoft/PSRule/issues/732">#732</a></li>
+</ul>
+</li>
+<li>Automatically detect output style from environment variables. <a href="https://github.com/microsoft/PSRule/issues/732">#732</a><ul>
 <li><em>Assert-PSRule</em> now defaults to <code>Detect</code> instead of <code>Client</code>.</li>
+</ul>
+</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Options/">about_PSRule_Options</a> for details.</li>
 </ul>
 </li>
@@ -2927,9 +3039,13 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Assert/">about_PSRule_Assert</a> for details.</li>
 </ul>
 </li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed prerelease constraint handling for prerelease versions. <a href="https://github.com/microsoft/PSRule/issues/712">#712</a></li>
 <li>Fixed null reference in convention for nested exceptions. <a href="https://github.com/microsoft/PSRule/issues/725">#725</a></li>
+</ul>
+</li>
 </ul>
 <p>What's changed since pre-release v1.4.0-B2105041:</p>
 <ul>
@@ -2938,27 +3054,35 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <h2 id="v140-b2105041-pre-release">v1.4.0-B2105041 (pre-release)<a class="headerlink" href="#v140-b2105041-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.4.0-B2105032:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Source location of objects from the pipeline are read from properties. <a href="https://github.com/microsoft/PSRule/issues/729">#729</a></li>
 <li>Assert output improvements:<ul>
-<li>Added support for Visual Studio Code with <code>VisualStudioCode</code> style. <a href="https://github.com/microsoft/PSRule/issues/731">#731</a></li>
+<li>Added support for Visual Studio Code with <code>VisualStudioCode</code> style. <a href="https://github.com/microsoft/PSRule/issues/731">#731</a><ul>
 <li>Updated output format provides support for problem matchers in task output.</li>
-<li>Automatically detect output style from environment variables. <a href="https://github.com/microsoft/PSRule/issues/732">#732</a></li>
+</ul>
+</li>
+<li>Automatically detect output style from environment variables. <a href="https://github.com/microsoft/PSRule/issues/732">#732</a><ul>
 <li><em>Assert-PSRule</em> now defaults to <code>Detect</code> instead of <code>Client</code>.</li>
+</ul>
+</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Options/">about_PSRule_Options</a> for details.</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <h2 id="v140-b2105032-pre-release">v1.4.0-B2105032 (pre-release)<a class="headerlink" href="#v140-b2105032-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.4.0-B2105019:</p>
 <ul>
-<li>Bug fixes:</li>
+<li>Bug fixes:<ul>
 <li>Fixed null reference in convention for nested exceptions. <a href="https://github.com/microsoft/PSRule/issues/725">#725</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v140-b2105019-pre-release">v1.4.0-B2105019 (pre-release)<a class="headerlink" href="#v140-b2105019-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.4.0-B2105004:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Source location of objects are included in results.<ul>
 <li>Source location of objects from JSON and YAML input files are read automatically. <a href="https://github.com/microsoft/PSRule/issues/624">#624</a></li>
 </ul>
@@ -2970,24 +3094,32 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Assert/">about_PSRule_Assert</a> for details.</li>
 </ul>
 </li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed prerelease constraint handling for prerelease versions. <a href="https://github.com/microsoft/PSRule/issues/712">#712</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v140-b2105004-pre-release">v1.4.0-B2105004 (pre-release)<a class="headerlink" href="#v140-b2105004-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v1.3.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>PSRule banner can be configured in output when using <code>Assert-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/708">#708</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v130">v1.3.0<a class="headerlink" href="#v130" title="Permanent link">#</a></h2>
 <p>What's changed since v1.2.0:</p>
 <ul>
-<li>Engine features:</li>
+<li>Engine features:<ul>
 <li>Options can be configured with environment variables. <a href="https://github.com/microsoft/PSRule/issues/691">#691</a><ul>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Options/">about_PSRule_Options</a> for details.</li>
 </ul>
 </li>
-<li>General improvements:</li>
+</ul>
+</li>
+<li>General improvements:<ul>
 <li>Exclude <code>.git</code> sub-directory by default for recursive scans. <a href="https://github.com/microsoft/PSRule/issues/697">#697</a><ul>
 <li>Added <code>Input.IgnoreGitPath</code> option to configure inclusion of <code>.git</code> path.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Options/">about_PSRule_Options</a> for details.</li>
@@ -3010,10 +3142,16 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 <li>Improved handling of field names for objects implementing <code>IList</code>, <code>IEnumerable</code>, and index properties. <a href="https://github.com/microsoft/PSRule/issues/692">#692</a></li>
-<li>Engineering:</li>
+</ul>
+</li>
+<li>Engineering:<ul>
 <li>Bump YamlDotNet dependency to 11.1.1. <a href="https://github.com/microsoft/PSRule/pull/690">#690</a></li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed expected DocumentEnd got SequenceEnd. <a href="https://github.com/microsoft/PSRule/issues/698">#698</a></li>
+</ul>
+</li>
 </ul>
 <p>What's changed since pre-release v1.3.0-B2105004:</p>
 <ul>
@@ -3022,36 +3160,46 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <h2 id="v130-b2105004-pre-release">v1.3.0-B2105004 (pre-release)<a class="headerlink" href="#v130-b2105004-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.3.0-B2104042:</p>
 <ul>
-<li>Engine features:</li>
+<li>Engine features:<ul>
 <li>Options can be configured with environment variables. <a href="https://github.com/microsoft/PSRule/issues/691">#691</a><ul>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Options/">about_PSRule_Options</a> for details.</li>
 </ul>
 </li>
-<li>General improvements:</li>
+</ul>
+</li>
+<li>General improvements:<ul>
 <li>Exclude <code>.git</code> sub-directory by default for recursive scans. <a href="https://github.com/microsoft/PSRule/issues/697">#697</a><ul>
 <li>Added <code>Input.IgnoreGitPath</code> option to configure inclusion of <code>.git</code> path.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Options/">about_PSRule_Options</a> for details.</li>
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v130-b2104042-pre-release">v1.3.0-B2104042 (pre-release)<a class="headerlink" href="#v130-b2104042-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.3.0-B2104030:</p>
 <ul>
-<li>Bug fixes:</li>
+<li>Bug fixes:<ul>
 <li>Fixed expected DocumentEnd got SequenceEnd. <a href="https://github.com/microsoft/PSRule/issues/698">#698</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v130-b2104030-pre-release">v1.3.0-B2104030 (pre-release)<a class="headerlink" href="#v130-b2104030-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.3.0-B2104021:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Improved handling of field names for objects implementing <code>IList</code>, <code>IEnumerable</code>, and index properties. <a href="https://github.com/microsoft/PSRule/issues/692">#692</a></li>
-<li>Engineering:</li>
+</ul>
+</li>
+<li>Engineering:<ul>
 <li>Bump YamlDotNet dependency to 11.1.1. <a href="https://github.com/microsoft/PSRule/pull/690">#690</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v130-b2104021-pre-release">v1.3.0-B2104021 (pre-release)<a class="headerlink" href="#v130-b2104021-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v1.2.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added file path assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/679">#679</a><ul>
 <li>Added <code>WithinPath</code> to check the file path field is within a specified path.</li>
 <li>Added <code>NotWithinPath</code> to check the file path field is not within a specified path</li>
@@ -3069,10 +3217,12 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v120">v1.2.0<a class="headerlink" href="#v120" title="Permanent link">#</a></h2>
 <p>What's changed since v1.1.0:</p>
 <ul>
-<li>Engine features:</li>
+<li>Engine features:<ul>
 <li>Added support for extensibility with conventions. <a href="https://github.com/microsoft/PSRule/issues/650">#650</a><ul>
 <li>Conventions provide an extensibility point within PSRule to execute actions within the pipeline.</li>
 <li>A convention can expose <code>Begin</code>, <code>Process</code>, and <code>End</code> blocks.</li>
@@ -3089,7 +3239,9 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Selectors/">about_PSRule_Selectors</a> for details.</li>
 </ul>
 </li>
-<li>General improvements:</li>
+</ul>
+</li>
+<li>General improvements:<ul>
 <li>Added support for preferring automatic binding over custom binding configurations. <a href="https://github.com/microsoft/PSRule/issues/670">#670</a><ul>
 <li>Added the <code>Binding.PreferTargetInfo</code> option to prefer target info specified by the object.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Options/">about_PSRule_Options</a> for details.</li>
@@ -3110,8 +3262,12 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 <li>Added support for automatic type binding with files that do not have a file extension. <a href="https://github.com/microsoft/PSRule/issues/665">#665</a></li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed dependent rule execution is skipped for consequent input objects. <a href="https://github.com/microsoft/PSRule/issues/657">#657</a></li>
+</ul>
+</li>
 </ul>
 <p>What's changed since pre-release v1.2.0-B2103043:</p>
 <ul>
@@ -3120,9 +3276,11 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <h2 id="v120-b2103043-pre-release">v1.2.0-B2103043 (pre-release)<a class="headerlink" href="#v120-b2103043-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.2.0-B2103031:</p>
 <ul>
-<li>Engine features:</li>
+<li>Engine features:<ul>
 <li>Added support for complex pre-conditions with selectors. <a href="https://github.com/microsoft/PSRule/issues/649">#649</a></li>
-<li>General improvements:</li>
+</ul>
+</li>
+<li>General improvements:<ul>
 <li>Added support for preferring automatic binding over custom binding configurations. <a href="https://github.com/microsoft/PSRule/issues/670">#670</a><ul>
 <li>Added the <code>Binding.PreferTargetInfo</code> option to prefer target info specified by the object.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Options/">about_PSRule_Options</a> for details.</li>
@@ -3136,10 +3294,12 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v120-b2103031-pre-release">v1.2.0-B2103031 (pre-release)<a class="headerlink" href="#v120-b2103031-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.2.0-B2103023:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added support for detecting files headers from additional file extensions. <a href="https://github.com/microsoft/PSRule/issues/664">#664</a><ul>
 <li>Added <code>.bicep</code>, <code>.csx</code>, <code>.jsx</code>, <code>.groovy</code>, <code>.java</code>, <code>.json</code>, <code>.jsonc</code>,
 <code>.scala</code>, <code>.rb</code>, <code>.bat</code>, <code>.cmd</code>.</li>
@@ -3149,26 +3309,32 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </li>
 <li>Added support for automatic type binding with files that do not have a file extension. <a href="https://github.com/microsoft/PSRule/issues/665">#665</a></li>
 </ul>
+</li>
+</ul>
 <h2 id="v120-b2103023-pre-release">v1.2.0-B2103023 (pre-release)<a class="headerlink" href="#v120-b2103023-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.2.0-B2103016:</p>
 <ul>
-<li>Engine features:</li>
+<li>Engine features:<ul>
 <li>Added support for object expansion with conventions. <a href="https://github.com/microsoft/PSRule/issues/661">#661</a><ul>
 <li>Use the <code>$PSRule.Import</code> method to import child source objects into the pipeline.</li>
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Variables/">about_PSRule_Variables</a> for details.</li>
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v120-b2103016-pre-release">v1.2.0-B2103016 (pre-release)<a class="headerlink" href="#v120-b2103016-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.2.0-B2103008:</p>
 <ul>
-<li>Bug fixes:</li>
+<li>Bug fixes:<ul>
 <li>Fixed dependent rule execution is skipped for consequent input objects. <a href="https://github.com/microsoft/PSRule/issues/657">#657</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v120-b2103008-pre-release">v1.2.0-B2103008 (pre-release)<a class="headerlink" href="#v120-b2103008-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v1.1.0:</p>
 <ul>
-<li>Engine features:</li>
+<li>Engine features:<ul>
 <li>Added support for extensibility with conventions. <a href="https://github.com/microsoft/PSRule/issues/650">#650</a><ul>
 <li>Conventions provide an extensibility point within PSRule to execute actions within the pipeline.</li>
 <li>A convention can expose <code>Begin</code>, <code>Process</code>, and <code>End</code> blocks.</li>
@@ -3177,10 +3343,12 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v110">v1.1.0<a class="headerlink" href="#v110" title="Permanent link">#</a></h2>
 <p>What's changed since v1.0.3:</p>
 <ul>
-<li>Engine features:</li>
+<li>Engine features:<ul>
 <li>Added assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/640">#640</a><ul>
 <li>Added <code>NotHasField</code> to check object does not have any of the specified fields.</li>
 <li>Added <code>Null</code> to check field value is null.</li>
@@ -3204,7 +3372,9 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Variables/">about_PSRule_Variables</a> for details.</li>
 </ul>
 </li>
-<li>General improvements:</li>
+</ul>
+</li>
+<li>General improvements:<ul>
 <li>Updated <code>HasJsonSchema</code> assertion helper. <a href="https://github.com/microsoft/PSRule/issues/636">#636</a><ul>
 <li>The URI scheme can optionally be ignored for <code>http://</code> or <code>https://</code> URIs.</li>
 <li>The fragment <code>#</code> is ignored.</li>
@@ -3215,6 +3385,8 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <li>Configure <code>Output.As</code> with <code>Summary</code> to produce summarized results per object.</li>
 <li>Configure <code>Output.Outcome</code> to limit output to <code>Fail</code> or <code>Error</code>.</li>
 <li>See <a href="../commands/PSRule/en-US/Assert-PSRule/">Assert-PSRule</a> for details.</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -3225,7 +3397,7 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <h2 id="v110-b2102029-pre-release">v1.1.0-B2102029 (pre-release)<a class="headerlink" href="#v110-b2102029-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.1.0-B2102024:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added support for <code>-Outcome</code> and <code>-As</code> to produce filtered output from <code>Assert-PSRule</code>. <a href="https://github.com/microsoft/PSRule/issues/643">#643</a><ul>
 <li>Configure <code>Output.As</code> with <code>Summary</code> to produce summarized results per object.</li>
 <li>Configure <code>Output.Outcome</code> to limit output to <code>Fail</code> or <code>Error</code>.</li>
@@ -3233,10 +3405,12 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v110-b2102024-pre-release">v1.1.0-B2102024 (pre-release)<a class="headerlink" href="#v110-b2102024-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v1.1.0-B2102019:</p>
 <ul>
-<li>Engine features:</li>
+<li>Engine features:<ul>
 <li>Added assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/640">#640</a><ul>
 <li>Added <code>NotHasField</code> to check object does not have any of the specified fields.</li>
 <li>Added <code>Null</code> to check field value is null.</li>
@@ -3245,10 +3419,12 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v110-b2102019-pre-release">v1.1.0-B2102019 (pre-release)<a class="headerlink" href="#v110-b2102019-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v1.0.3:</p>
 <ul>
-<li>Engine features:</li>
+<li>Engine features:<ul>
 <li>Added type assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/635">#635</a><ul>
 <li>Added <code>IsNumeric</code> to check field value is a numeric types.</li>
 <li>Added <code>IsInteger</code> to check field value is an integer types.</li>
@@ -3265,7 +3441,9 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <li>See <a href="../concepts/PSRule/en-US/about_PSRule_Variables/">about_PSRule_Variables</a> for details.</li>
 </ul>
 </li>
-<li>General improvements:</li>
+</ul>
+</li>
+<li>General improvements:<ul>
 <li>Updated <code>HasJsonSchema</code> assertion helper. <a href="https://github.com/microsoft/PSRule/issues/636">#636</a><ul>
 <li>The URI scheme can optionally be ignored for <code>http://</code> or <code>https://</code> URIs.</li>
 <li>The fragment <code>#</code> is ignored.</li>
@@ -3273,37 +3451,51 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h2 id="v103">v1.0.3<a class="headerlink" href="#v103" title="Permanent link">#</a></h2>
 <p>What's changed since v1.0.2:</p>
 <ul>
-<li>Bug fixes:</li>
+<li>Bug fixes:<ul>
 <li>Fixed reason reported fields for <code>HasField</code> and <code>HasFields</code> assertion helpers. <a href="https://github.com/microsoft/PSRule/issues/632">#632</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v102">v1.0.2<a class="headerlink" href="#v102" title="Permanent link">#</a></h2>
 <p>What's changed since v1.0.1:</p>
 <ul>
-<li>Engineering:</li>
+<li>Engineering:<ul>
 <li>Bump Manatee.Json dependency to 13.0.5. <a href="https://github.com/microsoft/PSRule/pull/619">#619</a></li>
-<li>Bug fixes:</li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
 <li>Fixed <code>GetContent</code> processing of <code>InputFileInfo</code>. <a href="https://github.com/microsoft/PSRule/issues/625">#625</a></li>
 <li>Fixed null reference of rule reason with wide output. <a href="https://github.com/microsoft/PSRule/issues/626">#626</a></li>
 <li>Fixed markdown help handling of inline code blocks with <code>[</code>. <a href="https://github.com/microsoft/PSRule/issues/627">#627</a></li>
 <li>Fixed markdown help inclusion of fenced code blocks in notes and description. <a href="https://github.com/microsoft/PSRule/issues/628">#628</a></li>
 </ul>
+</li>
+</ul>
 <h2 id="v101">v1.0.1<a class="headerlink" href="#v101" title="Permanent link">#</a></h2>
 <p>What's changed since v1.0.0:</p>
 <ul>
-<li>Bug fixes:</li>
+<li>Bug fixes:<ul>
 <li>Fixed module source key has already been added. <a href="https://github.com/microsoft/PSRule/issues/608">#608</a></li>
+</ul>
+</li>
 </ul>
 <h2 id="v100">v1.0.0<a class="headerlink" href="#v100" title="Permanent link">#</a></h2>
 <p>What's changed since v0.22.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added rule help link in failed <code>Assert-PSRule</code> output. <a href="https://github.com/microsoft/PSRule/issues/595">#595</a></li>
-<li>Engineering:</li>
+</ul>
+</li>
+<li>Engineering:<ul>
 <li><strong>Breaking change</strong>: Removed deprecated <code>$Rule</code> properties. <a href="https://github.com/microsoft/PSRule/pull/495">#495</a></li>
 <li>Bump Manatee.Json dependency to 13.0.4. <a href="https://github.com/microsoft/PSRule/pull/591">#591</a></li>
+</ul>
+</li>
 </ul>
 <p>What's changed since pre-release v1.0.0-B2011028:</p>
 <ul>
@@ -3312,11 +3504,15 @@ Please check out our <a href="https://microsoft.github.io/PSRule/latest/upgrade-
 <h2 id="v100-b2011028-pre-release">v1.0.0-B2011028 (pre-release)<a class="headerlink" href="#v100-b2011028-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since v0.22.0:</p>
 <ul>
-<li>General improvements:</li>
+<li>General improvements:<ul>
 <li>Added rule help link in failed <code>Assert-PSRule</code> output. <a href="https://github.com/microsoft/PSRule/issues/595">#595</a></li>
-<li>Engineering:</li>
+</ul>
+</li>
+<li>Engineering:<ul>
 <li><strong>Breaking change</strong>: Removed deprecated <code>$Rule</code> properties. <a href="https://github.com/microsoft/PSRule/pull/495">#495</a></li>
 <li>Bump Manatee.Json dependency to 13.0.4. <a href="https://github.com/microsoft/PSRule/pull/591">#591</a></li>
+</ul>
+</li>
 </ul>
 
   <hr>

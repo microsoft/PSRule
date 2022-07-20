@@ -1770,10 +1770,12 @@ This scenario demonstrates the process and features of PSRule for illustration p
 Rules are defined by using the <code>Rule</code> keyword in a file ending with the <code>.Rule.ps1</code> extension.</p>
 <p>Our business rules for configuration Kubernetes resources can be defined with the following dot points:</p>
 <ul>
-<li>The following <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/">recommended</a> labels will be used on all services and deployments:</li>
+<li>The following <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/">recommended</a> labels will be used on all services and deployments:<ul>
 <li><code>app.kubernetes.io/name</code> - the name of the application/ service.</li>
 <li><code>app.kubernetes.io/version</code> - the version of the service.</li>
 <li><code>app.kubernetes.io/component</code> - identifies the type of component, valid options are <code>web</code>, <code>api</code>, <code>database</code> and <code>gateway</code></li>
+</ul>
+</li>
 <li>For <code>web</code> or <code>api</code> deployments, a minimum of two (2) replicas must be used.</li>
 <li>Deployments must use container images with a specific version tag, and not <code>latest</code>.</li>
 <li>Deployments must declare minimum and maximum memory/ CPU resources.</li>
@@ -1801,11 +1803,13 @@ Each rule must be named uniquely.</li>
 <p>PSRule includes several convenience keywords such as <code>AllOf</code>, <code>AnyOf</code>, <code>Exists</code>, <code>Match</code>, <code>TypeOf</code> and <code>Within</code> that make conditions faster to define, easier to understand and troubleshoot. However, use of these keywords is optional.</p>
 <p>In the example below:</p>
 <ul>
-<li>We use the <code>Exists</code> keyword to check that the resource has the <code>app.kubernetes.io/name</code> label set.</li>
+<li>We use the <code>Exists</code> keyword to check that the resource has the <code>app.kubernetes.io/name</code> label set.<ul>
 <li>By default, PSRule will step through nested properties separated by a <code>.</code>.
-  i.e. <code>labels</code> is a property of <code>metadata</code>.</li>
+i.e. <code>labels</code> is a property of <code>metadata</code>.</li>
 <li>Kubernetes supports and recommends label namespaces, which often use <code>.</code> in their name.
-  PSRule supports this by enclosing the field name (<code>app.kubernetes.io/name</code>) in apostrophes (<code>'</code>) so that <code>app.kubernetes.io/name</code> is checked instead of <code>app</code>.</li>
+PSRule supports this by enclosing the field name (<code>app.kubernetes.io/name</code>) in apostrophes (<code>'</code>) so that <code>app.kubernetes.io/name</code> is checked instead of <code>app</code>.</li>
+</ul>
+</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="c"># Synopsis: Must have the app.kubernetes.io/name label</span>
 <span class="n">Rule</span> <span class="s1">&#39;metadata.Name&#39;</span> <span class="p">{</span>
@@ -1867,12 +1871,16 @@ Kubernetes has many types of built-in resource such as <em>Services</em>, <em>De
 <p>By defining a precondition, we can ensure that the rule is only processed for <em>Services</em> or <em>Deployments</em> to match our business rules.</p>
 <p>PSRule supports two types of preconditions, either type (<code>-Type</code>) or script block (<code>-If</code>).</p>
 <ul>
-<li><strong>Type</strong> preconditions are one or more type names that PSRule compares to the <code>TargetType</code> binding, where:</li>
+<li><strong>Type</strong> preconditions are one or more type names that PSRule compares to the <code>TargetType</code> binding, where:<ul>
 <li>One of the type names names equal <code>TargetType</code> the rule will be processed.</li>
 <li>None of the type names equal <code>TargetType</code> the rule be skipped.</li>
-<li><strong>Script</strong> block preconditions is a PowerShell script block that returns <em>true</em> or <em>false</em>, where:</li>
+</ul>
+</li>
+<li><strong>Script</strong> block preconditions is a PowerShell script block that returns <em>true</em> or <em>false</em>, where:<ul>
 <li><em>True</em> - Continue processing the rule.</li>
 <li><em>False</em> - Skip processing the rule.</li>
+</ul>
+</li>
 </ul>
 <p>Preconditions are evaluated once per rule for each object.</p>
 <p>In the example below:</p>
@@ -1897,8 +1905,10 @@ An example using a script block precondition is also shown below.</p>
 Each follows a similar pattern and builds on the previous sections.</p>
 <p>In the example below:</p>
 <ul>
-<li>The built-in variable <code>$TargetObject</code> is used to get the current pipeline object.</li>
+<li>The built-in variable <code>$TargetObject</code> is used to get the current pipeline object.<ul>
 <li>Built-in keywords like <code>Exists</code> automatically default to <code>$TargetObject</code>, but can be piped alternative input as shown in the rule definition named <code>deployment.ResourcesSet</code>.</li>
+</ul>
+</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="c"># Synopsis: Deployments use a minimum of 2 replicas</span>
 <span class="n">Rule</span> <span class="s1">&#39;deployment.HasMinimumReplicas&#39;</span> <span class="n">-Type</span> <span class="s1">&#39;Deployment&#39;</span> <span class="p">{</span>

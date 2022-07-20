@@ -1723,32 +1723,44 @@
 Rules can be written in PowerShell, YAML, or JSON.
 Some features include:</p>
 <ul>
-<li><strong>Objects</strong> - PowerShell objects can be validated on the pipeline or imported.</li>
+<li><strong>Objects</strong> - PowerShell objects can be validated on the pipeline or imported.<ul>
 <li>Objects can be <a href="../concepts/PSRule/en-US/about_PSRule_Options/#inputformat">imported</a> directly from <code>JSON</code>, <code>YAML</code>, or <code>.psd1</code>.</li>
 <li>Each object is automatically bound to a <em>target type</em> for use with pre-conditions.</li>
 <li>Rule results are orientated to validating an object.</li>
 <li>Built-in <a href="../concepts/PSRule/en-US/about_PSRule_Assert/">assertions</a>, automatically traverse object properties.</li>
+</ul>
+</li>
 <li><strong>Pre-conditions</strong> - Rules understand which objects they apply to.
 Objects are bound to a type as they are processed using object properties.
-Dissimilar objects can be processed quickly.</li>
+Dissimilar objects can be processed quickly.<ul>
 <li>Objects that match no rules are flagged with a warning by default.</li>
-<li><strong>Packaging</strong> - Rules can be reused between projects and optionally packaged into a module.</li>
+</ul>
+</li>
+<li><strong>Packaging</strong> - Rules can be reused between projects and optionally packaged into a module.<ul>
 <li>Portable rules, configuration, baselines, and documentation allow greater reuse and distribution.</li>
 <li><a href="../concepts/PSRule/en-US/about_PSRule_Docs/">Documentation</a> with detailed guidance or next steps can be included.</li>
 <li>Standalone or rules from modules can be combined together with <code>-Module</code> and <code>-Path</code>.</li>
-<li><strong>Configuration</strong> - <a href="../concepts/PSRule/en-US/about_PSRule_Options/#configuration">Configuration</a> of rules is handled by PSRule.</li>
+</ul>
+</li>
+<li><strong>Configuration</strong> - <a href="../concepts/PSRule/en-US/about_PSRule_Options/#configuration">Configuration</a> of rules is handled by PSRule.<ul>
 <li>Rules can be configured at runtime, from YAML configuration, or environment variables.</li>
 <li><a href="../concepts/PSRule/en-US/about_PSRule_Baseline/">Baselines</a> can be used to pair rules and configuration for a specific scenario.</li>
-<li><strong>Exceptions</strong> - Exceptions to a rule can be ignored for a single object using <a href="../concepts/PSRule/en-US/about_PSRule_Options/#suppression">suppression</a>.</li>
+</ul>
+</li>
+<li><strong>Exceptions</strong> - Exceptions to a rule can be ignored for a single object using <a href="../concepts/PSRule/en-US/about_PSRule_Options/#suppression">suppression</a>.<ul>
 <li>Exclusion can be used additionally to ignore a rule entirely.</li>
+</ul>
+</li>
 </ul>
 <p>These features make PSRule ideal for validating:</p>
 <ul>
-<li>Infrastructure as code, including:</li>
+<li>Infrastructure as code, including:<ul>
 <li>Kubernetes manifests.</li>
 <li>Azure Resource Manager (ARM) templates.</li>
 <li>Configuration files.</li>
 <li>Pipeline files.</li>
+</ul>
+</li>
 <li>Deployments or configurations against a baseline.</li>
 </ul>
 <p>If you want to test PowerShell code, consider using Pester, we do!</p>

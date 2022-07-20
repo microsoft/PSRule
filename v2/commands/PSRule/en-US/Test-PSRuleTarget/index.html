@@ -2089,12 +2089,16 @@
 <p>Evaluate objects against matching rules and return an overall pass or fail for the object as <code>$True</code> (pass) or <code>$False</code> (fail).</p>
 <p>PSRule uses the following logic to determine overall pass or fail for an object:</p>
 <ul>
-<li>The object fails if:</li>
+<li>The object fails if:<ul>
 <li>Any rules fail or error.</li>
 <li>Any rules are inconclusive.</li>
-<li>The object passes if:</li>
+</ul>
+</li>
+<li>The object passes if:<ul>
 <li>No matching rules were found.</li>
 <li>All rules pass.</li>
+</ul>
+</li>
 </ul>
 <p>By default, objects that do match any rules are not returned in results.
 To return <code>$True</code> for these objects, use <code>-Outcome All</code>.</p>

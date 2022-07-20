@@ -1775,13 +1775,17 @@ A baseline includes a set of rule and configuration options that are used for ev
 </ul>
 <p>Baseline options can be:</p>
 <ul>
-<li>Included as a baseline spec within a YAML or JSON file.</li>
+<li>Included as a baseline spec within a YAML or JSON file.<ul>
 <li>When using this method, multiple baseline specs can be defined within the same YAML/JSON file.</li>
 <li>Each YAML baseline spec is separated using <code>---</code>.</li>
 <li>Each JSON baseline spec is separated by JSON objects in a JSON array.</li>
-<li>Set within a workspace options file like <code>ps-rule.yaml</code> or <code>ps-rule.json</code>.</li>
+</ul>
+</li>
+<li>Set within a workspace options file like <code>ps-rule.yaml</code> or <code>ps-rule.json</code>.<ul>
 <li>Only a single baseline can be specified.</li>
 <li>See <a href="../about_PSRule_Options/">about_PSRule_Options</a> for details on using this method.</li>
+</ul>
+</li>
 </ul>
 <h3 id="baseline-specs">Baseline specs<a class="headerlink" href="#baseline-specs" title="Permanent link">#</a></h3>
 <p>YAML baseline specs are saved within a YAML file with a <code>.Rule.yaml</code> or <code>.Rule.yml</code> extension, for example <code>Baseline.Rule.yaml</code>.</p>

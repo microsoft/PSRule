@@ -1945,11 +1945,13 @@ Yaml.FileType                       Fail       Image files are not permitted.
 <p class="admonition-title">Tip</p>
 <ul>
 <li>If you didn't get any results with <code>Fail</code> try creating or saving a <code>.jpg</code> file in <em>pathToSeach</em>.</li>
-<li>If you have too many <code>Pass</code> results you can filter the output to only fails by using <code>-Outcome Fail</code>.
-  For example:</li>
-</ul>
+<li>
+<p>If you have too many <code>Pass</code> results you can filter the output to only fails by using <code>-Outcome Fail</code>.
+  For example:</p>
 <div class="highlight"><pre><span></span><code><span class="nv">$files</span> <span class="p">|</span> <span class="nb">Invoke-PSRule</span> <span class="n">-Path</span> <span class="nv">$rulePath</span> <span class="n">-Outcome</span> <span class="n">Fail</span>
 </code></pre></div>
+</li>
+</ul>
 </div>
 <h2 id="scenario-test-for-service-status">Scenario - Test for service status<a class="headerlink" href="#scenario-test-for-service-status" title="Permanent link">#</a></h2>
 <p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M11.75 1a.75.75 0 0 1 .75.75V4h6.532c.42 0 .826.15 1.143.425l3.187 2.75a1.75 1.75 0 0 1 0 2.65l-3.187 2.75a1.75 1.75 0 0 1-1.143.425H12.5v9.25a.75.75 0 0 1-1.5 0V13H3.75A1.75 1.75 0 0 1 2 11.25v-5.5C2 4.783 2.784 4 3.75 4H11V1.75a.75.75 0 0 1 .75-.75zm0 4.5h7.282a.25.25 0 0 1 .163.06l3.188 2.75a.25.25 0 0 1 0 .38l-3.188 2.75a.25.25 0 0 1-.163.06H3.75a.25.25 0 0 1-.25-.25v-5.5a.25.25 0 0 1 .25-.25h8z"/></svg></span> v2.0.0</p>

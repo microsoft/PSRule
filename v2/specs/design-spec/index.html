@@ -1746,22 +1746,30 @@ many support output into a standard artifact format.
 i.e. <code>terraform show -json</code></p>
 <h2 id="project-objectives">Project objectives<a class="headerlink" href="#project-objectives" title="Permanent link">#</a></h2>
 <ol>
-<li><strong>Extensible</strong>:</li>
+<li><strong>Extensible</strong>:<ul>
 <li>Provide an execution environment (tools and language) to validate infrastructure code.</li>
 <li>Handling of common concerns such as input/ output/ reporting should be handled by the engine.</li>
 <li>Language must be flexible enough to support a wide range of use cases.</li>
-<li><strong>DevOps</strong>:</li>
+</ul>
+</li>
+<li><strong>DevOps</strong>:<ul>
 <li>Validation should support and enhance DevOps workflows by providing fast feedback in pull requests.</li>
 <li>Allow quality gates to be implemented between environments such development, test, and production.</li>
-<li><strong>Cross-platform</strong>:</li>
+</ul>
+</li>
+<li><strong>Cross-platform</strong>:<ul>
 <li>A wide range of platforms can be used to author and deploy infrastructure code.
 PSRule must support rule validation and authoring on Linux, MacOS, and Windows.</li>
 <li>Runs in a Linux container.
 For continuous integration (CI) systems that do not support PowerShell, run in a container.</li>
-<li><strong>Reusable</strong>:</li>
+</ul>
+</li>
+<li><strong>Reusable</strong>:<ul>
 <li>Validation should plug and play, reusable across teams and organizations.</li>
 <li>Any reusable validation will have exceptions.
 Rules must be able to be disabled where they are not applicable.</li>
+</ul>
+</li>
 </ol>
 <h2 id="language-specification">Language specification<a class="headerlink" href="#language-specification" title="Permanent link">#</a></h2>
 <p>PSRule is rooted in PowerShell.
