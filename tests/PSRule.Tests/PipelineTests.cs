@@ -6,9 +6,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
 using PSRule.Pipeline;
 using PSRule.Resources;
+using PSRule.Rules;
 using Xunit;
 
 namespace PSRule
@@ -43,6 +45,45 @@ namespace PSRule
                 pipeline.Process(PSObject.AsPSObject(testObject1));
 
             pipeline.End();
+        }
+
+        [Fact]
+        public void InvokePipelineWithJObject()
+        {
+            var parent = new JObject
+            {
+                ["resources"] = new JArray(new object[] {
+                    new JObject
+                    {
+                        ["Name"] = "TestValue"
+                    },
+                    new JObject
+                    {
+                        ["Name"] = "TestValue2"
+                    }
+                })
+            };
+
+            var option = GetOption();
+            option.Rule.Include = new string[] { "ScriptReasonTest" };
+            option.Input.Format = InputFormat.File;
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null);
+            var writer = new TestWriter(option);
+            var pipeline = builder.Build(writer);
+
+            Assert.NotNull(pipeline);
+            pipeline.Begin();
+            pipeline.Process(PSObject.AsPSObject(parent["resources"][0]));
+            pipeline.Process(PSObject.AsPSObject(parent["resources"][1]));
+            pipeline.End();
+
+            var actual = (writer.Output[0] as InvokeResult).AsRecord().FirstOrDefault();
+            Assert.Equal(RuleOutcome.Pass, actual.Outcome);
+
+            actual = (writer.Output[1] as InvokeResult).AsRecord().FirstOrDefault();
+            Assert.Equal(RuleOutcome.Fail, actual.Outcome);
+            Assert.Equal("Name", actual.Detail.Reason.First().Path);
+            Assert.Equal("resources[1].Name", actual.Detail.Reason.First().FullPath);
         }
 
         [Fact]
@@ -158,9 +199,13 @@ namespace PSRule
             items = writer.Output.OfType<InvokeResult>().SelectMany(i => i.AsRecord()).ToArray();
             Assert.Equal(4, items.Length);
             Assert.Equal("master.items[0].Name", items[0].Detail.Reason.First().FullPath);
-            Assert.Equal("Name", items[1].Detail.Reason.First().FullPath);
+            Assert.Equal("Name", items[0].Detail.Reason.First().Path);
+            Assert.Equal("[1].Name", items[1].Detail.Reason.First().FullPath);
+            Assert.Equal("Name", items[1].Detail.Reason.First().Path);
             Assert.Equal("resources[0].Name", items[2].Detail.Reason.First().FullPath);
+            Assert.Equal("Name", items[2].Detail.Reason.First().Path);
             Assert.Equal("Name", items[3].Detail.Reason.First().FullPath);
+            Assert.Equal("Name", items[3].Detail.Reason.First().Path);
 
             // With IgnoreObjectSource
             option.Rule.Include = new string[] { "FromFile1" };

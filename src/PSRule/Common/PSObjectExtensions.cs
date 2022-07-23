@@ -8,6 +8,7 @@ using System.IO;
 using System.Management.Automation;
 using System.Threading;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PSRule.Data;
 using PSRule.Runtime;
 
@@ -118,7 +119,14 @@ namespace PSRule
 
         public static string GetTargetPath(this PSObject o)
         {
-            return o.TryTargetInfo(out var targetInfo) ? targetInfo.Path : string.Empty;
+            if (o == null)
+                return string.Empty;
+
+            if (o.TryTargetInfo(out var targetInfo))
+                return targetInfo.Path;
+
+            var baseObject = o.BaseObject;
+            return baseObject is JToken token ? token.Path : string.Empty;
         }
 
         public static void ConvertTargetInfoProperty(this PSObject o)
