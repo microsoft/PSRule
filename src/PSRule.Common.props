@@ -4,10 +4,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>9.0</LangVersion>
-    <DebugType>portable</DebugType>
     <NeutralLanguage>en-US</NeutralLanguage>
     <DebugSymbols>true</DebugSymbols>
-    <NeutralLanguage>en-US</NeutralLanguage>
+    <DebugType>portable</DebugType>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
   <!-- Package metadata -->
@@ -43,6 +45,10 @@ This project uses GitHub Issues to track bugs and feature requests. See GitHub p
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\..\docs\assets\package_icon.png">

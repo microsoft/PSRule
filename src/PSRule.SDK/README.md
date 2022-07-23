@@ -1,3 +1,3 @@
-# PSRule SDK package for .NET
+# PSRule SDK for .NET
 
-This is a meta package that contains PSRule libraries for .NET.
+This package allows you to consume PSRule for .NET.
