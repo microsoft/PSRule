@@ -21,6 +21,8 @@ What's changed since pre-release v2.3.0-B0030:
 - Engineering:
   - Added publishing support for NuGet symbol packages @BernieWhite.
     [#1173](https://github.com/microsoft/PSRule/issues/1173)
+  - Bump Sarif.Sdk to v2.4.16.
+    [#1177](https://github.com/microsoft/PSRule/pull/1177)
 
 ## v2.3.0-B0030 (pre-release)
 
