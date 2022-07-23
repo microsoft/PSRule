@@ -1,3 +1,4 @@
 # PSRule library for .NET
 
-Microsoft.PSRule provides core functionality of PSRule.
+Provides core functionality of PSRule.
+To consume, use Microsoft.PSRule.SDK.
