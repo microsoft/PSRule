@@ -3793,12 +3793,17 @@ The <code>Export-PSRuleBaseline</code> cmdlet only accepts <code>Yaml</code>.</p
 <p>Filters output to include results with the specified outcome.
 The following outcome options are available:</p>
 <ul>
-<li><code>None</code> - Results for rules that did not get processed are returned.</li>
-<li><code>Pass</code> - Results for rules that passed are returned.</li>
-<li><code>Fail</code> - Results for rules that failed are returned.</li>
-<li><code>Error</code> - Results for rules that raised an error are returned.</li>
-<li><code>Processed</code> - Results for rules that either passed, failed, or raised an error are returned.
+<li><code>None</code> (0) - Results for rules that did not get processed are returned.
+  This include rules that have been suppressed or were not run against a target object.</li>
+<li><code>Fail</code> (1) - Results for rules that failed are returned.</li>
+<li><code>Pass</code> (2)  - Results for rules that passed are returned.</li>
+<li><code>Error</code> (4) - Results for rules that raised an error are returned.</li>
+</ul>
+<p>Additionally the following rollup options exist:</p>
+<ul>
+<li><code>Processed</code> - Results for rules with the <code>Fail</code>, <code>Pass</code>, or <code>Error</code> outcome.
 This is the default option.</li>
+<li><code>Problem</code> - Results for rules with the <code>Fail</code>, or <code>Error</code> outcome.</li>
 <li><code>All</code> - All results for rules are returned.</li>
 </ul>
 <p>This option can be specified using:</p>
@@ -4425,7 +4430,7 @@ Objects that are suppressed are not processed by the rule at all but will contin
   <small>
     
       Last update:
-      2022-06-19
+      2022-07-23
     
   </small>
 </div>
