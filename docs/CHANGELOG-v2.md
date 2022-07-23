@@ -21,6 +21,8 @@ What's changed since pre-release v2.3.0-B0030:
 - Engineering:
   - Added publishing support for NuGet symbol packages @BernieWhite.
     [#1173](https://github.com/microsoft/PSRule/issues/1173)
+  - Updated outcome option docs by @BernieWhite.
+    [#1166](https://github.com/microsoft/PSRule/issues/1166)
 
 ## v2.3.0-B0030 (pre-release)
 

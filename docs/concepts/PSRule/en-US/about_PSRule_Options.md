@@ -2003,12 +2003,17 @@ variables:
 Filters output to include results with the specified outcome.
 The following outcome options are available:
 
-- `None` - Results for rules that did not get processed are returned.
-- `Pass` - Results for rules that passed are returned.
-- `Fail` - Results for rules that failed are returned.
-- `Error` - Results for rules that raised an error are returned.
-- `Processed` - Results for rules that either passed, failed, or raised an error are returned.
+- `None` (0) - Results for rules that did not get processed are returned.
+  This include rules that have been suppressed or were not run against a target object.
+- `Fail` (1) - Results for rules that failed are returned.
+- `Pass` (2)  - Results for rules that passed are returned.
+- `Error` (4) - Results for rules that raised an error are returned.
+
+Additionally the following rollup options exist:
+
+- `Processed` - Results for rules with the `Fail`, `Pass`, or `Error` outcome.
 This is the default option.
+- `Problem` - Results for rules with the `Fail`, or `Error` outcome.
 - `All` - All results for rules are returned.
 
 This option can be specified using:
