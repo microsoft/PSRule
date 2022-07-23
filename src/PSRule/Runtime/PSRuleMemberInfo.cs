@@ -11,12 +11,10 @@ using PSRule.Resources;
 
 namespace PSRule.Runtime
 {
-    [DebuggerDisplay("Instance = {_Instance}")]
+    [DebuggerDisplay("Path = {Path}, File = {File}")]
     internal sealed class PSRuleTargetInfo : PSMemberInfo
     {
         internal const string PropertyName = "_PSRule";
-
-        private readonly string _Instance = Guid.NewGuid().ToString();
 
         public PSRuleTargetInfo()
         {

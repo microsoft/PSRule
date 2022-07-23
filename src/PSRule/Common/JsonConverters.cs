@@ -219,6 +219,7 @@ namespace PSRule
         private static PSObject ReadObject(JsonReader reader, bool bindTargetInfo, TargetSourceInfo sourceInfo)
         {
             SkipComments(reader);
+            var path = reader.Path;
             if (reader.TokenType != JsonToken.StartObject || !reader.Read())
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
 
@@ -276,6 +277,8 @@ namespace PSRule
             {
                 result.UseTargetInfo(out var info);
                 info.SetSource(sourceInfo?.File, lineNumber, linePosition);
+                if (string.IsNullOrEmpty(info.Path))
+                    info.Path = path;
             }
             return result;
         }

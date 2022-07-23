@@ -49,7 +49,9 @@ namespace PSRule
             actual[0].Value.TryTargetInfo(out var info1);
             actual[1].Value.TryTargetInfo(out var info2);
             Assert.Equal("some-file.json", info1.Source[0].File);
+            Assert.Equal("master.items[0]", info1.Path);
             Assert.NotNull(info2.Source[0]);
+            Assert.Equal("[1]", info2.Path);
 
             // Single item
             actual = PipelineReceiverActions.ConvertFromJson(GetJsonContent("Single"), PipelineReceiverActions.PassThru).ToArray();
