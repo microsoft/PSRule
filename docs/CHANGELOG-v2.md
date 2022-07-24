@@ -13,6 +13,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.3.0-B0051:
+
+- General improvements:
+  - Added support for binding with JSON objects by @BernieWhite.
+    [#1182](https://github.com/microsoft/PSRule/issues/1182)
+
 ## v2.3.0-B0051 (pre-release)
 
 What's changed since pre-release v2.3.0-B0030:
