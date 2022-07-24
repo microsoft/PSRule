@@ -56,6 +56,9 @@ namespace PSRule.Configuration
         /// </summary>
         private static CultureInfo _CurrentCulture = Thread.CurrentThread.CurrentCulture;
 
+        /// <summary>
+        /// Create an empty PSRule options object.
+        /// </summary>
         public PSRuleOption()
         {
             // Set defaults

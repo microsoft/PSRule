@@ -32,6 +32,7 @@ namespace PSRule.Pipeline
 
         #region IPipeline
 
+        /// <inheritdoc/>
         public virtual void Begin()
         {
             Reader.Open();
@@ -39,11 +40,13 @@ namespace PSRule.Pipeline
             Context.Begin();
         }
 
+        /// <inheritdoc/>
         public virtual void Process(PSObject sourceObject)
         {
             // Do nothing
         }
 
+        /// <inheritdoc/>
         public virtual void End()
         {
             Writer.End();

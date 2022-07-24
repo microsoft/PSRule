@@ -15,8 +15,16 @@ namespace PSRule.Pipeline
 {
     public interface IInvokePipelineBuilder : IPipelineBuilder
     {
+        /// <summary>
+        /// Configures paths that will be scanned for input.
+        /// </summary>
+        /// <param name="path">An array of relative or absolute path specs to be scanned. Directories will be recursively scanned for all files not excluded matching the file path spec.</param>
         void InputPath(string[] path);
 
+        /// <summary>
+        /// Configures a variable that will recieve all results in addition to the host context.
+        /// </summary>
+        /// <param name="variableName">The name of the variable to set.</param>
         void ResultVariable(string variableName);
     }
 
@@ -193,6 +201,7 @@ namespace PSRule.Pipeline
 
         public int RuleCount { get; private set; }
 
+        /// <inheritdoc/>
         public override void Process(PSObject sourceObject)
         {
             try
@@ -212,6 +221,7 @@ namespace PSRule.Pipeline
             }
         }
 
+        /// <inheritdoc/>
         public override void End()
         {
             if (_Completed.Count > 0)

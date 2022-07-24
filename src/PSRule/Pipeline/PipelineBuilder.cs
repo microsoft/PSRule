@@ -18,6 +18,9 @@ using PSRule.Runtime;
 
 namespace PSRule.Pipeline
 {
+    /// <summary>
+    /// A helper to create a PowerShell-based pipeline for running PSRule.
+    /// </summary>
     public static class PipelineBuilder
     {
         public static IInvokePipelineBuilder Assert(Source[] source, PSRuleOption option, IHostContext hostContext)
@@ -85,17 +88,34 @@ namespace PSRule.Pipeline
 
     public interface IPipelineBuilder
     {
+        /// <summary>
+        /// Configure the pipeline with options.
+        /// </summary>
         IPipelineBuilder Configure(PSRuleOption option);
 
+        /// <summary>
+        /// Build the pipeline.
+        /// </summary>
+        /// <param name="writer">Optionally specify a custom writer which will handle output processing.</param>
         IPipeline Build(IPipelineWriter writer = null);
     }
 
     public interface IPipeline : IDisposable
     {
+        /// <summary>
+        /// Initalize the pipeline and results. Call this method once prior to calling Process.
+        /// </summary>
         void Begin();
 
+        /// <summary>
+        /// Process an object through the pipeline. Each object will be processed by rules that apply based on pre-conditions.
+        /// </summary>
+        /// <param name="sourceObject">The object to process.</param>
         void Process(PSObject sourceObject);
 
+        /// <summary>
+        /// Clean up and flush pipeline results. Call this method once after processing any objects through the pipeline.
+        /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Matches PowerShell pipeline.")]
         void End();
     }
