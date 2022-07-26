@@ -1,10 +1,13 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using PSRule.Pipeline;
 
 namespace PSRule.Runtime
 {
+    /// <summary>
+    /// A base class for scoped context variables used internally by PSRule.
+    /// </summary>
     public abstract class ScopedItem
     {
         private readonly RunspaceContext _Context;

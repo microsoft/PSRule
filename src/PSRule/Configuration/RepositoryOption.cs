@@ -8,7 +8,7 @@ using System.ComponentModel;
 namespace PSRule.Configuration
 {
     /// <summary>
-    /// Options that configure the execution sandbox.
+    /// Options that repository properties that are used by PSRule.
     /// </summary>
     public sealed class RepositoryOption : IEquatable<RepositoryOption>
     {
@@ -17,11 +17,18 @@ namespace PSRule.Configuration
 
         };
 
+        /// <summary>
+        /// Create an empty repository option.
+        /// </summary>
         public RepositoryOption()
         {
             Url = null;
         }
 
+        /// <summary>
+        /// Create a repository option by copying an existing instance.
+        /// </summary>
+        /// <param name="option">The option instance to copy.</param>
         public RepositoryOption(RepositoryOption option)
         {
             if (option == null)
@@ -30,17 +37,21 @@ namespace PSRule.Configuration
             Url = option.Url;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            return obj is RepositoryOption option && Equals(option);
+            return obj is RepositoryOption option &&
+                Equals(option);
         }
 
+        /// <inheritdoc/>
         public bool Equals(RepositoryOption other)
         {
             return other != null &&
                 Url == other.Url;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             unchecked // Overflow is fine
@@ -61,7 +72,7 @@ namespace PSRule.Configuration
         }
 
         /// <summary>
-        /// Determines if a warning is raised when an alias to a resource is used.
+        /// Configures the repository URL to report in output.
         /// </summary>
         [DefaultValue(null)]
         public string Url { get; set; }

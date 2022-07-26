@@ -22,6 +22,9 @@ namespace PSRule.Runtime
         private ITargetIssueCollection _Issue;
         private IBadgeBuilder _BadgeBuilder;
 
+        /// <summary>
+        /// Create an empty instance.
+        /// </summary>
         public PSRule() { }
 
         internal PSRule(RunspaceContext context)
@@ -87,6 +90,12 @@ namespace PSRule.Runtime
         /// <summary>
         /// A set of custom fields bound for the target object.
         /// </summary>
+        /// <remarks>
+        /// This property can only be accessed from a rule or pre-condition.
+        /// </remarks>
+        /// <exception cref="RuntimeScopeException">
+        /// Thrown when accessing this property outside of a rule or pre-condition.
+        /// </exception>
         public Hashtable Field
         {
             get
@@ -96,6 +105,15 @@ namespace PSRule.Runtime
             }
         }
 
+        /// <summary>
+        /// An aggregated set of results from executing PSRule rules.
+        /// </summary>
+        /// <remarks>
+        /// This property can only be accessed from an end convention block.
+        /// </remarks>
+        /// <exception cref="RuntimeScopeException">
+        /// Thrown when accessing this property outside of an end convention block.
+        /// </exception>
         public IEnumerable<InvokeResult> Output
         {
             get
@@ -105,8 +123,14 @@ namespace PSRule.Runtime
             }
         }
 
+        /// <summary>
+        /// The source information for the location the target object originated from.
+        /// </summary>
         public ITargetSourceCollection Source => GetSource();
 
+        /// <summary>
+        /// Any issues reported by downstream tools and annotated to the target object.
+        /// </summary>
         public ITargetIssueCollection Issue => GetIssue();
 
         /// <summary>
@@ -205,6 +229,12 @@ namespace PSRule.Runtime
         /// <summary>
         /// Imports source objects into the pipeline for processing.
         /// </summary>
+        /// <remarks>
+        /// This method can only be called from a convention begin block.
+        /// </remarks>
+        /// <exception cref="RuntimeScopeException">
+        /// Thrown when accessing this method outside of a convention begin block.
+        /// </exception>
         public void Import(PSObject[] sourceObject)
         {
             if (sourceObject == null || sourceObject.Length == 0)
@@ -220,6 +250,18 @@ namespace PSRule.Runtime
             }
         }
 
+        /// <summary>
+        /// Add a reusable singleton object into PSRule runtime that can be reference across multiple rules or conventions. To retrieve the singleton call <seealso cref="GetService"/>.
+        /// </summary>
+        /// <param name="id">A unique identifier for the object.</param>
+        /// <param name="service">A instance of the singleton.</param>
+        /// <remarks>
+        /// If either <paramref name="id"/> or <paramref name="service"/> is null or empty the singleton is ignored.
+        /// This method can only be called from a convention initialize block.
+        /// </remarks>
+        /// <exception cref="RuntimeScopeException">
+        /// Thrown when accessing this method outside of a convention initialize block.
+        /// </exception>
         public void AddService(string id, object service)
         {
             if (service == null || string.IsNullOrEmpty(id))
@@ -229,6 +271,14 @@ namespace PSRule.Runtime
             GetContext().AddService(id, service);
         }
 
+        /// <summary>
+        /// Retrieve a reusable singleton object from the PSRule runtime that has previously been stored with <see cref="AddService"/>.
+        /// </summary>
+        /// <param name="id">The unique identifier for the object.</param>
+        /// <returns>The singleton instance or null if an object with the specified <paramref name="id"/> was not found.</returns>
+        /// <exception cref="RuntimeScopeException">
+        /// Thrown when accessing this method outside of PSRule.
+        /// </exception>
         public object GetService(string id)
         {
             if (string.IsNullOrEmpty(id))

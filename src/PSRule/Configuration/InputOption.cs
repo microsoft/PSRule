@@ -31,6 +31,9 @@ namespace PSRule.Configuration
             TargetType = DEFAULT_TARGETTYPE,
         };
 
+        /// <summary>
+        /// Creates an empty input option.
+        /// </summary>
         public InputOption()
         {
             Format = null;
@@ -42,6 +45,10 @@ namespace PSRule.Configuration
             TargetType = null;
         }
 
+        /// <summary>
+        /// Creates a input option by copying an existing instance.
+        /// </summary>
+        /// <param name="option">The option instance to copy.</param>
         public InputOption(InputOption option)
         {
             if (option == null)
@@ -56,11 +63,13 @@ namespace PSRule.Configuration
             TargetType = option.TargetType;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is InputOption option && Equals(option);
         }
 
+        /// <inheritdoc/>
         public bool Equals(InputOption other)
         {
             return other != null &&
@@ -73,6 +82,7 @@ namespace PSRule.Configuration
                 TargetType == other.TargetType;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             unchecked // Overflow is fine

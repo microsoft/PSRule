@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -17,11 +17,18 @@ namespace PSRule.Configuration
 
         };
 
+        /// <summary>
+        /// Creates an empty convention option.
+        /// </summary>
         public ConventionOption()
         {
             Include = null;
         }
 
+        /// <summary>
+        /// Creates a convertion option by copying an existing instance.
+        /// </summary>
+        /// <param name="option">The option instance to copy.</param>
         public ConventionOption(ConventionOption option)
         {
             if (option == null)
@@ -30,17 +37,20 @@ namespace PSRule.Configuration
             Include = option.Include;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is ConventionOption option && Equals(option);
         }
 
+        /// <inheritdoc/>
         public bool Equals(ConventionOption other)
         {
             return other != null &&
                 Include == other.Include;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             unchecked // Overflow is fine
@@ -60,6 +70,9 @@ namespace PSRule.Configuration
             return result;
         }
 
+        /// <summary>
+        /// Conventions by name to use when executing PSRule.
+        /// </summary>
         [DefaultValue(null)]
         public string[] Include { get; set; }
 

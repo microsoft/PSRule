@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 namespace PSRule.Runtime
@@ -10,8 +10,14 @@ namespace PSRule.Runtime
     /// </summary>
     public sealed class Rule
     {
+        /// <summary>
+        /// The name of the currently executing rule.
+        /// </summary>
         public string RuleName => RunspaceContext.CurrentThread.RuleRecord.RuleName;
 
+        /// <summary>
+        /// A unique identifer of the currently executing rule.
+        /// </summary>
         public string RuleId => RunspaceContext.CurrentThread.RuleRecord.RuleId;
     }
 

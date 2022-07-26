@@ -17,7 +17,7 @@ using PSRule.Resources;
 namespace PSRule.Runtime
 {
     /// <summary>
-    /// A helper variable exposed at runtime for rules.
+    /// A set of assertion helpers that are exposed at runtime through the $Assert variable.
     /// </summary>
     public sealed class Assert
     {
@@ -25,23 +25,41 @@ namespace PSRule.Runtime
         private const string PROPERTY_SCHEMA = "$schema";
         private const string VARIABLE_NAME = "Assert";
         private const string TYPENAME_STRING = "[string]";
-        private const string TYPENAME_BOOL = "[bool]";
-        private const string TYPENAME_ARRAY = "[array]";
         private const string TYPENAME_NULL = "null";
-        private const string TYPENAME_DATETIME = "[DateTime]";
 
         #region Authoring
 
+        /// <summary>
+        /// Create a result based on a boolean <paramref name="condition"/>.
+        /// </summary>
+        /// <param name="condition">A boolean condition that passes when set to <c>true</c>, and fails when set to <c>false</c>.</param>
+        /// <param name="reason">A localized reason why the assertion failed. This parameter is ignored if the assertion passed.</param>
+        /// <returns>An assertion result.</returns>
         public AssertResult Create(bool condition, string reason = null)
         {
             return Create(condition, reason, args: null);
         }
 
+        /// <summary>
+        /// Create a result based on a boolean <paramref name="condition"/>.
+        /// </summary>
+        /// <param name="condition">A boolean condition that passes when set to <c>true</c>, and fails when set to <c>false</c>.</param>
+        /// <param name="reason">An unformatted localized reason why the assertion failed. This parameter is ignored if the assertion passed.</param>
+        /// <param name="args">A list of arguments that are inserted into the format string.</param>
+        /// <returns>An assertion result.</returns>
         public AssertResult Create(bool condition, string reason, params object[] args)
         {
             return Create(Operand.FromTarget(), condition, reason, args);
         }
 
+        /// <summary>
+        /// Create a result based on a boolean <paramref name="condition"/>.
+        /// </summary>
+        /// <param name="path">The object path that was reported by the assertion.</param>
+        /// <param name="condition">A boolean condition that passes when set to <c>true</c>, and fails when set to <c>false</c>.</param>
+        /// <param name="reason">An unformatted localized reason why the assertion failed. This parameter is ignored if the assertion passed.</param>
+        /// <param name="args">A list of arguments that are inserted into the format string.</param>
+        /// <returns>An assertion result.</returns>
         public AssertResult Create(string path, bool condition, string reason, params object[] args)
         {
             return Create(string.IsNullOrEmpty(path) ? Operand.FromTarget() : Operand.FromPath(path), condition, reason, args);
@@ -55,6 +73,11 @@ namespace PSRule.Runtime
             return new AssertResult(this, operand, condition, reason, args);
         }
 
+        /// <summary>
+        /// Create a result based on issues reported downstream.
+        /// </summary>
+        /// <param name="issue">An array of issues reported downstream.</param>
+        /// <returns>An assertion result.</returns>
         public AssertResult Create(TargetIssueInfo[] issue)
         {
             if (issue == null || issue.Length == 0)
@@ -68,31 +91,41 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
-        /// Pass the assertion.
+        /// Create a passing assertion result.
         /// </summary>
+        /// <returns>An assertion result.</returns>
         public AssertResult Pass()
         {
             return Create(condition: true);
         }
 
         /// <summary>
-        /// Fail the assertion.
+        /// Create a failed assertion result.
         /// </summary>
+        /// <returns>An assertion result.</returns>
         public AssertResult Fail()
         {
             return Create(condition: false, reason: null, args: null);
         }
 
         /// <summary>
-        /// Fail the assertion.
+        /// Create a failed assertion result.
         /// </summary>
-        /// <param name="reason">An unformatted reason why the assertion failed.</param>
-        /// <param name="args">Additional parameters for the reason format.</param>
+        /// <param name="reason">An unformatted localized reason why the assertion failed.</param>
+        /// <param name="args">A list of arguments that are inserted into the format string.</param>
+        /// <returns>An assertion result.</returns>
         public AssertResult Fail(string reason, params object[] args)
         {
             return Create(condition: false, reason: reason, args: args);
         }
 
+        /// <summary>
+        /// Create a failed assertion result.
+        /// </summary>
+        /// <param name="operand">An operand that was reported by the assertion.</param>
+        /// <param name="reason">An unformatted localized reason why the assertion failed.</param>
+        /// <param name="args">A list of arguments that are inserted into the format string.</param>
+        /// <returns>An assertion result.</returns>
         public AssertResult Fail(IOperand operand, string reason, params object[] args)
         {
             return Create(operand, condition: false, reason: reason, args: args);
@@ -791,8 +824,13 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
-        /// The object field value should match the version constraint. Only applies to strings.
+        /// The Version assertion method checks the field value is a valid semantic version.
+        /// A constraint can optionally be provided to require the semantic version to be within a range.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#version"/>
         /// </summary>
+        /// <remarks>
+        /// Only applies to strings.
+        /// </remarks>
         public AssertResult Version(PSObject inputObject, string field, string constraint = null, bool includePrerelease = false)
         {
             // Guard parameters
@@ -809,6 +847,11 @@ namespace PSRule.Runtime
             return c != null && !c.Equals(value) ? Fail(Operand.FromPath(field), ReasonStrings.VersionContraint, value, constraint) : Pass();
         }
 
+        /// <summary>
+        /// The Greater assertion method checks the field value is greater than the specified value.
+        /// The field value can either be an integer, float, array, or string.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#greater"/>
+        /// </summary>
         public AssertResult Greater(PSObject inputObject, string field, int value, bool convert = false)
         {
             // Guard parameters
@@ -823,6 +866,11 @@ namespace PSRule.Runtime
             return Fail(Operand.FromPath(field), ReasonStrings.Compare, fieldValue, value);
         }
 
+        /// <summary>
+        /// The GreaterOrEqual assertion method checks the field value is greater or equal to the specified value.
+        /// The field value can either be an integer, float, array, or string.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#greaterorequal"/>
+        /// </summary>
         public AssertResult GreaterOrEqual(PSObject inputObject, string field, int value, bool convert = false)
         {
             // Guard parameters
@@ -837,6 +885,11 @@ namespace PSRule.Runtime
             return Fail(Operand.FromPath(field), ReasonStrings.Compare, fieldValue, value);
         }
 
+        /// <summary>
+        /// The Less assertion method checks the field value is less than the specified value.
+        /// The field value can either be an integer, float, array, or string.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#less"/>
+        /// </summary>
         public AssertResult Less(PSObject inputObject, string field, int value, bool convert = false)
         {
             // Guard parameters
@@ -851,6 +904,11 @@ namespace PSRule.Runtime
             return Fail(Operand.FromPath(field), ReasonStrings.Compare, fieldValue, value);
         }
 
+        /// <summary>
+        /// The LessOrEqual assertion method checks the field value is less or equal to the specified value.
+        /// The field value can either be an integer, float, array, or string.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#lessorequal"/>
+        /// </summary>
         public AssertResult LessOrEqual(PSObject inputObject, string field, int value, bool convert = false)
         {
             // Guard parameters
@@ -867,6 +925,7 @@ namespace PSRule.Runtime
 
         /// <summary>
         /// The object field value must be included in the set.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#in"/>
         /// </summary>
         public AssertResult In(PSObject inputObject, string field, Array values, bool caseSensitive = false)
         {
@@ -887,6 +946,7 @@ namespace PSRule.Runtime
 
         /// <summary>
         /// The object field value must not be included in the set.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#notin"/>
         /// </summary>
         public AssertResult NotIn(PSObject inputObject, string field, Array values, bool caseSensitive = false)
         {
@@ -913,7 +973,11 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
-        /// The object field value must include the set.
+        /// The Subset assertion method checks the field value includes all of the specified values.
+        /// The field value may also contain additional values that are not specified in the values parameter.
+        /// The field value must be an array or collection.
+        /// Specified values can be included in the field value in any order.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#subset"/>
         /// </summary>
         public AssertResult Subset(PSObject inputObject, string field, Array values, bool caseSensitive = false, bool unique = false)
         {
@@ -933,6 +997,12 @@ namespace PSRule.Runtime
             return Pass();
         }
 
+        /// <summary>
+        /// The SetOf assertion method checks the field value only includes all of the specified values.
+        /// The field value must be an array or collection.
+        /// Specified values can be included in the field value in any order.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#setof"/>
+        /// </summary>
         public AssertResult SetOf(PSObject inputObject, string field, Array values, bool caseSensitive = false)
         {
             // Guard parameters
@@ -955,7 +1025,8 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
-        ///  The field value must contain the specified number of items.
+        /// The field value must contain the specified number of items.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#count"/>
         /// </summary>
         public AssertResult Count(PSObject inputObject, string field, int count)
         {
@@ -971,6 +1042,7 @@ namespace PSRule.Runtime
 
         /// <summary>
         /// The field value must not contain the specified number of items.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#notcount"/>
         /// </summary>
         public AssertResult NotCount(PSObject inputObject, string field, int count)
         {
@@ -986,6 +1058,7 @@ namespace PSRule.Runtime
 
         /// <summary>
         /// The object field value must match the regular expression.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#match"/>
         /// </summary>
         public AssertResult Match(PSObject inputObject, string field, string pattern, bool caseSensitive = false)
         {
@@ -1001,6 +1074,7 @@ namespace PSRule.Runtime
 
         /// <summary>
         /// The object field value must not match the regular expression.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#notmatch"/>
         /// </summary>
         public AssertResult NotMatch(PSObject inputObject, string field, string pattern, bool caseSensitive = false)
         {
@@ -1026,6 +1100,11 @@ namespace PSRule.Runtime
             return Fail(Operand.FromPath(field), ReasonStrings.NotMatchPattern, value, pattern);
         }
 
+        /// <summary>
+        /// The FilePath assertion method checks the file exists.
+        /// Checks use file system case-sensitivity rules.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#filepath"/>
+        /// </summary>
         public AssertResult FilePath(PSObject inputObject, string field, string[] suffix = null)
         {
             // Guard parameters
@@ -1051,6 +1130,11 @@ namespace PSRule.Runtime
             return reason;
         }
 
+        /// <summary>
+        /// The FileHeader assertion method checks a file for a comment header.
+        /// When comparing the file header, the format of line comments are automatically detected by file extension.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#fileheader"/>
+        /// </summary>
         public AssertResult FileHeader(PSObject inputObject, string field, string[] header, string prefix = null)
         {
             // Guard parameters

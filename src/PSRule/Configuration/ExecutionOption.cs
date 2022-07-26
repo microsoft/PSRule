@@ -52,11 +52,13 @@ namespace PSRule.Configuration
             InvariantCultureWarning = option.InvariantCultureWarning;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is ExecutionOption option && Equals(option);
         }
 
+        /// <inheritdoc/>
         public bool Equals(ExecutionOption other)
         {
             return other != null &&
@@ -68,6 +70,7 @@ namespace PSRule.Configuration
                 InvariantCultureWarning == other.InvariantCultureWarning;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             unchecked // Overflow is fine

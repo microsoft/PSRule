@@ -59,6 +59,9 @@ namespace PSRule.Rules
         /// <summary>
         /// A unique identifier for the rule.
         /// </summary>
+        /// <remarks>
+        /// An additional opaque identifer may also be provided by by <see cref="Ref"/>.
+        /// </remarks>
         [JsonIgnore]
         [YamlIgnore]
         public readonly string RuleId;
@@ -69,6 +72,9 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "ruleName")]
         public readonly string RuleName;
 
+        /// <summary>
+        /// A stable opaque unique identifier for the rule in addition to <see cref="RuleId"/>.
+        /// </summary>
         public string Ref { get; }
 
         /// <summary>
@@ -77,6 +83,9 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "level")]
         public SeverityLevel Level { get; }
 
+        /// <summary>
+        /// A source location for the rule that executed.
+        /// </summary>
         [JsonIgnore]
         [YamlIgnore]
         public ISourceExtent Extent { get; }
@@ -87,9 +96,15 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "outcome")]
         public RuleOutcome Outcome { get; internal set; }
 
+        /// <summary>
+        /// An additional reason code for the <see cref="Outcome"/>.
+        /// </summary>
         [JsonProperty(PropertyName = "outcomeReason")]
         public RuleOutcomeReason OutcomeReason { get; internal set; }
 
+        /// <summary>
+        /// A localized recommendation for the rule.
+        /// </summary>
         [JsonIgnore]
         [YamlIgnore]
         public string Recommendation => Info.Recommendation?.Text ?? Info.Synopsis?.Text;

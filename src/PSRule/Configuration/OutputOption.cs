@@ -36,6 +36,9 @@ namespace PSRule.Configuration
             Style = DEFAULT_STYLE,
         };
 
+        /// <summary>
+        /// Creates an empty output option.
+        /// </summary>
         public OutputOption()
         {
             As = null;
@@ -50,6 +53,10 @@ namespace PSRule.Configuration
             Style = null;
         }
 
+        /// <summary>
+        /// Creates a output option by copying an existing instance.
+        /// </summary>
+        /// <param name="option">The option instance to copy.</param>
         public OutputOption(OutputOption option)
         {
             if (option == null)
@@ -68,11 +75,13 @@ namespace PSRule.Configuration
             Style = option.Style;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is OutputOption option && Equals(option);
         }
 
+        /// <inheritdoc/>
         public bool Equals(OutputOption other)
         {
             return other != null &&
@@ -89,6 +98,7 @@ namespace PSRule.Configuration
                 Style == other.Style;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             unchecked // Overflow is fine

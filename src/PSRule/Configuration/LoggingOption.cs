@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -42,11 +42,13 @@ namespace PSRule.Configuration
             RulePass = option.RulePass;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is LoggingOption option && Equals(option);
         }
 
+        /// <inheritdoc/>
         public bool Equals(LoggingOption other)
         {
             return other != null &&
@@ -56,6 +58,7 @@ namespace PSRule.Configuration
                 RulePass == other.RulePass;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             unchecked // Overflow is fine
