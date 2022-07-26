@@ -37,11 +37,13 @@ namespace PSRule.Configuration
             Tag = option.Tag;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is RuleOption option && Equals(option);
         }
 
+        /// <inheritdoc/>
         public bool Equals(RuleOption other)
         {
             return other != null &&
@@ -52,6 +54,7 @@ namespace PSRule.Configuration
                 Tag == other.Tag;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             unchecked // Overflow is fine

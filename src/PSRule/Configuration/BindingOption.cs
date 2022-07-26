@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -24,6 +24,9 @@ namespace PSRule.Configuration
             UseQualifiedName = DEFAULT_USEQUALIFIEDNAME
         };
 
+        /// <summary>
+        /// Creates an empty binding option.
+        /// </summary>
         public BindingOption()
         {
             Field = null;
@@ -35,6 +38,10 @@ namespace PSRule.Configuration
             UseQualifiedName = null;
         }
 
+        /// <summary>
+        /// Creates a binding option by copying an existing instance.
+        /// </summary>
+        /// <param name="option">The option instance to copy.</param>
         public BindingOption(BindingOption option)
         {
             if (option == null)
@@ -49,11 +56,13 @@ namespace PSRule.Configuration
             UseQualifiedName = option.UseQualifiedName;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is BindingOption option && Equals(option);
         }
 
+        /// <inheritdoc/>
         public bool Equals(BindingOption other)
         {
             return other != null &&
@@ -66,6 +75,7 @@ namespace PSRule.Configuration
                 UseQualifiedName == other.UseQualifiedName;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             unchecked // Overflow is fine
@@ -122,13 +132,13 @@ namespace PSRule.Configuration
         public bool? PreferTargetInfo { get; set; }
 
         /// <summary>
-        /// One or more property names to use to bind TargetName.
+        /// Property names to use to bind TargetName.
         /// </summary>
         [DefaultValue(null)]
         public string[] TargetName { get; set; }
 
         /// <summary>
-        /// One or more property names to use to bind TargetType.
+        /// Property names to use to bind TargetType.
         /// </summary>
         [DefaultValue(null)]
         public string[] TargetType { get; set; }

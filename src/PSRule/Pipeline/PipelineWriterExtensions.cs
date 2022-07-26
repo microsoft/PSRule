@@ -8,8 +8,16 @@ using PSRule.Resources;
 
 namespace PSRule.Pipeline
 {
-    internal static class PipelineWriterExtensions
+    public static class PipelineWriterExtensions
     {
+        public static void WriteDebug(this IPipelineWriter writer, DebugRecord debugRecord)
+        {
+            if (debugRecord == null)
+                return;
+
+            writer.WriteDebug(debugRecord.Message);
+        }
+
         internal static void DebugMessage(this IPipelineWriter logger, string message)
         {
             if (logger == null || !logger.ShouldWriteDebug())

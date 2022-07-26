@@ -10,6 +10,9 @@ using PSRule.Resources;
 
 namespace PSRule.Runtime
 {
+    /// <summary>
+    /// The result of a single assertion.
+    /// </summary>
     public sealed class AssertResult : IEquatable<bool>
     {
         private readonly Assert _Assert;
@@ -26,6 +29,9 @@ namespace PSRule.Runtime
             }
         }
 
+        /// <summary>
+        /// Convert the result into a boolean value.
+        /// </summary>
         public static explicit operator bool(AssertResult result)
         {
             return result != null && result.Result;
@@ -161,21 +167,31 @@ namespace PSRule.Runtime
             return Result;
         }
 
+        /// <summary>
+        /// Clear any reasons for this result.
+        /// </summary>
         public void Ignore()
         {
             _Reason.Clear();
         }
 
+        /// <inheritdoc/>
         public bool Equals(bool other)
         {
             return Result == other;
         }
 
+        /// <summary>
+        /// Get a formatted string of the result reasons.
+        /// </summary>
         public override string ToString()
         {
             return IsNullOrEmptyReason() ? string.Empty : string.Join(" ", _Reason.GetStrings());
         }
 
+        /// <summary>
+        /// Convert the result into a boolean value.
+        /// </summary>
         public bool ToBoolean()
         {
             return Result;

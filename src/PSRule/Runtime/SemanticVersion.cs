@@ -635,7 +635,7 @@ namespace PSRule.Runtime
 
             /// <summary>
             /// 1.2.3 || 3.4.5
-            /// >=1.2.3 <3.4.5
+            /// >=1.2.3 &lt;3.4.5
             /// </summary>
             internal JoinOperator GetJoin()
             {

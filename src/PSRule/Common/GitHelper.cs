@@ -76,7 +76,7 @@ namespace PSRule
 
         /// <summary>
         /// Get the target ref.
-        /// </summary
+        /// </summary>
         public static bool TryBaseRef(out string value, string path = null)
         {
             // Try PSRule

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
@@ -54,6 +54,7 @@ namespace PSRule.Rules
         /// </summary>
         /// <remarks>
         /// This reason is used with the None outcome.
+        /// </remarks>
         Suppressed = 5
     }
 }

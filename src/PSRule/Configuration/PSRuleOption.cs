@@ -290,6 +290,14 @@ namespace PSRule.Configuration
             return option;
         }
 
+        /// <summary>
+        /// Read PSRule options from environment variables.
+        /// </summary>
+        /// <param name="option">An existing options object to set. If <c>null</c> an empty options object is used.</param>
+        /// <returns>An options object.</returns>
+        /// <remarks>
+        /// Any environment variables that are set will override options set in the specified <paramref name="option"/> object.
+        /// </remarks>
         private static PSRuleOption FromEnvironment(PSRuleOption option)
         {
             if (option == null)
@@ -309,10 +317,18 @@ namespace PSRule.Configuration
             return option;
         }
 
+        /// <summary>
+        /// Read PSRule options from a hashtable.
+        /// </summary>
+        /// <param name="hashtable">A hashtable to read options from.</param>
+        /// <returns>An options object.</returns>
+        /// <remarks>
+        /// A null or empty hashtable will return an empty options object.
+        /// </remarks>
         public static PSRuleOption FromHashtable(Hashtable hashtable)
         {
             var option = new PSRuleOption();
-            if (hashtable == null)
+            if (hashtable == null || hashtable.Count == 0)
                 return option;
 
             // Start loading matching values
@@ -346,18 +362,29 @@ namespace PSRule.Configuration
             _GetWorkingPath = () => executionContext.SessionState.Path.CurrentFileSystemLocation.Path;
         }
 
+        /// <summary>
+        /// Configures PSRule to use the culture of the current thread at runtime.
+        /// </summary>
         [DebuggerStepThrough]
         public static void UseCurrentCulture()
         {
             UseCurrentCulture(Thread.CurrentThread.CurrentCulture);
         }
 
+        /// <summary>
+        /// Configures PSRule to use the specified culture at runtime.
+        /// </summary>
+        /// <param name="culture">A valid culture.</param>
         [DebuggerStepThrough]
         public static void UseCurrentCulture(string culture)
         {
             UseCurrentCulture(CultureInfo.CreateSpecificCulture(culture));
         }
 
+        /// <summary>
+        /// Configures PSRule to use the specified culture at runtime. 
+        /// </summary>
+        /// <param name="culture">A valid culture.</param>
         public static void UseCurrentCulture(CultureInfo culture)
         {
             _CurrentCulture = culture;
@@ -376,7 +403,8 @@ namespace PSRule.Configuration
         /// <summary>
         /// Convert from hashtable to options by processing key values. This enables -Option @{ } from PowerShell.
         /// </summary>
-        /// <param name="hashtable"></param>
+        /// <param name="hashtable">A hashtable to read options from.</param>
+        /// <returns>An options object.</returns>
         public static implicit operator PSRuleOption(Hashtable hashtable)
         {
             return FromHashtable(hashtable);
@@ -386,16 +414,19 @@ namespace PSRule.Configuration
         /// Convert from string to options by loading the yaml file from disk. This enables -Option '.\ps-rule.yaml' from PowerShell.
         /// </summary>
         /// <param name="path">A file or directory to read options from.</param>
+        /// <returns>An options object.</returns>
         public static implicit operator PSRuleOption(string path)
         {
             return FromFile(path);
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is PSRuleOption option && Equals(option);
         }
 
+        /// <inheritdoc/>
         public bool Equals(PSRuleOption other)
         {
             return other != null &&
@@ -413,6 +444,7 @@ namespace PSRule.Configuration
                 Rule == other.Rule;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             unchecked // Overflow is fine
@@ -463,8 +495,9 @@ namespace PSRule.Configuration
         /// <summary>
         /// Get a full path instead of a relative path that may be passed from PowerShell.
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
+        /// <param name="path">A full or relative path.</param>
+        /// <param name="normalize">When set to <c>true</c> the returned path uses forward slashes instead of backslashes.</param>
+        /// <returns>A absolute path.</returns>
         internal static string GetRootedPath(string path, bool normalize = false, string basePath = null)
         {
             basePath ??= GetWorkingPath();
@@ -473,8 +506,14 @@ namespace PSRule.Configuration
         }
 
         /// <summary>
-        /// Get a full path instead of a relative path that may be passed from PowerShell.
+        /// Get a full base path instead of a relative path that may be passed from PowerShell.
         /// </summary>
+        /// <param name="path">A full or relative path.</param>
+        /// <param name="normalize">When set to <c>true</c> the returned path uses forward slashes instead of backslashes.</param>
+        /// <returns>A absolute base path.</returns>
+        /// <remarks>
+        /// A base path always includes a trailing <c>/</c>.
+        /// </remarks>
         internal static string GetRootedBasePath(string path, bool normalize = false)
         {
             var rootedPath = GetRootedPath(path);

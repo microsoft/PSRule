@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -13,15 +13,27 @@ namespace PSRule.Pipeline
     /// </summary>
     public abstract class PipelineException : Exception
     {
+        /// <summary>
+        /// Initialize a new instance of a PSRule exception.
+        /// </summary>
         protected PipelineException()
             : base() { }
 
+        /// <summary>
+        /// Initialize a new instance of a PSRule exception.
+        /// </summary>
         protected PipelineException(string message)
             : base(message) { }
 
+        /// <summary>
+        /// Initialize a new instance of a PSRule exception.
+        /// </summary>
         protected PipelineException(string message, Exception innerException)
             : base(message, innerException) { }
 
+        /// <summary>
+        /// Initialize a new instance of a PSRule exception.
+        /// </summary>
         protected PipelineException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }
@@ -31,15 +43,27 @@ namespace PSRule.Pipeline
     /// </summary>
     public abstract class RuntimeException : PipelineException
     {
+        /// <summary>
+        /// Initialize a new instance of a PSRule exception that is thrown during runtime.
+        /// </summary>
         protected RuntimeException()
             : base() { }
 
+        /// <summary>
+        /// Initialize a new instance of a PSRule exception that is thrown during runtime.
+        /// </summary>
         protected RuntimeException(string message)
             : base(message) { }
 
+        /// <summary>
+        /// Initialize a new instance of a PSRule exception that is thrown during runtime.
+        /// </summary>
         protected RuntimeException(string message, Exception innerException)
             : base(message, innerException) { }
 
+        /// <summary>
+        /// Initialize a new instance of a PSRule exception that is thrown during runtime.
+        /// </summary>
         protected RuntimeException(Exception innerException, InvocationInfo invocationInfo, string ruleId)
             : base(innerException?.Message, innerException)
         {
@@ -47,11 +71,20 @@ namespace PSRule.Pipeline
             RuleId = ruleId;
         }
 
+        /// <summary>
+        /// Initialize a new instance of a PSRule exception that is thrown during runtime.
+        /// </summary>
         protected RuntimeException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 
+        /// <summary>
+        /// Additional information about the invocation when executing PowerShell language elements.
+        /// </summary>
         public InvocationInfo CommandInvocation { get; }
 
+        /// <summary>
+        /// A unique identifier for the rule that was executing if currently within the context of a rule.
+        /// </summary>
         public string RuleId { get; }
     }
 
@@ -85,6 +118,7 @@ namespace PSRule.Pipeline
         private PipelineBuilderException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 
+        /// <inheritdoc/>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -108,6 +142,9 @@ namespace PSRule.Pipeline
         {
         }
 
+        /// <summary>
+        /// Creates a serialization exception.
+        /// </summary>
         internal PipelineSerializationException(string message, string path, Exception innerException)
             : this(message, innerException)
         {
@@ -131,6 +168,9 @@ namespace PSRule.Pipeline
         {
         }
 
+        /// <summary>
+        /// Creates a serialization exception.
+        /// </summary>
         private PipelineSerializationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
@@ -140,6 +180,7 @@ namespace PSRule.Pipeline
         /// </summary>
         public string Path { get; }
 
+        /// <inheritdoc/>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -157,44 +198,59 @@ namespace PSRule.Pipeline
     public sealed class ParseException : PipelineException
     {
         /// <summary>
-        /// Creates a rule exception.
+        /// Creates a parser exception.
         /// </summary>
         public ParseException()
         {
         }
 
+        /// <summary>
+        /// Creates a parser exception.
+        /// </summary>
         public ParseException(string message)
             : base(message) { }
 
+        /// <summary>
+        /// Creates a parser exception.
+        /// </summary>
         public ParseException(string message, Exception innerException)
             : base(message, innerException) { }
 
         /// <summary>
-        /// Creates a rule exception.
+        /// Creates a parser exception.
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
+        /// <param name="errorId">A unique identifier related to the exception.</param>
         internal ParseException(string message, string errorId) : base(message)
         {
             ErrorId = errorId;
         }
 
         /// <summary>
-        /// Creates a rule exception.
+        /// Creates a parser exception.
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
+        /// <param name="errorId">A unique identifier related to the exception.</param>
         /// <param name="innerException">A nested exception that caused the issue.</param>
         internal ParseException(string message, string errorId, Exception innerException) : base(message, innerException)
         {
             ErrorId = errorId;
         }
 
+        /// <summary>
+        /// Creates a parser exception.
+        /// </summary>
         private ParseException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             ErrorId = info.GetString("ErrorId");
         }
 
+        /// <summary>
+        /// An associated identifier related to why the exception was thrown.
+        /// </summary>
         public string ErrorId { get; }
 
+        /// <inheritdoc/>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -234,17 +290,27 @@ namespace PSRule.Pipeline
         public RuleException(string message, Exception innerException)
             : base(message, innerException) { }
 
+        /// <summary>
+        /// Creates a rule runtime exception.
+        /// </summary>
         internal RuleException(Exception innerException, InvocationInfo invocationInfo, string ruleId, ErrorRecord errorRecord)
             : base(innerException, invocationInfo, ruleId)
         {
             ErrorRecord = errorRecord;
         }
 
+        /// <summary>
+        /// Creates a rule runtime exception.
+        /// </summary>
         private RuleException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 
+        /// <summary>
+        /// An associated error record related to the exception.
+        /// </summary>
         public ErrorRecord ErrorRecord { get; }
 
+        /// <inheritdoc/>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -277,10 +343,16 @@ namespace PSRule.Pipeline
         {
         }
 
+        /// <summary>
+        /// Creates a pipeline configuration exception.
+        /// </summary>
         public PipelineConfigurationException(string message) : base(message)
         {
         }
 
+        /// <summary>
+        /// Creates a pipeline configuration exception.
+        /// </summary>
         public PipelineConfigurationException(string message, Exception innerException) : base(message, innerException)
         {
         }
@@ -295,10 +367,12 @@ namespace PSRule.Pipeline
         {
         }
 
+        /// <inheritdoc/>
         private PipelineConfigurationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 
+        /// <inheritdoc/>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -309,32 +383,33 @@ namespace PSRule.Pipeline
         }
     }
 
+    /// <summary>
+    /// An exception thrown by PSRule when the calling PowerShell environment should fail because one or more rules failed or errored.
+    /// </summary>
     [Serializable]
     public sealed class FailPipelineException : PipelineException
     {
-        /// <summary>
-        /// Creates a rule runtime exception.
-        /// </summary>
+        /// <inheritdoc/>
         public FailPipelineException()
         {
         }
 
-        /// <summary>
-        /// Creates a rule runtime exception.
-        /// </summary>
-        /// <param name="message">The detail of the exception.</param>
+        /// <inheritdoc/>
         public FailPipelineException(string message) : base(message)
         {
         }
 
+        /// <inheritdoc/>
         public FailPipelineException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
+        /// <inheritdoc/>
         private FailPipelineException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 
+        /// <inheritdoc/>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -345,32 +420,34 @@ namespace PSRule.Pipeline
         }
     }
 
+    /// <summary>
+    /// An exception thrown by PSRule when a runtime property or method is used outside of the intended scope.
+    /// Avoid using runtime variables outside of a PSRule pipeline.
+    /// </summary>
     [Serializable]
     public sealed class RuntimeScopeException : PipelineException
     {
-        /// <summary>
-        /// Creates a rule runtime exception.
-        /// </summary>
+        /// <inheritdoc/>
         public RuntimeScopeException()
         {
         }
 
-        /// <summary>
-        /// Creates a rule runtime exception.
-        /// </summary>
-        /// <param name="message">The detail of the exception.</param>
+        /// <inheritdoc/>
         public RuntimeScopeException(string message) : base(message)
         {
         }
 
+        /// <inheritdoc/>
         public RuntimeScopeException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
+        /// <inheritdoc/>
         private RuntimeScopeException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 
+        /// <inheritdoc/>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {

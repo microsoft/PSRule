@@ -28,7 +28,7 @@ namespace PSRule.Definitions
     /// A unique identifier for a resource.
     /// </summary>
     [DebuggerDisplay("{Value}")]
-    public struct ResourceId
+    public struct ResourceId : IEquatable<ResourceId>, IEquatable<string>
     {
         private const char SCOPE_SEPARATOR = '\\';
 
@@ -54,22 +54,29 @@ namespace PSRule.Definitions
 
         internal ResourceIdKind Kind { get; }
 
+        /// <summary>
+        /// Converts the resource identifier to a string.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Value;
         }
 
+        /// <inheritdoc/>
         [DebuggerStepThrough]
         public override int GetHashCode()
         {
             return _HashCode;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is ResourceId id && Equals(id);
         }
 
+        /// <inheritdoc/>
         public bool Equals(ResourceId id)
         {
             return _HashCode == id._HashCode &&
@@ -77,6 +84,7 @@ namespace PSRule.Definitions
                 EqualOrNull(Name, id.Name);
         }
 
+        /// <inheritdoc/>
         public bool Equals(string id)
         {
             return TryParse(id, out var scope, out var name) &&

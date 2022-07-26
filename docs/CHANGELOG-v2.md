@@ -15,6 +15,9 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v2.3.0-B0074:
 
+- Engineering:
+  - Added comment documentation to .NET classes and interfaces by @BernieWhite.
+    [#1186](https://github.com/microsoft/PSRule/issues/1186)
 - Bug fixes:
   - Fixed handling for JSON objects in rules by @BernieWhite.
     [#1187](https://github.com/microsoft/PSRule/issues/1187)

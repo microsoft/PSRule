@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -21,12 +21,19 @@ namespace PSRule.Configuration
             Module = DEFAULT_MODULE,
         };
 
+        /// <summary>
+        /// Create an empty include option.
+        /// </summary>
         public IncludeOption()
         {
             Path = null;
             Module = null;
         }
 
+        /// <summary>
+        /// Create an include option by copying an existing instance.
+        /// </summary>
+        /// <param name="option">The option instance to copy.</param>
         public IncludeOption(IncludeOption option)
         {
             if (option == null)
@@ -36,11 +43,13 @@ namespace PSRule.Configuration
             Module = option.Module;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             return obj is IncludeOption option && Equals(option);
         }
 
+        /// <inheritdoc/>
         public bool Equals(IncludeOption other)
         {
             return other != null &&
@@ -48,6 +57,7 @@ namespace PSRule.Configuration
                 Module == other.Module;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             unchecked // Overflow is fine
