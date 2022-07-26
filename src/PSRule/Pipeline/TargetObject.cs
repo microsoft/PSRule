@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Management.Automation;
+using Newtonsoft.Json.Linq;
 using PSRule.Data;
 using PSRule.Definitions.Selectors;
 
@@ -35,6 +36,9 @@ namespace PSRule.Pipeline
         }
     }
 
+    /// <summary>
+    /// An object processed by PSRule.
+    /// </summary>
     public sealed class TargetObject
     {
         private readonly Dictionary<Type, TargetObjectAnnotation> _Annotations;
@@ -46,12 +50,12 @@ namespace PSRule.Pipeline
 
         internal TargetObject(PSObject o, TargetSourceCollection source)
         {
-            Value = o;
-            Value.ConvertTargetInfoProperty();
-            Value.ConvertTargetInfoType();
-            Source = ReadSourceInfo(source);
-            Issue = ReadIssueInfo(null);
-            Path = ReadPath();
+            o.ConvertTargetInfoProperty();
+            o.ConvertTargetInfoType();
+            Source = ReadSourceInfo(o, source);
+            Issue = ReadIssueInfo(o, null);
+            Path = ReadPath(o);
+            Value = Convert(o);
             _Annotations = new Dictionary<Type, TargetObjectAnnotation>();
         }
 
@@ -84,26 +88,31 @@ namespace PSRule.Pipeline
             return (T)value;
         }
 
-        private string ReadPath()
+        private static string ReadPath(PSObject o)
         {
-            return Value.GetTargetPath();
+            return o.GetTargetPath();
         }
 
-        private TargetSourceCollection ReadSourceInfo(TargetSourceCollection source)
+        private static TargetSourceCollection ReadSourceInfo(PSObject o, TargetSourceCollection source)
         {
             var result = source ?? new TargetSourceCollection();
-            if (ExpressionHelpers.GetBaseObject(Value) is ITargetInfo targetInfo)
+            if (ExpressionHelpers.GetBaseObject(o) is ITargetInfo targetInfo)
                 result.Add(targetInfo.Source);
 
-            result.AddRange(Value.GetSourceInfo());
+            result.AddRange(o.GetSourceInfo());
             return result;
         }
 
-        private TargetIssueCollection ReadIssueInfo(TargetIssueCollection issue)
+        private static TargetIssueCollection ReadIssueInfo(PSObject o, TargetIssueCollection issue)
         {
             var result = issue ?? new TargetIssueCollection();
-            result.AddRange(Value.GetIssueInfo());
+            result.AddRange(o.GetIssueInfo());
             return result;
+        }
+
+        private static PSObject Convert(PSObject o)
+        {
+            return o.BaseObject is JToken token ? JsonHelper.ToPSObject(token) : o;
         }
     }
 }

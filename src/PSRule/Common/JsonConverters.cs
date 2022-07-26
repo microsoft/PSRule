@@ -32,7 +32,7 @@ namespace PSRule
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            if (!(value is PSObject obj))
+            if (value is not PSObject obj)
                 throw new ArgumentException(message: PSRuleResources.SerializeNullPSObject, paramName: nameof(value));
 
             if (WriteFileSystemInfo(writer, value, serializer) || WriteBaseObject(writer, obj, serializer))
@@ -91,18 +91,16 @@ namespace PSRule
                     case JsonToken.StartArray:
                         var items = new List<PSObject>();
                         reader.Read();
-                        var item = new PSObject();
-
                         while (reader.TokenType != JsonToken.EndArray)
                         {
                             if (SkipComments(reader))
                                 continue;
 
+                            var item = new PSObject();
                             ReadObject(value: item, reader: reader);
                             items.Add(item);
                             reader.Read();
                         }
-
                         value.Properties.Add(new PSNoteProperty(name: name, value: items.ToArray()));
                         break;
 

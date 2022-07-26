@@ -50,7 +50,7 @@ namespace PSRule
 
             var m0 = binder.Using(".");
             Assert.Equal("Name1", m0.TargetName);
-            Assert.Equal("Newtonsoft.Json.Linq.JObject", m0.TargetType);
+            Assert.Equal("System.Management.Automation.PSCustomObject", m0.TargetType);
         }
 
         #region Helper methods

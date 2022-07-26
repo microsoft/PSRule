@@ -13,6 +13,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.3.0-B0074:
+
+- Bug fixes:
+  - Fixed handling for JSON objects in rules by @BernieWhite.
+    [#1187](https://github.com/microsoft/PSRule/issues/1187)
+
 ## v2.3.0-B0074 (pre-release)
 
 What's changed since pre-release v2.3.0-B0051:
