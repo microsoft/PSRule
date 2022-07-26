@@ -20,7 +20,7 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -30,7 +30,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
       - name: Setup Python
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
           architecture: 'x64'
@@ -42,4 +42,4 @@ jobs:
           python3 -m pip install -r requirements-docs.txt
 
       - name: Deploy site
-        run: mike deploy --push --update-aliases v1 stable
+        run: mike deploy --push --update-aliases v1 --title 'v1'
