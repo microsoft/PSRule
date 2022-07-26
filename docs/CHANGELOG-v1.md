@@ -10,10 +10,10 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 - Setting the default module baseline requires a module configuration from PSRule v2. [#809](https://github.com/microsoft/PSRule/issues/809)
 - Resource names have naming restrictions introduced from PSRule v2. [#1012](https://github.com/microsoft/PSRule/issues/1012)
 
-!!! Info
-    The next release of PSRule is available.
+!!! Attention
+    PSRule v1 is a prior release.
     For more information see [v2][2] release notes.
-    Please check out our [upgrade notes][1] to get prepared for the next release.
+    Please check out our [upgrade notes][1] to get prepared for upgrading to the latest version.
 
   [2]: https://microsoft.github.io/PSRule/latest/CHANGELOG-v2/
 
