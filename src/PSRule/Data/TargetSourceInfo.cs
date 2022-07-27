@@ -10,7 +10,10 @@ using PSRule.Resources;
 
 namespace PSRule.Data
 {
-    public sealed class TargetSourceInfo
+    /// <summary>
+    /// An object source location reported by a downstream tool.
+    /// </summary>
+    public sealed class TargetSourceInfo : IEquatable<TargetSourceInfo>
     {
         private const string PROPERTY_FILE = "file";
         private const string PROPERTY_LINE = "line";
@@ -20,6 +23,9 @@ namespace PSRule.Data
         private const string COLON = ":";
         private const string COLONSPACE = ": ";
 
+        /// <summary>
+        /// Creates an empty source information structure.
+        /// </summary>
         public TargetSourceInfo()
         {
             // Do nothing
@@ -43,18 +49,31 @@ namespace PSRule.Data
             Type = PSRuleResources.FileSourceType;
         }
 
+        /// <summary>
+        /// The file path of the source file.
+        /// </summary>
         [JsonProperty(PropertyName = PROPERTY_FILE)]
         public string File { get; internal set; }
 
+        /// <summary>
+        /// The first line of the object.
+        /// </summary>
         [JsonProperty(PropertyName = PROPERTY_LINE)]
         public int? Line { get; internal set; }
 
+        /// <summary>
+        /// The first position of the object.
+        /// </summary>
         [JsonProperty(PropertyName = PROPERTY_POSITION)]
         public int? Position { get; internal set; }
 
+        /// <summary>
+        /// The type of source.
+        /// </summary>
         [JsonProperty(PropertyName = PROPERTY_TYPE)]
         public string Type { get; internal set; }
 
+        /// <inheritdoc/>
         public bool Equals(TargetSourceInfo other)
         {
             return other != null &&
@@ -84,11 +103,18 @@ namespace PSRule.Data
             }
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return ToString(null, false);
         }
 
+        /// <summary>
+        /// Converts the souce information into a formatted string for display.
+        /// </summary>
+        /// <param name="defaultType">The default type to use if the type was not specified.</param>
+        /// <param name="useRelativePath">Determine if a relative path is returned.</param>
+        /// <returns>A formatted source string.</returns>
         public string ToString(string defaultType, bool useRelativePath)
         {
             var type = Type ?? defaultType;
@@ -103,11 +129,17 @@ namespace PSRule.Data
             return useRelativePath ? ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), File) : File;
         }
 
+        /// <summary>
+        /// Create source information from a structured object.
+        /// </summary>
         public static TargetSourceInfo Create(object o)
         {
             return o is PSObject pso ? Create(pso) : null;
         }
 
+        /// <summary>
+        /// Create source information from a structured object.
+        /// </summary>
         public static TargetSourceInfo Create(PSObject o)
         {
             var result = new TargetSourceInfo();

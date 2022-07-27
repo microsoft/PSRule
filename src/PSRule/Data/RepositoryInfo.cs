@@ -3,6 +3,9 @@
 
 namespace PSRule.Data
 {
+    /// <summary>
+    /// Repository target information.
+    /// </summary>
     public sealed class RepositoryInfo : ITargetInfo
     {
         internal RepositoryInfo(string basePath, string headRef)
