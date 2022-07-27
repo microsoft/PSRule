@@ -21,9 +21,142 @@ using PSRule.Runtime;
 namespace PSRule
 {
     /// <summary>
+    /// A base <c>PSObject</c> converter.
+    /// </summary>
+    internal abstract class PSObjectBaseConverter : JsonConverter
+    {
+        /// <summary>
+        /// Skip JSON comments.
+        /// </summary>
+        protected static bool SkipComments(JsonReader reader)
+        {
+            var hasComments = false;
+            while (reader.TokenType == JsonToken.Comment && reader.Read())
+                hasComments = true;
+
+            return hasComments;
+        }
+
+        protected static void ReadObject(PSObject value, JsonReader reader, bool bindTargetInfo, TargetSourceInfo sourceInfo)
+        {
+            SkipComments(reader);
+            var path = reader.Path;
+            if (reader.TokenType != JsonToken.StartObject || !reader.Read())
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType));
+
+            string name = null;
+            var lineNumber = 0;
+            var linePosition = 0;
+
+            if (bindTargetInfo && reader is IJsonLineInfo lineInfo && lineInfo.HasLineInfo())
+            {
+                lineNumber = lineInfo.LineNumber;
+                linePosition = lineInfo.LinePosition;
+            }
+
+            // Read each token
+            while (reader.TokenType != JsonToken.EndObject)
+            {
+                switch (reader.TokenType)
+                {
+                    case JsonToken.PropertyName:
+                        name = reader.Value.ToString();
+                        if (string.IsNullOrEmpty(name))
+                        {
+                            reader.Skip();
+                        }
+                        else if (name == PSRuleTargetInfo.PropertyName)
+                        {
+                            var targetInfo = ReadInfo(reader);
+                            if (targetInfo != null)
+                                value.SetTargetInfo(targetInfo);
+                        }
+                        break;
+
+                    case JsonToken.StartObject:
+                        var item = new PSObject();
+                        ReadObject(item, reader, bindTargetInfo: false, sourceInfo: null);
+                        value.Properties.Add(new PSNoteProperty(name, value: item));
+                        break;
+
+                    case JsonToken.StartArray:
+                        var items = ReadArray(reader: reader);
+                        value.Properties.Add(new PSNoteProperty(name, value: items));
+                        break;
+
+                    case JsonToken.Comment:
+                        break;
+
+                    default:
+                        value.Properties.Add(new PSNoteProperty(name, value: reader.Value));
+                        break;
+                }
+                if (!reader.Read() || reader.TokenType == JsonToken.None)
+                    throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType));
+            }
+            if (bindTargetInfo)
+            {
+                value.UseTargetInfo(out var info);
+                info.SetSource(sourceInfo?.File, lineNumber, linePosition);
+                if (string.IsNullOrEmpty(info.Path))
+                    info.Path = path;
+            }
+        }
+
+        protected static PSRuleTargetInfo ReadInfo(JsonReader reader)
+        {
+            if (!reader.Read() || reader.TokenType == JsonToken.None || reader.TokenType != JsonToken.StartObject)
+                return null;
+
+            var s = JsonSerializer.Create();
+            return s.Deserialize<PSRuleTargetInfo>(reader);
+        }
+
+        protected static PSObject[] ReadArray(JsonReader reader)
+        {
+            SkipComments(reader);
+            if (reader.TokenType != JsonToken.StartArray || !reader.Read())
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType));
+
+            var result = new List<PSObject>();
+
+            // Read until the end of the array
+            while (reader.TokenType != JsonToken.EndArray)
+            {
+                switch (reader.TokenType)
+                {
+                    case JsonToken.StartObject:
+                        var item = new PSObject();
+                        ReadObject(item, reader, bindTargetInfo: false, sourceInfo: null);
+                        result.Add(item);
+                        break;
+
+                    case JsonToken.StartArray:
+                        result.Add(PSObject.AsPSObject(ReadArray(reader)));
+                        break;
+
+                    case JsonToken.Null:
+                        result.Add(null);
+                        break;
+
+                    case JsonToken.Comment:
+                        break;
+
+                    default:
+                        result.Add(PSObject.AsPSObject(reader.Value));
+                        break;
+                }
+                if (!reader.Read() || reader.TokenType == JsonToken.None)
+                    throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType));
+            }
+            return result.ToArray();
+        }
+    }
+
+    /// <summary>
     /// A custom serializer to correctly convert PSObject properties to JSON instead of CLIXML.
     /// </summary>
-    internal sealed class PSObjectJsonConverter : JsonConverter
+    internal sealed class PSObjectJsonConverter : PSObjectBaseConverter
     {
         public override bool CanConvert(Type objectType)
         {
@@ -57,74 +190,8 @@ namespace PSRule
             var result = existingValue as PSObject ?? new PSObject();
 
             // Read tokens
-            ReadObject(value: result, reader: reader);
+            ReadObject(result, reader, bindTargetInfo: true, sourceInfo: null);
             return result;
-        }
-
-        private void ReadObject(PSObject value, JsonReader reader)
-        {
-            SkipComments(reader);
-            if (reader.TokenType != JsonToken.StartObject)
-                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
-
-            reader.Read();
-            string name = null;
-
-            // Read each token
-            while (reader.TokenType != JsonToken.EndObject)
-            {
-                switch (reader.TokenType)
-                {
-                    case JsonToken.PropertyName:
-                        name = reader.Value.ToString();
-                        if (string.IsNullOrEmpty(name))
-                            reader.Skip();
-
-                        break;
-
-                    case JsonToken.StartObject:
-                        var child = new PSObject();
-                        ReadObject(value: child, reader: reader);
-                        value.Properties.Add(new PSNoteProperty(name, value: child));
-                        break;
-
-                    case JsonToken.StartArray:
-                        var items = new List<PSObject>();
-                        reader.Read();
-                        while (reader.TokenType != JsonToken.EndArray)
-                        {
-                            if (SkipComments(reader))
-                                continue;
-
-                            var item = new PSObject();
-                            ReadObject(value: item, reader: reader);
-                            items.Add(item);
-                            reader.Read();
-                        }
-                        value.Properties.Add(new PSNoteProperty(name: name, value: items.ToArray()));
-                        break;
-
-                    case JsonToken.Comment:
-                        break;
-
-                    default:
-                        value.Properties.Add(new PSNoteProperty(name: name, value: reader.Value));
-                        break;
-                }
-                reader.Read();
-            }
-        }
-
-        /// <summary>
-        /// Skip JSON comments.
-        /// </summary>
-        private static bool SkipComments(JsonReader reader)
-        {
-            var hasComments = false;
-            while (reader.TokenType == JsonToken.Comment && reader.Read())
-                hasComments = true;
-
-            return hasComments;
         }
 
         /// <summary>
@@ -132,7 +199,7 @@ namespace PSRule
         /// </summary>
         private static bool WriteFileSystemInfo(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            if (!(value is FileSystemInfo fileSystemInfo))
+            if (value is not FileSystemInfo fileSystemInfo)
                 return false;
 
             serializer.Serialize(writer, fileSystemInfo.FullName);
@@ -155,7 +222,7 @@ namespace PSRule
     /// <summary>
     /// A custom serializer to convert PSObjects that may or maynot be in a JSON array to an a PSObject array.
     /// </summary>
-    internal sealed class PSObjectArrayJsonConverter : JsonConverter
+    internal sealed class PSObjectArrayJsonConverter : PSObjectBaseConverter
     {
         private readonly TargetSourceInfo _SourceInfo;
 
@@ -180,7 +247,7 @@ namespace PSRule
         {
             SkipComments(reader);
             if (reader.TokenType != JsonToken.StartObject && reader.TokenType != JsonToken.StartArray)
-                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType));
 
             var result = new List<PSObject>();
             var isArray = reader.TokenType == JsonToken.StartArray;
@@ -193,137 +260,12 @@ namespace PSRule
                 if (SkipComments(reader))
                     continue;
 
-                var value = ReadObject(reader, bindTargetInfo: true, _SourceInfo);
+                var value = new PSObject();
+                ReadObject(value, reader, bindTargetInfo: true, sourceInfo: _SourceInfo);
                 result.Add(value);
 
                 // Consume the EndObject token
                 reader.Read();
-            }
-            return result.ToArray();
-        }
-
-        /// <summary>
-        /// Skip JSON comments.
-        /// </summary>
-        private static bool SkipComments(JsonReader reader)
-        {
-            var hasComments = false;
-            while (reader.TokenType == JsonToken.Comment && reader.Read())
-                hasComments = true;
-
-            return hasComments;
-        }
-
-        private static PSObject ReadObject(JsonReader reader, bool bindTargetInfo, TargetSourceInfo sourceInfo)
-        {
-            SkipComments(reader);
-            var path = reader.Path;
-            if (reader.TokenType != JsonToken.StartObject || !reader.Read())
-                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
-
-            var result = new PSObject();
-            string name = null;
-            var lineNumber = 0;
-            var linePosition = 0;
-
-            if (bindTargetInfo && reader is IJsonLineInfo lineInfo && lineInfo.HasLineInfo())
-            {
-                lineNumber = lineInfo.LineNumber;
-                linePosition = lineInfo.LinePosition;
-            }
-
-            // Read each token
-            while (reader.TokenType != JsonToken.EndObject)
-            {
-                switch (reader.TokenType)
-                {
-                    case JsonToken.PropertyName:
-                        name = reader.Value.ToString();
-                        if (string.IsNullOrEmpty(name))
-                        {
-                            reader.Skip();
-                        }
-                        else if (name == PSRuleTargetInfo.PropertyName)
-                        {
-                            var targetInfo = ReadInfo(reader);
-                            if (targetInfo != null)
-                                result.SetTargetInfo(targetInfo);
-                        }
-                        break;
-
-                    case JsonToken.StartObject:
-                        var value = ReadObject(reader, bindTargetInfo: false, sourceInfo: null);
-                        result.Properties.Add(new PSNoteProperty(name, value: value));
-                        break;
-
-                    case JsonToken.StartArray:
-                        var items = ReadArray(reader: reader);
-                        result.Properties.Add(new PSNoteProperty(name, value: items));
-                        break;
-
-                    case JsonToken.Comment:
-                        break;
-
-                    default:
-                        result.Properties.Add(new PSNoteProperty(name, value: reader.Value));
-                        break;
-                }
-                if (!reader.Read() || reader.TokenType == JsonToken.None)
-                    throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
-            }
-            if (bindTargetInfo)
-            {
-                result.UseTargetInfo(out var info);
-                info.SetSource(sourceInfo?.File, lineNumber, linePosition);
-                if (string.IsNullOrEmpty(info.Path))
-                    info.Path = path;
-            }
-            return result;
-        }
-
-        private static PSRuleTargetInfo ReadInfo(JsonReader reader)
-        {
-            if (!reader.Read() || reader.TokenType == JsonToken.None || reader.TokenType != JsonToken.StartObject)
-                return null;
-
-            var s = JsonSerializer.Create();
-            return s.Deserialize<PSRuleTargetInfo>(reader);
-        }
-
-        private static PSObject[] ReadArray(JsonReader reader)
-        {
-            SkipComments(reader);
-            if (reader.TokenType != JsonToken.StartArray || !reader.Read())
-                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
-
-            var result = new List<PSObject>();
-
-            // Read until the end of the array
-            while (reader.TokenType != JsonToken.EndArray)
-            {
-                switch (reader.TokenType)
-                {
-                    case JsonToken.StartObject:
-                        result.Add(ReadObject(reader, bindTargetInfo: false, sourceInfo: null));
-                        break;
-
-                    case JsonToken.StartArray:
-                        result.Add(PSObject.AsPSObject(ReadArray(reader)));
-                        break;
-
-                    case JsonToken.Null:
-                        result.Add(null);
-                        break;
-
-                    case JsonToken.Comment:
-                        break;
-
-                    default:
-                        result.Add(PSObject.AsPSObject(reader.Value));
-                        break;
-                }
-                if (!reader.Read() || reader.TokenType == JsonToken.None)
-                    throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
             }
             return result.ToArray();
         }

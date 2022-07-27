@@ -348,4 +348,7 @@
   <data name="ObjectPathNotFound" xml:space="preserve">
     <value>Object path not found.</value>
   </data>
+  <data name="ReadJsonFailedExpectedToken" xml:space="preserve">
+    <value>Read JSON failed because the token ({0}) was not expected.</value>
+  </data>
 </root>

@@ -5,6 +5,7 @@ using System;
 using System.Management.Automation;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using System.Threading;
 
 namespace PSRule.Pipeline
 {
@@ -163,17 +164,23 @@ namespace PSRule.Pipeline
         /// Creates a serialization exception.
         /// </summary>
         /// <param name="message">The detail of the exception.</param>
-        /// <param name="innerException">A nested exception that caused the issue.</param>
-        public PipelineSerializationException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        /// <param name="args">Additional argument to add to the format string.</param>
+        internal PipelineSerializationException(string message, params object[] args)
+            : base(string.Format(Thread.CurrentThread.CurrentCulture, message, args)) { }
 
         /// <summary>
         /// Creates a serialization exception.
         /// </summary>
-        private PipelineSerializationException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        /// <param name="message">The detail of the exception.</param>
+        /// <param name="innerException">A nested exception that caused the issue.</param>
+        public PipelineSerializationException(string message, Exception innerException)
+            : base(message, innerException) { }
+
+        /// <summary>
+        /// Creates a serialization exception.
+        /// </summary>
+        private PipelineSerializationException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
 
         /// <summary>
         /// The path to the file.
