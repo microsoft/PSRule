@@ -13,6 +13,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.3.0-B0100:
+
+- Bug fixes:
+  - Fixes JSON parsing of string array for single objects by @BernieWhite.
+    [#1193](https://github.com/microsoft/PSRule/issues/1193)
+
 ## v2.3.0-B0100 (pre-release)
 
 What's changed since pre-release v2.3.0-B0074:

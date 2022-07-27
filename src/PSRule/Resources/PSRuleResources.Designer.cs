@@ -457,6 +457,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Read JSON failed because the token ({0}) was not expected..
+        /// </summary>
+        internal static string ReadJsonFailedExpectedToken {
+            get {
+                return ResourceManager.GetString("ReadJsonFailedExpectedToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The module version &apos;{1}&apos; for &apos;{0}&apos; does not match the required version &apos;{2}&apos;. To continue, first update the module to match the version requirement..
         /// </summary>
         internal static string RequiredVersionMismatch {
