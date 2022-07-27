@@ -10,37 +10,67 @@ using YamlDotNet.Serialization;
 
 namespace PSRule.Rules
 {
+    /// <summary>
+    /// A rule help information structure.
+    /// </summary>
     public interface IRuleHelpInfoV2 : IResourceHelpInfo
     {
+        /// <summary>
+        /// The rule recommendation.
+        /// </summary>
         InfoString Recommendation { get; }
 
+        /// <summary>
+        /// Additional annotations, which are string key/ value pairs.
+        /// </summary>
         Hashtable Annotations { get; }
 
+        /// <summary>
+        /// The name of the module where the rule was loaded from.
+        /// </summary>
         string ModuleName { get; }
 
+        /// <summary>
+        /// Additional online links to reference information for the rule.
+        /// </summary>
         Link[] Links { get; }
     }
 
-    internal static class RuleHelpInfoExtensions
+    /// <summary>
+    /// Extension methods for rule help information.
+    /// </summary>
+    public static class RuleHelpInfoExtensions
     {
         private const string ONLINE_HELP_LINK_ANNOTATION = "online version";
 
         /// <summary>
         /// Get the URI for the online version of the documentation.
         /// </summary>
-        /// <returns>A URI when a valid link is set. Otherwise null is returned.</returns>
+        /// <returns>Returns the URI when a valid link is set, otherwise null is returned.</returns>
         public static Uri GetOnlineHelpUri(this IRuleHelpInfoV2 info)
         {
-            if (info.Annotations == null || !info.Annotations.ContainsKey(ONLINE_HELP_LINK_ANNOTATION))
-                return null;
+            var link = GetOnlineHelpUrl(info);
+            return link == null ||
+                !Uri.TryCreate(link, UriKind.Absolute, out var result) ?
+                null : result;
+        }
 
-            if (Uri.TryCreate(info.Annotations[ONLINE_HELP_LINK_ANNOTATION].ToString(), UriKind.Absolute, out var result))
-                return result;
-
-            return null;
+        /// <summary>
+        /// Get the URL for the online version of the documentation.
+        /// </summary>
+        /// <returns>Returns the URL when set, otherwise null is returned.</returns>
+        public static string GetOnlineHelpUrl(this IRuleHelpInfoV2 info)
+        {
+            return info == null ||
+                info.Annotations == null ||
+                !info.Annotations.ContainsKey(ONLINE_HELP_LINK_ANNOTATION) ?
+                null : info.Annotations[ONLINE_HELP_LINK_ANNOTATION].ToString();
         }
     }
 
+    /// <summary>
+    /// An URL link to reference information.
+    /// </summary>
     public sealed class Link
     {
         internal Link(string name, string uri)
@@ -49,8 +79,14 @@ namespace PSRule.Rules
             Uri = uri;
         }
 
+        /// <summary>
+        /// The display name of the link.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// The URL to the information, or the target link.
+        /// </summary>
         public string Uri { get; }
     }
 
@@ -122,7 +158,7 @@ namespace PSRule.Rules
         /// Reference links for the rule.
         /// </summary>
         [JsonIgnore, YamlIgnore]
-        public Rules.Link[] Links { get; internal set; }
+        public Link[] Links { get; internal set; }
 
         /// <summary>
         /// Metadata annotations for the rule.

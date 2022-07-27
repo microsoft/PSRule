@@ -15,6 +15,9 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v2.3.0-B0100:
 
+- Engineering:
+  - Expose online link extension method by @BernieWhite.
+    [#1195](https://github.com/microsoft/PSRule/issues/1195)
 - Bug fixes:
   - Fixes JSON parsing of string array for single objects by @BernieWhite.
     [#1193](https://github.com/microsoft/PSRule/issues/1193)

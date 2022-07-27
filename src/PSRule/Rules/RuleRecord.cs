@@ -168,6 +168,9 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "time")]
         public long Time { get; internal set; }
 
+        /// <summary>
+        /// Additional information if the rule errored. If the rule passed or failed this value is null.
+        /// </summary>
         [DefaultValue(null)]
         [JsonProperty(PropertyName = "error")]
         public ErrorInfo Error { get; internal set; }
@@ -187,16 +190,28 @@ namespace PSRule.Rules
         [YamlMember()]
         public IResultDetailV2 Detail => _Detail;
 
+        /// <summary>
+        /// Determine if the rule is successful or skipped.
+        /// </summary>
         public bool IsSuccess()
         {
             return Outcome == RuleOutcome.Pass || Outcome == RuleOutcome.None;
         }
 
+        /// <summary>
+        /// Determine if the rule was executed and resulted in an outcome.
+        /// </summary>
         public bool IsProcessed()
         {
             return Outcome == RuleOutcome.Pass || Outcome == RuleOutcome.Fail || Outcome == RuleOutcome.Error;
         }
 
+        /// <summary>
+        /// Gets a string for output views in PowerShell.
+        /// </summary>
+        /// <remarks>
+        /// This method is called by PowerShell.
+        /// </remarks>
         public string GetReasonViewString()
         {
             return Reason == null || Reason.Length == 0 ? string.Empty : string.Join(Environment.NewLine, Reason);
