@@ -472,3 +472,8 @@ Rule 'PS1RuleWarningLevel' -Level 'Warning' -Tag @{ test = 'Level' } {
 Rule 'PS1RuleInfoLevel' -Level 'Information' -Tag @{ test = 'Level' } {
     $Assert.HasFieldValue($TargetObject, 'name', 'TestObject1');
 }
+
+# Synopsis: Test WithPathPrefix.
+Rule 'WithPathPrefix' {
+    $Assert.HasFieldValue($TargetObject, 'Name', 'TestValue').PathPrefix('item');
+}

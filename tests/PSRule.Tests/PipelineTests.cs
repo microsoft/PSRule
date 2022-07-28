@@ -87,6 +87,45 @@ namespace PSRule
         }
 
         [Fact]
+        public void InvokePipelineWithPathPrefix()
+        {
+            var parent = new JObject
+            {
+                ["resources"] = new JArray(new object[] {
+                    new JObject
+                    {
+                        ["Name"] = "TestValue"
+                    },
+                    new JObject
+                    {
+                        ["Name"] = "TestValue2"
+                    }
+                })
+            };
+
+            var option = GetOption();
+            option.Rule.Include = new string[] { "WithPathPrefix" };
+            option.Input.Format = InputFormat.File;
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null);
+            var writer = new TestWriter(option);
+            var pipeline = builder.Build(writer);
+
+            Assert.NotNull(pipeline);
+            pipeline.Begin();
+            pipeline.Process(PSObject.AsPSObject(parent["resources"][0]));
+            pipeline.Process(PSObject.AsPSObject(parent["resources"][1]));
+            pipeline.End();
+
+            var actual = (writer.Output[0] as InvokeResult).AsRecord().FirstOrDefault();
+            Assert.Equal(RuleOutcome.Pass, actual.Outcome);
+
+            actual = (writer.Output[1] as InvokeResult).AsRecord().FirstOrDefault();
+            Assert.Equal(RuleOutcome.Fail, actual.Outcome);
+            Assert.Equal("item.Name", actual.Detail.Reason.First().Path);
+            Assert.Equal("resources[1].item.Name", actual.Detail.Reason.First().FullPath);
+        }
+
+        [Fact]
         public void BuildGetPipeline()
         {
             var builder = PipelineBuilder.Get(GetSource(), GetOption(), null);

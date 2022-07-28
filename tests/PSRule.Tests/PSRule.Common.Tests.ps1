@@ -1320,7 +1320,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $Null = $testObject | Invoke-PSRule @invokeParams2 -Option $option -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
                 $warningMessages = $outwarnings.ToArray();
-                $warningMessages.Length | Should -Be 152;
+                $warningMessages.Length | Should -Be 154;
 
                 $warningMessages | Should -BeOfType [System.Management.Automation.WarningRecord];
                 $warningMessages.Message | Should -MatchExactly "Rule '.\\[a-zA-Z0-9]+' was suppressed by suppression group '.\\SuppressWithTargetNameAnd(Null|Empty)Rule' for 'TestObject[1-2]'. Ignore test objects for all \((null|empty)\) rules."
@@ -1364,9 +1364,9 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $warningMessages.Length | Should -Be 2;
 
                 $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[0].Message | Should -BeExactly "76 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndNullRule' for 'TestObject1'. Ignore test objects for all (null) rules."
+                $warningMessages[0].Message | Should -BeExactly "77 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndNullRule' for 'TestObject1'. Ignore test objects for all (null) rules."
                 $warningMessages[1] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[1].Message | Should -BeExactly "76 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndEmptyRule' for 'TestObject2'. Ignore test objects for all (empty) rules."
+                $warningMessages[1].Message | Should -BeExactly "77 rule/s were suppressed by suppression group '.\SuppressWithTargetNameAndEmptyRule' for 'TestObject2'. Ignore test objects for all (empty) rules."
             }
 
             It 'No warnings' {

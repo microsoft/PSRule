@@ -90,6 +90,18 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
+        /// Adds a logical path prefix on to each reason path.
+        /// </summary>
+        /// <param name="prefix">A string to prefix on each path.</param>
+        public AssertResult PathPrefix(string prefix)
+        {
+            for (var i = 0; _Reason != null && i < _Reason.Count; i++)
+                _Reason[i].Prefix = prefix;
+
+            return this;
+        }
+
+        /// <summary>
         /// Replace the existing reason with the supplied format string.
         /// </summary>
         /// <param name="text">The text of a reason to use. This text should already be localized for the currently culture.</param>

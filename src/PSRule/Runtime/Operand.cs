@@ -60,6 +60,11 @@ namespace PSRule.Runtime
         /// The object path to the operand.
         /// </summary>
         string Path { get; }
+
+        /// <summary>
+        /// A logical prefix to add to the object path.
+        /// </summary>
+        string Prefix { get; set; }
     }
 
     internal sealed class Operand : IOperand
@@ -79,6 +84,8 @@ namespace PSRule.Runtime
         public object Value { get; }
 
         public string Path { get; }
+
+        public string Prefix { get; set; }
 
         public OperandKind Kind { get; }
 
@@ -109,7 +116,13 @@ namespace PSRule.Runtime
 
         public override string ToString()
         {
-            return string.IsNullOrEmpty(Path) || Kind == OperandKind.Target ? null : string.Concat(Enum.GetName(typeof(OperandKind), Kind), " ", Path, ": ");
+            return string.IsNullOrEmpty(Path) || Kind == OperandKind.Target ? null : OperandString();
+        }
+
+        private string OperandString()
+        {
+            var kind = Enum.GetName(typeof(OperandKind), Kind);
+            return string.IsNullOrEmpty(Prefix) ? string.Concat(kind, " ", Path, ": ") : string.Concat(kind, " ", Prefix, ".", Path, ": ");
         }
     }
 }
