@@ -3824,6 +3824,9 @@ When not set or <code>$Null</code>, the case-sensitivity rules of the working pa
   This method can be chained, similar to <code>Reason</code>.</li>
 <li><code>ReasonIf(&lt;string&gt; path, &lt;bool&gt; condition, &lt;string&gt; text, params &lt;object[]&gt; args)</code> - Replaces the reason if the condition is true.
   This method can be chained, similar to <code>ReasonFrom</code>.</li>
+<li><code>PathPrefix(&lt;string&gt; path)</code> - Adds a path prefix to any reasons.
+  This method can be chained.
+  For usage see examples below.</li>
 <li><code>GetReason()</code> - Gets any reasons currently associated with the failed result.</li>
 <li><code>Complete()</code> - Returns <code>$True</code> (Pass) or <code>$False</code> (Fail) to the rule record.
   If the assertion failed, any reasons are automatically added to the rule record.
@@ -3852,6 +3855,14 @@ The reason text is automatically formatted with any parameters provided.</p>
     <span class="nv">$Assert</span><span class="p">.</span>
         <span class="n">HasDefaultValue</span><span class="p">(</span><span class="nv">$TargetObject</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">).</span>
         <span class="n">Reason</span><span class="p">(</span><span class="nv">$LocalizedData</span><span class="p">.</span><span class="n">NonDefaultValue</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>In this example, the built-in reason has a path prefix added to any reasons.</p>
+<div class="highlight"><pre><span></span><code><span class="n">Rule</span> <span class="s1">&#39;Assert.ChildHasFieldValue&#39;</span> <span class="p">{</span>
+    <span class="nv">$items</span> <span class="p">=</span> <span class="p">@(</span><span class="nv">$TargetObject</span><span class="p">.</span><span class="n">items</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="nv">$i</span> <span class="p">=</span> <span class="n">0</span><span class="p">;</span> <span class="nv">$i</span> <span class="o">-lt</span> <span class="nv">$items</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span> <span class="nv">$i</span><span class="p">++)</span> <span class="p">{</span>
+        <span class="nv">$Assert</span><span class="p">.</span><span class="n">HasFieldValue</span><span class="p">(</span><span class="nv">$items</span><span class="p">[</span><span class="nv">$i</span><span class="p">],</span> <span class="s1">&#39;Name&#39;</span><span class="p">).</span><span class="n">PathPrefix</span><span class="p">(</span><span class="s2">&quot;items[$i]&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="downstream-issues">Downstream issues<a class="headerlink" href="#downstream-issues" title="Permanent link">#</a></h3>
@@ -3926,7 +3937,7 @@ If a <code>_PSRule</code> property exists with <code>issue</code> sub-property P
   <small>
     
       Last update:
-      2022-06-22
+      2022-07-28
     
   </small>
 </div>
