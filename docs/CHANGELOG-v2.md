@@ -13,6 +13,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.3.0-B0130:
+
+- General improvements:
+  - Added `PathPrefix` method to add an object path prefix to assertion reasons by @BernieWhite.
+    [#1198](https://github.com/microsoft/PSRule/issues/1198)
+
 ## v2.3.0-B0130 (pre-release)
 
 What's changed since pre-release v2.3.0-B0100:

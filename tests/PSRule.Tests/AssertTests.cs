@@ -79,6 +79,10 @@ namespace PSRule
             Assert.Equal("Path value2: New New Reason", actual1.ToString());
             Assert.Equal("Path value2: New New Reason", actual1.GetReason()[0]);
 
+            // WithPathPrefix
+            actual1.PathPrefix("resources[0]");
+            Assert.Equal("Path resources[0].value2: New New Reason", actual1.GetReason()[0]);
+
             // Aggregate results
             Assert.True(assert.AnyOf(actual2, actual3).Result);
             Assert.True(assert.AnyOf(actual2).Result);
@@ -91,8 +95,8 @@ namespace PSRule
             Assert.Equal("Fail reason", test1.GetReason()[0]);
 
             var test2 = assert.AllOf(actual1, actual2, actual3);
-            Assert.Equal("Path value2: New New Reason Fail reason", test2.ToString());
-            Assert.Equal(new string[] { "Path value2: New New Reason", "Fail reason" }, test2.GetReason());
+            Assert.Equal("Path resources[0].value2: New New Reason Fail reason", test2.ToString());
+            Assert.Equal(new string[] { "Path resources[0].value2: New New Reason", "Fail reason" }, test2.GetReason());
             Assert.True(assert.AllOf(actual2, actual2).Result);
             Assert.True(assert.AllOf(actual2).Result);
             Assert.False(assert.AllOf().Result);

@@ -1663,6 +1663,9 @@ The following methods are available:
   This method can be chained, similar to `Reason`.
 - `ReasonIf(<string> path, <bool> condition, <string> text, params <object[]> args)` - Replaces the reason if the condition is true.
   This method can be chained, similar to `ReasonFrom`.
+- `PathPrefix(<string> path)` - Adds a path prefix to any reasons.
+  This method can be chained.
+  For usage see examples below.
 - `GetReason()` - Gets any reasons currently associated with the failed result.
 - `Complete()` - Returns `$True` (Pass) or `$False` (Fail) to the rule record.
   If the assertion failed, any reasons are automatically added to the rule record.
@@ -1698,6 +1701,17 @@ Rule 'Assert.HasCustomValue' {
     $Assert.
         HasDefaultValue($TargetObject, 'value', 'test').
         Reason($LocalizedData.NonDefaultValue, 'value', $TargetObject.value)
+}
+```
+
+In this example, the built-in reason has a path prefix added to any reasons.
+
+```powershell
+Rule 'Assert.ChildHasFieldValue' {
+    $items = @($TargetObject.items)
+    for ($i = 0; $i -lt $items.Length; $i++) {
+        $Assert.HasFieldValue($items[$i], 'Name').PathPrefix("items[$i]")
+    }
 }
 ```
 

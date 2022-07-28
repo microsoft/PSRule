@@ -8,27 +8,62 @@ namespace PSRule.Definitions
 {
     internal sealed class ResultReason : IResultReasonV2
     {
+        private string _Path;
         private string _Formatted;
         private string _Message;
-        private readonly IOperand _Operand;
+        private string _FullPath;
+        private readonly string _ParentPath;
 
         internal ResultReason(string parentPath, IOperand operand, string text, object[] args)
         {
-            _Operand = operand;
+            _ParentPath = parentPath;
+            Operand = operand;
+            _Path = Operand?.Path;
             Text = text;
             Args = args;
-            FullPath = ObjectPathJoin(parentPath, operand?.Path);
         }
+
+        internal IOperand Operand { get; }
 
         /// <summary>
         /// The object path that failed.
         /// </summary>
-        public string Path => _Operand?.Path;
+        public string Path
+        {
+            get
+            {
+                _Path ??= GetPath();
+                return _Path;
+            }
+        }
+
+        /// <summary>
+        /// A prefix to add to the object path that failed.
+        /// </summary>
+        internal string Prefix
+        {
+            get { return Operand?.Prefix; }
+            set
+            {
+                if (Operand != null && Operand.Prefix != value)
+                {
+                    Operand.Prefix = value;
+                    _Formatted = _Path = _FullPath = null;
+                }
+            }
+        }
 
         /// <summary>
         /// The object path including the path of the parent object.
         /// </summary>
-        public string FullPath { get; }
+        public string FullPath
+        {
+            get
+            {
+                _FullPath ??= GetFullPath();
+                return _FullPath;
+            }
+        }
 
         public string Text { get; }
 
@@ -51,7 +86,7 @@ namespace PSRule.Definitions
         public string Format()
         {
             _Formatted ??= string.Concat(
-                _Operand?.ToString(),
+                Operand?.ToString(),
                 Message
             );
             return _Formatted;
@@ -63,6 +98,16 @@ namespace PSRule.Definitions
                 return path;
 
             return string.IsNullOrEmpty(path) ? parentPath : string.Concat(parentPath, ".", path);
+        }
+
+        private string GetPath()
+        {
+            return ObjectPathJoin(Prefix, Operand?.Path);
+        }
+
+        private string GetFullPath()
+        {
+            return ObjectPathJoin(_ParentPath, Path);
         }
     }
 }
