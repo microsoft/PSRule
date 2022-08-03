@@ -13,11 +13,16 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.3.0-B0163 (pre-release)
+
 What's changed since pre-release v2.3.0-B0130:
 
 - General improvements:
   - Added `PathPrefix` method to add an object path prefix to assertion reasons by @BernieWhite.
     [#1198](https://github.com/microsoft/PSRule/issues/1198)
+- Engineering:
+  - Bump xunit to v2.4.2.
+    [#1200](https://github.com/microsoft/PSRule/pull/1200)
 
 ## v2.3.0-B0130 (pre-release)
 
