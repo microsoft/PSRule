@@ -1023,6 +1023,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#v230" class="md-nav__link">
+    v2.3.0
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v230-b0163-pre-release" class="md-nav__link">
     v2.3.0-B0163 (pre-release)
   </a>
@@ -1891,6 +1898,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#v230" class="md-nav__link">
+    v2.3.0
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v230-b0163-pre-release" class="md-nav__link">
     v2.3.0-B0163 (pre-release)
   </a>
@@ -2177,6 +2191,59 @@
 </li>
 </ul>
 <h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">#</a></h2>
+<h2 id="v230">v2.3.0<a class="headerlink" href="#v230" title="Permanent link">#</a></h2>
+<p>What's changed since v2.2.0:</p>
+<ul>
+<li>General improvements:<ul>
+<li>Added <code>PathPrefix</code> method to add an object path prefix to assertion reasons by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1198">#1198</a></li>
+<li>Added support for binding with JSON objects by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1182">#1182</a></li>
+<li>Added support for full path from JSON objects by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1174">#1174</a></li>
+<li>Improved reporting of full object path from pre-processed results by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1169">#1169</a></li>
+<li>Added PSRule for Azure expansion configuration to options schema by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1149">#1149</a></li>
+</ul>
+</li>
+<li>Engineering:<ul>
+<li>Bump xunit to v2.4.2.
+  <a href="https://github.com/microsoft/PSRule/pull/1200">#1200</a></li>
+<li>Expose online link extension method by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1195">#1195</a></li>
+<li>Added comment documentation to .NET classes and interfaces by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1186">#1186</a></li>
+<li>Added publishing support for NuGet symbol packages @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1173">#1173</a></li>
+<li>Updated outcome option docs by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1166">#1166</a></li>
+<li>Bump Sarif.Sdk to v2.4.16.
+  <a href="https://github.com/microsoft/PSRule/pull/1177">#1177</a></li>
+<li>Refactoring and updates to interfaces to allow use outside of PowerShell by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1152">#1152</a></li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
+<li>Fixes JSON parsing of string array for single objects by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1193">#1193</a></li>
+<li>Fixed handling for JSON objects in rules by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1187">#1187</a></li>
+<li>Fixed null object reference for object equity comparison by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1157">#1157</a></li>
+<li>Fixed expression evaluation not logging debug output when using the <code>-Debug</code> switch by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1158">#1158</a></li>
+<li>Fixed startIndex cannot be larger than length of string by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1160">#1160</a></li>
+<li>Fixed path within SDK package causes <code>psd1</code> to compile by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1146">#1146</a></li>
+</ul>
+</li>
+</ul>
+<p>What's changed since pre-release v2.3.0-B0163:</p>
+<ul>
+<li>No additional changes.</li>
+</ul>
 <h2 id="v230-b0163-pre-release">v2.3.0-B0163 (pre-release)<a class="headerlink" href="#v230-b0163-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v2.3.0-B0130:</p>
 <ul>
@@ -2994,7 +3061,7 @@
   <small>
     
       Last update:
-      2022-08-03
+      2022-08-05
     
   </small>
 </div>
