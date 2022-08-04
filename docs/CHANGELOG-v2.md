@@ -13,6 +13,54 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.3.0
+
+What's changed since v2.2.0:
+
+- General improvements:
+  - Added `PathPrefix` method to add an object path prefix to assertion reasons by @BernieWhite.
+    [#1198](https://github.com/microsoft/PSRule/issues/1198)
+  - Added support for binding with JSON objects by @BernieWhite.
+    [#1182](https://github.com/microsoft/PSRule/issues/1182)
+  - Added support for full path from JSON objects by @BernieWhite.
+    [#1174](https://github.com/microsoft/PSRule/issues/1174)
+  - Improved reporting of full object path from pre-processed results by @BernieWhite.
+    [#1169](https://github.com/microsoft/PSRule/issues/1169)
+  - Added PSRule for Azure expansion configuration to options schema by @BernieWhite.
+    [#1149](https://github.com/microsoft/PSRule/issues/1149)
+- Engineering:
+  - Bump xunit to v2.4.2.
+    [#1200](https://github.com/microsoft/PSRule/pull/1200)
+  - Expose online link extension method by @BernieWhite.
+    [#1195](https://github.com/microsoft/PSRule/issues/1195)
+  - Added comment documentation to .NET classes and interfaces by @BernieWhite.
+    [#1186](https://github.com/microsoft/PSRule/issues/1186)
+  - Added publishing support for NuGet symbol packages @BernieWhite.
+    [#1173](https://github.com/microsoft/PSRule/issues/1173)
+  - Updated outcome option docs by @BernieWhite.
+    [#1166](https://github.com/microsoft/PSRule/issues/1166)
+  - Bump Sarif.Sdk to v2.4.16.
+    [#1177](https://github.com/microsoft/PSRule/pull/1177)
+  - Refactoring and updates to interfaces to allow use outside of PowerShell by @BernieWhite.
+    [#1152](https://github.com/microsoft/PSRule/issues/1152)
+- Bug fixes:
+  - Fixes JSON parsing of string array for single objects by @BernieWhite.
+    [#1193](https://github.com/microsoft/PSRule/issues/1193)
+  - Fixed handling for JSON objects in rules by @BernieWhite.
+    [#1187](https://github.com/microsoft/PSRule/issues/1187)
+  - Fixed null object reference for object equity comparison by @BernieWhite.
+    [#1157](https://github.com/microsoft/PSRule/issues/1157)
+  - Fixed expression evaluation not logging debug output when using the `-Debug` switch by @BernieWhite.
+    [#1158](https://github.com/microsoft/PSRule/issues/1158)
+  - Fixed startIndex cannot be larger than length of string by @BernieWhite.
+    [#1160](https://github.com/microsoft/PSRule/issues/1160)
+  - Fixed path within SDK package causes `psd1` to compile by @BernieWhite.
+    [#1146](https://github.com/microsoft/PSRule/issues/1146)
+
+What's changed since pre-release v2.3.0-B0163:
+
+- No additional changes.
+
 ## v2.3.0-B0163 (pre-release)
 
 What's changed since pre-release v2.3.0-B0130:
