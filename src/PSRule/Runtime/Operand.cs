@@ -69,6 +69,9 @@ namespace PSRule.Runtime
 
     internal sealed class Operand : IOperand
     {
+        private const string Dot = ".";
+        private const string Space = " ";
+
         private Operand(OperandKind kind, object value)
         {
             Kind = kind;
@@ -114,6 +117,14 @@ namespace PSRule.Runtime
             return new Operand(OperandKind.Target, null, null);
         }
 
+        internal static string JoinPath(string p1, string p2)
+        {
+            if (IsEmptyPath(p1))
+                return p2;
+
+            return IsEmptyPath(p2) ? p1 : string.Concat(p1, Dot, p2);
+        }
+
         public override string ToString()
         {
             return string.IsNullOrEmpty(Path) || Kind == OperandKind.Target ? null : OperandString();
@@ -122,7 +133,14 @@ namespace PSRule.Runtime
         private string OperandString()
         {
             var kind = Enum.GetName(typeof(OperandKind), Kind);
-            return string.IsNullOrEmpty(Prefix) ? string.Concat(kind, " ", Path, ": ") : string.Concat(kind, " ", Prefix, ".", Path, ": ");
+            return IsEmptyPath(Prefix) ? string.Concat(kind, Space, Path, ": ") : string.Concat(kind, Space, Prefix, Dot, Path, ": ");
+        }
+
+        private static bool IsEmptyPath(string s)
+        {
+            return string.IsNullOrEmpty(s) ||
+                string.IsNullOrWhiteSpace(s) ||
+                s == Dot;
         }
     }
 }
