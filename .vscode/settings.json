@@ -89,6 +89,7 @@
     "omnisharp.enableEditorConfigSupport": true,
     "omnisharp.enableRoslynAnalyzers": true,
     "git.branchProtection": [
-        "main"
+        "main",
+        "release/*"
     ]
 }

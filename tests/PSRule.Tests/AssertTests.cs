@@ -82,6 +82,10 @@ namespace PSRule
             // WithPathPrefix
             actual1.PathPrefix("resources[0]");
             Assert.Equal("Path resources[0].value2: New New Reason", actual1.GetReason()[0]);
+            actual4.PathPrefix("resources[0]");
+            Assert.Equal("Path resources[0].Name: Test reason", actual4.GetReason()[0]);
+            actual4.PathPrefix(".");
+            Assert.Equal("Path Name: Test reason", actual4.GetReason()[0]);
 
             // Aggregate results
             Assert.True(assert.AnyOf(actual2, actual3).Result);
