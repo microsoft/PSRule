@@ -92,22 +92,14 @@ namespace PSRule.Definitions
             return _Formatted;
         }
 
-        private string ObjectPathJoin(string parentPath, string path)
-        {
-            if (string.IsNullOrEmpty(parentPath))
-                return path;
-
-            return string.IsNullOrEmpty(path) ? parentPath : string.Concat(parentPath, ".", path);
-        }
-
         private string GetPath()
         {
-            return ObjectPathJoin(Prefix, Operand?.Path);
+            return Runtime.Operand.JoinPath(Prefix, Operand?.Path);
         }
 
         private string GetFullPath()
         {
-            return ObjectPathJoin(_ParentPath, Path);
+            return Runtime.Operand.JoinPath(_ParentPath, Path);
         }
     }
 }

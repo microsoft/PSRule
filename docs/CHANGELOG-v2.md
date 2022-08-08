@@ -13,6 +13,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since v2.3.0:
+
+- Bug fixes:
+  - Fixed object path join handling of self path identifier by @BernieWhite.
+    [#1204](https://github.com/microsoft/PSRule/issues/1204)
+
 ## v2.3.0
 
 What's changed since v2.2.0:
