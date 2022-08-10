@@ -324,14 +324,7 @@ task Rules {
 
 task Benchmark {
     if ($Benchmark -or $BuildTask -eq 'Benchmark') {
-        dotnet run -p src/PSRule.Benchmark -f netcoreapp3.1 -c Release -- benchmark --output $PWD;
-    }
-}
-
-# Synopsis: Add shipit build tag
-task TagBuild {
-    if ($Null -ne $Env:BUILD_DEFINITIONNAME) {
-        Write-Host "`#`#vso[build.addbuildtag]shipit";
+        dotnet run -p src/PSRule.Benchmark -f net6.0 -c Release -- benchmark --output $PWD;
     }
 }
 
@@ -348,6 +341,6 @@ task Build Clean, BuildModule, BuildHelp, VersionModule, PackageModule
 
 task Test Build, Rules, TestDotNet, TestModule
 
-task Release ReleaseModule, TagBuild
+task Release ReleaseModule
 
 task AnalyzeRepository Build, Rules
