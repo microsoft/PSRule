@@ -1,10 +1,11 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.CommandLine.Invocation;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 
 namespace PSRule.BuildTool
@@ -21,14 +22,19 @@ namespace PSRule.BuildTool
     {
         public static void Build(BadgeResourceOption options, InvocationContext invocation)
         {
+            // Guard non-Windows platforms.
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                invocation.Console.Error.Write("This tool supports execution on Windows platforms only.");
+                invocation.ExitCode = 1;
+                return;
+            }
+
             var c = GetChars();
             var set = new object[c.Length][];
             var padding = GetPadding();
-
             for (var i = 0; i < c.Length; i++)
-            {
                 set[i] = new object[2] { c[i], Measure(c[i]) - padding };
-            }
 
             var json = JsonConvert.SerializeObject(set);
             File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), options.OutputPath ?? "en.json"), json);
@@ -62,6 +68,9 @@ namespace PSRule.BuildTool
 
         private static double Measure(string s)
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return 0;
+
             using var font = new Font("Verdana", 11f, GraphicsUnit.Pixel);
             using var g = Graphics.FromHwnd(IntPtr.Zero);
             var size = g.MeasureString(s, font);

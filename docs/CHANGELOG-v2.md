@@ -13,6 +13,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since v2.3.1:
+
+- Engineering:
+  - Bump support projects to .NET 6 by @BernieWhite.
+    [#1209](https://github.com/microsoft/PSRule/issues/1209)
+
 ## v2.3.1
 
 What's changed since v2.3.0:
