@@ -11,15 +11,30 @@ using PSRule.Rules;
 
 namespace PSRule.Badges
 {
+    /// <summary>
+    /// The type of badge.
+    /// </summary>
     public enum BadgeType
     {
+        /// <summary>
+        /// A badge that reports an unknown state.
+        /// </summary>
         Unknown = 0,
 
+        /// <summary>
+        /// A badge reporting a successful state.
+        /// </summary>
         Success = 1,
 
+        /// <summary>
+        /// A bagde reporting a failed state.
+        /// </summary>
         Failure = 2
     }
 
+    /// <summary>
+    /// An instance of a badge created by the badge API.
+    /// </summary>
     public interface IBadge
     {
         /// <summary>
@@ -33,6 +48,9 @@ namespace PSRule.Badges
         void ToFile(string path);
     }
 
+    /// <summary>
+    /// A builder for the badge API.
+    /// </summary>
     public interface IBadgeBuilder
     {
         /// <summary>
@@ -59,6 +77,9 @@ namespace PSRule.Badges
         IBadge Create(string title, BadgeType type, string label);
     }
 
+    /// <summary>
+    /// An instance of a badge created by the Badge API.
+    /// </summary>
     internal sealed class Badge : IBadge
     {
         private readonly string _LeftText;
@@ -81,11 +102,13 @@ namespace PSRule.Badges
             _Fill = fill;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return ToSvg();
         }
 
+        /// <inheritdoc/>
         public string ToSvg()
         {
             var w = (int)Math.Round(_LeftWidth + _RightWidth + 2 * _BorderPadding + 2 * _MidPadding);
@@ -106,6 +129,7 @@ namespace PSRule.Badges
             return builder.ToString();
         }
 
+        /// <inheritdoc/>
         public void ToFile(string path)
         {
             path = PSRuleOption.GetRootedPath(path);
@@ -117,6 +141,9 @@ namespace PSRule.Badges
         }
     }
 
+    /// <summary>
+    /// A badge builder that implements the Badge API within PSRule.
+    /// </summary>
     internal sealed class BadgeBuilder : IBadgeBuilder
     {
         private const string BADGE_FILL_GREEN = "#4CAF50";
@@ -125,16 +152,19 @@ namespace PSRule.Badges
 
         #region IBadgeBuilder
 
+        /// <inheritdoc/>
         public IBadge Create(string title, BadgeType type, string label)
         {
             return CreateCustom(title, label, GetTypeFill(type));
         }
 
+        /// <inheritdoc/>
         public IBadge Create(InvokeResult result)
         {
             return CreateInternal(GetOutcome(result));
         }
 
+        /// <inheritdoc/>
         public IBadge Create(IEnumerable<InvokeResult> result)
         {
             var worstCase = RuleOutcome.Pass;
@@ -153,6 +183,8 @@ namespace PSRule.Badges
         }
 
         #endregion IBadgeBuilder
+
+        #region Private helper methods
 
         private static string GetOutcomeFill(RuleOutcome outcome)
         {
@@ -173,10 +205,7 @@ namespace PSRule.Badges
             if (outcome == RuleOutcome.Fail)
                 return PSRuleResources.OutcomeFail;
 
-            if (outcome == RuleOutcome.Error)
-                return PSRuleResources.OutcomeError;
-
-            return PSRuleResources.OutcomeUnknown;
+            return outcome == RuleOutcome.Error ? PSRuleResources.OutcomeError : PSRuleResources.OutcomeUnknown;
         }
 
         private static RuleOutcome GetOutcome(InvokeResult result)
@@ -206,5 +235,7 @@ namespace PSRule.Badges
             var outcomeFill = GetOutcomeFill(outcome);
             return CreateCustom("PSRule", outcomeLabel, outcomeFill);
         }
+
+        #endregion Private helper methods
     }
 }

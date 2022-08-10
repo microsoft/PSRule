@@ -19,7 +19,7 @@ namespace PSRule.Configuration
         private const bool DEFAULT_ALIASREFERENCEWARNING = true;
         private const bool DEFAULT_INVARIANTCULTUREWARNING = true;
 
-        internal static readonly ExecutionOption Default = new ExecutionOption
+        internal static readonly ExecutionOption Default = new()
         {
             AliasReferenceWarning = DEFAULT_ALIASREFERENCEWARNING,
             LanguageMode = DEFAULT_LANGUAGEMODE,
@@ -29,6 +29,9 @@ namespace PSRule.Configuration
             InvariantCultureWarning = DEFAULT_INVARIANTCULTUREWARNING
         };
 
+        /// <summary>
+        /// Creates an empty execution option.
+        /// </summary>
         public ExecutionOption()
         {
             AliasReferenceWarning = null;
@@ -39,6 +42,10 @@ namespace PSRule.Configuration
             InvariantCultureWarning = null;
         }
 
+        /// <summary>
+        /// Creates a execution option by copying an existing instance.
+        /// </summary>
+        /// <param name="option">The option instance to copy.</param>
         public ExecutionOption(ExecutionOption option)
         {
             if (option == null)
@@ -86,6 +93,10 @@ namespace PSRule.Configuration
             }
         }
 
+        /// <summary>
+        /// Merge two option instances by repacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+        /// Values from <paramref name="o1"/> that are set are not overridden.
+        /// </summary>
         internal static ExecutionOption Combine(ExecutionOption o1, ExecutionOption o2)
         {
             var result = new ExecutionOption(o1)

@@ -98,6 +98,7 @@ namespace PSRule.Badges
             Append($"<svg width=\"{_Width}\" height=\"{_Height}\" viewPort=\"0 0 {_Width} {_Height}\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"{text}\">");
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return _Builder.ToString();
