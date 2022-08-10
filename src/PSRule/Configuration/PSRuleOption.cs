@@ -32,9 +32,12 @@ namespace PSRule.Configuration
         private const char Backslash = '\\';
         private const char Slash = '/';
 
-        private string SourcePath;
+        /// <summary>
+        /// The original source path the options were loaded from if applicable.
+        /// </summary>
+        private string _SourcePath;
 
-        private static readonly PSRuleOption Default = new PSRuleOption
+        private static readonly PSRuleOption Default = new()
         {
             Binding = BindingOption.Default,
             Convention = ConventionOption.Default,
@@ -79,7 +82,7 @@ namespace PSRule.Configuration
 
         private PSRuleOption(string sourcePath, PSRuleOption option)
         {
-            SourcePath = sourcePath;
+            _SourcePath = sourcePath;
 
             // Set from existing option instance
             Binding = new BindingOption(option?.Binding);
@@ -102,6 +105,9 @@ namespace PSRule.Configuration
         /// </summary>
         public BindingOption Binding { get; set; }
 
+        /// <summary>
+        /// Allows configuration key/ values to be specified that can be used within rule definitions.
+        /// </summary>
         public ConfigurationOption Configuration { get; set; }
 
         /// <summary>
@@ -134,10 +140,16 @@ namespace PSRule.Configuration
         /// </summary>
         public OutputOption Output { get; set; }
 
+        /// <summary>
+        /// Configures pipeline hooks.
+        /// </summary>
         [YamlIgnore]
         [JsonIgnore]
         public PipelineHook Pipeline { get; set; }
 
+        /// <summary>
+        /// Options for repository properties that are used by PSRule.
+        /// </summary>
         public RepositoryOption Repository { get; set; }
 
         /// <summary>
@@ -145,6 +157,9 @@ namespace PSRule.Configuration
         /// </summary>
         public RequiresOption Requires { get; set; }
 
+        /// <summary>
+        /// Options for that affect which rules are executed by including and filtering discovered rules.
+        /// </summary>
         public RuleOption Rule { get; set; }
 
         /// <summary>
@@ -155,31 +170,50 @@ namespace PSRule.Configuration
         /// <summary>
         /// Return options as YAML.
         /// </summary>
+        /// <returns>PSRule options serialized as YAML.</returns>
         /// <remarks>
         /// Called from PowerShell.
         /// </remarks>
         public string ToYaml()
         {
             var yaml = GetYaml();
-            return string.IsNullOrEmpty(SourcePath)
+            return string.IsNullOrEmpty(_SourcePath)
                 ? yaml
                 : string.Concat(
                     string.Format(
                         Thread.CurrentThread.CurrentCulture,
                         PSRuleResources.OptionsSourceComment,
-                        SourcePath),
+                        _SourcePath),
                     Environment.NewLine,
                     yaml);
         }
 
+        /// <summary>
+        /// Create a new object instance with the same options set.
+        /// </summary>
+        /// <returns>A new <see cref="PSRuleOption"/> instance.</returns>
         public PSRuleOption Clone()
         {
-            return new PSRuleOption(sourcePath: SourcePath, option: this);
+            return new PSRuleOption(sourcePath: _SourcePath, option: this);
         }
 
+        /// <summary>
+        /// Create a <see cref="PSRuleOption"/> instance from PSRule defaults.
+        /// </summary>
+        /// <returns>A new <see cref="PSRuleOption"/> instance.</returns>
+        public static PSRuleOption FromDefault()
+        {
+            return Default.Clone();
+        }
+
+        /// <summary>
+        /// Merge two option instances by repacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+        /// Values from <paramref name="o1"/> that are set are not overridden.
+        /// </summary>
+        /// <returns>A new <see cref="PSRuleOption"/> instance combining options from both instances.</returns>
         private static PSRuleOption Combine(PSRuleOption o1, PSRuleOption o2)
         {
-            var result = new PSRuleOption(o1?.SourcePath ?? o2?.SourcePath, o1);
+            var result = new PSRuleOption(o1?._SourcePath ?? o2?._SourcePath, o1);
             result.Binding = BindingOption.Combine(result.Binding, o2?.Binding);
             result.Configuration = ConfigurationOption.Combine(result.Configuration, o2?.Configuration);
             result.Convention = ConventionOption.Combine(result.Convention, o2?.Convention);
@@ -201,11 +235,6 @@ namespace PSRule.Configuration
             // Get a rooted file path instead of directory or relative path
             var filePath = GetFilePath(path: path);
             File.WriteAllText(path: filePath, contents: GetYaml());
-        }
-
-        public static PSRuleOption FromDefault()
-        {
-            return Default.Clone();
         }
 
         /// <summary>
@@ -271,7 +300,7 @@ namespace PSRule.Configuration
             if (option == null)
                 return FromFileOrEmpty(path);
 
-            return string.IsNullOrEmpty(option.SourcePath) ? Combine(option, FromFileOrEmpty(path)) : option;
+            return string.IsNullOrEmpty(option._SourcePath) ? Combine(option, FromFileOrEmpty(path)) : option;
         }
 
         private static PSRuleOption FromYaml(string path, string yaml)
@@ -286,7 +315,7 @@ namespace PSRule.Configuration
                 .Build();
 
             var option = d.Deserialize<PSRuleOption>(yaml) ?? new PSRuleOption();
-            option.SourcePath = path;
+            option._SourcePath = path;
             return option;
         }
 
@@ -300,8 +329,7 @@ namespace PSRule.Configuration
         /// </remarks>
         private static PSRuleOption FromEnvironment(PSRuleOption option)
         {
-            if (option == null)
-                option = new PSRuleOption();
+            option ??= new PSRuleOption();
 
             // Start loading matching values
             var env = EnvironmentHelper.Default;
@@ -390,11 +418,19 @@ namespace PSRule.Configuration
             _CurrentCulture = culture;
         }
 
+        /// <summary>
+        /// Gets the current working path being used by PSRule.
+        /// </summary>
+        /// <returns>The current working path.</returns>
         public static string GetWorkingPath()
         {
             return _GetWorkingPath();
         }
 
+        /// <summary>
+        /// Get the current culture being used by PSRule.
+        /// </summary>
+        /// <returns>The current culture.</returns>
         public static CultureInfo GetCurrentCulture()
         {
             return _CurrentCulture;
@@ -497,6 +533,7 @@ namespace PSRule.Configuration
         /// </summary>
         /// <param name="path">A full or relative path.</param>
         /// <param name="normalize">When set to <c>true</c> the returned path uses forward slashes instead of backslashes.</param>
+        /// <param name="basePath">The base path to use. When <c>null</c> of unspecified, the current working path will be used.</param>
         /// <returns>A absolute path.</returns>
         internal static string GetRootedPath(string path, bool normalize = false, string basePath = null)
         {

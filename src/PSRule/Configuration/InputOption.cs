@@ -20,7 +20,7 @@ namespace PSRule.Configuration
         private const string[] DEFAULT_PATHIGNORE = null;
         private const string[] DEFAULT_TARGETTYPE = null;
 
-        internal static readonly InputOption Default = new InputOption
+        internal static readonly InputOption Default = new()
         {
             Format = DEFAULT_FORMAT,
             IgnoreGitPath = DEFAULT_IGNOREGITPATH,
@@ -99,6 +99,10 @@ namespace PSRule.Configuration
             }
         }
 
+        /// <summary>
+        /// Merge two option instances by repacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+        /// Values from <paramref name="o1"/> that are set are not overridden.
+        /// </summary>
         internal static InputOption Combine(InputOption o1, InputOption o2)
         {
             var result = new InputOption(o1)

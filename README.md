@@ -58,9 +58,13 @@ You can download and install the PSRule module from the PowerShell Gallery.
 
 Module | Description | Downloads / instructions
 ------ | ----------- | ------------------------
-PSRule | Validate infrastructure as code (IaC) and objects using PowerShell rules. | [latest][module-psrule] / [instructions][install]
+PSRule | Validate infrastructure as code (IaC) and objects using PowerShell rules. | [latest][8] / [instructions][9]
 
-For rule and integration modules see [related projects](#related-projects).
+For rule and integration modules see [related projects][10].
+
+  [8]: https://www.powershellgallery.com/packages/PSRule
+  [9]: https://microsoft.github.io/PSRule/v2/install-instructions/
+  [10]: https://microsoft.github.io/PSRule/v2/related-projects/
 
 ## Getting extensions
 
@@ -68,9 +72,13 @@ Companion extensions are available for the following platforms.
 
 Platform           | Description | Downloads / instructions
 --------           | ----------- | ------------------------
-Azure Pipelines    | Validate infrastructure as code (IaC) and DevOps repositories using Azure Pipelines. | [latest][extension-pipelines] / [instructions][install]
-GitHub Actions     | Validate infrastructure as code (IaC) and DevOps repositories using GitHub Actions. | [latest][extension-actions] / [instructions][install]
-Visual Studio Code | Visual Studio Code extension for PSRule. | [latest][extension-vscode] / [instructions][install]
+Azure Pipelines    | Validate infrastructure as code (IaC) and DevOps repositories using Azure Pipelines. | [latest][11] / [instructions][9]
+GitHub Actions     | Validate infrastructure as code (IaC) and DevOps repositories using GitHub Actions. | [latest][12] / [instructions][9]
+Visual Studio Code | Visual Studio Code extension for PSRule. | [latest][13] / [instructions][9]
+
+  [11]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
+  [12]: https://github.com/marketplace/actions/psrule
+  [13]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode
 
 ## Getting started
 
@@ -300,12 +308,12 @@ PSRule uses the following schemas:
 
 ## Related projects
 
-For a list of projects and integrations see [Related projects](https://microsoft.github.io/PSRule/v2/related-projects/).
+For a list of projects and integrations see [Related projects][10].
 
 ## Changes and versioning
 
 Modules in this repository use [semantic versioning](https://semver.org/) to declare breaking changes.
-For a list of module changes please see the [change log](CHANGELOG.md).
+For a list of module changes please see the [change log](https://aka.ms/ps-rule/changelog).
 
 > Pre-release module versions are created on major commits and can be installed from the PowerShell Gallery.
 > Pre-release versions should be considered experimental.
@@ -330,9 +338,3 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 ## License
 
 This project is [licensed under the MIT License](LICENSE).
-
-[install]: https://microsoft.github.io/PSRule/v2/install-instructions/
-[module-psrule]: https://www.powershellgallery.com/packages/PSRule
-[extension-vscode]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode
-[extension-pipelines]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
-[extension-actions]: https://github.com/marketplace/actions/psrule

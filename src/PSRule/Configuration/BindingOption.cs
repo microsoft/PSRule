@@ -7,7 +7,7 @@ using System.ComponentModel;
 namespace PSRule.Configuration
 {
     /// <summary>
-    /// Options tht affect property binding of TargetName and TargetType.
+    /// Options that affect property binding of TargetName and TargetType.
     /// </summary>
     public sealed class BindingOption : IEquatable<BindingOption>
     {
@@ -16,7 +16,7 @@ namespace PSRule.Configuration
         private const string DEFAULT_NAMESEPARATOR = "/";
         private const bool DEFAULT_USEQUALIFIEDNAME = false;
 
-        internal static readonly BindingOption Default = new BindingOption
+        internal static readonly BindingOption Default = new()
         {
             IgnoreCase = DEFAULT_IGNORECASE,
             NameSeparator = DEFAULT_NAMESEPARATOR,
@@ -92,6 +92,10 @@ namespace PSRule.Configuration
             }
         }
 
+        /// <summary>
+        /// Merge two option instances by repacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+        /// Values from <paramref name="o1"/> that are set are not overridden.
+        /// </summary>
         internal static BindingOption Combine(BindingOption o1, BindingOption o2)
         {
             var result = new BindingOption(o1)

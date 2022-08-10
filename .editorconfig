@@ -7,6 +7,7 @@ root = true
 [*]
 charset = utf-8
 indent_style = space
+insert_final_newline = true
 
 # Source code
 [*.{cs,ps1,psd1,psm1}]
@@ -45,3 +46,26 @@ csharp_prefer_simple_default_expression = true:suggestion
 csharp_style_var_for_built_in_types = true:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion
 csharp_style_var_elsewhere = true:suggestion
+
+# Define the 'private_fields' symbol group:
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+
+# Define the 'private_static_fields' symbol group
+dotnet_naming_symbols.private_static_fields.applicable_kinds = field
+dotnet_naming_symbols.private_static_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_fields.required_modifiers = static
+
+# Define the 'underscored' naming style
+dotnet_naming_style.underscored.capitalization = pascal_case
+dotnet_naming_style.underscored.required_prefix = _
+
+# Private instance fields must use pascal case with a leading '_'
+dotnet_naming_rule.private_fields_underscored.symbols = private_fields
+dotnet_naming_rule.private_fields_underscored.style = underscored
+dotnet_naming_rule.private_fields_underscored.severity = error
+
+# Exclude private static fields from underscored style
+dotnet_naming_rule.private_static_fields_none.symbols = private_static_fields
+dotnet_naming_rule.private_static_fields_none.style = underscored
+dotnet_naming_rule.private_static_fields_none.severity = none

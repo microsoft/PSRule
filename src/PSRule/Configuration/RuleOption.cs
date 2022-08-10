@@ -7,15 +7,21 @@ using System.ComponentModel;
 
 namespace PSRule.Configuration
 {
+    /// <summary>
+    /// Options for that affect which rules are executed by including and filtering discovered rules.
+    /// </summary>
     public sealed class RuleOption : IEquatable<RuleOption>
     {
         private const bool DEFAULT_INCLUDELOCAL = false;
 
-        internal static readonly RuleOption Default = new RuleOption
+        internal static readonly RuleOption Default = new()
         {
             IncludeLocal = DEFAULT_INCLUDELOCAL
         };
 
+        /// <summary>
+        /// Create an empty rule option.
+        /// </summary>
         public RuleOption()
         {
             Baseline = null;
@@ -25,6 +31,10 @@ namespace PSRule.Configuration
             Tag = null;
         }
 
+        /// <summary>
+        /// Create a rule option by copying an existing instance.
+        /// </summary>
+        /// <param name="option">The option instance to copy.</param>
         public RuleOption(RuleOption option)
         {
             if (option == null)
@@ -69,6 +79,10 @@ namespace PSRule.Configuration
             }
         }
 
+        /// <summary>
+        /// Merge two option instances by repacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+        /// Values from <paramref name="o1"/> that are set are not overridden.
+        /// </summary>
         internal static RuleOption Combine(RuleOption o1, RuleOption o2)
         {
             var result = new RuleOption(o1)

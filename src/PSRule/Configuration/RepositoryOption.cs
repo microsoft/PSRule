@@ -8,11 +8,11 @@ using System.ComponentModel;
 namespace PSRule.Configuration
 {
     /// <summary>
-    /// Options that repository properties that are used by PSRule.
+    /// Options for repository properties that are used by PSRule.
     /// </summary>
     public sealed class RepositoryOption : IEquatable<RepositoryOption>
     {
-        internal static readonly RepositoryOption Default = new RepositoryOption
+        internal static readonly RepositoryOption Default = new()
         {
 
         };
@@ -62,6 +62,10 @@ namespace PSRule.Configuration
             }
         }
 
+        /// <summary>
+        /// Merge two option instances by repacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+        /// Values from <paramref name="o1"/> that are set are not overridden.
+        /// </summary>
         internal static RepositoryOption Combine(RepositoryOption o1, RepositoryOption o2)
         {
             var result = new RepositoryOption(o1)
@@ -77,12 +81,20 @@ namespace PSRule.Configuration
         [DefaultValue(null)]
         public string Url { get; set; }
 
+        /// <summary>
+        /// Load options from environment variables into repository option.
+        /// Options that appear in both will replaced by environment variable values.
+        /// </summary>
         internal void Load(EnvironmentHelper env)
         {
             if (env.TryString("PSRULE_REPOSITORY_URL", out var url))
                 Url = url;
         }
 
+        /// <summary>
+        /// Load options from a key/ value dictionary into the repository options.
+        /// Options that appear in both will replaced by dictionary values.
+        /// </summary>
         internal void Load(Dictionary<string, object> index)
         {
             if (index.TryPopString("Repository.Url", out var url))
