@@ -7,7 +7,8 @@
         "TestResults/": true
     },
     "search.exclude": {
-        "out/": true
+        "out/": true,
+        "reports/": true
     },
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
@@ -38,10 +39,12 @@
         "editor.formatOnSave": true
     },
     "[yaml]": {
-        "editor.tabSize": 2
+        "editor.tabSize": 2,
+        "files.insertFinalNewline": true
     },
     "[markdown]": {
-        "editor.tabSize": 2
+        "editor.tabSize": 2,
+        "files.insertFinalNewline": true
     },
     "[json]": {
         "editor.tabSize": 4,
@@ -52,11 +55,13 @@
         "editor.suggest.insertMode": "replace",
         "gitlens.codeLens.scopes": [
             "document"
-        ]
+        ],
+        "files.insertFinalNewline": true
     },
     "files.associations": {
         "**/.azure-pipelines/*.yaml": "azure-pipelines",
-        "**/.azure-pipelines/jobs/*.yaml": "azure-pipelines"
+        "**/.azure-pipelines/jobs/*.yaml": "azure-pipelines",
+        "**/NuGet.config": "xml"
     },
     "cSpell.words": [
         "APPSERVICEMININSTANCECOUNT",
@@ -82,7 +87,8 @@
         "xunit"
     ],
     "[csharp]": {
-        "editor.formatOnSave": true
+        "editor.formatOnSave": true,
+        "files.insertFinalNewline": true
     },
     "omnisharp.enableImportCompletion": true,
     "omnisharp.organizeImportsOnFormat": true,
