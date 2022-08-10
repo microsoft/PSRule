@@ -155,9 +155,9 @@ The following PowerShell modules will be automatically install if the required v
 
 These additional modules are only required for building PSRule.
 
-Additionally .NET Core SDK v3.1 is required.
-.NET Core will not be automatically downloaded and installed.
-To download and install the latest SDK see [Download .NET Core 3.1][dotnet].
+Additionally .NET SDK v6 is required.
+.NET will not be automatically downloaded and installed.
+To download and install the latest SDK see [Download .NET 6][dotnet].
 
 ### Limited access networks
 
@@ -191,4 +191,4 @@ After downloading the modules, copy the module directories to devices with restr
 *[CI]: continuous integration
 
 [module]: https://www.powershellgallery.com/packages/PSRule
-[dotnet]: https://dotnet.microsoft.com/download/dotnet-core/3.1
+[dotnet]: https://dotnet.microsoft.com/download/dotnet/6.0
