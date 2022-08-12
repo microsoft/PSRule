@@ -496,19 +496,24 @@ namespace PSRule.Definitions
         /// <returns>An array of RuleIds.</returns>
         internal static ResourceId[] GetRuleId(string defaultScope, string[] name, ResourceIdKind kind)
         {
-            if (name == null)
+            if (name == null || name.Length == 0)
                 return null;
 
             var result = new ResourceId[name.Length];
             for (var i = 0; i < name.Length; i++)
-                result[i] = name[i].IndexOf(SCOPE_SEPARATOR) > 0 ? ResourceId.Parse(name[i], kind) : new ResourceId(defaultScope, name[i], kind);
+                result[i] = GetRuleId(defaultScope, name[i], kind);
 
             return (result.Length == 0) ? null : result;
         }
 
+        internal static ResourceId GetRuleId(string defaultScope, string name, ResourceIdKind kind)
+        {
+            return name.IndexOf(SCOPE_SEPARATOR) > 0 ? ResourceId.Parse(name, kind) : new ResourceId(defaultScope, name, kind);
+        }
+
         internal static ResourceId? GetIdNullable(string scope, string name, ResourceIdKind kind)
         {
-            return string.IsNullOrEmpty(name) ? null : (ResourceId?)new ResourceId(scope, name, kind);
+            return string.IsNullOrEmpty(name) ? null : new ResourceId(scope, name, kind);
         }
 
         internal static bool IsObsolete(ResourceMetadata metadata)

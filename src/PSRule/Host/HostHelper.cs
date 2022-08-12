@@ -358,6 +358,7 @@ namespace PSRule.Host
 
             try
             {
+                context.EnterSourceScope(ruleBlock.Source);
                 var invokeResult = condition.If();
                 if (invokeResult == null)
                 {
@@ -390,6 +391,11 @@ namespace PSRule.Host
             {
                 context.Error(ex);
             }
+            // TODO: Exit scope
+            //finally
+            //{
+            //    context.ExitSourceScope();
+            //}
         }
 
         private static RuleException ThrowDuplicateRuleId(IDependencyTarget block)
