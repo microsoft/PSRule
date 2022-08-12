@@ -13,6 +13,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since v2.3.1:
+
+- Bug fixes:
+  - Fixes lost scope for rules by @BernieWhite.
+    [#1214](https://github.com/microsoft/PSRule/issues/1214)
+
 ## v2.3.1
 
 What's changed since v2.3.0:

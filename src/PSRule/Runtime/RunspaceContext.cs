@@ -575,6 +575,8 @@ namespace PSRule.Runtime
 
         internal SourceScope EnterSourceScope(SourceFile source)
         {
+            // TODO: Look at scope caching, and a scope stack.
+
             if (!source.Exists())
                 throw new FileNotFoundException(PSRuleResources.ScriptNotFound, source.Path);
 
@@ -591,6 +593,8 @@ namespace PSRule.Runtime
 
         internal void ExitSourceScope()
         {
+            // Look at scope poping and validation.
+
             Source = null;
         }
 
@@ -617,8 +621,12 @@ namespace PSRule.Runtime
 
         public bool TrySelector(string name)
         {
-            name = ResourceHelper.GetIdString(Source.File.Module, name);
-            if (TargetObject == null || Pipeline == null || !Pipeline.Selector.TryGetValue(name, out var selector))
+            return TrySelector(ResourceHelper.GetRuleId(Source.File.Module, name, ResourceIdKind.Unknown));
+        }
+
+        public bool TrySelector(ResourceId id)
+        {
+            if (TargetObject == null || Pipeline == null || !Pipeline.Selector.TryGetValue(id.Value, out var selector))
                 return false;
 
             var annotation = TargetObject.GetAnnotation<SelectorTargetAnnotation>();
