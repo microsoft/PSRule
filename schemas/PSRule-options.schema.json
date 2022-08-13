@@ -776,8 +776,8 @@
                 "url": {
                     "type": "string",
                     "title": "Repository URL",
-                    "description": "The URL to the repository.",
-                    "markdownDescription": "The URL to the repository."
+                    "description": "Sets the repository URL reported in output. By default, the repository URL is detected from environment variables set by the build system.",
+                    "markdownDescription": "Sets the repository URL reported in output. By default, the repository URL is detected from environment variables set by the build system. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#repositoryurl)"
                 }
             },
             "additionalProperties": false

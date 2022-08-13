@@ -1667,6 +1667,11 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
     }
 
     Context 'Read Repository.Url' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Repository.Url | Should -BeNullOrEmpty;
+        }
+
         It 'from Hashtable' {
             $option = New-PSRuleOption -Option @{ 'Repository.Url' = 'https://github.com/microsoft/PSRule.UnitTest' };
             $option.Repository.Url | Should -Be 'https://github.com/microsoft/PSRule.UnitTest';

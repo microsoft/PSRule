@@ -53,7 +53,7 @@ namespace PSRule.Pipeline.Output
         /// </remarks>
         private static IList<VersionControlDetails> GetVersionControl(RepositoryOption option)
         {
-            var repository = option.Url ?? (GitHelper.TryRepository(out var url) ? url : null);
+            var repository = option.Url;
             return new List<VersionControlDetails>()
             {
                 new VersionControlDetails
