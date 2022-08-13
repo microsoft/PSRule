@@ -13,6 +13,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.4.0-B0009 (pre-release)
+
 What's changed since v2.3.2:
 
 - Engineering:
