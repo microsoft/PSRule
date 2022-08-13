@@ -13,13 +13,21 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
-What's changed since v2.3.1:
+What's changed since v2.3.2:
 
 - Engineering:
   - Bump support projects to .NET 6 by @BernieWhite.
     [#1209](https://github.com/microsoft/PSRule/issues/1209)
   - Bump Microsoft.NET.Test.Sdk to v17.3.0.
     [#1213](https://github.com/microsoft/PSRule/pull/1208)
+
+## v2.3.2
+
+What's changed since v2.3.1:
+
+- Bug fixes:
+  - Fixes lost scope for rules by @BernieWhite.
+    [#1214](https://github.com/microsoft/PSRule/issues/1214)
 
 ## v2.3.1
 
