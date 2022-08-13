@@ -3,6 +3,7 @@
 
 using System;
 using System.Management.Automation;
+using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -18,7 +19,7 @@ namespace PSRule.Commands
         public string[] Type;
 
         [Parameter()]
-        public string[] With;
+        public ResourceId[] With;
 
         [Parameter()]
         public ScriptBlock If;

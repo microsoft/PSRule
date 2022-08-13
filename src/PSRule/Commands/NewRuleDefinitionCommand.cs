@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Management.Automation;
 using System.Threading;
 using PSRule.Definitions;
@@ -147,7 +148,7 @@ namespace PSRule.Commands
             var result = context.GetPowerShell();
             result.AddCommand(new CmdletInfo(CmdletName, typeof(InvokeRuleBlockCommand)));
             result.AddParameter(Cmdlet_TypeParameter, Type);
-            result.AddParameter(Cmdlet_WithParameter, With);
+            result.AddParameter(Cmdlet_WithParameter, GetScopedSelectors(source));
             result.AddParameter(Cmdlet_IfParameter, If);
             result.AddParameter(Cmdlet_BodyParameter, Body);
             result.AddParameter(Cmdlet_SourceParameter, source);
@@ -165,6 +166,11 @@ namespace PSRule.Commands
                     targetObject: null
                 ));
             }
+        }
+
+        private ResourceId[] GetScopedSelectors(SourceFile source)
+        {
+            return ResourceHelper.GetRuleId(source.Module, With, ResourceIdKind.Unknown);
         }
     }
 }
