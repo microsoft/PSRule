@@ -10,8 +10,8 @@ namespace PSRule
     /// Helper for working with Git and CI tools.
     /// </summary>
     /// <remarks>
-    /// Azure Pipelines: https://docs.microsoft.com/azure/devops/pipelines/build/variables
-    /// GitHub Actions: https://docs.github.com/actions/learn-github-actions/environment-variables#default-environment-variables
+    /// Docs for <seealso href="https://docs.microsoft.com/azure/devops/pipelines/build/variables">Azure Pipelines</seealso> and
+    /// <seealso href="https://docs.github.com/actions/learn-github-actions/environment-variables#default-environment-variables">GitHub Actions</seealso>.
     /// </remarks>
     internal static class GitHelper
     {

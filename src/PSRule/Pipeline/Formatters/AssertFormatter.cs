@@ -410,7 +410,8 @@ namespace PSRule.Pipeline.Formatters
             if (!Option.Output.Banner.GetValueOrDefault(BannerFormat.Default).HasFlag(BannerFormat.RepositoryInfo))
                 return;
 
-            if (!GitHelper.TryRepository(out var repository))
+            var repository = Option.Repository.Url;
+            if (string.IsNullOrEmpty(repository))
                 return;
 
             WriteLineFormat(FormatterStrings.Repository_Url, repository);

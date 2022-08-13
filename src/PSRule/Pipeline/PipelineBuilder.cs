@@ -193,6 +193,7 @@ namespace PSRule.Pipeline
             Option.Output = new OutputOption(option.Output);
             Option.Output.Outcome = Option.Output.Outcome ?? OutputOption.Default.Outcome;
             Option.Output.Banner = Option.Output.Banner ?? OutputOption.Default.Banner;
+            Option.Repository = GetRepository(Option.Repository);
             return this;
         }
 
@@ -353,6 +354,15 @@ namespace PSRule.Pipeline
                 result.AddRange(parent);
 
             return result.Count == 0 ? null : result.ToArray();
+        }
+
+        protected static RepositoryOption GetRepository(RepositoryOption repository)
+        {
+            var result = new RepositoryOption(repository);
+            if (string.IsNullOrEmpty(result.Url) && GitHelper.TryRepository(out var url))
+                result.Url = url;
+
+            return result;
         }
 
         protected PathFilter GetInputObjectSourceFilter()

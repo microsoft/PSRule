@@ -20,6 +20,9 @@ What's changed since v2.3.2:
     [#1209](https://github.com/microsoft/PSRule/issues/1209)
   - Bump Microsoft.NET.Test.Sdk to v17.3.0.
     [#1213](https://github.com/microsoft/PSRule/pull/1208)
+- Bug fixes:
+  - Fixed repository information not in output by @BernieWhite.
+    [#1219](https://github.com/microsoft/PSRule/issues/1219)
 
 ## v2.3.2
 
