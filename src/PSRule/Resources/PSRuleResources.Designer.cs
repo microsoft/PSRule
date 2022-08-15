@@ -331,7 +331,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not valid module can be found with that name..
+        ///   Looks up a localized string similar to No valid module can be found with that name..
         /// </summary>
         internal static string ModuleNotFound {
             get {

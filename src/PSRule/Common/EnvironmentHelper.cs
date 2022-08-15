@@ -40,6 +40,10 @@ namespace PSRule
     internal sealed class EnvironmentHelper
     {
         private readonly static char[] STRINGARRAY_SEPARATOR = new char[] { ';' };
+        private readonly static char[] WINDOWS_PATH_ENV_SEPARATOR = new char[] { ';' };
+        private readonly static char[] LINUX_PATH_ENV_SEPARATOR = new char[] { ':' };
+
+        private const string DEFAULT_CREDENTIAL_USERNAME = "na";
 
         public static readonly EnvironmentHelper Default = new EnvironmentHelper();
 
@@ -54,7 +58,7 @@ namespace PSRule
             if (!TryString(key, out var variable))
                 return false;
 
-            value = new NetworkCredential("na", variable).SecurePassword;
+            value = new NetworkCredential(DEFAULT_CREDENTIAL_USERNAME, variable).SecurePassword;
             return true;
         }
 
@@ -83,6 +87,17 @@ namespace PSRule
                 return false;
 
             value = variable.Split(STRINGARRAY_SEPARATOR, options: StringSplitOptions.RemoveEmptyEntries);
+            return value != null;
+        }
+
+        internal bool TryPathEnvironmentVariable(string key, out string[] value)
+        {
+            value = default;
+            if (!TryVariable(key, out var variable))
+                return false;
+
+            var separator = Environment.OSVersion.Platform == PlatformID.Win32NT ? WINDOWS_PATH_ENV_SEPARATOR : LINUX_PATH_ENV_SEPARATOR;
+            value = variable.Split(separator, options: StringSplitOptions.RemoveEmptyEntries);
             return value != null;
         }
 

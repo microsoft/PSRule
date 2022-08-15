@@ -80,29 +80,40 @@ namespace PSRule.Pipeline
 
         public bool ShouldLoadModule => _HostContext.GetAutoLoadingPreference() == PSModuleAutoLoadingPreference.All;
 
+        #region Logging
+
         public void VerboseScanSource(string path)
         {
-            if (!_Writer.ShouldWriteVerbose())
-                return;
-
-            _Writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ScanSource, path));
+            Log(PSRuleResources.ScanSource, path);
         }
 
         public void VerboseFoundModules(int count)
         {
-            if (!_Writer.ShouldWriteVerbose())
-                return;
-
-            _Writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.FoundModules, count));
+            Log(PSRuleResources.FoundModules, count);
         }
 
         public void VerboseScanModule(string moduleName)
         {
+            Log(PSRuleResources.ScanModule, moduleName);
+        }
+
+        private void Log(string message, params object[] args)
+        {
             if (!_Writer.ShouldWriteVerbose())
                 return;
 
-            _Writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ScanModule, moduleName));
+            _Writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, message, args));
         }
+
+        private void Debug(string message, params object[] args)
+        {
+            if (!_Writer.ShouldWriteDebug())
+                return;
+
+            _Writer.WriteDebug(string.Format(Thread.CurrentThread.CurrentCulture, message, args));
+        }
+
+        #endregion Logging
 
         /// <summary>
         /// Add loose files as a source.
@@ -151,6 +162,9 @@ namespace PSRule.Pipeline
         public void ModuleByName(string name)
         {
             var basePath = FindModule(name);
+            if (basePath == null)
+                throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
+
             var info = LoadManifest(basePath);
             if (info == null)
                 throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
@@ -169,13 +183,66 @@ namespace PSRule.Pipeline
 
         private string FindModule(string name)
         {
-            return PSRuleOption.GetRootedBasePath(Path.Combine(_LocalPath, "Modules", name));
+            return TryPackagedModule(name, out var path) ||
+                TryInstalledModule(name, out path) ? path : null;
+        }
+
+        /// <summary>
+        /// Try to find a packaged module found relative to the tool.
+        /// </summary>
+        private bool TryPackagedModule(string name, out string path)
+        {
+            Log($"Looking for modules in: {_LocalPath}");
+            path = PSRuleOption.GetRootedBasePath(Path.Combine(_LocalPath, "Modules", name));
+            return System.IO.Directory.Exists(path);
+        }
+
+        /// <summary>
+        /// Try to find a module installed into PowerShell.
+        /// </summary>
+        private bool TryInstalledModule(string name, out string path)
+        {
+            path = null;
+            if (!EnvironmentHelper.Default.TryPathEnvironmentVariable("PSModulePath", out var searchPaths))
+                return false;
+
+            var unsorted = new List<string>();
+            Log("Looking for modules installed to PowerShell.");
+            for (var i = 0; i < searchPaths.Length; i++)
+            {
+                Debug($"Looking for modules search paths: {searchPaths[i]}");
+                var searchPath = PSRuleOption.GetRootedBasePath(Path.Combine(searchPaths[i], name));
+                if (System.IO.Directory.Exists(searchPath))
+                {
+                    foreach (var versionPath in System.IO.Directory.EnumerateDirectories(searchPath))
+                    {
+                        var manifestPath = Path.Combine(versionPath, GetManifestName(name));
+                        if (File.Exists(manifestPath))
+                            unsorted.Add(versionPath);
+                    }
+                }
+            }
+            if (unsorted.Count == 0)
+                return false;
+
+            var sorted = SortModulePath(unsorted);
+            if (sorted.Length > 0)
+                path = sorted[0];
+
+            return sorted.Length > 0;
+        }
+
+        private static string[] SortModulePath(IEnumerable<string> values)
+        {
+            var results = values.ToArray();
+            Array.Sort(results, new ModulePathComparer());
+            return results;
         }
 
         private static Source.ModuleInfo LoadManifest(string basePath)
         {
             var name = Path.GetFileName(Path.GetDirectoryName(basePath));
-            var path = Path.Combine(basePath, string.Concat(name, ".psd1"));
+            var path = Path.Combine(basePath, GetManifestName(name));
             if (!File.Exists(path))
                 return null;
 
@@ -196,10 +263,17 @@ namespace PSRule.Pipeline
             var prerelease = psData["Prerelease"] as string;
             var requiredAssemblies = manifest["RequiredAssemblies"] as Array;
 
-            foreach (var a in requiredAssemblies.OfType<string>())
-                Assembly.LoadFile(Path.Combine(basePath, a));
-
+            if (requiredAssemblies != null)
+            {
+                foreach (var a in requiredAssemblies.OfType<string>())
+                    Assembly.LoadFile(Path.Combine(basePath, a));
+            }
             return new Source.ModuleInfo(basePath, name, version, projectUri, guid, companyName, prerelease);
+        }
+
+        private static string GetManifestName(string name)
+        {
+            return string.Concat(name, ".psd1");
         }
 
         /// <summary>

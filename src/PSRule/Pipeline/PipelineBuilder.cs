@@ -10,11 +10,11 @@ using System.Linq;
 using System.Management.Automation;
 using System.Reflection;
 using PSRule.Configuration;
+using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Pipeline.Output;
 using PSRule.Resources;
-using PSRule.Runtime;
 
 namespace PSRule.Pipeline
 {
@@ -23,6 +23,16 @@ namespace PSRule.Pipeline
     /// </summary>
     public static class PipelineBuilder
     {
+        /// <summary>
+        /// Create a builder for an Assert pipeline.
+        /// </summary>
+        /// <remarks>
+        /// Assert pipelines process objects with rules and produce text-based output suitable for output to a CI pipeline.
+        /// </remarks>
+        /// <param name="source">An array of sources.</param>
+        /// <param name="option">Options that configure PSRule.</param>
+        /// <param name="hostContext">An implementation of a host context that will recieve output and results.</param>
+        /// <returns>A builder object to configure the pipeline.</returns>
         public static IInvokePipelineBuilder Assert(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
             var pipeline = new AssertPipelineBuilder(source, hostContext);
@@ -30,6 +40,16 @@ namespace PSRule.Pipeline
             return pipeline;
         }
 
+        /// <summary>
+        /// Create a builder for an Invoke pipeline.
+        /// </summary>
+        /// <remarks>
+        /// Invoke piplines process objects and produce records indicating the outcome of each rule.
+        /// </remarks>
+        /// <param name="source">An array of sources.</param>
+        /// <param name="option">Options that configure PSRule.</param>
+        /// <param name="hostContext">An implementation of a host context that will recieve output and results.</param>
+        /// <returns>A builder object to configure the pipeline.</returns>
         public static IInvokePipelineBuilder Invoke(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
             var pipeline = new InvokeRulePipelineBuilder(source, hostContext);
@@ -86,6 +106,9 @@ namespace PSRule.Pipeline
         }
     }
 
+    /// <summary>
+    /// A helper to build a PSRule pipeline.
+    /// </summary>
     public interface IPipelineBuilder
     {
         /// <summary>
@@ -94,12 +117,21 @@ namespace PSRule.Pipeline
         IPipelineBuilder Configure(PSRuleOption option);
 
         /// <summary>
+        /// Configure the pipeline to use a specific baseline.
+        /// </summary>
+        /// <param name="baseline">A baseline option or the name of a baseline.</param>
+        void Baseline(BaselineOption baseline);
+
+        /// <summary>
         /// Build the pipeline.
         /// </summary>
         /// <param name="writer">Optionally specify a custom writer which will handle output processing.</param>
         IPipeline Build(IPipelineWriter writer = null);
     }
 
+    /// <summary>
+    /// An instance of a PSRule pipeline.
+    /// </summary>
     public interface IPipeline : IDisposable
     {
         /// <summary>
@@ -155,6 +187,7 @@ namespace PSRule.Pipeline
             VisitTargetObject = PipelineReceiverActions.PassThru;
         }
 
+        /// <inheritdoc/>
         public void Name(string[] name)
         {
             if (name == null || name.Length == 0)
@@ -163,6 +196,7 @@ namespace PSRule.Pipeline
             _Include = name;
         }
 
+        /// <inheritdoc/>
         public void Tag(Hashtable tag)
         {
             if (tag == null || tag.Count == 0)
@@ -171,6 +205,7 @@ namespace PSRule.Pipeline
             _Tag = tag;
         }
 
+        /// <inheritdoc/>
         public void Convention(string[] convention)
         {
             if (convention == null || convention.Length == 0)
@@ -179,6 +214,7 @@ namespace PSRule.Pipeline
             _Convention = convention;
         }
 
+        /// <inheritdoc/>
         public virtual IPipelineBuilder Configure(PSRuleOption option)
         {
             if (option == null)
@@ -197,12 +233,20 @@ namespace PSRule.Pipeline
             return this;
         }
 
+        /// <inheritdoc/>
         public abstract IPipeline Build(IPipelineWriter writer = null);
 
         /// <summary>
         /// Use a baseline, either by name or by path.
         /// </summary>
+        [Obsolete()]
         public void UseBaseline(BaselineOption baseline)
+        {
+            Baseline(baseline);
+        }
+
+        /// <inheritdoc/>
+        public void Baseline(BaselineOption baseline)
         {
             if (baseline == null)
                 return;

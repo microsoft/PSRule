@@ -3,7 +3,7 @@
 
 using System.CommandLine;
 using System.IO;
-using PSRule.Tool.Resource;
+using PSRule.Tool.Resources;
 
 namespace PSRule.Tool
 {
@@ -17,6 +17,7 @@ namespace PSRule.Tool
         private readonly Option<string> _OutputFormat;
         private readonly Option<string[]> _InputPath;
         private readonly Option<string[]> _Module;
+        private readonly Option<string> _Baseline;
 
         private ClientBuilder(RootCommand cmd)
         {
@@ -48,6 +49,9 @@ namespace PSRule.Tool
             _Module = new Option<string[]>(
                 new string[] { "-m", "--module" }
             );
+            _Baseline = new Option<string>(
+                new string[] { "--baseline" }
+            );
 
             cmd.AddGlobalOption(_Option);
             cmd.AddGlobalOption(_Verbose);
@@ -58,9 +62,13 @@ namespace PSRule.Tool
 
         public static Command New()
         {
-            var cmd = new RootCommand();
+            var cmd = new RootCommand(CmdStrings.Cmd_Description)
+            {
+                Name = "ps-rule"
+            };
             var builder = new ClientBuilder(cmd);
             builder.AddAnalyze();
+            builder.AddRestore();
             return builder.Command;
         }
 
@@ -72,6 +80,7 @@ namespace PSRule.Tool
             cmd.AddOption(_OutputFormat);
             cmd.AddOption(_InputPath);
             cmd.AddOption(_Module);
+            cmd.AddOption(_Baseline);
             cmd.SetHandler((invocation) =>
             {
                 var option = new AnalyzerOptions
@@ -80,11 +89,31 @@ namespace PSRule.Tool
                     InputPath = invocation.ParseResult.GetValueForOption(_InputPath),
                     Module = invocation.ParseResult.GetValueForOption(_Module),
                     Option = invocation.ParseResult.GetValueForOption(_Option),
+                    Baseline = invocation.ParseResult.GetValueForOption(_Baseline),
                     Verbose = invocation.ParseResult.GetValueForOption(_Verbose),
                     Debug = invocation.ParseResult.GetValueForOption(_Debug),
                 };
                 var client = new ClientContext();
                 ClientHelper.RunAnalyze(option, client, invocation);
+            });
+            Command.AddCommand(cmd);
+        }
+
+        private void AddRestore()
+        {
+            var cmd = new Command("restore", CmdStrings.Restore_Description);
+            cmd.AddOption(_Path);
+            cmd.SetHandler((invocation) =>
+            {
+                var option = new RestoreOptions
+                {
+                    Path = invocation.ParseResult.GetValueForOption(_Path),
+                    Option = invocation.ParseResult.GetValueForOption(_Option),
+                    Verbose = invocation.ParseResult.GetValueForOption(_Verbose),
+                    Debug = invocation.ParseResult.GetValueForOption(_Debug),
+                };
+                var client = new ClientContext();
+                ClientHelper.RunRestore(option, client, invocation);
             });
             Command.AddCommand(cmd);
         }

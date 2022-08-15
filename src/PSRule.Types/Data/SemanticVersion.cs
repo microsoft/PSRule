@@ -6,12 +6,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
-namespace PSRule.Runtime
+namespace PSRule.Data
 {
+    public interface IVersionConstraint
+    {
+        bool Equals(SemanticVersion.Version version);
+    }
+
     /// <summary>
     /// A helper for comparing semantic version strings.
     /// </summary>
-    internal static class SemanticVersion
+    public static class SemanticVersion
     {
         private const char MINOR = '^';
         private const char PATCH = '~';
@@ -71,12 +76,7 @@ namespace PSRule.Runtime
             Prerelease = 1
         }
 
-        internal interface IConstraint
-        {
-            bool Equals(Version version);
-        }
-
-        internal sealed class VersionConstraint : IConstraint
+        public sealed class VersionConstraint : IVersionConstraint
         {
             private List<ConstraintExpression> _Constraints;
 
@@ -135,7 +135,7 @@ namespace PSRule.Runtime
         }
 
         [DebuggerDisplay("{_Major}.{_Minor}.{_Patch}")]
-        internal sealed class ConstraintExpression : IConstraint
+        internal sealed class ConstraintExpression : IVersionConstraint
         {
             private readonly ComparisonOperator _Flag;
             private readonly int _Major;
@@ -159,7 +159,7 @@ namespace PSRule.Runtime
 
             public JoinOperator Join { get; }
 
-            public static bool TryParse(string value, out IConstraint constraint)
+            public static bool TryParse(string value, out IVersionConstraint constraint)
             {
                 return TryParseConstraint(value, out constraint);
             }
@@ -311,7 +311,7 @@ namespace PSRule.Runtime
             }
         }
 
-        internal sealed class Version : IComparable<Version>, IEquatable<Version>
+        public sealed class Version : IComparable<Version>, IEquatable<Version>
         {
             public readonly int Major;
             public readonly int Minor;
@@ -333,16 +333,19 @@ namespace PSRule.Runtime
                 return TryParseVersion(value, out version);
             }
 
+            /// <inheritdoc/>
             public override string ToString()
             {
                 return string.Concat(Major, '.', Minor, '.', Patch);
             }
 
+            /// <inheritdoc/>
             public override bool Equals(object obj)
             {
                 return obj is Version version && Equals(version);
             }
 
+            /// <inheritdoc/>
             public override int GetHashCode()
             {
                 unchecked // Overflow is fine
@@ -389,7 +392,7 @@ namespace PSRule.Runtime
         }
 
         [DebuggerDisplay("{Value}")]
-        internal sealed class PR
+        public sealed class PR
         {
             internal static readonly PR Empty = new PR();
             private static readonly char[] SEPARATORS = new char[] { SEPARATOR };
@@ -454,16 +457,19 @@ namespace PSRule.Runtime
                 return left.Length > right.Length ? 1 : -1;
             }
 
+            /// <inheritdoc/>
             public override bool Equals(object obj)
             {
                 return obj is PR prerelease && Value.Equals(prerelease.Value);
             }
 
+            /// <inheritdoc/>
             public override int GetHashCode()
             {
                 return Value.GetHashCode();
             }
 
+            /// <inheritdoc/>
             public override string ToString()
             {
                 return Value.ToString();
@@ -722,7 +728,10 @@ namespace PSRule.Runtime
             }
         }
 
-        public static bool TryParseConstraint(string value, out IConstraint constraint, bool includePrerelease = false)
+        /// <summary>
+        /// Try to parse a version constraint from the provided string.
+        /// </summary>
+        public static bool TryParseConstraint(string value, out IVersionConstraint constraint, bool includePrerelease = false)
         {
             var c = new VersionConstraint();
             constraint = c;
@@ -748,6 +757,9 @@ namespace PSRule.Runtime
             return true;
         }
 
+        /// <summary>
+        /// Try to parse a version from the provided string.
+        /// </summary>
         public static bool TryParseVersion(string value, out Version version)
         {
             version = null;

@@ -45,7 +45,7 @@ namespace PSRule.Pipeline
         public static IInvokePipelineBuilder Assert(string[] module, PSRuleOption option, IHostContext hostContext)
         {
             var sourcePipeline = new SourcePipelineBuilder(hostContext, option);
-            for (var i = 0; i < module.Length; i++)
+            for (var i = 0; module != null && i < module.Length; i++)
                 sourcePipeline.ModuleByName(module[i]);
 
             var source = sourcePipeline.Build();

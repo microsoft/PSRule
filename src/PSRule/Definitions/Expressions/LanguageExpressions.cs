@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using PSRule.Configuration;
+using PSRule.Data;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;

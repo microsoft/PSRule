@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
+using PSRule.Data;
 
 namespace PSRule.Configuration
 {
@@ -31,11 +32,25 @@ namespace PSRule.Configuration
             : base(option) { }
 
         /// <summary>
+        /// Returns an array of Key/Values.
+        /// </summary>
+        public ModuleConstraint[] ToArray()
+        {
+            var result = new List<ModuleConstraint>();
+            foreach (var kv in this)
+            {
+                if (SemanticVersion.TryParseConstraint(kv.Value, out var constraint))
+                    result.Add(new ModuleConstraint(kv.Key, constraint));
+            }
+            return result.ToArray();
+        }
+
+        /// <summary>
         /// Load Requires option from environment variables.
         /// </summary>
         internal void Load(EnvironmentHelper env)
         {
-            base.Load(ENVIRONMENT_PREFIX, env, ConvertUnderscore);
+            Load(ENVIRONMENT_PREFIX, env, ConvertUnderscore);
         }
 
         /// <summary>
@@ -43,7 +58,7 @@ namespace PSRule.Configuration
         /// </summary>
         internal void Load(IDictionary<string, object> dictionary)
         {
-            base.Load(DICTIONARY_PREFIX, dictionary);
+            Load(DICTIONARY_PREFIX, dictionary);
         }
 
         /// <summary>

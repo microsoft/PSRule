@@ -7,6 +7,10 @@ using PSRule.Definitions.Baselines;
 
 namespace PSRule.Configuration
 {
+    /// <summary>
+    /// A subset of options that can be defined within a baseline.
+    /// These options can be passes as a baseline for use within a pipeline.
+    /// </summary>
     public class BaselineOption
     {
         internal sealed class BaselineRef : BaselineOption
@@ -37,16 +41,31 @@ namespace PSRule.Configuration
             public RuleOption Rule { get; set; }
         }
 
+        /// <summary>
+        /// Creates a baseline option from a hashtable of key/ values.
+        /// </summary>
+        /// <param name="hashtable">A hashtable of key/ values.</param>
+        /// <returns>A baseline option composed of provided key/ values.</returns>
         public static implicit operator BaselineOption(Hashtable hashtable)
         {
             return FromHashtable(hashtable);
         }
 
+        /// <summary>
+        /// Creates a reference to a baseline by name which is resolved at runtime.
+        /// </summary>
+        /// <param name="value">The name of the baseline.</param>
+        /// <returns>A reference to a baseline option.</returns>
         public static implicit operator BaselineOption(string value)
         {
             return FromString(value);
         }
 
+        /// <summary>
+        /// Creates a baseline option from a hashtable of key/ values.
+        /// </summary>
+        /// <param name="hashtable">A hashtable of key/ values.</param>
+        /// <returns>A baseline option composed of provided key/ values.</returns>
         public static BaselineOption FromHashtable(Hashtable hashtable)
         {
             var option = new BaselineInline();
@@ -59,9 +78,14 @@ namespace PSRule.Configuration
             return option;
         }
 
+        /// <summary>
+        /// Creates a reference to a baseline by name which is resolved at runtime.
+        /// </summary>
+        /// <param name="value">The name of the baseline.</param>
+        /// <returns>A reference to a baseline option.</returns>
         public static BaselineOption FromString(string value)
         {
-            return new BaselineRef(value);
+            return string.IsNullOrEmpty(value) ? null : new BaselineRef(value);
         }
 
         internal static void Load(IBaselineSpec option, EnvironmentHelper env)
