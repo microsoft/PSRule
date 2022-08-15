@@ -728,6 +728,9 @@ namespace PSRule.Data
             }
         }
 
+        /// <summary>
+        /// Try to parse a version constraint from the provided string.
+        /// </summary>
         public static bool TryParseConstraint(string value, out IVersionConstraint constraint, bool includePrerelease = false)
         {
             var c = new VersionConstraint();
@@ -754,6 +757,9 @@ namespace PSRule.Data
             return true;
         }
 
+        /// <summary>
+        /// Try to parse a version from the provided string.
+        /// </summary>
         public static bool TryParseVersion(string value, out Version version)
         {
             version = null;

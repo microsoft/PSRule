@@ -8,6 +8,9 @@ namespace PSRule
 {
     public sealed class SemanticVersionTests
     {
+        /// <summary>
+        /// Test parsing of versions.
+        /// </summary>
         [Fact]
         public void Version()
         {
@@ -31,6 +34,30 @@ namespace PSRule
             Assert.Equal("7223b39", actual3.Build);
         }
 
+        /// <summary>
+        /// Test ordering of versions by comparison.
+        /// </summary>
+        [Fact]
+        public void VersionOrder()
+        {
+            SemanticVersion.TryParseVersion("1.0.0", out var actual1);
+            SemanticVersion.TryParseVersion("1.2.0", out var actual2);
+            SemanticVersion.TryParseVersion("10.0.0", out var actual3);
+            SemanticVersion.TryParseVersion("1.0.2", out var actual4);
+
+            Assert.True(actual1.CompareTo(actual1) == 0);
+            Assert.True(actual1.CompareTo(actual2) < 0);
+            Assert.True(actual1.CompareTo(actual3) < 0);
+            Assert.True(actual1.CompareTo(actual4) < 0);
+            Assert.True(actual2.CompareTo(actual2) == 0);
+            Assert.True(actual2.CompareTo(actual1) > 0);
+            Assert.True(actual2.CompareTo(actual3) < 0);
+            Assert.True(actual2.CompareTo(actual4) > 0);
+        }
+
+        /// <summary>
+        /// Test parsing of constraints.
+        /// </summary>
         [Fact]
         public void Constraint()
         {
@@ -160,6 +187,9 @@ namespace PSRule
             Assert.False(actual21.Equals(version4));
         }
 
+        /// <summary>
+        /// Test parsing and order of pre-releases.
+        /// </summary>
         [Fact]
         public void Prerelease()
         {
