@@ -13,6 +13,10 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.4.0-B0022 (pre-release)
+
+What's changed since pre-release v2.4.0-B0009:
+
 - Engineering:
   - Updates to PSRule engine API by @BernieWhite.
     [#1152](https://github.com/microsoft/PSRule/issues/1152)
@@ -28,7 +32,7 @@ What's changed since v2.3.2:
   - Bump support projects to .NET 6 by @BernieWhite.
     [#1209](https://github.com/microsoft/PSRule/issues/1209)
   - Bump Microsoft.NET.Test.Sdk to v17.3.0.
-    [#1213](https://github.com/microsoft/PSRule/pull/1208)
+    [#1213](https://github.com/microsoft/PSRule/pull/1213)
 - Bug fixes:
   - Fixed repository information not in output by @BernieWhite.
     [#1219](https://github.com/microsoft/PSRule/issues/1219)
