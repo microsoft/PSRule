@@ -8,11 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PSRule.Tool.Resource
- {
+namespace PSRule.Tool.Resources {
     using System;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,104 +22,104 @@ namespace PSRule.Tool.Resource
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class CmdStrings
-    {
-
+    internal class CmdStrings {
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CmdStrings()
-        {
+        internal CmdStrings() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager
-        {
-            get
-            {
-                if (object.ReferenceEquals(resourceMan, null))
-                {
+        internal static global::System.Resources.ResourceManager ResourceManager {
+            get {
+                if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PSRule.Tool.Resources.CmdStrings", typeof(CmdStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture
-        {
-            get
-            {
+        internal static global::System.Globalization.CultureInfo Culture {
+            get {
                 return resourceCulture;
             }
-            set
-            {
+            set {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Run rule analysis.
+        ///   Looks up a localized string similar to Run rule analysis..
         /// </summary>
-        internal static string Analyze_Description
-        {
-            get
-            {
+        internal static string Analyze_Description {
+            get {
                 return ResourceManager.GetString("Analyze_Description", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PSRule CLI.
+        /// </summary>
+        internal static string Cmd_Description {
+            get {
+                return ResourceManager.GetString("Cmd_Description", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Return debug output.
         /// </summary>
-        internal static string Options_Debug_Description
-        {
-            get
-            {
+        internal static string Options_Debug_Description {
+            get {
                 return ResourceManager.GetString("Options_Debug_Description", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to An options file.
         /// </summary>
-        internal static string Options_Option_Description
-        {
-            get
-            {
+        internal static string Options_Option_Description {
+            get {
                 return ResourceManager.GetString("Options_Option_Description", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string Options_Path_Description
-        {
-            get
-            {
+        internal static string Options_Path_Description {
+            get {
                 return ResourceManager.GetString("Options_Path_Description", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Return verbose output.
         /// </summary>
-        internal static string Options_Verbose_Description
-        {
-            get
-            {
+        internal static string Options_Verbose_Description {
+            get {
                 return ResourceManager.GetString("Options_Verbose_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore PSRule modules..
+        /// </summary>
+        internal static string Restore_Description {
+            get {
+                return ResourceManager.GetString("Restore_Description", resourceCulture);
             }
         }
     }

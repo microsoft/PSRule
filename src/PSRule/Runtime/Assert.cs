@@ -1353,7 +1353,7 @@ namespace PSRule.Runtime
         {
             result = null;
             value = null;
-            if (ExpressionHelpers.TryString(fieldValue, out var sversion) && Runtime.SemanticVersion.TryParseVersion(sversion, out value))
+            if (ExpressionHelpers.TryString(fieldValue, out var sversion) && SemanticVersion.TryParseVersion(sversion, out value))
                 return false;
 
             result = Fail(operand, ReasonStrings.Version, fieldValue);

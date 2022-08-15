@@ -1,6 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Data;
 using Xunit;
 
 namespace PSRule
@@ -10,20 +11,20 @@ namespace PSRule
         [Fact]
         public void Version()
         {
-            Assert.True(Runtime.SemanticVersion.TryParseVersion("1.2.3-alpha.3+7223b39", out var actual1));
+            Assert.True(SemanticVersion.TryParseVersion("1.2.3-alpha.3+7223b39", out var actual1));
             Assert.Equal(1, actual1.Major);
             Assert.Equal(2, actual1.Minor);
             Assert.Equal(3, actual1.Patch);
             Assert.Equal("alpha.3", actual1.Prerelease.Value);
             Assert.Equal("7223b39", actual1.Build);
 
-            Assert.True(Runtime.SemanticVersion.TryParseVersion("v1.2.3-alpha.3", out var actual2));
+            Assert.True(SemanticVersion.TryParseVersion("v1.2.3-alpha.3", out var actual2));
             Assert.Equal(1, actual2.Major);
             Assert.Equal(2, actual2.Minor);
             Assert.Equal(3, actual2.Patch);
             Assert.Equal("alpha.3", actual2.Prerelease.Value);
 
-            Assert.True(Runtime.SemanticVersion.TryParseVersion("v1.2.3+7223b39", out var actual3));
+            Assert.True(SemanticVersion.TryParseVersion("v1.2.3+7223b39", out var actual3));
             Assert.Equal(1, actual3.Major);
             Assert.Equal(2, actual3.Minor);
             Assert.Equal(3, actual3.Patch);
@@ -34,37 +35,37 @@ namespace PSRule
         public void Constraint()
         {
             // Versions
-            Assert.True(Runtime.SemanticVersion.TryParseVersion("1.2.3", out var version1));
-            Assert.True(Runtime.SemanticVersion.TryParseVersion("1.2.3-alpha.3+7223b39", out var version2));
-            Assert.True(Runtime.SemanticVersion.TryParseVersion("3.4.5-alpha.9", out var version3));
-            Assert.True(Runtime.SemanticVersion.TryParseVersion("3.4.5", out var version4));
-            Assert.False(Runtime.SemanticVersion.TryParseVersion("1.2.3-", out var _));
-            Assert.True(Runtime.SemanticVersion.TryParseVersion("1.2.3-0", out var _));
-            Assert.False(Runtime.SemanticVersion.TryParseVersion("1.2.3-0123", out var _));
-            Assert.True(Runtime.SemanticVersion.TryParseVersion("1.2.3-0A", out var _));
+            Assert.True(SemanticVersion.TryParseVersion("1.2.3", out var version1));
+            Assert.True(SemanticVersion.TryParseVersion("1.2.3-alpha.3+7223b39", out var version2));
+            Assert.True(SemanticVersion.TryParseVersion("3.4.5-alpha.9", out var version3));
+            Assert.True(SemanticVersion.TryParseVersion("3.4.5", out var version4));
+            Assert.False(SemanticVersion.TryParseVersion("1.2.3-", out var _));
+            Assert.True(SemanticVersion.TryParseVersion("1.2.3-0", out var _));
+            Assert.False(SemanticVersion.TryParseVersion("1.2.3-0123", out var _));
+            Assert.True(SemanticVersion.TryParseVersion("1.2.3-0A", out var _));
 
             // Constraints
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("1.2.3", out var actual1));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("1.2.3-alpha.3", out var actual2));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint(">1.2.3-alpha.3", out var actual3));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint(">1.2.3-alpha.1", out var actual4));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("<1.2.3-beta", out var actual5));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("^1.2.3-alpha", out var actual6));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("<3.4.6", out var actual7));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("=v1.2.3", out var actual8));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint(">=v1.2.3", out var actual9));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint(">=v1.2.3-0", out var actual10));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("<3.4.5", out var actual11));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("<3.4.5-9999999999", out var actual12));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("^1.0.0", out var actual13));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("<1.2.3-0", out var actual14));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("1.2.3|| >=3.4.5-0 3.4.5", out var actual15));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("1.2.3 ||>=3.4.5-0 || 3.4.5", out var actual16));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("1.2.3||3.4.5", out var actual17));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint(">=1.2.3", out var actual18, includePrerelease: true));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("<=3.4.5-0", out var actual19, includePrerelease: true));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("@pre >=1.2.3", out var actual20));
-            Assert.True(Runtime.SemanticVersion.TryParseConstraint("@prerelease <=3.4.5-0", out var actual21));
+            Assert.True(SemanticVersion.TryParseConstraint("1.2.3", out var actual1));
+            Assert.True(SemanticVersion.TryParseConstraint("1.2.3-alpha.3", out var actual2));
+            Assert.True(SemanticVersion.TryParseConstraint(">1.2.3-alpha.3", out var actual3));
+            Assert.True(SemanticVersion.TryParseConstraint(">1.2.3-alpha.1", out var actual4));
+            Assert.True(SemanticVersion.TryParseConstraint("<1.2.3-beta", out var actual5));
+            Assert.True(SemanticVersion.TryParseConstraint("^1.2.3-alpha", out var actual6));
+            Assert.True(SemanticVersion.TryParseConstraint("<3.4.6", out var actual7));
+            Assert.True(SemanticVersion.TryParseConstraint("=v1.2.3", out var actual8));
+            Assert.True(SemanticVersion.TryParseConstraint(">=v1.2.3", out var actual9));
+            Assert.True(SemanticVersion.TryParseConstraint(">=v1.2.3-0", out var actual10));
+            Assert.True(SemanticVersion.TryParseConstraint("<3.4.5", out var actual11));
+            Assert.True(SemanticVersion.TryParseConstraint("<3.4.5-9999999999", out var actual12));
+            Assert.True(SemanticVersion.TryParseConstraint("^1.0.0", out var actual13));
+            Assert.True(SemanticVersion.TryParseConstraint("<1.2.3-0", out var actual14));
+            Assert.True(SemanticVersion.TryParseConstraint("1.2.3|| >=3.4.5-0 3.4.5", out var actual15));
+            Assert.True(SemanticVersion.TryParseConstraint("1.2.3 ||>=3.4.5-0 || 3.4.5", out var actual16));
+            Assert.True(SemanticVersion.TryParseConstraint("1.2.3||3.4.5", out var actual17));
+            Assert.True(SemanticVersion.TryParseConstraint(">=1.2.3", out var actual18, includePrerelease: true));
+            Assert.True(SemanticVersion.TryParseConstraint("<=3.4.5-0", out var actual19, includePrerelease: true));
+            Assert.True(SemanticVersion.TryParseConstraint("@pre >=1.2.3", out var actual20));
+            Assert.True(SemanticVersion.TryParseConstraint("@prerelease <=3.4.5-0", out var actual21));
 
             // Version1 - 1.2.3
             Assert.True(actual1.Equals(version1));
@@ -162,14 +163,14 @@ namespace PSRule
         [Fact]
         public void Prerelease()
         {
-            var actual1 = new Runtime.SemanticVersion.PR(null);
-            var actual2 = new Runtime.SemanticVersion.PR("alpha");
-            var actual3 = new Runtime.SemanticVersion.PR("alpha.1");
-            var actual4 = new Runtime.SemanticVersion.PR("alpha.beta");
-            var actual5 = new Runtime.SemanticVersion.PR("beta");
-            var actual6 = new Runtime.SemanticVersion.PR("beta.2");
-            var actual7 = new Runtime.SemanticVersion.PR("beta.11");
-            var actual8 = new Runtime.SemanticVersion.PR("rc.1");
+            var actual1 = new SemanticVersion.PR(null);
+            var actual2 = new SemanticVersion.PR("alpha");
+            var actual3 = new SemanticVersion.PR("alpha.1");
+            var actual4 = new SemanticVersion.PR("alpha.beta");
+            var actual5 = new SemanticVersion.PR("beta");
+            var actual6 = new SemanticVersion.PR("beta.2");
+            var actual7 = new SemanticVersion.PR("beta.11");
+            var actual8 = new SemanticVersion.PR("rc.1");
 
             Assert.True(actual1.CompareTo(actual1) == 0);
             Assert.True(actual1.CompareTo(actual2) > 0);

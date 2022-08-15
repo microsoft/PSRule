@@ -39,7 +39,8 @@ namespace PSRule
 
     internal sealed class EnvironmentHelper
     {
-        private readonly static char[] STRINGARRAY_SEPARATOR = new char[] { ';' };
+        private readonly static char[] WINDOWS_STRINGARRAY_SEPARATOR = new char[] { ';' };
+        private readonly static char[] LINUX_STRINGARRAY_SEPARATOR = new char[] { ':' };
 
         public static readonly EnvironmentHelper Default = new EnvironmentHelper();
 
@@ -82,7 +83,8 @@ namespace PSRule
             if (!TryVariable(key, out var variable))
                 return false;
 
-            value = variable.Split(STRINGARRAY_SEPARATOR, options: StringSplitOptions.RemoveEmptyEntries);
+            var separator = Environment.OSVersion.Platform == PlatformID.Win32NT ? WINDOWS_STRINGARRAY_SEPARATOR : LINUX_STRINGARRAY_SEPARATOR;
+            value = variable.Split(separator, options: StringSplitOptions.RemoveEmptyEntries);
             return value != null;
         }
 

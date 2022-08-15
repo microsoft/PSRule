@@ -13,6 +13,13 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+- Engineering:
+  - Updates to PSRule engine API by @BernieWhite.
+    [#1152](https://github.com/microsoft/PSRule/issues/1152)
+    - Added tool support for baselines parameter.
+    - Added module path discovery.
+    - Added output for verbose and debug messages.
+
 ## v2.4.0-B0009 (pre-release)
 
 What's changed since v2.3.2:

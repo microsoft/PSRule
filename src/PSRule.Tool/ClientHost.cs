@@ -22,6 +22,17 @@ namespace PSRule.Tool
             _Debug = debug;
         }
 
+        public override ActionPreference GetPreferenceVariable(string variableName)
+        {
+            if (variableName == "VerbosePreference")
+                return _Verbose ? ActionPreference.Continue : ActionPreference.SilentlyContinue;
+
+            if (variableName == "DebugPreference")
+                return _Debug ? ActionPreference.Continue : ActionPreference.SilentlyContinue;
+
+            return base.GetPreferenceVariable(variableName);
+        }
+
         public override void Error(ErrorRecord errorRecord)
         {
             _Invocation.Console.Error.WriteLine(errorRecord.Exception.Message);
@@ -41,6 +52,22 @@ namespace PSRule.Tool
         {
             if (informationRecord?.MessageData is HostInformationMessage info)
                 _Invocation.Console.WriteLine(info.Message);
+        }
+
+        public override void Verbose(string text)
+        {
+            if (!_Verbose)
+                return;
+
+            _Invocation.Console.WriteLine(text);
+        }
+
+        public override void Debug(string text)
+        {
+            if (!_Debug)
+                return;
+
+            _Invocation.Console.WriteLine(text);
         }
     }
 }
