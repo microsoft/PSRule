@@ -38,7 +38,12 @@ namespace PSRule.Runtime
         /// <summary>
         /// The target object itself.
         /// </summary>
-        Target = 5
+        Target = 5,
+
+        /// <summary>
+        /// A literal value or function.
+        /// </summary>
+        Value = 6
     }
 
     /// <summary>
@@ -115,6 +120,11 @@ namespace PSRule.Runtime
         internal static IOperand FromTarget()
         {
             return new Operand(OperandKind.Target, null, null);
+        }
+
+        internal static IOperand FromValue(object value)
+        {
+            return new Operand(OperandKind.Value, null, value);
         }
 
         internal static string JoinPath(string p1, string p2)

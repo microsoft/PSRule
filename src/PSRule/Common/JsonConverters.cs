@@ -21,7 +21,7 @@ using PSRule.Runtime;
 namespace PSRule
 {
     /// <summary>
-    /// A base <c>PSObject</c> converter.
+    /// A base <seealso cref="PSObject"/> converter.
     /// </summary>
     internal abstract class PSObjectBaseConverter : JsonConverter
     {
@@ -345,7 +345,7 @@ namespace PSRule
     }
 
     /// <summary>
-    /// A customer deserializer to convert JSON into ResourceObject
+    /// A custom deserializer to convert JSON into ResourceObject
     /// </summary>
     internal sealed class ResourceObjectJsonConverter : JsonConverter
     {
@@ -385,6 +385,7 @@ namespace PSRule
         private IResource MapResource(JsonReader reader, JsonSerializer serializer)
         {
             reader.GetSourceExtent(RunspaceContext.CurrentThread.Source.File.Path, out var extent);
+            reader.SkipComments();
             if (reader.TokenType != JsonToken.StartObject || !reader.Read())
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
 
@@ -619,22 +620,23 @@ namespace PSRule
     }
 
     /// <summary>
-    /// A JSON converter for deserializing Language Expressions
+    /// A custom converter for deserializing JSON into a language expression.
     /// </summary>
     internal sealed class LanguageExpressionJsonConverter : JsonConverter
     {
         private const string OPERATOR_IF = "if";
 
-        public override bool CanRead => true;
-
-        public override bool CanWrite => false;
-
         private readonly LanguageExpressionFactory _Factory;
+        private readonly FunctionBuilder _FunctionBuilder;
 
         public LanguageExpressionJsonConverter()
         {
             _Factory = new LanguageExpressionFactory();
+            _FunctionBuilder = new FunctionBuilder();
         }
+
+        public override bool CanRead => true;
+        public override bool CanWrite => false;
 
         public override bool CanConvert(Type objectType)
         {
@@ -653,32 +655,24 @@ namespace PSRule
         }
 
         /// <summary>
-        /// Skip JSON comments.
+        /// Map an operator.
         /// </summary>
-        private static bool SkipComments(JsonReader reader)
-        {
-            var hasComments = false;
-            while (reader.TokenType == JsonToken.Comment && reader.Read())
-                hasComments = true;
-
-            return hasComments;
-        }
-
         private LanguageExpression MapOperator(string type, JsonReader reader)
         {
             if (TryExpression(type, out LanguageOperator result))
             {
+                // If and Not
                 if (reader.TokenType == JsonToken.StartObject)
                 {
                     result.Add(MapExpression(reader));
                     reader.Read();
                 }
-
+                // AllOf and AnyOf
                 else if (reader.TokenType == JsonToken.StartArray && reader.Read())
                 {
                     while (reader.TokenType != JsonToken.EndArray)
                     {
-                        if (SkipComments(reader))
+                        if (reader.SkipComments())
                             continue;
 
                         result.Add(MapExpression(reader));
@@ -687,7 +681,6 @@ namespace PSRule
                     reader.Read();
                 }
             }
-
             return result;
         }
 
@@ -707,47 +700,96 @@ namespace PSRule
         private LanguageExpression MapExpression(JsonReader reader)
         {
             LanguageExpression result = null;
-
             var properties = new LanguageExpression.PropertyBag();
-
             MapProperty(properties, reader, out var key);
-
             if (key != null && TryCondition(key))
             {
                 result = MapCondition(key, properties, reader);
             }
-
-            else if (TryOperator(key) &&
-                (reader.TokenType == JsonToken.StartObject ||
-                 reader.TokenType == JsonToken.StartArray))
+            else if ((reader.TokenType == JsonToken.StartObject || reader.TokenType == JsonToken.StartArray) &&
+                 TryOperator(key))
             {
                 result = MapOperator(key, reader);
             }
-
             return result;
+        }
+
+        private ExpressionFnOuter MapFunction(string type, JsonReader reader)
+        {
+            _FunctionBuilder.Push();
+            while (reader.TokenType != JsonToken.EndObject)
+            {
+                var name = reader.Value as string;
+                if (name != null)
+                {
+                    reader.Consume(JsonToken.PropertyName);
+                    if (reader.TryConsume(JsonToken.StartObject))
+                    {
+                        var child = MapFunction(name, reader);
+                        _FunctionBuilder.Add(name, child);
+                        reader.Consume(JsonToken.EndObject);
+                    }
+                    else if (reader.TryConsume(JsonToken.StartArray))
+                    {
+                        var sequence = MapSequence(name, reader);
+                        _FunctionBuilder.Add(name, sequence);
+                        reader.Consume(JsonToken.EndArray);
+                    }
+                    else
+                    {
+                        _FunctionBuilder.Add(name, reader.Value);
+                        reader.Read();
+                    }
+                }
+            }
+            var result = _FunctionBuilder.Pop();
+            return result;
+        }
+
+        private object MapSequence(string name, JsonReader reader)
+        {
+            var result = new List<object>();
+            while (reader.TokenType != JsonToken.EndArray)
+            {
+                if (reader.TryConsume(JsonToken.StartObject))
+                {
+                    var child = MapFunction(name, reader);
+                    result.Add(child);
+                    reader.Consume(JsonToken.EndObject);
+                }
+                else
+                {
+                    result.Add(reader.Value);
+                    reader.Read();
+                }
+            }
+            return result.ToArray();
         }
 
         private void MapProperty(LanguageExpression.PropertyBag properties, JsonReader reader, out string name)
         {
             if (reader.TokenType != JsonToken.StartObject || !reader.Read())
-            {
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
-            }
 
             name = null;
-
             while (reader.TokenType != JsonToken.EndObject)
             {
                 var key = reader.Value.ToString();
-
                 if (TryCondition(key) || TryOperator(key))
-                {
                     name = key;
-                }
 
                 if (reader.Read())
                 {
-                    if (reader.TokenType == JsonToken.StartObject)
+                    if (TryValue(key, reader, out var value))
+                    {
+                        properties[key] = value;
+                    }
+                    else if (TryCondition(key) && reader.TryConsume(JsonToken.StartObject))
+                    {
+                        if (TryFunction(reader, key, out var fn))
+                            properties.Add(key, fn);
+                    }
+                    else if (reader.TokenType == JsonToken.StartObject)
                         break;
 
                     else if (reader.TokenType == JsonToken.StartArray)
@@ -758,12 +800,12 @@ namespace PSRule
                         var objects = new List<string>();
                         while (reader.TokenType != JsonToken.EndArray)
                         {
-                            if (SkipComments(reader))
+                            if (reader.SkipComments())
                                 continue;
 
-                            var value = reader.ReadAsString();
-                            if (!string.IsNullOrEmpty(value))
-                                objects.Add(value);
+                            var item = reader.ReadAsString();
+                            if (!string.IsNullOrEmpty(item))
+                                objects.Add(item);
                         }
                         properties.Add(key, objects.ToArray());
                     }
@@ -773,7 +815,6 @@ namespace PSRule
                         properties.Add(key, reader.Value);
                     }
                 }
-
                 reader.Read();
             }
         }
@@ -786,6 +827,44 @@ namespace PSRule
         private bool TryCondition(string key)
         {
             return _Factory.IsCondition(key);
+        }
+
+        private bool TryValue(string key, JsonReader reader, out object value)
+        {
+            value = null;
+            if (key != "value")
+                return false;
+
+            if (reader.TryConsume(JsonToken.StartObject) &&
+                TryFunction(reader, reader.Value as string, out var fn))
+            {
+                value = fn;
+                return true;
+            }
+            return false;
+        }
+
+        private bool TryFunction(JsonReader reader, string key, out ExpressionFnOuter fn)
+        {
+            fn = null;
+            if (!IsFunction(reader))
+                return false;
+
+            reader.Consume(JsonToken.PropertyName);
+            reader.Consume(JsonToken.StartObject);
+            fn = MapFunction("$", reader);
+            if (fn == null)
+                throw new Exception();
+
+            reader.Consume(JsonToken.EndObject);
+            return true;
+        }
+
+        private static bool IsFunction(JsonReader reader)
+        {
+            return reader.TokenType == JsonToken.PropertyName &&
+                reader.Value is string s &&
+                s == "$";
         }
 
         private bool TryExpression<T>(string type, out T expression) where T : LanguageExpression

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
@@ -39,7 +39,7 @@ namespace PSRule.Definitions.Expressions
             if (Type == LanguageExpressionType.Condition)
                 return new LanguageCondition(this, properties);
 
-            return null;
+            return Type == LanguageExpressionType.Function ? new LanguageFunction(this) : null;
         }
     }
 
@@ -102,6 +102,16 @@ namespace PSRule.Definitions.Expressions
         internal void Add(PropertyBag properties)
         {
             Property.AddUnique(properties);
+        }
+    }
+
+    [DebuggerDisplay("Selector {Descriptor.Name}")]
+    internal sealed class LanguageFunction : LanguageExpression
+    {
+        internal LanguageFunction(LanguageExpresssionDescriptor descriptor)
+            : base(descriptor)
+        {
+
         }
     }
 }

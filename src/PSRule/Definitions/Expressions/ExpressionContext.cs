@@ -16,6 +16,8 @@ namespace PSRule.Definitions.Expressions
 
         void Reason(IOperand operand, string text, params object[] args);
 
+        object Current { get; }
+
         RunspaceContext GetContext();
     }
 
@@ -25,12 +27,13 @@ namespace PSRule.Definitions.Expressions
 
         private List<ResultReason> _Reason;
 
-        internal ExpressionContext(SourceFile source, ResourceKind kind)
+        internal ExpressionContext(SourceFile source, ResourceKind kind, object current)
         {
             Source = source;
             LanguageScope = source.Module;
             Kind = kind;
             _NameTokenCache = new Dictionary<string, PathExpression>();
+            Current = current;
         }
 
         public SourceFile Source { get; }
@@ -38,6 +41,8 @@ namespace PSRule.Definitions.Expressions
         public string LanguageScope { get; }
 
         public ResourceKind Kind { get; }
+
+        public object Current { get; }
 
         [DebuggerStepThrough]
         void IBindingContext.CachePathExpression(string path, PathExpression expression)

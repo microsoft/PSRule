@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections;
@@ -69,23 +69,7 @@ namespace PSRule.Runtime
         private bool TryGetValue(string name, out object value)
         {
             value = null;
-            if (_Context == null)
-                return false;
-
-            // Get from baseline configuration
-            if (_Context.LanguageScope.TryConfigurationValue(name, out var result))
-            {
-                value = result;
-                return true;
-            }
-
-            // Check if value exists in Rule definition defaults
-            if (_Context.RuleBlock == null || _Context.RuleBlock.Configuration == null || !_Context.RuleBlock.Configuration.ContainsKey(name))
-                return false;
-
-            // Get from rule default
-            value = _Context.RuleBlock.Configuration[name];
-            return true;
+            return _Context != null && _Context.TryGetConfigurationValue(name, out value);
         }
 
         private static bool TryBool(object o, out bool value)

@@ -345,4 +345,13 @@
   <data name="Assert_NotExists" xml:space="preserve">
     <value>Exists.</value>
   </data>
+  <data name="Assert_Count" xml:space="preserve">
+    <value>The number of items is '{0}' instead of '{1}'.</value>
+  </data>
+  <data name="Assert_IsNull" xml:space="preserve">
+    <value>The value is null.</value>
+  </data>
+  <data name="Assert_NotCount" xml:space="preserve">
+    <value>The number of items is '{0}'.</value>
+  </data>
 </root>

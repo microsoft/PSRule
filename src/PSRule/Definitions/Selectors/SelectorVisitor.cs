@@ -42,7 +42,7 @@ namespace PSRule.Definitions.Selectors
 
         public bool Match(object o)
         {
-            var context = new ExpressionContext(Source, ResourceKind.Selector);
+            var context = new ExpressionContext(Source, ResourceKind.Selector, o);
             context.Debug(PSRuleResources.SelectorMatchTrace, Id);
             return _Fn(context, o).GetValueOrDefault(false);
         }

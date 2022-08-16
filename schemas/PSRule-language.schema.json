@@ -1,23 +1,26 @@
 {
     "$schema": "https://json-schema.org/draft-07/schema#",
-    "oneOf": [
-        {
-            "$ref": "#/definitions/rule-v1"
-        },
-        {
-            "$ref": "#/definitions/baseline-v1"
-        },
-        {
-            "$ref": "#/definitions/moduleConfig-v1"
-        },
-        {
-            "$ref": "#/definitions/selector-v1"
-        },
-        {
-            "$ref": "#/definitions/suppressionGroup-v1"
-        }
-    ],
+    "$ref": "#/definitions/resource-v1",
     "definitions": {
+        "resource-v1": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/rule-v1"
+                },
+                {
+                    "$ref": "#/definitions/baseline-v1"
+                },
+                {
+                    "$ref": "#/definitions/moduleConfig-v1"
+                },
+                {
+                    "$ref": "#/definitions/selector-v1"
+                },
+                {
+                    "$ref": "#/definitions/suppressionGroup-v1"
+                }
+            ]
+        },
         "resource-metadata": {
             "type": "object",
             "title": "Metadata",
@@ -808,6 +811,9 @@
             "oneOf": [
                 {
                     "$ref": "#/definitions/selectorPropertyField"
+                },
+                {
+                    "$ref": "#/definitions/selectorPropertyValue"
                 }
             ]
         },
@@ -815,6 +821,9 @@
             "oneOf": [
                 {
                     "$ref": "#/definitions/selectorPropertyField"
+                },
+                {
+                    "$ref": "#/definitions/selectorPropertyValue"
                 },
                 {
                     "$ref": "#/definitions/selectorPropertyType"
@@ -839,6 +848,16 @@
             },
             "required": [
                 "field"
+            ]
+        },
+        "selectorPropertyValue": {
+            "properties": {
+                "value": {
+                    "$ref": "#/definitions/selectorExpressionValue"
+                }
+            },
+            "required": [
+                "value"
             ]
         },
         "selectorPropertyType": {
@@ -1270,10 +1289,18 @@
             "type": "object",
             "properties": {
                 "greater": {
-                    "type": "integer",
                     "title": "Greater",
                     "description": "Must be greater then the specified value.",
-                    "markdownDescription": "Must be greater then the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greater)"
+                    "markdownDescription": "Must be greater then the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greater)",
+                    "oneOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "object",
+                            "$ref": "#/definitions/fn"
+                        }
+                    ]
                 },
                 "convert": {
                     "type": "boolean",
@@ -1936,15 +1963,351 @@
         "selectorExpressionValue": {
             "oneOf": [
                 {
-                    "type": "string"
+                    "type": "string",
+                    "title": "Value from string",
+                    "description": "A value to compare."
                 },
                 {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "title": "Value from boolean",
+                    "description": "A value to compare."
                 },
                 {
-                    "type": "integer"
+                    "type": "integer",
+                    "title": "Value from integer",
+                    "description": "A value to compare."
+                },
+                {
+                    "type": "object",
+                    "title": "Value for object",
+                    "description": "A value to compare.",
+                    "not": {
+                        "propertyNames": {
+                            "enum": [
+                                "$"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "$ref": "#/definitions/fn"
                 }
             ]
+        },
+        "fn": {
+            "title": "Value from function",
+            "description": "A function expression that once evaluated specifies the value.",
+            "markdownDescription": "A function expression that once evaluated specifies the value.",
+            "properties": {
+                "$": {
+                    "type": "object",
+                    "title": "Value from function",
+                    "description": "A function expression that once evaluated specifies the value.",
+                    "markdownDescription": "A function expression that once evaluated specifies the value.",
+                    "$ref": "#/definitions/fn/definitions/function"
+                }
+            },
+            "required": [
+                "$"
+            ],
+            "definitions": {
+                "function": {
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/fn/definitions/function/definitions/substring"
+                        },
+                        {
+                            "$ref": "#/definitions/fn/definitions/function/definitions/string"
+                        },
+                        {
+                            "$ref": "#/definitions/fn/definitions/function/definitions/boolean"
+                        },
+                        {
+                            "$ref": "#/definitions/fn/definitions/function/definitions/integer"
+                        },
+                        {
+                            "$ref": "#/definitions/fn/definitions/function/definitions/concat"
+                        },
+                        {
+                            "$ref": "#/definitions/fn/definitions/function/definitions/path"
+                        },
+                        {
+                            "$ref": "#/definitions/fn/definitions/function/definitions/configuration"
+                        }
+                    ],
+                    "definitions": {
+                        "equal": {
+                            "type": "object",
+                            "properties": {
+                                "equal": {
+                                    "type": "array",
+                                    "title": "Equal",
+                                    "description": "The equal operator checks for equity between two operands.",
+                                    "markdownDescription": "The `equal` operator checks for equity two operands.",
+                                    "items": {
+                                        "oneOf": [
+                                            {
+                                                "$ref": "#/definitions/fn/definitions/function"
+                                            },
+                                            {
+                                                "type": "string"
+                                            },
+                                            {
+                                                "type": "integer"
+                                            },
+                                            {
+                                                "type": "boolean"
+                                            }
+                                        ]
+                                    },
+                                    "additionalItems": false,
+                                    "minItems": 2,
+                                    "maxItems": 2
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "equal"
+                            ]
+                        },
+                        "substring": {
+                            "type": "object",
+                            "properties": {
+                                "substring": {
+                                    "title": "Substring",
+                                    "description": "The substring function, copies a number of characters from input starting from a zero based position.",
+                                    "markdownDescription": "The `substring` function, copies a number of characters from input starting from a zero based position.",
+                                    "oneOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "$ref": "#/definitions/fn/definitions/function",
+                                            "defaultSnippets": [
+                                                {
+                                                    "label": "From string",
+                                                    "description": "Set value to a specific value.",
+                                                    "body": ""
+                                                },
+                                                {
+                                                    "label": "From configuration",
+                                                    "description": "Configure length from configuration.",
+                                                    "body": {
+                                                        "configuration": "${1}"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "start": {
+                                    "title": "Start",
+                                    "description": "The zero based position to start copying characters from.",
+                                    "default": 0,
+                                    "oneOf": [
+                                        {
+                                            "type": "integer",
+                                            "minimum": 0
+                                        },
+                                        {
+                                            "type": "object",
+                                            "$ref": "#/definitions/fn/definitions/function"
+                                        }
+                                    ],
+                                    "defaultSnippets": [
+                                        {
+                                            "label": "From integer",
+                                            "description": "Set start to a specific value.",
+                                            "body": 0
+                                        },
+                                        {
+                                            "label": "From configuration",
+                                            "description": "Configure start from configuration.",
+                                            "body": {
+                                                "configuration": "${1}"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "length": {
+                                    "title": "Length",
+                                    "description": "The number of character to copy from the source string.",
+                                    "oneOf": [
+                                        {
+                                            "type": "integer",
+                                            "minimum": 0
+                                        },
+                                        {
+                                            "type": "object",
+                                            "$ref": "#/definitions/fn/definitions/function"
+                                        }
+                                    ],
+                                    "defaultSnippets": [
+                                        {
+                                            "label": "From integer",
+                                            "description": "Set length to a specific value.",
+                                            "body": 0
+                                        },
+                                        {
+                                            "label": "From configuration",
+                                            "description": "Configure length from configuration.",
+                                            "body": {
+                                                "configuration": "${1}"
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "substring"
+                            ],
+                            "defaultSnippets": [
+                                {
+                                    "label": "Substring from string",
+                                    "description": "Set value to a specific value.",
+                                    "body": {
+                                        "substring": "${1}",
+                                        "length": "${2}"
+                                    }
+                                },
+                                {
+                                    "label": "Substring from configuration",
+                                    "description": "Configure length from configuration.",
+                                    "body": {
+                                        "substring": {
+                                            "configuration": "${1}"
+                                        },
+                                        "length": "${2}"
+                                    }
+                                }
+                            ]
+                        },
+                        "string": {
+                            "type": "object",
+                            "properties": {
+                                "string": {
+                                    "title": "String",
+                                    "oneOf": [
+                                        {
+                                            "type": "string",
+                                            "description": "A literal string value."
+                                        },
+                                        {
+                                            "type": "object",
+                                            "description": "Converts the operand in to a string value.",
+                                            "$ref": "#/definitions/fn/definitions/function"
+                                        }
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "string"
+                            ]
+                        },
+                        "integer": {
+                            "type": "object",
+                            "properties": {
+                                "integer": {
+                                    "title": "Integer",
+                                    "oneOf": [
+                                        {
+                                            "type": "integer",
+                                            "description": "A literal integer value."
+                                        },
+                                        {
+                                            "type": "object",
+                                            "description": "Converts the operand in to an integer.",
+                                            "$ref": "#/definitions/fn/definitions/function"
+                                        }
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "integer"
+                            ]
+                        },
+                        "boolean": {
+                            "type": "object",
+                            "properties": {
+                                "boolean": {
+                                    "title": "Boolean",
+                                    "oneOf": [
+                                        {
+                                            "type": "boolean",
+                                            "description": "A literal boolean value.",
+                                            "markdownDescription": "A literal boolean value."
+                                        },
+                                        {
+                                            "type": "object",
+                                            "description": "Converts the operand to a boolean value.",
+                                            "markdownDescription": "Converts the operand to a boolean value.",
+                                            "$ref": "#/definitions/fn/definitions/function"
+                                        }
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "boolean"
+                            ]
+                        },
+                        "concat": {
+                            "type": "object",
+                            "properties": {
+                                "concat": {
+                                    "type": "array",
+                                    "description": "The concat function combines two or more operands.",
+                                    "markdownDescription": "The `concat` function combines two or more operands.",
+                                    "items": {
+                                        "$ref": "#/definitions/fn/definitions/function"
+                                    },
+                                    "additionalItems": false,
+                                    "minItems": 2
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "concat"
+                            ]
+                        },
+                        "path": {
+                            "type": "object",
+                            "properties": {
+                                "path": {
+                                    "type": "string",
+                                    "title": "Path",
+                                    "description": "The path function returns a value from an object path.",
+                                    "markdownDescription": "The `path` function returns a value from an object path."
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "path"
+                            ]
+                        },
+                        "configuration": {
+                            "type": "object",
+                            "properties": {
+                                "configuration": {
+                                    "type": "string",
+                                    "title": "Configuration",
+                                    "description": "The configuration function returns a value retrieved from configuration by name.",
+                                    "markdownDescription": "The `configuration` function returns a value retrieved from configuration by name.",
+                                    "minLength": 1
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "configuration"
+                            ]
+                        }
+                    }
+                }
+            }
         }
     }
 }

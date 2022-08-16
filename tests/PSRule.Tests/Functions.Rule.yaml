@@ -1,0 +1,88 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+# Synopsis: An expression function example.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: Yaml.Fn.Example1
+spec:
+  if:
+    value:
+      $:
+        substring:
+          path: name
+        length: 7
+    equals: TestObj
+
+---
+# Synopsis: An expression function example.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: Yaml.Fn.Example2
+spec:
+  if:
+    value:
+      $:
+        configuration: 'ConfigArray'
+    count: 5
+
+---
+# Synopsis: An expression function example.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: Yaml.Fn.Example3
+spec:
+  if:
+    value:
+      $:
+        boolean: true
+    equals: true
+
+---
+# Synopsis: An expression function example.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: Yaml.Fn.Example4
+spec:
+  if:
+    value:
+      $:
+        concat:
+        - path: name
+        - string: '-'
+        - path: name
+    equals: TestObject1-TestObject1
+
+---
+# Synopsis: An expression function example.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: Yaml.Fn.Example5
+spec:
+  if:
+    value:
+      $:
+        integer: 6
+    greater: 5
+
+---
+# Synopsis: An expression function example.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: Yaml.Fn.Example6
+spec:
+  if:
+    value: TestObject1-TestObject1
+    equals:
+      $:
+        concat:
+        - path: name
+        - string: '-'
+        - path: name

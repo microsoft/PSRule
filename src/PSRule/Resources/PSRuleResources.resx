@@ -121,6 +121,25 @@
     <value>The {0} '{1}' is obsolete. Consider switching to an alternative {0}.</value>
     <comment>Occurs when a resource is used that has been flagged as obsolete.</comment>
   </data>
+  <data name="ArgumentFormatInvalid" xml:space="preserve">
+    <value>The arguments for '{0}' are not in the expected format or type.</value>
+  </data>
+  <data name="ArgumentInvalidBoolean" xml:space="preserve">
+    <value>The argument '{0}' for '{1}' is not a valid boolean.</value>
+  </data>
+  <data name="ArgumentInvalidInteger" xml:space="preserve">
+    <value>The argument '{0}' for '{1}' is not a valid integer.</value>
+  </data>
+  <data name="ArgumentInvalidString" xml:space="preserve">
+    <value>The argument '{0}' for '{1}' is not a valid string.</value>
+  </data>
+  <data name="ArgumentsOutOfRange" xml:space="preserve">
+    <value>The number of arguments '{1}' is not within the allowed range for '{0}'.</value>
+  </data>
+  <data name="BaselineObsolete" xml:space="preserve">
+    <value>The baseline '{0}' is obsolete. Consider switching to an alternative baseline.</value>
+    <comment>Occurs when a baseline is used that has been flagged as obsolete.</comment>
+  </data>
   <data name="ConstrainedTargetBinding" xml:space="preserve">
     <value>Binding functions are not supported in this language mode.</value>
   </data>
@@ -164,8 +183,17 @@
   <data name="FileSourceType" xml:space="preserve">
     <value>File</value>
   </data>
+  <data name="ExpressionInvalid" xml:space="preserve">
+    <value>Failed to parse expression. The expression may not be valid. Expression: "{0}"</value>
+  </data>
   <data name="FoundModules" xml:space="preserve">
     <value>[PSRule][D] -- Found {0} PSRule module(s)</value>
+  </data>
+  <data name="FunctionNotFound" xml:space="preserve">
+    <value>The function "{0}" was not found.</value>
+  </data>
+  <data name="IndexInvalid" xml:space="preserve">
+    <value>The language expression index '{0}' is not valid for the object.</value>
   </data>
   <data name="InvalidErrorAction" xml:space="preserve">
     <value>An invalid ErrorAction ({0}) was specified for rule at {1}. Ignore | Stop are supported.</value>
@@ -228,6 +256,9 @@
   </data>
   <data name="OutcomeUnknown" xml:space="preserve">
     <value>Unknown</value>
+  </data>
+  <data name="PropertyNotFound" xml:space="preserve">
+    <value>The language expression property '{0}' doesn't exist.</value>
   </data>
   <data name="PropertyObsolete" xml:space="preserve">
     <value>The property '${0}.{1}' is obsolete and will be removed in the next major version.</value>

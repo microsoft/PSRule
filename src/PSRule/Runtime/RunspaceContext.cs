@@ -771,7 +771,6 @@ namespace PSRule.Runtime
         {
             InitLanguageScopes(source);
             Host.HostHelper.ImportResource(source, this);
-
             foreach (var languageScope in _LanguageScopes.Get())
                 Pipeline.Baseline.BuildScope(languageScope);
         }
@@ -840,6 +839,32 @@ namespace PSRule.Runtime
             _WarnOnce.Add(combinedKey);
             return true;
         }
+
+        #region Configuration
+
+        internal bool TryGetConfigurationValue(string name, out object value)
+        {
+            value = null;
+            if (string.IsNullOrEmpty(name))
+                return false;
+
+            // Get from baseline configuration
+            if (LanguageScope.TryConfigurationValue(name, out var result))
+            {
+                value = result;
+                return true;
+            }
+
+            // Check if value exists in Rule definition defaults
+            if (RuleBlock == null || RuleBlock.Configuration == null || !RuleBlock.Configuration.ContainsKey(name))
+                return false;
+
+            // Get from rule default
+            value = RuleBlock.Configuration[name];
+            return true;
+        }
+
+        #endregion Configuration
 
         #region IDisposable
 

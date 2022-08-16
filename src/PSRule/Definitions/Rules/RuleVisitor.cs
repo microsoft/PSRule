@@ -50,7 +50,7 @@ namespace PSRule.Definitions.Rules
 
         public IConditionResult If()
         {
-            var context = new ExpressionContext(Source, ResourceKind.Rule);
+            var context = new ExpressionContext(Source, ResourceKind.Rule, RunspaceContext.CurrentThread.TargetObject.Value);
             context.Debug(PSRuleResources.RuleMatchTrace, Id);
             context.PushScope(RunspaceScope.Rule);
             try

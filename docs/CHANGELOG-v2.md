@@ -11,7 +11,20 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
   [2]: https://microsoft.github.io/PSRule/latest/deprecations/#deprecations-for-v3
 
+**Experimental features**:
+
+- Functions within YAML expressions can be used to perform manipulation prior to testing a condition.
+
 ## Unreleased
+
+What's changed since pre-release v2.4.0-B0022:
+
+- New features:
+  - **Experimental**: Added support for functions within YAML and JSON expressions.
+    [#1227](https://github.com/microsoft/PSRule/issues/1227)
+    - Added conversion functions `boolean`, `string`, and `integer`.
+    - Added lookup functions `configuration`, and `path`.
+    - Added string functions `concat`, `substring`.
 
 ## v2.4.0-B0022 (pre-release)
 

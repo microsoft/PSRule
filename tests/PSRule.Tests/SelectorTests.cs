@@ -27,6 +27,8 @@ namespace PSRule
     {
         private const string SelectorYamlFileName = "Selectors.Rule.yaml";
         private const string SelectorJsonFileName = "Selectors.Rule.jsonc";
+        private const string FunctionsYamlFileName = "Functions.Rule.yaml";
+        private const string FunctionsJsonFileName = "Functions.Rule.jsonc";
 
         [Theory]
         [InlineData("Yaml", SelectorYamlFileName)]
@@ -1651,11 +1653,40 @@ namespace PSRule
 
         #endregion Properties
 
+        #region Functions
+
+        [Theory]
+        [InlineData("Yaml", FunctionsYamlFileName)]
+        [InlineData("Json", FunctionsJsonFileName)]
+        public void WithFunction(string type, string path)
+        {
+            var example1 = GetSelectorVisitor($"{type}.Fn.Example1", GetSource(path), out _);
+            var example2 = GetSelectorVisitor($"{type}.Fn.Example2", GetSource(path), out _);
+            var example3 = GetSelectorVisitor($"{type}.Fn.Example3", GetSource(path), out _);
+            var example4 = GetSelectorVisitor($"{type}.Fn.Example4", GetSource(path), out _);
+            var example5 = GetSelectorVisitor($"{type}.Fn.Example5", GetSource(path), out _);
+            var example6 = GetSelectorVisitor($"{type}.Fn.Example6", GetSource(path), out _);
+            var actual1 = GetObject(
+                (name: "Name", value: "TestObject1")
+            );
+
+            Assert.True(example1.Match(actual1));
+            Assert.True(example2.Match(actual1));
+            Assert.True(example3.Match(actual1));
+            Assert.True(example4.Match(actual1));
+            Assert.True(example5.Match(actual1));
+            Assert.True(example6.Match(actual1));
+        }
+
+        #endregion Functions
+
         #region Helper methods
 
         private static PSRuleOption GetOption()
         {
-            return new PSRuleOption();
+            var option = new PSRuleOption();
+            option.Configuration["ConfigArray"] = new string[] { "1", "2", "3", "4", "5" };
+            return option;
         }
 
         private static Source[] GetSource(string path)
@@ -1676,7 +1707,8 @@ namespace PSRule
 
         private static SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
         {
-            context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContext(), null), null);
+            var builder = new OptionContextBuilder(GetOption(), null, null, null);
+            context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, builder.Build(), null), null);
             context.Init(source);
             context.Begin();
             var selector = HostHelper.GetSelector(source, context).ToArray().FirstOrDefault(s => s.Name == name);

@@ -65,6 +65,16 @@ namespace PSRule
             return expectedBase.Equals(actualBase) || expectedValue.Equals(actualValue);
         }
 
+        internal static int Compare(object left, object right)
+        {
+            if (TryString(left, out var stringLeft) && TryString(right, out var stringRight))
+                return StringComparer.Ordinal.Compare(stringLeft, stringRight);
+            else if (CompareNumeric(left, right, convert: false, out var compare, out _))
+                return compare;
+
+            return Comparer.Default.Compare(left, right);
+        }
+
         internal static bool CompareNumeric(object actual, object expected, bool convert, out int compare, out object value)
         {
             if (TryInt(actual, convert, out var actualInt) && TryInt(expected, convert: true, value: out var expectedInt))
@@ -131,9 +141,19 @@ namespace PSRule
                 value = evalue.ToString();
                 return true;
             }
-            else if (convert && TryInt(o, false, out var ivalue))
+            else if (convert && TryLong(o, false, out var l_value))
             {
-                value = ivalue.ToString(Thread.CurrentThread.CurrentCulture);
+                value = l_value.ToString(Thread.CurrentThread.CurrentCulture);
+                return true;
+            }
+            else if (convert && TryBool(o, false, out var b_value))
+            {
+                value = b_value.ToString(Thread.CurrentThread.CurrentCulture);
+                return true;
+            }
+            else if (convert && TryInt(o, false, out var i_value))
+            {
+                value = i_value.ToString(Thread.CurrentThread.CurrentCulture);
                 return true;
             }
             return false;
@@ -213,6 +233,11 @@ namespace PSRule
             else if (convert && TryString(o, out var s) && bool.TryParse(s, out bvalue))
             {
                 value = bvalue;
+                return true;
+            }
+            else if (convert && TryLong(o, convert: false, out var lvalue))
+            {
+                value = lvalue > 0;
                 return true;
             }
             value = default;
@@ -525,7 +550,7 @@ namespace PSRule
         /// </summary>
         internal static object GetBaseObject(object o)
         {
-            return o is PSObject pso && pso.BaseObject != null && !(pso.BaseObject is PSCustomObject) ? pso.BaseObject : o;
+            return o is PSObject pso && pso.BaseObject != null && pso.BaseObject is not PSCustomObject ? pso.BaseObject : o;
         }
 
         private static PSRuleTargetInfo GetTargetInfo(object o)
