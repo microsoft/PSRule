@@ -839,6 +839,8 @@
         
           
         
+          
+        
       
       
         <label class="md-nav__link" for="__nav_2_7">
@@ -852,6 +854,57 @@
           Concepts
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_7_1" type="checkbox" id="__nav_2_7_1" >
+      
+      
+      
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2_7_1">
+          Expressions
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Expressions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_2_7_1">
+          <span class="md-nav__icon md-icon"></span>
+          Expressions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../expressions/functions/" class="md-nav__link">
+        Functions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
           
             
               
@@ -2244,7 +2297,24 @@
   See <a href="https://microsoft.github.io/PSRule/latest/deprecations/#deprecations-for-v3">deprecations</a> for details.</p>
 </li>
 </ul>
+<p><strong>Experimental features</strong>:</p>
+<ul>
+<li>Functions within YAML expressions can be used to perform manipulation prior to testing a condition.</li>
+</ul>
 <h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">#</a></h2>
+<p>What's changed since pre-release v2.4.0-B0022:</p>
+<ul>
+<li>New features:<ul>
+<li><strong>Experimental</strong>: Added support for functions within YAML and JSON expressions.
+  <a href="https://github.com/microsoft/PSRule/issues/1227">#1227</a><ul>
+<li>Added conversion functions <code>boolean</code>, <code>string</code>, and <code>integer</code>.</li>
+<li>Added lookup functions <code>configuration</code>, and <code>path</code>.</li>
+<li>Added string functions <code>concat</code>, <code>substring</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <h2 id="v240-b0022-pre-release">v2.4.0-B0022 (pre-release)<a class="headerlink" href="#v240-b0022-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v2.4.0-B0009:</p>
 <ul>
@@ -3163,7 +3233,7 @@
   <small>
     
       Last update:
-      2022-08-16
+      2022-08-17
     
   </small>
 </div>
