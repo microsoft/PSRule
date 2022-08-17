@@ -115,7 +115,7 @@ namespace PSRule
                 emitter.Emit(new MappingStart());
                 emitter.Emit(new MappingEnd());
             }
-            if (!(value is FieldMap map))
+            if (value is not FieldMap map)
                 return;
 
             emitter.Emit(new MappingStart());
@@ -179,7 +179,7 @@ namespace PSRule
             if (parser.TryConsume<SequenceStart>(out _))
             {
                 var values = new List<PSObject>();
-                while (!(parser.Current is SequenceEnd))
+                while (parser.Current is not SequenceEnd)
                 {
                     if (parser.Current is MappingStart)
                     {
@@ -308,16 +308,16 @@ namespace PSRule
     /// </summary>
     internal sealed class OrderedPropertiesTypeInspector : TypeInspectorSkeleton
     {
-        private readonly ITypeInspector _innerTypeDescriptor;
+        private readonly ITypeInspector _InnerTypeDescriptor;
 
         public OrderedPropertiesTypeInspector(ITypeInspector innerTypeDescriptor)
         {
-            _innerTypeDescriptor = innerTypeDescriptor;
+            _InnerTypeDescriptor = innerTypeDescriptor;
         }
 
         public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
         {
-            return _innerTypeDescriptor
+            return _InnerTypeDescriptor
                 .GetProperties(type, container)
                 .OrderBy(prop => prop.Name);
         }
@@ -598,17 +598,22 @@ namespace PSRule
         }
     }
 
+    /// <summary>
+    /// A custom deserializer to convert YAML into a language expression.
+    /// </summary>
     internal sealed class LanguageExpressionDeserializer : INodeDeserializer
     {
         private const string OPERATOR_IF = "if";
 
         private readonly INodeDeserializer _Next;
         private readonly LanguageExpressionFactory _Factory;
+        private readonly FunctionBuilder _FunctionBuilder;
 
         public LanguageExpressionDeserializer(INodeDeserializer next)
         {
             _Next = next;
             _Factory = new LanguageExpressionFactory();
+            _FunctionBuilder = new FunctionBuilder();
         }
 
         bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
@@ -625,6 +630,9 @@ namespace PSRule
             }
         }
 
+        /// <summary>
+        /// Map an operator.
+        /// </summary>
         private LanguageExpression MapOperator(string type, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
         {
             if (TryExpression(reader, type, nestedObjectDeserializer, out LanguageOperator result))
@@ -674,15 +682,76 @@ namespace PSRule
             {
                 result = MapCondition(key, properties, reader, nestedObjectDeserializer);
             }
-            else if (TryOperator(key) && reader.Accept(out MappingStart mapping))
+            else if (TryOperator(key) && reader.Accept<MappingStart>(out _))
             {
                 result = MapOperator(key, reader, nestedObjectDeserializer);
             }
-            else if (TryOperator(key) && reader.Accept(out SequenceStart sequence))
+            else if (TryOperator(key) && reader.Accept<SequenceStart>(out _))
             {
                 result = MapOperator(key, reader, nestedObjectDeserializer);
             }
             return result;
+        }
+
+        private ExpressionFnOuter MapFunction(string type, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
+        {
+            _FunctionBuilder.Push();
+            string name = null;
+            while (!(reader.Accept<MappingEnd>(out _) || reader.Accept<SequenceEnd>(out _)))
+            {
+                if (reader.TryConsume<Scalar>(out var s))
+                {
+                    if (name != null)
+                    {
+                        _FunctionBuilder.Add(name, s.Value);
+                        name = null;
+                    }
+                    else
+                    {
+                        name = s.Value;
+                    }
+                }
+                else if (reader.TryConsume<MappingStart>(out _))
+                {
+                    var child = MapFunction(name, reader, nestedObjectDeserializer);
+                    if (name != null)
+                    {
+                        _FunctionBuilder.Add(name, child);
+                        name = null;
+                    }
+                    reader.Consume<MappingEnd>();
+                }
+                else if (reader.TryConsume<SequenceStart>(out _))
+                {
+                    var sequence = MapSequence(name, reader, nestedObjectDeserializer);
+                    if (name != null)
+                    {
+                        _FunctionBuilder.Add(name, sequence);
+                        name = null;
+                    }
+                    reader.Consume<SequenceEnd>();
+                }
+            }
+            var result = _FunctionBuilder.Pop();
+            return result;
+        }
+
+        private object MapSequence(string name, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
+        {
+            var result = new List<object>();
+            while (!reader.Accept<SequenceEnd>(out _))
+            {
+                if (reader.TryConsume<Scalar>(out var s))
+                    result.Add(s.Value);
+
+                else if (reader.TryConsume<MappingStart>(out _))
+                {
+                    var child = MapFunction(name, reader, nestedObjectDeserializer);
+                    result.Add(child);
+                    reader.Consume<MappingEnd>();
+                }
+            }
+            return result.ToArray();
         }
 
         private void MapProperty(LanguageExpression.PropertyBag properties, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, out string name)
@@ -697,6 +766,15 @@ namespace PSRule
                 if (reader.TryConsume(out scalar))
                 {
                     properties[key] = scalar.Value;
+                }
+                else if (TryValue(key, reader, nestedObjectDeserializer, out var value))
+                {
+                    properties[key] = value;
+                }
+                else if (TryCondition(key) && reader.TryConsume<MappingStart>(out _))
+                {
+                    if (TryFunction(reader, nestedObjectDeserializer, out var fn))
+                        properties[key] = fn;
                 }
                 else if (TryCondition(key) && reader.TryConsume<SequenceStart>(out _))
                 {
@@ -721,6 +799,40 @@ namespace PSRule
         private bool TryCondition(string key)
         {
             return _Factory.IsCondition(key);
+        }
+
+        private bool TryValue(string key, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
+        {
+            value = null;
+            if (key != "value")
+                return false;
+
+            if (reader.TryConsume<MappingStart>(out _) && TryFunction(reader, nestedObjectDeserializer, out var fn))
+            {
+                value = fn;
+                return true;
+            }
+            reader.SkipThisAndNestedEvents();
+            return false;
+        }
+
+        private bool TryFunction(IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, out ExpressionFnOuter fn)
+        {
+            fn = null;
+            if (!IsFunction(reader))
+                return false;
+
+            reader.Consume<Scalar>();
+            reader.Consume<MappingStart>();
+            fn = MapFunction("$", reader, nestedObjectDeserializer);
+            reader.Consume<MappingEnd>();
+            reader.Consume<MappingEnd>();
+            return true;
+        }
+
+        private static bool IsFunction(IParser reader)
+        {
+            return reader.Accept<Scalar>(out var scalar) || scalar.Value == "$";
         }
 
         private bool TryExpression<T>(IParser reader, string type, Func<IParser, Type, object> nestedObjectDeserializer, out T expression) where T : LanguageExpression

@@ -58,6 +58,18 @@
         ],
         "files.insertFinalNewline": true
     },
+    "[jsonc]": {
+        "editor.tabSize": 4,
+        "editor.tabCompletion": "on",
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.suggest.insertMode": "replace",
+        "gitlens.codeLens.scopes": [
+            "document"
+        ],
+        "files.insertFinalNewline": true
+    },
     "files.associations": {
         "**/.azure-pipelines/*.yaml": "azure-pipelines",
         "**/.azure-pipelines/jobs/*.yaml": "azure-pipelines",
@@ -67,6 +79,7 @@
         "APPSERVICEMININSTANCECOUNT",
         "cmdlet",
         "cmdlets",
+        "concat",
         "datetime",
         "deserialize",
         "deserialized",

@@ -21,7 +21,9 @@ namespace PSRule.Definitions.Expressions
     {
         Operator = 1,
 
-        Condition = 2
+        Condition = 2,
+
+        Function = 3
     }
 
     internal sealed class ExpressionInfo
@@ -47,7 +49,9 @@ namespace PSRule.Definitions.Expressions
 
         public bool TryDescriptor(string name, out ILanguageExpresssionDescriptor descriptor)
         {
-            return _Descriptors.TryGetValue(name, out descriptor);
+            descriptor = null;
+            return !string.IsNullOrEmpty(name) &&
+                _Descriptors.TryGetValue(name, out descriptor);
         }
 
         public bool IsOperator(string name)
@@ -58,6 +62,12 @@ namespace PSRule.Definitions.Expressions
         public bool IsCondition(string name)
         {
             return TryDescriptor(name, out var d) && d != null && d.Type == LanguageExpressionType.Condition;
+        }
+
+        public bool IsFunction(string name)
+        {
+            return TryDescriptor(name, out var d) &&
+                d != null && d.Type == LanguageExpressionType.Function;
         }
 
         private void With(ILanguageExpresssionDescriptor descriptor)
@@ -350,6 +360,7 @@ namespace PSRule.Definitions.Expressions
         private const string INCLUDEPRERELEASE = "includePrerelease";
         private const string PROPERTY_SCHEMA = "$schema";
         private const string SOURCE = "source";
+        private const string VALUE = "value";
 
         // Comparisons
         private const string LESS_THAN = "<";
@@ -476,7 +487,7 @@ namespace PSRule.Definitions.Expressions
             return Condition(
                 context,
                 operand,
-                ExpressionHelpers.Equal(propertyValue, operand.Value, caseSensitive, convertExpected: true, convertActual: convert),
+                ExpressionHelpers.Equal(Value(context, propertyValue), Value(context, operand), caseSensitive, convertExpected: true, convertActual: convert),
                 ReasonStrings.Assert_IsSetTo,
                 operand.Value
             );
@@ -500,7 +511,7 @@ namespace PSRule.Definitions.Expressions
             return Condition(
                 context,
                 operand,
-                !ExpressionHelpers.Equal(propertyValue, operand.Value, caseSensitive, convertExpected: true, convertActual: convert),
+                !ExpressionHelpers.Equal(Value(context, propertyValue), Value(context, operand), caseSensitive, convertExpected: true, convertActual: convert),
                 ReasonStrings.Assert_IsSetTo,
                 operand.Value
             );
@@ -684,59 +695,50 @@ namespace PSRule.Definitions.Expressions
         internal static bool Count(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (TryPropertyLong(properties, COUNT, out var expectedValue) && TryField(properties, out var field))
-            {
-                context.ExpressionTrace(COUNT, field, expectedValue);
-                if (!ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object value))
-                    return NotHasField(context, field);
+            if (!TryPropertyLong(context, properties, COUNT, out var expectedValue) ||
+                !TryOperand(context, COUNT, o, properties, out var operand))
+                return Invalid(context, COUNT);
 
-                if (value == null)
-                    return Fail(context, field, ReasonStrings.Null, field);
+            var operandValue = Value(context, operand);
+            if (operandValue == null)
+                return Fail(context, operand, ReasonStrings.Assert_IsNull);
 
-                if (ExpressionHelpers.TryEnumerableLength(value, value: out var actualValue))
-                    return Condition(
-                        context,
-                        field,
-                        actualValue == expectedValue,
-                        ReasonStrings.Count,
-                        field,
-                        actualValue,
-                        expectedValue
-                    );
-            }
-            return Invalid(context, COUNT);
+            // int, string, bool
+            return Condition(
+                context,
+                operand,
+                ExpressionHelpers.TryEnumerableLength(operandValue, value: out var actualValue) && actualValue == expectedValue,
+                ReasonStrings.Assert_Count,
+                actualValue,
+                expectedValue
+            );
         }
 
         internal static bool NotCount(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (TryPropertyLong(properties, NOTCOUNT, out var expectedValue) && TryField(properties, out var field))
-            {
-                context.ExpressionTrace(NOTCOUNT, field, expectedValue);
-                if (!ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object value))
-                    return NotHasField(context, field);
+            if (!TryPropertyLong(context, properties, NOTCOUNT, out var expectedValue) ||
+                !TryOperand(context, NOTCOUNT, o, properties, out var operand))
+                return Invalid(context, NOTCOUNT);
 
-                if (value == null)
-                    return Fail(context, field, ReasonStrings.Null, field);
+            var operandValue = Value(context, operand);
+            if (operandValue == null)
+                return Fail(context, operand, ReasonStrings.Assert_IsNull);
 
-                if (ExpressionHelpers.TryEnumerableLength(value, value: out var actualValue))
-                    return Condition(
-                        context,
-                        field,
-                        actualValue != expectedValue,
-                        ReasonStrings.NotCount,
-                        field,
-                        actualValue,
-                        expectedValue
-                    );
-            }
-            return Invalid(context, NOTCOUNT);
+            // int, string, bool
+            return Condition(
+                context,
+                operand,
+                ExpressionHelpers.TryEnumerableLength(operandValue, value: out var actualValue) && actualValue != expectedValue,
+                ReasonStrings.Assert_NotCount,
+                actualValue
+            );
         }
 
         internal static bool Less(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (!TryPropertyLong(properties, LESS, out var propertyValue) ||
+            if (!TryPropertyLong(context, properties, LESS, out var propertyValue) ||
                 !TryOperand(context, LESS, o, properties, out var operand) ||
                 !GetConvert(properties, out var convert))
                 return Invalid(context, LESS);
@@ -749,8 +751,9 @@ namespace PSRule.Definitions.Expressions
                     ReasonStrings.Assert_IsNullOrEmpty
                 );
 
+            var operandValue = Value(context, operand);
             if (!ExpressionHelpers.CompareNumeric(
-                operand.Value,
+                operandValue,
                 propertyValue,
                 convert,
                 compare: out var compare,
@@ -763,7 +766,7 @@ namespace PSRule.Definitions.Expressions
                 operand,
                 compare < 0,
                 ReasonStrings.Assert_NotComparedTo,
-                operand.Value,
+                operandValue,
                 LESS_THAN,
                 propertyValue
             );
@@ -772,7 +775,7 @@ namespace PSRule.Definitions.Expressions
         internal static bool LessOrEquals(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (!TryPropertyLong(properties, LESSOREQUALS, out var propertyValue) ||
+            if (!TryPropertyLong(context, properties, LESSOREQUALS, out var propertyValue) ||
                 !TryOperand(context, LESSOREQUALS, o, properties, out var operand) ||
                 !GetConvert(properties, out var convert))
                 return Invalid(context, LESSOREQUALS);
@@ -785,8 +788,9 @@ namespace PSRule.Definitions.Expressions
                     ReasonStrings.Assert_IsNullOrEmpty
                 );
 
+            var operandValue = Value(context, operand);
             if (!ExpressionHelpers.CompareNumeric(
-                operand.Value,
+                operandValue,
                 propertyValue,
                 convert,
                 compare: out var compare,
@@ -799,7 +803,7 @@ namespace PSRule.Definitions.Expressions
                 operand,
                 compare <= 0,
                 ReasonStrings.Assert_NotComparedTo,
-                operand.Value,
+                operandValue,
                 LESS_THAN_EQUALS,
                 propertyValue
             );
@@ -808,7 +812,7 @@ namespace PSRule.Definitions.Expressions
         internal static bool Greater(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (!TryPropertyLong(properties, GREATER, out var propertyValue) ||
+            if (!TryPropertyLong(context, properties, GREATER, out var propertyValue) ||
                 !TryOperand(context, GREATER, o, properties, out var operand) ||
                 !GetConvert(properties, out var convert))
                 return Invalid(context, GREATER);
@@ -821,8 +825,9 @@ namespace PSRule.Definitions.Expressions
                     ReasonStrings.Assert_IsNullOrEmpty
                 );
 
+            var operandValue = Value(context, operand);
             if (!ExpressionHelpers.CompareNumeric(
-                operand.Value,
+                operandValue,
                 propertyValue,
                 convert,
                 compare: out var compare,
@@ -835,7 +840,7 @@ namespace PSRule.Definitions.Expressions
                 operand,
                 compare > 0,
                 ReasonStrings.Assert_NotComparedTo,
-                operand.Value,
+                operandValue,
                 GREATER_THAN,
                 propertyValue
             );
@@ -844,7 +849,7 @@ namespace PSRule.Definitions.Expressions
         internal static bool GreaterOrEquals(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            if (!TryPropertyLong(properties, GREATEROREQUALS, out var propertyValue) ||
+            if (!TryPropertyLong(context, properties, GREATEROREQUALS, out var propertyValue) ||
                 !TryOperand(context, GREATEROREQUALS, o, properties, out var operand) ||
                 !GetConvert(properties, out var convert))
                 return Invalid(context, GREATEROREQUALS);
@@ -857,8 +862,9 @@ namespace PSRule.Definitions.Expressions
                     ReasonStrings.Assert_IsNullOrEmpty
                 );
 
+            var operandValue = Value(context, operand);
             if (!ExpressionHelpers.CompareNumeric(
-                operand.Value,
+                operandValue,
                 propertyValue,
                 convert,
                 compare: out var compare,
@@ -871,7 +877,7 @@ namespace PSRule.Definitions.Expressions
                 operand,
                 compare >= 0,
                 ReasonStrings.Assert_NotComparedTo,
-                operand.Value,
+                operandValue,
                 GREATER_THAN_EQUALS,
                 propertyValue
             );
@@ -1484,9 +1490,17 @@ namespace PSRule.Definitions.Expressions
             return true;
         }
 
-        private static bool TryPropertyLong(LanguageExpression.PropertyBag properties, string propertyName, out long? propertyValue)
+        private static bool TryPropertyLong(ExpressionContext context, LanguageExpression.PropertyBag properties, string propertyName, out long? propertyValue)
         {
-            return properties.TryGetLong(propertyName, out propertyValue);
+            propertyValue = null;
+            if (!properties.TryGetValue(propertyName, out var value))
+                return false;
+
+            if (!ExpressionHelpers.TryLong(Value(context, value), true, out var l_value))
+                return false;
+
+            propertyValue = l_value;
+            return true;
         }
 
         private static bool TryField(LanguageExpression.PropertyBag properties, out string field)
@@ -1537,7 +1551,6 @@ namespace PSRule.Definitions.Expressions
                 if (string.IsNullOrEmpty(type))
                     return Invalid(context, svalue);
 
-
                 operand = Operand.FromType(type, binding.TargetTypePath);
             }
             return operand != null;
@@ -1555,6 +1568,36 @@ namespace PSRule.Definitions.Expressions
                 operand = Operand.FromSource(ExpressionHelpers.GetObjectOriginPath(source));
             }
             return operand != null;
+        }
+
+        private static bool TryValue(IExpressionContext context, LanguageExpression.PropertyBag properties, out IOperand operand)
+        {
+            operand = null;
+            if (properties.TryGetValue(VALUE, out var value))
+            {
+                // TODO: Propogate path
+                operand = Operand.FromValue(value);
+            }
+            return operand != null;
+        }
+
+        /// <summary>
+        /// Unwrap a function delegate or a literal value.
+        /// </summary>
+        private static object Value(IExpressionContext context, IOperand operand)
+        {
+            if (operand == null)
+                return null;
+
+            return operand.Value is ExpressionFnOuter fn ? fn(context) : operand.Value;
+        }
+
+        /// <summary>
+        /// Unwrap a function delegate or a literal value.
+        /// </summary>
+        private static object Value(IExpressionContext context, object value)
+        {
+            return value is ExpressionFnOuter fn ? fn(context) : value;
         }
 
         private static bool GetCaseSensitive(LanguageExpression.PropertyBag properties, out bool caseSensitive, bool defaultValue = false)
@@ -1587,6 +1630,7 @@ namespace PSRule.Definitions.Expressions
                 TryType(context, properties, out operand) ||
                 TryName(context, properties, out operand) ||
                 TrySource(context, properties, out operand) ||
+                TryValue(context, properties, out operand) ||
                 Invalid(context, name);
         }
 

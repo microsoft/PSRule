@@ -260,7 +260,7 @@ namespace PSRule.Host
                         context.EnterSourceScope(source: file);
 
                         using var reader = new StreamReader(file.Path);
-                        var parser = new YamlDotNet.Core.Parser(reader);
+                        var parser = new Parser(reader);
                         parser.TryConsume<StreamStart>(out _);
                         while (parser.Current is DocumentStart)
                         {

@@ -1,8 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using PSRule.Definitions;
+using PSRule.Pipeline;
+using PSRule.Resources;
 
 namespace PSRule
 {
@@ -28,6 +32,38 @@ namespace PSRule
 
             extent = new SourceExtent(file, lineNumber, linePosition);
             return true;
+        }
+
+        [DebuggerStepThrough]
+        public static bool TryConsume(this JsonReader reader, JsonToken token)
+        {
+            if (reader.TokenType != token)
+                return false;
+
+            reader.Read();
+            return true;
+        }
+
+        [DebuggerStepThrough]
+        public static void Consume(this JsonReader reader, JsonToken token)
+        {
+            if (reader.TokenType != token)
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType));
+
+            reader.Read();
+        }
+
+        /// <summary>
+        /// Skip JSON comments.
+        /// </summary>
+        [DebuggerStepThrough]
+        public static bool SkipComments(this JsonReader reader)
+        {
+            var hasComments = false;
+            while (reader.TokenType == JsonToken.Comment && reader.Read())
+                hasComments = true;
+
+            return hasComments;
         }
     }
 }

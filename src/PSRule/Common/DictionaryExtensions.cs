@@ -1,7 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -83,9 +84,24 @@ namespace PSRule
             if (!dictionary.TryGetValue(key, out var o))
                 return false;
 
-            if (o is long lvalue || (o is string svalue && long.TryParse(svalue, out lvalue)))
+            if (ExpressionHelpers.TryLong(o, true, out var i_value))
             {
-                value = lvalue;
+                value = i_value;
+                return true;
+            }
+            return false;
+        }
+
+        [DebuggerStepThrough]
+        public static bool TryGetInt(this IDictionary<string, object> dictionary, string key, out int? value)
+        {
+            value = null;
+            if (!dictionary.TryGetValue(key, out var o))
+                return false;
+
+            if (ExpressionHelpers.TryInt(o, true, out var i_value))
+            {
+                value = i_value;
                 return true;
             }
             return false;
@@ -101,6 +117,21 @@ namespace PSRule
             if (o is string svalue)
             {
                 value = svalue;
+                return true;
+            }
+            return false;
+        }
+
+        [DebuggerStepThrough]
+        public static bool TryGetEnumerable(this IDictionary<string, object> dictionary, string key, out IEnumerable value)
+        {
+            value = null;
+            if (!dictionary.TryGetValue(key, out var o))
+                return false;
+
+            if (o is IEnumerable evalue)
+            {
+                value = evalue;
                 return true;
             }
             return false;

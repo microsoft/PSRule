@@ -136,7 +136,7 @@ namespace PSRule.Runtime
         /// <summary>
         /// The current target object.
         /// </summary>
-        public PSObject TargetObject => GetContext().RuleRecord.TargetObject;
+        public PSObject TargetObject => GetContext().TargetObject.Value;
 
         /// <summary>
         /// The bound name of the target object.
