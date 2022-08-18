@@ -28,7 +28,7 @@ Within the root directory of your IaC repository:
 
         # Analyze Azure resources using PSRule for Azure
         - name: Analyze Azure template files
-          uses: microsoft/ps-rule@v2.1.0
+          uses: microsoft/ps-rule@v2.3.2
           with:
             modules: 'PSRule.Rules.Azure'
     ```

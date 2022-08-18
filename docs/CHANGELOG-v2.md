@@ -22,7 +22,7 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 What's changed since pre-release v2.4.0-B0022:
 
 - New features:
-  - **Experimental**: Added support for functions within YAML and JSON expressions.
+  - **Experimental**: Added support for functions within YAML and JSON expressions by @BernieWhite.
     [#1227](https://github.com/microsoft/PSRule/issues/1227)
     - Added conversion functions `boolean`, `string`, and `integer`.
     - Added lookup functions `configuration`, and `path`.
