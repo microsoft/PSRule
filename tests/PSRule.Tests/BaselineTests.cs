@@ -36,6 +36,7 @@ namespace PSRule
             Assert.Equal("github.com/microsoft/PSRule/v1", baseline[0].ApiVersion);
             Assert.Equal("value", baseline[0].Metadata.Annotations["key"]);
             Assert.False(baseline[0].Obsolete);
+            Assert.Equal("This is an example baseline", baseline[0].Info.Synopsis.Text);
 
             var config = baseline[0].Spec.Configuration["key2"] as Array;
             Assert.NotNull(config);
@@ -46,10 +47,15 @@ namespace PSRule
             pso = config.GetValue(1) as PSObject;
             Assert.Equal("def", pso.PropertyValue<string>("value2"));
 
+            // TestBaseline4
+            Assert.Equal("TestBaseline4", baseline[3].Name);
+            Assert.Null(baseline[3].Info.Synopsis.Text);
+
             // TestBaseline5
             Assert.Equal("TestBaseline5", baseline[4].Name);
             Assert.Equal("github.com/microsoft/PSRule/v1", baseline[4].ApiVersion);
             Assert.True(baseline[4].Obsolete);
+            Assert.Equal("This is an example obsolete baseline", baseline[4].Info.Synopsis.Text);
         }
 
         [Fact]
@@ -64,6 +70,7 @@ namespace PSRule
             Assert.Equal("github.com/microsoft/PSRule/v1", baseline[0].ApiVersion);
             Assert.Equal("value", baseline[0].Metadata.Annotations["key"]);
             Assert.False(baseline[0].Obsolete);
+            Assert.Equal("This is an example baseline", baseline[0].Info.Synopsis.Text);
 
             var config = (JArray)baseline[0].Spec.Configuration["key2"];
             Assert.NotNull(config);
@@ -73,10 +80,15 @@ namespace PSRule
             Assert.True(config[1].Type == JTokenType.Object);
             Assert.Equal("def", config[1]["value2"]);
 
+            // TestBaseline4
+            Assert.Equal("TestBaseline4", baseline[3].Name);
+            Assert.Null(baseline[3].Info.Synopsis.Text);
+
             // TestBaseline5
             Assert.Equal("TestBaseline5", baseline[4].Name);
             Assert.Equal("github.com/microsoft/PSRule/v1", baseline[4].ApiVersion);
             Assert.True(baseline[4].Obsolete);
+            Assert.Equal("This is an example obsolete baseline", baseline[4].Info.Synopsis.Text);
         }
 
         [Theory]

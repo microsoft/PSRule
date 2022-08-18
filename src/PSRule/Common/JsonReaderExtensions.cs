@@ -57,13 +57,18 @@ namespace PSRule
         /// Skip JSON comments.
         /// </summary>
         [DebuggerStepThrough]
-        public static bool SkipComments(this JsonReader reader)
+        public static bool SkipComments(this JsonReader reader, out bool hasComments)
         {
-            var hasComments = false;
-            while (reader.TokenType == JsonToken.Comment && reader.Read())
-                hasComments = true;
+            hasComments = false;
+            while (reader.TokenType == JsonToken.Comment || reader.TokenType == JsonToken.None)
+            {
+                if (reader.TokenType == JsonToken.Comment)
+                    hasComments = true;
 
-            return hasComments;
+                if (!reader.Read())
+                    return false;
+            }
+            return true;
         }
     }
 }

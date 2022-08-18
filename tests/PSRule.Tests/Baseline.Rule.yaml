@@ -57,8 +57,8 @@ spec:
     tag:
       category: group2
 
+# Baseline without synopsis.
 ---
-# Synopsis: This is an example baseline
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:

@@ -30,6 +30,8 @@ What's changed since pre-release v2.4.0-B0022:
     [#1229](https://github.com/microsoft/PSRule/issues/1229)
     - Added `Execution.DuplicateResourceId` option to configure PSRule behaviour.
     - By default, duplicate resource identifiers return an error.
+  - Fixed exception on JSON baseline without a synopsis by @BernieWhite.
+    [#1230](https://github.com/microsoft/PSRule/issues/1230)
 
 ## v2.4.0-B0022 (pre-release)
 
