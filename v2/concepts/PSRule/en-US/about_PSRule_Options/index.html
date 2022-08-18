@@ -1594,6 +1594,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#executionduplicateresourceid" class="md-nav__link">
+    Execution.DuplicateResourceId
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#executionlanguagemode" class="md-nav__link">
     Execution.LanguageMode
   </a>
@@ -2119,6 +2126,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#executionduplicateresourceid" class="md-nav__link">
+    Execution.DuplicateResourceId
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#executionlanguagemode" class="md-nav__link">
     Execution.LanguageMode
   </a>
@@ -2443,6 +2457,7 @@ This topic describes what options are available, when to and how to use them.</p
 <ul>
 <li><a href="#conventioninclude">Convention.Include</a></li>
 <li><a href="#executionaliasreferencewarning">Execution.AliasReferenceWarning</a></li>
+<li><a href="#executionduplicateresourceid">Execution.DuplicateResourceId</a></li>
 <li><a href="#executionlanguagemode">Execution.LanguageMode</a></li>
 <li><a href="#executioninconclusivewarning">Execution.InconclusiveWarning</a></li>
 <li><a href="#executionnotprocessedwarning">Execution.NotProcessedWarning</a></li>
@@ -2971,6 +2986,46 @@ We recommend taking action to update your usage of the alis to use the rule name
 <span class="nt">variables</span><span class="p">:</span><span class="w"></span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PSRULE_EXECUTION_ALIASREFERENCEWARNING</span><span class="w"></span>
 <span class="w">  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+</code></pre></div>
+<h3 id="executionduplicateresourceid">Execution.DuplicateResourceId<a class="headerlink" href="#executionduplicateresourceid" title="Permanent link">#</a></h3>
+<p>Determines how to handle duplicate resources identifiers during execution.
+A duplicate resource identifier may exist if two resources are defined with the same name, ref, or alias.
+By defaut, an error is thrown, however this behaviour can be modified by this option.</p>
+<p>If this option is configured to <code>Warn</code> or <code>Ignore</code> only the first resource will be used,
+however PSRule will continue to execute.</p>
+<p>The following preferences are available:</p>
+<ul>
+<li><code>None</code> (0) - No preference.
+  Inherits the default of <code>Error</code>.</li>
+<li><code>Ignore</code> (1) - Continue to execute silently.</li>
+<li><code>Warn</code> (2) - Continue to execute but log a warning.</li>
+<li><code>Error</code> (3) - Abort and throw an error.
+  This is the default.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c"># PowerShell: Using the DuplicateResourceId parameter</span>
+<span class="nv">$option</span> <span class="p">=</span> <span class="nb">New-PSRuleOption</span> <span class="n">-DuplicateResourceId</span> <span class="s1">&#39;Warn&#39;</span><span class="p">;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c"># PowerShell: Using the Execution.DuplicateResourceId hashtable key</span>
+<span class="nv">$option</span> <span class="p">=</span> <span class="nb">New-PSRuleOption</span> <span class="n">-Option</span> <span class="p">@{</span> <span class="s1">&#39;Execution.DuplicateResourceId&#39;</span> <span class="p">=</span> <span class="s1">&#39;Warn&#39;</span> <span class="p">};</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c"># PowerShell: Using the DuplicateResourceId parameter to set YAML</span>
+<span class="nb">Set-PSRuleOption</span> <span class="n">-DuplicateResourceId</span> <span class="s1">&#39;Warn&#39;</span><span class="p">;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># YAML: Using the execution/duplicateResourceId property</span><span class="w"></span>
+<span class="nt">execution</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">duplicateResourceId</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Warn</span><span class="w"></span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># Bash: Using environment variable</span>
+<span class="nb">export</span> <span class="nv">PSRULE_EXECUTION_DUPLICATERESOURCEID</span><span class="o">=</span>Warn
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># GitHub Actions: Using environment variable</span><span class="w"></span>
+<span class="nt">env</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">PSRULE_EXECUTION_DUPLICATERESOURCEID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Warn</span><span class="w"></span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># Azure Pipelines: Using environment variable</span><span class="w"></span>
+<span class="nt">variables</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PSRULE_EXECUTION_DUPLICATERESOURCEID</span><span class="w"></span>
+<span class="w">  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Warn</span><span class="w"></span>
 </code></pre></div>
 <h3 id="executionlanguagemode">Execution.LanguageMode<a class="headerlink" href="#executionlanguagemode" title="Permanent link">#</a></h3>
 <p>Unless PowerShell has been constrained, full language features of PowerShell are available to use within rule definitions.
@@ -4481,7 +4536,7 @@ Objects that are suppressed are not processed by the rule at all but will contin
   <small>
     
       Last update:
-      2022-07-23
+      2022-08-18
     
   </small>
 </div>
