@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
-using System.Threading;
 using Newtonsoft.Json;
 using PSRule.Annotations;
 using PSRule.Definitions;
@@ -19,7 +18,6 @@ using PSRule.Definitions.Selectors;
 using PSRule.Definitions.SuppressionGroups;
 using PSRule.Help;
 using PSRule.Pipeline;
-using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime;
 using YamlDotNet.Core;
@@ -45,13 +43,13 @@ namespace PSRule.Host
 
         internal static RuleHelpInfo[] GetRuleHelp(Source[] source, RunspaceContext context)
         {
-            return ToRuleHelp(ToRuleBlockV1(GetLanguageBlock(context, source), context).GetAll(), context);
+            return ToRuleHelp(ToRuleBlockV1(GetLanguageBlock(context, source), context, skipDuplicateName: true).GetAll(), context);
         }
 
         internal static DependencyGraph<RuleBlock> GetRuleBlockGraph(Source[] source, RunspaceContext context)
         {
             var blocks = GetLanguageBlock(context, source);
-            var rules = ToRuleBlockV1(blocks, context);
+            var rules = ToRuleBlockV1(blocks, context, skipDuplicateName: false);
             Import(GetConventions(blocks, context), context);
             var builder = new DependencyGraphBuilder<RuleBlock>(context, includeDependencies: true, includeDisabled: false);
             builder.Include(rules, filter: (b) => Match(context, b));
@@ -60,7 +58,7 @@ namespace PSRule.Host
 
         internal static IEnumerable<RuleBlock> GetRuleYamlBlocks(Source[] source, RunspaceContext context)
         {
-            return ToRuleBlockV1(GetYamlLanguageBlocks(source, context), context).GetAll();
+            return ToRuleBlockV1(GetYamlLanguageBlocks(source, context), context, skipDuplicateName: true).GetAll();
         }
 
         private static IEnumerable<ILanguageBlock> GetYamlJsonLanguageBlocks(Source[] source, RunspaceContext context)
@@ -398,11 +396,6 @@ namespace PSRule.Host
             //}
         }
 
-        private static RuleException ThrowDuplicateRuleId(IDependencyTarget block)
-        {
-            return new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.DuplicateRuleId, block.Id.Value));
-        }
-
         /// <summary>
         /// Convert matching langauge blocks to rules.
         /// </summary>
@@ -410,10 +403,24 @@ namespace PSRule.Host
         {
             // Index rules by RuleId
             var results = new DependencyTargetCollection<IRuleV1>();
+
+            // Keep track of rule names and ids that have been added
+            var knownRuleNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var knownRuleIds = new HashSet<ResourceId>(ResourceIdEqualityComparer.Default);
+
             try
             {
                 foreach (var block in blocks.OfType<RuleBlock>())
                 {
+                    if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
+                    {
+                        context.DuplicateResourceId(block.Id, duplicateId.Value);
+                        continue;
+                    }
+
+                    if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
+                        context.WarnDuplicateRuleName(duplicateName);
+
                     results.TryAdd(new Rule
                     {
                         Id = block.Id,
@@ -427,11 +434,21 @@ namespace PSRule.Host
                         Flags = block.Flags,
                         Extent = block.Extent,
                     });
-                    //throw ThrowDuplicateRuleId(block);
+                    knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
+                    knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
                 }
 
                 foreach (var block in blocks.OfType<RuleV1>())
                 {
+                    if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
+                    {
+                        context.DuplicateResourceId(block.Id, duplicateId.Value);
+                        continue;
+                    }
+
+                    if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
+                        context.WarnDuplicateRuleName(duplicateName);
+
                     context.EnterSourceScope(block.Source);
                     var info = GetRuleHelpInfo(context, block.Name, block.Synopsis);
                     results.TryAdd(new Rule
@@ -447,7 +464,8 @@ namespace PSRule.Host
                         Flags = block.Flags,
                         Extent = block.Extent,
                     });
-                    //throw ThrowDuplicateRuleId(block);
+                    knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
+                    knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
                 }
             }
             finally
@@ -457,76 +475,76 @@ namespace PSRule.Host
             return results;
         }
 
-        private static DependencyTargetCollection<RuleBlock> ToRuleBlockV1(ILanguageBlock[] blocks, RunspaceContext context)
+        private static DependencyTargetCollection<RuleBlock> ToRuleBlockV1(ILanguageBlock[] blocks, RunspaceContext context, bool skipDuplicateName)
         {
             // Index rules by RuleId
             var results = new DependencyTargetCollection<RuleBlock>();
 
             // Keep track of rule names and ids that have been added
-            var seenRuleNames = new HashSet<string>();
-            var seenRuleIds = new HashSet<ResourceId>();
+            var knownRuleNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var knownRuleIds = new HashSet<ResourceId>(ResourceIdEqualityComparer.Default);
 
             try
             {
                 foreach (var block in blocks.OfType<RuleBlock>())
                 {
-                    var ruleName = block.Name;
-                    var ruleId = block.Id;
-
-                    if (seenRuleIds.Contains(ruleId))
-                        throw ThrowDuplicateRuleId(block);
-
-                    else if (seenRuleNames.Contains(ruleName))
-                        context.WarnDuplicateRuleName(ruleName);
-
-                    else
+                    if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
                     {
-                        results.TryAdd(block);
-                        seenRuleNames.Add(ruleName);
-                        seenRuleIds.Add(ruleId);
+                        context.DuplicateResourceId(block.Id, duplicateId.Value);
+                        continue;
                     }
+                    if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
+                    {
+                        context.WarnDuplicateRuleName(duplicateName);
+                        if (skipDuplicateName)
+                            continue;
+                    }
+
+                    results.TryAdd(block);
+                    knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
+                    knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
                 }
 
-                foreach (var yaml in blocks.OfType<RuleV1>())
+                foreach (var block in blocks.OfType<RuleV1>())
                 {
-                    var ruleName = yaml.Name;
-                    var ruleId = yaml.Id;
-
-                    if (seenRuleIds.Contains(ruleId))
-                        throw ThrowDuplicateRuleId(yaml);
-
-                    else if (seenRuleNames.Contains(ruleName))
-                        context.WarnDuplicateRuleName(ruleName);
-
-                    else
+                    var ruleName = block.Name;
+                    if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
                     {
-                        context.EnterSourceScope(yaml.Source);
-                        var info = GetRuleHelpInfo(context, ruleName, yaml.Synopsis) ?? new RuleHelpInfo(
-                            ruleName,
-                            ruleName,
-                            yaml.Source.Module,
-                            synopsis: new InfoString(yaml.Synopsis)
-                        );
-
-                        var block = new RuleBlock
-                        (
-                            source: yaml.Source,
-                            id: yaml.Id,
-                            @ref: yaml.Ref,
-                            level: yaml.Level,
-                            info: info,
-                            condition: new RuleVisitor(yaml.Id, yaml.Source, yaml.Spec),
-                            alias: yaml.Alias,
-                            tag: yaml.Metadata.Tags,
-                            dependsOn: null,  // TODO: No support for DependsOn yet
-                            configuration: null, // TODO: No support for rule configuration use module or workspace config
-                            extent: null,
-                            flags: yaml.Flags
-                        );
-                        results.TryAdd(block);
-                        seenRuleNames.Add(ruleName);
-                        seenRuleIds.Add(ruleId);
+                        context.DuplicateResourceId(block.Id, duplicateId.Value);
+                        continue;
                     }
+                    if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
+                    {
+                        context.WarnDuplicateRuleName(duplicateName);
+                        if (skipDuplicateName)
+                            continue;
+                    }
+
+                    context.EnterSourceScope(block.Source);
+                    var info = GetRuleHelpInfo(context, ruleName, block.Synopsis) ?? new RuleHelpInfo(
+                        ruleName,
+                        ruleName,
+                        block.Source.Module,
+                        synopsis: new InfoString(block.Synopsis)
+                    );
+
+                    results.TryAdd(new RuleBlock
+                    (
+                        source: block.Source,
+                        id: block.Id,
+                        @ref: block.Ref,
+                        level: block.Level,
+                        info: info,
+                        condition: new RuleVisitor(block.Id, block.Source, block.Spec),
+                        alias: block.Alias,
+                        tag: block.Metadata.Tags,
+                        dependsOn: null,  // TODO: No support for DependsOn yet
+                        configuration: null, // TODO: No support for rule configuration use module or workspace config
+                        extent: null,
+                        flags: block.Flags
+                    ));
+                    knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
+                    knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
                 }
             }
             finally

@@ -2425,7 +2425,11 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
 
             try {
                 Push-Location $searchPath;
-                { Get-PSRuleHelp -Path $PWD } | Should -Throw "A rule with the same id '.\M1.Rule2' already exists.";
+                { Get-PSRuleHelp -Path $PWD } | Should -Throw "The resource '.\M1.Rule2' is using a duplicate resource identifier. A resource with the identifier '.\M1.Rule2' already exists. Each resource must have a unique name, ref, and aliases. See https://aka.ms/ps-rule/naming for guidance on naming within PSRule.";
+                Get-PSRuleHelp -Path $PWD -Option @{ 'Execution.DuplicateResourceId' = 'Warn'; 'Execution.InvariantCultureWarning' = $False } -WarningVariable outWarn -WarningAction SilentlyContinue;
+                $warnings = @($outWarn);
+                $warnings.Count | Should -Be 1;
+                $warnings | Should -Be "The resource '.\M1.Rule2' is using a duplicate resource identifier. A resource with the identifier '.\M1.Rule2' already exists. Each resource must have a unique name, ref, and aliases. See https://aka.ms/ps-rule/naming for guidance on naming within PSRule.";
             }
             finally {
                 Pop-Location;

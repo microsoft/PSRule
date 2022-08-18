@@ -224,13 +224,13 @@ namespace PSRule.Resources
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to A rule with the same id &apos;{0}&apos; already exists..
+        ///   Looks up a localized string similar to The resource &apos;{0}&apos; is using a duplicate resource identifier. A resource with the identifier &apos;{1}&apos; already exists. Each resource must have a unique name, ref, and aliases. See https://aka.ms/ps-rule/naming for guidance on naming within PSRule..
         /// </summary>
-        internal static string DuplicateRuleId
+        internal static string DuplicateResourceId
         {
             get
             {
-                return ResourceManager.GetString("DuplicateRuleId", resourceCulture);
+                return ResourceManager.GetString("DuplicateResourceId", resourceCulture);
             }
         }
 

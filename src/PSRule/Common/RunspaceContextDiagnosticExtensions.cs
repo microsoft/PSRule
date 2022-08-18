@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Threading;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Pipeline;
@@ -10,11 +11,11 @@ using PSRule.Runtime;
 
 namespace PSRule
 {
-    internal static class RunspaceContextExtensions
+    internal static class RunspaceContextDiagnosticExtensions
     {
         private const string WARN_KEY_PROPERTY = "Property";
 
-        public static void WarnResourceObsolete(this RunspaceContext context, ResourceKind kind, string id)
+        internal static void WarnResourceObsolete(this RunspaceContext context, ResourceKind kind, string id)
         {
             if (context.Writer == null || !context.Writer.ShouldWriteWarning())
                 return;
@@ -22,7 +23,7 @@ namespace PSRule
             context.Writer.WriteWarning(PSRuleResources.ResourceObsolete, Enum.GetName(typeof(ResourceKind), kind), id);
         }
 
-        public static void WarnPropertyObsolete(this RunspaceContext context, string variableName, string propertyName)
+        internal static void WarnPropertyObsolete(this RunspaceContext context, string variableName, string propertyName)
         {
             context.DebugPropertyObsolete(variableName, propertyName);
             if (context.Writer == null || !context.Writer.ShouldWriteWarning() || !context.ShouldWarnOnce(WARN_KEY_PROPERTY, variableName, propertyName))
@@ -31,7 +32,7 @@ namespace PSRule
             context.Writer.WriteWarning(PSRuleResources.PropertyObsolete, variableName, propertyName);
         }
 
-        public static void WarnRuleNotFound(this RunspaceContext context)
+        internal static void WarnRuleNotFound(this RunspaceContext context)
         {
             if (context.Writer == null || !context.Writer.ShouldWriteWarning())
                 return;
@@ -39,7 +40,7 @@ namespace PSRule
             context.Writer.WriteWarning(PSRuleResources.RuleNotFound);
         }
 
-        public static void WarnDuplicateRuleName(this RunspaceContext context, string ruleName)
+        internal static void WarnDuplicateRuleName(this RunspaceContext context, string ruleName)
         {
             if (context.Writer == null || !context.Writer.ShouldWriteWarning())
                 return;
@@ -47,7 +48,20 @@ namespace PSRule
             context.Writer.WriteWarning(PSRuleResources.DuplicateRuleName, ruleName);
         }
 
-        public static void DebugPropertyObsolete(this RunspaceContext context, string variableName, string propertyName)
+        internal static void DuplicateResourceId(this RunspaceContext context, ResourceId id, ResourceId duplicateId)
+        {
+            if (context == null)
+                return;
+
+            var action = context.Pipeline.Option.Execution.DuplicateResourceId.GetValueOrDefault(ExecutionOption.Default.DuplicateResourceId.Value);
+            if (action == ExecutionActionPreference.Error)
+                throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.DuplicateResourceId, id.Value, duplicateId.Value));
+
+            else if (action == ExecutionActionPreference.Warn && context.Writer != null && context.Writer.ShouldWriteWarning())
+                context.Writer.WriteWarning(PSRuleResources.DuplicateResourceId, id.Value, duplicateId.Value);
+        }
+
+        internal static void DebugPropertyObsolete(this RunspaceContext context, string variableName, string propertyName)
         {
             if (context.Writer == null || !context.Writer.ShouldWriteDebug())
                 return;
@@ -55,7 +69,7 @@ namespace PSRule
             context.Writer.WriteDebug(PSRuleResources.DebugPropertyObsolete, context.RuleBlock.Name, variableName, propertyName);
         }
 
-        public static void WarnAliasReference(this RunspaceContext context, ResourceKind kind, string resourceId, string targetId, string alias)
+        internal static void WarnAliasReference(this RunspaceContext context, ResourceKind kind, string resourceId, string targetId, string alias)
         {
             if (context.Writer == null || !context.Writer.ShouldWriteWarning() || !context.Pipeline.Option.Execution.AliasReferenceWarning.GetValueOrDefault(ExecutionOption.Default.AliasReferenceWarning.Value))
                 return;
@@ -63,7 +77,7 @@ namespace PSRule
             context.Writer.WriteWarning(PSRuleResources.AliasReference, kind.ToString(), resourceId, targetId, alias);
         }
 
-        public static void WarnAliasSuppression(this RunspaceContext context, string targetId, string alias)
+        internal static void WarnAliasSuppression(this RunspaceContext context, string targetId, string alias)
         {
             if (context.Writer == null || !context.Writer.ShouldWriteWarning() || !context.Pipeline.Option.Execution.AliasReferenceWarning.GetValueOrDefault(ExecutionOption.Default.AliasReferenceWarning.Value))
                 return;
