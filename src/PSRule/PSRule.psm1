@@ -1164,6 +1164,16 @@ function New-PSRuleOption {
         [Alias('ConventionInclude')]
         [String[]]$Convention,
 
+        # Sets the Execution.AliasReferenceWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionAliasReferenceWarning')]
+        [System.Boolean]$AliasReferenceWarning = $True,
+
+        # Sets the Execution.DuplicateResourceId option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionDuplicateResourceId')]
+        [PSRule.Configuration.ExecutionActionPreference]$DuplicateResourceId = [PSRule.Configuration.ExecutionActionPreference]::Error,
+
         # Sets the Execution.InconclusiveWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInconclusiveWarning')]
@@ -1179,10 +1189,6 @@ function New-PSRuleOption {
         [Alias('ExecutionSuppressedRuleWarning')]
         [System.Boolean]$SuppressedRuleWarning = $True,
 
-        # Sets the Execution.AliasReferenceWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionAliasReferenceWarning')]
-        [System.Boolean]$AliasReferenceWarning = $True,
 
         # Sets the Execution.InvariantCultureWarning option
         [Parameter(Mandatory = $False)]
@@ -1438,6 +1444,16 @@ function Set-PSRuleOption {
         [Alias('ConventionInclude')]
         [String[]]$Convention,
 
+        # Sets the Execution.AliasReferenceWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionAliasReferenceWarning')]
+        [System.Boolean]$AliasReferenceWarning = $True,
+
+        # Sets the Execution.DuplicateResourceId option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionDuplicateResourceId')]
+        [PSRule.Configuration.ExecutionActionPreference]$DuplicateResourceId = [PSRule.Configuration.ExecutionActionPreference]::Error,
+
         # Sets the Execution.InconclusiveWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInconclusiveWarning')]
@@ -1452,11 +1468,6 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionSuppressedRuleWarning')]
         [System.Boolean]$SuppressedRuleWarning = $True,
-
-        # Sets the Execution.AliasReferenceWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionAliasReferenceWarning')]
-        [System.Boolean]$AliasReferenceWarning = $True,
 
         # Sets the Execution.InvariantCultureWarning option
         [Parameter(Mandatory = $False)]
@@ -2155,6 +2166,16 @@ function SetOptions {
         [Alias('ConventionInclude')]
         [String[]]$Convention,
 
+        # Sets the Execution.AliasReferenceWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionAliasReferenceWarning')]
+        [System.Boolean]$AliasReferenceWarning = $True,
+
+        # Sets the Execution.DuplicateResourceId option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionDuplicateResourceId')]
+        [PSRule.Configuration.ExecutionActionPreference]$DuplicateResourceId = [PSRule.Configuration.ExecutionActionPreference]::Error,
+
         # Sets the Execution.InconclusiveWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInconclusiveWarning')]
@@ -2169,11 +2190,6 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionSuppressedRuleWarning')]
         [System.Boolean]$SuppressedRuleWarning = $True,
-
-        # Sets the Execution.AliasReferenceWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionAliasReferenceWarning')]
-        [System.Boolean]$AliasReferenceWarning = $True,
 
         # Sets the Execution.InvariantCultureWarning option
         [Parameter(Mandatory = $False)]
@@ -2358,6 +2374,11 @@ function SetOptions {
         # Sets option Execution.AliasReferenceWarning
         if ($PSBoundParameters.ContainsKey('AliasReferenceWarning')) {
             $Option.Execution.AliasReferenceWarning = $AliasReferenceWarning;
+        }
+
+        # Sets option Execution.DuplicateResourceId
+        if ($PSBoundParameters.ContainsKey('DuplicateResourceId')) {
+            $Option.Execution.DuplicateResourceId = $DuplicateResourceId;
         }
 
         # Sets option Execution.InvariantCultureWarning

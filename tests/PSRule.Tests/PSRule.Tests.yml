@@ -49,6 +49,7 @@ binding:
 # Configure execution options
 execution:
   aliasReferenceWarning: false
+  duplicateResourceId: Warn
   languageMode: ConstrainedLanguage
   inconclusiveWarning: false
   notProcessedWarning: false

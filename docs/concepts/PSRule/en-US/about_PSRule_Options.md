@@ -15,6 +15,7 @@ The following workspace options are available for use:
 
 - [Convention.Include](#conventioninclude)
 - [Execution.AliasReferenceWarning](#executionaliasreferencewarning)
+- [Execution.DuplicateResourceId](#executionduplicateresourceid)
 - [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InconclusiveWarning](#executioninconclusivewarning)
 - [Execution.NotProcessedWarning](#executionnotprocessedwarning)
@@ -717,6 +718,63 @@ env:
 variables:
 - name: PSRULE_EXECUTION_ALIASREFERENCEWARNING
   value: false
+```
+
+### Execution.DuplicateResourceId
+
+Determines how to handle duplicate resources identifiers during execution.
+A duplicate resource identifier may exist if two resources are defined with the same name, ref, or alias.
+By defaut, an error is thrown, however this behaviour can be modified by this option.
+
+If this option is configured to `Warn` or `Ignore` only the first resource will be used,
+however PSRule will continue to execute.
+
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Error`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+- `Error` (3) - Abort and throw an error.
+  This is the default.
+
+```powershell
+# PowerShell: Using the DuplicateResourceId parameter
+$option = New-PSRuleOption -DuplicateResourceId 'Warn';
+```
+
+```powershell
+# PowerShell: Using the Execution.DuplicateResourceId hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.DuplicateResourceId' = 'Warn' };
+```
+
+```powershell
+# PowerShell: Using the DuplicateResourceId parameter to set YAML
+Set-PSRuleOption -DuplicateResourceId 'Warn';
+```
+
+```yaml
+# YAML: Using the execution/duplicateResourceId property
+execution:
+  duplicateResourceId: Warn
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_DUPLICATERESOURCEID=Warn
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_DUPLICATERESOURCEID: Warn
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_DUPLICATERESOURCEID
+  value: Warn
 ```
 
 ### Execution.LanguageMode

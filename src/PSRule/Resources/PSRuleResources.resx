@@ -163,9 +163,9 @@
     <value>The dependency '{0}' for '{1}' could not be found. Check that the rule is defined in a .Rule.ps1 file within the search path.</value>
     <comment>Occurs when a rule dependency is not discovered.</comment>
   </data>
-  <data name="DuplicateRuleId" xml:space="preserve">
-    <value>A rule with the same id '{0}' already exists.</value>
-    <comment>Occurs when the same rule id is used.</comment>
+  <data name="DuplicateResourceId" xml:space="preserve">
+    <value>The resource '{0}' is using a duplicate resource identifier. A resource with the identifier '{1}' already exists. Each resource must have a unique name, ref, and aliases. See https://aka.ms/ps-rule/naming for guidance on naming within PSRule.</value>
+    <comment>Occurs when the same resource id is used.</comment>
   </data>
   <data name="DuplicateRuleName" xml:space="preserve">
     <value>A rule with the same name '{0}' already exists.</value>

@@ -25,6 +25,11 @@ What's changed since pre-release v2.4.0-B0022:
     - Added conversion functions `boolean`, `string`, and `integer`.
     - Added lookup functions `configuration`, and `path`.
     - Added string functions `concat`, `substring`.
+- Bug fixes:
+  - Fixed reporting of duplicate identifiers which were not generating an error for all cases by @BernieWhite.
+    [#1229](https://github.com/microsoft/PSRule/issues/1229)
+    - Added `Execution.DuplicateResourceId` option to configure PSRule behaviour.
+    - By default, duplicate resource identifiers return an error.
 
 ## v2.4.0-B0022 (pre-release)
 

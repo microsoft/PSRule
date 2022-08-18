@@ -222,13 +222,12 @@ namespace PSRule.Pipeline
 
             Option.Binding = new BindingOption(option.Binding);
             Option.Convention = new ConventionOption(option.Convention);
-            Option.Execution = new ExecutionOption(option.Execution);
-            Option.Execution.LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode;
+            Option.Execution = GetExecutionOption(option.Execution);
             Option.Input = new InputOption(option.Input);
-            Option.Input.Format = Option.Input.Format ?? InputOption.Default.Format;
+            Option.Input.Format ??= InputOption.Default.Format;
             Option.Output = new OutputOption(option.Output);
-            Option.Output.Outcome = Option.Output.Outcome ?? OutputOption.Default.Outcome;
-            Option.Output.Banner = Option.Output.Banner ?? OutputOption.Default.Banner;
+            Option.Output.Outcome ??= OutputOption.Default.Outcome;
+            Option.Output.Banner ??= OutputOption.Default.Banner;
             Option.Repository = GetRepository(Option.Repository);
             return this;
         }
@@ -400,12 +399,26 @@ namespace PSRule.Pipeline
             return result.Count == 0 ? null : result.ToArray();
         }
 
-        protected static RepositoryOption GetRepository(RepositoryOption repository)
+        protected static RepositoryOption GetRepository(RepositoryOption option)
         {
-            var result = new RepositoryOption(repository);
+            var result = new RepositoryOption(option);
             if (string.IsNullOrEmpty(result.Url) && GitHelper.TryRepository(out var url))
                 result.Url = url;
 
+            return result;
+        }
+
+        /// <summary>
+        /// Coalesce execution options with defaults.
+        /// </summary>
+        protected static ExecutionOption GetExecutionOption(ExecutionOption option)
+        {
+            var result = ExecutionOption.Combine(option, ExecutionOption.Default);
+            //result.InconclusiveWarning ??= ExecutionOption.Default.InconclusiveWarning;
+            //result.NotProcessedWarning ??= ExecutionOption.Default.NotProcessedWarning;
+            //result.SuppressedRuleWarning ??= ExecutionOption.Default.SuppressedRuleWarning;
+            //result.InvariantCultureWarning ??= ExecutionOption.Default.InvariantCultureWarning;
+            result.DuplicateResourceId = result.DuplicateResourceId == ExecutionActionPreference.None ? ExecutionOption.Default.DuplicateResourceId.Value : result.DuplicateResourceId;
             return result;
         }
 

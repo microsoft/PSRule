@@ -257,8 +257,28 @@
         "execution-option": {
             "type": "object",
             "title": "Execution options",
-            "description": "Options that affect rule execution.",
+            "description": "Options that affect execution.",
+            "markdownDescription": "Options that affect execution. [See help](https://aka.ms/ps-rule/options)",
             "properties": {
+                "aliasReferenceWarning": {
+                    "type": "boolean",
+                    "title": "Warn on resource aliases",
+                    "description": "Enable or disable warnings when an alias to a resource is used. The default is true.",
+                    "markdownDescription": "Enable or disable warnings when an alias to a resource is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionaliasreferencewarning)",
+                    "default": true
+                },
+                "duplicateResourceId": {
+                    "type": "string",
+                    "title": "Duplicate resource identifiers",
+                    "description": "Determines how to handle duplicate resources identifiers during execution. Regardless of the value, only the first resource will be used. By defaut, an error is thrown. When set to Warn, a warning is generated. When set to Ignore, no output will be displayed.",
+                    "markdownDescription": "Determines how to handle duplicate resources identifiers during execution.\n\nRegardless of the value, only the first resource will be used. By defaut, an error is thrown. When set to `Warn`, a warning is generated. When set to `Ignore`, no output will be displayed. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionduplicateresourceid)",
+                    "enum": [
+                        "Ignore",
+                        "Warn",
+                        "Error"
+                    ],
+                    "default": "Error"
+                },
                 "languageMode": {
                     "type": "string",
                     "title": "Language mode",
@@ -289,13 +309,6 @@
                     "title": "Warn on suppressed rules",
                     "description": "Enable or disable warnings for suppressed rules. The default is `true`.",
                     "markdownDescription": "Enable or disable warnings for suppressed rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionsuppressedrulewarning)",
-                    "default": true
-                },
-                "aliasReferenceWarning": {
-                    "type": "boolean",
-                    "title": "Warn on resource aliases",
-                    "description": "Enable or disable warnings when an alias to a resource is used. The default is true.",
-                    "markdownDescription": "Enable or disable warnings when an alias to a resource is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionaliasreferencewarning)",
                     "default": true
                 },
                 "invariantCultureWarning": {

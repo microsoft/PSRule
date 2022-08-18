@@ -25,6 +25,9 @@ namespace PSRule.Configuration
     /// <summary>
     /// A structure that stores PSRule configuration options.
     /// </summary>
+    /// <remarks>
+    /// See <see href="https://aka.ms/ps-rule/options"/>.
+    /// </remarks>
     public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineSpec
     {
         private const string DEFAULT_FILENAME = "ps-rule.yaml";

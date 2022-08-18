@@ -778,6 +778,53 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Execution.DuplicateResourceId' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.DuplicateResourceId | Should -Be 'Error'
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.DuplicateResourceId' = 'warn' };
+            $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.DuplicateResourceId' = 'Warn' };
+            $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_DUPLICATERESOURCEID = 'warn';
+                $option = New-PSRuleOption;
+                $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+
+                # With enum
+                $Env:PSRULE_EXECUTION_DUPLICATERESOURCEID = 'Warn';
+                $option = New-PSRuleOption;
+                $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+
+                # With int
+                $Env:PSRULE_EXECUTION_DUPLICATERESOURCEID = '2';
+                $option = New-PSRuleOption;
+                $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_DUPLICATERESOURCEID' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -DuplicateResourceId 'Warn' -Path $emptyOptionsFilePath;
+            $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+        }
+    }
+
     Context 'Read Execution.InvariantCultureWarning' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
