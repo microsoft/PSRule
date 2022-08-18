@@ -345,7 +345,7 @@ namespace PSRule
     }
 
     /// <summary>
-    /// A custom deserializer to convert JSON into ResourceObject
+    /// A custom deserializer to convert JSON into a <see cref="ResourceObject"/>.
     /// </summary>
     internal sealed class ResourceObjectJsonConverter : JsonConverter
     {
@@ -385,7 +385,7 @@ namespace PSRule
         private IResource MapResource(JsonReader reader, JsonSerializer serializer)
         {
             reader.GetSourceExtent(RunspaceContext.CurrentThread.Source.File.Path, out var extent);
-            reader.SkipComments();
+            reader.SkipComments(out _);
             if (reader.TokenType != JsonToken.StartObject || !reader.Read())
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
 
@@ -672,7 +672,7 @@ namespace PSRule
                 {
                     while (reader.TokenType != JsonToken.EndArray)
                     {
-                        if (reader.SkipComments())
+                        if (reader.SkipComments(out var hasComments) && hasComments)
                             continue;
 
                         result.Add(MapExpression(reader));
@@ -800,7 +800,7 @@ namespace PSRule
                         var objects = new List<string>();
                         while (reader.TokenType != JsonToken.EndArray)
                         {
-                            if (reader.SkipComments())
+                            if (reader.SkipComments(out var hasComments) && hasComments)
                                 continue;
 
                             var item = reader.ReadAsString();

@@ -313,14 +313,10 @@ namespace PSRule.Host
                             using var reader = new JsonTextReader(new StreamReader(file.Path));
 
                             // Consume lines until start of array
-                            while (reader.TokenType == JsonToken.None || reader.TokenType == JsonToken.Comment)
+                            reader.SkipComments(out _);
+                            if (reader.TryConsume(JsonToken.StartArray))
                             {
-                                if (!reader.Read())
-                                    break;
-                            }
-
-                            if (reader.TokenType == JsonToken.StartArray && reader.Read())
-                            {
+                                reader.SkipComments(out _);
                                 while (reader.TokenType != JsonToken.EndArray)
                                 {
                                     var value = deserializer.Deserialize<ResourceObject>(reader);
@@ -331,8 +327,7 @@ namespace PSRule.Host
                                     }
 
                                     // Consume all end objects at the end of each resource
-                                    while (reader.TokenType == JsonToken.EndObject)
-                                        reader.Read();
+                                    while (reader.TryConsume(JsonToken.EndObject)) { }
                                 }
                             }
                         }
@@ -798,7 +793,7 @@ namespace PSRule.Host
 
         internal static void UpdateHelpInfo(RunspaceContext context, IResource resource)
         {
-            if (resource == null || !TryHelpPath(context, resource.Name, out var path) || !TryHelpInfo(path, out var info))
+            if (context == null || resource == null || !TryHelpPath(context, resource.Name, out var path) || !TryHelpInfo(path, out var info))
                 return;
 
             resource.Info.Update(info);
