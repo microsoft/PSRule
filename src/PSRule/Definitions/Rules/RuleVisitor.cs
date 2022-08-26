@@ -11,13 +11,18 @@ using PSRule.Runtime;
 
 namespace PSRule.Definitions.Rules
 {
+    /// <summary>
+    /// A rule visitor.
+    /// </summary>
     [DebuggerDisplay("Id: {Id}")]
     internal sealed class RuleVisitor : ICondition
     {
         private readonly LanguageExpressionOuterFn _Condition;
+        private readonly RunspaceContext _Context;
 
-        public RuleVisitor(ResourceId id, SourceFile source, IRuleSpec spec)
+        public RuleVisitor(RunspaceContext context, ResourceId id, SourceFile source, IRuleSpec spec)
         {
+            _Context = context;
             ErrorAction = ActionPreference.Stop;
             Id = id;
             Source = source;
@@ -26,6 +31,7 @@ namespace PSRule.Definitions.Rules
             _Condition = builder
                 .WithSelector(spec.With)
                 .WithType(spec.Type)
+                .WithSubselector(spec.Where)
                 .Build(spec.Condition);
         }
 
@@ -50,14 +56,14 @@ namespace PSRule.Definitions.Rules
 
         public IConditionResult If()
         {
-            var context = new ExpressionContext(Source, ResourceKind.Rule, RunspaceContext.CurrentThread.TargetObject.Value);
+            var context = new ExpressionContext(_Context, Source, ResourceKind.Rule, _Context.TargetObject.Value);
             context.Debug(PSRuleResources.RuleMatchTrace, Id);
             context.PushScope(RunspaceScope.Rule);
             try
             {
-                var result = _Condition(context, RunspaceContext.CurrentThread.TargetObject.Value);
+                var result = _Condition(context, _Context.TargetObject.Value);
                 if (result.HasValue && !result.Value)
-                    RunspaceContext.CurrentThread.WriteReason(context.GetReasons());
+                    _Context.WriteReason(context.GetReasons());
 
                 return result.HasValue ? new RuleConditionResult(result.Value ? 1 : 0, 1, false) : null;
             }

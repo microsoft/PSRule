@@ -161,7 +161,7 @@ namespace PSRule.Pipeline
             return _Runspace;
         }
 
-        internal void Import(IResource resource)
+        internal void Import(RunspaceContext context, IResource resource)
         {
             TrackIssue(resource);
             if (TryBaseline(resource, out var baseline) && TryBaselineRef(resource.Id, out var baselineRef))
@@ -170,7 +170,7 @@ namespace PSRule.Pipeline
                 Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, baseline.BaselineId, resource.Source.Module, baseline.Spec, baseline.Obsolete));
             }
             else if (resource.Kind == ResourceKind.Selector && resource is SelectorV1 selector)
-                Selector[selector.Id.Value] = new SelectorVisitor(selector.Id, selector.Source, selector.Spec.If);
+                Selector[selector.Id.Value] = new SelectorVisitor(context, selector.Id, selector.Source, selector.Spec.If);
             else if (TryModuleConfig(resource, out var moduleConfig))
             {
                 if (!string.IsNullOrEmpty(moduleConfig?.Spec?.Rule?.Baseline))
@@ -184,6 +184,7 @@ namespace PSRule.Pipeline
             else if (resource.Kind == ResourceKind.SuppressionGroup && resource is SuppressionGroupV1 suppressionGroup)
             {
                 SuppressionGroup.Add(new SuppressionGroupVisitor(
+                    context: context,
                     id: suppressionGroup.Id,
                     source: suppressionGroup.Source,
                     spec: suppressionGroup.Spec,

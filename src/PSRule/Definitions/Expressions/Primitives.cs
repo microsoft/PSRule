@@ -34,7 +34,7 @@ namespace PSRule.Definitions.Expressions
         public LanguageExpression CreateInstance(SourceFile source, LanguageExpression.PropertyBag properties)
         {
             if (Type == LanguageExpressionType.Operator)
-                return new LanguageOperator(this);
+                return new LanguageOperator(this, properties);
 
             if (Type == LanguageExpressionType.Condition)
                 return new LanguageCondition(this, properties);
@@ -74,11 +74,16 @@ namespace PSRule.Definitions.Expressions
     [DebuggerDisplay("Selector {Descriptor.Name}")]
     internal sealed class LanguageOperator : LanguageExpression
     {
-        internal LanguageOperator(LanguageExpresssionDescriptor descriptor)
+        internal LanguageOperator(LanguageExpresssionDescriptor descriptor, PropertyBag properties)
             : base(descriptor)
         {
+            Property = properties ?? new PropertyBag();
             Children = new List<LanguageExpression>();
         }
+
+        public LanguageExpression Subselector { get; set; }
+
+        public PropertyBag Property { get; }
 
         public List<LanguageExpression> Children { get; }
 
@@ -109,9 +114,6 @@ namespace PSRule.Definitions.Expressions
     internal sealed class LanguageFunction : LanguageExpression
     {
         internal LanguageFunction(LanguageExpresssionDescriptor descriptor)
-            : base(descriptor)
-        {
-
-        }
+            : base(descriptor) { }
     }
 }

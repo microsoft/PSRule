@@ -20,7 +20,7 @@
     "no-reversed-links": true,
     "no-multiple-blanks": true,
     "line-length": {
-        "line_length": 100,
+        "line_length": 120,
         "code_blocks": false,
         "tables": false,
         "headers": true

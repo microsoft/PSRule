@@ -458,7 +458,7 @@
                     "title": "If",
                     "description": "A condition is made up of one or more expressions that will determine if an object is selected by the selector.",
                     "markdownDescription": "A condition is made up of one or more [expressions](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/) that will determine if an object is selected by the selector. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Selectors/)",
-                    "$ref": "#/definitions/selectorExpression"
+                    "$ref": "#/definitions/expressions"
                 }
             },
             "required": [
@@ -520,7 +520,7 @@
                 },
                 "if": {
                     "type": "object",
-                    "$ref": "#/definitions/selectorExpression"
+                    "$ref": "#/definitions/expressions"
                 }
             },
             "required": [
@@ -577,8 +577,12 @@
                     "type": "object",
                     "title": "Condition",
                     "description": "A condition is made up of one or more expressions that will determine if the rule passes or fails.",
-                    "markdownDescription": "A condition is made up of one or more [expressions](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/) that will determine if the rule passes or fails. [See help](https://microsoft.github.io/PSRule/v2/authoring/writing-rules/)",
-                    "$ref": "#/definitions/selectorExpression"
+                    "markdownDescription": "A condition is made up of one or more [expressions](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/) that will determine if the rule passes or fails.\n\n[See help](https://microsoft.github.io/PSRule/v2/authoring/writing-rules/)",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/expressions"
+                        }
+                    ]
                 },
                 "level": {
                     "type": "string",
@@ -597,7 +601,8 @@
                     "title": "Type pre-condition",
                     "description": "This rule only applies to objects that match the specifies types.",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "default": ""
                     },
                     "uniqueItems": true
                 },
@@ -606,15 +611,30 @@
                     "title": "Selector pre-condition",
                     "description": "This rule only applies to objects that match the specified selectors.",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "default": ""
                     },
                     "uniqueItems": true
+                },
+                "where": {
+                    "type": "object",
+                    "title": "Sub-selector pre-condition",
+                    "description": "The rule only applies to objects that match the sub-selector condition.",
+                    "markdownDescription": "The rule only applies to objects that match the sub-selector condition.\n\n[See help](https://microsoft.github.io/PSRule/v2/expressions/sub-selectors/)",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/expressions"
+                        }
+                    ]
                 }
             },
             "required": [
                 "condition"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "default": {
+                "condition": {}
+            }
         },
         "ruleMetadata": {
             "type": "object",
@@ -666,1286 +686,6 @@
                 "name"
             ]
         },
-        "selectorExpression": {
-            "type": "object",
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorOperator"
-                },
-                {
-                    "$ref": "#/definitions/selectorCondition"
-                }
-            ]
-        },
-        "selectorOperator": {
-            "type": "object",
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorOperatorAllOf"
-                },
-                {
-                    "$ref": "#/definitions/selectorOperatorAnyOf"
-                },
-                {
-                    "$ref": "#/definitions/selectorOperatorNot"
-                }
-            ]
-        },
-        "selectorCondition": {
-            "type": "object",
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorConditionExists"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionEquals"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionNotEquals"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionHasValue"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionMatch"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionNotMatch"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionIn"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionNotIn"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionSetOf"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionSubset"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionCount"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionNotCount"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionLess"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionLessOrEquals"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionGreater"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionGreaterOrEquals"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionStartsWith"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionNotStartsWith"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionEndsWith"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionNotEndsWith"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionContains"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionNotContains"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionIsString"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionIsLower"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionIsArray"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionIsBoolean"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionIsDateTime"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionIsInteger"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionIsNumeric"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionIsUpper"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionHasSchema"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionVersion"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionHasDefault"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionWithinPath"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionNotWithinPath"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionLike"
-                },
-                {
-                    "$ref": "#/definitions/selectorConditionNotLike"
-                }
-            ]
-        },
-        "selectorProperties": {
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertyField"
-                },
-                {
-                    "$ref": "#/definitions/selectorPropertyValue"
-                }
-            ]
-        },
-        "selectorPropertiesString": {
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertyField"
-                },
-                {
-                    "$ref": "#/definitions/selectorPropertyValue"
-                },
-                {
-                    "$ref": "#/definitions/selectorPropertyType"
-                },
-                {
-                    "$ref": "#/definitions/selectorPropertyName"
-                },
-                {
-                    "$ref": "#/definitions/selectorPropertySource"
-                }
-            ]
-        },
-        "selectorPropertyField": {
-            "properties": {
-                "field": {
-                    "type": "string",
-                    "title": "Field",
-                    "description": "The object path of a field to compare.",
-                    "markdownDescription": "The object path of a field to compare. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#field)",
-                    "default": "."
-                }
-            },
-            "required": [
-                "field"
-            ]
-        },
-        "selectorPropertyValue": {
-            "properties": {
-                "value": {
-                    "$ref": "#/definitions/selectorExpressionValue"
-                }
-            },
-            "required": [
-                "value"
-            ]
-        },
-        "selectorPropertyType": {
-            "properties": {
-                "type": {
-                    "type": "string",
-                    "title": "Type",
-                    "description": "The target type of the object.",
-                    "markdownDescription": "The target type of the object. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#type)",
-                    "default": "."
-                }
-            },
-            "required": [
-                "type"
-            ]
-        },
-        "selectorPropertyName": {
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "title": "Name",
-                    "description": "The target name of the object.",
-                    "markdownDescription": "The target name of the object. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#name)",
-                    "default": "."
-                }
-            },
-            "required": [
-                "name"
-            ]
-        },
-        "selectorPropertySource": {
-            "properties": {
-                "source": {
-                    "type": "string",
-                    "title": "Source",
-                    "description": "The source of the object currently being processed by the pipeline.",
-                    "markdownDescription": "The source of the object currently being processed by the pipeline. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#source)"
-                }
-            },
-            "required": [
-                "source"
-            ]
-        },
-        "selectorOperatorAllOf": {
-            "type": "object",
-            "properties": {
-                "allOf": {
-                    "type": "array",
-                    "title": "All Of",
-                    "description": "All of the expressions must be true.",
-                    "markdownDescription": "All of the expressions must be true. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#allof)",
-                    "items": {
-                        "$ref": "#/definitions/selectorExpression"
-                    }
-                }
-            },
-            "required": [
-                "allOf"
-            ],
-            "additionalProperties": false
-        },
-        "selectorOperatorAnyOf": {
-            "type": "object",
-            "properties": {
-                "anyOf": {
-                    "type": "array",
-                    "title": "Any Of",
-                    "description": "One of the expressions must be true.",
-                    "markdownDescription": "All of the expressions must be true. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#anyof)",
-                    "items": {
-                        "$ref": "#/definitions/selectorExpression"
-                    }
-                }
-            },
-            "required": [
-                "anyOf"
-            ],
-            "additionalProperties": false
-        },
-        "selectorOperatorNot": {
-            "type": "object",
-            "properties": {
-                "not": {
-                    "type": "object",
-                    "title": "Not",
-                    "description": "The nested expression must not be true.",
-                    "markdownDescription": "The nested expression must not be true. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#not)",
-                    "$ref": "#/definitions/selectorExpression"
-                }
-            },
-            "required": [
-                "not"
-            ]
-        },
-        "selectorConditionExists": {
-            "type": "object",
-            "properties": {
-                "exists": {
-                    "type": "boolean",
-                    "title": "Exists",
-                    "description": "Must have the named field.",
-                    "markdownDescription": "Must have the named field. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#exists)"
-                },
-                "field": {
-                    "type": "string",
-                    "title": "Field",
-                    "description": "The path of the field.",
-                    "markdownDescription": "The path of the field. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#field)"
-                }
-            },
-            "required": [
-                "exists",
-                "field"
-            ]
-        },
-        "selectorConditionEquals": {
-            "type": "object",
-            "properties": {
-                "equals": {
-                    "title": "Equals",
-                    "description": "Must have the specified value.",
-                    "markdownDescription": "Must have the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#equals)",
-                    "$ref": "#/definitions/selectorExpressionValue"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type of compared operand.",
-                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#equals)",
-                    "default": false
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive. Only applies to string values.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. Only applies to string values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#equals)",
-                    "default": false
-                }
-            },
-            "required": [
-                "equals"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionNotEquals": {
-            "type": "object",
-            "properties": {
-                "notEquals": {
-                    "title": "Not Equals",
-                    "description": "Must not have the specified value.",
-                    "markdownDescription": "Must not have the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
-                    "$ref": "#/definitions/selectorExpressionValue"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type of compared operand.",
-                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
-                    "default": false
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive. Only applies to string values.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. Only applies to string values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
-                    "default": false
-                }
-            },
-            "required": [
-                "notEquals"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionHasValue": {
-            "type": "object",
-            "properties": {
-                "hasValue": {
-                    "type": "boolean",
-                    "title": "Has Value",
-                    "description": "Must have a non-empty value.",
-                    "markdownDescription": "Must have a non-empty value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasvalue)"
-                }
-            },
-            "required": [
-                "hasValue"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionMatch": {
-            "type": "object",
-            "properties": {
-                "match": {
-                    "type": "string",
-                    "title": "Match",
-                    "description": "Must match the regular expression.",
-                    "markdownDescription": "Must match the regular expression. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#match)"
-                }
-            },
-            "required": [
-                "match"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionNotMatch": {
-            "type": "object",
-            "properties": {
-                "notMatch": {
-                    "type": "string",
-                    "title": "Not Match",
-                    "description": "Must not match the regular expression.",
-                    "markdownDescription": "Must not match the regular expression. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notmatch)"
-                }
-            },
-            "required": [
-                "notMatch"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionIn": {
-            "type": "object",
-            "properties": {
-                "in": {
-                    "type": "array",
-                    "title": "In",
-                    "description": "Must equal one of the specified values.",
-                    "markdownDescription": "Must equal one of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#in)"
-                }
-            },
-            "required": [
-                "in"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionNotIn": {
-            "type": "object",
-            "properties": {
-                "notIn": {
-                    "type": "array",
-                    "title": "Not In",
-                    "description": "Must not equal any of the specified values.",
-                    "markdownDescription": "Must not equal any of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notin)"
-                }
-            },
-            "required": [
-                "notIn"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionSetOf": {
-            "type": "object",
-            "properties": {
-                "setOf": {
-                    "type": "array",
-                    "title": "SetOf",
-                    "description": "Must include all of but only specified values.",
-                    "markdownDescription": "Must include all of but only values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#setof)"
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#setof)",
-                    "default": false
-                }
-            },
-            "required": [
-                "setOf"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorProperties"
-                }
-            ]
-        },
-        "selectorConditionSubset": {
-            "type": "object",
-            "properties": {
-                "subset": {
-                    "type": "array",
-                    "title": "Subset",
-                    "description": "Must include all of the specified values.",
-                    "markdownDescription": "Must include all of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#subset)"
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#subset)",
-                    "default": false
-                },
-                "unique": {
-                    "type": "boolean",
-                    "title": "Unique",
-                    "description": "Determines if each of the field values must be unique.",
-                    "markdownDescription": "Determines if each of the field values must be unique. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#subset)",
-                    "default": false
-                }
-            },
-            "required": [
-                "subset"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorProperties"
-                }
-            ]
-        },
-        "selectorConditionCount": {
-            "type": "object",
-            "properties": {
-                "count": {
-                    "type": "integer",
-                    "title": "Count",
-                    "description": "Must include all of the specified values.",
-                    "markdownDescription": "Must include all of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#count)",
-                    "minimum": 0
-                }
-            },
-            "required": [
-                "count"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorProperties"
-                }
-            ]
-        },
-        "selectorConditionNotCount": {
-            "type": "object",
-            "properties": {
-                "notCount": {
-                    "type": "integer",
-                    "title": "NotCount",
-                    "description": "Determines if operand does not have number of items.",
-                    "markdownDescription": "Determines if operand does not have number of items. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcount)",
-                    "minimum": 0
-                }
-            },
-            "required": [
-                "notCount"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorProperties"
-                }
-            ]
-        },
-        "selectorConditionLess": {
-            "type": "object",
-            "properties": {
-                "less": {
-                    "type": "integer",
-                    "title": "Less",
-                    "description": "Must be less then the specified value.",
-                    "markdownDescription": "Must be less then the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type of compared operand.",
-                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
-                    "default": false
-                }
-            },
-            "required": [
-                "less"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionLessOrEquals": {
-            "type": "object",
-            "properties": {
-                "lessOrEquals": {
-                    "type": "integer",
-                    "title": "Less or Equal to",
-                    "description": "Must be less or equal to the specified value.",
-                    "markdownDescription": "Must be less or equal to the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#lessorequals)"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type of compared operand.",
-                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
-                    "default": false
-                }
-            },
-            "required": [
-                "lessOrEquals"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionGreater": {
-            "type": "object",
-            "properties": {
-                "greater": {
-                    "title": "Greater",
-                    "description": "Must be greater then the specified value.",
-                    "markdownDescription": "Must be greater then the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greater)",
-                    "oneOf": [
-                        {
-                            "type": "integer"
-                        },
-                        {
-                            "type": "object",
-                            "$ref": "#/definitions/fn"
-                        }
-                    ]
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type of compared operand.",
-                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
-                    "default": false
-                }
-            },
-            "required": [
-                "greater"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionGreaterOrEquals": {
-            "type": "object",
-            "properties": {
-                "greaterOrEquals": {
-                    "type": "integer",
-                    "title": "Greater or Equal to",
-                    "description": "Must be greater or equal to the specified value.",
-                    "markdownDescription": "Must be greater or equal to the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greaterorequals)"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type of compared operand.",
-                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
-                    "default": false
-                }
-            },
-            "required": [
-                "greaterOrEquals"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionStartsWith": {
-            "type": "object",
-            "properties": {
-                "startsWith": {
-                    "title": "Starts with",
-                    "description": "Must start with one of the specified values.",
-                    "markdownDescription": "Must start with one of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#startswith)",
-                    "$ref": "#/definitions/selectorExpressionValueMultiString"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type to string.",
-                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#startswith)",
-                    "default": false
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#startswith)",
-                    "default": false
-                }
-            },
-            "required": [
-                "startsWith"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionNotStartsWith": {
-            "type": "object",
-            "properties": {
-                "notStartsWith": {
-                    "title": "Not starts with",
-                    "description": "Must not start with any of the specified values.",
-                    "markdownDescription": "Must not start with any of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notstartswith)",
-                    "$ref": "#/definitions/selectorExpressionValueMultiString"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type to string.",
-                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notstartswith)",
-                    "default": false
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notstartswith)",
-                    "default": false
-                }
-            },
-            "required": [
-                "notStartsWith"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionEndsWith": {
-            "type": "object",
-            "properties": {
-                "endsWith": {
-                    "title": "Ends with",
-                    "description": "Must end with one of the specified values.",
-                    "markdownDescription": "Must end with one of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#endswith)",
-                    "$ref": "#/definitions/selectorExpressionValueMultiString"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type to string.",
-                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#endswith)",
-                    "default": false
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#endswith)",
-                    "default": false
-                }
-            },
-            "required": [
-                "endsWith"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionNotEndsWith": {
-            "type": "object",
-            "properties": {
-                "notEndsWith": {
-                    "title": "Not Ends with",
-                    "description": "Must not end with any of the specified values.",
-                    "markdownDescription": "Must not end with any of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notendswith)",
-                    "$ref": "#/definitions/selectorExpressionValueMultiString"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type to string.",
-                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notendswith)",
-                    "default": false
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notendswith)",
-                    "default": false
-                }
-            },
-            "required": [
-                "notEndsWith"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionContains": {
-            "type": "object",
-            "properties": {
-                "contains": {
-                    "title": "Contains",
-                    "description": "Must contain one of the specified values.",
-                    "markdownDescription": "Must contain one of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#contains)",
-                    "$ref": "#/definitions/selectorExpressionValueMultiString"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type to string.",
-                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#contains)",
-                    "default": false
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#contains)",
-                    "default": false
-                }
-            },
-            "required": [
-                "contains"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionNotContains": {
-            "type": "object",
-            "properties": {
-                "notContains": {
-                    "title": "Not Contains",
-                    "description": "Must not contain any of the specified values.",
-                    "markdownDescription": "Must not contain any of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcontains)",
-                    "$ref": "#/definitions/selectorExpressionValueMultiString"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type to string.",
-                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcontains)",
-                    "default": false
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcontains)",
-                    "default": false
-                }
-            },
-            "required": [
-                "notContains"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionIsString": {
-            "type": "object",
-            "properties": {
-                "isString": {
-                    "type": "boolean",
-                    "title": "Is string",
-                    "description": "Must be a string type.",
-                    "markdownDescription": "Must be a string type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isstring)"
-                }
-            },
-            "required": [
-                "isString"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionIsArray": {
-            "type": "object",
-            "properties": {
-                "isArray": {
-                    "type": "boolean",
-                    "title": "Is array",
-                    "description": "Must be an array type.",
-                    "markdownDescription": "Must be an array type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isarray)"
-                }
-            },
-            "required": [
-                "isArray"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionIsBoolean": {
-            "type": "object",
-            "properties": {
-                "isBoolean": {
-                    "type": "boolean",
-                    "title": "Is boolean",
-                    "description": "Must be a boolean type.",
-                    "markdownDescription": "Must be a boolean type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isboolean)"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type to boolean.",
-                    "markdownDescription": "Convert type to boolean. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isboolean)",
-                    "default": false
-                }
-            },
-            "required": [
-                "isBoolean"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionIsDateTime": {
-            "type": "object",
-            "properties": {
-                "isDateTime": {
-                    "type": "boolean",
-                    "title": "Is datetime",
-                    "description": "Must be a datetime type.",
-                    "markdownDescription": "Must be a datetime type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isdatetime)"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type to datetime.",
-                    "markdownDescription": "Convert type to datetime. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isdatetime)",
-                    "default": false
-                }
-            },
-            "required": [
-                "isDateTime"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionIsInteger": {
-            "type": "object",
-            "properties": {
-                "isInteger": {
-                    "type": "boolean",
-                    "title": "Is integer",
-                    "description": "Must be an integer type.",
-                    "markdownDescription": "Must be an integer type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isinteger)"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type to integer.",
-                    "markdownDescription": "Convert type to integer. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isinteger)",
-                    "default": false
-                }
-            },
-            "required": [
-                "isInteger"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionIsNumeric": {
-            "type": "object",
-            "properties": {
-                "isNumeric": {
-                    "type": "boolean",
-                    "title": "Is numeric",
-                    "description": "Must be a numeric type.",
-                    "markdownDescription": "Must be a numeric type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isnumeric)"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type to numeric.",
-                    "markdownDescription": "Convert type to numeric. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isnumeric)",
-                    "default": false
-                }
-            },
-            "required": [
-                "isNumeric"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionIsLower": {
-            "type": "object",
-            "properties": {
-                "isLower": {
-                    "type": "boolean",
-                    "title": "Is Lowercase",
-                    "description": "Must be a lowercase string.",
-                    "markdownDescription": "Must be a lowercase string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#islower)"
-                }
-            },
-            "required": [
-                "isLower"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionIsUpper": {
-            "type": "object",
-            "properties": {
-                "isUpper": {
-                    "type": "boolean",
-                    "title": "Is Uppercase",
-                    "description": "Must be an uppercase string.",
-                    "markdownDescription": "Must be an uppercase string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isupper)"
-                }
-            },
-            "required": [
-                "isUpper"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionHasSchema": {
-            "type": "object",
-            "properties": {
-                "hasSchema": {
-                    "type": "array",
-                    "title": "Has schema",
-                    "description": "Must use one of the specified schemas of the value of $schema. If an empty array is specified any non-empty $schema can be specified.",
-                    "markdownDescription": "Must use one of the specified schemas of the value of `$schema`. If an empty array is specified any non-empty `$schema` can be specified [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasschema)",
-                    "default": [],
-                    "items": {
-                        "type": "string",
-                        "title": "Has schema",
-                        "description": "Must use one of the specified schemas of the value of $schema. If an empty array is specified any non-empty $schema can be specified.",
-                        "markdownDescription": "Must use one of the specified schemas of the value of `$schema`. If an empty array is specified any non-empty `$schema` can be specified [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasschema)",
-                        "minLength": 1
-                    },
-                    "uniqueItems": true
-                },
-                "ignoreScheme": {
-                    "type": "boolean",
-                    "title": "Ignore scheme",
-                    "description": "Determines comparing values is case-sensitive.",
-                    "markdownDescription": "Determines comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasschema)",
-                    "default": false
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing schemas is case-sensitive.",
-                    "markdownDescription": "Determines if comparing schemas is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasschema)",
-                    "default": false
-                }
-            },
-            "required": [
-                "hasSchema"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorProperties"
-                }
-            ]
-        },
-        "selectorConditionVersion": {
-            "type": "object",
-            "properties": {
-                "version": {
-                    "type": "string",
-                    "title": "Version",
-                    "description": "Must be a valid semantic version. A constraint can optionally be provided to require the semantic version to be within a range.",
-                    "markdownDescription": "Must be a valid semantic version. A constraint can optionally be provided to require the semantic version to be within a range. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#version)",
-                    "default": ""
-                },
-                "includePrerelease": {
-                    "type": "boolean",
-                    "title": "Include pre-release",
-                    "description": "Determines if pre-release versions are included. By default, pre-release versions are not included.",
-                    "markdownDescription": "Determines if pre-release versions are included. By default, pre-release versions are not included. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#version)",
-                    "default": false
-                }
-            },
-            "required": [
-                "version"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorProperties"
-                }
-            ]
-        },
-        "selectorConditionHasDefault": {
-            "type": "object",
-            "properties": {
-                "hasDefault": {
-                    "title": "Has Default",
-                    "description": "The field must either not exist or be set to the configured value.",
-                    "markdownDescription": "The field must either not exist or be set to the configured value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasdefault)",
-                    "$ref": "#/definitions/selectorExpressionValue"
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasdefault)",
-                    "default": false
-                }
-            },
-            "required": [
-                "hasDefault"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorProperties"
-                }
-            ]
-        },
-        "selectorConditionWithinPath": {
-            "type": "object",
-            "properties": {
-                "withinPath": {
-                    "type": "array",
-                    "title": "Within Path",
-                    "description": "The file path must exist within the required paths.",
-                    "markdownDescription": "The file path must exist within the required paths. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#withinpath)",
-                    "default": [],
-                    "items": {
-                        "type": "string"
-                    },
-                    "uniqueItems": true
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#withinpath)",
-                    "default": false
-                }
-            },
-            "required": [
-                "withinPath"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionNotWithinPath": {
-            "type": "object",
-            "properties": {
-                "notWithinPath": {
-                    "type": "array",
-                    "title": "Not Within Path",
-                    "description": "The file path must not exist within the required paths.",
-                    "markdownDescription": "The file path must not exist within the required paths. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notwithinpath)",
-                    "default": [],
-                    "items": {
-                        "type": "string"
-                    },
-                    "uniqueItems": true
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notwithinpath)",
-                    "default": false
-                }
-            },
-            "required": [
-                "notWithinPath"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionLike": {
-            "type": "object",
-            "properties": {
-                "like": {
-                    "title": "Like",
-                    "description": "Must match any of the specified wildcard patterns.",
-                    "markdownDescription": "Must match any of the specified wildcard patterns. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#like)",
-                    "$ref": "#/definitions/selectorExpressionValueMultiString"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type to string.",
-                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#like)",
-                    "default": false
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#like)",
-                    "default": false
-                }
-            },
-            "required": [
-                "like"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
-        "selectorConditionNotLike": {
-            "type": "object",
-            "properties": {
-                "notLike": {
-                    "title": "Not like",
-                    "description": "Must not match any of the specified wildcard patterns.",
-                    "markdownDescription": "Must not match any of the specified wildcard patterns. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notlike)",
-                    "$ref": "#/definitions/selectorExpressionValueMultiString"
-                },
-                "convert": {
-                    "type": "boolean",
-                    "title": "Type conversion",
-                    "description": "Convert type to string.",
-                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notlike)",
-                    "default": false
-                },
-                "caseSensitive": {
-                    "type": "boolean",
-                    "title": "Case sensitive",
-                    "description": "Determines if comparing values is case-sensitive.",
-                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notlike)",
-                    "default": false
-                }
-            },
-            "required": [
-                "notLike"
-            ],
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/selectorPropertiesString"
-                }
-            ]
-        },
         "selectorExpressionValueMultiString": {
             "oneOf": [
                 {
@@ -1964,23 +704,26 @@
             "oneOf": [
                 {
                     "type": "string",
-                    "title": "Value from string",
-                    "description": "A value to compare."
+                    "ztitle": "Value from string",
+                    "zdescription": "A value to compare.",
+                    "default": ""
                 },
                 {
                     "type": "boolean",
-                    "title": "Value from boolean",
-                    "description": "A value to compare."
+                    "ztitle": "Value from boolean",
+                    "zdescription": "A value to compare.",
+                    "default": true
                 },
                 {
                     "type": "integer",
-                    "title": "Value from integer",
-                    "description": "A value to compare."
+                    "ztitle": "Value from integer",
+                    "zdescription": "A value to compare.",
+                    "default": 0
                 },
                 {
                     "type": "object",
-                    "title": "Value for object",
-                    "description": "A value to compare.",
+                    "ztitle": "Value for object",
+                    "zdescription": "A value to compare.",
                     "not": {
                         "propertyNames": {
                             "enum": [
@@ -1994,10 +737,2071 @@
                 }
             ]
         },
+        "expressions": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/expressions/definitions/operators/definitions/allOf"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/operators/definitions/anyOf"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/operators/definitions/not"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/exists"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/equals"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/notEquals"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/hasValue"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/match"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/notMatch"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/in"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/notIn"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/setOf"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/subset"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/count"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/notCount"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/less"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/lessOrEquals"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/greater"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/greaterOrEquals"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/startsWith"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/notStartsWith"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/endsWith"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/notEndsWith"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/contains"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/notContains"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/isString"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/isLower"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/isArray"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/isBoolean"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/isDateTime"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/isInteger"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/isNumeric"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/isUpper"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/hasSchema"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/version"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/hasDefault"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/withinPath"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/notWithinPath"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/like"
+                },
+                {
+                    "$ref": "#/definitions/expressions/definitions/conditions/definitions/notLike"
+                }
+            ],
+            "defaultSnippets": [
+                {
+                    "label": "field",
+                    "description": "The object path of a field to compare.",
+                    "markdownDescription": "The object path of a field to compare.",
+                    "body": {
+                        "field": "${1}"
+                    }
+                },
+                {
+                    "label": "value",
+                    "body": {
+                        "value": "${1}"
+                    }
+                },
+                {
+                    "label": "name",
+                    "body": {
+                        "name": "."
+                    }
+                },
+                {
+                    "label": "type",
+                    "body": {
+                        "type": "."
+                    }
+                },
+                {
+                    "label": "source",
+                    "body": {
+                        "source": "${1}"
+                    }
+                },
+                {
+                    "label": "allOf",
+                    "body": {
+                        "allOf": [
+                            "${1}"
+                        ]
+                    }
+                },
+                {
+                    "label": "anyOf",
+                    "body": {
+                        "anyOf": [
+                            "${1}"
+                        ]
+                    }
+                },
+                {
+                    "label": "not",
+                    "body": {
+                        "not": {}
+                    }
+                }
+            ],
+            "definitions": {
+                "operands": {
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/expressions/definitions/operands/definitions/field"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/operands/definitions/value"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/operands/definitions/type"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/operands/definitions/name"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/operands/definitions/source"
+                        }
+                    ],
+                    "definitions": {
+                        "string-only": {
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands/definitions/field"
+                                },
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands/definitions/value"
+                                },
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands/definitions/type"
+                                },
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands/definitions/name"
+                                },
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands/definitions/source"
+                                }
+                            ]
+                        },
+                        "field": {
+                            "type": "object",
+                            "properties": {
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "where": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/where"
+                                }
+                            },
+                            "required": [
+                                "field"
+                            ]
+                        },
+                        "value": {
+                            "type": "object",
+                            "properties": {
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "value"
+                            ]
+                        },
+                        "type": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                }
+                            },
+                            "required": [
+                                "type"
+                            ]
+                        },
+                        "name": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                }
+                            },
+                            "required": [
+                                "name"
+                            ]
+                        },
+                        "source": {
+                            "type": "object",
+                            "properties": {
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "source"
+                            ]
+                        }
+                    }
+                },
+                "properties": {
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/expressions/definitions/operands/definitions/field"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/operands/definitions/value"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/operands/definitions/name"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/operands/definitions/type"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/operands/definitions/source"
+                        }
+                    ],
+                    "definitions": {
+                        "field": {
+                            "type": "string",
+                            "title": "Field",
+                            "description": "The object path of a field to compare.",
+                            "markdownDescription": "The object path of a field to compare.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#field)",
+                            "minLength": 1
+                        },
+                        "where": {
+                            "type": "object",
+                            "title": "Sub-selector filter",
+                            "description": "Limits the condition to matching items.",
+                            "markdownDescription": "Limits the condition to matching items.\n\n[See help](https://microsoft.github.io/PSRule/v2/expressions/sub-selectors/)",
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/expressions"
+                                }
+                            ]
+                        },
+                        "value": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/selectorExpressionValue"
+                                }
+                            ]
+                        },
+                        "name": {
+                            "type": "string",
+                            "title": "Name",
+                            "description": "The target name of the object.",
+                            "markdownDescription": "The target name of the object. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#name)",
+                            "default": ".",
+                            "enum": [
+                                "."
+                            ]
+                        },
+                        "type": {
+                            "type": "string",
+                            "title": "Type",
+                            "description": "The target type of the object.",
+                            "markdownDescription": "The target type of the object. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#type)",
+                            "default": ".",
+                            "enum": [
+                                "."
+                            ]
+                        },
+                        "source": {
+                            "type": "string",
+                            "title": "Source",
+                            "description": "The source of the object currently being processed by the pipeline.",
+                            "markdownDescription": "The source of the object currently being processed by the pipeline. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#source)",
+                            "default": ""
+                        }
+                    }
+                },
+                "conditions": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/exists"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/equals"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/notEquals"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/hasValue"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/match"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/notMatch"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/in"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/notIn"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/setOf"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/subset"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/count"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/notCount"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/less"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/lessOrEquals"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/greater"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/greaterOrEquals"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/startsWith"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/notStartsWith"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/endsWith"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/notEndsWith"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/contains"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/notContains"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/isString"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/isLower"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/isArray"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/isBoolean"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/isDateTime"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/isInteger"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/isNumeric"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/isUpper"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/hasSchema"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/version"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/hasDefault"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/withinPath"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/notWithinPath"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/like"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/conditions/definitions/notLike"
+                        }
+                    ],
+                    "definitions": {
+                        "equals": {
+                            "type": "object",
+                            "title": "equals",
+                            "description": "Must have the specified value.",
+                            "markdownDescription": "Must have the specified value.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#equals)",
+                            "properties": {
+                                "equals": {
+                                    "title": "Equals",
+                                    "description": "Must have the specified value.",
+                                    "markdownDescription": "Must have the specified value.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#equals)",
+                                    "default": "",
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/definitions/selectorExpressionValue"
+                                        }
+                                    ]
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type of compared operand.",
+                                    "markdownDescription": "Convert type of compared operand.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#equals)",
+                                    "default": false
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive. Only applies to string values.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. Only applies to string values.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#equals)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "equals"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ]
+                        },
+                        "count": {
+                            "type": "object",
+                            "properties": {
+                                "count": {
+                                    "type": "integer",
+                                    "title": "Count",
+                                    "description": "Must include the specified number of values.",
+                                    "markdownDescription": "Must include the specified number of values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#count)",
+                                    "minimum": 0
+                                }
+                            },
+                            "required": [
+                                "count"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ]
+                        },
+                        "exists": {
+                            "type": "object",
+                            "properties": {
+                                "exists": {
+                                    "type": "boolean",
+                                    "title": "Exists",
+                                    "description": "Must have the named field.",
+                                    "markdownDescription": "Must have the named field. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#exists)",
+                                    "default": true
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                }
+                            },
+                            "required": [
+                                "exists",
+                                "field"
+                            ]
+                        },
+                        "notEquals": {
+                            "type": "object",
+                            "properties": {
+                                "notEquals": {
+                                    "title": "Not Equals",
+                                    "description": "Must not have the specified value.",
+                                    "markdownDescription": "Must not have the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
+                                    "default": "",
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/definitions/selectorExpressionValue"
+                                        }
+                                    ]
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type of compared operand.",
+                                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
+                                    "default": false
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive. Only applies to string values.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. Only applies to string values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "notEquals"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ]
+                        },
+                        "hasValue": {
+                            "type": "object",
+                            "properties": {
+                                "hasValue": {
+                                    "type": "boolean",
+                                    "title": "Has Value",
+                                    "description": "Must have a non-empty value.",
+                                    "markdownDescription": "Must have a non-empty value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasvalue)",
+                                    "default": true
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                }
+                            },
+                            "required": [
+                                "hasValue"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ]
+                        },
+                        "match": {
+                            "type": "object",
+                            "properties": {
+                                "match": {
+                                    "type": "string",
+                                    "title": "Match",
+                                    "description": "Must match the regular expression.",
+                                    "markdownDescription": "Must match the regular expression. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#match)",
+                                    "default": ""
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "match"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ]
+                        },
+                        "notMatch": {
+                            "type": "object",
+                            "properties": {
+                                "notMatch": {
+                                    "type": "string",
+                                    "title": "Not Match",
+                                    "description": "Must not match the regular expression.",
+                                    "markdownDescription": "Must not match the regular expression. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notmatch)",
+                                    "default": ""
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "notMatch"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ]
+                        },
+                        "in": {
+                            "type": "object",
+                            "properties": {
+                                "in": {
+                                    "type": "array",
+                                    "title": "In",
+                                    "description": "Must equal one of the specified values.",
+                                    "markdownDescription": "Must equal one of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#in)",
+                                    "default": [
+                                        ""
+                                    ],
+                                    "uniqueItems": true
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "in"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ]
+                        },
+                        "notIn": {
+                            "type": "object",
+                            "properties": {
+                                "notIn": {
+                                    "type": "array",
+                                    "title": "Not In",
+                                    "description": "Must not equal any of the specified values.",
+                                    "markdownDescription": "Must not equal any of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notin)",
+                                    "default": [
+                                        ""
+                                    ],
+                                    "uniqueItems": true
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "notIn"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ]
+                        },
+                        "setOf": {
+                            "type": "object",
+                            "properties": {
+                                "setOf": {
+                                    "type": "array",
+                                    "title": "SetOf",
+                                    "description": "Must include all of but only specified values.",
+                                    "markdownDescription": "Must include all of but only values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#setof)",
+                                    "default": [
+                                        ""
+                                    ],
+                                    "uniqueItems": true
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#setof)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "setOf"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/properties"
+                                }
+                            ]
+                        },
+                        "subset": {
+                            "type": "object",
+                            "properties": {
+                                "subset": {
+                                    "type": "array",
+                                    "title": "Subset",
+                                    "description": "Must include all of the specified values.",
+                                    "markdownDescription": "Must include all of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#subset)",
+                                    "default": [
+                                        ""
+                                    ],
+                                    "uniqueItems": true
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#subset)",
+                                    "default": false
+                                },
+                                "unique": {
+                                    "type": "boolean",
+                                    "title": "Unique",
+                                    "description": "Determines if each of the field values must be unique.",
+                                    "markdownDescription": "Determines if each of the field values must be unique. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#subset)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "subset"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/properties"
+                                }
+                            ]
+                        },
+                        "notCount": {
+                            "type": "object",
+                            "properties": {
+                                "notCount": {
+                                    "type": "integer",
+                                    "title": "NotCount",
+                                    "description": "Determines if operand does not have number of items.",
+                                    "markdownDescription": "Determines if operand does not have number of items. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcount)",
+                                    "minimum": 0,
+                                    "default": 0
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "notCount"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/properties"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "less": {
+                            "type": "object",
+                            "properties": {
+                                "less": {
+                                    "title": "Less",
+                                    "description": "Must be less then the specified value.",
+                                    "markdownDescription": "Must be less then the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                                    "default": 0,
+                                    "oneOf": [
+                                        {
+                                            "type": "integer"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "$ref": "#/definitions/fn"
+                                        }
+                                    ]
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type of compared operand.",
+                                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "less"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "lessOrEquals": {
+                            "type": "object",
+                            "properties": {
+                                "lessOrEquals": {
+                                    "title": "Less or Equal to",
+                                    "description": "Must be less or equal to the specified value.",
+                                    "markdownDescription": "Must be less or equal to the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#lessorequals)",
+                                    "default": 0,
+                                    "oneOf": [
+                                        {
+                                            "type": "integer"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "$ref": "#/definitions/fn"
+                                        }
+                                    ]
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type of compared operand.",
+                                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "lessOrEquals"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "greater": {
+                            "type": "object",
+                            "properties": {
+                                "greater": {
+                                    "title": "Greater",
+                                    "description": "Must be greater then the specified value.",
+                                    "markdownDescription": "Must be greater then the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greater)",
+                                    "default": 0,
+                                    "oneOf": [
+                                        {
+                                            "type": "integer"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "$ref": "#/definitions/fn"
+                                        }
+                                    ]
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type of compared operand.",
+                                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "greater"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "greaterOrEquals": {
+                            "type": "object",
+                            "properties": {
+                                "greaterOrEquals": {
+                                    "title": "Greater or Equal to",
+                                    "description": "Must be greater or equal to the specified value.",
+                                    "markdownDescription": "Must be greater or equal to the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greaterorequals)",
+                                    "default": 0,
+                                    "oneOf": [
+                                        {
+                                            "type": "integer"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "$ref": "#/definitions/fn"
+                                        }
+                                    ]
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type of compared operand.",
+                                    "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "greaterOrEquals"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "startsWith": {
+                            "type": "object",
+                            "properties": {
+                                "startsWith": {
+                                    "title": "Starts with",
+                                    "description": "Must start with one of the specified values.",
+                                    "markdownDescription": "Must start with one of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#startswith)",
+                                    "$ref": "#/definitions/selectorExpressionValueMultiString",
+                                    "default": ""
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type to string.",
+                                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#startswith)",
+                                    "default": false
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#startswith)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "startsWith"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "notStartsWith": {
+                            "type": "object",
+                            "properties": {
+                                "notStartsWith": {
+                                    "title": "Not starts with",
+                                    "description": "Must not start with any of the specified values.",
+                                    "markdownDescription": "Must not start with any of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notstartswith)",
+                                    "$ref": "#/definitions/selectorExpressionValueMultiString"
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type to string.",
+                                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notstartswith)",
+                                    "default": false
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notstartswith)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "notStartsWith"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "endsWith": {
+                            "type": "object",
+                            "properties": {
+                                "endsWith": {
+                                    "title": "Ends with",
+                                    "description": "Must end with one of the specified values.",
+                                    "markdownDescription": "Must end with one of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#endswith)",
+                                    "$ref": "#/definitions/selectorExpressionValueMultiString",
+                                    "default": ""
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type to string.",
+                                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#endswith)",
+                                    "default": false
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#endswith)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "endsWith"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "notEndsWith": {
+                            "type": "object",
+                            "properties": {
+                                "notEndsWith": {
+                                    "title": "Not Ends with",
+                                    "description": "Must not end with any of the specified values.",
+                                    "markdownDescription": "Must not end with any of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notendswith)",
+                                    "$ref": "#/definitions/selectorExpressionValueMultiString"
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type to string.",
+                                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notendswith)",
+                                    "default": false
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notendswith)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "notEndsWith"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "contains": {
+                            "type": "object",
+                            "title": "contains",
+                            "description": "Must contain one of the specified values.",
+                            "markdownDescription": "Must contain one of the specified values.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#contains)",
+                            "properties": {
+                                "contains": {
+                                    "title": "Contains",
+                                    "description": "Must contain one of the specified values.",
+                                    "markdownDescription": "Must contain one of the specified values.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#contains)",
+                                    "default": "",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/definitions/selectorExpressionValueMultiString"
+                                        }
+                                    ]
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type to string.",
+                                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#contains)",
+                                    "default": false
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#contains)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "contains"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false,
+                            "minProperties": 2
+                        },
+                        "notContains": {
+                            "type": "object",
+                            "properties": {
+                                "notContains": {
+                                    "title": "Not Contains",
+                                    "description": "Must not contain any of the specified values.",
+                                    "markdownDescription": "Must not contain any of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcontains)",
+                                    "$ref": "#/definitions/selectorExpressionValueMultiString"
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type to string.",
+                                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcontains)",
+                                    "default": false
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcontains)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                },
+                                "type": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                                },
+                                "name": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                                },
+                                "source": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                                }
+                            },
+                            "required": [
+                                "notContains"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "isString": {
+                            "type": "object",
+                            "properties": {
+                                "isString": {
+                                    "type": "boolean",
+                                    "title": "Is string",
+                                    "description": "Must be a string type.",
+                                    "markdownDescription": "Must be a string type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isstring)",
+                                    "default": true
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "isString"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "isArray": {
+                            "type": "object",
+                            "properties": {
+                                "isArray": {
+                                    "type": "boolean",
+                                    "title": "Is array",
+                                    "description": "Must be an array type.",
+                                    "markdownDescription": "Must be an array type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isarray)",
+                                    "default": true
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "isArray"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "isBoolean": {
+                            "type": "object",
+                            "properties": {
+                                "isBoolean": {
+                                    "type": "boolean",
+                                    "title": "Is boolean",
+                                    "description": "Must be a boolean type.",
+                                    "markdownDescription": "Must be a boolean type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isboolean)",
+                                    "default": true
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type to boolean.",
+                                    "markdownDescription": "Convert type to boolean. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isboolean)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "isBoolean"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "isDateTime": {
+                            "type": "object",
+                            "properties": {
+                                "isDateTime": {
+                                    "type": "boolean",
+                                    "title": "Is datetime",
+                                    "description": "Must be a datetime type.",
+                                    "markdownDescription": "Must be a datetime type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isdatetime)",
+                                    "default": true
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type to datetime.",
+                                    "markdownDescription": "Convert type to datetime. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isdatetime)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "isDateTime"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "isInteger": {
+                            "type": "object",
+                            "properties": {
+                                "isInteger": {
+                                    "type": "boolean",
+                                    "title": "Is integer",
+                                    "description": "Must be an integer type.",
+                                    "markdownDescription": "Must be an integer type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isinteger)",
+                                    "default": true
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type to integer.",
+                                    "markdownDescription": "Convert type to integer. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isinteger)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "isInteger"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "isNumeric": {
+                            "type": "object",
+                            "properties": {
+                                "isNumeric": {
+                                    "type": "boolean",
+                                    "title": "Is numeric",
+                                    "description": "Must be a numeric type.",
+                                    "markdownDescription": "Must be a numeric type. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isnumeric)",
+                                    "default": true
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type to numeric.",
+                                    "markdownDescription": "Convert type to numeric. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isnumeric)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "isNumeric"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false,
+                            "minProperties": 2
+                        },
+                        "isLower": {
+                            "type": "object",
+                            "properties": {
+                                "isLower": {
+                                    "type": "boolean",
+                                    "title": "Is Lowercase",
+                                    "description": "Must be a lowercase string.",
+                                    "markdownDescription": "Must be a lowercase string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#islower)",
+                                    "default": true
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "isLower"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false,
+                            "minProperties": 2
+                        },
+                        "isUpper": {
+                            "type": "object",
+                            "properties": {
+                                "isUpper": {
+                                    "type": "boolean",
+                                    "title": "Is Uppercase",
+                                    "description": "Must be an uppercase string.",
+                                    "markdownDescription": "Must be an uppercase string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#isupper)",
+                                    "default": true
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "isUpper"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false,
+                            "minProperties": 2
+                        },
+                        "hasSchema": {
+                            "type": "object",
+                            "properties": {
+                                "hasSchema": {
+                                    "type": "array",
+                                    "title": "Has schema",
+                                    "description": "Must use one of the specified schemas of the value of $schema. If an empty array is specified any non-empty $schema can be specified.",
+                                    "markdownDescription": "Must use one of the specified schemas of the value of `$schema`. If an empty array is specified any non-empty `$schema` can be specified [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasschema)",
+                                    "default": [],
+                                    "items": {
+                                        "type": "string",
+                                        "title": "Has schema",
+                                        "description": "Must use one of the specified schemas of the value of $schema. If an empty array is specified any non-empty $schema can be specified.",
+                                        "markdownDescription": "Must use one of the specified schemas of the value of `$schema`. If an empty array is specified any non-empty `$schema` can be specified [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasschema)",
+                                        "minLength": 1
+                                    },
+                                    "uniqueItems": true
+                                },
+                                "ignoreScheme": {
+                                    "type": "boolean",
+                                    "title": "Ignore scheme",
+                                    "description": "Determines comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasschema)",
+                                    "default": false
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing schemas is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing schemas is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasschema)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "hasSchema"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/properties"
+                                }
+                            ],
+                            "additionalProperties": false,
+                            "minProperties": 2
+                        },
+                        "version": {
+                            "type": "object",
+                            "properties": {
+                                "version": {
+                                    "type": "string",
+                                    "title": "Version",
+                                    "description": "Must be a valid semantic version. A constraint can optionally be provided to require the semantic version to be within a range.",
+                                    "markdownDescription": "Must be a valid semantic version. A constraint can optionally be provided to require the semantic version to be within a range. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#version)",
+                                    "default": ""
+                                },
+                                "includePrerelease": {
+                                    "type": "boolean",
+                                    "title": "Include pre-release",
+                                    "description": "Determines if pre-release versions are included. By default, pre-release versions are not included.",
+                                    "markdownDescription": "Determines if pre-release versions are included. By default, pre-release versions are not included. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#version)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "version"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/properties"
+                                }
+                            ],
+                            "additionalProperties": false,
+                            "minProperties": 2
+                        },
+                        "hasDefault": {
+                            "type": "object",
+                            "properties": {
+                                "hasDefault": {
+                                    "title": "Has Default",
+                                    "description": "The field must either not exist or be set to the configured value.",
+                                    "markdownDescription": "The field must either not exist or be set to the configured value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasdefault)",
+                                    "default": "",
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/definitions/selectorExpressionValue"
+                                        }
+                                    ]
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasdefault)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "hasDefault"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/properties"
+                                }
+                            ],
+                            "additionalProperties": false,
+                            "minProperties": 2
+                        },
+                        "withinPath": {
+                            "type": "object",
+                            "properties": {
+                                "withinPath": {
+                                    "type": "array",
+                                    "title": "Within Path",
+                                    "description": "The file path must exist within the required paths.",
+                                    "markdownDescription": "The file path must exist within the required paths. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#withinpath)",
+                                    "default": [],
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "uniqueItems": true
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#withinpath)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "withinPath"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false,
+                            "maxProperties": 2
+                        },
+                        "notWithinPath": {
+                            "type": "object",
+                            "properties": {
+                                "notWithinPath": {
+                                    "type": "array",
+                                    "title": "Not Within Path",
+                                    "description": "The file path must not exist within the required paths.",
+                                    "markdownDescription": "The file path must not exist within the required paths. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notwithinpath)",
+                                    "default": [],
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "uniqueItems": true
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notwithinpath)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "notWithinPath"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false,
+                            "minProperties": 2
+                        },
+                        "like": {
+                            "type": "object",
+                            "properties": {
+                                "like": {
+                                    "title": "Like",
+                                    "description": "Must match any of the specified wildcard patterns.",
+                                    "markdownDescription": "Must match any of the specified wildcard patterns. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#like)",
+                                    "$ref": "#/definitions/selectorExpressionValueMultiString"
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type to string.",
+                                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#like)",
+                                    "default": false
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#like)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "like"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false,
+                            "minProperties": 2
+                        },
+                        "notLike": {
+                            "type": "object",
+                            "properties": {
+                                "notLike": {
+                                    "title": "Not like",
+                                    "description": "Must not match any of the specified wildcard patterns.",
+                                    "markdownDescription": "Must not match any of the specified wildcard patterns. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notlike)",
+                                    "$ref": "#/definitions/selectorExpressionValueMultiString"
+                                },
+                                "convert": {
+                                    "type": "boolean",
+                                    "title": "Type conversion",
+                                    "description": "Convert type to string.",
+                                    "markdownDescription": "Convert type to string. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notlike)",
+                                    "default": false
+                                },
+                                "caseSensitive": {
+                                    "type": "boolean",
+                                    "title": "Case sensitive",
+                                    "description": "Determines if comparing values is case-sensitive.",
+                                    "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notlike)",
+                                    "default": false
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                                }
+                            },
+                            "required": [
+                                "notLike"
+                            ],
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/expressions/definitions/operands"
+                                }
+                            ],
+                            "additionalProperties": false,
+                            "minProperties": 2
+                        }
+                    }
+                },
+                "operators": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/expressions/definitions/operators/definitions/allOf"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/operators/definitions/anyOf"
+                        },
+                        {
+                            "$ref": "#/definitions/expressions/definitions/operators/definitions/not"
+                        }
+                    ],
+                    "definitions": {
+                        "allOf": {
+                            "type": "object",
+                            "title": "allOf",
+                            "description": "All of the expressions must be true.",
+                            "markdownDescription": "All of the expressions must be true.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#allof)",
+                            "properties": {
+                                "allOf": {
+                                    "type": "array",
+                                    "title": "AllOf",
+                                    "description": "All of the expressions must be true.",
+                                    "markdownDescription": "All of the expressions must be true.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#allof)",
+                                    "items": {
+                                        "$ref": "#/definitions/expressions"
+                                    }
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "where": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/where"
+                                }
+                            },
+                            "required": [
+                                "allOf"
+                            ],
+                            "oneOf": [
+                                {
+                                    "properties": {
+                                        "field": {
+                                            "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                        },
+                                        "where": {
+                                            "$ref": "#/definitions/expressions/definitions/properties/definitions/where"
+                                        }
+                                    }
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "anyOf": {
+                            "type": "object",
+                            "properties": {
+                                "anyOf": {
+                                    "type": "array",
+                                    "title": "AnyOf",
+                                    "description": "One of the expressions must be true.",
+                                    "markdownDescription": "All of the expressions must be true.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#anyof)",
+                                    "items": {
+                                        "$ref": "#/definitions/expressions"
+                                    }
+                                },
+                                "field": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                },
+                                "where": {
+                                    "$ref": "#/definitions/expressions/definitions/properties/definitions/where"
+                                }
+                            },
+                            "required": [
+                                "anyOf"
+                            ],
+                            "oneOf": [
+                                {
+                                    "properties": {
+                                        "field": {
+                                            "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                                        },
+                                        "where": {
+                                            "$ref": "#/definitions/expressions/definitions/properties/definitions/where"
+                                        }
+                                    }
+                                }
+                            ],
+                            "additionalProperties": false
+                        },
+                        "not": {
+                            "type": "object",
+                            "properties": {
+                                "not": {
+                                    "type": "object",
+                                    "title": "Not",
+                                    "description": "The nested expression must not be true.",
+                                    "markdownDescription": "The nested expression must not be true.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#not)",
+                                    "$ref": "#/definitions/expressions"
+                                }
+                            },
+                            "required": [
+                                "not"
+                            ],
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            }
+        },
         "fn": {
-            "title": "Value from function",
-            "description": "A function expression that once evaluated specifies the value.",
-            "markdownDescription": "A function expression that once evaluated specifies the value.",
+            "ztitle": "Value from function",
+            "zdescription": "A function expression that once evaluated specifies the value.",
+            "zmarkdownDescription": "A function expression that once evaluated specifies the value.",
             "properties": {
                 "$": {
                     "type": "object",

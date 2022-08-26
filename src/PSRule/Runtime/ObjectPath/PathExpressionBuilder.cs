@@ -95,7 +95,7 @@ namespace PSRule.Runtime.ObjectPath
             UseArray();
             var filter = BuildExpression(reader, PathTokenType.EndFilter);
             var next = BuildSelector(reader);
-            return (IPathExpressionContext context, object input, out IEnumerable<object> value) =>
+            return (IPathExpressionContext context, object input, out IEnumerable<object> value, out bool enumerable) =>
             {
                 var result = new List<object>();
                 var success = 0;
@@ -104,13 +104,14 @@ namespace PSRule.Runtime.ObjectPath
                     if (!filter(context, i))
                         continue;
 
-                    if (!next(context, i, out var items))
+                    if (!next(context, i, out var items, out _))
                         continue;
 
                     success++;
                     result.AddRange(items);
                 }
                 value = success > 0 ? result.ToArray() : null;
+                enumerable = value != null;
                 return success > 0;
             };
         }
@@ -118,10 +119,11 @@ namespace PSRule.Runtime.ObjectPath
         private PathExpressionFn IndexSelector(ITokenReader reader, int index)
         {
             var next = BuildSelector(reader);
-            return (IPathExpressionContext context, object input, out IEnumerable<object> value) =>
+            return (IPathExpressionContext context, object input, out IEnumerable<object> value, out bool enumerable) =>
             {
                 value = null;
-                return TryGetIndex(input, index, out var item) && next(context, item, out value);
+                enumerable = false;
+                return TryGetIndex(input, index, out var item) && next(context, item, out value, out enumerable);
             };
         }
 
@@ -129,19 +131,20 @@ namespace PSRule.Runtime.ObjectPath
         {
             UseArray();
             var next = BuildSelector(reader);
-            return (IPathExpressionContext context, object input, out IEnumerable<object> value) =>
+            return (IPathExpressionContext context, object input, out IEnumerable<object> value, out bool enumerable) =>
             {
                 var result = new List<object>();
                 var success = 0;
                 foreach (var i in GetAll(input))
                 {
-                    if (!next(context, i, out var items))
+                    if (!next(context, i, out var items, out _))
                         continue;
 
                     success++;
                     result.AddRange(items);
                 }
                 value = success > 0 ? result.ToArray() : null;
+                enumerable = value != null;
                 return success > 0;
             };
         }
@@ -153,18 +156,19 @@ namespace PSRule.Runtime.ObjectPath
             var step = arg[2].GetValueOrDefault(1);
             var start = arg[0].GetValueOrDefault(step >= 0 ? 0 : -1);
             var end = arg[1];
-            return (IPathExpressionContext context, object input, out IEnumerable<object> value) =>
+            return (IPathExpressionContext context, object input, out IEnumerable<object> value, out bool enumerable) =>
             {
                 var result = new List<object>();
                 var currentIndex = start;
                 while ((!end.HasValue || (step > 0 && currentIndex < end) || (step < 0 && currentIndex > end)) && TryGetIndex(input, currentIndex, out var slice))
                 {
                     currentIndex += step;
-                    if (!next(context, slice, out var items))
+                    if (!next(context, slice, out var items, out _))
                         continue;
 
                     result.AddRange(items);
                 }
+                enumerable = true;
                 value = result.ToArray();
                 return true;
             };
@@ -174,11 +178,12 @@ namespace PSRule.Runtime.ObjectPath
         {
             var caseSensitiveFlag = option == PathTokenOption.CaseSensitive;
             var next = BuildSelector(reader);
-            return (IPathExpressionContext context, object input, out IEnumerable<object> value) =>
+            return (IPathExpressionContext context, object input, out IEnumerable<object> value, out bool enumerable) =>
             {
                 value = null;
+                enumerable = false;
                 var caseSensitive = context.CaseSensitive != caseSensitiveFlag;
-                return TryGetField(input, memberName, caseSensitive, out var item) && next(context, item, out value);
+                return TryGetField(input, memberName, caseSensitive, out var item) && next(context, item, out value, out enumerable);
             };
         }
 
@@ -186,20 +191,21 @@ namespace PSRule.Runtime.ObjectPath
         {
             var caseSensitiveFlag = option == PathTokenOption.CaseSensitive;
             var next = BuildSelector(reader);
-            return (IPathExpressionContext context, object input, out IEnumerable<object> value) =>
+            return (IPathExpressionContext context, object input, out IEnumerable<object> value, out bool enumerable) =>
             {
                 var caseSensitive = context.CaseSensitive != caseSensitiveFlag;
                 var result = new List<object>();
                 var success = 0;
                 foreach (var i in GetAllRecurse(input, memberName, caseSensitive))
                 {
-                    if (!next(context, i, out var items))
+                    if (!next(context, i, out var items, out _))
                         continue;
 
                     success++;
                     result.AddRange(items);
                 }
                 value = success > 0 ? result.ToArray() : null;
+                enumerable = value != null;
                 return success > 0;
             };
         }
@@ -207,13 +213,13 @@ namespace PSRule.Runtime.ObjectPath
         private PathExpressionFn CurrentRef(ITokenReader reader)
         {
             var next = BuildSelector(reader);
-            return (IPathExpressionContext context, object input, out IEnumerable<object> value) => next(context, input, out value);
+            return (IPathExpressionContext context, object input, out IEnumerable<object> value, out bool enumerable) => next(context, input, out value, out enumerable);
         }
 
         private PathExpressionFn RootRef(ITokenReader reader)
         {
             var next = BuildSelector(reader);
-            return (IPathExpressionContext context, object input, out IEnumerable<object> value) => next(context, context.Input, out value);
+            return (IPathExpressionContext context, object input, out IEnumerable<object> value, out bool enumerable) => next(context, context.Input, out value, out enumerable);
         }
 
         private PathExpressionFilterFn BuildExpression(ITokenReader reader, PathTokenType stop)
@@ -282,7 +288,7 @@ namespace PSRule.Runtime.ObjectPath
 
         private static PathExpressionFilterFn ExistCondition(PathExpressionFn next)
         {
-            return (IPathExpressionContext context, object input) => next(context, input, out _);
+            return (IPathExpressionContext context, object input) => next(context, input, out _, out _);
         }
 
         private static PathExpressionFilterFn NotCondition(PathExpressionFilterFn next)
@@ -294,7 +300,7 @@ namespace PSRule.Runtime.ObjectPath
         {
             return (IPathExpressionContext context, object input) =>
             {
-                if (!left(context, input, out var leftValue) || !right(context, input, out var rightValue))
+                if (!left(context, input, out var leftValue, out _) || !right(context, input, out var rightValue, out _))
                     return false;
 
                 var operand1 = leftValue.FirstOrDefault();
@@ -328,22 +334,32 @@ namespace PSRule.Runtime.ObjectPath
             };
         }
 
-        private static bool Return(IPathExpressionContext context, object input, out IEnumerable<object> value)
+        private static bool Return(IPathExpressionContext context, object input, out IEnumerable<object> value, out bool enumerable)
         {
             // Unwrap primitive types
             if (input is JValue jValue && (jValue.Type == JTokenType.String || jValue.Type == JTokenType.Integer || jValue.Type == JTokenType.Boolean))
                 input = jValue.Value;
 
-            value = new object[] { input };
+            enumerable = false;
+            if (input is object[] eo)
+            {
+                enumerable = true;
+                value = eo;
+            }
+            else
+                value = new object[] { input };
+
             return true;
         }
 
         private static PathExpressionFn Literal(object arg)
         {
-            var result = new object[] { arg };
-            return (IPathExpressionContext context, object input, out IEnumerable<object> value) =>
+            var isEnumerable = arg is object[];
+            var result = isEnumerable ? arg as object[] : new object[] { arg };
+            return (IPathExpressionContext context, object input, out IEnumerable<object> value, out bool enumerable) =>
             {
                 value = result;
+                enumerable = isEnumerable;
                 return true;
             };
         }

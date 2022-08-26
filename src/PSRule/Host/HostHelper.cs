@@ -56,11 +56,6 @@ namespace PSRule.Host
             return builder.Build();
         }
 
-        internal static IEnumerable<RuleBlock> GetRuleYamlBlocks(Source[] source, RunspaceContext context)
-        {
-            return ToRuleBlockV1(GetYamlLanguageBlocks(source, context), context, skipDuplicateName: true).GetAll();
-        }
-
         private static IEnumerable<ILanguageBlock> GetYamlJsonLanguageBlocks(Source[] source, RunspaceContext context)
         {
             var results = new List<ILanguageBlock>();
@@ -530,7 +525,7 @@ namespace PSRule.Host
                         @ref: block.Ref,
                         level: block.Level,
                         info: info,
-                        condition: new RuleVisitor(block.Id, block.Source, block.Spec),
+                        condition: new RuleVisitor(context, block.Id, block.Source, block.Spec),
                         alias: block.Alias,
                         tag: block.Metadata.Tags,
                         dependsOn: null,  // TODO: No support for DependsOn yet
@@ -706,11 +701,11 @@ namespace PSRule.Host
 
             // Process module configurations first
             foreach (var resource in resources.Where(r => r.Kind == ResourceKind.ModuleConfig).ToArray())
-                context.Pipeline.Import(resource);
+                context.Pipeline.Import(context, resource);
 
             // Process other resources
             foreach (var resource in resources.Where(r => r.Kind != ResourceKind.ModuleConfig).ToArray())
-                context.Pipeline.Import(resource);
+                context.Pipeline.Import(context, resource);
         }
 
         private static void Import(IConvention[] blocks, RunspaceContext context)

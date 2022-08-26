@@ -2,17 +2,16 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
-using System.Management.Automation;
 
 namespace PSRule.Configuration
 {
     /// <summary>
     /// Used by custom binding functions.
     /// </summary>
-    public delegate string BindTargetName(PSObject targetObject);
+    public delegate string BindTargetName(object targetObject);
 
-    internal delegate string BindTargetMethod(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, out string path);
-    internal delegate string BindTargetFunc(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, BindTargetMethod next, out string path);
+    internal delegate string BindTargetMethod(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path);
+    internal delegate string BindTargetFunc(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, BindTargetMethod next, out string path);
 
     /// <summary>
     /// Hooks that provide customize pipeline execution.
