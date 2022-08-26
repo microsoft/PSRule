@@ -23,10 +23,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.4.0-B0063 (pre-release)
+
 What's changed since pre-release v2.4.0-B0039:
 
 - New features:
-  - **Experimental**: Added support for sub-selectors YAML and JSON expressions by @BernieWhite.
+  - **Experimental**: Added support for sub-selector YAML and JSON expressions by @BernieWhite.
     [#1024](https://github.com/microsoft/PSRule/issues/1024)
     [#1045](https://github.com/microsoft/PSRule/issues/1045)
     - Sub-selector pre-conditions add an additional expression to determine if a rule is executed.
