@@ -15,7 +15,7 @@ namespace PSRule.Definitions.SuppressionGroups
         private readonly SuppressionInfo _Info;
         private readonly RunspaceContext _Context;
 
-        public SuppressionGroupVisitor(RunspaceContext context, ResourceId id, SourceFile source, ISuppressionGroupSpec spec, IResourceHelpInfo info)
+        public SuppressionGroupVisitor(RunspaceContext context, ResourceId id, SourceFile source, ISuppressionGroupV1Spec spec, IResourceHelpInfo info)
         {
             _Context = context;
             Id = id;

@@ -18,12 +18,19 @@ namespace PSRule.Configuration
     /// </summary>
     public sealed class PipelineHook
     {
+        /// <summary>
+        /// Create an empty set of pipeline hooks.
+        /// </summary>
         public PipelineHook()
         {
             BindTargetName = new List<BindTargetName>();
             BindTargetType = new List<BindTargetName>();
         }
 
+        /// <summary>
+        /// Create pipeline hooks based on an existing option instance.
+        /// </summary>
+        /// <param name="option">An existing pipeline hook option.</param>
         public PipelineHook(PipelineHook option)
         {
             BindTargetName = option?.BindTargetName ?? new List<BindTargetName>();

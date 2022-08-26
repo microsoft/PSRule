@@ -27,6 +27,7 @@ namespace PSRule.Definitions.Rules
         /// <param name="include">Only accept these rules by name.</param>
         /// <param name="tag">Only accept rules that have these tags.</param>
         /// <param name="exclude">Rule that are always excluded by name.</param>
+        /// <param name="includeLocal">Determine if local rules are automatically included.</param>
         public RuleFilter(string[] include, Hashtable tag, string[] exclude, bool? includeLocal)
         {
             _Include = include == null || include.Length == 0 ? null : include;

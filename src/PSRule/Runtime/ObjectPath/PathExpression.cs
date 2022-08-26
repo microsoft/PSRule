@@ -92,7 +92,7 @@ namespace PSRule.Runtime.ObjectPath
         public bool TryGet(object o, bool caseSensitive, out object[] value)
         {
             value = null;
-            if (!TryGet(o, caseSensitive, out var result, out var enumerable))
+            if (!TryGet(o, caseSensitive, out var result, out _))
                 return false;
 
             value = result.ToArray();
@@ -120,6 +120,7 @@ namespace PSRule.Runtime.ObjectPath
         /// <param name="o">The object to navigate the path for.</param>
         /// <param name="caseSensitive">Determines if member name matching is case-sensitive.</param>
         /// <param name="value">The values selected from the object.</param>
+        /// <param name="enumerable">Determines if <paramref name="value"/> is enumerable.</param>
         /// <returns>Returns true when the path exists within the object. Returns false if the path does not exist.</returns>
         private bool TryGet(object o, bool caseSensitive, out IEnumerable<object> value, out bool enumerable)
         {

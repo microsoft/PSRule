@@ -25,7 +25,7 @@ namespace PSRule.Definitions.Rules
         Error = 1,
 
         /// <summary>
-        /// A fiailure generates a warning.
+        /// A failure generates a warning.
         /// </summary>
         Warning = 2,
 
@@ -101,6 +101,9 @@ namespace PSRule.Definitions.Rules
         LanguageIf Where { get; }
     }
 
+    /// <summary>
+    /// A rule resource V1.
+    /// </summary>
     [Spec(Specs.V1, Specs.Rule)]
     internal sealed class RuleV1 : InternalResource<RuleV1Spec>, IResource, IRuleV1
     {

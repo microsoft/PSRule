@@ -9,6 +9,7 @@ namespace PSRule.Configuration
 {
     /// <summary>
     /// The information displayed for Assert-PSRule banner.
+    /// See <seealso href="https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputbanner">help</seealso>.
     /// </summary>
     [Flags]
     [JsonConverter(typeof(StringEnumConverter))]
@@ -39,7 +40,14 @@ namespace PSRule.Configuration
         /// </summary>
         RepositoryInfo = 8,
 
+        /// <summary>
+        /// The default information shown in the assert banner.
+        /// </summary>
         Default = Title | Source | SupportLinks | RepositoryInfo,
+
+        /// <summary>
+        /// A minimal set of information shown in the assert banner.
+        /// </summary>
         Minimal = Source
     }
 }

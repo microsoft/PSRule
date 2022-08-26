@@ -6,6 +6,19 @@ using PSRule.Pipeline;
 
 namespace PSRule.Definitions.SuppressionGroups
 {
+    /// <summary>
+    /// A specification for a V1 suppression group resource.
+    /// </summary>
+    internal interface ISuppressionGroupV1Spec
+    {
+        string[] Rule { get; }
+
+        LanguageIf If { get; }
+    }
+
+    /// <summary>
+    /// A suppression group resource V1.
+    /// </summary>
     [Spec(Specs.V1, Specs.SuppressionGroup)]
     internal sealed class SuppressionGroupV1 : InternalResource<SuppressionGroupV1Spec>
     {
@@ -13,14 +26,10 @@ namespace PSRule.Definitions.SuppressionGroups
             : base(ResourceKind.SuppressionGroup, apiVersion, source, metadata, info, extent, spec) { }
     }
 
-    internal interface ISuppressionGroupSpec
-    {
-        string[] Rule { get; }
-
-        LanguageIf If { get; }
-    }
-
-    internal sealed class SuppressionGroupV1Spec : Spec, ISuppressionGroupSpec
+    /// <summary>
+    /// A specification for a V1 suppression group resource.
+    /// </summary>
+    internal sealed class SuppressionGroupV1Spec : Spec, ISuppressionGroupV1Spec
     {
         public string[] Rule { get; set; }
 
