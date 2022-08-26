@@ -54,6 +54,11 @@ namespace PSRule.Definitions.Expressions
                 _Descriptors.TryGetValue(name, out descriptor);
         }
 
+        public bool IsSubselector(string name)
+        {
+            return name == "where";
+        }
+
         public bool IsOperator(string name)
         {
             return TryDescriptor(name, out var d) && d != null && d.Type == LanguageExpressionType.Operator;
@@ -80,12 +85,14 @@ namespace PSRule.Definitions.Expressions
     {
         private const char Dot = '.';
         private const char OpenBracket = '[';
-        private const char CloseBracket = '[';
+        private const char CloseBracket = ']';
+        private const string Where = ".where";
 
         private readonly bool _Debugger;
 
         private string[] _With;
         private string[] _Type;
+        private LanguageExpression _When;
         private string[] _Rule;
 
         public LanguageExpressionBuilder(bool debugger = true)
@@ -111,6 +118,15 @@ namespace PSRule.Definitions.Expressions
             return this;
         }
 
+        public LanguageExpressionBuilder WithSubselector(LanguageIf subselector)
+        {
+            if (subselector == null || subselector.Expression == null)
+                return this;
+
+            _When = subselector.Expression;
+            return this;
+        }
+
         public LanguageExpressionBuilder WithRule(string[] rule)
         {
             if (rule == null || rule.Length == 0)
@@ -120,12 +136,12 @@ namespace PSRule.Definitions.Expressions
             return this;
         }
 
-        public LanguageExpressionOuterFn Build(LanguageIf selectorIf)
+        public LanguageExpressionOuterFn Build(LanguageIf condition)
         {
-            return Precondition(Expression(string.Empty, selectorIf.Expression), _With, _Type, _Rule);
+            return Precondition(Expression(string.Empty, condition.Expression), _With, _Type, Expression(string.Empty, _When), _Rule);
         }
 
-        private static LanguageExpressionOuterFn Precondition(LanguageExpressionOuterFn expression, string[] with, string[] type, string[] rule)
+        private static LanguageExpressionOuterFn Precondition(LanguageExpressionOuterFn expression, string[] with, string[] type, LanguageExpressionOuterFn when, string[] rule)
         {
             var fn = expression;
             if (type != null)
@@ -133,6 +149,9 @@ namespace PSRule.Definitions.Expressions
 
             if (with != null)
                 fn = PreconditionSelector(with, fn);
+
+            if (when != null)
+                fn = PreconditionSubselector(when, fn);
 
             if (rule != null)
                 fn = PreconditionRule(rule, fn);
@@ -182,8 +201,25 @@ namespace PSRule.Definitions.Expressions
             };
         }
 
+        private static LanguageExpressionOuterFn PreconditionSubselector(LanguageExpressionOuterFn subselector, LanguageExpressionOuterFn fn)
+        {
+            return (context, o) =>
+            {
+                // Evalute sub-selector pre-condition
+                if (!AcceptsSubselector(context, subselector, o))
+                {
+                    context.Debug(PSRuleResources.DebugTargetSubselectorMismatch);
+                    return null;
+                }
+                return fn(context, o);
+            };
+        }
+
         private LanguageExpressionOuterFn Expression(string path, LanguageExpression expression)
         {
+            if (expression == null)
+                return null;
+
             path = Path(path, expression);
             if (expression is LanguageOperator selectorOperator)
                 return Scope(Debugger(Operator(path, selectorOperator), path));
@@ -226,7 +262,38 @@ namespace PSRule.Definitions.Expressions
             }
             var innerA = inner.ToArray();
             var info = new ExpressionInfo(path);
-            return (context, o) => expression.Descriptor.Fn(context, info, innerA, o);
+
+            // Check for sub-selectors
+            if (expression.Property == null || expression.Property.Count == 0)
+            {
+                return (context, o) => expression.Descriptor.Fn(context, info, innerA, o);
+            }
+            else
+            {
+                var subselector = expression.Subselector != null ? Expression(string.Concat(path, Where), expression.Subselector) : null;
+                return (context, o) =>
+                {
+                    if (!ObjectHelper.GetPath(context, o, Value<string>(context, expression.Property["field"]), caseSensitive: false, out object[] items) ||
+                    items == null || items.Length == 0)
+                        return false;
+
+                    // If any fail, all fail
+                    for (var i = 0; i < items.Length; i++)
+                    {
+                        if (subselector == null || subselector(context, items[i]).GetValueOrDefault(true))
+                        {
+                            if (!expression.Descriptor.Fn(context, info, innerA, items[i]))
+                                return false;
+                        }
+                    }
+                    return true;
+                };
+            }
+        }
+
+        private string Value<T>(ExpressionContext context, object v)
+        {
+            return v as string;
         }
 
         private LanguageExpressionOuterFn Debugger(LanguageExpressionOuterFn expression, string path)
@@ -271,6 +338,11 @@ namespace PSRule.Definitions.Expressions
                     return true;
             }
             return false;
+        }
+
+        private static bool AcceptsSubselector(ExpressionContext context, LanguageExpressionOuterFn subselector, object o)
+        {
+            return subselector == null || subselector.Invoke(context, o).GetValueOrDefault(false);
         }
 
         private static bool AcceptsRule(string[] rule)
@@ -1520,38 +1592,36 @@ namespace PSRule.Definitions.Expressions
             return operand != null || NotHasField(context, field);
         }
 
-        private static bool TryName(IExpressionContext context, LanguageExpression.PropertyBag properties, out IOperand operand)
+        private static bool TryName(IExpressionContext context, LanguageExpression.PropertyBag properties, object o, out IOperand operand)
         {
             operand = null;
             if (properties.TryGetString(NAME, out var svalue))
             {
-                if (svalue != ".")
+                if (svalue != "." || context?.Context?.LanguageScope == null)
                     return Invalid(context, svalue);
 
-                var binding = context.GetContext()?.TargetBinder?.Using(context.LanguageScope);
-                var name = binding?.TargetName;
-                if (string.IsNullOrEmpty(name))
+                if (!context.Context.LanguageScope.TryGetName(o, out var name, out var path) ||
+                    string.IsNullOrEmpty(name))
                     return Invalid(context, svalue);
 
-                operand = Operand.FromName(name, binding.TargetNamePath);
+                operand = Operand.FromName(name, path);
             }
             return operand != null;
         }
 
-        private static bool TryType(IExpressionContext context, LanguageExpression.PropertyBag properties, out IOperand operand)
+        private static bool TryType(IExpressionContext context, LanguageExpression.PropertyBag properties, object o, out IOperand operand)
         {
             operand = null;
             if (properties.TryGetString(TYPE, out var svalue))
             {
-                if (svalue != ".")
+                if (svalue != "." || context?.Context?.LanguageScope == null)
                     return Invalid(context, svalue);
 
-                var binding = context.GetContext()?.TargetBinder?.Using(context.LanguageScope);
-                var type = binding?.TargetType;
-                if (string.IsNullOrEmpty(type))
+                if (!context.Context.LanguageScope.TryGetType(o, out var type, out var path) ||
+                    string.IsNullOrEmpty(type))
                     return Invalid(context, svalue);
 
-                operand = Operand.FromType(type, binding.TargetTypePath);
+                operand = Operand.FromType(type, path);
             }
             return operand != null;
         }
@@ -1561,7 +1631,7 @@ namespace PSRule.Definitions.Expressions
             operand = null;
             if (properties.TryGetString(SOURCE, out var sourceValue))
             {
-                var source = context?.GetContext()?.TargetObject?.Source[sourceValue];
+                var source = context?.Context?.TargetObject?.Source[sourceValue];
                 if (source == null)
                     return Invalid(context, sourceValue);
 
@@ -1627,8 +1697,8 @@ namespace PSRule.Definitions.Expressions
         private static bool TryOperand(ExpressionContext context, string name, object o, LanguageExpression.PropertyBag properties, out IOperand operand)
         {
             return TryField(context, properties, o, out operand) ||
-                TryType(context, properties, out operand) ||
-                TryName(context, properties, out operand) ||
+                TryType(context, properties, o, out operand) ||
+                TryName(context, properties, o, out operand) ||
                 TrySource(context, properties, out operand) ||
                 TryValue(context, properties, out operand) ||
                 Invalid(context, name);

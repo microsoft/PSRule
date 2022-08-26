@@ -7,7 +7,6 @@ using PSRule.Configuration;
 using PSRule.Definitions.Baselines;
 using PSRule.Pipeline;
 using Xunit;
-using static PSRule.Pipeline.TargetBinder;
 
 namespace PSRule
 {
@@ -20,15 +19,15 @@ namespace PSRule
             var targetObject = GetTargetObject();
             binder.Bind(targetObject);
 
-            var m1 = binder.Using("Module1");
+            var m1 = binder.Result("Module1");
             Assert.Equal("Name1", m1.TargetName);
             Assert.Equal("Type1", m1.TargetType);
 
-            var m2 = binder.Using("Module2");
+            var m2 = binder.Result("Module2");
             Assert.Equal("Name2", m2.TargetName);
             Assert.Equal("Type1", m2.TargetType);
 
-            var m0 = binder.Using(".");
+            var m0 = binder.Result(".");
             Assert.Equal("Name1", m0.TargetName);
             Assert.Equal("System.Management.Automation.PSCustomObject", m0.TargetType);
         }
@@ -40,15 +39,15 @@ namespace PSRule
             var targetObject = new TargetObject(PSObject.AsPSObject(JToken.Parse("{ \"name\": \"Name1\", \"type\": \"Type1\", \"AlternativeName\": \"Name2\", \"AlternativeType\": \"Type2\" }")));
             binder.Bind(targetObject);
 
-            var m1 = binder.Using("Module1");
+            var m1 = binder.Result("Module1");
             Assert.Equal("Name1", m1.TargetName);
             Assert.Equal("Type1", m1.TargetType);
 
-            var m2 = binder.Using("Module2");
+            var m2 = binder.Result("Module2");
             Assert.Equal("Name2", m2.TargetName);
             Assert.Equal("Type1", m2.TargetType);
 
-            var m0 = binder.Using(".");
+            var m0 = binder.Result(".");
             Assert.Equal("Name1", m0.TargetName);
             Assert.Equal("System.Management.Automation.PSCustomObject", m0.TargetType);
         }
@@ -93,13 +92,13 @@ namespace PSRule
             ));
 
             option.UseScope("Module1");
-            builder.With(new TargetBindingContext("Module1", option.GetTargetBinding()));
+            builder.With("Module1", option.GetTargetBinding());
 
             option.UseScope("Module2");
-            builder.With(new TargetBindingContext("Module2", option.GetTargetBinding()));
+            builder.With("Module2", option.GetTargetBinding());
 
             option.UseScope(null);
-            builder.With(new TargetBindingContext(".", option.GetTargetBinding()));
+            builder.With(".", option.GetTargetBinding());
             return builder.Build();
         }
 

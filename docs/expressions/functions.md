@@ -1,15 +1,21 @@
-# Expression functions
+# Functions
 
 !!! Abstract
-    Functions are an advanced lanaguage feature specific to YAML and JSON resources.
+    _Functions_ are an advanced lanaguage feature specific to YAML and JSON expressions.
     That extend the language to allow for more complex use cases with expressions.
+    Functions don't apply to script expressions because PowerShell already has rich support for complex manipulation.
 
 !!! Experimental
-    Functions are a work in progress and subject to change.
+    _Functions_ are a work in progress and subject to change.
     We hope to add more functions, broader support, and more detailed documentation in the future.
     [Join or start a disucssion][1] to let us know how we can improve this feature going forward.
 
   [1]: https://github.com/microsoft/PSRule/discussions
+
+Functions cover two (2) main scenarios:
+
+- **Transformation** &mdash; you need to perform minor transformation before a condition.
+- **Configuration** &mdash; you want to configure an input into a condition.
 
 ## Using functions
 

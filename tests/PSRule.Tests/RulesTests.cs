@@ -20,6 +20,9 @@ namespace PSRule
     {
         #region Yaml rules
 
+        /// <summary>
+        /// Test that a YAML-based rule can be parsed.
+        /// </summary>
         [Fact]
         public void ReadYamlRule()
         {
@@ -42,6 +45,61 @@ namespace PSRule
 
             var hashtable = rule[0].Tag.ToHashtable();
             Assert.Equal("tag", hashtable["feature"]);
+        }
+
+        /// <summary>
+        /// Test that a YAML-based rule with sub-selectors can be parsed.
+        /// </summary>
+        [Fact]
+        public void ReadYamlSubSelectorRule()
+        {
+            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContext(), null), new TestWriter(GetOption()));
+            context.Init(GetSource("FromFileSubSelector.Rule.yaml"));
+            context.Begin();
+
+            // From current path
+            var rule = HostHelper.GetRule(GetSource("FromFileSubSelector.Rule.yaml"), context, includeDependencies: false);
+            Assert.NotNull(rule);
+            Assert.Equal("YamlRuleWithPrecondition", rule[0].Name);
+            Assert.Equal("YamlRuleWithSubselector", rule[1].Name);
+            Assert.Equal("YamlRuleWithSubselectorReordered", rule[2].Name);
+
+            context.Init(GetSource("FromFileSubSelector.Rule.yaml"));
+            context.Begin();
+            var subselector1 = GetRuleVisitor(context, "YamlRuleWithPrecondition", GetSource("FromFileSubSelector.Rule.yaml"));
+            var subselector2 = GetRuleVisitor(context, "YamlRuleWithSubselector", GetSource("FromFileSubSelector.Rule.yaml"));
+            var subselector3 = GetRuleVisitor(context, "YamlRuleWithSubselectorReordered", GetSource("FromFileSubSelector.Rule.yaml"));
+            context.EnterSourceScope(subselector1.Source);
+
+            var actual1 = GetObject((name: "kind", value: "test"), (name: "resources", value: new string[] { "abc", "abc" }));
+            var actual2 = GetObject((name: "resources", value: new string[] { "abc", "123", "abc" }));
+
+            // YamlRuleWithPrecondition
+            context.EnterTargetObject(actual1);
+            context.EnterRuleBlock(subselector1);
+            Assert.True(subselector1.Condition.If().AllOf());
+
+            context.EnterTargetObject(actual2);
+            context.EnterRuleBlock(subselector1);
+            Assert.True(subselector1.Condition.If().Skipped());
+
+            // YamlRuleWithSubselector
+            context.EnterTargetObject(actual1);
+            context.EnterRuleBlock(subselector2);
+            Assert.True(subselector2.Condition.If().AllOf());
+
+            context.EnterTargetObject(actual2);
+            context.EnterRuleBlock(subselector2);
+            Assert.False(subselector2.Condition.If().AllOf());
+
+            // YamlRuleWithSubselectorReordered
+            context.EnterTargetObject(actual1);
+            context.EnterRuleBlock(subselector3);
+            Assert.True(subselector3.Condition.If().AllOf());
+
+            context.EnterTargetObject(actual2);
+            context.EnterRuleBlock(subselector3);
+            Assert.True(subselector3.Condition.If().AllOf());
         }
 
         [Fact]
@@ -136,6 +194,9 @@ namespace PSRule
 
         #region Json rules
 
+        /// <summary>
+        /// Test that a JSON-based rule can be parsed.
+        /// </summary>
         [Fact]
         public void ReadJsonRule()
         {
@@ -158,6 +219,61 @@ namespace PSRule
 
             var hashtable = rule[0].Tag.ToHashtable();
             Assert.Equal("tag", hashtable["feature"]);
+        }
+
+        /// <summary>
+        /// Test that a JSON-based rule with sub-selectors can be parsed.
+        /// </summary>
+        [Fact]
+        public void ReadJsonSubSelectorRule()
+        {
+            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContext(), null), new TestWriter(GetOption()));
+            context.Init(GetSource("FromFileSubSelector.Rule.jsonc"));
+            context.Begin();
+
+            // From current path
+            var rule = HostHelper.GetRule(GetSource("FromFileSubSelector.Rule.jsonc"), context, includeDependencies: false);
+            Assert.NotNull(rule);
+            Assert.Equal("JsonRuleWithPrecondition", rule[0].Name);
+            Assert.Equal("JsonRuleWithSubselector", rule[1].Name);
+            Assert.Equal("JsonRuleWithSubselectorReordered", rule[2].Name);
+
+            context.Init(GetSource("FromFileSubSelector.Rule.yaml"));
+            context.Begin();
+            var subselector1 = GetRuleVisitor(context, "JsonRuleWithPrecondition", GetSource("FromFileSubSelector.Rule.jsonc"));
+            var subselector2 = GetRuleVisitor(context, "JsonRuleWithSubselector", GetSource("FromFileSubSelector.Rule.jsonc"));
+            var subselector3 = GetRuleVisitor(context, "JsonRuleWithSubselectorReordered", GetSource("FromFileSubSelector.Rule.jsonc"));
+            context.EnterSourceScope(subselector1.Source);
+
+            var actual1 = GetObject((name: "kind", value: "test"), (name: "resources", value: new string[] { "abc", "abc" }));
+            var actual2 = GetObject((name: "resources", value: new string[] { "abc", "123", "abc" }));
+
+            // JsonRuleWithPrecondition
+            context.EnterTargetObject(actual1);
+            context.EnterRuleBlock(subselector1);
+            Assert.True(subselector1.Condition.If().AllOf());
+
+            context.EnterTargetObject(actual2);
+            context.EnterRuleBlock(subselector1);
+            Assert.True(subselector1.Condition.If().Skipped());
+
+            // JsonRuleWithSubselector
+            context.EnterTargetObject(actual1);
+            context.EnterRuleBlock(subselector2);
+            Assert.True(subselector2.Condition.If().AllOf());
+
+            context.EnterTargetObject(actual2);
+            context.EnterRuleBlock(subselector2);
+            Assert.False(subselector2.Condition.If().AllOf());
+
+            // JsonRuleWithSubselectorReordered
+            context.EnterTargetObject(actual1);
+            context.EnterRuleBlock(subselector3);
+            Assert.True(subselector3.Condition.If().AllOf());
+
+            context.EnterTargetObject(actual2);
+            context.EnterRuleBlock(subselector3);
+            Assert.True(subselector3.Condition.If().AllOf());
         }
 
         #endregion Json rules
@@ -190,17 +306,17 @@ namespace PSRule
             return JsonConvert.DeserializeObject<object[]>(File.ReadAllText(path));
         }
 
-        private static RuleBlock GetRuleVisitor(RunspaceContext context, string name)
+        private static RuleBlock GetRuleVisitor(RunspaceContext context, string name, Source[] source = null)
         {
-            var block = HostHelper.GetRuleYamlBlocks(GetSource(), context);
+            var block = HostHelper.GetRuleBlockGraph(source ?? GetSource(), context).GetAll();
             return block.FirstOrDefault(s => s.Name == name);
         }
 
-        private static void ImportSelectors(RunspaceContext context)
+        private static void ImportSelectors(RunspaceContext context, Source[] source = null)
         {
-            var selectors = HostHelper.GetSelector(GetSource(), context).ToArray();
+            var selectors = HostHelper.GetSelector(source ?? GetSource(), context).ToArray();
             foreach (var selector in selectors)
-                context.Pipeline.Import(selector);
+                context.Pipeline.Import(context, selector);
         }
 
         private static string GetSourcePath(string path)

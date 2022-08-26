@@ -70,6 +70,12 @@
     <None Update="FromFileName.Rule.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="FromFileSubSelector.Rule.jsonc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="FromFileSubSelector.Rule.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Functions.Rule.jsonc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

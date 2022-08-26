@@ -4,8 +4,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Management.Automation;
 using PSRule.Configuration;
+using static PSRule.Pipeline.TargetBinder;
 
 namespace PSRule.Pipeline
 {
@@ -17,6 +17,8 @@ namespace PSRule.Pipeline
         void Bind(TargetObject targetObject);
 
         ITargetBindingContext Using(string languageScope);
+
+        ITargetBindingResult Result(string languageScope);
     }
 
     /// <summary>
@@ -26,6 +28,11 @@ namespace PSRule.Pipeline
     {
         string LanguageScope { get; }
 
+        ITargetBindingResult Bind(object o);
+    }
+
+    internal interface ITargetBindingResult
+    {
         /// <summary>
         /// The bound TargetName of the target object.
         /// </summary>
@@ -46,8 +53,6 @@ namespace PSRule.Pipeline
         Hashtable Field { get; }
 
         bool ShouldFilter { get; }
-
-        void Bind(TargetObject targetObject, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, HashSet<string> typeFilter);
     }
 
     /// <summary>
@@ -56,7 +61,7 @@ namespace PSRule.Pipeline
     internal sealed class TargetBinderBuilder
     {
         private readonly List<ITargetBindingContext> _BindingContext;
-        private readonly string[] _TypeFilter;
+        private readonly HashSet<string> _TypeFilter;
         private readonly BindTargetMethod _BindTargetName;
         private readonly BindTargetMethod _BindTargetType;
         private readonly BindTargetMethod _BindField;
@@ -67,7 +72,8 @@ namespace PSRule.Pipeline
             _BindTargetType = bindTargetType;
             _BindField = bindField;
             _BindingContext = new List<ITargetBindingContext>();
-            _TypeFilter = typeFilter;
+            if (typeFilter != null && typeFilter.Length > 0)
+                _TypeFilter = new HashSet<string>(typeFilter, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -75,7 +81,7 @@ namespace PSRule.Pipeline
         /// </summary>
         public ITargetBinder Build()
         {
-            return new TargetBinder(_BindingContext.ToArray(), _BindTargetName, _BindTargetType, _BindField, _TypeFilter);
+            return new TargetBinder(_BindingContext.ToArray());
         }
 
         /// <summary>
@@ -84,6 +90,14 @@ namespace PSRule.Pipeline
         public void With(ITargetBindingContext bindingContext)
         {
             _BindingContext.Add(bindingContext);
+        }
+
+        /// <summary>
+        /// Add a target binding context.
+        /// </summary>
+        public void With(string languageScope, IBindingOption bindingOption)
+        {
+            _BindingContext.Add(new TargetBindingContext(languageScope, bindingOption, _BindTargetName, _BindTargetType, _BindField, _TypeFilter));
         }
     }
 
@@ -94,23 +108,13 @@ namespace PSRule.Pipeline
     {
         private const string STANDALONE_SCOPE = ".";
 
-        private readonly BindTargetMethod _BindTargetName;
-
-        private readonly BindTargetMethod _BindTargetType;
-        private readonly BindTargetMethod _BindField;
-        private readonly HashSet<string> _TypeFilter;
-
         private readonly Dictionary<string, ITargetBindingContext> _BindingContext;
+        private readonly Dictionary<string, ITargetBindingResult> _BindingResult;
 
-        internal TargetBinder(ITargetBindingContext[] bindingContext, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, string[] typeFilter)
+        internal TargetBinder(ITargetBindingContext[] bindingContext)
         {
             _BindingContext = new Dictionary<string, ITargetBindingContext>();
-            _BindTargetName = bindTargetName;
-            _BindTargetType = bindTargetType;
-            _BindField = bindField;
-            if (typeFilter != null && typeFilter.Length > 0)
-                _TypeFilter = new HashSet<string>(typeFilter, StringComparer.OrdinalIgnoreCase);
-
+            _BindingResult = new Dictionary<string, ITargetBindingResult>();
             for (var i = 0; bindingContext != null && i < bindingContext.Length; i++)
                 _BindingContext.Add(bindingContext[i].LanguageScope ?? STANDALONE_SCOPE, bindingContext[i]);
         }
@@ -166,56 +170,79 @@ namespace PSRule.Pipeline
             }
         }
 
+        internal sealed class TargetBindingResult : ITargetBindingResult
+        {
+            public TargetBindingResult(string targetName, string targetNamePath, string targetType, string targetTypePath, bool shouldFilter, Hashtable field)
+            {
+                TargetName = targetName;
+                TargetNamePath = targetNamePath;
+                TargetType = targetType;
+                TargetTypePath = targetTypePath;
+                ShouldFilter = shouldFilter;
+                Field = field;
+            }
+
+            /// <inheritdoc/>
+            public string TargetName { get; }
+
+            /// <inheritdoc/>
+            public string TargetNamePath { get; }
+
+            /// <inheritdoc/>
+            public string TargetType { get; }
+
+            /// <inheritdoc/>
+            public string TargetTypePath { get; }
+
+            /// <inheritdoc/>
+            public bool ShouldFilter { get; }
+
+            /// <inheritdoc/>
+            public Hashtable Field { get; }
+        }
+
         internal sealed class TargetBindingContext : ITargetBindingContext
         {
             private readonly IBindingOption _BindingOption;
+            private readonly BindTargetMethod _BindTargetName;
+            private readonly BindTargetMethod _BindTargetType;
+            private readonly BindTargetMethod _BindField;
+            private readonly HashSet<string> _TypeFilter;
 
-            public TargetBindingContext(string languageScope, IBindingOption bindingOption)
+            public TargetBindingContext(string languageScope, IBindingOption bindingOption, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, HashSet<string> typeFilter)
             {
                 LanguageScope = languageScope;
                 _BindingOption = bindingOption;
+                _BindTargetName = bindTargetName;
+                _BindTargetType = bindTargetType;
+                _BindField = bindField;
+                _TypeFilter = typeFilter;
             }
 
             public string LanguageScope { get; }
 
-            /// <summary>
-            /// The bound TargetName of the target object.
-            /// </summary>
-            public string TargetName { get; private set; }
-
-            public string TargetNamePath { get; private set; }
-
-            /// <summary>
-            /// The bound TargetType of the target object.
-            /// </summary>
-            public string TargetType { get; private set; }
-
-            public string TargetTypePath { get; private set; }
-
-            /// <summary>
-            /// Additional bound fields of the target object.
-            /// </summary>
-            public Hashtable Field { get; private set; }
-
-            /// <summary>
-            /// Determines if the target object should be filtered.
-            /// </summary>
-            public bool ShouldFilter { get; private set; }
-
-            public void Bind(TargetObject targetObject, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, HashSet<string> typeFilter)
+            public ITargetBindingResult Bind(object o)
             {
-                TargetName = bindTargetName(_BindingOption.TargetName, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, targetObject.Value, out var targetNamePath);
-                TargetNamePath = targetNamePath;
-                TargetType = bindTargetType(_BindingOption.TargetType, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, targetObject.Value, out var targetTypePath);
-                TargetTypePath = targetTypePath;
-                ShouldFilter = !(typeFilter == null || typeFilter.Contains(TargetType));
+                var targetName = _BindTargetName(_BindingOption.TargetName, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, o, out var targetNamePath);
+                var targetType = _BindTargetType(_BindingOption.TargetType, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, o, out var targetTypePath);
+                var shouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(targetType));
 
                 // Use qualified name
                 if (_BindingOption.UseQualifiedName)
-                    TargetName = string.Concat(TargetType, _BindingOption.NameSeparator, TargetName);
+                    targetName = string.Concat(targetType, _BindingOption.NameSeparator, targetName);
 
                 // Bind custom fields
-                Field = BindField(bindField, _BindingOption.Field, !_BindingOption.IgnoreCase, targetObject.Value);
+                var field = BindField(_BindField, _BindingOption.Field, !_BindingOption.IgnoreCase, o);
+
+                return new TargetBindingResult
+                (
+                    targetName: targetName,
+                    targetNamePath: targetNamePath,
+                    targetType: targetType,
+                    targetTypePath: targetTypePath,
+                    shouldFilter: shouldFilter,
+                    field: field
+                );
             }
         }
 
@@ -227,7 +254,7 @@ namespace PSRule.Pipeline
         public void Bind(TargetObject targetObject)
         {
             foreach (var bindingContext in _BindingContext.Values)
-                bindingContext.Bind(targetObject, _BindTargetName, _BindTargetType, _BindField, _TypeFilter);
+                _BindingResult[bindingContext.LanguageScope] = bindingContext.Bind(targetObject.Value);
         }
 
         public ITargetBindingContext Using(string languageScope)
@@ -235,10 +262,15 @@ namespace PSRule.Pipeline
             return _BindingContext.TryGetValue(languageScope ?? STANDALONE_SCOPE, out var result) ? result : null;
         }
 
+        public ITargetBindingResult Result(string languageScope)
+        {
+            return _BindingResult.TryGetValue(languageScope ?? STANDALONE_SCOPE, out var result) ? result : null;
+        }
+
         /// <summary>
         /// Bind additional fields.
         /// </summary>
-        private static Hashtable BindField(BindTargetMethod bindField, FieldMap[] map, bool caseSensitive, PSObject targetObject)
+        private static Hashtable BindField(BindTargetMethod bindField, FieldMap[] map, bool caseSensitive, object o)
         {
             if (map == null || map.Length == 0)
                 return null;
@@ -254,7 +286,7 @@ namespace PSRule.Pipeline
                     if (hashtable.ContainsKey(field.Key))
                         continue;
 
-                    hashtable.Add(field.Key, bindField(field.Value, caseSensitive, false, targetObject, out _));
+                    hashtable.Add(field.Key, bindField(field.Value, caseSensitive, false, o, out _));
                 }
             }
             hashtable.Protect();

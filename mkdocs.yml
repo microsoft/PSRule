@@ -29,6 +29,7 @@ theme:
       level: 1
   - navigation.tabs
   - content.code.annotate
+  - content.tabs.link
 
 nav:
   - Home: index.md
@@ -55,8 +56,9 @@ nav:
       - Azure resource tagging example: scenarios/azure-tags/azure-tags.md
       - Kubernetes resource validation example: scenarios/kubernetes-resources/kubernetes-resources.md
     - Concepts:
-      - Expressions:
-        - Functions: expressions/functions.md
+      - Functions: expressions/functions.md
+      - Sub-selectors: expressions/sub-selectors.md
+    - Scenarios:
       - Using within continuous integration: scenarios/validation-pipeline/validation-pipeline.md
     # - Troubleshooting: troubleshooting.md
     - License and contributing: license-contributing.md
@@ -68,6 +70,7 @@ nav:
         - v0: 'CHANGELOG-v0.md'
       - Upgrade notes: upgrade-notes.md
       - Deprecations: deprecations.md
+      - Changes and versioning: versioning.md
     - Support: support.md
   # - Setup:
   #   - Configuring options: setup/configuring-options.md

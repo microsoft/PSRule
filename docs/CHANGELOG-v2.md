@@ -13,9 +13,25 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 **Experimental features**:
 
-- Functions within YAML expressions can be used to perform manipulation prior to testing a condition.
+- Functions within YAML and JSON expressions can be used to perform manipulation prior to testing a condition.
+  See [functions][3] for more information.
+- Sub-selectors within YAML and JSON expressions can be used to filter rules and list properties.
+  See [sub-selectors][4] for more information.
+
+  [3]: expressions/functions.md
+  [4]: expressions/sub-selectors.md
 
 ## Unreleased
+
+What's changed since pre-release v2.4.0-B0039:
+
+- New features:
+  - **Experimental**: Added support for sub-selectors YAML and JSON expressions by @BernieWhite.
+    [#1024](https://github.com/microsoft/PSRule/issues/1024)
+    [#1045](https://github.com/microsoft/PSRule/issues/1045)
+    - Sub-selector pre-conditions add an additional expression to determine if a rule is executed.
+    - Sub-selector object filters provide an way to filter items from list properties.
+    - See [sub-selectors][4] for more information.
 
 ## v2.4.0-B0039 (pre-release)
 
@@ -27,6 +43,7 @@ What's changed since pre-release v2.4.0-B0022:
     - Added conversion functions `boolean`, `string`, and `integer`.
     - Added lookup functions `configuration`, and `path`.
     - Added string functions `concat`, `substring`.
+    - See [functions][3] for more information.
 - Bug fixes:
   - Fixed reporting of duplicate identifiers which were not generating an error for all cases by @BernieWhite.
     [#1229](https://github.com/microsoft/PSRule/issues/1229)
