@@ -59,7 +59,7 @@ The output format can be configuring by setting the `Output.Format` option to on
 
 === "Options file"
 
-    ```yaml hl_lines="2-3"
+    ```yaml title="ps-rule.yaml" hl_lines="2-3"
     output:
       format: 'Sarif'
       path: reports/ps-rule-results.sarif

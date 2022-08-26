@@ -1,4 +1,5 @@
 ---
+title: Instructions for installing PSRule
 author: BernieWhite
 ---
 
@@ -16,7 +17,7 @@ It is shipped as a PowerShell module which makes it easy to install and distribu
 
 [:octicons-workflow-24: GitHub Action][1]
 
-Install and use PSRule with GitHub Actions by referencing the `Microsoft/ps-rule` action.
+Install and use PSRule with GitHub Actions by referencing the `microsoft/ps-rule` action.
 
 ```yaml
 - name: Analyze Azure template files

@@ -1,3 +1,8 @@
+---
+title: License and contributing to PSRule
+author: BernieWhite
+---
+
 # License and contributing
 
 PSRule is licensed with an [:octicons-law-24: MIT License][1], which means it's free to use and modify.

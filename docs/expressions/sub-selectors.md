@@ -186,7 +186,7 @@ In the example:
 
 Given the example, is important to understand what happens if:
 
-- The `resources` property doesn't exist.
+- The `resources` property doesn't exist. **OR**
 - The `resources` property doesn't contain any items that match the sub-selector condition.
 
 In either of these two cases, the sub-selector will return `false` and fail the rule.

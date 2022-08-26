@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 site_name: PSRule
 site_url: https://microsoft.github.io/PSRule
 site_description: Validate infrastructure as code (IaC) and objects using PowerShell rules.
@@ -133,7 +136,6 @@ plugins:
 - mkdocs-simple-hooks:
     hooks:
       on_page_markdown: "docs.hooks:replace_maml"
-      # on_nav: "docs.hooks:build_reference_nav"
 - search
 - git-revision-date
 - redirects:
@@ -153,10 +155,3 @@ extra:
     social_preview: https://repository-images.githubusercontent.com/125832556/d6685d9f-ba70-44a1-b11f-6534831143d1
     repo_issue: https://github.com/microsoft/PSRule/issues
     repo_discussion: https://github.com/microsoft/PSRule/discussions
-
-  # alternate:
-
-  #   # Switch to English
-  #   - name: English
-  #     link: /en/
-  #     lang: en

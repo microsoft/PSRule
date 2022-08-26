@@ -44,7 +44,7 @@ The conditions that are supported are:
 
 ## Examples
 
-```yaml
+```yaml title="YAML"
 ---
 # Synopsis: An expression function example.
 apiVersion: github.com/microsoft/PSRule/v1
