@@ -6,6 +6,9 @@ using PSRule.Data;
 
 namespace PSRule.Pipeline
 {
+    /// <summary>
+    /// A helper to build a pipeline for executing rules and conventions within a PSRule sandbox.
+    /// </summary>
     public interface IInvokePipelineBuilder : IPipelineBuilder
     {
         /// <summary>

@@ -281,7 +281,7 @@ namespace PSRule.Definitions
         /// </summary>
         internal bool Contains(object key, object value)
         {
-            if (key == null || value == null || !(key is string k) || !ContainsKey(k))
+            if (key == null || value == null || key is not string k || !ContainsKey(k))
                 return false;
 
             if (TryArray(value, out var values))
@@ -473,6 +473,10 @@ namespace PSRule.Definitions
         public ISourceExtent Extent { get; }
     }
 
+    /// <summary>
+    /// A base class for built-in resource types.
+    /// </summary>
+    /// <typeparam name="TSpec">The type of the related <seealso cref="Spec"/> for the resource.</typeparam>
     public abstract class InternalResource<TSpec> : Resource<TSpec>, IResource, IAnnotated<ResourceAnnotation> where TSpec : Spec, new()
     {
         private readonly Dictionary<Type, ResourceAnnotation> _Annotations;
@@ -558,9 +562,11 @@ namespace PSRule.Definitions
         }
 
         /// <summary>
-        /// Checks each RuleName and converts each to a RuleId.
+        /// Checks each resource name and converts each into a full qualified <seealso cref="ResourceId"/>.
         /// </summary>
+        /// <param name="defaultScope">The default scope to use if the resource name if not fully qualified.</param>
         /// <param name="name">An array of names. Qualified names (RuleIds) supplied are left intact.</param>
+        /// <param name="kind">The <seealso cref="ResourceIdKind"/> of the <seealso cref="ResourceId"/>.</param>
         /// <returns>An array of RuleIds.</returns>
         internal static ResourceId[] GetRuleId(string defaultScope, string[] name, ResourceIdKind kind)
         {

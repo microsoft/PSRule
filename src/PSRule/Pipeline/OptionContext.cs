@@ -106,7 +106,7 @@ namespace PSRule.Pipeline
             public string[] TargetType;
             public bool? UseQualifiedName;
 
-            public BaselineScope(ScopeType type, string baselineId, string moduleName, IBaselineSpec option, bool obsolete)
+            public BaselineScope(ScopeType type, string baselineId, string moduleName, IBaselineV1Spec option, bool obsolete)
                 : base(type, moduleName)
             {
                 Id = baselineId;

@@ -28,7 +28,7 @@ namespace PSRule.Configuration
     /// <remarks>
     /// See <see href="https://aka.ms/ps-rule/options"/>.
     /// </remarks>
-    public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineSpec
+    public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     {
         private const string DEFAULT_FILENAME = "ps-rule.yaml";
 
@@ -104,7 +104,7 @@ namespace PSRule.Configuration
         }
 
         /// <summary>
-        /// Options that affect property binding of TargetName.
+        /// Options that affect property binding.
         /// </summary>
         public BindingOption Binding { get; set; }
 
@@ -248,6 +248,7 @@ namespace PSRule.Configuration
         /// <remarks>
         /// This method is called from PowerShell.
         /// </remarks>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
         public static PSRuleOption FromFile(string path)
         {
             // Get a rooted file path instead of directory or relative path
@@ -298,6 +299,7 @@ namespace PSRule.Configuration
         /// <remarks>
         /// This method is called from PowerShell.
         /// </remarks>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
         public static PSRuleOption FromFileOrEmpty(PSRuleOption option, string path)
         {
             if (option == null)

@@ -32,6 +32,9 @@ What's changed since pre-release v2.4.0-B0039:
     - Sub-selector pre-conditions add an additional expression to determine if a rule is executed.
     - Sub-selector object filters provide an way to filter items from list properties.
     - See [sub-selectors][4] for more information.
+- Engineering:
+  - Improvements to PSRule engine API documentation by @BernieWhite.
+    [#1186](https://github.com/microsoft/PSRule/issues/1186)
 
 ## v2.4.0-B0039 (pre-release)
 
@@ -40,6 +43,7 @@ What's changed since pre-release v2.4.0-B0022:
 - New features:
   - **Experimental**: Added support for functions within YAML and JSON expressions by @BernieWhite.
     [#1227](https://github.com/microsoft/PSRule/issues/1227)
+    [#1016](https://github.com/microsoft/PSRule/issues/1016)
     - Added conversion functions `boolean`, `string`, and `integer`.
     - Added lookup functions `configuration`, and `path`.
     - Added string functions `concat`, `substring`.

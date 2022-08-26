@@ -78,6 +78,12 @@ namespace PSRule.Pipeline
             return pipeline;
         }
 
+        /// <summary>
+        /// Create a builder to define a list of rule sources.
+        /// </summary>
+        /// <param name="option">>Options that configure PSRule.</param>
+        /// <param name="hostContext">>An implementation of a host context that will recieve output and results.</param>
+        /// <returns>A builder object to configure the source pipeline.</returns>
         public static ISourcePipelineBuilder RuleSource(PSRuleOption option, IHostContext hostContext)
         {
             var pipeline = new SourcePipelineBuilder(hostContext, option);

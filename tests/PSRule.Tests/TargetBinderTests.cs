@@ -102,7 +102,7 @@ namespace PSRule
             return builder.Build();
         }
 
-        private static IBaselineSpec GetOption(string[] targetName, string[] targetType)
+        private static IBaselineV1Spec GetOption(string[] targetName, string[] targetType)
         {
             var result = new BaselineOption.BaselineInline();
             result.Binding.TargetName = targetName;
