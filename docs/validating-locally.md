@@ -17,7 +17,7 @@ This allows you to test Infrastructure as Code (IaC) artifacts before pushing ch
 [:octicons-download-24: Extension][2]
 
 An extension for Visual Studio Code is available for an integrated experience using PSRule.
-The Visual Studio Code extension includes a built-in _PSRule: Run analysis_ task.
+The Visual Studio Code extension includes a built-in task _PSRule: Run analysis_ task.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/microsoft/PSRule-vscode/main/docs/images/tasks-provider.png" alt="Built-in tasks shown in task list" />
@@ -31,7 +31,7 @@ The Visual Studio Code extension includes a built-in _PSRule: Run analysis_ task
 The _PSRule: Run analysis_ task will be available automatically after you install the PSRule extension.
 You can customize the defaults of the task by editing or inserting the task into `.vscode/tasks.json` within your workspace.
 
-```json
+```json title="JSON"
 {
     "type": "PSRule",
     "problemMatcher": [
@@ -51,7 +51,7 @@ You can customize the defaults of the task by editing or inserting the task into
 !!! Example
     A complete `.vscode/tasks.json` might look like the following:
 
-    ```json
+    ```json title=".vscode/tasks.json"
     {
         "version": "2.0.0",
         "tasks": [
