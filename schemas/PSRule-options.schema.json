@@ -811,7 +811,7 @@
                 {
                     "label": "Version constraint",
                     "body": {
-                        "${1:Module}": "${2:'>=1.0.0'}"
+                        "${1:Module}": "'>=${2:1.0.0}'"
                     }
                 }
             ]
