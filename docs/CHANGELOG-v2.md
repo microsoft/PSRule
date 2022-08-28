@@ -23,6 +23,14 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.4.0-B0063:
+
+- Engineering:
+  - Bump BenchmarkDotNet to v0.13.2.
+    [#1241](https://github.com/microsoft/PSRule/pull/1241)
+  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.2.
+    [#1242](https://github.com/microsoft/PSRule/pull/1242)
+
 ## v2.4.0-B0063 (pre-release)
 
 What's changed since pre-release v2.4.0-B0039:
