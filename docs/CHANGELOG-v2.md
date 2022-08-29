@@ -23,6 +23,54 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.4.0
+
+What's changed since v2.3.2:
+
+- New features:
+  - **Experimental**: Added support for functions within YAML and JSON expressions by @BernieWhite.
+    [#1227](https://github.com/microsoft/PSRule/issues/1227)
+    [#1016](https://github.com/microsoft/PSRule/issues/1016)
+    - Added conversion functions `boolean`, `string`, and `integer`.
+    - Added lookup functions `configuration`, and `path`.
+    - Added string functions `concat`, `substring`.
+    - See [functions][3] for more information.
+  - **Experimental**: Added support for sub-selector YAML and JSON expressions by @BernieWhite.
+    [#1024](https://github.com/microsoft/PSRule/issues/1024)
+    [#1045](https://github.com/microsoft/PSRule/issues/1045)
+    - Sub-selector pre-conditions add an additional expression to determine if a rule is executed.
+    - Sub-selector object filters provide an way to filter items from list properties.
+    - See [sub-selectors][4] for more information.
+- Engineering:
+  - Improvements to PSRule engine API documentation by @BernieWhite.
+    [#1186](https://github.com/microsoft/PSRule/issues/1186)
+  - Updates to PSRule engine API by @BernieWhite.
+    [#1152](https://github.com/microsoft/PSRule/issues/1152)
+    - Added tool support for baselines parameter.
+    - Added module path discovery.
+    - Added output for verbose and debug messages.
+  - Bump support projects to .NET 6 by @BernieWhite.
+    [#1209](https://github.com/microsoft/PSRule/issues/1209)
+  - Bump Microsoft.NET.Test.Sdk to v17.3.0.
+    [#1213](https://github.com/microsoft/PSRule/pull/1213)
+  - Bump BenchmarkDotNet to v0.13.2.
+    [#1241](https://github.com/microsoft/PSRule/pull/1241)
+  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.2.
+    [#1242](https://github.com/microsoft/PSRule/pull/1242)
+- Bug fixes:
+  - Fixed reporting of duplicate identifiers which were not generating an error for all cases by @BernieWhite.
+    [#1229](https://github.com/microsoft/PSRule/issues/1229)
+    - Added `Execution.DuplicateResourceId` option to configure PSRule behaviour.
+    - By default, duplicate resource identifiers return an error.
+  - Fixed exception on JSON baseline without a synopsis by @BernieWhite.
+    [#1230](https://github.com/microsoft/PSRule/issues/1230)
+  - Fixed repository information not in output by @BernieWhite.
+    [#1219](https://github.com/microsoft/PSRule/issues/1219)
+
+What's changed since pre-release v2.4.0-B0091:
+
+- No additional changes.
+
 ## v2.4.0-B0091 (pre-release)
 
 What's changed since pre-release v2.4.0-B0063:
@@ -756,13 +804,6 @@ What's changed since v1.11.0:
     - Resources that do not specify an `apiVersion` will be ignored.
     - See [upgrade notes][1] for details.
 
-[Assert-PSRule]: commands/PSRule/en-US/Assert-PSRule.md
 [about_PSRule_Assert]: concepts/PSRule/en-US/about_PSRule_Assert.md
 [about_PSRule_Options]: concepts/PSRule/en-US/about_PSRule_Options.md
-[about_PSRule_Variables]: concepts/PSRule/en-US/about_PSRule_Variables.md
-[about_PSRule_Conventions]: concepts/PSRule/en-US/about_PSRule_Conventions.md
-[about_PSRule_Selectors]: concepts/PSRule/en-US/about_PSRule_Selectors.md
-[about_PSRule_Rules]: concepts/PSRule/en-US/about_PSRule_Rules.md
-[about_PSRule_Badges]: concepts/PSRule/en-US/about_PSRule_Badges.md
-[about_PSRule_Expressions]: concepts/PSRule/en-US/about_PSRule_Expressions.md
 [about_PSRule_SuppressionGroups]: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md
