@@ -1195,6 +1195,11 @@ function New-PSRuleOption {
         [Alias('ExecutionInvariantCultureWarning')]
         [System.Boolean]$InvariantCultureWarning = $True,
 
+        # Sets the Execution.InitialSessionState option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInitialSessionState')]
+        [PSRule.Configuration.SessionState]$InitialSessionState = [PSRule.Configuration.SessionState]::BuiltIn,
+
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
         [String[]]$IncludeModule,
@@ -1473,6 +1478,11 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInvariantCultureWarning')]
         [System.Boolean]$InvariantCultureWarning = $True,
+
+        # Sets the Execution.InitialSessionState option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInitialSessionState')]
+        [PSRule.Configuration.SessionState]$InitialSessionState = [PSRule.Configuration.SessionState]::BuiltIn,
 
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
@@ -2196,6 +2206,11 @@ function SetOptions {
         [Alias('ExecutionInvariantCultureWarning')]
         [System.Boolean]$InvariantCultureWarning = $True,
 
+        # Sets the Execution.InitialSessionState option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInitialSessionState')]
+        [PSRule.Configuration.SessionState]$InitialSessionState = [PSRule.Configuration.SessionState]::BuiltIn,
+
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
         [String[]]$IncludeModule,
@@ -2384,6 +2399,11 @@ function SetOptions {
         # Sets option Execution.InvariantCultureWarning
         if ($PSBoundParameters.ContainsKey('InvariantCultureWarning')) {
             $Option.Execution.InvariantCultureWarning = $InvariantCultureWarning;
+        }
+
+        # Sets option Execution.InitialSessionState
+        if ($PSBoundParameters.ContainsKey('InitialSessionState')) {
+            $Option.Execution.InitialSessionState = $InitialSessionState;
         }
 
         # Sets option Include.Module

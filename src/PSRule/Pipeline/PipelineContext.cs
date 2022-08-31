@@ -138,7 +138,8 @@ namespace PSRule.Pipeline
         {
             if (_Runspace == null)
             {
-                var state = HostState.CreateSessionState();
+                var initialSessionState = Option.Execution.InitialSessionState.GetValueOrDefault(ExecutionOption.Default.InitialSessionState.Value);
+                var state = HostState.CreateSessionState(initialSessionState);
                 state.LanguageMode = _LanguageMode == LanguageMode.FullLanguage ? PSLanguageMode.FullLanguage : PSLanguageMode.ConstrainedLanguage;
 
                 _Runspace = RunspaceFactory.CreateRunspace(state);
@@ -203,7 +204,7 @@ namespace PSRule.Pipeline
         {
             baselineRef = null;
             var r = _Unresolved.FirstOrDefault(i => ResourceIdEqualityComparer.IdEquals(i.Id, resourceId.Value));
-            if (!(r is BaselineRef br))
+            if (r is not BaselineRef br)
                 return false;
 
             baselineRef = br;

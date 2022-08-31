@@ -205,7 +205,7 @@ namespace PSRule.Pipeline
             WriteError(errorRecord);
         }
 
-        protected static ActionPreference GetPreferenceVariable(SessionState sessionState, string variableName)
+        protected static ActionPreference GetPreferenceVariable(System.Management.Automation.SessionState sessionState, string variableName)
         {
             return (ActionPreference)sessionState.PSVariable.GetValue(variableName);
         }

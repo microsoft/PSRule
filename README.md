@@ -257,6 +257,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Execution.NotProcessedWarning](https://aka.ms/ps-rule/options#executionnotprocessedwarning)
   - [Execution.SuppressedRuleWarning](https://aka.ms/ps-rule/options#executionsuppressedrulewarning)
   - [Execution.InvariantCultureWarning](https://aka.ms/ps-rule/options#executioninvariantculturewarning)
+  - [Execution.InitialSessionState](https://aka.ms/ps-rule/options#executioninitialsessionstate)
   - [Include.Module](https://aka.ms/ps-rule/options#includemodule)
   - [Include.Path](https://aka.ms/ps-rule/options#includepath)
   - [Input.Format](https://aka.ms/ps-rule/options#inputformat)
