@@ -129,7 +129,7 @@ task TestDotNet {
 task BuildCLI BuildModule, {
     exec {
         # Build library
-        dotnet publish src/PSRule.Tool -c $Configuration --self-contained /p:DebugType=None /p:DebugSymbols=false -r win-x64 -o ./out/cli/win-x64/ -p:version=$Build -p:PSRule_Version=$Build
+        dotnet publish src/PSRule.Tool -c $Configuration --self-contained /p:DebugType=None /p:DebugSymbols=false -r win-x64 -o ./out/cli/win-x64/ -p:version=$Build
         # dotnet publish src/PSRule.Tool -c $Configuration --no-self-contained -r win-x64 -o ./out/cli/win-x64/ -p:version=$Build
         # dotnet publish --self-contained true -p:PublishTrimmed=true -p:PublishSingleFile=true -r win-x64 .\src\PSRule.Tool\PSRule.Tool.csproj -o .\out\cli
     }

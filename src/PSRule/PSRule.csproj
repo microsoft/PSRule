@@ -28,7 +28,7 @@
   </ItemGroup>
   
   <PropertyGroup>
-    <PSRule_Version>$(ProductVersion)</PSRule_Version>
+    <PSRule_Version>$(version)</PSRule_Version>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
