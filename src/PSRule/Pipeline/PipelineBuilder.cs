@@ -325,7 +325,7 @@ namespace PSRule.Pipeline
             var result = true;
             if (Option.Requires.TryGetValue(ENGINE_MODULE_NAME, out var requiredVersion))
             {
-                var engineVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+                var engineVersion = Engine.GetVersion();
                 if (GuardModuleVersion(ENGINE_MODULE_NAME, engineVersion, requiredVersion))
                     result = false;
             }

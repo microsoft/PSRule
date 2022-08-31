@@ -126,7 +126,7 @@ namespace PSRule.Pipeline
             _Writer = new HostPipelineWriter(hostContext, option);
             _Writer.EnterScope("[Discovery.Source]");
             _UseDefaultPath = option == null || option.Include == null || option.Include.Path == null;
-            _LocalPath = PSRuleOption.GetRootedBasePath(Path.GetDirectoryName(typeof(SourcePipelineBuilder).Assembly.Location));
+            _LocalPath = Engine.GetLocalPath();
 
             // Include paths from options
             if (!_UseDefaultPath)

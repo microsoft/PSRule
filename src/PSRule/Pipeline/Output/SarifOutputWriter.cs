@@ -288,7 +288,7 @@ namespace PSRule.Pipeline.Output
 
         private Tool GetTool(Source[] source)
         {
-            var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+            var version = Engine.GetVersion();
             return new Tool
             {
                 Driver = new ToolComponent
