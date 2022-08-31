@@ -307,16 +307,27 @@
                 "suppressedRuleWarning": {
                     "type": "boolean",
                     "title": "Warn on suppressed rules",
-                    "description": "Enable or disable warnings for suppressed rules. The default is `true`.",
+                    "description": "Enable or disable warnings for suppressed rules. The default is true.",
                     "markdownDescription": "Enable or disable warnings for suppressed rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionsuppressedrulewarning)",
                     "default": true
                 },
                 "invariantCultureWarning": {
                     "type": "boolean",
                     "title": "Warn on invariant culture",
-                    "description": "Enable or disable warning when invariant culture is used. The default is `true`.",
+                    "description": "Enable or disable warning when invariant culture is used. The default is true.",
                     "markdownDescription": "Enable or disable warning when invariant culture is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninvariantculturewarning)",
                     "default": true
+                },
+                "initialSessionState": {
+                    "type": "string",
+                    "title": "Initial Session State",
+                    "description": "Determines how the initial session state for executing PowerShell code is created. The default is BuiltIn.",
+                    "markdownDescription": "Determines how the initial session state for executing PowerShell code is created. The default is `BuiltIn`.\n- When set to `BuiltIn` all built-in cmdlets are loaded.\n- When set to `Minimal` only cmdlets for hosting PowerShell will be loaded.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninitialsessionstate)",
+                    "enum": [
+                        "BuiltIn",
+                        "Minimal"
+                    ],
+                    "default": "BuiltIn"
                 }
             },
             "additionalProperties": false

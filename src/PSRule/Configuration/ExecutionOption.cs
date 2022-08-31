@@ -22,6 +22,7 @@ namespace PSRule.Configuration
         private const bool DEFAULT_ALIASREFERENCEWARNING = true;
         private const bool DEFAULT_INVARIANTCULTUREWARNING = true;
         private const ExecutionActionPreference DEFAULT_DUPLICATERESOURCEID = ExecutionActionPreference.Error;
+        private const SessionState DEFAULT_INITIALSESSIONSTATE = SessionState.BuiltIn;
 
         internal static readonly ExecutionOption Default = new()
         {
@@ -32,6 +33,7 @@ namespace PSRule.Configuration
             NotProcessedWarning = DEFAULT_NOTPROCESSEDWARNING,
             SuppressedRuleWarning = DEFAULT_SUPPRESSEDRULEWARNING,
             InvariantCultureWarning = DEFAULT_INVARIANTCULTUREWARNING,
+            InitialSessionState = DEFAULT_INITIALSESSIONSTATE,
         };
 
         /// <summary>
@@ -46,6 +48,7 @@ namespace PSRule.Configuration
             NotProcessedWarning = null;
             SuppressedRuleWarning = null;
             InvariantCultureWarning = null;
+            InitialSessionState = null;
         }
 
         /// <summary>
@@ -64,6 +67,7 @@ namespace PSRule.Configuration
             NotProcessedWarning = option.NotProcessedWarning;
             SuppressedRuleWarning = option.SuppressedRuleWarning;
             InvariantCultureWarning = option.InvariantCultureWarning;
+            InitialSessionState = option.InitialSessionState;
         }
 
         /// <inheritdoc/>
@@ -82,7 +86,8 @@ namespace PSRule.Configuration
                 InconclusiveWarning == other.InconclusiveWarning &&
                 NotProcessedWarning == other.NotProcessedWarning &&
                 SuppressedRuleWarning == other.NotProcessedWarning &&
-                InvariantCultureWarning == other.InvariantCultureWarning;
+                InvariantCultureWarning == other.InvariantCultureWarning &&
+                InitialSessionState == other.InitialSessionState;
         }
 
         /// <inheritdoc/>
@@ -98,6 +103,7 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (NotProcessedWarning.HasValue ? NotProcessedWarning.Value.GetHashCode() : 0);
                 hash = hash * 23 + (SuppressedRuleWarning.HasValue ? SuppressedRuleWarning.Value.GetHashCode() : 0);
                 hash = hash * 23 + (InvariantCultureWarning.HasValue ? InvariantCultureWarning.Value.GetHashCode() : 0);
+                hash = hash * 23 + (InitialSessionState.HasValue ? InitialSessionState.Value.GetHashCode() : 0);
                 return hash;
             }
         }
@@ -116,7 +122,8 @@ namespace PSRule.Configuration
                 InconclusiveWarning = o1.InconclusiveWarning ?? o2.InconclusiveWarning,
                 NotProcessedWarning = o1.NotProcessedWarning ?? o2.NotProcessedWarning,
                 SuppressedRuleWarning = o1.SuppressedRuleWarning ?? o2.SuppressedRuleWarning,
-                InvariantCultureWarning = o1.InvariantCultureWarning ?? o2.InvariantCultureWarning
+                InvariantCultureWarning = o1.InvariantCultureWarning ?? o2.InvariantCultureWarning,
+                InitialSessionState = o1.InitialSessionState ?? o2.InitialSessionState,
             };
             return result;
         }
@@ -167,6 +174,13 @@ namespace PSRule.Configuration
         [DefaultValue(null)]
         public bool? InvariantCultureWarning { get; set; }
 
+        /// <summary>
+        /// Determines how the initial session state for executing PowerShell code is created.
+        /// The default is <see cref="SessionState.BuiltIn"/>.
+        /// </summary>
+        [DefaultValue(null)]
+        public SessionState? InitialSessionState { get; set; }
+
         internal void Load(EnvironmentHelper env)
         {
             if (env.TryBool("PSRULE_EXECUTION_ALIASREFERENCEWARNING", out var bvalue))
@@ -189,6 +203,9 @@ namespace PSRule.Configuration
 
             if (env.TryBool("PSRULE_EXECUTION_INVARIANTCULTUREWARNING", out bvalue))
                 InvariantCultureWarning = bvalue;
+
+            if (env.TryEnum("PSRULE_EXECUTION_INITIALSESSIONSTATE", out SessionState initialSessionState))
+                InitialSessionState = initialSessionState;
         }
 
         internal void Load(Dictionary<string, object> index)
@@ -213,6 +230,9 @@ namespace PSRule.Configuration
 
             if (index.TryPopBool("Execution.InvariantCultureWarning", out bvalue))
                 InvariantCultureWarning = bvalue;
+
+            if (index.TryPopEnum("Execution.InitialSessionState", out SessionState initialSessionState))
+                InitialSessionState = initialSessionState;
         }
     }
 }

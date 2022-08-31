@@ -28,6 +28,10 @@ What's changed since v2.4.0:
 - Engineering:
   - Bump Microsoft.NET.Test.Sdk to v17.3.1.
     [#1248](https://github.com/microsoft/PSRule/pull/1248)
+- Bug fixes:
+  - Fixed could not load Microsoft.Management.Infrastructure by @BernieWhite.
+    [#1249](https://github.com/microsoft/PSRule/issues/1249)
+    - To use minimal initial session state set `Execution.InitialSessionState` to `Minimal`.
 
 ## v2.4.0
 
