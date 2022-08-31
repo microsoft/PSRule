@@ -96,6 +96,7 @@ namespace PSRule.Tool
         private static PSRuleOption GetOption()
         {
             var option = PSRuleOption.FromFileOrEmpty();
+            option.Execution.InitialSessionState = Configuration.SessionState.Minimal;
             option.Input.Format = InputFormat.File;
             option.Output.Style = OutputStyle.Client;
             return option;

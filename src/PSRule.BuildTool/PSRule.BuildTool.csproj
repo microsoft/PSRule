@@ -14,10 +14,6 @@
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-    <DefineConstants>Windows</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup>
     <Compile Update="Resources\CmdStrings.Designer.cs">
       <DependentUpon>CmdStrings.resx</DependentUpon>

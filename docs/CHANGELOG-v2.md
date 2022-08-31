@@ -32,6 +32,8 @@ What's changed since v2.4.0:
   - Fixed could not load Microsoft.Management.Infrastructure by @BernieWhite.
     [#1249](https://github.com/microsoft/PSRule/issues/1249)
     - To use minimal initial session state set `Execution.InitialSessionState` to `Minimal`.
+  - Fixed unhandled exception with GetRootedPath by @BernieWhite.
+    [#1251](https://github.com/microsoft/PSRule/issues/1251)
 
 ## v2.4.0
 
