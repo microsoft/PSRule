@@ -2,12 +2,12 @@
 # CI pipeline for PSRule
 
 variables:
-  version: '2.1.0'
+  version: '2.5.0'
   buildConfiguration: 'Release'
   disable.coverage.autogenerate: 'true'
-  imageName: 'ubuntu-20.04'
+  imageName: 'ubuntu-22.04'
 
- # Use build number format, i.e. 2.1.0-B2203001
+ # Use build number format, i.e. 2.5.0-B2203001
 name: $(version)-B$(date:yyMM)$(rev:rrr)
 
 trigger:
@@ -15,10 +15,6 @@ trigger:
     include:
     - 'main'
     - 'release/*'
-  # tags:
-  #   include:
-  #   - 'v1.*'
-  #   - 'v2.*'
 
 pr:
   branches:
@@ -115,7 +111,7 @@ stages:
 
   - job: Secret_Scan
     pool:
-      vmImage: 'windows-2019'
+      vmImage: 'windows-2022'
     displayName: Secret scan
 
     steps:
@@ -142,30 +138,30 @@ stages:
 
   - template: jobs/test.yaml
     parameters:
-      name: ubuntu_20_04_coverage
-      imageName: 'ubuntu-20.04'
+      name: ubuntu_22_04_coverage
+      imageName: 'ubuntu-22.04'
       displayName: 'PowerShell coverage'
       coverage: 'true'
       publishResults: 'false'
 
   - template: jobs/test.yaml
     parameters:
-      name: macOS_10_15
-      displayName: 'PowerShell 7.2 - macOS-10.15'
-      imageName: 'macOS-10.15'
+      name: macOS_11
+      displayName: 'PowerShell 7.2 - macOS-11'
+      imageName: 'macOS-11'
 
   - template: jobs/test.yaml
     parameters:
-      name: ps_5_1_windows_2019
-      displayName: 'PowerShell 5.1 - Windows 2019'
-      imageName: 'windows-2019'
+      name: ps_5_1_windows_2022
+      displayName: 'PowerShell 5.1 - Windows 2022'
+      imageName: 'windows-2022'
       pwsh: 'false'
 
   - template: jobs/test.yaml
     parameters:
-      name: ps_7_2_windows_2019
-      displayName: 'PowerShell 7.2 - Windows 2019'
-      imageName: 'windows-2019'
+      name: ps_7_2_windows_2022
+      displayName: 'PowerShell 7.2 - Windows 2022'
+      imageName: 'windows-2022'
 
   - template: jobs/testContainer.yaml
     parameters:
@@ -177,49 +173,6 @@ stages:
   - template: jobs/testContainer.yaml
     parameters:
       name: ps_7_2_ubuntu_20_04
-      displayName: 'PowerShell 7.2 - ubuntu-20.04'
+      displayName: 'PowerShell 7.2 - ubuntu-22.04'
       imageName: mcr.microsoft.com/powershell
-      imageTag: 7.2.2-ubuntu-20.04
-
-# Release pipeline
-# - stage: Release
-#   displayName: Release
-#   dependsOn: [ 'Test', 'Analysis' ]
-#   condition: and(succeeded(), or(startsWith(variables['Build.SourceBranch'], 'refs/tags/v1.'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v2.')))
-#   jobs:
-#   - job:
-#     displayName: Live
-#     pool:
-#       vmImage: $(imageName)
-#     variables:
-#       isPreRelease: $[contains(variables['Build.SourceBranchName'], '-B')]
-#     steps:
-
-#     # Download module from build
-#     - task: DownloadPipelineArtifact@2
-#       displayName: 'Download module'
-#       inputs:
-#         artifact: PSRule
-#         path: $(Build.SourcesDirectory)/out/modules/PSRule
-
-#     # Install pipeline dependencies
-#     - powershell: ./.azure-pipelines/pipeline-deps.ps1
-#       displayName: 'Install dependencies'
-
-#     # Install pipeline dependencies and build module
-#     - powershell: Invoke-Build Release -ApiKey $(apiKey)
-#       displayName: 'Publish module'
-
-#     # Update GitHub release
-#     - task: GitHubRelease@1
-#       displayName: 'GitHub release'
-#       inputs:
-#         gitHubConnection: 'AzureDevOps-PSRule'
-#         repositoryName: '$(Build.Repository.Name)'
-#         action: edit
-#         tag: '$(Build.SourceBranchName)'
-#         releaseNotesSource: inline
-#         releaseNotesInline: 'See [change log](https://github.com/Microsoft/PSRule/blob/main/CHANGELOG.md)'
-#         assetUploadMode: replace
-#         addChangeLog: false
-#         isPreRelease: $(isPreRelease)
+      imageTag: 7.2-ubuntu-22.04
