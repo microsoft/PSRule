@@ -54,6 +54,7 @@ nav:
       - Validate Azure resource configuration: scenarios/azure-resources/azure-resources.md
       - Azure resource tagging example: scenarios/azure-tags/azure-tags.md
       - Kubernetes resource validation example: scenarios/kubernetes-resources/kubernetes-resources.md
+      - Using PSRule from a Container: scenarios/containers/container-execution.md
     - Concepts:
       - Expressions:
         - Functions: expressions/functions.md

@@ -1,0 +1,5 @@
+FROM mcr.microsoft.com/powershell
+SHELL ["pwsh", "-command"]
+
+RUN Install-Module -Name 'PSRule' -Force
+RUN Install-Module -Name 'PSRule.Rules.Azure' -Force
