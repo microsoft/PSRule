@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 <#
     .SYNOPSIS
         Create a container, execute the validate-files.ps1 script in the child psrulesample directory
