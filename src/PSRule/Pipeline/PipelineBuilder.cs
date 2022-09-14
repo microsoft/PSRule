@@ -4,11 +4,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Management.Automation;
-using System.Reflection;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Definitions;

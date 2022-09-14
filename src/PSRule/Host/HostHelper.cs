@@ -141,6 +141,28 @@ namespace PSRule.Host
             return metadata;
         }
 
+        internal static void UnblockFile(IPipelineWriter writer, string[] publisher, string[] path)
+        {
+            var ps = PowerShell.Create();
+            try
+            {
+                ps.Runspace.SessionStateProxy.SetVariable("trustedPublisher", publisher);
+                ps.Runspace.SessionStateProxy.SetVariable("trustedPath", path);
+                ps.AddScript("$trustedPath | ForEach-Object { Get-AuthenticodeSignature -FilePath $_ } | Where-Object { $_.Status -eq 'Valid' -and $_.SignerCertificate.Subject -in $trustedPublisher } | ForEach-Object { Unblock-File -Path $_.Path -Confirm:$False; }");
+                ps.Invoke();
+                if (ps.HadErrors)
+                {
+                    foreach (var error in ps.Streams.Error)
+                        writer.WriteError(error);
+                }
+            }
+            finally
+            {
+                ps.Runspace = null;
+                ps.Dispose();
+            }
+        }
+
         private static ILanguageBlock[] GetLanguageBlock(RunspaceContext context, Source[] sources)
         {
             var results = new List<ILanguageBlock>();

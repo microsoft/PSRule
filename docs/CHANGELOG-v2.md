@@ -23,6 +23,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.5.0-B0004:
+
+- General improvements:
+  - Provide unblock for command line tools by @BernieWhite.
+    [#1261](https://github.com/microsoft/PSRule/issues/1261)
+
 ## v2.5.0-B0004 (pre-release)
 
 What's changed since v2.4.0:
