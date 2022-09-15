@@ -9,11 +9,13 @@ In this tutorial we are going to use a simple Ubuntu based PowerShell image to v
 Creating an image ready to run PSRules first requires a dockerfile. The below example will use the latest powershell image released and install the PSRule and PSRule.Rules.Azure modules. 
 
 ```dockerfile
-FROM mcr.microsoft.com/powershell
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+FROM mcr.microsoft.com/powershell:7.2-ubuntu-22.04
 SHELL ["pwsh", "-command"]
 
-RUN Install-Module -Name 'PSRule' -Force
-RUN Install-Module -Name 'PSRule.Rules.Azure' -Force
+RUN Install-Module -Name 'PSRule','PSRule.Rules.Azure' -Force
 ```
 
 The below docker command can be used to create the image locally.
@@ -33,6 +35,9 @@ Create a new directory and add a new file named `validate-files.ps1`. This file 
 test for us on our new container image. Add the below code to the file.
 
 ```powershell
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 <#
     .SYNOPSIS
         Create a PSRule AzRuleTemplate data file and run the PSRule.Rules.Azure module rules against the output.
@@ -44,7 +49,7 @@ Assert-PSRule -InputPath "$PSScriptRoot/out/" -Module 'PSRule.Rules.Azure' -As S
 ```
 
 Also, within the new directory add another directory named `template`. Add any ARM template you would like to
-test in this directory. For a starting point you can get a template from [Azure Quickstart Templates.](https://azure.microsoft.com/en-us/resources/templates/)
+test in this directory. For a starting point you can get a template from [Azure Quickstart Templates.](https://azure.microsoft.com/resources/templates/)
 
 Your directory should now look like the below.
 
