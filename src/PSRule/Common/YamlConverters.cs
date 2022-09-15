@@ -620,7 +620,7 @@ namespace PSRule
         {
             if (typeof(LanguageExpression).IsAssignableFrom(expectedType))
             {
-                var resource = MapOperator(OPERATOR_IF, reader, nestedObjectDeserializer);
+                var resource = MapOperator(OPERATOR_IF, null, null, reader, nestedObjectDeserializer);
                 value = new LanguageIf(resource);
                 return true;
             }
@@ -633,9 +633,9 @@ namespace PSRule
         /// <summary>
         /// Map an operator.
         /// </summary>
-        private LanguageExpression MapOperator(string type, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
+        private LanguageOperator MapOperator(string type, LanguageExpression.PropertyBag properties, LanguageExpression subselector, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
         {
-            if (TryExpression(reader, type, nestedObjectDeserializer, out LanguageOperator result))
+            if (TryExpression(reader, type, properties, nestedObjectDeserializer, out LanguageOperator result))
             {
                 // If and Not
                 if (reader.TryConsume<MappingStart>(out _))
@@ -656,17 +656,18 @@ namespace PSRule
                     reader.Require<SequenceEnd>();
                     reader.MoveNext();
                 }
+                result.Subselector = subselector;
             }
             return result;
         }
 
         private LanguageExpression MapCondition(string type, LanguageExpression.PropertyBag properties, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
         {
-            if (TryExpression(reader, type, nestedObjectDeserializer, out LanguageCondition result))
+            if (TryExpression(reader, type, null, nestedObjectDeserializer, out LanguageCondition result))
             {
                 while (!reader.Accept(out MappingEnd end))
                 {
-                    MapProperty(properties, reader, nestedObjectDeserializer, out _);
+                    MapProperty(properties, reader, nestedObjectDeserializer, out _, out _);
                 }
                 result.Add(properties);
             }
@@ -677,18 +678,25 @@ namespace PSRule
         {
             LanguageExpression result = null;
             var properties = new LanguageExpression.PropertyBag();
-            MapProperty(properties, reader, nestedObjectDeserializer, out var key);
+            MapProperty(properties, reader, nestedObjectDeserializer, out var key, out var subselector);
             if (key != null && TryCondition(key))
             {
                 result = MapCondition(key, properties, reader, nestedObjectDeserializer);
             }
             else if (TryOperator(key) && reader.Accept<MappingStart>(out _))
             {
-                result = MapOperator(key, reader, nestedObjectDeserializer);
+                var op = MapOperator(key, properties, subselector, reader, nestedObjectDeserializer);
+                MapProperty(properties, reader, nestedObjectDeserializer, out _, out _);
+                result = op;
             }
             else if (TryOperator(key) && reader.Accept<SequenceStart>(out _))
             {
-                result = MapOperator(key, reader, nestedObjectDeserializer);
+                var op = MapOperator(key, properties, subselector, reader, nestedObjectDeserializer);
+                MapProperty(properties, reader, nestedObjectDeserializer, out _, out subselector);
+                if (subselector != null)
+                    op.Subselector = subselector;
+
+                result = op;
             }
             return result;
         }
@@ -754,9 +762,10 @@ namespace PSRule
             return result.ToArray();
         }
 
-        private void MapProperty(LanguageExpression.PropertyBag properties, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, out string name)
+        private void MapProperty(LanguageExpression.PropertyBag properties, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer, out string name, out LanguageExpression subselector)
         {
             name = null;
+            subselector = null;
             while (reader.TryConsume(out Scalar scalar))
             {
                 var key = scalar.Value;
@@ -767,6 +776,7 @@ namespace PSRule
                 {
                     properties[key] = scalar.Value;
                 }
+                // value:
                 else if (TryValue(key, reader, nestedObjectDeserializer, out var value))
                 {
                     properties[key] = value;
@@ -788,7 +798,18 @@ namespace PSRule
                     }
                     properties[key] = objects.ToArray();
                 }
+                // where:
+                else if (TrySubSelector(key) && reader.TryConsume<MappingStart>(out _))
+                {
+                    subselector = MapExpression(reader, nestedObjectDeserializer);
+                    reader.Consume<MappingEnd>();
+                }
             }
+        }
+
+        private bool TrySubSelector(string key)
+        {
+            return _Factory.IsSubselector(key);
         }
 
         private bool TryOperator(string key)
@@ -835,12 +856,12 @@ namespace PSRule
             return reader.Accept<Scalar>(out var scalar) || scalar.Value == "$";
         }
 
-        private bool TryExpression<T>(IParser reader, string type, Func<IParser, Type, object> nestedObjectDeserializer, out T expression) where T : LanguageExpression
+        private bool TryExpression<T>(IParser reader, string type, LanguageExpression.PropertyBag properties, Func<IParser, Type, object> nestedObjectDeserializer, out T expression) where T : LanguageExpression
         {
             expression = null;
             if (_Factory.TryDescriptor(type, out var descriptor))
             {
-                expression = (T)descriptor.CreateInstance(RunspaceContext.CurrentThread.Source.File, null);
+                expression = (T)descriptor.CreateInstance(RunspaceContext.CurrentThread.Source.File, properties);
                 return expression != null;
             }
             return false;

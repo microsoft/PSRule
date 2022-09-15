@@ -264,7 +264,7 @@ namespace PSRule
             targetObject.Properties.Add(new PSNoteProperty("name", "TestObject1"));
             var context = new Runtime.RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContextBuilder(GetOption(), null, null, null).Build(), null), null);
             var s = GetSource();
-            var result = new ExpressionContext(s[0].File[0], Definitions.ResourceKind.Rule, targetObject);
+            var result = new ExpressionContext(context, s[0].File[0], Definitions.ResourceKind.Rule, targetObject);
             context.Init(s);
             context.Begin();
             context.PushScope(Runtime.RunspaceScope.Precondition);

@@ -15,12 +15,10 @@ namespace PSRule.Runtime
     /// </summary>
     public sealed class AssertResult : IEquatable<bool>
     {
-        private readonly Assert _Assert;
         private readonly List<ResultReason> _Reason;
 
-        internal AssertResult(Assert assert, IOperand operand, bool value, string reason, object[] args)
+        internal AssertResult(IOperand operand, bool value, string reason, object[] args)
         {
-            _Assert = assert;
             Result = value;
             if (!Result)
             {
@@ -65,7 +63,9 @@ namespace PSRule.Runtime
         /// <summary>
         /// Add a reason.
         /// </summary>
+        /// <param name="operand">Indentifies the operand that was the reason for the failure.</param>
         /// <param name="text">The text of a reason to add. This text should already be localized for the currently culture.</param>
+        /// <param name="args">Replacement arguments for the format string.</param>
         internal void AddReason(IOperand operand, string text, params object[] args)
         {
             // Ignore reasons if this is a pass.

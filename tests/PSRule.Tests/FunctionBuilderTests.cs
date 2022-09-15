@@ -52,7 +52,7 @@ namespace PSRule
             context.Init(source);
             context.Begin();
             var selector = HostHelper.GetSelector(source, context).ToArray().FirstOrDefault(s => s.Name == name);
-            return new SelectorVisitor(selector.Id, selector.Source, selector.Spec.If);
+            return new SelectorVisitor(context, selector.Id, selector.Source, selector.Spec.If);
         }
 
         private static string GetSourcePath(string fileName)

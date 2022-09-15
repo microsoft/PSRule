@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -34,12 +34,12 @@ namespace PSRule.Host
     {
         private const string VARIABLE_NAME = "Rule";
 
-        private readonly Runtime.Rule _Value;
+        private readonly Rule _Value;
 
         public RuleVariable()
             : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
         {
-            _Value = new Runtime.Rule();
+            _Value = new Rule();
         }
 
         public override object Value => _Value;
@@ -52,12 +52,12 @@ namespace PSRule.Host
     {
         private const string VARIABLE_NAME = "LocalizedData";
 
-        private readonly Runtime.LocalizedData _Value;
+        private readonly LocalizedData _Value;
 
         public LocalizedDataVariable()
             : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
         {
-            _Value = new Runtime.LocalizedData();
+            _Value = new LocalizedData();
         }
 
         public override object Value => _Value;
@@ -69,12 +69,12 @@ namespace PSRule.Host
     internal sealed class AssertVariable : PSVariable
     {
         private const string VARIABLE_NAME = "Assert";
-        private readonly Runtime.Assert _Value;
+        private readonly Assert _Value;
 
         public AssertVariable()
             : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
         {
-            _Value = new Runtime.Assert();
+            _Value = new Assert();
         }
 
         public override object Value => _Value;
@@ -148,10 +148,10 @@ namespace PSRule.Host
         /// <summary>
         /// Create a default session state.
         /// </summary>
-        /// <returns></returns>
-        public static InitialSessionState CreateSessionState()
+        public static InitialSessionState CreateSessionState(Configuration.SessionState initialSessionState)
         {
-            var state = InitialSessionState.CreateDefault();
+            var state = initialSessionState == Configuration.SessionState.Minimal ?
+                InitialSessionState.CreateDefault2() : InitialSessionState.CreateDefault();
 
             // Add in language elements
             state.Commands.Add(BuiltInCmdlets);
@@ -161,7 +161,7 @@ namespace PSRule.Host
             state.ThreadOptions = PSThreadOptions.UseCurrentThread;
 
             // Set execution policy
-            SetExecutionPolicy(state: state, executionPolicy: Microsoft.PowerShell.ExecutionPolicy.RemoteSigned);
+            SetExecutionPolicy(state, executionPolicy: Microsoft.PowerShell.ExecutionPolicy.RemoteSigned);
 
             return state;
         }

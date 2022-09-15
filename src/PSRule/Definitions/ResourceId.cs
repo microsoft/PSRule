@@ -13,14 +13,29 @@ namespace PSRule.Definitions
     /// </summary>
     internal enum ResourceIdKind
     {
+        /// <summary>
+        /// Not specified.
+        /// </summary>
         None = 0,
 
+        /// <summary>
+        /// Unknown.
+        /// </summary>
         Unknown = 1,
 
+        /// <summary>
+        /// The identifier is a primary resource identifier.
+        /// </summary>
         Id = 2,
 
+        /// <summary>
+        /// The identifier is a opaque reference resource identifier.
+        /// </summary>
         Ref = 3,
 
+        /// <summary>
+        /// The identifier is an alias resource identifier.
+        /// </summary>
         Alias = 4,
     }
 
@@ -46,18 +61,33 @@ namespace PSRule.Definitions
         internal ResourceId(string scope, string name, ResourceIdKind kind)
             : this(GetIdString(scope, name), LanguageScope.Normalize(scope), name, kind) { }
 
+        /// <summary>
+        /// A string representation of the resource identifier.
+        /// </summary>
         public string Value { get; }
 
+        /// <summary>
+        /// The scope of the resource.
+        /// </summary>
         public string Scope { get; }
 
+        /// <summary>
+        /// A unique name for the resource within the specified <see cref="Scope"/>.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// The type of resource identifier.
+        /// </summary>
         internal ResourceIdKind Kind { get; }
 
         /// <summary>
         /// Converts the resource identifier to a string.
         /// </summary>
-        /// <returns></returns>
+        /// <remarks>
+        /// This is the same as <see cref="Value"/>.
+        /// </remarks>
+        /// <returns>A string representation of the resource identifier.</returns>
         public override string ToString()
         {
             return Value;
@@ -92,11 +122,17 @@ namespace PSRule.Definitions
                 EqualOrNull(Name, name);
         }
 
+        /// <summary>
+        /// Compare two resource identifiers to determine if they are equal.
+        /// </summary>
         public static bool operator ==(ResourceId left, ResourceId right)
         {
             return left.Equals(right);
         }
 
+        /// <summary>
+        /// Compare two resource identifiers to determine if they are not equal.
+        /// </summary>
         public static bool operator !=(ResourceId left, ResourceId right)
         {
             return !left.Equals(right);
@@ -155,7 +191,7 @@ namespace PSRule.Definitions
     /// </summary>
     internal sealed class ResourceIdEqualityComparer : IEqualityComparer<ResourceId>, IEqualityComparer<string>
     {
-        public readonly static ResourceIdEqualityComparer Default = new ResourceIdEqualityComparer();
+        public readonly static ResourceIdEqualityComparer Default = new();
 
         public static bool IdEquals(ResourceId x, ResourceId y)
         {

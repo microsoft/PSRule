@@ -18,7 +18,7 @@ namespace PSRule.Definitions.Expressions
 
         object Current { get; }
 
-        RunspaceContext GetContext();
+        RunspaceContext Context { get; }
     }
 
     internal sealed class ExpressionContext : IExpressionContext, IBindingContext
@@ -27,8 +27,9 @@ namespace PSRule.Definitions.Expressions
 
         private List<ResultReason> _Reason;
 
-        internal ExpressionContext(SourceFile source, ResourceKind kind, object current)
+        internal ExpressionContext(RunspaceContext context, SourceFile source, ResourceKind kind, object current)
         {
+            Context = context;
             Source = source;
             LanguageScope = source.Module;
             Kind = kind;
@@ -43,6 +44,8 @@ namespace PSRule.Definitions.Expressions
         public ResourceKind Kind { get; }
 
         public object Current { get; }
+
+        public RunspaceContext Context { get; }
 
         [DebuggerStepThrough]
         void IBindingContext.CachePathExpression(string path, PathExpression expression)
@@ -81,7 +84,7 @@ namespace PSRule.Definitions.Expressions
                 return;
 
             _Reason ??= new List<ResultReason>();
-            _Reason.Add(new ResultReason(RunspaceContext.CurrentThread?.TargetObject?.Path, operand, text, args));
+            _Reason.Add(new ResultReason(Context.TargetObject?.Path, operand, text, args));
         }
 
         public void Reason(string text, params object[] args)
@@ -90,17 +93,12 @@ namespace PSRule.Definitions.Expressions
                 return;
 
             _Reason ??= new List<ResultReason>();
-            _Reason.Add(new ResultReason(RunspaceContext.CurrentThread?.TargetObject?.Path, null, text, args));
+            _Reason.Add(new ResultReason(Context.TargetObject?.Path, null, text, args));
         }
 
         internal ResultReason[] GetReasons()
         {
             return _Reason == null || _Reason.Count == 0 ? Array.Empty<ResultReason>() : _Reason.ToArray();
-        }
-
-        public RunspaceContext GetContext()
-        {
-            return RunspaceContext.CurrentThread;
         }
     }
 }

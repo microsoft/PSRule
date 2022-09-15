@@ -21,16 +21,18 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
  [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
+ [-AliasReferenceWarning <Boolean>] [-DuplicateResourceId <ExecutionActionPreference>]
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
- [-AliasReferenceWarning <Boolean>] [-InvariantCultureWarning <Boolean>] [-IncludeModule <String[]>]
+ [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>] [-IncludeModule <String[]>]
  [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
- [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
- [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
- [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
- [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
- [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>]
- [-OutputJsonIndent <Int32>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>] [-ObjectPath <String>]
+ [-InputTargetType <String[]>] [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>]
+ [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
+ [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
+ [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
+ [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>]
+ [-OutputStyle <OutputStyle>] [-OutputJsonIndent <Int32>] [-RepositoryUrl <String>]
+ [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ### FromOption
@@ -41,16 +43,18 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
  [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
+ [-AliasReferenceWarning <Boolean>] [-DuplicateResourceId <ExecutionActionPreference>]
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
- [-AliasReferenceWarning <Boolean>] [-InvariantCultureWarning <Boolean>] [-IncludeModule <String[]>]
+ [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>] [-IncludeModule <String[]>]
  [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
- [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
- [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
- [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
- [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
- [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>]
- [-OutputJsonIndent <Int32>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>] [-ObjectPath <String>]
+ [-InputTargetType <String[]>] [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>]
+ [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
+ [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
+ [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
+ [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>]
+ [-OutputStyle <OutputStyle>] [-OutputJsonIndent <Int32>] [-RepositoryUrl <String>]
+ [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ### FromDefault
@@ -60,16 +64,18 @@ New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTar
  [-BindTargetName <BindTargetName[]>] [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>]
  [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
- [-Convention <String[]>] [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>]
- [-SuppressedRuleWarning <Boolean>] [-AliasReferenceWarning <Boolean>] [-InvariantCultureWarning <Boolean>]
- [-IncludeModule <String[]>] [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
- [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
- [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
- [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
- [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
- [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>]
- [-OutputJsonIndent <Int32>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-Convention <String[]>] [-AliasReferenceWarning <Boolean>] [-DuplicateResourceId <ExecutionActionPreference>]
+ [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
+ [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>] [-IncludeModule <String[]>]
+ [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
+ [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>] [-ObjectPath <String>]
+ [-InputTargetType <String[]>] [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>]
+ [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
+ [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
+ [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
+ [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>]
+ [-OutputStyle <OutputStyle>] [-OutputJsonIndent <Int32>] [-RepositoryUrl <String>]
+ [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -588,6 +594,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -InputIgnoreObjectSource
+
+Sets the option `Input.IgnoreObjectSource`.
+The `Input.IgnoreObjectSource` option determines if objects will be skipped if the source path has been ignored.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -LoggingLimitDebug
 
 Sets the `Logging.LimitDebug` option to limit debug messages to a list of named debug scopes.
@@ -912,12 +935,46 @@ Accept wildcard characters: False
 ### -InvariantCultureWarning
 
 Sets the option `Execution.InvariantCultureWarning`.
-The `Execution.InvariantCultureWarning` option set if a warning is logged when invarient culture is detected.
+The `Execution.InvariantCultureWarning` option sets if a warning is logged when invarient culture is detected.
 
 ```yaml
 Type: Boolean
 Parameter Sets: (All)
 Aliases: ExecutionInvariantCultureWarning
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DuplicateResourceId
+
+Sets the option `Execution.DuplicateResourceId`.
+The `Execution.DuplicateResourceId` option determines how to handle duplicate resources identifiers during execution.
+
+```yaml
+Type: ExecutionActionPreference
+Parameter Sets: (All)
+Aliases: ExecutionDuplicateResourceId
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InitialSessionState
+
+Sets the option `Execution.InitialSessionState`.
+The `Execution.InitialSessionState` option determines how the initial session state for executing PowerShell code is created.
+
+```yaml
+Type: SessionState
+Parameter Sets: (All)
+Aliases: ExecutionInitialSessionState
 
 Required: False
 Position: Named

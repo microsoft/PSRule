@@ -2,29 +2,35 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
-using System.Management.Automation;
 
 namespace PSRule.Configuration
 {
     /// <summary>
     /// Used by custom binding functions.
     /// </summary>
-    public delegate string BindTargetName(PSObject targetObject);
+    public delegate string BindTargetName(object targetObject);
 
-    internal delegate string BindTargetMethod(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, out string path);
-    internal delegate string BindTargetFunc(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, BindTargetMethod next, out string path);
+    internal delegate string BindTargetMethod(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path);
+    internal delegate string BindTargetFunc(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, BindTargetMethod next, out string path);
 
     /// <summary>
     /// Hooks that provide customize pipeline execution.
     /// </summary>
     public sealed class PipelineHook
     {
+        /// <summary>
+        /// Create an empty set of pipeline hooks.
+        /// </summary>
         public PipelineHook()
         {
             BindTargetName = new List<BindTargetName>();
             BindTargetType = new List<BindTargetName>();
         }
 
+        /// <summary>
+        /// Create pipeline hooks based on an existing option instance.
+        /// </summary>
+        /// <param name="option">An existing pipeline hook option.</param>
         public PipelineHook(PipelineHook option)
         {
             BindTargetName = option?.BindTargetName ?? new List<BindTargetName>();

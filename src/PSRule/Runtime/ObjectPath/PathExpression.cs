@@ -10,7 +10,7 @@ namespace PSRule.Runtime.ObjectPath
     /// <summary>
     /// An expression function that returns one or more values when successful.
     /// </summary>
-    internal delegate bool PathExpressionFn(IPathExpressionContext context, object input, out IEnumerable<object> value);
+    internal delegate bool PathExpressionFn(IPathExpressionContext context, object input, out IEnumerable<object> value, out bool enumerable);
 
     /// <summary>
     /// A function for filter objects that simply returns true or false.
@@ -92,7 +92,7 @@ namespace PSRule.Runtime.ObjectPath
         public bool TryGet(object o, bool caseSensitive, out object[] value)
         {
             value = null;
-            if (!TryGet(o, caseSensitive, out IEnumerable<object> result))
+            if (!TryGet(o, caseSensitive, out var result, out _))
                 return false;
 
             value = result.ToArray();
@@ -106,10 +106,11 @@ namespace PSRule.Runtime.ObjectPath
         public bool TryGet(object o, bool caseSensitive, out object value)
         {
             value = null;
-            if (!TryGet(o, caseSensitive, out object[] result))
+            if (!TryGet(o, caseSensitive, out var result, out var enumerable))
                 return false;
 
-            value = IsArray ? result : result[0];
+            var items = result.ToArray();
+            value = IsArray || enumerable ? items : items[0];
             return true;
         }
 
@@ -119,11 +120,12 @@ namespace PSRule.Runtime.ObjectPath
         /// <param name="o">The object to navigate the path for.</param>
         /// <param name="caseSensitive">Determines if member name matching is case-sensitive.</param>
         /// <param name="value">The values selected from the object.</param>
+        /// <param name="enumerable">Determines if <paramref name="value"/> is enumerable.</param>
         /// <returns>Returns true when the path exists within the object. Returns false if the path does not exist.</returns>
-        private bool TryGet(object o, bool caseSensitive, out IEnumerable<object> value)
+        private bool TryGet(object o, bool caseSensitive, out IEnumerable<object> value, out bool enumerable)
         {
             var context = new PathExpressionContext(o, caseSensitive);
-            return _Expression.Invoke(context, o, out value);
+            return _Expression.Invoke(context, o, out value, out enumerable);
         }
     }
 }

@@ -15,33 +15,87 @@ using PSRule.Resources;
 
 namespace PSRule.Pipeline
 {
+    /// <summary>
+    /// A helper to build a list of sources for a PowerShell pipeline.
+    /// </summary>
     public interface ISourcePipelineBuilder
     {
+        /// <summary>
+        /// Determines if PowerShell should automatically load the module.
+        /// </summary>
         bool ShouldLoadModule { get; }
 
+        /// <summary>
+        /// Log a verbose message for scanning sources.
+        /// </summary>
         void VerboseScanSource(string path);
 
+        /// <summary>
+        /// Log a verbose message for source modules.
+        /// </summary>
         void VerboseFoundModules(int count);
 
+        /// <summary>
+        /// Log a verbose message for scanning for modules.
+        /// </summary>
         void VerboseScanModule(string moduleName);
 
+        /// <summary>
+        /// Add loose files as a source.
+        /// </summary>
+        /// <param name="path">An array of file or directory paths containing one or more rule files.</param>
+        /// <param name="excludeDefaultRulePath">Determine if the default rule path is excluded. When set to <c>true</c> the default rule path is excluded.</param>
         void Directory(string[] path, bool excludeDefaultRulePath = false);
 
+        /// <summary>
+        /// Add loose files as a source.
+        /// </summary>
+        /// <param name="path">A file or directory path containing one or more rule files.</param>
+        /// <param name="excludeDefaultRulePath">Determine if the default rule path is excluded. When set to <c>true</c> the default rule path is excluded.</param>
         void Directory(string path, bool excludeDefaultRulePath = false);
 
+        /// <summary>
+        /// Add a module source.
+        /// </summary>
+        /// <param name="module">The module info.</param>
         void Module(PSModuleInfo[] module);
 
+        /// <summary>
+        /// Build a list of sources for executing within PSRule.
+        /// </summary>
+        /// <returns>A list of sources.</returns>
         Source[] Build();
     }
 
+    /// <summary>
+    /// A helper to build a list of sources for a command-line tool pipeline.
+    /// </summary>
     public interface ISourceCommandlineBuilder
     {
+        /// <summary>
+        /// Add loose files as a source.
+        /// </summary>
+        /// <param name="path">An array of file or directory paths containing one or more rule files.</param>
+        /// <param name="excludeDefaultRulePath">Determine if the default rule path is excluded. When set to <c>true</c> the default rule path is excluded.</param>
         void Directory(string[] path, bool excludeDefaultRulePath = false);
 
+        /// <summary>
+        /// Add loose files as a source.
+        /// </summary>
+        /// <param name="path">A file or directory path containing one or more rule files.</param>
+        /// <param name="excludeDefaultRulePath">Determine if the default rule path is excluded. When set to <c>true</c> the default rule path is excluded.</param>
         void Directory(string path, bool excludeDefaultRulePath = false);
 
+        /// <summary>
+        /// Add a module source.
+        /// </summary>
+        /// <param name="name">The name of the module.</param>
         void ModuleByName(string name);
 
+        /// <summary>
+        /// Build a list of sources for executing within PSRule.
+        /// </summary>
+        /// <returns>A list of sources.</returns>
         Source[] Build();
     }
 
@@ -50,13 +104,14 @@ namespace PSRule.Pipeline
     /// </summary>
     public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceCommandlineBuilder
     {
-        private const string SourceFileExtension_YAML = ".yaml";
-        private const string SourceFileExtension_YML = ".yml";
-        private const string SourceFileExtension_JSON = ".json";
-        private const string SourceFileExtension_JSONC = ".jsonc";
-        private const string SourceFileExtension_PS1 = ".ps1";
-        private const string RuleModuleTag = "PSRule-rules";
-        private const string DefaultRulePath = ".ps-rule/";
+        private const string SOURCE_FILE_EXTENSION_YAML = ".yaml";
+        private const string SOURCE_FILE_EXTENSION_YML = ".yml";
+        private const string SOURCE_FILE_EXTENSION_JSON = ".json";
+        private const string SOURCE_FILE_EXTENSION_JSONC = ".jsonc";
+        private const string SOURCE_FILE_EXTENSION_PS1 = ".ps1";
+        private const string SOURCE_FILE_PATTERN = "*.Rule.*";
+        private const string RULE_MODULE_TAG = "PSRule-rules";
+        private const string DEFAULT_RULE_PATH = ".ps-rule/";
 
         private readonly Dictionary<string, Source> _Source;
         private readonly IHostContext _HostContext;
@@ -71,27 +126,31 @@ namespace PSRule.Pipeline
             _Writer = new HostPipelineWriter(hostContext, option);
             _Writer.EnterScope("[Discovery.Source]");
             _UseDefaultPath = option == null || option.Include == null || option.Include.Path == null;
-            _LocalPath = PSRuleOption.GetRootedBasePath(Path.GetDirectoryName(typeof(SourcePipelineBuilder).Assembly.Location));
+            _LocalPath = Engine.GetLocalPath();
 
             // Include paths from options
             if (!_UseDefaultPath)
                 Directory(option.Include.Path);
         }
 
+        /// <inheritdoc/>
         public bool ShouldLoadModule => _HostContext.GetAutoLoadingPreference() == PSModuleAutoLoadingPreference.All;
 
         #region Logging
 
+        /// <inheritdoc/>
         public void VerboseScanSource(string path)
         {
             Log(PSRuleResources.ScanSource, path);
         }
 
+        /// <inheritdoc/>
         public void VerboseFoundModules(int count)
         {
             Log(PSRuleResources.FoundModules, count);
         }
 
+        /// <inheritdoc/>
         public void VerboseScanModule(string moduleName)
         {
             Log(PSRuleResources.ScanModule, moduleName);
@@ -115,10 +174,7 @@ namespace PSRule.Pipeline
 
         #endregion Logging
 
-        /// <summary>
-        /// Add loose files as a source.
-        /// </summary>
-        /// <param name="path">A file or directory path containing one or more rule files.</param>
+        /// <inheritdoc/>
         public void Directory(string[] path, bool excludeDefaultRulePath = false)
         {
             if (path == null || path.Length == 0)
@@ -128,6 +184,7 @@ namespace PSRule.Pipeline
                 Directory(path[i], excludeDefaultRulePath);
         }
 
+        /// <inheritdoc/>
         public void Directory(string path, bool excludeDefaultRulePath = false)
         {
             if (string.IsNullOrEmpty(path))
@@ -142,10 +199,7 @@ namespace PSRule.Pipeline
             Source(new Source(path, files));
         }
 
-        /// <summary>
-        /// Add a module source.
-        /// </summary>
-        /// <param name="module">The module info.</param>
+        /// <inheritdoc/>
         public void Module(PSModuleInfo[] module)
         {
             if (module == null || module.Length == 0)
@@ -155,10 +209,7 @@ namespace PSRule.Pipeline
                 Module(module[i], dependency: false);
         }
 
-        /// <summary>
-        /// Add a module source.
-        /// </summary>
-        /// <param name="name">The name of the module.</param>
+        /// <inheritdoc/>
         public void ModuleByName(string name)
         {
             var basePath = FindModule(name);
@@ -250,8 +301,7 @@ namespace PSRule.Pipeline
             var data = reader.ReadToEnd();
             var ast = System.Management.Automation.Language.Parser.ParseInput(data, out _, out _);
             var hashtable = ast.FindAll(item => item is System.Management.Automation.Language.HashtableAst, false).FirstOrDefault();
-            var manifest = hashtable.SafeGetValue() as Hashtable;
-            if (manifest == null)
+            if (hashtable.SafeGetValue() is not Hashtable manifest)
                 return null;
 
             var version = manifest["ModuleVersion"] as string;
@@ -261,9 +311,8 @@ namespace PSRule.Pipeline
             var psData = privateData["PSData"] as Hashtable;
             var projectUri = psData["ProjectUri"] as string;
             var prerelease = psData["Prerelease"] as string;
-            var requiredAssemblies = manifest["RequiredAssemblies"] as Array;
 
-            if (requiredAssemblies != null)
+            if (manifest["RequiredAssemblies"] is Array requiredAssemblies)
             {
                 foreach (var a in requiredAssemblies.OfType<string>())
                     Assembly.LoadFile(Path.Combine(basePath, a));
@@ -304,12 +353,13 @@ namespace PSRule.Pipeline
                 return false;
 
             foreach (var tag in module.Tags)
-                if (StringComparer.OrdinalIgnoreCase.Equals(RuleModuleTag, tag))
+                if (StringComparer.OrdinalIgnoreCase.Equals(RULE_MODULE_TAG, tag))
                     return true;
 
             return false;
         }
 
+        /// <inheritdoc/>
         public Source[] Build()
         {
             Default();
@@ -319,7 +369,7 @@ namespace PSRule.Pipeline
         private void Default()
         {
             if (_UseDefaultPath)
-                Directory(DefaultRulePath);
+                Directory(DEFAULT_RULE_PATH);
         }
 
         private void Source(Source source)
@@ -364,9 +414,7 @@ namespace PSRule.Pipeline
             if (!File.Exists(path))
                 throw new FileNotFoundException(PSRuleResources.SourceNotFound, path);
 
-            if (helpPath == null)
-                helpPath = Path.GetDirectoryName(path);
-
+            helpPath ??= Path.GetDirectoryName(path);
             return new SourceFile[] { new SourceFile(path, null, GetSourceType(path), helpPath) };
         }
 
@@ -374,30 +422,26 @@ namespace PSRule.Pipeline
         {
             if (!excludeDefaultRulePath)
             {
-                var allFiles = System.IO.Directory.EnumerateFiles(path, "*.Rule.*", SearchOption.AllDirectories);
+                var allFiles = System.IO.Directory.EnumerateFiles(path, SOURCE_FILE_PATTERN, SearchOption.AllDirectories);
                 return GetSourceFiles(allFiles, helpPath, moduleName);
             }
-
-            var filteredFiles = FilterFiles(path, "*.Rule.*", dir => !PathContainsDefaultRulePath(dir));
+            var filteredFiles = FilterFiles(path, SOURCE_FILE_PATTERN, dir => !PathContainsDefaultRulePath(dir));
             return GetSourceFiles(filteredFiles, helpPath, moduleName);
         }
 
         private static bool PathContainsDefaultRulePath(string path)
         {
-            return path.Contains(DefaultRulePath.TrimEnd(Path.AltDirectorySeparatorChar), StringComparison.OrdinalIgnoreCase);
+            return path.Contains(DEFAULT_RULE_PATH.TrimEnd(Path.AltDirectorySeparatorChar), StringComparison.OrdinalIgnoreCase);
         }
 
         private static SourceFile[] GetSourceFiles(IEnumerable<string> files, string helpPath, string moduleName)
         {
             var result = new List<SourceFile>();
-
             foreach (var file in files)
             {
                 if (ShouldInclude(file))
                 {
-                    if (helpPath == null)
-                        helpPath = Path.GetDirectoryName(file);
-
+                    helpPath ??= Path.GetDirectoryName(file);
                     result.Add(new SourceFile(file, moduleName, GetSourceType(file), helpPath));
                 }
             }
@@ -423,33 +467,30 @@ namespace PSRule.Pipeline
         private static SourceType GetSourceType(string path)
         {
             var extension = Path.GetExtension(path);
-
             if (IsYamlFile(extension))
             {
                 return SourceType.Yaml;
             }
-
             else if (IsJsonFile(extension))
             {
                 return SourceType.Json;
             }
-
             return SourceType.Script;
         }
 
         private static bool IsSourceFile(string extension)
         {
-            return extension == SourceFileExtension_PS1 || IsYamlFile(extension) || IsJsonFile(extension);
+            return extension == SOURCE_FILE_EXTENSION_PS1 || IsYamlFile(extension) || IsJsonFile(extension);
         }
 
         private static bool IsYamlFile(string extension)
         {
-            return extension == SourceFileExtension_YAML || extension == SourceFileExtension_YML;
+            return extension == SOURCE_FILE_EXTENSION_YAML || extension == SOURCE_FILE_EXTENSION_YML;
         }
 
         private static bool IsJsonFile(string extension)
         {
-            return extension == SourceFileExtension_JSON || extension == SourceFileExtension_JSONC;
+            return extension == SOURCE_FILE_EXTENSION_JSON || extension == SOURCE_FILE_EXTENSION_JSONC;
         }
     }
 }

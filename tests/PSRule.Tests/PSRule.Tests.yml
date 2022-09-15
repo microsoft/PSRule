@@ -55,6 +55,7 @@ execution:
   notProcessedWarning: false
   suppressedRuleWarning: false
   invariantCultureWarning: false
+  initialSessionState: Minimal
 
 # Configure input options
 input:

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\PSRule.Common.props" />
+  <PropertyGroup>
+    <AssemblyTitle>PSRule.BuildTask</AssemblyTitle>
+    <EnableNuget>false</EnableNuget>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.3.0" />
+  </ItemGroup>
+
+  <!--<ItemGroup>
+    <None Include="Generator.props" Pack="true" PackagePath="build" Visible="false" />
+  </ItemGroup>-->
+
+</Project>

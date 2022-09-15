@@ -5,6 +5,9 @@ using System.IO;
 
 namespace PSRule.Data
 {
+    /// <summary>
+    /// An input file information structure.
+    /// </summary>
     public sealed class InputFileInfo : ITargetInfo
     {
         private readonly string _TargetType;
@@ -30,18 +33,39 @@ namespace PSRule.Data
             _TargetType = string.IsNullOrEmpty(Extension) ? System.IO.Path.GetFileNameWithoutExtension(path) : Extension;
         }
 
+        /// <summary>
+        /// The fully qualified path to the file.
+        /// </summary>
         public string FullName { get; }
 
+        /// <summary>
+        /// The path to the parent directory containing the file.
+        /// </summary>
         public string BasePath { get; }
 
+        /// <summary>
+        /// The file name.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// The file extension.
+        /// </summary>
         public string Extension { get; }
 
+        /// <summary>
+        /// The name of the directory containing the file.
+        /// </summary>
         public string DirectoryName { get; }
 
+        /// <summary>
+        /// The normalized path to the file.
+        /// </summary>
         public string Path { get; }
 
+        /// <summary>
+        /// The friendly display name for the file.
+        /// </summary>
         public string DisplayName { get; }
 
         string ITargetInfo.TargetName => DisplayName;

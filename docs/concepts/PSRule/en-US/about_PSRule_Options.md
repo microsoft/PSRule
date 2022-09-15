@@ -21,6 +21,7 @@ The following workspace options are available for use:
 - [Execution.NotProcessedWarning](#executionnotprocessedwarning)
 - [Execution.SuppressedRuleWarning](#executionsuppressedrulewarning)
 - [Execution.InvariantCultureWarning](#executioninvariantculturewarning)
+- [Execution.InitialSessionState](#executioninitialsessionstate)
 - [Include.Module](#includemodule)
 - [Include.Path](#includepath)
 - [Input.Format](#inputformat)
@@ -1022,6 +1023,55 @@ env:
 variables:
 - name: PSRULE_EXECUTION_INVARIANTCULTUREWARNING
   value: false
+```
+
+### Execution.InitialSessionState
+
+Determines how the initial session state for executing PowerShell code is created.
+
+The following preferences are available:
+
+- `BuiltIn` (0) - Create the initial session state with all built-in cmdlets loaded.
+  This is the default.
+- `Minimal` (1) - Create the initial session state with only a minimum set of cmdlets loaded.
+
+```powershell
+# PowerShell: Using the InitialSessionState parameter
+$option = New-PSRuleOption -InitialSessionState 'Minimal';
+```
+
+```powershell
+# PowerShell: Using the Execution.InitialSessionState hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.InitialSessionState' = 'Minimal' };
+```
+
+```powershell
+# PowerShell: Using the InitialSessionState parameter to set YAML
+Set-PSRuleOption -InitialSessionState 'Minimal';
+```
+
+```yaml
+# YAML: Using the execution/initialSessionState property
+execution:
+  initialSessionState: Minimal
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_INITIALSESSIONSTATE=Minimal
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_INITIALSESSIONSTATE: Minimal
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_INITIALSESSIONSTATE
+  value: Minimal
 ```
 
 ### Include.Module

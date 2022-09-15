@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using PSRule.Definitions;
@@ -9,12 +9,17 @@ namespace PSRule
     {
         public static bool AllOf(this IConditionResult result)
         {
-            return result.Count > 0 && result.Pass == result.Count;
+            return result != null && result.Count > 0 && result.Pass == result.Count;
         }
 
         public static bool AnyOf(this IConditionResult result)
         {
-            return result.Pass > 0;
+            return result != null && result.Pass > 0;
+        }
+
+        public static bool Skipped(this IConditionResult result)
+        {
+            return result == null;
         }
     }
 }

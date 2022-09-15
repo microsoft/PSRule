@@ -645,7 +645,7 @@ namespace PSRule
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var expression = MapOperator(OPERATOR_IF, reader);
+            var expression = MapOperator(OPERATOR_IF, null, null, reader);
             return new LanguageIf(expression);
         }
 
@@ -657,40 +657,44 @@ namespace PSRule
         /// <summary>
         /// Map an operator.
         /// </summary>
-        private LanguageExpression MapOperator(string type, JsonReader reader)
+        private LanguageOperator MapOperator(string type, LanguageExpression.PropertyBag properties, LanguageExpression subselector, JsonReader reader)
         {
-            if (TryExpression(type, out LanguageOperator result))
+            if (TryExpression(type, properties, out LanguageOperator result))
             {
                 // If and Not
-                if (reader.TokenType == JsonToken.StartObject)
+                if (reader.TryConsume(JsonToken.StartObject))
                 {
                     result.Add(MapExpression(reader));
-                    reader.Read();
+                    //reader.Consume(JsonToken.EndObject);
                 }
                 // AllOf and AnyOf
-                else if (reader.TokenType == JsonToken.StartArray && reader.Read())
+                else if (reader.TryConsume(JsonToken.StartArray))
                 {
                     while (reader.TokenType != JsonToken.EndArray)
                     {
                         if (reader.SkipComments(out var hasComments) && hasComments)
                             continue;
 
-                        result.Add(MapExpression(reader));
-                        reader.Read();
+                        if (reader.TryConsume(JsonToken.StartObject))
+                        {
+                            result.Add(MapExpression(reader));
+                            reader.Consume(JsonToken.EndObject);
+                        }
                     }
-                    reader.Read();
+                    reader.Consume(JsonToken.EndArray);
                 }
+                result.Subselector = subselector;
             }
             return result;
         }
 
         private LanguageExpression MapCondition(string type, LanguageExpression.PropertyBag properties, JsonReader reader)
         {
-            if (TryExpression(type, out LanguageCondition result))
+            if (TryExpression(type, null, out LanguageCondition result))
             {
                 while (reader.TokenType != JsonToken.EndObject)
                 {
-                    MapProperty(properties, reader, out _);
+                    MapProperty(properties, reader, out _, out _);
                 }
                 result.Add(properties);
             }
@@ -701,7 +705,7 @@ namespace PSRule
         {
             LanguageExpression result = null;
             var properties = new LanguageExpression.PropertyBag();
-            MapProperty(properties, reader, out var key);
+            MapProperty(properties, reader, out var key, out var subselector);
             if (key != null && TryCondition(key))
             {
                 result = MapCondition(key, properties, reader);
@@ -709,7 +713,12 @@ namespace PSRule
             else if ((reader.TokenType == JsonToken.StartObject || reader.TokenType == JsonToken.StartArray) &&
                  TryOperator(key))
             {
-                result = MapOperator(key, reader);
+                var op = MapOperator(key, properties, subselector, reader);
+                MapProperty(properties, reader, out _, out subselector);
+                if (subselector != null)
+                    op.Subselector = subselector;
+
+                result = op;
             }
             return result;
         }
@@ -766,13 +775,14 @@ namespace PSRule
             return result.ToArray();
         }
 
-        private void MapProperty(LanguageExpression.PropertyBag properties, JsonReader reader, out string name)
+        private void MapProperty(LanguageExpression.PropertyBag properties, JsonReader reader, out string name, out LanguageExpression subselector)
         {
-            if (reader.TokenType != JsonToken.StartObject || !reader.Read())
-                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
+            //if (reader.TokenType != JsonToken.StartObject || !reader.Read())
+            //    throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType));
 
             name = null;
-            while (reader.TokenType != JsonToken.EndObject)
+            subselector = null;
+            while (reader.TokenType == JsonToken.PropertyName)
             {
                 var key = reader.Value.ToString();
                 if (TryCondition(key) || TryOperator(key))
@@ -780,18 +790,29 @@ namespace PSRule
 
                 if (reader.Read())
                 {
+                    // value:
                     if (TryValue(key, reader, out var value))
                     {
                         properties[key] = value;
+                        reader.Read();
                     }
                     else if (TryCondition(key) && reader.TryConsume(JsonToken.StartObject))
                     {
                         if (TryFunction(reader, key, out var fn))
                             properties.Add(key, fn);
+
+                        reader.Consume(JsonToken.EndObject);
+                    }
+                    // where:
+                    else if (TrySubSelector(key) && reader.TryConsume(JsonToken.StartObject))
+                    {
+                        subselector = MapExpression(reader);
+                        reader.Consume(JsonToken.EndObject);
                     }
                     else if (reader.TokenType == JsonToken.StartObject)
+                    {
                         break;
-
+                    }
                     else if (reader.TokenType == JsonToken.StartArray)
                     {
                         if (!TryCondition(key))
@@ -808,15 +829,20 @@ namespace PSRule
                                 objects.Add(item);
                         }
                         properties.Add(key, objects.ToArray());
+                        reader.Consume(JsonToken.EndArray);
                     }
-
                     else
                     {
                         properties.Add(key, reader.Value);
+                        reader.Read();
                     }
                 }
-                reader.Read();
             }
+        }
+
+        private bool TrySubSelector(string key)
+        {
+            return _Factory.IsSubselector(key);
         }
 
         private bool TryOperator(string key)
@@ -867,7 +893,7 @@ namespace PSRule
                 s == "$";
         }
 
-        private bool TryExpression<T>(string type, out T expression) where T : LanguageExpression
+        private bool TryExpression<T>(string type, LanguageExpression.PropertyBag properties, out T expression) where T : LanguageExpression
         {
             expression = null;
 
@@ -875,7 +901,7 @@ namespace PSRule
             {
                 expression = (T)descriptor.CreateInstance(
                     source: RunspaceContext.CurrentThread.Source.File,
-                    properties: null
+                    properties: properties
                 );
 
                 return expression != null;

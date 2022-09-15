@@ -70,7 +70,7 @@ namespace PSRule.Runtime
         // Fields exposed to engine
         internal RuleRecord RuleRecord;
         internal RuleBlock RuleBlock;
-        internal ITargetBindingContext Binding;
+        internal ITargetBindingResult Binding;
 
         private readonly bool _InconclusiveWarning;
         private readonly bool _NotProcessedWarning;
@@ -118,7 +118,7 @@ namespace PSRule.Runtime
             _RuleTimer = new Stopwatch();
             _Reason = new List<ResultReason>();
             _Conventions = new List<IConvention>();
-            _LanguageScopes = new LanguageScopeSet();
+            _LanguageScopes = new LanguageScopeSet(this);
             _Scope = new Stack<RunspaceScope>();
         }
 
@@ -402,9 +402,8 @@ namespace PSRule.Runtime
         private static void Debug_DataAdded(object sender, DataAddedEventArgs e)
         {
             if (CurrentThread.Writer == null)
-            {
                 return;
-            }
+
             var collection = sender as PSDataCollection<DebugRecord>;
             var record = collection[e.Index];
             CurrentThread.Writer.WriteDebug(debugRecord: record);
@@ -643,7 +642,7 @@ namespace PSRule.Runtime
         /// </summary>
         public RuleRecord EnterRuleBlock(RuleBlock ruleBlock)
         {
-            Binding = TargetBinder.Using(ruleBlock.Info.ModuleName);
+            Binding = TargetBinder.Result(ruleBlock.Info.ModuleName);
 
             _RuleErrors = 0;
             RuleBlock = ruleBlock;
@@ -791,10 +790,14 @@ namespace PSRule.Runtime
                 Pipeline.BindField,
                 Pipeline.Option.Input.TargetType);
 
+            HashSet<string> _TypeFilter = null;
+            if (Pipeline.Option.Input.TargetType != null && Pipeline.Option.Input.TargetType.Length > 0)
+                _TypeFilter = new HashSet<string>(Pipeline.Option.Input.TargetType, StringComparer.OrdinalIgnoreCase);
+
             foreach (var languageScope in _LanguageScopes.Get())
             {
                 var targetBinding = Pipeline.Baseline.GetTargetBinding();
-                builder.With(new TargetBinder.TargetBindingContext(languageScope.Name, targetBinding));
+                builder.With(new TargetBinder.TargetBindingContext(languageScope.Name, targetBinding, Pipeline.BindTargetName, Pipeline.BindTargetType, Pipeline.BindField, _TypeFilter));
             }
             TargetBinder = builder.Build();
             RunConventionInitialize();

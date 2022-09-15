@@ -1,0 +1,52 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+#
+# YAML-based rules for unit testing
+#
+
+---
+# Synopsis: A rule with sub-selector pre-condition.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: YamlRuleWithPrecondition
+spec:
+  where:
+    field: 'kind'
+    equals: 'test'
+  condition:
+    field: resources
+    count: 2
+
+---
+# Synopsis: A rule with sub-selector filter.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: YamlRuleWithSubselector
+spec:
+  condition:
+    field: resources
+    where:
+      field: '.'
+      isString: true
+    allOf:
+    - field: '.'
+      equals: abc
+
+---
+# Synopsis: A rule with sub-selector filter.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: YamlRuleWithSubselectorReordered
+spec:
+  condition:
+    allOf:
+    - field: '.'
+      equals: abc
+    field: resources
+    where:
+      field: '.'
+      equals: 'abc'

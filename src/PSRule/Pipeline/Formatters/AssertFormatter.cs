@@ -3,9 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Management.Automation;
-using System.Reflection;
 using System.Threading;
 using PSRule.Configuration;
 using PSRule.Definitions;
@@ -137,7 +135,7 @@ namespace PSRule.Pipeline.Formatters
         private bool _UnbrokenInfo;
         private bool _UnbrokenObject;
 
-        private static readonly TerminalSupport DefaultTerminalSupport = new TerminalSupport(4);
+        private static readonly TerminalSupport DefaultTerminalSupport = new(4);
 
         protected AssertFormatterBase(Source[] source, IPipelineWriter writer, PSRuleOption option)
         {
@@ -369,8 +367,10 @@ namespace PSRule.Pipeline.Formatters
             if (!Option.Output.Banner.GetValueOrDefault(BannerFormat.Default).HasFlag(BannerFormat.Source))
                 return;
 
-            var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
-            WriteLineFormat(FormatterStrings.PSRuleVersion, version);
+            var version = Engine.GetVersion();
+            if (!string.IsNullOrEmpty(version))
+                WriteLineFormat(FormatterStrings.PSRuleVersion, version);
+
             var list = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             for (var i = 0; source != null && i < source.Length; i++)
             {

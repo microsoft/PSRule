@@ -78,4 +78,4 @@ _n/a_           | NullOrEmpty
 _n/a_           | TypeOf
 WithinPath      | WithinPath
 
-[^1]: The `Equals`, `HasValue` and expression and `HasFieldValue` are similar.
+[^1]: The `Equals`, `HasValue` expressions and `HasFieldValue` are similar.

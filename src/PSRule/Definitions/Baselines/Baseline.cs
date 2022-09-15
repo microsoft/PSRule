@@ -12,23 +12,47 @@ using YamlDotNet.Serialization;
 
 namespace PSRule.Definitions.Baselines
 {
-    internal interface IBaselineSpec
+    /// <summary>
+    /// A specification for a V1 baseline resource.
+    /// </summary>
+    internal interface IBaselineV1Spec
     {
+        /// <summary>
+        /// Options that affect property binding.
+        /// </summary>
         BindingOption Binding { get; set; }
 
+        /// <summary>
+        /// Allows configuration key/ values to be specified that can be used within rule definitions.
+        /// </summary>
         ConfigurationOption Configuration { get; set; }
 
+        /// <summary>
+        /// Options that configure conventions.
+        /// </summary>
         ConventionOption Convention { get; set; }
 
+        /// <summary>
+        /// Options for that affect which rules are executed by including and filtering discovered rules.
+        /// </summary>
         RuleOption Rule { get; set; }
     }
 
+    /// <summary>
+    /// A baseline resource V1.
+    /// </summary>
     [Spec(Specs.V1, Specs.Baseline)]
     public sealed class Baseline : InternalResource<BaselineSpec>, IResource
     {
+        /// <summary>
+        /// Create a baseline instance.
+        /// </summary>
         public Baseline(string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, BaselineSpec spec)
             : base(ResourceKind.Baseline, apiVersion, source, metadata, info, extent, spec) { }
 
+        /// <summary>
+        /// The unique identifier for the baseline.
+        /// </summary>
         [YamlIgnore()]
         public string BaselineId => Name;
 
@@ -40,14 +64,21 @@ namespace PSRule.Definitions.Baselines
         public string Synopsis => Info.Synopsis.Text;
     }
 
-    public sealed class BaselineSpec : Spec, IBaselineSpec
+    /// <summary>
+    /// A specification for a V1 baseline resource.
+    /// </summary>
+    public sealed class BaselineSpec : Spec, IBaselineV1Spec
     {
+        /// <inheritdoc/>
         public BindingOption Binding { get; set; }
 
+        /// <inheritdoc/>
         public ConfigurationOption Configuration { get; set; }
 
+        /// <inheritdoc/>
         public ConventionOption Convention { get; set; }
 
+        /// <inheritdoc/>
         public RuleOption Rule { get; set; }
     }
 

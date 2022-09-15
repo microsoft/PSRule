@@ -21,6 +21,18 @@
     <PackageReference Include="Sarif.Sdk" Version="2.4.16" />
   </ItemGroup>
 
+  <!-- Add code generators -->
+  <ItemGroup>
+    <CompilerVisibleProperty Include="PSRule_Version" />
+    <ProjectReference Include="..\PSRule.BuildTask\PSRule.BuildTask.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+  
+  <PropertyGroup>
+    <PSRule_Version>$(version)</PSRule_Version>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+  </PropertyGroup>
+
+  <!-- Add PSRule types -->
   <ItemGroup>
     <ProjectReference Include="..\PSRule.Types\PSRule.Types.csproj" />
     <ProjectReference Include="..\PSRule.Badges\PSRule.Badges.csproj" />

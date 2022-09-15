@@ -83,7 +83,7 @@ To prevent a rule executing you can either:
 
     [:octicons-book-24: Docs][3]
 
-    ```yaml
+    ```yaml title="ps-rule.yaml"
     rule:
       exclude:
       # Ignore the following rules for all objects
@@ -97,7 +97,7 @@ To prevent a rule executing you can either:
 
     [:octicons-book-24: Docs][4]
 
-    ```yaml
+    ```yaml title="ps-rule.yaml"
     suppression:
       Azure.AKS.AuthorizedIPs:
       # Exclude the following externally managed AKS clusters

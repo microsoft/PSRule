@@ -47,7 +47,8 @@ namespace PSRule.Rules
         {
             public readonly string RuleName;
             public readonly string TargetName;
-            private readonly int HashCode;
+
+            private readonly int _HashCode;
 
             public SuppressionKey(string ruleName, string targetName)
             {
@@ -59,21 +60,23 @@ namespace PSRule.Rules
 
                 RuleName = ruleName;
                 TargetName = targetName;
-                HashCode = CombineHashCode();
+                _HashCode = CombineHashCode();
             }
 
+            /// <inheritdoc/>
             public override int GetHashCode()
             {
-                return HashCode;
+                return _HashCode;
             }
 
+            /// <inheritdoc/>
             public override bool Equals(object obj)
             {
-                if (!(obj is SuppressionKey))
+                if (obj is not SuppressionKey)
                     return false;
 
                 var k2 = obj as SuppressionKey;
-                return HashCode == k2.HashCode &&
+                return _HashCode == k2._HashCode &&
                     StringComparer.OrdinalIgnoreCase.Equals(TargetName, k2.TargetName) &&
                     StringComparer.OrdinalIgnoreCase.Equals(RuleName, k2.RuleName);
             }
@@ -125,10 +128,10 @@ namespace PSRule.Rules
         /// <summary>
         /// Attempts to fetch suppression group from rule suppression group index.
         /// </summary>
-        /// <param name="ruleId">The key rule id which indexes suppression groups</param>
-        /// <param name="targetObject">Th target object we are invoking</param>
-        /// <param name="suppressionGroupId">The Id of the matched suppression group</param>
-        /// <returns>Boolean indicating if suppression group has been found</returns>
+        /// <param name="ruleId">The key rule id which indexes suppression groups.</param>
+        /// <param name="targetObject">The <seealso cref="TargetObject"/> we are evaluating.</param>
+        /// <param name="suppression">Information about a matching suppression group.</param>
+        /// <returns>Boolean indicating if suppression group has been found.</returns>
         public bool TrySuppressionGroup(string ruleId, TargetObject targetObject, out ISuppressionInfo suppression)
         {
             suppression = null;

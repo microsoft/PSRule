@@ -3,9 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis.Sarif;
 using PSRule.Configuration;
@@ -288,7 +286,7 @@ namespace PSRule.Pipeline.Output
 
         private Tool GetTool(Source[] source)
         {
-            var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+            var version = Engine.GetVersion();
             return new Tool
             {
                 Driver = new ToolComponent

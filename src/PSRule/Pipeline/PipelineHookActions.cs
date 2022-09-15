@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Management.Automation;
@@ -14,14 +15,21 @@ namespace PSRule.Pipeline
 {
     internal delegate bool ShouldProcess(string target, string action);
 
+    /// <summary>
+    /// Define built-in binding hooks.
+    /// </summary>
     internal static class PipelineHookActions
     {
         private const string Property_TargetName = "TargetName";
         private const string Property_Name = "Name";
 
-        public static string BindTargetName(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, out string path)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
+        public static string BindTargetName(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path)
         {
             path = null;
+            if (targetObject == null)
+                return null;
+
             if (preferTargetInfo && TryGetInfoTargetName(targetObject, out var targetName))
                 return targetName;
 
@@ -33,9 +41,13 @@ namespace PSRule.Pipeline
             return DefaultTargetNameBinding(targetObject);
         }
 
-        public static string BindTargetType(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, out string path)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
+        public static string BindTargetType(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path)
         {
             path = null;
+            if (targetObject == null)
+                return null;
+
             if (preferTargetInfo && TryGetInfoTargetType(targetObject, out var targetType))
                 return targetType;
 
@@ -47,9 +59,14 @@ namespace PSRule.Pipeline
             return DefaultTargetTypeBinding(targetObject);
         }
 
-        public static string BindField(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, PSObject targetObject, out string path)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameter preferTargetInfo is required for matching the delegate type.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
+        public static string BindField(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path)
         {
             path = null;
+            if (targetObject == null)
+                return null;
+
             if (propertyNames != null)
                 return propertyNames.Any(n => n.Contains('.'))
                     ? NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultFieldBinding, out path)
@@ -63,7 +80,7 @@ namespace PSRule.Pipeline
         /// </summary>
         /// <param name="targetObject">A PSObject to bind.</param>
         /// <returns>The TargetName of the object.</returns>
-        private static string DefaultTargetNameBinding(PSObject targetObject)
+        private static string DefaultTargetNameBinding(object targetObject)
         {
             return TryGetInfoTargetName(targetObject, out var targetName) ||
                 TryGetTargetName(targetObject, propertyName: Property_TargetName, targetName: out targetName) ||
@@ -76,16 +93,18 @@ namespace PSRule.Pipeline
         /// Get the TargetName of the object by using any of the specified property names.
         /// </summary>
         /// <param name="propertyNames">One or more property names to use to bind TargetName.</param>
+        /// <param name="caseSensitive">Determines if binding properties are case-sensitive.</param>
         /// <param name="targetObject">A PSObject to bind.</param>
         /// <param name="next">The next delegate function to check if all of the property names can not be found.</param>
+        /// <param name="path">The object path that was used for binding.</param>
         /// <returns>The TargetName of the object.</returns>
-        private static string CustomTargetPropertyBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next, out string path)
+        private static string CustomTargetPropertyBinding(string[] propertyNames, bool caseSensitive, object targetObject, BindTargetName next, out string path)
         {
             path = null;
             string targetName = null;
             for (var i = 0; i < propertyNames.Length && targetName == null; i++)
             {
-                targetName = targetObject.ValueAsString(propertyName: propertyNames[i], caseSensitive: caseSensitive);
+                targetName = ValueAsString(targetObject, propertyName: propertyNames[i], caseSensitive: caseSensitive);
                 if (targetName != null)
                     path = propertyNames[i];
             }
@@ -97,10 +116,12 @@ namespace PSRule.Pipeline
         /// Get the TargetName of the object by using any of the specified property names.
         /// </summary>
         /// <param name="propertyNames">One or more property names to use to bind TargetName.</param>
+        /// <param name="caseSensitive">Determines if binding properties are case-sensitive.</param>
         /// <param name="targetObject">A PSObject to bind.</param>
         /// <param name="next">The next delegate function to check if all of the property names can not be found.</param>
+        /// <param name="path">The object path that was used for binding.</param>
         /// <returns>The TargetName of the object.</returns>
-        private static string NestedTargetPropertyBinding(string[] propertyNames, bool caseSensitive, PSObject targetObject, BindTargetName next, out string path)
+        private static string NestedTargetPropertyBinding(string[] propertyNames, bool caseSensitive, object targetObject, BindTargetName next, out string path)
         {
             path = null;
             string targetName = null;
@@ -128,7 +149,7 @@ namespace PSRule.Pipeline
         /// </summary>
         /// <param name="targetObject">A PSObject to hash.</param>
         /// <returns>The TargetName of the object.</returns>
-        private static string GetUnboundObjectTargetName(PSObject targetObject)
+        private static string GetUnboundObjectTargetName(object targetObject)
         {
             var settings = new JsonSerializerSettings
             {
@@ -146,9 +167,9 @@ namespace PSRule.Pipeline
         /// <summary>
         /// Try to get TargetName from specified property.
         /// </summary>
-        private static bool TryGetTargetName(PSObject targetObject, string propertyName, out string targetName)
+        private static bool TryGetTargetName(object targetObject, string propertyName, out string targetName)
         {
-            targetName = targetObject.ValueAsString(propertyName, false);
+            targetName = ValueAsString(targetObject, propertyName, false);
             return targetName != null;
         }
 
@@ -157,34 +178,50 @@ namespace PSRule.Pipeline
         /// </summary>
         /// <param name="targetObject">A PSObject to bind.</param>
         /// <returns>The TargetObject of the object.</returns>
-        private static string DefaultTargetTypeBinding(PSObject targetObject)
+        private static string DefaultTargetTypeBinding(object targetObject)
         {
-            return TryGetInfoTargetType(targetObject, out var targetType) ? targetType : targetObject.TypeNames[0];
+            return TryGetInfoTargetType(targetObject, out var targetType) ? targetType : GetTypeNames(targetObject);
         }
 
-        private static string DefaultFieldBinding(PSObject targetObject)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
+        private static string GetTypeNames(object targetObject)
+        {
+            if (targetObject == null)
+                return null;
+
+            return targetObject is PSObject pso ? pso.TypeNames[0] : targetObject.GetType().FullName;
+        }
+
+        private static string DefaultFieldBinding(object targetObject)
         {
             return null;
         }
 
-        private static bool TryGetInfoTargetName(PSObject targetObject, out string targetName)
+        private static bool TryGetInfoTargetName(object targetObject, out string targetName)
         {
             targetName = null;
-            if (!(targetObject.BaseObject is ITargetInfo info))
+            var baseObject = ExpressionHelpers.GetBaseObject(targetObject);
+            if (baseObject is not ITargetInfo info)
                 return false;
 
             targetName = info.TargetName;
             return true;
         }
 
-        private static bool TryGetInfoTargetType(PSObject targetObject, out string targetType)
+        private static bool TryGetInfoTargetType(object targetObject, out string targetType)
         {
             targetType = null;
-            if (!(targetObject.BaseObject is ITargetInfo info))
+            var baseObject = ExpressionHelpers.GetBaseObject(targetObject);
+            if (baseObject is not ITargetInfo info)
                 return false;
 
             targetType = info.TargetType;
             return true;
+        }
+
+        private static string ValueAsString(object o, string propertyName, bool caseSensitive)
+        {
+            return ObjectHelper.GetPath(bindingContext: null, targetObject: o, path: propertyName, caseSensitive: caseSensitive, value: out object value) && value != null ? value.ToString() : null;
         }
     }
 }

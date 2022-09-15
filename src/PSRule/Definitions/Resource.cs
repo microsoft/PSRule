@@ -18,8 +18,14 @@ using YamlDotNet.Serialization.NodeDeserializers;
 
 namespace PSRule.Definitions
 {
+    /// <summary>
+    /// The type of resource.
+    /// </summary>
     public enum ResourceKind
     {
+        /// <summary>
+        /// Unknown or empty.
+        /// </summary>
         None = 0,
 
         /// <summary>
@@ -53,14 +59,26 @@ namespace PSRule.Definitions
         SuppressionGroup = 6
     }
 
+    /// <summary>
+    /// Additional flags that indicate the status of the resource.
+    /// </summary>
     [Flags]
     public enum ResourceFlags
     {
+        /// <summary>
+        /// No flags are set.
+        /// </summary>
         None = 0,
 
+        /// <summary>
+        /// The resource is obsolete.
+        /// </summary>
         Obsolete = 1
     }
 
+    /// <summary>
+    /// A resource langange block.
+    /// </summary>
     public interface IResource : ILanguageBlock
     {
         /// <summary>
@@ -142,6 +160,9 @@ namespace PSRule.Definitions
 
     }
 
+    /// <summary>
+    /// A resource object.
+    /// </summary>
     public sealed class ResourceObject
     {
         internal ResourceObject(IResource block)
@@ -196,15 +217,24 @@ namespace PSRule.Definitions
         }
     }
 
+    /// <summary>
+    /// Additional resource annotations.
+    /// </summary>
     public sealed class ResourceAnnotations : Dictionary<string, object>
     {
 
     }
 
+    /// <summary>
+    /// Additional resource tags.
+    /// </summary>
     public sealed class ResourceTags : Dictionary<string, string>
     {
         private Hashtable _Hashtable;
 
+        /// <summary>
+        /// Create an empty set of resource tags.
+        /// </summary>
         public ResourceTags() : base(StringComparer.OrdinalIgnoreCase) { }
 
         /// <summary>
@@ -251,7 +281,7 @@ namespace PSRule.Definitions
         /// </summary>
         internal bool Contains(object key, object value)
         {
-            if (key == null || value == null || !(key is string k) || !ContainsKey(k))
+            if (key == null || value == null || key is not string k || !ContainsKey(k))
                 return false;
 
             if (TryArray(value, out var values))
@@ -287,6 +317,10 @@ namespace PSRule.Definitions
             return false;
         }
 
+        /// <summary>
+        /// Convert the resourecs tags to a display string for PowerShell views.
+        /// </summary>
+        /// <returns></returns>
         public string ToViewString()
         {
             var sb = new StringBuilder();
@@ -308,8 +342,14 @@ namespace PSRule.Definitions
         }
     }
 
+    /// <summary>
+    /// Additional resource metadata.
+    /// </summary>
     public sealed class ResourceMetadata
     {
+        /// <summary>
+        /// Create an empty set of metadata.
+        /// </summary>
         public ResourceMetadata()
         {
             Annotations = new ResourceAnnotations();
@@ -321,8 +361,14 @@ namespace PSRule.Definitions
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// A opaque reference for the resource.
+        /// </summary>
         public string Ref { get; set; }
 
+        /// <summary>
+        /// Additional aliases for the resource.
+        /// </summary>
         public string[] Alias { get; set; }
 
         /// <summary>
@@ -338,16 +384,32 @@ namespace PSRule.Definitions
         public ResourceTags Tags { get; set; }
     }
 
+    /// <summary>
+    /// The source location of the resource.
+    /// </summary>
     public sealed class ResourceExtent
     {
+        /// <summary>
+        /// The file where the resource is located.
+        /// </summary>
         public string File { get; set; }
 
+        /// <summary>
+        /// The name of the module if the resource is contained within a module.
+        /// </summary>
         public string Module { get; set; }
     }
 
+    /// <summary>
+    /// A base class for resources.
+    /// </summary>
+    /// <typeparam name="TSpec">The type for the resource specification.</typeparam>
     [DebuggerDisplay("Kind = {Kind}, Id = {Id}")]
     public abstract class Resource<TSpec> where TSpec : Spec, new()
     {
+        /// <summary>
+        /// Create a resource.
+        /// </summary>
         internal protected Resource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, TSpec spec)
         {
             Kind = kind;
@@ -361,6 +423,9 @@ namespace PSRule.Definitions
             Id = new ResourceId(source.Module, Name, ResourceIdKind.Id);
         }
 
+        /// <summary>
+        /// The resource identifier for the resource.
+        /// </summary>
         [YamlIgnore()]
         public ResourceId Id { get; }
 
@@ -376,6 +441,9 @@ namespace PSRule.Definitions
         [YamlIgnore()]
         public SourceFile Source { get; }
 
+        /// <summary>
+        /// Information about the resource.
+        /// </summary>
         [YamlIgnore()]
         public IResourceHelpInfo Info { get; }
 
@@ -405,6 +473,10 @@ namespace PSRule.Definitions
         public ISourceExtent Extent { get; }
     }
 
+    /// <summary>
+    /// A base class for built-in resource types.
+    /// </summary>
+    /// <typeparam name="TSpec">The type of the related <seealso cref="Spec"/> for the resource.</typeparam>
     public abstract class InternalResource<TSpec> : Resource<TSpec>, IResource, IAnnotated<ResourceAnnotation> where TSpec : Spec, new()
     {
         private readonly Dictionary<Type, ResourceAnnotation> _Annotations;
@@ -490,9 +562,11 @@ namespace PSRule.Definitions
         }
 
         /// <summary>
-        /// Checks each RuleName and converts each to a RuleId.
+        /// Checks each resource name and converts each into a full qualified <seealso cref="ResourceId"/>.
         /// </summary>
+        /// <param name="defaultScope">The default scope to use if the resource name if not fully qualified.</param>
         /// <param name="name">An array of names. Qualified names (RuleIds) supplied are left intact.</param>
+        /// <param name="kind">The <seealso cref="ResourceIdKind"/> of the <seealso cref="ResourceId"/>.</param>
         /// <returns>An array of RuleIds.</returns>
         internal static ResourceId[] GetRuleId(string defaultScope, string[] name, ResourceIdKind kind)
         {

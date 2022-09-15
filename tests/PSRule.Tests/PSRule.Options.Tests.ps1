@@ -864,6 +864,45 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Execution.InitialSessionState' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.InitialSessionState | Should -Be 'BuiltIn';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.InitialSessionState' = 'Minimal' };
+            $option.Execution.InitialSessionState | Should -Be 'Minimal';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.InitialSessionState | Should -Be 'Minimal';
+        }
+
+        It 'from Environment' {
+            try {
+                # With bool
+                $Env:PSRULE_EXECUTION_INITIALSESSIONSTATE = 'minimal';
+                $option = New-PSRuleOption;
+                $option.Execution.InitialSessionState | Should -Be 'Minimal';
+
+                # With int
+                $Env:PSRULE_EXECUTION_INITIALSESSIONSTATE = '1';
+                $option = New-PSRuleOption;
+                $option.Execution.InitialSessionState | Should -Be 'Minimal';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_INITIALSESSIONSTATE' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -InitialSessionState 'Minimal' -Path $emptyOptionsFilePath;
+            $option.Execution.InitialSessionState | Should -Be 'Minimal';
+        }
+    }
+
     Context 'Read Include.Path' {
         It 'from default' {
             $option = New-PSRuleOption -Default;

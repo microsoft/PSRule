@@ -20,10 +20,14 @@ namespace PSRule.Tool
             var inputPath = operationOptions.InputPath == null || operationOptions.InputPath.Length == 0 ?
                 new string[] { PSRuleOption.GetWorkingPath() } : operationOptions.InputPath;
 
+            if (operationOptions.Path != null)
+                option.Include.Path = operationOptions.Path;
+
             // Build command
             var builder = CommandLineBuilder.Assert(operationOptions.Module, option, host);
             builder.Baseline(BaselineOption.FromString(operationOptions.Baseline));
             builder.InputPath(inputPath);
+            builder.UnblockPublisher("CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US");
 
             using var pipeline = builder.Build();
             if (pipeline != null)
@@ -96,6 +100,7 @@ namespace PSRule.Tool
         private static PSRuleOption GetOption()
         {
             var option = PSRuleOption.FromFileOrEmpty();
+            option.Execution.InitialSessionState = Configuration.SessionState.Minimal;
             option.Input.Format = InputFormat.File;
             option.Output.Style = OutputStyle.Client;
             return option;

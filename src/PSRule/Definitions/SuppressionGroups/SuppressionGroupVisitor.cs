@@ -5,6 +5,7 @@ using System;
 using PSRule.Definitions.Expressions;
 using PSRule.Pipeline;
 using PSRule.Resources;
+using PSRule.Runtime;
 
 namespace PSRule.Definitions.SuppressionGroups
 {
@@ -12,9 +13,11 @@ namespace PSRule.Definitions.SuppressionGroups
     {
         private readonly LanguageExpressionOuterFn _Fn;
         private readonly SuppressionInfo _Info;
+        private readonly RunspaceContext _Context;
 
-        public SuppressionGroupVisitor(ResourceId id, SourceFile source, ISuppressionGroupSpec spec, IResourceHelpInfo info)
+        public SuppressionGroupVisitor(RunspaceContext context, ResourceId id, SourceFile source, ISuppressionGroupV1Spec spec, IResourceHelpInfo info)
         {
+            _Context = context;
             Id = id;
             Source = source;
             InstanceId = Guid.NewGuid();
@@ -77,7 +80,7 @@ namespace PSRule.Definitions.SuppressionGroups
         public bool TryMatch(object o, out ISuppressionInfo suppression)
         {
             suppression = null;
-            var context = new ExpressionContext(Source, ResourceKind.SuppressionGroup, o);
+            var context = new ExpressionContext(_Context, Source, ResourceKind.SuppressionGroup, o);
             context.Debug(PSRuleResources.SelectorMatchTrace, Id);
             if (_Fn(context, o).GetValueOrDefault(false))
             {

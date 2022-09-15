@@ -23,7 +23,7 @@ namespace PSRule.Configuration
             }
         }
 
-        internal sealed class BaselineInline : BaselineOption, IBaselineSpec
+        internal sealed class BaselineInline : BaselineOption, IBaselineV1Spec
         {
             public BaselineInline()
             {
@@ -88,7 +88,7 @@ namespace PSRule.Configuration
             return string.IsNullOrEmpty(value) ? null : new BaselineRef(value);
         }
 
-        internal static void Load(IBaselineSpec option, EnvironmentHelper env)
+        internal static void Load(IBaselineV1Spec option, EnvironmentHelper env)
         {
             // Binding.Field - currently not supported
 
@@ -133,7 +133,7 @@ namespace PSRule.Configuration
         /// </summary>
         /// <param name="option">A baseline options object to load.</param>
         /// <param name="properties">One or more indexed properties.</param>
-        internal static void Load(IBaselineSpec option, Dictionary<string, object> properties)
+        internal static void Load(IBaselineV1Spec option, Dictionary<string, object> properties)
         {
             if (properties.TryPopValue("Binding.Field", out Hashtable map))
                 option.Binding.Field = new FieldMap(map);

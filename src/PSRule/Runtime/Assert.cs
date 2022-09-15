@@ -70,7 +70,7 @@ namespace PSRule.Runtime
             if (!(RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule) || RunspaceContext.CurrentThread.IsScope(RunspaceScope.Precondition)))
                 throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VariableConditionScope, VARIABLE_NAME));
 
-            return new AssertResult(this, operand, condition, reason, args);
+            return new AssertResult(operand, condition, reason, args);
         }
 
         /// <summary>

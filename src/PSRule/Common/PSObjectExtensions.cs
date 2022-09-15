@@ -34,11 +34,6 @@ namespace PSRule
                 : PSObject.AsPSObject(o.Properties[propertyName].Value);
         }
 
-        public static string ValueAsString(this PSObject o, string propertyName, bool caseSensitive)
-        {
-            return ObjectHelper.GetPath(o, propertyName, caseSensitive, out var value) && value != null ? value.ToString() : null;
-        }
-
         public static bool HasProperty(this PSObject o, string propertyName)
         {
             return o.Properties[propertyName] != null;

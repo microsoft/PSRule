@@ -91,7 +91,7 @@ namespace PSRule.Definitions.Expressions
             // Lookup a configuration value.
             return (context) =>
             {
-                return context.GetContext().TryGetConfigurationValue(name, out var value) ? value : null;
+                return context.Context.TryGetConfigurationValue(name, out var value) ? value : null;
             };
         }
 
