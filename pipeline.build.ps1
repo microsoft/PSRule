@@ -104,6 +104,7 @@ task BuildDotNet {
     }
     exec {
         # Build library
+        dotnet build src/PSRule.BuildTask -c $Configuration -f netstandard2.0 -p:version=$Build
         dotnet build src/PSRule.Tool -c $Configuration -f net6.0 -p:version=$Build
         dotnet build src/PSRule.SDK -c $Configuration -f netstandard2.0 -p:version=$Build
         dotnet publish src/PSRule -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule) -p:version=$Build
