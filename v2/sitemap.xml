@@ -336,6 +336,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://microsoft.github.io/PSRule/v2/scenarios/containers/container-execution/</loc>
+         <lastmod>2022-09-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://microsoft.github.io/PSRule/v2/scenarios/kubernetes-resources/kubernetes-resources/</loc>
          <lastmod>2022-09-17</lastmod>
          <changefreq>daily</changefreq>
