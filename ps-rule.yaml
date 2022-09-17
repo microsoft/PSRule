@@ -29,5 +29,8 @@ input:
   - '.markdownlint.json'
   - '.github/dependabot.yml'
 
+  # Bug #1269: There is an issue preventing #1259 from being merged. Ignore this until bug is fixed.
+  - 'docs/scenarios/containers/dockerfile'
+
 include:
   path: []
