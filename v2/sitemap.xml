@@ -186,6 +186,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://microsoft.github.io/PSRule/v2/concepts/grouping-rules/</loc>
+         <lastmod>2022-09-21</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Assert/</loc>
          <lastmod>2022-09-21</lastmod>
          <changefreq>daily</changefreq>
