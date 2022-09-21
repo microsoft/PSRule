@@ -1284,6 +1284,10 @@ namespace PSRule
             // Dockerfile
             value = GetObject((name: "FullName", value: GetSourcePath("Dockerfile")));
             Assert.True(assert.FileHeader(value, "FullName", header).Result);
+
+            // Jenkinsfile
+            value = GetObject((name: "FullName", value: GetSourcePath("jenkinsfile")));
+            Assert.True(assert.FileHeader(value, "FullName", header).Result);
         }
 
         [Fact]
