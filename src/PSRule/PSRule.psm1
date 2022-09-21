@@ -1728,6 +1728,10 @@ function Rule {
         [Parameter(Mandatory = $False)]
         [Hashtable]$Tag,
 
+        # Any taxonomy references.
+        [Parameter(Mandatory = $False)]
+        [hashtable]$Taxa,
+
         [Parameter(Mandatory = $False)]
         [ScriptBlock]$If,
 

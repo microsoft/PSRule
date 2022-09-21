@@ -69,15 +69,13 @@ namespace PSRule.Rules
         /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
         /// </summary>
-        [JsonIgnore]
-        [YamlIgnore]
+        [JsonIgnore, YamlIgnore]
         public string Synopsis => Info.Synopsis;
 
         /// <summary>
-        /// Legacy. Alias to synopsis
+        /// Legacy. Alias to <see cref="Synopsis"/>.
         /// </summary>
-        [JsonIgnore]
-        [YamlIgnore]
+        [JsonIgnore, YamlIgnore]
         [Obsolete("Use Synopsis instead.")]
         public string Description => Info.Synopsis;
 
@@ -88,10 +86,12 @@ namespace PSRule.Rules
         [DefaultValue(null)]
         public ResourceTags Tag { get; set; }
 
+        /// <inheritdoc/>
         [JsonProperty(PropertyName = "info")]
         [DefaultValue(null)]
         public RuleHelpInfo Info { get; set; }
 
+        /// <inheritdoc/>
         [JsonProperty(PropertyName = "source")]
         [DefaultValue(null)]
         public SourceFile Source { get; set; }
@@ -102,19 +102,23 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "dependsOn")]
         public ResourceId[] DependsOn { get; set; }
 
-        [JsonIgnore]
-        [YamlIgnore]
+        /// <inheritdoc/>
+        [JsonIgnore, YamlIgnore]
         public ResourceFlags Flags { get; set; }
 
-        [JsonIgnore]
-        [YamlIgnore]
+        /// <inheritdoc/>
+        [JsonIgnore, YamlIgnore]
         public ISourceExtent Extent { get; set; }
+
+        /// <inheritdoc/>
+        [JsonIgnore, YamlIgnore]
+        public ResourceTaxa Taxa { get; set; }
 
         string ITargetInfo.TargetName => Name;
 
         string ITargetInfo.TargetType => typeof(Rule).FullName;
 
-        TargetSourceInfo ITargetInfo.Source => new TargetSourceInfo { File = Source.Path };
+        TargetSourceInfo ITargetInfo.Source => new() { File = Source.Path };
 
         bool IDependencyTarget.Dependency => Source.IsDependency();
 
@@ -134,12 +138,12 @@ namespace PSRule.Rules
         [Obsolete("Use Source property instead.")]
         string ILanguageBlock.Module => Source.Module;
 
-        [JsonIgnore]
-        [YamlIgnore]
+        /// <inheritdoc/>
+        [JsonIgnore, YamlIgnore]
         public ResourceId? Ref { get; set; }
 
-        [JsonIgnore]
-        [YamlIgnore]
+        /// <inheritdoc/>
+        [JsonIgnore, YamlIgnore]
         public ResourceId[] Alias { get; set; }
     }
 }

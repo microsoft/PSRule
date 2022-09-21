@@ -369,7 +369,7 @@ Describe 'Get-PSRuleBaseline' -Tag 'Baseline','Get-PSRuleBaseline' {
         It 'With defaults' {
             $result = @(Get-PSRuleBaseline -Path $baselineFilePath);
             $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 5;
+            $result.Length | Should -Be 6;
             $result[0].Name | Should -Be 'TestBaseline1';
             $result[0].Module | Should -BeNullOrEmpty;
             $result[3].Name | Should -Be 'TestBaseline4';
@@ -858,6 +858,11 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result.Length | Should -Be 2;
             $result[0].RuleName | Should -Be 'WithBaseline';
             $result[1].RuleName | Should -Be 'NotInBaseline';
+
+            $result = @(Get-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline6');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result[0].RuleName | Should -Be 'WithBaseline';
         }
     }
 }

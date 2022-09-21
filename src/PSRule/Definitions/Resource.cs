@@ -112,6 +112,11 @@ namespace PSRule.Definitions
         ResourceTags Tags { get; }
 
         /// <summary>
+        /// Any taxonomy references.
+        /// </summary>
+        ResourceTaxa Taxa { get; }
+
+        /// <summary>
         /// Flags for the resource.
         /// </summary>
         ResourceFlags Flags { get; }
@@ -190,6 +195,7 @@ namespace PSRule.Definitions
                 .IgnoreUnmatchedProperties()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
+                .WithTypeConverter(new StringArrayYamlTypeConverter())
                 .WithNodeDeserializer(
                     inner => new ResourceNodeDeserializer(new LanguageExpressionDeserializer(inner)),
                     s => s.InsteadOf<ObjectNodeDeserializer>())
@@ -223,6 +229,51 @@ namespace PSRule.Definitions
     public sealed class ResourceAnnotations : Dictionary<string, object>
     {
 
+    }
+
+    /// <summary>
+    /// Additional resource taxonomy references.
+    /// </summary>
+    public sealed class ResourceTaxa : Dictionary<string, string[]>
+    {
+        /// <summary>
+        /// Create an empty set of resource taxa.
+        /// </summary>
+        public ResourceTaxa() : base(StringComparer.OrdinalIgnoreCase) { }
+
+        /// <summary>
+        /// Convert from a hashtable to resource taxa.
+        /// </summary>
+        internal static ResourceTaxa FromHashtable(Hashtable hashtable)
+        {
+            if (hashtable == null || hashtable.Count == 0)
+                return null;
+
+            var annotations = new ResourceTaxa();
+            foreach (DictionaryEntry kv in hashtable)
+            {
+                var key = kv.Key.ToString();
+                if (hashtable.TryGetStringArray(key, out var value))
+                    annotations[key] = value;
+            }
+            return annotations;
+        }
+
+        internal bool Contains(string key, string[] value)
+        {
+            if (!TryGetValue(key, out var actual))
+                return false;
+
+            if (value == null || value.Length == 0 || (value.Length == 1 && value[0] == "*"))
+                return true;
+
+            for (var i = 0; i < value.Length; i++)
+            {
+                if (Array.IndexOf(actual, value[i]) != -1)
+                    return true;
+            }
+            return false;
+        }
     }
 
     /// <summary>
@@ -354,6 +405,7 @@ namespace PSRule.Definitions
         {
             Annotations = new ResourceAnnotations();
             Tags = new ResourceTags();
+            Taxa = new ResourceTaxa();
         }
 
         /// <summary>
@@ -382,6 +434,12 @@ namespace PSRule.Definitions
         /// </summary>
         [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitEmptyCollections)]
         public ResourceTags Tags { get; set; }
+
+        /// <summary>
+        /// Any taxonomy references.
+        /// </summary>
+        [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitEmptyCollections)]
+        public ResourceTaxa Taxa { get; set; }
     }
 
     /// <summary>
@@ -512,6 +570,8 @@ namespace PSRule.Definitions
         ResourceId[] IResource.Alias => null;
 
         ResourceTags IResource.Tags => Metadata.Tags;
+
+        ResourceTaxa IResource.Taxa => Metadata.Taxa;
 
         ResourceFlags IResource.Flags => Flags;
 

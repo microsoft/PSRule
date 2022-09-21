@@ -18,6 +18,7 @@ namespace PSRule.Definitions.Rules
         private readonly string[] _Include;
         private readonly string[] _Excluded;
         private readonly Hashtable _Tag;
+        private readonly ResourceTaxa _Taxa;
         private readonly bool _IncludeLocal;
         private readonly WildcardPattern _WildcardMatch;
 
@@ -28,11 +29,13 @@ namespace PSRule.Definitions.Rules
         /// <param name="tag">Only accept rules that have these tags.</param>
         /// <param name="exclude">Rule that are always excluded by name.</param>
         /// <param name="includeLocal">Determine if local rules are automatically included.</param>
-        public RuleFilter(string[] include, Hashtable tag, string[] exclude, bool? includeLocal)
+        /// <param name="taxa">Only accept rules that have these taxa.</param>
+        public RuleFilter(string[] include, Hashtable tag, string[] exclude, bool? includeLocal, ResourceTaxa taxa)
         {
             _Include = include == null || include.Length == 0 ? null : include;
             _Excluded = exclude == null || exclude.Length == 0 ? null : exclude;
             _Tag = tag ?? null;
+            _Taxa = taxa ?? null;
             _IncludeLocal = includeLocal ?? RuleOption.Default.IncludeLocal.Value;
             _WildcardMatch = null;
 
@@ -47,10 +50,10 @@ namespace PSRule.Definitions.Rules
 
         ResourceKind IResourceFilter.Kind => ResourceKind.Rule;
 
-        internal bool Match(string name, ResourceTags tag)
+        internal bool Match(string name, ResourceTags tag, ResourceTaxa taxa)
         {
             return !IsExcluded(new ResourceId[] { ResourceId.Parse(name) }) &&
-                IsIncluded(new ResourceId[] { ResourceId.Parse(name) }, tag);
+                IsIncluded(new ResourceId[] { ResourceId.Parse(name) }, tag, taxa);
         }
 
         /// <summary>
@@ -60,7 +63,7 @@ namespace PSRule.Definitions.Rules
         public bool Match(IResource resource)
         {
             var ids = resource.GetIds();
-            return !IsExcluded(ids) && (_IncludeLocal && resource.IsLocalScope() || IsIncluded(ids, resource.Tags));
+            return !IsExcluded(ids) && (_IncludeLocal && resource.IsLocalScope() || IsIncluded(ids, resource.Tags, resource.Taxa));
         }
 
         private bool IsExcluded(IEnumerable<ResourceId> ids)
@@ -76,12 +79,12 @@ namespace PSRule.Definitions.Rules
             return false;
         }
 
-        private bool IsIncluded(IEnumerable<ResourceId> ids, ResourceTags tag)
+        private bool IsIncluded(IEnumerable<ResourceId> ids, ResourceTags tag, ResourceTaxa taxa)
         {
             foreach (var id in ids)
             {
                 if (_Include == null || Contains(id, _Include) || MatchWildcard(id.Name))
-                    return TagEquals(tag);
+                    return TagEquals(tag) && TaxaEquals(taxa);
             }
             return false;
         }
@@ -97,6 +100,22 @@ namespace PSRule.Definitions.Rules
             foreach (DictionaryEntry entry in _Tag)
             {
                 if (!tag.Contains(entry.Key, entry.Value))
+                    return false;
+            }
+            return true;
+        }
+
+        private bool TaxaEquals(ResourceTaxa taxa)
+        {
+            if (_Taxa == null)
+                return true;
+
+            if (taxa == null || _Taxa.Count > taxa.Count)
+                return false;
+
+            foreach (var taxon in _Taxa)
+            {
+                if (!taxa.Contains(taxon.Key, taxon.Value))
                     return false;
             }
             return true;

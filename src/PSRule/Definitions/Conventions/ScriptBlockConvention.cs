@@ -59,6 +59,9 @@ namespace PSRule.Definitions.Conventions
         // Not supported with conventions.
         ResourceTags IResource.Tags => null;
 
+        // Not supported with conventions.
+        ResourceTaxa IResource.Taxa => null;
+
         public override void Initialize(RunspaceContext context, IEnumerable input)
         {
             InvokeConventionBlock(_Initialize, input);

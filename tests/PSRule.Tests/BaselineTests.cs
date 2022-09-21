@@ -29,7 +29,7 @@ namespace PSRule
         {
             var baseline = GetBaselines(GetSource(BaselineYamlFileName));
             Assert.NotNull(baseline);
-            Assert.Equal(5, baseline.Length);
+            Assert.Equal(6, baseline.Length);
 
             // TestBaseline1
             Assert.Equal("TestBaseline1", baseline[0].Name);
@@ -56,6 +56,14 @@ namespace PSRule
             Assert.Equal("github.com/microsoft/PSRule/v1", baseline[4].ApiVersion);
             Assert.True(baseline[4].Obsolete);
             Assert.Equal("This is an example obsolete baseline", baseline[4].Info.Synopsis.Text);
+
+            // TestBaseline6
+            Assert.Equal("TestBaseline6", baseline[5].Name);
+            var taxa = baseline[5].Spec.Rule.Taxa;
+            Assert.True(taxa.Contains("framework.v1/control", new string[] { "*" }));
+            Assert.True(taxa.Contains("framework.v1/control", new string[] { "c-1" }));
+            Assert.False(taxa.Contains("framework.v1/control", new string[] { "c-3" }));
+            Assert.False(taxa.Contains("framework.v3/control", new string[] { "*" }));
         }
 
         [Fact]
@@ -63,7 +71,7 @@ namespace PSRule
         {
             var baseline = GetBaselines(GetSource(BaselineJsonFileName));
             Assert.NotNull(baseline);
-            Assert.Equal(5, baseline.Length);
+            Assert.Equal(6, baseline.Length);
 
             // TestBaseline1
             Assert.Equal("TestBaseline1", baseline[0].Name);
@@ -89,6 +97,14 @@ namespace PSRule
             Assert.Equal("github.com/microsoft/PSRule/v1", baseline[4].ApiVersion);
             Assert.True(baseline[4].Obsolete);
             Assert.Equal("This is an example obsolete baseline", baseline[4].Info.Synopsis.Text);
+
+            // TestBaseline6
+            Assert.Equal("TestBaseline6", baseline[5].Name);
+            var taxa = baseline[5].Spec.Rule.Taxa;
+            Assert.True(taxa.Contains("framework.v1/control", new string[] { "*" }));
+            Assert.True(taxa.Contains("framework.v1/control", new string[] { "c-1" }));
+            Assert.False(taxa.Contains("framework.v1/control", new string[] { "c-3" }));
+            Assert.False(taxa.Contains("framework.v3/control", new string[] { "*" }));
         }
 
         [Theory]
@@ -98,7 +114,7 @@ namespace PSRule
         {
             var baseline = GetBaselines(GetSourceInModule(path, "TestModule", type));
             Assert.NotNull(baseline);
-            Assert.Equal(5, baseline.Length);
+            Assert.Equal(6, baseline.Length);
 
             // TestBaseline1
             Assert.Equal("TestBaseline1", baseline[0].Name);

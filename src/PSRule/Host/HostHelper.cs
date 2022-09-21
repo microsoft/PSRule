@@ -253,6 +253,7 @@ namespace PSRule.Host
                 .IgnoreUnmatchedProperties()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
+                .WithTypeConverter(new StringArrayYamlTypeConverter())
                 .WithTypeConverter(new PSObjectYamlTypeConverter())
                 .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
                 .WithNodeDeserializer(
@@ -311,6 +312,7 @@ namespace PSRule.Host
             var deserializer = new JsonSerializer();
             deserializer.Converters.Add(new ResourceObjectJsonConverter());
             deserializer.Converters.Add(new FieldMapJsonConverter());
+            deserializer.Converters.Add(new StringArrayJsonConverter());
             deserializer.Converters.Add(new LanguageExpressionJsonConverter());
 
             try
@@ -445,6 +447,7 @@ namespace PSRule.Host
                         DependsOn = block.DependsOn,
                         Flags = block.Flags,
                         Extent = block.Extent,
+                        Taxa = block.Taxa,
                     });
                     knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
                     knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
@@ -475,6 +478,7 @@ namespace PSRule.Host
                         DependsOn = null, // TODO: No support for DependsOn yet
                         Flags = block.Flags,
                         Extent = block.Extent,
+                        Taxa = block.Metadata.Taxa,
                     });
                     knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
                     knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
@@ -553,7 +557,8 @@ namespace PSRule.Host
                         dependsOn: null,  // TODO: No support for DependsOn yet
                         configuration: null, // TODO: No support for rule configuration use module or workspace config
                         extent: null,
-                        flags: block.Flags
+                        flags: block.Flags,
+                        taxa: block.Metadata.Taxa
                     ));
                     knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
                     knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);

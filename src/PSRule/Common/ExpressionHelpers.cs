@@ -171,20 +171,49 @@ namespace PSRule
             return false;
         }
 
-        internal static bool TryConvertStringArray(object[] o, out string[] value)
+        internal static bool TryConvertStringArray(object o, out string[] value)
         {
-            value = Array.Empty<string>();
-            if (o == null || o.Length == 0 || !TryString(o[0], convert: true, value: out var s))
-                return false;
-
-            value = new string[o.Length];
-            value[0] = s;
-            for (var i = 1; i < o.Length; i++)
+            // Handle single string
+            if (TryString(o, convert: true, value: out var s))
             {
-                if (TryString(o[i], convert: true, value: out s))
-                    value[i] = s;
+                value = new string[] { s };
+                return true;
             }
-            return true;
+
+            // Handle multiple strings
+            return TryStringArray(o, out value);
+        }
+
+        internal static bool TryStringArray(object o, out string[] value)
+        {
+            value = null;
+            if (o is Array array)
+            {
+                value = new string[array.Length];
+                for (var i = 0; i < array.Length; i++)
+                {
+                    if (TryString(array.GetValue(i), out var s))
+                        value[i] = s;
+                }
+            }
+            else if (o is JArray jArray)
+            {
+                value = new string[jArray.Count];
+                for (var i = 0; i < jArray.Count; i++)
+                {
+                    if (TryString(jArray[i], out var s))
+                        value[i] = s;
+                }
+            }
+            else if (o is IEnumerable<string> enumerable)
+            {
+                value = enumerable.ToArray();
+            }
+            else if (o is IEnumerable e)
+            {
+                value = e.OfType<string>().ToArray();
+            }
+            return value != null;
         }
 
         /// <summary>
@@ -408,7 +437,7 @@ namespace PSRule
         {
             foundValue = actualValue;
             var expectedBase = GetBaseObject(expectedValue);
-            if (actualValue is IEnumerable items && !(actualValue is string))
+            if (actualValue is IEnumerable items && actualValue is not string)
             {
                 foreach (var item in items)
                 {

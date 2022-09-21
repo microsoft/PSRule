@@ -90,9 +90,18 @@ namespace PSRule.Commands
         [Parameter(Mandatory = false)]
         public string[] Alias { get; set; }
 
+        /// <summary>
+        /// An optional reference identifer for the resource.
+        /// </summary>
         [Parameter(Mandatory = false)]
         [ValidateLength(3, 128)]
         public string Ref { get; set; }
+
+        /// <summary>
+        /// Any taxonomy references.
+        /// </summary>
+        [Parameter(Mandatory = false)]
+        public Hashtable Taxa { get; set; }
 
         protected override void ProcessRecord()
         {
@@ -112,6 +121,7 @@ namespace PSRule.Commands
             );
             var flags = ResourceFlags.None;
             var id = new ResourceId(source.Module, Name, ResourceIdKind.Id);
+            var taxa = ResourceTaxa.FromHashtable(Taxa);
 
             context.VerboseFoundResource(name: Name, moduleName: source.Module, scriptName: MyInvocation.ScriptName);
 
@@ -136,7 +146,8 @@ namespace PSRule.Commands
                 dependsOn: ResourceHelper.GetRuleId(source.Module, DependsOn, ResourceIdKind.Unknown),
                 configuration: Configure,
                 extent: extent,
-                flags: flags
+                flags: flags,
+                taxa: taxa
             );
 #pragma warning restore CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
             WriteObject(block);
