@@ -23,7 +23,7 @@ namespace PSRule.Rules
     [DebuggerDisplay("{Id} @{Source.Path}")]
     internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable, IResource, IRuleV1
     {
-        internal RuleBlock(SourceFile source, ResourceId id, ResourceId? @ref, SeverityLevel level, RuleHelpInfo info, ICondition condition, ResourceTags tag, ResourceId[] alias, ResourceId[] dependsOn, Hashtable configuration, ISourceExtent extent, ResourceFlags flags)
+        internal RuleBlock(SourceFile source, ResourceId id, ResourceId? @ref, SeverityLevel level, RuleHelpInfo info, ICondition condition, ResourceTags tag, ResourceId[] alias, ResourceId[] dependsOn, Hashtable configuration, ISourceExtent extent, ResourceFlags flags, ResourceTaxa taxa)
         {
             Source = source;
             Name = id.Name;
@@ -41,6 +41,7 @@ namespace PSRule.Rules
             Configuration = configuration;
             Extent = extent;
             Flags = flags;
+            Taxa = taxa;
         }
 
         /// <summary>
@@ -48,8 +49,10 @@ namespace PSRule.Rules
         /// </summary>
         public ResourceId Id { get; }
 
+        /// <inheritdoc/>
         public ResourceId? Ref { get; }
 
+        /// <inheritdoc/>
         public ResourceId[] Alias { get; }
 
         /// <summary>
@@ -79,6 +82,9 @@ namespace PSRule.Rules
         /// </summary>
         public readonly ResourceTags Tag;
 
+        /// <inheritdoc/>
+        public ResourceTaxa Taxa { get; }
+
         /// <summary>
         /// Configuration defaults for the rule definition.
         /// </summary>
@@ -89,10 +95,13 @@ namespace PSRule.Rules
 
         public readonly RuleHelpInfo Info;
 
+        /// <inheritdoc/>
         public SourceFile Source { get; }
 
+        /// <inheritdoc/>
         public ISourceExtent Extent { get; }
 
+        /// <inheritdoc/>
         [JsonIgnore]
         [YamlIgnore]
         public ResourceFlags Flags { get; }

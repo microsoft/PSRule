@@ -79,3 +79,14 @@ metadata:
   annotations:
     obsolete: true
 spec: { }
+
+---
+# Synopsis: An example of a baseline with taxa defined
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  name: TestBaseline6
+spec:
+  rule:
+    taxa:
+      framework.v1/control: [ 'c-1', 'c-2' ]

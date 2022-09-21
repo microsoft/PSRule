@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using PSRule.Definitions;
 
 namespace PSRule.Configuration
 {
@@ -29,6 +30,7 @@ namespace PSRule.Configuration
             IncludeLocal = null;
             Include = null;
             Tag = null;
+            Taxa = null;
         }
 
         /// <summary>
@@ -45,6 +47,7 @@ namespace PSRule.Configuration
             IncludeLocal = option.IncludeLocal;
             Include = option.Include;
             Tag = option.Tag;
+            Taxa = option.Taxa;
         }
 
         /// <inheritdoc/>
@@ -61,7 +64,8 @@ namespace PSRule.Configuration
                 Exclude == other.Exclude &&
                 IncludeLocal == other.IncludeLocal &&
                 Include == other.Include &&
-                Tag == other.Tag;
+                Tag == other.Tag &&
+                Taxa == other.Taxa;
         }
 
         /// <inheritdoc/>
@@ -75,6 +79,7 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (IncludeLocal.HasValue ? IncludeLocal.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Include != null ? Include.GetHashCode() : 0);
                 hash = hash * 23 + (Tag != null ? Tag.GetHashCode() : 0);
+                hash = hash * 23 + (Taxa != null ? Taxa.GetHashCode() : 0);
                 return hash;
             }
         }
@@ -91,7 +96,8 @@ namespace PSRule.Configuration
                 Exclude = o1.Exclude ?? o2.Exclude,
                 IncludeLocal = o1.IncludeLocal ?? o2.IncludeLocal,
                 Include = o1.Include ?? o2.Include,
-                Tag = o1.Tag ?? o2.Tag
+                Tag = o1.Tag ?? o2.Tag,
+                Taxa = o1.Taxa ?? o2.Taxa,
             };
             return result;
         }
@@ -125,5 +131,11 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public Hashtable Tag { get; set; }
+
+        /// <summary>
+        /// A set of taxonomy references.
+        /// </summary>
+        [DefaultValue(null)]
+        public ResourceTaxa Taxa { get; set; }
     }
 }

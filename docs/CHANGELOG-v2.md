@@ -23,6 +23,14 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.5.0-B0015:
+
+- General improvements:
+  - Added taxa metadata from grouping and filtering rules by @BernieWhite.
+    [#1272](https://github.com/microsoft/PSRule/issues/1272)
+    - Taxa is metadata that extends on tags to provide a more structured way to group rules.
+    - Rules can be classified by setting the `metadata.taxa` property or `-Taxa` parameter.
+
 ## v2.5.0-B0015 (pre-release)
 
 What's changed since pre-release v2.5.0-B0004:

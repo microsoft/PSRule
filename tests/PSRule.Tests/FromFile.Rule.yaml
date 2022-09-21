@@ -13,6 +13,11 @@ metadata:
   name: YamlBasicRule
   tags:
     feature: tag
+  taxa:
+    single: Value
+    multi:
+    - Value1
+    - Value2
 spec:
   condition:
     allOf:

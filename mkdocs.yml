@@ -61,6 +61,7 @@ nav:
       - Using PSRule from a Container: scenarios/containers/container-execution.md
     - Concepts:
       - Functions: expressions/functions.md
+      - Grouping rules: concepts/grouping-rules.md
       - Sub-selectors: expressions/sub-selectors.md
     - Scenarios:
       - Using within continuous integration: scenarios/validation-pipeline/validation-pipeline.md

@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace PSRule
 {
@@ -59,7 +58,7 @@ namespace PSRule
         public static bool TryPopStringArray(this IDictionary<string, object> dictionary, string key, out string[] value)
         {
             value = default;
-            return TryPopValue(dictionary, key, out var v) && TryStringArray(v, out value);
+            return TryPopValue(dictionary, key, out var v) && ExpressionHelpers.TryConvertStringArray(v, out value);
         }
 
         [DebuggerStepThrough]
@@ -141,7 +140,7 @@ namespace PSRule
         public static bool TryGetStringArray(this IDictionary<string, object> dictionary, string key, out string[] value)
         {
             value = null;
-            return dictionary.TryGetValue(key, out var o) && TryStringArray(o, out value);
+            return dictionary.TryGetValue(key, out var o) && ExpressionHelpers.TryConvertStringArray(o, out value);
         }
 
         [DebuggerStepThrough]
@@ -150,17 +149,6 @@ namespace PSRule
             foreach (var kv in values)
                 if (!dictionary.ContainsKey(kv.Key))
                     dictionary.Add(kv.Key, kv.Value);
-        }
-
-        [DebuggerStepThrough]
-        private static bool TryStringArray(object o, out string[] value)
-        {
-            value = default;
-            if (o == null)
-                return false;
-
-            value = o.GetType().IsArray ? ((object[])o).OfType<string>().ToArray() : new string[] { o.ToString() };
-            return true;
         }
 
         internal static SortedDictionary<TKey, TValue> ToSortedDictionary<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)

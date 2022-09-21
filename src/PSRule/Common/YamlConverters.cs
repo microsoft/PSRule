@@ -94,7 +94,7 @@ namespace PSRule
                         var fields = new List<string>();
                         while (!parser.Accept<SequenceEnd>(out _))
                         {
-                            if (parser.TryConsume<Scalar>(out scalar))
+                            if (parser.TryConsume(out scalar))
                                 fields.Add(scalar.Value);
                         }
                         result.Set(fieldName, fields.ToArray());
@@ -130,6 +130,40 @@ namespace PSRule
                 emitter.Emit(new SequenceEnd());
             }
             emitter.Emit(new MappingEnd());
+        }
+    }
+
+    /// <summary>
+    /// A YAML converter that handles string to string array.
+    /// </summary>
+    internal sealed class StringArrayYamlTypeConverter : IYamlTypeConverter
+    {
+        public bool Accepts(Type type)
+        {
+            return type == typeof(string[]);
+        }
+
+        public object ReadYaml(IParser parser, Type type)
+        {
+            if (parser.TryConsume<SequenceStart>(out _))
+            {
+                var result = new List<string>();
+                while (parser.TryConsume<Scalar>(out var scalar))
+                    result.Add(scalar.Value);
+
+                parser.Consume<SequenceEnd>();
+                return result.ToArray();
+            }
+            else if (parser.TryConsume<Scalar>(out var scalar))
+            {
+                return new string[] { scalar.Value };
+            }
+            return null;
+        }
+
+        public void WriteYaml(IEmitter emitter, object value, Type type)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -465,6 +499,9 @@ namespace PSRule
         }
     }
 
+    /// <summary>
+    /// A custom deserializer to convert YAML into a <see cref="ResourceObject"/>.
+    /// </summary>
     internal sealed class ResourceNodeDeserializer : INodeDeserializer
     {
         private const string FIELD_APIVERSION = "apiVersion";

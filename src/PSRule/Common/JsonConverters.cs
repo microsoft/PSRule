@@ -620,6 +620,42 @@ namespace PSRule
     }
 
     /// <summary>
+    /// A JSON converter that handles string to string array.
+    /// </summary>
+    internal sealed class StringArrayJsonConverter : JsonConverter
+    {
+        public override bool CanRead => true;
+        public override bool CanWrite => false;
+
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(string[]).IsAssignableFrom(objectType);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TryConsume(JsonToken.StartArray))
+            {
+                var result = new List<string>();
+                while (reader.TryConsume(JsonToken.String, out var s_object) && s_object is string s)
+                    result.Add(s);
+
+                return result.ToArray();
+            }
+            else if (reader.TokenType == JsonToken.String && reader.Value is string s)
+            {
+                return new string[] { s };
+            }
+            return null;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
     /// A custom converter for deserializing JSON into a language expression.
     /// </summary>
     internal sealed class LanguageExpressionJsonConverter : JsonConverter

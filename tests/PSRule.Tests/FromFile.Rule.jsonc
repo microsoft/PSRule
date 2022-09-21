@@ -13,6 +13,13 @@
             "name": "JsonBasicRule",
             "tags": {
                 "feature": "tag"
+            },
+            "taxa": {
+                "single": "Value",
+                "multi": [
+                    "Value1",
+                    "Value2"
+                ]
             }
         },
         "spec": {

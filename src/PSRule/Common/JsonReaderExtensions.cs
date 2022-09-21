@@ -27,7 +27,7 @@ namespace PSRule
         public static bool GetSourceExtent(this JsonReader reader, string file, out ISourceExtent extent)
         {
             extent = null;
-            if (string.IsNullOrEmpty(file) || !TryLineInfo(reader, out int lineNumber, out int linePosition))
+            if (string.IsNullOrEmpty(file) || !TryLineInfo(reader, out var lineNumber, out var linePosition))
                 return false;
 
             extent = new SourceExtent(file, lineNumber, linePosition);
@@ -40,6 +40,18 @@ namespace PSRule
             if (reader.TokenType != token)
                 return false;
 
+            reader.Read();
+            return true;
+        }
+
+        [DebuggerStepThrough]
+        public static bool TryConsume(this JsonReader reader, JsonToken token, out object value)
+        {
+            value = null;
+            if (reader.TokenType != token)
+                return false;
+
+            value = reader.Value;
             reader.Read();
             return true;
         }

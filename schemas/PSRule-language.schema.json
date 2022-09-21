@@ -162,6 +162,28 @@
                                     }
                                 ]
                             }
+                        },
+                        "taxa": {
+                            "type": "object",
+                            "title": "Taxa",
+                            "description": "Require rules to have the following associated taxa.",
+                            "markdownDescription": "Require rules to have the following associated taxa.",
+                            "additionalProperties": {
+                                "oneOf": [
+                                    {
+                                        "type": "string",
+                                        "description": "A required reference."
+                                    },
+                                    {
+                                        "type": "array",
+                                        "description": "A required reference.",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "uniqueItems": true
+                                    }
+                                ]
+                            }
                         }
                     },
                     "additionalProperties": false
@@ -680,6 +702,40 @@
                 },
                 "tags": {
                     "$ref": "#/definitions/resourceTags"
+                },
+                "taxa": {
+                    "type": "object",
+                    "title": "Taxa",
+                    "description": "Any taxonomy references.",
+                    "additionalProperties": {
+                        "oneOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        ]
+                    },
+                    "defaultSnippets": [
+                        {
+                            "label": "Reference key/ value",
+                            "body": {
+                                "${1:Key}": "${2:Value}"
+                            }
+                        },
+                        {
+                            "label": "Reference key/ multi-value",
+                            "body": {
+                                "${1:Key}": [
+                                    "${2:Value}"
+                                ]
+                            }
+                        }
+                    ]
                 }
             },
             "required": [
