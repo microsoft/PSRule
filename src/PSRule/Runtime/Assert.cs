@@ -1458,6 +1458,7 @@ namespace PSRule.Runtime
         /// </summary>
         private static string DetectLinePrefix(string extension)
         {
+            extension = extension?.ToLower();
             switch (extension)
             {
                 case ".bicep":
@@ -1476,7 +1477,7 @@ namespace PSRule.Runtime
                 case ".json":
                 case ".jsonc":
                 case ".scala":
-                case "Jenkinsfile":
+                case "jenkinsfile":
                     return "// ";
 
                 case ".ps1":
@@ -1492,7 +1493,7 @@ namespace PSRule.Runtime
                 case ".gitignore":
                 case ".pl":
                 case ".rb":
-                case "Dockerfile":
+                case "dockerfile":
                     return "# ";
 
                 case ".sql":

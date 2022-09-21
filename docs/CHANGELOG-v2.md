@@ -30,6 +30,9 @@ What's changed since pre-release v2.5.0-B0015:
     [#1272](https://github.com/microsoft/PSRule/issues/1272)
     - Taxa is metadata that extends on tags to provide a more structured way to group rules.
     - Rules can be classified by setting the `metadata.taxa` property or `-Taxa` parameter.
+- Bug fixes:
+  - Fixed Dockerfile case sensitivity by @BernieWhite.
+    [#1269](https://github.com/microsoft/PSRule/issues/1269)
 
 ## v2.5.0-B0015 (pre-release)
 
