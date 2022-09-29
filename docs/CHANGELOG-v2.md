@@ -59,6 +59,15 @@ What's changed since v2.4.0:
   - Fixed unhandled exception with GetRootedPath by @BernieWhite.
     [#1251](https://github.com/microsoft/PSRule/issues/1251)
 
+## v2.4.1
+
+What's changed since v2.4.0:
+
+- Bug fixes:
+  - Fixed markdown parsing of Spanish translated help fails by @BernieWhite @jonathanruiz.
+    [#1286](https://github.com/microsoft/PSRule/issues/1286)
+    [#1285](https://github.com/microsoft/PSRule/pull/1285)
+
 ## v2.4.0
 
 What's changed since v2.3.2:
