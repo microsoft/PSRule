@@ -81,12 +81,12 @@ metadata:
 spec: { }
 
 ---
-# Synopsis: An example of a baseline with taxa defined
+# Synopsis: An example of a baseline with labels defined
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: TestBaseline6
 spec:
   rule:
-    taxa:
+    labels:
       framework.v1/control: [ 'c-1', 'c-2' ]

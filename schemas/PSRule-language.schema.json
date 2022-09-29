@@ -163,11 +163,11 @@
                                 ]
                             }
                         },
-                        "taxa": {
+                        "labels": {
                             "type": "object",
-                            "title": "Taxa",
-                            "description": "Require rules to have the following associated taxa.",
-                            "markdownDescription": "Require rules to have the following associated taxa.",
+                            "title": "Labels",
+                            "description": "Require rules to have the following associated labels.",
+                            "markdownDescription": "Require rules to have the following associated labels.",
                             "additionalProperties": {
                                 "oneOf": [
                                     {
@@ -703,9 +703,9 @@
                 "tags": {
                     "$ref": "#/definitions/resourceTags"
                 },
-                "taxa": {
+                "labels": {
                     "type": "object",
-                    "title": "Taxa",
+                    "title": "Labels",
                     "description": "Any taxonomy references.",
                     "additionalProperties": {
                         "oneOf": [

@@ -10,9 +10,9 @@ Rule 'WithBaseline' -Tag @{ category = 'group2'; severity = 'high' } {
     $PSRule.TargetName -eq 'TestObject1'
     $PSRule.TargetType -eq 'TestObjectType'
     $PSRule.Field.kind -eq 'TestObjectType'
-} -Taxa @{ 'framework.v1/control' = @('c-2') }
+} -Labels @{ 'framework.v1/control' = @('c-2') }
 
 # Synopsis: Test for baseline
 Rule 'NotInBaseline' -Tag @{ category = 'group2'; severity = 'low' } {
     $False;
-} -Taxa @{ 'framework.v1/control' = @('c-3') }
+} -Labels @{ 'framework.v1/control' = @('c-3') }

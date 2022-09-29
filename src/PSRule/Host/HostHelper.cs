@@ -447,7 +447,7 @@ namespace PSRule.Host
                         DependsOn = block.DependsOn,
                         Flags = block.Flags,
                         Extent = block.Extent,
-                        Taxa = block.Taxa,
+                        Labels = block.Labels,
                     });
                     knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
                     knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
@@ -478,7 +478,7 @@ namespace PSRule.Host
                         DependsOn = null, // TODO: No support for DependsOn yet
                         Flags = block.Flags,
                         Extent = block.Extent,
-                        Taxa = block.Metadata.Taxa,
+                        Labels = block.Metadata.Labels,
                     });
                     knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
                     knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
@@ -558,7 +558,7 @@ namespace PSRule.Host
                         configuration: null, // TODO: No support for rule configuration use module or workspace config
                         extent: null,
                         flags: block.Flags,
-                        taxa: block.Metadata.Taxa
+                        labels: block.Metadata.Labels
                     ));
                     knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
                     knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);

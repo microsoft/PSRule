@@ -125,7 +125,7 @@
         },
         "spec": {
             "rule": {
-                "taxa": {
+                "labels": {
                     "framework.v1/control": [
                         "c-1",
                         "c-2"

@@ -112,7 +112,7 @@ namespace PSRule.Rules
 
         /// <inheritdoc/>
         [JsonIgnore, YamlIgnore]
-        public ResourceTaxa Taxa { get; set; }
+        public ResourceLabels Labels { get; set; }
 
         string ITargetInfo.TargetName => Name;
 

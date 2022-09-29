@@ -60,7 +60,7 @@ namespace PSRule.Definitions.Conventions
         ResourceTags IResource.Tags => null;
 
         // Not supported with conventions.
-        ResourceTaxa IResource.Taxa => null;
+        ResourceLabels IResource.Labels => null;
 
         public override void Initialize(RunspaceContext context, IEnumerable input)
         {
