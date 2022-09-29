@@ -810,14 +810,15 @@ namespace PSRule.Runtime
             RunConventionEnd();
         }
 
-        public string GetLocalizedPath(string file)
+        public string GetLocalizedPath(string file, out string culture)
         {
+            culture = null;
             if (string.IsNullOrEmpty(Source.File.HelpPath))
                 return null;
 
-            var culture = Pipeline.Baseline.GetCulture();
+            var cultures = Pipeline.Baseline.GetCulture();
             if (!_RaisedUsingInvariantCulture &&
-                (culture == null || culture.Length == 0) &&
+                (cultures == null || cultures.Length == 0) &&
                 _InvariantCultureWarning)
             {
                 Writer.WarnUsingInvariantCulture();
@@ -825,11 +826,14 @@ namespace PSRule.Runtime
                 return null;
             }
 
-            for (var i = 0; culture != null && i < culture.Length; i++)
+            for (var i = 0; cultures != null && i < cultures.Length; i++)
             {
-                var path = Path.Combine(Source.File.HelpPath, culture[i], file);
+                var path = Path.Combine(Source.File.HelpPath, cultures[i], file);
                 if (File.Exists(path))
+                {
+                    culture = cultures[i];
                     return path;
+                }
             }
             return null;
         }

@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using PSRule.Definitions;
-using PSRule.Resources;
 
 namespace PSRule.Help
 {
@@ -11,7 +10,7 @@ namespace PSRule.Help
     /// </summary>
     internal sealed class RuleHelpLexer : HelpLexer
     {
-        public RuleHelpLexer() { }
+        public RuleHelpLexer(string culture) : base(culture) { }
 
         public RuleDocument Process(TokenStream stream)
         {
@@ -51,9 +50,9 @@ namespace PSRule.Help
         /// <summary>
         /// Read recommendation.
         /// </summary>
-        private static bool Recommendation(TokenStream stream, RuleDocument doc)
+        private bool Recommendation(TokenStream stream, RuleDocument doc)
         {
-            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Recommendation))
+            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, _Strings.GetString("Recommendation")))
                 return false;
 
             doc.Recommendation = InfoString(stream);
@@ -64,9 +63,9 @@ namespace PSRule.Help
         /// <summary>
         /// Read notes.
         /// </summary>
-        private static bool Notes(TokenStream stream, RuleDocument doc)
+        private bool Notes(TokenStream stream, RuleDocument doc)
         {
-            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Notes))
+            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, _Strings.GetString("Notes")))
                 return false;
 
             doc.Notes = TextBlock(stream, includeNonYamlFencedBlocks: true);
