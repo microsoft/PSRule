@@ -55,28 +55,28 @@ namespace PSRule
         }
 
         [Fact]
-        public void MatchTaxa()
+        public void MatchLabels()
         {
             // Set resource tags
-            var resourceTaxa = new Hashtable();
+            var resourceLabels = new Hashtable();
 
             // Create a filter
-            var taxa = new ResourceTaxa
+            var labels = new ResourceLabels
             {
                 ["framework.v1/control"] = new string[] { "c-1", "c-2" }
             };
-            var filter = new RuleFilter(null, null, null, null, taxa);
+            var filter = new RuleFilter(null, null, null, null, labels);
 
-            resourceTaxa["framework.v1/control"] = new string[] { "c-2", "c-1" };
-            Assert.True(filter.Match("rule", null, ResourceTaxa.FromHashtable(resourceTaxa)));
-            resourceTaxa["framework.v1/control"] = new string[] { "c-3", "c-1" };
-            Assert.True(filter.Match("rule", null, ResourceTaxa.FromHashtable(resourceTaxa)));
-            resourceTaxa["framework.v1/control"] = new string[] { "c-1", "c-3" };
-            Assert.True(filter.Match("rule", null, ResourceTaxa.FromHashtable(resourceTaxa)));
-            resourceTaxa["framework.v1/control"] = new string[] { "c-3", "c-4" };
-            Assert.False(filter.Match("rule", null, ResourceTaxa.FromHashtable(resourceTaxa)));
-            resourceTaxa["framework.v1/control"] = System.Array.Empty<string>();
-            Assert.False(filter.Match("rule", null, ResourceTaxa.FromHashtable(resourceTaxa)));
+            resourceLabels["framework.v1/control"] = new string[] { "c-2", "c-1" };
+            Assert.True(filter.Match("rule", null, ResourceLabels.FromHashtable(resourceLabels)));
+            resourceLabels["framework.v1/control"] = new string[] { "c-3", "c-1" };
+            Assert.True(filter.Match("rule", null, ResourceLabels.FromHashtable(resourceLabels)));
+            resourceLabels["framework.v1/control"] = new string[] { "c-1", "c-3" };
+            Assert.True(filter.Match("rule", null, ResourceLabels.FromHashtable(resourceLabels)));
+            resourceLabels["framework.v1/control"] = new string[] { "c-3", "c-4" };
+            Assert.False(filter.Match("rule", null, ResourceLabels.FromHashtable(resourceLabels)));
+            resourceLabels["framework.v1/control"] = System.Array.Empty<string>();
+            Assert.False(filter.Match("rule", null, ResourceLabels.FromHashtable(resourceLabels)));
         }
     }
 }

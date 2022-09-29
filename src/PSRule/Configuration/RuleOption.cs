@@ -30,7 +30,7 @@ namespace PSRule.Configuration
             IncludeLocal = null;
             Include = null;
             Tag = null;
-            Taxa = null;
+            Labels = null;
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace PSRule.Configuration
             IncludeLocal = option.IncludeLocal;
             Include = option.Include;
             Tag = option.Tag;
-            Taxa = option.Taxa;
+            Labels = option.Labels;
         }
 
         /// <inheritdoc/>
@@ -65,7 +65,7 @@ namespace PSRule.Configuration
                 IncludeLocal == other.IncludeLocal &&
                 Include == other.Include &&
                 Tag == other.Tag &&
-                Taxa == other.Taxa;
+                Labels == other.Labels;
         }
 
         /// <inheritdoc/>
@@ -79,7 +79,7 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (IncludeLocal.HasValue ? IncludeLocal.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Include != null ? Include.GetHashCode() : 0);
                 hash = hash * 23 + (Tag != null ? Tag.GetHashCode() : 0);
-                hash = hash * 23 + (Taxa != null ? Taxa.GetHashCode() : 0);
+                hash = hash * 23 + (Labels != null ? Labels.GetHashCode() : 0);
                 return hash;
             }
         }
@@ -97,7 +97,7 @@ namespace PSRule.Configuration
                 IncludeLocal = o1.IncludeLocal ?? o2.IncludeLocal,
                 Include = o1.Include ?? o2.Include,
                 Tag = o1.Tag ?? o2.Tag,
-                Taxa = o1.Taxa ?? o2.Taxa,
+                Labels = o1.Labels ?? o2.Labels,
             };
             return result;
         }
@@ -136,6 +136,6 @@ namespace PSRule.Configuration
         /// A set of taxonomy references.
         /// </summary>
         [DefaultValue(null)]
-        public ResourceTaxa Taxa { get; set; }
+        public ResourceLabels Labels { get; set; }
     }
 }

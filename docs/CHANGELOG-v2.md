@@ -26,10 +26,10 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 What's changed since pre-release v2.5.0-B0015:
 
 - General improvements:
-  - Added taxa metadata from grouping and filtering rules by @BernieWhite.
+  - Added labels metadata from grouping and filtering rules by @BernieWhite.
     [#1272](https://github.com/microsoft/PSRule/issues/1272)
-    - Taxa is metadata that extends on tags to provide a more structured way to group rules.
-    - Rules can be classified by setting the `metadata.taxa` property or `-Taxa` parameter.
+    - Labels are metadata that extends on tags to provide a more structured way to group rules.
+    - Rules can be classified by setting the `metadata.labels` property or `-Labels` parameter.
 - Bug fixes:
   - Fixed Dockerfile case sensitivity by @BernieWhite.
     [#1269](https://github.com/microsoft/PSRule/issues/1269)

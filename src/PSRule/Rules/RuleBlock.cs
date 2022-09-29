@@ -23,7 +23,7 @@ namespace PSRule.Rules
     [DebuggerDisplay("{Id} @{Source.Path}")]
     internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable, IResource, IRuleV1
     {
-        internal RuleBlock(SourceFile source, ResourceId id, ResourceId? @ref, SeverityLevel level, RuleHelpInfo info, ICondition condition, ResourceTags tag, ResourceId[] alias, ResourceId[] dependsOn, Hashtable configuration, ISourceExtent extent, ResourceFlags flags, ResourceTaxa taxa)
+        internal RuleBlock(SourceFile source, ResourceId id, ResourceId? @ref, SeverityLevel level, RuleHelpInfo info, ICondition condition, ResourceTags tag, ResourceId[] alias, ResourceId[] dependsOn, Hashtable configuration, ISourceExtent extent, ResourceFlags flags, ResourceLabels labels)
         {
             Source = source;
             Name = id.Name;
@@ -41,7 +41,7 @@ namespace PSRule.Rules
             Configuration = configuration;
             Extent = extent;
             Flags = flags;
-            Taxa = taxa;
+            Labels = labels;
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace PSRule.Rules
         public readonly ResourceTags Tag;
 
         /// <inheritdoc/>
-        public ResourceTaxa Taxa { get; }
+        public ResourceLabels Labels { get; }
 
         /// <summary>
         /// Configuration defaults for the rule definition.
