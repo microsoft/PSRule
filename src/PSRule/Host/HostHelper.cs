@@ -791,7 +791,7 @@ namespace PSRule.Host
 
         internal static RuleHelpInfo GetRuleHelpInfo(RunspaceContext context, string name, string defaultSynopsis)
         {
-            return !TryHelpPath(context, name, out var path) || !TryDocument(path, out var document)
+            return !TryHelpPath(context, name, out var path, out var culture) || !TryDocument(path, culture, out var document)
                 ? new RuleHelpInfo(
                     name: name,
                     displayName: name,
@@ -815,24 +815,25 @@ namespace PSRule.Host
 
         internal static void UpdateHelpInfo(RunspaceContext context, IResource resource)
         {
-            if (context == null || resource == null || !TryHelpPath(context, resource.Name, out var path) || !TryHelpInfo(path, out var info))
+            if (context == null || resource == null || !TryHelpPath(context, resource.Name, out var path, out var culture) || !TryHelpInfo(path, culture, out var info))
                 return;
 
             resource.Info.Update(info);
         }
 
-        private static bool TryHelpPath(RunspaceContext context, string name, out string path)
+        private static bool TryHelpPath(RunspaceContext context, string name, out string path, out string culture)
         {
             path = null;
+            culture = null;
             if (string.IsNullOrEmpty(context.Source.File.HelpPath))
                 return false;
 
             var helpFileName = string.Concat(name, Markdown_Extension);
-            path = context.GetLocalizedPath(helpFileName);
+            path = context.GetLocalizedPath(helpFileName, out culture);
             return path != null;
         }
 
-        private static bool TryDocument(string path, out RuleDocument document)
+        private static bool TryDocument(string path, string culture, out RuleDocument document)
         {
             document = null;
             var markdown = File.ReadAllText(path);
@@ -841,12 +842,12 @@ namespace PSRule.Host
 
             var reader = new MarkdownReader(yamlHeaderOnly: false);
             var stream = reader.Read(markdown, path);
-            var lexer = new RuleHelpLexer();
+            var lexer = new RuleHelpLexer(culture);
             document = lexer.Process(stream);
             return document != null;
         }
 
-        private static bool TryHelpInfo(string path, out IResourceHelpInfo info)
+        private static bool TryHelpInfo(string path, string culture, out IResourceHelpInfo info)
         {
             info = null;
             var markdown = File.ReadAllText(path);
@@ -855,7 +856,7 @@ namespace PSRule.Host
 
             var reader = new MarkdownReader(yamlHeaderOnly: false);
             var stream = reader.Read(markdown, path);
-            var lexer = new ResourceHelpLexer();
+            var lexer = new ResourceHelpLexer(culture);
             info = lexer.Process(stream).ToInfo();
             return info != null;
         }

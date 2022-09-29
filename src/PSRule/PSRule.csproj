@@ -72,6 +72,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\DocumentStrings.es-us.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\DocumentStrings.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\DocumentStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DocumentStrings.Designer.cs</LastGenOutput>

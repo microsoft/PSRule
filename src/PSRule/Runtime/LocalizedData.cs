@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections;
@@ -47,7 +47,7 @@ namespace PSRule.Runtime
 
         private static string GetFilePath()
         {
-            return RunspaceContext.CurrentThread.GetLocalizedPath(DATA_FILENAME);
+            return RunspaceContext.CurrentThread.GetLocalizedPath(DATA_FILENAME, out _);
         }
     }
 }
