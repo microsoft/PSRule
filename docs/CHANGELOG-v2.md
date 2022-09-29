@@ -33,6 +33,9 @@ What's changed since pre-release v2.5.0-B0015:
 - Bug fixes:
   - Fixed Dockerfile case sensitivity by @BernieWhite.
     [#1269](https://github.com/microsoft/PSRule/issues/1269)
+  - Fixed markdown parsing of Spanish translated help fails by @BernieWhite @jonathanruiz.
+    [#1286](https://github.com/microsoft/PSRule/issues/1286)
+    [#1285](https://github.com/microsoft/PSRule/pull/1285)
 
 ## v2.5.0-B0015 (pre-release)
 

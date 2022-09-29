@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Resources;
 using System.Text;
 using System.Threading;
 using PSRule.Definitions;
@@ -17,12 +19,20 @@ namespace PSRule.Help
 
         private const string Space = " ";
 
+        protected readonly ResourceSet _Strings;
+
+        protected HelpLexer(string culture)
+        {
+            var cultureInfo = string.IsNullOrEmpty(culture) ? Thread.CurrentThread.CurrentCulture : CultureInfo.GetCultureInfo(culture);
+            _Strings = DocumentStrings.ResourceManager.GetResourceSet(cultureInfo, createIfNotExists: true, tryParents: true);
+        }
+
         /// <summary>
         /// Read synopsis.
         /// </summary>
-        protected static bool Synopsis(TokenStream stream, IHelpDocument doc)
+        protected bool Synopsis(TokenStream stream, IHelpDocument doc)
         {
-            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Synopsis))
+            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, _Strings.GetString("Synopsis")))
                 return false;
 
             doc.Synopsis = InfoString(stream);
@@ -33,9 +43,9 @@ namespace PSRule.Help
         /// <summary>
         /// Read description.
         /// </summary>
-        protected static bool Description(TokenStream stream, IHelpDocument doc)
+        protected bool Description(TokenStream stream, IHelpDocument doc)
         {
-            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Description))
+            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, _Strings.GetString("Description")))
                 return false;
 
             doc.Description = InfoString(stream, includeNonYamlFencedBlocks: true);
@@ -46,9 +56,9 @@ namespace PSRule.Help
         /// <summary>
         /// Read links.
         /// </summary>
-        protected static bool Links(TokenStream stream, IHelpDocument doc)
+        protected bool Links(TokenStream stream, IHelpDocument doc)
         {
-            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, DocumentStrings.Links))
+            if (!IsHeading(stream.Current, RULE_ENTRIES_HEADING_LEVEL, _Strings.GetString("Links")))
                 return false;
 
             var links = new List<Link>();
