@@ -14,3 +14,4 @@ BenchmarkDotNet.Artifacts/
 .sonarqube/
 TestResults/
 *.diagsession
+**/.DS_Store

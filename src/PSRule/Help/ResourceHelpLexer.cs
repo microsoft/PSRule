@@ -5,7 +5,7 @@ namespace PSRule.Help
 {
     internal sealed class ResourceHelpLexer : HelpLexer
     {
-        public ResourceHelpLexer() { }
+        public ResourceHelpLexer(string culture) : base(culture) { }
 
         public ResourceHelpDocument Process(TokenStream stream)
         {
