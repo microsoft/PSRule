@@ -114,7 +114,7 @@ namespace PSRule.Definitions
         /// <summary>
         /// Any taxonomy references.
         /// </summary>
-        ResourceTaxa Taxa { get; }
+        ResourceLabels Labels { get; }
 
         /// <summary>
         /// Flags for the resource.
@@ -234,22 +234,22 @@ namespace PSRule.Definitions
     /// <summary>
     /// Additional resource taxonomy references.
     /// </summary>
-    public sealed class ResourceTaxa : Dictionary<string, string[]>
+    public sealed class ResourceLabels : Dictionary<string, string[]>
     {
         /// <summary>
-        /// Create an empty set of resource taxa.
+        /// Create an empty set of resource labels.
         /// </summary>
-        public ResourceTaxa() : base(StringComparer.OrdinalIgnoreCase) { }
+        public ResourceLabels() : base(StringComparer.OrdinalIgnoreCase) { }
 
         /// <summary>
-        /// Convert from a hashtable to resource taxa.
+        /// Convert from a hashtable to resource labels.
         /// </summary>
-        internal static ResourceTaxa FromHashtable(Hashtable hashtable)
+        internal static ResourceLabels FromHashtable(Hashtable hashtable)
         {
             if (hashtable == null || hashtable.Count == 0)
                 return null;
 
-            var annotations = new ResourceTaxa();
+            var annotations = new ResourceLabels();
             foreach (DictionaryEntry kv in hashtable)
             {
                 var key = kv.Key.ToString();
@@ -405,7 +405,7 @@ namespace PSRule.Definitions
         {
             Annotations = new ResourceAnnotations();
             Tags = new ResourceTags();
-            Taxa = new ResourceTaxa();
+            Labels = new ResourceLabels();
         }
 
         /// <summary>
@@ -439,7 +439,7 @@ namespace PSRule.Definitions
         /// Any taxonomy references.
         /// </summary>
         [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitEmptyCollections)]
-        public ResourceTaxa Taxa { get; set; }
+        public ResourceLabels Labels { get; set; }
     }
 
     /// <summary>
@@ -571,7 +571,7 @@ namespace PSRule.Definitions
 
         ResourceTags IResource.Tags => Metadata.Tags;
 
-        ResourceTaxa IResource.Taxa => Metadata.Taxa;
+        ResourceLabels IResource.Labels => Metadata.Labels;
 
         ResourceFlags IResource.Flags => Flags;
 

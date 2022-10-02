@@ -101,7 +101,7 @@ namespace PSRule.Commands
         /// Any taxonomy references.
         /// </summary>
         [Parameter(Mandatory = false)]
-        public Hashtable Taxa { get; set; }
+        public Hashtable Labels { get; set; }
 
         protected override void ProcessRecord()
         {
@@ -121,7 +121,7 @@ namespace PSRule.Commands
             );
             var flags = ResourceFlags.None;
             var id = new ResourceId(source.Module, Name, ResourceIdKind.Id);
-            var taxa = ResourceTaxa.FromHashtable(Taxa);
+            var labels = ResourceLabels.FromHashtable(Labels);
 
             context.VerboseFoundResource(name: Name, moduleName: source.Module, scriptName: MyInvocation.ScriptName);
 
@@ -147,7 +147,7 @@ namespace PSRule.Commands
                 configuration: Configure,
                 extent: extent,
                 flags: flags,
-                taxa: taxa
+                labels: labels
             );
 #pragma warning restore CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
             WriteObject(block);

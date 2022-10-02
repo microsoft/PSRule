@@ -91,7 +91,7 @@ namespace PSRule.Pipeline
             public string[] Include;
             public string[] Exclude;
             public Hashtable Tag;
-            public ResourceTaxa Taxa;
+            public ResourceLabels Labels;
 
             // Configuration
             public Dictionary<string, object> Configuration;
@@ -123,7 +123,7 @@ namespace PSRule.Pipeline
                 Include = option.Rule?.Include;
                 Exclude = option.Rule?.Exclude;
                 Tag = option.Rule?.Tag;
-                Taxa = option.Rule?.Taxa;
+                Labels = option.Rule?.Labels;
                 Configuration = option.Configuration != null
                     ? new Dictionary<string, object>(option.Configuration, StringComparer.OrdinalIgnoreCase)
                     : new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
@@ -282,9 +282,9 @@ namespace PSRule.Pipeline
             var include = _Parameter?.Include ?? _Explicit?.Include ?? _WorkspaceBaseline?.Include ?? _ModuleBaseline?.Include;
             var exclude = _Explicit?.Exclude ?? _WorkspaceBaseline?.Exclude ?? _ModuleBaseline?.Exclude;
             var tag = _Parameter?.Tag ?? _Explicit?.Tag ?? _WorkspaceBaseline?.Tag ?? _ModuleBaseline?.Tag;
-            var taxa = _Parameter?.Taxa ?? _Explicit?.Taxa ?? _WorkspaceBaseline?.Taxa ?? _ModuleBaseline?.Taxa;
+            var labels = _Parameter?.Labels ?? _Explicit?.Labels ?? _WorkspaceBaseline?.Labels ?? _ModuleBaseline?.Labels;
             var includeLocal = _Explicit?.IncludeLocal ?? _WorkspaceBaseline?.IncludeLocal ?? _ModuleBaseline?.IncludeLocal;
-            return _Filter = new RuleFilter(include, tag, exclude, includeLocal, taxa);
+            return _Filter = new RuleFilter(include, tag, exclude, includeLocal, labels);
         }
 
         private IResourceFilter GetConventionFilter()

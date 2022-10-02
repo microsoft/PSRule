@@ -59,11 +59,11 @@ namespace PSRule
 
             // TestBaseline6
             Assert.Equal("TestBaseline6", baseline[5].Name);
-            var taxa = baseline[5].Spec.Rule.Taxa;
-            Assert.True(taxa.Contains("framework.v1/control", new string[] { "*" }));
-            Assert.True(taxa.Contains("framework.v1/control", new string[] { "c-1" }));
-            Assert.False(taxa.Contains("framework.v1/control", new string[] { "c-3" }));
-            Assert.False(taxa.Contains("framework.v3/control", new string[] { "*" }));
+            var labels = baseline[5].Spec.Rule.Labels;
+            Assert.True(labels.Contains("framework.v1/control", new string[] { "*" }));
+            Assert.True(labels.Contains("framework.v1/control", new string[] { "c-1" }));
+            Assert.False(labels.Contains("framework.v1/control", new string[] { "c-3" }));
+            Assert.False(labels.Contains("framework.v3/control", new string[] { "*" }));
         }
 
         [Fact]
@@ -100,11 +100,11 @@ namespace PSRule
 
             // TestBaseline6
             Assert.Equal("TestBaseline6", baseline[5].Name);
-            var taxa = baseline[5].Spec.Rule.Taxa;
-            Assert.True(taxa.Contains("framework.v1/control", new string[] { "*" }));
-            Assert.True(taxa.Contains("framework.v1/control", new string[] { "c-1" }));
-            Assert.False(taxa.Contains("framework.v1/control", new string[] { "c-3" }));
-            Assert.False(taxa.Contains("framework.v3/control", new string[] { "*" }));
+            var labels = baseline[5].Spec.Rule.Labels;
+            Assert.True(labels.Contains("framework.v1/control", new string[] { "*" }));
+            Assert.True(labels.Contains("framework.v1/control", new string[] { "c-1" }));
+            Assert.False(labels.Contains("framework.v1/control", new string[] { "c-3" }));
+            Assert.False(labels.Contains("framework.v3/control", new string[] { "*" }));
         }
 
         [Theory]

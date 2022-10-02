@@ -13,7 +13,7 @@ metadata:
   name: YamlBasicRule
   tags:
     feature: tag
-  taxa:
+  labels:
     single: Value
     multi:
     - Value1

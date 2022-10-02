@@ -124,6 +124,9 @@
     <None Update="PSRule.Tests6.yml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="RuleDocument-es.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="RuleDocument.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -1730,7 +1730,7 @@ function Rule {
 
         # Any taxonomy references.
         [Parameter(Mandatory = $False)]
-        [hashtable]$Taxa,
+        [hashtable]$Labels,
 
         [Parameter(Mandatory = $False)]
         [ScriptBlock]$If,
