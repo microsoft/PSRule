@@ -2,6 +2,7 @@
 
 repository:
   url: 'https://github.com/microsoft/PSRule.UnitTest'
+  baseRef: dev
 
 # Configure baseline
 rule:
@@ -68,6 +69,7 @@ input:
   - '*.Designer.cs'
   targetType:
   - virtualMachine
+  ignoreUnchangedPath: true
 
 # Configure logging options
 logging:

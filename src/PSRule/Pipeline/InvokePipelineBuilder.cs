@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using PSRule.Configuration;
-using PSRule.Data;
 using PSRule.Host;
 
 namespace PSRule.Pipeline
@@ -37,7 +36,7 @@ namespace PSRule.Pipeline
 
     internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvokePipelineBuilder
     {
-        protected InputFileInfo[] _InputPath;
+        protected InputPathBuilder _InputPath;
         protected string _ResultVariableName;
 
         private List<string> _TrustedPublishers;
@@ -53,9 +52,16 @@ namespace PSRule.Pipeline
             if (path == null || path.Length == 0)
                 return;
 
-            var builder = new InputPathBuilder(GetOutput(), PSRuleOption.GetWorkingPath(), "*", GetInputFilter());
+            PathFilter required = null;
+            if (TryChangedFiles(out var files))
+            {
+                required = PathFilter.Create(PSRuleOption.GetWorkingPath(), path);
+                path = files;
+            }
+
+            var builder = new InputPathBuilder(GetOutput(), PSRuleOption.GetWorkingPath(), "*", GetInputFilter(), required);
             builder.Add(path);
-            _InputPath = builder.Build();
+            _InputPath = builder;
         }
 
         public void ResultVariable(string variableName)

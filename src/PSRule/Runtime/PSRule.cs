@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using PSRule.Badges;
+using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline;
 
@@ -19,8 +20,10 @@ namespace PSRule.Runtime
     public sealed class PSRule : ScopedItem
     {
         private ITargetSourceCollection _Source;
+        private IInputCollection _Input;
         private ITargetIssueCollection _Issue;
         private IBadgeBuilder _BadgeBuilder;
+        private IRepositoryRuntimeInfo _Repository;
 
         /// <summary>
         /// Create an empty instance.
@@ -60,6 +63,45 @@ namespace PSRule.Runtime
             }
         }
 
+        private sealed class PSRuleInput : ScopedItem, IInputCollection
+        {
+            internal PSRuleInput(RunspaceContext context)
+                : base(context) { }
+
+            /// <inheritdoc/>
+            public void Add(string path)
+            {
+                var context = GetContext();
+                context.Writer.VerboseInputAdded(path);
+                context.Pipeline.Reader.Add(path);
+            }
+        }
+
+        private sealed class PSRuleRepository : ScopedItem, IRepositoryRuntimeInfo
+        {
+            private InputFileInfoCollection _ChangedFiles;
+
+            internal PSRuleRepository(RunspaceContext context)
+                : base(context)
+            {
+                Url = GetContext().Pipeline.Option.Repository.Url;
+                BaseRef = GetContext().Pipeline.Option.Repository.BaseRef;
+            }
+
+            /// <inheritdoc/>
+            public string Url { get; }
+
+            /// <inheritdoc/>
+            public string BaseRef { get; }
+
+            /// <inheritdoc/>
+            public IInputFileInfoCollection GetChangedFiles()
+            {
+                _ChangedFiles ??= new InputFileInfoCollection(PSRuleOption.GetWorkingPath(), GitHelper.TryGetChangedFiles(BaseRef, "d", null, out var files) ? files : null);
+                return _ChangedFiles;
+            }
+        }
+
         /// <summary>
         /// Exposes the badge API for used within conventions.
         /// </summary>
@@ -68,9 +110,7 @@ namespace PSRule.Runtime
             get
             {
                 RequireScope(RunspaceScope.ConventionEnd);
-                if (_BadgeBuilder == null)
-                    _BadgeBuilder = new BadgeBuilder();
-
+                _BadgeBuilder ??= new BadgeBuilder();
                 return _BadgeBuilder;
             }
         }
@@ -104,6 +144,22 @@ namespace PSRule.Runtime
                 return GetContext().RuleRecord.Field;
             }
         }
+
+        /// <summary>
+        /// A list of pre-defined input path that are included.
+        /// </summary>
+        /// <remarks>
+        /// This property can only be accessed from an initialize convention block.
+        /// </remarks>
+        /// <exception cref="RuntimeScopeException">
+        /// Thrown when accessing this property outside of an initialize convention block.
+        /// </exception>
+        public IInputCollection Input => GetInput();
+
+        /// <summary>
+        /// Information about the repository that is currently being used.
+        /// </summary>
+        public IRepositoryRuntimeInfo Repository => GetRepository();
 
         /// <summary>
         /// An aggregated set of results from executing PSRule rules.
@@ -293,19 +349,28 @@ namespace PSRule.Runtime
         private ITargetSourceCollection GetSource()
         {
             RequireScope(RunspaceScope.Target);
-            if (_Source == null)
-                _Source = new PSRuleSource(GetContext());
-
+            _Source ??= new PSRuleSource(GetContext());
             return _Source;
+        }
+
+        private IInputCollection GetInput()
+        {
+            RequireScope(RunspaceScope.ConventionInitialize);
+            _Input ??= new PSRuleInput(GetContext());
+            return _Input;
         }
 
         private ITargetIssueCollection GetIssue()
         {
             RequireScope(RunspaceScope.Target);
-            if (_Issue == null)
-                _Issue = new PSRuleIssue(GetContext());
-
+            _Issue ??= new PSRuleIssue(GetContext());
             return _Issue;
+        }
+
+        private IRepositoryRuntimeInfo GetRepository()
+        {
+            _Repository ??= new PSRuleRepository(GetContext());
+            return _Repository;
         }
 
         #endregion Helper methods

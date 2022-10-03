@@ -385,4 +385,10 @@
   <data name="DebugTargetSubselectorMismatch" xml:space="preserve">
     <value>Target failed sub-selector pre-condition.</value>
   </data>
+  <data name="InputAdded" xml:space="preserve">
+    <value>The input path was added: {0}</value>
+  </data>
+  <data name="UsingChangedFile" xml:space="preserve">
+    <value>Using changed files: {0}</value>
+  </data>
 </root>

@@ -4,7 +4,6 @@
 using System;
 using System.Management.Automation;
 using PSRule.Configuration;
-using PSRule.Data;
 
 namespace PSRule.Pipeline
 {
@@ -18,7 +17,7 @@ namespace PSRule.Pipeline
     /// </summary>
     internal sealed class GetTargetPipelineBuilder : PipelineBuilderBase, IGetTargetPipelineBuilder
     {
-        private InputFileInfo[] _InputPath;
+        private InputPathBuilder _InputPath;
 
         internal GetTargetPipelineBuilder(Source[] source, IHostContext hostContext)
             : base(source, hostContext)
@@ -47,9 +46,16 @@ namespace PSRule.Pipeline
             if (path == null || path.Length == 0)
                 return;
 
-            var builder = new InputPathBuilder(GetOutput(), PSRuleOption.GetWorkingPath(), "*", GetInputFilter());
+            PathFilter required = null;
+            if (TryChangedFiles(out var files))
+            {
+                required = PathFilter.Create(PSRuleOption.GetWorkingPath(), path);
+                path = files;
+            }
+
+            var builder = new InputPathBuilder(GetOutput(), PSRuleOption.GetWorkingPath(), "*", GetInputFilter(), required);
             builder.Add(path);
-            _InputPath = builder.Build();
+            _InputPath = builder;
         }
 
         public override IPipeline Build(IPipelineWriter writer = null)

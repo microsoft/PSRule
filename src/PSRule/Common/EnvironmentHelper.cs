@@ -39,10 +39,11 @@ namespace PSRule
 
     internal sealed class EnvironmentHelper
     {
-        private readonly static char[] STRINGARRAY_SEPARATOR = new char[] { ';' };
-        private readonly static char[] WINDOWS_PATH_ENV_SEPARATOR = new char[] { ';' };
-        private readonly static char[] LINUX_PATH_ENV_SEPARATOR = new char[] { ':' };
+        private static readonly char[] STRINGARRAY_SEPARATOR = new char[] { ';' };
+        private static readonly char[] LINUX_PATH_ENV_SEPARATOR = new char[] { ':' };
+        private static readonly char[] WINDOWS_PATH_ENV_SEPARATOR = new char[] { ';' };
 
+        private const string PATH_ENV = "PATH";
         private const string DEFAULT_CREDENTIAL_USERNAME = "na";
 
         public static readonly EnvironmentHelper Default = new EnvironmentHelper();
@@ -88,6 +89,11 @@ namespace PSRule
 
             value = variable.Split(STRINGARRAY_SEPARATOR, options: StringSplitOptions.RemoveEmptyEntries);
             return value != null;
+        }
+
+        internal bool TryPathEnvironmentVariable(out string[] value)
+        {
+            return TryPathEnvironmentVariable(PATH_ENV, out value);
         }
 
         internal bool TryPathEnvironmentVariable(string key, out string[] value)

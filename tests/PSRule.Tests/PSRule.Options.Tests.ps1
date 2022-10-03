@@ -1131,6 +1131,45 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Input.IgnoreUnchangedPath' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Input.IgnoreUnchangedPath | Should -Be $False;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Input.IgnoreUnchangedPath' = $True };
+            $option.Input.IgnoreUnchangedPath | Should -Be $True;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Input.IgnoreUnchangedPath | Should -Be $True;
+        }
+
+        It 'from Environment' {
+            try {
+                # With bool
+                $Env:PSRULE_INPUT_IGNOREUNCHANGEDPATH = 'true';
+                $option = New-PSRuleOption;
+                $option.Input.IgnoreUnchangedPath | Should -Be $True;
+
+                # With int
+                $Env:PSRULE_INPUT_IGNOREUNCHANGEDPATH = '1';
+                $option = New-PSRuleOption;
+                $option.Input.IgnoreUnchangedPath | Should -Be $True;
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_INPUT_IGNOREUNCHANGEDPATH' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -InputIgnoreUnchangedPath $True -Path $emptyOptionsFilePath;
+            $option.Input.IgnoreUnchangedPath | Should -Be $True;
+        }
+    }
+
     Context 'Read Input.ObjectPath' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -1752,6 +1791,39 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Repository.BaseRef' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Repository.BaseRef | Should -BeNullOrEmpty;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Repository.BaseRef' = 'dev' };
+            $option.Repository.BaseRef | Should -Be 'dev';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Repository.BaseRef | Should -Be 'dev';
+        }
+
+        It 'from Environment' {
+            try {
+                $Env:PSRULE_REPOSITORY_BASEREF = 'dev';
+                $option = New-PSRuleOption;
+                $option.Repository.BaseRef | Should -Be 'dev';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_REPOSITORY_BASEREF' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -RepositoryBaseRef 'dev' -Path $emptyOptionsFilePath;
+            $option.Repository.BaseRef | Should -Be 'dev';
+        }
+    }
+
     Context 'Read Repository.Url' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -2009,6 +2081,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         }
     }
 
+    Context 'Read Input.IgnoreUnchangedPath' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -InputIgnoreUnchangedPath $True @optionParams;
+            $option.Input.IgnoreUnchangedPath | Should -Be $True;
+        }
+    }
+
     Context 'Read Input.ObjectPath' {
         It 'from parameter' {
             $option = Set-PSRuleOption -ObjectPath 'items' @optionParams;
@@ -2132,6 +2211,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputStyle 'AzurePipelines' @optionParams;
             $option.Output.Style | Should -Be 'AzurePipelines';
+        }
+    }
+
+    Context 'Read Repository.BaseRef' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -RepositoryBaseRef 'dev' @optionParams;
+            $option.Repository.BaseRef | Should -Be 'dev';
         }
     }
 

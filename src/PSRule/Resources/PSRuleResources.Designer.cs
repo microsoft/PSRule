@@ -304,6 +304,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The input path was added: {0}.
+        /// </summary>
+        internal static string InputAdded {
+            get {
+                return ResourceManager.GetString("InputAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An invalid ErrorAction ({0}) was specified for rule at {1}. Ignore | Stop are supported..
         /// </summary>
         internal static string InvalidErrorAction {
@@ -777,6 +786,15 @@ namespace PSRule.Resources {
         internal static string SourceNotFound {
             get {
                 return ResourceManager.GetString("SourceNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using changed files: {0}.
+        /// </summary>
+        internal static string UsingChangedFile {
+            get {
+                return ResourceManager.GetString("UsingChangedFile", resourceCulture);
             }
         }
         

@@ -8,6 +8,9 @@ using PSRule.Resources;
 
 namespace PSRule.Pipeline
 {
+    /// <summary>
+    /// Extensions for the <see cref="IPipelineWriter"/>.
+    /// </summary>
     public static class PipelineWriterExtensions
     {
         public static void WriteDebug(this IPipelineWriter writer, DebugRecord debugRecord)
@@ -80,6 +83,14 @@ namespace PSRule.Pipeline
                 "PSRule.ReadFileFailed",
                 ErrorCategory.InvalidData
             );
+        }
+
+        internal static void VerboseInputAdded(this IPipelineWriter writer, string path)
+        {
+            if (writer == null || !writer.ShouldWriteVerbose() || string.IsNullOrEmpty(path))
+                return;
+
+            writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.InputAdded, path));
         }
 
         internal static void WriteError(this IPipelineWriter writer, PipelineException exception, string errorId, ErrorCategory errorCategory)

@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using PSRule.Configuration;
 
 namespace PSRule
@@ -132,6 +134,35 @@ namespace PSRule
 
             // Try .git/
             return false;
+        }
+
+        public static bool TryGetChangedFiles(string baseRef, string filter, string options, out string[] files)
+        {
+            // Get current tip
+            var source = TryRevision(out var source_sha) ? source_sha : "HEAD";
+            var target = !string.IsNullOrEmpty(baseRef) ? baseRef : "HEAD^";
+
+            var bin = GetGitBinary();
+            var args = GetGitArgs(target, source, filter, options);
+            var tool = ExternalTool.Get(null, bin);
+
+            files = Array.Empty<string>();
+            if (!tool.WaitForExit(args, out var exitCode) || exitCode != 0)
+                return false;
+
+            files = tool.GetOutput().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            return true;
+        }
+
+        private static string GetGitBinary()
+        {
+            return RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
+                RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "git" : "git.exe";
+        }
+
+        private static string GetGitArgs(string target, string source, string filter, string options)
+        {
+            return $"diff --diff-filter={filter} --ignore-submodules=all --name-only --no-renames {target}";
         }
 
         private static bool TryReadHead(string path, out string value)

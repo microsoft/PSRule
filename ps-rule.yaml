@@ -5,6 +5,10 @@
 # Please see the documentation for all configuration options:
 # https://microsoft.github.io/PSRule/
 
+repository:
+  url: https://github.com/microsoft/PSRule
+  baseRef: main
+
 output:
   culture:
   - 'en-US'

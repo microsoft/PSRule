@@ -132,7 +132,7 @@ To prevent a rule executing you can either:
         - 'TestObject2'
     ```
 
-!!! tip
+!!! Tip
     Use comments within `ps-rule.yaml` to describe the reason why rules are excluded or suppressed.
     Meaningful comments help during peer review within a Pull Request (PR).
     Also consider including a date if the exclusions or suppressions are temporary.
@@ -142,3 +142,23 @@ To prevent a rule executing you can either:
   [5]: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md
   [6]: addon-modules.md
   [7]: authoring/packaging-rules.md
+
+### Processing changed files only
+
+[:octicons-book-24: Docs][8]
+
+To only process files that have changed within a pull request, set the `Input.IgnoreUnchangedPath` option.
+
+```yaml title="ps-rule.yaml"
+repository:
+  baseRef: main
+
+input:
+  ignoreUnchangedPath: true
+```
+
+!!! Tip
+    In some cases it may be nessessary to set `Repository.BaseRef` to the default branch of your repository.
+    By default, PSRule will detect the default branch of the repository from the build system environment variables.
+
+  [8]: concepts/PSRule/en-US/about_PSRule_Options.md#inputignoreunchangedpath
