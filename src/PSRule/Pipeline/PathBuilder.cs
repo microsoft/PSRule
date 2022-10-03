@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
@@ -10,16 +10,16 @@ using PSRule.Data;
 
 namespace PSRule.Pipeline
 {
-    public interface IPathBuilder
-    {
-        void Add(string path);
+    //public interface IPathBuilder
+    //{
+    //    void Add(string path);
 
-        void Add(FileInfo[] fileInfo);
+    //    void Add(FileInfo[] fileInfo);
 
-        void Add(PathInfo[] pathInfo);
+    //    void Add(PathInfo[] pathInfo);
 
-        InputFileInfo[] Build();
-    }
+    //    InputFileInfo[] Build();
+    //}
 
     internal abstract class PathBuilder
     {
@@ -40,8 +40,9 @@ namespace PSRule.Pipeline
         private readonly string _BasePath;
         private readonly string _DefaultSearchPattern;
         private readonly PathFilter _GlobalFilter;
+        private readonly PathFilter _Required;
 
-        protected PathBuilder(IPipelineWriter logger, string basePath, string searchPattern, PathFilter filter)
+        protected PathBuilder(IPipelineWriter logger, string basePath, string searchPattern, PathFilter filter, PathFilter required)
         {
             _Logger = logger;
             _Files = new List<InputFileInfo>();
@@ -49,7 +50,13 @@ namespace PSRule.Pipeline
             _BasePath = NormalizePath(PSRuleOption.GetRootedBasePath(basePath));
             _DefaultSearchPattern = searchPattern;
             _GlobalFilter = filter;
+            _Required = required;
         }
+
+        /// <summary>
+        /// The number of files found.
+        /// </summary>
+        public int Count => _Files.Count;
 
         public void Add(string[] path)
         {
@@ -218,6 +225,7 @@ namespace PSRule.Pipeline
         private bool ShouldInclude(string file, PathFilter filter)
         {
             return (filter == null || filter.Match(file)) &&
+                (_Required == null || _Required.Match(file)) &&
                 (_GlobalFilter == null || _GlobalFilter.Match(file));
         }
 

@@ -22,6 +22,7 @@ namespace PSRule.Configuration
         /// </summary>
         public RepositoryOption()
         {
+            BaseRef = null;
             Url = null;
         }
 
@@ -34,6 +35,7 @@ namespace PSRule.Configuration
             if (option == null)
                 return;
 
+            BaseRef = option.BaseRef;
             Url = option.Url;
         }
 
@@ -48,6 +50,7 @@ namespace PSRule.Configuration
         public bool Equals(RepositoryOption other)
         {
             return other != null &&
+                BaseRef == other.BaseRef &&
                 Url == other.Url;
         }
 
@@ -57,6 +60,7 @@ namespace PSRule.Configuration
             unchecked // Overflow is fine
             {
                 var hash = 17;
+                hash = hash * 23 + (BaseRef != null ? BaseRef.GetHashCode() : 0);
                 hash = hash * 23 + (Url != null ? Url.GetHashCode() : 0);
                 return hash;
             }
@@ -70,10 +74,17 @@ namespace PSRule.Configuration
         {
             var result = new RepositoryOption(o1)
             {
+                BaseRef = o1.BaseRef ?? o2.BaseRef,
                 Url = o1.Url ?? o2.Url,
             };
             return result;
         }
+
+        /// <summary>
+        /// Sets the repository base ref used for comparisons of changed files.
+        /// </summary>
+        [DefaultValue(null)]
+        public string BaseRef { get; set; }
 
         /// <summary>
         /// Configures the repository URL to report in output.
@@ -87,6 +98,9 @@ namespace PSRule.Configuration
         /// </summary>
         internal void Load(EnvironmentHelper env)
         {
+            if (env.TryString("PSRULE_REPOSITORY_BASEREF", out var baseRef))
+                BaseRef = baseRef;
+
             if (env.TryString("PSRULE_REPOSITORY_URL", out var url))
                 Url = url;
         }
@@ -97,6 +111,9 @@ namespace PSRule.Configuration
         /// </summary>
         internal void Load(Dictionary<string, object> index)
         {
+            if (index.TryPopString("Repository.BaseRef", out var baseRef))
+                BaseRef = baseRef;
+
             if (index.TryPopString("Repository.Url", out var url))
                 Url = url;
         }

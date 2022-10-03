@@ -409,6 +409,13 @@
                     "markdownDescription": "Determines if objects are ignore based on their file source path. When set, objects from the pipeline or read from files will be exclude based on their source path and the configuration of `pathIgnore`, `ignoreGitPath`, and `ignoreRepositoryCommon` options. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignoreobjectsource)",
                     "default": false
                 },
+                "ignoreUnchangedPath": {
+                    "type": "boolean",
+                    "title": "Ignore unchanged path",
+                    "description": "Determine if unchanged files are ignored. By default, PSRule will process all files within an input path. For large repositories, this can result in a large number of files being processed. Additionally, for a pull request you may only be interested in files that have changed.",
+                    "markdownDescription": "Determine if unchanged files are ignored. By default, PSRule will process all files within an input path. For large repositories, this can result in a large number of files being processed. Additionally, for a pull request you may only be interested in files that have changed.  [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignoreunchangedpath)",
+                    "default": false
+                },
                 "objectPath": {
                     "type": "string",
                     "title": "Object path",
@@ -797,6 +804,12 @@
             "description": "Configures repository options.",
             "markdownDescription": "Configures repository options.",
             "properties": {
+                "baseRef": {
+                    "type": "string",
+                    "title": "Base Reference",
+                    "description": "Sets the repository base ref used for comparisons of changed files. By default, the base ref is detected from environment vairables set by the build system.",
+                    "markdownDescription": "Sets the repository base ref used for comparisons of changed files. By default, the base ref is detected from environment vairables set by the build system.  [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#repositorybaseref)"
+                },
                 "url": {
                     "type": "string",
                     "title": "Repository URL",

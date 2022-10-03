@@ -17,14 +17,22 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
   See [functions][3] for more information.
 - Sub-selectors within YAML and JSON expressions can be used to filter rules and list properties.
   See [sub-selectors][4] for more information.
+- Processing of changes files only within a pipeline.
+  See [creating your pipeline][5] for more information.
 
   [3]: expressions/functions.md
   [4]: expressions/sub-selectors.md
+  [5]: creating-your-pipeline.md#processing-changed-files-only
 
 ## Unreleased
 
 What's changed since pre-release v2.5.0-B0015:
 
+- New features:
+  - **Experimental**: Added support for only processing changed files by @BernieWhite.
+    [#688](https://github.com/microsoft/PSRule/issues/688)
+    - To ignore unchanged files, set the `Input.IgnoreUnchangedPath` option to `true`.
+    - See [creating your pipeline][5] for more information.
 - General improvements:
   - Added labels metadata from grouping and filtering rules by @BernieWhite.
     [#1272](https://github.com/microsoft/PSRule/issues/1272)
