@@ -1,116 +1,120 @@
 {
-    "files.exclude": {
-        ".vs/": true,
-        "out/": true,
-        "**/bin/": true,
-        "**/obj/": true,
-        "TestResults/": true
-    },
-    "search.exclude": {
-        "out/": true,
-        "reports/": true
-    },
-    "editor.insertSpaces": true,
-    "editor.tabSize": 4,
-    "yaml.format.singleQuote": true,
-    "yaml.schemas": {
-        "./schemas/PSRule-options.schema.json": [
-            "/tests/PSRule.Tests/PSRule.*.yml",
-            "/docs/scenarios/*/ps-rule.yaml",
-            "/ps-rule.yaml"
-        ],
-        "./schemas/PSRule-language.schema.json": [
-            "/tests/PSRule.Tests/**.Rule.yaml",
-            "/tests/PSRule.Tests/**/**.Rule.yaml",
-            "/docs/scenarios/*/*.Rule.yaml",
-            "/docs/expressions/**/*.Rule.yaml"
-        ]
-    },
-    "json.schemas": [
-        {
-            "fileMatch": [
-                "/tests/PSRule.Tests/**.Rule.jsonc",
-                "/tests/PSRule.Tests/**/**.Rule.jsonc",
-                "/docs/expressions/**/*.Rule.jsonc"
-            ],
-            "url": "./schemas/PSRule-resources.schema.json"
-        }
+  "files.exclude": {
+    ".vs/": true,
+    "out/": true,
+    "**/bin/": true,
+    "**/obj/": true,
+    "TestResults/": true
+  },
+  "search.exclude": {
+    "out/": true,
+    "reports/": true
+  },
+  "editor.insertSpaces": true,
+  "editor.tabSize": 4,
+  "yaml.format.singleQuote": true,
+  "yaml.schemas": {
+    "./schemas/PSRule-options.schema.json": [
+      "/tests/PSRule.Tests/PSRule.*.yml",
+      "/docs/scenarios/*/ps-rule.yaml",
+      "/ps-rule.yaml"
     ],
-    "[xml]": {
-        "editor.tabSize": 2,
-        "editor.formatOnSave": true
-    },
-    "[yaml]": {
-        "editor.tabSize": 2,
-        "files.insertFinalNewline": true
-    },
-    "[markdown]": {
-        "editor.tabSize": 2,
-        "files.insertFinalNewline": true
-    },
-    "[json]": {
-        "editor.tabSize": 4,
-        "editor.tabCompletion": "on",
-        "editor.quickSuggestions": {
-            "strings": true
-        },
-        "editor.suggest.insertMode": "replace",
-        "gitlens.codeLens.scopes": [
-            "document"
-        ],
-        "files.insertFinalNewline": true
-    },
-    "[jsonc]": {
-        "editor.tabSize": 4,
-        "editor.tabCompletion": "on",
-        "editor.quickSuggestions": {
-            "strings": true
-        },
-        "editor.suggest.insertMode": "replace",
-        "gitlens.codeLens.scopes": [
-            "document"
-        ],
-        "files.insertFinalNewline": true
-    },
-    "files.associations": {
-        "**/.azure-pipelines/*.yaml": "azure-pipelines",
-        "**/.azure-pipelines/jobs/*.yaml": "azure-pipelines",
-        "**/NuGet.config": "xml"
-    },
-    "cSpell.words": [
-        "APPSERVICEMININSTANCECOUNT",
-        "cmdlet",
-        "cmdlets",
-        "concat",
-        "datetime",
-        "deserialize",
-        "deserialized",
-        "deserializes",
-        "Gitter",
-        "hashtable",
-        "Kubernetes",
-        "Newtonsoft",
-        "NOTCOUNT",
-        "proxied",
-        "PSRULE",
-        "quickstart",
-        "runspace",
-        "runspaces",
-        "SARIF",
-        "SBOM",
-        "unencrypted",
-        "xunit"
-    ],
-    "[csharp]": {
-        "editor.formatOnSave": true,
-        "files.insertFinalNewline": true
-    },
-    "omnisharp.enableImportCompletion": true,
-    "omnisharp.organizeImportsOnFormat": true,
-    "omnisharp.enableEditorConfigSupport": true,
-    "omnisharp.enableRoslynAnalyzers": true,
-    "git.branchProtection": [
-        "main",
-        "release/*"
+    "./schemas/PSRule-language.schema.json": [
+      "/tests/PSRule.Tests/**.Rule.yaml",
+      "/tests/PSRule.Tests/**/**.Rule.yaml",
+      "/docs/scenarios/*/*.Rule.yaml",
+      "/docs/expressions/**/*.Rule.yaml"
     ]
+  },
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "/tests/PSRule.Tests/**.Rule.jsonc",
+        "/tests/PSRule.Tests/**/**.Rule.jsonc",
+        "/docs/expressions/**/*.Rule.jsonc"
+      ],
+      "url": "./schemas/PSRule-resources.schema.json"
+    }
+  ],
+  "[xml]": {
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true
+  },
+  "[yaml]": {
+    "editor.tabSize": 2,
+    "files.insertFinalNewline": true
+  },
+  "[markdown]": {
+    "editor.tabSize": 2,
+    "files.insertFinalNewline": true
+  },
+  "[json]": {
+    "editor.formatOnSave": true,
+    "editor.detectIndentation": false,
+    "editor.tabSize": 2,
+    "editor.tabCompletion": "on",
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "editor.suggest.insertMode": "replace",
+    "gitlens.codeLens.scopes": [
+      "document"
+    ],
+    "files.insertFinalNewline": true
+  },
+  "[jsonc]": {
+    "editor.formatOnSave": true,
+    "editor.detectIndentation": false,
+    "editor.tabSize": 2,
+    "editor.tabCompletion": "on",
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "editor.suggest.insertMode": "replace",
+    "gitlens.codeLens.scopes": [
+      "document"
+    ],
+    "files.insertFinalNewline": true
+  },
+  "files.associations": {
+    "**/.azure-pipelines/*.yaml": "azure-pipelines",
+    "**/.azure-pipelines/jobs/*.yaml": "azure-pipelines",
+    "**/NuGet.config": "xml"
+  },
+  "cSpell.words": [
+    "APPSERVICEMININSTANCECOUNT",
+    "cmdlet",
+    "cmdlets",
+    "concat",
+    "datetime",
+    "deserialize",
+    "deserialized",
+    "deserializes",
+    "Gitter",
+    "hashtable",
+    "Kubernetes",
+    "Newtonsoft",
+    "NOTCOUNT",
+    "proxied",
+    "PSRULE",
+    "quickstart",
+    "runspace",
+    "runspaces",
+    "SARIF",
+    "SBOM",
+    "unencrypted",
+    "xunit"
+  ],
+  "[csharp]": {
+    "editor.formatOnSave": true,
+    "files.insertFinalNewline": true
+  },
+  "omnisharp.enableImportCompletion": true,
+  "omnisharp.organizeImportsOnFormat": true,
+  "omnisharp.enableEditorConfigSupport": true,
+  "omnisharp.enableRoslynAnalyzers": true,
+  "git.branchProtection": [
+    "main",
+    "release/*"
+  ]
 }
