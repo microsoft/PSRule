@@ -157,3 +157,9 @@ extra:
     social_preview: https://repository-images.githubusercontent.com/125832556/d6685d9f-ba70-44a1-b11f-6534831143d1
     repo_issue: https://github.com/microsoft/PSRule/issues
     repo_discussion: https://github.com/microsoft/PSRule/discussions
+
+  giscus:
+    repo: microsoft/PSRule
+    repo_id: MMDEwOlJlcG9zaXRvcnkxMjU4MzI1NTY=
+    category: Documentation
+    category_id: DIC_kwDOB4ANbM4CRxSO

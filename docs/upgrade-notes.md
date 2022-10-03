@@ -1,6 +1,7 @@
 ---
 title: Notes for upgrading between PSRule versions
 author: BernieWhite
+discussion: false
 ---
 
 # Upgrade notes

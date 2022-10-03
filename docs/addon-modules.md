@@ -1,3 +1,7 @@
+---
+discussion: false
+---
+
 # Additional modules
 
 ## Integrations
