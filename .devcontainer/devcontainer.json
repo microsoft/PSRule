@@ -1,25 +1,33 @@
 {
-    "name": "PSRule dev",
-    "settings": {
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+  "name": "PSRule dev",
+  "customizations": {
+    "vscode": {
+      "settings": {
         "terminal.integrated.defaultProfile.linux": "pwsh",
         "terminal.integrated.profiles.linux": {
-            "pwsh": {
-                "path": "/bin/pwsh"
-            }
+          "pwsh": {
+            "path": "/opt/microsoft/powershell/7/pwsh"
+          }
         }
-    },
-    "extensions": [
-        "ms-azure-devops.azure-pipelines",
-        "davidanson.vscode-markdownlint",
-        "bewhite.psrule-vscode-preview",
+      },
+      "extensions": [
         "ms-dotnettools.csharp",
-        "eamodio.gitlens",
-        "github.vscode-pull-request-github",
-        "streetsidesoftware.code-spell-checker"
-    ],
-    "features": {
-        "github-cli": "latest"
-    },
-    "onCreateCommand": "/bin/pwsh -f .devcontainer/container-build.ps1",
-    "postStartCommand": "/bin/pwsh -f .devcontainer/container-start.ps1"
+        "bewhite.psrule-vscode-preview"
+      ]
+    }
+  },
+  "features": {
+    "github-cli": "latest",
+    "powershell": "latest"
+  },
+  "onCreateCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-build.ps1",
+  "postStartCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-start.ps1",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "VARIANT": "6.0-bullseye-slim"
+    }
+  },
+  "remoteUser": "vscode"
 }
