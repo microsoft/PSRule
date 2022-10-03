@@ -2472,14 +2472,25 @@
 <ul>
 <li>Functions within YAML and JSON expressions can be used to perform manipulation prior to testing a condition.
   See <a href="../expressions/functions/">functions</a> for more information.</li>
+<li>Sub-selectors within YAML and JSON expressions can be used to filter rules and list properties.
+  See <a href="../expressions/sub-selectors/">sub-selectors</a> for more information.</li>
 <li>
-<p>Sub-selectors within YAML and JSON expressions can be used to filter rules and list properties.
-  See <a href="../expressions/sub-selectors/">sub-selectors</a> for more information.</p>
+<p>Processing of changes files only within a pipeline.
+  See <a href="../creating-your-pipeline/#processing-changed-files-only">creating your pipeline</a> for more information.</p>
 </li>
 </ul>
 <h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v2.5.0-B0015:</p>
 <ul>
+<li>New features:<ul>
+<li><strong>Experimental</strong>: Added support for only processing changed files by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/688">#688</a><ul>
+<li>To ignore unchanged files, set the <code>Input.IgnoreUnchangedPath</code> option to <code>true</code>.</li>
+<li>See <a href="../creating-your-pipeline/#processing-changed-files-only">creating your pipeline</a> for more information.</li>
+</ul>
+</li>
+</ul>
+</li>
 <li>General improvements:<ul>
 <li>Added labels metadata from grouping and filtering rules by @BernieWhite.
   <a href="https://github.com/microsoft/PSRule/issues/1272">#1272</a><ul>
@@ -3573,7 +3584,7 @@
   <small>
     
       Last update:
-      2022-09-30
+      2022-10-03
     
   </small>
 </div>
