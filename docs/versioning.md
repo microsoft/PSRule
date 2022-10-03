@@ -1,3 +1,8 @@
+---
+author: BernieWhite
+discussion: false
+---
+
 # Changes and versioning
 
 PSRule uses [semantic versioning][1] to declare breaking changes.
@@ -26,9 +31,9 @@ Experimental features may ship in stable releases, however to use them you may n
 - Enabled or explictly reference them.
 
 !!! Important
-   Experimental features should be considered work in progress.
-   These features may be incomplete and should not be used in production.
-   We may introduce breaking changes for experimental features as we work towards a general release for the feature.
+    Experimental features should be considered work in progress.
+    These features may be incomplete and should not be used in production.
+    We may introduce breaking changes for experimental features as we work towards a general release for the feature.
 
 ## Reporting bugs
 
