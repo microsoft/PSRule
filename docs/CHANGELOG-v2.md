@@ -23,6 +23,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since v2.4.1:
+
+- Bug fixes:
+  - Fixed exception with `PathExpressionBuilder.GetAllRecurse` by @BernieWhite.
+    [#1301](https://github.com/microsoft/PSRule/issues/1301)
+
 ## v2.4.1
 
 What's changed since v2.4.0:
