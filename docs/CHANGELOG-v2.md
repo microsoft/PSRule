@@ -30,6 +30,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.5.0-B0045:
+
+- Bug fixes:
+  - Fixed exception with `PathExpressionBuilder.GetAllRecurse` by @BernieWhite.
+    [#1301](https://github.com/microsoft/PSRule/issues/1301)
+
 ## v2.5.0-B0045 (pre-release)
 
 What's changed since pre-release v2.5.0-B0015:
@@ -72,6 +78,14 @@ What's changed since v2.4.0:
     - To use minimal initial session state set `Execution.InitialSessionState` to `Minimal`.
   - Fixed unhandled exception with GetRootedPath by @BernieWhite.
     [#1251](https://github.com/microsoft/PSRule/issues/1251)
+
+## v2.4.2
+
+What's changed since v2.4.1:
+
+- Bug fixes:
+  - Fixed exception with `PathExpressionBuilder.GetAllRecurse` by @BernieWhite.
+    [#1301](https://github.com/microsoft/PSRule/issues/1301)
 
 ## v2.4.1
 
