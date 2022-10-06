@@ -30,6 +30,38 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.5.0
+
+What's changed since v2.4.2:
+
+- New features:
+  - **Experimental**: Added support for only processing changed files by @BernieWhite.
+    [#688](https://github.com/microsoft/PSRule/issues/688)
+    - To ignore unchanged files, set the `Input.IgnoreUnchangedPath` option to `true`.
+    - See [creating your pipeline][5] for more information.
+- General improvements:
+  - Added labels metadata from grouping and filtering rules by @BernieWhite.
+    [#1272](https://github.com/microsoft/PSRule/issues/1272)
+    - Labels are metadata that extends on tags to provide a more structured way to group rules.
+    - Rules can be classified by setting the `metadata.labels` property or `-Labels` parameter.
+  - Provide unblock for command line tools by @BernieWhite.
+    [#1261](https://github.com/microsoft/PSRule/issues/1261)
+- Engineering:
+  - Bump Microsoft.NET.Test.Sdk to v17.3.1.
+    [#1248](https://github.com/microsoft/PSRule/pull/1248)
+- Bug fixes:
+  - Fixed could not load Microsoft.Management.Infrastructure by @BernieWhite.
+    [#1249](https://github.com/microsoft/PSRule/issues/1249)
+    - To use minimal initial session state set `Execution.InitialSessionState` to `Minimal`.
+  - Fixed unhandled exception with GetRootedPath by @BernieWhite.
+    [#1251](https://github.com/microsoft/PSRule/issues/1251)
+  - Fixed Dockerfile case sensitivity by @BernieWhite.
+    [#1269](https://github.com/microsoft/PSRule/issues/1269)
+
+What's changed since pre-release v2.5.0-B0080:
+
+- No additional changes.
+
 ## v2.5.0-B0080 (pre-release)
 
 What's changed since pre-release v2.5.0-B0045:
