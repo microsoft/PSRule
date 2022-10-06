@@ -1,6 +1,7 @@
 ---
 title: License and contributing to PSRule
 author: BernieWhite
+discussion: false
 ---
 
 # License and contributing

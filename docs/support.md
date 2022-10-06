@@ -1,6 +1,7 @@
 ---
 title: Support for PSRule
 author: BernieWhite
+discussion: false
 ---
 
 # Support

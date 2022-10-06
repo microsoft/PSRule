@@ -457,6 +457,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The object path expression reached the maximum depth of {0} evaluating the path &apos;{1}&apos;..
+        /// </summary>
+        internal static string ObjectPathRecurseMaxDepth {
+            get {
+                return ResourceManager.GetString("ObjectPathRecurseMaxDepth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Options file does not exist..
         /// </summary>
         internal static string OptionsNotFound {

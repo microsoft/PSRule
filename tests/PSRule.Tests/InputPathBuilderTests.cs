@@ -72,7 +72,7 @@ namespace PSRule
             actual = builder.Build();
             Assert.True(actual.Length == 1);
 
-            required = PathFilter.Create(GetWorkingPath(), new string[] { "." });
+            required = PathFilter.Create(GetWorkingPath(), new string[] { "**" });
             builder = new InputPathBuilder(null, GetWorkingPath(), "*", null, required);
             builder.Add(".");
             actual = builder.Build();

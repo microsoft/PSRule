@@ -391,4 +391,7 @@
   <data name="UsingChangedFile" xml:space="preserve">
     <value>Using changed files: {0}</value>
   </data>
+  <data name="ObjectPathRecurseMaxDepth" xml:space="preserve">
+    <value>The object path expression reached the maximum depth of {0} evaluating the path '{1}'.</value>
+  </data>
 </root>
