@@ -13,7 +13,7 @@ PSRule works great and integrates with popular continuous integration (CI) syste
 - [Getting the module](#getting-the-module)
 - [Getting extensions](#getting-extensions)
 - [Getting started](#getting-started)
-  - [Scenarios](scenarios)
+  - [Scenarios](#scenarios)
 - [Language reference](#language-reference)
   - [Keywords](#keywords)
   - [Commands](#commands)
