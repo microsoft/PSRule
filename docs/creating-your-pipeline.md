@@ -28,7 +28,7 @@ Within the root directory of your IaC repository:
 
         # Analyze Azure resources using PSRule for Azure
         - name: Analyze Azure template files
-          uses: microsoft/ps-rule@v2.3.2
+          uses: microsoft/ps-rule@v2.4.2
           with:
             modules: 'PSRule.Rules.Azure'
     ```
@@ -57,8 +57,9 @@ Within the root directory of your IaC repository:
     Create a pipeline in any CI environment by using PowerShell.
 
     ```powershell
-    Install-Module -Name 'PSRule.Rules.Azure' -Scope CurrentUser -Force -ErrorAction Stop;
-    Assert-PSRule -InputPath '.' -Module 'PSRule.Rules.Azure' -Format File -ErrorAction Stop;
+    $modules = @('PSRule.Rules.Azure')
+    Install-Module -Name $modules -Scope CurrentUser -Force -ErrorAction Stop;
+    Assert-PSRule -InputPath '.' -Module $modules -Format File -ErrorAction Stop;
     ```
 
 !!! Tip
@@ -145,17 +146,65 @@ To prevent a rule executing you can either:
 
 ### Processing changed files only
 
-[:octicons-book-24: Docs][8]
+:octicons-milestone-24: v2.5.0 · [:octicons-book-24: Docs][8]
 
 To only process files that have changed within a pull request, set the `Input.IgnoreUnchangedPath` option.
 
-```yaml title="ps-rule.yaml"
-repository:
-  baseRef: main
+=== "GitHub Actions"
 
-input:
-  ignoreUnchangedPath: true
-```
+    Update your GitHub Actions workflow by setting the `PSRULE_INPUT_IGNOREUNCHANGEDPATH` environment variable.
+
+    ```yaml title=".github/workflows/analyze-arm.yaml"
+    name: Analyze templates
+    on:
+    - pull_request
+    jobs:
+      analyze_arm:
+        name: Analyze templates
+        runs-on: ubuntu-latest
+        steps:
+
+        - name: Checkout
+          uses: actions/checkout@v3
+
+        # Analyze Azure resources using PSRule for Azure
+        - name: Analyze Azure template files
+          uses: microsoft/ps-rule@v2.4.2
+          with:
+            modules: 'PSRule.Rules.Azure'
+          env:
+            PSRULE_INPUT_IGNOREUNCHANGEDPATH: true
+    ```
+
+=== "Azure Pipelines"
+
+    Update your Azure DevOps YAML pipeline by setting the `PSRULE_INPUT_IGNOREUNCHANGEDPATH` environment variable.
+
+    ```yaml title=".azure-pipelines/analyze-arm.yaml"
+    steps:
+
+    # Analyze Azure resources using PSRule for Azure
+    - task: ps-rule-assert@2
+      displayName: Analyze Azure template files
+      inputs:
+        inputType: repository
+        modules: 'PSRule.Rules.Azure'
+      env:
+        PSRULE_INPUT_IGNOREUNCHANGEDPATH: true
+    ```
+
+=== "Generic with PowerShell"
+
+    Update your PowerShell command-line to include the `Input.IgnoreUnchangedPath` option.
+
+    ```powershell title="PowerShell"
+    $modules = @('PSRule.Rules.Azure')
+    $options = @{
+        'Input.IgnoreUnchangedPath' = $True
+    }
+    Install-Module -Name $modules -Scope CurrentUser -Force -ErrorAction Stop;
+    Assert-PSRule -Options $options -InputPath '.' -Module $modules -Format File -ErrorAction Stop;
+    ```
 
 !!! Tip
     In some cases it may be nessessary to set `Repository.BaseRef` to the default branch of your repository.
