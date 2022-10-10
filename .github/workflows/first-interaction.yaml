@@ -9,6 +9,8 @@ name: First interaction
 
 on: [pull_request_target, issues]
 
+permissions: {}
+
 jobs:
   greeting:
     name: Greeting
