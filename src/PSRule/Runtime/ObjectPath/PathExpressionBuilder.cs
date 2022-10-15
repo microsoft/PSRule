@@ -351,6 +351,9 @@ namespace PSRule.Runtime.ObjectPath
             if (input is JValue jValue && (jValue.Type == JTokenType.String || jValue.Type == JTokenType.Integer || jValue.Type == JTokenType.Boolean))
                 input = jValue.Value;
 
+            if (input is PSObject pso && pso.BaseObject is IEnumerable e && pso.BaseObject is not string)
+                input = e.Cast<object>().ToArray();
+
             enumerable = false;
             if (input is object[] eo)
             {
