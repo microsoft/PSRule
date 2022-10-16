@@ -30,6 +30,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.5.1
+
 What's changed since v2.5.0:
 
 - Bug fixes:
