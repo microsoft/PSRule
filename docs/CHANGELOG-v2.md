@@ -30,6 +30,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since v2.5.0:
+
+- Bug fixes:
+  - Fixed `In` with array source object and dot object path by @BernieWhite.
+    [#1314](https://github.com/microsoft/PSRule/issues/1314)
+
 ## v2.5.0
 
 What's changed since v2.4.2:
