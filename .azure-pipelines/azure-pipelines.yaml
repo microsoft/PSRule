@@ -168,7 +168,7 @@ stages:
       name: alpine_3_14
       displayName: 'PowerShell 7.2 - alpine-3.14'
       imageName: mcr.microsoft.com/powershell/test-deps
-      imageTag: alpine-3.14
+      imageTag: lts-alpine-3.14
 
   - template: jobs/testContainer.yaml
     parameters:
