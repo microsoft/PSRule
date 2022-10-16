@@ -978,7 +978,7 @@ namespace PSRule
             Assert.True(assert.In(value, "values", new float[] { 2f, 4f, 5f }).Result);
 
             // String
-            value = GetObject((name: "value", value: "value2"), (name: "values", value: new string[] { "value2", "value5" }));
+            value = GetObject((name: "value", value: "value2"), (name: "values", value: new string[] { "value2", "value5" }), (name: "objects", value: new object[] { "value2", "value5" }));
             Assert.True(assert.In(value, "value", new string[] { "Value2" }).Result);
             Assert.True(assert.In(value, "value", new string[] { "VALUE1", "VALUE2", "VALUE3" }).Result);
             Assert.False(assert.In(value, "value", new string[] { "Value3" }).Result);
@@ -991,8 +991,13 @@ namespace PSRule
             Assert.True(assert.In(value, "values", new string[] { "Value2" }).Result);
             Assert.True(assert.In(value, "values", new string[] { "VALUE1", "VALUE2", "VALUE3" }).Result);
             Assert.True(assert.In(value, "values", new string[] { "Value3", "Value5" }).Result);
+            Assert.True(assert.In(value, "values", new object[] { "Value3", "Value5" }).Result);
             Assert.False(assert.In(value, "values", new string[] { "Value1", "Value3" }).Result);
             Assert.False(assert.In(value, "values", new string[] { "VALUE1", "VALUE2", "VALUE3" }, true).Result);
+
+            Assert.True(assert.In(value, "objects", new object[] { "Value3", "Value5" }).Result);
+            Assert.True(assert.In(value, "objects", new string[] { "Value3", "Value5" }).Result);
+            Assert.True(assert.In(PSObject.AsPSObject(new object[] { "value2", "value5" }), ".", new string[] { "Value3", "Value5" }).Result);
 
             Assert.Equal("value", assert.In(value, "value", new string[] { "Value3" }).ToResultReason().FirstOrDefault().Path);
         }
