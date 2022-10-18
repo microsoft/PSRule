@@ -28,6 +28,7 @@ The following workspace options are available for use:
 - [Input.IgnoreGitPath](#inputignoregitpath)
 - [Input.IgnoreObjectSource](#inputignoreobjectsource)
 - [Input.IgnoreRepositoryCommon](#inputignorerepositorycommon)
+- [Input.IgnoreUnchangedPath](#inputignoreunchangedpath)
 - [Input.ObjectPath](#inputobjectpath)
 - [Input.PathIgnore](#inputpathignore)
 - [Input.TargetType](#inputtargettype)
@@ -46,6 +47,7 @@ The following workspace options are available for use:
 - [Output.Path](#outputpath)
 - [Output.SarifProblemsOnly](#outputsarifproblemsonly)
 - [Output.Style](#outputstyle)
+- [Repository.BaseRef](#repositorybaseref)
 - [Repository.Url](#repositoryurl)
 - [Requires](#requires)
 - [Suppression](#suppression)
@@ -1436,12 +1438,61 @@ variables:
   value: false
 ```
 
+### Input.IgnoreUnchangedPath
+
+By default, PSRule will process all files within an input path.
+For large repositories, this can result in a large number of files being processed.
+Additionally, for a pull request you may only be interested in files that have changed.
+
+When set to `true`, files that have not changed will be ignored.
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the InputIgnoreUnchangedPath parameter
+$option = New-PSRuleOption -InputIgnoreUnchangedPath $True;
+```
+
+```powershell
+# PowerShell: Using the Input.IgnoreUnchangedPath hashtable key
+$option = New-PSRuleOption -Option @{ 'Input.IgnoreUnchangedPath' = $True };
+```
+
+```powershell
+# PowerShell: Using the InputIgnoreUnchangedPath parameter to set YAML
+Set-PSRuleOption -InputIgnoreUnchangedPath $True;
+```
+
+```yaml
+# YAML: Using the input/ignoreUnchangedPath property
+input:
+  ignoreUnchangedPath: true
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_INPUT_IGNOREUNCHANGEDPATH=true
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_INPUT_IGNOREUNCHANGEDPATH: true
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_INPUT_IGNOREUNCHANGEDPATH
+  value: true
+```
+
 ### Input.ObjectPath
 
 The object path to a property to use instead of the pipeline object.
 
 By default, PSRule processes objects passed from the pipeline against selected rules.
-When this option is set, instead of evaluating the pipeline object, PSRule looks for a property of the pipeline object specified by `ObjectPath` and uses that instead.
+When this option is set, instead of evaluating the pipeline object,
+PSRule looks for a property of the pipeline object specified by `ObjectPath` and uses that instead.
 If the property specified by `ObjectPath` is a collection/ array, then each item is evaluated separately.
 
 If the property specified by `ObjectPath` does not exist, PSRule skips the object.
@@ -2428,6 +2479,45 @@ variables:
   value: 2
 ```
 
+### Repository.BaseRef
+
+This option is used for specify the base branch for pull requests.
+When evaluating changes files only PSRule uses this option for comparison with the current branch.
+By default, the base ref is detected from environment variables set by the build system.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the RepositoryBaseRef parameter
+$option = New-PSRuleOption -RepositoryBaseRef 'main';
+```
+
+```powershell
+# PowerShell: Using the Repository.BaseRef hashtable key
+$option = New-PSRuleOption -Option @{ 'Repository.BaseRef' = 'main' };
+```
+
+```powershell
+# PowerShell: Using the RepositoryBaseRef parameter to set YAML
+Set-PSRuleOption -RepositoryBaseRef 'main';
+```
+
+```yaml
+# YAML: Using the repository/baseRef property
+repository:
+  baseRef: main
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_REPOSITORY_BASEREF='main'
+```
+
+```powershell
+# PowerShell: Using environment variable
+$env:PSRULE_REPOSITORY_BASEREF = 'main';
+```
+
 ### Repository.Url
 
 This option can be configured to set the repository URL reported in output.
@@ -2775,6 +2865,11 @@ Rule 'isFruit' -If { $TargetObject.Category -eq 'Produce' } {
 # PSRule example configuration
 #
 
+# Configures the repository
+repository:
+  url: https://github.com/microsoft/PSRule
+  baseRef: main
+
 # Configure required module versions
 requires:
   PSRule.Rules.Azure: '>=1.1.0'
@@ -2804,6 +2899,7 @@ input:
   ignoreGitPath: false
   ignoreObjectSource: true
   ignoreRepositoryCommon: false
+  ignoreUnchangedPath: true
   objectPath: items
   pathIgnore:
   - '*.Designer.cs'
@@ -2911,6 +3007,7 @@ input:
   ignoreGitPath: true
   ignoreObjectSource: false
   ignoreRepositoryCommon: true
+  ignoreUnchangedPath: false
   objectPath: null
   pathIgnore: [ ]
   targetType: [ ]

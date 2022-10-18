@@ -35,9 +35,9 @@ namespace PSRule.Pipeline
         /// <inheritdoc/>
         public virtual void Begin()
         {
-            Reader.Open();
             Writer.Begin();
             Context.Begin();
+            Reader.Open();
         }
 
         /// <inheritdoc/>

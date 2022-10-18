@@ -19,6 +19,8 @@ on:
   - cron: '24 22 * * 0' # At 10:24 PM, on Sunday each week
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   oss:
     name: Analyze with PSRule

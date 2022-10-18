@@ -4,18 +4,17 @@
 using System;
 using System.Collections.Concurrent;
 using System.Management.Automation;
-using PSRule.Data;
 
 namespace PSRule.Pipeline
 {
     internal sealed class PipelineReader
     {
         private readonly VisitTargetObject _Input;
-        private readonly InputFileInfo[] _InputPath;
+        private readonly InputPathBuilder _InputPath;
         private readonly PathFilter _InputFilter;
         private readonly ConcurrentQueue<TargetObject> _Queue;
 
-        public PipelineReader(VisitTargetObject input, InputFileInfo[] inputPath, PathFilter inputFilter)
+        public PipelineReader(VisitTargetObject input, InputPathBuilder inputPath, PathFilter inputFilter)
         {
             _Input = input;
             _InputPath = inputPath;
@@ -55,19 +54,20 @@ namespace PSRule.Pipeline
 
         public void Open()
         {
-            if (_InputPath == null || _InputPath.Length == 0)
+            if (_InputPath == null || _InputPath.Count == 0)
                 return;
 
             // Read each file
-            for (var i = 0; i < _InputPath.Length; i++)
+            var files = _InputPath.Build();
+            for (var i = 0; i < files.Length; i++)
             {
-                if (_InputPath[i].IsUrl)
+                if (files[i].IsUrl)
                 {
-                    Enqueue(PSObject.AsPSObject(new Uri(_InputPath[i].FullName)));
+                    Enqueue(PSObject.AsPSObject(new Uri(files[i].FullName)));
                 }
                 else
                 {
-                    Enqueue(PSObject.AsPSObject(_InputPath[i]));
+                    Enqueue(PSObject.AsPSObject(files[i]));
                 }
             }
         }
@@ -87,6 +87,15 @@ namespace PSRule.Pipeline
                         return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Add a path to the list of inputs.
+        /// </summary>
+        /// <param name="path">The path of files to add.</param>
+        internal void Add(string path)
+        {
+            _InputPath.Add(path);
         }
     }
 }

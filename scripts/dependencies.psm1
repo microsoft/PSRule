@@ -7,8 +7,8 @@
 function Update-Dependencies {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $True)]
-        [String]$Path,
+        [Parameter(Mandatory = $False)]
+        [String]$Path = (Join-Path -Path $PWD -ChildPath 'modules.json'),
 
         [Parameter(Mandatory = $False)]
         [String]$Repository = 'PSGallery'
@@ -19,7 +19,7 @@ function Update-Dependencies {
         $devDependencies = CheckVersion $modules.devDependencies -Repository $Repository -Dev;
 
         $modules = [Ordered]@{
-            dependencies = $dependencies
+            dependencies    = $dependencies
             devDependencies = $devDependencies
         }
         $modules | ConvertTo-Json -Depth 10 | Set-Content -Path $Path;
@@ -45,16 +45,21 @@ function Update-Dependencies {
 function Install-Dependencies {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $True)]
-        [String]$Path,
+        [Parameter(Mandatory = $False)]
+        [String]$Path = (Join-Path -Path $PWD -ChildPath 'modules.json'),
 
         [Parameter(Mandatory = $False)]
-        [String]$Repository = 'PSGallery'
+        [String]$Repository = 'PSGallery',
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$Dev
     )
     process {
         $modules = Get-Content -Path $Path -Raw | ConvertFrom-Json;
         InstallVersion $modules.dependencies -Repository $Repository;
-        InstallVersion $modules.devDependencies -Repository $Repository -Dev;
+        if ($Dev) {
+            InstallVersion $modules.devDependencies -Repository $Repository -Dev;
+        }
     }
 }
 
@@ -133,7 +138,7 @@ function InstallVersion {
     process {
         foreach ($module in $InputObject.PSObject.Properties.GetEnumerator()) {
             Write-Host -Object "[$group] -- Installing $($module.Name) v$($module.Value.version)";
-            $installParams = @{ MinimumVersion = $module.Value.version };
+            $installParams = @{ RequiredVersion = $module.Value.version };
             if ($Null -eq (Get-InstalledModule -Name $module.Name @installParams -ErrorAction Ignore)) {
                 Install-Module -Name $module.Name @installParams -Force -Repository $Repository;
             }

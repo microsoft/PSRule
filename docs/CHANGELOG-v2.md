@@ -1,3 +1,7 @@
+---
+discussion: false
+---
+
 # Change log
 
 See [upgrade notes][1] for helpful information when upgrading from previous versions.
@@ -17,14 +21,72 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
   See [functions][3] for more information.
 - Sub-selectors within YAML and JSON expressions can be used to filter rules and list properties.
   See [sub-selectors][4] for more information.
+- Processing of changes files only within a pipeline.
+  See [creating your pipeline][5] for more information.
 
   [3]: expressions/functions.md
   [4]: expressions/sub-selectors.md
+  [5]: creating-your-pipeline.md#processing-changed-files-only
 
 ## Unreleased
 
+## v2.5.1
+
+What's changed since v2.5.0:
+
+- Bug fixes:
+  - Fixed `In` with array source object and dot object path by @BernieWhite.
+    [#1314](https://github.com/microsoft/PSRule/issues/1314)
+
+## v2.5.0
+
+What's changed since v2.4.2:
+
+- New features:
+  - **Experimental**: Added support for only processing changed files by @BernieWhite.
+    [#688](https://github.com/microsoft/PSRule/issues/688)
+    - To ignore unchanged files, set the `Input.IgnoreUnchangedPath` option to `true`.
+    - See [creating your pipeline][5] for more information.
+- General improvements:
+  - Added labels metadata from grouping and filtering rules by @BernieWhite.
+    [#1272](https://github.com/microsoft/PSRule/issues/1272)
+    - Labels are metadata that extends on tags to provide a more structured way to group rules.
+    - Rules can be classified by setting the `metadata.labels` property or `-Labels` parameter.
+  - Provide unblock for command line tools by @BernieWhite.
+    [#1261](https://github.com/microsoft/PSRule/issues/1261)
+- Engineering:
+  - Bump Microsoft.NET.Test.Sdk to v17.3.1.
+    [#1248](https://github.com/microsoft/PSRule/pull/1248)
+- Bug fixes:
+  - Fixed could not load Microsoft.Management.Infrastructure by @BernieWhite.
+    [#1249](https://github.com/microsoft/PSRule/issues/1249)
+    - To use minimal initial session state set `Execution.InitialSessionState` to `Minimal`.
+  - Fixed unhandled exception with GetRootedPath by @BernieWhite.
+    [#1251](https://github.com/microsoft/PSRule/issues/1251)
+  - Fixed Dockerfile case sensitivity by @BernieWhite.
+    [#1269](https://github.com/microsoft/PSRule/issues/1269)
+
+What's changed since pre-release v2.5.0-B0080:
+
+- No additional changes.
+
+## v2.5.0-B0080 (pre-release)
+
+What's changed since pre-release v2.5.0-B0045:
+
+- Bug fixes:
+  - Fixed exception with `PathExpressionBuilder.GetAllRecurse` by @BernieWhite.
+    [#1301](https://github.com/microsoft/PSRule/issues/1301)
+
+## v2.5.0-B0045 (pre-release)
+
 What's changed since pre-release v2.5.0-B0015:
 
+- New features:
+  - **Experimental**: Added support for only processing changed files by @BernieWhite.
+    [#688](https://github.com/microsoft/PSRule/issues/688)
+    - To ignore unchanged files, set the `Input.IgnoreUnchangedPath` option to `true`.
+    - See [creating your pipeline][5] for more information.
 - General improvements:
   - Added labels metadata from grouping and filtering rules by @BernieWhite.
     [#1272](https://github.com/microsoft/PSRule/issues/1272)
@@ -58,6 +120,14 @@ What's changed since v2.4.0:
     - To use minimal initial session state set `Execution.InitialSessionState` to `Minimal`.
   - Fixed unhandled exception with GetRootedPath by @BernieWhite.
     [#1251](https://github.com/microsoft/PSRule/issues/1251)
+
+## v2.4.2
+
+What's changed since v2.4.1:
+
+- Bug fixes:
+  - Fixed exception with `PathExpressionBuilder.GetAllRecurse` by @BernieWhite.
+    [#1301](https://github.com/microsoft/PSRule/issues/1301)
 
 ## v2.4.1
 

@@ -170,12 +170,14 @@ The following properties are available for read access:
   This property can only be called within the `-End` block of a convention.
 - `Field` - A hashtable of custom bound fields.
   See option `Binding.Field` for more information.
+- `Input` - Allows adding additional input paths to the pipeline.
+- `Repository` - Provides access to information about the current repository.
+- `Source` - A collection of sources for the object currently being processed on the pipeline.
 - `TargetObject` - The object currently being processed on the pipeline.
 - `TargetName` - The name of the object currently being processed on the pipeline.
   This property will automatically default to `TargetName` or `Name` properties of the object if they exist.
 - `TargetType` - The type of the object currently being processed on the pipeline.
   This property will automatically bind to `PSObject.TypeNames[0]` by default.
-- `Source` - A collection of sources for the object currently being processed on the pipeline.
 - `Output` - The output of all rules.
   This property can only be called within the `-End` block of a convention.
 

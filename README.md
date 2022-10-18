@@ -5,7 +5,28 @@ PSRule works great and integrates with popular continuous integration (CI) syste
 
 [![Open in vscode.dev](https://img.shields.io/badge/Open%20in-vscode.dev-blue)][1]
 
-Features of PSRule include:
+### Summary
+
+- [Introduction](#summary)
+- [Project Objectives](#project-objectives)
+- [Support](#support)
+- [Getting the module](#getting-the-module)
+- [Getting extensions](#getting-extensions)
+- [Getting started](#getting-started)
+  - [Scenarios](#scenarios)
+- [Language reference](#language-reference)
+  - [Keywords](#keywords)
+  - [Commands](#commands)
+  - [Concepts](#concepts)
+  - [Schemas](#schemas)
+- [Related projects](#related-projects)
+- [Changes and versioning](#changes-and-versioning)
+- [Contributing](#contributing)
+- [Code of conduct](#code-of-conduct)
+- [Maintainers](#maintainers)
+- [License](#license)
+
+### Features of PSRule include:
 
 - [DevOps][2] - Built to support DevOps culture and tools.
 - [Extensible][3] - Define tests using YAML, JSON, or PowerShell format.
@@ -38,6 +59,8 @@ Rules must be able to be disabled where they are not applicable.
 Continue reading the [PSRule design specification][5].
 
   [5]: docs/specs/design-spec.md
+  
+> Back to the [summary](#summary)
 
 ## Support
 
@@ -51,6 +74,8 @@ Support for this project/ product is limited to the resources listed above.
 
   [6]: https://github.com/Microsoft/PSRule/issues
   [7]: https://github.com/microsoft/PSRule/discussions
+
+> Back to the [summary](#summary)
 
 ## Getting the module
 
@@ -66,6 +91,8 @@ For rule and integration modules see [related projects][10].
   [9]: https://microsoft.github.io/PSRule/v2/install-instructions/
   [10]: https://microsoft.github.io/PSRule/v2/related-projects/
 
+> Back to the [summary](#summary)
+
 ## Getting extensions
 
 Companion extensions are available for the following platforms.
@@ -79,6 +106,8 @@ Visual Studio Code | Visual Studio Code extension for PSRule. | [latest][13] / [
   [11]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
   [12]: https://github.com/marketplace/actions/psrule
   [13]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode
+  
+> Back to the [summary](#summary)
 
 ## Getting started
 
@@ -86,6 +115,8 @@ For an quickstart example of using PSRule see [Create a standalone rule](https:/
 For specific use cases see [scenarios](#scenarios).
 
 For frequently asked questions, see the [FAQ](https://microsoft.github.io/PSRule/v2/faq/).
+
+> Back to the [summary](#summary)
 
 ### Scenarios
 
@@ -97,6 +128,8 @@ For walk through examples of PSRule usage see:
 - [Using within continuous integration](https://microsoft.github.io/PSRule/v2/scenarios/validation-pipeline/validation-pipeline/)
 - [Packaging rules in a module](https://microsoft.github.io/PSRule/v2/authoring/packaging-rules/)
 - [Writing rule help](https://microsoft.github.io/PSRule/v2/authoring/writing-rule-help/)
+
+> Back to the [summary](#summary)
 
 ## Language reference
 
@@ -116,6 +149,8 @@ The following language keywords are used by the `PSRule` module:
 - [Reason](https://microsoft.github.io/PSRule/v2/keywords/PSRule/en-US/about_PSRule_Keywords/#reason) - Return a reason for why the rule failed.
 - [Recommend](https://microsoft.github.io/PSRule/v2/keywords/PSRule/en-US/about_PSRule_Keywords/#recommend) - Return a recommendation to resolve the issue and pass the rule.
 
+> Back to the [summary](#summary)
+
 ### Commands
 
 The following commands exist in the `PSRule` module:
@@ -130,6 +165,8 @@ The following commands exist in the `PSRule` module:
 - [New-PSRuleOption](https://microsoft.github.io/PSRule/v2/commands/PSRule/en-US/New-PSRuleOption/) - Create options to configure PSRule execution.
 - [Set-PSRuleOption](https://microsoft.github.io/PSRule/v2/commands/PSRule/en-US/Set-PSRuleOption/) - Sets options that configure PSRule execution.
 - [Test-PSRuleTarget](https://microsoft.github.io/PSRule/v2/commands/PSRule/en-US/Test-PSRuleTarget/) - Pass or fail objects against matching rules.
+
+> Back to the [summary](#summary)
 
 ### Concepts
 
@@ -264,6 +301,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Input.IgnoreGitPath](https://aka.ms/ps-rule/options#inputignoregitpath)
   - [Input.IgnoreObjectSource](https://aka.ms/ps-rule/options#inputignoreobjectsource)
   - [Input.IgnoreRepositoryCommon](https://aka.ms/ps-rule/options#inputignorerepositorycommon)
+  - [Input.IgnoreUnchangedPath](https://aka.ms/ps-rule/options#inputignoreunchangedpath)
   - [Input.ObjectPath](https://aka.ms/ps-rule/options#inputobjectpath)
   - [Input.PathIgnore](https://aka.ms/ps-rule/options#inputpathignore)
   - [Input.TargetType](https://aka.ms/ps-rule/options#inputtargettype)
@@ -282,6 +320,8 @@ The following conceptual topics exist in the `PSRule` module:
   - [Output.Path](https://aka.ms/ps-rule/options#outputpath)
   - [Output.SarifProblemsOnly](https://aka.ms/ps-rule/options#outputsarifproblemsonly)
   - [Output.Style](https://aka.ms/ps-rule/options#outputstyle)
+  - [Repository.BaseRef](https://aka.ms/ps-rule/options#repositorybaseref)
+  - [Repository.Url](https://aka.ms/ps-rule/options#repositoryurl)
   - [Requires](https://aka.ms/ps-rule/options#requires)
   - [Rule.Baseline](https://aka.ms/ps-rule/options#rulebaseline)
   - [Rule.Include](https://aka.ms/ps-rule/options#ruleinclude)
@@ -300,6 +340,8 @@ The following conceptual topics exist in the `PSRule` module:
   - [$Rule](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Variables/#rule)
   - [$TargetObject](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Variables/#targetobject)
 
+> Back to the [summary](#summary)
+
 ### Schemas
 
 PSRule uses the following schemas:
@@ -307,6 +349,8 @@ PSRule uses the following schemas:
 - [Options](schemas/PSRule-options.schema.json) - Schema for PSRule YAML options file.
 - [Language](schemas/PSRule-language.schema.json) - Schema for PSRule resources such as baselines.
 - [Resources](schemas/PSRule-resources.schema.json) - Schema for PSRule resources documents used with JSON.
+
+> Back to the [summary](#summary)
 
 ## Related projects
 
@@ -340,3 +384,5 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 ## License
 
 This project is [licensed under the MIT License](LICENSE).
+
+> Back to the [summary](#summary)

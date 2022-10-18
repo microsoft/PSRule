@@ -1226,6 +1226,10 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [System.Boolean]$InputIgnoreObjectSource = $False,
 
+        # Sets the Input.IgnoreUnchangedPath option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$InputIgnoreUnchangedPath = $False,
+
         # Sets the Input.ObjectPath option
         [Parameter(Mandatory = $False)]
         [Alias('InputObjectPath')]
@@ -1308,6 +1312,10 @@ function New-PSRuleOption {
         [ValidateRange(0, 4)]
         [Alias('JsonIndent')]
         [int]$OutputJsonIndent = 0,
+
+        # Sets the Repository.BaseRef option
+        [Parameter(Mandatory = $False)]
+        [String]$RepositoryBaseRef,
 
         # Sets the Repository.Url option
         [Parameter(Mandatory = $False)]
@@ -1510,6 +1518,10 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [System.Boolean]$InputIgnoreRepositoryCommon = $True,
 
+        # Sets the Input.IgnoreUnchangedPath option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$InputIgnoreUnchangedPath = $False,
+
         # Sets the Input.ObjectPath option
         [Parameter(Mandatory = $False)]
         [Alias('InputObjectPath')]
@@ -1592,6 +1604,10 @@ function Set-PSRuleOption {
         [ValidateRange(0, 4)]
         [Alias('JsonIndent')]
         [Int]$OutputJsonIndent = 0,
+
+        # Sets the Repository.BaseRef option
+        [Parameter(Mandatory = $False)]
+        [String]$RepositoryBaseRef,
 
         # Sets the Repository.Url option
         [Parameter(Mandatory = $False)]
@@ -2241,6 +2257,10 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [System.Boolean]$InputIgnoreRepositoryCommon = $True,
 
+        # Sets the Input.IgnoreUnchangedPath option
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$InputIgnoreUnchangedPath = $False,
+
         # Sets the Input.ObjectPath option
         [Parameter(Mandatory = $False)]
         [Alias('InputObjectPath')]
@@ -2323,6 +2343,10 @@ function SetOptions {
         [ValidateRange(0, 4)]
         [Alias('JsonIndent')]
         [Int]$OutputJsonIndent = 0,
+
+        # Sets the Repository.BaseRef option
+        [Parameter(Mandatory = $False)]
+        [String]$RepositoryBaseRef,
 
         # Sets the Repository.Url option
         [Parameter(Mandatory = $False)]
@@ -2440,6 +2464,11 @@ function SetOptions {
             $Option.Input.IgnoreRepositoryCommon = $InputIgnoreRepositoryCommon;
         }
 
+        # Sets option Input.IgnoreUnchangedPath
+        if ($PSBoundParameters.ContainsKey('InputIgnoreUnchangedPath')) {
+            $Option.Input.IgnoreUnchangedPath = $InputIgnoreUnchangedPath;
+        }
+
         # Sets option Input.ObjectPath
         if ($PSBoundParameters.ContainsKey('ObjectPath')) {
             $Option.Input.ObjectPath = $ObjectPath;
@@ -2528,6 +2557,11 @@ function SetOptions {
         # Sets option Output.Style
         if ($PSBoundParameters.ContainsKey('OutputStyle')) {
             $Option.Output.Style = $OutputStyle;
+        }
+
+        # Sets option Repository.BaseRef
+        if ($PSBoundParameters.ContainsKey('RepositoryBaseRef')) {
+            $Option.Repository.BaseRef = $RepositoryBaseRef;
         }
 
         # Sets option Repository.Url

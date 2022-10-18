@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Management.Automation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PSRule.Runtime.ObjectPath;
@@ -299,11 +300,16 @@ namespace PSRule
             Assert.NotNull(actual);
             Assert.Single(actual);
             Assert.Equal("TestObject2", actual[0]);
+
+            // Handle exception cases
+            var pso = GetPSObjectContent();
+            expression = PathExpression.Create("$..value");
+            Assert.False(expression.TryGet(pso, true, out object[] _));
         }
 
         #region Helper methods
 
-        private object GetJsonContent()
+        private static object GetJsonContent()
         {
             var settings = new JsonLoadSettings
             {
@@ -313,6 +319,15 @@ namespace PSRule
             using var stream = new StreamReader(path);
             using var reader = new JsonTextReader(stream);
             return JToken.Load(reader, settings);
+        }
+
+        private static object GetPSObjectContent()
+        {
+            var result = new PSObject();
+            result.Properties.Add(new PSNoteProperty("string", ""));
+            result.Properties.Add(new PSNoteProperty("date", DateTime.Now));
+            result.Properties.Add(new PSNoteProperty("int", 0));
+            return result;
         }
 
         #endregion Helper methods

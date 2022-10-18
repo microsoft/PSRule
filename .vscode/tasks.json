@@ -18,6 +18,16 @@
             "presentation": {
                 "clear": true,
                 "panel": "dedicated"
+            },
+            "linux": {
+                "options": {
+                    "shell": {
+                        "executable": "pwsh",
+                        "args": [
+                            "-c"
+                        ]
+                    }
+                }
             }
         },
         {
@@ -32,6 +42,16 @@
             "presentation": {
                 "clear": true,
                 "panel": "dedicated"
+            },
+            "linux": {
+                "options": {
+                    "shell": {
+                        "executable": "pwsh",
+                        "args": [
+                            "-c"
+                        ]
+                    }
+                }
             }
         },
         {
@@ -43,6 +63,16 @@
             "presentation": {
                 "clear": true,
                 "panel": "dedicated"
+            },
+            "linux": {
+                "options": {
+                    "shell": {
+                        "executable": "pwsh",
+                        "args": [
+                            "-c"
+                        ]
+                    }
+                }
             }
         },
         {
@@ -54,7 +84,17 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": []
+            "problemMatcher": [],
+            "linux": {
+                "options": {
+                    "shell": {
+                        "executable": "pwsh",
+                        "args": [
+                            "-c"
+                        ]
+                    }
+                }
+            }
         },
         {
             "label": "coverage",
@@ -66,33 +106,83 @@
             "presentation": {
                 "clear": true,
                 "panel": "dedicated"
+            },
+            "linux": {
+                "options": {
+                    "shell": {
+                        "executable": "pwsh",
+                        "args": [
+                            "-c"
+                        ]
+                    }
+                }
             }
         },
         {
             "label": "build-docs",
             "type": "shell",
             "command": "Invoke-Build BuildHelp",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "linux": {
+                "options": {
+                    "shell": {
+                        "executable": "pwsh",
+                        "args": [
+                            "-c"
+                        ]
+                    }
+                }
+            }
         },
         {
             "label": "scaffold-docs",
             "detail": "Generate cmdlet markdown docs.",
             "type": "shell",
             "command": "Invoke-Build ScaffoldHelp",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "linux": {
+                "options": {
+                    "shell": {
+                        "executable": "pwsh",
+                        "args": [
+                            "-c"
+                        ]
+                    }
+                }
+            }
         },
         {
             "label": "clean",
             "detail": "Clean up temporary working paths.",
             "type": "shell",
             "command": "Invoke-Build Clean",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "linux": {
+                "options": {
+                    "shell": {
+                        "executable": "pwsh",
+                        "args": [
+                            "-c"
+                        ]
+                    }
+                }
+            }
         },
         {
             "label": "script-analyzer",
             "type": "shell",
             "command": "Invoke-Build Analyze",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "linux": {
+                "options": {
+                    "shell": {
+                        "executable": "pwsh",
+                        "args": [
+                            "-c"
+                        ]
+                    }
+                }
+            }
         },
         {
             "label": "benchmark",
@@ -102,6 +192,16 @@
             "presentation": {
                 "clear": true,
                 "panel": "dedicated"
+            },
+            "linux": {
+                "options": {
+                    "shell": {
+                        "executable": "pwsh",
+                        "args": [
+                            "-c"
+                        ]
+                    }
+                }
             }
         },
         {
@@ -112,6 +212,16 @@
             "presentation": {
                 "clear": true,
                 "panel": "dedicated"
+            },
+            "linux": {
+                "options": {
+                    "shell": {
+                        "executable": "pwsh",
+                        "args": [
+                            "-c"
+                        ]
+                    }
+                }
             }
         },
         {
@@ -119,6 +229,17 @@
             "detail": "Build and run documentation site locally.",
             "type": "shell",
             "command": "mkdocs serve",
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true,
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "install python dependencies",
+            "detail": "Install or upgrade dependencies to build and debug mkdocs documentation locally.",
+            "type": "shell",
+            "command": "python3 -m pip install -r requirements-docs.txt",
             "problemMatcher": [],
             "presentation": {
                 "clear": true,
@@ -154,6 +275,16 @@
             "presentation": {
                 "clear": true,
                 "panel": "dedicated"
+            },
+            "linux": {
+                "options": {
+                    "shell": {
+                        "executable": "pwsh",
+                        "args": [
+                            "-c"
+                        ]
+                    }
+                }
             }
         }
     ],

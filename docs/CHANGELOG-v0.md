@@ -1,3 +1,7 @@
+---
+discussion: false
+---
+
 # Change log
 
 See [upgrade notes][1] for helpful information when upgrading from previous versions.

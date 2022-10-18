@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Management.Automation;
+using System.Threading;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Definitions;
@@ -290,7 +291,7 @@ namespace PSRule.Pipeline
             Option.Output = new OutputOption(option.Output);
             Option.Output.Outcome ??= OutputOption.Default.Outcome;
             Option.Output.Banner ??= OutputOption.Default.Banner;
-            Option.Repository = GetRepository(Option.Repository);
+            Option.Repository = GetRepository(option.Repository);
             return this;
         }
 
@@ -467,6 +468,9 @@ namespace PSRule.Pipeline
             if (string.IsNullOrEmpty(result.Url) && GitHelper.TryRepository(out var url))
                 result.Url = url;
 
+            if (string.IsNullOrEmpty(result.BaseRef) && GitHelper.TryBaseRef(out var baseRef))
+                result.BaseRef = baseRef;
+
             return result;
         }
 
@@ -562,25 +566,33 @@ namespace PSRule.Pipeline
         /// Normalizes JSON indent range between minimum 0 and maximum 4.
         /// </summary>
         /// <param name="jsonIndent"></param>
-        /// <returns></returns>
+        /// <returns>The number of characters to indent.</returns>
         protected static int NormalizeJsonIndentRange(int? jsonIndent)
         {
             if (jsonIndent.HasValue)
             {
                 if (jsonIndent < MIN_JSON_INDENT)
-                {
                     return MIN_JSON_INDENT;
-                }
 
                 else if (jsonIndent > MAX_JSON_INDENT)
-                {
                     return MAX_JSON_INDENT;
-                }
 
                 return jsonIndent.Value;
             }
-
             return MIN_JSON_INDENT;
+        }
+
+        protected bool TryChangedFiles(out string[] files)
+        {
+            files = null;
+            if (!Option.Input.IgnoreUnchangedPath.GetValueOrDefault(InputOption.Default.IgnoreUnchangedPath.Value) ||
+                !GitHelper.TryGetChangedFiles(Option.Repository.BaseRef, "d", null, out files))
+                return false;
+
+            for (var i = 0; i < files.Length; i++)
+                HostContext.Verbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.UsingChangedFile, files[i]));
+
+            return true;
         }
     }
 }

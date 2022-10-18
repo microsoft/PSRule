@@ -11,6 +11,7 @@ using System.Management.Automation;
 using System.Reflection;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using PSRule.Resources;
 
 namespace PSRule.Runtime.ObjectPath
 {
@@ -19,6 +20,16 @@ namespace PSRule.Runtime.ObjectPath
     /// </summary>
     internal sealed class PathExpressionBuilder
     {
+        private const int DEFAULT_RECURSE_MAX_DEPTH = 100;
+        private static readonly object[] DEFAULT_EMPTY_ARRAY = new object[] { };
+
+        private readonly int _RecurseMaxDepth;
+
+        public PathExpressionBuilder()
+        {
+            _RecurseMaxDepth = DEFAULT_RECURSE_MAX_DEPTH;
+        }
+
         private sealed class DynamicPropertyBinder : GetMemberBinder
         {
             internal DynamicPropertyBinder(string name, bool ignoreCase)
@@ -196,7 +207,7 @@ namespace PSRule.Runtime.ObjectPath
                 var caseSensitive = context.CaseSensitive != caseSensitiveFlag;
                 var result = new List<object>();
                 var success = 0;
-                foreach (var i in GetAllRecurse(input, memberName, caseSensitive))
+                foreach (var i in GetAllRecurse(input, memberName, caseSensitive, 0))
                 {
                     if (!next(context, i, out var items, out _))
                         continue;
@@ -340,6 +351,9 @@ namespace PSRule.Runtime.ObjectPath
             if (input is JValue jValue && (jValue.Type == JTokenType.String || jValue.Type == JTokenType.Integer || jValue.Type == JTokenType.Boolean))
                 input = jValue.Value;
 
+            if (input is PSObject pso && pso.BaseObject is IEnumerable e && pso.BaseObject is not string)
+                input = e.Cast<object>().ToArray();
+
             enumerable = false;
             if (input is object[] eo)
             {
@@ -369,11 +383,22 @@ namespace PSRule.Runtime.ObjectPath
         private static IEnumerable<object> GetAll(object o)
         {
             var baseObject = ExpressionHelpers.GetBaseObject(o);
+            if (IsSimpleType(baseObject))
+                return DEFAULT_EMPTY_ARRAY;
+
             return baseObject is IEnumerable ? GetAllIndex(baseObject) : GetAllField(baseObject);
         }
 
-        private static IEnumerable<object> GetAllRecurse(object o, string fieldName, bool caseSensitive)
+        private static bool IsSimpleType(object o)
         {
+            return o is string || (o != null && o.GetType().IsValueType);
+        }
+
+        private IEnumerable<object> GetAllRecurse(object o, string fieldName, bool caseSensitive, int depth)
+        {
+            if (depth > _RecurseMaxDepth)
+                throw new ObjectPathEvaluateException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ObjectPathRecurseMaxDepth, _RecurseMaxDepth, fieldName));
+
             foreach (var i in GetAll(o))
             {
                 if (TryGetField(i, fieldName, caseSensitive, out var value))
@@ -382,7 +407,7 @@ namespace PSRule.Runtime.ObjectPath
                 }
                 else
                 {
-                    foreach (var c in GetAllRecurse(i, fieldName, caseSensitive))
+                    foreach (var c in GetAllRecurse(i, fieldName, caseSensitive, depth + 1))
                         yield return c;
                 }
             }
