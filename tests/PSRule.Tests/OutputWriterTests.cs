@@ -1,9 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections;
 using System.Linq;
 using System.Management.Automation;
+using System.Xml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
@@ -277,6 +279,30 @@ namespace PSRule
 ]", output.Output.OfType<string>().FirstOrDefault());
         }
 
+        [Fact]
+        public void NUnit3()
+        {
+            var option = GetOption();
+            option.Repository.Url = "https://github.com/microsoft/PSRule.UnitTest";
+            var output = new TestWriter(option);
+            var result = new InvokeResult();
+            result.Add(GetPass());
+            result.Add(GetFail());
+            result.Add(GetFail("rid-003", SeverityLevel.Warning));
+            result.Add(GetFail("rid-004", SeverityLevel.Information, "Synopsis \"with quotes\"."));
+            var writer = new NUnit3OutputWriter(output, option);
+            writer.Begin();
+            writer.WriteObject(result, false);
+            writer.End();
+
+            var s = output.Output.OfType<string>().FirstOrDefault();
+            var doc = new XmlDocument();
+            doc.LoadXml(s);
+
+            var xml = doc["test-results"]["test-suite"].OuterXml.Replace(Environment.NewLine, "\r\n");
+            Assert.Equal("<test-suite type=\"TestFixture\" name=\"TestObject1\" executed=\"True\" result=\"Failure\" success=\"False\" time=\"0\" asserts=\"3\" description=\"\"><results><test-case description=\"This is rule 001.\" name=\"TestObject1 -- rule-001\" time=\"0\" asserts=\"0\" success=\"True\" result=\"Success\" executed=\"True\" /><test-case description=\"This is rule 002.\" name=\"TestObject1 -- rule-002\" time=\"0\" asserts=\"0\" success=\"False\" result=\"Failure\" executed=\"True\"><failure><message><![CDATA[Recommendation for rule 002\r\n]]></message><stack-trace><![CDATA[]]></stack-trace></failure></test-case><test-case description=\"This is rule 002.\" name=\"TestObject1 -- rule-002\" time=\"0\" asserts=\"0\" success=\"False\" result=\"Failure\" executed=\"True\"><failure><message><![CDATA[Recommendation for rule 002\r\n]]></message><stack-trace><![CDATA[]]></stack-trace></failure></test-case><test-case description=\"Synopsis &quot;with quotes&quot;.\" name=\"TestObject1 -- rule-002\" time=\"0\" asserts=\"0\" success=\"False\" result=\"Failure\" executed=\"True\"><failure><message><![CDATA[Recommendation for rule 002\r\n]]></message><stack-trace><![CDATA[]]></stack-trace></failure></test-case></results></test-suite>", xml);
+        }
+
         #region Helper methods
 
         private static RuleRecord GetPass()
@@ -304,7 +330,7 @@ namespace PSRule
             );
         }
 
-        private static RuleRecord GetFail(string ruleRef = "rid-002", SeverityLevel level = SeverityLevel.Error)
+        private static RuleRecord GetFail(string ruleRef = "rid-002", SeverityLevel level = SeverityLevel.Error, string synopsis = "This is rule 002.")
         {
             return new RuleRecord(
                 runId: "run-001",
@@ -318,7 +344,7 @@ namespace PSRule
                     "rule-002",
                     "Rule 002",
                     "TestModule",
-                    synopsis: new InfoString("This is rule 002."),
+                    synopsis: new InfoString(synopsis),
                     recommendation: new InfoString("Recommendation for rule 002")
                 ),
                 field: new Hashtable(),
