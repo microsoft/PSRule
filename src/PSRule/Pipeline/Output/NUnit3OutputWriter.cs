@@ -2,9 +2,11 @@
 // Licensed under the MIT License.
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Xml;
 using PSRule.Configuration;
 using PSRule.Resources;
 using PSRule.Rules;
@@ -13,17 +15,12 @@ namespace PSRule.Pipeline.Output
 {
     internal sealed class NUnit3OutputWriter : SerializationOutputWriter<InvokeResult>
     {
-        private readonly StringBuilder _Builder;
-
         internal NUnit3OutputWriter(PipelineWriter inner, PSRuleOption option)
-            : base(inner, option)
-        {
-            _Builder = new StringBuilder();
-        }
+            : base(inner, option) { }
 
         public override void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
-            if (!(sendToPipeline is InvokeResult result))
+            if (sendToPipeline is not InvokeResult result)
                 return;
 
             Add(result);
@@ -31,16 +28,50 @@ namespace PSRule.Pipeline.Output
 
         protected override string Serialize(InvokeResult[] o)
         {
-            _Builder.Append("<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>");
+            var settings = new XmlWriterSettings
+            {
+                Encoding = Encoding.UTF8, // Consider using: Option.Output.GetEncoding()
+                // Consider using: Indent = true,
+            };
+            using var writer = new OutputStringWriter(Option);
+            using var xml = XmlWriter.Create(writer, settings);
+            xml.WriteStartDocument(standalone: false);
 
             float time = o.Sum(r => r.Time);
             var total = o.Sum(r => r.Total);
             var error = o.Sum(r => r.Error);
             var fail = o.Sum(r => r.Fail);
 
-            _Builder.Append($"<test-results xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"nunit_schema_2.5.xsd\" name=\"PSRule\" total=\"{total}\" errors=\"{error}\" failures=\"{fail}\" not-run=\"0\" inconclusive=\"0\" ignored=\"0\" skipped=\"0\" invalid=\"0\" date=\"{DateTime.UtcNow.ToString("yyyy-MM-dd", Thread.CurrentThread.CurrentCulture)}\" time=\"{TimeSpan.FromMilliseconds(time)}\">");
-            _Builder.Append($"<environment user=\"{Environment.UserName}\" machine-name=\"{Environment.MachineName}\" cwd=\"{Configuration.PSRuleOption.GetWorkingPath()}\" user-domain=\"{Environment.UserDomainName}\" platform=\"{Environment.OSVersion.Platform}\" nunit-version=\"2.5.8.0\" os-version=\"{Environment.OSVersion.Version}\" clr-version=\"{Environment.Version}\" />");
-            _Builder.Append($"<culture-info current-culture=\"{Thread.CurrentThread.CurrentCulture}\" current-uiculture=\"{Thread.CurrentThread.CurrentUICulture}\" />");
+            xml.WriteStartElement("test-results");
+            xml.WriteAttributeString("xsi", "noNamespaceSchemaLocation", "http://www.w3.org/2001/XMLSchema-instance", "nunit_schema_2.5.xsd");
+            xml.WriteAttributeString("name", "PSRule");
+            xml.WriteAttributeString("total", total.ToString());
+            xml.WriteAttributeString("errors", error.ToString());
+            xml.WriteAttributeString("failures", fail.ToString());
+            xml.WriteAttributeString("not-run", "0");
+            xml.WriteAttributeString("inconclusive", "0");
+            xml.WriteAttributeString("ignored", "0");
+            xml.WriteAttributeString("skipped", "0");
+            xml.WriteAttributeString("invalid", "0");
+            xml.WriteAttributeString("date", DateTime.UtcNow.ToString("yyyy-MM-dd", Thread.CurrentThread.CurrentCulture));
+            xml.WriteAttributeString("time", TimeSpan.FromMilliseconds(time).ToString());
+
+            xml.WriteStartElement("environment");
+            xml.WriteAttributeString("user", Environment.UserName);
+            xml.WriteAttributeString("machine-name", Environment.MachineName);
+            xml.WriteAttributeString("cwd", PSRuleOption.GetWorkingPath());
+            xml.WriteAttributeString("user-domain", Environment.UserDomainName);
+            xml.WriteAttributeString("platform", Environment.OSVersion.Platform.ToString());
+            xml.WriteAttributeString("nunit-version", "2.5.8.0");
+            xml.WriteAttributeString("os-version", Environment.OSVersion.Version.ToString());
+            xml.WriteAttributeString("clr-version", Environment.Version.ToString());
+            xml.WriteEndElement();
+
+            xml.WriteStartElement("culture-info");
+            xml.WriteAttributeString("current-culture", Thread.CurrentThread.CurrentCulture.ToString());
+            xml.WriteAttributeString("current-uiculture", Thread.CurrentThread.CurrentUICulture.ToString());
+            xml.WriteEndElement();
+
             foreach (var result in o)
             {
                 if (result.Total == 0)
@@ -68,35 +99,63 @@ namespace PSRule.Pipeline.Output
                     asserts: failedCount,
                     testCases: testCases
                 );
-                VisitFixture(fixture: fixture);
+                VisitFixture(xml, fixture);
             }
-            _Builder.Append("</test-results>");
-            return _Builder.ToString();
+            xml.WriteEndElement();
+            xml.WriteEndDocument();
+            xml.Flush();
+            return writer.ToString();
         }
 
-        private void VisitFixture(TestFixture fixture)
+        private static void VisitFixture(XmlWriter xml, TestFixture fixture)
         {
-            _Builder.Append($"<test-suite type=\"TestFixture\" name=\"{fixture.Name}\" executed=\"{fixture.Executed}\" result=\"{(fixture.Success ? "Success" : "Failure")}\" success=\"{fixture.Success}\" time=\"{fixture.Time.ToString(Thread.CurrentThread.CurrentCulture)}\" asserts=\"{fixture.Asserts}\" description=\"{fixture.Description}\"><results>");
+            xml.WriteStartElement("test-suite");
+            xml.WriteAttributeString("type", "TestFixture");
+            xml.WriteAttributeString("name", fixture.Name);
+            xml.WriteAttributeString("executed", fixture.Executed.ToString());
+            xml.WriteAttributeString("result", fixture.Success ? "Success" : "Failure");
+            xml.WriteAttributeString("success", fixture.Success.ToString());
+
+            xml.WriteAttributeString("time", fixture.Time.ToString(Thread.CurrentThread.CurrentCulture));
+            xml.WriteAttributeString("asserts", fixture.Asserts.ToString());
+            xml.WriteAttributeString("description", fixture.Description);
+
+            xml.WriteStartElement("results");
             foreach (var testCase in fixture.Results)
-                VisitTestCase(testCase: testCase);
+                VisitTestCase(xml, testCase);
 
-            _Builder.Append("</results></test-suite>");
+            xml.WriteEndElement();
+            xml.WriteEndElement();
         }
 
-        private void VisitTestCase(TestCase testCase)
+        private static void VisitTestCase(XmlWriter xml, TestCase testCase)
         {
-            _Builder.Append($"<test-case description=\"{testCase.Description}\" name=\"{testCase.Name}\" time=\"{testCase.Time.ToString(Thread.CurrentThread.CurrentCulture)}\" asserts=\"0\" success=\"{testCase.Success}\" result=\"{(testCase.Success ? "Success" : "Failure")}\" executed=\"{testCase.Executed}\">");
+            xml.WriteStartElement("test-case");
+            xml.WriteAttributeString("description", testCase.Description);
+            xml.WriteAttributeString("name", testCase.Name);
+            xml.WriteAttributeString("time", testCase.Time.ToString(Thread.CurrentThread.CurrentCulture));
+            xml.WriteAttributeString("asserts", "0");
+            xml.WriteAttributeString("success", testCase.Success.ToString());
+            xml.WriteAttributeString("result", testCase.Success ? "Success" : "Failure");
+            xml.WriteAttributeString("executed", testCase.Executed.ToString());
             if (!testCase.Success)
             {
-                _Builder.Append("<failure>");
-                _Builder.Append($"<message><![CDATA[{testCase.FailureMessage}]]></message>");
-                _Builder.Append($"<stack-trace><![CDATA[{testCase.ScriptStackTrace}]]></stack-trace>");
-                _Builder.Append("</failure>");
+                xml.WriteStartElement("failure");
+
+                xml.WriteStartElement("message");
+                xml.WriteCData(testCase.FailureMessage);
+                xml.WriteEndElement();
+
+                xml.WriteStartElement("stack-trace");
+                xml.WriteCData(testCase.ScriptStackTrace);
+                xml.WriteEndElement();
+
+                xml.WriteEndElement();
             }
-            _Builder.Append("</test-case>");
+            xml.WriteEndElement();
         }
 
-        private string FailureMessage(Rules.RuleRecord record)
+        private string FailureMessage(RuleRecord record)
         {
             var useMarkdown = Option.Output.Style == OutputStyle.AzurePipelines;
             var sb = new StringBuilder();
