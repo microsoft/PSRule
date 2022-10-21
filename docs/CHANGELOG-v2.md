@@ -30,6 +30,22 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.5.3
+
+What's changed since v2.5.2:
+
+- Bug fixes:
+  - Fixed incorrect XML header for encoding by @BernieWhite.
+    [#1322](https://github.com/microsoft/PSRule/issues/1322)
+
+## v2.5.2
+
+What's changed since v2.5.1:
+
+- Bug fixes:
+  - Fixed NUnit output does not escape characters in all result properties by @BernieWhite.
+    [#1316](https://github.com/microsoft/PSRule/issues/1316)
+
 ## v2.5.1
 
 What's changed since v2.5.0:
