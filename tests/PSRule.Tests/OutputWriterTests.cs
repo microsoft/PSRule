@@ -299,6 +299,8 @@ namespace PSRule
             var doc = new XmlDocument();
             doc.LoadXml(s);
 
+            var declaration = doc.ChildNodes.Item(0) as XmlDeclaration;
+            Assert.Equal("utf-8", declaration.Encoding);
             var xml = doc["test-results"]["test-suite"].OuterXml.Replace(Environment.NewLine, "\r\n");
             Assert.Equal("<test-suite type=\"TestFixture\" name=\"TestObject1\" executed=\"True\" result=\"Failure\" success=\"False\" time=\"0\" asserts=\"3\" description=\"\"><results><test-case description=\"This is rule 001.\" name=\"TestObject1 -- rule-001\" time=\"0\" asserts=\"0\" success=\"True\" result=\"Success\" executed=\"True\" /><test-case description=\"This is rule 002.\" name=\"TestObject1 -- rule-002\" time=\"0\" asserts=\"0\" success=\"False\" result=\"Failure\" executed=\"True\"><failure><message><![CDATA[Recommendation for rule 002\r\n]]></message><stack-trace><![CDATA[]]></stack-trace></failure></test-case><test-case description=\"This is rule 002.\" name=\"TestObject1 -- rule-002\" time=\"0\" asserts=\"0\" success=\"False\" result=\"Failure\" executed=\"True\"><failure><message><![CDATA[Recommendation for rule 002\r\n]]></message><stack-trace><![CDATA[]]></stack-trace></failure></test-case><test-case description=\"Synopsis &quot;with quotes&quot;.\" name=\"TestObject1 -- rule-002\" time=\"0\" asserts=\"0\" success=\"False\" result=\"Failure\" executed=\"True\"><failure><message><![CDATA[Recommendation for rule 002\r\n]]></message><stack-trace><![CDATA[]]></stack-trace></failure></test-case></results></test-suite>", xml);
         }

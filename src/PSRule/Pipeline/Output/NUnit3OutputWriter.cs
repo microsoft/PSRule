@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,13 +15,8 @@ namespace PSRule.Pipeline.Output
 {
     internal sealed class NUnit3OutputWriter : SerializationOutputWriter<InvokeResult>
     {
-        private readonly StringBuilder _Builder;
-
         internal NUnit3OutputWriter(PipelineWriter inner, PSRuleOption option)
-            : base(inner, option)
-        {
-            _Builder = new StringBuilder();
-        }
+            : base(inner, option) { }
 
         public override void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
@@ -37,7 +33,8 @@ namespace PSRule.Pipeline.Output
                 Encoding = Encoding.UTF8, // Consider using: Option.Output.GetEncoding()
                 // Consider using: Indent = true,
             };
-            using var xml = XmlWriter.Create(_Builder, settings);
+            using var writer = new OutputStringWriter(Option);
+            using var xml = XmlWriter.Create(writer, settings);
             xml.WriteStartDocument(standalone: false);
 
             float time = o.Sum(r => r.Time);
@@ -107,7 +104,7 @@ namespace PSRule.Pipeline.Output
             xml.WriteEndElement();
             xml.WriteEndDocument();
             xml.Flush();
-            return _Builder.ToString();
+            return writer.ToString();
         }
 
         private static void VisitFixture(XmlWriter xml, TestFixture fixture)
