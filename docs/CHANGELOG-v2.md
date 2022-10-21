@@ -30,6 +30,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since v2.5.2:
+
+- Bug fixes:
+  - Fixed incorrect XML header for encoding by @BernieWhite.
+    [#1322](https://github.com/microsoft/PSRule/issues/1322)
+
 ## v2.5.2
 
 What's changed since v2.5.1:
