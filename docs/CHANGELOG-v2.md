@@ -30,11 +30,13 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
-What's changed since v2.5.1:
+What's changed since v2.5.3:
 
 - Engineering:
   - Bump Microsoft.NET.Test.Sdk to v17.3.2.
     [#1283](https://github.com/microsoft/PSRule/pull/1283)
+  - Bump PSScriptAnalyzer to v1.21.0.
+    [#1318](https://github.com/microsoft/PSRule/pull/1318)
 
 ## v2.5.3
 
