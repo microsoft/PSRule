@@ -105,7 +105,7 @@ function CheckVersion {
                 if (([Version]$found.Version) -gt ([Version]$module.Value.version)) {
                     Write-Host -Object "[$group] -- Newer version found $($found.Version)";
                     $dependencies[$module.Name].version = $found.Version;
-                    $Null = Add-Content -Path $changeNotes -Value "Bump $($module.Name) to $($found.Version).";
+                    $Null = Add-Content -Path $changeNotes -Value "Bump $($module.Name) to v$($found.Version).";
                 }
                 else {
                     Write-Host -Object "[$group] -- Already up to date.";
