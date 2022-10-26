@@ -37,6 +37,8 @@ What's changed since v2.5.3:
     [#1283](https://github.com/microsoft/PSRule/pull/1283)
   - Bump PSScriptAnalyzer to v1.21.0.
     [#1318](https://github.com/microsoft/PSRule/pull/1318)
+  - Class clean up and documentation by @BernieWhite.
+    [#1186](https://github.com/microsoft/PSRule/issues/1186)
 
 ## v2.5.3
 

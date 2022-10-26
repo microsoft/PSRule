@@ -8,8 +8,14 @@ using System.Threading;
 
 namespace PSRule.Data
 {
+    /// <summary>
+    /// A semantic version constraint.
+    /// </summary>
     public interface IVersionConstraint
     {
+        /// <summary>
+        /// Determines if the semantic version meets the requirments of the constraint.
+        /// </summary>
         bool Equals(SemanticVersion.Version version);
     }
 
@@ -36,6 +42,9 @@ namespace PSRule.Data
         private const string FLAG_PRERELEASE = "@prerelease ";
         private const string FLAG_PRE = "@pre ";
 
+        /// <summary>
+        /// A comparison operation for a version constraint.
+        /// </summary>
         [Flags]
         internal enum ComparisonOperator
         {
@@ -76,10 +85,14 @@ namespace PSRule.Data
             Prerelease = 1
         }
 
+        /// <summary>
+        /// A semantic version constraint.
+        /// </summary>
         public sealed class VersionConstraint : IVersionConstraint
         {
             private List<ConstraintExpression> _Constraints;
 
+            /// <inheritdoc/>
             public bool Equals(Version version)
             {
                 if (_Constraints == null || _Constraints.Count == 0)
@@ -311,12 +324,34 @@ namespace PSRule.Data
             }
         }
 
+        /// <summary>
+        /// A semantic version.
+        /// </summary>
         public sealed class Version : IComparable<Version>, IEquatable<Version>
         {
+            /// <summary>
+            /// The major part of the version.
+            /// </summary>
             public readonly int Major;
+
+            /// <summary>
+            /// The minor part of the version.
+            /// </summary>
             public readonly int Minor;
+
+            /// <summary>
+            /// The patch part of the version.
+            /// </summary>
             public readonly int Patch;
+
+            /// <summary>
+            /// The pre-release part of the version.
+            /// </summary>
             public readonly PR Prerelease;
+
+            /// <summary>
+            /// The build part of the version.
+            /// </summary>
             public readonly string Build;
 
             internal Version(int major, int minor, int patch, PR prerelease, string build)
@@ -328,6 +363,9 @@ namespace PSRule.Data
                 Build = build;
             }
 
+            /// <summary>
+            /// Try to parse a semantic version from a string.
+            /// </summary>
             public static bool TryParse(string value, out Version version)
             {
                 return TryParseVersion(value, out version);
@@ -360,12 +398,18 @@ namespace PSRule.Data
                 }
             }
 
+            /// <summary>
+            /// Compare the version against another version.
+            /// </summary>
             public bool Equals(Version other)
             {
                 return other != null &&
                     Equals(other.Major, other.Minor, other.Patch);
             }
 
+            /// <summary>
+            /// Compare the version against another version based on major.minor.patch.
+            /// </summary>
             public bool Equals(int major, int minor, int patch)
             {
                 return major == Major &&
@@ -373,6 +417,9 @@ namespace PSRule.Data
                     patch == Patch;
             }
 
+            /// <summary>
+            /// Compare the version against another version.
+            /// </summary>
             public int CompareTo(Version other)
             {
                 if (other == null)
@@ -391,6 +438,9 @@ namespace PSRule.Data
             }
         }
 
+        /// <summary>
+        /// A semantic version pre-release identifier.
+        /// </summary>
         [DebuggerDisplay("{Value}")]
         public sealed class PR
         {
@@ -411,10 +461,19 @@ namespace PSRule.Data
                 _Identifiers = string.IsNullOrEmpty(value) ? null : value.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
             }
 
+            /// <summary>
+            /// The string value of a pre-release identifier.
+            /// </summary>
             public string Value { get; }
 
+            /// <summary>
+            /// Is the pre-release identifier empty, indicating a stable release.
+            /// </summary>
             public bool Stable => _Identifiers == null;
 
+            /// <summary>
+            /// Compare the pre-release identifer to another pre-release identifier.
+            /// </summary>
             public int CompareTo(PR pr)
             {
                 if (pr == null || pr.Stable)
