@@ -17,8 +17,8 @@ namespace PSRule.Pipeline.Output
 
         private readonly StringBuilder _Builder;
 
-        internal CsvOutputWriter(PipelineWriter inner, PSRuleOption option)
-            : base(inner, option)
+        internal CsvOutputWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
+            : base(inner, option, shouldProcess)
         {
             _Builder = new StringBuilder();
         }

@@ -13,7 +13,7 @@ namespace PSRule
         private readonly StringBuilder _Output;
 
         public TestAssertWriter(PSRuleOption option)
-            : base(null, option)
+            : base(null, option, null)
         {
             _Output = new StringBuilder();
         }

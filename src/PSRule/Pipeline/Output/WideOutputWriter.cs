@@ -11,8 +11,8 @@ namespace PSRule.Pipeline.Output
 {
     internal sealed class WideOutputWriter : PipelineWriter
     {
-        internal WideOutputWriter(PipelineWriter inner, PSRuleOption option)
-            : base(inner, option) { }
+        internal WideOutputWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
+            : base(inner, option, shouldProcess) { }
 
         public override void WriteObject(object sendToPipeline, bool enumerateCollection)
         {

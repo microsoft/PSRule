@@ -14,8 +14,8 @@ namespace PSRule.Pipeline
         {
             private readonly RuleOutcome _Outcome;
 
-            internal BooleanWriter(PipelineWriter output, RuleOutcome outcome)
-                : base(output, null)
+            internal BooleanWriter(PipelineWriter output, RuleOutcome outcome, ShouldProcess shouldProcess)
+                : base(output, null, shouldProcess)
             {
                 _Outcome = outcome;
             }
@@ -38,7 +38,12 @@ namespace PSRule.Pipeline
 
         protected override PipelineWriter PrepareWriter()
         {
-            return new BooleanWriter(GetOutput(), Option.Output.Outcome.Value);
+            return new BooleanWriter(GetOutput(), Option.Output.Outcome.Value, ShouldProcess);
+        }
+
+        private new static bool ShouldProcess(string target, string action)
+        {
+            return true;
         }
     }
 }

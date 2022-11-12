@@ -21,11 +21,11 @@ namespace PSRule
         private const string LANGUAGE = "Language";
         private const string LANGUAGEELEMENT = "Variable";
 
-        private readonly ITestOutputHelper Output;
+        private readonly ITestOutputHelper _Output;
 
         public AssertTests(ITestOutputHelper output)
         {
-            Output = output;
+            _Output = output;
         }
 
         [Fact]
@@ -162,7 +162,7 @@ namespace PSRule
             );
 
             Assert.False(assert.HasField(null, null).Result);
-            Assert.False(assert.HasField(null, new string[] { }).Result);
+            Assert.False(assert.HasField(null, Array.Empty<string>()).Result);
             Assert.True(assert.HasField(value, new string[] { "value" }).Result);
             Assert.True(assert.HasField(value, new string[] { "notValue", "Value" }).Result);
             Assert.True(assert.HasField(value, new string[] { "value2" }).Result);
@@ -193,7 +193,7 @@ namespace PSRule
             );
 
             Assert.False(assert.NotHasField(null, null).Result);
-            Assert.False(assert.NotHasField(null, new string[] { }).Result);
+            Assert.False(assert.NotHasField(null, Array.Empty<string>()).Result);
             Assert.False(assert.NotHasField(value, new string[] { "value" }).Result);
             Assert.False(assert.NotHasField(value, new string[] { "notValue", "Value" }).Result);
             Assert.True(assert.NotHasField(value, new string[] { "notValue", "Value" }, true).Result);
@@ -1054,7 +1054,7 @@ namespace PSRule
             Assert.Equal("values", assert.NotIn(value, "values", new string[] { "Value2" }).ToResultReason().FirstOrDefault().Path);
 
             // Empty
-            value = GetObject((name: "null", value: null), (name: "empty", value: new string[] { }));
+            value = GetObject((name: "null", value: null), (name: "empty", value: Array.Empty<string>()));
             Assert.True(assert.NotIn(value, "null", new string[] { "Value1", "Value3" }).Result);
             Assert.True(assert.NotIn(value, "empty", new string[] { "Value1", "Value3" }).Result);
             Assert.True(assert.NotIn(value, "notValue", new string[] { "Value1", "Value3" }).Result);
@@ -1257,7 +1257,7 @@ namespace PSRule
                 (name: "value2", value: null),
                 (name: "value3", value: ""),
                 (name: "value4", value: 0),
-                (name: "value5", value: new string[] { })
+                (name: "value5", value: Array.Empty<string>())
             );
             Assert.False(assert.NullOrEmpty(value, "value").Result);
             Assert.True(assert.NullOrEmpty(value, "value2").Result);
@@ -1438,7 +1438,7 @@ namespace PSRule
             return new Runtime.Assert();
         }
 
-        private string GetSourcePath(string fileName)
+        private static string GetSourcePath(string fileName)
         {
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
         }
@@ -1449,7 +1449,7 @@ namespace PSRule
             {
                 var reasons = result.GetReason();
                 for (var i = 0; reasons != null && i < reasons.Length; i++)
-                    Output.WriteLine(reasons[i]);
+                    _Output.WriteLine(reasons[i]);
             }
             return result.Result;
         }

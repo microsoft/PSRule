@@ -12,8 +12,8 @@ namespace PSRule.Pipeline.Output
 {
     internal sealed class JsonOutputWriter : SerializationOutputWriter<object>
     {
-        internal JsonOutputWriter(PipelineWriter inner, PSRuleOption option)
-            : base(inner, option) { }
+        internal JsonOutputWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
+            : base(inner, option, shouldProcess) { }
 
         protected override string Serialize(object[] o)
         {

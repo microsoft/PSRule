@@ -18,6 +18,7 @@ namespace PSRule.Pipeline
         private long _Time;
         private int _Total;
         private int _Error;
+        private int _Pass;
         private int _Fail;
 
         internal InvokeResult()
@@ -26,6 +27,7 @@ namespace PSRule.Pipeline
             _Time = 0;
             _Total = 0;
             _Error = 0;
+            _Pass = 0;
             _Fail = 0;
         }
 
@@ -34,16 +36,34 @@ namespace PSRule.Pipeline
         /// </summary>
         internal long Time => _Time;
 
+        /// <summary>
+        /// The total number of rule records.
+        /// </summary>
         internal int Total => _Total;
 
+        /// <summary>
+        /// The number of rule records with a error result.
+        /// </summary>
         internal int Error => _Error;
 
+        /// <summary>
+        /// The number of rule records with a fail result.
+        /// </summary>
         internal int Fail => _Fail;
 
-        internal int Pass => _Total - _Error - _Fail;
+        /// <summary>
+        /// The number of rules records with a pass result.
+        /// </summary>
+        internal int Pass => _Pass;
 
+        /// <summary>
+        /// The worst outcome of all rule records.
+        /// </summary>
         public RuleOutcome Outcome => _Outcome;
 
+        /// <summary>
+        /// The highest severity level of all rule records.
+        /// </summary>
         public SeverityLevel Level => _Level;
 
         internal string TargetName
@@ -85,6 +105,9 @@ namespace PSRule.Pipeline
             return _Outcome == RuleOutcome.Pass || _Outcome == RuleOutcome.None;
         }
 
+        /// <summary>
+        /// Determines of the target object was processed.
+        /// </summary>
         public bool IsProcessed()
         {
             return _Outcome == RuleOutcome.Pass || _Outcome == RuleOutcome.Fail || _Outcome == RuleOutcome.Error;
@@ -96,9 +119,12 @@ namespace PSRule.Pipeline
         /// <param name="ruleRecord">The record after processing a rule.</param>
         internal void Add(RuleRecord ruleRecord)
         {
-            _Outcome = _Outcome.GetWorstCase(ruleRecord.Outcome);
+            _Outcome = ruleRecord.Outcome.GetWorstCase(_Outcome);
             _Time += ruleRecord.Time;
             _Total++;
+
+            if (ruleRecord.Outcome == RuleOutcome.Pass)
+                _Pass++;
 
             if (ruleRecord.Outcome == RuleOutcome.Error)
                 _Error++;

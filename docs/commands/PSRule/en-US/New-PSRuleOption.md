@@ -25,14 +25,15 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
  [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>] [-IncludeModule <String[]>]
  [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
- [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>] [-ObjectPath <String>]
- [-InputTargetType <String[]>] [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>]
- [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
- [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
- [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>]
- [-OutputStyle <OutputStyle>] [-OutputJsonIndent <Int32>] [-RepositoryUrl <String>]
- [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
+ [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
+ [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
+ [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
+ [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>] [-RepositoryBaseRef <String>]
+ [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ### FromOption
@@ -47,14 +48,15 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
  [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>] [-IncludeModule <String[]>]
  [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
- [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>] [-ObjectPath <String>]
- [-InputTargetType <String[]>] [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>]
- [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
- [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
- [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>]
- [-OutputStyle <OutputStyle>] [-OutputJsonIndent <Int32>] [-RepositoryUrl <String>]
- [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
+ [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
+ [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
+ [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
+ [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>] [-RepositoryBaseRef <String>]
+ [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ### FromDefault
@@ -68,14 +70,15 @@ New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTar
  [-InconclusiveWarning <Boolean>] [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
  [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>] [-IncludeModule <String[]>]
  [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
- [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>] [-ObjectPath <String>]
- [-InputTargetType <String[]>] [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>]
- [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
- [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
- [-OutputOutcome <RuleOutcome>] [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>]
- [-OutputStyle <OutputStyle>] [-OutputJsonIndent <Int32>] [-RepositoryUrl <String>]
- [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
+ [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
+ [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
+ [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
+ [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>] [-RepositoryBaseRef <String>]
+ [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -542,6 +545,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -InputIgnoreUnchangedPath
+
+Sets the option `Input.IgnoreUnchangedPath`.
+The `Input.IgnoreUnchangedPath` option determine if unchanged files are ignored.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ObjectPath
 
 Sets the `Input.ObjectPath` option to use an object path to use instead of the pipeline object.
@@ -788,6 +808,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -OutputJobSummaryPath
+
+Set the option `Output.JobSummaryPath`.
+The `Output.JobSummaryPath` option configures the path to a job summary output file.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -OutputJsonIndent
 
 Sets the option `Output.JsonIndent`.
@@ -876,6 +913,23 @@ Accepted values: Client, Plain, AzurePipelines, GitHubActions
 Required: False
 Position: Named
 Default value: Client
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RepositoryBaseRef
+
+Sets the option `Repository.BaseRef`.
+The `Repository.BaseRef` option sets the repository base ref used for comparisons of changed files.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

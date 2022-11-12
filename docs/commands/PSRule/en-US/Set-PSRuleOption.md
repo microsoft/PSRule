@@ -22,13 +22,14 @@ Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force
  [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>] [-InvariantCultureWarning <Boolean>]
  [-InitialSessionState <SessionState>] [-IncludeModule <String[]>] [-IncludePath <String[]>]
  [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>] [-InputIgnoreObjectSource <Boolean>]
- [-InputIgnoreRepositoryCommon <Boolean>] [-ObjectPath <String>] [-InputPathIgnore <String[]>]
- [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
- [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
- [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
- [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputOutcome <RuleOutcome>]
+ [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>]
+ [-InputPathIgnore <String[]>] [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>]
+ [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
+ [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
+ [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
+ [-OutputJobSummaryPath <String>] [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>]
  [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>]
- [-OutputJsonIndent <Int32>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [-WhatIf] [-Confirm]
+ [-RepositoryBaseRef <String>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
@@ -433,6 +434,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -InputIgnoreUnchangedPath
+
+Sets the option `Input.IgnoreUnchangedPath`.
+The `Input.IgnoreUnchangedPath` option determine if unchanged files are ignored.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ObjectPath
 
 Sets the `Input.ObjectPath` option to use an object path to use instead of the pipeline object.
@@ -675,6 +693,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -OutputJobSummaryPath
+
+Set the option `Output.JobSummaryPath`.
+The `Output.JobSummaryPath` option configures the path to a job summary output file.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -OutputJsonIndent
 
 Sets the option `Output.JsonIndent`.
@@ -791,6 +826,23 @@ Prompts you for confirmation before running the cmdlet.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RepositoryBaseRef
+
+Sets the option `Repository.BaseRef`.
+The `Repository.BaseRef` option sets the repository base ref used for comparisons of changed files.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

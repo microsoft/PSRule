@@ -339,8 +339,8 @@ namespace PSRule.Pipeline.Output
         private readonly Encoding _Encoding;
         private readonly bool _ReportAll;
 
-        internal SarifOutputWriter(Source[] source, PipelineWriter inner, PSRuleOption option)
-            : base(inner, option)
+        internal SarifOutputWriter(Source[] source, PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
+            : base(inner, option, shouldProcess)
         {
             _Builder = new SarifBuilder(source, option);
             _Encoding = option.Output.GetEncoding();

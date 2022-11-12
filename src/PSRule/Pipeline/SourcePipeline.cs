@@ -123,7 +123,7 @@ namespace PSRule.Pipeline
         {
             _Source = new Dictionary<string, Source>(StringComparer.OrdinalIgnoreCase);
             _HostContext = hostContext;
-            _Writer = new HostPipelineWriter(hostContext, option);
+            _Writer = new HostPipelineWriter(hostContext, option, ShouldProcess);
             _Writer.EnterScope("[Discovery.Source]");
             _UseDefaultPath = option == null || option.Include == null || option.Include.Path == null;
             _LocalPath = Engine.GetLocalPath();
@@ -297,11 +297,11 @@ namespace PSRule.Pipeline
             if (!File.Exists(path))
                 return null;
 
-            var reader = new StreamReader(path);
+            using var reader = new StreamReader(path);
             var data = reader.ReadToEnd();
             var ast = System.Management.Automation.Language.Parser.ParseInput(data, out _, out _);
             var hashtable = ast.FindAll(item => item is System.Management.Automation.Language.HashtableAst, false).FirstOrDefault();
-            if (hashtable.SafeGetValue() is not Hashtable manifest)
+            if (hashtable == null || hashtable.SafeGetValue() is not Hashtable manifest)
                 return null;
 
             var version = manifest["ModuleVersion"] as string;
@@ -491,6 +491,11 @@ namespace PSRule.Pipeline
         private static bool IsJsonFile(string extension)
         {
             return extension == SOURCE_FILE_EXTENSION_JSON || extension == SOURCE_FILE_EXTENSION_JSONC;
+        }
+
+        private bool ShouldProcess(string target, string action)
+        {
+            return _HostContext == null || _HostContext.ShouldProcess(target, action);
         }
     }
 }

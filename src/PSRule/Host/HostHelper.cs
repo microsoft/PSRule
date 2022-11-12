@@ -108,9 +108,6 @@ namespace PSRule.Host
         /// <summary>
         /// Called from PowerShell to get additional metdata from a language block, such as comment help.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="start"></param>
-        /// <returns></returns>
         internal static CommentMetadata GetCommentMeta(string path, int lineNumber, int offset)
         {
             var context = RunspaceContext.CurrentThread;

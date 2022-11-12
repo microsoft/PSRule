@@ -6,6 +6,7 @@ using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Definitions.Rules;
 using PSRule.Pipeline.Formatters;
+using PSRule.Pipeline.Output;
 using PSRule.Resources;
 using PSRule.Rules;
 
@@ -38,7 +39,7 @@ namespace PSRule.Pipeline
             private SeverityLevel _Level;
 
             internal AssertWriter(PSRuleOption option, Source[] source, PipelineWriter inner, PipelineWriter next, OutputStyle style, string resultVariableName, IHostContext hostContext)
-                : base(inner, option)
+                : base(inner, option, hostContext.ShouldProcess)
             {
                 _InnerWriter = next;
                 _ResultVariableName = resultVariableName;
@@ -46,7 +47,7 @@ namespace PSRule.Pipeline
                 if (!string.IsNullOrEmpty(resultVariableName))
                     _Results = new List<RuleRecord>();
 
-                _Formatter = GetFormatter(GetStyle(style), source, inner, option);
+                _Formatter = GetFormatter(style, source, inner, option);
             }
 
             private static IAssertFormatter GetFormatter(OutputStyle style, Source[] source, PipelineWriter inner, PSRuleOption option)
@@ -65,25 +66,9 @@ namespace PSRule.Pipeline
                     new ClientFormatter(source, inner, option);
             }
 
-            private static OutputStyle GetStyle(OutputStyle style)
-            {
-                if (style != OutputStyle.Detect)
-                    return style;
-
-                if (EnvironmentHelper.Default.IsAzurePipelines())
-                    return OutputStyle.AzurePipelines;
-
-                if (EnvironmentHelper.Default.IsGitHubActions())
-                    return OutputStyle.GitHubActions;
-
-                return EnvironmentHelper.Default.IsVisualStudioCode() ?
-                    OutputStyle.VisualStudioCode :
-                    OutputStyle.Client;
-            }
-
             public override void WriteObject(object sendToPipeline, bool enumerateCollection)
             {
-                if (!(sendToPipeline is InvokeResult result))
+                if (sendToPipeline is not InvokeResult result)
                     return;
 
                 ProcessResult(result);
@@ -221,8 +206,22 @@ namespace PSRule.Pipeline
                         bindTargetType: BindTargetTypeHook,
                         bindField: BindFieldHook),
                     source: Source,
-                    writer: writer ?? PrepareWriter(),
+                    writer: HandleJobSummary(writer ?? PrepareWriter()),
                     outcome: RuleOutcome.Processed);
+        }
+
+        private IPipelineWriter HandleJobSummary(IPipelineWriter writer)
+        {
+            if (string.IsNullOrEmpty(Option.Output.JobSummaryPath))
+                return writer;
+
+            return new JobSummaryWriter
+            (
+                inner: writer,
+                option: Option,
+                shouldProcess: ShouldProcess,
+                source: Source
+            );
         }
     }
 }

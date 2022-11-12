@@ -72,8 +72,8 @@ namespace PSRule.Pipeline
             private readonly bool _ShouldOutput;
             private readonly string _TypeName;
 
-            internal HelpWriter(PipelineWriter inner, PSRuleOption option, LanguageMode languageMode, bool inSession, bool online, bool full)
-                : base(inner, option)
+            internal HelpWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess, LanguageMode languageMode, bool inSession, bool online, bool full)
+                : base(inner, option, shouldProcess)
             {
                 _LanguageMode = languageMode;
                 _InSession = inSession;
@@ -147,6 +147,7 @@ namespace PSRule.Pipeline
             return new HelpWriter(
                 inner: GetOutput(),
                 option: Option,
+                shouldProcess: HostContext.ShouldProcess,
                 languageMode: Option.Execution.LanguageMode.GetValueOrDefault(ExecutionOption.Default.LanguageMode.Value),
                 inSession: HostContext.InSession,
                 online: _Online,

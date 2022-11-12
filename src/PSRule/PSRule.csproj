@@ -64,6 +64,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ReportStrings.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Summaries.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Summaries.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\ViewStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -97,6 +102,10 @@
     <EmbeddedResource Update="Resources\ReportStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ReportStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Summaries.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Summaries.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\ViewStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>

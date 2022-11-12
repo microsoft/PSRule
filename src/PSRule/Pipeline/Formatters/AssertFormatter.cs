@@ -421,7 +421,7 @@ namespace PSRule.Pipeline.Formatters
             if (GitHelper.TryRevision(out var revision))
                 WriteLineFormat(FormatterStrings.Repository_Revision, revision);
 
-            if (!string.IsNullOrEmpty(repository) || !string.IsNullOrEmpty(branch) || !string.IsNullOrEmpty(revision))
+            if (!string.IsNullOrEmpty(branch) || !string.IsNullOrEmpty(revision))
                 LineBreak();
         }
 

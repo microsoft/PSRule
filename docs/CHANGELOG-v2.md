@@ -30,6 +30,14 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.6.0-B0013:
+
+- New features:
+  - Added support for generating job summaries by @BernieWhite.
+    [#1264](https://github.com/microsoft/PSRule/issues/1264)
+    - Job summaries provide a markdown output for pipelines in addition to other supported output formats.
+    - To use, configure the `Output.JobSummaryPath` option.
+
 ## v2.6.0-B0013 (pre-release)
 
 What's changed since v2.5.3:

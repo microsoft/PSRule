@@ -47,6 +47,7 @@ namespace PSRule.Configuration
             Encoding = null;
             Footer = null;
             Format = null;
+            JobSummaryPath = null;
             JsonIndent = null;
             Path = null;
             SarifProblemsOnly = null;
@@ -68,6 +69,7 @@ namespace PSRule.Configuration
             Encoding = option.Encoding;
             Footer = option.Footer;
             Format = option.Format;
+            JobSummaryPath = option.JobSummaryPath;
             JsonIndent = option.JsonIndent;
             Outcome = option.Outcome;
             Path = option.Path;
@@ -91,6 +93,7 @@ namespace PSRule.Configuration
                 Encoding == other.Encoding &&
                 Footer == other.Footer &&
                 Format == other.Format &&
+                JobSummaryPath == other.JobSummaryPath &&
                 JsonIndent == other.JsonIndent &&
                 Outcome == other.Outcome &&
                 Path == other.Path &&
@@ -110,6 +113,7 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (Encoding.HasValue ? Encoding.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Footer.HasValue ? Footer.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Format.HasValue ? Format.Value.GetHashCode() : 0);
+                hash = hash * 23 + (JobSummaryPath != null ? JobSummaryPath.GetHashCode() : 0);
                 hash = hash * 23 + (JsonIndent.HasValue ? JsonIndent.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Outcome.HasValue ? Outcome.Value.GetHashCode() : 0);
                 hash = hash * 23 + (Path != null ? Path.GetHashCode() : 0);
@@ -129,6 +133,7 @@ namespace PSRule.Configuration
                 Encoding = o1.Encoding ?? o2.Encoding,
                 Footer = o1.Footer ?? o2.Footer,
                 Format = o1.Format ?? o2.Format,
+                JobSummaryPath = o1.JobSummaryPath ?? o2.JobSummaryPath,
                 JsonIndent = o1.JsonIndent ?? o2.JsonIndent,
                 Outcome = o1.Outcome ?? o2.Outcome,
                 Path = o1.Path ?? o2.Path,
@@ -175,6 +180,18 @@ namespace PSRule.Configuration
         public OutputFormat? Format { get; set; }
 
         /// <summary>
+        /// The path to a job summary output file.
+        /// </summary>
+        [DefaultValue(null)]
+        public string JobSummaryPath { get; set; }
+
+        /// <summary>
+        /// The indentation for JSON output.
+        /// </summary>
+        [DefaultValue(null)]
+        public int? JsonIndent { get; set; }
+
+        /// <summary>
         /// The outcome of rule results to return.
         /// </summary>
         [DefaultValue(null)]
@@ -191,12 +208,6 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public OutputStyle? Style { get; set; }
-
-        /// <summary>
-        /// The indentation for JSON output
-        /// </summary>
-        [DefaultValue(null)]
-        public int? JsonIndent { get; set; }
 
         /// <summary>
         /// Determines if SARIF output only includes rules with fail or error outcomes.
@@ -224,6 +235,12 @@ namespace PSRule.Configuration
             if (env.TryEnum("PSRULE_OUTPUT_FORMAT", out OutputFormat format))
                 Format = format;
 
+            if (env.TryString("PSRULE_OUTPUT_JOBSUMMARYPATH", out var jobSummaryPath))
+                JobSummaryPath = jobSummaryPath;
+
+            if (env.TryInt("PSRULE_OUTPUT_JSONINDENT", out var jsonIndent))
+                JsonIndent = jsonIndent;
+
             if (env.TryEnum("PSRULE_OUTPUT_OUTCOME", out RuleOutcome outcome))
                 Outcome = outcome;
 
@@ -232,9 +249,6 @@ namespace PSRule.Configuration
 
             if (env.TryEnum("PSRULE_OUTPUT_STYLE", out OutputStyle style))
                 Style = style;
-
-            if (env.TryInt("PSRULE_OUTPUT_JSONINDENT", out var jsonIndent))
-                JsonIndent = jsonIndent;
 
             if (env.TryBool("PSRULE_OUTPUT_SARIFPROBLEMSONLY", out var sarifProblemsOnly))
                 SarifProblemsOnly = sarifProblemsOnly;
@@ -260,6 +274,12 @@ namespace PSRule.Configuration
             if (index.TryPopEnum("Output.Format", out OutputFormat format))
                 Format = format;
 
+            if (index.TryPopString("Output.JobSummaryPath", out var jobSummaryPath))
+                JobSummaryPath = jobSummaryPath;
+
+            if (index.TryPopValue<int>("Output.JsonIndent", out var jsonIndent))
+                JsonIndent = jsonIndent;
+
             if (index.TryPopEnum("Output.Outcome", out RuleOutcome outcome))
                 Outcome = outcome;
 
@@ -268,9 +288,6 @@ namespace PSRule.Configuration
 
             if (index.TryPopEnum("Output.Style", out OutputStyle style))
                 Style = style;
-
-            if (index.TryPopValue<int>("Output.JsonIndent", out var jsonIndent))
-                JsonIndent = jsonIndent;
 
             if (index.TryPopBool("Output.SarifProblemsOnly", out var sarifProblemsOnly))
                 SarifProblemsOnly = sarifProblemsOnly;

@@ -68,6 +68,7 @@ namespace PSRule.Pipeline
             {
                 if (disposing)
                 {
+                    Writer.Dispose();
                     Context.Dispose();
                     Pipeline.Dispose();
                 }

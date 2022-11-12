@@ -7,6 +7,8 @@
     <IsPackable>false</IsPackable>
     <RootNamespace>PSRule</RootNamespace>
     <DebugType>portable</DebugType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <ItemGroup>

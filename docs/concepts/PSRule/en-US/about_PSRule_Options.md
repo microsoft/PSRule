@@ -42,6 +42,7 @@ The following workspace options are available for use:
 - [Output.Encoding](#outputencoding)
 - [Output.Footer](#outputfooter)
 - [Output.Format](#outputformat)
+- [Output.JobSummaryPath](#outputjobsummarypath)
 - [Output.JsonIndent](#outputjsonindent)
 - [Output.Outcome](#outputoutcome)
 - [Output.Path](#outputpath)
@@ -2352,13 +2353,13 @@ If specified, the `-Style` parameter takes precedence, over this option.
 
 The following styles are available:
 
-- Client - Output is written to the host directly in green/ red to indicate outcome.
-- Plain - Output is written as an unformatted string.
+- `Client` - Output is written to the host directly in green/ red to indicate outcome.
+- `Plain` - Output is written as an unformatted string.
 This option can be redirected to a file.
-- AzurePipelines - Output is written for integration Azure Pipelines.
-- GitHubActions - Output is written for integration GitHub Actions.
-- VisualStudioCode - Output is written for integration with Visual Studio Code.
-- Detect - Output style will be detected by checking the environment variables.
+- `AzurePipelines` - Output is written for integration Azure Pipelines.
+- `GitHubActions` - Output is written for integration GitHub Actions.
+- `VisualStudioCode` - Output is written for integration with Visual Studio Code.
+- `Detect` - Output style will be detected by checking the environment variables.
 This is the default.
 
 Detect uses the following logic:
@@ -2423,6 +2424,72 @@ variables:
   value: AzurePipelines
 ```
 
+### Output.JobSummaryPath
+
+Configures the file path a job summary will be written to when using `Assert-PSRule`.
+A job summary is a markdown file that summarizes the results of a job.
+When not specified, a job summary will not be generated.
+
+Syntax:
+
+```yaml
+output:
+  jobSummaryPath: string
+```
+
+Default:
+
+```yaml
+output:
+  jobSummaryPath: null
+```
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the OutputJobSummaryPath parameter
+$option = New-PSRuleOption -OutputJobSummaryPath 'reports/summary.md';
+```
+
+```powershell
+# PowerShell: Using the Output.JobSummaryPath hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.JobSummaryPath' = 'reports/summary.md' };
+```
+
+```powershell
+# PowerShell: Using the OutputJobSummaryPath parameter to set YAML
+Set-PSRuleOption -OutputJobSummaryPath 'reports/summary.md';
+```
+
+```yaml
+# YAML: Using the output/jobSummaryPath property
+output:
+  jobSummaryPath: 'reports/summary.md'
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_OUTPUT_JOBSUMMARYPATH='reports/summary.md'
+```
+
+```powershell
+# PowerShell: Using environment variable
+$env:PSRULE_OUTPUT_JOBSUMMARYPATH = 'reports/summary.md';
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_OUTPUT_JOBSUMMARYPATH: reports/summary.md
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_OUTPUT_JOBSUMMARYPATH
+  value: reports/summary.md
+```
+
 ### Output.JsonIndent
 
 Configures the number of spaces to indent JSON properties and elements.
@@ -2446,7 +2513,7 @@ $option = New-PSRuleOption -Option @{ 'Output.JsonIndent' = 2 };
 ```
 
 ```powershell
-# PowerShell: Using the OutputStyle parameter to set YAML
+# PowerShell: Using the OutputJsonIndent parameter to set YAML
 Set-PSRuleOption -OutputJsonIndent 2;
 ```
 
@@ -2926,6 +2993,7 @@ output:
   encoding: UTF8
   footer: RuleCount
   format: Json
+  jobSummaryPath: reports/summary.md
   outcome: Fail
   sarifProblemsOnly: false
   style: GitHubActions
@@ -3026,6 +3094,7 @@ output:
   encoding: Default
   footer: Default
   format: None
+  jobSummaryPath: null
   outcome: Processed
   sarifProblemsOnly: true
   style: Detect
