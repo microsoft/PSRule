@@ -1618,6 +1618,39 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Output.JobSummaryPath' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Output.JobSummaryPath | Should -BeNullOrEmpty;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Output.JobSummaryPath' = './summary.md' };
+            $option.Output.JobSummaryPath | Should -Be './summary.md';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Output.JobSummaryPath | Should -Be 'summary.md';
+        }
+
+        It 'from Environment' {
+            try {
+                $env:PSRULE_OUTPUT_JOBSUMMARYPATH = './summary.md';
+                $option = New-PSRuleOption;
+                $option.Output.JobSummaryPath | Should -Be './summary.md';
+            }
+            finally {
+                Remove-Item 'env:PSRULE_OUTPUT_JOBSUMMARYPATH' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -OutputJobSummaryPath './summary.md' -Path $emptyOptionsFilePath;
+            $option.Output.JobSummaryPath | Should -Be './summary.md';
+        }
+    }
+
     Context 'Output.JsonIndent' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -2176,6 +2209,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -OutputFormat 'Yaml' @optionParams;
             $option.Output.Format | Should -Be 'Yaml';
+        }
+    }
+
+    Context 'Read Output.JobSummaryPath' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -OutputJobSummaryPath './summary.md' @optionParams;
+            $option.Output.JobSummaryPath | Should -Be './summary.md';
         }
     }
 

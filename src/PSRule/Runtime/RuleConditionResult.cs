@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
@@ -73,10 +73,13 @@ namespace PSRule.Runtime
             HadErrors = hadErrors;
         }
 
+        /// <inheritdoc/>
         public int Pass { get; }
 
+        /// <inheritdoc/>
         public int Count { get; }
 
+        /// <inheritdoc/>
         public bool HadErrors { get; }
     }
 }

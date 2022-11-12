@@ -1288,6 +1288,16 @@ function New-PSRuleOption {
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide', 'Sarif')]
         [PSRule.Configuration.OutputFormat]$OutputFormat = 'None',
 
+        # Sets the Output.JobSummaryPath option
+        [Parameter(Mandatory = $False)]
+        [String]$OutputJobSummaryPath = '',
+
+        # Sets the Output.JsonIndent option
+        [Parameter(Mandatory = $False)]
+        [ValidateRange(0, 4)]
+        [Alias('JsonIndent')]
+        [int]$OutputJsonIndent = 0,
+
         # Sets the Output.Outcome option
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Processed', 'All')]
@@ -1306,12 +1316,6 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
         [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect,
-
-        # Sets the Output.JsonIndent option
-        [Parameter(Mandatory = $False)]
-        [ValidateRange(0, 4)]
-        [Alias('JsonIndent')]
-        [int]$OutputJsonIndent = 0,
 
         # Sets the Repository.BaseRef option
         [Parameter(Mandatory = $False)]
@@ -1580,6 +1584,16 @@ function Set-PSRuleOption {
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide', 'Sarif')]
         [PSRule.Configuration.OutputFormat]$OutputFormat = 'None',
 
+        # Sets the Output.JobSummaryPath option
+        [Parameter(Mandatory = $False)]
+        [String]$OutputJobSummaryPath = '',
+
+        # Sets the Output.JsonIndent option
+        [Parameter(Mandatory = $False)]
+        [ValidateRange(0, 4)]
+        [Alias('JsonIndent')]
+        [int]$OutputJsonIndent = 0,
+
         # Sets the Output.Outcome option
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Processed', 'All')]
@@ -1598,12 +1612,6 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
         [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect,
-
-        # Sets the Output.JsonIndent option
-        [Parameter(Mandatory = $False)]
-        [ValidateRange(0, 4)]
-        [Alias('JsonIndent')]
-        [Int]$OutputJsonIndent = 0,
 
         # Sets the Repository.BaseRef option
         [Parameter(Mandatory = $False)]
@@ -2319,6 +2327,16 @@ function SetOptions {
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'NUnit3', 'Csv', 'Wide', 'Sarif')]
         [PSRule.Configuration.OutputFormat]$OutputFormat = 'None',
 
+        # Sets the Output.JobSummaryPath option
+        [Parameter(Mandatory = $False)]
+        [String]$OutputJobSummaryPath = '',
+
+        # Sets the Output.JsonIndent option
+        [Parameter(Mandatory = $False)]
+        [ValidateRange(0, 4)]
+        [Alias('JsonIndent')]
+        [int]$OutputJsonIndent = 0,
+
         # Sets the Output.Outcome option
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Processed', 'All')]
@@ -2337,12 +2355,6 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [ValidateSet('Client', 'Plain', 'AzurePipelines', 'GitHubActions', 'VisualStudioCode', 'Detect')]
         [PSRule.Configuration.OutputStyle]$OutputStyle = [PSRule.Configuration.OutputStyle]::Detect,
-
-        # Sets the Output.JsonIndent option
-        [Parameter(Mandatory = $False)]
-        [ValidateRange(0, 4)]
-        [Alias('JsonIndent')]
-        [Int]$OutputJsonIndent = 0,
 
         # Sets the Repository.BaseRef option
         [Parameter(Mandatory = $False)]
@@ -2532,6 +2544,11 @@ function SetOptions {
         # Sets option Output.Format
         if ($PSBoundParameters.ContainsKey('OutputFormat')) {
             $Option.Output.Format = $OutputFormat;
+        }
+
+        # Sets option Output.OutputJobSummaryPath
+        if ($PSBoundParameters.ContainsKey('OutputJobSummaryPath')) {
+            $Option.Output.JobSummaryPath = $OutputJobSummaryPath;
         }
 
         # Sets option Output.JsonIndent

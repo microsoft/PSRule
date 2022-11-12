@@ -14,8 +14,8 @@ namespace PSRule.Pipeline.Output
 {
     internal sealed class YamlOutputWriter : SerializationOutputWriter<object>
     {
-        internal YamlOutputWriter(PipelineWriter inner, PSRuleOption option)
-            : base(inner, option) { }
+        internal YamlOutputWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
+            : base(inner, option, shouldProcess) { }
 
         protected override string Serialize(object[] o)
         {

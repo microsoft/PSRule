@@ -242,7 +242,7 @@ namespace PSRule.Pipeline
         {
             Option = new PSRuleOption();
             Source = source;
-            _Output = new HostPipelineWriter(hostContext, Option);
+            _Output = new HostPipelineWriter(hostContext, Option, ShouldProcess);
             HostContext = hostContext;
             BindTargetNameHook = PipelineHookActions.BindTargetName;
             BindTargetTypeHook = PipelineHookActions.BindTargetType;
@@ -291,6 +291,7 @@ namespace PSRule.Pipeline
             Option.Output = new OutputOption(option.Output);
             Option.Output.Outcome ??= OutputOption.Default.Outcome;
             Option.Output.Banner ??= OutputOption.Default.Banner;
+            Option.Output.Style = GetStyle(option.Output.Style ?? OutputOption.Default.Style.Value);
             Option.Repository = GetRepository(option.Repository);
             return this;
         }
@@ -408,13 +409,13 @@ namespace PSRule.Pipeline
             var output = GetOutput();
             return Option.Output.Format switch
             {
-                OutputFormat.Csv => new CsvOutputWriter(output, Option),
-                OutputFormat.Json => new JsonOutputWriter(output, Option),
-                OutputFormat.NUnit3 => new NUnit3OutputWriter(output, Option),
-                OutputFormat.Yaml => new YamlOutputWriter(output, Option),
-                OutputFormat.Markdown => new MarkdownOutputWriter(output, Option),
-                OutputFormat.Wide => new WideOutputWriter(output, Option),
-                OutputFormat.Sarif => new SarifOutputWriter(Source, output, Option),
+                OutputFormat.Csv => new CsvOutputWriter(output, Option, ShouldProcess),
+                OutputFormat.Json => new JsonOutputWriter(output, Option, ShouldProcess),
+                OutputFormat.NUnit3 => new NUnit3OutputWriter(output, Option, ShouldProcess),
+                OutputFormat.Yaml => new YamlOutputWriter(output, Option, ShouldProcess),
+                OutputFormat.Markdown => new MarkdownOutputWriter(output, Option, ShouldProcess),
+                OutputFormat.Wide => new WideOutputWriter(output, Option, ShouldProcess),
+                OutputFormat.Sarif => new SarifOutputWriter(Source, output, Option, ShouldProcess),
                 _ => output,
             };
         }
@@ -593,6 +594,27 @@ namespace PSRule.Pipeline
                 HostContext.Verbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.UsingChangedFile, files[i]));
 
             return true;
+        }
+
+        protected bool ShouldProcess(string target, string action)
+        {
+            return HostContext == null || HostContext.ShouldProcess(target, action);
+        }
+
+        protected static OutputStyle GetStyle(OutputStyle style)
+        {
+            if (style != OutputStyle.Detect)
+                return style;
+
+            if (EnvironmentHelper.Default.IsAzurePipelines())
+                return OutputStyle.AzurePipelines;
+
+            if (EnvironmentHelper.Default.IsGitHubActions())
+                return OutputStyle.GitHubActions;
+
+            return EnvironmentHelper.Default.IsVisualStudioCode() ?
+                OutputStyle.VisualStudioCode :
+                OutputStyle.Client;
         }
     }
 }

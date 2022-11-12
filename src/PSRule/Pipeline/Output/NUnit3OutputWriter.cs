@@ -14,8 +14,8 @@ namespace PSRule.Pipeline.Output
 {
     internal sealed class NUnit3OutputWriter : SerializationOutputWriter<InvokeResult>
     {
-        internal NUnit3OutputWriter(PipelineWriter inner, PSRuleOption option)
-            : base(inner, option) { }
+        internal NUnit3OutputWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
+            : base(inner, option, shouldProcess) { }
 
         public override void WriteObject(object sendToPipeline, bool enumerateCollection)
         {

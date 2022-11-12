@@ -315,6 +315,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Output.Encoding](https://aka.ms/ps-rule/options#outputencoding)
   - [Output.Footer](https://aka.ms/ps-rule/options#outputfooter)
   - [Output.Format](https://aka.ms/ps-rule/options#outputformat)
+  - [Output.JobSummaryPath](https://aka.ms/ps-rule/options#outputjobsummarypath)
   - [Output.JsonIndent](https://aka.ms/ps-rule/options#outputjsonindent)
   - [Output.Outcome](https://aka.ms/ps-rule/options#outputoutcome)
   - [Output.Path](https://aka.ms/ps-rule/options#outputpath)

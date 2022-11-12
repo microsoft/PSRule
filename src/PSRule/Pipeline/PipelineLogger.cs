@@ -126,6 +126,22 @@ namespace PSRule.Pipeline
 
         }
 
+        #region IDisposable
+
+        protected virtual void Dispose(bool disposing)
+        {
+            // Do nothing, but allow override.
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion IDisposable
+
         protected abstract void DoWriteError(ErrorRecord errorRecord);
 
         protected abstract void DoWriteVerbose(string message);
@@ -150,11 +166,11 @@ namespace PSRule.Pipeline
         private HashSet<string> _VerboseFilter;
         private HashSet<string> _DebugFilter;
 
-        private Action<string> OnWriteWarning;
-        private Action<string> OnWriteVerbose;
-        private Action<ErrorRecord> OnWriteError;
-        private Action<InformationRecord> OnWriteInformation;
-        private Action<string> OnWriteDebug;
+        private Action<string> _OnWriteWarning;
+        private Action<string> _OnWriteVerbose;
+        private Action<ErrorRecord> _OnWriteError;
+        private Action<InformationRecord> _OnWriteInformation;
+        private Action<string> _OnWriteDebug;
         internal Action<object, bool> OnWriteObject;
 
         private bool _LogError;
@@ -165,11 +181,11 @@ namespace PSRule.Pipeline
 
         internal void UseCommandRuntime(PSCmdlet commandRuntime)
         {
-            OnWriteVerbose = commandRuntime.WriteVerbose;
-            OnWriteWarning = commandRuntime.WriteWarning;
-            OnWriteError = commandRuntime.WriteError;
-            OnWriteInformation = commandRuntime.WriteInformation;
-            OnWriteDebug = commandRuntime.WriteDebug;
+            _OnWriteVerbose = commandRuntime.WriteVerbose;
+            _OnWriteWarning = commandRuntime.WriteWarning;
+            _OnWriteError = commandRuntime.WriteError;
+            _OnWriteInformation = commandRuntime.WriteInformation;
+            _OnWriteDebug = commandRuntime.WriteDebug;
             OnWriteObject = commandRuntime.WriteObject;
         }
 
@@ -207,10 +223,10 @@ namespace PSRule.Pipeline
         /// <param name="errorRecord">A valid PowerShell error record.</param>
         protected override void DoWriteError(ErrorRecord errorRecord)
         {
-            if (OnWriteError == null)
+            if (_OnWriteError == null)
                 return;
 
-            OnWriteError(errorRecord);
+            _OnWriteError(errorRecord);
         }
 
         /// <summary>
@@ -219,10 +235,10 @@ namespace PSRule.Pipeline
         /// <param name="message">A message to log.</param>
         protected override void DoWriteVerbose(string message)
         {
-            if (OnWriteVerbose == null)
+            if (_OnWriteVerbose == null)
                 return;
 
-            OnWriteVerbose(message);
+            _OnWriteVerbose(message);
         }
 
         /// <summary>
@@ -231,10 +247,10 @@ namespace PSRule.Pipeline
         /// <param name="message">A message to log</param>
         protected override void DoWriteWarning(string message)
         {
-            if (OnWriteWarning == null)
+            if (_OnWriteWarning == null)
                 return;
 
-            OnWriteWarning(message);
+            _OnWriteWarning(message);
         }
 
         /// <summary>
@@ -242,10 +258,10 @@ namespace PSRule.Pipeline
         /// </summary>
         protected override void DoWriteInformation(InformationRecord informationRecord)
         {
-            if (OnWriteInformation == null)
+            if (_OnWriteInformation == null)
                 return;
 
-            OnWriteInformation(informationRecord);
+            _OnWriteInformation(informationRecord);
         }
 
         /// <summary>
@@ -253,10 +269,10 @@ namespace PSRule.Pipeline
         /// </summary>
         protected override void DoWriteDebug(DebugRecord debugRecord)
         {
-            if (OnWriteDebug == null)
+            if (_OnWriteDebug == null)
                 return;
 
-            OnWriteDebug(debugRecord.Message);
+            _OnWriteDebug(debugRecord.Message);
         }
 
         protected override void DoWriteObject(object sendToPipeline, bool enumerateCollection)

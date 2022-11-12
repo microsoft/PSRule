@@ -1,907 +1,913 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema#",
-    "title": "PSRule options",
-    "description": "A schema for PSRule YAML options files.",
-    "$ref": "#/definitions/options",
-    "definitions": {
-        "configuration": {
-            "type": "object",
-            "title": "Configuration values",
-            "description": "A set of key/ value configuration options for rules.",
-            "markdownDescription": "A set of key/ value configuration options for rules. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#configuration)",
-            "properties": {
-                "AZURE_PARAMETER_FILE_EXPANSION": {
-                    "type": "boolean",
-                    "title": "Parameter file expansion",
-                    "description": "Determines if Azure template parameter files will automatically be expanded. By default, parameter files will not be automatically expanded. When enabled, PSRule will discover and expand JSON parameter files for Azure templates or Bicep modules.",
-                    "markdownDescription": "Determines if Azure template parameter files will automatically be expanded. By default, parameter files will not be automatically expanded. When enabled, PSRule will discover and expand JSON parameter files for Azure templates or Bicep modules. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#parameterfileexpansion)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
-                    "default": false
-                },
-                "AZURE_BICEP_FILE_EXPANSION": {
-                    "type": "boolean",
-                    "title": "Bicep source expansion",
-                    "description": "This configuration option determines if Azure Bicep source files will automatically be expanded. By default, Bicep files will not be automatically expanded.",
-                    "markdownDescription": "This configuration option determines if Azure Bicep source files will automatically be expanded. By default, Bicep files will not be automatically expanded. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#bicepsourceexpansion)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
-                    "default": false
-                },
-                "AZURE_BICEP_FILE_EXPANSION_TIMEOUT": {
-                    "type": "integer",
-                    "title": "Bicep compilation timeout",
-                    "description": "This configuration option determines the maximum time to spend building a single Bicep source file. The timeout is configured in seconds.",
-                    "markdownDescription": "This configuration option determines the maximum time to spend building a single Bicep source file. The timeout is configured in seconds. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#bicepcompilationtimeout)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
-                    "default": 5,
-                    "minimum": 1,
-                    "maximum": 120
-                },
-                "AZURE_PARAMETER_FILE_METADATA_LINK": {
-                    "type": "boolean",
-                    "title": "Bicep source expansion",
-                    "description": "This configuration option determines if Azure Bicep source files will automatically be expanded. By default, Bicep files will not be automatically expanded.",
-                    "markdownDescription": "This configuration option determines if Azure Bicep source files will automatically be expanded. By default, Bicep files will not be automatically expanded. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#bicepsourceexpansion)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
-                    "default": false
-                },
-                "AZURE_DEPLOYMENT": {
-                    "type": "object",
-                    "title": "Deployment properties",
-                    "description": "This configuration option sets the deployment object use by the deployment() function. Configure this option to change the details of the deployment when exporting templates for analysis. Provided properties will override the default.",
-                    "markdownDescription": "This configuration option sets the deployment object use by the `deployment()` function. Configure this option to change the details of the deployment when exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymentproperties)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "default": "ps-rule-test-deployment"
-                        }
-                    },
-                    "additionalProperties": false
-                },
-                "AZURE_RESOURCE_GROUP": {
-                    "type": "object",
-                    "title": "Deployment resource group",
-                    "description": "This configuration option sets the resource group object used by the resourceGroup() function. Configure this option to change the resource group object when using exporting templates for analysis. Provided properties will override the default.",
-                    "markdownDescription": "This configuration option sets the resource group object used by the `resourceGroup()` function. Configure this option to change the resource group object when using exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymentresourcegroup)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "default": "ps-rule-test-rg"
-                        },
-                        "location": {
-                            "type": "string",
-                            "default": "eastus"
-                        },
-                        "tags": {
-                            "type": "object",
-                            "default": {}
-                        },
-                        "properties": {
-                            "type": "object",
-                            "properties": {
-                                "provisioningState": {
-                                    "type": "string",
-                                    "default": "Succeeded"
-                                }
-                            },
-                            "additionalProperties": false
-                        }
-                    },
-                    "additionalProperties": false
-                },
-                "AZURE_SUBSCRIPTION": {
-                    "type": "object",
-                    "title": "Deployment subscription",
-                    "description": "This configuration option sets the subscription object used by the subscription() function. Configure this option to change the subscription object when using exporting templates for analysis. Provided properties will override the default.",
-                    "markdownDescription": "This configuration option sets the subscription object used by the `subscription()` function. Configure this option to change the subscription object when using exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymentsubscription)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
-                    "properties": {
-                        "subscriptionId": {
-                            "type": "string",
-                            "default": "ffffffff-ffff-ffff-ffff-ffffffffffff"
-                        },
-                        "displayName": {
-                            "type": "string",
-                            "default": "PSRule Test Subscription"
-                        },
-                        "state": {
-                            "type": "string",
-                            "default": "NotDefined"
-                        }
-                    },
-                    "additionalProperties": false
-                },
-                "AZURE_TENANT": {
-                    "type": "object",
-                    "title": "Deployment tenant",
-                    "description": "This configuration option sets the tenant object used by the tenant() function. Configure this option to change the tenant object when using exporting templates for analysis. Provided properties will override the default.",
-                    "markdownDescription": "This configuration option sets the tenant object used by the `tenant()` function. Configure this option to change the tenant object when using exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymenttenant)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
-                    "properties": {
-                        "countryCode": {
-                            "type": "string",
-                            "default": "US"
-                        },
-                        "tenantId": {
-                            "type": "string",
-                            "default": "ffffffff-ffff-ffff-ffff-ffffffffffff"
-                        },
-                        "displayName": {
-                            "type": "string",
-                            "default": "PSRule"
-                        }
-                    },
-                    "additionalProperties": false
-                },
-                "AZURE_MANAGEMENT_GROUP": {
-                    "type": "object",
-                    "title": "Deployment management group",
-                    "description": "This configuration option sets the management group object used by the managementGroup() function. Configure this option to change the management group object when using exporting templates for analysis. Provided properties will override the default.",
-                    "markdownDescription": "This configuration option sets the management group object used by the `managementGroup()` function. Configure this option to change the management group object when using exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymentmanagementgroup)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "default": "psrule-test"
-                        },
-                        "properties": {
-                            "type": "object",
-                            "properties": {
-                                "displayName": {
-                                    "type": "string",
-                                    "default": "PSRule Test Management Group"
-                                }
-                            },
-                            "additionalProperties": false
-                        }
-                    },
-                    "additionalProperties": false
-                },
-                "AZURE_PARAMETER_DEFAULTS": {
-                    "type": "object",
-                    "title": "Required parameter defaults",
-                    "description": "This configuration option allows a fallback value to be configured for required parameters. When a parameter value is not provided and a default is not set, the fallback value will be used.",
-                    "markdownDescription": "This configuration option allows a fallback value to be configured for required parameters. When a parameter value is not provided and a default is not set, the fallback value will be used. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#requiredparameterdefaults)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)"
-                }
-            },
-            "additionalProperties": true,
-            "defaultSnippets": [
-                {
-                    "label": "Custom configuration value",
-                    "body": {
-                        "${1:Key}": "${2:Value}"
-                    }
-                }
-            ]
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "PSRule options",
+  "description": "A schema for PSRule YAML options files.",
+  "$ref": "#/definitions/options",
+  "definitions": {
+    "configuration": {
+      "type": "object",
+      "title": "Configuration values",
+      "description": "A set of key/ value configuration options for rules.",
+      "markdownDescription": "A set of key/ value configuration options for rules. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#configuration)",
+      "properties": {
+        "AZURE_PARAMETER_FILE_EXPANSION": {
+          "type": "boolean",
+          "title": "Parameter file expansion",
+          "description": "Determines if Azure template parameter files will automatically be expanded. By default, parameter files will not be automatically expanded. When enabled, PSRule will discover and expand JSON parameter files for Azure templates or Bicep modules.",
+          "markdownDescription": "Determines if Azure template parameter files will automatically be expanded. By default, parameter files will not be automatically expanded. When enabled, PSRule will discover and expand JSON parameter files for Azure templates or Bicep modules. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#parameterfileexpansion)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+          "default": false
         },
-        "convention-option": {
-            "type": "object",
-            "title": "Convention options",
-            "description": "Options that configure conventions.",
-            "properties": {
-                "include": {
-                    "type": "array",
-                    "title": "Include conventions",
-                    "description": "An ordered list of conventions to include.",
-                    "items": {
-                        "type": "string"
-                    },
-                    "uniqueItems": true
-                }
-            },
-            "additionalProperties": false
+        "AZURE_BICEP_FILE_EXPANSION": {
+          "type": "boolean",
+          "title": "Bicep source expansion",
+          "description": "This configuration option determines if Azure Bicep source files will automatically be expanded. By default, Bicep files will not be automatically expanded.",
+          "markdownDescription": "This configuration option determines if Azure Bicep source files will automatically be expanded. By default, Bicep files will not be automatically expanded. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#bicepsourceexpansion)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+          "default": false
         },
-        "binding-option": {
-            "type": "object",
-            "title": "Object binding",
-            "description": "Configure property/ object binding options.",
-            "properties": {
-                "field": {
-                    "type": "object",
-                    "title": "Field",
-                    "description": "Custom fields to bind.",
-                    "markdownDescription": "Custom fields to bind. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingfield)",
-                    "additionalProperties": {
-                        "type": "array",
-                        "description": "A custom field to bind.",
-                        "markdownDescription": "Custom field to bind. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingfield)",
-                        "items": {
-                            "type": "string"
-                        },
-                        "uniqueItems": true
-                    }
-                },
-                "ignoreCase": {
-                    "type": "boolean",
-                    "title": "Ignore case",
-                    "description": "Determines if custom binding uses ignores case when matching properties. The default is true.",
-                    "markdownDescription": "Determines if custom binding uses ignores case when matching properties. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingignorecase)",
-                    "default": true
-                },
-                "nameSeparator": {
-                    "type": "string",
-                    "title": "Name separator",
-                    "description": "Configures the separator to use for building a qualified name. The default is '/'.",
-                    "markdownDescription": "Configures the separator to use for building a qualified name. The default is `/`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingnameseparator)",
-                    "default": "/"
-                },
-                "preferTargetInfo": {
-                    "type": "boolean",
-                    "title": "Prefer target info",
-                    "description": "Determines if binding prefers target info provided by the object over custom configuration. The default is false.",
-                    "markdownDescription": "Determines if binding prefers target info provided by the object over custom configuration. The default is `false`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingprefertargetinfo)",
-                    "default": false
-                },
-                "targetName": {
-                    "type": "array",
-                    "title": "Bind TargetName",
-                    "description": "Specifies one or more property names to bind TargetName to.",
-                    "markdownDescription": "Specifies one or more property names to bind TargetName to. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingtargetname)",
-                    "items": {
-                        "type": "string"
-                    },
-                    "uniqueItems": true
-                },
-                "targetType": {
-                    "type": "array",
-                    "title": "Bind TargetType",
-                    "description": "Specifies one or more property names to bind TargetType to.",
-                    "markdownDescription": "Specifies one or more property names to bind TargetType to. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingtargettype)",
-                    "items": {
-                        "type": "string"
-                    },
-                    "uniqueItems": true
-                },
-                "useQualifiedName": {
-                    "type": "boolean",
-                    "title": "Use qualified name",
-                    "description": "Determines if a qualified TargetName is used. The default is false.",
-                    "markdownDescription": "Determines if a qualified TargetName is used. The default is `false`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingusequalifiedname)",
-                    "default": false
-                }
-            },
-            "additionalProperties": false
+        "AZURE_BICEP_FILE_EXPANSION_TIMEOUT": {
+          "type": "integer",
+          "title": "Bicep compilation timeout",
+          "description": "This configuration option determines the maximum time to spend building a single Bicep source file. The timeout is configured in seconds.",
+          "markdownDescription": "This configuration option determines the maximum time to spend building a single Bicep source file. The timeout is configured in seconds. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#bicepcompilationtimeout)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+          "default": 5,
+          "minimum": 1,
+          "maximum": 120
         },
-        "execution-option": {
-            "type": "object",
-            "title": "Execution options",
-            "description": "Options that affect execution.",
-            "markdownDescription": "Options that affect execution. [See help](https://aka.ms/ps-rule/options)",
-            "properties": {
-                "aliasReferenceWarning": {
-                    "type": "boolean",
-                    "title": "Warn on resource aliases",
-                    "description": "Enable or disable warnings when an alias to a resource is used. The default is true.",
-                    "markdownDescription": "Enable or disable warnings when an alias to a resource is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionaliasreferencewarning)",
-                    "default": true
-                },
-                "duplicateResourceId": {
-                    "type": "string",
-                    "title": "Duplicate resource identifiers",
-                    "description": "Determines how to handle duplicate resources identifiers during execution. Regardless of the value, only the first resource will be used. By defaut, an error is thrown. When set to Warn, a warning is generated. When set to Ignore, no output will be displayed.",
-                    "markdownDescription": "Determines how to handle duplicate resources identifiers during execution.\n\nRegardless of the value, only the first resource will be used. By defaut, an error is thrown. When set to `Warn`, a warning is generated. When set to `Ignore`, no output will be displayed. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionduplicateresourceid)",
-                    "enum": [
-                        "Ignore",
-                        "Warn",
-                        "Error"
-                    ],
-                    "default": "Error"
-                },
-                "languageMode": {
-                    "type": "string",
-                    "title": "Language mode",
-                    "description": "The PowerShell language mode to use for rule execution. The default is FullLanguage.",
-                    "markdownDescription": "The PowerShell language mode to use for rule execution. The default is `FullLanguage`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionlanguagemode)",
-                    "enum": [
-                        "FullLanguage",
-                        "ConstrainedLanguage"
-                    ],
-                    "default": "FullLanguage"
-                },
-                "inconclusiveWarning": {
-                    "type": "boolean",
-                    "title": "Warn on inconclusive rules",
-                    "description": "Enable or disable warnings for inconclusive rules. The default is true.",
-                    "markdownDescription": "Enable or disable warnings for inconclusive rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninconclusivewarning)",
-                    "default": true
-                },
-                "notProcessedWarning": {
-                    "type": "boolean",
-                    "title": "Warn on unprocessed objects",
-                    "description": "Enable or disable warnings for objects that are not processed by any rule. The default is true.",
-                    "markdownDescription": "Enable or disable warnings for objects that are not processed by any rule. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionnotprocessedwarning)",
-                    "default": true
-                },
-                "suppressedRuleWarning": {
-                    "type": "boolean",
-                    "title": "Warn on suppressed rules",
-                    "description": "Enable or disable warnings for suppressed rules. The default is true.",
-                    "markdownDescription": "Enable or disable warnings for suppressed rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionsuppressedrulewarning)",
-                    "default": true
-                },
-                "invariantCultureWarning": {
-                    "type": "boolean",
-                    "title": "Warn on invariant culture",
-                    "description": "Enable or disable warning when invariant culture is used. The default is true.",
-                    "markdownDescription": "Enable or disable warning when invariant culture is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninvariantculturewarning)",
-                    "default": true
-                },
-                "initialSessionState": {
-                    "type": "string",
-                    "title": "Initial Session State",
-                    "description": "Determines how the initial session state for executing PowerShell code is created. The default is BuiltIn.",
-                    "markdownDescription": "Determines how the initial session state for executing PowerShell code is created. The default is `BuiltIn`.\n- When set to `BuiltIn` all built-in cmdlets are loaded.\n- When set to `Minimal` only cmdlets for hosting PowerShell will be loaded.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninitialsessionstate)",
-                    "enum": [
-                        "BuiltIn",
-                        "Minimal"
-                    ],
-                    "default": "BuiltIn"
-                }
-            },
-            "additionalProperties": false
+        "AZURE_PARAMETER_FILE_METADATA_LINK": {
+          "type": "boolean",
+          "title": "Bicep source expansion",
+          "description": "This configuration option determines if Azure Bicep source files will automatically be expanded. By default, Bicep files will not be automatically expanded.",
+          "markdownDescription": "This configuration option determines if Azure Bicep source files will automatically be expanded. By default, Bicep files will not be automatically expanded. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#bicepsourceexpansion)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+          "default": false
         },
-        "include-option": {
-            "type": "object",
-            "title": "Include options",
-            "description": "Options that affect source locations imported for execution.",
-            "properties": {
-                "module": {
-                    "type": "array",
-                    "title": "Include module",
-                    "description": "Automatically include rules and resources from the specified modules.",
-                    "markdownDescription": "Automatically include rules and resources from the specified modules. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#includemodule)",
-                    "items": {
-                        "type": "string",
-                        "title": "Include module",
-                        "description": "Automatically include rules and resources from the specified modules.",
-                        "markdownDescription": "Automatically include rules and resources from the specified modules. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#includemodule)"
-                    },
-                    "uniqueItems": true
-                },
-                "path": {
-                    "type": "array",
-                    "title": "Include path",
-                    "description": "Automatically include rules and resources from the specified paths.",
-                    "markdownDescription": "Automatically include rules and resources from the specified paths. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#includepath)",
-                    "items": {
-                        "type": "string",
-                        "title": "Include path",
-                        "description": "Automatically include rules and resources from the specified paths.",
-                        "markdownDescription": "Automatically include rules and resources from the specified paths. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#includepath)"
-                    },
-                    "uniqueItems": true
-                }
-            },
-            "additionalProperties": false
-        },
-        "input-option": {
-            "type": "object",
-            "title": "Input options",
-            "description": "Options that affect how input types are processed.",
-            "markdownDescription": "Options that affect how input types are processed.",
-            "properties": {
-                "format": {
-                    "type": "string",
-                    "title": "Input format",
-                    "description": "The input string format. The default is Detect, which will try to detect the format when the -InputPath parameter is used.",
-                    "markdownDescription": "The input string format. The default is `Detect`, which will try to detect the format when the `-InputPath` parameter is used. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputformat)",
-                    "enum": [
-                        "None",
-                        "Yaml",
-                        "Json",
-                        "Markdown",
-                        "PowerShellData",
-                        "File",
-                        "Detect"
-                    ],
-                    "default": "Detect"
-                },
-                "ignoreGitPath": {
-                    "type": "boolean",
-                    "title": "Ignore .git path",
-                    "description": "Determine if files within the .git path are ignored when the -InputPath parameter is used. This is enabled by default.",
-                    "markdownDescription": "Determine if files within the `.git` path are ignored when the `-InputPath` parameter is used. This is enabled by default. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignoregitpath)",
-                    "default": true
-                },
-                "ignoreRepositoryCommon": {
-                    "type": "boolean",
-                    "title": "Ignore common files",
-                    "description": "Determine if common repository files are ignored when the -InputPath parameter is used. This is enabled by default.",
-                    "markdownDescription": "Determine if common repository files are ignored when the `-InputPath` parameter is used. This is enabled by default. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignorerepositorycommon)",
-                    "default": true
-                },
-                "ignoreObjectSource": {
-                    "type": "boolean",
-                    "title": "Ignore object source",
-                    "description": "Determines if objects are ignore based on their file source path. When set, objects from the pipeline or read from files will be exclude based on their source path and the configuration of pathIgnore, ignoreGitPath, and ignoreRepositoryCommon options.",
-                    "markdownDescription": "Determines if objects are ignore based on their file source path. When set, objects from the pipeline or read from files will be exclude based on their source path and the configuration of `pathIgnore`, `ignoreGitPath`, and `ignoreRepositoryCommon` options. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignoreobjectsource)",
-                    "default": false
-                },
-                "ignoreUnchangedPath": {
-                    "type": "boolean",
-                    "title": "Ignore unchanged path",
-                    "description": "Determine if unchanged files are ignored. By default, PSRule will process all files within an input path. For large repositories, this can result in a large number of files being processed. Additionally, for a pull request you may only be interested in files that have changed.",
-                    "markdownDescription": "Determine if unchanged files are ignored. By default, PSRule will process all files within an input path. For large repositories, this can result in a large number of files being processed. Additionally, for a pull request you may only be interested in files that have changed.  [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignoreunchangedpath)",
-                    "default": false
-                },
-                "objectPath": {
-                    "type": "string",
-                    "title": "Object path",
-                    "description": "The object path to a property to use instead of the pipeline object.",
-                    "markdownDescription": "The object path to a property to use instead of the pipeline object. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputobjectpath)"
-                },
-                "pathIgnore": {
-                    "type": "array",
-                    "title": "Path ignore",
-                    "description": "Exclude input files that match the path spec. To exclude a file specify the path prefix or file name. To re-include previously excluded paths use ! at the start of the entry. Wildcards are supported.",
-                    "markdownDescription": "Exclude input files that match the path spec. To exclude a file specify the path prefix or file name. To re-include previously excluded paths use `!` at the start of the entry. Wildcards are supported. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputpathignore)",
-                    "items": {
-                        "type": "string"
-                    },
-                    "uniqueItems": true
-                },
-                "targetType": {
-                    "type": "array",
-                    "title": "Target type",
-                    "description": "Only process objects that match one of the included types.",
-                    "markdownDescription": "Only process objects that match one of the included types. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputtargettype)",
-                    "items": {
-                        "type": "string"
-                    },
-                    "uniqueItems": true
-                }
-            },
-            "additionalProperties": false
-        },
-        "logging-option": {
-            "type": "object",
-            "title": "Logging options",
-            "description": "Options for configuring information logging.",
-            "properties": {
-                "limitDebug": {
-                    "type": "array",
-                    "title": "Scopes for debug messages",
-                    "description": "Limits debug messages to a list of named debug scopes. No scopes are set by default.",
-                    "markdownDescription": "Limits debug messages to a list of named debug scopes. No scopes are set by default. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#logginglimitdebug)",
-                    "items": {
-                        "type": "string"
-                    },
-                    "uniqueItems": true
-                },
-                "limitVerbose": {
-                    "type": "array",
-                    "title": "Scopes for verbose messages",
-                    "description": "Limits verbose messages to a list of named verbose scopes. No scopes are set by default.",
-                    "markdownDescription": "Limits verbose messages to a list of named verbose scopes. No scopes are set by default. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#logginglimitverbose)",
-                    "items": {
-                        "type": "string"
-                    },
-                    "uniqueItems": true
-                },
-                "ruleFail": {
-                    "type": "string",
-                    "title": "Report fail to stream",
-                    "description": "Log fail outcomes for each rule to a specific informational stream. The default is None.",
-                    "markdownDescription": "Log fail outcomes for each rule to a specific informational stream. The default is `None`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#loggingrulefail)",
-                    "enum": [
-                        "None",
-                        "Error",
-                        "Warning",
-                        "Information"
-                    ],
-                    "default": "None"
-                },
-                "rulePass": {
-                    "type": "string",
-                    "title": "Report pass to stream",
-                    "description": "Log pass outcomes for each rule to a specific informational stream. The default is None.",
-                    "markdownDescription": "Log pass outcomes for each rule to a specific informational stream. The default is `None`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#loggingrulepass)",
-                    "enum": [
-                        "None",
-                        "Error",
-                        "Warning",
-                        "Information"
-                    ],
-                    "default": "None"
-                }
-            },
-            "additionalProperties": false
-        },
-        "suppression-option": {
-            "type": "object",
-            "title": "Suppress rules",
-            "description": "Specifies suppression rules.",
-            "markdownDescription": "Specifies suppression rules. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#suppression)",
-            "uniqueItems": true,
-            "additionalProperties": {
-                "oneOf": [
-                    {
-                        "type": "array",
-                        "title": "Suppressed rule",
-                        "description": "The name of the rule to suppress.",
-                        "markdownDescription": "The name of the rule to suppress. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#suppression)",
-                        "items": {
-                            "type": "string",
-                            "title": "Suppress when",
-                            "description": "Suppress the rule on TargetNames to suppress.",
-                            "markdownDescription": "Suppress the rule on TargetNames to suppress. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#suppression)"
-                        },
-                        "uniqueItems": true
-                    },
-                    {
-                        "type": "object",
-                        "title": "Suppressed rule",
-                        "description": "The name of the rule to suppress.",
-                        "markdownDescription": "The name of the rule to suppress. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#suppression)",
-                        "properties": {
-                            "targetName": {
-                                "type": "array",
-                                "title": "Suppress when",
-                                "description": "One or more TargetNames to suppress.",
-                                "markdownDescription": "One or more TargetNames to suppress. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#suppression)",
-                                "items": {
-                                    "type": "string"
-                                },
-                                "uniqueItems": true
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "targetName"
-                        ]
-                    }
-                ]
+        "AZURE_DEPLOYMENT": {
+          "type": "object",
+          "title": "Deployment properties",
+          "description": "This configuration option sets the deployment object use by the deployment() function. Configure this option to change the details of the deployment when exporting templates for analysis. Provided properties will override the default.",
+          "markdownDescription": "This configuration option sets the deployment object use by the `deployment()` function. Configure this option to change the details of the deployment when exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymentproperties)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+          "properties": {
+            "name": {
+              "type": "string",
+              "default": "ps-rule-test-deployment"
             }
+          },
+          "additionalProperties": false
         },
-        "output-option": {
+        "AZURE_RESOURCE_GROUP": {
+          "type": "object",
+          "title": "Deployment resource group",
+          "description": "This configuration option sets the resource group object used by the resourceGroup() function. Configure this option to change the resource group object when using exporting templates for analysis. Provided properties will override the default.",
+          "markdownDescription": "This configuration option sets the resource group object used by the `resourceGroup()` function. Configure this option to change the resource group object when using exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymentresourcegroup)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+          "properties": {
+            "name": {
+              "type": "string",
+              "default": "ps-rule-test-rg"
+            },
+            "location": {
+              "type": "string",
+              "default": "eastus"
+            },
+            "tags": {
+              "type": "object",
+              "default": {}
+            },
+            "properties": {
+              "type": "object",
+              "properties": {
+                "provisioningState": {
+                  "type": "string",
+                  "default": "Succeeded"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "AZURE_SUBSCRIPTION": {
+          "type": "object",
+          "title": "Deployment subscription",
+          "description": "This configuration option sets the subscription object used by the subscription() function. Configure this option to change the subscription object when using exporting templates for analysis. Provided properties will override the default.",
+          "markdownDescription": "This configuration option sets the subscription object used by the `subscription()` function. Configure this option to change the subscription object when using exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymentsubscription)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+          "properties": {
+            "subscriptionId": {
+              "type": "string",
+              "default": "ffffffff-ffff-ffff-ffff-ffffffffffff"
+            },
+            "displayName": {
+              "type": "string",
+              "default": "PSRule Test Subscription"
+            },
+            "state": {
+              "type": "string",
+              "default": "NotDefined"
+            }
+          },
+          "additionalProperties": false
+        },
+        "AZURE_TENANT": {
+          "type": "object",
+          "title": "Deployment tenant",
+          "description": "This configuration option sets the tenant object used by the tenant() function. Configure this option to change the tenant object when using exporting templates for analysis. Provided properties will override the default.",
+          "markdownDescription": "This configuration option sets the tenant object used by the `tenant()` function. Configure this option to change the tenant object when using exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymenttenant)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+          "properties": {
+            "countryCode": {
+              "type": "string",
+              "default": "US"
+            },
+            "tenantId": {
+              "type": "string",
+              "default": "ffffffff-ffff-ffff-ffff-ffffffffffff"
+            },
+            "displayName": {
+              "type": "string",
+              "default": "PSRule"
+            }
+          },
+          "additionalProperties": false
+        },
+        "AZURE_MANAGEMENT_GROUP": {
+          "type": "object",
+          "title": "Deployment management group",
+          "description": "This configuration option sets the management group object used by the managementGroup() function. Configure this option to change the management group object when using exporting templates for analysis. Provided properties will override the default.",
+          "markdownDescription": "This configuration option sets the management group object used by the `managementGroup()` function. Configure this option to change the management group object when using exporting templates for analysis. Provided properties will override the default. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#deploymentmanagementgroup)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+          "properties": {
+            "name": {
+              "type": "string",
+              "default": "psrule-test"
+            },
+            "properties": {
+              "type": "object",
+              "properties": {
+                "displayName": {
+                  "type": "string",
+                  "default": "PSRule Test Management Group"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "AZURE_PARAMETER_DEFAULTS": {
+          "type": "object",
+          "title": "Required parameter defaults",
+          "description": "This configuration option allows a fallback value to be configured for required parameters. When a parameter value is not provided and a default is not set, the fallback value will be used.",
+          "markdownDescription": "This configuration option allows a fallback value to be configured for required parameters. When a parameter value is not provided and a default is not set, the fallback value will be used. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-expansion/#requiredparameterdefaults)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)"
+        }
+      },
+      "additionalProperties": true,
+      "defaultSnippets": [
+        {
+          "label": "Custom configuration value",
+          "body": {
+            "${1:Key}": "${2:Value}"
+          }
+        }
+      ]
+    },
+    "convention-option": {
+      "type": "object",
+      "title": "Convention options",
+      "description": "Options that configure conventions.",
+      "properties": {
+        "include": {
+          "type": "array",
+          "title": "Include conventions",
+          "description": "An ordered list of conventions to include.",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "binding-option": {
+      "type": "object",
+      "title": "Object binding",
+      "description": "Configure property/ object binding options.",
+      "properties": {
+        "field": {
+          "type": "object",
+          "title": "Field",
+          "description": "Custom fields to bind.",
+          "markdownDescription": "Custom fields to bind. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingfield)",
+          "additionalProperties": {
+            "type": "array",
+            "description": "A custom field to bind.",
+            "markdownDescription": "Custom field to bind. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingfield)",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "ignoreCase": {
+          "type": "boolean",
+          "title": "Ignore case",
+          "description": "Determines if custom binding uses ignores case when matching properties. The default is true.",
+          "markdownDescription": "Determines if custom binding uses ignores case when matching properties. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingignorecase)",
+          "default": true
+        },
+        "nameSeparator": {
+          "type": "string",
+          "title": "Name separator",
+          "description": "Configures the separator to use for building a qualified name. The default is '/'.",
+          "markdownDescription": "Configures the separator to use for building a qualified name. The default is `/`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingnameseparator)",
+          "default": "/"
+        },
+        "preferTargetInfo": {
+          "type": "boolean",
+          "title": "Prefer target info",
+          "description": "Determines if binding prefers target info provided by the object over custom configuration. The default is false.",
+          "markdownDescription": "Determines if binding prefers target info provided by the object over custom configuration. The default is `false`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingprefertargetinfo)",
+          "default": false
+        },
+        "targetName": {
+          "type": "array",
+          "title": "Bind TargetName",
+          "description": "Specifies one or more property names to bind TargetName to.",
+          "markdownDescription": "Specifies one or more property names to bind TargetName to. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingtargetname)",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "targetType": {
+          "type": "array",
+          "title": "Bind TargetType",
+          "description": "Specifies one or more property names to bind TargetType to.",
+          "markdownDescription": "Specifies one or more property names to bind TargetType to. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingtargettype)",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "useQualifiedName": {
+          "type": "boolean",
+          "title": "Use qualified name",
+          "description": "Determines if a qualified TargetName is used. The default is false.",
+          "markdownDescription": "Determines if a qualified TargetName is used. The default is `false`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingusequalifiedname)",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "execution-option": {
+      "type": "object",
+      "title": "Execution options",
+      "description": "Options that affect execution.",
+      "markdownDescription": "Options that affect execution. [See help](https://aka.ms/ps-rule/options)",
+      "properties": {
+        "aliasReferenceWarning": {
+          "type": "boolean",
+          "title": "Warn on resource aliases",
+          "description": "Enable or disable warnings when an alias to a resource is used. The default is true.",
+          "markdownDescription": "Enable or disable warnings when an alias to a resource is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionaliasreferencewarning)",
+          "default": true
+        },
+        "duplicateResourceId": {
+          "type": "string",
+          "title": "Duplicate resource identifiers",
+          "description": "Determines how to handle duplicate resources identifiers during execution. Regardless of the value, only the first resource will be used. By defaut, an error is thrown. When set to Warn, a warning is generated. When set to Ignore, no output will be displayed.",
+          "markdownDescription": "Determines how to handle duplicate resources identifiers during execution.\n\nRegardless of the value, only the first resource will be used. By defaut, an error is thrown. When set to `Warn`, a warning is generated. When set to `Ignore`, no output will be displayed. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionduplicateresourceid)",
+          "enum": [
+            "Ignore",
+            "Warn",
+            "Error"
+          ],
+          "default": "Error"
+        },
+        "languageMode": {
+          "type": "string",
+          "title": "Language mode",
+          "description": "The PowerShell language mode to use for rule execution. The default is FullLanguage.",
+          "markdownDescription": "The PowerShell language mode to use for rule execution. The default is `FullLanguage`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionlanguagemode)",
+          "enum": [
+            "FullLanguage",
+            "ConstrainedLanguage"
+          ],
+          "default": "FullLanguage"
+        },
+        "inconclusiveWarning": {
+          "type": "boolean",
+          "title": "Warn on inconclusive rules",
+          "description": "Enable or disable warnings for inconclusive rules. The default is true.",
+          "markdownDescription": "Enable or disable warnings for inconclusive rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninconclusivewarning)",
+          "default": true
+        },
+        "notProcessedWarning": {
+          "type": "boolean",
+          "title": "Warn on unprocessed objects",
+          "description": "Enable or disable warnings for objects that are not processed by any rule. The default is true.",
+          "markdownDescription": "Enable or disable warnings for objects that are not processed by any rule. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionnotprocessedwarning)",
+          "default": true
+        },
+        "suppressedRuleWarning": {
+          "type": "boolean",
+          "title": "Warn on suppressed rules",
+          "description": "Enable or disable warnings for suppressed rules. The default is true.",
+          "markdownDescription": "Enable or disable warnings for suppressed rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionsuppressedrulewarning)",
+          "default": true
+        },
+        "invariantCultureWarning": {
+          "type": "boolean",
+          "title": "Warn on invariant culture",
+          "description": "Enable or disable warning when invariant culture is used. The default is true.",
+          "markdownDescription": "Enable or disable warning when invariant culture is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninvariantculturewarning)",
+          "default": true
+        },
+        "initialSessionState": {
+          "type": "string",
+          "title": "Initial Session State",
+          "description": "Determines how the initial session state for executing PowerShell code is created. The default is BuiltIn.",
+          "markdownDescription": "Determines how the initial session state for executing PowerShell code is created. The default is `BuiltIn`.\n- When set to `BuiltIn` all built-in cmdlets are loaded.\n- When set to `Minimal` only cmdlets for hosting PowerShell will be loaded.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninitialsessionstate)",
+          "enum": [
+            "BuiltIn",
+            "Minimal"
+          ],
+          "default": "BuiltIn"
+        }
+      },
+      "additionalProperties": false
+    },
+    "include-option": {
+      "type": "object",
+      "title": "Include options",
+      "description": "Options that affect source locations imported for execution.",
+      "properties": {
+        "module": {
+          "type": "array",
+          "title": "Include module",
+          "description": "Automatically include rules and resources from the specified modules.",
+          "markdownDescription": "Automatically include rules and resources from the specified modules. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#includemodule)",
+          "items": {
+            "type": "string",
+            "title": "Include module",
+            "description": "Automatically include rules and resources from the specified modules.",
+            "markdownDescription": "Automatically include rules and resources from the specified modules. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#includemodule)"
+          },
+          "uniqueItems": true
+        },
+        "path": {
+          "type": "array",
+          "title": "Include path",
+          "description": "Automatically include rules and resources from the specified paths.",
+          "markdownDescription": "Automatically include rules and resources from the specified paths. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#includepath)",
+          "items": {
+            "type": "string",
+            "title": "Include path",
+            "description": "Automatically include rules and resources from the specified paths.",
+            "markdownDescription": "Automatically include rules and resources from the specified paths. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#includepath)"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "input-option": {
+      "type": "object",
+      "title": "Input options",
+      "description": "Options that affect how input types are processed.",
+      "markdownDescription": "Options that affect how input types are processed.",
+      "properties": {
+        "format": {
+          "type": "string",
+          "title": "Input format",
+          "description": "The input string format. The default is Detect, which will try to detect the format when the -InputPath parameter is used.",
+          "markdownDescription": "The input string format. The default is `Detect`, which will try to detect the format when the `-InputPath` parameter is used. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputformat)",
+          "enum": [
+            "None",
+            "Yaml",
+            "Json",
+            "Markdown",
+            "PowerShellData",
+            "File",
+            "Detect"
+          ],
+          "default": "Detect"
+        },
+        "ignoreGitPath": {
+          "type": "boolean",
+          "title": "Ignore .git path",
+          "description": "Determine if files within the .git path are ignored when the -InputPath parameter is used. This is enabled by default.",
+          "markdownDescription": "Determine if files within the `.git` path are ignored when the `-InputPath` parameter is used. This is enabled by default. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignoregitpath)",
+          "default": true
+        },
+        "ignoreRepositoryCommon": {
+          "type": "boolean",
+          "title": "Ignore common files",
+          "description": "Determine if common repository files are ignored when the -InputPath parameter is used. This is enabled by default.",
+          "markdownDescription": "Determine if common repository files are ignored when the `-InputPath` parameter is used. This is enabled by default. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignorerepositorycommon)",
+          "default": true
+        },
+        "ignoreObjectSource": {
+          "type": "boolean",
+          "title": "Ignore object source",
+          "description": "Determines if objects are ignore based on their file source path. When set, objects from the pipeline or read from files will be exclude based on their source path and the configuration of pathIgnore, ignoreGitPath, and ignoreRepositoryCommon options.",
+          "markdownDescription": "Determines if objects are ignore based on their file source path. When set, objects from the pipeline or read from files will be exclude based on their source path and the configuration of `pathIgnore`, `ignoreGitPath`, and `ignoreRepositoryCommon` options. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignoreobjectsource)",
+          "default": false
+        },
+        "ignoreUnchangedPath": {
+          "type": "boolean",
+          "title": "Ignore unchanged path",
+          "description": "Determine if unchanged files are ignored. By default, PSRule will process all files within an input path. For large repositories, this can result in a large number of files being processed. Additionally, for a pull request you may only be interested in files that have changed.",
+          "markdownDescription": "Determine if unchanged files are ignored. By default, PSRule will process all files within an input path. For large repositories, this can result in a large number of files being processed. Additionally, for a pull request you may only be interested in files that have changed.  [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputignoreunchangedpath)",
+          "default": false
+        },
+        "objectPath": {
+          "type": "string",
+          "title": "Object path",
+          "description": "The object path to a property to use instead of the pipeline object.",
+          "markdownDescription": "The object path to a property to use instead of the pipeline object. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputobjectpath)"
+        },
+        "pathIgnore": {
+          "type": "array",
+          "title": "Path ignore",
+          "description": "Exclude input files that match the path spec. To exclude a file specify the path prefix or file name. To re-include previously excluded paths use ! at the start of the entry. Wildcards are supported.",
+          "markdownDescription": "Exclude input files that match the path spec. To exclude a file specify the path prefix or file name. To re-include previously excluded paths use `!` at the start of the entry. Wildcards are supported. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputpathignore)",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "targetType": {
+          "type": "array",
+          "title": "Target type",
+          "description": "Only process objects that match one of the included types.",
+          "markdownDescription": "Only process objects that match one of the included types. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputtargettype)",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "logging-option": {
+      "type": "object",
+      "title": "Logging options",
+      "description": "Options for configuring information logging.",
+      "properties": {
+        "limitDebug": {
+          "type": "array",
+          "title": "Scopes for debug messages",
+          "description": "Limits debug messages to a list of named debug scopes. No scopes are set by default.",
+          "markdownDescription": "Limits debug messages to a list of named debug scopes. No scopes are set by default. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#logginglimitdebug)",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "limitVerbose": {
+          "type": "array",
+          "title": "Scopes for verbose messages",
+          "description": "Limits verbose messages to a list of named verbose scopes. No scopes are set by default.",
+          "markdownDescription": "Limits verbose messages to a list of named verbose scopes. No scopes are set by default. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#logginglimitverbose)",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "ruleFail": {
+          "type": "string",
+          "title": "Report fail to stream",
+          "description": "Log fail outcomes for each rule to a specific informational stream. The default is None.",
+          "markdownDescription": "Log fail outcomes for each rule to a specific informational stream. The default is `None`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#loggingrulefail)",
+          "enum": [
+            "None",
+            "Error",
+            "Warning",
+            "Information"
+          ],
+          "default": "None"
+        },
+        "rulePass": {
+          "type": "string",
+          "title": "Report pass to stream",
+          "description": "Log pass outcomes for each rule to a specific informational stream. The default is None.",
+          "markdownDescription": "Log pass outcomes for each rule to a specific informational stream. The default is `None`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#loggingrulepass)",
+          "enum": [
+            "None",
+            "Error",
+            "Warning",
+            "Information"
+          ],
+          "default": "None"
+        }
+      },
+      "additionalProperties": false
+    },
+    "suppression-option": {
+      "type": "object",
+      "title": "Suppress rules",
+      "description": "Specifies suppression rules.",
+      "markdownDescription": "Specifies suppression rules. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#suppression)",
+      "uniqueItems": true,
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "array",
+            "title": "Suppressed rule",
+            "description": "The name of the rule to suppress.",
+            "markdownDescription": "The name of the rule to suppress. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#suppression)",
+            "items": {
+              "type": "string",
+              "title": "Suppress when",
+              "description": "Suppress the rule on TargetNames to suppress.",
+              "markdownDescription": "Suppress the rule on TargetNames to suppress. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#suppression)"
+            },
+            "uniqueItems": true
+          },
+          {
             "type": "object",
-            "title": "Output options",
-            "description": "Options that affect how output is generated.",
+            "title": "Suppressed rule",
+            "description": "The name of the rule to suppress.",
+            "markdownDescription": "The name of the rule to suppress. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#suppression)",
             "properties": {
-                "as": {
-                    "type": "string",
-                    "title": "Result type",
-                    "description": "Determine if detailed or summary results are generated. The default is Detail.",
-                    "markdownDescription": "Determine if detailed or summary results are generated. The default is `Detail`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputas)",
-                    "enum": [
-                        "Detail",
-                        "Summary"
-                    ],
-                    "default": "Detail"
+              "targetName": {
+                "type": "array",
+                "title": "Suppress when",
+                "description": "One or more TargetNames to suppress.",
+                "markdownDescription": "One or more TargetNames to suppress. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#suppression)",
+                "items": {
+                  "type": "string"
                 },
-                "banner": {
-                    "title": "Banner format",
-                    "description": "The information displayed for Assert-PSRule banner. The default is Default which includes Title, Source, SupportLinks, and RepositoryInfo.",
-                    "markdownDescription": "The information displayed for Assert-PSRule banner. The default is `Default` which includes `Title`, `Source`, `SupportLinks`, and `RepositoryInfo`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputbanner)",
-                    "oneOf": [
-                        {
-                            "type": "string",
-                            "enum": [
-                                "None",
-                                "Title",
-                                "Source",
-                                "SupportLinks",
-                                "RepositoryInfo",
-                                "Default",
-                                "Minimal"
-                            ]
-                        },
-                        {
-                            "type": "integer"
-                        }
-                    ],
-                    "default": "Default"
-                },
-                "culture": {
-                    "type": "array",
-                    "title": "Culture",
-                    "description": "One or more cultures to use for generating output. When multiple cultures are specified, the first matching culture will be used. By default, the current PowerShell culture is used.",
-                    "markdownDescription": "One or more cultures to use for generating output. When multiple cultures are specified, the first matching culture will be used. By default, the current PowerShell culture is used. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputculture)",
-                    "items": {
-                        "type": "string",
-                        "description": "A culture for generating output.",
-                        "minLength": 2
-                    },
-                    "uniqueItems": true,
-                    "defaultSnippets": [
-                        {
-                            "label": "en-AU",
-                            "bodyText": [
-                                "en-AU"
-                            ]
-                        },
-                        {
-                            "label": "en-US",
-                            "bodyText": [
-                                "en-US"
-                            ]
-                        },
-                        {
-                            "label": "en-GB",
-                            "bodyText": [
-                                "en-GB"
-                            ]
-                        }
-                    ]
-                },
-                "encoding": {
-                    "type": "string",
-                    "title": "Encoding",
-                    "description": "The encoding to use when writing results to file. The default is Default, UTF-8 without BOM.",
-                    "markdownDescription": "The encoding to use when writing results to file. The default is `Default`, UTF-8 without BOM. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputencoding)",
-                    "enum": [
-                        "Default",
-                        "UTF8",
-                        "UTF7",
-                        "Unicode",
-                        "UTF32",
-                        "ASCII"
-                    ],
-                    "default": "Default"
-                },
-                "footer": {
-                    "title": "Footer format",
-                    "description": "The information displayed for Assert-PSRule footer. The default is Default which includes RuleCount, RunInfo, and OutputFile.",
-                    "markdownDescription": "The information displayed for Assert-PSRule footer. The default is `Default` which includes `RuleCount`, `RunInfo`, and `OutputFile`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputfooter)",
-                    "oneOf": [
-                        {
-                            "type": "string",
-                            "enum": [
-                                "None",
-                                "RuleCount",
-                                "RunInfo",
-                                "OutputFile",
-                                "Default"
-                            ]
-                        },
-                        {
-                            "type": "integer",
-                            "minimum": 0
-                        }
-                    ],
-                    "default": "Default"
-                },
-                "format": {
-                    "type": "string",
-                    "title": "Output format",
-                    "description": "The output format to use when returning results. The default is None.",
-                    "markdownDescription": "The output format to use when returning results. The default is `None`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputformat)",
-                    "enum": [
-                        "None",
-                        "Yaml",
-                        "Json",
-                        "Markdown",
-                        "NUnit3",
-                        "Csv",
-                        "Wide",
-                        "Sarif"
-                    ],
-                    "default": "None"
-                },
-                "outcome": {
-                    "type": "string",
-                    "title": "Output outcome",
-                    "description": "The outcome of rule results to return. The default is Processed.",
-                    "markdownDescription": "The outcome of rule results to return. The default is `Processed`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputoutcome)",
-                    "enum": [
-                        "None",
-                        "Fail",
-                        "Pass",
-                        "Error",
-                        "Processed",
-                        "All"
-                    ],
-                    "default": "Processed"
-                },
-                "path": {
-                    "type": "string",
-                    "title": "Output path",
-                    "description": "The file path location to save results.",
-                    "markdownDescription": "The file path location to save results. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputpath)"
-                },
-                "style": {
-                    "type": "string",
-                    "title": "Output Style",
-                    "description": "The style that results will be presented in. The default is Detect.",
-                    "markdownDescription": "The style that results will be presented in. The default is `Detect`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputstyle)",
-                    "enum": [
-                        "Client",
-                        "Plain",
-                        "AzurePipelines",
-                        "GitHubActions",
-                        "VisualStudioCode",
-                        "Detect"
-                    ],
-                    "default": "Detect"
-                },
-                "jsonIndent": {
-                    "type": "integer",
-                    "title": "Output Json Indent",
-                    "description": "The indentation level for JSON output. The default is 0.",
-                    "markdownDescription": "The indentation level for JSON output. The default is `0`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputjsonindent)",
-                    "minimum": 0,
-                    "maximum": 4,
-                    "default": 0
-                },
-                "sarifProblemsOnly": {
-                    "type": "boolean",
-                    "title": "SARIF Problems Only",
-                    "description": "Determines if SARIF output only includes rules with fail or error outcomes. The default is true.",
-                    "markdownDescription": "Determines if SARIF output only includes rules with fail or error outcomes. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputsarifproblemsonly)",
-                    "default": true
-                }
+                "uniqueItems": true
+              }
             },
-            "additionalProperties": false
+            "additionalProperties": false,
+            "required": [
+              "targetName"
+            ]
+          }
+        ]
+      }
+    },
+    "output-option": {
+      "type": "object",
+      "title": "Output options",
+      "description": "Options that affect how output is generated.",
+      "properties": {
+        "as": {
+          "type": "string",
+          "title": "Result type",
+          "description": "Determine if detailed or summary results are generated. The default is Detail.",
+          "markdownDescription": "Determine if detailed or summary results are generated. The default is `Detail`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputas)",
+          "enum": [
+            "Detail",
+            "Summary"
+          ],
+          "default": "Detail"
         },
-        "options": {
-            "properties": {
-                "binding": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/binding-option"
-                        }
-                    ]
-                },
-                "configuration": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/configuration"
-                        }
-                    ]
-                },
-                "convention": {
-                    "type": "object",
-                    "$ref": "#/definitions/convention-option"
-                },
-                "execution": {
-                    "type": "object",
-                    "$ref": "#/definitions/execution-option"
-                },
-                "include": {
-                    "type": "object",
-                    "$ref": "#/definitions/include-option"
-                },
-                "input": {
-                    "type": "object",
-                    "$ref": "#/definitions/input-option"
-                },
-                "logging": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/logging-option"
-                        }
-                    ]
-                },
-                "output": {
-                    "type": "object",
-                    "$ref": "#/definitions/output-option"
-                },
-                "repository": {
-                    "type": "object",
-                    "$ref": "#/definitions/repository-option"
-                },
-                "requires": {
-                    "type": "object",
-                    "$ref": "#/definitions/requires"
-                },
-                "rule": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/rule-option"
-                        }
-                    ]
-                },
-                "suppression": {
-                    "type": "object",
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/suppression-option"
-                        }
-                    ]
-                }
+        "banner": {
+          "title": "Banner format",
+          "description": "The information displayed for Assert-PSRule banner. The default is Default which includes Title, Source, SupportLinks, and RepositoryInfo.",
+          "markdownDescription": "The information displayed for Assert-PSRule banner. The default is `Default` which includes `Title`, `Source`, `SupportLinks`, and `RepositoryInfo`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputbanner)",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "None",
+                "Title",
+                "Source",
+                "SupportLinks",
+                "RepositoryInfo",
+                "Default",
+                "Minimal"
+              ]
             },
-            "additionalProperties": false
+            {
+              "type": "integer"
+            }
+          ],
+          "default": "Default"
         },
-        "repository-option": {
-            "type": "object",
-            "title": "Repository",
-            "description": "Configures repository options.",
-            "markdownDescription": "Configures repository options.",
-            "properties": {
-                "baseRef": {
-                    "type": "string",
-                    "title": "Base Reference",
-                    "description": "Sets the repository base ref used for comparisons of changed files. By default, the base ref is detected from environment vairables set by the build system.",
-                    "markdownDescription": "Sets the repository base ref used for comparisons of changed files. By default, the base ref is detected from environment vairables set by the build system.  [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#repositorybaseref)"
-                },
-                "url": {
-                    "type": "string",
-                    "title": "Repository URL",
-                    "description": "Sets the repository URL reported in output. By default, the repository URL is detected from environment variables set by the build system.",
-                    "markdownDescription": "Sets the repository URL reported in output. By default, the repository URL is detected from environment variables set by the build system. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#repositoryurl)"
-                }
+        "culture": {
+          "type": "array",
+          "title": "Culture",
+          "description": "One or more cultures to use for generating output. When multiple cultures are specified, the first matching culture will be used. By default, the current PowerShell culture is used.",
+          "markdownDescription": "One or more cultures to use for generating output. When multiple cultures are specified, the first matching culture will be used. By default, the current PowerShell culture is used. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputculture)",
+          "items": {
+            "type": "string",
+            "description": "A culture for generating output.",
+            "minLength": 2
+          },
+          "uniqueItems": true,
+          "defaultSnippets": [
+            {
+              "label": "en-AU",
+              "bodyText": [
+                "en-AU"
+              ]
             },
-            "additionalProperties": false
+            {
+              "label": "en-US",
+              "bodyText": [
+                "en-US"
+              ]
+            },
+            {
+              "label": "en-GB",
+              "bodyText": [
+                "en-GB"
+              ]
+            }
+          ]
+        },
+        "encoding": {
+          "type": "string",
+          "title": "Encoding",
+          "description": "The encoding to use when writing results to file. The default is Default, UTF-8 without BOM.",
+          "markdownDescription": "The encoding to use when writing results to file. The default is `Default`, UTF-8 without BOM. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputencoding)",
+          "enum": [
+            "Default",
+            "UTF8",
+            "UTF7",
+            "Unicode",
+            "UTF32",
+            "ASCII"
+          ],
+          "default": "Default"
+        },
+        "footer": {
+          "title": "Footer format",
+          "description": "The information displayed for Assert-PSRule footer. The default is Default which includes RuleCount, RunInfo, and OutputFile.",
+          "markdownDescription": "The information displayed for Assert-PSRule footer. The default is `Default` which includes `RuleCount`, `RunInfo`, and `OutputFile`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputfooter)",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "None",
+                "RuleCount",
+                "RunInfo",
+                "OutputFile",
+                "Default"
+              ]
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            }
+          ],
+          "default": "Default"
+        },
+        "format": {
+          "type": "string",
+          "title": "Output format",
+          "description": "The output format to use when returning results. The default is None.",
+          "markdownDescription": "The output format to use when returning results. The default is `None`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputformat)",
+          "enum": [
+            "None",
+            "Yaml",
+            "Json",
+            "Markdown",
+            "NUnit3",
+            "Csv",
+            "Wide",
+            "Sarif"
+          ],
+          "default": "None"
+        },
+        "jobSummaryPath": {
+          "type": "string",
+          "title": "Job Summary Path",
+          "description": "The path to a job summary output file.",
+          "markdownDescription": "The path to a job summary output file. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputjobsummarypath)"
+        },
+        "jsonIndent": {
+          "type": "integer",
+          "title": "Output Json Indent",
+          "description": "The indentation level for JSON output. The default is 0.",
+          "markdownDescription": "The indentation level for JSON output. The default is `0`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputjsonindent)",
+          "minimum": 0,
+          "maximum": 4,
+          "default": 0
+        },
+        "outcome": {
+          "type": "string",
+          "title": "Output outcome",
+          "description": "The outcome of rule results to return. The default is Processed.",
+          "markdownDescription": "The outcome of rule results to return. The default is `Processed`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputoutcome)",
+          "enum": [
+            "None",
+            "Fail",
+            "Pass",
+            "Error",
+            "Processed",
+            "All"
+          ],
+          "default": "Processed"
+        },
+        "path": {
+          "type": "string",
+          "title": "Output path",
+          "description": "The file path location to save results.",
+          "markdownDescription": "The file path location to save results. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputpath)"
+        },
+        "style": {
+          "type": "string",
+          "title": "Output Style",
+          "description": "The style that results will be presented in. The default is Detect.",
+          "markdownDescription": "The style that results will be presented in. The default is `Detect`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputstyle)",
+          "enum": [
+            "Client",
+            "Plain",
+            "AzurePipelines",
+            "GitHubActions",
+            "VisualStudioCode",
+            "Detect"
+          ],
+          "default": "Detect"
+        },
+        "sarifProblemsOnly": {
+          "type": "boolean",
+          "title": "SARIF Problems Only",
+          "description": "Determines if SARIF output only includes rules with fail or error outcomes. The default is true.",
+          "markdownDescription": "Determines if SARIF output only includes rules with fail or error outcomes. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputsarifproblemsonly)",
+          "default": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "options": {
+      "properties": {
+        "binding": {
+          "type": "object",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/binding-option"
+            }
+          ]
+        },
+        "configuration": {
+          "type": "object",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/configuration"
+            }
+          ]
+        },
+        "convention": {
+          "type": "object",
+          "$ref": "#/definitions/convention-option"
+        },
+        "execution": {
+          "type": "object",
+          "$ref": "#/definitions/execution-option"
+        },
+        "include": {
+          "type": "object",
+          "$ref": "#/definitions/include-option"
+        },
+        "input": {
+          "type": "object",
+          "$ref": "#/definitions/input-option"
+        },
+        "logging": {
+          "type": "object",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/logging-option"
+            }
+          ]
+        },
+        "output": {
+          "type": "object",
+          "$ref": "#/definitions/output-option"
+        },
+        "repository": {
+          "type": "object",
+          "$ref": "#/definitions/repository-option"
         },
         "requires": {
-            "type": "object",
-            "title": "Required modules",
-            "description": "Specifies the required version of a module to use.",
-            "markdownDescription": "Specifies the required version of a module to use. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#requires)",
-            "additionalProperties": {
-                "type": "string",
-                "title": "Version constraint",
-                "description": "Specifies a module to constrain to a specific version.",
-                "markdownDescription": "Specifies a module to constrain to a specific version. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#requires)",
-                "pattern": "^(@pre |@prerelease )?(((?:^|~|\\>=|\\>|=|\\<=|\\<)?v?(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?)(?:\\s|\\s?\\|\\|\\s?)?){1,}$"
-            },
-            "defaultSnippets": [
-                {
-                    "label": "Version constraint",
-                    "body": {
-                        "${1:Module}": "'>=${2:1.0.0}'"
-                    }
-                }
-            ]
+          "type": "object",
+          "$ref": "#/definitions/requires"
         },
-        "rule-option": {
-            "type": "object",
-            "title": "Baseline options",
-            "description": "Options that include/ exclude and configure rules.",
-            "properties": {
-                "include": {
-                    "type": "array",
-                    "title": "Include rules",
-                    "description": "Optionally filter to rules by name.",
-                    "markdownDescription": "Optionally filter to rules by name. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#ruleinclude)",
-                    "items": {
-                        "type": "string",
-                        "$ref": "#/definitions/resourceName"
-                    },
-                    "uniqueItems": true
-                },
-                "includeLocal": {
-                    "type": "boolean",
-                    "title": "Include local",
-                    "description": "Automatically include all local rules in the search path unless they have been explicitly excluded.",
-                    "markdownDescription": "Automatically include all local rules in the search path unless they have been explicitly excluded. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#ruleincludelocal)",
-                    "default": false
-                },
-                "exclude": {
-                    "type": "array",
-                    "title": "Exclude rules",
-                    "description": "Specifies rules to exclude by name.",
-                    "markdownDescription": "Specifies rules to exclude by name. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#ruleexclude)",
-                    "items": {
-                        "type": "string",
-                        "$ref": "#/definitions/resourceName"
-                    },
-                    "uniqueItems": true
-                },
-                "tag": {
-                    "type": "object",
-                    "title": "Tags",
-                    "description": "Require rules to have the following tags.",
-                    "markdownDescription": "Require rules to have the following tags. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#ruletag)",
-                    "additionalProperties": {
-                        "oneOf": [
-                            {
-                                "type": "string",
-                                "description": "A required tag."
-                            },
-                            {
-                                "type": "array",
-                                "description": "A required tag.",
-                                "items": {
-                                    "type": "string"
-                                },
-                                "uniqueItems": true
-                            }
-                        ]
-                    }
-                }
-            },
-            "additionalProperties": false
+        "rule": {
+          "type": "object",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/rule-option"
+            }
+          ]
         },
-        "resourceName": {
-            "type": "string",
-            "minLength": 3
+        "suppression": {
+          "type": "object",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/suppression-option"
+            }
+          ]
         }
+      },
+      "additionalProperties": false
+    },
+    "repository-option": {
+      "type": "object",
+      "title": "Repository",
+      "description": "Configures repository options.",
+      "markdownDescription": "Configures repository options.",
+      "properties": {
+        "baseRef": {
+          "type": "string",
+          "title": "Base Reference",
+          "description": "Sets the repository base ref used for comparisons of changed files. By default, the base ref is detected from environment vairables set by the build system.",
+          "markdownDescription": "Sets the repository base ref used for comparisons of changed files. By default, the base ref is detected from environment vairables set by the build system.  [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#repositorybaseref)"
+        },
+        "url": {
+          "type": "string",
+          "title": "Repository URL",
+          "description": "Sets the repository URL reported in output. By default, the repository URL is detected from environment variables set by the build system.",
+          "markdownDescription": "Sets the repository URL reported in output. By default, the repository URL is detected from environment variables set by the build system. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#repositoryurl)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "requires": {
+      "type": "object",
+      "title": "Required modules",
+      "description": "Specifies the required version of a module to use.",
+      "markdownDescription": "Specifies the required version of a module to use. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#requires)",
+      "additionalProperties": {
+        "type": "string",
+        "title": "Version constraint",
+        "description": "Specifies a module to constrain to a specific version.",
+        "markdownDescription": "Specifies a module to constrain to a specific version. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#requires)",
+        "pattern": "^(@pre |@prerelease )?(((?:^|~|\\>=|\\>|=|\\<=|\\<)?v?(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?)(?:\\s|\\s?\\|\\|\\s?)?){1,}$"
+      },
+      "defaultSnippets": [
+        {
+          "label": "Version constraint",
+          "body": {
+            "${1:Module}": "'>=${2:1.0.0}'"
+          }
+        }
+      ]
+    },
+    "rule-option": {
+      "type": "object",
+      "title": "Baseline options",
+      "description": "Options that include/ exclude and configure rules.",
+      "properties": {
+        "include": {
+          "type": "array",
+          "title": "Include rules",
+          "description": "Optionally filter to rules by name.",
+          "markdownDescription": "Optionally filter to rules by name. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#ruleinclude)",
+          "items": {
+            "type": "string",
+            "$ref": "#/definitions/resourceName"
+          },
+          "uniqueItems": true
+        },
+        "includeLocal": {
+          "type": "boolean",
+          "title": "Include local",
+          "description": "Automatically include all local rules in the search path unless they have been explicitly excluded.",
+          "markdownDescription": "Automatically include all local rules in the search path unless they have been explicitly excluded. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#ruleincludelocal)",
+          "default": false
+        },
+        "exclude": {
+          "type": "array",
+          "title": "Exclude rules",
+          "description": "Specifies rules to exclude by name.",
+          "markdownDescription": "Specifies rules to exclude by name. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#ruleexclude)",
+          "items": {
+            "type": "string",
+            "$ref": "#/definitions/resourceName"
+          },
+          "uniqueItems": true
+        },
+        "tag": {
+          "type": "object",
+          "title": "Tags",
+          "description": "Require rules to have the following tags.",
+          "markdownDescription": "Require rules to have the following tags. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#ruletag)",
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "A required tag."
+              },
+              {
+                "type": "array",
+                "description": "A required tag.",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              }
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "resourceName": {
+      "type": "string",
+      "minLength": 3
     }
+  }
 }

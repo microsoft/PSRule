@@ -41,18 +41,14 @@ namespace PSRule.Data
 
         internal void Add(TargetSourceInfo sourceInfo)
         {
-            if (sourceInfo == null)
+            if (sourceInfo == null || string.IsNullOrEmpty(sourceInfo.Type))
                 return;
 
-            if (_Index == null && !string.IsNullOrEmpty(sourceInfo.Type))
-                _Index = new Dictionary<string, TargetSourceInfo>(StringComparer.OrdinalIgnoreCase);
-
-            if (string.IsNullOrEmpty(sourceInfo.Type) || _Index.ContainsKey(sourceInfo.Type))
+            _Index ??= new Dictionary<string, TargetSourceInfo>(StringComparer.OrdinalIgnoreCase);
+            if (_Index.ContainsKey(sourceInfo.Type))
                 return;
 
-            if (_Items == null)
-                _Items = new List<TargetSourceInfo>();
-
+            _Items ??= new List<TargetSourceInfo>();
             _Items.Add(sourceInfo);
             _Index.Add(sourceInfo.Type, sourceInfo);
         }

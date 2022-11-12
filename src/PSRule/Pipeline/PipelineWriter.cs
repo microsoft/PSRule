@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Management.Automation;
 using System.Threading;
 using PSRule.Configuration;
@@ -13,7 +15,7 @@ namespace PSRule.Pipeline
     /// <summary>
     /// An writer which recieves output from PSRule.
     /// </summary>
-    public interface IPipelineWriter
+    public interface IPipelineWriter : IDisposable
     {
         /// <summary>
         /// Write a verbose message.
@@ -110,12 +112,16 @@ namespace PSRule.Pipeline
         protected const string DebugPreference = "DebugPreference";
 
         private readonly IPipelineWriter _Writer;
+        private readonly ShouldProcess _ShouldProcess;
 
         protected readonly PSRuleOption Option;
 
-        protected PipelineWriter(IPipelineWriter inner, PSRuleOption option)
+        private bool _IsDisposed;
+
+        protected PipelineWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
         {
             _Writer = inner;
+            _ShouldProcess = shouldProcess;
             Option = option;
         }
 
@@ -249,6 +255,28 @@ namespace PSRule.Pipeline
             _Writer.ExitScope();
         }
 
+        #region IDisposable
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_IsDisposed)
+            {
+                if (disposing && _Writer != null)
+                    _Writer.Dispose();
+
+                _IsDisposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion IDisposable
+
         protected void WriteErrorInfo(RuleRecord record)
         {
             if (record == null || record.Error == null)
@@ -273,6 +301,27 @@ namespace PSRule.Pipeline
             WriteError(errorRecord);
         }
 
+        private bool ShouldProcess(string target, string action)
+        {
+            return _ShouldProcess == null || _ShouldProcess(target, action);
+        }
+
+        private bool CreatePath(string path)
+        {
+            var parentPath = Directory.GetParent(path);
+            if (!parentPath.Exists && ShouldProcess(target: parentPath.FullName, action: PSRuleResources.ShouldCreatePath))
+            {
+                Directory.CreateDirectory(path: parentPath.FullName);
+                return true;
+            }
+            return parentPath.Exists;
+        }
+
+        protected bool CreateFile(string path)
+        {
+            return CreatePath(path) && ShouldProcess(target: path, action: PSRuleResources.ShouldWriteFile);
+        }
+
         /// <summary>
         /// Get the value of a preference variable.
         /// </summary>
@@ -282,14 +331,63 @@ namespace PSRule.Pipeline
         }
     }
 
-    internal abstract class SerializationOutputWriter<T> : PipelineWriter
+    internal abstract class ResultOutputWriter<T> : PipelineWriter
     {
         private readonly List<T> _Result;
 
-        protected SerializationOutputWriter(PipelineWriter inner, PSRuleOption option)
-            : base(inner, option)
+        protected ResultOutputWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
+            : base(inner, option, shouldProcess)
         {
             _Result = new List<T>();
+        }
+
+        public override void WriteObject(object sendToPipeline, bool enumerateCollection)
+        {
+            if (sendToPipeline is InvokeResult && Option.Output.As == ResultFormat.Summary)
+                return;
+
+            if (sendToPipeline is InvokeResult result)
+            {
+                Add(typeof(T) == typeof(RuleRecord) ? result.AsRecord() : result);
+            }
+            else
+            {
+                Add(sendToPipeline);
+            }
+            base.WriteObject(sendToPipeline, enumerateCollection);
+        }
+
+        protected void Add(object o)
+        {
+            if (o is T[] collection)
+                _Result.AddRange(collection);
+            else if (o is T item)
+                _Result.Add(item);
+        }
+
+        /// <summary>
+        /// Clear any buffers from the writer.
+        /// </summary>
+        protected virtual void Flush() { }
+
+        protected T[] GetResults()
+        {
+            return _Result.ToArray();
+        }
+    }
+
+    internal abstract class SerializationOutputWriter<T> : ResultOutputWriter<T>
+    {
+        protected SerializationOutputWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
+            : base(inner, option, shouldProcess) { }
+
+        public sealed override void End()
+        {
+            var results = GetResults();
+            base.WriteObject(Serialize(results), false);
+            ProcessError(results);
+            Flush();
+            base.End();
         }
 
         public override void WriteObject(object sendToPipeline, bool enumerateCollection)
@@ -303,21 +401,6 @@ namespace PSRule.Pipeline
                 return;
             }
             Add(sendToPipeline);
-        }
-
-        protected void Add(object o)
-        {
-            if (o is T[] collection)
-                _Result.AddRange(collection);
-            else if (o is T item)
-                _Result.Add(item);
-        }
-
-        public sealed override void End()
-        {
-            var results = _Result.ToArray();
-            base.WriteObject(Serialize(results), false);
-            ProcessError(results);
         }
 
         protected abstract string Serialize(T[] o);

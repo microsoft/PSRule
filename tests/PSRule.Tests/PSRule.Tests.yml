@@ -88,6 +88,7 @@ output:
   encoding: UTF7
   footer: RuleCount
   format: Json
+  jobSummaryPath: summary.md
   outcome: Pass
   path: 'out/OutputPath.txt'
   sarifProblemsOnly: false

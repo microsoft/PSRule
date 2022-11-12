@@ -13,6 +13,9 @@ namespace PSRule.Pipeline
     /// </summary>
     public static class PipelineWriterExtensions
     {
+        /// <summary>
+        /// Write a debug message.
+        /// </summary>
         public static void WriteDebug(this IPipelineWriter writer, DebugRecord debugRecord)
         {
             if (debugRecord == null)

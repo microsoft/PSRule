@@ -19,8 +19,8 @@ namespace PSRule.Pipeline.Output
 
         private bool _LineBreak = true;
 
-        internal MarkdownOutputWriter(PipelineWriter inner, PSRuleOption option)
-            : base(inner, option)
+        internal MarkdownOutputWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
+            : base(inner, option, shouldProcess)
         {
             _Builder = new StringBuilder();
         }

@@ -19,15 +19,13 @@ namespace PSRule.Pipeline.Output
 
         private readonly Encoding _Encoding;
         private readonly string _Path;
-        private readonly ShouldProcess _ShouldProcess;
         private readonly bool _WriteHost;
 
         internal FileOutputWriter(PipelineWriter inner, PSRuleOption option, Encoding encoding, string path, ShouldProcess shouldProcess, bool writeHost)
-            : base(inner, option)
+            : base(inner, option, shouldProcess)
         {
             _Encoding = encoding;
             _Path = path;
-            _ShouldProcess = shouldProcess;
             _WriteHost = writeHost;
         }
 
@@ -39,11 +37,7 @@ namespace PSRule.Pipeline.Output
         private void WriteToFile(object o)
         {
             var rootedPath = PSRuleOption.GetRootedPath(_Path);
-            var parentPath = Directory.GetParent(rootedPath);
-            if (!parentPath.Exists && _ShouldProcess(target: parentPath.FullName, action: PSRuleResources.ShouldCreatePath))
-                Directory.CreateDirectory(path: parentPath.FullName);
-
-            if (_ShouldProcess(target: rootedPath, action: PSRuleResources.ShouldWriteFile))
+            if (CreateFile(rootedPath))
             {
                 File.WriteAllText(path: rootedPath, contents: o.ToString(), encoding: _Encoding);
                 InfoOutputPath(rootedPath);

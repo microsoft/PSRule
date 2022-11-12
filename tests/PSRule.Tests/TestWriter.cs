@@ -10,12 +10,12 @@ namespace PSRule
 {
     internal sealed class TestWriter : PipelineWriter
     {
-        internal List<ErrorRecord> Errors = new List<ErrorRecord>();
-        internal List<string> Warnings = new List<string>();
-        internal List<object> Output = new List<object>();
+        internal List<ErrorRecord> Errors = new();
+        internal List<string> Warnings = new();
+        internal List<object> Output = new();
 
         public TestWriter(PSRuleOption option)
-            : base(null, option) { }
+            : base(null, option, null) { }
 
         public override void WriteError(ErrorRecord errorRecord)
         {
