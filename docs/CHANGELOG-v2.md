@@ -37,6 +37,9 @@ What's changed since pre-release v2.6.0-B0013:
     [#1264](https://github.com/microsoft/PSRule/issues/1264)
     - Job summaries provide a markdown output for pipelines in addition to other supported output formats.
     - To use, configure the `Output.JobSummaryPath` option.
+- Engineering:
+  - Bump Microsoft.NET.Test.Sdk to v17.4.0.
+    [#1331](https://github.com/microsoft/PSRule/pull/1331)
 
 ## v2.6.0-B0013 (pre-release)
 
