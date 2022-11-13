@@ -30,6 +30,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.6.0-B0034 (pre-release)
+
 What's changed since pre-release v2.6.0-B0013:
 
 - New features:
