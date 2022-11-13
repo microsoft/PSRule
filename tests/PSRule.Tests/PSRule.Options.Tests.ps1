@@ -739,6 +739,53 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Execution.SuppressionGroupExpired' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.SuppressionGroupExpired | Should -Be 'Warn'
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.SuppressionGroupExpired' = 'error' };
+            $option.Execution.SuppressionGroupExpired | Should -Be 'Error';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.SuppressionGroupExpired' = 'Error' };
+            $option.Execution.SuppressionGroupExpired | Should -Be 'Error';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.SuppressionGroupExpired | Should -Be 'Debug';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED = 'error';
+                $option = New-PSRuleOption;
+                $option.Execution.SuppressionGroupExpired | Should -Be 'Error';
+
+                # With enum
+                $Env:PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED = 'Error';
+                $option = New-PSRuleOption;
+                $option.Execution.SuppressionGroupExpired | Should -Be 'Error';
+
+                # With int
+                $Env:PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED = '3';
+                $option = New-PSRuleOption;
+                $option.Execution.SuppressionGroupExpired | Should -Be 'Error';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -SuppressionGroupExpired 'Error' -Path $emptyOptionsFilePath;
+            $option.Execution.SuppressionGroupExpired | Should -Be 'Error';
+        }
+    }
+
     Context 'Read Execution.AliasReferenceWarning' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -2083,6 +2130,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -SuppressedRuleWarning $False @optionParams;
             $option.Execution.SuppressedRuleWarning | Should -Be $False;
+        }
+    }
+
+    Context 'Read Execution.SuppressionGroupExpired' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -SuppressionGroupExpired 'Error' @optionParams;
+            $option.Execution.SuppressionGroupExpired | Should -Be 'Error';
         }
     }
 

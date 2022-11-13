@@ -184,13 +184,20 @@ namespace PSRule.Pipeline
             }
             else if (resource.Kind == ResourceKind.SuppressionGroup && resource is SuppressionGroupV1 suppressionGroup)
             {
-                SuppressionGroup.Add(new SuppressionGroupVisitor(
-                    context: context,
-                    id: suppressionGroup.Id,
-                    source: suppressionGroup.Source,
-                    spec: suppressionGroup.Spec,
-                    info: suppressionGroup.Info
-                ));
+                if (!suppressionGroup.Spec.ExpiresOn.HasValue || suppressionGroup.Spec.ExpiresOn.Value > DateTime.UtcNow)
+                {
+                    SuppressionGroup.Add(new SuppressionGroupVisitor(
+                        context: context,
+                        id: suppressionGroup.Id,
+                        source: suppressionGroup.Source,
+                        spec: suppressionGroup.Spec,
+                        info: suppressionGroup.Info
+                    ));
+                }
+                else
+                {
+                    context.SuppressionGroupExpired(suppressionGroup.Id);
+                }
             }
         }
 

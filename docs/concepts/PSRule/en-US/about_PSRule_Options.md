@@ -18,10 +18,11 @@ The following workspace options are available for use:
 - [Execution.DuplicateResourceId](#executionduplicateresourceid)
 - [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InconclusiveWarning](#executioninconclusivewarning)
-- [Execution.NotProcessedWarning](#executionnotprocessedwarning)
-- [Execution.SuppressedRuleWarning](#executionsuppressedrulewarning)
 - [Execution.InvariantCultureWarning](#executioninvariantculturewarning)
 - [Execution.InitialSessionState](#executioninitialsessionstate)
+- [Execution.NotProcessedWarning](#executionnotprocessedwarning)
+- [Execution.SuppressedRuleWarning](#executionsuppressedrulewarning)
+- [Execution.SuppressionGroupExpired](#executionsuppressiongroupexpired)
 - [Include.Module](#includemodule)
 - [Include.Path](#includepath)
 - [Input.Format](#inputformat)
@@ -741,6 +742,7 @@ The following preferences are available:
 - `Warn` (2) - Continue to execute but log a warning.
 - `Error` (3) - Abort and throw an error.
   This is the default.
+- `Debug` (4) - Continue to execute but log a debug message.
 
 ```powershell
 # PowerShell: Using the DuplicateResourceId parameter
@@ -880,6 +882,101 @@ variables:
   value: false
 ```
 
+### Execution.InvariantCultureWarning
+
+When evaluating rules inside a CI host, if invariant culture is used, a warning is shown by default.
+You can suppress this warning if you set the culture with `-Culture` or the `Output.Culture` option.
+
+This warning can also be suppressed by using:
+
+```powershell
+# PowerShell: Using the InvariantCultureWarning parameter
+$option = New-PSRuleOption -InvariantCultureWarning $False;
+```
+
+```powershell
+# PowerShell: Using the Execution.InvariantCultureWarning hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.InvariantCultureWarning' = $False };
+```
+
+```powershell
+# PowerShell: Using the InvariantCultureWarning parameter to set YAML
+Set-PSRuleOption -InvariantCultureWarning $False;
+```
+
+```yaml
+# YAML: Using the execution/invariantCultureWarning property
+execution:
+  invariantCultureWarning: false
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_INVARIANTCULTUREWARNING=false
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_INVARIANTCULTUREWARNING: false
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_INVARIANTCULTUREWARNING
+  value: false
+```
+
+### Execution.InitialSessionState
+
+Determines how the initial session state for executing PowerShell code is created.
+
+The following preferences are available:
+
+- `BuiltIn` (0) - Create the initial session state with all built-in cmdlets loaded.
+  This is the default.
+- `Minimal` (1) - Create the initial session state with only a minimum set of cmdlets loaded.
+
+```powershell
+# PowerShell: Using the InitialSessionState parameter
+$option = New-PSRuleOption -InitialSessionState 'Minimal';
+```
+
+```powershell
+# PowerShell: Using the Execution.InitialSessionState hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.InitialSessionState' = 'Minimal' };
+```
+
+```powershell
+# PowerShell: Using the InitialSessionState parameter to set YAML
+Set-PSRuleOption -InitialSessionState 'Minimal';
+```
+
+```yaml
+# YAML: Using the execution/initialSessionState property
+execution:
+  initialSessionState: Minimal
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_INITIALSESSIONSTATE=Minimal
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_INITIALSESSIONSTATE: Minimal
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_INITIALSESSIONSTATE
+  value: Minimal
+```
+
 ### Execution.NotProcessedWarning
 
 When evaluating rules, it is possible to incorrectly select a path with rules that use pre-conditions that do not accept the pipeline object.
@@ -982,99 +1079,59 @@ variables:
   value: false
 ```
 
-### Execution.InvariantCultureWarning
+### Execution.SuppressionGroupExpired
 
-When evaluating rules inside a CI host, if invariant culture is used, a warning is shown by default.
-You can suppress this warning if you set the culture with `-Culture` or the `Output.Culture` option.
-
-This warning can also be suppressed by using:
-
-```powershell
-# PowerShell: Using the InvariantCultureWarning parameter
-$option = New-PSRuleOption -InvariantCultureWarning $False;
-```
-
-```powershell
-# PowerShell: Using the Execution.InvariantCultureWarning hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.InvariantCultureWarning' = $False };
-```
-
-```powershell
-# PowerShell: Using the InvariantCultureWarning parameter to set YAML
-Set-PSRuleOption -InvariantCultureWarning $False;
-```
-
-```yaml
-# YAML: Using the execution/invariantCultureWarning property
-execution:
-  invariantCultureWarning: false
-```
-
-```bash
-# Bash: Using environment variable
-export PSRULE_EXECUTION_INVARIANTCULTUREWARNING=false
-```
-
-```yaml
-# GitHub Actions: Using environment variable
-env:
-  PSRULE_EXECUTION_INVARIANTCULTUREWARNING: false
-```
-
-```yaml
-# Azure Pipelines: Using environment variable
-variables:
-- name: PSRULE_EXECUTION_INVARIANTCULTUREWARNING
-  value: false
-```
-
-### Execution.InitialSessionState
-
-Determines how the initial session state for executing PowerShell code is created.
+Determines how to handle expired suppression groups.
+Regardless of the value, an expired suppression group will be ignored.
+By defaut, a warning is generated, however this behaviour can be modified by this option.
 
 The following preferences are available:
 
-- `BuiltIn` (0) - Create the initial session state with all built-in cmdlets loaded.
+- `None` (0) - No preference.
+  Inherits the default of `Warn`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
   This is the default.
-- `Minimal` (1) - Create the initial session state with only a minimum set of cmdlets loaded.
+- `Error` (3) - Abort and throw an error.
+- `Debug` (4) - Continue to execute but log a debug message.
 
 ```powershell
-# PowerShell: Using the InitialSessionState parameter
-$option = New-PSRuleOption -InitialSessionState 'Minimal';
+# PowerShell: Using the SuppressionGroupExpired parameter
+$option = New-PSRuleOption -SuppressionGroupExpired 'Error';
 ```
 
 ```powershell
-# PowerShell: Using the Execution.InitialSessionState hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.InitialSessionState' = 'Minimal' };
+# PowerShell: Using the Execution.SuppressionGroupExpired hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.SuppressionGroupExpired' = 'Error' };
 ```
 
 ```powershell
-# PowerShell: Using the InitialSessionState parameter to set YAML
-Set-PSRuleOption -InitialSessionState 'Minimal';
+# PowerShell: Using the SuppressionGroupExpired parameter to set YAML
+Set-PSRuleOption -SuppressionGroupExpired 'Error';
 ```
 
 ```yaml
-# YAML: Using the execution/initialSessionState property
+# YAML: Using the execution/suppressionGroupExpired property
 execution:
-  initialSessionState: Minimal
+  suppressionGroupExpired: Error
 ```
 
 ```bash
 # Bash: Using environment variable
-export PSRULE_EXECUTION_INITIALSESSIONSTATE=Minimal
+export PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED=Error
 ```
 
 ```yaml
 # GitHub Actions: Using environment variable
 env:
-  PSRULE_EXECUTION_INITIALSESSIONSTATE: Minimal
+  PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED: Error
 ```
 
 ```yaml
 # Azure Pipelines: Using environment variable
 variables:
-- name: PSRULE_EXECUTION_INITIALSESSIONSTATE
-  value: Minimal
+- name: PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED
+  value: Error
 ```
 
 ### Include.Module
@@ -2949,10 +3006,12 @@ convention:
 # Configure execution options
 execution:
   aliasReferenceWarning: false
+  duplicateResourceId: Warn
   languageMode: ConstrainedLanguage
   inconclusiveWarning: false
   notProcessedWarning: false
   suppressedRuleWarning: false
+  suppressionGroupExpired: Error
 
 # Configure include options
 include:
@@ -3058,10 +3117,12 @@ convention:
 # Configure execution options
 execution:
   aliasReferenceWarning: true
+  duplicateResourceId: Error
   languageMode: FullLanguage
   inconclusiveWarning: true
   notProcessedWarning: true
   suppressedRuleWarning: true
+  suppressionGroupExpired: Warn
 
 # Configure include options
 include:

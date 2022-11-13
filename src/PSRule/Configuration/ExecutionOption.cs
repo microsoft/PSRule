@@ -23,6 +23,7 @@ namespace PSRule.Configuration
         private const bool DEFAULT_INVARIANTCULTUREWARNING = true;
         private const ExecutionActionPreference DEFAULT_DUPLICATERESOURCEID = ExecutionActionPreference.Error;
         private const SessionState DEFAULT_INITIALSESSIONSTATE = SessionState.BuiltIn;
+        private const ExecutionActionPreference DEFAULT_SUPPRESSIONGROUPEXPIRED = ExecutionActionPreference.Warn;
 
         internal static readonly ExecutionOption Default = new()
         {
@@ -30,10 +31,11 @@ namespace PSRule.Configuration
             DuplicateResourceId = DEFAULT_DUPLICATERESOURCEID,
             LanguageMode = DEFAULT_LANGUAGEMODE,
             InconclusiveWarning = DEFAULT_INCONCLUSIVEWARNING,
-            NotProcessedWarning = DEFAULT_NOTPROCESSEDWARNING,
-            SuppressedRuleWarning = DEFAULT_SUPPRESSEDRULEWARNING,
             InvariantCultureWarning = DEFAULT_INVARIANTCULTUREWARNING,
             InitialSessionState = DEFAULT_INITIALSESSIONSTATE,
+            NotProcessedWarning = DEFAULT_NOTPROCESSEDWARNING,
+            SuppressedRuleWarning = DEFAULT_SUPPRESSEDRULEWARNING,
+            SuppressionGroupExpired = DEFAULT_SUPPRESSIONGROUPEXPIRED,
         };
 
         /// <summary>
@@ -45,10 +47,11 @@ namespace PSRule.Configuration
             DuplicateResourceId = null;
             LanguageMode = null;
             InconclusiveWarning = null;
-            NotProcessedWarning = null;
-            SuppressedRuleWarning = null;
             InvariantCultureWarning = null;
             InitialSessionState = null;
+            NotProcessedWarning = null;
+            SuppressedRuleWarning = null;
+            SuppressionGroupExpired = null;
         }
 
         /// <summary>
@@ -64,10 +67,11 @@ namespace PSRule.Configuration
             DuplicateResourceId = option.DuplicateResourceId;
             LanguageMode = option.LanguageMode;
             InconclusiveWarning = option.InconclusiveWarning;
-            NotProcessedWarning = option.NotProcessedWarning;
-            SuppressedRuleWarning = option.SuppressedRuleWarning;
             InvariantCultureWarning = option.InvariantCultureWarning;
             InitialSessionState = option.InitialSessionState;
+            NotProcessedWarning = option.NotProcessedWarning;
+            SuppressedRuleWarning = option.SuppressedRuleWarning;
+            SuppressionGroupExpired = option.SuppressionGroupExpired;
         }
 
         /// <inheritdoc/>
@@ -84,10 +88,11 @@ namespace PSRule.Configuration
                 DuplicateResourceId == other.DuplicateResourceId &&
                 LanguageMode == other.LanguageMode &&
                 InconclusiveWarning == other.InconclusiveWarning &&
+                InvariantCultureWarning == other.InvariantCultureWarning &&
+                InitialSessionState == other.InitialSessionState &&
                 NotProcessedWarning == other.NotProcessedWarning &&
                 SuppressedRuleWarning == other.NotProcessedWarning &&
-                InvariantCultureWarning == other.InvariantCultureWarning &&
-                InitialSessionState == other.InitialSessionState;
+                SuppressionGroupExpired == other.SuppressionGroupExpired;
         }
 
         /// <inheritdoc/>
@@ -100,10 +105,11 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (DuplicateResourceId.HasValue ? DuplicateResourceId.Value.GetHashCode() : 0);
                 hash = hash * 23 + (LanguageMode.HasValue ? LanguageMode.Value.GetHashCode() : 0);
                 hash = hash * 23 + (InconclusiveWarning.HasValue ? InconclusiveWarning.Value.GetHashCode() : 0);
-                hash = hash * 23 + (NotProcessedWarning.HasValue ? NotProcessedWarning.Value.GetHashCode() : 0);
-                hash = hash * 23 + (SuppressedRuleWarning.HasValue ? SuppressedRuleWarning.Value.GetHashCode() : 0);
                 hash = hash * 23 + (InvariantCultureWarning.HasValue ? InvariantCultureWarning.Value.GetHashCode() : 0);
                 hash = hash * 23 + (InitialSessionState.HasValue ? InitialSessionState.Value.GetHashCode() : 0);
+                hash = hash * 23 + (NotProcessedWarning.HasValue ? NotProcessedWarning.Value.GetHashCode() : 0);
+                hash = hash * 23 + (SuppressedRuleWarning.HasValue ? SuppressedRuleWarning.Value.GetHashCode() : 0);
+                hash = hash * 23 + (SuppressionGroupExpired.HasValue ? SuppressionGroupExpired.Value.GetHashCode() : 0);
                 return hash;
             }
         }
@@ -139,6 +145,7 @@ namespace PSRule.Configuration
         /// Regardless of the value, only the first resource will be used.
         /// By defaut, an error is thrown.
         /// When set to Warn, a warning is generated.
+        /// When set to Debug, a message is written to the debug log.
         /// When set to Ignore, no output will be displayed.
         /// </summary>
         [DefaultValue(null)]
@@ -157,18 +164,6 @@ namespace PSRule.Configuration
         public bool? InconclusiveWarning { get; set; }
 
         /// <summary>
-        /// Determines if a warning is raised when an object is not processed by any rule.
-        /// </summary>
-        [DefaultValue(null)]
-        public bool? NotProcessedWarning { get; set; }
-
-        /// <summary>
-        /// Determines if a warning is raised when a rule is suppressed.
-        /// </summary>
-        [DefaultValue(null)]
-        public bool? SuppressedRuleWarning { get; set; }
-
-        /// <summary>
         /// Determines if warning is raised when invariant culture is used.
         /// </summary>
         [DefaultValue(null)]
@@ -180,6 +175,29 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public SessionState? InitialSessionState { get; set; }
+
+        /// <summary>
+        /// Determines if a warning is raised when an object is not processed by any rule.
+        /// </summary>
+        [DefaultValue(null)]
+        public bool? NotProcessedWarning { get; set; }
+
+        /// <summary>
+        /// Determines how to handle expired suppression groups.
+        /// Regardless of the value, an expired suppression group will be ignored.
+        /// By default, a warning is generated.
+        /// When set to Error, an error is thrown.
+        /// When set to Debug, a message is written to the debug log.
+        /// When set to Ignore, no output will be displayed.
+        /// </summary>
+        [DefaultValue(null)]
+        public ExecutionActionPreference? SuppressionGroupExpired { get; set; }
+
+        /// <summary>
+        /// Determines if a warning is raised when a rule is suppressed.
+        /// </summary>
+        [DefaultValue(null)]
+        public bool? SuppressedRuleWarning { get; set; }
 
         internal void Load(EnvironmentHelper env)
         {
@@ -195,17 +213,20 @@ namespace PSRule.Configuration
             if (env.TryBool("PSRULE_EXECUTION_INCONCLUSIVEWARNING", out bvalue))
                 InconclusiveWarning = bvalue;
 
+            if (env.TryBool("PSRULE_EXECUTION_INVARIANTCULTUREWARNING", out bvalue))
+                InvariantCultureWarning = bvalue;
+
+            if (env.TryEnum("PSRULE_EXECUTION_INITIALSESSIONSTATE", out SessionState initialSessionState))
+                InitialSessionState = initialSessionState;
+
             if (env.TryBool("PSRULE_EXECUTION_NOTPROCESSEDWARNING", out bvalue))
                 NotProcessedWarning = bvalue;
 
             if (env.TryBool("PSRULE_EXECUTION_SUPPRESSEDRULEWARNING", out bvalue))
                 SuppressedRuleWarning = bvalue;
 
-            if (env.TryBool("PSRULE_EXECUTION_INVARIANTCULTUREWARNING", out bvalue))
-                InvariantCultureWarning = bvalue;
-
-            if (env.TryEnum("PSRULE_EXECUTION_INITIALSESSIONSTATE", out SessionState initialSessionState))
-                InitialSessionState = initialSessionState;
+            if (env.TryEnum("PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED", out ExecutionActionPreference suppressionGroupExpired))
+                SuppressionGroupExpired = suppressionGroupExpired;
         }
 
         internal void Load(Dictionary<string, object> index)
@@ -222,17 +243,20 @@ namespace PSRule.Configuration
             if (index.TryPopBool("Execution.InconclusiveWarning", out bvalue))
                 InconclusiveWarning = bvalue;
 
+            if (index.TryPopBool("Execution.InvariantCultureWarning", out bvalue))
+                InvariantCultureWarning = bvalue;
+
+            if (index.TryPopEnum("Execution.InitialSessionState", out SessionState initialSessionState))
+                InitialSessionState = initialSessionState;
+
             if (index.TryPopBool("Execution.NotProcessedWarning", out bvalue))
                 NotProcessedWarning = bvalue;
 
             if (index.TryPopBool("Execution.SuppressedRuleWarning", out bvalue))
                 SuppressedRuleWarning = bvalue;
 
-            if (index.TryPopBool("Execution.InvariantCultureWarning", out bvalue))
-                InvariantCultureWarning = bvalue;
-
-            if (index.TryPopEnum("Execution.InitialSessionState", out SessionState initialSessionState))
-                InitialSessionState = initialSessionState;
+            if (index.TryPopEnum("Execution.SuppressionGroupExpired", out ExecutionActionPreference suppressionGroupExpired))
+                SuppressionGroupExpired = suppressionGroupExpired;
         }
     }
 }

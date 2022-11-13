@@ -327,7 +327,7 @@ task Rules {
 
 task Benchmark {
     if ($Benchmark -or $BuildTask -eq 'Benchmark') {
-        dotnet run -p src/PSRule.Benchmark -f net6.0 -c Release -- benchmark --output $PWD;
+        dotnet run --project src/PSRule.Benchmark -f net6.0 -c Release -- benchmark --output $PWD;
     }
 }
 

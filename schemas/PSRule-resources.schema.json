@@ -1,25 +1,25 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema#",
-    "title": "PSRule resources",
-    "description": "A schema for PSRule resources.",
-    "type": "array",
-    "items": {
-        "anyOf": [
-            {
-                "$ref": "https://raw.githubusercontent.com/microsoft/PSRule/main/schemas/PSRule-language.schema.json#/definitions/rule-v1"
-            },
-            {
-                "$ref": "https://raw.githubusercontent.com/microsoft/PSRule/main/schemas/PSRule-language.schema.json#/definitions/baseline-v1"
-            },
-            {
-                "$ref": "https://raw.githubusercontent.com/microsoft/PSRule/main/schemas/PSRule-language.schema.json#/definitions/moduleConfig-v1"
-            },
-            {
-                "$ref": "https://raw.githubusercontent.com/microsoft/PSRule/main/schemas/PSRule-language.schema.json#/definitions/selector-v1"
-            },
-            {
-                "$ref": "https://raw.githubusercontent.com/microsoft/PSRule/main/schemas/PSRule-language.schema.json#/definitions/suppressionGroup-v1"
-            }
-        ]
-    }
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "PSRule resources",
+  "description": "A schema for PSRule resources.",
+  "type": "array",
+  "items": {
+    "anyOf": [
+      {
+        "$ref": "https://raw.githubusercontent.com/microsoft/PSRule/main/schemas/PSRule-language.schema.json#/definitions/rule-v1"
+      },
+      {
+        "$ref": "https://raw.githubusercontent.com/microsoft/PSRule/main/schemas/PSRule-language.schema.json#/definitions/baseline-v1"
+      },
+      {
+        "$ref": "https://raw.githubusercontent.com/microsoft/PSRule/main/schemas/PSRule-language.schema.json#/definitions/moduleConfig-v1"
+      },
+      {
+        "$ref": "https://raw.githubusercontent.com/microsoft/PSRule/main/schemas/PSRule-language.schema.json#/definitions/selector-v1"
+      },
+      {
+        "$ref": "https://raw.githubusercontent.com/microsoft/PSRule/main/schemas/PSRule-language.schema.json#/definitions/suppressionGroup-v1"
+      }
+    ]
+  }
 }

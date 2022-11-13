@@ -1179,6 +1179,16 @@ function New-PSRuleOption {
         [Alias('ExecutionInconclusiveWarning')]
         [System.Boolean]$InconclusiveWarning = $True,
 
+        # Sets the Execution.InvariantCultureWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInvariantCultureWarning')]
+        [System.Boolean]$InvariantCultureWarning = $True,
+
+        # Sets the Execution.InitialSessionState option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInitialSessionState')]
+        [PSRule.Configuration.SessionState]$InitialSessionState = [PSRule.Configuration.SessionState]::BuiltIn,
+
         # Sets the Execution.NotProcessedWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionNotProcessedWarning')]
@@ -1189,16 +1199,10 @@ function New-PSRuleOption {
         [Alias('ExecutionSuppressedRuleWarning')]
         [System.Boolean]$SuppressedRuleWarning = $True,
 
-
-        # Sets the Execution.InvariantCultureWarning option
+        # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInvariantCultureWarning')]
-        [System.Boolean]$InvariantCultureWarning = $True,
-
-        # Sets the Execution.InitialSessionState option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInitialSessionState')]
-        [PSRule.Configuration.SessionState]$InitialSessionState = [PSRule.Configuration.SessionState]::BuiltIn,
+        [Alias('ExecutionSuppressionGroupExpired')]
+        [PSRule.Configuration.ExecutionActionPreference]$SuppressionGroupExpired = [PSRule.Configuration.ExecutionActionPreference]::Warn,
 
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
@@ -1476,6 +1480,16 @@ function Set-PSRuleOption {
         [Alias('ExecutionInconclusiveWarning')]
         [System.Boolean]$InconclusiveWarning = $True,
 
+        # Sets the Execution.InvariantCultureWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInvariantCultureWarning')]
+        [System.Boolean]$InvariantCultureWarning = $True,
+
+        # Sets the Execution.InitialSessionState option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInitialSessionState')]
+        [PSRule.Configuration.SessionState]$InitialSessionState = [PSRule.Configuration.SessionState]::BuiltIn,
+
         # Sets the Execution.NotProcessedWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionNotProcessedWarning')]
@@ -1486,15 +1500,10 @@ function Set-PSRuleOption {
         [Alias('ExecutionSuppressedRuleWarning')]
         [System.Boolean]$SuppressedRuleWarning = $True,
 
-        # Sets the Execution.InvariantCultureWarning option
+        # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInvariantCultureWarning')]
-        [System.Boolean]$InvariantCultureWarning = $True,
-
-        # Sets the Execution.InitialSessionState option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInitialSessionState')]
-        [PSRule.Configuration.SessionState]$InitialSessionState = [PSRule.Configuration.SessionState]::BuiltIn,
+        [Alias('ExecutionSuppressionGroupExpired')]
+        [PSRule.Configuration.ExecutionActionPreference]$SuppressionGroupExpired = [PSRule.Configuration.ExecutionActionPreference]::Warn,
 
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
@@ -2219,6 +2228,16 @@ function SetOptions {
         [Alias('ExecutionInconclusiveWarning')]
         [System.Boolean]$InconclusiveWarning = $True,
 
+        # Sets the Execution.InvariantCultureWarning option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInvariantCultureWarning')]
+        [System.Boolean]$InvariantCultureWarning = $True,
+
+        # Sets the Execution.InitialSessionState option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionInitialSessionState')]
+        [PSRule.Configuration.SessionState]$InitialSessionState = [PSRule.Configuration.SessionState]::BuiltIn,
+
         # Sets the Execution.NotProcessedWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionNotProcessedWarning')]
@@ -2229,15 +2248,10 @@ function SetOptions {
         [Alias('ExecutionSuppressedRuleWarning')]
         [System.Boolean]$SuppressedRuleWarning = $True,
 
-        # Sets the Execution.InvariantCultureWarning option
+        # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInvariantCultureWarning')]
-        [System.Boolean]$InvariantCultureWarning = $True,
-
-        # Sets the Execution.InitialSessionState option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInitialSessionState')]
-        [PSRule.Configuration.SessionState]$InitialSessionState = [PSRule.Configuration.SessionState]::BuiltIn,
+        [Alias('ExecutionSuppressionGroupExpired')]
+        [PSRule.Configuration.ExecutionActionPreference]$SuppressionGroupExpired = [PSRule.Configuration.ExecutionActionPreference]::Warn,
 
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
@@ -2411,9 +2425,24 @@ function SetOptions {
             $Option.Convention.Include = $Convention;
         }
 
+        # Sets option Execution.DuplicateResourceId
+        if ($PSBoundParameters.ContainsKey('DuplicateResourceId')) {
+            $Option.Execution.DuplicateResourceId = $DuplicateResourceId;
+        }
+
         # Sets option Execution.InconclusiveWarning
         if ($PSBoundParameters.ContainsKey('InconclusiveWarning')) {
             $Option.Execution.InconclusiveWarning = $InconclusiveWarning;
+        }
+
+        # Sets option Execution.InvariantCultureWarning
+        if ($PSBoundParameters.ContainsKey('InvariantCultureWarning')) {
+            $Option.Execution.InvariantCultureWarning = $InvariantCultureWarning;
+        }
+
+        # Sets option Execution.InitialSessionState
+        if ($PSBoundParameters.ContainsKey('InitialSessionState')) {
+            $Option.Execution.InitialSessionState = $InitialSessionState;
         }
 
         # Sets option Execution.NotProcessedWarning
@@ -2431,19 +2460,9 @@ function SetOptions {
             $Option.Execution.AliasReferenceWarning = $AliasReferenceWarning;
         }
 
-        # Sets option Execution.DuplicateResourceId
-        if ($PSBoundParameters.ContainsKey('DuplicateResourceId')) {
-            $Option.Execution.DuplicateResourceId = $DuplicateResourceId;
-        }
-
-        # Sets option Execution.InvariantCultureWarning
-        if ($PSBoundParameters.ContainsKey('InvariantCultureWarning')) {
-            $Option.Execution.InvariantCultureWarning = $InvariantCultureWarning;
-        }
-
-        # Sets option Execution.InitialSessionState
-        if ($PSBoundParameters.ContainsKey('InitialSessionState')) {
-            $Option.Execution.InitialSessionState = $InitialSessionState;
+        # Sets option Execution.SuppressionGroupExpired
+        if ($PSBoundParameters.ContainsKey('SuppressionGroupExpired')) {
+            $Option.Execution.SuppressionGroupExpired = $SuppressionGroupExpired;
         }
 
         # Sets option Include.Module

@@ -250,6 +250,11 @@ namespace PSRule.Pipeline
             VisitTargetObject = PipelineReceiverActions.PassThru;
         }
 
+        /// <summary>
+        /// Determines if the pipeline is executing in a remote PowerShell session.
+        /// </summary>
+        public bool InSession => HostContext != null && HostContext.InSession;
+
         /// <inheritdoc/>
         public void Name(string[] name)
         {
@@ -482,6 +487,7 @@ namespace PSRule.Pipeline
         {
             var result = ExecutionOption.Combine(option, ExecutionOption.Default);
             result.DuplicateResourceId = result.DuplicateResourceId == ExecutionActionPreference.None ? ExecutionOption.Default.DuplicateResourceId.Value : result.DuplicateResourceId;
+            result.SuppressionGroupExpired = result.SuppressionGroupExpired == ExecutionActionPreference.None ? ExecutionOption.Default.SuppressionGroupExpired.Value : result.SuppressionGroupExpired;
             return result;
         }
 
