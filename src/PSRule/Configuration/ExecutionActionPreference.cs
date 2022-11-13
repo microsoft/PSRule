@@ -28,6 +28,11 @@ namespace PSRule.Configuration
         /// <summary>
         /// Generate an error.
         /// </summary>
-        Error = 3
+        Error = 3,
+
+        /// <summary>
+        /// Continue to execute but write a debug log.
+        /// </summary>
+        Debug = 4
     }
 }

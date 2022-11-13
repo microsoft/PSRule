@@ -42,7 +42,7 @@ namespace PSRule
 
         #region Helper methods
 
-        private Source[] GetSource()
+        private static Source[] GetSource()
         {
             var builder = new SourcePipelineBuilder(null, null);
             builder.Directory(GetSourcePath("FromFileAlias.Rule.yaml"));

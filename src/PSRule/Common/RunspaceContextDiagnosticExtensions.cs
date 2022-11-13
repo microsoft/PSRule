@@ -42,7 +42,7 @@ namespace PSRule
 
         internal static void WarnDuplicateRuleName(this RunspaceContext context, string ruleName)
         {
-            if (context.Writer == null || !context.Writer.ShouldWriteWarning())
+            if (context == null || context.Writer == null || !context.Writer.ShouldWriteWarning())
                 return;
 
             context.Writer.WriteWarning(PSRuleResources.DuplicateRuleName, ruleName);
@@ -50,20 +50,40 @@ namespace PSRule
 
         internal static void DuplicateResourceId(this RunspaceContext context, ResourceId id, ResourceId duplicateId)
         {
-            if (context == null)
+            if (context == null || context.Pipeline == null)
                 return;
 
             var action = context.Pipeline.Option.Execution.DuplicateResourceId.GetValueOrDefault(ExecutionOption.Default.DuplicateResourceId.Value);
+            context.Throw(action, PSRuleResources.DuplicateResourceId, id.Value, duplicateId.Value);
+        }
+
+        internal static void SuppressionGroupExpired(this RunspaceContext context, ResourceId suppressionGroupId)
+        {
+            if (context == null || context.Pipeline == null)
+                return;
+
+            var action = context.Pipeline.Option.Execution.SuppressionGroupExpired.GetValueOrDefault(ExecutionOption.Default.SuppressionGroupExpired.Value);
+            context.Throw(action, PSRuleResources.SuppressionGroupExpired, suppressionGroupId.Value);
+        }
+
+        internal static void Throw(this RunspaceContext context, ExecutionActionPreference action, string message, params object[] args)
+        {
+            if (context == null || action == ExecutionActionPreference.Ignore)
+                return;
+
             if (action == ExecutionActionPreference.Error)
-                throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.DuplicateResourceId, id.Value, duplicateId.Value));
+                throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, message, args));
 
             else if (action == ExecutionActionPreference.Warn && context.Writer != null && context.Writer.ShouldWriteWarning())
-                context.Writer.WriteWarning(PSRuleResources.DuplicateResourceId, id.Value, duplicateId.Value);
+                context.Writer.WriteWarning(message, args);
+
+            else if (action == ExecutionActionPreference.Debug && context.Writer != null && context.Writer.ShouldWriteDebug())
+                context.Writer.WriteDebug(message, args);
         }
 
         internal static void DebugPropertyObsolete(this RunspaceContext context, string variableName, string propertyName)
         {
-            if (context.Writer == null || !context.Writer.ShouldWriteDebug())
+            if (context == null || context.Writer == null || !context.Writer.ShouldWriteDebug())
                 return;
 
             context.Writer.WriteDebug(PSRuleResources.DebugPropertyObsolete, context.RuleBlock.Name, variableName, propertyName);

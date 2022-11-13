@@ -53,10 +53,11 @@ execution:
   duplicateResourceId: Warn
   languageMode: ConstrainedLanguage
   inconclusiveWarning: false
-  notProcessedWarning: false
-  suppressedRuleWarning: false
   invariantCultureWarning: false
   initialSessionState: Minimal
+  notProcessedWarning: false
+  suppressedRuleWarning: false
+  suppressionGroupExpired: Debug
 
 # Configure input options
 input:

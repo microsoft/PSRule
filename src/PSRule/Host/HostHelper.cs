@@ -306,7 +306,10 @@ namespace PSRule.Host
         {
             var result = new Collection<ILanguageBlock>();
             var visitor = new ResourceValidator(context);
-            var deserializer = new JsonSerializer();
+            var deserializer = new JsonSerializer
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+            };
             deserializer.Converters.Add(new ResourceObjectJsonConverter());
             deserializer.Converters.Add(new FieldMapJsonConverter());
             deserializer.Converters.Add(new StringArrayJsonConverter());

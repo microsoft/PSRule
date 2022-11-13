@@ -32,6 +32,7 @@ kind: SuppressionGroup
 metadata:
   name: '{{ Name }}'
 spec:
+  expiresOn: null
   rule: []
   if: { }
 ```
@@ -46,6 +47,7 @@ spec:
       "name": "{{ Name }}"
     },
     "spec": {
+      "expiresOn": null,
       "rule": [],
       "if": {}
     }
@@ -58,6 +60,10 @@ Within the `rule` array, one or more rule names can be used.
 If no rules are specified, suppression will occur for all rules.
 Within the `if` object, one or more conditions or logical operators can be used.
 When the `if` condition is `true` the object will be suppressed for the current rule.
+
+Optionally, an expiry can be set using the `expiresOn` property.
+When the expiry date is reached, the suppression will no longer be applied.
+To configure an expiry, set a RFC3339 (ISO 8601) formatted date time using the format `yyyy-MM-ddTHH:mm:ssZ`.
 
 ### Documentation
 
@@ -105,6 +111,7 @@ kind: SuppressionGroup
 metadata:
   name: SuppressWithTestType
 spec:
+  expiresOn: '2030-01-01T00:00:00Z'
   rule:
   - 'FromFile3'
   - 'FromFile5'
@@ -147,6 +154,7 @@ spec:
       "name": "SuppressWithTestType"
     },
     "spec": {
+      "expiresOn": "2030-01-01T00:00:00Z",
       "rule": [
         "FromFile3",
         "FromFile5"
@@ -162,7 +170,7 @@ spec:
 
 ## NOTE
 
-An online version of this document is available at https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_SuppressionGroups/.
+An online version of this document is available at <https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_SuppressionGroups/>.
 
 ## SEE ALSO
 

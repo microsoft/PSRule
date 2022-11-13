@@ -48,3 +48,20 @@ spec:
     in:
     - 'dev'
     - 'test'
+
+---
+# Synopsis: Suppress with expiry.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: SuppressionGroup
+metadata:
+  name: SuppressWithExpiry
+spec:
+  expiresOn: '2022-01-01T00:00:00Z'
+  rule:
+  - '.\WithTag2'
+  - '.\WithTag3'
+  if:
+    field: 'tags.env'
+    in:
+    - 'dev'
+    - 'test'

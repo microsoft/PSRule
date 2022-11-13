@@ -37,6 +37,11 @@ What's changed since pre-release v2.6.0-B0013:
     [#1264](https://github.com/microsoft/PSRule/issues/1264)
     - Job summaries provide a markdown output for pipelines in addition to other supported output formats.
     - To use, configure the `Output.JobSummaryPath` option.
+  - Added support for time bound suppression groups by @BernieWhite.
+    [#1335](https://github.com/microsoft/PSRule/issues/1335)
+    - Suppression groups can be configured to expire after a specified time by setting the `spec.expiresOn` property.
+    - When a suppression group expires, the suppression group will generate a warning by default.
+    - Configure the `Execution.SuppressionGroupExpired` option to ignore or error on expired suppression groups.
 - Engineering:
   - Bump Microsoft.NET.Test.Sdk to v17.4.0.
     [#1331](https://github.com/microsoft/PSRule/pull/1331)

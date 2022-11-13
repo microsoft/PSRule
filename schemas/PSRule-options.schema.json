@@ -271,11 +271,12 @@
           "type": "string",
           "title": "Duplicate resource identifiers",
           "description": "Determines how to handle duplicate resources identifiers during execution. Regardless of the value, only the first resource will be used. By defaut, an error is thrown. When set to Warn, a warning is generated. When set to Ignore, no output will be displayed.",
-          "markdownDescription": "Determines how to handle duplicate resources identifiers during execution.\n\nRegardless of the value, only the first resource will be used. By defaut, an error is thrown. When set to `Warn`, a warning is generated. When set to `Ignore`, no output will be displayed. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionduplicateresourceid)",
+          "markdownDescription": "Determines how to handle duplicate resources identifiers during execution.\n\nRegardless of the value, only the first resource will be used. By defaut, an error is thrown.\n\n- When set to `Warn`, a warning is generated.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionduplicateresourceid)",
           "enum": [
             "Ignore",
             "Warn",
-            "Error"
+            "Error",
+            "Debug"
           ],
           "default": "Error"
         },
@@ -297,20 +298,6 @@
           "markdownDescription": "Enable or disable warnings for inconclusive rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninconclusivewarning)",
           "default": true
         },
-        "notProcessedWarning": {
-          "type": "boolean",
-          "title": "Warn on unprocessed objects",
-          "description": "Enable or disable warnings for objects that are not processed by any rule. The default is true.",
-          "markdownDescription": "Enable or disable warnings for objects that are not processed by any rule. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionnotprocessedwarning)",
-          "default": true
-        },
-        "suppressedRuleWarning": {
-          "type": "boolean",
-          "title": "Warn on suppressed rules",
-          "description": "Enable or disable warnings for suppressed rules. The default is true.",
-          "markdownDescription": "Enable or disable warnings for suppressed rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionsuppressedrulewarning)",
-          "default": true
-        },
         "invariantCultureWarning": {
           "type": "boolean",
           "title": "Warn on invariant culture",
@@ -328,6 +315,33 @@
             "Minimal"
           ],
           "default": "BuiltIn"
+        },
+        "notProcessedWarning": {
+          "type": "boolean",
+          "title": "Warn on unprocessed objects",
+          "description": "Enable or disable warnings for objects that are not processed by any rule. The default is true.",
+          "markdownDescription": "Enable or disable warnings for objects that are not processed by any rule. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionnotprocessedwarning)",
+          "default": true
+        },
+        "suppressedRuleWarning": {
+          "type": "boolean",
+          "title": "Warn on suppressed rules",
+          "description": "Enable or disable warnings for suppressed rules. The default is true.",
+          "markdownDescription": "Enable or disable warnings for suppressed rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionsuppressedrulewarning)",
+          "default": true
+        },
+        "suppressionGroupExpired": {
+          "type": "string",
+          "title": "Expired suppression groups",
+          "description": "Determines how to handle expired suppression groups. Regardless of the value, an expired suppression group will be ignored. By default, a warning is generated. When set to Error, an error is thrown. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed.",
+          "markdownDescription": "Determines how to handle expired suppression groups.\n\nRegardless of the value, an expired suppression group will be ignored. By default, a warning is generated.\n\n- When set to `Error`, an error is thrown.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionsuppressiongroupexpired)",
+          "enum": [
+            "Ignore",
+            "Warn",
+            "Error",
+            "Debug"
+          ],
+          "default": "Warn"
         }
       },
       "additionalProperties": false

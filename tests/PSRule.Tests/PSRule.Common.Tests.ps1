@@ -1298,24 +1298,26 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile1', 'FromFile2', 'WithTag2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
                 $warningMessages = $outwarnings.ToArray();
-                $warningMessages.Length | Should -Be 6;
+                $warningMessages.Length | Should -Be 7;
 
                 $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[0].Message | Should -BeExactly "Rule '.\FromFile1' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject1'. Ignore test objects by name.";
+                $warningMessages[0].Message | Should -BeExactly "Suppression group '.\SuppressWithExpiry' has expired and will be ignored.";
                 $warningMessages[1] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[1].Message | Should -BeExactly "Rule '.\FromFile2' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject1'. Ignore test objects by name.";
+                $warningMessages[1].Message | Should -BeExactly "Rule '.\FromFile1' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject1'. Ignore test objects by name.";
                 $warningMessages[2] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[2].Message | Should -BeExactly "Rule '.\WithTag2' was suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject1'. Ignore objects with non-production tag.";
+                $warningMessages[2].Message | Should -BeExactly "Rule '.\FromFile2' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject1'. Ignore test objects by name.";
                 $warningMessages[3] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[3].Message | Should -BeExactly "Rule '.\FromFile1' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject2'. Ignore test objects by name.";
+                $warningMessages[3].Message | Should -BeExactly "Rule '.\WithTag2' was suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject1'. Ignore objects with non-production tag.";
                 $warningMessages[4] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[4].Message | Should -BeExactly "Rule '.\FromFile2' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject2'. Ignore test objects by name.";
+                $warningMessages[4].Message | Should -BeExactly "Rule '.\FromFile1' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject2'. Ignore test objects by name.";
                 $warningMessages[5] | Should -BeOfType [System.Management.Automation.WarningRecord];
-                $warningMessages[5].Message | Should -BeExactly "Rule '.\WithTag2' was suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject2'. Ignore objects with non-production tag.";
+                $warningMessages[5].Message | Should -BeExactly "Rule '.\FromFile2' was suppressed by suppression group '.\SuppressWithTargetName' for 'TestObject2'. Ignore test objects by name.";
+                $warningMessages[6] | Should -BeOfType [System.Management.Automation.WarningRecord];
+                $warningMessages[6].Message | Should -BeExactly "Rule '.\WithTag2' was suppressed by suppression group '.\SuppressWithNonProdTag' for 'TestObject2'. Ignore objects with non-production tag.";
             }
 
             It 'Show warnings for all rules when rule property is null or empty' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Detail -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Detail -InvariantCultureWarning $False -SuppressionGroupExpired Ignore;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams2 -Option $option -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1327,7 +1329,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $False -OutputAs Detail -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -SuppressedRuleWarning $False -OutputAs Detail -InvariantCultureWarning $False -SuppressionGroupExpired Ignore;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile1', 'FromFile2', 'WithTag2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1338,7 +1340,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Summary' {
             It 'Show warnings' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Summary -InvariantCultureWarning $False -OutputCulture 'en-US';
+                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Summary -InvariantCultureWarning $False -SuppressionGroupExpired Ignore -OutputCulture 'en-US';
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile3', 'FromFile5', 'WithTag3' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1370,7 +1372,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $False -OutputAs Summary -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -SuppressedRuleWarning $False -OutputAs Summary -InvariantCultureWarning $False -SuppressionGroupExpired Ignore;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile3', 'FromFile5', 'WithTag3' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 

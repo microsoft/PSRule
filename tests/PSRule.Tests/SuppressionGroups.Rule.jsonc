@@ -2,64 +2,86 @@
 // Licensed under the MIT License.
 // Suppression groups for unit testing
 [
-    {
-        // Synopsis: Ignore test objects by name.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "SuppressionGroup",
-        "metadata": {
-            "name": "SuppressWithTargetName"
-        },
-        "spec": {
-            "rule": [
-                "FromFile1",
-                "FromFile2"
-            ],
-            "if": {
-                "name": ".",
-                "in": [
-                    "TestObject1",
-                    "TestObject2"
-                ]
-            }
-        }
+  {
+    // Synopsis: Ignore test objects by name.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "SuppressionGroup",
+    "metadata": {
+      "name": "SuppressWithTargetName"
     },
-    {
-        // Synopsis: Ignore test objects by type.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "SuppressionGroup",
-        "metadata": {
-            "name": "SuppressWithTestType"
-        },
-        "spec": {
-            "rule": [
-                "FromFile3",
-                "FromFile5"
-            ],
-            "if": {
-                "type": ".",
-                "equals": "TestType"
-            }
-        }
-    },
-    {
-        // Synopsis: Suppress with non-production tag
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "SuppressionGroup",
-        "metadata": {
-            "name": "SuppressWithNonProdTag"
-        },
-        "spec": {
-            "rule": [
-                ".\\WithTag2",
-                ".\\WithTag3"
-            ],
-            "if": {
-                "field": "tags.env",
-                "in": [
-                    "dev",
-                    "test"
-                ]
-            }
-        }
+    "spec": {
+      "rule": [
+        "FromFile1",
+        "FromFile2"
+      ],
+      "if": {
+        "name": ".",
+        "in": [
+          "TestObject1",
+          "TestObject2"
+        ]
+      }
     }
+  },
+  {
+    // Synopsis: Ignore test objects by type.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "SuppressionGroup",
+    "metadata": {
+      "name": "SuppressWithTestType"
+    },
+    "spec": {
+      "rule": [
+        "FromFile3",
+        "FromFile5"
+      ],
+      "if": {
+        "type": ".",
+        "equals": "TestType"
+      }
+    }
+  },
+  {
+    // Synopsis: Suppress with non-production tag.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "SuppressionGroup",
+    "metadata": {
+      "name": "SuppressWithNonProdTag"
+    },
+    "spec": {
+      "rule": [
+        ".\\WithTag2",
+        ".\\WithTag3"
+      ],
+      "if": {
+        "field": "tags.env",
+        "in": [
+          "dev",
+          "test"
+        ]
+      }
+    }
+  },
+  {
+    // Synopsis: Suppress with expiry.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "SuppressionGroup",
+    "metadata": {
+      "name": "SuppressWithExpiry"
+    },
+    "spec": {
+      "expiresOn": "2022-01-01T00:00:00Z",
+      "rule": [
+        ".\\WithTag2",
+        ".\\WithTag3"
+      ],
+      "if": {
+        "field": "tags.env",
+        "in": [
+          "dev",
+          "test"
+        ]
+      }
+    }
+  }
 ]

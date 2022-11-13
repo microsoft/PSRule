@@ -799,6 +799,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Suppression group &apos;{0}&apos; has expired and will be ignored..
+        /// </summary>
+        internal static string SuppressionGroupExpired {
+            get {
+                return ResourceManager.GetString("SuppressionGroupExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Using changed files: {0}.
         /// </summary>
         internal static string UsingChangedFile {
