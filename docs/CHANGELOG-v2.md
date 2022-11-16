@@ -30,6 +30,32 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.6.0
+
+What's changed since v2.5.3:
+
+- New features:
+  - Added support for generating job summaries by @BernieWhite.
+    [#1264](https://github.com/microsoft/PSRule/issues/1264)
+    - Job summaries provide a markdown output for pipelines in addition to other supported output formats.
+    - To use, configure the `Output.JobSummaryPath` option.
+  - Added support for time bound suppression groups by @BernieWhite.
+    [#1335](https://github.com/microsoft/PSRule/issues/1335)
+    - Suppression groups can be configured to expire after a specified time by setting the `spec.expiresOn` property.
+    - When a suppression group expires, the suppression group will generate a warning by default.
+    - Configure the `Execution.SuppressionGroupExpired` option to ignore or error on expired suppression groups.
+- Engineering:
+  - Bump Microsoft.NET.Test.Sdk to v17.4.0.
+    [#1331](https://github.com/microsoft/PSRule/pull/1331)
+  - Bump PSScriptAnalyzer to v1.21.0.
+    [#1318](https://github.com/microsoft/PSRule/pull/1318)
+  - Class clean up and documentation by @BernieWhite.
+    [#1186](https://github.com/microsoft/PSRule/issues/1186)
+
+What's changed since pre-release v2.6.0-B0034:
+
+- No additional changes.
+
 ## v2.6.0-B0034 (pre-release)
 
 What's changed since pre-release v2.6.0-B0013:
