@@ -158,11 +158,11 @@ namespace PSRule.Help
         /// If the current character and sequential characters are line ending control characters, skip ahead.
         /// </summary>
         /// <param name="max">The number of line endings to skip. When max is 0, sequential line endings will be skipped.</param>
+        /// <param name="ignoreEscaping">Determines if escaped characters are skipped.</param>
         /// <returns>The number of line endings skipped.</returns>
         public int SkipLineEnding(int max = 1, bool ignoreEscaping = false)
         {
             var skipped = 0;
-
             while ((Current == CarrageReturn || Current == NewLine) && (max == 0 || skipped < max))
             {
                 if (Remaining == 0)
@@ -171,7 +171,7 @@ namespace PSRule.Help
                 if (Current == CarrageReturn && Peak() == NewLine)
                     Next();
 
-                Next(ignoreEscaping: ignoreEscaping);
+                Next(ignoreEscaping);
                 skipped++;
             }
             return skipped;
@@ -205,32 +205,27 @@ namespace PSRule.Help
         /// Skip ahead if the current character is expected. Keep skipping when the character is repeated.
         /// </summary>
         /// <param name="c">The character to skip.</param>
+        /// <param name="max">The maximum number of characters to skip.</param>
         /// <returns>The number of characters that where skipped.</returns>
         public int Skip(char c, int max)
         {
             var skipped = 0;
-
             while (Current == c && (max == 0 || skipped < max))
             {
                 Next();
-
                 skipped++;
             }
-
             return skipped;
         }
 
         public int Skip(string sequence, int max = 0, bool ignoreEscaping = false)
         {
             var skipped = 0;
-
             while (IsSequence(sequence) && (max == 0 || skipped < max))
             {
                 Skip(sequence.Length, ignoreEscaping);
-
                 skipped++;
             }
-
             return skipped;
         }
 
@@ -238,14 +233,12 @@ namespace PSRule.Help
         /// Skip ahead a number of characters. Use Next() in preference of Skip if the number to skip is 1.
         /// </summary>
         /// <param name="toSkip">The number of characters to skip</param>
+        /// <param name="ignoreEscaping">Determines if escaped characters are skipped.</param>
         public void Skip(int toSkip, bool ignoreEscaping = false)
         {
             toSkip = HasRemaining(toSkip) ? toSkip : Remaining;
-
             for (var i = 0; i < toSkip; i++)
-            {
                 Next(ignoreEscaping);
-            }
         }
 
         /// <summary>

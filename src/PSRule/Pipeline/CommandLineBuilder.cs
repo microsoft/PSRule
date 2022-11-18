@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.IO;
 using PSRule.Configuration;
 
 namespace PSRule.Pipeline
@@ -22,7 +24,7 @@ namespace PSRule.Pipeline
         /// <returns>A builder object to configure the pipeline.</returns>
         public static IInvokePipelineBuilder Invoke(string[] module, PSRuleOption option, IHostContext hostContext)
         {
-            var sourcePipeline = new SourcePipelineBuilder(hostContext, option);
+            var sourcePipeline = new SourcePipelineBuilder(hostContext, option, GetLocalPath());
             for (var i = 0; i < module.Length; i++)
                 sourcePipeline.ModuleByName(module[i]);
 
@@ -44,7 +46,7 @@ namespace PSRule.Pipeline
         /// <returns>A builder object to configure the pipeline.</returns>
         public static IInvokePipelineBuilder Assert(string[] module, PSRuleOption option, IHostContext hostContext)
         {
-            var sourcePipeline = new SourcePipelineBuilder(hostContext, option);
+            var sourcePipeline = new SourcePipelineBuilder(hostContext, option, GetLocalPath());
             for (var i = 0; module != null && i < module.Length; i++)
                 sourcePipeline.ModuleByName(module[i]);
 
@@ -52,6 +54,15 @@ namespace PSRule.Pipeline
             var pipeline = new AssertPipelineBuilder(source, hostContext);
             pipeline.Configure(option);
             return pipeline;
+        }
+
+        internal static string GetLocalPath()
+        {
+            if (string.IsNullOrEmpty(AppContext.BaseDirectory) ||
+                string.IsNullOrEmpty(Path.GetDirectoryName(AppContext.BaseDirectory)))
+                return null;
+
+            return PSRuleOption.GetRootedBasePath(Path.GetDirectoryName(AppContext.BaseDirectory));
         }
     }
 }

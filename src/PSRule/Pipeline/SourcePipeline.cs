@@ -119,14 +119,14 @@ namespace PSRule.Pipeline
         private readonly bool _UseDefaultPath;
         private readonly string _LocalPath;
 
-        internal SourcePipelineBuilder(IHostContext hostContext, PSRuleOption option)
+        internal SourcePipelineBuilder(IHostContext hostContext, PSRuleOption option, string localPath = null)
         {
             _Source = new Dictionary<string, Source>(StringComparer.OrdinalIgnoreCase);
             _HostContext = hostContext;
             _Writer = new HostPipelineWriter(hostContext, option, ShouldProcess);
             _Writer.EnterScope("[Discovery.Source]");
             _UseDefaultPath = option == null || option.Include == null || option.Include.Path == null;
-            _LocalPath = Engine.GetLocalPath();
+            _LocalPath = localPath;
 
             // Include paths from options
             if (!_UseDefaultPath)
@@ -243,6 +243,10 @@ namespace PSRule.Pipeline
         /// </summary>
         private bool TryPackagedModule(string name, out string path)
         {
+            path = null;
+            if (_LocalPath == null)
+                return false;
+
             Log($"Looking for modules in: {_LocalPath}");
             path = PSRuleOption.GetRootedBasePath(Path.Combine(_LocalPath, "Modules", name));
             return System.IO.Directory.Exists(path);

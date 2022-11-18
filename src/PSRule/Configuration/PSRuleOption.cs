@@ -542,6 +542,9 @@ namespace PSRule.Configuration
         /// <returns>A absolute path.</returns>
         internal static string GetRootedPath(string path, bool normalize = false, string basePath = null)
         {
+            if (string.IsNullOrEmpty(path))
+                path = string.Empty;
+
             basePath ??= GetWorkingPath();
             var rootedPath = Path.IsPathRooted(path) ? Path.GetFullPath(path) : Path.GetFullPath(Path.Combine(basePath, path));
             return normalize ? rootedPath.Replace(Backslash, Slash) : rootedPath;
@@ -558,6 +561,9 @@ namespace PSRule.Configuration
         /// </remarks>
         internal static string GetRootedBasePath(string path, bool normalize = false)
         {
+            if (string.IsNullOrEmpty(path))
+                path = string.Empty;
+
             var rootedPath = GetRootedPath(path);
             var basePath = rootedPath.Length > 0 && IsSeparator(rootedPath[rootedPath.Length - 1])
                 ? rootedPath

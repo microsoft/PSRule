@@ -10,11 +10,18 @@ using Xunit;
 
 namespace PSRule
 {
-    [Trait(LANGUAGE, LANGUAGEELEMENT)]
-    public sealed class ConfigurationTests
+    public sealed class PSRuleOptionTests
     {
-        private const string LANGUAGE = "Language";
-        private const string LANGUAGEELEMENT = "Variable";
+        [Fact]
+        public void GetRootedBasePath()
+        {
+            var pwd = Directory.GetCurrentDirectory();
+            var basePwd = $"{pwd}{Path.DirectorySeparatorChar}";
+            Assert.Equal(basePwd, PSRuleOption.GetRootedBasePath(null));
+            Assert.Equal(basePwd, PSRuleOption.GetRootedBasePath(pwd));
+            Assert.Equal(pwd, PSRuleOption.GetRootedPath(null));
+            Assert.Equal(pwd, PSRuleOption.GetRootedPath(pwd));
+        }
 
         [Fact]
         public void Configuration()
@@ -67,6 +74,8 @@ namespace PSRule
             Assert.Equal("East US", pso.PropertyValue<string>("location"));
         }
 
+        #region Helper methods
+
         private static Runtime.Configuration GetConfigurationHelper(PSRuleOption option)
         {
             var builder = new OptionContextBuilder(option, null, null, null);
@@ -97,5 +106,7 @@ namespace PSRule
         {
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
         }
+
+        #endregion Helper methods
     }
 }
