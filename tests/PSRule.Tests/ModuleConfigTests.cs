@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
@@ -13,7 +13,7 @@ using Assert = Xunit.Assert;
 
 namespace PSRule
 {
-    public sealed class ConfigTests
+    public sealed class ModuleConfigTests
     {
         [Theory]
         [InlineData("ModuleConfig.Rule.yaml")]
@@ -26,21 +26,25 @@ namespace PSRule
             Assert.Equal("Configuration1", configuration[0].Name);
         }
 
-        private PSRuleOption GetOption()
+        #region Helper methods
+
+        private static PSRuleOption GetOption()
         {
             return new PSRuleOption();
         }
 
-        private Source[] GetSource(string path)
+        private static Source[] GetSource(string path)
         {
             var builder = new SourcePipelineBuilder(null, null);
             builder.Directory(GetSourcePath(path));
             return builder.Build();
         }
 
-        private string GetSourcePath(string fileName)
+        private static string GetSourcePath(string fileName)
         {
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
         }
+
+        #endregion Helper methods
     }
 }

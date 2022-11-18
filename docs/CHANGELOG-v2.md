@@ -30,6 +30,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since v2.6.0:
+
+- Bug fixes:
+  - Fixes exception calling `RuleSource` value cannot be null by @BernieWhite.
+    [#1343](https://github.com/microsoft/PSRule/issues/1343)
+
 ## v2.6.0
 
 What's changed since v2.5.3:
