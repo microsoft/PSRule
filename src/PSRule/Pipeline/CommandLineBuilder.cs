@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System;
-using System.IO;
 using PSRule.Configuration;
 
 namespace PSRule.Pipeline
@@ -58,11 +57,7 @@ namespace PSRule.Pipeline
 
         internal static string GetLocalPath()
         {
-            if (string.IsNullOrEmpty(AppContext.BaseDirectory) ||
-                string.IsNullOrEmpty(Path.GetDirectoryName(AppContext.BaseDirectory)))
-                return null;
-
-            return PSRuleOption.GetRootedBasePath(Path.GetDirectoryName(AppContext.BaseDirectory));
+            return string.IsNullOrEmpty(AppContext.BaseDirectory) ? null : PSRuleOption.GetRootedBasePath(AppContext.BaseDirectory);
         }
     }
 }
