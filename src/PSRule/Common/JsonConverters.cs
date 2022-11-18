@@ -489,7 +489,6 @@ namespace PSRule
         private static bool TryMetadata(JsonReader reader, JsonSerializer serializer, string propertyName, out ResourceMetadata metadata)
         {
             metadata = null;
-
             if (propertyName == FIELD_METADATA)
             {
                 if (reader.Read() && reader.TokenType == JsonToken.StartObject)
@@ -498,7 +497,6 @@ namespace PSRule
                     return true;
                 }
             }
-
             return false;
         }
 
@@ -514,16 +512,12 @@ namespace PSRule
             out IResource spec)
         {
             spec = null;
-
-            if (propertyName == FIELD_SPEC && _Factory.TryDescriptor(
-                apiVersion: apiVersion,
-                name: kind,
-                descriptor: out var descriptor))
+            if (propertyName == FIELD_SPEC && _Factory.TryDescriptor(apiVersion: apiVersion, name: kind, descriptor: out var descriptor))
             {
                 if (reader.Read() && reader.TokenType == JsonToken.StartObject)
                 {
+                    reader.SkipComments(out _);
                     var deserializedSpec = serializer.Deserialize(reader, objectType: descriptor.SpecType);
-
                     spec = descriptor.CreateInstance(
                         source: RunspaceContext.CurrentThread.Source.File,
                         metadata: metadata,
@@ -534,7 +528,6 @@ namespace PSRule
                     return true;
                 }
             }
-
             return false;
         }
     }
@@ -636,10 +629,13 @@ namespace PSRule
         {
             if (reader.TryConsume(JsonToken.StartArray))
             {
+                reader.SkipComments(out _);
                 var result = new List<string>();
                 while (reader.TryConsume(JsonToken.String, out var s_object) && s_object is string s)
+                {
                     result.Add(s);
-
+                    reader.SkipComments(out _);
+                }
                 return result.ToArray();
             }
             else if (reader.TokenType == JsonToken.String && reader.Value is string s)
@@ -701,7 +697,6 @@ namespace PSRule
                 if (reader.TryConsume(JsonToken.StartObject))
                 {
                     result.Add(MapExpression(reader));
-                    //reader.Consume(JsonToken.EndObject);
                 }
                 // AllOf and AnyOf
                 else if (reader.TryConsume(JsonToken.StartArray))
