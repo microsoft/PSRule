@@ -19,7 +19,9 @@ spec:
       equals: TargetObject1
       # Additional comments
     - field: Value
+      # Additional comments
       equals: value1
+      # Additional comments
 
 ---
 # Synopsis: A selector to match objects using a specific JSON schema

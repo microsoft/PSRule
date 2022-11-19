@@ -22,8 +22,11 @@
             // Additional comments
           },
           {
+            // Additional comments
             "field": "Value",
+            // Additional comments
             "equals": "value1"
+            // Additional comments
           }
         ]
       }

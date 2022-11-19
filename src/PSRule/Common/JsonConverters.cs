@@ -693,6 +693,8 @@ namespace PSRule
         {
             if (TryExpression(type, properties, out LanguageOperator result))
             {
+                reader.SkipComments(out _);
+
                 // If and Not
                 if (reader.TryConsume(JsonToken.StartObject))
                 {
@@ -713,6 +715,7 @@ namespace PSRule
                         }
                     }
                     reader.Consume(JsonToken.EndArray);
+                    reader.SkipComments(out _);
                 }
                 result.Subselector = subselector;
             }
@@ -736,6 +739,7 @@ namespace PSRule
         {
             LanguageExpression result = null;
             var properties = new LanguageExpression.PropertyBag();
+            reader.SkipComments(out _);
             MapProperty(properties, reader, out var key, out var subselector);
             if (key != null && TryCondition(key))
             {
@@ -813,6 +817,7 @@ namespace PSRule
 
             name = null;
             subselector = null;
+            reader.SkipComments(out _);
             while (reader.TokenType == JsonToken.PropertyName)
             {
                 var key = reader.Value.ToString();
@@ -868,6 +873,7 @@ namespace PSRule
                         reader.Read();
                     }
                 }
+                reader.SkipComments(out _);
             }
         }
 
@@ -927,17 +933,14 @@ namespace PSRule
         private bool TryExpression<T>(string type, LanguageExpression.PropertyBag properties, out T expression) where T : LanguageExpression
         {
             expression = null;
-
             if (_Factory.TryDescriptor(type, out var descriptor))
             {
                 expression = (T)descriptor.CreateInstance(
                     source: RunspaceContext.CurrentThread.Source.File,
                     properties: properties
                 );
-
                 return expression != null;
             }
-
             return false;
         }
     }
