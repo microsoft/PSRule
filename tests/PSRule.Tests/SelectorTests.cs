@@ -35,6 +35,7 @@ namespace PSRule
         [InlineData("Json", SelectorJsonFileName)]
         public void ReadSelector(string type, string path)
         {
+            var testObject = GetObject((name: "value", value: 3));
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
             context.Init(GetSource(path));
             context.Begin();
@@ -42,8 +43,17 @@ namespace PSRule
             Assert.NotNull(selector);
             Assert.Equal(92, selector.Length);
 
-            Assert.Equal("BasicSelector", selector[0].Name);
-            Assert.Equal($"{type}AllOf", selector[4].Name);
+            var actual = selector[0];
+            var visitor = new SelectorVisitor(context, actual.Id, actual.Source, actual.Spec.If);
+            Assert.Equal("BasicSelector", actual.Name);
+            Assert.NotNull(actual.Spec.If);
+            Assert.False(visitor.Match(testObject));
+
+            actual = selector[4];
+            visitor = new SelectorVisitor(context, actual.Id, actual.Source, actual.Spec.If);
+            Assert.Equal($"{type}AllOf", actual.Name);
+            Assert.NotNull(actual.Spec.If);
+            Assert.False(visitor.Match(testObject));
         }
 
         #region Conditions

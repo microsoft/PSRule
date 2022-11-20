@@ -489,7 +489,6 @@ namespace PSRule
         private static bool TryMetadata(JsonReader reader, JsonSerializer serializer, string propertyName, out ResourceMetadata metadata)
         {
             metadata = null;
-
             if (propertyName == FIELD_METADATA)
             {
                 if (reader.Read() && reader.TokenType == JsonToken.StartObject)
@@ -498,7 +497,6 @@ namespace PSRule
                     return true;
                 }
             }
-
             return false;
         }
 
@@ -514,16 +512,12 @@ namespace PSRule
             out IResource spec)
         {
             spec = null;
-
-            if (propertyName == FIELD_SPEC && _Factory.TryDescriptor(
-                apiVersion: apiVersion,
-                name: kind,
-                descriptor: out var descriptor))
+            if (propertyName == FIELD_SPEC && _Factory.TryDescriptor(apiVersion: apiVersion, name: kind, descriptor: out var descriptor))
             {
                 if (reader.Read() && reader.TokenType == JsonToken.StartObject)
                 {
+                    reader.SkipComments(out _);
                     var deserializedSpec = serializer.Deserialize(reader, objectType: descriptor.SpecType);
-
                     spec = descriptor.CreateInstance(
                         source: RunspaceContext.CurrentThread.Source.File,
                         metadata: metadata,
@@ -534,7 +528,6 @@ namespace PSRule
                     return true;
                 }
             }
-
             return false;
         }
     }
@@ -636,10 +629,13 @@ namespace PSRule
         {
             if (reader.TryConsume(JsonToken.StartArray))
             {
+                reader.SkipComments(out _);
                 var result = new List<string>();
                 while (reader.TryConsume(JsonToken.String, out var s_object) && s_object is string s)
+                {
                     result.Add(s);
-
+                    reader.SkipComments(out _);
+                }
                 return result.ToArray();
             }
             else if (reader.TokenType == JsonToken.String && reader.Value is string s)
@@ -697,11 +693,12 @@ namespace PSRule
         {
             if (TryExpression(type, properties, out LanguageOperator result))
             {
+                reader.SkipComments(out _);
+
                 // If and Not
                 if (reader.TryConsume(JsonToken.StartObject))
                 {
                     result.Add(MapExpression(reader));
-                    //reader.Consume(JsonToken.EndObject);
                 }
                 // AllOf and AnyOf
                 else if (reader.TryConsume(JsonToken.StartArray))
@@ -718,6 +715,7 @@ namespace PSRule
                         }
                     }
                     reader.Consume(JsonToken.EndArray);
+                    reader.SkipComments(out _);
                 }
                 result.Subselector = subselector;
             }
@@ -741,6 +739,7 @@ namespace PSRule
         {
             LanguageExpression result = null;
             var properties = new LanguageExpression.PropertyBag();
+            reader.SkipComments(out _);
             MapProperty(properties, reader, out var key, out var subselector);
             if (key != null && TryCondition(key))
             {
@@ -818,6 +817,7 @@ namespace PSRule
 
             name = null;
             subselector = null;
+            reader.SkipComments(out _);
             while (reader.TokenType == JsonToken.PropertyName)
             {
                 var key = reader.Value.ToString();
@@ -873,6 +873,7 @@ namespace PSRule
                         reader.Read();
                     }
                 }
+                reader.SkipComments(out _);
             }
         }
 
@@ -932,17 +933,14 @@ namespace PSRule
         private bool TryExpression<T>(string type, LanguageExpression.PropertyBag properties, out T expression) where T : LanguageExpression
         {
             expression = null;
-
             if (_Factory.TryDescriptor(type, out var descriptor))
             {
                 expression = (T)descriptor.CreateInstance(
                     source: RunspaceContext.CurrentThread.Source.File,
                     properties: properties
                 );
-
                 return expression != null;
             }
-
             return false;
         }
     }

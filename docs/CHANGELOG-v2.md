@@ -30,12 +30,18 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.7.0-B0001:
+
+- Bug fixes:
+  - Fixed exception with comments in JSON baselines by @BernieWhite.
+    [#1336](https://github.com/microsoft/PSRule/issues/1336)
+
 ## v2.7.0-B0001 (pre-release)
 
 What's changed since v2.6.0:
 
 - Bug fixes:
-  - Fixes exception calling `RuleSource` value cannot be null by @BernieWhite.
+  - Fixed exception calling `RuleSource` value cannot be null by @BernieWhite.
     [#1343](https://github.com/microsoft/PSRule/issues/1343)
 
 ## v2.6.0

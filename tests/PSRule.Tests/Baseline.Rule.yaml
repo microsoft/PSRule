@@ -8,6 +8,7 @@ metadata:
   annotations:
     key: value
 spec:
+  # Additional comment
   binding:
     field:
       kind:
@@ -21,7 +22,9 @@ spec:
     - kind
   rule:
     include:
+    # Additional comment
     - 'WithBaseline'
+    # Additional comment
   configuration:
     key1: value1
     key2:
