@@ -67,9 +67,7 @@ namespace PSRule.Pipeline
         {
             get
             {
-                if (_Hash == null)
-                    _Hash = new SHA1Managed();
-
+                _Hash ??= new SHA1Managed();
                 return _Hash;
             }
         }
@@ -145,7 +143,6 @@ namespace PSRule.Pipeline
                 state.LanguageMode = _LanguageMode == LanguageMode.FullLanguage ? PSLanguageMode.FullLanguage : PSLanguageMode.ConstrainedLanguage;
 
                 _Runspace = RunspaceFactory.CreateRunspace(state);
-                //_OrginalRunspace = Runspace.DefaultRunspace;
                 Runspace.DefaultRunspace ??= _Runspace;
 
                 _Runspace.Open();
