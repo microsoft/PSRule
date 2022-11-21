@@ -18,11 +18,8 @@ namespace PSRule.Runtime
         public PSRuleTargetInfo()
         {
             SetMemberName(PropertyName);
-            if (Source == null)
-                Source = new List<TargetSourceInfo>();
-
-            if (Issue == null)
-                Issue = new List<TargetIssueInfo>();
+            Source ??= new List<TargetSourceInfo>();
+            Issue ??= new List<TargetIssueInfo>();
         }
 
         private PSRuleTargetInfo(PSRuleTargetInfo targetInfo)
@@ -31,6 +28,9 @@ namespace PSRule.Runtime
             if (targetInfo == null)
                 return;
 
+            TargetName = targetInfo.TargetName;
+            TargetType = targetInfo.TargetType;
+            Scope = targetInfo.Scope;
             Path = targetInfo.Path;
             Source = targetInfo.Source;
             Issue = targetInfo.Issue;
@@ -43,6 +43,15 @@ namespace PSRule.Runtime
                 return Source.Count == 0 ? null : Source[0].File;
             }
         }
+
+        [JsonProperty(PropertyName = "name")]
+        public string TargetName { get; set; }
+
+        [JsonProperty(PropertyName = "type")]
+        public string TargetType { get; set; }
+
+        [JsonProperty(PropertyName = "scope")]
+        public string Scope { get; set; }
 
         [JsonProperty(PropertyName = "path")]
         public string Path { get; set; }
@@ -76,6 +85,9 @@ namespace PSRule.Runtime
             if (targetInfo == null)
                 return;
 
+            TargetName = targetInfo.TargetName;
+            TargetType = targetInfo.TargetType;
+            Scope = targetInfo.Scope;
             Path = targetInfo.Path;
             Source.AddUnique(targetInfo?.Source);
             Issue.AddUnique(targetInfo?.Issue);

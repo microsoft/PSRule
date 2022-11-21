@@ -41,7 +41,7 @@ namespace PSRule
             context.Begin();
             var selector = HostHelper.GetSelector(GetSource(path), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(92, selector.Length);
+            Assert.Equal(94, selector.Length);
 
             var actual = selector[0];
             var visitor = new SelectorVisitor(context, actual.Id, actual.Source, actual.Spec.If);
@@ -415,7 +415,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: new string[] { "Value1" }));
             var actual2 = GetObject((name: "value", value: new string[] { "Value2" }));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject();
 
@@ -451,7 +451,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: new string[] { "Value1" }));
             var actual2 = GetObject((name: "value", value: new string[] { "Value2" }));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
 
             Assert.False(notIn.Match(actual1));
@@ -487,7 +487,7 @@ namespace PSRule
             var actual3 = GetObject((name: "value", value: new string[] { "cluster-autoscaler" }));
             var actual4 = GetObject((name: "value", value: new string[] { "kube-apiserver", "kube-scheduler" }));
             var actual5 = GetObject((name: "value", value: new string[] { "kube-scheduler" }));
-            var actual6 = GetObject((name: "value", value: new string[] { }));
+            var actual6 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual7 = GetObject((name: "value", value: null));
             var actual8 = GetObject();
             var actual9 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler", "kube-apiserver" }));
@@ -516,7 +516,7 @@ namespace PSRule
             var actual3 = GetObject((name: "value", value: new string[] { "cluster-autoscaler" }));
             var actual4 = GetObject((name: "value", value: new string[] { "kube-apiserver", "kube-scheduler" }));
             var actual5 = GetObject((name: "value", value: new string[] { "kube-scheduler" }));
-            var actual6 = GetObject((name: "value", value: new string[] { }));
+            var actual6 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual7 = GetObject((name: "value", value: null));
             var actual8 = GetObject();
             var actual9 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler", "kube-apiserver" }));
@@ -545,7 +545,7 @@ namespace PSRule
             var actual3 = GetObject((name: "value", value: new string[] { "1" }));
             var actual4 = GetObject((name: "value", value: new int[] { 2, 3 }));
             var actual5 = GetObject((name: "value", value: new int[] { 3 }));
-            var actual6 = GetObject((name: "value", value: new string[] { }));
+            var actual6 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual7 = GetObject((name: "value", value: null));
             var actual8 = GetObject();
 
@@ -570,7 +570,7 @@ namespace PSRule
             var actual3 = GetObject((name: "value", value: new string[] { "1" }));
             var actual4 = GetObject((name: "value", value: new int[] { 2, 3 }));
             var actual5 = GetObject((name: "value", value: new int[] { 3 }));
-            var actual6 = GetObject((name: "value", value: new string[] { }));
+            var actual6 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual7 = GetObject((name: "value", value: null));
             var actual8 = GetObject();
 
@@ -593,7 +593,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject((name: "value", value: 2));
             var actual7 = GetObject((name: "value", value: -1));
@@ -635,7 +635,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject((name: "value", value: 2));
             var actual7 = GetObject((name: "value", value: -1));
@@ -677,7 +677,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject((name: "value", value: 2));
             var actual7 = GetObject((name: "value", value: -1));
@@ -719,7 +719,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "value", value: 4));
             var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject((name: "value", value: 2));
             var actual7 = GetObject((name: "value", value: -1));
@@ -761,7 +761,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject();
             var actual7 = GetObject((name: "value", value: "EFG"));
@@ -803,7 +803,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject();
             var actual7 = GetObject((name: "value", value: "EFG"));
@@ -830,7 +830,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject();
             var actual7 = GetObject((name: "value", value: "EFG"));
@@ -889,7 +889,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject();
             var actual7 = GetObject((name: "value", value: "EFG"));
@@ -916,7 +916,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "bcd"));
             var actual3 = GetObject((name: "value", value: "hij"));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject();
             var actual7 = GetObject((name: "value", value: "BCD"));
@@ -958,7 +958,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "bcd"));
             var actual3 = GetObject((name: "value", value: "hij"));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject();
             var actual7 = GetObject((name: "value", value: "BCD"));
@@ -985,7 +985,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject();
             var actual7 = GetObject((name: "value", value: "EFG"));
@@ -1012,7 +1012,7 @@ namespace PSRule
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: "efg"));
             var actual3 = GetObject((name: "value", value: "hij"));
-            var actual4 = GetObject((name: "value", value: new string[] { }));
+            var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject();
             var actual7 = GetObject((name: "value", value: "EFG"));
@@ -1039,7 +1039,7 @@ namespace PSRule
             var isStringFalse = GetSelectorVisitor($"{type}IsStringFalse", GetSource(path), out _);
             var actual1 = GetObject((name: "value", value: "abc"));
             var actual2 = GetObject((name: "value", value: 4));
-            var actual3 = GetObject((name: "value", value: new string[] { }));
+            var actual3 = GetObject((name: "value", value: Array.Empty<string>()));
             var actual4 = GetObject((name: "value", value: null));
             var actual5 = GetObject();
 
@@ -1118,7 +1118,7 @@ namespace PSRule
             var actual4 = GetObject((name: "value", value: "false"));
             var actual5 = GetObject((name: "value", value: null));
             var actual6 = GetObject((name: "value", value: PSObject.AsPSObject(true)));
-            var actual7 = GetObject((name: "value", value: new bool[] { }));
+            var actual7 = GetObject((name: "value", value: Array.Empty<bool>()));
             var actual8 = GetObject();
 
             // Without conversion
@@ -1659,6 +1659,39 @@ namespace PSRule
             context.EnterTargetObject(new TargetObject(actual1));
 
             Assert.True(equals.Match(actual1));
+        }
+
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void Scope(string type, string path)
+        {
+            var testObject = GetObject(
+                (name: "Name", value: "TargetObject1")
+            );
+
+            var equals = GetSelectorVisitor($"{type}ScopeEquals", GetSource(path), out var context);
+            context.EnterTargetObject(new TargetObject(testObject, scope: "/scope1"));
+            Assert.True(equals.Match(testObject));
+
+            context.EnterTargetObject(new TargetObject(testObject, scope: "/scope2"));
+            Assert.False(equals.Match(testObject));
+
+            context.EnterTargetObject(new TargetObject(testObject));
+            Assert.False(equals.Match(testObject));
+
+            var startsWith = GetSelectorVisitor($"{type}ScopeStartsWith", GetSource(path), out context);
+            context.EnterTargetObject(new TargetObject(testObject, scope: "/scope1/"));
+            Assert.True(startsWith.Match(testObject));
+
+            context.EnterTargetObject(new TargetObject(testObject, scope: "/scope2/"));
+            Assert.True(startsWith.Match(testObject));
+
+            context.EnterTargetObject(new TargetObject(testObject, scope: "/scope2"));
+            Assert.False(startsWith.Match(testObject));
+
+            context.EnterTargetObject(new TargetObject(testObject));
+            Assert.False(startsWith.Match(testObject));
         }
 
         #endregion Properties

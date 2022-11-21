@@ -201,22 +201,26 @@ namespace PSRule.Pipeline
         {
             targetName = null;
             var baseObject = ExpressionHelpers.GetBaseObject(targetObject);
-            if (baseObject is not ITargetInfo info)
-                return false;
+            if (targetObject is PSObject pso && pso.TryTargetInfo(out var targetInfoMember) && targetInfoMember.TargetName != null)
+                targetName = targetInfoMember.TargetName;
 
-            targetName = info.TargetName;
-            return true;
+            if (baseObject is ITargetInfo info)
+                targetName = info.TargetName;
+
+            return targetName != null;
         }
 
         private static bool TryGetInfoTargetType(object targetObject, out string targetType)
         {
             targetType = null;
             var baseObject = ExpressionHelpers.GetBaseObject(targetObject);
-            if (baseObject is not ITargetInfo info)
-                return false;
+            if (targetObject is PSObject pso && pso.TryTargetInfo(out var targetInfoMember) && targetInfoMember.TargetType != null)
+                targetType = targetInfoMember.TargetType;
 
-            targetType = info.TargetType;
-            return true;
+            if (baseObject is ITargetInfo info)
+                targetType = info.TargetType;
+
+            return targetType != null;
         }
 
         private static string ValueAsString(object o, string propertyName, bool caseSensitive)

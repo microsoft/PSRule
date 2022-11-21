@@ -205,6 +205,11 @@ namespace PSRule.Runtime
         public string TargetType => GetContext().RuleRecord.TargetType;
 
         /// <summary>
+        /// The bound scope of the target object.
+        /// </summary>
+        public string Scope => GetContext().TargetObject.Scope;
+
+        /// <summary>
         /// Attempts to read content from disk.
         /// </summary>
         public PSObject[] GetContent(PSObject sourceObject)

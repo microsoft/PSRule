@@ -1770,5 +1770,36 @@
         "caseSensitive": true
       }
     }
+  },
+  {
+    // Synopsis: Test scope property with equals.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "JsonScopeEquals"
+    },
+    "spec": {
+      "if": {
+        "scope": ".",
+        "equals": "/scope1"
+      }
+    }
+  },
+  {
+    // Synopsis: Test scope property with startsWith.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "JsonScopeStartsWith"
+    },
+    "spec": {
+      "if": {
+        "scope": ".",
+        "startsWith": [
+          "/scope1/",
+          "/scope2/"
+        ]
+      }
+    }
   }
 ]

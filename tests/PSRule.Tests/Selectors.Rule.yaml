@@ -1142,6 +1142,8 @@ spec:
     name: '.'
     isUpper: true
 
+#endregion With name tests
+
 ---
 # Synopsis: Test endsWith with source
 apiVersion: github.com/microsoft/PSRule/v1
@@ -1257,5 +1259,26 @@ spec:
       - "SECURITY/"
     caseSensitive: true
 
+---
+# Synopsis: Test scope property with equals.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlScopeEquals
+spec:
+  if:
+    scope: .
+    equals: /scope1
 
-#endregion With name tests
+---
+# Synopsis: Test scope property with startsWith.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlScopeStartsWith
+spec:
+  if:
+    scope: .
+    startsWith:
+    - /scope1/
+    - /scope2/
