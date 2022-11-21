@@ -44,6 +44,8 @@ namespace PSRule.Runtime
         bool TryGetType(object o, out string type, out string path);
 
         bool TryGetName(object o, out string name, out string path);
+
+        bool TryGetScope(object o, out string scope);
     }
 
     internal sealed class LanguageScope : ILanguageScope
@@ -144,6 +146,17 @@ namespace PSRule.Runtime
             }
             name = null;
             path = null;
+            return false;
+        }
+
+        public bool TryGetScope(object o, out string scope)
+        {
+            if (_Context != null && _Context.TargetObject.Value == o)
+            {
+                scope = _Context.TargetObject.Scope;
+                return true;
+            }
+            scope = null;
             return false;
         }
 
