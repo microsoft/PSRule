@@ -145,8 +145,8 @@ namespace PSRule.Pipeline
                 state.LanguageMode = _LanguageMode == LanguageMode.FullLanguage ? PSLanguageMode.FullLanguage : PSLanguageMode.ConstrainedLanguage;
 
                 _Runspace = RunspaceFactory.CreateRunspace(state);
-                _OrginalRunspace = Runspace.DefaultRunspace;
-                Runspace.DefaultRunspace = _Runspace;
+                //_OrginalRunspace = Runspace.DefaultRunspace;
+                Runspace.DefaultRunspace ??= _Runspace;
 
                 _Runspace.Open();
                 _Runspace.SessionStateProxy.PSVariable.Set(new PSRuleVariable());
